@@ -3,6 +3,7 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+#include "batch_size.hpp"
 #include "item_frequency.hpp"
 #include "vega_spec.hpp"
 #include <string>
@@ -135,8 +136,8 @@ namespace turi {
   namespace visualization {
 
     std::shared_ptr<Plot> plot_item_frequency(
-      gl_sarray& sa, std::string xlabel, std::string ylabel, 
-      std::string title) {
+      const gl_sarray& sa, const flexible_type& xlabel, const flexible_type& ylabel, 
+      const flexible_type& title) {
 
         using namespace turi;
         using namespace turi::visualization;
@@ -151,28 +152,13 @@ namespace turi {
         std::shared_ptr<const gl_sarray> self = std::make_shared<const gl_sarray>(sa);
 
         item_frequency item_freq;
-        item_freq.init(*self);
+        item_freq.init(*self, batch_size(sa));
 
         auto transformer = std::dynamic_pointer_cast<item_frequency_result>(item_freq.get());
         auto result = transformer->emit().get<flex_dict>();
         size_t length_list = std::min(200UL, result.size());
         
-        if (title.empty()) {
-          title = std::string("Distribution of Values [");
-          title.append(flex_type_enum_to_name(self->dtype()));
-          title.append("]");
-        }
-
-        if (xlabel.empty()) {
-          xlabel = "Count";
-        }
-        if (ylabel.empty()) {
-          ylabel = "Values";
-        }
-
-        std::stringstream ss;
-        ss << categorical_spec(length_list, title, xlabel, ylabel);
-        std::string category_spec = ss.str();
+        std::string category_spec = categorical_spec(length_list, title, xlabel, ylabel, self->dtype());
 
         double size_array = static_cast<double>(self->size());
 

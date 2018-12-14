@@ -71,13 +71,44 @@ static std::string make_format_string(unsigned char *raw_format_str_ptr,
   return raw_format_str;
 }
 
+static std::string label_or_default(const flexible_type& label,
+                                    const std::string& _default) {
+  if (label == FLEX_UNDEFINED) {
+    // undefined should render as null in JSON
+    return "null";
 
-EXPORT std::string histogram_spec(std::string title,
-                                  std::string xlabel,
-                                  std::string ylabel) {
-  title = extra_label_escape(title);
-  xlabel = extra_label_escape(xlabel);
-  ylabel = extra_label_escape(ylabel);
+  } else if (label == "__TURI_DEFAULT_LABEL") {
+    // substitute the default label
+    return extra_label_escape(_default);
+
+  } else {
+    // user-provided label should render with quotes/escaping
+    return extra_label_escape(label.get<flex_string>());
+  }
+}
+
+static std::string label_or_null(const flexible_type& label) {
+  if (label == FLEX_UNDEFINED || label == "__TURI_DEFAULT_LABEL") {
+    // undefined/not provided should render as null in JSON
+    return "null";
+
+  } else {
+    // user-provided label should render with quotes/escaping
+    return extra_label_escape(label.get<flex_string>());
+  }
+
+}
+
+EXPORT std::string histogram_spec(const flexible_type& _title,
+                                  const flexible_type& _xlabel,
+                                  const flexible_type& _ylabel,
+                                  flex_type_enum dtype) {
+  static std::string default_title = std::string("Distribution of Values [") +
+                                     flex_type_enum_to_name(dtype) +
+                                     "]";
+  flexible_type title = label_or_default(_title, default_title);
+  flexible_type xlabel = label_or_default(_xlabel, "Count");
+  flexible_type ylabel = label_or_default(_ylabel, "Values");
 
   auto format_string = make_format_string(vega_spec_histogram_json, vega_spec_histogram_json_len);
   auto formatted = boost::format(format_string) %
@@ -88,13 +119,17 @@ EXPORT std::string histogram_spec(std::string title,
 }
 
 EXPORT std::string categorical_spec(size_t length_list,
-                                    std::string title,
-                                    std::string xlabel,
-                                    std::string ylabel) {
+                                    const flexible_type& _title,
+                                    const flexible_type& _xlabel,
+                                    const flexible_type& _ylabel,
+                                    flex_type_enum dtype) {
+  static std::string default_title = std::string("Distribution of Values [") +
+                                     flex_type_enum_to_name(dtype) +
+                                     "]";
 
-  title = extra_label_escape(title);
-  xlabel = extra_label_escape(xlabel);
-  ylabel = extra_label_escape(ylabel);
+  flexible_type title = label_or_default(_title, default_title);
+  flexible_type xlabel = label_or_default(_xlabel, "Values");
+  flexible_type ylabel = label_or_default(_ylabel, "Count");
 
   size_t height = static_cast<size_t>(static_cast<double>(length_list) * 25.0 + 160.0);
   auto format_string = make_format_string(vega_spec_categorical_json, vega_spec_categorical_json_len);
@@ -116,20 +151,11 @@ EXPORT std::string summary_view_spec(size_t length_elements){
   return formatted.str();
 }
 
-std::string scatter_spec(std::string xlabel, std::string ylabel, std::string title) {
-  if (xlabel.empty()) {
-    xlabel = "X";
-  }
-  if (ylabel.empty()) {
-    ylabel = "Y";
-  }
-  if (title.empty()) {
-    title = xlabel + " vs " + ylabel;
-  }
+std::string scatter_spec(const flexible_type& _xlabel, const flexible_type& _ylabel, const flexible_type& _title) {
 
-  xlabel = extra_label_escape(xlabel);
-  ylabel = extra_label_escape(ylabel);
-  title = extra_label_escape(title);
+  std::string xlabel = label_or_default(_xlabel, "X");
+  std::string ylabel = label_or_default(_ylabel, "Y");
+  std::string title = label_or_null(_title);
 
   auto format_string = make_format_string(vega_spec_scatter_json, vega_spec_scatter_json_len);
   auto formatted = boost::format(format_string) %
@@ -139,19 +165,10 @@ std::string scatter_spec(std::string xlabel, std::string ylabel, std::string tit
   return formatted.str();
 }
 
-std::string heatmap_spec(std::string xlabel, std::string ylabel, std::string title) {
-  if (xlabel.empty()) {
-    xlabel = "X";
-  }
-  if (ylabel.empty()) {
-    ylabel = "Y";
-  }
-  if (title.empty()) {
-    title = xlabel + " vs " + ylabel;
-  }
-  xlabel = extra_label_escape(xlabel);
-  ylabel = extra_label_escape(ylabel);
-  title = extra_label_escape(title);
+std::string heatmap_spec(const flexible_type& _xlabel, const flexible_type& _ylabel, const flexible_type& _title) {
+  std::string xlabel = label_or_default(_xlabel, "X");
+  std::string ylabel = label_or_default(_ylabel, "Y");
+  std::string title = label_or_null(_title);
 
   auto format_string = make_format_string(vega_spec_heatmap_json, vega_spec_heatmap_json_len);
   auto formatted = boost::format(format_string) %
@@ -161,19 +178,10 @@ std::string heatmap_spec(std::string xlabel, std::string ylabel, std::string tit
   return formatted.str();
 }
 
-std::string categorical_heatmap_spec(std::string xlabel, std::string ylabel, std::string title) {
-  if (xlabel.empty()) {
-    xlabel = "X";
-  }
-  if (ylabel.empty()) {
-    ylabel = "Y";
-  }
-  if (title.empty()) {
-    title = xlabel + " vs " + ylabel;
-  }
-  xlabel = extra_label_escape(xlabel);
-  ylabel = extra_label_escape(ylabel);
-  title = extra_label_escape(title);
+std::string categorical_heatmap_spec(const flexible_type& _xlabel, const flexible_type& _ylabel, const flexible_type& _title) {
+  std::string xlabel = label_or_default(_xlabel, "X");
+  std::string ylabel = label_or_default(_ylabel, "Y");
+  std::string title = label_or_null(_title);
 
   auto format_string = make_format_string(vega_spec_categorical_heatmap_json, vega_spec_categorical_heatmap_json_len);
   auto formatted = boost::format(format_string) %
@@ -183,19 +191,10 @@ std::string categorical_heatmap_spec(std::string xlabel, std::string ylabel, std
   return formatted.str();
 }
 
-std::string boxes_and_whiskers_spec(std::string xlabel, std::string ylabel, std::string title) {
-  if (xlabel.empty()) {
-    xlabel = "X";
-  }
-  if (ylabel.empty()) {
-    ylabel = "Y";
-  }
-  if (title.empty()) {
-    title = xlabel + " vs " + ylabel;
-  }
-  xlabel = extra_label_escape(xlabel);
-  ylabel = extra_label_escape(ylabel);
-  title = extra_label_escape(title);
+std::string boxes_and_whiskers_spec(const flexible_type& _xlabel, const flexible_type& _ylabel, const flexible_type& _title) {
+  std::string xlabel = label_or_default(_xlabel, "X");
+  std::string ylabel = label_or_default(_ylabel, "Y");
+  std::string title = label_or_null(_title);
 
   auto format_string = make_format_string(vega_spec_boxes_and_whiskers_json, vega_spec_boxes_and_whiskers_json_len);
   auto formatted = boost::format(format_string) %

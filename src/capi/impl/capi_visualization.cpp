@@ -12,6 +12,13 @@
 #include <flexible_type/flexible_type.hpp>
 #include <unity/lib/visualization/show.hpp>
 
+static turi::flexible_type optional_str(const char *str) {
+    if (str == nullptr) {
+        return turi::FLEX_UNDEFINED;
+    }
+    return turi::flex_string(str);
+}
+
 extern "C" {
 
 EXPORT tc_plot* tc_plot_create_1d(const tc_sarray* sa, const char* title,
@@ -22,12 +29,9 @@ EXPORT tc_plot* tc_plot_create_1d(const tc_sarray* sa, const char* title,
   turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa, "sarray", NULL);
-  CHECK_NOT_NULL(error, title, "title", NULL);
-  CHECK_NOT_NULL(error, x_axis_title, "x_axis_title", NULL);
-  CHECK_NOT_NULL(error, y_axis_title, "y_axis_title", NULL);
 
   std::shared_ptr<turi::model_base> plot =
-      sa->value.plot(title, x_axis_title, y_axis_title);
+      sa->value.plot(optional_str(title), optional_str(x_axis_title), optional_str(y_axis_title));
   return new_tc_plot(
       std::dynamic_pointer_cast<turi::visualization::Plot>(plot));
 
@@ -43,12 +47,10 @@ EXPORT tc_plot* tc_plot_create_2d(const tc_sarray* sa_x, const tc_sarray* sa_y,
 
   CHECK_NOT_NULL(error, sa_x, "sarray_x", NULL);
   CHECK_NOT_NULL(error, sa_y, "sarray_y", NULL);
-  CHECK_NOT_NULL(error, title, "title", NULL);
-  CHECK_NOT_NULL(error, x_axis_title, "x_axis_title", NULL);
-  CHECK_NOT_NULL(error, y_axis_title, "y_axis_title", NULL);
 
   std::shared_ptr<turi::model_base> plot = turi::visualization::plot(
-      sa_x->value, sa_y->value, x_axis_title, y_axis_title, title);
+      sa_x->value, sa_y->value,
+      optional_str(x_axis_title), optional_str(y_axis_title), optional_str(title));
   return new_tc_plot(
       std::dynamic_pointer_cast<turi::visualization::Plot>(plot));
 

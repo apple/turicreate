@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Extended functionality: Basic extensions</title>
+<link rel="stylesheet" href="../../../doc/src/boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../index.html" title="The Boost C++ Libraries BoostBook Documentation Subset">
+<link rel="up" href="../container.html" title="Chapter&#160;9.&#160;Boost.Container">
+<link rel="prev" href="non_standard_containers.html" title="Non-standard containers">
+<link rel="next" href="configurable_containers.html" title="Extended functionality: Configurable containers">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img alt="Boost C++ Libraries" width="277" height="86" src="../../../boost.png"></td>
+<td align="center"><a href="../../../index.html">Home</a></td>
+<td align="center"><a href="../../../libs/libraries.htm">Libraries</a></td>
+<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
+<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
+<td align="center"><a href="../../../more/index.htm">More</a></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="non_standard_containers.html"><img src="../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../container.html"><img src="../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="configurable_containers.html"><img src="../../../doc/src/images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="container.extended_functionality"></a><a class="link" href="extended_functionality.html" title="Extended functionality: Basic extensions">Extended functionality:
+    Basic extensions</a>
+</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="extended_functionality.html#container.extended_functionality.default_initialialization">Default
+      initialization for vector-like containers</a></span></dt>
+<dt><span class="section"><a href="extended_functionality.html#container.extended_functionality.ordered_range_insertion">Ordered
+      range insertion for associative containers (<span class="emphasis"><em>ordered_unique_range</em></span>,
+      <span class="emphasis"><em>ordered_range</em></span>) </a></span></dt>
+<dt><span class="section"><a href="extended_functionality.html#container.extended_functionality.constant_time_range_splice">Constant-time
+      range splice for <code class="computeroutput"><span class="special">(</span><span class="identifier">s</span><span class="special">)</span><span class="identifier">list</span></code></a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="container.extended_functionality.default_initialialization"></a><a class="link" href="extended_functionality.html#container.extended_functionality.default_initialialization" title="Default initialization for vector-like containers">Default
+      initialization for vector-like containers</a>
+</h3></div></div></div>
+<p>
+        STL and most other containers value initialize new elements in common operations
+        like <code class="computeroutput"><span class="identifier">vector</span><span class="special">::</span><span class="identifier">resize</span><span class="special">(</span><span class="identifier">size_type</span> <span class="identifier">n</span><span class="special">)</span></code> or <code class="computeroutput"><span class="keyword">explicit</span>
+        <span class="identifier">vector</span><span class="special">::</span><span class="identifier">vector</span><span class="special">(</span><span class="identifier">size_type</span> <span class="identifier">n</span><span class="special">)</span></code>.
+      </p>
+<p>
+        In some performance-sensitive environments, where vectors are used as a replacement
+        for variable-size buffers for file or network operations, <a href="http://en.cppreference.com/w/cpp/language/value_initialization" target="_top">value
+        initialization</a> is a cost that is not negligible as elements are going
+        to be overwritten by an external source shortly after new elements are added
+        to the container.
+      </p>
+<p>
+        <span class="bold"><strong>Boost.Container</strong></span> offers two new members for
+        <code class="computeroutput"><span class="identifier">vector</span></code>, <code class="computeroutput"><span class="identifier">static_vector</span></code>
+        and <code class="computeroutput"><span class="identifier">stable_vector</span></code>: <code class="computeroutput"><span class="keyword">explicit</span> <span class="identifier">container</span><span class="special">::</span><span class="identifier">container</span><span class="special">(</span><span class="identifier">size_type</span> <span class="identifier">n</span><span class="special">,</span> <span class="identifier">default_init_t</span><span class="special">)</span></code> and <code class="computeroutput"><span class="identifier">container</span><span class="special">::</span><span class="identifier">resize</span><span class="special">(</span><span class="identifier">size_type</span> <span class="identifier">n</span><span class="special">,</span> <span class="identifier">default_init_t</span><span class="special">)</span></code>, where new elements are constructed using
+        <a href="http://en.cppreference.com/w/cpp/language/default_initialization" target="_top">default
+        initialization</a>.
+      </p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="container.extended_functionality.ordered_range_insertion"></a><a class="link" href="extended_functionality.html#container.extended_functionality.ordered_range_insertion" title="Ordered range insertion for associative containers (ordered_unique_range, ordered_range)">Ordered
+      range insertion for associative containers (<span class="emphasis"><em>ordered_unique_range</em></span>,
+      <span class="emphasis"><em>ordered_range</em></span>) </a>
+</h3></div></div></div>
+<p>
+        When filling associative containers big performance gains can be achieved
+        if the input range to be inserted is guaranteed by the user to be ordered
+        according to the predicate. This can happen when inserting values from a
+        <code class="computeroutput"><span class="identifier">set</span></code> to a <code class="computeroutput"><span class="identifier">multiset</span></code>
+        or between different associative container families (<code class="computeroutput"><span class="special">[</span><span class="identifier">multi</span><span class="special">]</span><span class="identifier">set</span><span class="special">/</span><span class="identifier">map</span></code>
+        vs. <code class="computeroutput"><span class="identifier">flat_</span><span class="special">[</span><span class="identifier">multi</span><span class="special">]</span><span class="identifier">set</span><span class="special">/</span><span class="identifier">map</span></code>).
+      </p>
+<p>
+        <span class="bold"><strong>Boost.Container</strong></span> has some overloads for constructors
+        and insertions taking an <code class="computeroutput"><span class="identifier">ordered_unique_range_t</span></code>
+        or an <code class="computeroutput"><span class="identifier">ordered_range_t</span></code> tag
+        parameters as the first argument. When an <code class="computeroutput"><span class="identifier">ordered_unique_range_t</span></code>
+        overload is used, the user notifies the container that the input range is
+        ordered according to the container predicate and has no duplicates. When
+        an <code class="computeroutput"><span class="identifier">ordered_range_t</span></code> overload
+        is used, the user notifies the container that the input range is ordered
+        according to the container predicate but it might have duplicates. With this
+        information, the container can avoid multiple predicate calls and improve
+        insertion times.
+      </p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="container.extended_functionality.constant_time_range_splice"></a><a class="link" href="extended_functionality.html#container.extended_functionality.constant_time_range_splice" title="Constant-time range splice for (s)list">Constant-time
+      range splice for <code class="computeroutput"><span class="special">(</span><span class="identifier">s</span><span class="special">)</span><span class="identifier">list</span></code></a>
+</h3></div></div></div>
+<p>
+        In the first C++ standard <code class="computeroutput"><span class="identifier">list</span><span class="special">::</span><span class="identifier">size</span><span class="special">()</span></code> was not required to be constant-time, and
+        that caused some controversy in the C++ community. Quoting Howard Hinnant's
+        <a href="http://howardhinnant.github.io/On_list_size.html" target="_top"><span class="emphasis"><em>On
+        List Size</em></span></a> paper:
+      </p>
+<div class="blockquote"><blockquote class="blockquote">
+<p>
+          <span class="emphasis"><em>There is a considerable debate on whether <code class="computeroutput"><span class="identifier">std</span><span class="special">::</span><span class="identifier">list</span><span class="special">&lt;</span><span class="identifier">T</span><span class="special">&gt;::</span><span class="identifier">size</span><span class="special">()</span></code> should be O(1) or O(N). The usual argument
+          notes that it is a tradeoff with:</em></span>
+        </p>
+<p>
+          <code class="computeroutput"><span class="identifier">splice</span><span class="special">(</span><span class="identifier">iterator</span> <span class="identifier">position</span><span class="special">,</span> <span class="identifier">list</span><span class="special">&amp;</span> <span class="identifier">x</span><span class="special">,</span> <span class="identifier">iterator</span>
+          <span class="identifier">first</span><span class="special">,</span>
+          <span class="identifier">iterator</span> <span class="identifier">last</span><span class="special">);</span></code>
+        </p>
+<p>
+          <span class="emphasis"><em>If size() is O(1) and this != &amp;x, then this method must perform
+          a linear operation so that it can adjust the size member in each list</em></span>
+        </p>
+</blockquote></div>
+<p>
+        C++11 definitely required <code class="computeroutput"><span class="identifier">size</span><span class="special">()</span></code> to be O(1), so range splice became O(N).
+        However, Howard Hinnant's paper proposed a new <code class="computeroutput"><span class="identifier">splice</span></code>
+        overload so that even O(1) <code class="computeroutput"><span class="identifier">list</span><span class="special">:</span><span class="identifier">size</span><span class="special">()</span></code>
+        implementations could achieve O(1) range splice when the range size was known
+        to the caller:
+      </p>
+<div class="blockquote"><blockquote class="blockquote">
+<p>
+          <code class="computeroutput"><span class="keyword">void</span> <span class="identifier">splice</span><span class="special">(</span><span class="identifier">iterator</span> <span class="identifier">position</span><span class="special">,</span> <span class="identifier">list</span><span class="special">&amp;</span> <span class="identifier">x</span><span class="special">,</span> <span class="identifier">iterator</span>
+          <span class="identifier">first</span><span class="special">,</span>
+          <span class="identifier">iterator</span> <span class="identifier">last</span><span class="special">,</span> <span class="identifier">size_type</span>
+          <span class="identifier">n</span><span class="special">);</span></code>
+        </p>
+<p>
+          <span class="bold"><strong>Effects</strong></span>: Inserts elements in the range
+          [first, last) before position and removes the elements from x.
+        </p>
+<p>
+          <span class="bold"><strong>Requires</strong></span>: [first, last) is a valid range
+          in x. The result is undefined if position is an iterator in the range [first,
+          last). Invalidates only the iterators and references to the spliced elements.
+          n == distance(first, last).
+        </p>
+<p>
+          <span class="bold"><strong>Throws</strong></span>: Nothing.
+        </p>
+<p>
+          <span class="bold"><strong>Complexity</strong></span>: Constant time.
+        </p>
+</blockquote></div>
+<p>
+        This new splice signature allows the client to pass the distance of the input
+        range in. This information is often available at the call site. If it is
+        passed in, then the operation is constant time, even with an O(1) size.
+      </p>
+<p>
+        <span class="bold"><strong>Boost.Container</strong></span> implements this overload
+        for <code class="computeroutput"><span class="identifier">list</span></code> and a modified version
+        of it for <code class="computeroutput"><span class="identifier">slist</span></code> (as <code class="computeroutput"><span class="identifier">slist</span><span class="special">::</span><span class="identifier">size</span><span class="special">()</span></code>
+        is also <code class="computeroutput"><span class="identifier">O</span><span class="special">(</span><span class="number">1</span><span class="special">)</span></code>).
+      </p>
+</div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2009-2018 Ion Gaztanaga<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="non_standard_containers.html"><img src="../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../container.html"><img src="../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="configurable_containers.html"><img src="../../../doc/src/images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

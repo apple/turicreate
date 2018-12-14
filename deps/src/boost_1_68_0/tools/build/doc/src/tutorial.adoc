@@ -1,0 +1,553 @@
+[[bbv2.tutorial]]
+= Tutorial
+
+This section will guide you though the most basic features of
+Boost.Build. We will start with the “Hello, world” example, learn how to
+use libraries, and finish with testing and installing features.
+
+[[bbv2.tutorial.hello]]
+== Hello, world
+
+The simplest project that Boost.Build can construct is stored in
+`example/hello/` directory. The project is described by a file called
+`Jamroot` that contains:
+
+[source]
+----
+exe hello : hello.cpp ;
+----
+
+Even with this simple setup, you can do some interesting things. First
+of all, just invoking `b2` will build the `hello` executable by compiling
+and linking `hello.cpp`. By default, the debug variant is built. Now, to
+build the release variant of `hello`, invoke
+
+[source,shell]
+----
+b2 release
+----
+
+Note that the debug and release variants are created in different
+directories, so you can switch between variants or even build multiple
+variants at once, without any unnecessary recompilation. Let us extend
+the example by adding another line to our project's `Jamroot`:
+
+[source]
+----
+exe hello2 : hello.cpp ;
+----
+
+Now let us build both the debug and release variants of our project
+again:
+
+[source,shell]
+----
+b2 debug release
+----
+
+Note that two variants of `hello2` are linked. Since we have already
+built both variants of `hello`, hello.cpp will not be recompiled;
+instead the existing object files will just be linked into the
+corresponding variants of `hello2`. Now let us remove all the built
+products:
+
+[source,shell]
+----
+b2 --clean debug release
+----
+
+It is also possible to build or clean specific targets. The following
+two commands, respectively, build or clean only the debug version of
+`hello2`.
+
+[source,shell]
+----
+b2 hello2
+b2 --clean hello2
+----
+
+[[bbv2.tutorial.properties]]
+== Properties
+
+To represent aspects of target configuration such as debug and release
+variants, or single- and multi-threaded builds portably, Boost.Build
+uses _features_ with associated _values_. For example, the `debug-symbols`
+feature can have a value of `on` or `off`. A _property_ is just a
+(feature, value) pair. When a user initiates a build, Boost.Build
+automatically translates the requested properties into appropriate
+command-line flags for invoking toolset components like compilers and
+linkers.
+
+There are many built-in features that can be combined to produce
+arbitrary build configurations. The following command builds the
+project's `release` variant with inlining disabled and debug symbols
+enabled:
+
+[source,shell]
+----
+b2 release inlining=off debug-symbols=on
+----
+
+Properties on the command-line are specified with the syntax:
+
+----
+feature-name=feature-value
+----
+
+The `release` and `debug` that we have seen in `b2` invocations are just
+a shorthand way to specify values of the `variant` feature. For example,
+the command above could also have been written this way:
+
+[source,shell]
+----
+b2 variant=release inlining=off debug-symbols=on
+----
+
+`variant` is so commonly-used that it has been given special status as
+an _implicit_ feature—Boost.Build will deduce its identity just from the
+name of one of its values.
+
+A complete description of features can be found in
+link:#bbv2.reference.features[the section called “Features and properties”].
+
+[[bbv2.tutorial.properties.requirements]]
+=== Build Requests and Target Requirements
+
+The set of properties specified on the command line constitutes a _build
+request_—a description of the desired properties for building the
+requested targets (or, if no targets were explicitly requested, the
+project in the current directory). The _actual_ properties used for
+building targets are typically a combination of the build request and
+properties derived from the project's `Jamroot` (and its other Jamfiles,
+as described in
+link:#bbv2.tutorial.hierarchy[the section called “Project Hierarchies”]).
+For example, the locations of `#include`d header files are normally not
+specified on the command-line, but described in Jamfiles as _target
+requirements_ and automatically combined with the build request for those
+targets. Multi-threaded compilation is another example of a typical
+target requirement. The Jamfile fragment below illustrates how these
+requirements might be specified.
+
+[source]
+----
+exe hello
+    : hello.cpp
+    : <include>boost <threading>multi
+    ;
+----
+
+When `hello` is built, the two requirements specified above will always
+be present. If the build request given on the `b2` command-line
+explicitly contradicts a target's requirements, the target requirements
+usually override (or, in the case of “free” features like
+`<include>`, footnote:[See
+link:#bbv2.reference.features.attributes[the section called “Feature Attributes”]]
+augment) the build request.
+
+TIP: The value of the `<include>` feature is relative to the location of
+`Jamroot` where it is used.
+
+[[bbv2.tutorial.properties.project_attributes]]
+=== Project Attributes
+
+If we want the same requirements for our other target, `hello2`, we
+could simply duplicate them. However, as projects grow, that approach
+leads to a great deal of repeated boilerplate in Jamfiles. Fortunately,
+there's a better way. Each project can specify a set of _attributes_,
+including requirements:
+
+[source]
+----
+project
+    : requirements <include>/home/ghost/Work/boost <threading>multi
+    ;
+
+exe hello : hello.cpp ;
+exe hello2 : hello.cpp ;
+----
+
+The effect would be as if we specified the same requirement for both
+`hello` and `hello2`.
+
+[[bbv2.tutorial.hierarchy]]
+== Project Hierarchies
+
+So far we have only considered examples with one project, with one
+user-written Boost.Jam file, `Jamroot`. A typical large codebase would
+be composed of many projects organized into a tree. The top of the tree
+is called the _project root_. Every subproject is defined by a file called
+`Jamfile` in a descendant directory of the project root. The parent
+project of a subproject is defined by the nearest `Jamfile` or `Jamroot`
+file in an ancestor directory. For example, in the following directory
+layout:
+
+----
+top/
+  |
+  +-- Jamroot
+  |
+  +-- app/
+  |    |
+  |    +-- Jamfile
+  |    `-- app.cpp
+  |
+  `-- util/
+       |
+       +-- foo/
+       .    |
+       .    +-- Jamfile
+       .    `-- bar.cpp
+----
+
+the project root is `top/`. The projects in `top/app/` and
+`top/util/foo/` are immediate children of the root project.
+
+NOTE: When we refer to a “Jamfile,” set in normal type, we mean a file called
+either `Jamfile` or `Jamroot`. When we need to be more specific, the
+filename will be set as “`Jamfile`” or “`Jamroot`.”
+
+Projects inherit all attributes (such as requirements) from their
+parents. Inherited requirements are combined with any requirements
+specified by the subproject. For example, if `top/Jamroot` has
+
+[source]
+----
+<include>/home/ghost/local
+----
+
+in its requirements, then all of its sub-projects will have it in their
+requirements, too. Of course, any project can add include paths to those
+specified by its parents. footnote:[Many features will be overridden,
+rather than added-to, in sub-projects See
+link:#bbv2.reference.features.attributes[the section called “Feature Attributes”] for more information] More
+details can be found in link:#bbv2.overview.projects[the section called “Projects”].
+
+Invoking `b2` without explicitly specifying any targets on the command
+line builds the project rooted in the current directory. Building a
+project does not automatically cause its sub-projects to be built unless
+the parent project's Jamfile explicitly requests it. In our example,
+`top/Jamroot` might contain:
+
+[source]
+----
+build-project app ;
+----
+
+which would cause the project in `top/app/` to be built whenever the
+project in `top/` is built. However, targets in `top/util/foo/` will be
+built only if they are needed by targets in `top/` or `top/app/`.
+
+[[bbv2.tutorial.libs]]
+== Dependent Targets
+
+When building a target `X` that depends on first building another target
+`Y` (such as a library that must be linked with X), `Y` is called a
+_dependency_ of `X` and `X` is termed a _dependent_ of `Y`.
+
+To get a feeling of target dependencies, let's continue the above
+example and see how `top/app/Jamfile` can use libraries from
+`top/util/foo`. If `top/util/foo/Jamfile` contains
+
+[source]
+----
+lib bar : bar.cpp ;
+----
+
+then to use this library in `top/app/Jamfile`, we can write:
+
+[source]
+----
+exe app : app.cpp ../util/foo//bar ;
+----
+
+While `app.cpp` refers to a regular source file, `../util/foo//bar` is a
+reference to another target: a library `bar` declared in the Jamfile at
+`../util/foo`.
+
+TIP: Some other build system have special syntax for listing dependent
+libraries, for example `LIBS` variable. In Boost.Build, you just add the
+library to the list of sources.
+
+Suppose we build `app` with:
+
+[source,shell]
+----
+b2 app optimization=full define=USE_ASM
+----
+
+Which properties will be used to build `foo`? The answer is that some
+features are _propagated_ — Boost.Build attempts to use dependencies with
+the same value of propagated features. The `<optimization>` feature is
+propagated, so both `app` and `foo` will be compiled with full
+optimization. But `<define>` is not propagated: its value will be added
+as-is to the compiler flags for `a.cpp`, but won't affect `foo`.
+
+Let's improve this project further. The library probably has some
+headers that must be used when compiling `app.cpp`. We could manually
+add the necessary `#include` paths to `app`'s requirements as values of
+the `<include>  ` feature, but then this work will be repeated for all
+programs that use `foo`. A better solution is to modify
+`util/foo/Jamfile` in this way:
+
+[source]
+----
+project
+    : usage-requirements <include>.
+    ;
+
+lib foo : foo.cpp ;
+----
+
+Usage requirements are applied not to the target being declared but to
+its dependents. In this case, `<include>.` will be applied to all
+targets that directly depend on `foo`.
+
+Another improvement is using symbolic identifiers to refer to the
+library, as opposed to `Jamfile` location. In a large project, a library
+can be used by many targets, and if they all use `Jamfile` location, a change
+in directory organization entails much work.
+The solution is to use project ids—symbolic names not tied to directory
+layout. First, we need to assign a project id by adding this code to
+`Jamroot`:
+
+[source]
+----
+use-project /library-example/foo : util/foo ;
+----
+
+Second, we modify `app/Jamfile` to use the project id:
+
+[source]
+----
+exe app : app.cpp /library-example/foo//bar ;
+----
+
+The `/library-example/foo//bar` syntax is used to refer to the target
+`bar` in the project with id `/library-example/foo`. We've achieved our
+goal—if the library is moved to a different directory, only `Jamroot` must be
+modified. Note that project ids are global—two Jamfiles
+are not allowed to assign the same project id to different directories.
+
+[TIP]
+====
+If you want all applications in some project to link to a certain
+library, you can avoid having to specify directly the sources of every
+target by using the `<library>` property. For example, if
+`/boost/filesystem//fs` should be linked to all applications in your
+project, you can add `<library>/boost/filesystem//fs` to the project's
+requirements, like this:
+
+[source]
+----
+project
+   : requirements <library>/boost/filesystem//fs
+   ;
+----
+====
+
+
+[[bbv2.tutorial.linkage]]
+== Static and shared libraries
+
+Libraries can be either _static_, which means they are included in
+executable files that use them, or _shared_ (a.k.a. _dynamic_), which
+are only referred to from executables, and must be available at run
+time. Boost.Build can create and use both kinds.
+
+The kind of library produced from a `lib` target is determined by the
+value of the `link` feature. Default value is `shared`, and to build a
+static library, the value should be `static`. You can request a static
+build either on the command line:
+
+[source,shell]
+----
+b2 link=static
+----
+
+or in the library's requirements:
+
+[source]
+----
+lib l : l.cpp : <link>static ;
+----
+
+We can also use the `<link>` property to express linking requirements on
+a per-target basis. For example, if a particular executable can be
+correctly built only with the static version of a library, we can
+qualify the executable's link:#bbv2.reference.targets.references[target
+reference] to the library as follows:
+
+[source]
+----
+exe important : main.cpp helpers/<link>static ;
+----
+
+No matter what arguments are specified on the `b2` command line,
+`important` will only be linked with the static version of `helpers`.
+
+Specifying properties in target references is especially useful if you
+use a library defined in some other project (one you can't change) but
+you still want static (or dynamic) linking to that library in all cases.
+If that library is used by many targets, you _could_ use target
+references everywhere:
+
+[source]
+----
+exe e1 : e1.cpp /other_project//bar/<link>static ;
+exe e10 : e10.cpp /other_project//bar/<link>static ;
+----
+
+but that's far from being convenient. A better approach is to introduce
+a level of indirection. Create a local `alias` target that refers to the
+static (or dynamic) version of `foo`:
+
+[source]
+----
+alias foo : /other_project//bar/<link>static ;
+exe e1 : e1.cpp foo ;
+exe e10 : e10.cpp foo ;
+----
+
+The link:#bbv2.tasks.alias[alias] rule is specifically used to rename a
+reference to a target and possibly change the properties.
+
+[TIP]
+====
+When one library uses another, you put the second library in the source
+list of the first. For example:
+
+[source]
+----
+lib utils : utils.cpp /boost/filesystem//fs ;
+lib core : core.cpp utils ;
+exe app : app.cpp core ;
+----
+
+This works no matter what kind of linking is used. When `core` is built as a
+shared library, links `utils` directly into it. Static libraries can't link
+to other libraries, so when `core` is built as a static library, its
+dependency on `utils` is passed along to `core`'s dependents, causing `app`
+to be linked with both `core` and `utils`.
+====
+
+NOTE: (Note for non-UNIX system). Typically, shared libraries must be
+installed to a directory in the dynamic linker's search path. Otherwise,
+applications that use shared libraries can't be started. On Windows, the
+dynamic linker's search path is given by the `PATH` environment variable.
+This restriction is lifted when you use Boost.Build testing
+facilities—the `PATH` variable will be automatically adjusted before
+running the executable.
+
+[[bbv2.tutorial.conditions]]
+== Conditions and alternatives
+
+Sometimes, particular relationships need to be maintained among a
+target's build properties. For example, you might want to set specific
+`#define` when a library is built as shared, or when a target's
+`release` variant is built. This can be achieved using _conditional
+requirements_.
+
+[source]
+----
+lib network : network.cpp
+    : <link>shared:<define>NETWORK_LIB_SHARED
+      <variant>release:<define>EXTRA_FAST
+    ;
+----
+
+In the example above, whenever `network` is built with `<link>shared`,
+`<define>NETWORK_LIB_SHARED` will be in its properties, too. Also, whenever
+its release variant is built, `<define>EXTRA_FAST` will appear in its
+properties.
+
+Sometimes the ways a target is built are so different that describing
+them using conditional requirements would be hard. For example, imagine
+that a library actually uses different source files depending on the
+toolset used to build it. We can express this situation using target
+_alternatives_:
+
+[source]
+----
+lib demangler : dummy_demangler.cpp ;                # <1>
+lib demangler : demangler_gcc.cpp : <toolset>gcc ;   # <2>
+lib demangler : demangler_msvc.cpp : <toolset>msvc ; # <3>
+----
+
+When building `demangler`, Boost.Build will compare requirements for
+each alternative with build properties to find the best match. For
+example, when building with `<toolset>gcc` alternative *(2)*, will be
+selected, and when building with `<toolset>msvc` alternative *(3)* will be
+selected. In all other cases, the most generic alternative *(1)* will be
+built.
+
+[[bbv2.tutorial.prebuilt]]
+== Prebuilt targets
+
+To link to libraries whose build instructions aren't given in a Jamfile,
+you need to create `lib` targets with an appropriate `file` property.
+Target alternatives can be used to associate multiple library files with
+a single conceptual target. For example:
+
+[source]
+----
+# util/lib2/Jamfile
+lib lib2
+    :
+    : <file>lib2_release.a <variant>release
+    ;
+
+lib lib2
+    :
+    : <file>lib2_debug.a <variant>debug
+    ;
+----
+
+This example defines two alternatives for `lib2`, and for each one names
+a prebuilt file. Naturally, there are no sources. Instead, the `<file>`
+feature is used to specify the file name.
+
+Once a prebuilt target has been declared, it can be used just like any
+other target:
+
+[source]
+----
+exe app : app.cpp ../util/lib2//lib2 ;
+----
+
+As with any target, the alternative selected depends on the properties
+propagated from `lib2`'s dependents. If we build the release and debug
+versions of `app` it will be linked with `lib2_release.a` and
+`lib2_debug.a`, respectively.
+
+System libraries — those that are automatically found by the toolset by
+searching through some set of predetermined paths — should be declared
+almost like regular ones:
+
+[source]
+----
+lib pythonlib : : <name>python22 ;
+----
+
+We again don't specify any sources, but give a `name` that should be
+passed to the compiler. If the gcc toolset were used to link an
+executable target to `pythonlib`, `-lpython22` would appear in the
+command line (other compilers may use different options).
+
+We can also specify where the toolset should look for the library:
+
+[source]
+----
+lib pythonlib : : <name>python22 <search>/opt/lib ;
+----
+
+And, of course, target alternatives can be used in the usual way:
+
+[source]
+----
+lib pythonlib : : <name>python22 <variant>release ;
+lib pythonlib : : <name>python22_d <variant>debug ;
+----
+
+A more advanced use of prebuilt targets is described in
+link:#bbv2.recipes.site-config[the section called “Targets in
+site-config.jam”].

@@ -111,17 +111,17 @@ struct histogram_result : public sframe_transformation_output {
  *     the histogram (result type, as shown below) representing the current
  *     distribution of values seen so far.
  */
-typedef transformation<gl_sarray, histogram_result, 5000000> histogram_parent;
+typedef transformation<gl_sarray, histogram_result> histogram_parent;
 class histogram : public histogram_parent {
   public:
     virtual std::vector<histogram_result> split_input(size_t num_threads) override;
     virtual void merge_results(std::vector<histogram_result>& transformers) override;
-    virtual void init(const gl_sarray& source) override;
+    virtual void init(const gl_sarray& source, size_t batch_size) override;
 };
 
 std::shared_ptr<Plot> plot_histogram(
-  gl_sarray& sa, std::string xlabel, std::string ylabel, 
-  std::string title);
+  const gl_sarray& sa, const flexible_type& xlabel, const flexible_type& ylabel, 
+  const flexible_type& title);
 
 }}
 

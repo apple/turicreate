@@ -790,13 +790,13 @@ class unity_sarray: public unity_sarray_base {
   void load(iarchive& iarc);
 
   void show(const std::string& path_to_client,
-            const std::string& title,
-            const std::string& xlabel,
-            const std::string& ylabel);
+            const flexible_type& title,
+            const flexible_type& xlabel,
+            const flexible_type& ylabel);
 
-  std::shared_ptr<model_base> plot(const std::string& _title,
-                                   const std::string& _xlabel,
-                                   const std::string& _ylabel);
+  std::shared_ptr<model_base> plot(const flexible_type& _title,
+                                   const flexible_type& _xlabel,
+                                   const flexible_type& _ylabel);
 
  private:
   /**

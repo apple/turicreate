@@ -20,7 +20,7 @@ from ..cython.cy_flexible_type import infer_type_of_list, infer_type_of_sequence
 from ..cython.cy_sarray import UnitySArrayProxy
 from ..cython.context import debug_trace as cython_context
 from ..util import _is_non_string_iterable, _make_internal_url
-from ..visualization import Plot
+from ..visualization import Plot, LABEL_DEFAULT
 from .image import Image as _Image
 from .. import aggregate as _aggregate
 from ..deps import numpy, HAS_NUMPY
@@ -2900,7 +2900,7 @@ class SArray(object):
         from .sframe import SFrame as _SFrame
         _SFrame({'SArray': self}).explore()
 
-    def show(self, title=None, xlabel=None, ylabel=None):
+    def show(self, title=LABEL_DEFAULT, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT):
         """
         Visualize the SArray.
 
@@ -2913,16 +2913,16 @@ class SArray(object):
         Parameters
         ----------
         title : str
-            The plot title to show for the resulting visualization. Defaults to None.
-            If the title is None, a default title will be provided.
+            The plot title to show for the resulting visualization.
+            If the title is None, the title will be omitted.
 
         xlabel : str
-            The X axis label to show for the resulting visualization. Defaults to None.
-            If the xlabel is None, a default X axis label will be provided.
+            The X axis label to show for the resulting visualization.
+            If the xlabel is None, the X axis label will be omitted.
 
         ylabel : str
-            The Y axis label to show for the resulting visualization. Defaults to None.
-            If the ylabel is None, a default Y axis label will be provided.
+            The Y axis label to show for the resulting visualization.
+            If the ylabel is None, the Y axis label will be omitted.
 
         Returns
         -------
@@ -2943,7 +2943,7 @@ class SArray(object):
 
         returned_plot.show()
 
-    def plot(self, title=None, xlabel=None, ylabel=None):
+    def plot(self, title=LABEL_DEFAULT, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT):
         """
         Create a Plot object representing the SArray.
 
@@ -2956,16 +2956,16 @@ class SArray(object):
         Parameters
         ----------
         title : str
-            The plot title to show for the resulting visualization. Defaults to None.
-            If the title is None, a default title will be provided.
+            The plot title to show for the resulting visualization.
+            If the title is None, the title will be omitted.
 
         xlabel : str
-            The X axis label to show for the resulting visualization. Defaults to None.
-            If the xlabel is None, a default X axis label will be provided.
+            The X axis label to show for the resulting visualization.
+            If the xlabel is None, the X axis label will be omitted.
 
         ylabel : str
-            The Y axis label to show for the resulting visualization. Defaults to None.
-            If the ylabel is None, a default Y axis label will be provided.
+            The Y axis label to show for the resulting visualization.
+            If the ylabel is None, the Y axis label will be omitted.
 
         Returns
         -------

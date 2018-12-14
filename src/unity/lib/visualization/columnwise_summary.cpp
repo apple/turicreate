@@ -1,3 +1,4 @@
+#include "batch_size.hpp"
 #include "columnwise_summary.hpp"
 #include <unity/lib/unity_sframe.hpp>
 
@@ -40,20 +41,9 @@ namespace turi {
         switch (sarr->dtype()) {
           case flex_type_enum::INTEGER:
           case flex_type_enum::FLOAT:
-          {
-            i++;
-            std::shared_ptr<histogram> hist = std::make_shared<histogram>();
-            hist->init(sarr);
-            column_transformers.push_back(hist);
-            column_names.push_back(col);
-            break;
-          }
           case flex_type_enum::STRING:
           {
             i++;
-            std::shared_ptr<item_frequency> item_freq = std::make_shared<item_frequency>();
-            item_freq->init(sarr);
-            column_transformers.push_back(item_freq);
             column_names.push_back(col);
             break;
           }
@@ -69,6 +59,32 @@ namespace turi {
                                  << "Further warnings of unsupported type will be suppressed."
                                  << std::endl;
             }
+            break;
+        }
+      }
+
+      // now that we've collected columns, pick a batch size and add transformers
+      gl_sframe gl_sf(sf->select_columns(column_names));
+      size_t sf_batch_size = batch_size(gl_sf);
+      for (const std::string& col : column_names) {
+        std::shared_ptr<unity_sarray_base> sarr = sf->select_column(col);
+        switch (sarr->dtype()) {
+          case flex_type_enum::INTEGER:
+          case flex_type_enum::FLOAT:
+          {
+            std::shared_ptr<histogram> hist = std::make_shared<histogram>();
+            hist->init(sarr, sf_batch_size);
+            column_transformers.push_back(hist);
+            break;
+          }
+          case flex_type_enum::STRING:
+          {
+            std::shared_ptr<item_frequency> item_freq = std::make_shared<item_frequency>();
+            item_freq->init(sarr, sf_batch_size);
+            column_transformers.push_back(item_freq);
+            break;
+          }
+          default:
             break;
         }
       }

@@ -57,16 +57,16 @@ namespace visualization {
    */
   class heatmap : public groupby<heatmap_result> {
     public:
-      virtual void init(const gl_sframe& source) override;
+      virtual void init(const gl_sframe& source, size_t batch_size) override;
       virtual std::vector<heatmap_result> split_input(size_t num_threads) override;
   };
 
   std::shared_ptr<Plot> plot_heatmap(
                     const gl_sarray& x,
                     const gl_sarray& y,
-                    const std::string& xlabel,
-                    const std::string& ylabel,
-                    const std::string& title);
+                    const flexible_type& xlabel,
+                    const flexible_type& ylabel,
+                    const flexible_type& title);
 
 }}
 
