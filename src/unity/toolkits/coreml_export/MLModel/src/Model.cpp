@@ -127,15 +127,7 @@ namespace CoreML {
     
     // We will only reduce the given specification version if possible. We never increase it here. 
     void Model::downgradeSpecificationVersion() {
-
-        if (m_spec->specificationversion() == MLMODEL_SPECIFICATION_VERSION_IOS12 && !hasIOS12Features(*m_spec)) {
-            m_spec->set_specificationversion(MLMODEL_SPECIFICATION_VERSION_IOS11_2);
-        }
-        
-        if (m_spec->specificationversion() == MLMODEL_SPECIFICATION_VERSION_IOS11_2 && !(hasCustomLayer(*m_spec) || hasfp16Weights(*m_spec))) {
-            m_spec->set_specificationversion(MLMODEL_SPECIFICATION_VERSION_IOS11);
-        }
-        
+        CoreML::downgradeSpecificationVersion(m_spec.get());
     }
     
     Result Model::save(std::ostream& out) {

@@ -24,6 +24,7 @@ namespace CoreML {
     // - Word tagger
     // - Text classifier
     // - Vision feature print
+    // - New neural network layers (resizeBilinear, cropResize)
     // - <fill in as we develope> ..
     static const int32_t MLMODEL_SPECIFICATION_VERSION_IOS12 = 3;
 

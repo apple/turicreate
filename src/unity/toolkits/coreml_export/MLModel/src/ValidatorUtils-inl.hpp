@@ -9,9 +9,7 @@
 #include "Comparison.hpp"
 #include "Format.hpp"
 #include "Result.hpp"
-
-#include "unity/toolkits/coreml_export/protobuf_include_internal.hpp"
-
+#include "../build/format/FeatureTypes_enums.h"
 #include <sstream>
 
 namespace CoreML {
@@ -19,7 +17,7 @@ namespace CoreML {
     enum WeightParamType {
         FLOAT32, // float32 weights
         FLOAT16, // float16 weights
-        QUINT, // <= 8-bit unsigned integer
+        QUINT,   // smaller or equal to 8-bit unsigned integer
         UNSPECIFIED, // More then one type specified
         EMPTY // No populated fields
     };
