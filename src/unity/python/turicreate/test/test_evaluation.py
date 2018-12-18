@@ -512,11 +512,12 @@ f1 = {}; fbeta = {}
         data = turicreate.util.generate_random_sframe(100, "ss")
 
         data = data.rename({"X1-s" : 'user_id', "X2-s" : 'item_id'})
-
+:
 
         training_data, test_data = turicreate.recommender.util.random_split_by_user(data, 
                 "user_id", "item_id", 0.5)
 
+        
 
 
 

@@ -129,14 +129,32 @@ sframe precision_recall_by_user(
 
   turi::timer timer;
   timer.start();
-  
+ 
   std::map<std::string, flexible_type> opts 
     = { {"sort_by_first_two_columns", true} };  
+
+  sframe rec_data; 
   
   const std::string& user_column = recommend_output.column_name(0);
   const std::string& item_column = recommend_output.column_name(1);
-  const std::string& target_column = recommend_output.column_name(2);
+  std::string target_column;
 
+  if(recommend_output.num_columns() == 2) {
+    // Add in a column of descending order.
+    rec_data = recommend_output.select_columns({user_column, item_column});
+
+    target_column = "target"; 
+
+    rec_data.add_column(gl_sarray::from_sequence(recommend_output.size(), 0, true)
+        .materialize_to_sarray(), target_column);
+  } else {
+
+    target_column = recommend_output.column_name(2);
+
+    rec_data = recommend_output.select_columns(
+        {user_column, item_column, target_column});
+  }
+  
   std::map<std::string, v2::ml_column_mode> col_modes =
   { {user_column, v2::ml_column_mode::CATEGORICAL}, 
     {item_column, v2::ml_column_mode::CATEGORICAL} };
@@ -157,9 +175,7 @@ sframe precision_recall_by_user(
   {
     // Map the recommendations set first.  This gets turned into a lookup table.
     v2::ml_data md_rec(opts);
-    md_rec.set_data(recommend_output.select_columns(
-                        {user_column, item_column, target_column}),
-                    target_column, {}, col_modes);
+    md_rec.set_data(rec_data, target_column, {}, col_modes);
 
     md_rec.fill(); 
     metadata = md_rec.metadata();
