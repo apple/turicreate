@@ -135,19 +135,31 @@ sframe precision_recall_by_user(
   
   const std::string& user_column = recommend_output.column_name(0);
   const std::string& item_column = recommend_output.column_name(1);
+  const std::string& target_column = recommend_output.column_name(2);
 
   std::map<std::string, v2::ml_column_mode> col_modes =
   { {user_column, v2::ml_column_mode::CATEGORICAL}, 
     {item_column, v2::ml_column_mode::CATEGORICAL} };
 
-  std::vector<std::pair<size_t, size_t> > recommendations;
+
+  struct __observation {
+    size_t user, item;
+    double score; 
+
+    bool operator<(const __observation& other) const { 
+      return user < other.user; 
+    }
+  }; 
+
+  std::vector<__observation> recommendations;
   std::shared_ptr<v2::ml_metadata> metadata; 
 
   {
     // Map the recommendations set first.  This gets turned into a lookup table.
     v2::ml_data md_rec(opts);
-    md_rec.set_data(recommend_output.select_columns({user_column,item_column}), 
-                    "", {}, col_modes);
+    md_rec.set_data(recommend_output.select_columns(
+                        {user_column, item_column, target_column}),
+                    target_column, {}, col_modes);
 
     md_rec.fill(); 
     metadata = md_rec.metadata();
@@ -155,17 +167,16 @@ sframe precision_recall_by_user(
     // Dump this into a vector. 
     recommendations.resize(md_rec.num_rows());
 
-    in_parallel([&](size_t thread_idx, size_t num_threads) { 
-      
+    in_parallel([&](size_t thread_idx, size_t num_threads) {
+
+      std::vector<v2::ml_data_entry> v;
       for(auto it = md_rec.get_iterator(thread_idx, num_threads); !it.done(); ++it) { 
-        std::vector<v2::ml_data_entry> v; 
         it.fill_observation(v); 
       
-        recommendations[it.row_index()] = {v[0].index, v[1].index};
+        recommendations[it.row_index()] = {v[0].index, v[1].index, it.target_value()};
       }
-    }); 
+    });
 
-    DASSERT_TRUE(std::is_sorted(recommendations.begin(), recommendations.end()));
   }
 
   v2::ml_data md_val(metadata);
@@ -210,12 +221,37 @@ sframe precision_recall_by_user(
       *it_out = out_v;
     }
   };
-  
-  // We need to record all the recommendations that were given that have 
-  // no presence in the validation data.   
+
+  // We need to record all the recommendations. users above this are not in the
+  // recommended set, and therefore not really relevant.
   const size_t max_recommended_user_idx = metadata->index_size(0);
   std::vector<int> recommendations_processed(max_recommended_user_idx, 0);
   atomic<size_t> num_users_processed = 0;
+
+  typedef decltype(recommendations.begin()) rec_iter;
+  auto copy_recommendations = [&](rec_iter& rec_it, std::vector<size_t>& pr) {
+
+    // Now, dump them into the predictions.
+    pr.clear();
+
+    // Find the end of this set of recommendations.
+    auto rec_it_end = rec_it;
+
+    while (rec_it_end != recommendations.end() && rec_it_end->user == rec_it->user) {
+      ++rec_it_end;
+    }
+
+    // Now, sort the recommendations in this group again by descending score
+    // before passing to the precision_recall calculation.
+    std::sort(rec_it, rec_it_end,
+              [](const __observation& v1, const __observation& v2) {
+                return (v1.score > v2.score);
+              });
+
+    for (; rec_it != rec_it_end; ++rec_it) {
+      pr.push_back(rec_it->item);
+    }
+  };
 
   in_parallel([&](size_t thread_idx, size_t num_threads) { 
   
@@ -234,9 +270,9 @@ sframe precision_recall_by_user(
     size_t user = v[0].index;
 
     // Find the starting tracking iterator for this place
-    auto rec_it = std::lower_bound(
-       recommendations.begin(), 
-       recommendations.end(), std::pair<size_t, size_t>{user, 0});
+    auto rec_it =
+        std::lower_bound(recommendations.begin(), recommendations.end(),
+                         __observation{user, 0, 0});
 
     while(!val_it.done()) { 
       
@@ -264,30 +300,19 @@ sframe precision_recall_by_user(
       DASSERT_FALSE(vr.empty());
 
       // Find the starting location of the recommendations for this user
-      while(rec_it != recommendations.end() && rec_it->first < user) {
+      while(rec_it != recommendations.end() && rec_it->user < user) {
          ++rec_it; 
       }
 
-      // Now, dump them into the predictions.
-      pr.clear(); 
-
-      // Copy the recommended items into a buffer. 
-      while(rec_it != recommendations.end() && rec_it->first == user) { 
-        pr.push_back(rec_it->second);
-        ++rec_it;
-      }
-
+      copy_recommendations(rec_it, pr);
+      add_to_output(thread_idx, user, pr, vr);
 
       // Record that it's been processed.
       DASSERT_LT(user, recommendations_processed.size()); 
-      DASSERT_EQ(recommendations_processed[user], 0); 
-      recommendations_processed[user] = 1;
-
-      DASSERT_FALSE(pr.empty());
+      DASSERT_EQ(recommendations_processed[user], 0);
 
       ++num_users_processed;
-    
-      add_to_output(thread_idx, user, pr, vr); 
+      recommendations_processed[user] = 1;
     }
   });
 
@@ -309,21 +334,16 @@ sframe precision_recall_by_user(
         }
         
         // Find these recommendations in the block.
-        auto rec_it = std::lower_bound(
-           recommendations.begin(), 
-           recommendations.end(), std::pair<size_t, size_t>{user, 0});
+        auto rec_it =
+            std::lower_bound(recommendations.begin(), recommendations.end(),
+                             __observation{user, 0, 0});
 
         // The only way the above iterator would have missed it is if it's here, 
         // but not in the validation set.
-        DASSERT_EQ(rec_it->first, user); 
-
-        // Copy the recommended items into a buffer. 
-        while(rec_it != recommendations.end() && rec_it->first == user) { 
-          pr.push_back(rec_it->second);
-          ++rec_it;
-        }
-
-        add_to_output(thread_idx, user, pr, {}); 
+        DASSERT_EQ(rec_it->user, user); 
+      
+        copy_recommendations(rec_it, pr);
+        add_to_output(thread_idx, user, pr, {});
       }
     }); 
   }
