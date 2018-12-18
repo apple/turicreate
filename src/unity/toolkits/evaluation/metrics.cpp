@@ -144,7 +144,7 @@ sframe precision_recall_by_user(
   std::shared_ptr<v2::ml_metadata> metadata; 
 
   {
-    // Map the recommend output first
+    // Map the recommendations set first.  This gets turned into a lookup table.
     v2::ml_data md_rec(opts);
     md_rec.set_data(recommend_output.select_columns({user_column,item_column}), 
                     "", {}, col_modes);
@@ -212,9 +212,10 @@ sframe precision_recall_by_user(
   };
   
   // We need to record all the recommendations that were given that have 
-  // no presence in 
-  std::vector<int> recommendations_processed(metadata->index_size(0), 0);
-  atomic<size_t> num_users_processed = 0; 
+  // no presence in the validation data.   
+  const size_t max_recommended_user_idx = metadata->index_size(0);
+  std::vector<int> recommendations_processed(max_recommended_user_idx, 0);
+  atomic<size_t> num_users_processed = 0;
 
   in_parallel([&](size_t thread_idx, size_t num_threads) { 
   
@@ -243,14 +244,24 @@ sframe precision_recall_by_user(
 
       val_it.fill_observation(v);
       user = v[0].index;
+
+      if (user >= max_recommended_user_idx) {
+        continue;
+      }
+
       vr.push_back(v[1].index); 
       ++val_it; 
 
       for(; !val_it.done() && !val_it.is_start_of_new_block(); ++val_it) { 
         val_it.fill_observation(v); 
         DASSERT_EQ(v[0].index, user); 
+        if(!vr.empty() && vr.back() == v[1].index) { 
+          continue;
+        }
         vr.push_back(v[1].index); 
       }
+      
+      DASSERT_FALSE(vr.empty());
 
       // Find the starting location of the recommendations for this user
       while(rec_it != recommendations.end() && rec_it->first < user) {
@@ -266,10 +277,14 @@ sframe precision_recall_by_user(
         ++rec_it;
       }
 
+
       // Record that it's been processed.
       DASSERT_LT(user, recommendations_processed.size()); 
       DASSERT_EQ(recommendations_processed[user], 0); 
       recommendations_processed[user] = 1;
+
+      DASSERT_FALSE(pr.empty());
+
       ++num_users_processed;
     
       add_to_output(thread_idx, user, pr, vr); 
