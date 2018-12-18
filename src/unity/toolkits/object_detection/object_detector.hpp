@@ -40,7 +40,7 @@ class EXPORT object_detector: public ml_model_base {
              std::string image_column_name,
              std::map<std::string, flexible_type> options);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
-      std::string filename);
+      std::string filename, std::map<std::string, flexible_type> options);
 
   // Register with Unity server
 
@@ -69,7 +69,8 @@ class EXPORT object_detector: public ml_model_base {
   );
   // TODO: Addition training options: batch_size, max_iterations, etc.
 
-  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::export_to_coreml, "filename");
+  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::export_to_coreml, "filename", 
+    "options");//"include_non_maximum_suppression", "iou_threshold", "confidence_threshold");
 
   // TODO: Remainder of interface: predict, etc.
 

@@ -21,6 +21,8 @@
 #include <random/random.hpp>
 #include <unity/toolkits/coreml_export/neural_net_models_exporter.hpp>
 #include <unity/toolkits/object_detection/od_yolo.hpp>
+#include <unity/toolkits/coreml_export/protobuf_include_internal.hpp>
+
 
 using turi::coreml::MLModelWrapper;
 using turi::neural_net::cnn_module;
@@ -299,43 +301,78 @@ std::unique_ptr<model_spec> object_detector::init_model(
 
   return nn_spec;
 }
-
+//################################################################
 std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
-    std::string filename) {
+    std::string filename, std::map<std::string, flexible_type> options) { //bool include_non_maximum_suppression, 
+    //double iou_threshold = 0.45, double confidence_threshold = 0.25) {
 
   // Initialize the result with the learned layers from the cnn_module.
   model_spec yolo_nn_spec(nn_spec_->get_coreml_spec());
 
   // Add the layers that convert to intelligible predictions.
-  add_yolo(&yolo_nn_spec, "coordinates", "confidence", "conv8_fwd",
+  std::string coordinates_str;
+  std::string confidence_str;
+  if (options["include_non_maximum_suppression"]=="True") {
+    coordinates_str = "raw_coordinates";
+    confidence_str = "raw_confidence";
+  }
+  else {
+    coordinates_str = "coordinates";
+    confidence_str = "confidence";
+  }
+  
+
+  add_yolo(&yolo_nn_spec, coordinates_str, confidence_str, "conv8_fwd",
            anchor_boxes(),
            variant_get_value<flex_int>(get_value_from_state("num_classes")),
            GRID_SIZE, GRID_SIZE);
 
+  // add_nms();
   // TODO: Support non-maximal suppression.
 
   // Compute the string representation of the list of class labels.
   flex_string class_labels_str;
   flex_list class_labels = read_state<flex_list>("classes");
   if (!class_labels.empty()) {
-    class_labels_str = class_labels.front().get<flex_string>();
+    class_labels_str = class_labels.front().get<flex_string>(); //classes
   }
   for (size_t i = 1; i < class_labels.size(); ++i) {
-    class_labels_str += "," + class_labels[i].get<flex_string>();
+    class_labels_str += "," + class_labels[i].get<flex_string>(); //classes
   }
 
   // Generate "user-defined" metadata.
+  
   flex_dict user_defined_metadata = {
-    {"model", read_state<flex_string>("model")},
-    {"max_iterations", read_state<flex_int>("max_iterations")},
-    {"training_iterations", read_state<flex_int>("training_iterations")},
-    {"include_non_maximum_suppression", "False"},
-    // TODO: {"confidence_threshold", ... },
-    // TODO: {"iou_threshold", ...},
-    {"feature", read_state<flex_string>("feature")},
-    {"annotations", read_state<flex_string>("annotations")},
-    {"classes", class_labels_str},
-  };
+      {"model", read_state<flex_string>("model")},
+      {"max_iterations", read_state<flex_int>("max_iterations")},
+      {"training_iterations", read_state<flex_int>("training_iterations")},
+      {"include_non_maximum_suppression", "False"},
+      {"feature", read_state<flex_string>("feature")},
+      {"annotations", read_state<flex_string>("annotations")},
+      {"classes", class_labels_str},
+      {"type", "object_detector"},
+    };
+  /*
+  std::map<std::string, flexible_type> user_defined_metadata;
+  user_defined_metadata[model] = read_state<flex_string>(model);
+  user_defined_metadata[max_iterations] = read_state<flex_int>(max_iterations);
+  user_defined_metadata[training_iterations] = read_state<flex_int>(training_iterations);
+  user_defined_metadata[include_non_maximum_suppression] = False;
+  user_defined_metadata[feature] = read_state<flex_string>(feature);
+  user_defined_metadata[annotations] = read_state<flex_string>(annotations);
+  user_defined_metadata[classes] = class_labels_str;
+  user_defined_metadata[type] = object_detector;
+  */
+  if (options["include_non_maximum_suppression"] == "True") {
+    user_defined_metadata.push_back(std::make_pair<std::string, std::string>("include_non_maximum_suppression", options["include_non_maximum_suppression"]));
+    user_defined_metadata.push_back(std::make_pair<std::string, double>("confidence_threshold", options["confidence_threshold"]));
+    user_defined_metadata.push_back(std::make_pair<std::string, double>("iou_threshold", options["iou_threshold"]));
+    //user_defined_metadata['include_non_maximum_suppression'] = options['include_non_maximum_suppression'];
+    //user_defined_metadata['confidence_threshold'] = options['confidence_threshold']; //##
+    //user_defined_metadata['iou_threshold'] = options['iou_threshold']; //## check in model proto if it works
+  }
+
+
 
   // TODO: Should we also be adding the non-user-defined keys, such as
   // "version" and "shortDescription", or is that up to the frontend?
@@ -346,15 +383,38 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
                                    GRID_SIZE * SPATIAL_REDUCTION,
                                    class_labels.size(),
                                    GRID_SIZE*GRID_SIZE * anchor_boxes().size(),
-                                   std::move(user_defined_metadata));
+                                   std::move(user_defined_metadata), class_labels, 
+                                   options); //see how to use metadatas only and femove opts
+
+  /*
+  // Create pipeline model
+  CoreML::Specification::Pipeline pipeline;
+  // Create NMS
+  CoreML::Specification::NonMaximumSuppression model_nms; 
+  // TO DO: add thresholdhold etc. 
+  // add model_wrapper
+  // // //pipeline.add(model_wrapper->coreml_model());
+
+  auto* model1 = pipeline.add_models();
+  *model1 = yolo_nn_spec; //model_wrapper->coreml_model();
+  auto* model2 = pipeline.add_models();
+  *model2 = model_nms;
+  
+
+  // add NMS
+  //add_nms(model_nms);
+  
+  //pipeline.add(model_nms);
+  std::shared_ptr<MLModelWrapper> pipeline_wrapper = std::make_shared<MLModelWrapper>(pipeline);
+  */
 
   if (!filename.empty()) {
-    model_wrapper->save(filename);
+    model_wrapper->save(filename); // pipeline_wrapper->save(filename);
   }
 
-  return model_wrapper;
+  return model_wrapper; //pipeline_wrapper;
 }
-
+//##################################
 std::unique_ptr<data_iterator> object_detector::create_iterator(
     gl_sframe data, std::string annotations_column_name,
     std::string image_column_name) const {
@@ -448,6 +508,8 @@ void object_detector::init_train(gl_sframe data,
       { "num_examples", data.size() },
       { "training_epochs", 0 },
       { "training_iterations", 0 },
+      //{"iou_threshold", 0.45},
+      //{"confidence_threshold", 0.25},
   });
   // TODO: The original Python implementation also exposed "anchors",
   // "non_maximum_suppression_threshold", and "training_time".
