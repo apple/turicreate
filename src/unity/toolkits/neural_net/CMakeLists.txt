@@ -10,6 +10,9 @@ if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
     find_library(ACCELERATE NAMES Accelerate)
     message("Accelerate found at ${ACCELERATE}.")
 
+    find_library(CORE_GRAPHICS NAMES CoreGraphics)
+    message("CoreGraphics found at ${CORE_GRAPHICS}.")
+
     find_library(CORE_IMAGE NAMES CoreImage)
     message("CoreImage found at ${CORE_IMAGE}.")
 
@@ -40,6 +43,7 @@ if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
       REQUIRES
         unity_core
         ${ACCELERATE}
+        ${CORE_GRAPHICS}
         ${CORE_IMAGE}
         ${METAL}
         ${METAL_PERFORMANCE_SHADERS}

@@ -203,7 +203,9 @@ void convert_from_core_image(TCMPSLabeledImage *source, CIContext *context,
 
 }  // namespace
 
-mps_image_augmenter::mps_image_augmenter(const options& opts): opts_(opts) {
+mps_image_augmenter::mps_image_augmenter(
+    const options& opts, std::function<float(float,float)> rng_fn):
+  opts_(opts) {
 
   NSDictionary *contextOptions = @{
 
@@ -217,15 +219,26 @@ mps_image_augmenter::mps_image_augmenter(const options& opts): opts_(opts) {
 
   NSMutableArray<id <TCMPSImageAugmenting>> *augmentations =
       [[NSMutableArray alloc] init];
-  TCMPSUniformRandomNumberGenerator rng = ^(CGFloat lower, CGFloat upper) {
-    return turi::random::fast_uniform(lower, upper);
-  };
+  TCMPSUniformRandomNumberGenerator rngBlock;
+  if (rng_fn) {
+    rngBlock = ^(CGFloat lower, CGFloat upper) {
+      return static_cast<CGFloat>(rng_fn(lower, upper));
+    };
+  } else {
+    rngBlock = ^(CGFloat lower, CGFloat upper) {
+      if (lower < upper) {
+        return turi::random::fast_uniform(lower, upper);
+      } else {
+        return lower;
+      }
+    };
+  }
 
   if (opts.crop_prob > 0.f) {
 
     // Enable random crops.
     TCMPSRandomCropAugmenter *cropAug =
-        [[TCMPSRandomCropAugmenter alloc] initWithRNG:rng];
+        [[TCMPSRandomCropAugmenter alloc] initWithRNG:rngBlock];
     cropAug.skipProbability = 1.f - opts.crop_prob;
     cropAug.minAspectRatio = opts.crop_opts.min_aspect_ratio;
     cropAug.maxAspectRatio = opts.crop_opts.max_aspect_ratio;
@@ -242,7 +255,7 @@ mps_image_augmenter::mps_image_augmenter(const options& opts): opts_(opts) {
 
     // Enable random padding.
     TCMPSRandomPadAugmenter *padAug =
-        [[TCMPSRandomPadAugmenter alloc] initWithRNG:rng];
+        [[TCMPSRandomPadAugmenter alloc] initWithRNG:rngBlock];
     padAug.skipProbability = 1.f - opts.pad_prob;
     padAug.minAspectRatio = opts.pad_opts.min_aspect_ratio;
     padAug.maxAspectRatio = opts.pad_opts.max_aspect_ratio;
@@ -257,7 +270,7 @@ mps_image_augmenter::mps_image_augmenter(const options& opts): opts_(opts) {
 
     // Enable mirror images.
     TCMPSHorizontalFlipAugmenter *horizontalFlipAug =
-        [[TCMPSHorizontalFlipAugmenter alloc] initWithRNG:rng];
+        [[TCMPSHorizontalFlipAugmenter alloc] initWithRNG:rngBlock];
     horizontalFlipAug.skipProbability = 1.f - opts.horizontal_flip_prob;
     [augmentations addObject:horizontalFlipAug];
   }
@@ -268,7 +281,7 @@ mps_image_augmenter::mps_image_augmenter(const options& opts): opts_(opts) {
 
     // Enable color controls.
     TCMPSColorControlAugmenter *colorAug =
-        [[TCMPSColorControlAugmenter alloc] initWithRNG:rng];
+        [[TCMPSColorControlAugmenter alloc] initWithRNG:rngBlock];
     colorAug.maxBrightnessDelta = opts.brightness_max_jitter;
     colorAug.maxContrastProportion = opts.contrast_max_jitter;
     colorAug.maxSaturationProportion = opts.saturation_max_jitter;
@@ -279,7 +292,7 @@ mps_image_augmenter::mps_image_augmenter(const options& opts): opts_(opts) {
 
     // Enable color rotation.
     TCMPSHueAdjustAugmenter *hueAug =
-        [[TCMPSHueAdjustAugmenter alloc] initWithRNG:rng];
+        [[TCMPSHueAdjustAugmenter alloc] initWithRNG:rngBlock];
     hueAug.maxHueAdjust = opts.hue_max_jitter;
     [augmentations addObject:hueAug];
   }

@@ -198,7 +198,7 @@
 
     // If the range is empty, then crops with the sampled aspect ratio cannot
     // satisfy the area constraint.
-    if (minHeight >= maxHeight) {
+    if (minHeight > maxHeight) {
       continue;
     }
 
@@ -345,7 +345,7 @@
   }
 
   // We did not find a compatible aspect ratio. Just return the original data.
-  if (minHeight >= maxHeight) {
+  if (minHeight > maxHeight) {
     return source;
   }
 

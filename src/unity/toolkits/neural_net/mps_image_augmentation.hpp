@@ -21,7 +21,12 @@ namespace neural_net {
  */
 class API_AVAILABLE(macos(10.13)) mps_image_augmenter: public image_augmenter {
 public:
-  explicit mps_image_augmenter(const options& opts);
+
+  // Uses turi::random::fast_uniform for a random number generator if one is not
+  // provided.
+  explicit mps_image_augmenter(
+      const options& opts,
+      std::function<float(float lower_bound, float upper_bound)> rng = nullptr);
 
   const options& get_options() const override { return opts_; }
 

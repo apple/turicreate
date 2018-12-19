@@ -9,3 +9,4 @@ make_boost_test(test_model_spec.cxx
 )
 
 make_boost_test(test_image_augmentation.cxx REQUIRES unity_neural_net)
+make_boost_test(test_mps_image_augmentation.cxx REQUIRES unity_neural_net)
