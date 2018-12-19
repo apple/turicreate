@@ -417,11 +417,9 @@ class MetricsTest(unittest.TestCase):
         y    = turicreate.SArray(["0", "0", "2"])
         yhat = turicreate.SArray(["0", "1", "2"])
 
-#Act
+        # Act
         avg_cases = ["micro", "macro", None]
-        pr = {};
-rec = {};
-f1 = {}; fbeta = {}
+        pr = {}; rec = {}; f1 = {}; fbeta = {}
         for avg in avg_cases:
             pr[avg]    = turicreate.toolkits.evaluation.precision(y, yhat, avg)
             rec[avg]   = turicreate.toolkits.evaluation.recall(y, yhat, avg)
@@ -506,49 +504,6 @@ f1 = {}; fbeta = {}
         pr = turicreate.recommender.util.precision_recall_by_user(test_data,
                                                     recs, cutoffs=[5, 10, 15])
         self.assertEqual(pr.num_rows(), 9)
-
-    def test_precision_recall_by_user_regression(self):
-
-        data = turicreate.util.generate_random_sframe(100, "ss")
-
-        data = data.rename({"X1-s" : 'user_id', "X2-s" : 'item_id'})
-:
-
-        training_data, test_data = turicreate.recommender.util.random_split_by_user(data, 
-                "user_id", "item_id", 0.5)
-
-        
-
-
-
-
-
-        data = turicreate.SFrame()
-        data['user_id'] = ["a", "b", "b", "c", "c", "c"]
-        data['item_id'] = ['x', 'x', 'y', 'v', 'w', 'z']
-        data['rating'] = [0, 1, 2, 3, 4, 5]
-        m = turicreate.recommender.item_similarity_recommender.create(data)
-        recs = m.recommend()
-
-        test_data = turicreate.SFrame()
-        test_data['user_id'] = ['a', 'b']
-        test_data['item_id'] = ['v', 'z']
-        test_data['rating'] = [7, 8]
-
-        pr = turicreate.recommender.util.precision_recall_by_user(test_data,
-                                                            recs, cutoffs=[3])
-
-        self.assertEqual(type(pr), turicreate.SFrame)
-        self.assertEqual(pr.column_names(), ['user_id',
-                                     'cutoff',
-                                     'precision',
-                                     'recall',
-                                     'count'])
-        self.assertEqual(list(pr['user_id']), list(turicreate.SArray(['a', 'b', 'c'])))
-        pr = turicreate.recommender.util.precision_recall_by_user(test_data,
-                                                    recs, cutoffs=[5, 10, 15])
-        self.assertEqual(pr.num_rows(), 9)
-
 
     def test_fbeta_binary_score(self):
         # Arrange
