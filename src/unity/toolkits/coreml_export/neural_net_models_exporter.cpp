@@ -9,9 +9,8 @@
 #include <logger/assertions.hpp>
 #include <unity/toolkits/coreml_export/mlmodel_include.hpp>
 
-#include <unity/toolkits/coreml_export/mldata_exporter.hpp> //
-//#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp> //
-#include <unity/toolkits/coreml_export/coreml_export_utils.hpp> //
+#include <unity/toolkits/coreml_export/mldata_exporter.hpp>
+#include <unity/toolkits/coreml_export/coreml_export_utils.hpp>
 
 using CoreML::Specification::ArrayFeatureType;
 using CoreML::Specification::DoubleFeatureType;
@@ -21,9 +20,6 @@ using CoreML::Specification::ModelDescription;
 using CoreML::Specification::NeuralNetworkLayer;
 using turi::coreml::MLModelWrapper;
 
-
-//This one...
-//Change here return type 
   
 namespace turi {
 
@@ -33,7 +29,7 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
     flex_dict user_defined_metadata, flex_list class_labels, std::map<std::string, flexible_type> options) {
 
   
-  CoreML::Specification::Model model_nn; //coreml_spec_model2
+  CoreML::Specification::Model model_nn;
 
   // Scale pixel values 0..255 to [0,1]
   NeuralNetworkLayer* first_layer =
@@ -96,7 +92,7 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
     output_coordinates_pb_feature->set_datatype(ArrayFeatureType::DOUBLE);
 
     // Set CoreML spec version.
-    model_nn.set_specificationversion(1); 
+    model_nn.set_specificationversion(1);
     auto model_wrapper = std::make_shared<MLModelWrapper>(
       std::make_shared<CoreML::Model>(model_nn));
 
@@ -112,7 +108,7 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
 
   // Write FeatureDescription for the raw confidence output.
   FeatureDescription* output_rconfidence_pb = model_desc->add_output();
-  output_rconfidence_pb->set_name("raw_confidence"); 
+  output_rconfidence_pb->set_name("raw_confidence");
   ArrayFeatureType* output_rconfidence_feature =
       output_rconfidence_pb->mutable_type()->mutable_multiarraytype();
   output_rconfidence_feature->add_shape(num_predictions);
@@ -127,9 +123,7 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
 
   // Write FeatureDescription for the coordinates output.
   FeatureDescription* output_rcoordinates_pb = model_desc->add_output();
-  output_rcoordinates_pb->set_name("raw_coordinates"); //raw_coordinates
-  //output_rcoordinates_pb->set_shortdescription(
-  //    "Boxes × [x, y, width, height] (relative to image size)");
+  output_rcoordinates_pb->set_name("raw_coordinates");
   ArrayFeatureType* output_rcoordinates_pb_feature =
       output_rcoordinates_pb->mutable_type()->mutable_multiarraytype();
   output_rcoordinates_pb_feature->add_shape(num_predictions);
@@ -143,10 +137,9 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
       ->add_sizeranges();
   rcoordinates_shape_pb2->set_lowerbound(4);
   rcoordinates_shape_pb2->set_upperbound(4);
-
   
   // Create Non Maximum Suppression model
-  CoreML::Specification::Model model_nms; //coreml_spec_model3
+  CoreML::Specification::Model model_nms;
   model_nms.set_specificationversion(3);
 
   ModelDescription* nms_desc = model_nms.mutable_description();
@@ -227,19 +220,18 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
   coordinates_shape_nms2->set_lowerbound(4);
   coordinates_shape_nms2->set_upperbound(4);
   
-  
   CoreML::Specification::NonMaximumSuppression* first_layer_nms =
     model_nms.mutable_nonmaximumsuppression();
   
-  // Write Class Labels 
+  // Write Class Labels
   auto* string_class_labels = first_layer_nms->mutable_stringclasslabels(); 
   for (size_t i = 0; i < class_labels.size(); ++i) {
     string_class_labels->add_vector(class_labels[i]);
   }
 
   //Write Features for Non Maximum Suppression
-  first_layer_nms->set_iouthreshold(options["iou_threshold"]);//0.45); //hard-coded. need to fix
-  first_layer_nms->set_confidencethreshold(options["confidence_threshold"]);//0.25); //hard-coded. need to fix
+  first_layer_nms->set_iouthreshold(options["iou_threshold"]);
+  first_layer_nms->set_confidencethreshold(options["confidence_threshold"]);
   first_layer_nms->set_confidenceinputfeaturename("raw_confidence");
   first_layer_nms->set_coordinatesinputfeaturename("raw_coordinates");
   first_layer_nms->set_iouthresholdinputfeaturename("iouThreshold");
@@ -249,7 +241,7 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
 
 
   // Set up Pipeline 
-  CoreML::Specification::Model model_pipeline; //coreml_spec_model1
+  CoreML::Specification::Model model_pipeline;
   model_pipeline.set_specificationversion(3); 
   ModelDescription* pipeline_desc = model_pipeline.mutable_description();
 
@@ -268,8 +260,6 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
   input_iou_pipeline->set_name("iouThreshold");
   input_iou_pipeline->set_shortdescription("(optional) IOU Threshold override (default: 0.45)");
   input_iou_pipeline->mutable_type()->mutable_doubletype();
-  //DoubleFeatureType* iou_array_pipeline =
-  //    input_iou_pipeline->mutable_type()->mutable_doubletype(); //################### check if this effects
 
   // Write FeatureDescription for the Confidence Threshold input.
   FeatureDescription* input_cthreshold_pipeline = pipeline_desc->add_input();
@@ -277,8 +267,6 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
   input_cthreshold_pipeline->set_shortdescription(
     "(optional) Confidence Threshold override (default: 0.25)");
   input_cthreshold_pipeline->mutable_type()->mutable_doubletype();
-  //DoubleFeatureType* confthresh_pipeline =
-  //    input_cthreshold_pipeline->mutable_type()->mutable_doubletype();  //################### check if this effects
 
   // Write FeatureDescription for the Confidence output.
   FeatureDescription* output_confidence_pipeline = pipeline_desc->add_output();
@@ -310,19 +298,18 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
   
   // Add NeuralNetwork model to pipeline
   auto* model1 = model_pipeline.mutable_pipeline()->add_models();
-  *model1 = model_nn; 
+  *model1 = model_nn;
 
   // Add Non Maximum Suppression model to pipeline
   auto* model2 = model_pipeline.mutable_pipeline()->add_models();
   *model2 = model_nms;
 
-
   // Wrap the pipeline
   auto pipeline_wrapper = std::make_shared<MLModelWrapper>(
     std::make_shared<CoreML::Model>(model_pipeline));
+  
   // Add metadata.
   pipeline_wrapper->add_metadata({{ "user_defined", std::move(user_defined_metadata)}});
-
 
   return pipeline_wrapper;
 }

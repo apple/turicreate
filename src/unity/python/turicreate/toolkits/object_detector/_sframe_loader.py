@@ -83,19 +83,9 @@ class _SFrameDataSource:
         row = self.sframe[row_index]
 
         turi_image = row[self.feature_column]
-        #turi_image2 = turi_image    
         if turi_image.channels!=3:
             turi_image = _convert_image_to_raw(turi_image)
         image = turi_image.pixel_data
-        '''
-        print("turi_image.pixel_data.shape : {}".format(turi_image2.pixel_data.shape))
-        print("image.shape : {}\n".format(image.shape))
-        
-        for iii in range(3):
-            print("turi_image.pixel_data[:,:,{}] : {}".format(iii, turi_image2.pixel_data[:,:,iii]))  
-            print("image[:,:,{}] : {}\n".format(iii, image[:,:,iii]))
-        print("turi_image.pixel_data[:,:,3] : {}".format(turi_image2.pixel_data[:,:,3])) 
-        '''
 
         # Copy the annotated bounding boxes for this image, if requested.
         if self.load_labels:

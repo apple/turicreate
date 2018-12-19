@@ -48,10 +48,6 @@ void add_yolo(neural_net::model_spec* nn_spec,
               size_t output_grid_width,
               std::string prefix = "__tc__internal__");
 
-//void add_nms(neural_net::model_spec* nn_spec,
- //             const std::string& iou_threshold,
- //             const std::string& confidence_threshold,);
-
 }  // object_detection
 }  // turi
 
