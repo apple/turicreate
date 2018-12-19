@@ -760,7 +760,7 @@ class parallel_csv_parser {
     const char comment_char = tokenizer.comment_char;
     bool cur_in_quote = false;
 
-    size_t idx = 0;
+    int idx = 0;
     const char* __restrict__ buf = &(buffer[0]);
     const char* __restrict__ bufend = &(buffer[0]) + buffer.size();
     if (tokenizer.has_comment_char) {
