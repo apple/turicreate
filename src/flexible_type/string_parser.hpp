@@ -17,21 +17,23 @@
 
 namespace parser_impl { 
 
-/*
+/**
  * \internal
  * The string parsing configuration.
  *
  */
 struct parser_config {
-  // If any of these character occurs outside of quoted string, 
-  // the string will be terminated
+  /// If any of these character occurs outside of quoted string, 
+  /// the string will be terminated
   std::string restrictions;
-  // If the delimiter string is seen anywhere outside of a quoted string,
-  // the string will be terminated.
+  /// If the delimiter string is seen anywhere outside of a quoted string,
+  /// the string will be terminated.
   std::string delimiter;
-  // The character to use for an escape character
+  /// Whether escape char should be used
+  bool use_escape_char = true;
+  /// The character to use for an escape character
   char escape_char = '\\';
-  /* whether double quotes inside of a quote are treated as a single quote.
+  /** whether double quotes inside of a quote are treated as a single quote.
    * i.e. """hello""" => \"hello\"
    */
   char double_quote = true;
@@ -136,7 +138,7 @@ struct string_parser
     }
     return true;
   }
-#define PUSH_CHAR(c) ret.add_char(c); escape_sequence = (c == config.escape_char);
+#define PUSH_CHAR(c) ret.add_char(c); escape_sequence = config.use_escape_char && (c == config.escape_char);
 
 // insert a character into the field buffer. resizing it if necessary
 
@@ -229,8 +231,9 @@ struct string_parser
       if (!quote_char) boost::algorithm::trim_right(final_str);
       else if (quote_char) {
         // if was quoted field, we unescape the contents
-        turi::unescape_string(final_str, config.escape_char,
-                                  quote_char, config.double_quote);
+        turi::unescape_string(final_str, config.use_escape_char, 
+                              config.escape_char,
+                              quote_char, config.double_quote);
       }
       attr = std::move(final_str);
       first = cur;

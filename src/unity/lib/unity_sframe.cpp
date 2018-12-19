@@ -164,6 +164,7 @@ std::map<std::string, std::shared_ptr<unity_sarray_base>> unity_sframe::construc
   tokenizer.delimiter = ",";
   tokenizer.has_comment_char = false;
   tokenizer.escape_char = '\\';
+  tokenizer.use_escape_char = true;
   tokenizer.double_quote = true;
   tokenizer.quote_char = '\"';
   tokenizer.skip_initial_space = true;
@@ -196,6 +197,9 @@ std::map<std::string, std::shared_ptr<unity_sarray_base>> unity_sframe::construc
       tokenizer.comment_char= tmp[0];
       tokenizer.has_comment_char = true;
     }
+  }
+  if (csv_parsing_config.count("use_escape_char")) {
+    tokenizer.skip_initial_space = !csv_parsing_config["use_escape_char"].is_zero();
   }
   if (csv_parsing_config["escape_char"].get_type() == flex_type_enum::STRING) {
     std::string tmp = (flex_string)csv_parsing_config["escape_char"];

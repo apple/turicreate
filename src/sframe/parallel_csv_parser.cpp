@@ -540,16 +540,26 @@ class parallel_csv_parser {
         if (store_errors) error_buffer[threadid].push_back(badline);
         if (continue_on_failure) {
           if (num_failures.value < 10) {
-            std::string badline = std::string(pstart, pnext - pstart);
-            if (badline.length() > 256) badline=badline.substr(0, 256) + "...";
-            logprogress_stream << std::string("Unable to parse line \"") +
-                               badline + "\"" << std::endl;
+            if (!thread_local_tokenizer[threadid].get_last_parse_error_diagnosis().empty()) {
+              logprogress_stream << thread_local_tokenizer[threadid].get_last_parse_error_diagnosis() 
+                                 << std::endl;
+            } else {
+              std::string badline = std::string(pstart, pnext - pstart);
+              if (badline.length() > 256) badline=badline.substr(0, 256) + "...";
+              logprogress_stream << std::string("Unable to parse line \"") +
+                                 badline + "\"" << std::endl;
+            }
           }
           ++num_failures;
         } else {
+          if (!thread_local_tokenizer[threadid].get_last_parse_error_diagnosis().empty()) {
+            logprogress_stream << thread_local_tokenizer[threadid].get_last_parse_error_diagnosis() 
+                               << std::endl;
+          } 
+          std::string badline = std::string(pstart, pnext - pstart);
+          if (badline.length() > 256) badline=badline.substr(0, 256) + "...";
           log_and_throw(std::string("Unable to parse line \"") +
-                        std::string(pstart, pnext - pstart) + "\"\n" +
-                        "Set error_bad_lines=False to skip bad lines");
+                        badline + "\"\n");
         }
       }
     }

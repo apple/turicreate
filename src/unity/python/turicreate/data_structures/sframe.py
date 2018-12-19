@@ -923,7 +923,8 @@ class SFrame(object):
         parsing_config["use_header"] = header
         parsing_config["continue_on_failure"] = not error_bad_lines
         parsing_config["comment_char"] = comment_char
-        parsing_config["escape_char"] = escape_char
+        parsing_config["escape_char"] = '\0' if escape_char is None else escape_char
+        parsing_config["use_escape_char"] = escape_char is None
         parsing_config["double_quote"] = double_quote
         parsing_config["quote_char"] = quote_char
         parsing_config["skip_initial_space"] = skip_initial_space
@@ -1091,8 +1092,9 @@ class SFrame(object):
             The character which denotes that the
             remainder of the line is a comment.
 
-        escape_char : string, optional
-            Character which begins a C escape sequence
+        escape_char : string, optional 
+            Character which begins a C escape sequence. Defaults to backslash(\\)
+            Set to None to disable.
 
         double_quote : bool, optional
             If True, two consecutive quotes in a string are parsed to a single
@@ -1245,8 +1247,9 @@ class SFrame(object):
             The character which denotes that the remainder of the line is a
             comment.
 
-        escape_char : string, optional
-            Character which begins a C escape sequence
+        escape_char : string, optional 
+            Character which begins a C escape sequence. Defaults to backslash(\\)
+            Set to None to disable.
 
         double_quote : bool, optional
             If True, two consecutive quotes in a string are parsed to a single
