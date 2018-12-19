@@ -33,7 +33,8 @@ void add_yolo(model_spec* nn_spec, const std::string& coordinates_name,
   // box and one-hot class probabilities), by anchor box, by output-grid cell.
 
   // (1, B, 5+C, H*W)
-  nn_spec->add_reshape(prefix + "ymap_sp_pre", input,
+  nn_spec->add_reshape(
+      prefix + "ymap_sp_pre", input,
       { 1, anchor_boxes.size(), (5 + num_classes), num_spatial });
 
   // (1, 5+C, B, H*W)
@@ -200,7 +201,6 @@ void add_yolo(model_spec* nn_spec, const std::string& coordinates_name,
   // (1, B*H*W, C, 1)
   nn_spec->add_permute(confidence_name, prefix + "confprobs_transposed",
                        { 0, 2, 1, 3 });
-
 }
 
 }  // object_detection

@@ -82,7 +82,7 @@ class _SFrameDataSource:
         # Copy the image data for this row into a NumPy array.
         row = self.sframe[row_index]
 
-        turi_image = row[self.feature_column]
+        turi_image = row[self.feature_column]        
         if turi_image.channels!=3:
             turi_image = _convert_image_to_raw(turi_image)
         image = turi_image.pixel_data
