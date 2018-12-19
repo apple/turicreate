@@ -646,8 +646,13 @@ namespace turi {
       is unsafe if accessed by multiple threads.
     */
     inline bool set_unsync(size_t b, bool value) {
-      if (value) return set_bit_unsync(b);
-      else return clear_bit_unsync(b);
+      size_t arrpos, bitpos;
+      bit_to_pos(b, arrpos, bitpos);
+
+      const size_t mask(size_t(1) << size_t(bitpos)); 
+      bool ret = array[arrpos] & mask;
+      array[arrpos]^= (-((size_t)value) ^ array[arrpos]) & mask;
+      return ret;
     }
 
 
