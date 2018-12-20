@@ -252,7 +252,20 @@ std::vector<labeled_image> simple_data_iterator::next_batch(size_t batch_size) {
 
     if (++next_row_ == range_iterator_.end()) {
 
-      // TODO: Shuffle if desired.
+      // Shuffle the data.
+      // TODO: This heavyweight shuffle operation introduces spikes into the
+      // wall-clock time of this function. SFrame should either provide an
+      // optimized implementation, or we should implement an approach that
+      // amortizes the cost across calls.
+      auto rng = [](const sframe_rows::row&) {
+        return random::rand();
+      };
+      data_.add_column(data_.apply(rng, flex_type_enum::INTEGER),
+                       "_random_order");
+      data_ = data_.sort("_random_order");
+      data_.remove_column("_random_order");
+
+      // Reset iteration.
       range_iterator_ = data_.range_iterator();
       next_row_ = range_iterator_.begin();
     }

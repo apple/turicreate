@@ -107,6 +107,43 @@ float_array_map get_training_config() {
   return config;
 }
 
+image_augmenter::options get_augmentation_options() {
+  image_augmenter::options opts;
+
+  // Specify the fixed image size expected by the neural network.
+  opts.output_width = GRID_SIZE * SPATIAL_REDUCTION;
+  opts.output_height = GRID_SIZE * SPATIAL_REDUCTION;
+
+  // Apply random crops.
+  opts.crop_prob = 0.9f;
+  opts.crop_opts.min_aspect_ratio = 0.8f;
+  opts.crop_opts.max_aspect_ratio = 1.25f;
+  opts.crop_opts.min_area_fraction = 0.15f;
+  opts.crop_opts.max_area_fraction = 1.f;
+  opts.crop_opts.min_object_covered = 0.f;
+  opts.crop_opts.max_attempts = 50;
+  opts.crop_opts.min_eject_coverage = 0.5f;
+
+  // Apply random padding.
+  opts.pad_prob = 0.9f;
+  opts.pad_opts.min_aspect_ratio = 0.8f;
+  opts.pad_opts.max_aspect_ratio = 1.25f;
+  opts.pad_opts.min_area_fraction = 1.f;
+  opts.pad_opts.max_area_fraction = 2.f;
+  opts.pad_opts.max_attempts = 50;
+
+  // Allow mirror images.
+  opts.horizontal_flip_prob = 0.5f;
+
+  // Apply random perturbations to color.
+  opts.brightness_max_jitter = 0.05f;
+  opts.contrast_max_jitter = 0.05f;
+  opts.saturation_max_jitter = 0.05f;
+  opts.hue_max_jitter = 0.05f;
+
+  return opts;
+}
+
 flex_int estimate_max_iterations(flex_int num_instances, flex_int batch_size) {
 
   // Scale with square root of number of labeled instances.
@@ -392,10 +429,7 @@ void object_detector::init_train(gl_sframe data,
                                             image_column_name);
 
   // Instantiate the data augmenter.
-  image_augmenter::options aug_opts;
-  aug_opts.output_width = GRID_SIZE * SPATIAL_REDUCTION;
-  aug_opts.output_height = GRID_SIZE * SPATIAL_REDUCTION;
-  training_data_augmenter_ = create_augmenter(aug_opts);
+  training_data_augmenter_ = create_augmenter(get_augmentation_options());
 
   // Extract 'mlmodel_path' from the options, to avoid storing it as a model
   // field.

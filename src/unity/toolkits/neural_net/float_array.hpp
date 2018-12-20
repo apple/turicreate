@@ -153,6 +153,9 @@ public:
   const size_t* shape() const override { return shape_; }
   size_t dim() const override { return dim_; }
 
+  // Returns the sub-array at the specified index in the first dimension.
+  shared_float_array operator[](size_t idx) const;
+
   // TODO: Operations such as reshape, slice, etc.?
 
 protected:

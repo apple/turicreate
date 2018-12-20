@@ -133,7 +133,7 @@ private:
 
   annotation_properties compute_properties(const gl_sarray& annotations);
 
-  const gl_sframe data_;
+  gl_sframe data_;
   const size_t annotations_index_;
   const size_t image_index_;
 

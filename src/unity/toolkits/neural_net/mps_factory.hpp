@@ -8,9 +8,17 @@
 #define UNITY_TOOLKITS_NEURAL_NET_MPS_CNN_MODULE_FACTORY_H_
 
 #include <unity/toolkits/neural_net/cnn_module.hpp>
+#include <unity/toolkits/neural_net/image_augmentation.hpp>
 
 namespace turi {
 namespace neural_net {
+
+std::unique_ptr<image_augmenter> create_mps_image_augmenter(
+    const image_augmenter::options& opts);
+
+std::unique_ptr<image_augmenter> create_mps_image_augmenter_for_testing(
+    const image_augmenter::options& opts,
+    std::function<float(float lower, float upper)> rng);
 
 std::unique_ptr<cnn_module> create_mps_object_detector(
     int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
