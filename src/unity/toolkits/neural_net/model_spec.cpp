@@ -25,8 +25,6 @@ using CoreML::Specification::ConvolutionLayerParams;
 using CoreML::Specification::Model;
 using CoreML::Specification::NeuralNetwork;
 using CoreML::Specification::NeuralNetworkLayer;
-using CoreML::Specification::NonMaximumSuppression;
-using CoreML::Specification::Pipeline;
 using CoreML::Specification::SamePadding;
 using CoreML::Specification::WeightParams;
 

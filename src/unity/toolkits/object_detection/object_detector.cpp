@@ -305,11 +305,11 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
 
   // Initialize the result with the learned layers from the cnn_module.
   model_spec yolo_nn_spec(nn_spec_->get_coreml_spec());
+  
+  std::string coordinates_str = "coordinates";
+  std::string confidence_str = "confidence";
 
-  // Add the layers that convert to intelligible predictions.
-  std::string coordinates_str;
-  std::string confidence_str;
-  if (options["include_non_maximum_suppression"]=="True") {
+  if (options["include_non_maximum_suppression"].to<bool>()){
     coordinates_str = "raw_coordinates";
     confidence_str = "raw_confidence";
     //Set default values if thresholds not provided.
@@ -318,11 +318,8 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
     if (options.find("confidence_threshold") == options.end())
       options["confidence_threshold"] = 0.25;
   }
-  else {
-    coordinates_str = "coordinates";
-    confidence_str = "confidence";
-  }
 
+  // Add the layers that convert to intelligible predictions.
   add_yolo(&yolo_nn_spec, coordinates_str, confidence_str, "conv8_fwd",
            anchor_boxes(),
            variant_get_value<flex_int>(get_value_from_state("num_classes")),
@@ -350,10 +347,11 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
       {"type", "object_detector"},
     };
 
-  if (options["include_non_maximum_suppression"] == "True") {
-    user_defined_metadata.push_back(std::make_pair<std::string, std::string>("include_non_maximum_suppression", options["include_non_maximum_suppression"]));
-    user_defined_metadata.push_back(std::make_pair<std::string, double>("confidence_threshold", options["confidence_threshold"]));
-    user_defined_metadata.push_back(std::make_pair<std::string, double>("iou_threshold", options["iou_threshold"]));
+  
+  if (options["include_non_maximum_suppression"].to<bool>()){
+    user_defined_metadata.emplace_back("include_non_maximum_suppression", "True");
+    user_defined_metadata.emplace_back("confidence_threshold", options["confidence_threshold"]);
+    user_defined_metadata.emplace_back("iou_threshold", options["iou_threshold"]);
   }
 
   // TODO: Should we also be adding the non-user-defined keys, such as
@@ -365,8 +363,8 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
                                    GRID_SIZE * SPATIAL_REDUCTION,
                                    class_labels.size(),
                                    GRID_SIZE*GRID_SIZE * anchor_boxes().size(),
-                                   std::move(user_defined_metadata), class_labels,
-                                   options); 
+                                   std::move(user_defined_metadata), std::move(class_labels),
+                                   std::move(options)); 
 
   if (!filename.empty()) {
     model_wrapper->save(filename);

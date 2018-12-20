@@ -20,8 +20,6 @@
 namespace CoreML {
 namespace Specification {
 class NeuralNetwork;
-class NonMaximumSuppression;
-class Pipeline;
 }
 }
 
