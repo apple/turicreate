@@ -36,7 +36,10 @@ template <typename Iterator, typename SpaceType>
 struct flexible_type_parser_impl: qi::grammar<Iterator, flexible_type(), SpaceType> {
   flexible_type_parser_impl(std::string delimiter = ",", 
                             bool use_escape_char = true, 
-                            char escape_char = '\\') : 
+                            char escape_char = '\\',
+                            const std::unordered_set<std::string>& na_val = {},
+                            const std::unordered_set<std::string>& true_val = {},
+                            const std::unordered_set<std::string>& false_val = {}) :
       flexible_type_parser_impl::base_type(root_parser), delimiter(delimiter) {
     using qi::long_long;
     using qi::double_;
@@ -59,6 +62,9 @@ struct flexible_type_parser_impl: qi::grammar<Iterator, flexible_type(), SpaceTy
     recursive_element_string_parser.use_escape_char = use_escape_char;
     recursive_element_string_parser.escape_char = escape_char;
     recursive_element_string_parser.double_quote = true;
+    recursive_element_string_parser.na_val = na_val;
+    recursive_element_string_parser.true_val = true_val;
+    recursive_element_string_parser.false_val= false_val;
 
     /*
      * A parser which parses strings, and stops at all unquoted delimiters
@@ -69,6 +75,9 @@ struct flexible_type_parser_impl: qi::grammar<Iterator, flexible_type(), SpaceTy
     dictionary_element_string_parser.use_escape_char = use_escape_char;
     dictionary_element_string_parser.escape_char = escape_char;
     dictionary_element_string_parser.double_quote = true;
+    dictionary_element_string_parser.na_val = na_val;
+    dictionary_element_string_parser.true_val = true_val;
+    dictionary_element_string_parser.false_val = false_val;
 
     parser_impl::parser_config root_flex_string;
     // when the delimiter is just one character, using the restrictions is faster.
@@ -78,6 +87,9 @@ struct flexible_type_parser_impl: qi::grammar<Iterator, flexible_type(), SpaceTy
     root_flex_string.use_escape_char = use_escape_char;
     root_flex_string.escape_char = escape_char;
     root_flex_string.double_quote = true;
+    root_flex_string.na_val = na_val;
+    root_flex_string.true_val = true_val;
+    root_flex_string.false_val = false_val;
 
     string = 
         (parser_impl::restricted_string(root_flex_string)[_val = _1]);
@@ -191,9 +203,12 @@ struct flexible_type_parser_impl: qi::grammar<Iterator, flexible_type(), SpaceTy
 
 flexible_type_parser::flexible_type_parser(std::string separator, 
                                            bool use_escape_char, 
-                                           char escape_char):
+                                           char escape_char,
+                                           const std::unordered_set<std::string>& na_val,
+                                           const std::unordered_set<std::string>& true_val,
+                                           const std::unordered_set<std::string>& false_val):
     parser(new flexible_type_parser_impl<const char*, 
-           decltype(space)>(separator, use_escape_char, escape_char)), 
+           decltype(space)>(separator, use_escape_char, escape_char, na_val, true_val, false_val)), 
     non_space_parser(new flexible_type_parser_impl<const char*, 
                      decltype(qi::eoi)>(separator, use_escape_char, escape_char)), 
     m_delimiter_has_space(delimiter_has_space(parser->delimiter))

@@ -260,6 +260,26 @@ bool csv_line_tokenizer::parse_as(char** buf, size_t len,
       }
     }
   }
+  if (!true_values.empty() && true_values.count(std::string(*buf, len))) {
+    while(len > 0 && std::isspace((*buf)[len - 1])) len--;
+    if (out.get_type() == flex_type_enum::INTEGER) {
+      out = 1;
+      return true;
+    } else if (out.get_type() == flex_type_enum::FLOAT) {
+      out = 1.0;
+      return true;
+    }
+  }
+  if (!false_values.empty() && false_values.count(std::string(*buf, len))) {
+    while(len > 0 && std::isspace((*buf)[len - 1])) len--;
+    if (out.get_type() == flex_type_enum::INTEGER) {
+      out = 0;
+      return true;
+    } else if (out.get_type() == flex_type_enum::FLOAT) {
+      out = 0.0;
+      return true;
+    }
+  }
   bool parse_success = false;
   // we are trying to parse a non-string, but this actually looks like a string
   // to me.  it might be some other type wrapped inside quote characters
@@ -595,7 +615,9 @@ const std::string& csv_line_tokenizer::get_last_parse_error_diagnosis() const {
 }
 
 void csv_line_tokenizer::init() {
-  parser.reset(new flexible_type_parser(delimiter, use_escape_char, escape_char));
+  parser.reset(new flexible_type_parser(delimiter, use_escape_char, escape_char, 
+                                        std::unordered_set<std::string>(na_values.begin(), na_values.end()),
+                                        true_values, false_values));
   is_regular_line_terminator = line_terminator == "\n";
   if (is_regular_line_terminator) {
     delimiter_is_new_line = delimiter == "\n" || 

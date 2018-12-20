@@ -37,6 +37,10 @@ struct parser_config {
    * i.e. """hello""" => \"hello\"
    */
   char double_quote = true;
+
+  std::unordered_set<std::string> na_val;
+  std::unordered_set<std::string> true_val;
+  std::unordered_set<std::string> false_val;
 };
 
 BOOST_SPIRIT_TERMINAL_EX(restricted_string); 
@@ -235,7 +239,15 @@ struct string_parser
                               config.escape_char,
                               quote_char, config.double_quote);
       }
-      attr = std::move(final_str);
+      if (!config.na_val.empty() && config.na_val.count(final_str)) {
+        attr = turi::flexible_type(turi::flex_type_enum::UNDEFINED);
+      } else if (!config.true_val.empty() && config.true_val.count(final_str)) {
+        attr = 1;
+      } else if (!config.false_val.empty() && config.false_val.count(final_str)) {
+        attr = 0;
+      } else {
+        attr = std::move(final_str);
+      }
       first = cur;
     }
     return true;

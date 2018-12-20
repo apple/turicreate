@@ -36,7 +36,10 @@ class flexible_type_parser {
  public:
   flexible_type_parser(std::string delimiter = ",", 
                        bool use_escape_char = true, 
-                       char escape_char = '\\');
+                       char escape_char = '\\',
+                       const std::unordered_set<std::string>& na_val = {},
+                       const std::unordered_set<std::string>& true_val = {},
+                       const std::unordered_set<std::string>& false_val = {});
   /**
    * Parses a generalized flexible type from a string. The *str pointer will be
    * updated to point to the character after the last character parsed.

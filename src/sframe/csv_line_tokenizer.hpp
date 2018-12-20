@@ -124,6 +124,16 @@ struct csv_line_tokenizer {
   std::vector<std::string> na_values;
 
   /**
+   * string values which map to numeric 1
+   */
+  std::unordered_set<std::string> true_values;
+
+  /**
+   * string values which map to numeric 0
+   */
+  std::unordered_set<std::string> false_values;
+
+  /**
    * Constructor. Does nothing but set up internal buffers.
    */
   csv_line_tokenizer();
