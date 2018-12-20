@@ -309,6 +309,10 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
   std::string coordinates_str = "coordinates";
   std::string confidence_str = "confidence";
 
+  // No options provided defaults to include Non Maximum Suppression.
+  if (options.count("include_non_maximum_suppression")==0)
+    options["include_non_maximum_suppression"] = 1;
+
   if (options["include_non_maximum_suppression"].to<bool>()){
     coordinates_str = "raw_coordinates";
     confidence_str = "raw_confidence";

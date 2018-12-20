@@ -71,6 +71,7 @@ class EXPORT object_detector: public ml_model_base {
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::export_to_coreml, "filename",
     "options");
+  register_defaults("export_to_coreml", {{"options", to_variant(std::map<std::string, flexible_type>())}});
 
   REGISTER_CLASS_MEMBER_DOCSTRING(
       object_detector::export_to_coreml,
