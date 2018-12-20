@@ -9,11 +9,8 @@
 #include <logger/assertions.hpp>
 #include <unity/toolkits/coreml_export/mlmodel_include.hpp>
 
-//#include <unity/toolkits/coreml_export/mldata_exporter.hpp>
-//#include <unity/toolkits/coreml_export/coreml_export_utils.hpp>
 
 using CoreML::Specification::ArrayFeatureType;
-//using CoreML::Specification::DoubleFeatureType;
 using CoreML::Specification::FeatureDescription;
 using CoreML::Specification::ImageFeatureType;
 using CoreML::Specification::ModelDescription;
@@ -101,7 +98,7 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
 
   // Scale pixel values 0..255 to [0,1]
   NeuralNetworkLayer* first_layer =
-      model_nn->mutable_neuralnetwork()->add_layers();//model_nn.mutable_neuralnetwork()->add_layers();
+      model_nn->mutable_neuralnetwork()->add_layers();
   first_layer->set_name("_divscalar0");
   first_layer->add_input("image");
   first_layer->add_output("_divscalar0");
