@@ -40,7 +40,7 @@ class EXPORT object_detector: public ml_model_base {
              std::string image_column_name,
              std::map<std::string, flexible_type> options);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
-      std::string filename);
+      std::string filename, std::map<std::string, flexible_type> options);
 
   // Register with Unity server
 
@@ -69,7 +69,26 @@ class EXPORT object_detector: public ml_model_base {
   );
   // TODO: Addition training options: batch_size, max_iterations, etc.
 
-  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::export_to_coreml, "filename");
+  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::export_to_coreml, "filename",
+    "options");
+  register_defaults("export_to_coreml", {{"options", to_variant(std::map<std::string, flexible_type>())}});
+
+  REGISTER_CLASS_MEMBER_DOCSTRING(
+      object_detector::export_to_coreml,
+      "\n"
+      "Options\n"
+      "-------\n"
+      "include_non_maximum_suppression : bool\n"
+      "    A boolean value \"True\" or \"False\" to indicate the use of Non Maximum Suppression.\n"
+      "iou_threshold: double\n"
+      "    The allowable IOU overlap between bounding box detections for the same object.\n"
+      "    If no value is specified, a default value of 0.45 is used.\n"
+      "confidence_threshold : double\n"
+      "    The minimum required object confidence score per bounding box detection.\n"
+      "    All bounding box detections with object confidence score lower than\n"
+      "    the confidence_threshold are eliminiated. If no value is specified,\n"
+      "    a default value of 0.25 is used.\n"
+  );
 
   // TODO: Remainder of interface: predict, etc.
 
