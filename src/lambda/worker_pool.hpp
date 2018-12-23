@@ -472,7 +472,7 @@ private:
     });
 
     if (m_num_workers == 0) {
-      log_and_throw("Cannot evaluate lambda. Lambda workers cannot not start.");
+      log_and_throw("Cannot evaluate lambda. No Lambda workers have been successfully started.");
     } else if (m_num_workers < num_workers) {
       logprogress_stream << "Less than " << num_workers << " successfully started. "
                          << "Using only " << m_num_workers  << " workers." << std::endl;
