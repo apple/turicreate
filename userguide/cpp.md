@@ -188,7 +188,7 @@ Data:
 To build this C++ program, you'll need to borrow the compilation flags from Turi Create as shown above.
 
 ```shell
-# run the following in the turicreate repostitory root:
+# run the following in the turicreate repository root:
 ./configure
 cd release/src/unity
 make -j8

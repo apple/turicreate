@@ -77,7 +77,7 @@ reference_data[9]['image'].show()
 ```
 ![Similar images](images/sample_image.jpg)
 Note: the loading order of images is non-deterministic, so your 10th image
-is likely something differnt but this isn't important for demonstration purposes.
+is likely something different but this isn't important for demonstration purposes.
 
 The 10 most "similar" looking images are
 ```python
