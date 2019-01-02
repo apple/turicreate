@@ -1,6 +1,6 @@
 # Deployment to Core ML
 
-Style trasnfer models created in Turi Create can easily be deployed to
+Style transfer models created in Turi Create can easily be deployed to
 Core ML into an iOS or macOS application.
 
 #### Export to Core ML {#coreml}
@@ -19,7 +19,7 @@ arrow next to MyCustomStyleTransfer should appear:
 
 ![Xcode view of MyStyleTransfer.mlmodel](images/xcode_style_transfer.png)
 
-If your style transfer model has 8 styles and you want to stlyize using
+If your style transfer model has 8 styles and you want to stylize using
 the 4th style, then index should be
 
 ```swift
