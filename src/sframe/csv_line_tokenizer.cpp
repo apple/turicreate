@@ -217,7 +217,7 @@ size_t csv_line_tokenizer::tokenize_line(char* str, size_t len,
   if (!success || ctr < output.size()) {
     std::stringstream strm;
     if (!tokenizer_impl_error.empty()) strm << tokenizer_impl_error << "\n";
-    if (tokenizer_impl_fail_pos >= 0 && tokenizer_impl_fail_pos <= len) {
+    if (tokenizer_impl_fail_pos >= 0 && (size_t)tokenizer_impl_fail_pos <= len) {
       strm << "Parse failed at token ending at: \n";
       std::string line(str, len);
       // colorize the line.
