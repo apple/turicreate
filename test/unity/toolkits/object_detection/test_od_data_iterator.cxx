@@ -9,6 +9,7 @@
 #include <unity/toolkits/object_detection/od_data_iterator.hpp>
 
 #include <boost/test/unit_test.hpp>
+#include <unity/lib/image_util.hpp>
 #include <util/test_macros.hpp>
 
 namespace turi {
@@ -32,7 +33,7 @@ data_iterator::parameters create_data(size_t num_rows) {
   std::vector<unsigned char> buffer(IMAGE_HEIGHT * IMAGE_WIDTH * 3);
   for (size_t i = 0; i < num_rows; ++i) {
 
-    // Each pixel has R, G, and B value qual to the row index (modulo 256).
+    // Each pixel has R, G, and B value equal to the row index (modulo 256).
     std::fill(buffer.begin(), buffer.end(),
               static_cast<unsigned char>(i % 256));
     images[i] = flex_image(reinterpret_cast<char*>(buffer.data()), IMAGE_HEIGHT,
@@ -90,7 +91,9 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator) {
       TS_ASSERT_EQUALS(example.image.m_width, IMAGE_WIDTH);
       TS_ASSERT_EQUALS(example.image.m_channels, 3);
 
-      TS_ASSERT_EQUALS(static_cast<size_t>(*example.image.get_image_data()),
+      // The first byte of the first pixel should contain the row index.
+      flex_image image = image_util::decode_image(example.image);
+      TS_ASSERT_EQUALS(static_cast<size_t>(image.get_image_data()[0]),
                        row % 256);
 
       TS_ASSERT_EQUALS(example.annotations.size(), 1);
