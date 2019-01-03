@@ -7,7 +7,7 @@
 #include <memory>
 #include <map>
 
-#include "unity/toolkits/coreml_export/protobuf_include_internal.hpp"
+#include "unity/toolkits/coreml_export/mlmodel_include.hpp"
 
 namespace turi {
 

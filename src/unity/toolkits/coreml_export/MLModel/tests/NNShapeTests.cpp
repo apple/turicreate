@@ -6,7 +6,7 @@
 #include "MLModelTests.hpp"
 #include "../src/Format.hpp"
 #include "../src/Model.hpp"
-#include "LayerShapeConstraints.hpp"
+#include "../src/LayerShapeConstraints.hpp"
 
 #include "framework/TestUtils.hpp"
 

@@ -11,9 +11,8 @@
 #include "ValidatorUtils-inl.hpp"
 #include "LayerShapeConstraints.hpp"
 #include "transforms/NeuralNetwork.hpp"
-
-#include <functional>
 #include <iostream>
+#include <functional>
 
 #define COREML_VALIDATOR_VERBOSE 0
 
@@ -25,9 +24,9 @@ namespace CoreML {
 
     public:
 
-        NeuralNetworkShaper(const Specification::Model& model);
+        NeuralNetworkShaper(const Specification::Model& model, bool useInputAndOutputConstraints = true);
 
-        NeuralNetworkShaper(const Specification::ModelDescription& interface, const google::protobuf::RepeatedPtrField<Specification::NeuralNetworkLayer>& nn);
+        NeuralNetworkShaper(const Specification::ModelDescription& interface, const google::protobuf::RepeatedPtrField<Specification::NeuralNetworkLayer>& nn, bool useInputAndOutputConstraints = true);
 
         bool isValid() const;
 
@@ -62,7 +61,8 @@ namespace CoreML {
         void shapeUnidirectionalLSTMLayer(const Specification::NeuralNetworkLayer& specLayer);
         void shapeBidirectionalLSTMLayer(const Specification::NeuralNetworkLayer& specLayer);
         void shapeCustomLayer(const Specification::NeuralNetworkLayer& specLayer);
-
+        void shapeResizeBilinearLayer(const Specification::NeuralNetworkLayer& specLayer);
+        void shapeCropResizeLayer(const Specification::NeuralNetworkLayer& specLayer);
         void ProcessLayer(const Specification::NeuralNetworkLayer& layer);
         void PassColorsDown(const Specification::NeuralNetworkLayer& layer);
         void PassColorsUp(const Specification::NeuralNetworkLayer& layer);

@@ -171,7 +171,7 @@ del csv_sf['id'], csv_sf['xMin'], csv_sf['xMax'], csv_sf['yMin'], csv_sf['yMax']
 csv_sf = csv_sf.rename({'name': 'label', 'image': 'name'})
 
 # Load all images in random order
-sf_images = tc.image_analysis.load_images(images_directory, recursive=True,
+sf_images = tc.image_analysis.load_images(IMAGES_DIR, recursive=True,
     random_order=True)
 
 # Split path to get filename

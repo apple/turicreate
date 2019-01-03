@@ -375,6 +375,9 @@ message NeuralNetworkLayer {
         PaddingLayerParams padding = 200;
         UpsampleLayerParams upsample = 210;
 
+        ResizeBilinearLayerParams resizeBilinear = 211;
+        CropResizeLayerParams cropResize = 212;
+
         UnaryFunctionLayerParams unary = 220;
 
         //elementwise operations
@@ -563,6 +566,89 @@ message SamePadding {
     SamePaddingMode asymmetryMode = 1;
 }
 
+
+/**
+ * Specifies how grid points are sampled from an interval. 
+ * Without the loss of generality, assume the interval to be [0, X-1] from which N points are to be sampled.
+ * Here X may correspond to an input image's height or width. 
+ * All the methods can be expressed in terms of numpy's linspace function, along with the constraint that grid points have to lie in the interval [0, X-1].
+ * Note: numpy.linspace(start = start, end = end, num = N, endpoint = True) corresponds to sampling 
+ * N points uniformly from the interval [start, end], endpoints included. 
+ * The methods vary in how the ``start`` and ``end`` values are computed.  
+ */
+message SamplingMode {
+
+	enum Method {
+
+		/**
+		 * start = 0, end = X-1
+         * grid points = numpy.linspace(start, end)
+		 */
+		STRICT_ALIGN_ENDPOINTS_MODE = 0;
+
+		/** 
+		 * if N == 1: start = end = (X-1)/2
+		 * otherwise, start = 0, end = X-1
+         * grid points = numpy.linspace(start, end)
+		 */
+		ALIGN_ENDPOINTS_MODE = 1;
+
+		/**
+		 * start = 0, end = X - X/N
+		 * grid points = min(X-1, numpy.linspace(start, end))
+		 * This is same as the mode used in the upsample layer in this specification, when used with bilinear interpolation. In that case N/X = upsample ratio.
+		 */
+		UPSAMPLE_MODE = 2;
+
+		/**
+		 * spacing = max(1, X-1)/N
+		 * start = 0.5 * spacing
+		 * end = start + (N-1) * spacing
+		 * grid points = min(X-1, numpy.linspace(start, end))
+		 */
+		ROI_ALIGN_MODE = 3; 
+
+	}
+
+	Method samplingMethod = 1; 
+
+}
+
+/**
+ * Specifies the convention used to specify four bounding box coordinates for an image of size (Height, Width).
+ * The (0,0) coordinate corresponds to the top-left corner of the image. 
+ */ 
+message BoxCoordinatesMode {
+	
+	enum Coordinates {
+
+		/**
+		 * [h_start, w_start, h_end, w_end]
+		 */
+		CORNERS_HEIGHT_FIRST = 0;
+
+		/**
+		 * [w_start, h_start, w_end, h_end]
+		 */
+        CORNERS_WIDTH_FIRST = 1;
+
+        /**
+         * [h_center, w_center, box_height, box_width]
+         */
+        CENTER_SIZE_HEIGHT_FIRST = 2;
+
+        /**
+         * [w_center, h_center, box_width, box_height]
+         */ 
+        CENTER_SIZE_WIDTH_FIRST = 3; 
+
+	}
+
+	Coordinates boxMode = 1;
+
+}
+
+
 /**
  * Weights for layer parameters.
  * Weights are stored as repeated floating point numbers
@@ -673,7 +759,7 @@ message ConvolutionLayerParams {
     /**
      * Group convolution, i.e. weight reuse along channel axis.
      * Input and kernels are divided into g groups
-     * and convolution / deconvoltuion is applied within the groups independently.
+     * and convolution / deconvolution is applied within the groups independently.
      * If not set or 0, it is set to the default value 1.
      */
     uint64 nGroups = 10;
@@ -1295,6 +1381,115 @@ message UpsampleLayerParams {
 }
 
 /**
+* A layer that resizes the input to a pre-specified spatial size using bilinear interpolation. 
+*
+* .. code::
+*
+*      y = ResizeBilinearLayer(x)
+*
+* Requires 1 input and produces 1 output.
+*
+* Input
+*     A blob with shape ``[C, H_in, W_in]``. 
+*
+* Output
+*     A blob with shape ``[C, H_out, W_out]``.
+*     
+*/
+message ResizeBilinearLayerParams {
+
+	/**
+	 * Target Spatial Size.
+	 * Must be length 2 in order ``[Height, Width]``, i.e. ``[H_out, W_out]``.
+	 * If not set, default value ``[1, 1]`` is used.
+	 */
+	repeated uint64 targetSize = 1;
+
+	/**
+	 * Mode used to compute the grid on which the spatial output values are evaluated.
+	 * Same mode is applied to both the height and width axes. 
+	 */
+	SamplingMode mode = 2;
+}
+
+/**
+* A layer that extracts cropped spatial patches or RoIs (regions of interest) from the input and resizes them to a pre-specified size using
+* bilinear interpolation. 
+* Note that RoI Align layer can be implemented with this layer followed by a pooling layer.
+*
+* .. code::
+*
+*      y = CropResizeLayer(x)
+*
+* Requires 2 inputs and produces 1 output.
+*
+* Input
+*     A blob with shape ``[C, H_in, W_in]``. 
+*			This represents an image feature map. 
+*			Note that the full batched input shape is ``[Seq = 1, Batch = Batch, C, H_in, W_in]``
+*     A second input with shape ``[N, 4, 1, 1]`` or ``[N, 5, 1, 1]``. 
+*			This represents the bounding box coordinates for N patches/RoIs. 
+*			Note that the full batched shape is ``[Seq = N, Batch = 1, C = 4 or 5, 1, 1]``
+*			That is, sequence dimension = N, channel dimension = 4 or 5.
+*
+*     N: number of patches/RoIs to be extracted
+*     If RoI shape = ``[N, 4, 1, 1]``
+*                    The channel axis corresponds to the four coordinates specifying the bounding box.
+*                    All the N RoIs are extracted from all the batches of the input. 
+*     If RoI shape = ``[N, 5, 1, 1]``
+*                     The first element of the channel axis specifies the input batch id from which to extract the RoI and 
+*					  must be in the interval ``[0, Batch - 1]``. That is, n-th RoI is extracted from the RoI[n,0,0,0]-th input batch id. 
+*                     The last four elements of the channel axis specify the bounding box coordinates. 
+*
+* Output
+*     A blob with shape ``[N, C, H_out, W_out]``. 
+*			This represents the output image feature map for each input RoI. 
+*	  		Note that the full batched output shape is:
+*			- ``[Seq = N, Batch = Batch, C, H_out, W_out]`` if input RoI shape is ``[N, 4, 1, 1]``
+*			- ``[Seq = N, Batch = 1, C, H_out, W_out]`` if input RoI shape is ``[N, 5, 1, 1]``
+*     
+*/
+message CropResizeLayerParams {
+
+	/**
+	 * Target Spatial Size.
+	 * Must be length 2 in order ``[Height, Width]``, i.e. ``[H_out, W_out]``.
+	 * If not set, default value ``[1, 1]`` is used.
+	 */
+	repeated uint64 targetSize = 1;
+
+	/**
+	 * If true the bounding box coordinates must be in the interval [0, 1].
+	 * They are scaled by (H_in - 1), (W_in - 1), i.e. based on the input spatial dimensions.  
+	 * If false the bounding box coordinates must be in the interval
+	 * [0, H_in -1] and [0, W_in - 1], respectively for height and width dimensions.
+	 */
+	bool normalizedCoordinates = 2;
+
+	/**
+	 * Mode used to compute the grid on which the spatial output values are evaluated.
+	 * Same mode is applied to both the height and width axes. 
+	 */
+	SamplingMode mode = 3;
+
+	/**
+	 * Representation used to express the bounding box coordinates. 
+	 * It determines how the values of the second input are interpreted. 
+	 */
+	BoxCoordinatesMode boxIndicesMode = 4; 
+
+	/**
+	 * Additional spatial scale that multiplies the bounding box coordinates. 
+     * Generally used while implementing the RoI Align layer, 
+     * which uses unnormalized RoI coordinates along with a spatial scale less than or equal to 1. 
+	 */
+	float spatialScale = 5;
+
+}
+
+
+
+/**
  * A layer that performs elementwise addition of a bias,
  * which is broadcasted to match the input shape.
  *
@@ -1566,7 +1761,7 @@ message PermuteLayerParams {
  * mode == DEPTH_TO_SPACE
  *  ``[C_out, H_out, W_out]`` : ``[C/(blockSize * blockSize), H * blockSize, W * blockSize]``.
  *  Square of blockSize must divide C.
- *  Reverse of SPACE_TO_DEPTH. Data is moved from the channel dimension to the spatial dimenions.
+ *  Reverse of SPACE_TO_DEPTH. Data is moved from the channel dimension to the spatial dimensions.
  *
  */
 message ReorganizeDataLayerParams {
@@ -1596,15 +1791,15 @@ message ReorganizeDataLayerParams {
  * Sliced section is taken from the interval ``[startIndex, endIndex)``, i.e.
  * startIndex is inclusive while endIndex is exclusive.
  * stride must be positive and represents the step size for slicing.
- * startIndex must be non-negative. Negative indexing is supported for endIndex: -1 denotes N, -2 denotes N-1
- * and so on, where N is the length of the dimension to be sliced.
+ * Negative indexing is supported for startIndex and endIndex.
+ * -1 denotes N-1, -2 denotes N-2 and so on, where N is the length of the dimension to be sliced.
  *
  */
 message SliceLayerParams {
 
     int64 startIndex = 1; /// start of the sliced section. Inclusive.
     int64 endIndex = 2; /// end of sliced section. Exclusive.
-    uint64 stride = 3; /// The step size. Must be postive.
+    uint64 stride = 3; /// The step size. Must be positive.
 
     enum SliceAxis {
         CHANNEL_AXIS = 0;

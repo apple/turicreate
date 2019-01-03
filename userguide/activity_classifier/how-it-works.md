@@ -12,6 +12,6 @@ The output of the convolutional layer is a vector representation for each predic
 
 The recurrent layer is specialized for learning temporal features across sequences. For example it may learn that spatial features associated with walking are more likely to occur after detecting spatial features associated with running. These features are further encoded into the output of the recurrent layer.
 
-In order to detect these features along sessions the recurrent layer takes into account it's own **state** - the output of the recurrent layer for the previous prediction window. The output of the recurrent layer for the current prediction window is turned into a probability vector across all desired activities to produce the final classification.
+In order to detect these features along sessions the recurrent layer takes into account its own **state** - the output of the recurrent layer for the previous prediction window. The output of the recurrent layer for the current prediction window is turned into a probability vector across all desired activities to produce the final classification.
 
 More about this type of deep learning architecture can be found in [Deep Convolutional and LSTM Recurrent Neural Networks for Multimodal Wearable Activity Recognition](http://www.mdpi.com/1424-8220/16/1/115).

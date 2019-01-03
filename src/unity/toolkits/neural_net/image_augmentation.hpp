@@ -77,17 +77,143 @@ struct labeled_image {
  */
 class image_augmenter {
 public:
-  /** Parameters for constructing new image_augmenter instances. */
+
+  /** Parameters governing random crops. */
+  struct crop_options {
+
+    /** Lower bound for the uniformly sampled aspect ratio (width/height) */
+    float min_aspect_ratio = 0.8f;
+
+    /** Upper bound for the uniformly sampled aspect ratio (width/height) */
+    float max_aspect_ratio = 1.25f;
+
+    /**
+     * Given a sampled aspect ratio, determines the lower bound of the uniformly
+     * sampled height.
+     */
+    float min_area_fraction = 0.15f;
+
+    /**
+     * Given a sampled aspect ratio, determines the upper bound of the uniformly
+     * sampled height.
+     */
+    float max_area_fraction = 1.f;
+
+    /**
+     * Given a sampled crop (aspect ratio, height, and location), specifies the
+     * minimum fraction of each bounding box's area that must be included to
+     * accept the crop. If 0.f, then the crop need not touch any object.
+     */
+    float min_object_covered = 0.f;
+
+    /**
+     * The maximum number of random crops to sample in an attempt to generate
+     * one that satisfies the min_object_covered constraint.
+     */
+    size_t max_attempts = 50;
+
+    /**
+     * Given an accepted crop, the minimum fraction of each bounding box's area
+     * that must be included to keep the (potentially cropped) bounding box in
+     * the annotations (instead of discarding it).
+     */
+    float min_eject_coverage = 0.5f;
+  };
+
+  /** Parameters governing random padding. */
+  struct pad_options {
+
+    /** Lower bound for the uniformly sampled aspect ratio (width/height) */
+    float min_aspect_ratio = 0.8f;
+
+    /** Upper bound for the uniformly sampled aspect ratio (width/height) */
+    float max_aspect_ratio = 1.25f;
+
+    /**
+     * Given a sampled aspect ratio, determines the lower bound of the uniformly
+     * sampled height.
+     */
+    float min_area_fraction = 1.f;
+
+    /**
+     * Given a sampled aspect ratio, determines the upper bound of the uniformly
+     * sampled height.
+     */
+    float max_area_fraction = 2.f;
+
+    /**
+     * The maximum number of random aspect ratios to sample, looking for one
+     * that satisfies the constraints on area.
+     */
+    size_t max_attempts = 50;
+  };
+
+  /**
+   * Parameters for constructing new image_augmenter instances.
+   *
+   * Default constructed values perform no augmentation, outside of resizing to
+   * the output width and height (which must be specified).
+   */
   struct options {
+
     /** The W dimension of the resulting float array. */
     size_t output_width = 0;
 
     /** The H dimension of the resulting float array. */
     size_t output_height = 0;
+
+    /** The probability of applying (attempting) a random crop. */
+    float crop_prob = 0.f;
+    crop_options crop_opts;
+
+    /** The probability of applying (attempting) a random pad. */
+    float pad_prob = 0.f;
+    pad_options pad_opts;
+
+    /** The probability of flipping the image horizontally. */
+    float horizontal_flip_prob = 0.f;
+
+    // TODO: The semantics below are adopted from Core Image but don't match the
+    // behavior of MXNet augmentations.... What should a shared interface
+    // specify?
+    // See also https://developer.apple.com/library/archive/documentation/GraphicsImaging/Reference/CoreImageFilterReference/index.html#//apple_ref/doc/filter/ci/CIColorControls
+
+    /**
+     * Maximum pixel value to add or subtract to each channel.
+     *
+     * For example, a value of 0.05 adds a random value between -0.05 and 0.05
+     * to each channel of each pixel (represented as a value from 0 to 1).
+     */
+    float brightness_max_jitter = 0.f;
+
+    /**
+     * Maximum proportion to increase or decrease contrast.
+     *
+     * For example, a value of 0.05 multiplies the contrast by a random value
+     * between 0.95 and 1.05.
+     */
+    float contrast_max_jitter = 0.f;
+
+    /**
+     * Maximum proportion to increase or decrease saturation.
+     *
+     * For example, a value of 0.05 multiplies the saturation by a random value
+     * between 0.95 and 1.05.
+     */
+    float saturation_max_jitter = 0.f;
+
+    /**
+     * Maximum proportion to rotate the hues.
+     *
+     * For example, a value of 0.05 applies a random rotation between
+     * -0.05 * pi and 0.05 * pi.
+     */
+    float hue_max_jitter = 0.f;
   };
 
   /** The output of an image_augmenter. */
   struct result {
+
     /** The augmented images, represented as a single NHWC array (RGB). */
     shared_float_array image_batch;
 
@@ -121,7 +247,7 @@ public:
  */
 class resize_only_image_augmenter final: public image_augmenter {
 public:
-  resize_only_image_augmenter(const options& opts): opts_(opts) {}
+  explicit resize_only_image_augmenter(const options& opts): opts_(opts) {}
 
   const options& get_options() const override { return opts_; }
 

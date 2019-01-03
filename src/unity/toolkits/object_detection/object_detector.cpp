@@ -107,6 +107,43 @@ float_array_map get_training_config() {
   return config;
 }
 
+image_augmenter::options get_augmentation_options() {
+  image_augmenter::options opts;
+
+  // Specify the fixed image size expected by the neural network.
+  opts.output_width = GRID_SIZE * SPATIAL_REDUCTION;
+  opts.output_height = GRID_SIZE * SPATIAL_REDUCTION;
+
+  // Apply random crops.
+  opts.crop_prob = 0.9f;
+  opts.crop_opts.min_aspect_ratio = 0.8f;
+  opts.crop_opts.max_aspect_ratio = 1.25f;
+  opts.crop_opts.min_area_fraction = 0.15f;
+  opts.crop_opts.max_area_fraction = 1.f;
+  opts.crop_opts.min_object_covered = 0.f;
+  opts.crop_opts.max_attempts = 50;
+  opts.crop_opts.min_eject_coverage = 0.5f;
+
+  // Apply random padding.
+  opts.pad_prob = 0.9f;
+  opts.pad_opts.min_aspect_ratio = 0.8f;
+  opts.pad_opts.max_aspect_ratio = 1.25f;
+  opts.pad_opts.min_area_fraction = 1.f;
+  opts.pad_opts.max_area_fraction = 2.f;
+  opts.pad_opts.max_attempts = 50;
+
+  // Allow mirror images.
+  opts.horizontal_flip_prob = 0.5f;
+
+  // Apply random perturbations to color.
+  opts.brightness_max_jitter = 0.05f;
+  opts.contrast_max_jitter = 0.05f;
+  opts.saturation_max_jitter = 0.05f;
+  opts.hue_max_jitter = 0.05f;
+
+  return opts;
+}
+
 flex_int estimate_max_iterations(flex_int num_instances, flex_int batch_size) {
 
   // Scale with square root of number of labeled instances.
@@ -301,18 +338,33 @@ std::unique_ptr<model_spec> object_detector::init_model(
 }
 
 std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
-    std::string filename) {
+    std::string filename, std::map<std::string, flexible_type> options) {
 
   // Initialize the result with the learned layers from the cnn_module.
   model_spec yolo_nn_spec(nn_spec_->get_coreml_spec());
+  
+  std::string coordinates_str = "coordinates";
+  std::string confidence_str = "confidence";
+
+  // No options provided defaults to include Non Maximum Suppression.
+  if (options.count("include_non_maximum_suppression")==0)
+    options["include_non_maximum_suppression"] = 1;
+
+  if (options["include_non_maximum_suppression"].to<bool>()){
+    coordinates_str = "raw_coordinates";
+    confidence_str = "raw_confidence";
+    //Set default values if thresholds not provided.
+    if (options.find("iou_threshold") == options.end())
+      options["iou_threshold"] = 0.45;
+    if (options.find("confidence_threshold") == options.end())
+      options["confidence_threshold"] = 0.25;
+  }
 
   // Add the layers that convert to intelligible predictions.
-  add_yolo(&yolo_nn_spec, "coordinates", "confidence", "conv8_fwd",
+  add_yolo(&yolo_nn_spec, coordinates_str, confidence_str, "conv8_fwd",
            anchor_boxes(),
            variant_get_value<flex_int>(get_value_from_state("num_classes")),
            GRID_SIZE, GRID_SIZE);
-
-  // TODO: Support non-maximal suppression.
 
   // Compute the string representation of the list of class labels.
   flex_string class_labels_str;
@@ -326,16 +378,22 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
 
   // Generate "user-defined" metadata.
   flex_dict user_defined_metadata = {
-    {"model", read_state<flex_string>("model")},
-    {"max_iterations", read_state<flex_int>("max_iterations")},
-    {"training_iterations", read_state<flex_int>("training_iterations")},
-    {"include_non_maximum_suppression", "False"},
-    // TODO: {"confidence_threshold", ... },
-    // TODO: {"iou_threshold", ...},
-    {"feature", read_state<flex_string>("feature")},
-    {"annotations", read_state<flex_string>("annotations")},
-    {"classes", class_labels_str},
-  };
+      {"model", read_state<flex_string>("model")},
+      {"max_iterations", read_state<flex_int>("max_iterations")},
+      {"training_iterations", read_state<flex_int>("training_iterations")},
+      {"include_non_maximum_suppression", "False"},
+      {"feature", read_state<flex_string>("feature")},
+      {"annotations", read_state<flex_string>("annotations")},
+      {"classes", class_labels_str},
+      {"type", "object_detector"},
+    };
+
+  
+  if (options["include_non_maximum_suppression"].to<bool>()){
+    user_defined_metadata.emplace_back("include_non_maximum_suppression", "True");
+    user_defined_metadata.emplace_back("confidence_threshold", options["confidence_threshold"]);
+    user_defined_metadata.emplace_back("iou_threshold", options["iou_threshold"]);
+  }
 
   // TODO: Should we also be adding the non-user-defined keys, such as
   // "version" and "shortDescription", or is that up to the frontend?
@@ -346,7 +404,8 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
                                    GRID_SIZE * SPATIAL_REDUCTION,
                                    class_labels.size(),
                                    GRID_SIZE*GRID_SIZE * anchor_boxes().size(),
-                                   std::move(user_defined_metadata));
+                                   std::move(user_defined_metadata), std::move(class_labels),
+                                   std::move(options)); 
 
   if (!filename.empty()) {
     model_wrapper->save(filename);
@@ -392,10 +451,7 @@ void object_detector::init_train(gl_sframe data,
                                             image_column_name);
 
   // Instantiate the data augmenter.
-  image_augmenter::options aug_opts;
-  aug_opts.output_width = GRID_SIZE * SPATIAL_REDUCTION;
-  aug_opts.output_height = GRID_SIZE * SPATIAL_REDUCTION;
-  training_data_augmenter_ = create_augmenter(aug_opts);
+  training_data_augmenter_ = create_augmenter(get_augmentation_options());
 
   // Extract 'mlmodel_path' from the options, to avoid storing it as a model
   // field.

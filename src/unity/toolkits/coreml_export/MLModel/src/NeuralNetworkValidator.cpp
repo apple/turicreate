@@ -3,7 +3,7 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include "unity/toolkits/coreml_export/protobuf_include_internal.hpp"
+#include "../build/format/NeuralNetwork_enums.h"
 #include "Validators.hpp"
 #include "ValidatorUtils-inl.hpp"
 #include "transforms/NeuralNetwork.hpp"
@@ -1453,6 +1453,44 @@ namespace CoreML {
         return r;
     }
 
+    //    ResizeBilinear Layer
+    static Result validateResizeBilinearLayer(const Specification::NeuralNetworkLayer& layer) {
+        Result r;
+        r = validateInputCount(layer, 1, 1);
+        if (r.good()) {
+            r = validateOutputCount(layer, 1, 1);
+        }
+
+        const auto& params = layer.resizebilinear();
+        // target Size must be 2D if provided
+        if (!(params.targetsize_size() == 0 || params.targetsize_size() == 2)) {
+            std::string err = "Target Size in the resize bilinear layer '" + layer.name() + "' must be a vector of size 2 (i.e height, width) but is a vector of size " + std::to_string(params.targetsize_size()) + ".";
+            r = Result(ResultType::INVALID_MODEL_PARAMETERS, err);
+            return r;
+        }
+
+        return r;
+    }
+
+    //    CropResize Layer
+    static Result validateCropResizeLayer(const Specification::NeuralNetworkLayer& layer) {
+        Result r;
+        r = validateInputCount(layer, 2, 2);
+        if (r.good()) {
+            r = validateOutputCount(layer, 1, 1);
+        }
+
+        const auto& params = layer.cropresize();
+        // target Size must be 2D if provided
+        if (!(params.targetsize_size() == 0 || params.targetsize_size() == 2)) {
+            std::string err = "Target Size in the crop resize layer '" + layer.name() + "' must be a vector of size 2 (i.e height, width) but is a vector of size " + std::to_string(params.targetsize_size()) + ".";
+            r = Result(ResultType::INVALID_MODEL_PARAMETERS, err);
+            return r;
+        }
+
+        return r;
+    }
+
     static Result validateFailUnknownType(const Specification::NeuralNetworkLayer& layer) {
         return Result(ResultType::INVALID_MODEL_PARAMETERS, "Unsupported layer type (" + layer.GetTypeName() + ") for layer '" + layer.name() + "'.");
     }
@@ -1571,6 +1609,10 @@ namespace CoreML {
                 return validateSliceLayer;
             case Specification::NeuralNetworkLayer::LayerCase::kCustom:
                 return validateCustomLayer;
+            case Specification::NeuralNetworkLayer::LayerCase::kResizeBilinear:
+                return validateResizeBilinearLayer;
+            case Specification::NeuralNetworkLayer::LayerCase::kCropResize:
+                return validateCropResizeLayer;
             default:
                 return validateFailUnknownType;
         }
@@ -1614,16 +1656,12 @@ namespace CoreML {
                              }
 
         
-        // For each named data blob, which node produced it
-        std::map<std::string, Specification::NeuralNetworkLayer> blobNameToProducingLayer;
-
-        // For input blobs, we'll give them a dummy producing layer
-        std::string inputName = "__input";
-        Specification::NeuralNetworkLayer dummyInputLayer;
-        dummyInputLayer.set_name(inputName);
+        // For each named data blob, the name of the node which produced it
+        std::map<std::string, std::string> blobNameToProducingLayerName;
 
         for (const auto& input: interface.input()) {
-            blobNameToProducingLayer[input.name()] = dummyInputLayer;
+            // For input blobs, we'll give them a dummy producing layer name
+            blobNameToProducingLayerName[input.name()] = "__input";
             if (input.type().Type_case() == Specification::FeatureType::kMultiArrayType) {
                 // only vector-like (rank 1) or image-like (rank 3) inputs are allowed
 
@@ -1684,20 +1722,20 @@ namespace CoreML {
             // Check for topological defects: the layer's input must have been produced by a blob we have
             // already seen. Also, check that the same output isn't being produced in two different places.
             for (const auto& input: layer.input()) {
-                if (blobNameToProducingLayer.find(input) == blobNameToProducingLayer.end()) {
+                if (blobNameToProducingLayerName.find(input) == blobNameToProducingLayerName.end()) {
                     std::string err = "Layer '" + std::string(layer.name()) + "' consumes an input named '"
                         + std::string(input) + "' which is not present in this network.";
                     return Result(ResultType::INVALID_MODEL_PARAMETERS, err);
                 }
             }
             for (const auto& output: layer.output()) {
-                if (blobNameToProducingLayer.find(output) != blobNameToProducingLayer.end()) {
+                if (blobNameToProducingLayerName.find(output) != blobNameToProducingLayerName.end()) {
                     std::string err = "Layer '" + std::string(layer.name()) + "' produces an output named '"
                         + std::string(output) + "' which is also an output produced by the layer '"
-                        + blobNameToProducingLayer[output].name() + "'.";
+                        + blobNameToProducingLayerName[output] + "'.";
                     return Result(ResultType::INVALID_MODEL_PARAMETERS, err);
                 }
-                blobNameToProducingLayer[output] = layer;
+                blobNameToProducingLayerName[output] = layer.name();
                 outputBlobNames.insert(output);
             }
 
