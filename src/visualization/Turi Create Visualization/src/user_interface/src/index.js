@@ -5,6 +5,8 @@ import TcPlot from './elements/Plot/Chart/index.js';
 import TcSummary from './elements/Plot/Summary/index.js';
 import TcTable from './elements/Explore/Table/index.js';
 
+import TCEvaluationTopBar from './elements/Explore/Evaluation/Components/TCEvaluationTopBar';
+
 var command_down = 0;
 var body_zoom = 100;
 

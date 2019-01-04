@@ -21,6 +21,10 @@
 		FCB8DFE1206EF950001A7089 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = FCB8DFE0206EF950001A7089 /* index.html */; };
 		FCB8DFE3206F1756001A7089 /* index.css in Resources */ = {isa = PBXBuildFile; fileRef = FCB8DFE2206F1756001A7089 /* index.css */; };
 		FCB8DFE5206F187D001A7089 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FCB8DFE4206F187D001A7089 /* index.js */; };
+		FCDE559C21E02399002C0738 /* index.scss in Resources */ = {isa = PBXBuildFile; fileRef = FCDE559A21E02399002C0738 /* index.scss */; };
+		FCDE559D21E02399002C0738 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FCDE559B21E02399002C0738 /* index.js */; };
+		FCDE55A021E023C2002C0738 /* drop_down_arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = FCDE559E21E023C2002C0738 /* drop_down_arrow.png */; };
+		FCDE55A121E023C2002C0738 /* accordian_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = FCDE559F21E023C2002C0738 /* accordian_icon.png */; };
 		FCE3954420B4C2CB0029FDB5 /* build in Resources */ = {isa = PBXBuildFile; fileRef = FCE3954320B4C2CB0029FDB5 /* build */; };
 /* End PBXBuildFile section */
 
@@ -58,6 +62,10 @@
 		FCB8DFE0206EF950001A7089 /* index.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
 		FCB8DFE2206F1756001A7089 /* index.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = index.css; sourceTree = "<group>"; };
 		FCB8DFE4206F187D001A7089 /* index.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCDE559A21E02399002C0738 /* index.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.scss; sourceTree = "<group>"; };
+		FCDE559B21E02399002C0738 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCDE559E21E023C2002C0738 /* drop_down_arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = drop_down_arrow.png; sourceTree = "<group>"; };
+		FCDE559F21E023C2002C0738 /* accordian_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = accordian_icon.png; sourceTree = "<group>"; };
 		FCE3954320B4C2CB0029FDB5 /* build */ = {isa = PBXFileReference; lastKnownFileType = folder; path = build; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -149,6 +157,7 @@
 		FC3E34D7206EF43F00B6B69A /* Explore */ = {
 			isa = PBXGroup;
 			children = (
+				FC4FA21521E0212C0071D501 /* Evaluation */,
 				FC3E34DB206EF4D300B6B69A /* Table */,
 			);
 			path = Explore;
@@ -189,6 +198,22 @@
 				FC3E34DE206EF4F600B6B69A /* index.css */,
 			);
 			path = Table;
+			sourceTree = "<group>";
+		};
+		FC4FA21521E0212C0071D501 /* Evaluation */ = {
+			isa = PBXGroup;
+			children = (
+				FC4FA21721E021C60071D501 /* Components */,
+			);
+			path = Evaluation;
+			sourceTree = "<group>";
+		};
+		FC4FA21721E021C60071D501 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				FCDE559321E0231A002C0738 /* TCEvaluationTopBar */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 		FC78045C20729F7F004BE45B /* sticky-table */ = {
@@ -238,6 +263,25 @@
 				FCB8DFE4206F187D001A7089 /* index.js */,
 			);
 			path = public;
+			sourceTree = "<group>";
+		};
+		FCDE559321E0231A002C0738 /* TCEvaluationTopBar */ = {
+			isa = PBXGroup;
+			children = (
+				FCDE559B21E02399002C0738 /* index.js */,
+				FCDE559A21E02399002C0738 /* index.scss */,
+				FCDE559921E0235C002C0738 /* assets */,
+			);
+			path = TCEvaluationTopBar;
+			sourceTree = "<group>";
+		};
+		FCDE559921E0235C002C0738 /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				FCDE559F21E023C2002C0738 /* accordian_icon.png */,
+				FCDE559E21E023C2002C0738 /* drop_down_arrow.png */,
+			);
+			path = assets;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -299,8 +343,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FCDE559C21E02399002C0738 /* index.scss in Resources */,
+				FCDE55A021E023C2002C0738 /* drop_down_arrow.png in Resources */,
 				FCB8DFE5206F187D001A7089 /* index.js in Resources */,
+				FCDE55A121E023C2002C0738 /* accordian_icon.png in Resources */,
 				FCB8DFE1206EF950001A7089 /* index.html in Resources */,
+				FCDE559D21E02399002C0738 /* index.js in Resources */,
 				FCB8DFE3206F1756001A7089 /* index.css in Resources */,
 				FCE3954420B4C2CB0029FDB5 /* build in Resources */,
 				9226E7C81F366F2E00C33A64 /* Assets.xcassets in Resources */,
