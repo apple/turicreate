@@ -12,6 +12,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include <image/image_type.hpp>
+#include <unity/lib/image_util.hpp>
 #include <util/test_macros.hpp>
 
 namespace turi {
@@ -39,9 +40,10 @@ image_type create_image(
     }
   }
 
-  return image_type(reinterpret_cast<char*>(buffer.get()), height, width, 3,
-                    size, IMAGE_TYPE_CURRENT_VERSION,
-                    static_cast<int>(Format::RAW_ARRAY));
+  flex_image raw_image(reinterpret_cast<char*>(buffer.get()), height, width, 3,
+		       size, IMAGE_TYPE_CURRENT_VERSION,
+		       static_cast<int>(Format::RAW_ARRAY));
+  return image_util::encode_image(raw_image);
 }
 
 std::vector<image_annotation> create_annotations(std::vector<image_box> boxes) {
