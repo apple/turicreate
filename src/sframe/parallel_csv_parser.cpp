@@ -497,8 +497,14 @@ class parallel_csv_parser {
     while(c != cend) {
       c = advance_past_newline(c, cend, newline_was_matched);
       bool b = quote_parity.get(c - bufstart - 1);
-      if (newline_was_matched == false || 
-          b == false) return c;
+      // it is not actually a newline if the quote parity is set
+      // continue to continue searching for the next newline
+      if (b && newline_was_matched) {
+        newline_was_matched = false;
+        continue;
+      } else {
+        break;
+      }
     }
     return c;
   }
