@@ -1,0 +1,61 @@
+.TCEvaluationToggleIcon{
+	display: flex;
+}
+
+.TCEvaluationToggleIconLeft{
+	background: #F9F9FA;
+	border: 1px solid #EFF0F1;
+	width: 28px;
+	height: 28px;
+	border-radius: 4px 0px 0px 4px;
+	display: flex;
+  	align-items: center;
+  	justify-content: center;
+  	cursor: pointer;
+}
+
+.TCEvaluationToggleIconLeft:hover{
+	background: #E4E4E4;
+}
+
+.TCEvaluationToggleIconLeftSelected{
+	background: #363643;
+	border: 1px solid #EFF0F1;
+	width: 28px;
+	height: 28px;
+	border-radius: 4px 0px 0px 4px;
+	display: flex;
+  	align-items: center;
+  	justify-content: center;
+  	cursor: pointer;
+}
+
+.TCEvaluationToggleIconRight{
+	background: #F9F9FA;
+	border: 1px solid #EFF0F1;
+	border-left: 1px;
+	width: 28px;
+	height: 28px;
+	border-radius: 0px 4px 4px 0px;
+	display: flex;
+	align-items: center;
+  	justify-content: center;
+  	cursor: pointer;
+}
+
+.TCEvaluationToggleIconRight:hover{
+	background: #E4E4E4;
+}
+
+.TCEvaluationToggleIconRightSelected{
+	background: #363643;
+	border: 1px solid #EFF0F1;
+	border-left: 1px;
+	width: 28px;
+	height: 28px;
+	border-radius: 0px 4px 4px 0px;
+	display: flex;
+	align-items: center;
+  	justify-content: center;
+  	cursor: pointer;
+}
