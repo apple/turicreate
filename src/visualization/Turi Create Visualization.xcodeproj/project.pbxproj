@@ -149,6 +149,7 @@
 		FC3E34D7206EF43F00B6B69A /* Explore */ = {
 			isa = PBXGroup;
 			children = (
+				FC652C5421E544B900F5AA5A /* Evaluation */,
 				FC3E34DB206EF4D300B6B69A /* Table */,
 			);
 			path = Explore;
@@ -189,6 +190,21 @@
 				FC3E34DE206EF4F600B6B69A /* index.css */,
 			);
 			path = Table;
+			sourceTree = "<group>";
+		};
+		FC652C5421E544B900F5AA5A /* Evaluation */ = {
+			isa = PBXGroup;
+			children = (
+				FC652C5721E544ED00F5AA5A /* Components */,
+			);
+			path = Evaluation;
+			sourceTree = "<group>";
+		};
+		FC652C5721E544ED00F5AA5A /* Components */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 		FC78045C20729F7F004BE45B /* sticky-table */ = {
