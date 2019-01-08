@@ -6,6 +6,7 @@
 #include "histogram.hpp"
 
 #include <parallel/lambda_omp.hpp>
+#include <unity/lib/visualization/batch_size.hpp>
 #include <unity/lib/visualization/escape.hpp>
 
 #include <string>
@@ -213,8 +214,8 @@ void histogram_result::add_element_simple(const flexible_type& value) {
   this->bins[bin] += 1;
 }
 
-void histogram::init(const gl_sarray& source) {
-  histogram_parent::init(source);
+void histogram::init(const gl_sarray& source, size_t batch_size) {
+  histogram_parent::init(source, batch_size);
   flex_type_enum dtype = m_source.dtype();
   if (dtype != flex_type_enum::INTEGER &&
       dtype != flex_type_enum::FLOAT) {
@@ -335,8 +336,8 @@ std::string histogram_result::vega_summary_data() const {
 }
 
 std::shared_ptr<Plot> plot_histogram(
-  gl_sarray& sa, std::string xlabel, std::string ylabel,
-  std::string title) {
+  const gl_sarray& sa, const flexible_type& xlabel, const flexible_type& ylabel,
+  const flexible_type& title) {
     using namespace turi;
     using namespace turi::visualization;
 
@@ -351,29 +352,13 @@ std::shared_ptr<Plot> plot_histogram(
 
     histogram hist;
 
-    if (title.empty()) {
-      title = std::string("Distribution of Values [");
-      title.append(flex_type_enum_to_name(self->dtype()));
-      title.append("]");
-    }
-
-    if (xlabel.empty()) {
-      xlabel = "Values";
-    }
-
-    if (ylabel.empty()) {
-      ylabel = "Count";
-    }
-
-    std::stringstream ss;
-    ss << histogram_spec(title, xlabel, ylabel);
-    std::string histogram_spec = ss.str();
+    std::string spec = histogram_spec(title, xlabel, ylabel, self->dtype());
     double size_array = static_cast<double>(self->size());
 
-    hist.init(*self);
+    hist.init(*self, batch_size(sa));
 
     std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<histogram>(hist);
-    return std::make_shared<Plot>(histogram_spec, shared_unity_transformer, size_array);
+    return std::make_shared<Plot>(spec, shared_unity_transformer, size_array);
 }
 
 

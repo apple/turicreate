@@ -157,7 +157,7 @@ ax.scatter(sf['X1.0'][noise_mask], sf['X1.1'][noise_mask], s=40, alpha=0.7,
 fig.show()
 ```
 
-![dbscan_mooons](images/dbscan_moons.png)
+![dbscan_moons](images/dbscan_moons.png)
 
 For comparison, K-means cannot identify the true clusters in this case, even
 when we tell the model the correct number of clusters.
@@ -173,7 +173,7 @@ ax.scatter(sf['X1.0'], sf['X1.1'], s=80, alpha=0.9, c=sf['kmeans_id'],
 fig.show()
 ```
 
-![kmeans_mooons](images/kmeans_moons.png)
+![kmeans_moons](images/kmeans_moons.png)
 
 
 #### Setting key parameters

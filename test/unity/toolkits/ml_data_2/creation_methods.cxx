@@ -271,6 +271,11 @@ struct test_shuffle  {
   }
 
   void test_shuffling_1b() {
+    _run_shuffling_test(7, "cc");
+  }
+
+
+  void test_shuffling_1c() {
     _run_shuffling_test(7, "cDUV");
   }
 

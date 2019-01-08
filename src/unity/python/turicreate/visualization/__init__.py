@@ -34,7 +34,7 @@ those classes/methods.
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-from .show import show
+from .show import plot, show
 from .show import scatter
 from .show import categorical_heatmap
 from .show import heatmap
@@ -42,4 +42,4 @@ from .show import box_plot
 from .show import columnwise_summary
 from .show import histogram
 from .show import item_frequency
-from ._plot import Plot, set_target, _get_client_app_path
+from ._plot import Plot, set_target, _get_client_app_path, LABEL_DEFAULT

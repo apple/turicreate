@@ -119,8 +119,9 @@ class column_statistics {
 
     } else {
 
-      if(total_row_count)
+      if(total_row_count) {
         DASSERT_TRUE(!statistics.empty());
+      }
 
       return index < statistics.size() ? statistics[index].stdev : 0;
     }
@@ -181,12 +182,14 @@ class column_statistics {
   void update_numeric_statistics(size_t thread_idx, const std::vector<double>& value_vect) GL_HOT {
 
     DASSERT_TRUE(mode == ml_column_mode::NUMERIC
-                 || mode == ml_column_mode::NUMERIC_VECTOR);
+                 || mode == ml_column_mode::NUMERIC_VECTOR
+                 || mode == ml_column_mode::NUMERIC_ND_VECTOR);
 
     // Silently ignore columns of empty vectors.  Note that all the
     // vectors in a column must be empty for this to work.
-    if(value_vect.empty())
+    if(value_vect.empty()) {
       return;
+    }
 
     // Numeric statistics are always cached on a thread-local basis
     // and ignore the parallel_threshhold parameter.

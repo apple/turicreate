@@ -16,7 +16,7 @@
 #define int_p_NULL (int*)NULL
 #endif 
 
-#include <boost/gil/extension/io/png_io.hpp>
+#include <boost/gil/extension/io/png.hpp>
 
 namespace turi {
 

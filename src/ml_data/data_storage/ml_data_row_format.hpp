@@ -440,6 +440,22 @@ read_ml_data_row(
         break;
       }
 
+      case ml_column_mode::NUMERIC_ND_VECTOR: {
+
+        size_t nv = rm.metadata_vect[c_idx]->fixed_column_size();
+
+        for(size_t k = 0; k < nv; ++k) {
+
+          size_t index = k;
+          double value = read_value();
+
+          out_function(ml_column_mode::NUMERIC_ND_VECTOR, c_idx, index, value, index_size, index_offset);
+        }
+
+        next_column(ml_column_mode::NUMERIC_ND_VECTOR, c_idx, index_size);
+        break;
+      }
+
       case ml_column_mode::CATEGORICAL_VECTOR: {
 
         size_t nv = read_size();

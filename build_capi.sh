@@ -120,7 +120,7 @@ if [[ ${cleanup} -eq 1 ]]; then
 fi
 
 if [[ "$cross_compile" == "iOS" ]]; then
-  ios_flag=--with-ios
+  ios_flag=--target-ios
 fi
 
 function build_capi {

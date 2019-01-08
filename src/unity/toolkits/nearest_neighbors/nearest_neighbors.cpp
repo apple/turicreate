@@ -654,8 +654,8 @@ void nearest_neighbors_model::initialize_model_data(const sframe& X,
 
   // Set metadata in model state
   num_examples = mld_ref.size();
-  std::vector<std::string> unpacked_feature_names=
-                           supervised::get_feature_names_from_metadata(metadata);
+  std::vector<std::string> unpacked_feature_names = metadata->feature_names();
+
   size_t num_unpacked_features = metadata->num_dimensions() +
                                  metadata->num_untranslated_columns();
 

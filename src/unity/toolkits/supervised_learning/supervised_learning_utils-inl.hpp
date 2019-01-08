@@ -98,59 +98,8 @@ inline void check_empty_data(sframe X){
 }
 
 /**
- * Check that the types of each set of feature columns match and 
- * that they have the same number of columns.
- */
-inline void check_feature_column_types_match(sframe train, sframe valid) {
-  if (train.num_columns() != valid.num_columns()) {
-    log_and_throw("The provided validation set has a different number of "
-                  "columns from the provided training set.");
-  }
-
-  std::stringstream ss;
-  for (size_t i = 0; i < train.num_columns(); i++){
-    flex_type_enum ctype1 = train.column_type(i);
-    flex_type_enum ctype2 = valid.column_type(i);
-    if (ctype1 != ctype2) {
-      ss.str("");
-      ss << "The type of " << train.column_name(i) << " in the training set "
-         << "is not the same in the training set and the provided validation "
-         << "set (" << flex_type_enum_to_name(ctype1) 
-         << " vs. " << flex_type_enum_to_name(ctype2) << ")."
-         << std::endl;
-      log_and_throw(ss.str());
-    }
-  }
-}
-
-/**
- * Check that the feature types are right!
- */
-inline void check_feature_column_types(sframe X, bool support_image_type=false){
-
-  std::stringstream ss;
-  for (size_t i = 0; i < X.num_columns(); i++){
-    flex_type_enum ctype = X.column_type(i);
-    if (ctype != flex_type_enum::INTEGER &&
-        ctype != flex_type_enum::FLOAT &&
-        ctype != flex_type_enum::VECTOR &&
-        ctype != flex_type_enum::LIST &&
-        ctype != flex_type_enum::DICT &&
-        ctype != flex_type_enum::STRING &&
-        !(support_image_type && ctype == flex_type_enum::IMAGE)) {
-      ss.str("");
-      ss << "Feature '" << X.column_name(i) << "' is not of type"
-         << " (numeric, string, array, or dictionary)."
-         << std::endl;
-      log_and_throw(ss.str());
-    }
-  }
-}
-
-
-/**
  * Check that the target types are right.
- * 
+ *
  * Regression vs classifier:
  *
  * One user in our forum complained that he got an error message for logistic
@@ -593,56 +542,7 @@ inline std::vector<flexible_type> get_class_names(
     classes[k] = metadata->target_indexer()->map_index_to_value(k);
   }
   return classes;
-} 
-
-/**
- * Get feature names from the metadata.
- * \param[in] metadata
- * \returns Names of features
- */
-template <class T>
-inline std::vector<std::string> get_feature_names_from_metadata(
-    std::shared_ptr<T> metadata){
-
-  std::vector<std::string> feature_names;
-  for (size_t i = 0; i < metadata->num_columns(); ++i) {
-    std::string name = metadata->column_name(i);
-
-    // Vector
-    if (metadata->column_type(i) == flex_type_enum::VECTOR){
-      for (size_t j = 0; j < metadata->column_size(i); ++j) {
-        std::string level = std::to_string(j);
-        feature_names.push_back(name + std::string("[") + level + std::string("]"));
-      }
-
-    // Dict
-    } else if (metadata->column_type(i) == flex_type_enum::DICT){
-      for (size_t j = 0; j < metadata->column_size(i); ++j) {
-        std::string level = (std::string)(
-                metadata->indexer(i)->map_index_to_value(j));
-        feature_names.push_back(name + std::string("[") + level + std::string("]"));
-      }
-
-    // Numeric
-    } else {
-      feature_names.push_back(name);
-    }
-  }
-
-  return feature_names;
 }
-
-/**
- * Get feature names from the metadata.
- * \param[in] metadata
- * \returns Names of feature columns.
- */
-
-inline std::vector<std::string> get_feature_column_names_from_metadata(
-       std::shared_ptr<ml_metadata> metadata){
-  return metadata->column_names();
-}
-
 
 /**
  * Get the number of coefficients from meta_data.
@@ -692,31 +592,22 @@ inline void get_one_hot_encoded_coefs(const arma::vec&
   size_t num_classes = metadata->target_index_size();
   bool is_classifier = metadata->target_is_categorical();
   if (is_classifier) {
-    num_classes -= 1; // reference class
+    num_classes -= 1;  // reference class
   }
 
   for (size_t c = 0; c < num_classes; c++) {
     for (size_t i = 0; i < metadata->num_columns(); ++i) {
       // Categorical
+      size_t start_idx = 0;
       if (metadata->is_categorical(i)) {
-        one_hot_coefs.push_back(0.0);
         // 0 is the reference
-        for (size_t j = 1; j < metadata->index_size(i); ++j) {
-          one_hot_coefs.push_back(coefs[idx++]);
-        }
-      // Vector
-      } else if (metadata->column_type(i) == flex_type_enum::VECTOR){
-        for (size_t j = 0; j < metadata->index_size(i); ++j) {
-          one_hot_coefs.push_back(coefs[idx++]);
-        }
+        one_hot_coefs.push_back(0.0);
+        start_idx = 1;
+      }
 
-      // Dict
-      } else if (metadata->column_type(i) == flex_type_enum::DICT){
-        for (size_t j = 0; j < metadata->index_size(i); ++j) {
-          one_hot_coefs.push_back(coefs[idx++]);
-        }
-      } else {
-        one_hot_coefs.push_back(coefs[idx++]);
+      for (size_t j = start_idx; j < metadata->index_size(i); ++j) {
+        one_hot_coefs.push_back(coefs[idx]);
+        ++idx;
       }
     }
 
@@ -741,7 +632,7 @@ inline sframe get_coefficients_as_sframe(
   DASSERT_TRUE(coefs.size() > 0);
   DASSERT_TRUE(metadata);
 
-  // Classifiers need to provide target_metada to print out the class in 
+  // Classifiers need to provide target_metadata to print out the class in
   // the coefficients.
   bool is_classifier = metadata->target_is_categorical();
   bool has_stderr = std_err.size() > 0;
@@ -769,36 +660,23 @@ inline sframe get_coefficients_as_sframe(
   std::vector<flexible_type> feature_names;
   std::vector<flexible_type> feature_index;
 
+  feature_names.reserve(metadata->num_dimensions());
+  feature_index.reserve(metadata->num_dimensions());
+
   for (size_t i = 0; i < metadata->num_columns(); ++i) {
-    std::string name = metadata->column_name(i);
+    bool skip_zero = metadata->is_categorical(i);
 
-    // Categorical
-    if (metadata->is_categorical(i)) {
-      // 0 is the reference
-      for (size_t j = 1; j < metadata->index_size(i); ++j) {
-        std::string level =
-          std::string(metadata->indexer(i)->map_index_to_value(j));
-        feature_names.push_back(name);
-        feature_index.push_back(level);
-      }
-    // Vector
-    } else if (metadata->column_type(i) == flex_type_enum::VECTOR){
-      for (size_t j = 0; j < metadata->index_size(i); ++j) {
-        std::string level = std::to_string(j);
-        feature_names.push_back(name);
-        feature_index.push_back(level);
-      }
+    for (size_t j = skip_zero ? 1 : 0; j < metadata->index_size(i); ++j) {
+      feature_names.push_back(metadata->column_name(i));
 
-    // Dict
-    } else if (metadata->column_type(i) == flex_type_enum::DICT){
-      for (size_t j = 0; j < metadata->index_size(i); ++j) {
-        std::string level = (std::string)metadata->indexer(i)->map_index_to_value(j);
-        feature_names.push_back(name);
-        feature_index.push_back(level);
+      if (metadata->is_indexed(i)) {
+        feature_index.push_back(
+            metadata->indexer(i)->map_index_to_value(j).to<flex_string>());
+      } else if (metadata->column_mode(i) == ml_column_mode::NUMERIC) {
+        feature_index.push_back(FLEX_UNDEFINED);
+      } else {
+        feature_index.push_back(std::to_string(j));
       }
-    } else {
-      feature_names.push_back(name);
-      feature_index.push_back(FLEX_UNDEFINED);
     }
   }
 

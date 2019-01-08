@@ -132,7 +132,7 @@ class groupby_result {
 };
 
 template<typename Result>
-class groupby : public transformation<gl_sframe, Result, 5000000> {
+class groupby : public transformation<gl_sframe, Result> {
   protected:
     virtual void merge_results(std::vector<Result>& transformers) override {
       for (auto& result : transformers) {

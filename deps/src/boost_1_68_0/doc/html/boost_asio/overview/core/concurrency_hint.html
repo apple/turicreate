@@ -1,0 +1,175 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Concurrency Hints</title>
+<link rel="stylesheet" href="../../../../../doc/src/boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../../../boost_asio.html" title="Boost.Asio">
+<link rel="up" href="../core.html" title="Core Concepts and Functionality">
+<link rel="prev" href="handler_tracking.html" title="Handler Tracking">
+<link rel="next" href="coroutine.html" title="Stackless Coroutines">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img alt="Boost C++ Libraries" width="277" height="86" src="../../../../../boost.png"></td>
+<td align="center"><a href="../../../../../index.html">Home</a></td>
+<td align="center"><a href="../../../../../libs/libraries.htm">Libraries</a></td>
+<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
+<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
+<td align="center"><a href="../../../../../more/index.htm">More</a></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="handler_tracking.html"><img src="../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../core.html"><img src="../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../../boost_asio.html"><img src="../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="coroutine.html"><img src="../../../../../doc/src/images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="boost_asio.overview.core.concurrency_hint"></a><a class="link" href="concurrency_hint.html" title="Concurrency Hints">Concurrency
+        Hints</a>
+</h4></div></div></div>
+<p>
+          The <a class="link" href="../../reference/io_context/io_context.html" title="io_context::io_context"><code class="computeroutput"><span class="identifier">io_context</span></code> constructor</a> allows
+          programs to specify a concurrency hint. This is a suggestion to the <code class="computeroutput"><span class="identifier">io_context</span></code> implementation as to the number
+          of active threads that should be used for running completion handlers.
+        </p>
+<p>
+          When the Windows I/O completion port backend is in use, this value is passed
+          to <code class="literal">CreateIoCompletionPort</code>.
+        </p>
+<p>
+          When a reactor-based backend is used, the implementation recognises the
+          following special concurrency hint values:
+        </p>
+<div class="informaltable"><table class="table">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>
+                  <p>
+                    Value
+                  </p>
+                </th>
+<th>
+                  <p>
+                    Description
+                  </p>
+                </th>
+</tr></thead>
+<tbody>
+<tr>
+<td>
+                  <p>
+                    <code class="computeroutput"><span class="number">1</span></code>
+                  </p>
+                </td>
+<td>
+                  <p>
+                    The implementation assumes that the <code class="computeroutput"><span class="identifier">io_context</span></code>
+                    will be run from a single thread, and applies several optimisations
+                    based on this assumption.
+                  </p>
+                  <p>
+                    For example, when a handler is posted from within another handler,
+                    the new handler is added to a fast thread-local queue (with the
+                    consequence that the new handler is held back until the currently
+                    executing handler finishes).
+                  </p>
+                </td>
+</tr>
+<tr>
+<td>
+                  <p>
+                    <code class="computeroutput"><span class="identifier">BOOST_ASIO_CONCURRENCY_HINT_UNSAFE</span></code>
+                  </p>
+                </td>
+<td>
+                  <p>
+                    This special concurrency hint disables locking in both the scheduler
+                    and reactor I/O. This hint has the following restrictions:
+                  </p>
+                  <p>
+                    &#8212; Care must be taken to ensure that all operations on the <code class="computeroutput"><span class="identifier">io_context</span></code> and any of its associated
+                    I/O objects (such as sockets and timers) occur in only one thread
+                    at a time.
+                  </p>
+                  <p>
+                    &#8212; Asynchronous resolve operations fail with <code class="computeroutput"><span class="identifier">operation_not_supported</span></code>.
+                  </p>
+                  <p>
+                    &#8212; If a <code class="computeroutput"><span class="identifier">signal_set</span></code>
+                    is used with the <code class="computeroutput"><span class="identifier">io_context</span></code>,
+                    <code class="computeroutput"><span class="identifier">signal_set</span></code> objects
+                    cannot be used with any other io_context in the program.
+                  </p>
+                </td>
+</tr>
+<tr>
+<td>
+                  <p>
+                    <code class="computeroutput"><span class="identifier">BOOST_ASIO_CONCURRENCY_HINT_UNSAFE_IO</span></code>
+                  </p>
+                </td>
+<td>
+                  <p>
+                    This special concurrency hint disables locking in the reactor
+                    I/O. This hint has the following restrictions:
+                  </p>
+                  <p>
+                    &#8212; Care must be taken to ensure that run functions on the <code class="computeroutput"><span class="identifier">io_context</span></code>, and all operations
+                    on the context's associated I/O objects (such as sockets and
+                    timers), occur in only one thread at a time.
+                  </p>
+                </td>
+</tr>
+<tr>
+<td>
+                  <p>
+                    <code class="computeroutput"><span class="identifier">BOOST_ASIO_CONCURRENCY_HINT_SAFE</span></code>
+                  </p>
+                </td>
+<td>
+                  <p>
+                    The default. The <code class="computeroutput"><span class="identifier">io_context</span></code>
+                    provides full thread safety, and distinct I/O objects may be
+                    used from any thread.
+                  </p>
+                </td>
+</tr>
+</tbody>
+</table></div>
+<p>
+          The concurrency hint used by default-constructed <code class="computeroutput">io_context</code>
+          objects can be overridden at compile time by defining the <code class="computeroutput">BOOST_ASIO_CONCURRENCY_HINT_DEFAULT</code>
+          macro. For example, specifying
+        </p>
+<pre class="programlisting">-DBOOST_ASIO_CONCURRENCY_HINT_DEFAULT=1
+</pre>
+<p>
+          on the compiler command line means that a concurrency hint of <code class="computeroutput">1</code>
+          is used for all default-constructed <code class="computeroutput">io_context</code> objects in
+          the program. Similarly, the concurrency hint used by <code class="computeroutput">io_context</code>
+          objects constructed with <code class="computeroutput">1</code> can be overridden by defining
+          <code class="computeroutput">BOOST_ASIO_CONCURRENCY_HINT_1</code>. For example, passing
+        </p>
+<pre class="programlisting">-DBOOST_ASIO_CONCURRENCY_HINT_1=BOOST_ASIO_CONCURRENCY_HINT_UNSAFE
+</pre>
+<p>
+          to the compiler will disable thread safety for all of these objects.
+        </p>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2003-2018 Christopher M. Kohlhoff<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="handler_tracking.html"><img src="../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../core.html"><img src="../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../../boost_asio.html"><img src="../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="coroutine.html"><img src="../../../../../doc/src/images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

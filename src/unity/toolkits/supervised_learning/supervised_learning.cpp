@@ -49,9 +49,7 @@ EXPORT std::shared_ptr<supervised_learning_model_base> create(
 
   // Error handling.
   // --------------------------------------------------------------------------
-  bool support_image_type = false; // used to be neural net
   check_empty_data(X);
-  check_feature_column_types(X, support_image_type);
   check_target_column_type(model_name, y);
 
   // Initialize
@@ -70,9 +68,7 @@ EXPORT std::shared_ptr<supervised_learning_model_base> create(
         kwargs, "features_validation")->get_underlying_sframe());
     sframe valid_y = *(safe_varmap_get<std::shared_ptr<unity_sframe>>(
         kwargs, "target_validation")->get_underlying_sframe());
-    check_feature_column_types(valid_X, support_image_type);
     check_target_column_type(model_name, valid_y);
-    check_feature_column_types_match(X, valid_X);
     model->init(X, y, valid_X, valid_y, missing_value_action);
   }
 
@@ -103,6 +99,7 @@ void supervised_learning_model_base::init(const sframe& X, const sframe& y,
   std::string target_col = y.column_name(0);
   std::map<std::string, ml_column_mode> mode_overides;
   std::vector<std::string> sorted_columns;
+
   if(this->is_classifier()) {
     mode_overides[target_col] = ml_column_mode::CATEGORICAL_SORTED;
     sorted_columns = {target_col};
@@ -111,6 +108,7 @@ void supervised_learning_model_base::init(const sframe& X, const sframe& y,
   // Error out if target column has missing values
   auto target_sa = std::make_shared<unity_sarray>();
   target_sa->construct_from_sarray(y.select_column(0));
+
   bool target_has_na = ((gl_sarray)target_sa).apply(
       [](const flexible_type& x) {
         return x.get_type() == flex_type_enum::UNDEFINED;
@@ -128,13 +126,11 @@ void supervised_learning_model_base::init(const sframe& X, const sframe& y,
   ml_data data;
   sframe sf_data = X.add_column(y.select_column(0), target_col);
   data.fill(sf_data, target_col, mode_overides, false, missing_value_action);
-  this->ml_mdata = data.metadata();
+  ml_mdata = data.metadata();
 
   // Update the model
-  std::vector<std::string> feature_names =
-                   get_feature_names_from_metadata(this->ml_mdata);
-  std::vector<std::string> feature_column_names =
-                   get_feature_column_names_from_metadata(this->ml_mdata);
+  std::vector<std::string> feature_names = ml_mdata->feature_names(false);
+  std::vector<std::string> feature_column_names = this->ml_mdata->column_names();
 
   this->state["target"] =  to_variant((this->ml_mdata)->target_column_name());
   this->state["unpacked_features"] = to_variant(feature_names);
@@ -934,7 +930,8 @@ std::vector<std::vector<flexible_type>>
           }
           break; 
         }
-      case ml_column_mode::NUMERIC_VECTOR: {
+      case ml_column_mode::NUMERIC_VECTOR:
+      case ml_column_mode::NUMERIC_ND_VECTOR: {
         for(size_t i = 0; i < metadata->index_size(col_index); ++i) { 
           out[1] = i;
           ret[pos] = out;
@@ -963,10 +960,6 @@ void supervised_learning_model_base::api_train(
   gl_sframe validation_data;
   std::tie(data, validation_data) = create_validation_data(data, _validation_data);
   add_or_update_state({{"validation_data", validation_data}});
-
-  // TODO: remove this plumbing now that neural nets has been 
-  // moved out. 
-  constexpr bool support_image_type = false;
 
   gl_sframe f_data = data;
   f_data.remove_column(target);
@@ -1005,9 +998,7 @@ void supervised_learning_model_base::api_train(
     
     valid_y = validation_data.select_columns({target}).materialize_to_sframe();
     
-    check_feature_column_types(valid_X, support_image_type);
     check_target_column_type(this->name(), valid_y);
-    check_feature_column_types_match(X, valid_X);
   }
 
   this->init(X, y, valid_X, valid_y, missing_value_action);

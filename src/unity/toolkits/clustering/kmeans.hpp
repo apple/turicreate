@@ -24,7 +24,7 @@
 
 // Interfaces
 #include <unity/lib/extensions/ml_model.hpp>
-#include <unity/toolkits/options/option_manager.hpp>
+#include <unity/lib/extensions/option_manager.hpp>
 #include <unity/lib/variant_deep_serialize.hpp>
 #include <globals/globals.hpp>
 #include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>

@@ -23,6 +23,7 @@
 #include <fileio/fs_utils.hpp>
 #include <cppipc/server/cancel_ops.hpp>
 #include <sframe/sframe_constants.hpp>
+#include <util/dense_bitset.hpp>
 
 namespace turi {
 
@@ -398,6 +399,8 @@ class parallel_csv_parser {
   std::vector<csv_line_tokenizer> thread_local_tokenizer;
   /// shared buffer
   std::string buffer;
+  /// Same length as buffer. marks if a part of the buffer is in a quoted string
+  dense_bitset quote_parity;
   /// Reading thread pool
   parallel_task_queue read_group;
   /// writing thread pool
@@ -486,6 +489,19 @@ class parallel_csv_parser {
     newline_was_matched = false;
     return cend;
   }
+  // same as advance_past_newline, but checks the quote_parity
+  // to make sure we are only handling true new lines
+  char* advance_past_newline_with_quote_parity(char* bufstart, char* c, char* cend, 
+                                               bool& newline_was_matched) const {
+    newline_was_matched = false;
+    while(c != cend) {
+      c = advance_past_newline(c, cend, newline_was_matched);
+      bool b = quote_parity.get(c - bufstart - 1);
+      if (newline_was_matched == false || 
+          b == false) return c;
+    }
+    return c;
+  }
 
   /// parses the line between pstart to pnext, using threadid's buffer
   void parse_line(char* pstart, char* pnext, size_t threadid) {
@@ -538,6 +554,7 @@ class parallel_csv_parser {
       }
     }
   }
+
   /**
    * Performs the parse on a section of the buffer (threadid in nthreads)
    * adding new rows into the parsed_buffer.
@@ -596,7 +613,7 @@ class parallel_csv_parser {
         pstart -= line_terminator.length() - 1;
       }
       bool newline_was_matched;
-      pstart = advance_past_newline(pstart, pend, newline_was_matched);
+      pstart = advance_past_newline_with_quote_parity(bufstart, pstart, pend, newline_was_matched);
       if (newline_was_matched) {
         start_position_found = true;
       }
@@ -614,8 +631,8 @@ class parallel_csv_parser {
           pend - bufstart >= int(line_terminator.length() - 0)) {
         pend -= line_terminator.length() - 1;
       }
-      bool newline_was_matched_unused;
-      pend = advance_past_newline(pend, bufend, newline_was_matched_unused);
+      bool newline_was_matched_unused = false;
+      pend = advance_past_newline_with_quote_parity(bufstart, pend, bufend, newline_was_matched_unused);
       // make a thread local parsed tokens set
       /**************************************************************************/
       /*                                                                        */
@@ -634,10 +651,10 @@ class parallel_csv_parser {
           // search for a new line
           // This can be massively optimized in the general case of interesting
           // end line characters using Robin Karp or KMP.
-          if (is_end_line_str(pnext, pend)) {
+          if (is_end_line_str(pnext, pend) && quote_parity.get(pnext - bufstart) == false) {
             // parse pstart until pnext
             parse_line(pstart, pnext, threadid);
-            pnext = advance_past_newline(pnext, pend, newline_was_matched_unused);
+            pnext = advance_past_newline_with_quote_parity(bufstart, pnext, pend, newline_was_matched_unused);
             pstart = pnext;
           } else {
             ++pnext;
@@ -693,6 +710,141 @@ class parallel_csv_parser {
   }
 
   /**
+   * to handle CSV lines which span multiple lines, this happens in particular
+   * when we have quoted line terminators. For instance a CSV might be of the
+   * form
+   *  
+   * user_id, review
+   * 123, "good food"
+   * 456, "hello
+   * world"
+   * 678, "moof"
+   *  
+   * In this case, "hello\nworld" spans a line.
+   * 
+   * However, this gets complicated with the buffer splitting algorithm which
+   * takes a large contiguous buffer and tries to cut it up into #thread chunks.
+   * Each chunk must span a complete set of lines. See \ref parse_thread
+   * for details.
+   * 
+   * To fix this behavior, we need to be able to mark which line_terminator 
+   * positions are *really* line terminators and which are sitting within quotes.
+   * Note that there are a variety of quoting rules we need to be able to handle.
+   * 
+   * To do this, we pay for one pass through the buffer counting quote characters
+   * and marking all the "valid" newline positions.
+   *
+   * This is essentially a "parity" problem. we need to know at each
+   * character position in the buffer, if we are in a quoted string or not.
+   *
+   * This uses the information in \ref tokenizer to get the quoting rules.
+   * Of the csv rules, we can ignore double_quote, (adjacent quote chars 
+   * just flips the parity back and forth). Rules which affect are  
+   * quote_char, escape_char, comment_char, has_comment_char.
+   *
+   * comment_char is quite hard...
+   *
+   * This function reads the variable \ref buffer and fills \ref quote_parity.
+   */
+  void find_true_new_line_positions() {
+    quote_parity.resize(buffer.size());
+    quote_parity.clear();
+
+    // if the prev char is not an escape char.
+    // this seems like not very natural instead of is_esc. but this
+    // saves a negation every loop iteration.
+    bool not_esc = true; 
+    csv_line_tokenizer& tokenizer = thread_local_tokenizer[0];
+    const char escape_char = tokenizer.escape_char;
+    const char quote_char = tokenizer.quote_char;
+    const char comment_char = tokenizer.comment_char;
+    bool cur_in_quote = false;
+
+    int idx = 0;
+    const char* __restrict__ buf = &(buffer[0]);
+    const char* __restrict__ bufend = &(buffer[0]) + buffer.size();
+    if (tokenizer.has_comment_char) {
+      // with comment char we need to do a bit more work.
+      while(buf != bufend) {
+        // fast path. quickly scan through the buffer while I don't see special
+        // characters
+        if (not_esc) {
+          while(buf != bufend && 
+                (*(buf) != comment_char) && 
+                (*(buf) != quote_char) && 
+                (*(buf) != escape_char)) {
+            ++buf;
+          }
+          int endidx = buf - &(buffer[0]);
+          if (cur_in_quote) {
+            // if in_quote we need to flag all the quote_parity bits
+            while(idx < endidx) {
+              quote_parity.set_bit_unsync(idx);
+              ++idx;
+            }
+          } else {
+            idx = endidx;
+          }
+          if (buf == bufend) break;
+          // continue for slow path handling
+        }
+        const char c = (*buf);
+        if (c == comment_char && not_esc && cur_in_quote == false) {
+          // skip to next newline 
+          bool newline_was_matched = false;
+          const char* initial_buf = buf;
+          buf = advance_past_newline((char*)buf, (char*)bufend, newline_was_matched);
+          idx += buf - initial_buf;
+          if (newline_was_matched == false) break;
+          else continue;
+        }
+        bool is_quote_char = (c == quote_char) && not_esc;
+        cur_in_quote ^= is_quote_char;
+        quote_parity.set_unsync(idx, cur_in_quote);
+        // invert of the following
+        // if (!esc) esc = c == escape_char
+        // else esc = false
+        not_esc = !not_esc || c != escape_char;
+        ++idx; ++buf;
+      }
+    } else {
+      // without comment char this is simpler.
+      while(buf != bufend) {
+        // fast path. quickly scan through the buffer while I don't see special
+        // characters
+        if (not_esc) {
+          while(buf != bufend && 
+                (*(buf) != quote_char) && 
+                (*(buf) != escape_char)) {
+            ++buf;
+          }
+          int endidx = buf - &(buffer[0]);
+          if (cur_in_quote) {
+            // if in_quote we need to flag all the quote_parity bits
+            while(idx < endidx) {
+              quote_parity.set_bit_unsync(idx);
+              ++idx;
+            }
+          } else {
+            idx = endidx;
+          }
+          if (buf == bufend) break;
+          // continue for slow path handling
+        }
+        const char c = (*buf);
+        bool is_quote_char = (c == quote_char) && not_esc;
+        cur_in_quote ^= is_quote_char;
+        quote_parity.set_unsync(idx, cur_in_quote);
+        // invert of the following
+        // if (!esc) esc = c == escape_char
+        // else esc = false
+        not_esc = !not_esc || c != escape_char;
+        ++idx; ++buf;
+      }
+    }
+  }
+
+  /**
    * Performs a parallel parse of the contents of the buffer, adding to
    * parsed_buffer.
    */
@@ -702,6 +854,8 @@ class parallel_csv_parser {
     // parse buffer in parallel
     mutex last_parsed_token_lock;
     char* last_parsed_token = &(buffer[0]);
+
+    find_true_new_line_positions();
 
     for (size_t threadid = 0; threadid < nthreads; ++threadid) {
       read_group.launch(

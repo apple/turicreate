@@ -83,6 +83,8 @@ enum MLNeuralNetworkLayerlayer: int {
     MLNeuralNetworkLayerlayer_crop = 190,
     MLNeuralNetworkLayerlayer_padding = 200,
     MLNeuralNetworkLayerlayer_upsample = 210,
+    MLNeuralNetworkLayerlayer_resizeBilinear = 211,
+    MLNeuralNetworkLayerlayer_cropResize = 212,
     MLNeuralNetworkLayerlayer_unary = 220,
     MLNeuralNetworkLayerlayer_add = 230,
     MLNeuralNetworkLayerlayer_multiply = 231,
@@ -138,6 +140,10 @@ static const char * MLNeuralNetworkLayerlayer_Name(MLNeuralNetworkLayerlayer x) 
             return "MLNeuralNetworkLayerlayer_padding";
         case MLNeuralNetworkLayerlayer_upsample:
             return "MLNeuralNetworkLayerlayer_upsample";
+        case MLNeuralNetworkLayerlayer_resizeBilinear:
+            return "MLNeuralNetworkLayerlayer_resizeBilinear";
+        case MLNeuralNetworkLayerlayer_cropResize:
+            return "MLNeuralNetworkLayerlayer_cropResize";
         case MLNeuralNetworkLayerlayer_unary:
             return "MLNeuralNetworkLayerlayer_unary";
         case MLNeuralNetworkLayerlayer_add:
@@ -194,6 +200,20 @@ static const char * MLNeuralNetworkLayerlayer_Name(MLNeuralNetworkLayerlayer x) 
 enum MLSamePaddingMode: int {
     MLSamePaddingModeBOTTOM_RIGHT_HEAVY = 0,
     MLSamePaddingModeTOP_LEFT_HEAVY = 1,
+};
+
+enum MLMethod: int {
+    MLMethodSTRICT_ALIGN_ENDPOINTS_MODE = 0,
+    MLMethodALIGN_ENDPOINTS_MODE = 1,
+    MLMethodUPSAMPLE_MODE = 2,
+    MLMethodROI_ALIGN_MODE = 3,
+};
+
+enum MLCoordinates: int {
+    MLCoordinatesCORNERS_HEIGHT_FIRST = 0,
+    MLCoordinatesCORNERS_WIDTH_FIRST = 1,
+    MLCoordinatesCENTER_SIZE_HEIGHT_FIRST = 2,
+    MLCoordinatesCENTER_SIZE_WIDTH_FIRST = 3,
 };
 
 enum MLQuantizationParamsQuantizationType: int {

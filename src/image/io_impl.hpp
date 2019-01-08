@@ -15,10 +15,10 @@
 #endif 
 
 #include <image/image_type.hpp>
-#include <boost/gil/extension/io/jpeg_dynamic_io.hpp>
-#include <boost/gil/extension/io/jpeg_io.hpp>
-#include <boost/gil/extension/io/png_dynamic_io.hpp>
-#include <boost/gil/extension/io/png_io.hpp>
+#include <boost/gil/extension/io/jpeg.hpp>
+#include <boost/gil/extension/io/jpeg/old.hpp>
+#include <boost/gil/extension/io/png.hpp>
+#include <boost/gil/extension/io/png/old.hpp>
 #include <logger/logger.hpp>
 
 using namespace boost::gil;

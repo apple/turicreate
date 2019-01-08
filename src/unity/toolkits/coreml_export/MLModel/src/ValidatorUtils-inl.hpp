@@ -1,20 +1,15 @@
-//
-//  ValidatorUtils.hpp
-//  libmlmodelspec
-//
-//  Created by Srikrishna Sridhar on 11/10/16.
-//  Copyright © 2016 Apple. All rights reserved.
-//
-
+/* Copyright © 2017 Apple Inc. All rights reserved.
+ *
+ * Use of this source code is governed by a BSD-3-clause license that can
+ * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ */
 #ifndef ValidatorUtils_h
 #define ValidatorUtils_h
 
 #include "Comparison.hpp"
 #include "Format.hpp"
 #include "Result.hpp"
-
-#include "unity/toolkits/coreml_export/protobuf_include_internal.hpp"
-
+#include "../build/format/FeatureTypes_enums.h"
 #include <sstream>
 
 namespace CoreML {
@@ -22,7 +17,7 @@ namespace CoreML {
     enum WeightParamType {
         FLOAT32, // float32 weights
         FLOAT16, // float16 weights
-        QUINT, // <= 8-bit unsigned integer
+        QUINT,   // smaller or equal to 8-bit unsigned integer
         UNSPECIFIED, // More then one type specified
         EMPTY // No populated fields
     };

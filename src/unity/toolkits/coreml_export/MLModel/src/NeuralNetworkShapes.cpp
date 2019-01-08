@@ -1,11 +1,8 @@
-//
-//  NeuralNetworkShapes.cpp
-//  mlmodel
-//
-//  Created by William March on 12/5/17.
-//  Copyright © 2017 Apple Inc. All rights reserved.
-//
-
+/* Copyright © 2017 Apple Inc. All rights reserved.
+ *
+ * Use of this source code is governed by a BSD-3-clause license that can
+ * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ */
 #include "NeuralNetworkShapes.hpp"
 #include "Utils.hpp"
 
@@ -387,6 +384,10 @@ void NeuralNetworkShaper::shapeCropLayer(const Specification::NeuralNetworkLayer
     outputShape.updateBatchRange(outputShape.batchRange().intersect(inputShape.batchRange()));
     outputShape.updateChannelRange(outputShape.channelRange().intersect(inputShape.channelRange()));
 
+    inputShape.updateSequenceRange(outputShape.sequenceRange());
+    inputShape.updateBatchRange(outputShape.batchRange());
+    inputShape.updateChannelRange(outputShape.channelRange());
+
     Specification::CropLayerParams crop = specLayer.crop();
 
     int l , r, t, b;
@@ -434,6 +435,10 @@ void NeuralNetworkShaper::shapePaddingLayer(const Specification::NeuralNetworkLa
     outputShape.updateSequenceRange(outputShape.sequenceRange().intersect(inputShape.sequenceRange()));
     outputShape.updateBatchRange(outputShape.batchRange().intersect(inputShape.batchRange()));
 
+    inputShape.updateSequenceRange(outputShape.sequenceRange());
+    inputShape.updateBatchRange(outputShape.batchRange());
+    inputShape.updateChannelRange(outputShape.channelRange());
+
     Specification::PaddingLayerParams padding = specLayer.padding();
 
     size_t l, r, t, b;
@@ -447,6 +452,10 @@ void NeuralNetworkShaper::shapePaddingLayer(const Specification::NeuralNetworkLa
     outputShape.updateChannelRange(outputShape.channelRange().intersect(inputShape.channelRange()));
     outputShape.updateHeightRange(inputShape.heightRange() + t + b);
     outputShape.updateWidthRange(inputShape.widthRange() + r + l);
+    
+    // If a fixed constraint for the output shape emerges later in the network, then we can infer a lower bound for the input shape
+    inputShape.updateHeightRange(outputShape.heightRange() - t - b);
+    inputShape.updateWidthRange(outputShape.widthRange() - l - r);
 
 #if COREML_VALIDATOR_VERBOSE
     std::cout << "Padding layer " << specLayer.name() << " input shapes (after): " << std::endl;
@@ -454,7 +463,6 @@ void NeuralNetworkShaper::shapePaddingLayer(const Specification::NeuralNetworkLa
     std::cout << "Padding layer " << specLayer.name() << " output shapes (after): " << std::endl;
     std::cout << outputShape;
 #endif
-
 
 }
 
@@ -475,6 +483,10 @@ void NeuralNetworkShaper::shapeUpsampleLayer(const Specification::NeuralNetworkL
     outputShape.updateBatchRange(outputShape.batchRange().intersect(inputShape.batchRange()));
     outputShape.updateChannelRange(outputShape.channelRange().intersect(inputShape.channelRange()));
 
+    inputShape.updateSequenceRange(outputShape.sequenceRange());
+    inputShape.updateBatchRange(outputShape.batchRange());
+    inputShape.updateChannelRange(outputShape.channelRange());
+
     Specification::UpsampleLayerParams upsample = specLayer.upsample();
 
     size_t scaling_factor_h = 1;
@@ -487,6 +499,9 @@ void NeuralNetworkShaper::shapeUpsampleLayer(const Specification::NeuralNetworkL
 
     outputShape.updateHeightRange(inputShape.heightRange() * scaling_factor_h);
     outputShape.updateWidthRange(inputShape.widthRange() * scaling_factor_w);
+    
+    inputShape.updateHeightRange(outputShape.heightRange() / scaling_factor_h);
+    inputShape.updateWidthRange(outputShape.widthRange() / scaling_factor_w);
 
 #if COREML_VALIDATOR_VERBOSE
     std::cout << "Upsample layer " << specLayer.name() << " input shapes (after): " << std::endl;
@@ -603,9 +618,20 @@ void NeuralNetworkShaper::shapeDotLayer(const Specification::NeuralNetworkLayer&
     outputShape.updateSequenceRange(outputShape.sequenceRange().intersect(inputShape2.sequenceRange()));
     outputShape.updateBatchRange(outputShape.batchRange().intersect(inputShape2.batchRange()));
 
+    inputShape1.setHeight(1);
+    inputShape1.setWidth(1);
+    inputShape2.setHeight(1);
+    inputShape2.setWidth(1);
+
     // The inputs need to be equal
     inputShape1.copyFrom(inputShape2);
     inputShape2.copyFrom(inputShape1);
+
+    inputShape1.updateSequenceRange(outputShape.sequenceRange());
+    inputShape1.updateBatchRange(outputShape.batchRange());
+
+    inputShape2.updateSequenceRange(outputShape.sequenceRange());
+    inputShape2.updateBatchRange(outputShape.batchRange());
 
     outputShape.setChannel(1);
     outputShape.setHeight(1);
@@ -632,6 +658,9 @@ void NeuralNetworkShaper::shapeReduceLayer(const Specification::NeuralNetworkLay
     outputShape.updateSequenceRange(outputShape.sequenceRange().intersect(inputShape.sequenceRange()));
     outputShape.updateBatchRange(outputShape.batchRange().intersect(inputShape.batchRange()));
 
+    inputShape.updateSequenceRange(outputShape.sequenceRange());
+    inputShape.updateBatchRange(outputShape.batchRange());
+
 #if COREML_VALIDATOR_VERBOSE
     std::cout << "Reduce layer " << specLayer.name() << " input shapes (before): " << std::endl;
     std::cout << inputShape;
@@ -642,35 +671,48 @@ void NeuralNetworkShaper::shapeReduceLayer(const Specification::NeuralNetworkLay
     Specification::ReduceLayerParams reduce = specLayer.reduce();
 
     switch (reduce.axis()) {
-        case Specification::ReduceLayerParams::CHW:
+        case Specification::ReduceLayerParams::CHW: {
             outputShape.setChannel(1);
             outputShape.setHeight(1);
             outputShape.setWidth(1);
             break;
-        case Specification::ReduceLayerParams::HW:
+        }
+        case Specification::ReduceLayerParams::HW: {
             outputShape.updateChannelRange(outputShape.channelRange().intersect(inputShape.channelRange()));
+            inputShape.updateChannelRange(outputShape.channelRange());
             outputShape.setHeight(1);
             outputShape.setWidth(1);
             break;
-        case Specification::ReduceLayerParams::H:
+        }
+        case Specification::ReduceLayerParams::H: {
             outputShape.updateChannelRange(outputShape.channelRange().intersect(inputShape.channelRange()));
+            inputShape.updateChannelRange(outputShape.channelRange());
             outputShape.setHeight(1);
             outputShape.updateWidthRange(outputShape.widthRange().intersect(inputShape.widthRange()));
+            inputShape.updateWidthRange(outputShape.widthRange());
             break;
-        case Specification::ReduceLayerParams::W:
+        }
+        case Specification::ReduceLayerParams::W: {
             outputShape.updateChannelRange(outputShape.channelRange().intersect(inputShape.channelRange()));
+            inputShape.updateChannelRange(outputShape.channelRange());
             outputShape.updateHeightRange(outputShape.heightRange().intersect(inputShape.heightRange()));
+            inputShape.updateHeightRange(outputShape.heightRange());
             outputShape.setWidth(1);
             break;
-        case Specification::ReduceLayerParams::C:
+        }
+        case Specification::ReduceLayerParams::C: {
             outputShape.setChannel(1);
             outputShape.updateHeightRange(outputShape.heightRange().intersect(inputShape.heightRange()));
+            inputShape.updateHeightRange(outputShape.heightRange());
             outputShape.updateWidthRange(outputShape.widthRange().intersect(inputShape.widthRange()));
+            outputShape.updateWidthRange(outputShape.widthRange());
             break;
+        }
         case CoreML::Specification::ReduceLayerParams_ReduceAxis_ReduceLayerParams_ReduceAxis_INT_MIN_SENTINEL_DO_NOT_USE_:
-        case CoreML::Specification::ReduceLayerParams_ReduceAxis_ReduceLayerParams_ReduceAxis_INT_MAX_SENTINEL_DO_NOT_USE_:
+        case CoreML::Specification::ReduceLayerParams_ReduceAxis_ReduceLayerParams_ReduceAxis_INT_MAX_SENTINEL_DO_NOT_USE_: {
             throw std::runtime_error("Reduce layer axis not set -- should have been caught in validator.");
             break;
+        }
     }
 
 #if COREML_VALIDATOR_VERBOSE
@@ -828,6 +870,8 @@ void NeuralNetworkShaper::shapePermuteLayer(const Specification::NeuralNetworkLa
     inputShape.updateHeightRange(outranges[2]);
     inputShape.updateWidthRange(outranges[3]);
 
+    inputShape.updateBatchRange(outputShape.batchRange());
+
 #if COREML_VALIDATOR_VERBOSE
     std::cout << "Permute layer " << specLayer.name() << " input shapes (after): " << std::endl;
     std::cout << inputShape;
@@ -936,6 +980,13 @@ void NeuralNetworkShaper::shapeSplitLayer(const Specification::NeuralNetworkLaye
         outputShape.updateWidthRange(inputShape.widthRange());
 
     }
+    
+    ShapeConstraint& outputShape = blobShapes[specLayer.output(0)];
+    inputShape.updateSequenceRange(outputShape.sequenceRange());
+    inputShape.updateBatchRange(outputShape.batchRange());
+    inputShape.updateChannelRange(outputShape.channelRange() * static_cast<size_t>(nout));
+    inputShape.updateHeightRange(outputShape.heightRange());
+    inputShape.updateWidthRange(outputShape.widthRange());
 
 #if COREML_VALIDATOR_VERBOSE
     std::cout << "Split layer " << specLayer.name() << " input shapes (after): " << std::endl;
@@ -1062,14 +1113,17 @@ void NeuralNetworkShaper::shapeSliceLayer(const Specification::NeuralNetworkLaye
     auto axis = slice.axis();
 
     int outsize = 0;
+    int inLowerBound = 0;
     bool fixedSize = false;
 
     if (start >= 0 && end > 0) {
         fixedSize = true;
         outsize = (end - 1 - start) / stride + 1;
+        inLowerBound = end;
     }
     else if (start < 0 && end <= 0) {
         fixedSize = true;
+        inLowerBound = -1*start;
         outsize = (-start - 1 + end) / stride + 1;
     }
 
@@ -1081,16 +1135,31 @@ void NeuralNetworkShaper::shapeSliceLayer(const Specification::NeuralNetworkLaye
                 outputShape.setChannel(static_cast<size_t>(outsize));
                 outputShape.updateHeightRange(inputShape.heightRange());
                 outputShape.updateWidthRange(inputShape.widthRange());
+
+                inputShape.lowerBoundChannel(static_cast<size_t>(inLowerBound));
+                inputShape.updateHeightRange(outputShape.heightRange());
+                inputShape.updateWidthRange(outputShape.widthRange());
+
                 break;
             case Specification::SliceLayerParams::HEIGHT_AXIS:
                 outputShape.updateChannelRange(inputShape.channelRange());
                 outputShape.setHeight(static_cast<size_t>(outsize));
                 outputShape.updateWidthRange(inputShape.widthRange());
+
+                inputShape.updateChannelRange(outputShape.channelRange());
+                inputShape.lowerBoundHeight(static_cast<size_t>(inLowerBound));
+                inputShape.updateWidthRange(outputShape.widthRange());
+
                 break;
             case Specification::SliceLayerParams::WIDTH_AXIS:
                 outputShape.updateChannelRange(inputShape.channelRange());
                 outputShape.updateHeightRange(inputShape.heightRange());
                 outputShape.setWidth(static_cast<size_t>(outsize));
+
+                inputShape.updateChannelRange(outputShape.channelRange());
+                inputShape.updateHeightRange(outputShape.heightRange());
+                inputShape.lowerBoundWidth(static_cast<size_t>(inLowerBound));
+
                 break;
             default:
                 throw std::runtime_error("Slice layer axis incorrect -- should be caught in validator.");
@@ -1123,25 +1192,46 @@ void NeuralNetworkShaper::shapeSliceLayer(const Specification::NeuralNetworkLaye
 
         ShapeRange outrange = (size - (start + 1 + end)) / stride + 1;
 
+        inLowerBound = start + 1 + end;
+
         switch (axis) {
-            case Specification::SliceLayerParams::CHANNEL_AXIS:
+            case Specification::SliceLayerParams::CHANNEL_AXIS: {
                 outputShape.updateChannelRange(outrange);
                 outputShape.updateHeightRange(inputShape.heightRange());
                 outputShape.updateWidthRange(inputShape.widthRange());
+
+                inputShape.lowerBoundChannel(static_cast<size_t>(inLowerBound));
+                inputShape.updateHeightRange(outputShape.heightRange());
+                inputShape.updateWidthRange(outputShape.widthRange());
+
                 break;
-            case Specification::SliceLayerParams::HEIGHT_AXIS:
+            }
+            case Specification::SliceLayerParams::HEIGHT_AXIS: {
                 outputShape.updateChannelRange(inputShape.channelRange());
                 outputShape.updateHeightRange(outrange);
                 outputShape.updateWidthRange(inputShape.widthRange());
+
+                inputShape.updateChannelRange(outputShape.channelRange());
+                inputShape.lowerBoundHeight(static_cast<size_t>(inLowerBound));
+                inputShape.updateWidthRange(outputShape.widthRange());
+
                 break;
-            case Specification::SliceLayerParams::WIDTH_AXIS:
+            }
+            case Specification::SliceLayerParams::WIDTH_AXIS: {
                 outputShape.updateChannelRange(inputShape.channelRange());
                 outputShape.updateHeightRange(inputShape.heightRange());
                 outputShape.updateWidthRange(outrange);
+
+                inputShape.updateChannelRange(outputShape.channelRange());
+                inputShape.updateHeightRange(outputShape.heightRange());
+                inputShape.lowerBoundWidth(static_cast<size_t>(inLowerBound));
+
                 break;
-            default:
+            }
+            default: {
                 throw std::runtime_error("Slice layer axis incorrect -- should be caught in validator.");
                 break;
+            }
         }
 
     } // signs don't match
@@ -1482,6 +1572,110 @@ void NeuralNetworkShaper::shapeCustomLayer(const Specification::NeuralNetworkLay
 
 }
 
+void NeuralNetworkShaper::shapeResizeBilinearLayer(const Specification::NeuralNetworkLayer& specLayer) {
+
+    // Input shape: [Seq, B, C, H_in, W_out]
+    // Output shape: [Seq, B, C, H_out, W_out]
+
+    ShapeConstraint& inputShape = blobShapes[specLayer.input(0)];
+    ShapeConstraint& outputShape = blobShapes[specLayer.output(0)];
+    outputShape.setName(specLayer.output(0));
+
+#if COREML_VALIDATOR_VERBOSE
+    std::cout << "Resize Bilinear layer " << specLayer.name() << " input shapes (before): " << std::endl;
+    std::cout << inputShape;
+    std::cout << "Resize Bilinear layer " << specLayer.name() << " output shapes (before): " << std::endl;
+    std::cout << outputShape;
+#endif
+
+    // For forward pass: update the output shape ranges
+    outputShape.updateSequenceRange(outputShape.sequenceRange().intersect(inputShape.sequenceRange()));
+    outputShape.updateBatchRange(outputShape.batchRange().intersect(inputShape.batchRange()));
+    outputShape.updateChannelRange(outputShape.channelRange().intersect(inputShape.channelRange()));
+
+    Specification::ResizeBilinearLayerParams resize = specLayer.resizebilinear();
+
+    size_t target_h = 1;
+    size_t target_w = 1;
+
+    if (resize.targetsize_size() == 2) {
+        target_h = (resize.targetsize(0) == 0) ? 1 : (size_t)resize.targetsize(0); //height
+        target_w = (resize.targetsize(1) == 0) ? 1 : (size_t)resize.targetsize(1); //width
+    }
+
+    outputShape.setHeight(target_h);
+    outputShape.setWidth(target_w);
+
+    // For backward pass: update the input shape ranges
+    inputShape.updateSequenceRange(inputShape.sequenceRange().intersect(outputShape.sequenceRange()));
+    inputShape.updateBatchRange(inputShape.batchRange().intersect(outputShape.batchRange()));
+    inputShape.updateChannelRange(inputShape.channelRange().intersect(outputShape.channelRange()));
+
+#if COREML_VALIDATOR_VERBOSE
+    std::cout << "Resize Bilinear layer " << specLayer.name() << " input shapes (after): " << std::endl;
+    std::cout << inputShape;
+    std::cout << "Resize Bilinear layer " << specLayer.name() << " output shapes (after): " << std::endl;
+    std::cout << outputShape;
+#endif
+
+}
+
+void NeuralNetworkShaper::shapeCropResizeLayer(const Specification::NeuralNetworkLayer& specLayer) {
+
+    // Input shapes: [1, B, C, H_in, W_out], roi shape = [N, 1, 4/5, 1, 1]
+    // Output shape: [N, B, C, H_out, W_out] if roi shape = [N, 1, 4, 1, 1]
+    // Output shape: [N, 1, C, H_out, W_out] if roi shape = [N, 1, 5, 1, 1]
+
+    ShapeConstraint& inputShape = blobShapes[specLayer.input(0)];
+    ShapeConstraint& roiInputShape = blobShapes[specLayer.input(1)];
+    ShapeConstraint& outputShape = blobShapes[specLayer.output(0)];
+    outputShape.setName(specLayer.output(0));
+
+#if COREML_VALIDATOR_VERBOSE
+    std::cout << "Crop resize layer " << specLayer.name() << " input shapes (before): " << std::endl;
+    std::cout << inputShape;
+    std::cout << "Crop resize layer " << specLayer.name() << " output shapes (before): " << std::endl;
+    std::cout << outputShape;
+#endif
+
+    // For forward pass
+    outputShape.updateSequenceRange(outputShape.sequenceRange().intersect(roiInputShape.sequenceRange()));
+    outputShape.updateBatchRange(outputShape.batchRange().intersect(inputShape.batchRange()));
+    outputShape.updateChannelRange(outputShape.channelRange().intersect(inputShape.channelRange()));
+
+    Specification::CropResizeLayerParams crop_resize = specLayer.cropresize();
+
+    size_t target_h = 1;
+    size_t target_w = 1;
+
+    if (crop_resize.targetsize_size() == 2) {
+        target_h = (crop_resize.targetsize(0) == 0) ? 1 : (size_t)crop_resize.targetsize(0); //height
+        target_w = (crop_resize.targetsize(1) == 0) ? 1 : (size_t)crop_resize.targetsize(1); //width
+    }
+
+    outputShape.setHeight(target_h);
+    outputShape.setWidth(target_w);
+
+    // For Backward pass
+    // image input:
+    inputShape.updateChannelRange(inputShape.channelRange().intersect(outputShape.channelRange()));
+
+    // roi input:
+    roiInputShape.updateSequenceRange(roiInputShape.sequenceRange().intersect(outputShape.sequenceRange()));
+    roiInputShape.setBatch(1);
+    roiInputShape.updateChannelRange(ShapeRange(4, 5));
+    roiInputShape.setWidth(1);
+    roiInputShape.setHeight(1);
+
+#if COREML_VALIDATOR_VERBOSE
+    std::cout << "Crop resize layer " << specLayer.name() << " input shapes (after): " << std::endl;
+    std::cout << inputShape;
+    std::cout << "Crop resize layer " << specLayer.name() << " output shapes (after): " << std::endl;
+    std::cout << outputShape;
+#endif
+
+}
+
 void NeuralNetworkShaper::ProcessLayer(const Specification::NeuralNetworkLayer& layer) {
 
     switch(layer.layer_case()) {
@@ -1596,6 +1790,12 @@ void NeuralNetworkShaper::ProcessLayer(const Specification::NeuralNetworkLayer& 
         case Specification::NeuralNetworkLayer::kCustom:
             shapeCustomLayer(layer);
             break;
+        case Specification::NeuralNetworkLayer::kResizeBilinear:
+            shapeResizeBilinearLayer(layer);
+            break;
+        case Specification::NeuralNetworkLayer::kCropResize:
+            shapeCropResizeLayer(layer);
+            break;
         case Specification::NeuralNetworkLayer::LAYER_NOT_SET:
             throw std::runtime_error("Layer type not found.");
             break;
@@ -1635,7 +1835,7 @@ bool NeuralNetworkShaper::AllShapesDone() {
     return true;
 }
 
-NeuralNetworkShaper::NeuralNetworkShaper(const Specification::ModelDescription& interface, const google::protobuf::RepeatedPtrField<Specification::NeuralNetworkLayer>& layers)
+NeuralNetworkShaper::NeuralNetworkShaper(const Specification::ModelDescription& interface, const google::protobuf::RepeatedPtrField<Specification::NeuralNetworkLayer>& layers, bool useInputAndOutputConstraints)
     :
     numColors(interface.input().size())
 {
@@ -1648,13 +1848,17 @@ NeuralNetworkShaper::NeuralNetworkShaper(const Specification::ModelDescription& 
         // Each input blob starts as it's own color
         blobColors[desc.name()].insert(i);
 
-        constraint.updateConstraint(desc.type());
+        if (useInputAndOutputConstraints) {
+            constraint.updateConstraint(desc.type());
+        }
 
     }
 
     bool done = false;
 
     while (!done) {
+
+        std::map<std::string, std::set<int> > blobColorsCopy = blobColors;
 
 #if COREML_VALIDATOR_VERBOSE
         std::cout << std::endl << "=====================" << std::endl << "Computing neural network shapes" << std::endl  << "=====================" << std::endl;
@@ -1681,55 +1885,60 @@ NeuralNetworkShaper::NeuralNetworkShaper(const Specification::ModelDescription& 
 
         done = AllShapesDone();
 
+        if (blobColorsCopy == blobColors) {
+            break;
+        }
     }
 
-    for (int i = 0; i < interface.output().size(); i++) {
-        const Specification::FeatureDescription& desc = interface.output(i);
+    if (useInputAndOutputConstraints) {
+        for (int i = 0; i < interface.output().size(); i++) {
+            const Specification::FeatureDescription& desc = interface.output(i);
 
-        // skip over names that are just for the classifier
-        if (desc.name().compare(interface.predictedprobabilitiesname()) == 0
-            || desc.name().compare(interface.predictedfeaturename()) == 0) {
-            continue;
-        }
-        
-        // using at because it needs to exist, this will throw if it doesn't
-        ShapeConstraint& constraint = blobShapes.at(desc.name());
-
-        // TODO: add a catch with an error message that mentions the name
-
-        if (desc.type().Type_case() == Specification::FeatureType::kImageType) {
-            // sequence constraint here is unbounded
-            // batch is unbounded
-            // other three read from the constraint as is -- later to be updated with flexibility
-            if (desc.type().imagetype().colorspace() == Specification::ImageFeatureType_ColorSpace_GRAYSCALE)
-                constraint.setChannel(1);
-            else {
-                constraint.setChannel(3);
+            // skip over names that are just for the classifier
+            if (desc.name().compare(interface.predictedprobabilitiesname()) == 0
+                || desc.name().compare(interface.predictedfeaturename()) == 0) {
+                continue;
             }
-            constraint.setHeight(static_cast<size_t>(desc.type().imagetype().height()));
-            constraint.setWidth(static_cast<size_t>(desc.type().imagetype().width()));
-        }
-        else { // assuming it's a multi array
+            
+            // using at because it needs to exist, this will throw if it doesn't
+            ShapeConstraint& constraint = blobShapes.at(desc.name());
 
-            // allowing for the possibility that output shapes aren't constrained
-            if (desc.type().multiarraytype().shape_size() == 3) {
-                constraint.setChannel(static_cast<size_t>(desc.type().multiarraytype().shape(0)));
-                constraint.setHeight(static_cast<size_t>(desc.type().multiarraytype().shape(1)));
-                constraint.setWidth(static_cast<size_t>(desc.type().multiarraytype().shape(2)));
+            // TODO: add a catch with an error message that mentions the name
+
+            if (desc.type().Type_case() == Specification::FeatureType::kImageType) {
+                // sequence constraint here is unbounded
+                // batch is unbounded
+                // other three read from the constraint as is -- later to be updated with flexibility
+                if (desc.type().imagetype().colorspace() == Specification::ImageFeatureType_ColorSpace_GRAYSCALE)
+                    constraint.setChannel(1);
+                else {
+                    constraint.setChannel(3);
+                }
+                constraint.setHeight(static_cast<size_t>(desc.type().imagetype().height()));
+                constraint.setWidth(static_cast<size_t>(desc.type().imagetype().width()));
             }
-            else if (desc.type().multiarraytype().shape_size() == 1) {
-                constraint.setChannel(static_cast<size_t>(desc.type().multiarraytype().shape(0)));
-                constraint.setHeight(1);
-                constraint.setWidth(1);
+            else { // assuming it's a multi array
+
+                // allowing for the possibility that output shapes aren't constrained
+                if (desc.type().multiarraytype().shape_size() == 3) {
+                    constraint.setChannel(static_cast<size_t>(desc.type().multiarraytype().shape(0)));
+                    constraint.setHeight(static_cast<size_t>(desc.type().multiarraytype().shape(1)));
+                    constraint.setWidth(static_cast<size_t>(desc.type().multiarraytype().shape(2)));
+                }
+                else if (desc.type().multiarraytype().shape_size() == 1) {
+                    constraint.setChannel(static_cast<size_t>(desc.type().multiarraytype().shape(0)));
+                    constraint.setHeight(1);
+                    constraint.setWidth(1);
+                }
             }
         }
     }
 
 }
 
-NeuralNetworkShaper::NeuralNetworkShaper(const Specification::Model& model)
+NeuralNetworkShaper::NeuralNetworkShaper(const Specification::Model& model, bool useInputAndOutputConstraints)
 :
-NeuralNetworkShaper(model.description(), *(getNNSpec(model)))
+NeuralNetworkShaper(model.description(), *(getNNSpec(model)), useInputAndOutputConstraints)
 {}
 
 const ShapeConstraint& NeuralNetworkShaper::shape(const std::string& name) const {

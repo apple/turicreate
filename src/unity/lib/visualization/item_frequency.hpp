@@ -31,7 +31,7 @@ class item_frequency_result: public sframe_transformation_output,
     groupby_operators::non_null_count m_non_null_count; // (inverse) num missing
 };
 
-typedef transformation<gl_sarray, item_frequency_result, 5000000> item_frequency_parent;
+typedef transformation<gl_sarray, item_frequency_result> item_frequency_parent;
 
 class item_frequency : public item_frequency_parent {
   public:
@@ -40,8 +40,8 @@ class item_frequency : public item_frequency_parent {
 };
 
 std::shared_ptr<Plot> plot_item_frequency(
-  gl_sarray& sa, std::string xlabel, std::string ylabel, 
-  std::string title);
+  const gl_sarray& sa, const flexible_type& xlabel, const flexible_type& ylabel, 
+  const flexible_type& title);
 
 }} // turi::visualization
 

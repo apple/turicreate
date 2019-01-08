@@ -42,7 +42,7 @@ setup.p.y
 
 ### To run all the tests in the scenario-testing environment
 
-    ./run_scenario_tests.sh
+    ./run_scenario_tests.sh path_to_test_egg [other named options]
 
 ### To run all the tests (in your own environment -- YMMV)
 

@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Extended functionality: Extended allocators</title>
+<link rel="stylesheet" href="../../../doc/src/boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../index.html" title="The Boost C++ Libraries BoostBook Documentation Subset">
+<link rel="up" href="../container.html" title="Chapter&#160;9.&#160;Boost.Container">
+<link rel="prev" href="configurable_containers.html" title="Extended functionality: Configurable containers">
+<link rel="next" href="cpp_conformance.html" title="C++11/C++14/C++17 Conformance">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img alt="Boost C++ Libraries" width="277" height="86" src="../../../boost.png"></td>
+<td align="center"><a href="../../../index.html">Home</a></td>
+<td align="center"><a href="../../../libs/libraries.htm">Libraries</a></td>
+<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
+<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
+<td align="center"><a href="../../../more/index.htm">More</a></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="configurable_containers.html"><img src="../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../container.html"><img src="../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="cpp_conformance.html"><img src="../../../doc/src/images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="container.extended_allocators"></a><a class="link" href="extended_allocators.html" title="Extended functionality: Extended allocators">Extended functionality:
+    Extended allocators</a>
+</h2></div></div></div>
+<p>
+      Many C++ programmers have ever wondered where does good old realloc fit in
+      C++. And that's a good question. Could we improve <code class="computeroutput"><a class="link" href="../boost/container/vector.html" title="Class template vector">vector</a></code>
+      performance using memory expansion mechanisms to avoid too many copies? But
+      <code class="computeroutput"><a class="link" href="../boost/container/vector.html" title="Class template vector">vector</a></code> is not the only
+      container that could benefit from an improved allocator interface: we could
+      take advantage of the insertion of multiple elements in <code class="computeroutput"><a class="link" href="../boost/container/list.html" title="Class template list">list</a></code>
+      using a burst allocation mechanism that could amortize costs (mutex locks,
+      free memory searches...) that can't be amortized when using single node allocation
+      strategies.
+    </p>
+<p>
+      These improvements require extending the STL allocator interface and use make
+      use of a new general purpose allocator since new and delete don't offer expansion
+      and burst capabilities.
+    </p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem">
+          <span class="bold"><strong>Boost.Container</strong></span> containers support an
+          extended allocator interface based on an evolution of proposals <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n1953.html" target="_top">N1953:
+          Upgrading the Interface of Allocators using API Versioning</a>, <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n2045.html" target="_top">N2045:
+          Improving STL allocators</a> and the article <a href="http://www.drivehq.com/web/igaztanaga/allocplus/" target="_top">Applying
+          classic memory allocation strategies to C++ containers</a>. The extended
+          allocator interface is implemented by <code class="computeroutput"><a class="link" href="../boost/container/allocator.html" title="Class template allocator">allocator</a></code>,
+          <code class="computeroutput"><a class="link" href="../boost/container/adaptive_pool.html" title="Class template adaptive_pool">adaptive_pool</a></code>
+          and <code class="computeroutput"><a class="link" href="../boost/container/node_allocator.html" title="Class template node_allocator">node_allocator</a></code>
+          classes.
+        </li>
+<li class="listitem">
+          Extended allocators use a modified <a href="http://g.oswego.edu/dl/html/malloc.html" target="_top">Doug
+          Lea Malloc (DLMalloc)</a> low-level allocator and offers an C API to
+          implement memory expansion and burst allocations. DLmalloc is known to
+          be very size and speed efficient, and this allocator is used as the basis
+          of many malloc implementations, including multithreaded allocators built
+          above DLmalloc (See <a href="http://www.malloc.de/en/" target="_top">ptmalloc2, ptmalloc3</a>
+          or <a href="http://www.nedprod.com/programs/portable/nedmalloc/" target="_top">nedmalloc</a>).
+          This low-level allocator is implemented as a separately compiled library
+          and the following extended allocators depend on the library:
+        </li>
+<li class="listitem">
+          <code class="computeroutput"><a class="link" href="../boost/container/allocator.html" title="Class template allocator">allocator</a></code>: This
+          extended allocator offers expansion, shrink-in place and burst allocation
+          capabilities implemented as a thin wrapper around the modified DLMalloc.
+          It can be used with all containers and it should be the default choice
+          when the programmer wants to use extended allocator capabilities.
+        </li>
+<li class="listitem">
+          <code class="computeroutput"><a class="link" href="../boost/container/node_allocator.html" title="Class template node_allocator">node_allocator</a></code>:
+          It's a <a href="http://www.boost.org/doc/libs/1_55_0/libs/pool/doc/html/boost_pool/pool/pooling.html#boost_pool.pool.pooling.simple" target="_top">Simple
+          Segregated Storage</a> allocator, similar to <span class="bold"><strong>Boost.Pool</strong></span>
+          that takes advantage of the modified DLMalloc burst interface. It does
+          not return memory to the DLMalloc allocator (and thus, to the system),
+          unless explicitly requested. It does offer a very small memory overhead
+          so it's suitable for node containers ([boost::container::list list], [boost::container::slist
+          slist] [boost::container::set set]...) that allocate very small <code class="computeroutput"><span class="identifier">value_type</span></code>s and it offers improved node
+          allocation times for single node allocations with respecto to <code class="computeroutput"><a class="link" href="../boost/container/allocator.html" title="Class template allocator">allocator</a></code>.
+        </li>
+<li class="listitem">
+          <code class="computeroutput"><a class="link" href="../boost/container/adaptive_pool.html" title="Class template adaptive_pool">adaptive_pool</a></code>:
+          It's a low-overhead node allocator that can return memory to the system.
+          The overhead can be very low (&lt; 5% for small nodes) and it's nearly
+          as fast as <code class="computeroutput"><a class="link" href="../boost/container/node_allocator.html" title="Class template node_allocator">node_allocator</a></code>.
+          It's also suitable for node containers.
+        </li>
+</ul></div>
+<p>
+      Use them simply specifying the new allocator in the corresponding template
+      argument of your favourite container:
+    </p>
+<p>
+</p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">container</span><span class="special">/</span><span class="identifier">vector</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">container</span><span class="special">/</span><span class="identifier">flat_set</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">container</span><span class="special">/</span><span class="identifier">list</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">container</span><span class="special">/</span><span class="identifier">set</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+
+<span class="comment">//"allocator" is a general purpose allocator that can reallocate</span>
+<span class="comment">//memory, something useful for vector and flat associative containers</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">container</span><span class="special">/</span><span class="identifier">allocator</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+
+<span class="comment">//"adaptive_pool" is a node allocator, specially suited for</span>
+<span class="comment">//node-based containers</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">container</span><span class="special">/</span><span class="identifier">adaptive_pool</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+
+<span class="keyword">int</span> <span class="identifier">main</span> <span class="special">()</span>
+<span class="special">{</span>
+   <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">container</span><span class="special">;</span>
+
+   <span class="comment">//A vector that can reallocate memory to implement faster insertions</span>
+   <span class="identifier">vector</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">,</span> <span class="identifier">allocator</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="special">&gt;</span> <span class="identifier">extended_alloc_vector</span><span class="special">;</span>
+
+   <span class="comment">//A flat set that can reallocate memory to implement faster insertions</span>
+   <span class="identifier">flat_set</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">,</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">less</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;,</span> <span class="identifier">allocator</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="special">&gt;</span> <span class="identifier">extended_alloc_flat_set</span><span class="special">;</span>
+
+   <span class="comment">//A list that can manages nodes to implement faster</span>
+   <span class="comment">//range insertions and deletions</span>
+   <span class="identifier">list</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">,</span> <span class="identifier">adaptive_pool</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="special">&gt;</span> <span class="identifier">extended_alloc_list</span><span class="special">;</span>
+
+   <span class="comment">//A set that can recycle nodes to implement faster</span>
+   <span class="comment">//range insertions and deletions</span>
+   <span class="identifier">set</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">,</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">less</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;,</span> <span class="identifier">adaptive_pool</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="special">&gt;</span> <span class="identifier">extended_alloc_set</span><span class="special">;</span>
+
+   <span class="comment">//Now user them as always</span>
+   <span class="identifier">extended_alloc_vector</span><span class="special">.</span><span class="identifier">push_back</span><span class="special">(</span><span class="number">0</span><span class="special">);</span>
+   <span class="identifier">extended_alloc_flat_set</span><span class="special">.</span><span class="identifier">insert</span><span class="special">(</span><span class="number">0</span><span class="special">);</span>
+   <span class="identifier">extended_alloc_list</span><span class="special">.</span><span class="identifier">push_back</span><span class="special">(</span><span class="number">0</span><span class="special">);</span>
+   <span class="identifier">extended_alloc_set</span><span class="special">.</span><span class="identifier">insert</span><span class="special">(</span><span class="number">0</span><span class="special">);</span>
+
+   <span class="comment">//...</span>
+   <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
+<span class="special">}</span>
+</pre>
+<p>
+    </p>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2009-2018 Ion Gaztanaga<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="configurable_containers.html"><img src="../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../container.html"><img src="../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="cpp_conformance.html"><img src="../../../doc/src/images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

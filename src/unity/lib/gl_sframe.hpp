@@ -373,8 +373,8 @@ groupby_descriptor_type ARGMIN(const std::string& agg, const std::string& out);
  * \ingroup group_glsdk
  * A tabular, column-mutable dataframe object that can scale to big data. 
  *
- * The data in \ref gl_sframe is stored column-wise on the Turi Server
- * side, and is stored on persistent storage (e.g. disk) to avoid being
+ * The data in \ref gl_sframe is stored column-wise on persistent
+ * storage (e.g. disk) to avoid being
  * constrained by memory size.  Each column in an \ref gl_sframe is a
  * immutable \ref gl_sarray, but \ref gl_sframe objects
  * are mutable in that columns can be added and subtracted with ease.  

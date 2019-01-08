@@ -50,14 +50,14 @@ std::pair<sframe, ml_data> make_random_sframe_and_ml_data(
         break;
 
       case 'b':
-      case 'c':
-      case 'C':
       case 'z':
       case 'Z':
         DASSERT_TRUE(mdata.metadata()->column_mode(i) == ml_column_mode::CATEGORICAL);
         DASSERT_TRUE(mdata.metadata()->column_type(i) == flex_type_enum::INTEGER);
         break;
 
+      case 'c':
+      case 'C':
       case 's':
       case 'S':
         DASSERT_TRUE(mdata.metadata()->column_mode(i) == ml_column_mode::CATEGORICAL);
@@ -70,6 +70,10 @@ std::pair<sframe, ml_data> make_random_sframe_and_ml_data(
         DASSERT_TRUE(mdata.metadata()->column_type(i) == flex_type_enum::VECTOR);
         break;
 
+      case 'l':
+      case 'L':
+      case 'm':
+      case 'M':
       case 'u':
       case 'U':
         DASSERT_TRUE(mdata.metadata()->column_mode(i) == ml_column_mode::CATEGORICAL_VECTOR);

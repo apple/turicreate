@@ -115,6 +115,7 @@ if(APPLE)
     add_definitions(-DHAS_CORE_ML_BATCH_INFERENCE)
 
     # GPU-accelerated training with MPS backend requires macOS 10.14 or higher
+    add_definitions(-DHAS_MPS)
     set(HAS_MPS TRUE)
 
     # CoreML MLCustomModel requires macOS 10.14 or higher
@@ -196,6 +197,13 @@ add_definitions(-DCURL_STATICLIB)
 add_definitions(-DIN_TURI_SOURCE_TREE)
 add_definitions(-DFUSION_MAX_VECTOR_SIZE=20)
 add_definitions(-DBOOST_SPIRIT_THREAD_SAFE)
+# These determine the maximum number of arguments for extension functions
+add_definitions(-DBOOST_FUSION_INVOKE_MAX_ARITY=12)
+add_definitions(-DBOOST_FUSION_INVOKE_PROCEDURE_MAX_ARITY=12)
+add_definitions(-DBOOST_FUSION_INVOKE_FUNCTION_OBJECT_MAX_ARITY=12)
+
+# Workaround for https://svn.boost.org/trac10/ticket/10443 in Boost 1.68.0
+add_definitions(-DBOOST_RESULT_OF_USE_TR1_WITH_DECLTYPE_FALLBACK)
 
 #**************************************************************************/
 #*                                                                        */
@@ -364,40 +372,46 @@ if(HAS_FTRACER)
         set(EXTRA_OPTIMIZATION_FLAGS "${EXTRA_OPTIMIZATION_FLAGS} -ftracer")
 endif()
 
-set(DEBUG_OPTIMIZATION_LEVEL -O0)
+
+
+if(${DEBUG_OPT_FOR_SIZE})
+  set(DEBUG_OPTIMIZATION_FLAGS -Os)
+else()
+  set(DEBUG_OPTIMIZATION_FLAGS "-O0 -fno-inline")
+endif()
 
 if(${RELEASE_OPT_FOR_SIZE})
-  set(RELEASE_OPTIMIZATION_LEVEL -Os)
+  set(RELEASE_OPTIMIZATION_FLAGS "-Os -DNDEBUG")
 else()
-  set(RELEASE_OPTIMIZATION_LEVEL -O3)
+  set(RELEASE_OPTIMIZATION_FLAGS "-O3 -DNDEBUG")
 endif()
 
 if(WIN32)
         # on windows due to some string table limitations + template
         # insanities, on -O0 we run out of string table entries or something
         # like that.
-        set(DEBUG_OPTIMIZATION_LEVEL -O2)
+        set(DEBUG_OPTIMIZATION_FLAGS -O2)
 endif()
 
 # Set the debug flags
 set(EXTERNAL_CMAKE_C_FLAGS_DEBUG
-  "${DEBUG_OPTIMIZATION_LEVEL} -Wno-attributes ${ARCH_FLAG} -Winit-self  ${PROFILING_FLAGS} ${C_REAL_COMPILER_FLAGS} -fno-inline ${ALTERNATE_LINKER} -DHAVE_PTHREAD=1"
+  "${DEBUG_OPTIMIZATION_FLAGS} -Wno-attributes ${ARCH_FLAG} -Winit-self  ${PROFILING_FLAGS} ${C_REAL_COMPILER_FLAGS} -fno-inline ${ALTERNATE_LINKER} -DHAVE_PTHREAD=1"
   CACHE STRING "compiler options" FORCE)
 set(CMAKE_C_FLAGS_DEBUG
   "${EXTERNAL_CMAKE_C_FLAGS_DEBUG} ${WERROR_FLAGS} -Wuninitialized "
   CACHE STRING "compiler options" FORCE)
 set(EXTERNAL_CMAKE_CXX_FLAGS_DEBUG
-  "${DEBUG_OPTIMIZATION_LEVEL} ${DISABLE_WARNING_FLAGS} -Wno-attributes ${ARCH_FLAG} -Winit-self ${PROFILING_FLAGS} ${CPP_REAL_COMPILER_FLAGS} ${INT128_FLAGS} ${ALTERNATE_LINKER} -fno-inline -DHAVE_PTHREAD=1"
+  "${DEBUG_OPTIMIZATION_FLAGS} ${DISABLE_WARNING_FLAGS} -Wno-attributes ${ARCH_FLAG} -Winit-self ${PROFILING_FLAGS} ${CPP_REAL_COMPILER_FLAGS} ${INT128_FLAGS} ${ALTERNATE_LINKER} -fno-inline -DHAVE_PTHREAD=1"
   CACHE STRING "compiler options" FORCE)
 set(CMAKE_CXX_FLAGS_DEBUG
   "${EXTERNAL_CMAKE_CXX_FLAGS_DEBUG} ${WERROR_FLAGS} -Wuninitialized"
   CACHE STRING "compiler options" FORCE)
 
 set(CMAKE_C_FLAGS_RELEASE
-  "${RELEASE_OPTIMIZATION_LEVEL} -Wno-attributes ${ARCH_FLAG} ${MTUNE} ${PROFILING_FLAGS} ${C_REAL_COMPILER_FLAGS} ${WERROR_FLAGS} -DNDEBUG ${ALTERNATE_LINKER} -DHAVE_PTHREAD=1 -DARMA_NO_DEBUG"
+  "${RELEASE_OPTIMIZATION_FLAGS} -Wno-attributes ${ARCH_FLAG} ${MTUNE} ${PROFILING_FLAGS} ${C_REAL_COMPILER_FLAGS} ${WERROR_FLAGS} -DNDEBUG ${ALTERNATE_LINKER} -DHAVE_PTHREAD=1 -DARMA_NO_DEBUG"
   CACHE STRING "compiler options" FORCE)
 set(CMAKE_CXX_FLAGS_RELEASE
-  "${RELEASE_OPTIMIZATION_LEVEL} ${EXTRA_OPTIMIZATION_FLAGS} ${DISABLE_WARNING_FLAGS} ${PROFILING_FLAGS} -Wno-attributes ${ARCH_FLAG} ${MTUNE} ${CPP_REAL_COMPILER_FLAGS} ${WERROR_FLAGS} ${INT128_FLAGS} ${ALTERNATE_LINKER} -DNDEBUG -DHAVE_PTHREAD=1 -DARMA_NO_DEBUG"
+  "${RELEASE_OPTIMIZATION_FLAGS} ${EXTRA_OPTIMIZATION_FLAGS} ${DISABLE_WARNING_FLAGS} ${PROFILING_FLAGS} -Wno-attributes ${ARCH_FLAG} ${MTUNE} ${CPP_REAL_COMPILER_FLAGS} ${WERROR_FLAGS} ${INT128_FLAGS} ${ALTERNATE_LINKER} -DNDEBUG -DHAVE_PTHREAD=1 -DARMA_NO_DEBUG"
   CACHE STRING "compiler options" FORCE)
 
 
@@ -406,6 +420,7 @@ set(CMAKE_CXX_FLAGS_RELEASE
 #*       Some C++ Implementation Oddities between libc++ and stdc++       */
 #*                                                                        */
 #**************************************************************************/
+set(CMAKE_REQUIRED_FLAGS ${CMAKE_CXX_FLAGS_DEBUG})
 check_cxx_source_compiles("#include <ios>
                            #include <system_error>
                            int main(int argc, char** argv) {
@@ -418,6 +433,24 @@ if(COMPILER_HAS_IOS_BASE_FAILURE_WITH_ERROR_CODE)
 else()
   message(STATUS "Compiler does not support ios_base::failure(str, error_code)")
 endif()
+
+check_cxx_source_compiles("#include <ios>
+                           #include <system_error>
+                                                    
+                           class io_error : public std::ios_base::failure {
+                             public:   /* The noexcept here is different between C++ 17 and C++ 11. */
+                              const char *what() const noexcept { return \"\"; } 
+                           };
+                           int main(int argc, char** argv) { return 0; }" 
+                          COMPILER_HAS_NOEXCEPT_WHAT_ON_EXCEPTIONS)
+
+if(COMPILER_HAS_NOEXCEPT_WHAT_ON_EXCEPTIONS)
+  message(STATUS "Compiler supports noexcept on what() with ios_base::failure.")
+  add_definitions(-DCOMPILER_HAS_NOEXCEPT_WHAT_ON_EXCEPTIONS)
+else()
+  message(STATUS "Compiler uses throw() on what() with ios_base::failure.")
+endif()
+
 
 #**************************************************************************/
 #*                                                                        */

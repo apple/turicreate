@@ -144,7 +144,9 @@ std::vector<flexible_type> translate_row_to_original(
     if(metadata->column_mode(c_idx) == ml_column_mode::UNTRANSLATED) {
       ret[c_idx] = flexible_type(flex_type_enum::UNDEFINED);
     } else if(metadata->column_mode(c_idx) == ml_column_mode::NUMERIC_VECTOR) {
-      ret[c_idx] = flex_vec(metadata->column_size(c_idx), 0);
+      ret[c_idx] = flex_vec(metadata->column_size(c_idx), 0.0);
+    } else if(metadata->column_mode(c_idx) == ml_column_mode::NUMERIC_ND_VECTOR) {
+      ret[c_idx] = flex_nd_vec(metadata->nd_column_shape(c_idx), 0.0);
     } else {
       ret[c_idx] = flexible_type(metadata->column_type(c_idx));
     }
@@ -183,7 +185,7 @@ std::vector<flexible_type> translate_row_to_original(
       }
       case ml_column_mode::NUMERIC_VECTOR: {
 
-        flex_vec vv = ret[c_idx];
+        flex_vec& vv = ret[c_idx].mutable_get<flex_vec>();
 
         DASSERT_EQ(vv.size(), metadata->column_size(c_idx));
         DASSERT_LT(v.index, vv.size());
@@ -193,7 +195,6 @@ std::vector<flexible_type> translate_row_to_original(
           vv[v.index] = v.value;
 
         vv[v.index] = v.value;
-        ret[c_idx] = vv;
         break;
       }
 
@@ -208,6 +209,23 @@ std::vector<flexible_type> translate_row_to_original(
 
       case ml_column_mode::UNTRANSLATED: {
         ret[c_idx] = flexible_type(flex_type_enum::UNDEFINED);
+        break;
+      }
+
+      case ml_column_mode::NUMERIC_ND_VECTOR: {
+
+        flex_nd_vec& vv = ret[c_idx].mutable_get<flex_nd_vec>();
+
+        DASSERT_TRUE(vv.is_canonical());
+        DASSERT_EQ(vv.num_elem(), metadata->column_size(c_idx));
+        DASSERT_LT(v.index, vv.num_elem());
+
+        // Should always be true, but don't want to crash.
+        if(v.index < vv.num_elem()) {
+          vv[v.index] = v.value;
+        }
+
+        vv[v.index] = v.value;
         break;
       }
     }

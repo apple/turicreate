@@ -11,6 +11,7 @@
 #include "vega_spec.hpp"
 
 #include <parallel/lambda_omp.hpp>
+#include <unity/lib/visualization/batch_size.hpp>
 #include <unity/lib/visualization/transformation.hpp>
 
 #include <cmath>
@@ -35,9 +36,9 @@ static inline gl_sarray validate_dtype(const gl_sarray& input) {
 std::shared_ptr<Plot> turi::visualization::plot_heatmap(
                                        const gl_sarray& x,
                                        const gl_sarray& y,
-                                       const std::string& xlabel,
-                                       const std::string& ylabel,
-                                       const std::string& title) {
+                                       const flexible_type& xlabel,
+                                       const flexible_type& ylabel,
+                                       const flexible_type& title) {
   validate_dtype(x);
   validate_dtype(y);
 
@@ -54,7 +55,7 @@ std::shared_ptr<Plot> turi::visualization::plot_heatmap(
   temp_sf[x_name] = x;
   temp_sf[y_name] = y;
 
-  hm.init(temp_sf);
+  hm.init(temp_sf, batch_size(x, y));
 
   std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<heatmap>(hm);
   return std::make_shared<Plot>(heatmap_specification, shared_unity_transformer, size_array);
@@ -70,9 +71,9 @@ void heatmap_result::init(double xMin, double xMax, double yMin, double yMax) {
   extrema.y.update(yMax);
 }
 
-void heatmap::init(const gl_sframe& source) {
+void heatmap::init(const gl_sframe& source, size_t batch_size) {
   // initialize parent class
-  groupby<heatmap_result>::init(source);
+  groupby<heatmap_result>::init(source, batch_size);
 
   // initialize heatmap_result
   const auto& head = source.head(10000); // infer min/max from first 10k rows

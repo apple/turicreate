@@ -8,10 +8,10 @@
 
 #include <vector>
 #include <string>
+#include <unity/lib/extensions/option_manager.hpp>
 #include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
 #include <unity/toolkits/recsys/recsys_model_base.hpp>
 #include <generics/symmetric_2d_array.hpp>
-#include <unity/toolkits/options/option_manager.hpp> 
 
 #include <numerics/armadillo.hpp>
 #include <limits>
@@ -218,8 +218,7 @@ public:
     return sframe();
   }
 
-  virtual void export_to_coreml(std::shared_ptr<recsys_model_base> recsys_model,
-                                const std::string& filename) override;
+  virtual void export_to_coreml(const std::string& filename) override;
   
  private:
   
@@ -230,13 +229,9 @@ public:
   std::shared_ptr<sparse_similarity_lookup> create_similarity_lookup() const;
  
  public: 
-  // TODO: convert interface above to use the extensions methods here
+  
   BEGIN_CLASS_MEMBER_REGISTRATION("item_similarity")
-  REGISTER_CLASS_MEMBER_FUNCTION(recsys_itemcf::list_fields)
-  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
-      "get_value", recsys_itemcf::get_value_from_state, "field");
-  REGISTER_CLASS_MEMBER_FUNCTION(recsys_itemcf::recommend_extension_wrapper, 
-    "reference_data", "new_observation_data", "top_k")
+  IMPORT_BASE_CLASS_REGISTRATION(recsys_model_base)
   END_CLASS_MEMBER_REGISTRATION
 }; 
 

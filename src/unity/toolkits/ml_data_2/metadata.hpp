@@ -331,7 +331,36 @@ class EXPORT ml_metadata {
   /** Returns the current options.
    */
   inline const std::map<std::string, flexible_type>& get_current_options() const;
-  
+
+  /**
+   * Returns the feature name of a specific feature present in the metadata.
+   *
+   * Numeric columns are represented by the column name.
+   *
+   * Categorical / Categorical List / Dictionary columns are represented by
+   * "name[category]".
+   *
+   * Vectors are represented by "vector[index]", where index is numerical.
+   *
+   * \returns Names of features
+   */
+  std::string feature_name(size_t column_idx, size_t index) const;
+
+  /**
+   * Returns a list of all the feature names present in the metadata.
+   *
+   * Numeric columns are represented by the column name.
+   *
+   * Categorical / Categorical List / Dictionary columns are represented by
+   * "name[category]".
+   *
+   * Vectors are represented by "vector[index]", where index is numerical.
+   *
+   * \returns Names of features
+   */
+  std::vector<std::string> feature_names(bool unpack_categorical_columns = true) const;
+
+
   /** Serialization version.
    */
   size_t get_version() const { return 2; }

@@ -7,11 +7,6 @@ endif()
 
 if(${TC_BUILD_VISUALIZATION_CLIENT})
 
-  find_program(NPM npm)
-  if(NOT NPM)
-    message(FATAL_ERROR "npm not found. Node.js 6.x or later with npm is required to build Turi Create.")
-  endif()
-
   if(APPLE)
     if (${CMAKE_BUILD_TYPE} MATCHES "RELEASE")
       set(XCODE_BUILD_TYPE "Release")
@@ -140,20 +135,6 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
     )
 
     add_dependencies(visualization_client cef)
-
-    add_custom_command(
-            TARGET visualization_client PRE_LINK
-
-            COMMAND npm install
-
-            COMMAND npm run build
-
-            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface"
-
-            COMMENT "Building NPM Package for Turi Create Visualization"
-
-            VERBATIM
-    )
 
     add_custom_command(
             TARGET visualization_client POST_BUILD

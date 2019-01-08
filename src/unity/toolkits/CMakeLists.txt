@@ -11,15 +11,17 @@ subdirs(ml_model
         ml_data_2
         recsys
         util 
-        options
         evaluation
         supervised_learning
         nearest_neighbors
         pattern_mining
         feature_engineering
         text
-        tcmps
-        image)
+        image
+        neural_net
+        object_detection
+        prototype
+)
 
 
 make_empty_library(unity_toolkits
@@ -37,6 +39,6 @@ make_empty_library(unity_toolkits
     unity_coreml_model_export
     unity_image_export
     unity_activity_classification
+    unity_object_detection
+    unity_prototype
     )
-
-add_dependencies(unity_toolkits tcmps)

@@ -8,6 +8,8 @@ from tempfile import mkstemp as _mkstemp
 from subprocess import Popen as _Popen
 from subprocess import PIPE as _PIPE
 
+LABEL_DEFAULT = "__TURI_DEFAULT_LABEL"
+
 _target = 'auto'
 
 _SUCCESS = 0
@@ -239,15 +241,15 @@ class Plot(object):
 
     def _get_vega(self, include_data=True):
         if(include_data):
-            spec = _json.loads(self.__proxy__.call_function('get_spec'))["vega_spec"]
-            data = _json.loads(self.__proxy__.call_function('get_data'))["data_spec"]
+            spec = _json.loads(self.__proxy__.call_function('get_spec'))
+            data = _json.loads(self.__proxy__.call_function('get_data'))
             for x in range(len(spec["data"])):
                 if(spec["data"][x]["name"] == "source_2"):
                     spec["data"][x] = data
                     break
             return spec
         else:
-            return _json.loads(self.__proxy__.call_function('get_spec'))["vega_spec"]
+            return _json.loads(self.__proxy__.call_function('get_spec'))
 
     def _repr_javascript_(self):
         from IPython.core.display import display, HTML

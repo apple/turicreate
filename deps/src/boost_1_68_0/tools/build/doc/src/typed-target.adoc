@@ -1,0 +1,54 @@
+[[bbv2.reference.class.typed-target]]
+= Class typed-target
+
+[source,jam]
+----
+class typed-target : basic-target {
+    rule __init__ ( name : project : type : sources * : requirements * : default-build * : usage-requirements * ) 
+    rule type ( )
+    rule construct ( name : source-targets * : property-set )
+
+    # Methods inherited from abstract-target
+    rule name ( )
+    rule project ( )
+    rule location ( )
+    rule full-name ( )
+    
+    # Methods inherited from basic-target
+    rule generate ( property-set )
+  }
+----
+
+link:#bbv2.reference.class.typed-target[typed-target] is the most common
+kind of target alternative. Rules for creating typed targets are defined
+automatically for each type.
+
+--
+1. `rule __init__ ( name : project : type : sources * : requirements * : default-build * : usage-requirements * )`
++
+`name`::
+  The name of the target
+`project`::
+  The link:#bbv2.reference.class.project-target[project] in which the
+  target is declared.
+`type`::
+  The link:#bbv2.reference.modules.type[type] of the target.
+
+2. `rule type ( )`
++
+Returns the link:#bbv2.reference.modules.type[type] of the target.
+
+3. `rule construct ( name : source-targets * : property-set )`
++
+Implements
+link:#bbv2.reference.class.basic-target.construct[basic-target.construct].
+Attempts to create a target of the correct type using generators
+appropriate for the given
+link:#bbv2.reference.class.property-set[property-set]. Returns a
+link:#bbv2.reference.class.property-set[property-set] containing the
+usage requirements and a list of virtual targets.
++
+NOTE: This function is invoked automatically by
+link:#bbv2.reference.class.basic-target.generate[basic-target.generate]
+and should not be called directly by users.
+--

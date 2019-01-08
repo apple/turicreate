@@ -1,6 +1,4 @@
-import React, { Component } from 'react';
-import vegaEmbed from 'vega-embed';
-import {vega as vegaTooltip} from'vega-tooltip';
+import React from 'react';
 import TcPlot from "../Chart";
 
 class TcSummary extends TcPlot {

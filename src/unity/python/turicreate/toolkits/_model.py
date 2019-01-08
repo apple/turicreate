@@ -15,6 +15,7 @@ from __future__ import absolute_import as _
 import turicreate as _tc
 import turicreate.connect.main as glconnect
 from turicreate.data_structures.sframe import SFrame as _SFrame
+import turicreate.extensions as _extensions
 from turicreate.extensions import _wrap_function_return
 from turicreate.toolkits._internal_utils import _toolkit_serialize_summary_struct
 from turicreate.util import _make_internal_url
@@ -79,16 +80,24 @@ def load_model(location):
                            "This model looks to have been saved with a future version of Turi Create.\n"
                            "Please upgrade Turi Create before attempting to load this model file.")
     elif archive_version == 1:
-        cls = MODEL_NAME_MAP[saved_state['model_name']]
-        if 'model' in saved_state:
-            # this is a native model
-            return cls(saved_state['model'])
+        name = saved_state['model_name'];
+        if name in MODEL_NAME_MAP: 
+            cls = MODEL_NAME_MAP[name]
+
+            if 'model' in saved_state:
+                # this is a native model
+                return cls(saved_state['model'])
+            else:
+                # this is a CustomModel
+                model_data = saved_state['side_data']
+                model_version = model_data['model_version']
+                del model_data['model_version']
+                return cls._load_version(model_data, model_version)
+
+        elif hasattr(_extensions, name):
+            return saved_state["model"]
         else:
-            # this is a CustomModel
-            model_data = saved_state['side_data']
-            model_version = model_data['model_version']
-            del model_data['model_version']
-            return cls._load_version(model_data, model_version)
+            raise ToolkitError("Unable to load model of name '%s'; model name not registered." % name)
     else:
         # very legacy model format. Attempt pickle loading
         import sys
@@ -463,6 +472,7 @@ class Model(ExposeAttributesFromProxy):
         elif output == 'dict':
             return _toolkit_serialize_summary_struct( self, \
                                             *self._get_summary_struct() )
+
         try:
             print(self.__repr__())
         except:

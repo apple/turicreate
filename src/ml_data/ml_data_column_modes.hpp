@@ -30,13 +30,14 @@ enum class ml_missing_value_action : int {IMPUTE, ERROR, USE_NAN};
  *  how it is translated and what functionality it works with.
  */
 enum class ml_column_mode : int {
-    NUMERIC,
-    CATEGORICAL,
-    NUMERIC_VECTOR,
-    CATEGORICAL_VECTOR,
-    DICTIONARY,
-    UNTRANSLATED,
-    CATEGORICAL_SORTED};
+    NUMERIC = 0,
+    CATEGORICAL = 1,
+    NUMERIC_VECTOR = 2,
+    CATEGORICAL_VECTOR = 3,
+    DICTIONARY = 4,
+    UNTRANSLATED = 5,
+    CATEGORICAL_SORTED = 6,
+    NUMERIC_ND_VECTOR = 7};
 
 
 /** Returns true if the underlying type is treated as a categorical
@@ -53,6 +54,7 @@ static inline bool mode_is_categorical(ml_column_mode mode) {
     case ml_column_mode::DICTIONARY:         return false;
     case ml_column_mode::UNTRANSLATED:       return false;
     case ml_column_mode::CATEGORICAL_SORTED: return true;
+    case ml_column_mode::NUMERIC_ND_VECTOR:  return false;
   }
   return false;
 }
@@ -71,6 +73,7 @@ static inline bool mode_has_fixed_size(ml_column_mode mode) {
     case ml_column_mode::DICTIONARY:         return false;
     case ml_column_mode::UNTRANSLATED:       return true;
     case ml_column_mode::CATEGORICAL_SORTED: return true;
+    case ml_column_mode::NUMERIC_ND_VECTOR:  return true;
     default: ASSERT_TRUE(false);             return false;
   }
 }
@@ -91,6 +94,7 @@ static inline bool mode_is_indexed(ml_column_mode mode) {
     case ml_column_mode::DICTIONARY:         return true;
     case ml_column_mode::UNTRANSLATED:       return false;
     case ml_column_mode::CATEGORICAL_SORTED: return true;
+    case ml_column_mode::NUMERIC_ND_VECTOR:  return false;
   }
   return false;
 }

@@ -13,7 +13,8 @@
 #include <unity/lib/toolkit_class_macros.hpp>
 
 #include <unity/lib/extensions/model_base.hpp>
-#include <unity/toolkits/options/option_manager.hpp>
+#include <unity/lib/extensions/option_manager.hpp>
+
 #include <export.hpp>
 
 namespace turi {
@@ -70,30 +71,13 @@ class EXPORT ml_model_base: public model_base {
   inline virtual ~ml_model_base() { }
 
   /**
-   * Returns the current model version
-   */
-  virtual size_t get_version() const = 0;
-
-  /**
-   * Serializes the model. Must save the model to the file format version
-   * matching that of get_version()
-   */
-  virtual void save_impl(oarchive& oarc) const = 0;
-
-  /**
-   * Loads a model previously saved at a particular version number.
-   * Should raise an exception on failure.
-   */
-  virtual void load_version(iarchive& iarc, size_t version) = 0;
-
-  /**
    * Set one of the options in the algorithm. Use the option manager to set
    * these options. If the option does not satisfy the conditions that the
    * option manager has imposed on it. Errors will be thrown.
    *
    * \param[in] options Options to set
    */
-  virtual void init_options(const std::map<std::string,flexible_type>& _options) = 0;
+  virtual void init_options(const std::map<std::string,flexible_type>& _options) {};
 
 
   /**
@@ -129,7 +113,7 @@ class EXPORT ml_model_base: public model_base {
    * [] operator in python.
    *
    */
-  variant_type get_value_from_state(std::string key);
+  const variant_type& get_value_from_state(std::string key);
 
 
   /**
@@ -167,7 +151,7 @@ class EXPORT ml_model_base: public model_base {
    *
    * \returns Model map.
    */
-  std::map<std::string, variant_type> get_state() const;
+  const std::map<std::string, variant_type>& get_state() const;
 
   /**
    * Is this model trained.
@@ -198,6 +182,23 @@ class EXPORT ml_model_base: public model_base {
    *  parameters.
    */
   const std::vector<option_handling::option_info>& get_option_info() const;
+
+  // Code to perform the registration for the rest of the tools. 
+  BEGIN_BASE_CLASS_MEMBER_REGISTRATION()
+
+  IMPORT_BASE_CLASS_REGISTRATION(model_base);
+
+  REGISTER_CLASS_MEMBER_FUNCTION(ml_model_base::list_fields);
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_value",
+                                       ml_model_base::get_value_from_state,
+                                       "field");
+  REGISTER_CLASS_MEMBER_FUNCTION(ml_model_base::get_option_value);
+  REGISTER_CLASS_MEMBER_FUNCTION(ml_model_base::is_trained);
+  REGISTER_CLASS_MEMBER_FUNCTION(ml_model_base::get_default_options);
+  REGISTER_CLASS_MEMBER_FUNCTION(ml_model_base::get_state);
+  REGISTER_CLASS_MEMBER_FUNCTION(ml_model_base::set_options);
+
+  END_CLASS_MEMBER_REGISTRATION
 
  protected:
 

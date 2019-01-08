@@ -7,7 +7,7 @@
 #define TURI_UNITY_ITEM_SIMILARITY_LOOKUP_H_
 
 #include <flexible_type/flexible_type.hpp>
-#include <unity/toolkits/options/option_manager.hpp>
+#include <unity/lib/extensions/option_manager.hpp>
 
 namespace turi {
 

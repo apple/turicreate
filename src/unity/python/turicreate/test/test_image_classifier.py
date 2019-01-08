@@ -6,71 +6,68 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
+
 import os
+import platform
 import sys
+import tempfile
 import unittest
-import turicreate as tc
+
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._internal_utils import (_mac_ver,
                                                  _raise_error_if_not_sframe,
                                                  _raise_error_if_not_sarray)
-import tempfile
+
 from . import util as test_util
-import pytest
+
 import coremltools
-import platform
+import numpy as np
+import pytest
+import turicreate as tc
 
-def _get_data(num_examples = 100, label_type = int):
-    from PIL import Image as _PIL_Image
-    import numpy as np
 
-    assert(label_type in [str, int])
+def get_test_data():
+    '''
+    Create 5 all white images and 5 all black images. Then add some noise to
+    each image.
+    '''
+    from PIL import Image
+    DIM = 224
 
-    rs = np.random.RandomState(1234)
-    _format = {'JPG': 0, 'PNG': 1, 'RAW': 2, 'UNDEFINED': 3}
+    # Five all white images
+    data = []
+    for _ in range(5):
+        data.append( np.full((DIM, DIM, 3), 255, dtype=np.uint8) )
+    
+    # Five all black images
+    for _ in range(5):
+        data.append( np.full((DIM, DIM, 3), 0, dtype=np.uint8) )
 
-    def from_pil_image(pil_img):
-        height = pil_img.size[1]
-        width = pil_img.size[0]
-        if pil_img.mode == 'L':
-            image_data = bytearray([z for z in pil_img.getdata()])
-            channels = 1
-        elif pil_img.mode == 'RGB':
-            image_data = bytearray([z for l in pil_img.getdata() for z in l ])
-            channels = 3
-        else:
-            image_data = bytearray([z for l in pil_img.getdata() for z in l])
-            channels = 4
-        format_enum = _format['RAW']
-        image_data_size = len(image_data)
-        img = tc.Image(_image_data=image_data,
-                _width=width, _height=height,
-                _channels=channels,
-                _format_enum=format_enum,
-                _image_data_size=image_data_size)
-        return img
+    # Add some random noise to each images
+    random = np.random.RandomState(100)
+    for cur_image in data:
+        for _ in range(1000):
+            x, y = random.randint(DIM), random.randint(DIM)
+            rand_pixel_value = (random.randint(255), random.randint(255), random.randint(255))
+            cur_image[x][y] = rand_pixel_value
 
+    # Convert to an array of tc.Images
     images = []
-    if label_type == int:
-        random_labels = [rs.randint(0,5) for _ in range(num_examples)]
-    else:
-        random_labels = [rs.choice(['a', 'b', 'c', 'd', 'e']) for _ in range(num_examples)]
-    for i in range(num_examples):
-        img_shape = tuple(rs.randint(100, 1000, size=2)) + (3,)
-        img = rs.randint(255, size=img_shape)
+    for cur_data in data:
+        pil_image = Image.fromarray(cur_data)
+        image_data = bytearray([z for l in pil_image.getdata() for z in l ])
+        image_data_size = len(image_data)
+        tc_image = tc.Image(_image_data = image_data,
+                             _width = DIM, _height = DIM,
+                             _channels = 3, _format_enum = 2,
+                             _image_data_size = image_data_size)
+        images.append(tc_image)
 
-        # Give a slight color hint about the label
-        if label_type == int:
-            label = int(random_labels[i])
-        else:
-            label = ord(random_labels[i]) - ord('a')
+    labels = ['white'] * 5 + ['black'] * 5
+    return tc.SFrame({'awesome_image': images, 'awesome_label': labels})
 
-        img = (img + [label * 3, 0, -label * 3]).clip(0, 255)
-        pil_img = _PIL_Image.fromarray(img, mode='RGB')
-        images.append(from_pil_image(pil_img))
-    data = tc.SFrame({'awesome_image': tc.SArray(images)})
-    data['awesome_label'] = random_labels
-    return data
+
+data = get_test_data()
 
 
 class ImageClassifierTest(unittest.TestCase):
@@ -83,8 +80,7 @@ class ImageClassifierTest(unittest.TestCase):
         self.pre_trained_model = model
         self.tolerance = tol
 
-        self.sf = _get_data(num_examples = num_examples, label_type = label_type)
-        self.model = tc.image_classifier.create(self.sf, target=self.target,
+        self.model = tc.image_classifier.create(data, target=self.target,
                                                 model=self.pre_trained_model,
                                                 seed=42)
         self.nn_model = self.model.feature_extractor
@@ -116,41 +112,44 @@ class ImageClassifierTest(unittest.TestCase):
 
     def test_create_with_missing_feature(self):
         with self.assertRaises(_ToolkitError):
-            tc.image_classifier.create(self.sf, feature='wrong_feature', target=self.target)
+            tc.image_classifier.create(data, feature='wrong_feature', target=self.target)
 
     def test_create_with_missing_label(self):
         with self.assertRaises(RuntimeError):
-            tc.image_classifier.create(self.sf, feature=self.feature, target='wrong_annotations')
+            tc.image_classifier.create(data, feature=self.feature, target='wrong_annotations')
 
     def test_create_with_empty_dataset(self):
         with self.assertRaises(_ToolkitError):
-            tc.image_classifier.create(self.sf[:0], target = self.target)
+            tc.image_classifier.create(data[:0], target = self.target)
 
     def test_predict(self):
         model = self.model
         for output_type in ['class', 'probability_vector']:
-            preds = model.predict(self.sf.head(), output_type=output_type)
+            preds = model.predict(data.head(), output_type=output_type)
             _raise_error_if_not_sarray(preds)
-            self.assertEqual(len(preds), len(self.sf.head()))
+            self.assertEqual(len(preds), len(data.head()))
+            if output_type == 'class':
+                self.assertTrue(all(preds[:5] == 'white'))
+                self.assertTrue(all(preds[5:] == 'black'))
 
     def test_single_image(self):
         model = self.model
-        single_image = self.sf[0][self.feature]
+        single_image = data[0][self.feature]
         prediction = model.predict(single_image)
         self.assertTrue(isinstance(prediction, (int, str)))
-        prediction = model.predict_topk(single_image)
+        prediction = model.predict_topk(single_image, k = 2)
         _raise_error_if_not_sframe(prediction)
         prediction = model.classify(single_image)
         self.assertTrue(isinstance(prediction, dict) and 'class' in prediction and 'probability' in prediction)
 
     def test_sarray(self):
         model = self.model
-        data = self.sf[self.feature]
-        predictions = model.predict(data)
+        sa = data[self.feature]
+        predictions = model.predict(sa)
         _raise_error_if_not_sarray(predictions)
-        predictions = model.predict_topk(data)
+        predictions = model.predict_topk(sa, k = 2)
         _raise_error_if_not_sframe(predictions)
-        predictions = model.classify(data)
+        predictions = model.classify(sa)
         _raise_error_if_not_sframe(predictions)
 
     def test_junk_input(self):
@@ -173,7 +172,7 @@ class ImageClassifierTest(unittest.TestCase):
         self.model.export_coreml(filename)
 
         coreml_model = coremltools.models.MLModel(filename)
-        img = self.sf[0:1][self.feature][0]
+        img = data[0:1][self.feature][0]
         img_fixed = tc.image_analysis.resize(img, *reversed(self.input_image_shape))
         from PIL import Image
         pil_img = Image.fromarray(img_fixed.pixel_data)
@@ -191,17 +190,14 @@ class ImageClassifierTest(unittest.TestCase):
 
     def test_classify(self):
         model = self.model
-        preds = model.classify(self.sf.head())
-        self.assertEqual(len(preds), len(self.sf.head()))
+        preds = model.classify(data.head())
+        self.assertEqual(len(preds), len(data.head()))
 
     def test_predict_topk(self):
         model = self.model
         for output_type in ['margin', 'probability', 'rank']:
-            preds = model.predict_topk(self.sf.head(), output_type = output_type)
-            self.assertEqual(len(preds), 3 * len(self.sf.head()))
-
-            preds = model.predict_topk(self.sf.head(), k = 5, output_type = output_type)
-            self.assertEqual(len(preds), 5 * len(self.sf.head()))
+            preds = model.predict_topk(data.head(), output_type = output_type, k = 2)
+            self.assertEqual(len(preds), 2 * len(data.head()))
 
     def test_list_fields(self):
         model = self.model
@@ -261,40 +257,3 @@ class VisionFeaturePrintScreenTest(ImageClassifierTest):
                                                               input_image_shape=(3, 299, 299),
                                                               tol=0.005, num_examples = 100,
                                                               label_type = str)
-
-
-@unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')
-@pytest.mark.gpu
-class ImageClassifierGPUTest(unittest.TestCase):
-    @classmethod
-    def setUpClass(self, model='resnet-50', tol=0.005):
-        self.feature = 'awesome_image'
-        self.target = 'awesome_label'
-        self.input_image_shape = (3, 224, 224)
-        self.pre_trained_model = model
-        self.tolerance = tol
-        self.sf = _get_data()
-
-    def test_gpu_save_load_export(self):
-        old_num_gpus = tc.config.get_num_gpus()
-        gpu_options = set([old_num_gpus, 0, 1])
-        for in_gpus in gpu_options:
-            for out_gpus in gpu_options:
-                tc.config.set_num_gpus(in_gpus)
-                model = tc.image_classifier.create(self.sf, target=self.target,
-                                                   model=self.pre_trained_model)
-                with test_util.TempDirectory() as path:
-                    model.save(path)
-                    tc.config.set_num_gpus(out_gpus)
-                    model = tc.load_model(path)
-                    model.export_coreml(os.path.join(path, 'model.mlmodel'))
-
-        tc.config.set_num_gpus(old_num_gpus)
-
-
-@unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')
-@pytest.mark.gpu
-class ImageClassifierSqueezeNetGPUTest(unittest.TestCase):
-    @classmethod
-    def setUpClass(self):
-        super(ImageClassifierSqueezeNetGPUTest, self).setUpClass(model='squeezenet_v1.1')

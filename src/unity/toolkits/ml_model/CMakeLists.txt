@@ -5,6 +5,5 @@ make_library(unity_ml_model
   python_model.cpp
   REQUIRES
     unity_core
-    unity_options
     optimization
   )

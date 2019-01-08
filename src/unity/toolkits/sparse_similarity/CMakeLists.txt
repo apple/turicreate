@@ -5,4 +5,6 @@ make_library(unity_sparse_similarity
     sparse_similarity_lookup.cpp
     sliced_itemitem_matrix.cpp
   REQUIRES
-    sframe unity_options unity_core)
+    sframe
+    unity_core
+)

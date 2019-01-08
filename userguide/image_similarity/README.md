@@ -77,7 +77,7 @@ reference_data[9]['image'].show()
 ```
 ![Similar images](images/sample_image.jpg)
 Note: the loading order of images is non-deterministic, so your 10th image
-is likely something differnt but this isn't important for demonstration purposes.
+is likely something different but this isn't important for demonstration purposes.
 
 The 10 most "similar" looking images are
 ```python
@@ -123,7 +123,7 @@ similar_images = similarity_graph.edges
 
 Once you have created a model, you can save it and load it back later for use.
 
-```
+```python
 model.save('./myModel.model')
 loaded_model = turicreate.load_model('./myModel.model')
 ```

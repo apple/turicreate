@@ -159,6 +159,20 @@ class ml_metadata {
    */
   inline size_t column_size(size_t column_index) const;
 
+  /** If the type of the column is an ND vector, returns the shape of the nd_vector
+   *  held by that coulmn.
+   *
+   *  \param column_index The index of the column.
+   */
+  inline const flex_nd_vec::index_range_type& nd_column_shape(size_t column_index) const;
+
+  /** If the type of the column is an ND vector, returns the shape of the nd_vector
+   *  held by that coulmn.
+   *
+   *  \param column_index The index of the column.
+   */
+  inline const flex_nd_vec::index_range_type& nd_column_shape(const std::string& column_name) const;
+
   /** Returns the current index size of the columns in the metadata.
    */
   inline size_t target_column_size() const;
@@ -183,7 +197,6 @@ class ml_metadata {
    *  \param column_name The name of the column.
    */
   inline size_t index_size(const std::string& column_name) const;
-
 
   /** Returns the global index offset of the columns in the metadata
    *  that were present at train time.  This is fixed at setup time;
@@ -308,6 +321,38 @@ class ml_metadata {
   /** Serialization version.
    */
   size_t get_version() const { return 3; }
+
+  /**
+   * Returns the feature name of a specific feature present in the metadata.
+   *
+   * Numeric columns are represented by the column name.
+   *
+   * Categorical / Categorical List / Dictionary columns are represented by
+   * "name[category]".
+   *
+   * Vectors are represented by "vector[index]", where index is numerical.
+   *
+   * ND vectors are represented by "nd_vector[idx1,idx2]" etc.
+   *
+   * \returns Names of features
+   */
+  std::string feature_name(size_t column_idx, size_t index, bool quote_string_values = false) const;
+
+  /**
+   * Returns a list of all the feature names present in the metadata.
+   *
+   * Numeric columns are represented by the column name.
+   *
+   * Categorical / Categorical List / Dictionary columns are represented by
+   * "name[category]".
+   *
+   * Vectors are represented by "vector[index]", where index is numerical.
+   *
+   * ND vectors are represented by "nd_vector[idx1,idx2]" etc.
+   *
+   * \returns Names of features
+   */
+  std::vector<std::string> feature_names(bool unpack_categorical_columns = true) const;
 
   /** Serialization -- save.
    */

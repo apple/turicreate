@@ -73,7 +73,7 @@ endif()
 
 ExternalProject_Add(ex_boost
   PREFIX ${CMAKE_SOURCE_DIR}/deps/build/boost
-  URL "${CMAKE_SOURCE_DIR}/deps/src/boost_1_65_1/"
+  URL "${CMAKE_SOURCE_DIR}/deps/src/boost_1_68_0/"
   BUILD_IN_SOURCE 1
   INSTALL_DIR ${CMAKE_SOURCE_DIR}/deps/local
   PATCH_COMMAND ${PATCHCMD}

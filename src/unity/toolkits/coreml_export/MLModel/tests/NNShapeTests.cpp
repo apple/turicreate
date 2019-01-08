@@ -1,15 +1,12 @@
-//
-//  NNShapeTests.cpp
-//  mlmodel
-//
-//  Created by William March on 12/8/17.
-//  Copyright © 2017 Apple Inc. All rights reserved.
-//
-
+/* Copyright © 2017 Apple Inc. All rights reserved.
+ *
+ * Use of this source code is governed by a BSD-3-clause license that can
+ * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ */
 #include "MLModelTests.hpp"
 #include "../src/Format.hpp"
 #include "../src/Model.hpp"
-#include "LayerShapeConstraints.hpp"
+#include "../src/LayerShapeConstraints.hpp"
 
 #include "framework/TestUtils.hpp"
 

@@ -1828,12 +1828,12 @@ class gl_sarray {
   /**
    * Show a visualization of the SArray.
    */
-  void show(const std::string& path_to_client, const std::string& title, const std::string& xlabel, const std::string& ylabel) const;
+  void show(const std::string& path_to_client, const flexible_type& title, const flexible_type& xlabel, const flexible_type& ylabel) const;
 
   /**
    * Return a visualization of the SArray.
    */
-  std::shared_ptr<model_base> plot(const std::string& title, const std::string& xlabel, const std::string& ylabel) const;
+  std::shared_ptr<visualization::Plot> plot(const flexible_type& title, const flexible_type& xlabel, const flexible_type& ylabel) const;
 
   /**
    * \internal

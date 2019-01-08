@@ -15,11 +15,10 @@
 
 #include <unity/lib/extensions/ml_model.hpp>
 
-#if(TC_BUILD_VISUALIZATION_CLIENT)
 #include <unity/lib/visualization/show.hpp>
-#endif 
 
 #include <unity/toolkits/activity_classification/class_registrations.hpp>
+#include <unity/toolkits/object_detection/class_registrations.hpp>
 
 #include <unity/toolkits/evaluation/metrics.hpp>
 #include <unity/toolkits/evaluation/unity_evaluation.hpp>
@@ -32,7 +31,7 @@
 #include <unity/toolkits/nearest_neighbors/distances.hpp>
 #include <unity/toolkits/nearest_neighbors/unity_nearest_neighbors.hpp>
 #include <unity/toolkits/text/unity_text.hpp>
-#include <unity/toolkits/recsys/unity_recsys.hpp>
+#include <unity/toolkits/recsys/recsys_model_base.hpp>
 #include <unity/toolkits/clustering/unity_kmeans.hpp>
 
 #include <unity/toolkits/nearest_neighbors/class_registrations.hpp>
@@ -44,6 +43,7 @@
 #include <unity/toolkits/pattern_mining/class_registrations.hpp>
 #include <unity/toolkits/clustering/class_registrations.hpp>
 #include <unity/toolkits/util/class_registrations.hpp>
+#include <unity/toolkits/prototype/class_registrations.hpp>
 
 #include <toolkits/image_deep_feature_extractor/class_registrations.hpp>
 
@@ -57,9 +57,7 @@ void register_functions(toolkit_function_registry& registry) {
   registry.register_toolkit_function(turi::sdk_model::activity_classification::get_toolkit_function_registration());
 
   registry.register_toolkit_function(image_util::get_toolkit_function_registration());
-#if(TC_BUILD_VISUALIZATION_CLIENT)
   registry.register_toolkit_function(visualization::get_toolkit_function_registration());
-#endif
 
   // Register proprietary toolkits
   registry.register_toolkit_function(turi::kmeans::get_toolkit_function_registration(), "_kmeans");
@@ -131,6 +129,12 @@ void register_models(toolkit_class_registry& registry) {
   // Image Deep Feature Extractor
   registry.register_toolkit_class(turi::image_deep_feature_extractor::get_toolkit_class_registration());
 #endif
+
+  // Object Detection
+  registry.register_toolkit_class(turi::object_detection::get_toolkit_class_registration());
+  
+  // Various prototypes
+  registry.register_toolkit_class(turi::prototype::get_toolkit_class_registration());
 
 }
 

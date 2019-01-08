@@ -6,6 +6,8 @@ add_subdirectory(synthetic_timings)
 add_subdirectory(recsys)
 add_subdirectory(sparse_similarity)
 add_subdirectory(pattern_mining)
+add_subdirectory(neural_net)
+add_subdirectory(object_detection)
 
 make_boost_test(kmeans_test.cxx
   REQUIRES unity_clustering util numerics

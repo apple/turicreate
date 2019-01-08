@@ -135,6 +135,45 @@
                     toolkit_class_wrapper_impl::generate_member_function_wrapper_indirect( \
                     &function, ##__VA_ARGS__));
 
+/**
+ * Begins a class member registration block for base classes.  These 
+ *
+ * BEGIN_BASE_CLASS_MEMBER_REGISTRATION()
+ *
+ * The basic usage is to put this inside a class to be published, and go:
+ * \code
+ * BEGIN_BASE_CLASS_MEMBER_REGISTRATION("python_facing_classname")
+ * REGISTER_ ... OTHER MEMBERS ...
+ * END_CLASS_MEMBER_REGISTRATION
+ * \endcode
+ *
+ * In the parent class, you would register 
+ *
+ *
+ */
+#define BEGIN_BASE_CLASS_MEMBER_REGISTRATION() \
+ public:                                       \
+  virtual inline void perform_registration() override { \
+
+
+/**
+ * Begins a class member registration block for a base class.  
+ *
+ * BEGIN_BASE_CLASS_MEMBER_REGISTRATION()
+ *
+ * The basic usage is to put this inside a class that is the base class of an inherited, and go:
+ * \code
+ * BEGIN_BASE_CLASS_MEMBER_REGISTRATION()
+ * REGISTER_ ... OTHER MEMBERS ...
+ * END_CLASS_MEMBER_REGISTRATION
+ * \endcode
+ */
+#define IMPORT_BASE_CLASS_REGISTRATION(base_class)                     \
+  static_assert(                                                       \
+      !std::is_same<decltype(*this), base_class>::value,               \
+      "IMPORT_BASE_CLASS_REGISTRATION must be called on base class."); \
+  this->base_class::perform_registration();
+
 // /*
 //  * Like REGISTER_CLASS_MEMBER_FUNCTION but to be used when the function to
 //  * be exposed is overloaded. 

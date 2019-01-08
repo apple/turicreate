@@ -1478,7 +1478,7 @@ class roc_curve: public supervised_evaluation_interface {
   // Options
   average_type_enum average = average_type_enum::NONE;
   bool binary = false;
-  const size_t NUM_BINS=1e5;
+  const size_t NUM_BINS=100000;
   size_t n_threads = 0;
   size_t num_classes = 0;
 
@@ -1586,13 +1586,13 @@ class roc_curve: public supervised_evaluation_interface {
 
   const float get_bin(double prediction) const {
     // Assign this prediction to an integer that indicates a "bin" id.
-    size_t bin = std::floor((double) prediction * (double) NUM_BINS);
+    size_t bin = std::floor((double) std::max(0.0, prediction * NUM_BINS));
 
     // This effectively makes the upper bin [0.999, 1] instead of [0.999, 1).
     // If a prediction is exactly 1.0, then it would get assigned to
     // a bin with lower bound 1.0, but since we want 1000 bins, we move 
     // these into the bin with lower bound 0.999.
-    if (bin == NUM_BINS) bin -= 1; 
+    if (bin >= NUM_BINS) bin = NUM_BINS - 1;
     return bin;
   }
 

@@ -20,7 +20,12 @@ class io_error : public std::ios_base::failure {
 
   public:
     explicit io_error(const std::string &message);
-    virtual const char *what() const noexcept override;
+
+#ifdef COMPILER_HAS_NOEXCEPT_WHAT_ON_EXCEPTIONS
+  virtual const char *what() const noexcept override;
+#else
+  virtual const char *what() const override;
+#endif
 };
 
 } // namespace error
