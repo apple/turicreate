@@ -119,12 +119,22 @@ struct string_parser
   bool has_delimiter = false;
   char delimiter_first_char;
   bool delimiter_is_singlechar = false;
+  std::unordered_map<std::string, turi::flexible_type> map_vals; // handle na_val, true_val, false_val
 
   string_parser(){}
   string_parser(parser_config config):config(config) {
     has_delimiter = config.delimiter.length() > 0;
     delimiter_is_singlechar = config.delimiter.length() == 1;
     if (has_delimiter) delimiter_first_char = config.delimiter[0];
+    for (auto s: config.na_val) {
+      map_vals[s] = turi::flexible_type(turi::flex_type_enum::UNDEFINED);
+    }
+    for (auto s: config.true_val) {
+      map_vals[s] = 1;
+    }
+    for (auto s: config.false_val) {
+      map_vals[s] = 0;
+    }
   }
 
   enum class tokenizer_state {
@@ -239,12 +249,9 @@ struct string_parser
                               config.escape_char,
                               quote_char, config.double_quote);
       }
-      if (!config.na_val.empty() && config.na_val.count(final_str)) {
-        attr = turi::flexible_type(turi::flex_type_enum::UNDEFINED);
-      } else if (!config.true_val.empty() && config.true_val.count(final_str)) {
-        attr = 1;
-      } else if (!config.false_val.empty() && config.false_val.count(final_str)) {
-        attr = 0;
+      auto map_val_iter = map_vals.find(final_str);
+      if (map_val_iter != map_vals.end()) {
+        attr = map_val_iter->second;
       } else {
         attr = std::move(final_str);
       }

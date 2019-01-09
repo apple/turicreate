@@ -5,12 +5,14 @@
  */
 /**
  * \file
- * CSV Parser as adapted from Pandas
+ * Tokenizes a CSV line.  
+ * Originally modified from Pandas. Now is quite significantly different.
  */
 #include <vector>
 #include <string>
 #include <cstdlib>
 #include <algorithm>
+#include <logger/logger.hpp>
 #include <boost/config/warning_disable.hpp>
 #include <sframe/csv_line_tokenizer.hpp>
 #include <flexible_type/string_escape.hpp>
@@ -221,7 +223,14 @@ size_t csv_line_tokenizer::tokenize_line(char* str, size_t len,
       strm << "Parse failed at token ending at: \n";
       std::string line(str, len);
       // colorize the line.
-      line.insert(tokenizer_impl_fail_pos, "\033[1m\033[31m^\033[00m");
+#ifdef COLOROUTPUT
+      line.insert(tokenizer_impl_fail_pos, 
+                  textcolor(TEXTCOLOR_BRIGHT, TEXTCOLOR_RED) + 
+                  "^" + 
+                  reset_color());
+#else
+      line.insert(tokenizer_impl_fail_pos, "^");
+#endif
       if (line.length() > 256) {
         // truncate around the fail pos
         ssize_t start = std::max<ssize_t>(0, tokenizer_impl_fail_pos - 60);
