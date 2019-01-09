@@ -6,7 +6,7 @@
   "height": 550,
   "style": "cell",
   "title": {
-    "text": %1%,
+    "text": "{{title}}",
     "offset": 30
   },
   "data": [
@@ -95,7 +95,7 @@
       "tickCount": {
         "signal": "ceil(width/40)"
       },
-      "title": %2%,
+      "title": "{{xlabel}}",
       "zindex": 1
     },
     {
@@ -120,7 +120,7 @@
       "tickCount": {
         "signal": "ceil(height/40)"
       },
-      "title": %3%,
+      "title": "{{ylabel}}",
       "zindex": 1
     },
     {

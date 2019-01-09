@@ -27,7 +27,7 @@
     }
   },
   "title": {
-    "text": %1%
+    "text": "{{title}}"
   },
   "height": 550,
   "style": "cell",
@@ -258,7 +258,7 @@
       "scale": "x",
       "labelOverlap": true,
       "orient": "bottom",
-      "title": %2%,
+      "title": "{{xlabel}}",
       "zindex": 1,
       "encode": {
         "labels": {
@@ -277,7 +277,7 @@
       }
     },
     {
-      "title": %3%,
+      "title": "{{ylabel}}",
       "scale": "y",
       "labelOverlap": true,
       "orient": "left",

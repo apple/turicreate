@@ -19,9 +19,9 @@
     }
   },
   "width": 720,
-  "height": %1%,
+  "height": {{height}},
   "title": {
-    "text": %2%,
+    "text": "{{title}}",
     "offset": 30
   },
   "style": "cell",
@@ -177,7 +177,7 @@
       "tickCount": {
         "signal": "ceil(width/40)"
       },
-      "title": %3%,
+      "title": "{{xlabel}}",
       "zindex": 1
     },
     {
@@ -199,7 +199,7 @@
       "scale": "y",
       "labelOverlap": true,
       "orient": "left",
-      "title": %4%,
+      "title": "{{ylabel}}",
       "zindex": 1
     }
   ],

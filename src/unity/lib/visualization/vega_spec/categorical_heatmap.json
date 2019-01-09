@@ -4,7 +4,7 @@
   "axes": [
     {
       "scale": "x",
-      "title": %2%,
+      "title": "{{xlabel}}",
       "tickCount": {
         "signal": "min(ceil(width/40), 60)"
       },
@@ -29,7 +29,7 @@
     },
     {
       "scale": "y",
-      "title": %3%,
+      "title": "{{ylabel}}",
       "tickCount": {
         "signal": "min(ceil(height/40), 40)"
       },
@@ -53,7 +53,7 @@
     }
   ],
   "title": {
-    "text": %1%,
+    "text": "{{title}}",
     "frame": "group",
     "fontSize": 16,
     "anchor": "middle",

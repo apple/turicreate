@@ -6,7 +6,7 @@
   "height": 550,
   "padding": 5,
   "title": {
-    "text": %1%,
+    "text": "{{title}}",
     "offset": 30
   },
   "style": "cell",
@@ -120,7 +120,7 @@
   ],
   "axes": [
     {
-      "title": %2%,
+      "title": "{{xlabel}}",
       "scale": "x",
       "labelOverlap": true,
       "orient": "bottom",
@@ -145,7 +145,7 @@
       "gridScale": "y"
     },
     {
-      "title": %3%,
+      "title": "{{ylabel}}",
       "scale": "y",
       "labelOverlap": true,
       "orient": "left",

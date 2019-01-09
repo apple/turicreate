@@ -6,7 +6,7 @@
   "height": 550,
   "style": "cell",
   "title": {
-    "text": %1%
+    "text": "{{title}}"
   },
   "data": [
     {
@@ -108,7 +108,7 @@
       "tickCount": {
         "signal": "min(ceil(width/40), 60)"
       },
-      "title": %2%,
+      "title": "{{xlabel}}",
       "zindex": 1,
       "encode": {
         "labels": {
@@ -133,7 +133,7 @@
       "tickCount": {
         "signal": "min(ceil(height/40), 40)"
       },
-      "title": %3%,
+      "title": "{{ylabel}}",
       "zindex": 1
     }
   ],
