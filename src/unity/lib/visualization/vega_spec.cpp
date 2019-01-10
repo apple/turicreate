@@ -12,6 +12,7 @@
 #include <unity/lib/visualization/vega_spec/boxes_and_whiskers.h>
 #include <unity/lib/visualization/vega_spec/categorical.h>
 #include <unity/lib/visualization/vega_spec/categorical_heatmap.h>
+#include <unity/lib/visualization/vega_spec/config.h>
 #include <unity/lib/visualization/vega_spec/heatmap.h>
 #include <unity/lib/visualization/vega_spec/histogram.h>
 #include <unity/lib/visualization/vega_spec/scatter.h>
@@ -44,22 +45,6 @@ std::string replace_all(std::string str, const std::string& from, const std::str
     return str;
 }
 
-std::string format(const std::string& format_str, const std::unordered_map<std::string, std::string>& format_params) {
-  std::string ret = format_str;
-  for (const auto& it : format_params) {
-    // TODO: optimize this.
-    // For now, it's O(n * k), where n is the number of format parameters, and
-    // k is the number of instances of each parameter.
-    const std::string& placeholder = it.first;
-    std::string::size_type pos = ret.find(placeholder);
-    while( pos != std::string::npos ) {
-        ret.replace(pos, placeholder.length(), it.second);
-        pos = ret.find(placeholder, ++pos);
-    }
-  }
-  return ret;
-}
-
 std::string extra_label_escape(const std::string& str, bool include_quotes){
   std::string escaped_string = escape_string(str, include_quotes /* include_quotes */);
   escaped_string = replace_all(escaped_string, std::string("\\n"), std::string("\\\\n"));
@@ -85,6 +70,32 @@ static std::string make_format_string(unsigned char *raw_format_str_ptr,
   return raw_format_str;
 }
 
+static void _format_impl(std::string& ret,
+                                const std::string& placeholder,
+                                const std::string& replacement) {
+    std::string::size_type pos = ret.find(placeholder);
+    while( pos != std::string::npos ) {
+        ret.replace(pos, placeholder.length(), replacement);
+        pos = ret.find(placeholder, ++pos);
+    }
+}
+
+std::string format(const std::string& format_str, const std::unordered_map<std::string, std::string>& format_params) {
+  // TODO: optimize this.
+  // For now, it's O(n * k), where n is the number of format parameters, and
+  // k is the number of instances of each parameter.
+  std::string ret = format_str;
+  for (const auto& it : format_params) {
+    _format_impl(ret, it.first, it.second);
+  }
+  // Also replace config from predefined config (maintained separately so we don't
+  // have to repeat the same config in each file, and we can make sure it stays
+  // consistent across the different plots)
+  static std::string config_str = make_format_string(vega_spec_config_json, vega_spec_config_json_len);
+  _format_impl(ret, "{{config}}", config_str);
+  return ret;
+}
+
 static std::string label_or_default(const flexible_type& label,
                                     const std::string& _default) {
   if (label == FLEX_UNDEFINED) {
@@ -101,14 +112,15 @@ static std::string label_or_default(const flexible_type& label,
   }
 }
 
-static std::string label_or_null(const flexible_type& label) {
-  if (label == FLEX_UNDEFINED || label == "__TURI_DEFAULT_LABEL") {
+static std::string title_or_default(const flexible_type& title, const std::string& xlabel, const std::string& ylabel) {
+  if (title == FLEX_UNDEFINED) {
     // undefined/not provided should render as null in JSON
     return "null";
-
+  } else if (title == "__TURI_DEFAULT_LABEL") {
+    return extra_label_escape(xlabel + " vs. " + ylabel, false /* include_quotes */);
   } else {
     // user-provided label should render with quotes/escaping
-    return extra_label_escape(label.get<flex_string>(), false /* include_quotes */);
+    return extra_label_escape(title.get<flex_string>(), false /* include_quotes */);
   }
 
 }
@@ -169,7 +181,7 @@ std::string scatter_spec(const flexible_type& _xlabel, const flexible_type& _yla
 
   std::string xlabel = label_or_default(_xlabel, "X");
   std::string ylabel = label_or_default(_ylabel, "Y");
-  std::string title = label_or_null(_title);
+  std::string title = title_or_default(_title, xlabel, ylabel);
 
   auto format_string = make_format_string(vega_spec_scatter_json, vega_spec_scatter_json_len);
   return format(format_string, {
@@ -182,7 +194,7 @@ std::string scatter_spec(const flexible_type& _xlabel, const flexible_type& _yla
 std::string heatmap_spec(const flexible_type& _xlabel, const flexible_type& _ylabel, const flexible_type& _title) {
   std::string xlabel = label_or_default(_xlabel, "X");
   std::string ylabel = label_or_default(_ylabel, "Y");
-  std::string title = label_or_null(_title);
+  std::string title = title_or_default(_title, xlabel, ylabel);
 
   auto format_string = make_format_string(vega_spec_heatmap_json, vega_spec_heatmap_json_len);
   return format(format_string, {
@@ -195,7 +207,7 @@ std::string heatmap_spec(const flexible_type& _xlabel, const flexible_type& _yla
 std::string categorical_heatmap_spec(const flexible_type& _xlabel, const flexible_type& _ylabel, const flexible_type& _title) {
   std::string xlabel = label_or_default(_xlabel, "X");
   std::string ylabel = label_or_default(_ylabel, "Y");
-  std::string title = label_or_null(_title);
+  std::string title = title_or_default(_title, xlabel, ylabel);
 
   auto format_string = make_format_string(vega_spec_categorical_heatmap_json, vega_spec_categorical_heatmap_json_len);
   return format(format_string, {
@@ -208,7 +220,7 @@ std::string categorical_heatmap_spec(const flexible_type& _xlabel, const flexibl
 std::string boxes_and_whiskers_spec(const flexible_type& _xlabel, const flexible_type& _ylabel, const flexible_type& _title) {
   std::string xlabel = label_or_default(_xlabel, "X");
   std::string ylabel = label_or_default(_ylabel, "Y");
-  std::string title = label_or_null(_title);
+  std::string title = title_or_default(_title, xlabel, ylabel);
 
   auto format_string = make_format_string(vega_spec_boxes_and_whiskers_json, vega_spec_boxes_and_whiskers_json_len);
   return format(format_string, {
