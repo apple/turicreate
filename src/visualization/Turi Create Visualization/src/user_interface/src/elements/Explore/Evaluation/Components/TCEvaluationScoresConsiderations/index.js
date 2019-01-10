@@ -6,12 +6,17 @@ import TCEvaluationScoresConsiderationsElement from './TCEvaluationScoresConside
 class TCEvaluationScoresConsiderations extends Component {
   render() {
     return (
-      <div className="TCEvaluationScoresConsiderations">
-        <div className="TCEvaluationScoresConsiderationsBox">
-          {this.props.considerations.map((consideration, index) => (
-            <TCEvaluationScoresConsiderationsElement error={consideration.error}
-                                                     content={consideration.message}/>
-          ))}
+      <div className="TCEvaluationScoresConsiderationsParent">
+        <div className="TCEvaluationScoresConsiderationsTitle">
+          Top Confusions
+        </div>
+        <div className="TCEvaluationScoresConsiderations">
+          <div className="TCEvaluationScoresConsiderationsBox">
+            {this.props.considerations.map((consideration, index) => (
+              <TCEvaluationScoresConsiderationsElement error={consideration.error}
+                                                       content={consideration.message}/>
+            ))}
+          </div>
         </div>
       </div>
     );

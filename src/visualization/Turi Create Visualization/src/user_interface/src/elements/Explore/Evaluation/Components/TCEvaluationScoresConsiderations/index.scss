@@ -1,8 +1,19 @@
+.TCEvaluationScoresConsiderationsParent{
+	width: 262px;
+}
+
+.TCEvaluationScoresConsiderationsTitle{
+	font-family: Helvetica;
+	font-size: 20px;
+	color: #363643;
+	text-align: left;
+	padding-bottom: 20px;
+}
+
 .TCEvaluationScoresConsiderations{
 	display: flex;
 	overflow: auto;
 	overflow-y: scroll;
-	width: 262px;
 	height: 182px;
 	background: #363643;
 	font-family: Helvetica;
