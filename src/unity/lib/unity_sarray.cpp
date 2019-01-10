@@ -220,7 +220,7 @@ void unity_sarray::construct_from_json_record_files(std::string url) {
   sarray_ptr->set_type(flex_type_enum::DICT);
   auto output = sarray_ptr->get_output_iterator(0);
 
-  flexible_type_parser parser;
+  flexible_type_parser parser(",", true, '\\', {"null"}, {"true"}, {"false"});
   std::vector<char> buffer;
 
 

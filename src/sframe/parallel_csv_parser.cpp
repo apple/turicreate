@@ -497,8 +497,14 @@ class parallel_csv_parser {
     while(c != cend) {
       c = advance_past_newline(c, cend, newline_was_matched);
       bool b = quote_parity.get(c - bufstart - 1);
-      if (newline_was_matched == false || 
-          b == false) return c;
+      // it is not actually a newline if the quote parity is set
+      // continue to continue searching for the next newline
+      if (b && newline_was_matched) {
+        newline_was_matched = false;
+        continue;
+      } else {
+        break;
+      }
     }
     return c;
   }
@@ -540,16 +546,26 @@ class parallel_csv_parser {
         if (store_errors) error_buffer[threadid].push_back(badline);
         if (continue_on_failure) {
           if (num_failures.value < 10) {
-            std::string badline = std::string(pstart, pnext - pstart);
-            if (badline.length() > 256) badline=badline.substr(0, 256) + "...";
-            logprogress_stream << std::string("Unable to parse line \"") +
-                               badline + "\"" << std::endl;
+            if (!thread_local_tokenizer[threadid].get_last_parse_error_diagnosis().empty()) {
+              logprogress_stream << thread_local_tokenizer[threadid].get_last_parse_error_diagnosis() 
+                                 << std::endl;
+            } else {
+              std::string badline = std::string(pstart, pnext - pstart);
+              if (badline.length() > 256) badline=badline.substr(0, 256) + "...";
+              logprogress_stream << std::string("Unable to parse line \"") +
+                                 badline + "\"" << std::endl;
+            }
           }
           ++num_failures;
         } else {
+          if (!thread_local_tokenizer[threadid].get_last_parse_error_diagnosis().empty()) {
+            logprogress_stream << thread_local_tokenizer[threadid].get_last_parse_error_diagnosis() 
+                               << std::endl;
+          } 
+          std::string badline = std::string(pstart, pnext - pstart);
+          if (badline.length() > 256) badline=badline.substr(0, 256) + "...";
           log_and_throw(std::string("Unable to parse line \"") +
-                        std::string(pstart, pnext - pstart) + "\"\n" +
-                        "Set error_bad_lines=False to skip bad lines");
+                        badline + "\"\n");
         }
       }
     }
