@@ -17,6 +17,12 @@
 		FC245BF31F4F7FFB009F54C6 /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC245BF21F4F7FFB009F54C6 /* JSON.swift */; };
 		FC245BF51F4F8110009F54C6 /* Pipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC245BF41F4F8110009F54C6 /* Pipe.swift */; };
 		FC5F0B3C1F5F3A3E0001BCEE /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC5F0B3B1F5F3A3E0001BCEE /* Error.swift */; };
+		FC652C9421E719C000F5AA5A /* index.scss in Resources */ = {isa = PBXBuildFile; fileRef = FC652C8C21E719C000F5AA5A /* index.scss */; };
+		FC652C9521E719C000F5AA5A /* index.scss in Resources */ = {isa = PBXBuildFile; fileRef = FC652C8E21E719C000F5AA5A /* index.scss */; };
+		FC652C9621E719C000F5AA5A /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FC652C8F21E719C000F5AA5A /* index.js */; };
+		FC652C9721E719C000F5AA5A /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FC652C9021E719C000F5AA5A /* index.js */; };
+		FC652C9821E719C000F5AA5A /* index.scss in Resources */ = {isa = PBXBuildFile; fileRef = FC652C9221E719C000F5AA5A /* index.scss */; };
+		FC652C9921E719C000F5AA5A /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FC652C9321E719C000F5AA5A /* index.js */; };
 		FC9066011F425B4800AE3881 /* AppData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC9066001F425B4800AE3881 /* AppData.swift */; };
 		FCB8DFE1206EF950001A7089 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = FCB8DFE0206EF950001A7089 /* index.html */; };
 		FCB8DFE3206F1756001A7089 /* index.css in Resources */ = {isa = PBXBuildFile; fileRef = FCB8DFE2206F1756001A7089 /* index.css */; };
@@ -45,6 +51,12 @@
 		FC3E34E2206EF50E00B6B69A /* index.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
 		FC3E34E5206EF52000B6B69A /* index.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = index.css; sourceTree = "<group>"; };
 		FC5F0B3B1F5F3A3E0001BCEE /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
+		FC652C8C21E719C000F5AA5A /* index.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.scss; sourceTree = "<group>"; };
+		FC652C8E21E719C000F5AA5A /* index.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.scss; sourceTree = "<group>"; };
+		FC652C8F21E719C000F5AA5A /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FC652C9021E719C000F5AA5A /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FC652C9221E719C000F5AA5A /* index.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.scss; sourceTree = "<group>"; };
+		FC652C9321E719C000F5AA5A /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
 		FC78045F20729FF9004BE45B /* index.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
 		FC7804662072A061004BE45B /* index.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = index.js; path = Row/index.js; sourceTree = "<group>"; };
 		FC7804682072A075004BE45B /* index.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
@@ -203,8 +215,38 @@
 		FC652C5721E544ED00F5AA5A /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				FC652C8B21E719C000F5AA5A /* TCEvaluationSummary */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		FC652C8B21E719C000F5AA5A /* TCEvaluationSummary */ = {
+			isa = PBXGroup;
+			children = (
+				FC652C8C21E719C000F5AA5A /* index.scss */,
+				FC652C8D21E719C000F5AA5A /* TCEvaluationSummaryImage */,
+				FC652C9021E719C000F5AA5A /* index.js */,
+				FC652C9121E719C000F5AA5A /* TCEvaluationSummaryStat */,
+			);
+			path = TCEvaluationSummary;
+			sourceTree = "<group>";
+		};
+		FC652C8D21E719C000F5AA5A /* TCEvaluationSummaryImage */ = {
+			isa = PBXGroup;
+			children = (
+				FC652C8E21E719C000F5AA5A /* index.scss */,
+				FC652C8F21E719C000F5AA5A /* index.js */,
+			);
+			path = TCEvaluationSummaryImage;
+			sourceTree = "<group>";
+		};
+		FC652C9121E719C000F5AA5A /* TCEvaluationSummaryStat */ = {
+			isa = PBXGroup;
+			children = (
+				FC652C9221E719C000F5AA5A /* index.scss */,
+				FC652C9321E719C000F5AA5A /* index.js */,
+			);
+			path = TCEvaluationSummaryStat;
 			sourceTree = "<group>";
 		};
 		FC78045C20729F7F004BE45B /* sticky-table */ = {
@@ -315,9 +357,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FC652C9621E719C000F5AA5A /* index.js in Resources */,
+				FC652C9421E719C000F5AA5A /* index.scss in Resources */,
 				FCB8DFE5206F187D001A7089 /* index.js in Resources */,
+				FC652C9921E719C000F5AA5A /* index.js in Resources */,
+				FC652C9821E719C000F5AA5A /* index.scss in Resources */,
 				FCB8DFE1206EF950001A7089 /* index.html in Resources */,
 				FCB8DFE3206F1756001A7089 /* index.css in Resources */,
+				FC652C9721E719C000F5AA5A /* index.js in Resources */,
+				FC652C9521E719C000F5AA5A /* index.scss in Resources */,
 				FCE3954420B4C2CB0029FDB5 /* build in Resources */,
 				9226E7C81F366F2E00C33A64 /* Assets.xcassets in Resources */,
 				9226E7CB1F366F2E00C33A64 /* Main.storyboard in Resources */,
