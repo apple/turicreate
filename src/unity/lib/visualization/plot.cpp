@@ -13,13 +13,13 @@
 
 namespace turi{
   namespace visualization{
-    void Plot::show(const std::string& path_to_client) {
+    void Plot::show(const std::string& path_to_client, tc_plot_variation variation) {
 
       std::shared_ptr<Plot> self = std::make_shared<Plot>(*this);
 
-      ::turi::visualization::run_thread([self, path_to_client]() {
+      ::turi::visualization::run_thread([self, path_to_client, variation]() {
         process_wrapper ew(path_to_client);
-        ew << "{\"vega_spec\": " << self->m_vega_spec << "}\n";
+        ew << "{\"vega_spec\": " << self->get_spec(variation) << "}\n";
 
         while(ew.good()) {
           vega_data vd;
@@ -67,7 +67,8 @@ namespace turi{
       return vd.get_data_spec(100 /* percent_complete */);
     }
 
-    std::string Plot::get_spec() {
+    std::string Plot::get_spec(tc_plot_variation variation) {
+      (void)variation; // TODO support multiple variations
       return m_vega_spec;
     }
   }
