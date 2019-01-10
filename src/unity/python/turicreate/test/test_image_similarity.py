@@ -238,9 +238,16 @@ class ImageSimilaritySqueezeNetTest(ImageSimilarityTest):
                                                               input_image_shape=(3, 227, 227))
 
 
-@unittest.skipIf(_mac_ver() < (10,14), 'VisionFeaturePrint_Screen only supported on macOS 10.14+')
-class ImageSimilarityVisionFeaturePrintScreenTest(ImageSimilarityTest):
+@unittest.skipIf(_mac_ver() < (10,14), 'VisionFeaturePrint_Scene only supported on macOS 10.14+')
+class ImageSimilarityVisionFeaturePrintSceneTest(ImageSimilarityTest):
     @classmethod
     def setUpClass(self):
-        super(ImageSimilarityVisionFeaturePrintScreenTest, self).setUpClass(model='VisionFeaturePrint_Screen',
-                                                                            input_image_shape=(3, 299, 299))
+        super(ImageSimilarityVisionFeaturePrintSceneTest, self).setUpClass(model='VisionFeaturePrint_Scene',
+
+# A test to gaurantee that old code using the incorrect name still works.
+@unittest.skipIf(_mac_ver() < (10,14), 'VisionFeaturePrint_Scene only supported on macOS 10.14+')
+class ImageSimilarityVisionFeaturePrintSceneTest_bad_name(ImageSimilarityTest):
+    @classmethod
+    def setUpClass(self):
+        super(ImageSimilarityVisionFeaturePrintSceneTest, self).setUpClass(model='VisionFeaturePrint_Screen',
+                                                                             input_image_shape=(3, 299, 299))
