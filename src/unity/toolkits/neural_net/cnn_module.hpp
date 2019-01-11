@@ -8,6 +8,8 @@
 #define UNITY_TOOLKITS_NEURAL_NET_CNN_MODULE_HPP_
 
 #include <memory>
+#include <string>
+#include <vector>
 
 #include <unity/toolkits/neural_net/float_array.hpp>
 
@@ -49,8 +51,8 @@ public:
   /**
    * Performs a forward pass.
    */
-  virtual deferred_float_array
-  predict(const float_array& input_batch) const = 0;
+  virtual deferred_float_array predict(
+      const float_array& input_batch) const = 0;
 
   /**
    * Exports the network weights.
@@ -60,6 +62,12 @@ public:
    *       the cnn_module).
    */
   virtual float_array_map export_weights() const = 0;
+
+  /**
+   * Returns the (human readable) names of the GPUs used by this module, for
+   * reporting to the user.
+   */
+  virtual std::vector<std::string> gpu_names() const = 0;
 };
 
 }  // namespace neural_net

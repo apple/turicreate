@@ -272,6 +272,10 @@ void mps_graph_cnn_module::set_learning_rate(float lr) {
   }
 }
 
+std::vector<std::string> mps_graph_cnn_module::gpu_names() const {
+  return { [dev_.name cStringUsingEncoding:NSUTF8StringEncoding] };
+}
+
 MPSImageBatch *
 mps_graph_cnn_module::create_image_batch(MPSImageDescriptor *desc) const {
   NSUInteger batchSize = (NSUInteger)network_->batch_size;
