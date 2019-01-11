@@ -27,9 +27,23 @@ from .. import _image_feature_extractor
 from turicreate.toolkits._internal_utils import (_raise_error_if_not_sframe,
                                                  _numeric_param_check_range)
 
-def create(dataset, target, feature = None, model = 'resnet-50',
-           validation_set='auto', max_iterations = 10, verbose = True,
-           seed = None, batch_size=64):
+_DEFAULT_SOLVER_OPTIONS = {
+'convergence_threshold': 1e-2,
+'step_size': 1.0,
+'lbfgs_memory_level': 11,
+'max_iterations': 10}
+
+def create(dataset, target, features=None,
+    l2_penalty=0.01, l1_penalty=0.0,
+    solver='auto', feature_rescaling=True,
+    convergence_threshold = _DEFAULT_SOLVER_OPTIONS['convergence_threshold'],
+    step_size = _DEFAULT_SOLVER_OPTIONS['step_size'],
+    lbfgs_memory_level = _DEFAULT_SOLVER_OPTIONS['lbfgs_memory_level'],
+    max_iterations = _DEFAULT_SOLVER_OPTIONS['max_iterations'],
+    class_weights = None,
+    validation_set = 'auto',
+    verbose=True,
+    seed=None):
     """
     Create a :class:`ImageClassifier` model.
 
@@ -496,6 +510,1759 @@ class ImageClassifier(_CustomModel):
         """
         Evaluate the model by making predictions of target values and comparing
         these to actual values.
+        
+        
+# Regression model names.
+
+
+
+
+   model_name = "classifier_image_regression"
+
+
+   solver = solver.lower()
+
+
+
+
+
+
+
+   model = _sl.create(dataset, target, model_name, features=features,
+
+
+                       validation_set = validation_set, verbose = verbose,
+
+
+                       l2_penalty=l2_penalty, l1_penalty = l1_penalty,
+
+
+                       feature_rescaling = feature_rescaling,
+
+
+                       convergence_threshold = convergence_threshold,
+
+
+                       step_size = step_size,
+
+
+                       solver = solver,
+
+
+                       lbfgs_memory_level = lbfgs_memory_level,
+
+
+                       max_iterations = max_iterations,
+
+
+                       class_weights = class_weights,
+
+
+                       seed=seed)
+
+
+
+
+
+
+
+   return ImageClassifier(model.__proxy__)
+
+
+
+
+
+
+
+class ImageClassifier(_Classifier):
+
+
+   """
+
+
+   Image regression models a discrete target variable as a function of
+
+
+   several feature variables.
+
+
+
+
+
+
+   The :class:`~turicreate.image_classifier.imageClassifier` uses
+
+
+   a discrete target variable :math:`y` instead of a scalar. For each
+
+
+   observation, the probability that :math:`y=1` (instead of 0) is modeled as
+
+
+   the image function of a linear combination of the feature values.
+
+
+
+
+
+
+   Given a set of features :math:`x_i`, and a label :math:`y_i \in \{0,1\}`,
+
+
+   image regression interprets the probability that the label is in one class
+
+
+   as a image function of a linear combination of the features.
+
+
+
+
+
+
+       .. math::
+
+
+         f_i(\\theta) =  p(y_i = 1 | x) = \\frac{1}{1 + \exp(-\\theta^T x)}
+
+
+
+
+
+
+   An intercept term is added by appending a column of 1's to the features.
+
+
+   Regularization is often required to prevent over fitting by penalizing
+
+
+   models with extreme parameter values. The image regression module
+
+
+   supports l1 and l2 regularization, which are added to the loss function.
+
+
+
+
+
+
+   The composite objective being optimized for is the following;
+
+
+
+
+
+
+       .. math::
+
+
+          \min_{\\theta} \sum_{i = 1}^{n} f_i(\\theta) + \lambda_1 ||\\theta||_1 + \lambda_2 ||\\theta||^{2}_{2}
+
+
+
+
+
+
+   where :math:`\lambda_1` is the ``l1_penalty`` and :math:`\lambda_2` is the
+
+
+   ``l2_penalty``.
+
+
+
+
+
+
+   For multi-class models, we perform multinomial image regression, which
+
+
+   is an extension of the binary image regression model discussed above.
+
+
+
+
+
+
+   This model cannot be constructed directly.  Instead, use
+
+
+   :func:`turicreate.image_classifier.create` to create an instance of this
+
+
+   model. A detailed list of parameter options and code samples are available
+
+
+   in the documentation for the create function.
+
+
+
+
+
+
+   Examples
+
+
+   --------
+
+
+   .. sourcecode:: python
+
+
+
+
+
+
+       # Load the data (From an S3 bucket)
+
+
+       >>> data =  turicreate.SFrame('https://static.turi.com/datasets/regression/houses.csv')
+
+
+
+
+
+
+       # Make sure the target is discrete
+
+
+       >>> data['is_expensive'] = data['price'] > 30000
+
+
+
+
+
+
+       # Make a image regression model
+
+
+       >>> model = turicreate.image_classifier.create(data, target='is_expensive', features=['bath', 'bedroom', 'size'])
+
+
+
+
+
+
+       # Extract the coefficients
+
+
+       >>> coefficients = model.coefficients
+
+
+
+
+
+
+       # Make predictions (as margins, probability, or class)
+
+
+       >>> predictions = model.predict(data)
+
+
+       >>> predictions = model.predict(data, output_type='probability')
+
+
+       >>> predictions = model.predict(data, output_type='margin')
+
+
+
+
+
+
+       # Evaluate the model
+
+
+       >>> results = model.evaluate(data)
+
+
+
+
+
+
+   See Also
+
+
+   --------
+
+
+   create
+
+
+
+
+
+
+
+
+
+
+   """
+
+
+   def __init__(self, model_proxy):
+
+
+
+
+
+
+
+       self.__proxy__ = model_proxy
+
+
+       self.__name__ = self.__class__._native_name()
+
+
+
+
+
+
+
+   @classmethod
+
+
+   def _native_name(cls):
+
+
+       return "classifier_image_regression"
+
+
+
+
+
+
+
+   def __str__(self):
+
+
+       """
+
+
+       Return a string description of the model to the ``print`` method.
+
+
+
+
+
+
+       Returns
+
+
+       -------
+
+
+       out : string
+
+
+           A description of the model.
+
+
+       """
+
+
+       return self.__repr__()
+
+
+
+
+
+
+
+   def _get_summary_struct(self):
+
+
+       """
+
+
+       Returns a structured description of the model, including (where relevant)
+
+
+       the schema of the training data, description of the training data,
+
+
+       training statistics, and model hyperparameters.
+
+
+
+
+
+
+       Returns
+
+
+       -------
+
+
+       sections : list (of list of tuples)
+
+
+           A list of summary sections.
+
+
+             Each section is a list.
+
+
+               Each item in a section list is a tuple of the form:
+
+
+                 ('<label>','<field>')
+
+
+       section_titles: list
+
+
+           A list of section titles.
+
+
+             The order matches that of the 'sections' object.
+
+
+       """
+
+
+
+
+
+
+
+       model_fields = [
+
+
+           ('Number of coefficients', 'num_coefficients'),
+
+
+           ('Number of examples', 'num_examples'),
+
+
+           ('Number of classes', 'num_classes'),
+
+
+           ('Number of feature columns', 'num_features'),
+
+
+           ('Number of unpacked features', 'num_unpacked_features')]
+
+
+
+
+
+
+
+       hyperparam_fields = [
+
+
+           ("L1 penalty", 'l1_penalty'),
+
+
+           ("L2 penalty", 'l2_penalty')
+
+
+       ]
+
+
+
+
+
+
+
+       solver_fields = [
+
+
+           ("Solver", 'solver'),
+
+
+           ("Solver iterations", 'training_iterations'),
+
+
+           ("Solver status", 'training_solver_status'),
+
+
+           ("Training time (sec)", 'training_time')]
+
+
+
+
+
+
+
+       training_fields = [
+
+
+           ("Log-likelihood", 'training_loss')]
+
+
+
+
+
+
+
+       coefs = self.coefficients
+
+
+       top_coefs, bottom_coefs = _toolkit_get_topk_bottomk(coefs,k=5)
+
+
+
+
+
+
+
+       (coefs_list, titles_list) = _summarize_coefficients(top_coefs, \
+
+
+                                                                   bottom_coefs)
+
+
+
+
+
+
+
+       return ([ model_fields, hyperparam_fields, \
+
+
+                       solver_fields, training_fields ] + coefs_list, \
+
+
+                       [ 'Schema', 'Hyperparameters', \
+
+
+                       'Training Summary', 'Settings' ] + titles_list )
+
+
+
+
+
+
+
+   def __repr__(self):
+
+
+       """
+
+
+       Print a string description of the model, when the model name is entered
+
+
+       in the terminal.
+
+
+       """
+
+
+
+
+
+
+
+       (sections, section_titles) = self._get_summary_struct()
+
+
+
+
+
+
+
+       return _toolkit_repr_print(self, sections, section_titles, width=30)
+
+
+
+
+
+
+
+   def export_coreml(self, filename):
+
+
+       """
+
+
+       Export the model in Core ML format.
+
+
+
+
+
+
+       Parameters
+
+
+       ----------
+
+
+       filename: str
+
+
+         A valid filename where the model can be saved.
+
+
+
+
+
+
+       Examples
+
+
+       --------
+
+
+       >>> model.export_coreml("MyModel.mlmodel")
+
+
+       """
+
+
+       from turicreate.extensions import _image_classifier_export_as_model_asset
+
+
+       from turicreate.toolkits import _coreml_utils
+
+
+       display_name = "image classifier"
+
+
+       short_description = _coreml_utils._mlmodel_short_description(display_name)
+
+
+       context = {"class": self.__class__.__name__,
+
+
+                  "version": _turicreate.__version__,
+
+
+                  "short_description": short_description,
+
+
+                  'user_defined':{
+
+
+                   'turicreate_version': _turicreate.__version__
+
+
+                  }
+
+
+               }
+
+
+       _image_classifier_export_as_model_asset(self.__proxy__, filename, context)
+
+
+
+
+
+
+
+   def _get(self, field):
+
+
+       """
+
+
+       Return the value of a given field. The list of all queryable fields is
+
+
+       detailed below, and can be obtained programmatically with the
+
+
+       :func:`~turicreate.image_classifier.ImageClassifier._list_fields`
+
+
+       method.
+
+
+
+
+
+
+       +------------------------+-------------------------------------------------------------+
+
+
+       |      Field             | Description                                                 |
+
+
+       +========================+=============================================================+
+
+
+       | coefficients           | Regression coefficients                                     |
+
+
+       +------------------------+-------------------------------------------------------------+
+
+
+       | convergence_threshold  | Desired solver accuracy                                     |
+
+
+       +------------------------+-------------------------------------------------------------+
+
+
+       | feature_rescaling      | Bool indicating l2-rescaling of features                    |
+
+
+       +------------------------+-------------------------------------------------------------+
+
+
+       | features               | Feature column names                                        |
+
+
+       +------------------------+-------------------------------------------------------------+
+
+
+       | l1_penalty             | l1 regularization weight                                    |
+
+
+       +------------------------+-------------------------------------------------------------+
+
+
+       | l2_penalty             | l2 regularization weight                                    |
+
+
+       +------------------------+-------------------------------------------------------------+
+
+
+       | lbfgs_memory_level     | LBFGS memory level                                          |
+
+
+       +------------------------+-------------------------------------------------------------+
+
+
+       | max_iterations         | Maximum number of solver iterations                         |
+
+
+       +------------------------+-------------------------------------------------------------+
+
+
+       | num_coefficients       | Number of coefficients in the model                         |
+
+
+       +------------------------+-------------------------------------------------------------+
+
+
+       | num_examples           | Number of examples used for training                        |
+
+
+       +------------------------+-------------------------------------------------------------+
+
+
+       | num_features           | Number of dataset columns used for training                 |
+
+
+       +------------------------+-------------------------------------------------------------+
+
+
+       | num_unpacked_features  | Number of features (including expanded list/dict features)  |
+
+
+       +------------------------+-------------------------------------------------------------+
+
+
+       | solver                 | Type of solver                                              |
+
+
+       +------------------------+-------------------------------------------------------------+
+
+
+       | step_size              | Initial step size for the solver                            |
+
+
+       +------------------------+-------------------------------------------------------------+
+
+
+       | target                 | Target column name                                          |
+
+
+       +------------------------+-------------------------------------------------------------+
+
+
+       | training_iterations    | Number of solver iterations                                 |
+
+
+       +------------------------+-------------------------------------------------------------+
+
+
+       | training_loss          | Maximized Log-likelihood                                    |
+
+
+       +------------------------+-------------------------------------------------------------+
+
+
+       | training_solver_status | Solver status after training                                |
+
+
+       +------------------------+-------------------------------------------------------------+
+
+
+       | training_time          | Training time (excludes preprocessing)                      |
+
+
+       +------------------------+-------------------------------------------------------------+
+
+
+       | unpacked_features      | Feature names (including expanded list/dict features)       |
+
+
+       +------------------------+-------------------------------------------------------------+
+
+
+
+
+
+
+       Parameters
+
+
+       ----------
+
+
+       field : string
+
+
+           Name of the field to be retrieved.
+
+
+
+
+
+
+       Returns
+
+
+       -------
+
+
+       out
+
+
+           Value of the requested fields.
+
+
+       """
+
+
+       return super(_Classifier, self)._get(field)
+
+
+
+
+
+
+
+   def predict(self, dataset, output_type='class',
+
+
+               missing_value_action='auto'):
+
+
+       """
+
+
+       Return predictions for ``dataset``, using the trained image
+
+
+       regression model. Predictions can be generated as class labels,
+
+
+       probabilities that the target value is True, or margins (i.e. the
+
+
+       distance of the observations from the hyperplane separating the
+
+
+       classes). `probability_vector` returns a vector of probabilities by
+
+
+       each class.
+
+
+
+
+
+
+       For each new example in ``dataset``, the margin---also known as the
+
+
+       linear predictor---is the inner product of the example and the model
+
+
+       coefficients. The probability is obtained by passing the margin through
+
+
+       the image function. Predicted classes are obtained by thresholding
+
+
+       the predicted probabilities at 0.5. If you would like to threshold
+
+
+       predictions at a different probability level, you can use the
+
+
+       Turi Create evaluation toolkit.
+
+
+
+
+
+
+       Parameters
+
+
+       ----------
+
+
+       dataset : SFrame
+
+
+           Dataset of new observations. Must include columns with the same
+
+
+           names as the features used for model training, but does not require
+
+
+           a target column. Additional columns are ignored.
+
+
+
+
+
+
+       output_type : {'probability', 'margin', 'class', 'probability_vector'}, optional
+
+
+           Form of the predictions which are one of:
+
+
+
+
+
+
+           - 'probability': Prediction probability associated with the True
+
+
+             class (not applicable for multi-class classification)
+
+
+           - 'probability_vector': Prediction probability associated with each
+
+
+             class as a vector. The probability of the first class (sorted
+
+
+             alphanumerically by name of the class in the training set) is in
+
+
+             position 0 of the vector, the second in position 1 and so on.
+
+
+           - 'class': Class prediction. For multi-class classification, this
+
+
+             returns the class with maximum probability.
+
+
+
+
+
+
+       missing_value_action : str, optional
+
+
+           Action to perform when missing values are encountered. Can be
+
+
+           one of:
+
+
+
+
+
+
+           - 'auto': Default to 'impute'
+
+
+           - 'impute': Proceed with evaluation by filling in the missing
+
+
+             values with the mean of the training data. Missing
+
+
+             values are also imputed if an entire column of data is
+
+
+             missing during evaluation.
+
+
+           - 'error': Do not proceed with evaluation and terminate with
+
+
+             an error message.
+
+
+
+
+
+
+       Returns
+
+
+       -------
+
+
+       out : SArray
+
+
+           An SArray with model predictions.
+
+
+
+
+
+
+       See Also
+
+
+       ----------
+
+
+       create, evaluate, classify
+
+
+
+
+
+
+       Examples
+
+
+       ----------
+
+
+       >>> data =  turicreate.SFrame('https://static.turi.com/datasets/regression/houses.csv')
+
+
+
+
+
+
+       >>> data['is_expensive'] = data['price'] > 30000
+
+
+       >>> model = turicreate.image_classifier.create(data,
+
+
+                                            target='is_expensive',
+
+
+                                            features=['bath', 'bedroom', 'size'])
+
+
+
+
+
+
+       >>> probability_predictions = model.predict(data, output_type='probability')
+
+
+       >>> margin_predictions = model.predict(data, output_type='margin')
+
+
+       >>> class_predictions = model.predict(data, output_type='class')
+
+
+
+
+
+
+       """
+
+
+
+
+
+
+
+       return super(_Classifier, self).predict(dataset,
+
+
+                                               output_type=output_type,
+
+
+                                               missing_value_action=missing_value_action)
+
+
+
+
+
+
+
+   def classify(self, dataset, missing_value_action='auto'):
+
+
+       """
+
+
+       Return a classification, for each example in the ``dataset``, using the
+
+
+       trained image regression model. The output SFrame contains predictions
+
+
+       as both class labels (0 or 1) as well as probabilities that the predicted
+
+
+       value is the associated label.
+
+
+
+
+
+
+       Parameters
+
+
+       ----------
+
+
+       dataset : SFrame
+
+
+           Dataset of new observations. Must include columns with the same
+
+
+           names as the features used for model training, but does not require
+
+
+           a target column. Additional columns are ignored.
+
+
+
+
+
+
+       missing_value_action : str, optional
+
+
+           Action to perform when missing values are encountered. This can be
+
+
+           one of:
+
+
+
+
+
+
+           - 'auto': Default to 'impute'
+
+
+           - 'impute': Proceed with evaluation by filling in the missing
+
+
+             values with the mean of the training data. Missing
+
+
+             values are also imputed if an entire column of data is
+
+
+             missing during evaluation.
+
+
+           - 'error': Do not proceed with evaluation and terminate with
+
+
+             an error message.
+
+
+
+
+
+
+       Returns
+
+
+       -------
+
+
+       out : SFrame
+
+
+           An SFrame with model predictions i.e class labels and probabilities.
+
+
+
+
+
+
+       See Also
+
+
+       ----------
+
+
+       create, evaluate, predict
+
+
+
+
+
+
+       Examples
+
+
+       ----------
+
+
+       >>> data =  turicreate.SFrame('https://static.turi.com/datasets/regression/houses.csv')
+
+
+
+
+
+
+       >>> data['is_expensive'] = data['price'] > 30000
+
+
+       >>> model = turicreate.image_classifier.create(data,
+
+
+                                            target='is_expensive',
+
+
+                                            features=['bath', 'bedroom', 'size'])
+
+
+
+
+
+
+       >>> classes = model.classify(data)
+
+
+
+
+
+
+       """
+
+
+
+
+
+
+
+       return super(ImageClassifier, self).classify(dataset,
+
+
+                                                       missing_value_action=missing_value_action)
+
+
+
+
+
+
+
+   def predict_topk(self, dataset, output_type="probability", k=3, missing_value_action='auto'):
+
+
+       """
+
+
+       Return top-k predictions for the ``dataset``, using the trained model.
+
+
+       Predictions are returned as an SFrame with three columns: `id`,
+
+
+       `class`, and `probability`, `margin`,  or `rank`, depending on the ``output_type``
+
+
+       parameter. Input dataset size must be the same as for training of the model.
+
+
+
+
+
+
+       Parameters
+
+
+       ----------
+
+
+       dataset : SFrame
+
+
+           A dataset that has the same columns that were used during training.
+
+
+           If the target column exists in ``dataset`` it will be ignored
+
+
+           while making predictions.
+
+
+
+
+
+
+       output_type : {'probability', 'rank', 'margin'}, optional
+
+
+           Choose the return type of the prediction:
+
+
+
+
+
+
+           - `probability`: Probability associated with each label in the prediction.
+
+
+           - `rank`       : Rank associated with each label in the prediction.
+
+
+           - `margin`     : Margin associated with each label in the prediction.
+
+
+
+
+
+
+       k : int, optional
+
+
+           Number of classes to return for each input example.
+
+
+
+
+
+
+       missing_value_action : str, optional
+
+
+           Action to perform when missing values are encountered. Can be
+
+
+           one of:
+
+
+
+
+
+
+           - 'auto': Default to 'impute'
+
+
+           - 'impute': Proceed with evaluation by filling in the missing
+
+
+             values with the mean of the training data. Missing
+
+
+             values are also imputed if an entire column of data is
+
+
+             missing during evaluation.
+
+
+           - 'error': Do not proceed with evaluation and terminate with
+
+
+             an error message.
+
+
+
+
+
+
+       Returns
+
+
+       -------
+
+
+       out : SFrame
+
+
+           An SFrame with model predictions.
+
+
+
+
+
+
+       See Also
+
+
+       --------
+
+
+       predict, classify, evaluate
+
+
+
+
+
+
+       Examples
+
+
+       --------
+
+
+       >>> pred = m.predict_topk(validation_data, k=3)
+
+
+       >>> pred
+
+
+       +--------+-------+-------------------+
+
+
+       | id     | class |   probability     |
+
+
+       +--------+-------+-------------------+
+
+
+       |   0    |   4   |   0.995623886585  |
+
+
+       |   0    |   9   |  0.0038311756216  |
+
+
+       |   0    |   7   | 0.000301006948575 |
+
+
+       |   1    |   1   |   0.928708016872  |
+
+
+       |   1    |   3   |  0.0440889261663  |
+
+
+       |   1    |   2   |  0.0176190119237  |
+
+
+       |   2    |   3   |   0.996967732906  |
+
+
+       |   2    |   2   |  0.00151345680933 |
+
+
+       |   2    |   7   | 0.000637513934635 |
+
+
+       |   3    |   1   |   0.998070061207  |
+
+
+       |  ...   |  ...  |        ...        |
+
+
+       +--------+-------+-------------------+
+
+
+       [35688 rows x 3 columns]
+
+
+       """
+
+
+       _check_categorical_option_type('output_type', output_type,
+
+
+                                      ['rank', 'margin', 'probability'])
+
+
+       _check_categorical_option_type('missing_value_action', missing_value_action,
+
+
+                                      ['auto', 'impute', 'error'])
+
+
+       if missing_value_action == 'auto':
+
+
+           missing_value_action = 'impute'
+
+
+
+
+
+
+
+       # Low latency path
+
+
+       if isinstance(dataset, list):
+
+
+           return self.__proxy__.fast_predict_topk(
+
+
+               dataset, missing_value_action, output_type, k)
+
+
+       if isinstance(dataset, dict):
+
+
+           return self.__proxy__.fast_predict_topk(
+
+
+               [dataset], missing_value_action, output_type, k)
+
+
+       # Fast path
+
+
+       _raise_error_if_not_sframe(dataset, "dataset")
+
+
+       options = dict()
+
+
+       if (missing_value_action == 'auto'):
+
+
+           missing_value_action = _sl.select_default_missing_value_policy(
+
+
+                                                             self, 'predict')
+
+
+       return self.__proxy__.predict_topk(
+
+
+           dataset, missing_value_action, output_type, k)
+
+
+
+
+
+
+
+  
+
+
+   def evaluate(self, dataset, metric='auto', missing_value_action='auto'):
+
+
+       """
+
+
+       Evaluate the model by making predictions of target values and comparing
+
+
+       these to actual values.
+
+
+
+
+
+
+       Parameters
+
+
+       ----------
+
+
+       dataset : SFrame
+
+
+           Dataset of new observations. Must include columns with the same
+
+
+           names as the target and features used for model training. Additional
+
+
+           columns are ignored.
+
+
+
+
+
+
+       metric : str, optional
+
+
+           Name of the evaluation metric.  Possible values are:
+
+
+
+
+
+
+           - 'auto'             : Returns all available metrics.
+
+
+           - 'accuracy'         : Classification accuracy (micro average).
+
+
+           - 'auc'              : Area under the ROC curve (macro average)
+
+
+           - 'precision'        : Precision score (macro average)
+
+
+           - 'recall'           : Recall score (macro average)
+
+
+           - 'f1_score'         : F1 score (macro average)
+
+
+           - 'log_loss'         : Log loss
+
+
+           - 'confusion_matrix' : An SFrame with counts of possible prediction/true label combinations.
+
+
+           - 'roc_curve'        : An SFrame containing information needed for an ROC curve
+
+
+
+
+
+
+           For more flexibility in calculating evaluation metrics, use the
+
+
+           :class:`~turicreate.evaluation` module.
+
+
+
+
+
+
+       missing_value_action : str, optional
+
+
+           Action to perform when missing values are encountered. This can be
+
+
+           one of:
+
+
+
+
+
+
+           - 'auto': Default to 'impute'
+
+
+           - 'impute': Proceed with evaluation by filling in the missing
+
+
+             values with the mean of the training data. Missing
+
+
+             values are also imputed if an entire column of data is
+
+
+             missing during evaluation.
+
+
+           - 'error': Do not proceed with evaluation and terminate with
+
+
+             an error message.
+
+
+
+
+
+
+       Returns
+
+
+       -------
+
+
+       out : dict
+
+
+           Dictionary of evaluation results where the key is the name of the
+
+
+           evaluation metric (e.g. `accuracy`) and the value is the evaluation
+
+
+           score.
+
+
+
+
+
+
+       See Also
+
+
+       ----------
+
+
+       create, predict, classify
+
+
+
+
+
+
+       Examples
+
+
+       ----------
+
+
+       .. sourcecode:: python
+
+
+
+
+
+
+         >>> data =  turicreate.SFrame('https://static.turi.com/datasets/regression/houses.csv')
+
+
+         >>> data['is_expensive'] = data['price'] > 30000
+
+
+         >>> model = turicreate.image_classifier.create(data,
+
+
+         ...                            target='is_expensive',
+
+
+         ...                            features=['bath', 'bedroom', 'size'])
+
+
+         >>> results = model.evaluate(data)
+
+
+         >>> print results['accuracy']
+
+
+       """
+
+
+
+
+
+
+
+       _raise_error_evaluation_metric_is_valid(metric,
+
+
+               ['auto', 'accuracy', 'confusion_matrix', 'roc_curve', 'auc',
+
+
+                'log_loss', 'precision', 'recall', 'f1_score'])
+
+
+       return super(_Classifier, self).evaluate(dataset,
+
+
+                                missing_value_action=missing_value_action,
+
+
+                                metric=metric)
+
+
 
         Parameters
         ----------
