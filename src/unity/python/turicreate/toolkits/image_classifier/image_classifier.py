@@ -48,11 +48,13 @@ _DEFAULT_SOLVER_OPTIONS = {
     
     """
     Create a :class:`ImageClassifier` model.
+
     Parameters
     ----------
     dataset : SFrame
         Input data. The column named by the 'feature' parameter will be
         extracted for modeling.
+
     target : string, or int
         Name of the column containing the target variable. The values in this
         column must be of string or integer type. String target variables are
@@ -61,23 +63,116 @@ _DEFAULT_SOLVER_OPTIONS = {
         values is mapped to 0 and 1 respectively with 0 being the base class
         and 1 being the reference class. Use `model.classes` to retrieve
         the order in which the classes are mapped.
+
     feature : string, optional
         indicates that the SFrame has only column of Image type and that will
         Name of the column containing the input images. 'None' (the default)
         indicates the only image column in `dataset` should be used as the
         feature.
+        
+l2_penalty : float, optional
+        Weight on l2 regularization of the model. The larger this weight, the
+        more the model coefficients shrink toward 0. This introduces bias into
+        the model but decreases variance, potentially leading to better
+        predictions. The default value is 0.01; setting this parameter to 0
+        corresponds to unregularized logistic regression. See the ridge
+        regression reference for more detail.
+
+    l1_penalty : float, optional
+        Weight on l1 regularization of the model. Like the l2 penalty, the
+        higher the l1 penalty, the more the estimated coefficients shrink toward
+        0. The l1 penalty, however, completely zeros out sufficiently small
+        coefficients, automatically indicating features that are not useful
+        for the model. The default weight of 0 prevents any features from
+        being discarded. See the LASSO regression reference for more detail.
+
+    solver : string, optional
+        Name of the solver to be used to solve the regression. See the
+        references for more detail on each solver. Available solvers are:
+
+        - *auto (default)*: automatically chooses the best solver for the data
+          and model parameters.
+        - *newton*: Newton-Raphson
+        - *lbfgs*: limited memory BFGS
+        - *fista*: accelerated gradient descent
+
+        For this model, the Newton-Raphson method is equivalent to the
+        iteratively re-weighted least squares algorithm. If the l1_penalty is
+        greater than 0, use the 'fista' solver.
+
+        The model is trained using a carefully engineered collection of methods
+        that are automatically picked based on the input data. The ``newton``
+        method  works best for datasets with plenty of examples and few features
+        (long datasets). Limited memory BFGS (``lbfgs``) is a robust solver for
+        wide datasets (i.e datasets with many coefficients).  ``fista`` is the
+        default solver for l1-regularized linear regression. The solvers are all
+        automatically tuned and the default options should function well. See
+        the solver options guide for setting additional parameters for each of
+        the solvers.
+
+        See the user guide for additional details on how the solver is chosen.
+        (see `here
+        <https://apple.github.io/turicreate/docs/userguide/supervised-learning/linear-regression.html>`_)
+
+    feature_rescaling : boolean, optional
+
+        Feature rescaling is an important pre-processing step that ensures that
+        all features are on the same scale. An l2-norm rescaling is performed
+        to make sure that all features are of the same norm. Categorical
+        features are also rescaled by rescaling the dummy variables that are
+        used to represent them. The coefficients are returned in original scale
+        of the problem. This process is particularly useful when features
+        vary widely in their ranges.
+
+    convergence_threshold : float, optional
+
+        Convergence is tested using variation in the training objective. The
+        variation in the training objective is calculated using the difference
+        between the objective values between two steps. Consider reducing this
+        below the default value (0.01) for a more accurately trained model.
+        Beware of overfitting (i.e a model that works well only on the training
+        data) if this parameter is set to a very low value.
+
+    lbfgs_memory_level : float, optional
+
+        The L-BFGS algorithm keeps track of gradient information from the
+        previous ``lbfgs_memory_level`` iterations. The storage requirement for
+        each of these gradients is the ``num_coefficients`` in the problem.
+        Increasing the ``lbfgs_memory_level ``can help improve the quality of
+        the model trained. Setting this to more than ``max_iterations`` has the
+        same effect as setting it to ``max_iterations``.
+
     model : string optional
         Uses a pretrained model to bootstrap an image classifier:
+
            - "resnet-50" : Uses a pretrained resnet model.
                            Exported Core ML model will be ~90M.
+
            - "squeezenet_v1.1" : Uses a pretrained squeezenet model.
                                  Exported Core ML model will be ~4.7M.
+
            - "VisionFeaturePrint_Screen": Uses an OS internal feature extractor.
                                           Only on available on iOS 12.0+,
                                           macOS 10.14+ and tvOS 12.0+.
                                           Exported Core ML model will be ~41K.
+
         Models are downloaded from the internet if not available locally. Once
         downloaded, the models are cached for future use.
+        
+    step_size : float, optional
+
+        The starting step size to use for the ``fista`` solver. The default is
+        set to 1.0, this is an aggressive setting. If the first iteration takes
+        a considerable amount of time, reducing this parameter may speed up
+        model training.
+
+    class_weights : {dict, `auto`}, optional
+
+        Weights the examples in the training data according to the given class
+        weights. If set to `None`, all classes are supposed to have weight one. The
+        `auto` mode set the class weight to be inversely proportional to number of
+        examples in the training data with the given class.
+
     validation_set : SFrame, optional
         A dataset for monitoring the model's generalization performance.
         The format of this SFrame must be the same as the training set.
@@ -85,33 +180,43 @@ _DEFAULT_SOLVER_OPTIONS = {
         automatically sampled and used for progress printing. If
         validation_set is set to None, then no additional metrics
         are computed. The default value is 'auto'.
+
     max_iterations : float, optional
         The maximum number of allowed passes through the data. More passes over
         the data can result in a more accurately trained model. Consider
         increasing this (the default value is 10) if the training accuracy is
         low and the *Grad-Norm* in the display is large.
+
     verbose : bool, optional
         If True, prints progress updates and model details.
+
     seed : int, optional
         Seed for random number generation. Set this value to ensure that the
         same model is created every time.
+
     batch_size : int, optional
         If you are getting memory errors, try decreasing this value. If you
         have a powerful computer, increasing this value may improve performance.
+
     Returns
     -------
     out : ImageClassifier
         A trained :class:`ImageClassifier` model.
+
     Examples
     --------
     .. sourcecode:: python
+
         >>> model = turicreate.image_classifier.create(data, target='is_expensive')
+
         # Make predictions (in various forms)
         >>> predictions = model.predict(data)      # predictions
         >>> predictions = model.classify(data)     # predictions with confidence
         >>> predictions = model.predict_topk(data) # Top-5 predictions (multiclass)
+
         # Evaluate the model with ground truth data
         >>> results = model.evaluate(data)
+
     See Also
     --------
     ImageClassifier
@@ -201,6 +306,7 @@ class ImageClassifier(_CustomModel):
     """
     An trained model that is ready to use for classification, exported to
     CoreML, or for feature extraction.
+
     This model should not be constructed directly.
     """
 
@@ -250,6 +356,7 @@ class ImageClassifier(_CustomModel):
     def __str__(self):
         """
         Return a string description of the model to the ``print`` method.
+
         Returns
         -------
         out : string
@@ -275,6 +382,7 @@ class ImageClassifier(_CustomModel):
         Returns a structured description of the model, including (where
         relevant) the schema of the training data, description of the training
         data, training statistics, and model hyperparameters.
+
         Returns
         -------
         sections : list (of list of tuples)
@@ -322,6 +430,7 @@ class ImageClassifier(_CustomModel):
         distance of the observations from the hyperplane separating the
         classes). `probability_vector` returns a vector of probabilities by
         each class.
+
         For each new example in ``dataset``, the margin---also known as the
         linear predictor---is the inner product of the example and the model
         coefficients. The probability is obtained by passing the margin through
@@ -329,6 +438,7 @@ class ImageClassifier(_CustomModel):
         the predicted probabilities at 0.5. If you would like to threshold
         predictions at a different probability level, you can use the
         Turi Create evaluation toolkit.
+
         Parameters
         ----------
         dataset : SFrame | SArray | turicreate.Image
@@ -336,8 +446,10 @@ class ImageClassifier(_CustomModel):
             If dataset is an SFrame, it must have columns with the same names as
             the features used for model training, but does not require a target
             column. Additional columns are ignored.
+
         output_type : {'probability', 'margin', 'class', 'probability_vector'}, optional
             Form of the predictions which are one of:
+
             - 'probability': Prediction probability associated with the True
               class (not applicable for multi-class classification)
             - 'probability_vector': Prediction probability associated with each
@@ -346,22 +458,27 @@ class ImageClassifier(_CustomModel):
               position 0 of the vector, the second in position 1 and so on.
             - 'class': Class prediction. For multi-class classification, this
               returns the class with maximum probability.
+
         batch_size : int, optional
             If you are getting memory errors, try decreasing this value. If you
             have a powerful computer, increasing this value may improve performance.
+
         Returns
         -------
         out : SArray
             An SArray with model predictions. If `dataset` is a single image, the
             return value will be a single prediction.
+
         See Also
         ----------
         create, evaluate, classify
+
         Examples
         ----------
         >>> probability_predictions = model.predict(data, output_type='probability')
         >>> margin_predictions = model.predict(data, output_type='margin')
         >>> class_predictions = model.predict(data, output_type='class')
+
         """
         if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image)):
             raise TypeError('dataset must be either an SFrame, SArray or turicreate.Image')
@@ -379,6 +496,7 @@ class ImageClassifier(_CustomModel):
         trained logistic regression model. The output SFrame contains predictions
         as both class labels (0 or 1) as well as probabilities that the predicted
         value is the associated label.
+
         Parameters
         ----------
         dataset : SFrame | SArray | turicreate.Image
@@ -386,21 +504,26 @@ class ImageClassifier(_CustomModel):
             If dataset is an SFrame, it must include columns with the same
             names as the features used for model training, but does not require
             a target column. Additional columns are ignored.
+
         batch_size : int, optional
             If you are getting memory errors, try decreasing this value. If you
             have a powerful computer, increasing this value may improve performance.
+
         Returns
         -------
         out : SFrame
             An SFrame with model predictions i.e class labels and
             probabilities. If `dataset` is a single image, the return will be a
             single row (dict).
+
         See Also
         ----------
         create, evaluate, predict
+
         Examples
         ----------
         >>> classes = model.classify(data)
+
         """
         if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image)):
             raise TypeError('dataset must be either an SFrame, SArray or turicreate.Image')
@@ -418,6 +541,7 @@ class ImageClassifier(_CustomModel):
         Predictions are returned as an SFrame with three columns: `id`,
         `class`, and `probability`, `margin`,  or `rank`, depending on the ``output_type``
         parameter. Input dataset size must be the same as for training of the model.
+
         Parameters
         ----------
         dataset : SFrame | SArray | turicreate.Image
@@ -425,20 +549,26 @@ class ImageClassifier(_CustomModel):
             If dataset is an SFrame, it must include columns with the same
             names as the features used for model training, but does not require
             a target column. Additional columns are ignored.
+
         output_type : {'probability', 'rank', 'margin'}, optional
             Choose the return type of the prediction:
+
             - `probability`: Probability associated with each label in the prediction.
             - `rank`       : Rank associated with each label in the prediction.
             - `margin`     : Margin associated with each label in the prediction.
+
         k : int, optional
             Number of classes to return for each input example.
+
         Returns
         -------
         out : SFrame
             An SFrame with model predictions.
+
         See Also
         --------
         predict, classify, evaluate
+
         Examples
         --------
         >>> pred = m.predict_topk(validation_data, k=3)
@@ -474,14 +604,17 @@ class ImageClassifier(_CustomModel):
         """
         Evaluate the model by making predictions of target values and comparing
         these to actual values.
+
         Parameters
         ----------
         dataset : SFrame
             Dataset of new observations. Must include columns with the same
             names as the target and features used for model training. Additional
             columns are ignored.
+
         metric : str, optional
             Name of the evaluation metric.  Possible values are:
+
             - 'auto'             : Returns all available metrics.
             - 'accuracy'         : Classification accuracy (micro average).
             - 'auc'              : Area under the ROC curve (macro average)
@@ -491,25 +624,32 @@ class ImageClassifier(_CustomModel):
             - 'log_loss'         : Log loss
             - 'confusion_matrix' : An SFrame with counts of possible prediction/true label combinations.
             - 'roc_curve'        : An SFrame containing information needed for an ROC curve
+
             For more flexibility in calculating evaluation metrics, use the
             :class:`~turicreate.evaluation` module.
+
         verbose : bool, optional
             If True, prints progress updates and model details.
+
         batch_size : int, optional
             If you are getting memory errors, try decreasing this value. If you
             have a powerful computer, increasing this value may improve performance.
+
         Returns
         -------
         out : dict
             Dictionary of evaluation results where the key is the name of the
             evaluation metric (e.g. `accuracy`) and the value is the evaluation
             score.
+
         See Also
         ----------
         create, predict, classify
+
         Examples
         ----------
         .. sourcecode:: python
+
           >>> results = model.evaluate(data)
           >>> print results['accuracy']
         """
@@ -528,9 +668,11 @@ class ImageClassifier(_CustomModel):
     def export_coreml(self, filename):
         """
         Save the model in Core ML format.
+
         See Also
         --------
         save
+
         Examples
         --------
         >>> model.export_coreml('myModel.mlmodel')
