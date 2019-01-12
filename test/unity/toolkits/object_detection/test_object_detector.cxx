@@ -141,6 +141,10 @@ public:
     return export_weights_retval_;
   }
 
+  std::vector<std::string> gpu_names() const override {
+    return {};
+  }
+
   std::deque<set_learning_rate_call> set_learning_rate_calls_;
   std::deque<train_call> train_calls_;
   mutable std::deque<predict_call> predict_calls_;
