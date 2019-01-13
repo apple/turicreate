@@ -33,7 +33,7 @@ _DEFAULT_SOLVER_OPTIONS = {
 'lbfgs_memory_level': 11,
 'max_iterations': 10}
 
-  def create(dataset, target, features=None, model = 'resnet-50',
+def create(dataset, target, features=None, model = 'resnet-50',
     l2_penalty=0.01, l1_penalty=0.0,
     solver='auto', feature_rescaling=True,
     convergence_threshold = _DEFAULT_SOLVER_OPTIONS['convergence_threshold'],
@@ -115,7 +115,6 @@ l2_penalty : float, optional
         <https://apple.github.io/turicreate/docs/userguide/supervised-learning/linear-regression.html>`_)
 
     feature_rescaling : boolean, optional
-
         Feature rescaling is an important pre-processing step that ensures that
         all features are on the same scale. An l2-norm rescaling is performed
         to make sure that all features are of the same norm. Categorical
@@ -125,7 +124,6 @@ l2_penalty : float, optional
         vary widely in their ranges.
 
     convergence_threshold : float, optional
-
         Convergence is tested using variation in the training objective. The
         variation in the training objective is calculated using the difference
         between the objective values between two steps. Consider reducing this
@@ -134,7 +132,6 @@ l2_penalty : float, optional
         data) if this parameter is set to a very low value.
 
     lbfgs_memory_level : float, optional
-
         The L-BFGS algorithm keeps track of gradient information from the
         previous ``lbfgs_memory_level`` iterations. The storage requirement for
         each of these gradients is the ``num_coefficients`` in the problem.
@@ -160,14 +157,12 @@ l2_penalty : float, optional
         downloaded, the models are cached for future use.
         
     step_size : float, optional
-
         The starting step size to use for the ``fista`` solver. The default is
         set to 1.0, this is an aggressive setting. If the first iteration takes
         a considerable amount of time, reducing this parameter may speed up
         model training.
 
     class_weights : {dict, `auto`}, optional
-
         Weights the examples in the training data according to the given class
         weights. If set to `None`, all classes are supposed to have weight one. The
         `auto` mode set the class weight to be inversely proportional to number of
