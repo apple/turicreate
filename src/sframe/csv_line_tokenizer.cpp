@@ -5,12 +5,14 @@
  */
 /**
  * \file
- * CSV Parser as adapted from Pandas
+ * Tokenizes a CSV line.  
+ * Originally modified from Pandas. Now is quite significantly different.
  */
 #include <vector>
 #include <string>
 #include <cstdlib>
 #include <algorithm>
+#include <logger/logger.hpp>
 #include <boost/config/warning_disable.hpp>
 #include <sframe/csv_line_tokenizer.hpp>
 #include <flexible_type/string_escape.hpp>
@@ -70,7 +72,7 @@ bool csv_line_tokenizer::tokenize_line(const char* str, size_t len,
                          if (len > 0 && buf[len - 1] == quote_char) --len;
                          output.emplace_back(buf, len);
                          if (is_quoted) {
-                           unescape_string(output.back(), escape_char, 
+                           unescape_string(output.back(), use_escape_char, escape_char, 
                                            quote_char, double_quote);
                          }
                          return true;
@@ -102,6 +104,8 @@ size_t csv_line_tokenizer::tokenize_line(char* str, size_t len,
   size_t ctr = 0;
   size_t num_outputs = output.size();
   if (output_order != nullptr) num_outputs = output_order->size();
+  tokenizer_impl_error.clear();
+
   bool success = 
   tokenize_line_impl(str, len,
                      [&](char* buf, size_t len)->bool {
@@ -114,10 +118,16 @@ size_t csv_line_tokenizer::tokenize_line(char* str, size_t len,
                          if (delimiter_is_space_but_not_tab) {
                            if (len == 0) return true;
                            for (size_t i = 0;i < len; ++i) {
-                             if (!std::isspace(buf[i])) return false;
+                             if (!std::isspace(buf[i])) {
+                               tokenizer_impl_error = "Unexpected characters after last column. \"" + 
+                                                 std::string(buf, len) + "\"";
+                               return false;
+                             }
                            }
                            return true;
                          }
+                         tokenizer_impl_error = "Unexpected characters after last column. \"" + 
+                                           std::string(buf, len) + "\"";
                          return false;
                        }
                        // get the output column
@@ -152,8 +162,15 @@ size_t csv_line_tokenizer::tokenize_line(char* str, size_t len,
                            ++buf;
                            --len;
                          }
+                         char* prevbuf = buf;
                          bool success = parse_as(&buf, len, output[output_idx], true);
-                         if (success) ++ctr;
+                         if (success) {
+                           ++ctr;
+                         } else {
+                           tokenizer_impl_error = "Unable to interpret \"" + std::string(prevbuf, len) + 
+                                             "\" as a " + 
+                                             flex_type_enum_to_name(output[output_idx].get_type());
+                         }
                          return success;
                        }
                      },
@@ -199,6 +216,40 @@ size_t csv_line_tokenizer::tokenize_line(char* str, size_t len,
                        --ctr;
                      });
 
+  if (!success || ctr < output.size()) {
+    std::stringstream strm;
+    if (!tokenizer_impl_error.empty()) strm << tokenizer_impl_error << "\n";
+    if (tokenizer_impl_fail_pos >= 0 && (size_t)tokenizer_impl_fail_pos <= len) {
+      strm << "Parse failed at token ending at: \n";
+      std::string line(str, len);
+      // colorize the line.
+#ifdef COLOROUTPUT
+      line.insert(tokenizer_impl_fail_pos, 
+                  textcolor(TEXTCOLOR_BRIGHT, TEXTCOLOR_RED) + 
+                  "^" + 
+                  reset_color());
+#else
+      line.insert(tokenizer_impl_fail_pos, "^");
+#endif
+      if (line.length() > 256) {
+        // truncate around the fail pos
+        ssize_t start = std::max<ssize_t>(0, tokenizer_impl_fail_pos - 60);
+        ssize_t end = std::min<ssize_t>(len, tokenizer_impl_fail_pos + 60);
+        line = line.substr(start, end - start);
+      }
+      strm << "\t" << line << "\n";
+    }
+    strm <<  "Successfully parsed " << ctr << " tokens: \n";
+    for (size_t i = 0; i < ctr; ++i) {
+      std::string s = std::string(output[i]);
+      if (s.length() > 21) {
+        // too long string. just take first 10, and last 10 chars
+        s = s.substr(0, 10) + " ... " + s.substr(s.length() - 10);
+      }
+      strm << "\t" << i << ": " << s << "\n";
+    }
+    parse_error = strm.str();
+  }
   if (!success) return 0;
   return ctr;
 };
@@ -218,6 +269,26 @@ bool csv_line_tokenizer::parse_as(char** buf, size_t len,
       }
     }
   }
+  if (!true_values.empty() && true_values.count(std::string(*buf, len))) {
+    while(len > 0 && std::isspace((*buf)[len - 1])) len--;
+    if (out.get_type() == flex_type_enum::INTEGER) {
+      out = 1;
+      return true;
+    } else if (out.get_type() == flex_type_enum::FLOAT) {
+      out = 1.0;
+      return true;
+    }
+  }
+  if (!false_values.empty() && false_values.count(std::string(*buf, len))) {
+    while(len > 0 && std::isspace((*buf)[len - 1])) len--;
+    if (out.get_type() == flex_type_enum::INTEGER) {
+      out = 0;
+      return true;
+    } else if (out.get_type() == flex_type_enum::FLOAT) {
+      out = 0.0;
+      return true;
+    }
+  }
   bool parse_success = false;
   // we are trying to parse a non-string, but this actually looks like a string
   // to me.  it might be some other type wrapped inside quote characters
@@ -232,7 +303,7 @@ bool csv_line_tokenizer::parse_as(char** buf, size_t len,
     ++(*buf); 
     if (len > 1) len -= 2;
     size_t new_length = 
-        unescape_string(*buf, len, escape_char, quote_char, double_quote);
+        unescape_string(*buf, len, use_escape_char, escape_char, quote_char, double_quote);
     bool ret = parse_as(buf, new_length, out, false);
     (*buf) = end_of_buf; 
     return ret;
@@ -268,7 +339,7 @@ bool csv_line_tokenizer::parse_as(char** buf, size_t len,
        }
        parse_success = true;
        if (is_quoted) {
-         unescape_string(out.mutable_get<flex_string>(), escape_char, 
+         unescape_string(out.mutable_get<flex_string>(), use_escape_char, escape_char, 
                          quote_char, double_quote);
        }
        break;
@@ -337,7 +408,7 @@ bool csv_line_tokenizer::parse_as(char** buf, size_t len,
 // insert a character into the field buffer. resizing it if necessary
 #define PUSH_CHAR(c) if (field_buffer_len >= field_buffer.size()) field_buffer.resize(field_buffer.size() * 2); \
                      field_buffer[field_buffer_len++] = c;  \
-                     escape_sequence = (c == escape_char);
+                     escape_sequence = use_escape_char && (c == escape_char);
 
 // Finished parsing a field buffer. insert the token and reset the buffer
 #define END_FIELD() if (!add_token(&(field_buffer[0]), field_buffer_len)) { good = false; keep_parsing = false; break; } \
@@ -388,6 +459,7 @@ bool csv_line_tokenizer::tokenize_line_impl(char* str,
   // this is set to true for the character immediately after an escape character
   // and false all other times
   bool escape_sequence = false;
+  tokenizer_impl_fail_pos = -1;
   tokenizer_state state = tokenizer_state::START_FIELD; 
   field_buffer_len = 0;
   if (delimiter_is_new_line) {
@@ -526,15 +598,20 @@ REGULAR_CHARACTER:
     }
     if (reset_escape_sequence) escape_sequence = false;
   }
-  if (!good) return false;
+  if (!good) {
+    tokenizer_impl_fail_pos = (ssize_t)(buf - str);
+    return false;
+  }
   // cleanup 
   if (state != tokenizer_state::START_FIELD) {
     if (!add_token(&(field_buffer[0]), field_buffer_len)) { 
+      tokenizer_impl_fail_pos = (ssize_t)(buf - str);
       return false;
     }
   } else {
     if (start_field_with_delimiter_encountered) {
       if (!add_token(NULL, 0)) { 
+        tokenizer_impl_fail_pos = (ssize_t)(buf - str);
         return false;
       }
     }
@@ -542,8 +619,14 @@ REGULAR_CHARACTER:
   return true;
 }
 
+const std::string& csv_line_tokenizer::get_last_parse_error_diagnosis() const {
+  return parse_error;
+}
+
 void csv_line_tokenizer::init() {
-  parser.reset(new flexible_type_parser(delimiter, escape_char));
+  parser.reset(new flexible_type_parser(delimiter, use_escape_char, escape_char, 
+                                        std::unordered_set<std::string>(na_values.begin(), na_values.end()),
+                                        true_values, false_values));
   is_regular_line_terminator = line_terminator == "\n";
   if (is_regular_line_terminator) {
     delimiter_is_new_line = delimiter == "\n" || 

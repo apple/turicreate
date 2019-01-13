@@ -16,3 +16,10 @@ def bad_memory_access_fun():
 
 def force_exit_fun():
   abort()
+
+# Need to put something here to avoid an annoying compile error with
+# some cython versions
+# cy_test_utils.cxx:691:12: error: unused variable '__pyx_clineno' [-Werror,-Wunused-variable]
+cpdef unused():
+    abort()
+

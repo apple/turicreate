@@ -17,24 +17,30 @@
 
 namespace parser_impl { 
 
-/*
+/**
  * \internal
  * The string parsing configuration.
  *
  */
 struct parser_config {
-  // If any of these character occurs outside of quoted string, 
-  // the string will be terminated
+  /// If any of these character occurs outside of quoted string, 
+  /// the string will be terminated
   std::string restrictions;
-  // If the delimiter string is seen anywhere outside of a quoted string,
-  // the string will be terminated.
+  /// If the delimiter string is seen anywhere outside of a quoted string,
+  /// the string will be terminated.
   std::string delimiter;
-  // The character to use for an escape character
+  /// Whether escape char should be used
+  bool use_escape_char = true;
+  /// The character to use for an escape character
   char escape_char = '\\';
-  /* whether double quotes inside of a quote are treated as a single quote.
+  /** whether double quotes inside of a quote are treated as a single quote.
    * i.e. """hello""" => \"hello\"
    */
   char double_quote = true;
+
+  std::unordered_set<std::string> na_val;
+  std::unordered_set<std::string> true_val;
+  std::unordered_set<std::string> false_val;
 };
 
 BOOST_SPIRIT_TERMINAL_EX(restricted_string); 
@@ -113,12 +119,22 @@ struct string_parser
   bool has_delimiter = false;
   char delimiter_first_char;
   bool delimiter_is_singlechar = false;
+  std::unordered_map<std::string, turi::flexible_type> map_vals; // handle na_val, true_val, false_val
 
   string_parser(){}
   string_parser(parser_config config):config(config) {
     has_delimiter = config.delimiter.length() > 0;
     delimiter_is_singlechar = config.delimiter.length() == 1;
     if (has_delimiter) delimiter_first_char = config.delimiter[0];
+    for (auto s: config.na_val) {
+      map_vals[s] = turi::flexible_type(turi::flex_type_enum::UNDEFINED);
+    }
+    for (auto s: config.true_val) {
+      map_vals[s] = 1;
+    }
+    for (auto s: config.false_val) {
+      map_vals[s] = 0;
+    }
   }
 
   enum class tokenizer_state {
@@ -136,7 +152,7 @@ struct string_parser
     }
     return true;
   }
-#define PUSH_CHAR(c) ret.add_char(c); escape_sequence = (c == config.escape_char);
+#define PUSH_CHAR(c) ret.add_char(c); escape_sequence = config.use_escape_char && (c == config.escape_char);
 
 // insert a character into the field buffer. resizing it if necessary
 
@@ -229,10 +245,16 @@ struct string_parser
       if (!quote_char) boost::algorithm::trim_right(final_str);
       else if (quote_char) {
         // if was quoted field, we unescape the contents
-        turi::unescape_string(final_str, config.escape_char,
-                                  quote_char, config.double_quote);
+        turi::unescape_string(final_str, config.use_escape_char, 
+                              config.escape_char,
+                              quote_char, config.double_quote);
       }
-      attr = std::move(final_str);
+      auto map_val_iter = map_vals.find(final_str);
+      if (map_val_iter != map_vals.end()) {
+        attr = map_val_iter->second;
+      } else {
+        attr = std::move(final_str);
+      }
       first = cur;
     }
     return true;

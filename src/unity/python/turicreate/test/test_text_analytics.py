@@ -10,7 +10,7 @@ import math
 import unittest
 import warnings
 import turicreate as tc
-from . import util  # turicreate test utils (in oss_src)
+from . import util
 
 
 class FeatureEngineeringTest(unittest.TestCase):
@@ -40,6 +40,15 @@ class FeatureEngineeringTest(unittest.TestCase):
                                {'this': 1, 'is': 1, 'another': 2, 'example': 3}])
 
         self.sframe_comparer = util.SFrameComparer()
+
+
+    def test_tokenize(self):
+        sa_word_results = tc.text_analytics.tokenize(self.sa_word)
+
+        self.assertEqual(sa_word_results[0], ['I', 'like', 'big', 'dogs', 'They', 'are', 'fun', 'I', 'LIKE', 'BIG', 'DOGS'])
+        self.assertEqual(sa_word_results[1], ['I', 'like'])
+        self.assertEqual(sa_word_results[2], ['I', 'like', 'big'])
+
 
     def test_count_ngrams(self):
         # Testing word n-gram functionality
