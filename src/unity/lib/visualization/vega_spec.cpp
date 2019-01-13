@@ -154,7 +154,7 @@ EXPORT std::string categorical_spec(size_t length_list,
   size_t height = static_cast<size_t>(static_cast<double>(length_list) * 25.0 + 160.0);
   auto format_string = make_format_string(vega_spec_categorical_json, vega_spec_categorical_json_len);
   return format(format_string, {
-    {"{{height}}", std::to_string(height)},
+    {"{{computed_height}}", std::to_string(height)},
     {"{{title}}", title},
     {"{{xlabel}}", xlabel},
     {"{{ylabel}}", ylabel},
@@ -167,7 +167,7 @@ EXPORT std::string summary_view_spec(size_t length_elements){
 
   auto format_string = make_format_string(vega_spec_summary_view_json, vega_spec_summary_view_json_len);
   return format(format_string, {
-    {"{{height}}", std::to_string(height)}
+    {"{{computed_height}}", std::to_string(height)}
   });
 }
 

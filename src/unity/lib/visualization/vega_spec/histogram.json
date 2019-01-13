@@ -1,10 +1,10 @@
 {
   "$schema": "https://vega.github.io/schema/vega/v4.json",
   "description": "A simple bar chart with embedded data.",
-  "autosize": {"type": "fit", "resize": true, "contains": "padding"},
-  "width": 720,
-  "height": 550,
-  "padding": 5,
+  "autosize": {"type": "fit", "resize": false, "contains": "padding"},
+  "width": {{width}},
+  "height": {{height}},
+  "padding": 8,
   "title": {
     "text": "{{title}}",
     "offset": 30

@@ -885,7 +885,7 @@ typedef enum {
     tc_plot_variation_default   = 0x00,
 
     // Sizes (defaults to medium)
-    //tc_plot_size_small        = 0x01,
+    tc_plot_size_small          = 0x01,
     tc_plot_size_medium         = 0x02,
 
     // Color variations

@@ -1,7 +1,7 @@
 {
   "$schema": "https://vega.github.io/schema/vega/v4.json",
-  "autosize": {"type": "fit", "resize": true, "contains": "padding"},
-  "padding": 5,
+  "autosize": {"type": "fit", "resize": false, "contains": "padding"},
+  "padding": 8,
   "metadata": {
     "bubbleOpts": {
       "showAllFields": false,
@@ -18,8 +18,8 @@
       ]
     }
   },
-  "width": 720,
-  "height": {{height}},
+  "width": {{width}},
+  "height": {{computed_height}},
   "title": {
     "text": "{{title}}",
     "offset": 30
