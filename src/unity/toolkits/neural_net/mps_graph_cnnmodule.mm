@@ -127,7 +127,13 @@ deferred_float_array mps_graph_cnn_module::train(
   auto loss_promise = std::make_shared<std::promise<shared_float_array>>();
   NSMutableArray<MPSImageBatch *> *recycled_inputs = recycled_inputs_;
   [cb addCompletedHandler:^(id <MTLCommandBuffer> cmdBuf) {
-      // TODO: Add error checking!
+
+      // Propagate Metal errors as C++ exceptions.
+      if (cmdBuf.status == MTLCommandBufferStatusError) {
+        loss_promise->set_exception(std::make_exception_ptr(std::runtime_error(
+            cmdBuf.error.localizedDescription.UTF8String)));
+        return;
+      }
 
       // Copy out the loss data and compute the scalar loss for each training
       // instance.
@@ -181,7 +187,13 @@ mps_graph_cnn_module::predict(const float_array& input_batch) const {
   auto result_promise = std::make_shared<std::promise<shared_float_array>>();
   NSMutableArray<MPSImageBatch *> *recycled_inputs = recycled_inputs_;
   [cb addCompletedHandler:^(id <MTLCommandBuffer> cmdBuf) {
-      // TODO: Add error checking!
+
+      // Propagate Metal errors as C++ exceptions.
+      if (cmdBuf.status == MTLCommandBufferStatusError) {
+        result_promise->set_exception(std::make_exception_ptr(
+            std::runtime_error(cmdBuf.error.localizedDescription.UTF8String)));
+        return;
+      }
 
       // Copy out the results.
       shared_float_array result = copy_image_batch_float16(result_shape,
@@ -232,7 +244,13 @@ deferred_float_array mps_graph_cnn_module::train_return_grad(
   NSMutableArray<MPSImageBatch *> *recycled_inputs = recycled_inputs_;
   NSMutableArray<MPSImageBatch *> *recycled_grads = recycled_grads_;
   [cb addCompletedHandler:^(id <MTLCommandBuffer> cmdBuf) {
-      // TODO: Add error checking!
+
+      // Propagate Metal errors as C++ exceptions.
+      if (cmdBuf.status == MTLCommandBufferStatusError) {
+        result_promise->set_exception(std::make_exception_ptr(
+            std::runtime_error(cmdBuf.error.localizedDescription.UTF8String)));
+        return;
+      }
 
       // Copy out the results.
       shared_float_array result = copy_image_batch_float16(result_shape,
