@@ -33,7 +33,7 @@ _DEFAULT_SOLVER_OPTIONS = {
 'lbfgs_memory_level': 11,
 'max_iterations': 10}
 
-def create(dataset, target, features=None, model = 'resnet-50',
+def create(dataset, target, feature=None, model = 'resnet-50',
     l2_penalty=0.01, l1_penalty=0.0,
     solver='auto', feature_rescaling=True,
     convergence_threshold = _DEFAULT_SOLVER_OPTIONS['convergence_threshold'],
