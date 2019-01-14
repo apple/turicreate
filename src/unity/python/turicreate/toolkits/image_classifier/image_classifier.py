@@ -24,6 +24,7 @@ from .._internal_utils import _mac_ver
 from .. import _mxnet_utils
 from .. import _pre_trained_models
 from .. import _image_feature_extractor
+from ._evaluation import Evaluation as _Evaluation
 from turicreate.toolkits._internal_utils import (_raise_error_if_not_sframe,
                                                  _numeric_param_check_range)
 
@@ -545,12 +546,160 @@ class ImageClassifier(_CustomModel):
           >>> results = model.evaluate(data)
           >>> print results['accuracy']
         """
+
+        import os, json, math
+
         if(batch_size < 1):
             raise ValueError("'batch_size' must be greater than or equal to 1")
 
         extracted_features = self._extract_features(dataset, verbose=verbose, batch_size=batch_size)
         extracted_features[self.target] = dataset[self.target]
-        return self.classifier.evaluate(extracted_features, metric = metric)
+        
+        metrics = self.classifier.evaluate_with_predictions(extracted_features, metric = metric)
+        predictions = metrics["predictions"]["probs"]
+        state = self.__proxy__.get_state()
+        labels = state["classes"]
+
+
+        def entropy(probs):
+            return reduce(lambda x, y: x + (y*math.log(1/y, 2) if y > 0 else 0) , probs, 0) / math.log(len(probs),2)
+
+        def confidence(probs):
+            return max(probs)
+
+        def relative_confidence(probs):
+            sorted_probs = sorted(probs, reverse=True)
+            return sorted_probs[0] - sorted_probs[1]
+
+
+        def get_confusion_matrix(extended_test, labels):
+            #Init a matrix
+            sf_confusion_matrix = {'label':[], 'predicted_label':[], 'prob_default':[]}
+            for target_l in labels:
+                for predicted_l in labels:
+                    sf_confusion_matrix['label'].append(target_l)
+                    sf_confusion_matrix['predicted_label'].append(predicted_l)
+                    sf_confusion_matrix['prob_default'].append(0)
+
+            sf_confusion_matrix = _tc.SFrame(sf_confusion_matrix)
+            sf_confusion_matrix = sf_confusion_matrix.join(extended_test.groupby(['label', 'predicted_label'], {'count' :_tc.aggregate.COUNT}), how='left', on=['label','predicted_label'])
+            sf_confusion_matrix = sf_confusion_matrix.fillna('count', 0)
+
+            label_column = _tc.SFrame({'label': extended_test['label']})
+            predictions = extended_test['probs']
+            for i in range(0, len(labels)):
+                new_test_data = label_column.add_columns([predictions.apply(lambda probs: probs[i]), predictions.apply(lambda probs: labels[i])], ['prob','predicted_label'])
+                if (i==0):
+                    test_longer_form = new_test_data
+                else:
+                    test_longer_form = test_longer_form.append(new_test_data)
+
+            if len(extended_test) is 0:
+                sf_confusion_matrix = sf_confusion_matrix.rename({'prob_default': 'prob', 'label': 'target_label'})
+            else:
+                sf_confusion_matrix = sf_confusion_matrix.join(test_longer_form.groupby(['label', 'predicted_label'], {'prob': _tc.aggregate.SUM('prob')}), how='left', on=['label', 'predicted_label'])
+                sf_confusion_matrix = sf_confusion_matrix.rename({'label': 'target_label'}).fillna('prob', 0)
+            
+            def wo_divide_by_zero(a,b):
+                if b==0:
+                    return None
+                else:
+                    return a*1.0/b
+
+            sf_confusion_matrix['norm_prob'] = sf_confusion_matrix.join(sf_confusion_matrix.groupby('target_label', {'sum_prob': _tc.aggregate.SUM('prob')}),how='left').apply(lambda x: wo_divide_by_zero(x['prob'], x['sum_prob']))
+            return sf_confusion_matrix.fillna('norm_prob', 0)
+
+
+        def hclusterSort(vectors, dist_fn):
+            distances = []
+            vecs = vectors[:]
+            for i in range(0, len(vecs)):
+                for j in range(i+1, len(vecs)):
+                    distances.append({'from': vecs[i], 'to': vecs[j], 'dist': dist_fn(vecs[i], vecs[j])})
+            distances = sorted(distances, key=lambda d: d['dist'])
+            excluding_names = []
+
+            while(len(distances) > 0):
+                min_dist = distances[0]
+
+                new_vec = {'name': str(min_dist['from']['name']) + '|'+ str(min_dist['to']['name']),
+                        'members': min_dist['from'].get('members', [min_dist['from']]) + min_dist['to'].get('members',[min_dist['to']])}
+
+                excluding_names = [min_dist['from']['name'], min_dist['to']['name']]
+
+                vecs = filter(lambda v: v['name'] not in excluding_names, vecs)
+                distances = filter(lambda dist: (dist['from']['name'] not in excluding_names) and (dist['to']['name'] not in excluding_names), distances)
+
+                for v in vecs:
+                    total = 0
+                    for vi in v.get('members', [v]):
+                        for vj in new_vec['members']:
+                            total += dist_fn(vi, vj)
+                    distances.append({'from': v, 'to': new_vec, 'dist': total/len(v.get('members', [v]))/len(new_vec['members'])})
+
+                vecs.append(new_vec)
+                distances = sorted(distances, key=lambda d: d['dist'])
+
+            return vecs
+
+        def l2Dist(v1, v2):
+            dist = 0
+            for i in range(0, len(v1['pos'])):
+                dist +=  math.pow(v1['pos'][i] - v2['pos'][i], 2)
+            return math.pow(dist, 0.5)
+
+    
+
+        evaluation_result = {k: metrics[k] for k in ['accuracy', 'f1_score', 'log_loss', 'precision', 'recall', 'auc']}
+        evaluation_result['num_test_examples'] = len(dataset)
+        for k in ['num_classes', 'num_features', 'input_image_shape', 'num_examples', 'training_loss', 'training_time']:
+            evaluation_result[k] = getattr(self, k)
+        
+        # Extend the given test data
+        extended_test = dataset.add_column(predictions, 'probs')
+        extended_test['label'] = dataset[self.target]
+        extended_test = extended_test.add_columns( [extended_test.apply(lambda d: labels[d['probs'].index(confidence(d['probs']))]),
+            extended_test.apply(lambda d: entropy(d['probs'])),
+            extended_test.apply(lambda d: confidence(d['probs'])),
+            extended_test.apply(lambda d: relative_confidence(d['probs']))],
+            ['predicted_label', 'entropy', 'confidence', 'relative_confidence'])
+        extended_test = extended_test.add_column(extended_test.apply(lambda d: d['label'] == d['predicted_label']), 'correct')
+
+        # Calculate the confusion matrix
+        sf_conf_mat = get_confusion_matrix(extended_test, labels)
+        confidence_threshold = 0.5
+        hesitant_threshold = 0.2
+        evaluation_result['confidence_threshold'] = confidence_threshold
+        evaluation_result['hesitant_threshold'] = hesitant_threshold
+        evaluation_result['confidence_metric_for_threshold'] = 'relative_confidence'
+        sf_hesitant_conf_mat = get_confusion_matrix(extended_test[extended_test[evaluation_result['confidence_metric_for_threshold']] < hesitant_threshold], labels)
+        sf_confidently_wrong_conf_mat = get_confusion_matrix(extended_test[(extended_test[evaluation_result['confidence_metric_for_threshold']] > confidence_threshold) & (extended_test['correct']==True)], labels)
+
+        evaluation_result['conf_mat'] = list(sf_conf_mat)
+        evaluation_result['hesitant_conf_mat'] = list(sf_hesitant_conf_mat)
+        evaluation_result['confidently_wrong_conf_mat'] = list(sf_confidently_wrong_conf_mat)
+
+        
+        # Get sorted labels (sorted by hCluster)
+        vectors = map(lambda l: {'name': l, 'pos':list(sf_conf_mat[sf_conf_mat['target_label']==l].sort('predicted_label')['norm_prob'])},
+                    labels)
+        evaluation_result['sorted_labels'] = hclusterSort(vectors, l2Dist)[0]['name'].split("|")
+
+        # Get recall and precision per label
+        per_l = extended_test.groupby(['label'], {'count': _tc.aggregate.COUNT, 'correct_count': _tc.aggregate.SUM('correct') })
+        per_l['recall'] = per_l.apply(lambda l: l['correct_count']*1.0 / l['count'])
+
+        per_pl = extended_test.groupby(['predicted_label'], {'predicted_count': _tc.aggregate.COUNT, 'correct_count': _tc.aggregate.SUM('correct') })
+        per_pl['precision'] = per_pl.apply(lambda l: l['correct_count']*1.0 / l['predicted_count'])
+        per_pl = per_pl.rename({'predicted_label': 'label'})
+        evaluation_result['label_metrics'] = list(per_l.join(per_pl, on='label', how='outer').select_columns(['label', 'count', 'correct_count', 'predicted_count', 'recall', 'precision']))
+        evaluation_result['labels'] = labels
+        
+        extended_test = extended_test.add_row_number('__idx').rename({'label': 'target_label'})
+        evaluation_result['test_data'] = extended_test
+
+        return _Evaluation(evaluation_result)
+
 
     def _extract_features(self, dataset, verbose=False, batch_size=64):
         return _tc.SFrame({
@@ -755,5 +904,3 @@ class ImageClassifier(_CustomModel):
         _update_last_two_layers(nn_spec)
         mlmodel = _set_inputs_outputs_and_metadata(spec, nn_spec)
         mlmodel.save(filename)
-
-

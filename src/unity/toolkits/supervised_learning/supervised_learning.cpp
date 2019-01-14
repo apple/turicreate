@@ -853,6 +853,196 @@ std::map<std::string, variant_type> supervised_learning_model_base::evaluate(
   return results;
 }
 
+
+/**
+ * Evaluate (by first making predictions)
+ */
+std::map<std::string, variant_type> supervised_learning_model_base::evaluate_with_predictions(
+            const ml_data& test_data,
+            const std::string& evaluation_type){
+
+  // Timers.
+  timer t;
+  double start_time = t.current_time();
+  logstream(LOG_INFO) << "Starting evaluation" << std::endl;
+
+  // Variables needed.
+  size_t n_threads = turi::thread_pool::get_instance().size();
+  size_t variables = variant_get_value<size_t>(state.at("num_coefficients"));
+  bool is_dense = this->is_dense();
+
+  // Classifier specific metrics pre-computations.
+  size_t num_classes = 0;
+  size_t num_classes_test_and_train = 0;
+  std::map<size_t, flexible_type> index_map;
+  std::unordered_map<flexible_type, size_t> identity_map;
+  bool is_classifier = this->is_classifier();
+  if (is_classifier) {
+    num_classes = variant_get_value<size_t>(state.at("num_classes"));
+    num_classes_test_and_train = test_data.metadata()->target_column_size();
+    variables = variables / (num_classes - 1);
+    for (size_t i = 0; i < num_classes_test_and_train; i++){
+      index_map[i] = this->ml_mdata->target_indexer()->map_index_to_value(i);
+      identity_map[i] = i;
+    }
+  }
+
+  // Setup metric computation.
+  std::vector<std::string> evaluator_names;
+  typedef std::shared_ptr<evaluation::supervised_evaluation_interface> evalptr;
+  std::vector<evalptr> evaluators;
+  
+  // Compute a specific metric or all metrics ["auto"]
+  std::vector<std::string> metrics_computed;
+  if (evaluation_type == std::string("auto")) {
+    metrics_computed = metrics; 
+    DASSERT_TRUE(metrics_computed.size() > 0); 
+  } else if (evaluation_type == std::string("train")) {
+    metrics_computed = tracking_metrics;
+    DASSERT_TRUE(metrics_computed.size() > 0); 
+  } else {
+    metrics_computed.push_back(evaluation_type);
+  }
+
+  // Get the evaluator metrics.
+  bool contains_prob_evaluator = false;
+  for (const auto& m: metrics_computed){
+    std::map<std::string, variant_type> kwargs {
+       {"average", to_variant(std::string("default"))}, 
+       {"binary", to_variant(false)},
+       {"index_map", to_variant(identity_map)},
+       {"num_classes", to_variant(num_classes)},
+       {"inv_index_map", to_variant(index_map)}};
+    
+    // Remove metrics that can't be computed. 
+    auto e = evaluation::get_evaluator_metric(m, kwargs);
+    evaluators.push_back(e);
+    evaluator_names.push_back(m);
+
+    // For progress tracking. Make sure the IF in train mode, then 
+    // training metrics are table printer compatible.
+    DASSERT_TRUE((evaluation_type == std::string("train")) 
+                                        <= e->is_table_printer_compatible()); 
+
+    // If a prob-evaluator is needed, then we use prediction probabilities.
+    if (! contains_prob_evaluator) {
+      contains_prob_evaluator = e->is_prob_evaluator();
+    }
+  } 
+  DASSERT_TRUE(evaluators.size() > 0);
+  DASSERT_TRUE(metrics_computed.size() > 0);
+
+  // Init the evaluators
+  for(size_t i=0; i < evaluators.size(); i++){
+    evaluators[i]->init(n_threads);
+  }
+
+  // Save predictions as probability vectors
+  std::shared_ptr<sarray<flexible_type>> prob_vectors (new sarray<flexible_type>);
+  prob_vectors->open_for_write(n_threads);
+  prob_vectors->set_type(flex_type_enum::VECTOR);
+
+  std::shared_ptr<sarray<flexible_type>> predicted_classes (new sarray<flexible_type>);
+  predicted_classes->open_for_write(n_threads);
+  predicted_classes->set_type((this->ml_mdata)->target_column_type());
+
+  // Go through evaluators that require the predicted class.
+  in_parallel([&](size_t thread_idx, size_t num_threads){
+    flexible_type true_value, predicted_value, prob_vector;
+    DenseVector x(variables);
+    SparseVector x_sp(variables);
+    auto writer_probs = prob_vectors->get_output_iterator(thread_idx);
+    auto writer_classes = predicted_classes->get_output_iterator(thread_idx);
+    for(auto it = test_data.get_iterator(thread_idx, num_threads);
+                                                       !it.done(); ++it) {
+      // Classifiers.
+      if(is_classifier) {
+
+        // Dense predict.
+        if (is_dense) {
+          fill_reference_encoding(*it, x);
+          x(variables-1) = 1;
+          prob_vector = predict_single_example(x,
+                                 prediction_type_enum::PROBABILITY_VECTOR);
+          
+        // Sparse predict.
+        } else {
+          fill_reference_encoding(*it, x_sp);
+          x_sp.insert(variables-1, 1);
+          
+          prob_vector = predict_single_example(x_sp,
+                                 prediction_type_enum::PROBABILITY_VECTOR);
+        }
+       
+        double max_prob = 0;
+        for(size_t i = 0; i < prob_vector.size(); i++){
+          if (max_prob < prob_vector[i]) {
+            max_prob = prob_vector[i];
+            predicted_value = i;
+          }
+        }
+        *writer_probs = prob_vector;
+        ++writer_probs;
+        *writer_classes = (this->ml_mdata)->target_indexer()->map_index_to_value(predicted_value);
+        ++writer_classes;
+
+
+        true_value = it->target_index();
+      // Regression.
+      } else {
+
+        // Dense predict.
+        if (is_dense) {
+          fill_reference_encoding(*it, x);
+          x(variables-1) = 1;
+          predicted_value = predict_single_example(x);
+
+        // Sparse predict.
+        } else {
+          fill_reference_encoding(*it, x_sp);
+          x_sp.insert(variables-1, 1);
+          predicted_value = predict_single_example(x_sp);
+        }
+        true_value = it->target_value();
+      }
+
+      // Evaluate.
+      for(size_t i=0; i < evaluators.size(); i++){
+        if (evaluators[i]->is_prob_evaluator()) {
+          evaluators[i]->register_example(
+          true_value, prob_vector, thread_idx);
+        } else {
+          if (evaluators[i]->name() == "classifier_accuracy") {
+            evaluators[i]->register_unmapped_example(
+                     true_value, predicted_value, thread_idx); // Optimized!
+          } else {
+            evaluators[i]->register_example(
+                     true_value, predicted_value, thread_idx);
+          }
+        }
+      }
+    }
+  });
+  prob_vectors->close();
+  predicted_classes->close();
+
+  // Get results
+  std::map<std::string, variant_type> results;
+  for(size_t i=0; i < evaluators.size(); i++){
+      results[evaluator_names[i]] = evaluators[i]->get_metric();
+  }
+  gl_sframe sf_predictions;
+  sf_predictions.add_column(prob_vectors, "probs");
+  sf_predictions.add_column(predicted_classes, "class");
+  results["predictions"] = sf_predictions;
+  
+
+  logstream(LOG_INFO) << "Evaluation done at "
+            << (t.current_time() - start_time) << "s" << std::endl;
+
+  return results;
+}
+
 /**
  * Display classifier model training data summary.
  *
@@ -1146,6 +1336,54 @@ variant_map_type supervised_learning_model_base::api_evaluate(
   }
 
   variant_map_type results = evaluate(m_data, metric);
+  return results;
+}
+
+/**
+ *  API interface through the unity server.
+ *
+ *  Evaluate the model and retun with the predictions
+ */
+variant_map_type supervised_learning_model_base::api_evaluate_with_predictions(
+    gl_sframe data, std::string missing_value_action_str, std::string metric) {
+  auto model = std::dynamic_pointer_cast<supervised_learning_model_base>(
+      shared_from_this());
+  ml_missing_value_action missing_value_action =
+      get_missing_value_enum_from_string(missing_value_action_str);
+
+  sframe test_data = data.materialize_to_sframe();
+  sframe X = setup_test_data_sframe(test_data, model, missing_value_action);
+  sframe y = test_data.select_columns({get_target_name()});
+  ml_data m_data = setup_ml_data_for_evaluation(
+      X, y, model, missing_value_action);
+
+
+  if(metric == "report") {
+    if(is_classifier()) {
+      std::string target = "class"; 
+      std::string pred_column = "predicted_class";
+      
+      variant_map_type ret = evaluate_with_predictions(m_data, "auto");
+      
+      gl_sframe preds = variant_get_value<gl_sframe>(ret["predictions"]);
+      gl_sframe out;
+      out["class"] = data[variant_get_ref<flexible_type>(state.at("target")).get<flex_string>()];
+      out["predicted_class"] = preds["class"];
+     
+
+      ret["confusion_matrix"] = confusion_matrix(out, target, pred_column);
+      ret["report_by_class"] = classifier_report_by_class(out, target, pred_column);
+      ret["accuracy"] =
+          double((out["class"] == out["predicted_class"]).sum()) / out.size();
+
+      return ret;
+
+    } else {
+      metric = "auto";
+    }
+  }
+
+  variant_map_type results = evaluate_with_predictions(m_data, metric);
   return results;
 }
 
