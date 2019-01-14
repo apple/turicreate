@@ -9,7 +9,6 @@
 #include <logger/assertions.hpp>
 #include <platform/parallel/lambda_omp.hpp>
 #include <random/random.hpp>
-#include <unity/lib/image_util.hpp>
 
 #import <Accelerate/Accelerate.h>
 
@@ -37,15 +36,10 @@ CGAffineTransform transform_from_core_image(CGSize size) {
 
 CIImage *convert_to_core_image(const image_type& source) {
 
+  ASSERT_TRUE(!source.is_decoded());
+
   // Wrap the image with shared_ptr for memory management by NSData below.
   __block auto shared_image = std::make_shared<image_type>(source);
-  if (shared_image->is_decoded()) {
-
-    // CoreImage only accepts RGBA bitmaps, not RGB.
-    *shared_image = image_util::resize_image(
-        *shared_image, shared_image->m_width, shared_image->m_height, 4,
-        /* decode */ true);
-  }
 
   // Wrap the (shared) image data with NSData.
   auto deallocator = ^(void *bytes, NSUInteger length) {
@@ -57,22 +51,8 @@ CIImage *convert_to_core_image(const image_type& source) {
                                    length: shared_image->m_image_data_size
                               deallocator: deallocator];
 
-  CIImage* result = nil;
-  if (shared_image->is_decoded()) {
-
-    // Initialize the CIImage from raw RGBA bitmap data.
-    ASSERT_EQ(shared_image->m_channels, 4);
-    result = [CIImage imageWithBitmapData: imageData
-                              bytesPerRow: shared_image->m_width * 4
-                                     size: CGSizeMake(shared_image->m_width,
-                                                      shared_image->m_height)
-                                   format: kCIFormatRGBA8
-                               colorSpace: nil];
-  } else {
-
-    // Let CIImage inspect the file format and decode it.
-    result = [CIImage imageWithData:imageData];
-  }
+  // Let CIImage inspect the file format and decode it.
+  CIImage* result = [CIImage imageWithData:imageData];
 
   if (!result) {
     log_and_throw("Image decoding error");

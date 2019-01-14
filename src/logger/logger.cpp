@@ -78,24 +78,6 @@ bool file_logger::set_log_file(std::string file) {
 }
 
 
-
-#define RESET   0
-#define BRIGHT    1
-#define DIM   2
-#define UNDERLINE   3
-#define BLINK   4
-#define REVERSE   7
-#define HIDDEN    8
-
-#define BLACK     0
-#define RED   1
-#define GREEN   2
-#define YELLOW    3
-#define BLUE    4
-#define MAGENTA   5
-#define CYAN    6
-#define WHITE   7
-
 void textcolor(FILE* handle, int attr, int fg)
 {
   char command[13];
@@ -104,12 +86,29 @@ void textcolor(FILE* handle, int attr, int fg)
   fprintf(handle, "%s", command);
 }
 
+std::string textcolor(int attr, int fg)
+{
+  char command[13];
+  /* Command is the control command to the terminal */
+  sprintf(command, "%c[%d;%dm", 0x1B, attr, fg + 30);
+  return command;
+}
+
 void reset_color(FILE* handle)
 {
   char command[20];
   /* Command is the control command to the terminal */
   sprintf(command, "%c[0m", 0x1B);
   fprintf(handle, "%s", command);
+}
+
+
+std::string reset_color()
+{
+  char command[20];
+  /* Command is the control command to the terminal */
+  sprintf(command, "%c[0m", 0x1B);
+  return command;
 }
 
 
@@ -219,19 +218,19 @@ void file_logger::_lograw(int lineloglevel, const char* buf, int len) {
 
     pthread_mutex_lock(&mut);
     if (lineloglevel == LOG_FATAL) {
-      textcolor(stderr, BRIGHT, RED);
+      textcolor(stderr, TEXTCOLOR_BRIGHT, TEXTCOLOR_RED);
     }
     else if (lineloglevel == LOG_ERROR) {
-      textcolor(log_to_stderr ? stderr : stdout, BRIGHT, RED);
+      textcolor(log_to_stderr ? stderr : stdout, TEXTCOLOR_BRIGHT, TEXTCOLOR_RED);
     }
     else if (lineloglevel == LOG_WARNING) {
-      textcolor(log_to_stderr ? stderr : stdout, BRIGHT, MAGENTA);
+      textcolor(log_to_stderr ? stderr : stdout, TEXTCOLOR_BRIGHT, TEXTCOLOR_MAGENTA);
     }
     else if (lineloglevel == LOG_DEBUG) {
-      textcolor(log_to_stderr ? stderr : stdout, BRIGHT, YELLOW);
+      textcolor(log_to_stderr ? stderr : stdout, TEXTCOLOR_BRIGHT, TEXTCOLOR_YELLOW);
     }
     else if (lineloglevel == LOG_EMPH) {
-      textcolor(log_to_stderr ? stderr : stdout, BRIGHT, GREEN);
+      textcolor(log_to_stderr ? stderr : stdout, TEXTCOLOR_BRIGHT, TEXTCOLOR_GREEN);
     }
 #endif
     if(lineloglevel >= LOG_FATAL) {
