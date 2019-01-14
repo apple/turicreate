@@ -9,19 +9,12 @@ import selected_split_pane from './assets/selected_split_pane.png';
 import * as d3 from "d3";
 
 class TCEvaluationToggleIcon extends Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      "left_selected": true
-    }
-  }
-
   changeSelectedState = () => {
-    this.setState({"left_selected": !this.state.left_selected});
+    this.props.changeSelectedState(!this.props.selected_state);
   }
 
   renderLeftIcon = () => {
-    if (this.state.left_selected) {
+    if (this.props.selected_state) {
       return (
         <div className="TCEvaluationToggleIconLeftSelected">
           <img height={12} src={selected_split_pane}/>
@@ -38,7 +31,7 @@ class TCEvaluationToggleIcon extends Component {
   }
 
   renderRightIcon = () => {
-    if (!this.state.left_selected) {
+    if (!this.props.selected_state) {
       return (
         <div className="TCEvaluationToggleIconRightSelected">
           <img height={12} src={selected_list_view}/>

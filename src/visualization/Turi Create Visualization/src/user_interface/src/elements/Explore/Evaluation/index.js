@@ -12,6 +12,17 @@ import TCEvaluationIncorrectlyClassified from './Components/TCEvaluationIncorrec
 import TCEvaluationConfusionMenu from './Components/TCEvaluationConfusionMenu';
 
 class TCEvaluation extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      left_selected: true
+    }
+  }
+
+  changeSelectedState = (value) => {
+    this.setState({left_selected: value});
+  }
+  
   render() {
     // TODO: add iterations and model_type to data
     return (
@@ -24,6 +35,9 @@ class TCEvaluation extends Component {
                                 correct={this.props.spec.corrects_size}
                                 total={this.props.spec.num_examples}
                                 classes={this.props.spec.num_classes}/>
+            
+            <TCEvaluationNavigationBar selected_state={this.state.left_selected}
+                                       changeSelectedState={this.props.changeSelectedState.bind(this)} />
       </div>  
     );
   }
