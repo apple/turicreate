@@ -1,0 +1,46 @@
+.TCEvaluationSummary{
+	background: #363643;
+	height: 81px;
+	padding: 8px;
+	border-radius: 3px;
+}
+
+.TCEvaluationSummaryTitle{
+	font-family: Helvetica;
+	font-size: 12px;
+	color: #FFFFFF;
+	text-align: left;
+}
+
+.TCEvaluationSummaryContent{
+	display: flex;
+	height: 67px;
+}
+
+.TCEvaluationSummaryExamples{
+	display: flex;
+	flex: 1;
+	overflow-x: scroll;
+}
+
+.TCEvaluationSummaryImageContainer{
+	padding-top: 10px;
+	padding-left: 10px;
+	display: flex;
+	min-height: min-content;
+}
+
+.TCEvaluationSummaryStats{
+	width: 291px;
+	height: 60px;
+	display: flex;
+	border-left: 1px solid #979797;
+}
+
+.TCEvaluationSummaryContainers{
+	padding: 10px;
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	justify-content:space-between;
+}

@@ -1,0 +1,106 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v4.json",
+  "description": "A simple bar chart with embedded data.",
+  "autosize": "pad",
+  "padding": 5,
+  "width": 200,
+  "style": "cell",
+  "data": [{ "name": "precision" }],
+  "signals": [
+    {"name": "y_step", "value": 21},
+    {
+      "name": "height",
+      "update": "bandspace(domain('y').length, 0.1, 0.05) * y_step"
+    }
+  ],
+  "marks": [
+    {
+      "name": "marks",
+      "type": "rect",
+      "style": ["bar"],
+      "from": {"data": "precision"},
+      "encode": {
+        "update": {
+          "fill": [
+            {
+              "test": "datum[\"b\"] === null || isNaN(datum[\"b\"])",
+              "value": null
+            },
+            {"value": "#066EE0"}
+          ],
+          "tooltip": {
+            "signal": "{\"score\": format(datum[\"b\"], \"\"), \"a\": ''+datum[\"a\"]}"
+          },
+          "x": {"scale": "x", "field": "b"},
+          "x2": {"scale": "x", "value": 0},
+          "y": {"scale": "y", "field": "a"},
+          "height": {"scale": "y", "band": true}
+        }
+      }
+    }
+  ],
+  "scales": [
+    {
+      "name": "x",
+      "type": "linear",
+      "domain": {"data": "precision", "field": "b"},
+      "range": [0, {"signal": "width"}],
+      "nice": true,
+      "zero": true
+    },
+    {
+      "name": "y",
+      "type": "band",
+      "domain": {"data": "precision", "field": "a", "sort": true},
+      "range": {"step": {"signal": "y_step"}},
+      "paddingInner": 0.1,
+      "paddingOuter": 0.05
+    }
+  ],
+  "axes": [
+    {
+      "scale": "x",
+      "orient": "top",
+      "grid": false,
+      "title": "score",
+      "labelFlush": true,
+      "labelOverlap": true,
+      "tickCount": {"signal": "ceil(width/40)"},
+      "zindex": 1
+    },
+    {
+      "scale": "x",
+      "orient": "top",
+      "gridScale": "y",
+      "grid": true,
+      "tickCount": {"signal": "ceil(width/40)"},
+      "domain": false,
+      "labels": false,
+      "maxExtent": 0,
+      "minExtent": 0,
+      "ticks": false,
+      "zindex": 0
+    },
+    {
+      "scale": "y",
+      "orient": "left",
+      "grid": false,
+      "labelOverlap": true,
+      "zindex": 1
+    }
+  ],
+  "config": {"axisY": {"minExtent": 30}, "axis": {
+      "labelFont": "Helvetica, Arial",
+      "labelFontSize": 7,
+      "labelPadding": 10,
+      "labelColor": "#96969E",
+      "titleFont": "HelveticaNeue-Medium, Arial",
+      "titleFontWeight": "normal",
+      "titlePadding": 10,
+      "titleFontSize": 15,
+      "titleColor": "#96969E"
+    },"style": {
+      "rect": {
+      "stroke": "rgba(200, 200, 200, 0.5)"
+    }}}
+}

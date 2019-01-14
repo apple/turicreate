@@ -1,0 +1,54 @@
+.TCEvaluationScoresConsiderationsParent{
+	width: 262px;
+}
+
+.TCEvaluationScoresConsiderationsTitle{
+	font-family: Helvetica;
+	font-size: 20px;
+	color: #363643;
+	text-align: left;
+	padding-bottom: 20px;
+}
+
+.TCEvaluationScoresConsiderations{
+	display: flex;
+	overflow: auto;
+	overflow-y: scroll;
+	height: 182px;
+	background: #363643;
+	font-family: Helvetica;
+	font-size: 10px;
+	color: #EFF0F1;
+	padding: 15px;
+	border-radius: 5px;
+}
+
+.TCEvaluationScoresConsiderationsBox{
+	min-height: min-content;
+    display: flex;
+    flex-direction: column;
+}
+
+.TCEvaluationScoresConsiderations::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+
+.TCEvaluationScoresConsiderations::-webkit-scrollbar:vertical {
+    width: 11px;
+}
+
+.TCEvaluationScoresConsiderations::-webkit-scrollbar:horizontal {
+    height: 11px;
+}
+
+.TCEvaluationScoresConsiderations::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid #797B83;
+    background-color: #363643;
+}
+
+.TCEvaluationScoresConsiderations::-webkit-scrollbar-track { 
+    background-color: #797B83; 
+    border-radius: 8px;
+    margin-right: 5px;
+} 

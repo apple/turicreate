@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import TcPlot from './elements/Plot/Chart/index.js';
 import TcSummary from './elements/Plot/Summary/index.js';
 import TcTable from './elements/Explore/Table/index.js';
+import TCEvaluation from './elements/Explore/Evaluation/index.js';
 
 var command_down = 0;
 var body_zoom = 100;
@@ -76,10 +77,9 @@ window.setSpec = function setSpec(value) {
             spec_type = SpecType.annotate;
             break;
         case "evaluate":
-            // set the visibility of the evaluation container to be a block;
+            document.getElementById("loading_container").style.display = "none";
             document.getElementById('evaluation_vis').style.display = 'block';
-            // set the component to be rendered
-            //component_rendered = ReactDOM.render(<TcEvaluate spec={value.data} />, document.getElementById('evaluation_vis'));
+            component_rendered = ReactDOM.render(<TCEvaluation spec={value.data} />, document.getElementById('evaluation_vis'));
             spec_type = SpecType.evaluate;
             break;
             

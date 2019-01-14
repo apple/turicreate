@@ -1,0 +1,30 @@
+.TCEvaluationHelperTitle {
+	font-family: Helvetica;
+  font-size: 20px;
+  color: #363643;
+}
+
+.TCEvaluationHelperTitle > select {
+  -webkit-appearance: none; 
+  -moz-appearance: none;
+  appearance: none;
+  font-size: inherit;
+  color: inherit;
+  font:inherit;
+  border: 0;
+  outline: none;
+}
+
+.TCEvaluationHelperTitleCalculated{
+	font-family: Helvetica;
+	font-size: 9px;
+	color: #979797;
+	text-decoration: underline;
+	text-align: left;
+	padding: 3px;
+	cursor: pointer;
+}
+
+.TCEvaluationHelperTitleCalculated:hover{
+	color: #575757;
+}

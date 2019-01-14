@@ -50,6 +50,13 @@ body{
     display: none;
 }
 
+#evaluation_vis{
+    position:absolute;
+    top: 0;
+    left: 0;
+    display: none;
+}
+
 #search_bar{
     position: fixed;
     top: 10px;
