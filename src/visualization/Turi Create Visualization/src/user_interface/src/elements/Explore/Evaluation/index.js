@@ -29,4 +29,28 @@ class TCEvaluation extends Component {
   }
 }
 
+// TODO: Use Label Metrics for Precision Recall Graphs (Reshape into plots)
+// TODO: Use `confidently_wrong_conf_mat` to display the TCEvaluationConfusionMenu
+/*
+UNKNOWN:
+ INPUT:
+ {
+ "count":4,
+ "target_label":0,
+ "prob_default":0,
+ "norm_prob":0.6833108822485874,
+ "predicted_label":0,
+ "prob":2.733243528994349
+ }
+ 
+ Look at Yonghoon's implementation and figure out how to use it here
+ 
+ In the meantime just display everything
+ 
+ */
+
+/*
+ 
+ */
+
 export default TCEvaluation;
