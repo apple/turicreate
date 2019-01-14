@@ -24,6 +24,7 @@ func debug_log(_ message: String) {
 class VegaContainer: NSObject, WKScriptMessageHandler {
     
     public var vega_spec: [String: Any]?
+    public var evaluation_spec: [String: Any]?
     public var data_spec: [[String: Any]] = []
     public var image_spec: [[String: Any]] = []
     public var table_spec: [String: Any]?
@@ -188,6 +189,19 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
             SharedData.shared.save_vega?.isHidden = false
             SharedData.shared.print_vega?.isHidden = false
             SharedData.shared.page_setup?.isHidden = false
+        }
+    }
+    
+    // set evaluation spec and initial data
+    public func set_evaluation(evaluation_spec: [String: Any]){
+        self.data_spec.removeAll()
+        self.evaluation_spec = evaluation_spec
+        
+        DispatchQueue.main.async {
+            SharedData.shared.save_image?.isHidden = true
+            SharedData.shared.save_vega?.isHidden = true
+            SharedData.shared.print_vega?.isHidden = true
+            SharedData.shared.page_setup?.isHidden = true
         }
     }
     
@@ -361,6 +375,10 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
             } else if let spec = self.vega_spec {
                 debug_log("queuing up sending vega spec to JS")
                 self.send_spec_js(spec: spec, type: "vega")
+                // Working on sending the evaluation spec
+            } else if let spec = self.evaluation_spec {
+                    debug_log("queuing up sending evaluation spec to JS")
+                    self.send_spec_js(spec: spec, type: "evaluate")
             } else {
                 // Still waiting for a spec - if we get here,
                 // it means the UI loaded before the backend actually sent us

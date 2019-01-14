@@ -87,6 +87,10 @@ class Pipe {
                 self.graph_data.set_vega(vega_spec: vega_spec)
             }
             
+            if let evaluation_spec = json["evaluation_spec"] as? [String: Any] {
+                self.graph_data.set_evaluation(evaluation_spec: evaluation_spec)
+            }
+            
             if let data_spec = json["data_spec"] as? [String: Any] {
                 self.graph_data.add_data(data_spec: data_spec)
             }

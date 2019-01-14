@@ -41,7 +41,7 @@ document.onkeyup = function(e) {
     }
 };
 
-var SpecType = Object.freeze({"table":1, "vega":2, "summary":3, "annotate": 4})
+var SpecType = Object.freeze({"table":1, "vega":2, "summary":3, "annotate": 4, "evaluate": 5})
 window.flex_type_enum = Object.freeze({"integer":0, "float":1, "string":2, "vector": 3, "list": 4, "dict": 5, "datetime": 6, "undefined": 7, "image": 8, "nd_vector": 9});
 
 var component_rendered = null;
@@ -75,6 +75,14 @@ window.setSpec = function setSpec(value) {
         case "annotate":
             spec_type = SpecType.annotate;
             break;
+        case "evaluate":
+            // set the visibility of the evaluation container to be a block;
+            document.getElementById('evaluation_vis').style.display = 'block';
+            // set the component to be rendered
+            //component_rendered = ReactDOM.render(<TcEvaluate spec={value.data} />, document.getElementById('evaluation_vis'));
+            spec_type = SpecType.evaluate;
+            break;
+            
         default:
             break;
     }
@@ -157,7 +165,7 @@ window.handleInput = function(data){
 
   if(json_obj["vega_spec"] != null) {
     var input_data = {};
-    input_data["data"] = json_obj["vega_spec"];json_obj["data_spec"]
+    input_data["data"] = json_obj["vega_spec"];
     input_data["type"] = "vega";
 
     window.setSpec(input_data);
