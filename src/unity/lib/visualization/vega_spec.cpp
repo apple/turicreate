@@ -106,15 +106,28 @@ static std::string label_or_default(const flexible_type& label,
   }
 }
 
+static std::string title_or_default(const flexible_type& title, const std::string& default_title) {
+  if (title == FLEX_UNDEFINED) {
+    // undefined/not provided should render as null in JSON
+    return "null";
+  } else if (title == "__TURI_DEFAULT_LABEL") {
+    return extra_label_escape(default_title, true /* include_quotes */);
+  } else {
+    // user-provided label should render with quotes/escaping
+    return extra_label_escape(title.get<flex_string>(), true /* include_quotes */);
+  }
+
+}
+
 static std::string title_or_default(const flexible_type& title, const std::string& xlabel, const std::string& ylabel) {
   if (title == FLEX_UNDEFINED) {
     // undefined/not provided should render as null in JSON
     return "null";
   } else if (title == "__TURI_DEFAULT_LABEL") {
-    return extra_label_escape(xlabel + " vs. " + ylabel, false /* include_quotes */);
+    return extra_label_escape(xlabel + " vs. " + ylabel, true /* include_quotes */);
   } else {
     // user-provided label should render with quotes/escaping
-    return extra_label_escape(title.get<flex_string>(), false /* include_quotes */);
+    return extra_label_escape(title.get<flex_string>(), true /* include_quotes */);
   }
 
 }
@@ -126,7 +139,7 @@ EXPORT std::string histogram_spec(const flexible_type& _title,
   static std::string default_title = std::string("Distribution of Values [") +
                                      flex_type_enum_to_name(dtype) +
                                      "]";
-  flexible_type title = label_or_default(_title, default_title);
+  flexible_type title = title_or_default(_title, default_title);
   flexible_type xlabel = label_or_default(_xlabel, "Count");
   flexible_type ylabel = label_or_default(_ylabel, "Values");
 
@@ -147,7 +160,7 @@ EXPORT std::string categorical_spec(size_t length_list,
                                      flex_type_enum_to_name(dtype) +
                                      "]";
 
-  flexible_type title = label_or_default(_title, default_title);
+  flexible_type title = title_or_default(_title, default_title);
   flexible_type xlabel = label_or_default(_xlabel, "Values");
   flexible_type ylabel = label_or_default(_ylabel, "Count");
 

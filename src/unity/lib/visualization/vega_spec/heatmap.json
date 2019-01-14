@@ -4,9 +4,7 @@
   "padding": 8,
   "width": {{width}},
   "height": {{height}},
-  "title": {
-    "text": "{{title}}"
-  },
+  "title": {{title}},
   "data": [
     {
       "name": "source_2"

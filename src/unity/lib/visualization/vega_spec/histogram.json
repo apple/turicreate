@@ -5,10 +5,7 @@
   "width": {{width}},
   "height": {{height}},
   "padding": 8,
-  "title": {
-    "text": "{{title}}",
-    "offset": 30
-  },
+  "title": {{title}},
   "style": "cell",
   "data": [
     {

@@ -20,10 +20,7 @@
   },
   "width": {{width}},
   "height": {{computed_height}},
-  "title": {
-    "text": "{{title}}",
-    "offset": 30
-  },
+  "title": {{title}},
   "style": "cell",
   "data": [
     {
