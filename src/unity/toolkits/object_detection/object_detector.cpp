@@ -523,6 +523,21 @@ void object_detector::init_train(gl_sframe data,
       get_training_config(),
       std::move(model_params));
 
+  // Report to the user what GPU(s) is being used.
+  std::vector<std::string> gpu_names = training_module_->gpu_names();
+  if (gpu_names.empty()) {
+    logprogress_stream << "Using CPU to create model";
+  } else {
+    std::string gpu_names_string = gpu_names[0];
+    for (size_t i = 1; i < gpu_names.size(); ++i) {
+      gpu_names_string += ", " + gpu_names[i];
+    }
+    logprogress_stream << "Using "
+                       << (gpu_names.size() > 1 ? "GPUs" : "GPU")
+                       << " to create model ("
+                       << gpu_names_string << ")";
+  }
+
   // Print the header last, after any logging triggered by initialization above.
   if (training_table_printer_) {
     training_table_printer_->print_header();
