@@ -895,6 +895,9 @@ typedef enum {
 
 } tc_plot_variation;
 
+// Default plot title / axis title sentinel value
+const char * const tc_plot_title_default_label = "__TURI_DEFAULT_LABEL";
+
 // Single SArray view (`.show` on an SArray)
 tc_plot* tc_plot_create_1d(const tc_sarray* sa,
                            const char* title,
