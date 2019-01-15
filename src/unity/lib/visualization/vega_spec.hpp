@@ -15,7 +15,7 @@ namespace turi {
   namespace visualization {
 
     std::string histogram_spec(const flexible_type& title, const flexible_type& xlabel, const flexible_type& ylabel, flex_type_enum dtype);
-    std::string categorical_spec(size_t length_list, const flexible_type& title, const flexible_type& xlabel, const flexible_type& ylabel, flex_type_enum dtype);
+    std::string categorical_spec(const flexible_type& title, const flexible_type& xlabel, const flexible_type& ylabel, flex_type_enum dtype);
     std::string summary_view_spec(size_t length_elements);
     std::string scatter_spec(const flexible_type& xlabel, const flexible_type& ylabel, const flexible_type& title);
     std::string heatmap_spec(const flexible_type& xlabel, const flexible_type& ylabel, const flexible_type& title);

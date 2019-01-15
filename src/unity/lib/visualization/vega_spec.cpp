@@ -152,8 +152,7 @@ EXPORT std::string histogram_spec(const flexible_type& _title,
   });
 }
 
-EXPORT std::string categorical_spec(size_t length_list,
-                                    const flexible_type& _title,
+EXPORT std::string categorical_spec(const flexible_type& _title,
                                     const flexible_type& _xlabel,
                                     const flexible_type& _ylabel,
                                     flex_type_enum dtype) {
@@ -165,10 +164,8 @@ EXPORT std::string categorical_spec(size_t length_list,
   flexible_type xlabel = label_or_default(_xlabel, "Values");
   flexible_type ylabel = label_or_default(_ylabel, "Count");
 
-  size_t height = static_cast<size_t>(static_cast<double>(length_list) * 25.0 + 160.0);
   auto format_string = make_format_string(vega_spec_categorical_json, vega_spec_categorical_json_len);
   return format(format_string, {
-    {"{{computed_height}}", std::to_string(height)},
     {"{{title}}", title},
     {"{{xlabel}}", xlabel},
     {"{{ylabel}}", ylabel},
