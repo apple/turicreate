@@ -13,7 +13,7 @@ The clustering toolkit contains two models: K-Means and DBSCAN.
 
 Please see the documentation for each of these models for more details, as well
 as the `clustering chapter of the User Guide
-<https://apple.github.io/turicreate/docs/userguide/clustering/README.html>`_.
+<https://apple.github.io/turicreate/docs/userguide/clustering/>`_.
 """
 from __future__ import print_function as _
 from __future__ import division as _
