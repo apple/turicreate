@@ -295,6 +295,9 @@ std::string histogram_result::vega_column_data(bool) const {
   std::stringstream ss;
 
   for (size_t i=0; i<bins.bins.size(); i++) {
+    if (i != 0) {
+      ss << ",";
+    }
     const auto& value = bins.bins[i];
     ss << "{\"left\": ";
     ss << (bins.min + (i * binWidth));
@@ -303,9 +306,16 @@ std::string histogram_result::vega_column_data(bool) const {
     ss << ", \"count\": ";
     ss << value;
     ss << "}";
-    if (i != bins.bins.size() - 1) {
-      ss << ",";
-    }
+  }
+
+  // if there are null values, include them separately
+  size_t null_count = m_count.emit() - m_non_null_count.emit();
+  if (null_count > 0) {
+    ss << ",";
+    ss << "{\"missing\": true";
+    ss << ", \"count\": ";
+    ss << null_count;
+    ss << "}";
   }
 
   return ss.str();

@@ -7,6 +7,16 @@
   "padding": 8,
   "title": {{title}},
   "style": "cell",
+  "signals": [
+    {
+      "name": "nullGap",
+      "update": "data('nulls').length > 0 ? 10 : 0"
+    },
+    {
+      "name": "barStep",
+      "update": "nullGap == 0 ? 0 : (width/40)"
+    }
+  ],
   "data": [
     {
       "name": "source_2"
@@ -33,6 +43,21 @@
         {
           "type": "filter",
           "expr": "datum[\"left\"] !== null && !isNaN(datum[\"left\"]) && datum[\"count\"] !== null && !isNaN(datum[\"count\"])"
+        }
+      ]
+    },
+    {
+      "source": "source_2",
+      "name": "nulls",
+      "transform": [
+        {
+          "expr": "toNumber(datum[\"count\"])",
+          "as": "count",
+          "type": "formula"
+        },
+        {
+          "expr": "datum[\"missing\"] === true && datum[\"count\"] !== null && !isNaN(datum[\"count\"])",
+          "type": "filter"
         }
       ]
     }
@@ -75,9 +100,41 @@
           }
         }
       }
+    },
+    {
+      "type": "rect",
+      "from": {"data": "nulls"},
+      "style": [
+        "rect"
+      ],
+      "encode": {
+        "update": {
+          "x": {"scale": "xscale-null", "value": null, "offset": 1},
+          "x2": {"scale": "xscale-null", "band": 1},
+          "y": {"scale": "y", "field": "count"},
+          "y2": {"scale": "y", "value": 0},
+          "fill": {"value": "#108EE9"}
+        },
+        "hover": {
+          "fill": {"value": "#7EC2F3"}
+        }
+      }
     }
   ],
   "scales": [
+    {
+      "domain": [
+        null
+      ],
+      "range": [
+        0,
+        {
+          "signal": "barStep"
+        }
+      ],
+      "type": "band",
+      "name": "xscale-null"
+    },
     {
       "name": "x",
       "type": "linear",
@@ -90,7 +147,9 @@
         "sort": true
       },
       "range": [
-        0,
+        {
+          "signal": "barStep + nullGap"
+        },
         {
           "signal": "width"
         }
@@ -102,8 +161,10 @@
       "name": "y",
       "type": "linear",
       "domain": {
-        "data": "data_0",
-        "field": "count"
+        "fields": [
+          {"data": "data_0", "field": "count"},
+          {"data": "nulls", "field": "count"}
+        ]
       },
       "range": [
         {
@@ -165,6 +226,14 @@
       "ticks": false,
       "zindex": 0,
       "gridScale": "x"
+    },
+    {
+      "orient": "bottom",
+      "scale": "xscale-null",
+      "encode": {
+        "ticks": {"update": {"opacity": {"signal": "nullGap > 0 ? 1.0 : 0.0"}}},
+        "labels": {"update": {"text": {"signal": "nullGap > 0 ? 'null' : ''"}}}
+      }
     }
   ],
   {{config}}
