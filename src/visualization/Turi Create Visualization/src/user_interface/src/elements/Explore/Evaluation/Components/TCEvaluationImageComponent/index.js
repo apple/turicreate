@@ -24,9 +24,10 @@ class TCEvaluationImageComponent extends Component {
   }
 
   render() {
+
     return (
       <div className="TCEvaluationImageComponent">
-        <img src={this.props.src}
+        <img src={"data:image/"+this.props.src.format+";base64,"+this.props.src.data}
              className="TCEvaluationImageComponentImage"
              ref={this.imgEl}
              width={this.state.width}

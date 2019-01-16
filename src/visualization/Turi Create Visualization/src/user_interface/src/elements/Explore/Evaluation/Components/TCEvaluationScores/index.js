@@ -11,7 +11,9 @@ import {F1Score,
 import TCEvaluationHelperSort from '../TCEvaluationHelperSort'
 import TCEvaluationHelperTitle from '../TCEvaluationHelperTitle'
 
+/*
 import { Handler } from 'vega-tooltip';
+*/
 
 import './index.scss';
 
@@ -28,40 +30,24 @@ class TCEvaluationScores extends Component {
       "info": '',
       "sort": SortType.HighToLow
     }
-
-    this.handleHover = this.handleHover.bind(this);
-  }
-
-  handleHover(...args) {
-    this.setState({
-      info: JSON.stringify(args)
-    });
   }
 
   renderChart = () => {
     if(this.state.chart == ChartType.F1Score){
       return (
-        <F1Score data={this.props.data}
-                 onSignalHover={this.handleHover}
-                 tooltip={new Handler(this.tooltip_options).call} />
+        <F1Score data={this.props.data} />
       );
     }else if(this.state.chart == ChartType.Recall){
       return (
-        <Recall data={this.props.data}
-                onSignalHover={this.handleHover}
-                tooltip={new Handler(this.tooltip_options).call} />
+        <Recall data={this.props.data} />
       );
     }else if(this.state.chart == ChartType.Precision){
       return (
-        <Precision data={this.props.data}
-                   onSignalHover={this.handleHover}
-                   tooltip={new Handler(this.tooltip_options).call} />
+        <Precision data={this.props.data} />
       );
     }else if(this.state.chart == ChartType.NumTrained){
       return (
-        <NumTrained data={this.props.data}
-                    onSignalHover={this.handleHover}
-                    tooltip={new Handler(this.tooltip_options).call} />
+        <NumTrained data={this.props.data} />
       );
     }
   }

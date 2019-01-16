@@ -112,6 +112,37 @@ def _filter_sframe(filters, row_type, mat_type, sf, evaluation):
   
   return filtered_array
 
+def __get_incorrects(label, sf, evaluation):
+  conf_metric = evaluation["confidence_metric_for_threshold"]
+  
+  sf = sf[sf[conf_metric] > evaluation["hesitant_threshold"]]
+  sf = sf.filter_by([False], "correct")
+  
+  filtered_sframe = sf.filter_by([label], "target_label")
+  unique_predictions = list(filtered_sframe["predicted_label"].unique())
+  
+  data = []
+  for u in unique_predictions:
+    u_filt = filtered_sframe.filter_by([u], "predicted_label")
+    data.append({"label": str(u), "images": list(u_filt["images"].apply(_image_conversion))})
+
+  return {"data_spec": { "incorrects": {"target": label, "data": data }}}
+
+def __get_corrects(sf, evaluation):
+  conf_metric = evaluation["confidence_metric_for_threshold"]
+  
+  sf = sf[sf[conf_metric] > evaluation["hesitant_threshold"]]
+  sf = sf.filter_by([False], "correct")
+
+  unique_predictions = list(sf["target_label"].unique())
+
+  data = []
+  for u in unique_predictions:
+    u_filt = sf.filter_by([u], "predicted_label")
+    incorrects_sliced = u_filt[0:10]
+    data.append({"target": u, "images": list(incorrects_sliced["images"].apply(_image_conversion))})
+  return {"data_spec": { "correct": data}}
+
 def _process_value(value, extended_sframe, proc, evaluation):
   json_value = None
 
@@ -121,9 +152,14 @@ def _process_value(value, extended_sframe, proc, evaluation):
     pass
 
   if json_value != None:
-    if (json_value['method'] == "get_rows_eval"):
+    if(json_value['method'] == "get_rows_eval"):
       proc.stdin.write(_get_data_spec(json_value['cells'], json_value['start'], json_value['length'], json_value['row_type'], json_value['mat_type'], extended_sframe, evaluation)+"\n")
+    
+    if(json_value['method'] == "get_corrects"):
+      proc.stdin.write(str(_json.dumps(__get_corrects(extended_sframe, evaluation)))+"\n")
 
+    if(json_value['method'] == "get_incorrects"):
+      proc.stdin.write(str(_json.dumps(__get_incorrects(json_value['label'], extended_sframe, evaluation)))+"\n")
 
 def _start_process(process_input, extended_sframe, evaluation):
   proc = __subprocess.Popen(_get_client_app_path(), stdout=__subprocess.PIPE, stdin=__subprocess.PIPE)

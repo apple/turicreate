@@ -37,8 +37,11 @@ class TCEvaluationIncorrectlyClassifiedContainer extends Component {
   displayArrow(){
     if(this.state.open){
       return (
-        <div className="TCEvaluationIncorrectlyClassifiedContainerTitle">
-          Incorrectly classified as {this.props.label} 
+        <div className="TCEvaluationIncorrectlyClassifiedContainerTitle"
+             onClick={this.changeState.bind(this)}>
+          <span className="TCEvaluationIncorrectlyClassifiedContainerNumber">
+            {this.props.images.length} &nbsp;
+          </span>images incorrectly classified as {this.props.label} 
           <img className="TCEvaluationIncorrectlyClassifiedContainerDropDown"
                height={6}
                src={dropdown}
@@ -47,12 +50,14 @@ class TCEvaluationIncorrectlyClassifiedContainer extends Component {
       );
     }else{
       return (
-        <div className="TCEvaluationIncorrectlyClassifiedContainerTitle">
-          Incorrectly classified as {this.props.label} 
+        <div className="TCEvaluationIncorrectlyClassifiedContainerTitle"
+             onClick={this.changeState.bind(this)}>
+          <span className="TCEvaluationIncorrectlyClassifiedContainerNumber">
+            {this.props.images.length} &nbsp;
+          </span>images incorrectly classified as {this.props.label}
           <img className="TCEvaluationIncorrectlyClassifiedContainerDropUp"
                height={6}
-               src={dropdown}
-               onClick={this.changeState.bind(this)}/>
+               src={dropdown}/>
         </div>
       );
     }

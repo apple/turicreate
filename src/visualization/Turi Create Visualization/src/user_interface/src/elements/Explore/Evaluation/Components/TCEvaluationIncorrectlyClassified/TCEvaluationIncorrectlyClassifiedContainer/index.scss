@@ -1,5 +1,5 @@
 .TCEvaluationIncorrectlyClassifiedContainer{
-	min-height: 35px;
+	min-height: 45px;
 }
 
 .TCEvaluationIncorrectlyClassifiedContainerTitle{
@@ -8,6 +8,7 @@
 	color: #9B9B9B;
 	float: left;
 	padding:10px;
+	cursor: pointer;
 }
 
 .TCEvaluationIncorrectlyClassifiedContainerImages{
@@ -32,4 +33,8 @@
 
 .TCEvaluationIncorrectlyClassifiedContainerDropUp{
 	margin-left: 5px;
+}
+
+.TCEvaluationIncorrectlyClassifiedContainerNumber{
+	color: #363643;
 }

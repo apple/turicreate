@@ -19,7 +19,8 @@ class TCEvaluationScoresConsiderationsElement extends Component {
 
   render() {
     return (
-      <div className="TCEvaluationScoresConsiderationsElement">
+      <div className="TCEvaluationScoresConsiderationsElement"
+           onClick={this.props.onClick.bind(this)}>
         <div className="TCEvaluationScoresConsiderationsIcon">
           {this.renderComponentType()}
         </div>

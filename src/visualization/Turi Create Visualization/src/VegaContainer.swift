@@ -146,7 +146,52 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
             
             self.pipe!.writePipe(method: "get_rows", start: start_num, end: end_num)
             break
+            
+        case "getIncorrects":
+            guard let label = messageBody["label"] as? String else {
+                assert(false, "Expected label in getRows")
+                return
+            }
+            
+            self.pipe!.writeIncorrect(label: label)
+            break
         
+        case "getCorrects":
+            self.pipe!.getCorrect()
+            break
+            
+        case "getRowsEval":
+            guard let start_idx = messageBody["start"] as? Int else {
+                assert(false, "Expected start in getRowsEval")
+                return
+            }
+            
+            guard let length = messageBody["length"] as? Int else {
+                assert(false, "Expected length in getRowsEval")
+                return
+            }
+            
+            guard let row_type = messageBody["row_type"] as? String else {
+                assert(false, "Expected row_type in getRowsEval")
+                return
+            }
+            
+            guard let mat_type = messageBody["mat_type"] as? String else {
+                assert(false, "Expected mat_type in getRowsEval")
+                return
+            }
+            
+            guard let cells = messageBody["cells"] as? [Any] else {
+                assert(false, "Expected cells in getRowsEval")
+                return
+            }
+            
+            let arrData = try! JSONSerialization.data(withJSONObject: cells)
+            let json_string = String(data: arrData, encoding: .utf8)!
+            self.pipe!.writePipeEval(start: start_idx, length: length, row_type: row_type, mat_type: mat_type, cells: json_string)
+            
+            break
+            
         case "getAccordion":
             guard let column_name = messageBody["column"] as? String else {
                 assert(false, "column in getAccordion")
@@ -377,8 +422,8 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
                 self.send_spec_js(spec: spec, type: "vega")
                 // Working on sending the evaluation spec
             } else if let spec = self.evaluation_spec {
-                    debug_log("queuing up sending evaluation spec to JS")
-                    self.send_spec_js(spec: spec, type: "evaluate")
+                debug_log("queuing up sending evaluation spec to JS")
+                self.send_spec_js(spec: spec, type: "evaluate")
             } else {
                 // Still waiting for a spec - if we get here,
                 // it means the UI loaded before the backend actually sent us

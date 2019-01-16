@@ -1,6 +1,11 @@
 .TCEvaluationScoresConsiderationsElement{
 	display: flex;
 	padding-bottom: 15px;
+	cursor: pointer;
+}
+
+.TCEvaluationScoresConsiderationsElement:hover{
+	background: #797B83;
 }
 
 .TCEvaluationScoresConsiderationsElementText{

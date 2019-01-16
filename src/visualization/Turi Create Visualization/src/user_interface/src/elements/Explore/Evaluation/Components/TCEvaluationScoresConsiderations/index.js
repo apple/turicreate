@@ -14,7 +14,8 @@ class TCEvaluationScoresConsiderations extends Component {
           <div className="TCEvaluationScoresConsiderationsBox">
             {this.props.considerations.map((consideration, index) => (
               <TCEvaluationScoresConsiderationsElement error={consideration.error}
-                                                       content={consideration.message}/>
+                                                       content={consideration.message}
+                                                       onClick={this.props.onClick.bind(this)}/>
             ))}
           </div>
         </div>

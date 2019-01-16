@@ -93,6 +93,7 @@ window.updateData = function updateData(data) {
         case SpecType.table:
         case SpecType.summary:
         case SpecType.vega:
+        case SpecType.evaluate:
             document.getElementById("loading_container").style.display = "none";
             component_rendered.updateData(data);
             break;

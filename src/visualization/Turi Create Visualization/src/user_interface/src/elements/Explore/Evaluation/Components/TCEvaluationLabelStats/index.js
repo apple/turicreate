@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import './index.scss';
 
 import {PieChart, F1Score} from '../TCEvaluationChartType';
+/*
 import { Handler } from 'vega-tooltip';
+*/
 
 import * as d3 from "d3";
 
@@ -13,6 +15,7 @@ class TCEvaluationLabelStats extends Component {
     this.tooltip_options = {
       theme: 'dark'
     }
+
     this.handleHover = this.handleHover.bind(this);
   }
 
@@ -20,6 +23,17 @@ class TCEvaluationLabelStats extends Component {
     this.setState({
       info: JSON.stringify(args)
     });
+  }
+
+  chartData = () => {
+    return {
+      "f1_score": [
+        {"a": "F1 Score", "b": this.props.data[this.props.selectedLabel]["f1_score"]},
+        {"a": "Precision", "b": this.props.data[this.props.selectedLabel]["precision"]},
+        {"a": "Recall", "b": this.props.data[this.props.selectedLabel]["recall"]},
+        {"a": "Percent of Data", "b": this.props.data[this.props.selectedLabel]["num_examples"]/this.props.total},
+      ]
+    }
   }
 
   render() {
@@ -33,10 +47,10 @@ class TCEvaluationLabelStats extends Component {
             <PieChart data={{
                             "table": [
                               { "id": 1,
-                                "field": this.props.incorrect,
+                                "field": this.props.data[this.props.selectedLabel]["incorrect"],
                                 "color": "#D0021B"},
                               { "id": 2,
-                                "field": this.props.correct,
+                                "field": this.props.data[this.props.selectedLabel]["correct"],
                                 "color": "#7ED321"}
                             ]
                           }} />
@@ -58,9 +72,7 @@ class TCEvaluationLabelStats extends Component {
             </div>
           </div>
           <div className="TCEvaluationLabelStatsFScore">
-            <F1Score data={this.props.data}
-                     onSignalHover={this.handleHover}
-                     tooltip={new Handler(this.tooltip_options).call}/>
+            <F1Score data={this.chartData()} />
           </div>
         </div>
       </div>

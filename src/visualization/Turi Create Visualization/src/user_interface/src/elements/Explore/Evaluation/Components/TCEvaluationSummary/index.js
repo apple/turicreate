@@ -13,9 +13,9 @@ class TCEvaluationSummary extends Component {
 
   render() {
     return (
-      <div className="TCEvaluationSummary">
+      <div className="TCEvaluationSummary" onClick={this.props.onClick.bind(this, this.props.name)}>
         <div className="TCEvaluationSummaryTitle">
-          Dogs
+          {this.props.name}
         </div>
         <div className="TCEvaluationSummaryContent">
           <div className="TCEvaluationSummaryExamples">

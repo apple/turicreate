@@ -10,6 +10,8 @@ $easing_time: 0.2s;
 
   min-height: 0px;
 
+  z-index: 999;
+
   -webkit-transition: min-height $easing_time ease-in-out $easing_time;
   -ms-transition: min-height $easing_time ease-in-out $easing_time;
   transition: min-height $easing_time ease-in-out $easing_time;
@@ -173,4 +175,29 @@ $easing_time: 0.2s;
   text-align: right;
   display: inline-block;
   float: right;
+}
+
+.TCEvaluationTopBackButton{
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  font-family: Helvetica;
+  font-size: 9px;
+  color: #EFF0F1;
+  float: left;
+  padding-top: 21px;
+  padding-left:15px;
+  cursor: pointer;
+  z-index: 9999;
+}
+
+.TCEvaluationTopLabelName{
+  display: inline-block;
+  font-family: Helvetica-Light;
+  font-size: 24px;
+  color: #EFF0F1;
+  text-align: right;
+  float: right;
+  padding: 8px;
+  padding-right:15px;
 }

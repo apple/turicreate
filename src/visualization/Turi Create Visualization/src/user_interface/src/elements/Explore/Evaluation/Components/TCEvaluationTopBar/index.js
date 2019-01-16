@@ -20,48 +20,16 @@ class TCEvaluationTopBar extends Component {
     this.setState({"accordian": !this.state.accordian});
   }
 
-  render() {
-
-    let barClassName = (this.state.accordian)?"TCEvaluationTopBar":
-                                              ["TCEvaluationTopBar",
-                                               "TCEvaluationTopBarExtened"]
-                                               .join(" ");
-
-    let textMetricsClassName = (this.state.accordian)?
-                                "TCEvaluationTopBarMetricsTextContainer":
-                              ["TCEvaluationTopBarMetricsTextContainer",
-                               "TCEvaluationTopBarMetricsTextContainerExtended"]
-                               .join(" ");
-
-    let dropDownClassName = (this.state.accordian)?
-                              "TCEvaluationTopBarMetricsAccordianDropDown":
-                        ["TCEvaluationTopBarMetricsAccordianDropDown",
-                         "TCEvaluationTopBarMetricsAccordianDropDownRotate"]
-                         .join(" ");
-
-    let accordianTextClassName = (this.state.accordian)?
-                              "TCEvaluationTopBarAccuracyAccordianText":
-                        ["TCEvaluationTopBarAccuracyAccordianText",
-                         "TCEvaluationTopBarAccuracyAccordianTextDisplayed"]
-                         .join(" ");
-
-    let accordianTextHolderClassName = (this.state.accordian)?
-                              "TCEvaluationTopBarAccuracyAccordianTextHolder":
-                      ["TCEvaluationTopBarAccuracyAccordianTextHolder",
-                       "TCEvaluationTopBarAccuracyAccordianTextHolderDisplayed"]
-                       .join(" ");
-
-    let accordianMetricClassName = (this.state.accordian)?
-                              "TCEvaluationTopBarAccuracyAccordianMetricContainer":
-                      ["TCEvaluationTopBarAccuracyAccordianMetricContainer",
-                       "TCEvaluationTopBarAccuracyAccordianMetricContainerDisplayed"]
-                       .join(" ");
-
-
-
-
-    return (
-      <div className={barClassName}>
+  renderAccuracy = () => {
+    if(!this.props.left_selected && (this.props.selected_label != null)) {
+      return (
+        <div className="TCEvaluationTopBackButton"
+             onClick={this.props.reset.bind(this)}>
+            &lt;&nbsp;&nbsp;BACK
+        </div>
+      );
+    }else{
+      return (
         <div className="TCEvaluationTopBarAccuracy">
           <span className="TCEvaluationTopBarAccuracyValue">
             {this.formatPercentTitle(this.props.accuracy)}
@@ -70,6 +38,31 @@ class TCEvaluationTopBar extends Component {
             accuracy
           </span>
         </div>
+      );
+    }
+  }
+
+  renderDropDown = () => {
+    if(!this.props.left_selected && (this.props.selected_label != null)) {
+      return (
+        <div className="TCEvaluationTopLabelName">
+          {this.props.selected_label}
+        </div>
+      );
+    }else{
+      let dropDownClassName = (this.state.accordian)?
+                              "TCEvaluationTopBarMetricsAccordianDropDown":
+                        ["TCEvaluationTopBarMetricsAccordianDropDown",
+                         "TCEvaluationTopBarMetricsAccordianDropDownRotate"]
+                         .join(" ");
+
+      let textMetricsClassName = (this.state.accordian)?
+                                "TCEvaluationTopBarMetricsTextContainer":
+                              ["TCEvaluationTopBarMetricsTextContainer",
+                               "TCEvaluationTopBarMetricsTextContainerExtended"]
+                               .join(" ");
+
+      return (
         <div className="TCEvaluationTopBarMetrics">
           <div className="TCEvaluationTopBarMetricsAccordian"
                onClick={this.rotationHandler.bind(this)}>
@@ -89,6 +82,39 @@ class TCEvaluationTopBar extends Component {
             </div>
           </div>
         </div>
+      );
+    }
+  }
+
+  render() {
+
+    let barClassName = (this.state.accordian)?"TCEvaluationTopBar":
+                                              ["TCEvaluationTopBar",
+                                               "TCEvaluationTopBarExtened"]
+                                               .join(" ");
+
+    let accordianTextClassName = (this.state.accordian)?
+                              "TCEvaluationTopBarAccuracyAccordianText":
+                        ["TCEvaluationTopBarAccuracyAccordianText",
+                         "TCEvaluationTopBarAccuracyAccordianTextDisplayed"]
+                         .join(" ");
+
+    let accordianTextHolderClassName = (this.state.accordian)?
+                              "TCEvaluationTopBarAccuracyAccordianTextHolder":
+                      ["TCEvaluationTopBarAccuracyAccordianTextHolder",
+                       "TCEvaluationTopBarAccuracyAccordianTextHolderDisplayed"]
+                       .join(" ");
+
+    let accordianMetricClassName = (this.state.accordian)?
+                              "TCEvaluationTopBarAccuracyAccordianMetricContainer":
+                      ["TCEvaluationTopBarAccuracyAccordianMetricContainer",
+                       "TCEvaluationTopBarAccuracyAccordianMetricContainerDisplayed"]
+                       .join(" ");
+
+    return (
+      <div className={barClassName}>
+        {this.renderAccuracy()}
+        {this.renderDropDown()}
          <div className="TCEvaluationTopBarAccuracyAccordian">
            <div className={accordianTextHolderClassName}>
             <div className={accordianTextClassName}>

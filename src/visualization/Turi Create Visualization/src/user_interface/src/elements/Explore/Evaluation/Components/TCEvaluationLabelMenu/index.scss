@@ -1,7 +1,7 @@
 .TCEvaluationLabelMenu{
 	display: flex;
 	width: 94px;
-	height: 100vh;
+	height: calc(100vh - 66px);
 	padding: 12px;
 	padding-bottom: 0px;
 	top: 0px;
@@ -19,6 +19,7 @@
 }
 
 .TCEvaluationLabelMenuItemSelected{
+	text-align: center;
 	background: #797B83;
 	width: 88px;
 	height: 68px;
@@ -26,9 +27,13 @@
 	margin-bottom: 12px;
 	cursor: pointer;
 	border-radius: 4px;
+	font-family: Helvetica;
+	font-size: 9px;
+	color: #EFF0F1;
 }
 
 .TCEvaluationLabelMenuItem{
+	text-align: center;
 	background: #363643;
 	width: 88px;
 	height: 68px;
@@ -36,4 +41,7 @@
 	margin-bottom: 12px;
 	cursor: pointer;
 	border-radius: 4px;
+	font-family: Helvetica;
+	font-size: 9px;
+	color: #EFF0F1;
 }
