@@ -36,7 +36,7 @@ jpeg_error_exit (j_common_ptr cinfo)
 
 void parse_jpeg(const char* data, size_t length,
                 size_t& width, size_t& height,
-                size_t& channels) {
+                size_t& channels, const std::string& url) {
   struct jpeg_decompress_struct cinfo;
   struct jpeg_error_mgr jerr;
   memset(&cinfo, 0, sizeof(cinfo));
@@ -49,6 +49,10 @@ void parse_jpeg(const char* data, size_t length,
 
     jpeg_mem_src(&cinfo, (unsigned char*)data, length); // Specify data source for decompression
     jpeg_read_header(&cinfo, TRUE); // Read file header, set default decompression parameters
+
+    if (cinfo.out_color_space != JCS_GRAYSCALE && cinfo.out_color_space != JCS_RGB) {
+      log_and_throw(std::string("Unsupported colorspace format. Currently, only RGB and Grayscale are supported."));
+    }
 
     width = cinfo.image_width;
     height = cinfo.image_height;
@@ -81,10 +85,6 @@ void decode_jpeg(const char* data, size_t length, char** out_data, size_t& out_l
     jpeg_mem_src(&cinfo, (unsigned char*)data, length); // Specify data source for decompression
     jpeg_read_header(&cinfo, TRUE); // Read file header, set default decompression parameters
     jpeg_start_decompress(&cinfo); // Start decompressor
-
-    if (cinfo.out_color_space != JCS_GRAYSCALE && cinfo.out_color_space != JCS_RGB) {
-      log_and_throw(std::string("Unsupported colorspace format. Currently, only RGB and Grayscale are supported."));
-    }
 
     size_t width = cinfo.image_width;
     size_t height = cinfo.image_height;
