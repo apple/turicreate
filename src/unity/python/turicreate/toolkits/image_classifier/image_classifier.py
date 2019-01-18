@@ -652,7 +652,7 @@ class ImageClassifier(_CustomModel):
 
         evaluation_result = {k: metrics[k] for k in ['accuracy', 'f1_score', 'log_loss', 'precision', 'recall', 'auc']}
         evaluation_result['num_test_examples'] = len(dataset)
-        for k in ['num_classes', 'num_features', 'input_image_shape', 'num_examples', 'training_loss', 'training_time']:
+        for k in ['num_classes', 'num_features', 'input_image_shape', 'num_examples', 'training_loss', 'training_time', 'model', 'max_iterations']:
             evaluation_result[k] = getattr(self, k)
         
         # Extend the given test data

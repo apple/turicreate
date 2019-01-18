@@ -1,32 +1,29 @@
 import React, { Component } from 'react';
-import './index.scss';
 
-import TCEvaluationTopBar from './Components/TCEvaluationTopBar';
-import TCEvaluationNavigationBar from './Components/TCEvaluationNavigationBar';
-import TCEvaluationScores from './Components/TCEvaluationScores'
-import TCEvaluationScoresConsiderations from './Components/TCEvaluationScoresConsiderations';
-import TCEvaluationSummary from './Components/TCEvaluationSummary';
-import TCEvaluationLabelMenu from './Components/TCEvaluationLabelMenu';
-import TCEvaluationLabelStats from './Components/TCEvaluationLabelStats';
-import TCEvaluationIncorrectlyClassified from './Components/TCEvaluationIncorrectlyClassified';
-import TCEvaluationConfusionMenu from './Components/TCEvaluationConfusionMenu';
+import TCEvaluationOverview from './Components/TCEvaluationOverview';
+import TCEvaluationTable from './Components/TCEvaluationTable';
+import TCEvaluationFooter from './Components/TCEvaluationFooter';
 
 class TCEvaluation extends Component {
   constructor(props){
-    super(props);
+    super(props)
     this.state = {
-      left_selected: true,
-      selected_label:null,
+      "accuracy_visible": true,
+      "precision_visible": false,
+      "f1_score_visible": false,
+      "recall_visible": false,
+      "sort_by": "class",
+      "sort_direction": false,
       incorrect_classification: this.props.spec.label_metrics.reduce(function(map, data) {
-        map[data] = null;
+        map[data.label] = null;
         return map;
       }, {}),
-      correct_classification: this.props.spec.label_metrics.reduce(function(map, data) {
-        map[data] = [];
-        return map;
-      }, {}),
-      confusions:false,
-      selected_confusion:null
+      correct_classification:[],
+      "filter_confusion":null,
+      "sort_by_confusions": "predicted",
+      "sort_direction_confusions": false,
+      "selected_actual_confusion": null,
+      "selected_actual_prediction": null
     }
   }
 
@@ -48,6 +45,8 @@ class TCEvaluation extends Component {
           }
         }
       });
+
+      this.loadIncorrect()
     }
   }
 
@@ -62,18 +61,6 @@ class TCEvaluation extends Component {
     if("correct" in data){
       this.setState({"correct_classification": data["correct"]})
     }
-  }
-
-  changeSelectedState = (value) => {
-    this.setState({
-      left_selected: value
-    });
-  }
-
-  setSelectedLabel = (value) => {
-    this.setState({
-      selected_label: value
-    });
   }
 
   loadIncorrect = () => {
@@ -91,93 +78,62 @@ class TCEvaluation extends Component {
       }
     }
   }
+    
+  updateSortDirection = () => {
+    this.setState({"sort_direction": !this.state.sort_direction})
+  }
 
-  resetSelected = () => {
+  updateSortBy = (value) => {
+    this.setState({"sort_by": value})
+  }
+
+  updateSortByConfusion = (value) => {
     this.setState({
-      selected_label: null
+      "sort_by_confusions": value,
+      "sort_direction_confusions": !this.state.sort_direction_confusions
     });
   }
 
-  renderTopBar = () => {
-    return(
-      <TCEvaluationTopBar accuracy={this.props.spec.accuracy}
-                          iterations={10000}
-                          precision={this.props.spec.precision}
-                          recall={this.props.spec.recall}
-                          model_type={"resnet-50"}
-                          correct={this.props.spec.corrects_size}
-                          total={this.props.spec.num_examples}
-                          classes={this.props.spec.num_classes}
-                          selected_label={this.state.selected_label}
-                          left_selected={this.state.left_selected}
-                          reset={this.resetSelected.bind(this)}/>
-    );
+  summarySeedData = () => {
+    return this.props.spec.label_metrics.map((data, index) => {
+
+        var dataArr = {
+          name: data.label,
+          num_examples: data.count,
+          correct: data.correct_count,
+          incorrect: (data.count - data.correct_count),
+          f1_score: (2*(data.recall * data.precision))/(data.recall + data.precision),
+          precision: data.precision,
+          recall: data.recall,
+          correct_images: []
+        }
+
+        var correct_data = []
+        for(var x = 0; x < this.state.correct_classification.length; x++){
+          if(this.state.correct_classification[x]["target"] == data.label){
+            correct_data = this.state.correct_classification[x]["images"]
+          }
+        }
+
+        dataArr["correct_images"] = correct_data;
+        return dataArr;
+    });
   }
 
-  renderSummaryContainer = () => {
-    if(!this.state.left_selected && (this.state.selected_label == null)) {
-      return (
-        <div className={"TCEvaluationSummaryContainer"}>
-            {this.summarySeedData().map((value, index) => {
-              return (
-                <TCEvaluationSummary name={value.name}
-                                     images={value.correct_images}
-                                     num_examples={value.num_examples}
-                                     correct={value.correct}
-                                     incorrect={value.incorrect}
-                                     f1_score={value.f1_score}
-                                     precision={value.precision}
-                                     recall={value.recall}
-                                     onClick={this.setSelectedLabel.bind(this)}/>
-              )
-            })}
-              
-            </div>);
-    }
+  changeAccuracy = () =>{
+    this.setState({accuracy_visible: !this.state.accuracy_visible})
   }
 
-  f1ScoreData = () => {
-    return this.props.spec.label_metrics.map((data, index) => ({
-      "a": data.label,
-      "b": (2*(data.recall * data.precision))/(data.recall + data.precision)
-    }));
+  changeF1Score = () =>{
+    this.setState({f1_score_visible: !this.state.f1_score_visible})
   }
 
-  PrecisionData = () => {
-    return this.props.spec.label_metrics.map((data, index) => ({
-      "a": data.label,
-      "b": data.precision
-    }));
+  changePrecision = () =>{ 
+    this.setState({precision_visible: !this.state.precision_visible})
   }
 
-  RecallData = () => {
-    return this.props.spec.label_metrics.map((data, index) => ({
-      "a": data.label,
-      "b": data.recall
-    }));
-  }
-
-  NumTrainedData = () => {
-    return this.props.spec.label_metrics.map((data, index) => ({
-      "a": data.label,
-      "b": data.count
-    }));
-  }
-
-  EvaluationScoresData = () => {
-    return {
-      f1_score: this.f1ScoreData(),
-      recall: this.RecallData(),
-      precision: this.PrecisionData(),
-      num_trained: this.NumTrainedData()
-    }
-  }
-
-  convertCorrectDict = () => {
-    return this.state.correct_classification.reduce(function(map, data) {
-      map[data.target] = data.images;
-      return map;
-    }, {});
+  changeRecall = () =>{
+    this.setState({recall_visible: !this.state.recall_visible})
   }
 
   createConsiderations = () => {
@@ -188,10 +144,13 @@ class TCEvaluation extends Component {
       const current_val = this.state.incorrect_classification[incorrect_keys[k]]
       if(current_val != null && current_val != "loading"){
         for(var x = 0; x < current_val.length; x++){
+          console.log(JSON.stringify(current_val[x].images));
           considerations_array.push(
             {
-              "error": true,
-              "message": "An image of a " + incorrect_keys[k] + " is confused for an image of a " + current_val[x].label + ", "+current_val[x].images.length+" times."
+              "actual": incorrect_keys[k],
+              "predicted": current_val[x].label,
+              "images": current_val[x].images,
+              "count": current_val[x].images.length
             }
           )
         }
@@ -201,167 +160,55 @@ class TCEvaluation extends Component {
     return considerations_array;
   }
 
-  confusionsLabels = () => {
-    const incorrect_keys = Object.keys(this.state.incorrect_classification);
-    var considerations_array = [];
-
-    for(var k = 0; k < incorrect_keys.length; k++){
-      const current_val = this.state.incorrect_classification[incorrect_keys[k]]
-      if(current_val != null && current_val != "loading"){
-        for(var x = 0; x < current_val.length; x++){
-          considerations_array.push(
-            {"base":incorrect_keys[k], "confused": current_val[x].label, "num": current_val[x].images.length}
-          )
-        }
-      }
-    }
-
-    return considerations_array;
+  updatedSelectedRow = (value) =>{
+    this.setState({"filter_confusion": value})
   }
 
-  summarySeedData = () => {
-    const imageDict = this.convertCorrectDict()
-    return this.props.spec.label_metrics.map((data, index) => ({
-      name: data.label,
-      num_examples: data.count,
-      correct: data.correct_count,
-      incorrect: (data.count - data.correct_count),
-      f1_score: (2*(data.recall * data.precision))/(data.recall + data.precision),
-      precision: data.precision,
-      recall: data.recall,
-      correct_images: imageDict[data.label]
-    }));
+  selectRowConfusions = (actual, predicted) => {
+    this.setState({
+      "selected_actual_confusion": actual,
+      "selected_actual_prediction": predicted
+    })
   }
 
-  summarySeedDict = () => {
-    const imageDict = this.convertCorrectDict()
-    return this.props.spec.label_metrics.reduce(function(map, data) {
-      const compact_data = {
-        name: data.label,
-        num_examples: data.count,
-        correct: data.correct_count,
-        incorrect: (data.count - data.correct_count),
-        f1_score: (2*(data.recall * data.precision))/(data.recall + data.precision),
-        precision: data.precision,
-        recall: data.recall,
-        correct_images: imageDict[data.label]
-      }
-
-      map[compact_data.name] = compact_data;
-      return map;
-    }, {});
-  }
-
-  changeConfusions = () => {
-    this.setState({confusions: !this.state.confusions})
-  }
-
-  changeConfused = (label) => {
-    this.setState({selected_confusion: label})
-  }
-
-  findImagesConfusion = () => {
-    const baseImages = this.state.incorrect_classification[this.state.selected_confusion.base];
-  }
-
-  renderNavigation = () => {
-    if(this.state.selected_label == null && !this.state.confusions){
-      return(
-        <div className="TCEvaluationNaviationContainer">
-          <TCEvaluationNavigationBar selected_state={this.state.left_selected}
-                                     changeSelectedState={this.changeSelectedState.bind(this)} />
-        </div>
-      );
-    }
-  }
-
-  renderHomePage = () => {
-    if(this.state.left_selected && !this.state.confusions) {
-      return (
-        <div className="TCEvaluationHomePageContainer">
-          <div className="TCEvaluationVegaContainer">
-            <TCEvaluationScores data={this.EvaluationScoresData()} />
-          </div>
-          <div className="TCEvaluationConsiderationsContainer">
-            <TCEvaluationScoresConsiderations considerations={this.createConsiderations()}
-                                              onClick={this.changeConfusions.bind(this)} />
-          </div>
-        </div>
-      );
-    }
-  }
-
-  renderConfusions = () => {
-    if(this.state.left_selected && this.state.confusions) {
-      return(
-        <div className="TCEvaluationSummarySelectedModal">
-          <div className="TCEvaluationSummarySelectedContainer">
-            <div className="TCEvaluationSummarySelectedContainerSpacer">
-            </div>
-            <div className="TCEvaluationSummarySelectedContainerData">
-          <TCEvaluationConfusionMenu labels={this.confusionsLabels()}
-                                     selected_element={this.state.selected_confusion}
-                                     filterImages={this.changeConfused.bind(this)}/>
-          </div>
-          </div>
-          <div className="TCEvaluationSummarySelectedView">
-            <div className="TCEvaluationSummarySelectedContainerSpacer">
-            </div>
-            <div className="TCEvaluationSummarySelectedContainerData">
-              <div className="TCEvaluationSummarySelectedContainerDataCont">
-                {this.findImagesConfusion()}
-              </div>
-            </div>
-          </div>
-        </div>
-      )
-    }
-  }
-
-  renderSelectSummary = () => {
-    if(!this.state.left_selected && (this.state.selected_label != null)) {
-      this.loadIncorrect()
-      return (
-        <div className="TCEvaluationSummarySelectedModal">
-          <div className="TCEvaluationSummarySelectedContainer">
-            <div className="TCEvaluationSummarySelectedContainerSpacer">
-            </div>
-            <div className="TCEvaluationSummarySelectedContainerData">
-              <TCEvaluationLabelMenu labels={this.props.spec.labels}
-                                     selectedLabel={this.state.selected_label}
-                                     changeLabel={this.setSelectedLabel.bind(this)} />
-            </div>
-          </div>
-          <div className="TCEvaluationSummarySelectedView">
-            <div className="TCEvaluationSummarySelectedContainerSpacer">
-            </div>
-            <div className="TCEvaluationSummarySelectedContainerData">
-              <div className="TCEvaluationSummarySelectedContainerDataCont">
-                <TCEvaluationLabelStats data={this.summarySeedDict()}
-                                        selectedLabel={this.state.selected_label}
-                                        total={this.props.spec.num_examples}/>
-                <div className="TCEvaluationSummarySelectedContainerDataIncorrectlyCont">
-                  <div className="TCEvaluationSummarySelectedContainerDataIncorrectly">
-                    <TCEvaluationIncorrectlyClassified incorrect={this.state.incorrect_classification[this.state.selected_label]} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )
-    }
-  }
-  
   render() {
     return (
       <div className="TCEvaluation">
-            {this.renderTopBar()}
-            {this.renderNavigation()}
-            {this.renderHomePage()}
-            {this.renderSummaryContainer()}
-            {this.renderConfusions()}
-            {this.renderSelectSummary()}
+        <TCEvaluationOverview accuracy={this.props.spec.accuracy}
+                              iterations={this.props.spec.max_iterations}
+                              precision={this.props.spec.precision}
+                              recall={this.props.spec.recall}
+                              model_type={"Resnet-50"}
+                              accuracy_visible={this.state.accuracy_visible}
+                              precision_visible={this.state.precision_visible}
+                              f1_score_visible={this.state.f1_score_visible}
+                              recall_visible={this.state.recall_visible}
+                              changeAccuracy={this.changeAccuracy.bind(this)}
+                              changePrecision={this.changePrecision.bind(this)}
+                              changeRecall={this.changeRecall.bind(this)}
+                              changeF1Score={this.changeF1Score.bind(this)} />
+        <TCEvaluationTable data={this.summarySeedData()}
+                           accuracy_visible={this.state.accuracy_visible}
+                           precision_visible={this.state.precision_visible}
+                           f1_score_visible={this.state.f1_score_visible}
+                           recall_visible={this.state.recall_visible}
+                           sort_by={this.state.sort_by}
+                           sort_direction={this.state.sort_direction}
+                           updateSortDirection={this.updateSortDirection.bind(this)}
+                           updateSortBy={this.updateSortBy.bind(this)}
+                           filter_confusion={this.state.filter_confusion}
+                           row_click={this.updatedSelectedRow.bind(this)}
+                            />
+        <TCEvaluationFooter considerations={this.createConsiderations()}
+                            filter_confusion={this.state.filter_confusion}
+                            sort_by_confusions={this.state.sort_by_confusions}
+                            sort_direction_confusions={this.state.sort_direction_confusions}
+                            row_click={this.updatedSelectedRow.bind(this)}
+                            updateSortByConfusion={this.updateSortByConfusion.bind(this)}
+                            selectRowConfusions={this.selectRowConfusions.bind(this)}
+                            selected_actual={this.state.selected_actual_confusion}
+                            selected_prediction={this.state.selected_actual_prediction}
+                            />
       </div>
     );
   }

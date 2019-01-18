@@ -17,9 +17,9 @@ class TCEvaluationImageComponent extends Component {
     const imageWidth = this.imgEl.current.clientWidth;
     const imageHeight = this.imgEl.current.clientHeight;
     if(imageWidth > imageHeight){
-      this.setState({"height" : 78})
+      this.setState({"height" : 130})
     }else{
-      this.setState({"width" : 78})
+      this.setState({"width" : 130})
     }
   }
 
