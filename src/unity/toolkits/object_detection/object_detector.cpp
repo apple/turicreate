@@ -24,6 +24,7 @@
 
 using turi::coreml::MLModelWrapper;
 using turi::neural_net::cnn_module;
+using turi::neural_net::compute_context;
 using turi::neural_net::deferred_float_array;
 using turi::neural_net::float_array_map;
 using turi::neural_net::image_annotation;
@@ -427,18 +428,9 @@ std::unique_ptr<data_iterator> object_detector::create_iterator(
       new simple_data_iterator(iterator_params));  
 }
 
-std::unique_ptr<image_augmenter> object_detector::create_augmenter(
-    const image_augmenter::options& opts) const {
-
-  return image_augmenter::create(opts);
-}
-
-std::unique_ptr<cnn_module> object_detector::create_cnn_module (
-    int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
-    const float_array_map& config, const float_array_map& weights) const {
-
-  return cnn_module::create_object_detector(n, c_in, h_in, w_in, c_out, h_out,
-                                            w_out, config, weights);
+std::unique_ptr<compute_context> object_detector::create_compute_context() const
+{
+  return compute_context::create();
 }
 
 void object_detector::init_train(gl_sframe data,
@@ -450,8 +442,15 @@ void object_detector::init_train(gl_sframe data,
   training_data_iterator_ = create_iterator(data, annotations_column_name,
                                             image_column_name);
 
+  // Instantiate the compute context.
+  std::unique_ptr<compute_context> context = create_compute_context();
+  if (context == nullptr) {
+    log_and_throw("No neural network compute context provided");
+  }
+
   // Instantiate the data augmenter.
-  training_data_augmenter_ = create_augmenter(get_augmentation_options());
+  training_data_augmenter_ =
+      context->create_image_augmenter(get_augmentation_options());
 
   // Extract 'mlmodel_path' from the options, to avoid storing it as a model
   // field.
@@ -512,7 +511,7 @@ void object_detector::init_train(gl_sframe data,
   int num_outputs_per_anchor =  // 4 bbox coords + 1 conf + one-hot class labels
       5 + static_cast<int>(training_data_iterator_->class_labels().size());
   int num_output_channels = num_outputs_per_anchor * anchor_boxes().size();
-  training_module_ = create_cnn_module(
+  training_module_ = context->create_object_detector(
       /* n */     options.value("batch_size"),
       /* c_in */  NUM_INPUT_CHANNELS,
       /* h_in */  GRID_SIZE * SPATIAL_REDUCTION,

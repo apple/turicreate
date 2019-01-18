@@ -16,6 +16,7 @@
 #include <unity/lib/gl_sframe.hpp>
 #include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
 #include <unity/toolkits/neural_net/cnn_module.hpp>
+#include <unity/toolkits/neural_net/compute_context.hpp>
 #include <unity/toolkits/neural_net/image_augmentation.hpp>
 #include <unity/toolkits/neural_net/model_spec.hpp>
 #include <unity/toolkits/object_detection/od_data_iterator.hpp>
@@ -103,20 +104,14 @@ class EXPORT object_detector: public ml_model_base {
       gl_sframe data, std::string annotations_column_name,
       std::string image_column_name) const;
 
-  // Factory for image_augmenter
-  virtual std::unique_ptr<neural_net::image_augmenter> create_augmenter(
-      const neural_net::image_augmenter::options& opts) const;
+  // Factory for compute_context
+  virtual
+  std::unique_ptr<neural_net::compute_context> create_compute_context() const;
 
   // Returns the initial neural network to train (represented by its CoreML
   // spec), given the path to a mlmodel file containing the pretrained weights.
   virtual std::unique_ptr<neural_net::model_spec> init_model(
       const std::string& pretrained_mlmodel_path) const;
-
-  // Factory for cnn_module
-  virtual std::unique_ptr<neural_net::cnn_module> create_cnn_module(
-      int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
-      const neural_net::float_array_map& config,
-      const neural_net::float_array_map& weights) const;
 
 
   // Support for iterative training.

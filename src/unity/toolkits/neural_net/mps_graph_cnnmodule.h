@@ -24,7 +24,9 @@ namespace neural_net {
 
 class mps_graph_cnn_module: public cnn_module {
 public:
+
   mps_graph_cnn_module();
+  mps_graph_cnn_module(id <MTLDevice> dev);
 
   void init(int network_id, int n, int c_in, int h_in, int w_in, int c_out,
             int h_out, int w_out,
