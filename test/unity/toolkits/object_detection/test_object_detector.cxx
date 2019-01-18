@@ -142,10 +142,6 @@ public:
     return export_weights_retval_;
   }
 
-  std::vector<std::string> gpu_names() const override {
-    return {};
-  }
-
   std::deque<set_learning_rate_call> set_learning_rate_calls_;
   std::deque<train_call> train_calls_;
   mutable std::deque<predict_call> predict_calls_;
@@ -165,6 +161,14 @@ public:
   ~mock_compute_context() {
     TS_ASSERT(create_augmenter_calls_.empty());
     TS_ASSERT(create_cnn_module_calls_.empty());
+  }
+
+  size_t memory_budget() const override {
+    return 0;
+  }
+
+  std::vector<std::string> gpu_names() const override {
+    return {};
   }
 
   std::unique_ptr<image_augmenter> create_image_augmenter(

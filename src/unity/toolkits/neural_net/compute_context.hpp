@@ -32,6 +32,20 @@ public:
   virtual ~compute_context();
 
   /**
+   * Returns the (human readable) names of the GPUs used by this context, for
+   * reporting to the user.
+   */
+  virtual std::vector<std::string> gpu_names() const = 0;
+
+  /**
+   * Provides a measure of the memory resources available.
+   *
+   * Returns the maximum memory size in bytes that neural networks should
+   * allocate, typically used to determine batch sizes (often heuristically).
+   */
+  virtual size_t memory_budget() const = 0;
+
+  /**
    * Creates an object detection network.
    *
    * \todo Define a object_detector_config struct to encapsulate these

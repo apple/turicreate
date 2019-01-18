@@ -42,6 +42,9 @@ constexpr size_t OBJECT_DETECTOR_VERSION = 1;
 
 constexpr int DEFAULT_BATCH_SIZE = 32;
 
+// Empircally, we need 4GB to support batch size 32.
+constexpr size_t MEMORY_REQUIRED_FOR_DEFAULT_BATCH_SIZE = 4294967296;
+
 // We assume RGB input.
 constexpr int NUM_INPUT_CHANNELS = 3;
 
@@ -186,10 +189,31 @@ void object_detector::init_options(
   // Validate user-provided options.
   options.set_options(opts);
 
+  // Report to the user what GPU(s) is being used.
+  std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
+  if (gpu_names.empty()) {
+    logprogress_stream << "Using CPU to create model";
+  } else {
+    std::string gpu_names_string = gpu_names[0];
+    for (size_t i = 1; i < gpu_names.size(); ++i) {
+      gpu_names_string += ", " + gpu_names[i];
+    }
+    logprogress_stream << "Using "
+                       << (gpu_names.size() > 1 ? "GPUs" : "GPU")
+                       << " to create model ("
+                       << gpu_names_string << ")";
+  }
+
   // Configure the batch size automatically if not set.
   if (options.value("batch_size") == FLEX_UNDEFINED) {
-    // TODO: Reduce batch size when training on GPU with less than 4GB RAM.
+
     flex_int batch_size = DEFAULT_BATCH_SIZE;
+    size_t memory_budget = training_compute_context_->memory_budget();
+    if (memory_budget < MEMORY_REQUIRED_FOR_DEFAULT_BATCH_SIZE) {
+      batch_size /= 2;
+    }
+    // TODO: What feedback can we give if the user requests a batch size that
+    // doesn't fit?
 
     logprogress_stream << "Setting 'batch_size' to " << batch_size;
 
@@ -443,14 +467,14 @@ void object_detector::init_train(gl_sframe data,
                                             image_column_name);
 
   // Instantiate the compute context.
-  std::unique_ptr<compute_context> context = create_compute_context();
-  if (context == nullptr) {
+  training_compute_context_ = create_compute_context();
+  if (training_compute_context_ == nullptr) {
     log_and_throw("No neural network compute context provided");
   }
 
   // Instantiate the data augmenter.
-  training_data_augmenter_ =
-      context->create_image_augmenter(get_augmentation_options());
+  training_data_augmenter_ = training_compute_context_->create_image_augmenter(
+      get_augmentation_options());
 
   // Extract 'mlmodel_path' from the options, to avoid storing it as a model
   // field.
@@ -511,7 +535,7 @@ void object_detector::init_train(gl_sframe data,
   int num_outputs_per_anchor =  // 4 bbox coords + 1 conf + one-hot class labels
       5 + static_cast<int>(training_data_iterator_->class_labels().size());
   int num_output_channels = num_outputs_per_anchor * anchor_boxes().size();
-  training_module_ = context->create_object_detector(
+  training_module_ = training_compute_context_->create_object_detector(
       /* n */     options.value("batch_size"),
       /* c_in */  NUM_INPUT_CHANNELS,
       /* h_in */  GRID_SIZE * SPATIAL_REDUCTION,
@@ -521,21 +545,6 @@ void object_detector::init_train(gl_sframe data,
       /* w_out */ GRID_SIZE,
       get_training_config(),
       std::move(model_params));
-
-  // Report to the user what GPU(s) is being used.
-  std::vector<std::string> gpu_names = training_module_->gpu_names();
-  if (gpu_names.empty()) {
-    logprogress_stream << "Using CPU to create model";
-  } else {
-    std::string gpu_names_string = gpu_names[0];
-    for (size_t i = 1; i < gpu_names.size(); ++i) {
-      gpu_names_string += ", " + gpu_names[i];
-    }
-    logprogress_stream << "Using "
-                       << (gpu_names.size() > 1 ? "GPUs" : "GPU")
-                       << " to create model ("
-                       << gpu_names_string << ")";
-  }
 
   // Print the header last, after any logging triggered by initialization above.
   if (training_table_printer_) {

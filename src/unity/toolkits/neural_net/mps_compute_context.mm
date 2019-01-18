@@ -30,6 +30,15 @@ mps_compute_context::mps_compute_context(): impl_(new impl) {
 
 mps_compute_context::~mps_compute_context() = default;
 
+size_t mps_compute_context::memory_budget() const {
+
+  return static_cast<size_t>(impl_->dev.recommendedMaxWorkingSetSize);
+}
+
+std::vector<std::string> mps_compute_context::gpu_names() const {
+  return { [impl_->dev.name cStringUsingEncoding:NSUTF8StringEncoding] };
+}
+
 std::unique_ptr<image_augmenter> mps_compute_context::create_image_augmenter(
     const image_augmenter::options& opts) {
 

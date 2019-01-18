@@ -51,8 +51,6 @@ public:
 
   float_array_map export_weights() const override;
 
-  std::vector<std::string> gpu_names() const override;
-
 private:
   MPSImageBatch *create_image_batch(MPSImageDescriptor *desc) const;
   MPSImageBatch *copy_input(const float_array& input) const;
