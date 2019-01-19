@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Class cartesian_topology</title>
+<link rel="stylesheet" href="../../../../doc/src/boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../../index.html" title="The Boost C++ Libraries BoostBook Documentation Subset">
+<link rel="up" href="../../mpi/tutorial.html#header.boost.mpi.cartesian_communicator_hpp" title="Header &lt;boost/mpi/cartesian_communicator.hpp&gt;">
+<link rel="prev" href="is_mpi_1_3_26_5_14_3_2_1_2.html" title="Struct is_mpi_datatype&lt;cartesian_dimension&gt;">
+<link rel="next" href="cartesian_communicator.html" title="Class cartesian_communicator">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img alt="Boost C++ Libraries" width="277" height="86" src="../../../../boost.png"></td>
+<td align="center"><a href="../../../../index.html">Home</a></td>
+<td align="center"><a href="../../../../libs/libraries.htm">Libraries</a></td>
+<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
+<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
+<td align="center"><a href="../../../../more/index.htm">More</a></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="is_mpi_1_3_26_5_14_3_2_1_2.html"><img src="../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../mpi/tutorial.html#header.boost.mpi.cartesian_communicator_hpp"><img src="../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="cartesian_communicator.html"><img src="../../../../doc/src/images/next.png" alt="Next"></a>
+</div>
+<div class="refentry">
+<a name="boost.mpi.cartesian_topology"></a><div class="titlepage"></div>
+<div class="refnamediv">
+<h2><span class="refentrytitle">Class cartesian_topology</span></h2>
+<p>boost::mpi::cartesian_topology &#8212; Describe the topology of a cartesian grid. </p>
+</div>
+<h2 xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" class="refsynopsisdiv-title">Synopsis</h2>
+<div xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" class="refsynopsisdiv"><pre class="synopsis"><span class="comment">// In header: &lt;<a class="link" href="../../mpi/tutorial.html#header.boost.mpi.cartesian_communicator_hpp" title="Header &lt;boost/mpi/cartesian_communicator.hpp&gt;">boost/mpi/cartesian_communicator.hpp</a>&gt;
+
+</span>
+<span class="keyword">class</span> <a class="link" href="cartesian_topology.html" title="Class cartesian_topology">cartesian_topology</a> <span class="special">:</span> <span class="keyword">private</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span> <span class="identifier">cartesian_dimension</span> <span class="special">&gt;</span> <span class="special">{</span>
+<span class="keyword">public</span><span class="special">:</span>
+  <span class="comment">// <a class="link" href="cartesian_topology.html#boost.mpi.cartesian_topologyconstruct-copy-destruct">construct/copy/destruct</a></span>
+  <a class="link" href="cartesian_topology.html#id-1_3_26_5_14_3_2_1_3_5-bb"><span class="identifier">cartesian_topology</span></a><span class="special">(</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">delete</span><span class="special">;</span>
+  <a class="link" href="cartesian_topology.html#id-1_3_26_5_14_3_2_1_3_6-bb"><span class="identifier">cartesian_topology</span></a><span class="special">(</span><a class="link" href="cartesian_topology.html" title="Class cartesian_topology">cartesian_topology</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">default</span><span class="special">;</span>
+  <a class="link" href="cartesian_topology.html#id-1_3_26_5_14_3_2_1_3_8-bb"><span class="identifier">cartesian_topology</span></a><span class="special">(</span><a class="link" href="cartesian_topology.html" title="Class cartesian_topology">cartesian_topology</a> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="cartesian_topology.html#id-1_3_26_5_14_3_2_1_3_11-bb"><span class="identifier">cartesian_topology</span></a><span class="special">(</span><span class="keyword">int</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="cartesian_topology.html#id-1_3_26_5_14_3_2_1_3_12-bb"><span class="identifier">cartesian_topology</span></a><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span> <a class="link" href="cartesian_dimension.html" title="Struct cartesian_dimension">cartesian_dimension</a> <span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> InitArr<span class="special">&gt;</span> <span class="keyword">explicit</span> <a class="link" href="cartesian_topology.html#id-1_3_26_5_14_3_2_1_3_13-bb"><span class="identifier">cartesian_topology</span></a><span class="special">(</span><span class="identifier">InitArr</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">explicit</span> <a class="link" href="cartesian_topology.html#id-1_3_26_5_14_3_2_1_3_14-bb"><span class="identifier">cartesian_topology</span></a><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">initializer_list</span><span class="special">&lt;</span> <a class="link" href="cartesian_dimension.html" title="Struct cartesian_dimension">cartesian_dimension</a> <span class="special">&gt;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">int</span> NDIM<span class="special">&gt;</span> <span class="keyword">explicit</span> <a class="link" href="cartesian_topology.html#id-1_3_26_5_14_3_2_1_3_15-bb"><span class="identifier">cartesian_topology</span></a><span class="special">(</span><a class="link" href="cartesian_dimension.html" title="Struct cartesian_dimension">cartesian_dimension</a><span class="special">(</span><span class="special">&amp;</span><span class="special">)</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> DimRg<span class="special">,</span> <span class="keyword">typename</span> PerRg<span class="special">&gt;</span> 
+    <a class="link" href="cartesian_topology.html#id-1_3_26_5_14_3_2_1_3_16-bb"><span class="identifier">cartesian_topology</span></a><span class="special">(</span><span class="identifier">DimRg</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">PerRg</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> DimIter<span class="special">,</span> <span class="keyword">typename</span> PerIter<span class="special">&gt;</span> 
+    <a class="link" href="cartesian_topology.html#id-1_3_26_5_14_3_2_1_3_17-bb"><span class="identifier">cartesian_topology</span></a><span class="special">(</span><span class="identifier">DimIter</span><span class="special">,</span> <span class="identifier">PerIter</span><span class="special">,</span> <span class="keyword">int</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="cartesian_topology.html" title="Class cartesian_topology">cartesian_topology</a> <span class="special">&amp;</span> <a class="link" href="cartesian_topology.html#id-1_3_26_5_14_3_2_1_3_7-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><a class="link" href="cartesian_topology.html" title="Class cartesian_topology">cartesian_topology</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">default</span><span class="special">;</span>
+  <a class="link" href="cartesian_topology.html" title="Class cartesian_topology">cartesian_topology</a> <span class="special">&amp;</span> <a class="link" href="cartesian_topology.html#id-1_3_26_5_14_3_2_1_3_9-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><a class="link" href="cartesian_topology.html" title="Class cartesian_topology">cartesian_topology</a> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="cartesian_topology.html#id-1_3_26_5_14_3_2_1_3_10-bb"><span class="special">~</span><span class="identifier">cartesian_topology</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+
+  <span class="comment">// <a class="link" href="cartesian_topology.html#id-1_3_26_5_14_3_2_1_3_4-bb">public member functions</a></span>
+  <span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span> <a class="link" href="cartesian_dimension.html" title="Struct cartesian_dimension">cartesian_dimension</a> <span class="special">&gt;</span> <span class="special">&amp;</span> <a class="link" href="cartesian_topology.html#id-1_3_26_5_14_3_2_1_3_4_1-bb"><span class="identifier">stl</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span> <a class="link" href="cartesian_dimension.html" title="Struct cartesian_dimension">cartesian_dimension</a> <span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span> <a class="link" href="cartesian_topology.html#id-1_3_26_5_14_3_2_1_3_4_2-bb"><span class="identifier">stl</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="cartesian_topology.html#id-1_3_26_5_14_3_2_1_3_4_3-bb"><span class="identifier">split</span></a><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span> <span class="keyword">int</span> <span class="special">&gt;</span> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span> <span class="keyword">bool</span> <span class="special">&gt;</span> <span class="special">&amp;</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+<span class="special">}</span><span class="special">;</span></pre></div>
+<div class="refsect1">
+<a name="id-1.3.26.5.14.4.6.4"></a><h2>Description</h2>
+<p>Behave mostly like a sequence of <code class="computeroutput"><a class="link" href="cartesian_dimension.html" title="Struct cartesian_dimension">cartesian_dimension</a></code> with the notable exception that its size is fixed. This is a lightweight object, so that any constructor that could be considered missing could be replaced with a function (move constructor provided when supported). </p>
+<div class="refsect2">
+<a name="id-1.3.26.5.14.4.6.4.3"></a><h3>
+<a name="boost.mpi.cartesian_topologyconstruct-copy-destruct"></a><code class="computeroutput">cartesian_topology</code> 
+        public
+       construct/copy/destruct</h3>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem"><pre class="literallayout"><a name="id-1_3_26_5_14_3_2_1_3_5-bb"></a><span class="identifier">cartesian_topology</span><span class="special">(</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">delete</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><a name="id-1_3_26_5_14_3_2_1_3_6-bb"></a><span class="identifier">cartesian_topology</span><span class="special">(</span><a class="link" href="cartesian_topology.html" title="Class cartesian_topology">cartesian_topology</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">default</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><a name="id-1_3_26_5_14_3_2_1_3_8-bb"></a><span class="identifier">cartesian_topology</span><span class="special">(</span><a class="link" href="cartesian_topology.html" title="Class cartesian_topology">cartesian_topology</a> <span class="special">&amp;&amp;</span> other<span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem">
+<pre class="literallayout"><a name="id-1_3_26_5_14_3_2_1_3_11-bb"></a><span class="identifier">cartesian_topology</span><span class="special">(</span><span class="keyword">int</span> ndim<span class="special">)</span><span class="special">;</span></pre>Create a N dimension space. Each dimension is initialized as non periodic of size 0. </li>
+<li class="listitem">
+<pre class="literallayout"><a name="id-1_3_26_5_14_3_2_1_3_12-bb"></a><span class="identifier">cartesian_topology</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span> <a class="link" href="cartesian_dimension.html" title="Struct cartesian_dimension">cartesian_dimension</a> <span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span> dims<span class="special">)</span><span class="special">;</span></pre>Use the provided dimensions specification as initial values. </li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> InitArr<span class="special">&gt;</span> <span class="keyword">explicit</span> <a name="id-1_3_26_5_14_3_2_1_3_13-bb"></a><span class="identifier">cartesian_topology</span><span class="special">(</span><span class="identifier">InitArr</span> dims<span class="special">)</span><span class="special">;</span></pre>Use dimensions specification provided in the sequence container as initial values. #param dims must be a sequence container. </li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">explicit</span> <a name="id-1_3_26_5_14_3_2_1_3_14-bb"></a><span class="identifier">cartesian_topology</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">initializer_list</span><span class="special">&lt;</span> <a class="link" href="cartesian_dimension.html" title="Struct cartesian_dimension">cartesian_dimension</a> <span class="special">&gt;</span> dims<span class="special">)</span><span class="special">;</span></pre>Use dimensions specification provided in the initialization list as initial values. #param dims can be of the form { dim_1, false}, .... {dim_n, true}. </li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">int</span> NDIM<span class="special">&gt;</span> <span class="keyword">explicit</span> <a name="id-1_3_26_5_14_3_2_1_3_15-bb"></a><span class="identifier">cartesian_topology</span><span class="special">(</span><a class="link" href="cartesian_dimension.html" title="Struct cartesian_dimension">cartesian_dimension</a><span class="special">(</span><span class="special">&amp;</span><span class="special">)</span> dims<span class="special">)</span><span class="special">;</span></pre>Use dimensions specification provided in the array. #param dims can be of the form { dim_1, false}, .... {dim_n, true}. </li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> DimRg<span class="special">,</span> <span class="keyword">typename</span> PerRg<span class="special">&gt;</span> 
+  <a name="id-1_3_26_5_14_3_2_1_3_16-bb"></a><span class="identifier">cartesian_topology</span><span class="special">(</span><span class="identifier">DimRg</span> <span class="keyword">const</span> <span class="special">&amp;</span> dim_rg<span class="special">,</span> <span class="identifier">PerRg</span> <span class="keyword">const</span> <span class="special">&amp;</span> period_rg<span class="special">)</span><span class="special">;</span></pre>Use dimensions specification provided in the input ranges The ranges do not need to be the same size. If the sizes are different, the missing values will be complete with zeros of the dim and assumed non periodic. <p>
+</p>
+<div class="variablelist"><table border="0" class="variablelist compact">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term">Parameters:</span></p></td>
+<td><div class="variablelist"><table border="0" class="variablelist compact">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><code class="computeroutput">dim_rg</code></span></p></td>
+<td><p>the dimensions, values must convert to integers. </p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="computeroutput">period_rg</code></span></p></td>
+<td><p>the periodicities, values must convert to booleans. #param dims can be of the form { dim_1, false}, .... {dim_n, true} </p></td>
+</tr>
+</tbody>
+</table></div></td>
+</tr></tbody>
+</table></div>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> DimIter<span class="special">,</span> <span class="keyword">typename</span> PerIter<span class="special">&gt;</span> 
+  <a name="id-1_3_26_5_14_3_2_1_3_17-bb"></a><span class="identifier">cartesian_topology</span><span class="special">(</span><span class="identifier">DimIter</span> dit<span class="special">,</span> <span class="identifier">PerIter</span> pit<span class="special">,</span> <span class="keyword">int</span> n<span class="special">)</span><span class="special">;</span></pre>Iterator based initializer. Will use the first n iterated values. Both iterators can be single pass. <p>
+</p>
+<div class="variablelist"><table border="0" class="variablelist compact">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term">Parameters:</span></p></td>
+<td><div class="variablelist"><table border="0" class="variablelist compact">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><code class="computeroutput">dit</code></span></p></td>
+<td><p>dimension iterator, value must convert to integer type. </p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="computeroutput">pit</code></span></p></td>
+<td><p>periodicity iterator, value must convert to booleans.. </p></td>
+</tr>
+</tbody>
+</table></div></td>
+</tr></tbody>
+</table></div>
+</li>
+<li class="listitem"><pre class="literallayout"><a class="link" href="cartesian_topology.html" title="Class cartesian_topology">cartesian_topology</a> <span class="special">&amp;</span> <a name="id-1_3_26_5_14_3_2_1_3_7-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><a class="link" href="cartesian_topology.html" title="Class cartesian_topology">cartesian_topology</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">default</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><a class="link" href="cartesian_topology.html" title="Class cartesian_topology">cartesian_topology</a> <span class="special">&amp;</span> <a name="id-1_3_26_5_14_3_2_1_3_9-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><a class="link" href="cartesian_topology.html" title="Class cartesian_topology">cartesian_topology</a> <span class="special">&amp;&amp;</span> other<span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><a name="id-1_3_26_5_14_3_2_1_3_10-bb"></a><span class="special">~</span><span class="identifier">cartesian_topology</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre></li>
+</ol></div>
+</div>
+<div class="refsect2">
+<a name="id-1.3.26.5.14.4.6.4.4"></a><h3>
+<a name="id-1_3_26_5_14_3_2_1_3_4-bb"></a><code class="computeroutput">cartesian_topology</code> public member functions</h3>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span> <a class="link" href="cartesian_dimension.html" title="Struct cartesian_dimension">cartesian_dimension</a> <span class="special">&gt;</span> <span class="special">&amp;</span> <a name="id-1_3_26_5_14_3_2_1_3_4_1-bb"></a><span class="identifier">stl</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<p>Export as an stl sequence. </p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span> <a class="link" href="cartesian_dimension.html" title="Struct cartesian_dimension">cartesian_dimension</a> <span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span> <a name="id-1_3_26_5_14_3_2_1_3_4_2-bb"></a><span class="identifier">stl</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p>Export as an stl sequence. </p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">void</span> <a name="id-1_3_26_5_14_3_2_1_3_4_3-bb"></a><span class="identifier">split</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span> <span class="keyword">int</span> <span class="special">&gt;</span> <span class="special">&amp;</span> dims<span class="special">,</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span> <span class="keyword">bool</span> <span class="special">&gt;</span> <span class="special">&amp;</span> periodics<span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p>Split the topology in two sequences of sizes and periodicities. </p>
+</li>
+</ol></div>
+</div>
+</div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2005-2007 Douglas Gregor,
+      Matthias Troyer, Trustees of Indiana University<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">
+        http://www.boost.org/LICENSE_1_0.txt </a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="is_mpi_1_3_26_5_14_3_2_1_2.html"><img src="../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../mpi/tutorial.html#header.boost.mpi.cartesian_communicator_hpp"><img src="../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="cartesian_communicator.html"><img src="../../../../doc/src/images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Rationale</title>
+<link rel="stylesheet" href="../../../doc/src/boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../index.html" title="The Boost C++ Libraries BoostBook Documentation Subset">
+<link rel="up" href="../yap.html" title="Chapter&#160;47.&#160;Boost.YAP">
+<link rel="prev" href="../BOOST_YAP_US_1_3_48_8_7_12.html" title="Macro BOOST_YAP_USER_LITERAL_PLACEHOLDER_OPERATOR">
+<link rel="next" href="../concept_check.html" title="Chapter&#160;48.&#160;Boost.Concept_Check">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img alt="Boost C++ Libraries" width="277" height="86" src="../../../boost.png"></td>
+<td align="center"><a href="../../../index.html">Home</a></td>
+<td align="center"><a href="../../../libs/libraries.htm">Libraries</a></td>
+<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
+<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
+<td align="center"><a href="../../../more/index.htm">More</a></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="../BOOST_YAP_US_1_3_48_8_7_12.html"><img src="../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../yap.html"><img src="../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="../concept_check.html"><img src="../../../doc/src/images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="boost_yap.rationale"></a><a class="link" href="rationale.html" title="Rationale">Rationale</a>
+</h2></div></div></div>
+<h4>
+<a name="boost_yap.rationale.h0"></a>
+      <span class="phrase"><a name="boost_yap.rationale.decaying_values_captured_in_yap_expressions"></a></span><a class="link" href="rationale.html#boost_yap.rationale.decaying_values_captured_in_yap_expressions">Decaying
+      Values Captured in YAP Expressions</a>
+    </h4>
+<p>
+      The main objective of Boost.YAP is to be an easy-to-use and easy-to-understand
+      library for using the expression template programming technique.
+    </p>
+<p>
+      As such, it is very important that the way nodes in a Boost.YAP expression
+      tree are represented matches the way nodes in C++ builtin expression are represented.
+      This keeps the mental model for how to identify and manipulate parts of expression
+      trees consistent across C++ builtin and Boost.YAP trees.
+    </p>
+<p>
+      Though this creates minor difficulties (for instance, Boost.YAP terminals cannot
+      contain arrays), the benefit of a consistent programming model is more important.
+    </p>
+<h4>
+<a name="boost_yap.rationale.h1"></a>
+      <span class="phrase"><a name="boost_yap.rationale.reference_expressions"></a></span><a class="link" href="rationale.html#boost_yap.rationale.reference_expressions">Reference
+      Expressions</a>
+    </h4>
+<p>
+      Boost.YAP expressions can be used as subexpressions to build larger expressions.
+      <a class="link" href="../boost/yap/expr_kind.html#boost.yap.expr_kind.expr_ref"><code class="computeroutput"><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">expr_ref</span></code></a>
+      exists because we want to be able to do this without incurring unnecessay copies
+      or moves. Consider <code class="computeroutput"><span class="identifier">v2</span></code> and
+      <code class="computeroutput"><span class="identifier">v3</span></code> in this snippet from the
+      Lazy Vector example. Each is a terminal that owns its value, rather than referring
+      to it.
+    </p>
+<pre class="programlisting"><span class="identifier">lazy_vector</span> <span class="identifier">v2</span><span class="special">{{</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span><span class="keyword">double</span><span class="special">&gt;(</span><span class="number">4</span><span class="special">,</span> <span class="number">2.0</span><span class="special">)}};</span>
+<span class="identifier">lazy_vector</span> <span class="identifier">v3</span><span class="special">{{</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span><span class="keyword">double</span><span class="special">&gt;(</span><span class="number">4</span><span class="special">,</span> <span class="number">3.0</span><span class="special">)}};</span>
+</pre>
+<p>
+      Now consider this expression:
+    </p>
+<pre class="programlisting"><span class="keyword">double</span> <span class="identifier">d1</span> <span class="special">=</span> <span class="special">(</span><span class="identifier">v2</span> <span class="special">+</span> <span class="identifier">v3</span><span class="special">)[</span><span class="number">2</span><span class="special">];</span>
+</pre>
+<p>
+      Without using reference semantics, how can we capture this expression, even
+      before evaluating it, without copying or moving the vectors? We cannot. We
+      must take references to the <code class="computeroutput"><span class="identifier">v2</span></code>
+      and <code class="computeroutput"><span class="identifier">v3</span></code> subexpressions to avoid
+      copying or moving.
+    </p>
+<p>
+      This comes at a cost. Dealing with <a class="link" href="../boost/yap/expr_kind.html#boost.yap.expr_kind.expr_ref"><code class="computeroutput"><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">expr_ref</span></code></a> expressions complicates user
+      code. The alternatives, silently incurring copies/moves or disallowing the
+      use of subexpressions to build larger expressions, are worse.
+    </p>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2018 T. Zachary Laine<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="../BOOST_YAP_US_1_3_48_8_7_12.html"><img src="../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../yap.html"><img src="../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="../concept_check.html"><img src="../../../doc/src/images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

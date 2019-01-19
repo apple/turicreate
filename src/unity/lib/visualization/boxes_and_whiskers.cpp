@@ -5,6 +5,7 @@
  */
 #include "boxes_and_whiskers.hpp"
 
+#include "batch_size.hpp"
 #include "process_wrapper.hpp"
 #include "thread.hpp"
 #include "vega_data.hpp"
@@ -94,7 +95,7 @@ std::shared_ptr<Plot> turi::visualization::plot_boxes_and_whiskers(
   temp_sf[x_name] = x;
   temp_sf[y_name] = y;
 
-  bw.init(temp_sf, 5000000 /* batch_size */);
+  bw.init(temp_sf, batch_size(x, y));
 
   std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<boxes_and_whiskers>(bw);
   return std::make_shared<Plot>(boxes_and_whiskers_specification, shared_unity_transformer, size_array);

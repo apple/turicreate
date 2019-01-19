@@ -10,6 +10,8 @@
 #include <cassert>
 #include <numeric>
 
+#include <logger/assertions.hpp>
+
 namespace turi {
 namespace neural_net {
 
@@ -69,6 +71,16 @@ shared_float_array::shared_float_array(
   // The provided shape array must be a view into the impl's shape array.
   assert(impl_->shape() <= shape_);
   assert(shape_ + dim_ <= impl_->shape() + impl_->dim());
+}
+
+shared_float_array shared_float_array::operator[](size_t idx) const {
+
+  ASSERT_GT(dim_, 0);
+  ASSERT_LT(idx, shape_[0]);
+
+  size_t stride = size_ / shape_[0];
+  size_t offset = stride * idx;
+  return shared_float_array(impl_, offset_ + offset, shape_ + 1, dim_ - 1);
 }
 
 // static

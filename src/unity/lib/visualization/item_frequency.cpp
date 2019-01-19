@@ -3,6 +3,7 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+#include "batch_size.hpp"
 #include "item_frequency.hpp"
 #include "vega_spec.hpp"
 #include <string>
@@ -151,7 +152,7 @@ namespace turi {
         std::shared_ptr<const gl_sarray> self = std::make_shared<const gl_sarray>(sa);
 
         item_frequency item_freq;
-        item_freq.init(*self, 5000000 /* batch_size */);
+        item_freq.init(*self, batch_size(sa));
 
         auto transformer = std::dynamic_pointer_cast<item_frequency_result>(item_freq.get());
         auto result = transformer->emit().get<flex_dict>();

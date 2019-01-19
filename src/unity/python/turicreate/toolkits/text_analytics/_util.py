@@ -468,7 +468,7 @@ def tokenize(text, to_lower=False, delimiters=DEFAULT_DELIMITERS):
     _raise_error_if_not_sarray(text, "text")
 
     ## Compute word counts
-    sf = _turicreate.SFrame({'docs': sa})
+    sf = _turicreate.SFrame({'docs': text})
     fe = _feature_engineering.Tokenizer(features='docs',
                                                  to_lower=to_lower,
                                                  delimiters=delimiters,

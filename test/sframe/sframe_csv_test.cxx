@@ -440,6 +440,71 @@ csv_test string_integers2() {
 }
 
 
+csv_test newline_in_strings() {
+  csv_test ret;
+  std::stringstream strm;
+  strm << "int,str\n"
+       << "1,\"a\nb\"\n"
+       << "2,\"c\nd\"\n";
+  ret.file = strm.str();
+  ret.tokenizer.delimiter = ",";
+  ret.tokenizer.double_quote=true;
+
+  ret.values.push_back({1,"a\nb"});
+  ret.values.push_back({2,"c\nd"});
+
+  ret.types = {{"int", flex_type_enum::UNDEFINED},
+               {"str", flex_type_enum::UNDEFINED}};
+  return ret;
+}
+
+csv_test newline_in_strings2() {
+  csv_test ret;
+  std::stringstream strm;
+  strm << "int,str\n"
+       << "1,\"a\"\"\\\"\\n\n#123\nb\"\n" // "a""\"\n
+                                        // #123
+                                        // b"
+       << "2,\"c\nd\"\n";
+  ret.file = strm.str();
+  ret.tokenizer.delimiter = ",";
+  ret.tokenizer.double_quote=true;
+  ret.tokenizer.has_comment_char=true;
+  ret.tokenizer.comment_char='#';
+
+  ret.values.push_back({1,"a\"\"\n\n#123\nb"});
+  ret.values.push_back({2,"c\nd"});
+
+  ret.types = {{"int", flex_type_enum::UNDEFINED},
+               {"str", flex_type_enum::UNDEFINED}};
+  return ret;
+}
+
+csv_test newline_in_strings3() {
+  csv_test ret;
+  std::stringstream strm;
+  strm << "int,str\n"
+       << "1,\"a\"\"\\\"\\n\n#123\nb\"\n" // "a""\"\n
+                                        // #123
+                                        // b"
+       << "#IGNORE THIS\n"
+       << "2,\"c\nd\"\n";
+  ret.file = strm.str();
+  ret.tokenizer.delimiter = ",";
+  ret.tokenizer.double_quote=true;
+  ret.tokenizer.has_comment_char=true;
+  ret.tokenizer.comment_char='#';
+
+  ret.values.push_back({1,"a\"\"\n\n#123\nb"});
+  ret.values.push_back({2,"c\nd"});
+
+  ret.types = {{"int", flex_type_enum::UNDEFINED},
+               {"str", flex_type_enum::UNDEFINED}};
+  return ret;
+}
+
+
+
 csv_test alternate_endline_test() {
   csv_test ret;
   std::stringstream strm;
@@ -730,32 +795,35 @@ struct sframe_test  {
 
    void test_string_escaping() {
      std::string s = "hello";
-     unescape_string(s, '\\', '\"', false);
+     unescape_string(s, true, '\\', '\"', false);
      TS_ASSERT_EQUALS(s, "hello");
 
      s = "\\\"world\\\"";
-     unescape_string(s, '\\', '\"', false);
+     unescape_string(s, true, '\\', '\"', false);
      TS_ASSERT_EQUALS(s, "\"world\"");
 
      s = "\\\\world\\\\";
-     unescape_string(s, '\\', '\"', false);
+     unescape_string(s, true, '\\', '\"', false);
      TS_ASSERT_EQUALS(s, "\\world\\");
 
      s = "\\";
-     unescape_string(s, '\\', '\"', false);
+     unescape_string(s, true, '\\', '\"', false);
      TS_ASSERT_EQUALS(s, "\\");
 
      s = "\\\"\"\"a\\\"\"\"";
-     unescape_string(s, '\\', '\"', true);
+     unescape_string(s, true, '\\', '\"', true);
      TS_ASSERT_EQUALS(s, "\"\"a\"\"");
 
      s = "\\\'\\\"\\\\\\/\\b\\r\\n";
-     unescape_string(s, '\\', '\"', false);
+     unescape_string(s, true, '\\', '\"', false);
      TS_ASSERT_EQUALS(s, "\'\"\\/\b\r\n");
 
+     s = "\\world\\";
+     unescape_string(s, false, '\\', '\"', false);
+     TS_ASSERT_EQUALS(s, "\\world\\");
    }
    void test_na() {
-     //evaluate(test_na_values());
+     evaluate(test_na_values());
      evaluate(test_na_values2());
    }
 
@@ -791,6 +859,9 @@ struct sframe_test  {
      evaluate(test_type_inference(",", "zzz"));
      evaluate(string_integers());
      evaluate(string_integers2());
+     evaluate(newline_in_strings());
+     evaluate(newline_in_strings2());
+     evaluate(newline_in_strings3());
      evaluate(escape_parsing());
      evaluate(escape_parsing_string_hint());
      evaluate(non_escaped_parsing());

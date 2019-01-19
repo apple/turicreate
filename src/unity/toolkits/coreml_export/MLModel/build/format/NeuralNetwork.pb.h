@@ -110,6 +110,9 @@ extern BorderAmountsDefaultTypeInternal _BorderAmounts_default_instance_;
 class BorderAmounts_EdgeSizes;
 class BorderAmounts_EdgeSizesDefaultTypeInternal;
 extern BorderAmounts_EdgeSizesDefaultTypeInternal _BorderAmounts_EdgeSizes_default_instance_;
+class BoxCoordinatesMode;
+class BoxCoordinatesModeDefaultTypeInternal;
+extern BoxCoordinatesModeDefaultTypeInternal _BoxCoordinatesMode_default_instance_;
 class ConcatLayerParams;
 class ConcatLayerParamsDefaultTypeInternal;
 extern ConcatLayerParamsDefaultTypeInternal _ConcatLayerParams_default_instance_;
@@ -119,6 +122,9 @@ extern ConvolutionLayerParamsDefaultTypeInternal _ConvolutionLayerParams_default
 class CropLayerParams;
 class CropLayerParamsDefaultTypeInternal;
 extern CropLayerParamsDefaultTypeInternal _CropLayerParams_default_instance_;
+class CropResizeLayerParams;
+class CropResizeLayerParamsDefaultTypeInternal;
+extern CropResizeLayerParamsDefaultTypeInternal _CropResizeLayerParams_default_instance_;
 class CustomLayerParams;
 class CustomLayerParamsDefaultTypeInternal;
 extern CustomLayerParamsDefaultTypeInternal _CustomLayerParams_default_instance_;
@@ -272,9 +278,15 @@ extern ReorganizeDataLayerParamsDefaultTypeInternal _ReorganizeDataLayerParams_d
 class ReshapeLayerParams;
 class ReshapeLayerParamsDefaultTypeInternal;
 extern ReshapeLayerParamsDefaultTypeInternal _ReshapeLayerParams_default_instance_;
+class ResizeBilinearLayerParams;
+class ResizeBilinearLayerParamsDefaultTypeInternal;
+extern ResizeBilinearLayerParamsDefaultTypeInternal _ResizeBilinearLayerParams_default_instance_;
 class SamePadding;
 class SamePaddingDefaultTypeInternal;
 extern SamePaddingDefaultTypeInternal _SamePadding_default_instance_;
+class SamplingMode;
+class SamplingModeDefaultTypeInternal;
+extern SamplingModeDefaultTypeInternal _SamplingMode_default_instance_;
 class ScaleLayerParams;
 class ScaleLayerParamsDefaultTypeInternal;
 extern ScaleLayerParamsDefaultTypeInternal _ScaleLayerParams_default_instance_;
@@ -362,6 +374,32 @@ bool SamePadding_SamePaddingMode_IsValid(int value);
 const SamePadding_SamePaddingMode SamePadding_SamePaddingMode_SamePaddingMode_MIN = SamePadding_SamePaddingMode_BOTTOM_RIGHT_HEAVY;
 const SamePadding_SamePaddingMode SamePadding_SamePaddingMode_SamePaddingMode_MAX = SamePadding_SamePaddingMode_TOP_LEFT_HEAVY;
 const int SamePadding_SamePaddingMode_SamePaddingMode_ARRAYSIZE = SamePadding_SamePaddingMode_SamePaddingMode_MAX + 1;
+
+enum SamplingMode_Method {
+  SamplingMode_Method_STRICT_ALIGN_ENDPOINTS_MODE = 0,
+  SamplingMode_Method_ALIGN_ENDPOINTS_MODE = 1,
+  SamplingMode_Method_UPSAMPLE_MODE = 2,
+  SamplingMode_Method_ROI_ALIGN_MODE = 3,
+  SamplingMode_Method_SamplingMode_Method_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
+  SamplingMode_Method_SamplingMode_Method_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
+};
+bool SamplingMode_Method_IsValid(int value);
+const SamplingMode_Method SamplingMode_Method_Method_MIN = SamplingMode_Method_STRICT_ALIGN_ENDPOINTS_MODE;
+const SamplingMode_Method SamplingMode_Method_Method_MAX = SamplingMode_Method_ROI_ALIGN_MODE;
+const int SamplingMode_Method_Method_ARRAYSIZE = SamplingMode_Method_Method_MAX + 1;
+
+enum BoxCoordinatesMode_Coordinates {
+  BoxCoordinatesMode_Coordinates_CORNERS_HEIGHT_FIRST = 0,
+  BoxCoordinatesMode_Coordinates_CORNERS_WIDTH_FIRST = 1,
+  BoxCoordinatesMode_Coordinates_CENTER_SIZE_HEIGHT_FIRST = 2,
+  BoxCoordinatesMode_Coordinates_CENTER_SIZE_WIDTH_FIRST = 3,
+  BoxCoordinatesMode_Coordinates_BoxCoordinatesMode_Coordinates_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
+  BoxCoordinatesMode_Coordinates_BoxCoordinatesMode_Coordinates_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
+};
+bool BoxCoordinatesMode_Coordinates_IsValid(int value);
+const BoxCoordinatesMode_Coordinates BoxCoordinatesMode_Coordinates_Coordinates_MIN = BoxCoordinatesMode_Coordinates_CORNERS_HEIGHT_FIRST;
+const BoxCoordinatesMode_Coordinates BoxCoordinatesMode_Coordinates_Coordinates_MAX = BoxCoordinatesMode_Coordinates_CENTER_SIZE_WIDTH_FIRST;
+const int BoxCoordinatesMode_Coordinates_Coordinates_ARRAYSIZE = BoxCoordinatesMode_Coordinates_Coordinates_MAX + 1;
 
 enum PoolingLayerParams_PoolingType {
   PoolingLayerParams_PoolingType_MAX = 0,
@@ -2180,6 +2218,8 @@ class NeuralNetworkLayer : public ::google::protobuf::MessageLite /* @@protoc_in
     kCrop = 190,
     kPadding = 200,
     kUpsample = 210,
+    kResizeBilinear = 211,
+    kCropResize = 212,
     kUnary = 220,
     kAdd = 230,
     kMultiply = 231,
@@ -2430,6 +2470,24 @@ class NeuralNetworkLayer : public ::google::protobuf::MessageLite /* @@protoc_in
   ::CoreML::Specification::UpsampleLayerParams* release_upsample();
   void set_allocated_upsample(::CoreML::Specification::UpsampleLayerParams* upsample);
 
+  // .CoreML.Specification.ResizeBilinearLayerParams resizeBilinear = 211;
+  bool has_resizebilinear() const;
+  void clear_resizebilinear();
+  static const int kResizeBilinearFieldNumber = 211;
+  const ::CoreML::Specification::ResizeBilinearLayerParams& resizebilinear() const;
+  ::CoreML::Specification::ResizeBilinearLayerParams* mutable_resizebilinear();
+  ::CoreML::Specification::ResizeBilinearLayerParams* release_resizebilinear();
+  void set_allocated_resizebilinear(::CoreML::Specification::ResizeBilinearLayerParams* resizebilinear);
+
+  // .CoreML.Specification.CropResizeLayerParams cropResize = 212;
+  bool has_cropresize() const;
+  void clear_cropresize();
+  static const int kCropResizeFieldNumber = 212;
+  const ::CoreML::Specification::CropResizeLayerParams& cropresize() const;
+  ::CoreML::Specification::CropResizeLayerParams* mutable_cropresize();
+  ::CoreML::Specification::CropResizeLayerParams* release_cropresize();
+  void set_allocated_cropresize(::CoreML::Specification::CropResizeLayerParams* cropresize);
+
   // .CoreML.Specification.UnaryFunctionLayerParams unary = 220;
   bool has_unary() const;
   void clear_unary();
@@ -2662,6 +2720,8 @@ class NeuralNetworkLayer : public ::google::protobuf::MessageLite /* @@protoc_in
   void set_has_crop();
   void set_has_padding();
   void set_has_upsample();
+  void set_has_resizebilinear();
+  void set_has_cropresize();
   void set_has_unary();
   void set_has_add();
   void set_has_multiply();
@@ -2710,6 +2770,8 @@ class NeuralNetworkLayer : public ::google::protobuf::MessageLite /* @@protoc_in
     ::CoreML::Specification::CropLayerParams* crop_;
     ::CoreML::Specification::PaddingLayerParams* padding_;
     ::CoreML::Specification::UpsampleLayerParams* upsample_;
+    ::CoreML::Specification::ResizeBilinearLayerParams* resizebilinear_;
+    ::CoreML::Specification::CropResizeLayerParams* cropresize_;
     ::CoreML::Specification::UnaryFunctionLayerParams* unary_;
     ::CoreML::Specification::AddLayerParams* add_;
     ::CoreML::Specification::MultiplyLayerParams* multiply_;
@@ -3087,6 +3149,200 @@ class SamePadding : public ::google::protobuf::MessageLite /* @@protoc_insertion
 };
 // -------------------------------------------------------------------
 
+class SamplingMode : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:CoreML.Specification.SamplingMode) */ {
+ public:
+  SamplingMode();
+  virtual ~SamplingMode();
+
+  SamplingMode(const SamplingMode& from);
+
+  inline SamplingMode& operator=(const SamplingMode& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const SamplingMode& default_instance();
+
+  static inline const SamplingMode* internal_default_instance() {
+    return reinterpret_cast<const SamplingMode*>(
+               &_SamplingMode_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    23;
+
+  void Swap(SamplingMode* other);
+
+  // implements Message ----------------------------------------------
+
+  inline SamplingMode* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  SamplingMode* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
+  void CopyFrom(const SamplingMode& from);
+  void MergeFrom(const SamplingMode& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(SamplingMode* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  typedef SamplingMode_Method Method;
+  static const Method STRICT_ALIGN_ENDPOINTS_MODE =
+    SamplingMode_Method_STRICT_ALIGN_ENDPOINTS_MODE;
+  static const Method ALIGN_ENDPOINTS_MODE =
+    SamplingMode_Method_ALIGN_ENDPOINTS_MODE;
+  static const Method UPSAMPLE_MODE =
+    SamplingMode_Method_UPSAMPLE_MODE;
+  static const Method ROI_ALIGN_MODE =
+    SamplingMode_Method_ROI_ALIGN_MODE;
+  static inline bool Method_IsValid(int value) {
+    return SamplingMode_Method_IsValid(value);
+  }
+  static const Method Method_MIN =
+    SamplingMode_Method_Method_MIN;
+  static const Method Method_MAX =
+    SamplingMode_Method_Method_MAX;
+  static const int Method_ARRAYSIZE =
+    SamplingMode_Method_Method_ARRAYSIZE;
+
+  // accessors -------------------------------------------------------
+
+  // .CoreML.Specification.SamplingMode.Method samplingMethod = 1;
+  void clear_samplingmethod();
+  static const int kSamplingMethodFieldNumber = 1;
+  ::CoreML::Specification::SamplingMode_Method samplingmethod() const;
+  void set_samplingmethod(::CoreML::Specification::SamplingMode_Method value);
+
+  // @@protoc_insertion_point(class_scope:CoreML.Specification.SamplingMode)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
+  int samplingmethod_;
+  mutable int _cached_size_;
+  friend struct protobuf_NeuralNetwork_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class BoxCoordinatesMode : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:CoreML.Specification.BoxCoordinatesMode) */ {
+ public:
+  BoxCoordinatesMode();
+  virtual ~BoxCoordinatesMode();
+
+  BoxCoordinatesMode(const BoxCoordinatesMode& from);
+
+  inline BoxCoordinatesMode& operator=(const BoxCoordinatesMode& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const BoxCoordinatesMode& default_instance();
+
+  static inline const BoxCoordinatesMode* internal_default_instance() {
+    return reinterpret_cast<const BoxCoordinatesMode*>(
+               &_BoxCoordinatesMode_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    24;
+
+  void Swap(BoxCoordinatesMode* other);
+
+  // implements Message ----------------------------------------------
+
+  inline BoxCoordinatesMode* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  BoxCoordinatesMode* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
+  void CopyFrom(const BoxCoordinatesMode& from);
+  void MergeFrom(const BoxCoordinatesMode& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(BoxCoordinatesMode* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  typedef BoxCoordinatesMode_Coordinates Coordinates;
+  static const Coordinates CORNERS_HEIGHT_FIRST =
+    BoxCoordinatesMode_Coordinates_CORNERS_HEIGHT_FIRST;
+  static const Coordinates CORNERS_WIDTH_FIRST =
+    BoxCoordinatesMode_Coordinates_CORNERS_WIDTH_FIRST;
+  static const Coordinates CENTER_SIZE_HEIGHT_FIRST =
+    BoxCoordinatesMode_Coordinates_CENTER_SIZE_HEIGHT_FIRST;
+  static const Coordinates CENTER_SIZE_WIDTH_FIRST =
+    BoxCoordinatesMode_Coordinates_CENTER_SIZE_WIDTH_FIRST;
+  static inline bool Coordinates_IsValid(int value) {
+    return BoxCoordinatesMode_Coordinates_IsValid(value);
+  }
+  static const Coordinates Coordinates_MIN =
+    BoxCoordinatesMode_Coordinates_Coordinates_MIN;
+  static const Coordinates Coordinates_MAX =
+    BoxCoordinatesMode_Coordinates_Coordinates_MAX;
+  static const int Coordinates_ARRAYSIZE =
+    BoxCoordinatesMode_Coordinates_Coordinates_ARRAYSIZE;
+
+  // accessors -------------------------------------------------------
+
+  // .CoreML.Specification.BoxCoordinatesMode.Coordinates boxMode = 1;
+  void clear_boxmode();
+  static const int kBoxModeFieldNumber = 1;
+  ::CoreML::Specification::BoxCoordinatesMode_Coordinates boxmode() const;
+  void set_boxmode(::CoreML::Specification::BoxCoordinatesMode_Coordinates value);
+
+  // @@protoc_insertion_point(class_scope:CoreML.Specification.BoxCoordinatesMode)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
+  int boxmode_;
+  mutable int _cached_size_;
+  friend struct protobuf_NeuralNetwork_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
 class WeightParams : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:CoreML.Specification.WeightParams) */ {
  public:
   WeightParams();
@@ -3106,7 +3362,7 @@ class WeightParams : public ::google::protobuf::MessageLite /* @@protoc_insertio
                &_WeightParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    23;
+    25;
 
   void Swap(WeightParams* other);
 
@@ -3237,7 +3493,7 @@ class QuantizationParams : public ::google::protobuf::MessageLite /* @@protoc_in
                &_QuantizationParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    24;
+    26;
 
   void Swap(QuantizationParams* other);
 
@@ -3347,7 +3603,7 @@ class LinearQuantizationParams : public ::google::protobuf::MessageLite /* @@pro
                &_LinearQuantizationParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    25;
+    27;
 
   void Swap(LinearQuantizationParams* other);
 
@@ -3446,7 +3702,7 @@ class LookUpTableQuantizationParams : public ::google::protobuf::MessageLite /* 
                &_LookUpTableQuantizationParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    26;
+    28;
 
   void Swap(LookUpTableQuantizationParams* other);
 
@@ -3537,7 +3793,7 @@ class ConvolutionLayerParams : public ::google::protobuf::MessageLite /* @@proto
                &_ConvolutionLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    27;
+    29;
 
   void Swap(ConvolutionLayerParams* other);
 
@@ -3751,7 +4007,7 @@ class InnerProductLayerParams : public ::google::protobuf::MessageLite /* @@prot
                &_InnerProductLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    28;
+    30;
 
   void Swap(InnerProductLayerParams* other);
 
@@ -3863,7 +4119,7 @@ class EmbeddingLayerParams : public ::google::protobuf::MessageLite /* @@protoc_
                &_EmbeddingLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    29;
+    31;
 
   void Swap(EmbeddingLayerParams* other);
 
@@ -3975,7 +4231,7 @@ class BatchnormLayerParams : public ::google::protobuf::MessageLite /* @@protoc_
                &_BatchnormLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    30;
+    32;
 
   void Swap(BatchnormLayerParams* other);
 
@@ -4114,7 +4370,7 @@ class PoolingLayerParams_ValidCompletePadding : public ::google::protobuf::Messa
                &_PoolingLayerParams_ValidCompletePadding_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    31;
+    33;
 
   void Swap(PoolingLayerParams_ValidCompletePadding* other);
 
@@ -4206,7 +4462,7 @@ class PoolingLayerParams : public ::google::protobuf::MessageLite /* @@protoc_in
                &_PoolingLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    32;
+    34;
 
   void Swap(PoolingLayerParams* other);
 
@@ -4388,7 +4644,7 @@ class PaddingLayerParams_PaddingConstant : public ::google::protobuf::MessageLit
                &_PaddingLayerParams_PaddingConstant_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    33;
+    35;
 
   void Swap(PaddingLayerParams_PaddingConstant* other);
 
@@ -4466,7 +4722,7 @@ class PaddingLayerParams_PaddingReflection : public ::google::protobuf::MessageL
                &_PaddingLayerParams_PaddingReflection_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    34;
+    36;
 
   void Swap(PaddingLayerParams_PaddingReflection* other);
 
@@ -4537,7 +4793,7 @@ class PaddingLayerParams_PaddingReplication : public ::google::protobuf::Message
                &_PaddingLayerParams_PaddingReplication_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    35;
+    37;
 
   void Swap(PaddingLayerParams_PaddingReplication* other);
 
@@ -4615,7 +4871,7 @@ class PaddingLayerParams : public ::google::protobuf::MessageLite /* @@protoc_in
                &_PaddingLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    36;
+    38;
 
   void Swap(PaddingLayerParams* other);
 
@@ -4743,7 +4999,7 @@ class ConcatLayerParams : public ::google::protobuf::MessageLite /* @@protoc_ins
                &_ConcatLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    37;
+    39;
 
   void Swap(ConcatLayerParams* other);
 
@@ -4821,7 +5077,7 @@ class LRNLayerParams : public ::google::protobuf::MessageLite /* @@protoc_insert
                &_LRNLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    38;
+    40;
 
   void Swap(LRNLayerParams* other);
 
@@ -4920,7 +5176,7 @@ class SoftmaxLayerParams : public ::google::protobuf::MessageLite /* @@protoc_in
                &_SoftmaxLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    39;
+    41;
 
   void Swap(SoftmaxLayerParams* other);
 
@@ -4991,7 +5247,7 @@ class SplitLayerParams : public ::google::protobuf::MessageLite /* @@protoc_inse
                &_SplitLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    40;
+    42;
 
   void Swap(SplitLayerParams* other);
 
@@ -5069,7 +5325,7 @@ class AddLayerParams : public ::google::protobuf::MessageLite /* @@protoc_insert
                &_AddLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    41;
+    43;
 
   void Swap(AddLayerParams* other);
 
@@ -5147,7 +5403,7 @@ class MultiplyLayerParams : public ::google::protobuf::MessageLite /* @@protoc_i
                &_MultiplyLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    42;
+    44;
 
   void Swap(MultiplyLayerParams* other);
 
@@ -5225,7 +5481,7 @@ class UnaryFunctionLayerParams : public ::google::protobuf::MessageLite /* @@pro
                &_UnaryFunctionLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    43;
+    45;
 
   void Swap(UnaryFunctionLayerParams* other);
 
@@ -5358,7 +5614,7 @@ class UpsampleLayerParams : public ::google::protobuf::MessageLite /* @@protoc_i
                &_UpsampleLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    44;
+    46;
 
   void Swap(UpsampleLayerParams* other);
 
@@ -5446,6 +5702,220 @@ class UpsampleLayerParams : public ::google::protobuf::MessageLite /* @@protoc_i
 };
 // -------------------------------------------------------------------
 
+class ResizeBilinearLayerParams : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:CoreML.Specification.ResizeBilinearLayerParams) */ {
+ public:
+  ResizeBilinearLayerParams();
+  virtual ~ResizeBilinearLayerParams();
+
+  ResizeBilinearLayerParams(const ResizeBilinearLayerParams& from);
+
+  inline ResizeBilinearLayerParams& operator=(const ResizeBilinearLayerParams& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ResizeBilinearLayerParams& default_instance();
+
+  static inline const ResizeBilinearLayerParams* internal_default_instance() {
+    return reinterpret_cast<const ResizeBilinearLayerParams*>(
+               &_ResizeBilinearLayerParams_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    47;
+
+  void Swap(ResizeBilinearLayerParams* other);
+
+  // implements Message ----------------------------------------------
+
+  inline ResizeBilinearLayerParams* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  ResizeBilinearLayerParams* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
+  void CopyFrom(const ResizeBilinearLayerParams& from);
+  void MergeFrom(const ResizeBilinearLayerParams& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(ResizeBilinearLayerParams* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated uint64 targetSize = 1;
+  int targetsize_size() const;
+  void clear_targetsize();
+  static const int kTargetSizeFieldNumber = 1;
+  ::google::protobuf::uint64 targetsize(int index) const;
+  void set_targetsize(int index, ::google::protobuf::uint64 value);
+  void add_targetsize(::google::protobuf::uint64 value);
+  const ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >&
+      targetsize() const;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >*
+      mutable_targetsize();
+
+  // .CoreML.Specification.SamplingMode mode = 2;
+  bool has_mode() const;
+  void clear_mode();
+  static const int kModeFieldNumber = 2;
+  const ::CoreML::Specification::SamplingMode& mode() const;
+  ::CoreML::Specification::SamplingMode* mutable_mode();
+  ::CoreML::Specification::SamplingMode* release_mode();
+  void set_allocated_mode(::CoreML::Specification::SamplingMode* mode);
+
+  // @@protoc_insertion_point(class_scope:CoreML.Specification.ResizeBilinearLayerParams)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint64 > targetsize_;
+  mutable int _targetsize_cached_byte_size_;
+  ::CoreML::Specification::SamplingMode* mode_;
+  mutable int _cached_size_;
+  friend struct protobuf_NeuralNetwork_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class CropResizeLayerParams : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:CoreML.Specification.CropResizeLayerParams) */ {
+ public:
+  CropResizeLayerParams();
+  virtual ~CropResizeLayerParams();
+
+  CropResizeLayerParams(const CropResizeLayerParams& from);
+
+  inline CropResizeLayerParams& operator=(const CropResizeLayerParams& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const CropResizeLayerParams& default_instance();
+
+  static inline const CropResizeLayerParams* internal_default_instance() {
+    return reinterpret_cast<const CropResizeLayerParams*>(
+               &_CropResizeLayerParams_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    48;
+
+  void Swap(CropResizeLayerParams* other);
+
+  // implements Message ----------------------------------------------
+
+  inline CropResizeLayerParams* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  CropResizeLayerParams* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
+  void CopyFrom(const CropResizeLayerParams& from);
+  void MergeFrom(const CropResizeLayerParams& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(CropResizeLayerParams* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated uint64 targetSize = 1;
+  int targetsize_size() const;
+  void clear_targetsize();
+  static const int kTargetSizeFieldNumber = 1;
+  ::google::protobuf::uint64 targetsize(int index) const;
+  void set_targetsize(int index, ::google::protobuf::uint64 value);
+  void add_targetsize(::google::protobuf::uint64 value);
+  const ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >&
+      targetsize() const;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >*
+      mutable_targetsize();
+
+  // .CoreML.Specification.SamplingMode mode = 3;
+  bool has_mode() const;
+  void clear_mode();
+  static const int kModeFieldNumber = 3;
+  const ::CoreML::Specification::SamplingMode& mode() const;
+  ::CoreML::Specification::SamplingMode* mutable_mode();
+  ::CoreML::Specification::SamplingMode* release_mode();
+  void set_allocated_mode(::CoreML::Specification::SamplingMode* mode);
+
+  // .CoreML.Specification.BoxCoordinatesMode boxIndicesMode = 4;
+  bool has_boxindicesmode() const;
+  void clear_boxindicesmode();
+  static const int kBoxIndicesModeFieldNumber = 4;
+  const ::CoreML::Specification::BoxCoordinatesMode& boxindicesmode() const;
+  ::CoreML::Specification::BoxCoordinatesMode* mutable_boxindicesmode();
+  ::CoreML::Specification::BoxCoordinatesMode* release_boxindicesmode();
+  void set_allocated_boxindicesmode(::CoreML::Specification::BoxCoordinatesMode* boxindicesmode);
+
+  // bool normalizedCoordinates = 2;
+  void clear_normalizedcoordinates();
+  static const int kNormalizedCoordinatesFieldNumber = 2;
+  bool normalizedcoordinates() const;
+  void set_normalizedcoordinates(bool value);
+
+  // float spatialScale = 5;
+  void clear_spatialscale();
+  static const int kSpatialScaleFieldNumber = 5;
+  float spatialscale() const;
+  void set_spatialscale(float value);
+
+  // @@protoc_insertion_point(class_scope:CoreML.Specification.CropResizeLayerParams)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint64 > targetsize_;
+  mutable int _targetsize_cached_byte_size_;
+  ::CoreML::Specification::SamplingMode* mode_;
+  ::CoreML::Specification::BoxCoordinatesMode* boxindicesmode_;
+  bool normalizedcoordinates_;
+  float spatialscale_;
+  mutable int _cached_size_;
+  friend struct protobuf_NeuralNetwork_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
 class BiasLayerParams : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:CoreML.Specification.BiasLayerParams) */ {
  public:
   BiasLayerParams();
@@ -5465,7 +5935,7 @@ class BiasLayerParams : public ::google::protobuf::MessageLite /* @@protoc_inser
                &_BiasLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    45;
+    49;
 
   void Swap(BiasLayerParams* other);
 
@@ -5560,7 +6030,7 @@ class ScaleLayerParams : public ::google::protobuf::MessageLite /* @@protoc_inse
                &_ScaleLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    46;
+    50;
 
   void Swap(ScaleLayerParams* other);
 
@@ -5686,7 +6156,7 @@ class LoadConstantLayerParams : public ::google::protobuf::MessageLite /* @@prot
                &_LoadConstantLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    47;
+    51;
 
   void Swap(LoadConstantLayerParams* other);
 
@@ -5781,7 +6251,7 @@ class L2NormalizeLayerParams : public ::google::protobuf::MessageLite /* @@proto
                &_L2NormalizeLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    48;
+    52;
 
   void Swap(L2NormalizeLayerParams* other);
 
@@ -5859,7 +6329,7 @@ class FlattenLayerParams : public ::google::protobuf::MessageLite /* @@protoc_in
                &_FlattenLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    49;
+    53;
 
   void Swap(FlattenLayerParams* other);
 
@@ -5952,7 +6422,7 @@ class ReshapeLayerParams : public ::google::protobuf::MessageLite /* @@protoc_in
                &_ReshapeLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    50;
+    54;
 
   void Swap(ReshapeLayerParams* other);
 
@@ -6059,7 +6529,7 @@ class PermuteLayerParams : public ::google::protobuf::MessageLite /* @@protoc_in
                &_PermuteLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    51;
+    55;
 
   void Swap(PermuteLayerParams* other);
 
@@ -6144,7 +6614,7 @@ class ReorganizeDataLayerParams : public ::google::protobuf::MessageLite /* @@pr
                &_ReorganizeDataLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    52;
+    56;
 
   void Swap(ReorganizeDataLayerParams* other);
 
@@ -6244,7 +6714,7 @@ class SliceLayerParams : public ::google::protobuf::MessageLite /* @@protoc_inse
                &_SliceLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    53;
+    57;
 
   void Swap(SliceLayerParams* other);
 
@@ -6360,7 +6830,7 @@ class ReduceLayerParams : public ::google::protobuf::MessageLite /* @@protoc_ins
                &_ReduceLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    54;
+    58;
 
   void Swap(ReduceLayerParams* other);
 
@@ -6504,7 +6974,7 @@ class CropLayerParams : public ::google::protobuf::MessageLite /* @@protoc_inser
                &_CropLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    55;
+    59;
 
   void Swap(CropLayerParams* other);
 
@@ -6599,7 +7069,7 @@ class AverageLayerParams : public ::google::protobuf::MessageLite /* @@protoc_in
                &_AverageLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    56;
+    60;
 
   void Swap(AverageLayerParams* other);
 
@@ -6670,7 +7140,7 @@ class MaxLayerParams : public ::google::protobuf::MessageLite /* @@protoc_insert
                &_MaxLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    57;
+    61;
 
   void Swap(MaxLayerParams* other);
 
@@ -6741,7 +7211,7 @@ class MinLayerParams : public ::google::protobuf::MessageLite /* @@protoc_insert
                &_MinLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    58;
+    62;
 
   void Swap(MinLayerParams* other);
 
@@ -6812,7 +7282,7 @@ class DotProductLayerParams : public ::google::protobuf::MessageLite /* @@protoc
                &_DotProductLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    59;
+    63;
 
   void Swap(DotProductLayerParams* other);
 
@@ -6890,7 +7360,7 @@ class MeanVarianceNormalizeLayerParams : public ::google::protobuf::MessageLite 
                &_MeanVarianceNormalizeLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    60;
+    64;
 
   void Swap(MeanVarianceNormalizeLayerParams* other);
 
@@ -6982,7 +7452,7 @@ class SequenceRepeatLayerParams : public ::google::protobuf::MessageLite /* @@pr
                &_SequenceRepeatLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    61;
+    65;
 
   void Swap(SequenceRepeatLayerParams* other);
 
@@ -7060,7 +7530,7 @@ class SimpleRecurrentLayerParams : public ::google::protobuf::MessageLite /* @@p
                &_SimpleRecurrentLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    62;
+    66;
 
   void Swap(SimpleRecurrentLayerParams* other);
 
@@ -7206,7 +7676,7 @@ class GRULayerParams : public ::google::protobuf::MessageLite /* @@protoc_insert
                &_GRULayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    63;
+    67;
 
   void Swap(GRULayerParams* other);
 
@@ -7415,7 +7885,7 @@ class LSTMParams : public ::google::protobuf::MessageLite /* @@protoc_insertion_
                &_LSTMParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    64;
+    68;
 
   void Swap(LSTMParams* other);
 
@@ -7528,7 +7998,7 @@ class LSTMWeightParams : public ::google::protobuf::MessageLite /* @@protoc_inse
                &_LSTMWeightParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    65;
+    69;
 
   void Swap(LSTMWeightParams* other);
 
@@ -7749,7 +8219,7 @@ class UniDirectionalLSTMLayerParams : public ::google::protobuf::MessageLite /* 
                &_UniDirectionalLSTMLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    66;
+    70;
 
   void Swap(UniDirectionalLSTMLayerParams* other);
 
@@ -7874,7 +8344,7 @@ class BiDirectionalLSTMLayerParams : public ::google::protobuf::MessageLite /* @
                &_BiDirectionalLSTMLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    67;
+    71;
 
   void Swap(BiDirectionalLSTMLayerParams* other);
 
@@ -8017,7 +8487,7 @@ class CustomLayerParams_CustomLayerParamValue : public ::google::protobuf::Messa
                &_CustomLayerParams_CustomLayerParamValue_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    68;
+    72;
 
   void Swap(CustomLayerParams_CustomLayerParamValue* other);
 
@@ -8164,7 +8634,7 @@ class CustomLayerParams : public ::google::protobuf::MessageLite /* @@protoc_ins
                &_CustomLayerParams_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    70;
+    74;
 
   void Swap(CustomLayerParams* other);
 
@@ -8309,7 +8779,7 @@ class NeuralNetworkClassifier : public ::google::protobuf::MessageLite /* @@prot
                &_NeuralNetworkClassifier_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    71;
+    75;
 
   void Swap(NeuralNetworkClassifier* other);
 
@@ -8453,7 +8923,7 @@ class NeuralNetworkRegressor : public ::google::protobuf::MessageLite /* @@proto
                &_NeuralNetworkRegressor_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    72;
+    76;
 
   void Swap(NeuralNetworkRegressor* other);
 
@@ -10618,6 +11088,102 @@ inline void NeuralNetworkLayer::set_allocated_upsample(::CoreML::Specification::
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.NeuralNetworkLayer.upsample)
 }
 
+// .CoreML.Specification.ResizeBilinearLayerParams resizeBilinear = 211;
+inline bool NeuralNetworkLayer::has_resizebilinear() const {
+  return layer_case() == kResizeBilinear;
+}
+inline void NeuralNetworkLayer::set_has_resizebilinear() {
+  _oneof_case_[0] = kResizeBilinear;
+}
+inline void NeuralNetworkLayer::clear_resizebilinear() {
+  if (has_resizebilinear()) {
+    delete layer_.resizebilinear_;
+    clear_has_layer();
+  }
+}
+inline  const ::CoreML::Specification::ResizeBilinearLayerParams& NeuralNetworkLayer::resizebilinear() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.NeuralNetworkLayer.resizeBilinear)
+  return has_resizebilinear()
+      ? *layer_.resizebilinear_
+      : ::CoreML::Specification::ResizeBilinearLayerParams::default_instance();
+}
+inline ::CoreML::Specification::ResizeBilinearLayerParams* NeuralNetworkLayer::mutable_resizebilinear() {
+  if (!has_resizebilinear()) {
+    clear_layer();
+    set_has_resizebilinear();
+    layer_.resizebilinear_ = new ::CoreML::Specification::ResizeBilinearLayerParams;
+  }
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.NeuralNetworkLayer.resizeBilinear)
+  return layer_.resizebilinear_;
+}
+inline ::CoreML::Specification::ResizeBilinearLayerParams* NeuralNetworkLayer::release_resizebilinear() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.NeuralNetworkLayer.resizeBilinear)
+  if (has_resizebilinear()) {
+    clear_has_layer();
+    ::CoreML::Specification::ResizeBilinearLayerParams* temp = layer_.resizebilinear_;
+    layer_.resizebilinear_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void NeuralNetworkLayer::set_allocated_resizebilinear(::CoreML::Specification::ResizeBilinearLayerParams* resizebilinear) {
+  clear_layer();
+  if (resizebilinear) {
+    set_has_resizebilinear();
+    layer_.resizebilinear_ = resizebilinear;
+  }
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.NeuralNetworkLayer.resizeBilinear)
+}
+
+// .CoreML.Specification.CropResizeLayerParams cropResize = 212;
+inline bool NeuralNetworkLayer::has_cropresize() const {
+  return layer_case() == kCropResize;
+}
+inline void NeuralNetworkLayer::set_has_cropresize() {
+  _oneof_case_[0] = kCropResize;
+}
+inline void NeuralNetworkLayer::clear_cropresize() {
+  if (has_cropresize()) {
+    delete layer_.cropresize_;
+    clear_has_layer();
+  }
+}
+inline  const ::CoreML::Specification::CropResizeLayerParams& NeuralNetworkLayer::cropresize() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.NeuralNetworkLayer.cropResize)
+  return has_cropresize()
+      ? *layer_.cropresize_
+      : ::CoreML::Specification::CropResizeLayerParams::default_instance();
+}
+inline ::CoreML::Specification::CropResizeLayerParams* NeuralNetworkLayer::mutable_cropresize() {
+  if (!has_cropresize()) {
+    clear_layer();
+    set_has_cropresize();
+    layer_.cropresize_ = new ::CoreML::Specification::CropResizeLayerParams;
+  }
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.NeuralNetworkLayer.cropResize)
+  return layer_.cropresize_;
+}
+inline ::CoreML::Specification::CropResizeLayerParams* NeuralNetworkLayer::release_cropresize() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.NeuralNetworkLayer.cropResize)
+  if (has_cropresize()) {
+    clear_has_layer();
+    ::CoreML::Specification::CropResizeLayerParams* temp = layer_.cropresize_;
+    layer_.cropresize_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void NeuralNetworkLayer::set_allocated_cropresize(::CoreML::Specification::CropResizeLayerParams* cropresize) {
+  clear_layer();
+  if (cropresize) {
+    set_has_cropresize();
+    layer_.cropresize_ = cropresize;
+  }
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.NeuralNetworkLayer.cropResize)
+}
+
 // .CoreML.Specification.UnaryFunctionLayerParams unary = 220;
 inline bool NeuralNetworkLayer::has_unary() const {
   return layer_case() == kUnary;
@@ -11904,6 +12470,42 @@ inline void SamePadding::set_asymmetrymode(::CoreML::Specification::SamePadding_
   
   asymmetrymode_ = value;
   // @@protoc_insertion_point(field_set:CoreML.Specification.SamePadding.asymmetryMode)
+}
+
+// -------------------------------------------------------------------
+
+// SamplingMode
+
+// .CoreML.Specification.SamplingMode.Method samplingMethod = 1;
+inline void SamplingMode::clear_samplingmethod() {
+  samplingmethod_ = 0;
+}
+inline ::CoreML::Specification::SamplingMode_Method SamplingMode::samplingmethod() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.SamplingMode.samplingMethod)
+  return static_cast< ::CoreML::Specification::SamplingMode_Method >(samplingmethod_);
+}
+inline void SamplingMode::set_samplingmethod(::CoreML::Specification::SamplingMode_Method value) {
+  
+  samplingmethod_ = value;
+  // @@protoc_insertion_point(field_set:CoreML.Specification.SamplingMode.samplingMethod)
+}
+
+// -------------------------------------------------------------------
+
+// BoxCoordinatesMode
+
+// .CoreML.Specification.BoxCoordinatesMode.Coordinates boxMode = 1;
+inline void BoxCoordinatesMode::clear_boxmode() {
+  boxmode_ = 0;
+}
+inline ::CoreML::Specification::BoxCoordinatesMode_Coordinates BoxCoordinatesMode::boxmode() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.BoxCoordinatesMode.boxMode)
+  return static_cast< ::CoreML::Specification::BoxCoordinatesMode_Coordinates >(boxmode_);
+}
+inline void BoxCoordinatesMode::set_boxmode(::CoreML::Specification::BoxCoordinatesMode_Coordinates value) {
+  
+  boxmode_ = value;
+  // @@protoc_insertion_point(field_set:CoreML.Specification.BoxCoordinatesMode.boxMode)
 }
 
 // -------------------------------------------------------------------
@@ -13918,6 +14520,219 @@ inline void UpsampleLayerParams::set_mode(::CoreML::Specification::UpsampleLayer
   
   mode_ = value;
   // @@protoc_insertion_point(field_set:CoreML.Specification.UpsampleLayerParams.mode)
+}
+
+// -------------------------------------------------------------------
+
+// ResizeBilinearLayerParams
+
+// repeated uint64 targetSize = 1;
+inline int ResizeBilinearLayerParams::targetsize_size() const {
+  return targetsize_.size();
+}
+inline void ResizeBilinearLayerParams::clear_targetsize() {
+  targetsize_.Clear();
+}
+inline ::google::protobuf::uint64 ResizeBilinearLayerParams::targetsize(int index) const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.ResizeBilinearLayerParams.targetSize)
+  return targetsize_.Get(index);
+}
+inline void ResizeBilinearLayerParams::set_targetsize(int index, ::google::protobuf::uint64 value) {
+  targetsize_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CoreML.Specification.ResizeBilinearLayerParams.targetSize)
+}
+inline void ResizeBilinearLayerParams::add_targetsize(::google::protobuf::uint64 value) {
+  targetsize_.Add(value);
+  // @@protoc_insertion_point(field_add:CoreML.Specification.ResizeBilinearLayerParams.targetSize)
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >&
+ResizeBilinearLayerParams::targetsize() const {
+  // @@protoc_insertion_point(field_list:CoreML.Specification.ResizeBilinearLayerParams.targetSize)
+  return targetsize_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >*
+ResizeBilinearLayerParams::mutable_targetsize() {
+  // @@protoc_insertion_point(field_mutable_list:CoreML.Specification.ResizeBilinearLayerParams.targetSize)
+  return &targetsize_;
+}
+
+// .CoreML.Specification.SamplingMode mode = 2;
+inline bool ResizeBilinearLayerParams::has_mode() const {
+  return this != internal_default_instance() && mode_ != NULL;
+}
+inline void ResizeBilinearLayerParams::clear_mode() {
+  if (GetArenaNoVirtual() == NULL && mode_ != NULL) delete mode_;
+  mode_ = NULL;
+}
+inline const ::CoreML::Specification::SamplingMode& ResizeBilinearLayerParams::mode() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.ResizeBilinearLayerParams.mode)
+  return mode_ != NULL ? *mode_
+                         : *::CoreML::Specification::SamplingMode::internal_default_instance();
+}
+inline ::CoreML::Specification::SamplingMode* ResizeBilinearLayerParams::mutable_mode() {
+  
+  if (mode_ == NULL) {
+    mode_ = new ::CoreML::Specification::SamplingMode;
+  }
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.ResizeBilinearLayerParams.mode)
+  return mode_;
+}
+inline ::CoreML::Specification::SamplingMode* ResizeBilinearLayerParams::release_mode() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.ResizeBilinearLayerParams.mode)
+  
+  ::CoreML::Specification::SamplingMode* temp = mode_;
+  mode_ = NULL;
+  return temp;
+}
+inline void ResizeBilinearLayerParams::set_allocated_mode(::CoreML::Specification::SamplingMode* mode) {
+  delete mode_;
+  mode_ = mode;
+  if (mode) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.ResizeBilinearLayerParams.mode)
+}
+
+// -------------------------------------------------------------------
+
+// CropResizeLayerParams
+
+// repeated uint64 targetSize = 1;
+inline int CropResizeLayerParams::targetsize_size() const {
+  return targetsize_.size();
+}
+inline void CropResizeLayerParams::clear_targetsize() {
+  targetsize_.Clear();
+}
+inline ::google::protobuf::uint64 CropResizeLayerParams::targetsize(int index) const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.CropResizeLayerParams.targetSize)
+  return targetsize_.Get(index);
+}
+inline void CropResizeLayerParams::set_targetsize(int index, ::google::protobuf::uint64 value) {
+  targetsize_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CoreML.Specification.CropResizeLayerParams.targetSize)
+}
+inline void CropResizeLayerParams::add_targetsize(::google::protobuf::uint64 value) {
+  targetsize_.Add(value);
+  // @@protoc_insertion_point(field_add:CoreML.Specification.CropResizeLayerParams.targetSize)
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >&
+CropResizeLayerParams::targetsize() const {
+  // @@protoc_insertion_point(field_list:CoreML.Specification.CropResizeLayerParams.targetSize)
+  return targetsize_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >*
+CropResizeLayerParams::mutable_targetsize() {
+  // @@protoc_insertion_point(field_mutable_list:CoreML.Specification.CropResizeLayerParams.targetSize)
+  return &targetsize_;
+}
+
+// bool normalizedCoordinates = 2;
+inline void CropResizeLayerParams::clear_normalizedcoordinates() {
+  normalizedcoordinates_ = false;
+}
+inline bool CropResizeLayerParams::normalizedcoordinates() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.CropResizeLayerParams.normalizedCoordinates)
+  return normalizedcoordinates_;
+}
+inline void CropResizeLayerParams::set_normalizedcoordinates(bool value) {
+  
+  normalizedcoordinates_ = value;
+  // @@protoc_insertion_point(field_set:CoreML.Specification.CropResizeLayerParams.normalizedCoordinates)
+}
+
+// .CoreML.Specification.SamplingMode mode = 3;
+inline bool CropResizeLayerParams::has_mode() const {
+  return this != internal_default_instance() && mode_ != NULL;
+}
+inline void CropResizeLayerParams::clear_mode() {
+  if (GetArenaNoVirtual() == NULL && mode_ != NULL) delete mode_;
+  mode_ = NULL;
+}
+inline const ::CoreML::Specification::SamplingMode& CropResizeLayerParams::mode() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.CropResizeLayerParams.mode)
+  return mode_ != NULL ? *mode_
+                         : *::CoreML::Specification::SamplingMode::internal_default_instance();
+}
+inline ::CoreML::Specification::SamplingMode* CropResizeLayerParams::mutable_mode() {
+  
+  if (mode_ == NULL) {
+    mode_ = new ::CoreML::Specification::SamplingMode;
+  }
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.CropResizeLayerParams.mode)
+  return mode_;
+}
+inline ::CoreML::Specification::SamplingMode* CropResizeLayerParams::release_mode() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.CropResizeLayerParams.mode)
+  
+  ::CoreML::Specification::SamplingMode* temp = mode_;
+  mode_ = NULL;
+  return temp;
+}
+inline void CropResizeLayerParams::set_allocated_mode(::CoreML::Specification::SamplingMode* mode) {
+  delete mode_;
+  mode_ = mode;
+  if (mode) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.CropResizeLayerParams.mode)
+}
+
+// .CoreML.Specification.BoxCoordinatesMode boxIndicesMode = 4;
+inline bool CropResizeLayerParams::has_boxindicesmode() const {
+  return this != internal_default_instance() && boxindicesmode_ != NULL;
+}
+inline void CropResizeLayerParams::clear_boxindicesmode() {
+  if (GetArenaNoVirtual() == NULL && boxindicesmode_ != NULL) delete boxindicesmode_;
+  boxindicesmode_ = NULL;
+}
+inline const ::CoreML::Specification::BoxCoordinatesMode& CropResizeLayerParams::boxindicesmode() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.CropResizeLayerParams.boxIndicesMode)
+  return boxindicesmode_ != NULL ? *boxindicesmode_
+                         : *::CoreML::Specification::BoxCoordinatesMode::internal_default_instance();
+}
+inline ::CoreML::Specification::BoxCoordinatesMode* CropResizeLayerParams::mutable_boxindicesmode() {
+  
+  if (boxindicesmode_ == NULL) {
+    boxindicesmode_ = new ::CoreML::Specification::BoxCoordinatesMode;
+  }
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.CropResizeLayerParams.boxIndicesMode)
+  return boxindicesmode_;
+}
+inline ::CoreML::Specification::BoxCoordinatesMode* CropResizeLayerParams::release_boxindicesmode() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.CropResizeLayerParams.boxIndicesMode)
+  
+  ::CoreML::Specification::BoxCoordinatesMode* temp = boxindicesmode_;
+  boxindicesmode_ = NULL;
+  return temp;
+}
+inline void CropResizeLayerParams::set_allocated_boxindicesmode(::CoreML::Specification::BoxCoordinatesMode* boxindicesmode) {
+  delete boxindicesmode_;
+  boxindicesmode_ = boxindicesmode;
+  if (boxindicesmode) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.CropResizeLayerParams.boxIndicesMode)
+}
+
+// float spatialScale = 5;
+inline void CropResizeLayerParams::clear_spatialscale() {
+  spatialscale_ = 0;
+}
+inline float CropResizeLayerParams::spatialscale() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.CropResizeLayerParams.spatialScale)
+  return spatialscale_;
+}
+inline void CropResizeLayerParams::set_spatialscale(float value) {
+  
+  spatialscale_ = value;
+  // @@protoc_insertion_point(field_set:CoreML.Specification.CropResizeLayerParams.spatialScale)
 }
 
 // -------------------------------------------------------------------
@@ -17137,6 +17952,14 @@ NeuralNetworkRegressor::preprocessing() const {
 
 // -------------------------------------------------------------------
 
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 
 // @@protoc_insertion_point(namespace_scope)
 
@@ -17149,6 +17972,8 @@ namespace google {
 namespace protobuf {
 
 template <> struct is_proto_enum< ::CoreML::Specification::SamePadding_SamePaddingMode> : ::google::protobuf::internal::true_type {};
+template <> struct is_proto_enum< ::CoreML::Specification::SamplingMode_Method> : ::google::protobuf::internal::true_type {};
+template <> struct is_proto_enum< ::CoreML::Specification::BoxCoordinatesMode_Coordinates> : ::google::protobuf::internal::true_type {};
 template <> struct is_proto_enum< ::CoreML::Specification::PoolingLayerParams_PoolingType> : ::google::protobuf::internal::true_type {};
 template <> struct is_proto_enum< ::CoreML::Specification::UnaryFunctionLayerParams_Operation> : ::google::protobuf::internal::true_type {};
 template <> struct is_proto_enum< ::CoreML::Specification::UpsampleLayerParams_InterpolationMode> : ::google::protobuf::internal::true_type {};

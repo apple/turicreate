@@ -6,6 +6,21 @@
 #ifndef COREML_MLMODEL_HPP
 #define COREML_MLMODEL_HPP
 
+#if defined(__GNUC__)
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wreturn-type"
+#elif defined (__clang__)
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wsign-conversion"
+  #pragma clang diagnostic ignored "-Wunused-parameter"
+  #pragma clang diagnostic ignored "-Wshorten-64-to-32"
+  #pragma clang diagnostic ignored "-Wshadow"
+  #pragma clang diagnostic ignored "-Wextended-offsetof"
+#endif
+
+#pragma push_macro("CHECK")
+#undef CHECK
+
 // Include this first.  We need to undefine some defines here.
 #include <unity/toolkits/coreml_export/MLModel/src/transforms/TreeEnsemble.hpp>
 #include <unity/toolkits/coreml_export/MLModel/src/transforms/Pipeline.hpp>
@@ -24,7 +39,13 @@
 #undef MIN
 #endif
 
+#pragma pop_macro("CHECK")
 
+#if defined(__GNUC__)
+  #pragma GCC diagnostic pop
+#elif defined (__clang__)
+  #pragma clang diagnostic pop
+#endif
 
 #endif
 

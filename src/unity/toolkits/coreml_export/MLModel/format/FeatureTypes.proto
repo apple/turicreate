@@ -188,7 +188,7 @@ message DictionaryFeatureType {
 message SequenceFeatureType {
 
     /**
-     * Currently only categorical int64 and Stirng sequences are supported
+     * Currently only categorical int64 and String sequences are supported
      */
     oneof Type {
         Int64FeatureType int64Type = 1;

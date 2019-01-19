@@ -85,7 +85,7 @@ struct inner_product_k_t<0> {
 template <std::size_t Size,
           class _InputIterator1, class _InputIterator2, class _Tp,
           class _BinaryOperation1, class _BinaryOperation2>
-GIL_FORCEINLINE
+
 _Tp inner_product_k(_InputIterator1 __first1, 
                     _InputIterator2 __first2,
                     _Tp __init, 

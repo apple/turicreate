@@ -7,7 +7,7 @@
 #include "cnn_module.hpp"
 
 #if defined(HAS_MPS) && !defined(TC_BUILD_IOS)
-#include "mps_cnn_module_factory.h"
+#include "mps_factory.hpp"
 #endif
 
 namespace turi {

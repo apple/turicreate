@@ -4,6 +4,7 @@
 #include <cmath>
 
 #include <image/io.hpp>
+#include <unity/lib/image_util.hpp>
 
 namespace turi {
 namespace object_detection {
@@ -21,6 +22,22 @@ flex_image get_image(const flexible_type& image_feature) {
   } else {
     return image_feature;
   }
+}
+
+gl_sframe get_data(const data_iterator::parameters& params) {
+
+  gl_sarray annotations = params.data[params.annotations_column_name];
+  gl_sarray images = params.data[params.image_column_name];
+
+  if (images.dtype() == flex_type_enum::IMAGE) {
+
+    // Ensure that all images are (losslessly) compressed to minimize the I/O
+    // pain, especially when shuffling.
+    images = images.apply(image_util::encode_image, flex_type_enum::IMAGE);
+  }
+
+  return gl_sframe({ { params.annotations_column_name, annotations },
+                     { params.image_column_name,       images      }  });
 }
 
 std::vector<image_annotation> parse_annotations(
@@ -222,8 +239,7 @@ simple_data_iterator::compute_properties(const gl_sarray& annotations) {
 simple_data_iterator::simple_data_iterator(const parameters& params)
 
     // Reduce SFrame to the two columns we care about.
-  : data_(params.data[ { params.annotations_column_name,
-                         params.image_column_name        } ] ),
+  : data_(get_data(params)),
 
     // Determine which column is which within each (ordered) row.
     annotations_index_(data_.column_index(params.annotations_column_name)),
@@ -252,7 +268,20 @@ std::vector<labeled_image> simple_data_iterator::next_batch(size_t batch_size) {
 
     if (++next_row_ == range_iterator_.end()) {
 
-      // TODO: Shuffle if desired.
+      // Shuffle the data.
+      // TODO: This heavyweight shuffle operation introduces spikes into the
+      // wall-clock time of this function. SFrame should either provide an
+      // optimized implementation, or we should implement an approach that
+      // amortizes the cost across calls.
+      auto rng = [](const sframe_rows::row&) {
+        return random::rand();
+      };
+      data_.add_column(data_.apply(rng, flex_type_enum::INTEGER),
+                       "_random_order");
+      data_ = data_.sort("_random_order");
+      data_.remove_column("_random_order");
+
+      // Reset iteration.
       range_iterator_ = data_.range_iterator();
       next_row_ = range_iterator_.begin();
     }

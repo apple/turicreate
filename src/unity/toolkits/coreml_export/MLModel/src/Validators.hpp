@@ -8,8 +8,7 @@
 
 #include "Format.hpp"
 #include "Result.hpp"
-
-#include "unity/toolkits/coreml_export/protobuf_include_internal.hpp"
+#include "../build/format/Model_enums.h"
 
 #include "ValidatorUtils-inl.hpp"
 

@@ -4,8 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include "LogisticModel.hpp"
-
-#include "unity/toolkits/coreml_export/protobuf_include_internal.hpp"
+#include "../Format.hpp"
 
 namespace CoreML {
 

@@ -1,0 +1,266 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Extended functionality: Configurable containers</title>
+<link rel="stylesheet" href="../../../doc/src/boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../index.html" title="The Boost C++ Libraries BoostBook Documentation Subset">
+<link rel="up" href="../container.html" title="Chapter&#160;9.&#160;Boost.Container">
+<link rel="prev" href="extended_functionality.html" title="Extended functionality: Basic extensions">
+<link rel="next" href="extended_allocators.html" title="Extended functionality: Extended allocators">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img alt="Boost C++ Libraries" width="277" height="86" src="../../../boost.png"></td>
+<td align="center"><a href="../../../index.html">Home</a></td>
+<td align="center"><a href="../../../libs/libraries.htm">Libraries</a></td>
+<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
+<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
+<td align="center"><a href="../../../more/index.htm">More</a></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="extended_functionality.html"><img src="../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../container.html"><img src="../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="extended_allocators.html"><img src="../../../doc/src/images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="container.configurable_containers"></a><a class="link" href="configurable_containers.html" title="Extended functionality: Configurable containers">Extended functionality:
+    Configurable containers</a>
+</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="configurable_containers.html#container.configurable_containers.configurable_tree_based_associative_containers">Configurable
+      tree-based associative ordered containers</a></span></dt>
+<dt><span class="section"><a href="configurable_containers.html#container.configurable_containers.configurable_vectors">Configurable
+      vectors</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="container.configurable_containers.configurable_tree_based_associative_containers"></a><a class="link" href="configurable_containers.html#container.configurable_containers.configurable_tree_based_associative_containers" title="Configurable tree-based associative ordered containers">Configurable
+      tree-based associative ordered containers</a>
+</h3></div></div></div>
+<p>
+        <code class="computeroutput"><a class="link" href="../boost/container/set.html" title="Class template set">set</a></code>, <code class="computeroutput"><a class="link" href="../boost/container/multiset.html" title="Class template multiset">multiset</a></code>,
+        <code class="computeroutput"><a class="link" href="../boost/container/map.html" title="Class template map">map</a></code> and <code class="computeroutput"><a class="link" href="../boost/container/multimap.html" title="Class template multimap">multimap</a></code>
+        associative containers are implemented as binary search trees which offer
+        the needed complexity and stability guarantees required by the C++ standard
+        for associative containers.
+      </p>
+<p>
+        <span class="bold"><strong>Boost.Container</strong></span> offers the possibility to
+        configure at compile time some parameters of the binary search tree implementation.
+        This configuration is passed as the last template parameter and defined using
+        the utility class <code class="computeroutput"><a class="link" href="../boost/container/tree_assoc_options.html" title="Struct template tree_assoc_options">tree_assoc_options</a></code>.
+        The following parameters can be configured:
+      </p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem">
+            The underlying <span class="bold"><strong>tree implementation</strong></span> type
+            (<code class="computeroutput"><a class="link" href="../boost/container/tree_type.html" title="Struct template tree_type">tree_type</a></code>).
+            By default these containers use a red-black tree but the user can use
+            other tree types:
+            <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; ">
+<li class="listitem">
+                  <a href="http://en.wikipedia.org/wiki/Red%E2%80%93black_tree" target="_top">Red-Black
+                  Tree</a>
+                </li>
+<li class="listitem">
+                  <a href="http://en.wikipedia.org/wiki/Avl_trees" target="_top">AVL tree</a>
+                </li>
+<li class="listitem">
+                  <a href="http://en.wikipedia.org/wiki/Scapegoat_tree" target="_top">Scapegoat
+                  tree</a>. In this case Insertion and Deletion are amortized
+                  O(log n) instead of O(log n).
+                </li>
+<li class="listitem">
+                  <a href="http://en.wikipedia.org/wiki/Splay_tree" target="_top">Splay tree</a>.
+                  In this case Searches, Insertions and Deletions are amortized O(log
+                  n) instead of O(log n).
+                </li>
+</ul></div>
+          </li>
+<li class="listitem">
+            Whether the <span class="bold"><strong>size saving</strong></span> mechanisms are
+            used to implement the tree nodes (<code class="computeroutput"><a class="link" href="../boost/container/optimize_size.html" title="Struct template optimize_size">optimize_size</a></code>).
+            By default this option is activated and is only meaningful to red-black
+            and avl trees (in other cases, this option will be ignored). This option
+            will try to put rebalancing metadata inside the "parent" pointer
+            of the node if the pointer type has enough alignment. Usually, due to
+            alignment issues, the metadata uses the size of a pointer yielding to
+            four pointer size overhead per node, whereas activating this option usually
+            leads to 3 pointer size overhead. Although some mask operations must
+            be performed to extract data from this special "parent" pointer,
+            in several systems this option also improves performance due to the improved
+            cache usage produced by the node size reduction.
+          </li>
+</ul></div>
+<p>
+        See the following example to see how <code class="computeroutput"><a class="link" href="../boost/container/tree_assoc_options.html" title="Struct template tree_assoc_options">tree_assoc_options</a></code>
+        can be used to customize these containers:
+      </p>
+<p>
+</p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">container</span><span class="special">/</span><span class="identifier">set</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+
+<span class="comment">//Make sure assertions are active</span>
+<span class="preprocessor">#ifdef</span> <span class="identifier">NDEBUG</span>
+<span class="preprocessor">#undef</span> <span class="identifier">NDEBUG</span>
+<span class="preprocessor">#endif</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">cassert</span><span class="special">&gt;</span>
+
+<span class="keyword">int</span> <span class="identifier">main</span> <span class="special">()</span>
+<span class="special">{</span>
+   <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">container</span><span class="special">;</span>
+
+   <span class="comment">//First define several options</span>
+   <span class="comment">//</span>
+
+   <span class="comment">//This option specifies an AVL tree based associative container</span>
+   <span class="keyword">typedef</span> <span class="identifier">tree_assoc_options</span><span class="special">&lt;</span> <span class="identifier">tree_type</span><span class="special">&lt;</span><span class="identifier">avl_tree</span><span class="special">&gt;</span> <span class="special">&gt;::</span><span class="identifier">type</span> <span class="identifier">AVLTree</span><span class="special">;</span>
+
+   <span class="comment">//This option specifies an AVL tree based associative container</span>
+   <span class="comment">//disabling node size optimization.</span>
+   <span class="keyword">typedef</span> <span class="identifier">tree_assoc_options</span><span class="special">&lt;</span> <span class="identifier">tree_type</span><span class="special">&lt;</span><span class="identifier">avl_tree</span><span class="special">&gt;</span>
+                             <span class="special">,</span> <span class="identifier">optimize_size</span><span class="special">&lt;</span><span class="keyword">false</span><span class="special">&gt;</span> <span class="special">&gt;::</span><span class="identifier">type</span> <span class="identifier">AVLTreeNoSizeOpt</span><span class="special">;</span>
+
+   <span class="comment">//This option specifies an Splay tree based associative container</span>
+   <span class="keyword">typedef</span> <span class="identifier">tree_assoc_options</span><span class="special">&lt;</span> <span class="identifier">tree_type</span><span class="special">&lt;</span><span class="identifier">splay_tree</span><span class="special">&gt;</span> <span class="special">&gt;::</span><span class="identifier">type</span> <span class="identifier">SplayTree</span><span class="special">;</span>
+
+   <span class="comment">//Now define new tree-based associative containers</span>
+   <span class="comment">//</span>
+
+   <span class="comment">//AVLTree based set container</span>
+   <span class="keyword">typedef</span> <span class="identifier">set</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">,</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">less</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;,</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">allocator</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;,</span> <span class="identifier">AVLTree</span><span class="special">&gt;</span> <span class="identifier">AvlSet</span><span class="special">;</span>
+
+   <span class="comment">//AVLTree based set container without size optimization</span>
+   <span class="keyword">typedef</span> <span class="identifier">set</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">,</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">less</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;,</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">allocator</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;,</span> <span class="identifier">AVLTreeNoSizeOpt</span><span class="special">&gt;</span> <span class="identifier">AvlSetNoSizeOpt</span><span class="special">;</span>
+
+   <span class="comment">//Splay tree based multiset container</span>
+   <span class="keyword">typedef</span> <span class="identifier">multiset</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">,</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">less</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;,</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">allocator</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;,</span> <span class="identifier">SplayTree</span><span class="special">&gt;</span> <span class="identifier">SplayMultiset</span><span class="special">;</span>
+
+   <span class="comment">//Use them</span>
+   <span class="comment">//</span>
+   <span class="identifier">AvlSet</span> <span class="identifier">avl_set</span><span class="special">;</span>
+   <span class="identifier">avl_set</span><span class="special">.</span><span class="identifier">insert</span><span class="special">(</span><span class="number">0</span><span class="special">);</span>
+   <span class="identifier">assert</span><span class="special">(</span><span class="identifier">avl_set</span><span class="special">.</span><span class="identifier">find</span><span class="special">(</span><span class="number">0</span><span class="special">)</span> <span class="special">!=</span> <span class="identifier">avl_set</span><span class="special">.</span><span class="identifier">end</span><span class="special">());</span>
+
+   <span class="identifier">AvlSetNoSizeOpt</span> <span class="identifier">avl_set_no_szopt</span><span class="special">;</span>
+   <span class="identifier">avl_set_no_szopt</span><span class="special">.</span><span class="identifier">insert</span><span class="special">(</span><span class="number">1</span><span class="special">);</span>
+   <span class="identifier">avl_set_no_szopt</span><span class="special">.</span><span class="identifier">insert</span><span class="special">(</span><span class="number">1</span><span class="special">);</span>
+   <span class="identifier">assert</span><span class="special">(</span><span class="identifier">avl_set_no_szopt</span><span class="special">.</span><span class="identifier">count</span><span class="special">(</span><span class="number">1</span><span class="special">)</span> <span class="special">==</span> <span class="number">1</span><span class="special">);</span>
+
+   <span class="identifier">SplayMultiset</span> <span class="identifier">splay_mset</span><span class="special">;</span>
+   <span class="identifier">splay_mset</span><span class="special">.</span><span class="identifier">insert</span><span class="special">(</span><span class="number">2</span><span class="special">);</span>
+   <span class="identifier">splay_mset</span><span class="special">.</span><span class="identifier">insert</span><span class="special">(</span><span class="number">2</span><span class="special">);</span>
+   <span class="identifier">assert</span><span class="special">(</span><span class="identifier">splay_mset</span><span class="special">.</span><span class="identifier">count</span><span class="special">(</span><span class="number">2</span><span class="special">)</span> <span class="special">==</span> <span class="number">2</span><span class="special">);</span>
+   <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
+<span class="special">}</span>
+</pre>
+<p>
+      </p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="container.configurable_containers.configurable_vectors"></a><a class="link" href="configurable_containers.html#container.configurable_containers.configurable_vectors" title="Configurable vectors">Configurable
+      vectors</a>
+</h3></div></div></div>
+<p>
+        <span class="bold"><strong>Boost.Container</strong></span> offers the possibility to
+        configure at compile time some parameters of <code class="computeroutput"><a class="link" href="../boost/container/vector.html" title="Class template vector">vector</a></code>
+        implementation. This configuration is passed as the last template parameter
+        and defined using the utility class <code class="computeroutput"><a class="link" href="../boost/container/vector_options.html" title="Struct template vector_options">vector_options</a></code>.
+        The following parameters can be configured:
+      </p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem">
+            <code class="computeroutput"><a class="link" href="../boost/container/growth_factor.html" title="Struct template growth_factor">growth_factor</a></code>:
+            the growth policy of the vector. The rate at which the capacity of a
+            vector grows is implementation dependent and implementations choose exponential
+            growth in order to meet the amortized constant time requirement for push_back.
+            A higher growth factor will make it faster as it will require less data
+            movement, but it will have a greater memory impact (on average, more
+            memory will be unused). A user can provide it's own implementation and
+            some predefined policies are available: <code class="computeroutput"><a class="link" href="../boost/container/growth_factor_50.html" title="Struct growth_factor_50">growth_factor_50</a></code>,
+            <code class="computeroutput"><a class="link" href="../boost/container/growth_factor_60.html" title="Struct growth_factor_60">growth_factor_60</a></code>
+            and <code class="computeroutput"><a class="link" href="../boost/container/growth_factor_50.html" title="Struct growth_factor_50">growth_factor_100</a></code>.
+          </li>
+<li class="listitem">
+            <code class="computeroutput"><a class="link" href="../boost/container/stored_size.html" title="Struct template stored_size">stored_size</a></code>:
+            the type that will be used to store size-related parameters inside of
+            the vector. Sometimes, when the maximum capacity to be used is much less
+            than the theoretical maximum that a vector can hold, it's interesting
+            to use smaller unsigned integer types to represent <code class="computeroutput"><span class="identifier">size</span><span class="special">()</span></code> and <code class="computeroutput"><span class="identifier">capacity</span><span class="special">()</span></code> inside vector, so that the size of
+            an empty vector is minimized and cache performance might be improved.
+            See <code class="computeroutput"><a class="link" href="../boost/container/stored_size.html" title="Struct template stored_size">stored_size</a></code>
+            for more details.
+          </li>
+</ul></div>
+<p>
+        See the following example to see how <code class="computeroutput"><a class="link" href="../boost/container/vector_options.html" title="Struct template vector_options">vector_options</a></code>
+        can be used to customize <code class="computeroutput"><span class="identifier">vector</span></code>
+        container:
+      </p>
+<p>
+</p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">container</span><span class="special">/</span><span class="identifier">vector</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="keyword">static_assert</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+
+<span class="comment">//Make sure assertions are active</span>
+<span class="preprocessor">#ifdef</span> <span class="identifier">NDEBUG</span>
+<span class="preprocessor">#undef</span> <span class="identifier">NDEBUG</span>
+<span class="preprocessor">#endif</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">cassert</span><span class="special">&gt;</span>
+
+<span class="keyword">int</span> <span class="identifier">main</span> <span class="special">()</span>
+<span class="special">{</span>
+   <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">container</span><span class="special">;</span>
+
+   <span class="comment">//This option specifies that a vector that will use "unsigned char" as</span>
+   <span class="comment">//the type to store capacity or size internally.</span>
+   <span class="keyword">typedef</span> <span class="identifier">vector_options</span><span class="special">&lt;</span> <span class="identifier">stored_size</span><span class="special">&lt;</span><span class="keyword">unsigned</span> <span class="keyword">char</span><span class="special">&gt;</span> <span class="special">&gt;::</span><span class="identifier">type</span> <span class="identifier">size_option_t</span><span class="special">;</span>
+
+   <span class="comment">//Size-optimized vector is smaller than the default one.</span>
+   <span class="keyword">typedef</span> <span class="identifier">vector</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">,</span> <span class="identifier">new_allocator</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;,</span> <span class="identifier">size_option_t</span> <span class="special">&gt;</span> <span class="identifier">size_optimized_vector_t</span><span class="special">;</span>
+   <span class="identifier">BOOST_STATIC_ASSERT</span><span class="special">((</span> <span class="keyword">sizeof</span><span class="special">(</span><span class="identifier">size_optimized_vector_t</span><span class="special">)</span> <span class="special">&lt;</span> <span class="keyword">sizeof</span><span class="special">(</span><span class="identifier">vector</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;)</span> <span class="special">));</span>
+
+   <span class="comment">//Requesting capacity for more elements than representable by "unsigned char"</span>
+   <span class="comment">//is an error in the size optimized vector.</span>
+   <span class="keyword">bool</span> <span class="identifier">exception_thrown</span> <span class="special">=</span> <span class="keyword">false</span><span class="special">;</span>
+   <span class="keyword">try</span>       <span class="special">{</span> <span class="identifier">size_optimized_vector_t</span> <span class="identifier">v</span><span class="special">(</span><span class="number">256</span><span class="special">);</span> <span class="special">}</span>
+   <span class="keyword">catch</span><span class="special">(...){</span> <span class="identifier">exception_thrown</span> <span class="special">=</span> <span class="keyword">true</span><span class="special">;</span>        <span class="special">}</span>
+   <span class="identifier">assert</span><span class="special">(</span><span class="identifier">exception_thrown</span> <span class="special">==</span> <span class="keyword">true</span><span class="special">);</span>
+
+   <span class="comment">//This option specifies that a vector will increase its capacity 50%</span>
+   <span class="comment">//each time the previous capacity was exhausted.</span>
+   <span class="keyword">typedef</span> <span class="identifier">vector_options</span><span class="special">&lt;</span> <span class="identifier">growth_factor</span><span class="special">&lt;</span><span class="identifier">growth_factor_50</span><span class="special">&gt;</span> <span class="special">&gt;::</span><span class="identifier">type</span> <span class="identifier">growth_50_option_t</span><span class="special">;</span>
+
+   <span class="comment">//Fill the vector until full capacity is reached</span>
+   <span class="identifier">vector</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">,</span> <span class="identifier">new_allocator</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;,</span> <span class="identifier">growth_50_option_t</span> <span class="special">&gt;</span> <span class="identifier">growth_50_vector</span><span class="special">(</span><span class="number">5</span><span class="special">,</span> <span class="number">0</span><span class="special">);</span>
+   <span class="keyword">const</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span> <span class="identifier">old_cap</span> <span class="special">=</span> <span class="identifier">growth_50_vector</span><span class="special">.</span><span class="identifier">capacity</span><span class="special">();</span>
+   <span class="identifier">growth_50_vector</span><span class="special">.</span><span class="identifier">resize</span><span class="special">(</span><span class="identifier">old_cap</span><span class="special">);</span>
+
+   <span class="comment">//Now insert an additional item and check the new buffer is 50% bigger</span>
+   <span class="identifier">growth_50_vector</span><span class="special">.</span><span class="identifier">push_back</span><span class="special">(</span><span class="number">1</span><span class="special">);</span>
+   <span class="identifier">assert</span><span class="special">(</span><span class="identifier">growth_50_vector</span><span class="special">.</span><span class="identifier">capacity</span><span class="special">()</span> <span class="special">==</span> <span class="identifier">old_cap</span><span class="special">*</span><span class="number">3</span><span class="special">/</span><span class="number">2</span><span class="special">);</span>
+
+   <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
+<span class="special">}</span>
+</pre>
+<p>
+      </p>
+</div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2009-2018 Ion Gaztanaga<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="extended_functionality.html"><img src="../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../container.html"><img src="../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="extended_allocators.html"><img src="../../../doc/src/images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

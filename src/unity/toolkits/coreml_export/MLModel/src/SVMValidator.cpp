@@ -6,8 +6,7 @@
 #include "Result.hpp"
 #include "Validators.hpp"
 #include "ValidatorUtils-inl.hpp"
-
-#include "unity/toolkits/coreml_export/protobuf_include_internal.hpp"
+#include "../build/format/Model.pb.h"
 
 namespace CoreML {
 

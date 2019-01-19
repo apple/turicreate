@@ -6,6 +6,7 @@
 #include "histogram.hpp"
 
 #include <parallel/lambda_omp.hpp>
+#include <unity/lib/visualization/batch_size.hpp>
 #include <unity/lib/visualization/escape.hpp>
 
 #include <string>
@@ -354,7 +355,7 @@ std::shared_ptr<Plot> plot_histogram(
     std::string spec = histogram_spec(title, xlabel, ylabel, self->dtype());
     double size_array = static_cast<double>(self->size());
 
-    hist.init(*self, 5000000 /* batch_size */);
+    hist.init(*self, batch_size(sa));
 
     std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<histogram>(hist);
     return std::make_shared<Plot>(spec, shared_unity_transformer, size_array);

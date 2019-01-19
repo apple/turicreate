@@ -164,6 +164,7 @@ std::map<std::string, std::shared_ptr<unity_sarray_base>> unity_sframe::construc
   tokenizer.delimiter = ",";
   tokenizer.has_comment_char = false;
   tokenizer.escape_char = '\\';
+  tokenizer.use_escape_char = true;
   tokenizer.double_quote = true;
   tokenizer.quote_char = '\"';
   tokenizer.skip_initial_space = true;
@@ -196,6 +197,9 @@ std::map<std::string, std::shared_ptr<unity_sarray_base>> unity_sframe::construc
       tokenizer.comment_char= tmp[0];
       tokenizer.has_comment_char = true;
     }
+  }
+  if (csv_parsing_config.count("use_escape_char")) {
+    tokenizer.skip_initial_space = !csv_parsing_config["use_escape_char"].is_zero();
   }
   if (csv_parsing_config["escape_char"].get_type() == flex_type_enum::STRING) {
     std::string tmp = (flex_string)csv_parsing_config["escape_char"];
@@ -235,7 +239,27 @@ std::map<std::string, std::shared_ptr<unity_sarray_base>> unity_sframe::construc
       }
     }
   }
+  if (csv_parsing_config["true_values"].get_type() == flex_type_enum::LIST) {
+    flex_list rec = csv_parsing_config["true_values"];
+    std::unordered_set<std::string> true_values;
+    tokenizer.true_values.clear();
+    for (size_t i = 0;i < rec.size(); ++i) {
+      if (rec[i].get_type() == flex_type_enum::STRING) {
+        tokenizer.true_values.insert((std::string)rec[i]);
+      }
+    }
+  }
 
+  if (csv_parsing_config["false_values"].get_type() == flex_type_enum::LIST) {
+    flex_list rec = csv_parsing_config["false_values"];
+    std::unordered_set<std::string> false_values;
+    tokenizer.false_values.clear();
+    for (size_t i = 0;i < rec.size(); ++i) {
+      if (rec[i].get_type() == flex_type_enum::STRING) {
+        tokenizer.false_values.insert((std::string)rec[i]);
+      }
+    }
+  }
   tokenizer.init();
 
   auto sframe_ptr = std::make_shared<sframe>();

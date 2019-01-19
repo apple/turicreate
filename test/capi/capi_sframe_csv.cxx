@@ -887,30 +887,57 @@ struct sframe_test  {
 
    void test_string_escaping() {
      std::string s = "hello";
-     unescape_string(s, '\\', '\"', false);
+     unescape_string(s, true, '\\', '\"', false);
      TS_ASSERT_EQUALS(s, "hello");
 
      s = "\\\"world\\\"";
-     unescape_string(s, '\\', '\"', false);
+     unescape_string(s, true, '\\', '\"', false);
      TS_ASSERT_EQUALS(s, "\"world\"");
 
      s = "\\\\world\\\\";
-     unescape_string(s, '\\', '\"', false);
+     unescape_string(s, true, '\\', '\"', false);
      TS_ASSERT_EQUALS(s, "\\world\\");
 
      s = "\\";
-     unescape_string(s, '\\', '\"', false);
+     unescape_string(s, true, '\\', '\"', false);
      TS_ASSERT_EQUALS(s, "\\");
 
      s = "\\\"\"\"a\\\"\"\"";
-     unescape_string(s, '\\', '\"', true);
+     unescape_string(s, true, '\\', '\"', true);
      TS_ASSERT_EQUALS(s, "\"\"a\"\"");
 
      s = "\\\'\\\"\\\\\\/\\b\\r\\n";
-     unescape_string(s, '\\', '\"', false);
+     unescape_string(s, true, '\\', '\"', false);
      TS_ASSERT_EQUALS(s, "\'\"\\/\b\r\n");
-
    }
+
+
+   void test_string_escaping2() {
+     std::string s = "hello";
+     unescape_string(s, false, '\\', '\"', false);
+     TS_ASSERT_EQUALS(s, "hello");
+
+     s = "\\\"world\\\"";
+     unescape_string(s, false, '\\', '\"', false);
+     TS_ASSERT_EQUALS(s, "\\\"world\\\"");
+
+     s = "\\\\world\\\\";
+     unescape_string(s, false, '\\', '\"', false);
+     TS_ASSERT_EQUALS(s, "\\\\world\\\\");
+
+     s = "\\";
+     unescape_string(s, false, '\\', '\"', false);
+     TS_ASSERT_EQUALS(s, "\\");
+
+     s = "\\\"\"\"a\\\"\"\"";
+     unescape_string(s, true, '\\', '\"', true);
+     TS_ASSERT_EQUALS(s, "\\\"\"\"a\\\"\"\"");
+
+     s = "\\\'\\\"\\\\\\/\\b\\r\\n";
+     unescape_string(s, true, '\\', '\"', false);
+     TS_ASSERT_EQUALS(s, "\\\'\\\"\\\\\\/\\b\\r\\n");
+   }
+
    void test_na() {
      //evaluate(test_na_values());
      evaluate(test_na_values2());
