@@ -27,9 +27,26 @@ from .. import _image_feature_extractor
 from turicreate.toolkits._internal_utils import (_raise_error_if_not_sframe,
                                                  _numeric_param_check_range)
 
-def create(dataset, target, feature = None, model = 'resnet-50',
-           validation_set='auto', max_iterations = 10, verbose = True,
-           seed = None, batch_size=64):
+_DEFAULT_SOLVER_OPTIONS = {
+'convergence_threshold': 1e-2,
+'step_size': 1.0,
+'lbfgs_memory_level': 11,
+'max_iterations': 10}
+
+def create(dataset, target, feature=None, model = 'resnet-50',
+    l2_penalty=0.01, 
+    l1_penalty=0.0,
+    solver='auto', feature_rescaling=True,
+    convergence_threshold = _DEFAULT_SOLVER_OPTIONS['convergence_threshold'],
+    step_size = _DEFAULT_SOLVER_OPTIONS['step_size'],
+    lbfgs_memory_level = _DEFAULT_SOLVER_OPTIONS['lbfgs_memory_level'],
+    max_iterations = _DEFAULT_SOLVER_OPTIONS['max_iterations'],
+    class_weights = None,
+    validation_set = 'auto',
+    verbose=True,
+    seed=None,
+    batch_size=64):
+    
     """
     Create a :class:`ImageClassifier` model.
 
@@ -53,6 +70,75 @@ def create(dataset, target, feature = None, model = 'resnet-50',
         Name of the column containing the input images. 'None' (the default)
         indicates the only image column in `dataset` should be used as the
         feature.
+        
+l2_penalty : float, optional
+        Weight on l2 regularization of the model. The larger this weight, the
+        more the model coefficients shrink toward 0. This introduces bias into
+        the model but decreases variance, potentially leading to better
+        predictions. The default value is 0.01; setting this parameter to 0
+        corresponds to unregularized logistic regression. See the ridge
+        regression reference for more detail.
+
+    l1_penalty : float, optional
+        Weight on l1 regularization of the model. Like the l2 penalty, the
+        higher the l1 penalty, the more the estimated coefficients shrink toward
+        0. The l1 penalty, however, completely zeros out sufficiently small
+        coefficients, automatically indicating features that are not useful
+        for the model. The default weight of 0 prevents any features from
+        being discarded. See the LASSO regression reference for more detail.
+
+    solver : string, optional
+        Name of the solver to be used to solve the regression. See the
+        references for more detail on each solver. Available solvers are:
+
+        - *auto (default)*: automatically chooses the best solver for the data
+          and model parameters.
+        - *newton*: Newton-Raphson
+        - *lbfgs*: limited memory BFGS
+        - *fista*: accelerated gradient descent
+
+        For this model, the Newton-Raphson method is equivalent to the
+        iteratively re-weighted least squares algorithm. If the l1_penalty is
+        greater than 0, use the 'fista' solver.
+
+        The model is trained using a carefully engineered collection of methods
+        that are automatically picked based on the input data. The ``newton``
+        method  works best for datasets with plenty of examples and few features
+        (long datasets). Limited memory BFGS (``lbfgs``) is a robust solver for
+        wide datasets (i.e datasets with many coefficients).  ``fista`` is the
+        default solver for l1-regularized linear regression. The solvers are all
+        automatically tuned and the default options should function well. See
+        the solver options guide for setting additional parameters for each of
+        the solvers.
+
+        See the user guide for additional details on how the solver is chosen.
+        (see `here
+        <https://apple.github.io/turicreate/docs/userguide/supervised-learning/linear-regression.html>`_)
+
+    feature_rescaling : boolean, optional
+        Feature rescaling is an important pre-processing step that ensures that
+        all features are on the same scale. An l2-norm rescaling is performed
+        to make sure that all features are of the same norm. Categorical
+        features are also rescaled by rescaling the dummy variables that are
+        used to represent them. The coefficients are returned in original scale
+        of the problem. This process is particularly useful when features
+        vary widely in their ranges.
+
+    convergence_threshold : float, optional
+        Convergence is tested using variation in the training objective. The
+        variation in the training objective is calculated using the difference
+        between the objective values between two steps. Consider reducing this
+        below the default value (0.01) for a more accurately trained model.
+        Beware of overfitting (i.e a model that works well only on the training
+        data) if this parameter is set to a very low value.
+
+    lbfgs_memory_level : float, optional
+        The L-BFGS algorithm keeps track of gradient information from the
+        previous ``lbfgs_memory_level`` iterations. The storage requirement for
+        each of these gradients is the ``num_coefficients`` in the problem.
+        Increasing the ``lbfgs_memory_level ``can help improve the quality of
+        the model trained. Setting this to more than ``max_iterations`` has the
+        same effect as setting it to ``max_iterations``.
 
     model : string optional
         Uses a pretrained model to bootstrap an image classifier:
@@ -70,6 +156,18 @@ def create(dataset, target, feature = None, model = 'resnet-50',
 
         Models are downloaded from the internet if not available locally. Once
         downloaded, the models are cached for future use.
+        
+    step_size : float, optional
+        The starting step size to use for the ``fista`` solver. The default is
+        set to 1.0, this is an aggressive setting. If the first iteration takes
+        a considerable amount of time, reducing this parameter may speed up
+        model training.
+
+    class_weights : {dict, `auto`}, optional
+        Weights the examples in the training data according to the given class
+        weights. If set to `None`, all classes are supposed to have weight one. The
+        `auto` mode set the class weight to be inversely proportional to number of
+        examples in the training data with the given class.
 
     validation_set : SFrame, optional
         A dataset for monitoring the model's generalization performance.
@@ -167,7 +265,13 @@ def create(dataset, target, feature = None, model = 'resnet-50',
                                               max_iterations=max_iterations,
                                               validation_set=extracted_features_validation,
                                               seed=seed,
-                                              verbose=verbose)
+                                              verbose=verbose, l2_penalty=l2_penalty, l1_penalty=l1_penalty,
+                                              solver=solver, feature_rescaling=feature_rescaling,
+                                              convergence_threshold=convergence_threshold, 
+                                              step_size=step_size,
+                                              lbfgs_memory_level=lbfgs_memory_level,
+                                              class_weights=class_weights)
+    
 
     # set input image shape
     if model in _pre_trained_models.MODELS:
@@ -755,5 +859,3 @@ class ImageClassifier(_CustomModel):
         _update_last_two_layers(nn_spec)
         mlmodel = _set_inputs_outputs_and_metadata(spec, nn_spec)
         mlmodel.save(filename)
-
-
