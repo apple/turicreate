@@ -17,12 +17,10 @@ import json as _json
 import base64 as _base64
 import sys as _sys
 import math as _math
-from UserDict import UserDict as _UserDict
 
-
-class Evaluation(_UserDict):
+class Evaluation(dict):
   def __init__(self, obj = {}):
-    _UserDict.__init__(self)
+    dict.__init__(self)
     self.update(obj)
 
   def _get_eval_json(self):
