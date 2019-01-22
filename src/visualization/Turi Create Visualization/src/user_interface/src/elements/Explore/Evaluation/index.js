@@ -144,7 +144,6 @@ class TCEvaluation extends Component {
       const current_val = this.state.incorrect_classification[incorrect_keys[k]]
       if(current_val != null && current_val != "loading"){
         for(var x = 0; x < current_val.length; x++){
-          console.log(JSON.stringify(current_val[x].images));
           considerations_array.push(
             {
               "actual": incorrect_keys[k],

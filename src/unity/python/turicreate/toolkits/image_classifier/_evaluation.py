@@ -21,6 +21,7 @@ import math as _math
 class Evaluation(dict):
   def __init__(self, obj = {}):
     dict.__init__(self)
+    self.data = obj
     self.update(obj)
 
   def _get_eval_json(self):
