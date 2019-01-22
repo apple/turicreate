@@ -562,6 +562,10 @@ class ImageClassifier(_CustomModel):
 
 
         def entropy(probs):
+            import sys
+            if sys.version_info > (3, 0):
+                from functools import reduce
+                
             return reduce(lambda x, y: x + (y*math.log(1/y, 2) if y > 0 else 0) , probs, 0) / math.log(len(probs),2)
 
         def confidence(probs):

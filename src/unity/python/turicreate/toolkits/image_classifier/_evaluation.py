@@ -4,7 +4,7 @@
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 """
-Class definition and utilities for the evaluation of the image classification toolkit.
+Class definition and utilities for the evaluation of the image classification model
 """
 from __future__ import print_function as _
 from __future__ import division as _
