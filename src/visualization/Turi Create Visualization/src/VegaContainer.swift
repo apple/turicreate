@@ -157,7 +157,7 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
             break
         
         case "getCorrects":
-            self.pipe!.getCorrect()
+            self.pipe!.writeCorrect()
             break
             
         case "getRowsEval":

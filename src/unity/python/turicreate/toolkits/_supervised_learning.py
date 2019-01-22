@@ -185,12 +185,7 @@ class SupervisedLearningModel(Model):
             - 'none': Treat missing value as is. Model must be able to handle missing value.
             - 'error' : Do not proceed with prediction and terminate with
                         an error message.
-
-        options : dict
-            additional options to be passed in to prediction
-
-        kwargs : dict
-            additional options to be passed into prediction
+                        
         """
         if missing_value_action == 'auto':
             missing_value_action = select_default_missing_value_policy(

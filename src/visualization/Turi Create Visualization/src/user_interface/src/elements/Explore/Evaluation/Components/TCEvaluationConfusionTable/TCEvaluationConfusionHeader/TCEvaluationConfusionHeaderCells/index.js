@@ -6,7 +6,7 @@ import caret_down from './assets/caret-down.svg';
 
 class TCEvaluationConfusionHeaderCell extends Component {
 
-  renderCarret = () => {
+  renderCaret = () => {
     if(this.props.enabled){
       if(this.props.direction){
         return (
@@ -43,7 +43,7 @@ class TCEvaluationConfusionHeaderCell extends Component {
         <div className="TCEvaluationConfusionHeaderCellPercent"
              onClick={this.props.onclick.bind(this)}>
           {this.props.name}
-          {this.renderCarret()}
+          {this.renderCaret()}
         </div>
       );
     }else if(this.props.type == "amount"){
@@ -51,7 +51,7 @@ class TCEvaluationConfusionHeaderCell extends Component {
         <div className="TCEvaluationConfusionHeaderCellAmount"
              onClick={this.props.onclick.bind(this)}>
           {this.props.name}
-          {this.renderCarret()}
+          {this.renderCaret()}
         </div>
       );
     }else{
@@ -59,7 +59,7 @@ class TCEvaluationConfusionHeaderCell extends Component {
         <div className="TCEvaluationConfusionHeaderCellText"
              onClick={this.props.onclick.bind(this)}>
           {this.props.name}
-          {this.renderCarret()}
+          {this.renderCaret()}
         </div>
       );
     }

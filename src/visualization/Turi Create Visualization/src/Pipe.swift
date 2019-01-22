@@ -79,7 +79,7 @@ class Pipe {
         fflush(__stdoutp)
     }
     
-    public func getCorrect(){
+    public func writeCorrect(){
         print("{\"method\":\"get_corrects\"}");
         fflush(__stdoutp)
     }
@@ -116,10 +116,6 @@ class Pipe {
             
             if let accordion_spec = json["accordion_spec"] as? [String: Any] {
                 self.graph_data.add_accordion(accordion_spec: accordion_spec)
-            }
-            
-            if let evaluation_spec = json["evaluation_spec"] as? [String: Any] {
-                self.graph_data.set_evaluation(evaluation_spec: evaluation_spec)
             }
 
         } catch let error as NSError {
