@@ -225,11 +225,6 @@ public:
     std::vector<std::vector<image_annotation>> annotations_batch;
   };
 
-  /**
-   * Constructs an image_augmenter. The implementation may depend on platform
-   * and hardware resources. */
-  static std::unique_ptr<image_augmenter> create(const options& opts);
-
   virtual ~image_augmenter() = default;
 
   /** Returns the options parameterizing this instance. */
