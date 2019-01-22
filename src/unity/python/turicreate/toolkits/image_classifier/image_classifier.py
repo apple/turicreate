@@ -34,7 +34,8 @@ _DEFAULT_SOLVER_OPTIONS = {
 'max_iterations': 10}
 
 def create(dataset, target, feature=None, model = 'resnet-50',
-    l2_penalty=0.01, l1_penalty=0.0,
+    l2_penalty=0.01, 
+    l1_penalty=0.0,
     solver='auto', feature_rescaling=True,
     convergence_threshold = _DEFAULT_SOLVER_OPTIONS['convergence_threshold'],
     step_size = _DEFAULT_SOLVER_OPTIONS['step_size'],
