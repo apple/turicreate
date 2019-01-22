@@ -47,7 +47,7 @@ void read_raw_image(const std::string& url, char** data, size_t& length, size_t&
       }
     }
     if (format == Format::JPG) {
-      parse_jpeg(*data, length, width, height, channels, url);
+      parse_jpeg(*data, length, width, height, channels);
     } else if (format == Format::PNG) {
       parse_png(*data, length, width, height, channels);
     } else {

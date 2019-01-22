@@ -36,7 +36,7 @@ jpeg_error_exit (j_common_ptr cinfo)
 
 void parse_jpeg(const char* data, size_t length,
                 size_t& width, size_t& height,
-                size_t& channels, const std::string& url) {
+                size_t& channels) {
   struct jpeg_decompress_struct cinfo;
   struct jpeg_error_mgr jerr;
   memset(&cinfo, 0, sizeof(cinfo));

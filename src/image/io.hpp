@@ -31,7 +31,7 @@ void read_raw_image(const std::string& url, char** data, size_t& length, size_t&
  * Parse the image information, set width, height and channels using libjpeg.
  */
 void parse_jpeg(const char* data, size_t length,
-                size_t& width, size_t& height, size_t& channels, const std::string& url);
+                size_t& width, size_t& height, size_t& channels);
 
 void decode_jpeg(const char* data, size_t length, char** decoded_data, size_t& out_length);
 
