@@ -560,7 +560,7 @@ class ImageClassifier(_CustomModel):
         extracted_features = self._extract_features(dataset, verbose=verbose, batch_size=batch_size)
         extracted_features[self.target] = dataset[self.target]
         
-        metrics = self.classifier.evaluate_with_predictions(extracted_features, metric = metric)
+        metrics = self.classifier.evaluate(extracted_features, metric = metric)
         predictions = metrics["predictions"]["probs"]
         state = self.__proxy__.get_state()
         labels = state["classes"]

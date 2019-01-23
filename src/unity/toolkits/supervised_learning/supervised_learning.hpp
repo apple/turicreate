@@ -281,26 +281,6 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
   }
 
   /**
-   * Evaluate the model and return with predictions.
-   *
-   * \param[in] test_data          Test data.
-   * \param[in] evaluation_type Evalution type.
-   *
-   * \note Already assumes that data is of the right shape. Test data
-   * must contain target column also.
-   *
-   */
-  virtual std::map<std::string, variant_type> evaluate_with_predictions(const ml_data&
-                test_data, const std::string& evaluation_type="");
-
-  /**
-   * Same as evaluate_with_predictions(ml_data), but take SFrame as input.
-   */
-  virtual std::map<std::string, variant_type> evaluate_with_predictions(const sframe& X,
-                const sframe &y, const std::string& evaluation_type="");
-
-
-  /**
    * Make predictions using a trained supervised_learning model.
    *
    * \param[in] test_X      Test data (only independent variables)
@@ -693,15 +673,6 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
   /**
    *  API interface through the unity server.
    *
-   *  Evaluate the model and retun with predictions
-   */
-  // TODO: This function should be const
-  variant_map_type api_evaluate_with_predictions(
-      gl_sframe data, std::string missing_value_action, std::string metric);
-
-  /**
-   *  API interface through the unity server.
-   *
    *  Extract features!
    */
   // TODO: This function should be const
@@ -778,15 +749,6 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
       "missing_value_action", "metric");
 
   register_defaults("evaluate",
-                    {{"metric", std::string("_report")},
-                     {"missing_value_action", std::string("auto")}});
-
-  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("evaluate_with_predictions",
-            supervised_learning_model_base::api_evaluate_with_predictions,
-                                       "data", "missing_value_action",
-                                       "metric");
-
-  register_defaults("evaluate_with_predictions",
                     {{"metric", std::string("_report")},
                      {"missing_value_action", std::string("auto")}});
 

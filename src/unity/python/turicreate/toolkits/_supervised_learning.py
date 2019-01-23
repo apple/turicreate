@@ -157,44 +157,6 @@ class SupervisedLearningModel(Model):
         results = self.__proxy__.evaluate(
             dataset, missing_value_action, metric);
         return results
-
-    def evaluate_with_predictions(self, dataset, metric="auto",
-                 missing_value_action='auto', options={}, **kwargs):
-        """
-        Evaluate the model by making predictions of target values and comparing
-        these to actual values. It returns with the predictions.
-
-        Parameters
-        ----------
-        dataset : SFrame
-            Dataset in the same format used for training. The columns names and
-            types of the dataset must be the same as that used in training.
-
-        metric : str, list[str]
-            Evaluation metric(s) to be computed.
-
-        missing_value_action: str, optional
-            Action to perform when missing values are encountered. This can be
-            one of:
-
-            - 'auto': Choose a model dependent missing value policy.
-            - 'impute': Proceed with evaluation by filling in the missing
-                        values with the mean of the training data. Missing
-                        values are also imputed if an entire column of data is
-                        missing during evaluation.
-            - 'none': Treat missing value as is. Model must be able to handle missing value.
-            - 'error' : Do not proceed with prediction and terminate with
-                        an error message.
-                        
-        """
-        if missing_value_action == 'auto':
-            missing_value_action = select_default_missing_value_policy(
-                                                             self, 'evaluate_with_predictions')
-
-        _raise_error_if_not_sframe(dataset, "dataset")
-        results = self.__proxy__.evaluate_with_predictions(
-            dataset, missing_value_action, metric);
-        return results
         
     def _training_stats(self):
         """
