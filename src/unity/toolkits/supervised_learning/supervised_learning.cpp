@@ -854,7 +854,7 @@ std::map<std::string, variant_type> supervised_learning_model_base::evaluate(
 }
 
 
-std::map<std::string, variant_type> evaluate_with_predictions(
+std::map<std::string, variant_type> supervised_learning_model_base::evaluate_with_predictions(
             const sframe& X,
             const sframe &y,
             const std::string& evaluation_type=""){
