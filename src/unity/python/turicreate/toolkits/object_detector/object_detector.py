@@ -1072,6 +1072,7 @@ class ObjectDetector(_CustomModel):
         mAP: 43.2%
         """
         if iou_threshold is None: iou_threshold = self.non_maximum_suppression_threshold
+        if confidence_threshold is None: confidence_threshold = 0.001
 
         AP = 'average_precision'
         MAP = 'mean_average_precision'
