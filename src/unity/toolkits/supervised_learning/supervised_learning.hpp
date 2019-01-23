@@ -297,10 +297,7 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
    * Same as evaluate_with_predictions(ml_data), but take SFrame as input.
    */
   virtual std::map<std::string, variant_type> evaluate_with_predictions(const sframe& X,
-                const sframe &y, const std::string& evaluation_type="") {
-    ml_data data = construct_ml_data_using_current_metadata(X, y);
-    return this->evaluate_with_predictions(data, evaluation_type);
-  }
+                const sframe &y, const std::string& evaluation_type="");
 
 
   /**

@@ -854,6 +854,14 @@ std::map<std::string, variant_type> supervised_learning_model_base::evaluate(
 }
 
 
+std::map<std::string, variant_type> evaluate_with_predictions(
+            const sframe& X,
+            const sframe &y,
+            const std::string& evaluation_type=""){
+  ml_data data = construct_ml_data_using_current_metadata(X, y);
+  return this->evaluate_with_predictions(data, evaluation_type);
+}
+
 /**
  * Evaluate (by first making predictions)
  */
