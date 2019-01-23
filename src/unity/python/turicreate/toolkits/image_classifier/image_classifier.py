@@ -29,9 +29,7 @@ from turicreate.toolkits._internal_utils import (_raise_error_if_not_sframe,
                                                  _numeric_param_check_range)
 
 
-import sys as _sys
-if _sys.version_info >= (3, 0):
-    from functools import reduce as _reduce
+from six.moves import reduce as _reduce
 
 def create(dataset, target, feature = None, model = 'resnet-50',
            validation_set='auto', max_iterations = 10, verbose = True,
@@ -567,18 +565,14 @@ class ImageClassifier(_CustomModel):
 
 
         def entropy(probs):
-            if _sys.version_info >= (3, 0):
-                return _reduce(lambda x, y: x + (y*math.log(1/y, 2) if y > 0 else 0) , probs, 0) / math.log(len(probs),2)
-            else:
-                return reduce(lambda x, y: x + (y*math.log(1/y, 2) if y > 0 else 0) , probs, 0) / math.log(len(probs),2)
+            return _reduce(lambda x, y: x + (y*math.log(1/y, 2) if y > 0 else 0) , probs, 0) / math.log(len(probs),2)
 
         def confidence(probs):
             return max(probs)
 
         def relative_confidence(probs):
-            sorted_probs = sorted(probs, reverse=True)
-            return sorted_probs[0] - sorted_probs[1]
-
+            lp = len(probs)
+            return sorted_probs[lp-1] - sorted_probs[lp-2]
 
         def get_confusion_matrix(extended_test, labels):
             #Init a matrix
