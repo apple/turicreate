@@ -726,6 +726,7 @@ class ObjectDetector(_CustomModel):
 
     def _predict_with_options(self, dataset, with_ground_truth,
                               postprocess=True, confidence_threshold=0.001,
+                              iou_threshold=None,
                               verbose=True):
         """
         Predict with options for what kind of SFrame should be returned.
@@ -733,6 +734,7 @@ class ObjectDetector(_CustomModel):
         If postprocess is False, a single numpy array with raw unprocessed
         results will be returned.
         """
+        if iou_threshold is None: iou_threshold = self.non_maximum_suppression_threshold
         _raise_error_if_not_detection_sframe(dataset, self.feature, self.annotations,
                                              require_annotations=with_ground_truth)
         from ._sframe_loader import SFrameDetectionIter as _SFrameDetectionIter
@@ -861,7 +863,7 @@ class ObjectDetector(_CustomModel):
                     # image, inspired by the evaluation in COCO)
                     x_boxes0, x_classes, x_scores = _non_maximum_suppression(
                             x_boxes0, x_classes, x_scores,
-                            num_classes=self.num_classes, threshold=self.non_maximum_suppression_threshold,
+                            num_classes=self.num_classes, threshold=iou_threshold,
                             limit=100)
 
                     for bbox, cls, s in zip(x_boxes0, x_classes, x_scores):
@@ -924,7 +926,7 @@ class ObjectDetector(_CustomModel):
             unpack = lambda x: x[0]
         return dataset, unpack
 
-    def predict(self, dataset, confidence_threshold=0.25, verbose=True):
+    def predict(self, dataset, confidence_threshold=0.25, iou_threshold=None, verbose=True):
         """
         Predict object instances in an sframe of images.
 
@@ -939,6 +941,14 @@ class ObjectDetector(_CustomModel):
         confidence_threshold : float
             Only return predictions above this level of confidence. The
             threshold can range from 0 to 1.
+
+        iou_threshold : float
+            Threshold value for non-maximum suppression. Non-maximum suppression
+            prevents multiple bounding boxes appearing over a single object. 
+            This threshold, set between 0 and 1, controls how aggressive this 
+            suppression is. A value of 1 means no maximum suppression will 
+            occur, while a value of 0 will maximally suppress neighboring 
+            boxes around a prediction.
 
         verbose : bool
             If True, prints prediction progress.
@@ -982,12 +992,15 @@ class ObjectDetector(_CustomModel):
         dataset, unpack = self._canonize_input(dataset)
         stacked_pred = self._predict_with_options(dataset, with_ground_truth=False,
                                                   confidence_threshold=confidence_threshold,
+                                                  iou_threshold=iou_threshold,
                                                   verbose=verbose)
 
         from . import util
         return unpack(util.unstack_annotations(stacked_pred, num_rows=len(dataset)))
 
-    def evaluate(self, dataset, metric='auto', output_type='dict', verbose=True):
+    def evaluate(self, dataset, metric='auto',
+            output_type='dict', iou_threshold=None, 
+            confidence_threshold=None, verbose=True):
         """
         Evaluate the model by making predictions and comparing these to ground
         truth bounding box annotations.
@@ -1028,6 +1041,18 @@ class ObjectDetector(_CustomModel):
                             However, these are easily computed from the `SFrame` (e.g.
                             ``results['average_precision'].mean()``).
 
+        iou_threshold : float
+            Threshold value for non-maximum suppression. Non-maximum suppression
+            prevents multiple bounding boxes appearing over a single object. 
+            This threshold, set between 0 and 1, controls how aggressive this 
+            suppression is. A value of 1 means no maximum suppression will 
+            occur, while a value of 0 will maximally suppress neighboring 
+            boxes around a prediction.
+
+        confidence_threshold : float
+            Only return predictions above this level of confidence. The
+            threshold can range from 0 to 1. 
+
         verbose : bool
             If True, prints evaluation progress.
 
@@ -1046,6 +1071,9 @@ class ObjectDetector(_CustomModel):
         >>> print('mAP: {:.1%}'.format(results['mean_average_precision']))
         mAP: 43.2%
         """
+        if iou_threshold is None: iou_threshold = self.non_maximum_suppression_threshold
+        if confidence_threshold is None: confidence_threshold = 0.25
+
         AP = 'average_precision'
         MAP = 'mean_average_precision'
         AP50 = 'average_precision_50'
@@ -1063,6 +1091,8 @@ class ObjectDetector(_CustomModel):
             raise _ToolkitError("Metric '{}' not supported".format(metric))
 
         pred, gt = self._predict_with_options(dataset, with_ground_truth=True,
+                                              confidence_threshold=confidence_threshold,
+                                              iou_threshold=iou_threshold,
                                               verbose=verbose)
 
         pred_df = pred.to_dataframe()
