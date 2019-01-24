@@ -21,7 +21,6 @@
 		FC652CAB21E8918600F5AA5A /* export.png in Resources */ = {isa = PBXBuildFile; fileRef = FC652CA821E8918600F5AA5A /* export.png */; };
 		FC652CC021E8ADA000F5AA5A /* right_arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = FC652CBD21E8ADA000F5AA5A /* right_arrow.png */; };
 		FC9066011F425B4800AE3881 /* AppData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC9066001F425B4800AE3881 /* AppData.swift */; };
-		FCB8DFE1206EF950001A7089 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = FCB8DFE0206EF950001A7089 /* index.html */; };
 		FCB8DFE3206F1756001A7089 /* index.css in Resources */ = {isa = PBXBuildFile; fileRef = FCB8DFE2206F1756001A7089 /* index.css */; };
 		FCE3954420B4C2CB0029FDB5 /* build in Resources */ = {isa = PBXBuildFile; fileRef = FCE3954320B4C2CB0029FDB5 /* build */; };
 /* End PBXBuildFile section */
@@ -378,6 +377,7 @@
 				TargetAttributes = {
 					9226E7BF1F366F2E00C33A64 = {
 						CreatedOnToolsVersion = 8.3.3;
+						LastSwiftMigration = 0920;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -405,9 +405,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FCB8DFE1206EF950001A7089 /* index.html in Resources */,
 				FC652CC021E8ADA000F5AA5A /* right_arrow.png in Resources */,
-				FCB8DFE1206EF950001A7089 /* index.html in Resources */,
 				FCB8DFE3206F1756001A7089 /* index.css in Resources */,
 				92E526C321EDAC33008D3183 /* dropdown.png in Resources */,
 				FCE3954420B4C2CB0029FDB5 /* build in Resources */,
@@ -562,7 +560,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.apple.turi.visualization-client";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -576,7 +575,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.apple.turi.visualization-client";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
