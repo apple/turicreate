@@ -9,7 +9,12 @@
 #include <utility>
 #include <functional>
 #include <type_traits>
+
+#include <util/basic_types.hpp>
 #include <parallel/thread_pool.hpp>
+
+using std::string;
+
 namespace turi {
 
 /**
@@ -46,6 +51,71 @@ inline void in_parallel(const std::function<void (size_t thread_id,
       threads.launch([&fn, i, nworkers]() { fn(i, nworkers); }, i);
     }
     threads.join();
+  }
+}
+
+inline int64_t parallel_get_debug_config() {
+  thread_local optional<int64_t> res_cached;
+  if (!!res_cached) {
+    return *res_cached;
+  }
+
+  const char* res = getenv("TURI_PARALLEL_DEBUG");
+  if (!res) {
+    res_cached = SOME(0);
+  } else {
+    if (string(res) == "0") {
+      res_cached = SOME(0);
+    } else if (string(res) == "1") {
+      res_cached = SOME(1);
+    } else if (string(res) == "2") {
+      res_cached = SOME(2);
+    } else {
+      AU();
+    }
+  }
+
+  return *res_cached;
+}
+
+/**
+ * Runs a provided function in parallel, as in turi::in_parallel, but may also
+ * be customized by setting the environment variable TURI_PARALLEL_DEBUG:
+ *
+ *   - TURI_PARALLEL_DEBUG=0: default behavior
+ *   - TURI_PARALLEL_DEBUG=1: one slice on calling thread, others in parallel
+ *   - TURI_PARALLEL_DEBUG=2: run all sequentially (no parallelism)
+ */
+inline void in_parallel_debug(
+  const std::function<void (size_t thread_id,
+                            size_t num_threads)>& fn) {
+
+  using turi::thread_pool;
+  using turi::parallel_task_queue;
+
+  if (parallel_get_debug_config() == 0) {
+    turi::in_parallel(fn);
+
+  } else if (parallel_get_debug_config() == 1) {
+    size_t nworkers = thread_pool::get_instance().size();
+    parallel_task_queue threads(thread_pool::get_instance());
+
+    for (size_t i = 1; i < nworkers; ++i) {
+      threads.launch([&fn, i, nworkers]() { fn(i, nworkers); }, i);
+    }
+
+    fn(0, nworkers);
+
+    threads.join();
+
+  } else if (parallel_get_debug_config() == 2) {
+    size_t nworkers = thread_pool::get_instance().size();
+    for (size_t i = 0; i < nworkers; i++) {
+      fn(i, nworkers);
+    }
+
+  } else {
+    AU();
   }
 }
 
