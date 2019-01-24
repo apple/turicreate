@@ -6,17 +6,20 @@
 #ifndef TURI_CODE_OPTIMIZATION_H_
 #define TURI_CODE_OPTIMIZATION_H_
 
+#ifdef __clang__
+#define GL_GCC_ONLY(...)
+#else
+#define GL_GCC_ONLY(...) __VA_ARGS__
+#endif
+
+
+#ifdef TC_EXTRA_OPTIMIZATION_FLAGS
+
 #ifdef NDEBUG
 #define GL_OPT_ATTR(...) __attribute__((__VA_ARGS__))
 #else
 // put it as hot; this is more-or-less ignored in the ; the "cold" ones have their own attribute def.
 #define GL_OPT_ATTR(...) __attribute__((hot)) 
-#endif
-
-#ifdef __clang__
-#define GL_GCC_ONLY(...)
-#else
-#define GL_GCC_ONLY(...) __VA_ARGS__
 #endif
 
 // Attributes that enable aggressive optimizations for math-heavy
@@ -76,6 +79,18 @@
               flatten,                          \
               _GL_HOT_FUNCTION_FLAGS            \
               )
+
+#else  // TC_EXTRA_OPTIMIZATION_FLAGS
+
+#define GL_HOT_INLINE
+#define GL_HOT_INLINE_FLATTEN
+#define GL_HOT_FLATTEN
+#define GL_HOT
+#define GL_HOT_NOINLINE
+#define GL_HOT_NOINLINE_FLATTEN
+
+#endif
+
 
 #define GL_COLD_NOINLINE                        \
   __attribute__((cold, noinline))

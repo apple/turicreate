@@ -19,14 +19,22 @@
 namespace turi {
 void flexible_type_fail(bool);
 }
+
 #ifdef NDEBUG
 //  ---- RELEASE MODE ---
 // In release mode, disable assertions on DFLEX_TYPE_ASSERT
 #define FLEX_TYPE_ASSERT(param) flexible_type_fail(param);
 #define DFLEX_TYPE_ASSERT(param)
-// also enable all the inline and flatten attributes
-#define FLEX_ALWAYS_INLINE __attribute__((always_inline))
-#define FLEX_ALWAYS_INLINE_FLATTEN __attribute__((always_inline,flatten))
+
+#ifdef TURI_COMPILE_EXTRA_OPTIMIZATION
+  // also enable all the inline and flatten attributes
+  #define FLEX_ALWAYS_INLINE __attribute__((always_inline))
+  #define FLEX_ALWAYS_INLINE_FLATTEN __attribute__((always_inline,flatten))
+#else
+  #define FLEX_ALWAYS_INLINE
+  #define FLEX_ALWAYS_INLINE_FLATTEN
+#endif
+
 #else
 //  ---- DEBUG MODE ---
 // In debug mode, turn on everything
