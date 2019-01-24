@@ -26,7 +26,7 @@ if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
         SOURCES
         TCMPSImageAugmenting.m
         mps_image_augmentation.mm
-        mps_factory.mm
+        mps_compute_context.mm
         mps_graph_trainer.mm
         mps_graph_networks.mm
         mps_updater.mm
@@ -58,7 +58,7 @@ endif()
 
 make_library(unity_neural_net
   SOURCES
-    cnn_module.cpp
+    compute_context.cpp
     float_array.cpp
     image_augmentation.cpp
     model_spec.cpp

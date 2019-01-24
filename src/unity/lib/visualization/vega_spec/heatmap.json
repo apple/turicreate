@@ -4,9 +4,8 @@
   "padding": 5,
   "width": 720,
   "height": 550,
-  "style": "cell",
   "title": {
-    "text": %1%
+    "text": "{{title}}"
   },
   "data": [
     {
@@ -18,7 +17,7 @@
       "name": "marks",
       "type": "rect",
       "style": [
-        "rect"
+        "cell"
       ],
       "from": {
         "data": "source_2"
@@ -108,7 +107,7 @@
       "tickCount": {
         "signal": "min(ceil(width/40), 60)"
       },
-      "title": %2%,
+      "title": "{{xlabel}}",
       "zindex": 1,
       "encode": {
         "labels": {
@@ -133,7 +132,7 @@
       "tickCount": {
         "signal": "min(ceil(height/40), 40)"
       },
-      "title": %3%,
+      "title": "{{ylabel}}",
       "zindex": 1
     }
   ],
@@ -146,44 +145,5 @@
       "type": "gradient"
     }
   ],
-  "config": {
-    "legend": {
-      "titleFont": "HelveticaNeue, Arial",
-      "titleColor": "rgba(0,0,0,0.65)",
-      "labelFont": "HelveticaNeue, Arial",
-      "labelColor": "rgba(0,0,0,0.65)",
-      "cornerRadius": 30,
-      "gradientLength": 620
-    },
-    "axis": {
-      "labelFont": "HelveticaNeue, Arial",
-      "labelFontSize": 12,
-      "labelPadding": 10,
-      "labelColor": "rgba(0,0,0,0.65)",
-      "titleFont": "HelveticaNeue-Medium, Arial",
-      "titleFontWeight": "normal",
-      "titlePadding": 30,
-      "titleFontSize": 15,
-      "titleColor": "rgba(0,0,0,0.65)"
-    },
-    "axisY": {
-      "minExtent": 30
-    },
-    "style": {
-      "cell": {
-        "stroke": "transparent"
-      },
-      "group-title": {
-        "fontSize": 29,
-        "font": "HelveticaNeue, Arial",
-        "fontWeight": "normal",
-        "fill": "rgba(0,0,0,0.65)"
-      }
-    },
-    "range": {
-      "heatmap": {
-        "scheme": "greenblue"
-      }
-    }
-  }
+  {{config}}
 }

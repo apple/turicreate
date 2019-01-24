@@ -27,7 +27,7 @@
     }
   },
   "title": {
-    "text": %1%
+    "text": "{{title}}"
   },
   "height": 550,
   "style": "cell",
@@ -258,7 +258,7 @@
       "scale": "x",
       "labelOverlap": true,
       "orient": "bottom",
-      "title": %2%,
+      "title": "{{xlabel}}",
       "zindex": 1,
       "encode": {
         "labels": {
@@ -277,7 +277,7 @@
       }
     },
     {
-      "title": %3%,
+      "title": "{{ylabel}}",
       "scale": "y",
       "labelOverlap": true,
       "orient": "left",
@@ -302,31 +302,5 @@
       "gridScale": "x"
     }
   ],
-  "config": {
-    "axis": {
-      "labelFont": "HelveticaNeue, Arial",
-      "labelFontSize": 12,
-      "labelPadding": 10,
-      "labelColor": "rgba(0,0,0,0.65)",
-      "titleFont": "HelveticaNeue-Medium, Arial",
-      "titleFontWeight": "normal",
-      "titlePadding": 30,
-      "titleFontSize": 15,
-      "titleColor": "rgba(0,0,0,0.65)"
-    },
-    "axisY": {
-      "minExtent": 30
-    },
-    "style": {
-      "rect": {
-        "stroke": "rgba(200, 200, 200, 0.5)"
-      },
-      "group-title": {
-        "fontSize": 29,
-        "font": "HelveticaNeue, Arial",
-        "fontWeight": "normal",
-        "fill": "rgba(0,0,0,0.65)"
-      }
-    }
-  }
+  {{config}}
 }

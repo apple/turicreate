@@ -8,6 +8,8 @@
 #define UNITY_TOOLKITS_NEURAL_NET_CNN_MODULE_HPP_
 
 #include <memory>
+#include <string>
+#include <vector>
 
 #include <unity/toolkits/neural_net/float_array.hpp>
 
@@ -49,8 +51,8 @@ public:
   /**
    * Performs a forward pass.
    */
-  virtual deferred_float_array
-  predict(const float_array& input_batch) const = 0;
+  virtual deferred_float_array predict(
+      const float_array& input_batch) const = 0;
 
   /**
    * Exports the network weights.

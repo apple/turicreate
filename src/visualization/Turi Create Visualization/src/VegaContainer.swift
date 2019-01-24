@@ -284,8 +284,8 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
         let savePanel = NSSavePanel()
         
         // start the saving of the json
-        savePanel.begin { (result: Int) -> Void in
-            if result == NSFileHandlingPanelOKButton {
+        savePanel.begin { (result: NSApplication.ModalResponse) -> Void in
+            if result == .OK {
                 let exportedFileURL = savePanel.url?.appendingPathExtension("csv")
                 
                 let jsString = "getData();";
@@ -302,11 +302,11 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
                     
                     // filter bytes
                     let index1 = data_string.index(data_string.endIndex, offsetBy: -1)
-                    data_string = data_string.substring(to: index1)
+                    data_string = String(data_string[..<index1])
                     
                     // filter more bytes
                     let index = data_string.index(data_string.startIndex, offsetBy: 9)
-                    let substring2 = data_string.substring(from: index)
+                    let substring2 = data_string[index...]
                     
                     // encode data
                     let dataDecoded = substring2.data(using: .utf8)!
@@ -326,8 +326,8 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
         savePanel.allowedFileTypes = ["json"];
         
         // start the saving of the json
-        savePanel.begin { (result: Int) -> Void in
-            if result == NSFileHandlingPanelOKButton {
+        savePanel.begin { (result: NSApplication.ModalResponse) -> Void in
+            if result == .OK {
                 let exportedFileURL = savePanel.url
                 
                 let jsString = "getSpec();";
@@ -356,8 +356,8 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
         savePanel.allowedFileTypes = ["png"];
         
         // start the saving of the image
-        savePanel.begin { (result: Int) -> Void in
-            if result == NSFileHandlingPanelOKButton {
+        savePanel.begin { (result: NSApplication.ModalResponse) -> Void in
+            if result == .OK {
                 let exportedFileURL = savePanel.url
                 let jsString = "export_png();";
                 
