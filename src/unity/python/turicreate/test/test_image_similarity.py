@@ -96,7 +96,9 @@ class ImageSimilarityTest(unittest.TestCase):
            'feature_extractor' : lambda x: callable(x.extract_features),
            'num_features': lambda x: x == self.lm_model.num_features,
            'num_examples': lambda x: x == self.lm_model.num_examples,
-           'model': lambda x: x == self.pre_trained_model,
+           'model': lambda x: (x == self.pre_trained_model 
+               or (self.pre_trained_model == "VisionFeaturePrint_Screen" 
+                   and x == "VisionFeaturePrint_Scene"))
         }
         self.fields_ans = self.get_ans.keys()
 

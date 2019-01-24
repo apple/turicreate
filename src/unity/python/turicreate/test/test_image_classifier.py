@@ -100,7 +100,9 @@ class ImageClassifierTest(unittest.TestCase):
            'max_iterations': lambda x: x == self.max_iterations,
            'num_features': lambda x: x == self.lm_model.num_features,
            'num_examples': lambda x: x == self.lm_model.num_examples,
-           'model': lambda x: x == self.pre_trained_model,
+           'model': lambda x: (x == self.pre_trained_model 
+               or (self.pre_trained_model == "VisionFeaturePrint_Screen" 
+                   and x == "VisionFeaturePrint_Scene")),
            'num_classes': lambda x: x == self.lm_model.num_classes,
         }
         self.fields_ans = self.get_ans.keys()
