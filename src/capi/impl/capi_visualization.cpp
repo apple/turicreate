@@ -73,6 +73,7 @@ EXPORT tc_plot* tc_plot_create_sframe_summary(const tc_sframe* sf,
 }
 
 EXPORT tc_flexible_type* tc_plot_get_vega_spec(const tc_plot* plot,
+                                               tc_plot_variation variation,
                                                const tc_parameters*,
                                                tc_error** error) {
   ERROR_HANDLE_START();
@@ -80,7 +81,7 @@ EXPORT tc_flexible_type* tc_plot_get_vega_spec(const tc_plot* plot,
 
   CHECK_NOT_NULL(error, plot, "plot", NULL);
 
-  std::string vega_spec = plot->value->get_spec();
+  std::string vega_spec = plot->value->get_spec(variation);
   return tc_ft_create_from_string(vega_spec.data(), vega_spec.size(), error);
 
   ERROR_HANDLE_END(error, NULL);
