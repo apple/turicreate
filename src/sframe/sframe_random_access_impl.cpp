@@ -7,7 +7,7 @@
 #include <sframe/sframe_random_access.hpp>
 
 #include <sframe/sarray.hpp>
-#include <sframe/sframe_random_access_impl.hpp>
+#include <sframe_query_engine/experimental/sframe_random_access_query_impl.hpp>
 #include <unity/toolkits/util/random_sframe_generation.hpp>
 #include <util/basic_types.hpp>
 #include <util/fs_util.hpp>
@@ -402,6 +402,7 @@ ostream& operator<<(ostream& os, value_enum x) {
   case value_enum::EITHER: os << "EITHER"; break;
   case value_enum::REF: os << "REF"; break;
   case value_enum::INDEX: os << "INDEX"; break;
+  case value_enum::THUNK: os << "THUNK"; break;
   default:
     cerr << static_cast<int64_t>(x) << endl;
     AU();
@@ -652,6 +653,110 @@ value_p column_builder::at(int64_t i) {
     istringstream is(data_str);
     value_p ret = value::load_raw(is, entry_type_, NONE<url_p>());
     return ret;
+  }
+}
+
+ostream& operator<<(ostream& os, column_reduce_op_enum reduce_op) {
+  switch (reduce_op) {
+  case column_reduce_op_enum::SUM:  os << "SUM"; return os;
+  default:
+    AU();
+  }
+}
+
+value_p reduce_op_init(
+  column_reduce_op_enum reduce_op, value_type_p result_type) {
+
+  ASSERT_EQ(result_type->which(), value_type_enum::ND_VECTOR);
+  auto dtype = result_type->as<value_type_nd_vector_p>()->dtype_;
+
+  if (dtype == dtype_enum::I64) {
+    if (reduce_op == column_reduce_op_enum::SUM) {
+      return value_nd_vector::create_scalar_int64(0);
+    }
+  } else if (dtype == dtype_enum::F64) {
+    if (reduce_op == column_reduce_op_enum::SUM) {
+      return value_nd_vector::create_scalar_float64(0.0);
+    }
+  }
+
+  cerr << "Reduce operation not yet supported" << endl;
+  AU();
+}
+
+value_p reduce_op_exec(
+  column_reduce_op_enum reduce_op, value_p lhs, value_p rhs) {
+
+  auto val_type = lhs->ty_;
+  ASSERT_EQ(val_type->which(), value_type_enum::ND_VECTOR);
+  auto dtype = val_type->as<value_type_nd_vector_p>()->dtype_;
+
+  if (dtype == dtype_enum::I64) {
+    auto lhs_val = lhs->get_value_scalar_int64();
+    auto rhs_val = rhs->get_value_scalar_int64();
+    if (reduce_op == column_reduce_op_enum::SUM) {
+      return value_nd_vector::create_scalar_int64(lhs_val + rhs_val);
+    }
+  } else if (dtype == dtype_enum::F64) {
+    auto lhs_val = lhs->get_value_scalar_float64();
+    auto rhs_val = rhs->get_value_scalar_float64();
+    if (reduce_op == column_reduce_op_enum::SUM) {
+      return value_nd_vector::create_scalar_float64(lhs_val + rhs_val);
+    }
+  }
+
+  cerr << "Reduce operation not yet supported" << endl;
+  AU();
+}
+
+group_by_spec_p group_by_spec::create_original_table() {
+  return make_shared<group_by_spec>(
+    group_by_spec_v(
+      make_shared<group_by_spec_original_table>()));
+}
+
+group_by_spec_p group_by_spec_create_reduce(
+  column_reduce_op_enum reduce_op, query_p source_column) {
+
+  return make_shared<group_by_spec>(
+    group_by_spec_v(
+      make_shared<group_by_spec_reduce>(reduce_op, source_column)));
+}
+
+group_by_spec_p group_by_spec::create_reduce(
+  string reduce_op_str, value_p source_column) {
+
+  auto reduce_op = reduce_op_enum_from_string(reduce_op_str);
+  return group_by_spec_create_reduce(
+    reduce_op, query::from_value(source_column));
+}
+
+group_by_spec_p group_by_spec_create_select_one(query_p source_column) {
+  return make_shared<group_by_spec>(
+    group_by_spec_v(
+      make_shared<group_by_spec_select_one>(source_column)));
+}
+
+group_by_spec_p group_by_spec::create_select_one(value_p source_column) {
+  return group_by_spec_create_select_one(query::from_value(source_column));
+}
+
+ostream& operator<<(ostream& os, group_by_spec_enum x) {
+  switch (x) {
+  case group_by_spec_enum::ORIGINAL_TABLE:  os << "ORIGINAL_TABLE"; return os;
+  case group_by_spec_enum::REDUCE:          os << "REDUCE"; return os;
+  case group_by_spec_enum::SELECT_ONE:      os << "SELECT_ONE"; return os;
+  default:
+    AU();
+  }
+}
+
+column_reduce_op_enum reduce_op_enum_from_string(string x) {
+  if (x == "SUM") {
+    return column_reduce_op_enum::SUM;
+  } else {
+    fmt(cerr, "Reduce operation not recognized: %v\n", x);
+    AU();
   }
 }
 
@@ -1149,6 +1254,32 @@ value_p value::get_record_at_field_name(const string& field_name) {
   AU();
 }
 
+value_p value::sum() {
+  ASSERT_EQ(ty_->which(), value_type_enum::COLUMN);
+  return value::create_thunk(
+    query::from_value(shared_from_this())->sum());
+}
+
+value_p value::materialize() {
+  switch (which()) {
+  case value_enum::THUNK: {
+    auto cc = this->as<value_thunk_p>();
+    return eval(cc->query_);
+  }
+
+  case value_enum::COLUMN:
+  case value_enum::ND_VECTOR:
+  case value_enum::RECORD:
+  case value_enum::EITHER:
+  case value_enum::REF:
+    return shared_from_this();
+
+  default:
+    AU();
+    break;
+  }
+}
+
 void value::save(const string& output_path) {
   make_directories_strict(output_path);
 
@@ -1269,6 +1400,15 @@ value_p value::create_index(
       index_map_range,
       index_mode),
     value_type::create_index(source_column_types, index_mode),
+    NONE<ref_context_p>(),
+    NONE<url_p>(),
+    NONE<int64_t>());
+}
+
+value_p value::create_thunk(query_p x) {
+  return value::create(
+    make_shared<value_thunk>(x),
+    turi::sframe_random_access::get_type(x),
     NONE<ref_context_p>(),
     NONE<url_p>(),
     NONE<int64_t>());
@@ -1666,6 +1806,399 @@ int64_t value::get_value_id() {
   return ret;
 }
 
+value_p value::at(value_p x) {
+  if (type_valid(value_type::create_bool_column(), x->ty_)) {
+    if (ty_->tag_ == SOME(value_type_tag_enum::DATA_TABLE)) {
+      auto index_column = query::create_column_from_mask(query::from_value(x));
+      return value::create_thunk(
+        query::create_table_at_column(
+          query::from_value(shared_from_this()), index_column));
+    } else if (ty_->which() == value_type_enum::COLUMN) {
+      auto index_column = query::create_column_from_mask(query::from_value(x));
+      return value::create_thunk(
+        query::create_column_at_column(
+          query::from_value(shared_from_this()), index_column));
+    }
+  }
+
+  if (type_valid(value_type::create_scalar(dtype_enum::I64), x->ty_)) {
+    if (ty_->which() == value_type_enum::COLUMN) {
+      return value::create_thunk(
+        query::create_column_at_index(
+          query::from_value(shared_from_this()), query::from_value(x)));
+    } else if (ty_->tag_ == SOME(value_type_tag_enum::DATA_TABLE)) {
+      return value::create_thunk(
+        query::create_table_at_index(
+          query::from_value(shared_from_this()), query::from_value(x)));
+    }
+  }
+
+  fmt(cerr, " *** Type error or subscript type not supported: %v\n", x->ty_);
+  AU();
+}
+
+value_p value::at_string(string x) {
+  switch (which()) {
+  case value_enum::RECORD: {
+    auto cc = this->as<value_record_p>();
+    auto cc_type = cc->type_->as<value_type_record_p>();
+    for (int64_t i = 0; i < len(cc_type->field_types_); i++) {
+      if (cc_type->field_types_[i].first == x) {
+        return ::at(cc->entries_, i);
+      }
+    }
+  }
+
+  default:
+    fmt(cerr, "Type error or indexing mode not yet supported\n");
+    AU();
+    return nullptr;
+  }
+}
+
+value_p value::at_int(int64_t x) {
+  return value::at(value::create_scalar_int64(x));
+}
+
+value_p value::equals_string(string x) {
+  return value::create_thunk(
+    query::from_value(shared_from_this())->equals_string_poly(x));
+}
+
+value_p value::equals_int(int64_t x) {
+  return value::create_thunk(
+    query::from_value(shared_from_this())->equals_int_poly(x));
+}
+
+value_p value::equals_value_poly(value_p x) {
+  return value::create_thunk(
+    query::from_value(shared_from_this())->equals_value_poly(x));
+}
+
+value_p value::op_boolean_lt(value_p x) {
+  vector<query_p> args = {
+    query::from_value(shared_from_this()),
+    query::from_value(x),
+  };
+  return value::create_thunk(
+    query_builtin_poly(scalar_builtin_enum::LT, args));
+}
+
+value_p value::op_add(value_p x) {
+  vector<query_p> args = {
+    query::from_value(shared_from_this()),
+    query::from_value(x),
+  };
+  return value::create_thunk(
+    query_builtin_poly(scalar_builtin_enum::ADD, args));
+}
+
+vector<query_p> query_table_join_body(
+  vector<query_p> join_columns_left,
+  vector<query_p> join_columns_right,
+  vector<query_p> other_columns_left,
+  vector<query_p> other_columns_right) {
+
+  auto join_index_left =
+    query::create_build_index(join_columns_left, index_mode_enum::EQUALS);
+  auto join_index_right =
+    query::create_build_index(join_columns_right, index_mode_enum::EQUALS);
+
+  vector<query_p> ret_columns;
+
+  for (auto ci : other_columns_left) {
+    ret_columns.push_back(
+      query::create_column_join(
+        ci, join_index_left, join_index_right, column_join_mode::INNER,
+        column_join_position::LEFT));
+  }
+
+  for (auto ci : join_columns_left) {
+    ret_columns.push_back(
+      query::create_column_join(
+        ci, join_index_left, join_index_right, column_join_mode::INNER,
+        column_join_position::LEFT));
+  }
+
+  for (auto ci : other_columns_right) {
+    ret_columns.push_back(
+      query::create_column_join(
+        ci, join_index_right, join_index_left, column_join_mode::INNER,
+        column_join_position::RIGHT));
+  }
+
+  return ret_columns;
+}
+
+query_p query_table_join(
+  query_p table_left,
+  query_p table_right,
+  vector<string> join_column_names_left,
+  vector<string> join_column_names_right) {
+
+  vector<query_p> join_columns_left;
+  vector<query_p> join_columns_right;
+  vector<query_p> other_columns_left;
+  vector<query_p> other_columns_right;
+
+  ASSERT_TRUE(
+    table_left->get_type()->tag_ == SOME(value_type_tag_enum::DATA_TABLE));
+  ASSERT_TRUE(
+    table_right->get_type()->tag_ == SOME(value_type_tag_enum::DATA_TABLE));
+
+  auto ty_left = table_left->get_type()->as<value_type_record_p>();
+  auto ty_right = table_right->get_type()->as<value_type_record_p>();
+
+  int64_t n_join = join_column_names_left.size();
+  ASSERT_EQ(join_column_names_right.size(), n_join);
+
+  vector<bool> joined_left(ty_left->field_types_.size(), false);
+  vector<bool> joined_right(ty_right->field_types_.size(), false);
+
+  for (int64_t i = 0; i < n_join; i++) {
+    auto name_left_i = at(join_column_names_left, i);
+    auto name_right_i = at(join_column_names_right, i);
+
+    bool found_left_i = false;
+    bool found_right_i = false;
+
+    for (int64_t j = 0; j < len(ty_left->field_types_); j++) {
+      if (at(ty_left->field_types_, j).first == name_left_i) {
+        ASSERT_TRUE(!found_left_i);
+        found_left_i = true;
+        join_columns_left.push_back(
+          query::create_record_at_field_index(table_left, j));
+        joined_left[j] = true;
+      }
+    }
+
+    if (!found_left_i) {
+      fmt(cerr, "Join column not found in table: %v\n", name_left_i);
+      AU();
+    }
+
+    for (int64_t j = 0; j < len(ty_right->field_types_); j++) {
+      if (at(ty_right->field_types_, j).first == name_right_i) {
+        ASSERT_TRUE(!found_right_i);
+        found_right_i = true;
+        join_columns_right.push_back(
+          query::create_record_at_field_index(table_right, j));
+        joined_right[j] = true;
+      }
+    }
+
+    if (!found_right_i) {
+      fmt(cerr, "Join column not found in table: %v\n", name_right_i);
+      AU();
+    }
+  }
+
+  vector<string> ret_field_names;
+
+  for (int64_t j = 0; j < len(ty_left->field_types_); j++) {
+    if (!joined_left[j]) {
+      other_columns_left.push_back(
+        query::create_record_at_field_index(table_left, j));
+      ret_field_names.push_back(at(ty_left->field_types_, j).first);
+    }
+  }
+
+  for (auto name : join_column_names_left) {
+    ret_field_names.push_back(name);
+  }
+
+  for (int64_t j = 0; j < len(ty_right->field_types_); j++) {
+    if (!joined_right[j]) {
+      other_columns_right.push_back(
+        query::create_record_at_field_index(table_right, j));
+      ret_field_names.push_back(at(ty_right->field_types_, j).first);
+    }
+  }
+
+  auto ret_columns = query_table_join_body(
+    join_columns_left,
+    join_columns_right,
+    other_columns_left,
+    other_columns_right);
+
+  vector<value_type_p> ret_field_types;
+  for (int64_t i = 0; i < len(ret_columns); i++) {
+    auto orig_type_i = at(ret_columns, i)->get_type()
+      ->as<value_type_column_p>();
+    ret_field_types.push_back(orig_type_i->element_type_);
+  }
+
+  return query::create_record_from_fields(
+    value_type_table_create(
+      ret_field_names,
+      ret_field_types
+    ),
+    ret_columns);
+}
+
+query_p query_table_join_auto(
+  query_p table_left,
+  query_p table_right) {
+
+  vector<string> join_column_names_left;
+  vector<string> join_column_names_right;
+
+  auto ty_left = table_left->get_type()->as<value_type_record_p>();
+  auto ty_right = table_right->get_type()->as<value_type_record_p>();
+
+  unordered_set<string> names_left;
+
+  for (int64_t i = 0; i < len(ty_left->field_types_); i++) {
+    auto name_i = at(ty_left->field_types_, i).first;
+    ASSERT_EQ(names_left.count(name_i), 0);
+    names_left.insert(name_i);
+  }
+
+  for (int64_t i = 0; i < len(ty_right->field_types_); i++) {
+    auto name_i = at(ty_right->field_types_, i).first;
+    if (names_left.count(name_i) != 0) {
+      join_column_names_left.push_back(name_i);
+      join_column_names_right.push_back(name_i);
+    }
+  }
+
+  return query_table_join(
+    table_left,
+    table_right,
+    join_column_names_left,
+    join_column_names_right);
+}
+
+query_p query_table_group_by_body(
+  query_p source_table,
+  query_p ind_column_keys,
+  query_p ind_column_values,
+  group_by_spec_p output_spec) {
+
+  auto f_gen_values =
+    [source_table, ind_column_values, output_spec](query_p i) {
+
+    switch (output_spec->which()) {
+    case group_by_spec_enum::ORIGINAL_TABLE: {
+      return query::create_table_at_column(
+        source_table,
+        query::create_column_at_index(ind_column_values, i));
+    }
+    case group_by_spec_enum::REDUCE: {
+      auto spec_cc = output_spec->as<group_by_spec_reduce_p>();
+      auto reduce_column = query::create_column_at_column(
+        spec_cc->source_column_,
+        query::create_column_at_index(ind_column_values, i));
+      return query::create_column_reduce(reduce_column, spec_cc->reduce_op_);
+    }
+    case group_by_spec_enum::SELECT_ONE: {
+      auto spec_cc = output_spec->as<group_by_spec_select_one_p>();
+      auto index_column = query::create_column_at_index(ind_column_values, i);
+      auto zero = query::from_value(value_nd_vector::create_scalar_int64(0));
+      return query::create_column_at_index(
+        spec_cc->source_column_,
+        query::create_column_at_index(index_column, zero));
+    }
+    default:
+      AU();
+    }
+  };
+
+  auto val_column = query::create_column_generator(
+    query::create_lambda(
+      f_gen_values, value_type::create_scalar(dtype_enum::I64)),
+    query::create_column_length(ind_column_keys));
+
+  return val_column;
+}
+
+query_p query_table_group_by(
+  query_p source_table,
+  vector<string> field_names,
+  vector<pair<string, group_by_spec_p>> output_specs) {
+
+  ASSERT_TRUE(
+    source_table->get_type()->tag_ == SOME(value_type_tag_enum::DATA_TABLE));
+
+  vector<query_p> source_columns;
+  for (auto field_name : field_names) {
+    auto source_column =
+      query::create_record_at_field_name(source_table, field_name);
+    source_columns.push_back(source_column);
+  }
+
+  auto index = query::create_build_index(
+    source_columns, index_mode_enum::EQUALS);
+
+  auto ind_column_keys = query::create_index_get_keys(index);
+  auto ind_column_values = query::create_index_get_values(index);
+
+  vector<string> ret_field_names = field_names;
+  vector<value_type_p> ret_field_types;
+  for (auto source_column : source_columns) {
+    ret_field_types.push_back(
+      source_column->get_type()->as<value_type_column_p>()->element_type_);
+  }
+
+  vector<query_p> ret_columns;
+  for (auto source_column : source_columns) {
+    ret_columns.push_back(
+      query::create_column_at_column(source_column, ind_column_keys));
+  }
+
+  for (auto output_spec : output_specs) {
+    ret_field_names.push_back(output_spec.first);
+    auto val_column = query_table_group_by_body(
+      source_table,
+      ind_column_keys,
+      ind_column_values,
+      output_spec.second);
+    ret_columns.push_back(val_column);
+
+    ret_field_types.push_back(
+      val_column->get_type()->as<value_type_column_p>()->element_type_);
+  }
+
+  return query::create_record_from_fields(
+    value_type_table_create(
+      ret_field_names,
+      ret_field_types
+    ),
+    ret_columns);
+}
+
+query_p query_column_unique(query_p source_column) {
+  ASSERT_TRUE(source_column->get_type()->which() == value_type_enum::COLUMN);
+  vector<query_p> source_columns = {source_column,};
+
+  auto index = query::create_build_index(
+    source_columns, index_mode_enum::EQUALS);
+
+  return query::create_column_at_column(
+    source_column,
+    query::create_index_get_keys(index));
+}
+
+value_p value::group_by(
+  vector<string> field_names,
+  vector<pair<string, group_by_spec_p>> output_specs) {
+
+  return value::create_thunk(
+    query_table_group_by(
+      query::from_value(shared_from_this()), field_names, output_specs));
+}
+
+value_p value::unique() {
+  return value::create_thunk(
+    query_column_unique(query::from_value(shared_from_this())));
+}
+
+value_p value::join_auto(value_p x) {
+  return value::create_thunk(
+    query_table_join_auto(
+      query::from_value(shared_from_this()), query::from_value(x)));
+}
+
 int64_t value_nd_vector::value_scalar_int64() {
   ASSERT_EQ(shape_.size(), 0);
   ASSERT_EQ(dtype_, dtype_enum::I64);
@@ -1677,6 +2210,11 @@ bool value_nd_vector::value_scalar_bool() {
   ASSERT_EQ(dtype_, dtype_enum::BOOL);
   return *reinterpret_cast<bool*>(base_addr_);
 }
+
+constexpr int64_t COLUMN_DISPLAY_COMPACT_MAX = 16;
+constexpr int64_t STRING_DISPLAY_MAX = 16;
+
+ostream& operator<<(ostream& os, value_p v);
 
 value_p value_column_at(value_p v, int64_t i) {
   v = value_deref(v);
@@ -1730,6 +2268,7 @@ value_p value_column_at(value_p v, int64_t i) {
   case value_enum::RECORD:
   case value_enum::EITHER:
   case value_enum::INDEX:
+  case value_enum::THUNK:
     AU();
 
   default:
@@ -1779,6 +2318,298 @@ void value_column_iterate(value_p v, function<bool(int64_t, value_p)> yield) {
   value_column_iterate(vs, [&](int64_t i, vector<value_p> res_i) {
     return yield(i, res_i[0]);
   });
+}
+
+vector<string> print_column_extract_display_values(value_p x) {
+  vector<string> ret;
+
+  value_column_iterate(x, [&](int64_t i, value_p xi) {
+    if (i >= COLUMN_DISPLAY_COMPACT_MAX) {
+      return false;
+    }
+    ret.push_back(to_string(xi));
+    return true;
+  });
+
+  return ret;
+}
+
+inline string center_string(string x, int64_t width) {
+  int64_t num_spaces_total = max<int64_t>(0, width - x.length());
+  if (num_spaces_total == 0) {
+    return x;
+  }
+  int64_t num_spaces_left = num_spaces_total / 2;
+  int64_t num_spaces_right = num_spaces_total - num_spaces_left;
+  return (
+    cc_repstr(" ", num_spaces_left) + x + cc_repstr(" ", num_spaces_right));
+}
+
+ostream& operator<<(ostream& os, value_p v) {
+  if (v->ty_->is_optional()) {
+    ASSERT_TRUE(v->which() == value_enum::EITHER);
+    auto cc = v->as<value_either_p>();
+    if (cc->val_which_ == 0) {
+      os << "None";
+    } else {
+      os << cc->val_data_;
+    }
+    return os;
+  }
+
+  switch (v->which()) {
+  case value_enum::RECORD: {
+    auto cc = v->as<value_record_p>();
+
+    if (v->ty_->tag_ == SOME(value_type_tag_enum::DATA_TABLE)) {
+      auto ty_cc = v->ty_->as<value_type_record_p>();
+      auto num_columns = len(ty_cc->field_types_);
+      ASSERT_EQ(cc->entries_.size(), num_columns);
+      vector<string> column_names;
+      auto num_rows_display = NONE<int64_t>();
+      auto num_rows_actual = NONE<int64_t>();
+      auto row_heights = NONE<vector<int64_t>>();
+      vector<vector<vector<string>>> column_display_values;
+      int64_t table_display_width = 1;
+      vector<int64_t> column_widths_proper;
+
+      for (int64_t i = 0; i < num_columns; i++) {
+        auto column_name_i = ty_cc->field_types_[i].first;
+        int64_t column_width_proper_i = column_name_i.length();
+        column_names.push_back(column_name_i);
+
+        int64_t num_rows_actual_i = cc->entries_[i]->get_column_length();
+        if (!num_rows_actual) {
+          num_rows_actual = SOME(num_rows_actual_i);
+        } else {
+          ASSERT_EQ(num_rows_actual_i, *num_rows_actual);
+        }
+
+        auto display_ret_i_orig =
+          print_column_extract_display_values(cc->entries_[i]);
+
+        vector<vector<string>> display_ret_i;
+        for (int64_t j = 0; j < len(display_ret_i_orig); j++) {
+          auto orig_j = strip_all(display_ret_i_orig[j], "\n");
+          display_ret_i.push_back(::split(orig_j, "\n"));
+        }
+        column_display_values.push_back(display_ret_i);
+        if (!num_rows_display) {
+          num_rows_display = SOME<int64_t>(display_ret_i.size());
+          row_heights = SOME<vector<int64_t>>(vector<int64_t>(*num_rows_display, 0));
+        }
+        ASSERT_EQ(display_ret_i.size(), *num_rows_display);
+
+        for (int64_t j = 0; j < *num_rows_display; j++) {
+          int64_t new_row_height_j = display_ret_i[j].size();
+          for (int64_t k = 0; k < new_row_height_j; k++) {
+            column_width_proper_i = max<int64_t>(
+              column_width_proper_i, display_ret_i[j][k].length());
+          }
+          (*row_heights)[j] = max<int64_t>((*row_heights)[j], new_row_height_j);
+        }
+
+        column_widths_proper.push_back(column_width_proper_i);
+        table_display_width += (column_width_proper_i + 3);
+      }
+
+      auto print_bar = [&]() {
+        for (int64_t i = 0; i < num_columns; i++) {
+          os << "+";
+          os << cc_repstr("-", at(column_widths_proper, i) + 2);
+        }
+        os << "+" << endl;
+      };
+
+      os << endl;
+
+      print_bar();
+
+      for (int64_t i = 0; i < num_columns; i++) {
+        os << "| ";
+        os << center_string(at(column_names, i), at(column_widths_proper, i));
+        os << " ";
+      }
+      os << "|" << endl;
+
+      print_bar();
+
+      auto row_height_max = extract(vector_max(*row_heights), int64_t(0));
+
+      if (!!num_rows_display) {
+        for (int64_t j = 0; j < num_rows_display; j++) {
+          for (int64_t k = 0; k < (*row_heights)[j]; k++) {
+            for (int64_t i = 0; i < num_columns; i++) {
+              string str_ijk;
+              if (k < len(at(at(column_display_values, i), j))) {
+                str_ijk = center_string(
+                  at(at(at(column_display_values, i), j), k),
+                  at(column_widths_proper, i)
+                );
+              } else {
+                str_ijk = center_string("", at(column_widths_proper, i));
+              }
+
+              if (i > 0) {
+                os << " ";
+              }
+              os << "| " << str_ijk;
+            }
+            os << " |" << endl;
+          }
+
+          if (row_height_max > 1) {
+            print_bar();
+          }
+        }
+      }
+
+      if (row_height_max <= 1) {
+        print_bar();
+      }
+
+      string footer = cc_sprintf(
+        "[%ld rows x %ld columns]",
+        (!!num_rows_actual ? *num_rows_actual : 0), num_columns);
+      footer += cc_repstr(
+        " ", max<int64_t>(0, table_display_width - footer.length()));
+      os << footer;
+    } else {
+      os << "<record>";
+    }
+    break;
+  }
+
+  case value_enum::ND_VECTOR: {
+    auto cc = v->as<value_nd_vector_p>();
+    auto cc_ty = v->ty_->as<value_type_nd_vector_p>();
+
+    bool handled = false;
+
+    if (v->ty_->tag_ == SOME(value_type_tag_enum::STRING)) {
+      ASSERT_EQ(cc_ty->ndim_, 1);
+      ASSERT_EQ(cc_ty->dtype_, dtype_enum::I8);
+      int64_t len_actual = cc->size();
+      int64_t len_display = min<int64_t>(STRING_DISPLAY_MAX, len_actual);
+      ASSERT_TRUE(cc->contiguous_);
+      string str_val;
+      auto base = reinterpret_cast<const char*>(cc->base_addr_);
+      for (int64_t i = 0; i < len_display; i++) {
+        if (isprint(base[i])) {
+          str_val += base[i];
+        } else {
+          str_val += "\\x";
+          str_val += format_hex(string(&base[i], 1));
+        }
+      }
+      os << "\"" << str_val;
+      if (len_actual > len_display) {
+        os << "...";
+      }
+      os << "\"";
+      handled = true;
+
+    } else if (v->ty_->tag_ == SOME(value_type_tag_enum::IMAGE)) {
+      os << "<image>";
+      handled = true;
+
+    } else if (cc_ty->ndim_ == 0 &&
+               cc_ty->dtype_ == dtype_enum::I64) {
+
+      int64_t v = *reinterpret_cast<int64_t*>(cc->base_addr_);
+      os << v;
+      handled = true;
+
+    } else if (cc_ty->ndim_ == 0 &&
+               cc_ty->dtype_ == dtype_enum::F64) {
+
+      double v = *reinterpret_cast<double*>(cc->base_addr_);
+      os << cc_sprintf("%6f", v);
+      handled = true;
+
+    } else if (cc_ty->ndim_ == 0 &&
+               cc_ty->dtype_ == dtype_enum::BOOL) {
+
+      bool v = *reinterpret_cast<bool*>(cc->base_addr_);
+      os << v;
+      handled = true;
+    }
+
+    if (!handled) {
+      os << "<nd_vector>";
+    }
+
+    break;
+  }
+
+  case value_enum::COLUMN: {
+    auto cc = v->as<value_column_p>();
+    int64_t len_actual = cc->length();
+    os << "Column<" << len_actual << ">: [";
+    int64_t len_display = min<int64_t>(COLUMN_DISPLAY_COMPACT_MAX, len_actual);
+    for (int64_t i = 0; i < len_display; i++) {
+      os << cc->at(i);
+      if (i < len_display - 1) {
+        os << ", ";
+      }
+    }
+    if (len_actual > len_display) {
+      os << ", ...";
+    }
+    os << "]";
+    break;
+  }
+
+  case value_enum::THUNK: {
+    os << "<thunk>";
+    break;
+  }
+
+  case value_enum::REF: {
+    auto cc = v->as<value_ref_p>();
+
+    switch (cc->ref_which_) {
+    case value_ref_enum::COLUMN_SUBSET: {
+      auto v_base = *cc->target_;
+      auto col_base = v_base->as<value_column_p>();
+      auto col_index = (*cc->column_subset_);
+
+      int64_t len_actual = col_index->get_column_length();
+      os << "Column<" << len_actual << ">: [";
+      int64_t len_display = min<int64_t>(COLUMN_DISPLAY_COMPACT_MAX, len_actual);
+      for (int64_t i = 0; i < len_display; i++) {
+        int64_t ii = value_column_at(col_index, i)
+          ->as<value_nd_vector_p>()->value_scalar_int64();
+        os << col_base->at(ii);
+        if (i < len_display - 1) {
+          os << ", ";
+        }
+      }
+      if (len_actual > len_display) {
+        os << ", ...";
+      }
+      os << "]";
+
+      break;
+    }
+    case value_ref_enum::VALUE:
+    case value_ref_enum::COLUMN_ELEMENT:
+    case value_ref_enum::COLUMN_RANGE: {
+      os << "<ref: " << v->ty_ << ">";
+      break;
+    }
+    default:
+      AU();
+    }
+
+    break;
+  }
+
+  default:
+    fmt(os, "<%v>", v->which());
+  }
+
+  return os;
 }
 
 value_p value_column_at_deref(value_p x, int64_t i) {
@@ -2178,6 +3009,7 @@ gl_sframe to_sframe(value_p v) {
 
 const char* column_metadata::object_id_    = "CM";
 const char* object_ids_builtin::pair_      = "PA";
+const char* query::object_id_              = "QU";
 const char* value::object_id_              = "VA";
 const char* object_ids_builtin::vector_    = "VE";
 const char* value_type::object_id_         = "VT";

@@ -17,6 +17,7 @@ make_library(sframe_query_engine
    algorithm/ec_sort.cpp
    algorithm/ec_permute.cpp
    query_engine_lock.cpp
+   experimental/sframe_random_access_query_impl.cpp
    REQUIRES
      sframe flexible_type pylambda dot_graph_printer
     EXTERNAL_VISIBILITY

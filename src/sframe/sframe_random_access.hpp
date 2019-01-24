@@ -42,12 +42,20 @@ namespace turi { namespace sframe_random_access {
  *
  * This module provides an alternate binary representation of (strongly-typed)
  * SArray and SFrame values, which supports fast random access and indirect
- * references, as well as some basic indexing utilities over this alternate
- * representation.
+ * references, as well as the corresponding query execution and optimization
+ * machinery for the usual relational operations (join, groupby, filter,
+ * etc.). This also enables us to implement an in-memory hash-based index for
+ * relatively small SFrames, which speeds up repeated relational queries over
+ * the same database. Standard SFrames can be converted to and from this
+ * random-access format, provided that they are of certain primitive types
+ * (currently only numeric and string are supported) and do not have missing
+ * values.
  * \{
  */
 
 /*! \cond internal */
+DECL_STRUCT(group_by_spec);
+DECL_STRUCT(query);
 DECL_STRUCT(ref_context);
 DECL_STRUCT(url);
 DECL_STRUCT(value);
@@ -57,6 +65,7 @@ DECL_STRUCT(value_index);
 DECL_STRUCT(value_nd_vector);
 DECL_STRUCT(value_record);
 DECL_STRUCT(value_ref);
+DECL_STRUCT(value_thunk);
 DECL_STRUCT(value_type);
 
 typedef typename boost::make_recursive_variant<
@@ -65,7 +74,8 @@ typedef typename boost::make_recursive_variant<
   value_record_p,
   value_either_p,
   value_ref_p,
-  value_index_p
+  value_index_p,
+  value_thunk_p
 >::type value_v;
 
 using value_id_map_shared_ptr_type = unordered_map<
@@ -109,6 +119,11 @@ enum class value_enum {
    * Index structure providing fast lookups over a column (internal use only).
    */
   INDEX,
+  /**
+   * Value corresponding to a lazily-evaluated relational query (internal use
+   * only).
+   */
+  THUNK,
 };
 
 /**
@@ -203,14 +218,83 @@ gl_sframe to_sframe(value_p v);
  */
 struct value : public enable_shared_from_this<value> {
   /**
-   * Saves the contents of a random access SFrame value to disk.
+   * Extracts a given field from a record (e.g., a column from a table).
    */
-  void save(const string& output_path);
+  value_p at_string(string x);
 
   /**
-   * Loads the contents of a random access SFrame value from disk.
+   * Extracts the x'th row of a table or column.
    */
-  static value_p load_from_path(const string& input_path);
+  value_p at_int(int64_t x);
+
+  /**
+   * Returns the result of the user-friendly subscript operation V[x].
+   * If V is a table or column, and x is an integer, this corresponds to
+   * extracting the x'th row.
+   * If x is a boolean column, this corresponds to extracting the values
+   * satisfying a predicate (e.g., V[V > 3]).
+   */
+  value_p at(value_p x);
+
+  /**
+   * Returns the result of the user-friendly equality test operation (V == x).
+   * If V is a string, this is just string comparison.
+   * If V is a column, the equality test is performed on each row independently.
+   */
+  value_p equals_string(string x);
+
+  /**
+   * Returns the result of the user-friendly equality test operation (V == x).
+   * If V is a integer, this is just integer comparison.
+   * If V is a column, the equality test is performed on each row independently.
+   */
+  value_p equals_int(int64_t x);
+
+  /**
+   * Returns the result of the user-friendly equality test operation (V == x).
+   * If V has the same type as x, this is just hash equality.
+   * If V is a column, the equality test is performed on each row independently.
+   */
+  value_p equals_value_poly(value_p x);
+
+  /**
+   * Returns the result of the scalar comparison (V < x).
+   */
+  value_p op_boolean_lt(value_p x);
+
+  /**
+   * Returns the result of the scalar addition (V + x).
+   */
+  value_p op_add(value_p x);
+
+  /**
+   * Returns the result of the relational aggregation operation
+   * V.groupby(field_names). If V already has an in-memory index for the
+   * indicated fields, the implementation will use that index. If not, an index
+   * will be created.
+   *
+   * The output_specs argument controls how the output will be generated. In
+   * general, it contains a vector of pairs (output_column_name, aggregator),
+   * and the output table will contain a column for each pair, with the
+   * corresponding column name mapped to the result of the corresponding
+   * aggregation operation. For details of the supported aggregation operations,
+   * see \ref group_by_spec.
+   */
+  value_p group_by(
+    vector<string> field_names,
+    vector<pair<string, group_by_spec_p>> output_specs);
+
+  /**
+   * For a column V, returns the result of the relational operation V.unique().
+   */
+  value_p unique();
+
+  /**
+   * For tables V and x, returns the result of the relational operation
+   * V.join(x). The join columns are automatically inferred based on matching
+   * column names, and the default is an inner join.
+   */
+  value_p join_auto(value_p x);
 
   /**
    * Creates a value corresponding to the empty record (e.g., a table with
@@ -278,6 +362,27 @@ struct value : public enable_shared_from_this<value> {
   uint64_t get_integral_value();
 
   /**
+   * Returns the result of summing a numeric column value.
+   */
+  value_p sum();
+
+  /**
+   * For a value that is lazy (e.g. the result of a relational operation),
+   * forces complete evaluation of the value.
+   */
+  value_p materialize();
+
+  /**
+   * Saves the contents of a random access SFrame value to disk.
+   */
+  void save(const string& output_path);
+
+  /**
+   * Loads the contents of a random access SFrame value from disk.
+   */
+  static value_p load_from_path(const string& input_path);
+
+  /**
    * Build a hash-based index of the indicated source columns.
    */
   static value_p build_index(
@@ -319,6 +424,8 @@ struct value : public enable_shared_from_this<value> {
   static value_p create_optional_none(value_type_p ty);
   static value_p create_optional_some(value_type_p ty, value_p v);
 
+  static value_p create_thunk(query_p x);
+
   static value_p create_index(
     value_p index_keys,
     value_p index_values_flat,
@@ -351,6 +458,88 @@ struct value : public enable_shared_from_this<value> {
   // Note: should only access while holding lock
   static value_id_map_weak_ptr_type& get_value_id_map();
   static recursive_mutex& get_value_id_map_lock();
+  /*! \endcond */
+};
+
+/**
+ * Enumerates the possible relational aggregation operations over a column.
+ * For details, see the static create methods of \ref group_by_spec.
+ */
+enum class group_by_spec_enum {
+  /**
+   * The trivial aggregator operation that just returns the concatenation of the
+   * original table entries.
+   */
+  ORIGINAL_TABLE,
+  /**
+   * A reduce aggregator operation (e.g., SUM).
+   */
+  REDUCE,
+  /**
+   * The SELECT_ONE aggregator operation.
+   */
+  SELECT_ONE,
+};
+
+/*! \cond internal */
+DECL_STRUCT(group_by_spec);
+DECL_STRUCT(group_by_spec_original_table);
+DECL_STRUCT(group_by_spec_reduce);
+DECL_STRUCT(group_by_spec_select_one);
+
+typedef typename boost::make_recursive_variant<
+  group_by_spec_original_table_p,
+  group_by_spec_reduce_p,
+  group_by_spec_select_one_p
+>::type group_by_spec_v;
+/*! \endcond */
+
+/**
+ * Enumerates the possible reduce operations over a column (i.e., operations
+ * that consume each row in succession into some accumulator). Currently the
+ * only supported case is the SUM operation for numeric columns, but MIN, MAX,
+ * AVERAGE, and others may be added in the future.
+ */
+enum class column_reduce_op_enum {
+  /**
+   * The reduce operation that computes the sum of a numeric column.
+   */
+  SUM,
+};
+
+/**
+ * A \ref group_by_spec describes an aggregation operation and its parameters.
+ * It is a tagged union of several cases. For details, see the static create
+ * methods of \ref group_by_spec.
+ */
+struct group_by_spec : public enable_shared_from_this<group_by_spec> {
+  /**
+   * Create a reduce aggregator operation (e.g., "SUM") on the given source
+   * column. For the supported operations, see \ref column_reduce_op_enum .
+   */
+  static group_by_spec_p create_reduce(
+    string reduce_op_str, value_p source_column);
+
+  /**
+   * Create a SELECT_ONE aggregator operation on the given source column.
+   */
+  static group_by_spec_p create_select_one(value_p source_column);
+
+  /**
+   * Create the trivial aggregator operation which just returns the
+   * concatenation of the original table entries.
+   */
+  static group_by_spec_p create_original_table();
+
+  //////////////////// Implementation-internal APIs /////////////////////
+  /*! \cond internal */
+  group_by_spec_enum which();
+  template<typename T> T& as();
+  template<typename T> const T& as() const;
+
+  group_by_spec(group_by_spec_v v) : v_(v) { }
+
+  group_by_spec_v v_;
   /*! \endcond */
 };
 

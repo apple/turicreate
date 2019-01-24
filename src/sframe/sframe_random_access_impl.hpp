@@ -628,6 +628,7 @@ DECL_STRUCT(value_record);
 DECL_STRUCT(value_either);
 DECL_STRUCT(value_ref);
 DECL_STRUCT(value_index);
+DECL_STRUCT(value_thunk);
 
 SERIALIZE_POD(value_enum);
 
@@ -640,10 +641,13 @@ typedef typename boost::make_recursive_variant<
   value_record_p,
   value_either_p,
   value_ref_p,
-  value_index_p
+  value_index_p,
+  value_thunk_p
 >::type value_v;
 
 DECL_STRUCT(value);
+DECL_STRUCT(query);
+value_type_p get_type(query_p x);
 
 DECL_STRUCT(ref_context);
 
@@ -656,6 +660,49 @@ struct ref_context : public enable_shared_from_this<ref_context> {
   // Note: should only access while holding lock
   vector<value_p> ref_targets_;
 };
+
+SERIALIZE_POD(column_reduce_op_enum);
+
+value_p reduce_op_init(
+  column_reduce_op_enum reduce_op, value_type_p result_type);
+value_p reduce_op_exec(
+  column_reduce_op_enum reduce_op, value_p lhs, value_p rhs);
+
+ostream& operator<<(ostream& os, column_reduce_op_enum reduce_op);
+
+column_reduce_op_enum reduce_op_enum_from_string(string x);
+
+ostream& operator<<(ostream& os, group_by_spec_enum x);
+
+struct group_by_spec_original_table { };
+
+struct group_by_spec_reduce {
+  column_reduce_op_enum reduce_op_;
+  query_p source_column_;
+
+  group_by_spec_reduce(
+    column_reduce_op_enum reduce_op, query_p source_column)
+    : reduce_op_(reduce_op), source_column_(source_column) { }
+};
+
+struct group_by_spec_select_one {
+  query_p source_column_;
+
+  group_by_spec_select_one(query_p source_column)
+    : source_column_(source_column) { }
+};
+
+inline group_by_spec_enum group_by_spec::which() {
+  return static_cast<group_by_spec_enum>(v_.which());
+}
+
+template<typename T> T& group_by_spec::as() {
+  return vget<group_by_spec_enum, T>(v_);
+}
+
+template<typename T> const T& group_by_spec::as() const {
+  return vget<group_by_spec_enum, T>(v_);
+}
 
 constexpr int64_t COLUMN_TABLE_ENTRY_SIZE_BYTES = 3 * sizeof(int64_t);
 
@@ -1122,6 +1169,13 @@ struct value_index {
       index_mode_(index_mode) { }
 };
 
+struct value_thunk {
+  value_type_p type_;
+  query_p query_;
+
+  value_thunk(query_p query) : type_(get_type(query)), query_(query) { }
+};
+
 struct value_column {
   column_format_enum format_;
   column_view_v view_;
@@ -1221,6 +1275,91 @@ inline string to_string(value_p x) {
   ostringstream os;
   os << x;
   return os.str();
+}
+
+/**
+ * Evaluate a binary operation on numeric scalars, given the addresses of its
+ * operands and destination.
+ */
+inline void eval_raw_binary(
+  scalar_builtin_enum op, void* dst, void* src0, void* src1,
+  dtype_enum input_dtype) {
+
+  switch (op) {
+  case scalar_builtin_enum::LT:
+    switch (input_dtype) {
+    case dtype_enum::I64:
+      *reinterpret_cast<bool*>(dst) =
+        (*reinterpret_cast<int64_t*>(src0) < *reinterpret_cast<int64_t*>(src1));
+      break;
+
+    case dtype_enum::F64:
+      *reinterpret_cast<bool*>(dst) =
+        (*reinterpret_cast<double*>(src0) < *reinterpret_cast<double*>(src1));
+      break;
+
+    default:
+      cerr << input_dtype << endl;
+      AU();
+    }
+    break;
+
+  case scalar_builtin_enum::ADD:
+    switch (input_dtype) {
+    case dtype_enum::I64:
+      *reinterpret_cast<int64_t*>(dst) =
+        (*reinterpret_cast<int64_t*>(src0) + *reinterpret_cast<int64_t*>(src1));
+      break;
+
+    case dtype_enum::F64:
+      *reinterpret_cast<double*>(dst) =
+        (*reinterpret_cast<double*>(src0) + *reinterpret_cast<double*>(src1));
+      break;
+
+    default:
+      cerr << input_dtype << endl;
+      AU();
+    }
+    break;
+
+  default:
+    AU();
+  }
+}
+
+/**
+ * Evaluate a binary operation on numeric scalars, given its operands.
+ */
+inline value_p eval(scalar_builtin_enum op, vector<value_p> args) {
+  auto input_dtype = NONE<dtype_enum>();
+
+  vector<void*> cc_arg_addrs;
+  for (auto arg : args) {
+    auto cc_arg = arg->as<value_nd_vector_p>();
+    ASSERT_EQ(cc_arg->shape_.size(), 0);
+    if (!!input_dtype) {
+      ASSERT_EQ(cc_arg->dtype_, *input_dtype);
+    } else {
+      input_dtype = SOME(cc_arg->dtype_);
+    }
+    cc_arg_addrs.push_back(cc_arg->base_addr_);
+  }
+
+  ASSERT_TRUE(!!input_dtype);
+
+  ASSERT_EQ(cc_arg_addrs.size(), arity(op));
+  auto ret = value_nd_vector::create_scalar_zero(
+    get_result_dtype(op, *input_dtype));
+
+  ASSERT_EQ(arity(op), 2);
+  eval_raw_binary(
+    op,
+    ret->as<value_nd_vector_p>()->base_addr_,
+    cc_arg_addrs[0],
+    cc_arg_addrs[1],
+    *input_dtype);
+
+  return ret;
 }
 
 }}
