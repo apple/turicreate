@@ -6,6 +6,7 @@ language: python
 
 python:
   - "2.7"
+  - "3.5"
   - "3.6"
 
 addons:
@@ -31,15 +32,8 @@ env:
     - CC=gcc-5
     - CXX=g++-5
 
-before_install:
-  # Install Python dependencies
-  # TODO - do this through the official Travis CI python/virtualenv support matrix
-  # So that we get various Python versions installed automatically
-  - sudo easy_install pip
-  - sudo pip install --upgrade pip
-  - sudo pip install virtualenv
-
 script:
+  # TODO - not sure why this is necessary. Is it?
   - sudo ln -s /usr/bin/gcc-5 /usr/local/bin/gcc
   - sudo ln -s /usr/bin/g++-5 /usr/local/bin/g++
   # We sometimes get `error: No space left on device`
@@ -58,4 +52,4 @@ script:
   - rm src/unity/python/turicreate/test/test_style_transfer.py src/unity/python/turicreate/test/test_object_detector.py
 
   # Build the wheel
-  - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=3 --debug --skip_cpp_test
+  - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=3 --debug --skip_cpp_test --skip_doc
