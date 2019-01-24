@@ -62,12 +62,6 @@ public:
    *       the cnn_module).
    */
   virtual float_array_map export_weights() const = 0;
-
-  /**
-   * Returns the (human readable) names of the GPUs used by this module, for
-   * reporting to the user.
-   */
-  virtual std::vector<std::string> gpu_names() const = 0;
 };
 
 }  // namespace neural_net

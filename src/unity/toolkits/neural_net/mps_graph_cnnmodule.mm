@@ -48,6 +48,15 @@ mps_graph_cnn_module::mps_graph_cnn_module() {
   }
 }
 
+mps_graph_cnn_module::mps_graph_cnn_module(id <MTLDevice> dev) {
+  @autoreleasepool {
+
+  dev_ = dev;
+  cmd_queue_ = [dev_ newCommandQueue];
+
+  }  // @autoreleasepool
+}
+
 void mps_graph_cnn_module::init(
     int network_id, int n, int c_in, int h_in, int w_in, int c_out, int h_out,
     int w_out, const float_array_map& config, const float_array_map& weights) {
@@ -288,10 +297,6 @@ void mps_graph_cnn_module::set_learning_rate(float lr) {
       network_->layers[i]->SetLearningRate(lr);
     }
   }
-}
-
-std::vector<std::string> mps_graph_cnn_module::gpu_names() const {
-  return { [dev_.name cStringUsingEncoding:NSUTF8StringEncoding] };
 }
 
 MPSImageBatch *

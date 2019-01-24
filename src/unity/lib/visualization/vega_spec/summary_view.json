@@ -20,7 +20,7 @@
     }
   },
   "width":800,
-  "height":%1%,
+  "height":{{height}},
   "padding":0,
   "data":[
     {

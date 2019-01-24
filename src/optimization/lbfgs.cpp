@@ -227,6 +227,7 @@ bool lbfgs_solver::next_iteration() {
   if (reg != nullptr) {
     reg->compute_gradient(point, reg_gradient);
     gradient += reg_gradient;
+    func_value += reg->compute_function_value(point);
   }
 
   double residual = compute_residual(gradient);
@@ -245,16 +246,9 @@ bool lbfgs_solver::next_iteration() {
 
   if (current_iteration == 0) {
 
-    // Do a line search
-    double reg_func = 0;
-
-    if (reg != NULL) {
-      reg_func = reg->compute_function_value(point);
-    }
-
     // Initialize with a line search
     ls_return lsm_status =
-        more_thuente(*model, m_status.step_size, func_value + reg_func, point, gradient,
+        more_thuente(*model, m_status.step_size, func_value, point, gradient,
                      -gradient, reg);
 
     m_status.step_size = lsm_status.step_size;
@@ -304,7 +298,6 @@ bool lbfgs_solver::next_iteration() {
       alpha(i) = rho(i) * dot(s.col(i), q);
       q -= alpha(i) * y.col(i);
     }
-    
 
     // Scaling factor according to Pg 178 of [1]. This ensures that the
     // problem is better scaled and that a step size of 1 is mostly accepted.
@@ -316,20 +309,12 @@ bool lbfgs_solver::next_iteration() {
       q += s.col(i) * (alpha(i) - beta);
     }
 
-
-
-    // Update the new point and gradient
-    double reg_func = 0;
-    if (reg != NULL) {
-      reg_func = reg->compute_function_value(point);
-    }
-
     // Check if we need to retune the step size.
     if(current_iteration == 1 || func_value > previous_function_value) {
     
 
       // Reset the step size.
-      ls_return lsm_status = more_thuente(*model, m_status.step_size, func_value + reg_func, point,
+      ls_return lsm_status = more_thuente(*model, m_status.step_size, func_value, point,
                                         gradient, -q, reg);
 
       // Line search failed
@@ -343,6 +328,18 @@ bool lbfgs_solver::next_iteration() {
       // Record statistics from line search
       m_status.num_function_evaluations += lsm_status.func_evals;
       m_status.num_gradient_evaluations += lsm_status.gradient_evals;
+    
+    } else {
+
+      // If the step size is less than 1, which is usually okay per the scaling
+      // above, then we should increase it slowly to get back towards 1 so that
+      // we don't hit a bad spot and then forever set the step size to be
+      // unnecessarily tiny and never retrigger more_thuente to reset it to
+      // something where the conditions are good. In the worst case, we'll
+      // trigger more_thuente again, which isn't the worst thing.
+      if(m_status.step_size < 1) {
+        m_status.step_size = std::min(1.0, 1.25 * m_status.step_size);
+      }
     }
 
     point += (delta_point = -m_status.step_size * q);
