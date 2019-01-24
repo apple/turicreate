@@ -9,3 +9,5 @@ make_boost_test(parallel_sframe_iterator.cxx REQUIRES sframe)
 make_boost_test(test_sarray_iterators.cxx REQUIRES sframe)
 make_boost_test(integer_pack_test.cxx REQUIRES sframe)
 make_boost_test(sframe_csv_test.cxx REQUIRES sframe)
+make_boost_test(
+  sframe_random_access_test.cxx REQUIRES sframe unity_core unity_toolkits)

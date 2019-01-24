@@ -33,6 +33,8 @@ project(sframe)
      sframe_saving_impl.cpp
      sframe_compact.cpp
      rolling_aggregate.cpp
+     sframe_random_access_impl.cpp
+     sframe_random_access_buffers_impl.cpp
    REQUIRES
      random flexible_type fileio parallel lz4 
      cancel_serverside_ops serialization libjson globals 

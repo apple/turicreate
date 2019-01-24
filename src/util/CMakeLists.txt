@@ -11,6 +11,7 @@ SOURCES
   string_util.cpp
   syserr_reporting.cpp 
   testing_utils.cpp 
+  time_spec.cpp
   web_util.cpp
 REQUIRES 
   logger 
