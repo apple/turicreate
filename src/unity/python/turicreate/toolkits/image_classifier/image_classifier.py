@@ -572,7 +572,7 @@ class ImageClassifier(_CustomModel):
 
         def relative_confidence(probs):
             lp = len(probs)
-            return sorted_probs[lp-1] - sorted_probs[lp-2]
+            return probs[lp-1] - probs[lp-2]
 
         def get_confusion_matrix(extended_test, labels):
             #Init a matrix

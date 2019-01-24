@@ -773,8 +773,9 @@ std::map<std::string, variant_type> supervised_learning_model_base::evaluate(
     evaluators[i]->init(n_threads);
   }
   
-  std::shared_ptr<sarray<flexible_type>> prob_vectors (new sarray<flexible_type>);
-  std::shared_ptr<sarray<flexible_type>> predicted_classes (new sarray<flexible_type>);
+
+  std::shared_ptr<sarray<flexible_type>> prob_vectors = std::make_shared<sarray<flexible_type>>();
+  std::shared_ptr<sarray<flexible_type>> predicted_classes = std::make_shared<sarray<flexible_type>>();
   
   if (contains_prob_evaluator) {
     // Save predictions as probability vectors  
