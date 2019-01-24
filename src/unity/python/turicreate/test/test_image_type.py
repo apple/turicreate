@@ -129,9 +129,8 @@ class ImageClassTest(unittest.TestCase):
             import tempfile 
             with tempfile.NamedTemporaryFile() as t:
                 input_img.save(t, format='jpeg')
-                cmyk_image = image.Image(path=t.name, format='JPG')
                 with self.assertRaises(ToolkitError):
-                    image_analysis.resize(cmyk_image, cmyk_image.width, cmyk_image.height, 3, decode=True)
+                    cmyk_image = image.Image(path=t.name, format='JPG')
 
     def test_batch_resize(self):
         image_url_dir = current_file_dir + '/images'

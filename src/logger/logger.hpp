@@ -689,8 +689,28 @@ struct log_stream_dispatch<false> {
   }
 };
 
+
+#define TEXTCOLOR_RESET   0
+#define TEXTCOLOR_BRIGHT    1
+#define TEXTCOLOR_DIM   2
+#define TEXTCOLOR_UNDERLINE   3
+#define TEXTCOLOR_BLINK   4
+#define TEXTCOLOR_REVERSE   7
+#define TEXTCOLOR_HIDDEN    8
+
+#define TEXTCOLOR_BLACK     0
+#define TEXTCOLOR_RED   1
+#define TEXTCOLOR_GREEN   2
+#define TEXTCOLOR_YELLOW    3
+#define TEXTCOLOR_BLUE    4
+#define TEXTCOLOR_MAGENTA   5
+#define TEXTCOLOR_CYAN    6
+#define TEXTCOLOR_WHITE   7
+
 void textcolor(FILE* handle, int attr, int fg);
+std::string textcolor(int attr, int fg);
 void reset_color(FILE* handle);
+std::string reset_color();
 
 #endif
 

@@ -37,6 +37,7 @@ set(GENERATED_VEGA_JSON_HEADERS
   vega_spec/boxes_and_whiskers.json
   vega_spec/categorical.json
   vega_spec/categorical_heatmap.json
+  vega_spec/config.json
   vega_spec/heatmap.json
   vega_spec/histogram.json
   vega_spec/scatter.json

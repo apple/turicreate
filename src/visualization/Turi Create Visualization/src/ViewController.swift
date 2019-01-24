@@ -22,8 +22,8 @@ class ViewController: NSViewController, NSWindowDelegate {
         self.view.layer?.backgroundColor = NSColor.white.cgColor
     }
     
-    func windowShouldClose(_ sender: Any) -> Bool {
-        NSApplication.shared().terminate(self)
+    func windowShouldClose(_ sender: NSWindow) -> Bool {
+        NSApplication.shared.terminate(self)
         return true
     }
 

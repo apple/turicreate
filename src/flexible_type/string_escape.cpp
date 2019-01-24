@@ -171,8 +171,8 @@ size_t write_utf8(size_t code_point, char* c) {
   return 0;
 }
 
-size_t unescape_string(char* cal, size_t length, char escape_char, 
-                     char quote_char, bool double_quote) {
+size_t unescape_string(char* cal, size_t length, bool use_escape_char, 
+                       char escape_char, char quote_char, bool double_quote) {
   // to avoid allocating a new string, we are do this entirely in-place
   // This works because for all the escapes we have here, the output string
   // is shorter than the input.
@@ -180,7 +180,7 @@ size_t unescape_string(char* cal, size_t length, char escape_char,
   size_t out = 0;
 
   while(in != length) {
-    if (cal[in]  == escape_char && in + 1 < length) {
+    if ((use_escape_char && cal[in] == escape_char) && in + 1 < length) {
       char echar = cal[in + 1];
       switch (echar) {
        case '\'':
@@ -283,10 +283,11 @@ size_t unescape_string(char* cal, size_t length, char escape_char,
 }
 
 
-void unescape_string(std::string& cal, char escape_char, 
+void unescape_string(std::string& cal, bool use_escape_char, char escape_char, 
                      char quote_char, bool double_quote) {
   size_t new_length = unescape_string(&(cal[0]), cal.length(), 
-                                      escape_char, quote_char, double_quote);
+                                      use_escape_char, escape_char, 
+                                      quote_char, double_quote);
   cal.resize(new_length);
 }
 
