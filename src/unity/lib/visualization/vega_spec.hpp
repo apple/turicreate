@@ -23,9 +23,10 @@ namespace turi {
     std::string boxes_and_whiskers_spec(const flexible_type& xlabel, const flexible_type& ylabel, const flexible_type& title);
 
     // Utility for escaping JSON string literals. Not concerned with Vega implications of the contents of those strings.
-    std::string escape_string(const std::string& str);
+    std::string escape_string(const std::string& str, bool include_quotes=true);
     std::string replace_all(std::string str, const std::string& from, const std::string& to);
-    std::string extra_label_escape(const std::string& str);
+    std::string extra_label_escape(const std::string& str, bool include_quotes=true);
+    std::string format(const std::string& format_str, const std::unordered_map<std::string, std::string>& format_params);
   }
 }
 

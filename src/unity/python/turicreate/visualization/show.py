@@ -51,8 +51,9 @@ def plot(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
     ylabel : str (optional)
       The text label for the Y axis. Defaults to "Y".
     title : str (optional)
-      The title of the plot. Defaults to None. If the value is None, the title
-      will be "<xlabel> vs. <ylabel>". Otherwise, the string passed in as the
+      The title of the plot. Defaults to LABEL_DEFAULT. If the value is
+      LABEL_DEFAULT, the title will be "<xlabel> vs. <ylabel>". If the value
+      is None, the title will be omitted. Otherwise, the string passed in as the
       title will be used as the plot title.
 
     Examples
@@ -114,8 +115,9 @@ def show(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
     ylabel : str (optional)
       The text label for the Y axis. Defaults to "Y".
     title : str (optional)
-      The title of the plot. Defaults to None. If the value is None, the title
-      will be "<xlabel> vs. <ylabel>". Otherwise, the string passed in as the
+      The title of the plot. Defaults to LABEL_DEFAULT. If the value is
+      LABEL_DEFAULT, the title will be "<xlabel> vs. <ylabel>". If the value
+      is None, the title will be omitted. Otherwise, the string passed in as the
       title will be used as the plot title.
 
     Examples
@@ -161,8 +163,9 @@ def scatter(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAUL
     ylabel : str (optional)
       The text label for the Y axis. Defaults to "Y".
     title : str (optional)
-      The title of the plot. Defaults to None. If the value is None, the title
-      will be "<xlabel> vs. <ylabel>". Otherwise, the string passed in as the
+      The title of the plot. Defaults to LABEL_DEFAULT. If the value is
+      LABEL_DEFAULT, the title will be "<xlabel> vs. <ylabel>". If the value
+      is None, the title will be omitted. Otherwise, the string passed in as the
       title will be used as the plot title.
 
     Returns
@@ -209,8 +212,9 @@ def categorical_heatmap(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=
     ylabel : str (optional)
       The text label for the Y axis. Defaults to "Y".
     title : str (optional)
-      The title of the plot. Defaults to None. If the value is None, the title
-      will be "<xlabel> vs. <ylabel>". Otherwise, the string passed in as the
+      The title of the plot. Defaults to LABEL_DEFAULT. If the value is
+      LABEL_DEFAULT, the title will be "<xlabel> vs. <ylabel>". If the value
+      is None, the title will be omitted. Otherwise, the string passed in as the
       title will be used as the plot title.
 
     Returns
@@ -257,8 +261,9 @@ def heatmap(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAUL
     ylabel : str (optional)
       The text label for the Y axis. Defaults to "Y".
     title : str (optional)
-      The title of the plot. Defaults to None. If the value is None, the title
-      will be "<xlabel> vs. <ylabel>". Otherwise, the string passed in as the
+      The title of the plot. Defaults to LABEL_DEFAULT. If the value is
+      LABEL_DEFAULT, the title will be "<xlabel> vs. <ylabel>". If the value
+      is None, the title will be omitted. Otherwise, the string passed in as the
       title will be used as the plot title.
 
     Returns
@@ -304,8 +309,9 @@ def box_plot(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAU
     ylabel : str (optional)
       The text label for the Y axis. Defaults to "Y".
     title : str (optional)
-      The title of the plot. Defaults to None. If the value is None, the title
-      will be "<xlabel> vs. <ylabel>". Otherwise, the string passed in as the
+      The title of the plot. Defaults to LABEL_DEFAULT. If the value is
+      LABEL_DEFAULT, the title will be "<xlabel> vs. <ylabel>". If the value
+      is None, the title will be omitted. Otherwise, the string passed in as the
       title will be used as the plot title.
 
     Returns
@@ -378,8 +384,9 @@ def histogram(sa, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAUL
     ylabel : str (optional)
       The text label for the Y axis. Defaults to "Count".
     title : str (optional)
-      The title of the plot. Defaults to None. If the value is None, the title
-      will be "<xlabel> vs. <ylabel>". Otherwise, the string passed in as the
+      The title of the plot. Defaults to LABEL_DEFAULT. If the value is
+      LABEL_DEFAULT, the title will be "<xlabel> vs. <ylabel>". If the value
+      is None, the title will be omitted. Otherwise, the string passed in as the
       title will be used as the plot title.
     
     Returns
@@ -419,8 +426,9 @@ def item_frequency(sa, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_D
     ylabel : str (optional)
       The text label for the Y axis. Defaults to "Count".
     title : str (optional)
-      The title of the plot. Defaults to None. If the value is None, the title
-      will be "<xlabel> vs. <ylabel>". Otherwise, the string passed in as the
+      The title of the plot. Defaults to LABEL_DEFAULT. If the value is
+      LABEL_DEFAULT, the title will be "<xlabel> vs. <ylabel>". If the value
+      is None, the title will be omitted. Otherwise, the string passed in as the
       title will be used as the plot title.
     
     Returns

@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega/v4.json",
-  "autosize": "fit",
+  "autosize": {"type": "fit", "resize": true, "contains": "padding"},
   "padding": 5,
   "metadata": {
     "bubbleOpts": {
@@ -19,9 +19,9 @@
     }
   },
   "width": 720,
-  "height": %1%,
+  "height": {{height}},
   "title": {
-    "text": %2%,
+    "text": "{{title}}",
     "offset": 30
   },
   "style": "cell",
@@ -177,7 +177,7 @@
       "tickCount": {
         "signal": "ceil(width/40)"
       },
-      "title": %3%,
+      "title": "{{xlabel}}",
       "zindex": 1
     },
     {
@@ -199,35 +199,9 @@
       "scale": "y",
       "labelOverlap": true,
       "orient": "left",
-      "title": %4%,
+      "title": "{{ylabel}}",
       "zindex": 1
     }
   ],
-  "config": {
-    "axis": {
-      "labelFont": "HelveticaNeue, Arial",
-      "labelFontSize": 12,
-      "labelPadding": 10,
-      "labelColor": "rgba(0,0,0,0.65)",
-      "titleFont": "HelveticaNeue-Medium, Arial",
-      "titleFontWeight": "normal",
-      "titlePadding": 30,
-      "titleFontSize": 15,
-      "titleColor": "rgba(0,0,0,0.65)"
-    },
-    "axisY": {
-      "minExtent": 30
-    },
-    "style": {
-      "rect": {
-        "stroke": "rgba(200, 200, 200, 0.5)"
-      },
-      "group-title": {
-        "fontSize": 29,
-        "font": "HelveticaNeue, Arial",
-        "fontWeight": "normal",
-        "fill": "rgba(0,0,0,0.65)"
-      }
-    }
-  }
+  {{config}}
 }
