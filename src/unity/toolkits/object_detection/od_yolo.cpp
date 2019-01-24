@@ -35,11 +35,11 @@ void add_yolo(model_spec* nn_spec, const std::string& coordinates_name,
   // (1, B, 5+C, H*W)
   nn_spec->add_reshape(
       prefix + "ymap_sp_pre", input,
-      { 1, anchor_boxes.size(), (5 + num_classes), num_spatial });
+      {{ 1, anchor_boxes.size(), (5 + num_classes), num_spatial }});
 
   // (1, 5+C, B, H*W)
   nn_spec->add_permute(prefix + "ymap_sp", prefix + "ymap_sp_pre",
-                       { 0, 2, 1, 3 });
+                       {{ 0, 2, 1, 3 }});
 
   // POSITION: X/Y
   // Slice out the predicted X/Y offsets and add in the corresponding output
@@ -55,7 +55,7 @@ void add_yolo(model_spec* nn_spec, const std::string& coordinates_name,
 
   // (1, 2, B*H*W, 1)
   nn_spec->add_reshape(prefix + "rel_xy", prefix + "rel_xy_sp",
-                       { 1, 2, num_bounding_boxes, 1 });
+                       {{ 1, 2, num_bounding_boxes, 1 }});
 
   // (1, 2, B*H*W, 1)
   auto constant_xy_init = [=](float* out, float* last) {
@@ -77,7 +77,7 @@ void add_yolo(model_spec* nn_spec, const std::string& coordinates_name,
     }
     ASSERT_EQ(out, last);
   };
-  nn_spec->add_constant(prefix + "constant_xy", { 2, num_bounding_boxes, 1 },
+  nn_spec->add_constant(prefix + "constant_xy", {{ 2, num_bounding_boxes, 1 }},
                         constant_xy_init);
 
   // (1, 2, B*H*W, 1)
@@ -99,7 +99,7 @@ void add_yolo(model_spec* nn_spec, const std::string& coordinates_name,
   // (1, 2*B, H, W)
   nn_spec->add_reshape(
       prefix + "rel_wh", prefix + "rel_wh_sp",
-      {1, 2 * anchor_boxes.size(), output_grid_height, output_grid_width});
+      {{1, 2 * anchor_boxes.size(), output_grid_height, output_grid_width}});
 
   // (1, 2*B, H, W)
   auto c_anchors_init = [&](float* out, float* last) {
@@ -123,7 +123,7 @@ void add_yolo(model_spec* nn_spec, const std::string& coordinates_name,
   };
   nn_spec->add_constant(
       prefix + "c_anchors",
-      { 2*anchor_boxes.size(), output_grid_height, output_grid_width },
+      {{ 2*anchor_boxes.size(), output_grid_height, output_grid_width }},
       c_anchors_init);
 
   // (1, 2*B, H, W)
@@ -132,7 +132,7 @@ void add_yolo(model_spec* nn_spec, const std::string& coordinates_name,
 
   // (1, 2, B*H*W, 1)
   nn_spec->add_reshape(prefix + "wh", prefix + "wh_pre",
-                       { 1, 2, num_bounding_boxes, 1 });
+                       {{ 1, 2, num_bounding_boxes, 1 }});
 
   // BOXES: X/Y/WIDTH/HEIGHT
   // Concatenate the POSITION and SHAPE results and normalize to [0,1].
@@ -143,7 +143,7 @@ void add_yolo(model_spec* nn_spec, const std::string& coordinates_name,
 
   // (1, B*H*W, 4, 1)
   nn_spec->add_permute(prefix + "boxes_out", prefix + "boxes_out_transposed",
-                       { 0, 2, 1, 3 } );
+                       {{ 0, 2, 1, 3 }} );
 
   // (1, B*H*W, 4, 1)
   auto boxes_out_init = [&](float* out, float* last) {
@@ -156,7 +156,7 @@ void add_yolo(model_spec* nn_spec, const std::string& coordinates_name,
     ASSERT_EQ(out, last);
   };
   nn_spec->add_scale(coordinates_name, prefix + "boxes_out",
-                     { num_bounding_boxes, 4, 1 }, boxes_out_init);
+                     {{ num_bounding_boxes, 4, 1 }}, boxes_out_init);
 
   // CLASS PROBABILITIES AND OBJECT CONFIDENCE
 
@@ -196,11 +196,11 @@ void add_yolo(model_spec* nn_spec, const std::string& coordinates_name,
 
   // (1, C, B*H*W, 1)
   nn_spec->add_reshape(prefix + "confprobs_transposed", prefix + "confprobs_sp",
-                       { 1, num_classes, num_bounding_boxes, 1 });
+                       {{ 1, num_classes, num_bounding_boxes, 1 }});
 
   // (1, B*H*W, C, 1)
   nn_spec->add_permute(confidence_name, prefix + "confprobs_transposed",
-                       { 0, 2, 1, 3 });
+                       {{ 0, 2, 1, 3 }});
 }
 
 }  // object_detection

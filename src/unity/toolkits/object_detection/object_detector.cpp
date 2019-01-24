@@ -514,7 +514,7 @@ void object_detector::init_train(gl_sframe data,
   const std::vector<std::string>& classes =
       training_data_iterator_->class_labels();
   std::array<flex_int, 3> input_image_shape =  // Using CoreML CHW format.
-      {3, GRID_SIZE * SPATIAL_REDUCTION, GRID_SIZE * SPATIAL_REDUCTION};
+      {{3, GRID_SIZE * SPATIAL_REDUCTION, GRID_SIZE * SPATIAL_REDUCTION}};
   add_or_update_state({
       { "annotations", annotations_column_name },
       { "classes", flex_list(classes.begin(), classes.end()) },
