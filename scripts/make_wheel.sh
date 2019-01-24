@@ -107,7 +107,7 @@ build_source() {
   cd ${WORKSPACE}
 
   if [[ ${DEBUG_OPT} ]] ; then
-    ./configure --debug-opt-for-size
+    ./configure --debug-opt
   else
     ./configure
   fi
