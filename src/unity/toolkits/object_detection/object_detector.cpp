@@ -24,6 +24,7 @@
 
 using turi::coreml::MLModelWrapper;
 using turi::neural_net::cnn_module;
+using turi::neural_net::compute_context;
 using turi::neural_net::deferred_float_array;
 using turi::neural_net::float_array_map;
 using turi::neural_net::image_annotation;
@@ -40,6 +41,9 @@ namespace {
 constexpr size_t OBJECT_DETECTOR_VERSION = 1;
 
 constexpr int DEFAULT_BATCH_SIZE = 32;
+
+// Empircally, we need 4GB to support batch size 32.
+constexpr size_t MEMORY_REQUIRED_FOR_DEFAULT_BATCH_SIZE = 4294967296;
 
 // We assume RGB input.
 constexpr int NUM_INPUT_CHANNELS = 3;
@@ -185,10 +189,31 @@ void object_detector::init_options(
   // Validate user-provided options.
   options.set_options(opts);
 
+  // Report to the user what GPU(s) is being used.
+  std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
+  if (gpu_names.empty()) {
+    logprogress_stream << "Using CPU to create model";
+  } else {
+    std::string gpu_names_string = gpu_names[0];
+    for (size_t i = 1; i < gpu_names.size(); ++i) {
+      gpu_names_string += ", " + gpu_names[i];
+    }
+    logprogress_stream << "Using "
+                       << (gpu_names.size() > 1 ? "GPUs" : "GPU")
+                       << " to create model ("
+                       << gpu_names_string << ")";
+  }
+
   // Configure the batch size automatically if not set.
   if (options.value("batch_size") == FLEX_UNDEFINED) {
-    // TODO: Reduce batch size when training on GPU with less than 4GB RAM.
+
     flex_int batch_size = DEFAULT_BATCH_SIZE;
+    size_t memory_budget = training_compute_context_->memory_budget();
+    if (memory_budget < MEMORY_REQUIRED_FOR_DEFAULT_BATCH_SIZE) {
+      batch_size /= 2;
+    }
+    // TODO: What feedback can we give if the user requests a batch size that
+    // doesn't fit?
 
     logprogress_stream << "Setting 'batch_size' to " << batch_size;
 
@@ -427,18 +452,9 @@ std::unique_ptr<data_iterator> object_detector::create_iterator(
       new simple_data_iterator(iterator_params));  
 }
 
-std::unique_ptr<image_augmenter> object_detector::create_augmenter(
-    const image_augmenter::options& opts) const {
-
-  return image_augmenter::create(opts);
-}
-
-std::unique_ptr<cnn_module> object_detector::create_cnn_module (
-    int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
-    const float_array_map& config, const float_array_map& weights) const {
-
-  return cnn_module::create_object_detector(n, c_in, h_in, w_in, c_out, h_out,
-                                            w_out, config, weights);
+std::unique_ptr<compute_context> object_detector::create_compute_context() const
+{
+  return compute_context::create();
 }
 
 void object_detector::init_train(gl_sframe data,
@@ -450,8 +466,15 @@ void object_detector::init_train(gl_sframe data,
   training_data_iterator_ = create_iterator(data, annotations_column_name,
                                             image_column_name);
 
+  // Instantiate the compute context.
+  training_compute_context_ = create_compute_context();
+  if (training_compute_context_ == nullptr) {
+    log_and_throw("No neural network compute context provided");
+  }
+
   // Instantiate the data augmenter.
-  training_data_augmenter_ = create_augmenter(get_augmentation_options());
+  training_data_augmenter_ = training_compute_context_->create_image_augmenter(
+      get_augmentation_options());
 
   // Extract 'mlmodel_path' from the options, to avoid storing it as a model
   // field.
@@ -491,7 +514,7 @@ void object_detector::init_train(gl_sframe data,
   const std::vector<std::string>& classes =
       training_data_iterator_->class_labels();
   std::array<flex_int, 3> input_image_shape =  // Using CoreML CHW format.
-      {3, GRID_SIZE * SPATIAL_REDUCTION, GRID_SIZE * SPATIAL_REDUCTION};
+      {{3, GRID_SIZE * SPATIAL_REDUCTION, GRID_SIZE * SPATIAL_REDUCTION}};
   add_or_update_state({
       { "annotations", annotations_column_name },
       { "classes", flex_list(classes.begin(), classes.end()) },
@@ -512,7 +535,7 @@ void object_detector::init_train(gl_sframe data,
   int num_outputs_per_anchor =  // 4 bbox coords + 1 conf + one-hot class labels
       5 + static_cast<int>(training_data_iterator_->class_labels().size());
   int num_output_channels = num_outputs_per_anchor * anchor_boxes().size();
-  training_module_ = create_cnn_module(
+  training_module_ = training_compute_context_->create_object_detector(
       /* n */     options.value("batch_size"),
       /* c_in */  NUM_INPUT_CHANNELS,
       /* h_in */  GRID_SIZE * SPATIAL_REDUCTION,
@@ -522,21 +545,6 @@ void object_detector::init_train(gl_sframe data,
       /* w_out */ GRID_SIZE,
       get_training_config(),
       std::move(model_params));
-
-  // Report to the user what GPU(s) is being used.
-  std::vector<std::string> gpu_names = training_module_->gpu_names();
-  if (gpu_names.empty()) {
-    logprogress_stream << "Using CPU to create model";
-  } else {
-    std::string gpu_names_string = gpu_names[0];
-    for (size_t i = 1; i < gpu_names.size(); ++i) {
-      gpu_names_string += ", " + gpu_names[i];
-    }
-    logprogress_stream << "Using "
-                       << (gpu_names.size() > 1 ? "GPUs" : "GPU")
-                       << " to create model ("
-                       << gpu_names_string << ")";
-  }
 
   // Print the header last, after any logging triggered by initialization above.
   if (training_table_printer_) {

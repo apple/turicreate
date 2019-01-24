@@ -11,10 +11,6 @@
 #include <logger/assertions.hpp>
 #include <unity/lib/image_util.hpp>
 
-#if defined(HAS_MPS) && !defined(TC_BUILD_IOS)
-#include <unity/toolkits/neural_net/mps_factory.hpp>
-#endif
-
 namespace turi {
 namespace neural_net {
 
@@ -51,24 +47,6 @@ std::ostream& operator<<(std::ostream& out, const image_box& box) {
 bool operator==(const image_annotation& a, const image_annotation& b) {
   return a.identifier == b.identifier && a.bounding_box == b.bounding_box &&
     a.confidence == b.confidence;
-}
-
-// static
-std::unique_ptr<image_augmenter> image_augmenter::create(const options& opts) {
-
-  std::unique_ptr<image_augmenter> result;
-
-#if defined(HAS_MPS) && !defined(TC_BUILD_IOS)
-
-  result = create_mps_image_augmenter(opts);
-
-#else
-
-  result.reset(new resize_only_image_augmenter(opts));
-
-#endif
-
-  return result;
 }
 
 image_augmenter::result resize_only_image_augmenter::prepare_images(
