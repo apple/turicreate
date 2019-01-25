@@ -104,12 +104,6 @@ class TCEvaluationHeader extends Component {
           {this.renderPrecision()}
           {this.renderRecall()}
           {this.renderF1Score()}
-          
-          <TCEvaluationHeaderCell type="amount"
-                                  name="NUM TRAIN"
-                                  onclick={this.clickNumTrain.bind(this)}
-                                  enabled={(this.props.sort_by == "test")}
-                                  direction={this.props.sort_direction}/>
           <TCEvaluationHeaderCell type="amount"
                                   name="NUM TEST"
                                   onclick={this.clickNumTest.bind(this)}

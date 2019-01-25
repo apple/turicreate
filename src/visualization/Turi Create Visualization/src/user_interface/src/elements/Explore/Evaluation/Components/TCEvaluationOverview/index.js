@@ -10,7 +10,7 @@ class TCEvaluationOverview extends Component {
   constructor(props){
     super(props)
 
-    this.formatDecimal = d3.format(".0f")
+    this.formatDecimal = d3.format(".2f")
     this.state={
       "accuracy": true,
       "f1_score": false,
@@ -25,7 +25,7 @@ class TCEvaluationOverview extends Component {
       returnMetrics.push(
         <TCEvaluationMetrics title={"Accuracy"}
                              value={this.formatDecimal(this.props.accuracy*100) + "%"}
-                             tooltip={"Predicted 9 out of 13"}/>
+                             tooltip={this.props.total_correct + " out of " + this.props.total_num + " predicted correctly"}/>
       )
     }
 
@@ -33,7 +33,7 @@ class TCEvaluationOverview extends Component {
       returnMetrics.push(
         <TCEvaluationMetrics title={"F1 Score"}
                              value={this.formatDecimal(((2*(this.props.recall * this.props.precision))/(this.props.recall + this.props.precision))*100) + "%"}
-                             tooltip={"Predicted 9 out of 13"}/>
+                             tooltip={"A harmonic average of precision and recall"}/>
       )
     }
 
@@ -41,7 +41,7 @@ class TCEvaluationOverview extends Component {
       returnMetrics.push(
         <TCEvaluationMetrics title={"Precision"}
                              value={this.formatDecimal(this.props.precision*100) + "%"}
-                             tooltip={"Predicted 9 out of 13"}/>
+                             tooltip={"Out of the labels predicted by the model, which were correct"}/>
       )
     }
 
@@ -49,7 +49,7 @@ class TCEvaluationOverview extends Component {
       returnMetrics.push(
         <TCEvaluationMetrics title={"Recall"}
                              value={this.formatDecimal(this.props.recall*100) + "%"}
-                             tooltip={"Predicted 9 out of 13"}/>
+                             tooltip={"Out of the correct labels, which were predicted by the model"}/>
       )
     }
 

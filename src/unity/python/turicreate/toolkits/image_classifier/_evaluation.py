@@ -122,7 +122,6 @@ def _filter_sframe(filters, row_type, mat_type, sf, evaluation):
 def __get_incorrects(label, sf, evaluation):
   conf_metric = evaluation["confidence_metric_for_threshold"]
   
-  sf = sf[sf[conf_metric] > evaluation["hesitant_threshold"]]
   sf = sf.filter_by([False], "correct")
   
   filtered_sframe = sf.filter_by([label], "target_label")
@@ -138,16 +137,14 @@ def __get_incorrects(label, sf, evaluation):
 def __get_corrects(sf, evaluation):
   conf_metric = evaluation["confidence_metric_for_threshold"]
   
-  sf = sf[sf[conf_metric] > evaluation["hesitant_threshold"]]
-  sf = sf.filter_by([False], "correct")
+  sf = sf.filter_by([True], "correct")
 
   unique_predictions = list(sf["target_label"].unique())
-
+  
   data = []
   for u in unique_predictions:
     u_filt = sf.filter_by([u], "predicted_label")
-    incorrects_sliced = u_filt[0:10]
-    data.append({"target": u, "images": list(incorrects_sliced["images"].apply(_image_conversion))})
+    data.append({"target": u, "images": list(u_filt["images"].apply(_image_conversion))})
   return {"data_spec": { "correct": data}}
 
 def _process_value(value, extended_sframe, proc, evaluation):

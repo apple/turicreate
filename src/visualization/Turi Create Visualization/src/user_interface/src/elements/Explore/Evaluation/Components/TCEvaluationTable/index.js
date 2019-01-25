@@ -127,10 +127,18 @@ class TCEvaluationTable extends Component {
     return 0;
   }
 
+  selectClassName = () =>{
+    if(this.props.footer_open) {
+      return "TCEvaluationTable TCEvaluationTableOpen";
+    }else{
+      return "TCEvaluationTable";
+    }
+  }
+
   render() {
     const max_test = this.maxValueNumTest();
     return (
-      <div className="TCEvaluationTable">
+      <div className={this.selectClassName()}>
           <TCEvaluationHeader accuracy_visible={this.props.accuracy_visible}
                               precision_visible={this.props.precision_visible}
                               f1_score_visible={this.props.f1_score_visible}

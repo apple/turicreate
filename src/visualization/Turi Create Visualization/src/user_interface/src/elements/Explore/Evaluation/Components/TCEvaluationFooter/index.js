@@ -7,43 +7,32 @@ import TCEvaluationConfusionTable from '../TCEvaluationConfusionTable';
 import TCEvaluationImageViewerContainer from '../TCEvaluationImageViewerContainer';
 
 class TCEvaluationFooter extends Component {
-  constructor(props){
-    super(props)
-    this.state = {
-      open: false
-    }
-  }
-
-  changeOpen = () => {
-    this.setState({
-      open:!this.state.open
-    });
-  }
 
   cssOpenStyleContainer = () => {
-    if(this.state.open){
-      return {"min-height":"50%"}
+    if(this.props.footer_open){
+      return {"min-height": parseInt((window.innerHeight/2), 10) + "px"}
     }
-
-
   }
 
   cssOpenStyleIcon = () => {
-    if(this.state.open){
+    if(this.props.footer_open){
       return {"transform":"rotate(-180deg)"}
     }
   }
 
   filterData = (element) => {
-    if(this.props.filter_confusion != null){
-      return element.actual == this.props.selected_actual && element.predicted == this.props.selected_prediction;
-    }else{
-      return true;
-    }
+    return element.actual == this.props.selected_actual && element.predicted == this.props.selected_prediction;
   }
 
   render_table = () => {
-    if((this.props.selected_actual == null) || (this.props.selected_prediction == null)){
+    if((this.props.selected_actual != null) && (this.props.selected_prediction != null)){
+      return (
+        <div>
+          <TCEvaluationImageViewerContainer reset={this.props.selectRowConfusions.bind(this, null, null)}
+                                            data={this.props.considerations.filter(this.filterData)[0]}/>
+        </div>
+      );
+    } else {
       return (
         <div>
           <TCEvaluationConfusionTable considerations={this.props.considerations}
@@ -52,13 +41,6 @@ class TCEvaluationFooter extends Component {
                                       sort_direction_confusions={this.props.sort_direction_confusions}
                                       updateSortByConfusion={this.props.updateSortByConfusion.bind(this)}
                                       selectRowConfusions={this.props.selectRowConfusions.bind(this)}/>
-        </div>
-      );  
-    } else {
-      return (
-        <div>
-          <TCEvaluationImageViewerContainer reset={this.props.selectRowConfusions.bind(this, null, null)}
-                                            data={this.props.considerations.filter(this.filterData)[0]}/>
         </div>
       );
     }
@@ -93,7 +75,7 @@ class TCEvaluationFooter extends Component {
       <div className="TCEvaluationFooter"
            style={this.cssOpenStyleContainer()}>
         <div className="TCEvaluationFooterContainer"
-             onClick={this.changeOpen.bind(this)}>
+             onClick={this.props.updateFooterOpen.bind(this)}>
           <div className="TCEvaluationFooterText">
             <div>
               Errors

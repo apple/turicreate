@@ -14,16 +14,17 @@ class TCEvaluation extends Component {
       "recall_visible": false,
       "sort_by": "class",
       "sort_direction": false,
-      incorrect_classification: this.props.spec.label_metrics.reduce(function(map, data) {
+      "incorrect_classification": this.props.spec.label_metrics.reduce(function(map, data) {
         map[data.label] = null;
         return map;
       }, {}),
-      correct_classification:[],
+      "correct_classification":[],
       "filter_confusion":null,
       "sort_by_confusions": "predicted",
       "sort_direction_confusions": false,
       "selected_actual_confusion": null,
-      "selected_actual_prediction": null
+      "selected_actual_prediction": null,
+      "footer_open": false
     }
   }
 
@@ -94,6 +95,12 @@ class TCEvaluation extends Component {
     });
   }
 
+  updateFooterOpen = () => {
+    this.setState({
+      footer_open:!this.state.footer_open
+    });
+  }
+
   summarySeedData = () => {
     return this.props.spec.label_metrics.map((data, index) => {
 
@@ -118,6 +125,22 @@ class TCEvaluation extends Component {
         dataArr["correct_images"] = correct_data;
         return dataArr;
     });
+  }
+
+  totalCorrect = () => {
+    var correct_num = 0;
+    for(var x = 0; x< this.props.spec.label_metrics.length; x++){
+      correct_num += this.props.spec.label_metrics[x].correct_count
+    }
+    return correct_num;
+  }
+
+  totalNum = () => {
+    var total_num = 0;
+    for(var x = 0; x< this.props.spec.label_metrics.length; x++){
+      total_num += this.props.spec.label_metrics[x].count
+    }
+    return total_num;
   }
 
   changeAccuracy = () =>{
@@ -185,7 +208,9 @@ class TCEvaluation extends Component {
                               changeAccuracy={this.changeAccuracy.bind(this)}
                               changePrecision={this.changePrecision.bind(this)}
                               changeRecall={this.changeRecall.bind(this)}
-                              changeF1Score={this.changeF1Score.bind(this)} />
+                              changeF1Score={this.changeF1Score.bind(this)}
+                              total_correct={this.totalCorrect()}
+                              total_num={this.totalNum()} />
         <TCEvaluationTable data={this.summarySeedData()}
                            accuracy_visible={this.state.accuracy_visible}
                            precision_visible={this.state.precision_visible}
@@ -196,6 +221,7 @@ class TCEvaluation extends Component {
                            updateSortDirection={this.updateSortDirection.bind(this)}
                            updateSortBy={this.updateSortBy.bind(this)}
                            filter_confusion={this.state.filter_confusion}
+                           footer_open={this.state.footer_open}
                            row_click={this.updatedSelectedRow.bind(this)}
                             />
         <TCEvaluationFooter considerations={this.createConsiderations()}
@@ -207,6 +233,8 @@ class TCEvaluation extends Component {
                             selectRowConfusions={this.selectRowConfusions.bind(this)}
                             selected_actual={this.state.selected_actual_confusion}
                             selected_prediction={this.state.selected_actual_prediction}
+                            footer_open={this.state.footer_open}
+                            updateFooterOpen={this.updateFooterOpen.bind(this)}
                             />
       </div>
     );

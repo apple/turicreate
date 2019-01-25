@@ -17,7 +17,7 @@ class TCEvaluationCells extends Component {
       return (
         <div className="TCEvaluationCellsPercentShadedText"
              style={{"color": "#FFFFFF"}}>
-          {this.formatDecimal(this.props.value*100)}%
+          {this.formatDecimal(this.props.value*100)+"%"}
         </div>
       );
     }
@@ -38,8 +38,8 @@ class TCEvaluationCells extends Component {
     if(this.props.value < 0.5){
       return (
         <div className="TCEvaluationCellsPercentShadedText"
-             style={{"color": "#484856"}}>
-          {this.formatDecimal(this.props.value*100)}%
+             style={{"color": "#484856"}}> 
+          {this.formatDecimal(this.props.value*100)+"%"}
         </div>
       );
     }

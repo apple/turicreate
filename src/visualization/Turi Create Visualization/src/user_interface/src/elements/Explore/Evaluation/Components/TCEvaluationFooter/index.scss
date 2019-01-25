@@ -7,7 +7,7 @@ $transition-speed: 0.3s;
 	background: #FFFFFF;
 	box-shadow: 0 0 20px 0 #D4D7D9;
 	overflow: scroll;
-	max-height: 10%;
+	max-height: 75px;
 	min-height:0%;
 	transition:min-height $transition-speed ease-out;
 	height:auto;
