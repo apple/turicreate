@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega/v4.json",
-  "autosize": {"type": "fit", "resize": true, "contains": "padding"},
+  "autosize": {"type": "fit", "resize": false, "contains": "padding"},
   "axes": [
     {
       "scale": "x",
@@ -104,9 +104,9 @@
       "nice": false
     }
   ],
-  "height": 550,
-  "padding": 0,
-  "width": 720,
+  "height": {{height}},
+  "padding": 8,
+  "width": {{width}},
   "marks": [
     {
       "encode": {
