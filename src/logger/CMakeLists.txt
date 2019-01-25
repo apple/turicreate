@@ -17,5 +17,6 @@ make_library(logger
     boost
     timer
     parallel
+    stack_trace
     EXTERNAL_VISIBILITY
   )

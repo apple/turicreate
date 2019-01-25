@@ -1,25 +1,27 @@
 "config": {
     "axis": {
-        "labelFont": "HelveticaNeue, Arial",
-        "labelFontSize": 12,
-        "labelPadding": 10,
-        "labelColor": "rgba(0,0,0,0.65)",
-        "titleFont": "HelveticaNeue-Medium, Arial",
-        "titleFontWeight": "normal",
-        "titlePadding": 30,
-        "titleFontSize": 15,
-        "titleColor": "rgba(0,0,0,0.65)"
+        "gridColor": {{gridColor}},
+        "labelFont": {{labelFont}},
+        "labelFontSize": {{labelFontSize}},
+        "labelPadding": {{labelPadding}},
+        "labelColor": {{labelColor}},
+        "tickColor": {{tickColor}},
+        "titleFont": {{titleFont}},
+        "titleFontWeight": {{axisTitleFontWeight}},
+        "titlePadding": {{axisTitlePadding}},
+        "titleFontSize": {{axisTitleFontSize}},
+        "titleColor": {{titleColor}}
     },
     "axisY": {
         "minExtent": 30
     },
     "legend": {
-        "labelFont": "HelveticaNeue, Arial",
-        "labelColor": "rgba(0,0,0,0.65)",
-        "titleFont": "HelveticaNeue, Arial",
+        "labelFont": {{labelFont}},
+        "labelColor": {{labelColor}},
+        "titleFont": {{titleFont}},
         "cornerRadius": 30,
         "gradientLength": 608,
-        "titleColor": "rgba(0,0,0,0.65)"
+        "titleColor": {{titleColor}}
     },
     "range": {
         "heatmap": {
@@ -39,5 +41,12 @@
             "fontWeight": "normal",
             "fill": "rgba(0,0,0,0.65)"
         }
+    },
+    "title": {
+        "color": {{titleColor}},
+        "font": {{titleFont}},
+        "fontSize": {{titleFontSize}},
+        "fontWeight": {{titleFontWeight}},
+        "offset": {{titleOffset}}
     }
 }

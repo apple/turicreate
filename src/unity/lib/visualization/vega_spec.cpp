@@ -12,7 +12,6 @@
 #include <unity/lib/visualization/vega_spec/boxes_and_whiskers.h>
 #include <unity/lib/visualization/vega_spec/categorical.h>
 #include <unity/lib/visualization/vega_spec/categorical_heatmap.h>
-#include <unity/lib/visualization/vega_spec/config.h>
 #include <unity/lib/visualization/vega_spec/heatmap.h>
 #include <unity/lib/visualization/vega_spec/histogram.h>
 #include <unity/lib/visualization/vega_spec/scatter.h>
@@ -60,7 +59,7 @@ std::string extra_label_escape(const std::string& str, bool include_quotes){
  * by doing the following:
  * 1. Strips all newlines.
  */
-static std::string make_format_string(unsigned char *raw_format_str_ptr,
+std::string make_format_string(unsigned char *raw_format_str_ptr,
                                       size_t raw_format_str_len) {
   auto raw_format_str = std::string(
     reinterpret_cast<char *>(raw_format_str_ptr),
@@ -88,11 +87,6 @@ std::string format(const std::string& format_str, const std::unordered_map<std::
   for (const auto& it : format_params) {
     _format_impl(ret, it.first, it.second);
   }
-  // Also replace config from predefined config (maintained separately so we don't
-  // have to repeat the same config in each file, and we can make sure it stays
-  // consistent across the different plots)
-  static std::string config_str = make_format_string(vega_spec_config_json, vega_spec_config_json_len);
-  _format_impl(ret, "{{config}}", config_str);
   return ret;
 }
 

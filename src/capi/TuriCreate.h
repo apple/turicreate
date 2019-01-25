@@ -872,6 +872,29 @@ tc_variant* tc_function_call(
 /*                                                                            */
 /******************************************************************************/
 
+/*
+ * Bit flags to configure plot variations.
+ * The bit layout is as follows:
+ * The first 4 bits (1 hex digit) represents size.
+ * The next 4 bits (1 hex digit) represents color mode (light/dark).
+ * Zeroes in any set of bits imply defaults should be used.
+ * To apply multiple flags, simply OR them together.
+ * (Note: only a single flag within each bit range should be used.)
+ */
+typedef enum {
+    tc_plot_variation_default   = 0x00,
+
+    // Sizes (defaults to medium)
+    //tc_plot_size_small        = 0x01,
+    tc_plot_size_medium         = 0x02,
+
+    // Color variations
+    // default could be light/dark depending on OS settings
+    tc_plot_color_light         = 0x10,
+    tc_plot_color_dark          = 0x20,
+
+} tc_plot_variation;
+
 // Single SArray view (`.show` on an SArray)
 tc_plot* tc_plot_create_1d(const tc_sarray* sa,
                            const char* title,
@@ -894,15 +917,15 @@ tc_plot* tc_plot_create_2d(const tc_sarray* sa_x,
                            const tc_parameters* params,
                            tc_error** error);
 
-// SFrame summary view (`.show` on an SFrame)
-tc_plot* tc_plot_create_sframe_summary(const tc_sframe* sf, const tc_parameters* params, tc_error** error);
-
 // returns true if no further computation can be done on this stream
 // (should probably be used as a loop condition)
 bool tc_plot_finished_streaming(const tc_plot* plot, const tc_parameters *params, tc_error** error);
 
 // returns a flex string containing the Vega JSON spec for this plot
-tc_flexible_type* tc_plot_get_vega_spec(const tc_plot* plot, const tc_parameters *params, tc_error** error);
+tc_flexible_type* tc_plot_get_vega_spec(const tc_plot* plot,
+                                        tc_plot_variation variation,
+                                        const tc_parameters *params,
+                                        tc_error** error);
 
 // computes the next batch of results, and returns a flex string of JSON data
 tc_flexible_type* tc_plot_get_next_data(const tc_plot* plot, const tc_parameters *params, tc_error** error); 
