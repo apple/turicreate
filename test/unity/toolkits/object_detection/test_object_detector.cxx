@@ -449,7 +449,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
   // mocked-out method has been called.
 }
     
-BOOST_AUTO_TEST_CASE(test_object_detector_export_corml_with_nms) {
+BOOST_AUTO_TEST_CASE(test_object_detector_export_coreml_with_nms) {
     
     const std::string test_annotations_name = "test_annotations";
     const std::string test_image_name = "test_image";
