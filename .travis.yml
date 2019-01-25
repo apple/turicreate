@@ -33,9 +33,6 @@ env:
     - CXX=g++-5
 
 script:
-  # TODO - not sure why this is necessary. Is it?
-  - sudo ln -s /usr/bin/gcc-5 /usr/local/bin/gcc
-  - sudo ln -s /usr/bin/g++-5 /usr/local/bin/g++
   # We sometimes get `error: No space left on device`
   # The workaround seems to be to force blocking I/O
   # See https://github.com/travis-ci/travis-ci/issues/8902 and
