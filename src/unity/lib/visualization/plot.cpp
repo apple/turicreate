@@ -2,13 +2,16 @@
 #include <memory>
 
 #include "plot.hpp"
+#include <unity/lib/visualization/dark_mode.hpp>
 #include <unity/lib/visualization/process_wrapper.hpp>
 #include <unity/lib/visualization/thread.hpp>
 #include <unity/lib/visualization/transformation.hpp>
 #include <unity/lib/visualization/vega_data.hpp>
+#include <unity/lib/visualization/vega_spec.hpp>
 #include <unity/lib/visualization/histogram.hpp>
 #include <unity/lib/visualization/item_frequency.hpp>
 #include <unity/lib/visualization/summary_view.hpp>
+#include <unity/lib/visualization/vega_spec/config.h>
 #include <sstream>
 
 namespace turi{
@@ -68,8 +71,57 @@ namespace turi{
     }
 
     std::string Plot::get_spec(tc_plot_variation variation) {
-      (void)variation; // TODO support multiple variations
-      return m_vega_spec;
+      // Replace config from predefined config (maintained separately so we don't
+      // have to repeat the same config in each file, and we can make sure it stays
+      // consistent across the different plots)
+      std::string ret = m_vega_spec;
+      static std::string config_str = make_format_string(vega_spec_config_json, vega_spec_config_json_len);
+      ret = format(ret, {{"{{config}}", config_str}});
+
+      // Apply templated configuration values based on variation
+
+      // Defaults
+      std::string gridColor = escape_string("rgba(204,204,204,1.0)");
+      std::string axisTitlePadding = "20";
+      std::string axisTitleFontSize = "14";
+      std::string axisTitleFontWeight = escape_string("normal");
+      std::string labelColor = escape_string("rgba(0,0,0,0.847)");
+      std::string labelFont = escape_string("\"San Francisco\", HelveticaNeue, Arial");
+      std::string labelFontSize = "12";
+      std::string labelPadding = "10";
+      std::string titleColor = labelColor;
+      std::string titleFont = labelFont;
+      std::string titleFontWeight = escape_string("normal");
+      std::string titleFontSize = "18";
+      std::string titleOffset = "30";
+      std::string tickColor = escape_string("rgb(136,136,136)");
+
+      // Overrides for dark mode
+      tc_plot_variation color_variation = (tc_plot_variation)((uint32_t)variation & 0xf0);
+      if (color_variation == tc_plot_color_dark ||
+          (color_variation == tc_plot_variation_default && is_system_dark_mode())) {
+        labelColor = escape_string("rgba(255,255,255,0.847)");
+        gridColor = escape_string("rgba(255,255,255,0.098)");
+        titleColor = labelColor;
+        tickColor = escape_string("#A4AAAD");
+      }
+
+      return format(ret, {
+        {"{{gridColor}}", gridColor},
+        {"{{axisTitlePadding}}", axisTitlePadding},
+        {"{{axisTitleFontSize}}", axisTitleFontSize},
+        {"{{axisTitleFontWeight}}", axisTitleFontWeight},
+        {"{{labelColor}}", labelColor},
+        {"{{labelFont}}", labelFont},
+        {"{{labelFontSize}}", labelFontSize},
+        {"{{labelPadding}}", labelPadding},
+        {"{{titleColor}}", titleColor},
+        {"{{titleFont}}", titleFont},
+        {"{{titleFontSize}}", titleFontSize},
+        {"{{titleFontWeight}}", titleFontWeight},
+        {"{{titleOffset}}", titleOffset},
+        {"{{tickColor}}", tickColor},
+      });
     }
   }
 

@@ -884,15 +884,14 @@ tc_variant* tc_function_call(
 typedef enum {
     tc_plot_variation_default   = 0x00,
 
-    // Sizes
-    tc_plot_size_default        = 0x01, // defaults to medium
-    //tc_plot_size_small        = 0x02,
-    tc_plot_size_medium         = 0x03,
+    // Sizes (defaults to medium)
+    //tc_plot_size_small        = 0x01,
+    tc_plot_size_medium         = 0x02,
 
     // Color variations
-    tc_plot_color_default       = 0x10, // could be light/dark depending on OS settings
-    tc_plot_color_light         = 0x20,
-    //tc_plot_color_dark        = 0x30,
+    // default could be light/dark depending on OS settings
+    tc_plot_color_light         = 0x10,
+    tc_plot_color_dark          = 0x20,
 
 } tc_plot_variation;
 

@@ -38,9 +38,9 @@ namespace turi {
         std::string get_data();
 
         BEGIN_CLASS_MEMBER_REGISTRATION("_Plot")
-        REGISTER_CLASS_MEMBER_FUNCTION(Plot::show, "path_to_client")
+        REGISTER_CLASS_MEMBER_FUNCTION(Plot::show, "path_to_client", "variation")
         REGISTER_CLASS_MEMBER_FUNCTION(Plot::materialize)
-        REGISTER_CLASS_MEMBER_FUNCTION(Plot::get_spec)
+        REGISTER_CLASS_MEMBER_FUNCTION(Plot::get_spec, "variation")
         REGISTER_CLASS_MEMBER_FUNCTION(Plot::get_data)
         END_CLASS_MEMBER_REGISTRATION
     };

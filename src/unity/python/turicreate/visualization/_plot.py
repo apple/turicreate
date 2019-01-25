@@ -128,7 +128,11 @@ class Plot(object):
                      raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
 
                 path_to_client = _get_client_app_path()
-                self.__proxy__.call_function('show', {'path_to_client': path_to_client})
+
+                # TODO: allow autodetection of light/dark mode.
+                # Disabled for now, since the GUI side needs some work (ie. background color).
+                plot_variation = 0x10 # force light mode
+                self.__proxy__.call_function('show', {'path_to_client': path_to_client, 'variation': plot_variation})
 
     def save(self, filepath):
         """

@@ -12,6 +12,7 @@ make_library(
     batch_size.cpp
     boxes_and_whiskers.cpp
     categorical_heatmap.cpp
+    dark_mode.cpp
     escape.cpp
     groupby.cpp
     heatmap.cpp
