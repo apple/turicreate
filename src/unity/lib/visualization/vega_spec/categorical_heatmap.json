@@ -52,13 +52,7 @@
       "fill": "color"
     }
   ],
-  "title": {
-    "text": "{{title}}",
-    "frame": "group",
-    "fontSize": 16,
-    "anchor": "middle",
-    "offset": 4
-  },
+  "title": {{title}},
   "scales": [
     {
       "range": [

@@ -5,10 +5,7 @@
   "width": {{width}},
   "height": {{height}},
   "style": "cell",
-  "title": {
-    "text": "{{title}}",
-    "offset": 30
-  },
+  "title": {{title}},
   "data": [
     {
       "name": "source_2"

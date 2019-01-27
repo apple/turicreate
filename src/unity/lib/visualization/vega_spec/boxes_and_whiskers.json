@@ -27,9 +27,7 @@
       ]
     }
   },
-  "title": {
-    "text": "{{title}}"
-  },
+  "title": {{title}},
   "height": {{height}},
   "style": "cell",
   "data": [
