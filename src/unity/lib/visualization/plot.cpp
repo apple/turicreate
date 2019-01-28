@@ -122,6 +122,18 @@ namespace turi{
         labelPadding = "4";
         titleFontSize = "13";
         titleOffset = "16";
+      } else if (size_variation == tc_plot_size_large) {
+        // Large size is 960x840
+        width = "960";
+        height = "840";
+        axisTitleFontSize = "22";
+        axisTitleFontWeight = escape_string("bold");
+        axisTitlePadding = "18";
+        labelFontSize = "18";
+        labelPadding = "18";
+        titleFontSize = "26";
+        titleFontWeight = escape_string("bold");
+        titleOffset = "30";
       }
 
       return format(ret, {
