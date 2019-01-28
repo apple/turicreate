@@ -15,7 +15,7 @@ namespace turi {
   namespace visualization {
 
     std::string histogram_spec(const flexible_type& title, const flexible_type& xlabel, const flexible_type& ylabel, flex_type_enum dtype);
-    std::string categorical_spec(size_t length_list, const flexible_type& title, const flexible_type& xlabel, const flexible_type& ylabel, flex_type_enum dtype);
+    std::string categorical_spec(const flexible_type& title, const flexible_type& xlabel, const flexible_type& ylabel, flex_type_enum dtype);
     std::string summary_view_spec(size_t length_elements);
     std::string scatter_spec(const flexible_type& xlabel, const flexible_type& ylabel, const flexible_type& title);
     std::string heatmap_spec(const flexible_type& xlabel, const flexible_type& ylabel, const flexible_type& title);
@@ -23,6 +23,8 @@ namespace turi {
     std::string boxes_and_whiskers_spec(const flexible_type& xlabel, const flexible_type& ylabel, const flexible_type& title);
 
     // Utility for escaping JSON string literals. Not concerned with Vega implications of the contents of those strings.
+    std::string make_format_string(unsigned char *raw_format_str_ptr,
+                                           size_t raw_format_str_len);
     std::string escape_string(const std::string& str, bool include_quotes=true);
     std::string replace_all(std::string str, const std::string& from, const std::string& to);
     std::string extra_label_escape(const std::string& str, bool include_quotes=true);

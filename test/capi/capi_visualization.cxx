@@ -90,7 +90,7 @@ class capi_test_visualization {
             tc_error *error = nullptr;
             tc_plot *actual_obj = tc_plot_create_1d(m_sa_int, "foo", "bar", "baz", nullptr, &error);
             CAPI_CHECK_ERROR(error);
-            tc_flexible_type *actual_spec_ft = tc_plot_get_vega_spec(actual_obj, nullptr, &error);
+            tc_flexible_type *actual_spec_ft = tc_plot_get_vega_spec(actual_obj, tc_plot_variation_default, nullptr, &error);
             CAPI_CHECK_ERROR(error);
             const char *actual_spec_data = tc_ft_string_data(actual_spec_ft, &error);
             CAPI_CHECK_ERROR(error);
@@ -121,7 +121,7 @@ class capi_test_visualization {
             error = nullptr;
             actual_obj = tc_plot_create_1d(m_sa_float, nullptr, nullptr, nullptr, nullptr, &error);
             CAPI_CHECK_ERROR(error);
-            actual_spec_ft = tc_plot_get_vega_spec(actual_obj, nullptr, &error);
+            actual_spec_ft = tc_plot_get_vega_spec(actual_obj, tc_plot_variation_default, nullptr, &error);
             CAPI_CHECK_ERROR(error);
             actual_spec_data = tc_ft_string_data(actual_spec_ft, &error);
             CAPI_CHECK_ERROR(error);
@@ -152,7 +152,7 @@ class capi_test_visualization {
             error = nullptr;
             actual_obj = tc_plot_create_1d(m_sa_str, "foo", "bar", "baz", nullptr, &error);
             CAPI_CHECK_ERROR(error);
-            actual_spec_ft = tc_plot_get_vega_spec(actual_obj, nullptr, &error);
+            actual_spec_ft = tc_plot_get_vega_spec(actual_obj, tc_plot_variation_default, nullptr, &error);
             CAPI_CHECK_ERROR(error);
             actual_spec_data = tc_ft_string_data(actual_spec_ft, &error);
             CAPI_CHECK_ERROR(error);
@@ -185,7 +185,7 @@ class capi_test_visualization {
             tc_error *error = nullptr;
             tc_plot *actual_obj = tc_plot_create_2d(m_sa_int, m_sa_float, "foo", "bar", "baz", nullptr, &error);
             CAPI_CHECK_ERROR(error);
-            tc_flexible_type *actual_spec_ft = tc_plot_get_vega_spec(actual_obj, nullptr, &error);
+            tc_flexible_type *actual_spec_ft = tc_plot_get_vega_spec(actual_obj, tc_plot_variation_default, nullptr, &error);
             CAPI_CHECK_ERROR(error);
             const char *actual_spec_data = tc_ft_string_data(actual_spec_ft, &error);
             CAPI_CHECK_ERROR(error);
@@ -216,7 +216,7 @@ class capi_test_visualization {
             error = nullptr;
             actual_obj = tc_plot_create_2d(m_sa_float_10k, m_sa_float_10k, "foo", "bar", "baz", nullptr, &error);
             CAPI_CHECK_ERROR(error);
-            actual_spec_ft = tc_plot_get_vega_spec(actual_obj, nullptr, &error);
+            actual_spec_ft = tc_plot_get_vega_spec(actual_obj, tc_plot_variation_default, nullptr, &error);
             CAPI_CHECK_ERROR(error);
             actual_spec_data = tc_ft_string_data(actual_spec_ft, &error);
             CAPI_CHECK_ERROR(error);
@@ -247,7 +247,7 @@ class capi_test_visualization {
             error = nullptr;
             actual_obj = tc_plot_create_2d(m_sa_float, m_sa_str, "foo", "bar", "baz", nullptr, &error);
             CAPI_CHECK_ERROR(error);
-            actual_spec_ft = tc_plot_get_vega_spec(actual_obj, nullptr, &error);
+            actual_spec_ft = tc_plot_get_vega_spec(actual_obj, tc_plot_variation_default, nullptr, &error);
             CAPI_CHECK_ERROR(error);
             actual_spec_data = tc_ft_string_data(actual_spec_ft, &error);
             CAPI_CHECK_ERROR(error);
@@ -278,7 +278,7 @@ class capi_test_visualization {
             error = nullptr;
             actual_obj = tc_plot_create_2d(m_sa_str, m_sa_str, "foo", "bar", "baz", nullptr, &error);
             CAPI_CHECK_ERROR(error);
-            actual_spec_ft = tc_plot_get_vega_spec(actual_obj, nullptr, &error);
+            actual_spec_ft = tc_plot_get_vega_spec(actual_obj, tc_plot_variation_default, nullptr, &error);
             CAPI_CHECK_ERROR(error);
             actual_spec_data = tc_ft_string_data(actual_spec_ft, &error);
             CAPI_CHECK_ERROR(error);
@@ -310,7 +310,7 @@ class capi_test_visualization {
             tc_error *error = nullptr;
             tc_plot *actual_obj = tc_plot_create_sframe_summary(m_sf_float, nullptr, &error);
             CAPI_CHECK_ERROR(error);
-            tc_flexible_type *actual_spec_ft = tc_plot_get_vega_spec(actual_obj, nullptr, &error);
+            tc_flexible_type *actual_spec_ft = tc_plot_get_vega_spec(actual_obj, tc_plot_variation_default, nullptr, &error);
             CAPI_CHECK_ERROR(error);
             const char *actual_spec_data = tc_ft_string_data(actual_spec_ft, &error);
             CAPI_CHECK_ERROR(error);

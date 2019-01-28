@@ -1,14 +1,11 @@
 {
   "$schema": "https://vega.github.io/schema/vega/v4.json",
-  "autosize": {"type": "fit", "resize": true, "contains": "padding"},
-  "padding": 5,
-  "width": 720,
-  "height": 550,
+  "autosize": {"type": "fit", "resize": false, "contains": "padding"},
+  "padding": 8,
+  "width": {{width}},
+  "height": {{height}},
   "style": "cell",
-  "title": {
-    "text": "{{title}}",
-    "offset": 30
-  },
+  "title": {{title}},
   "data": [
     {
       "name": "source_2"
