@@ -5,6 +5,7 @@
  */
 #include "vega_spec.hpp"
 
+#include <capi/TuriCreate.h>
 #include <logger/assertions.hpp>
 #include <flexible_type/string_escape.hpp>
 
@@ -96,7 +97,7 @@ static std::string label_or_default(const flexible_type& label,
     // undefined should render as null in JSON
     return "null";
 
-  } else if (label == "__TURI_DEFAULT_LABEL") {
+  } else if (label == tc_plot_title_default_label) {
     // substitute the default label
     return extra_label_escape(_default, false /* include_quotes */);
 
@@ -110,7 +111,7 @@ static std::string title_or_default(const flexible_type& title, const std::strin
   if (title == FLEX_UNDEFINED) {
     // undefined/not provided should render as null in JSON
     return "null";
-  } else if (title == "__TURI_DEFAULT_LABEL") {
+  } else if (title == tc_plot_title_default_label) {
     return extra_label_escape(default_title, true /* include_quotes */);
   } else {
     // user-provided label should render with quotes/escaping
@@ -123,7 +124,7 @@ static std::string title_or_default(const flexible_type& title, const std::strin
   if (title == FLEX_UNDEFINED) {
     // undefined/not provided should render as null in JSON
     return "null";
-  } else if (title == "__TURI_DEFAULT_LABEL") {
+  } else if (title == tc_plot_title_default_label) {
     return extra_label_escape(xlabel + " vs. " + ylabel, true /* include_quotes */);
   } else {
     // user-provided label should render with quotes/escaping
