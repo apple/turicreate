@@ -19,7 +19,7 @@
     }
   },
   "width": {{width}},
-  "height": {{computed_height}},
+  "height": {{height}},
   "title": {{title}},
   "style": "cell",
   "data": [
@@ -151,9 +151,10 @@
       "domain": {
         "data": "data_0",
         "field": "label",
-        "sort": {
-          "op": "mean",
-          "field": "count"
+        "sort":{
+          "op":"mean",
+          "field":"label_idx",
+          "order":"descending"
         }
       },
       "range": [
