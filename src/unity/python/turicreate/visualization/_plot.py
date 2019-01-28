@@ -168,12 +168,12 @@ class Plot(object):
 
         if filepath.endswith(".json"):
             # save as vega json
-            spec = self._get_vega(include_data = True)
+            spec = self.get_vega(include_data = True)
             with open(filepath, 'w') as fp:
                 _json.dump(spec, fp)
         elif filepath.endswith(".png") or filepath.endswith(".svg"):
             # save as png/svg, but json first
-            spec = self._get_vega(include_data = True)
+            spec = self.get_vega(include_data = True)
             EXTENSION_START_INDEX = -3
             extension = filepath[EXTENSION_START_INDEX:]
             temp_file_tuple = _mkstemp()
@@ -240,25 +240,23 @@ class Plot(object):
             raise NotImplementedError("filename must end in" +
                 " .json, .svg, or .png")
 
-    def _get_data(self):
+    def get_data(self):
         return _json.loads(self.__proxy__.call_function('get_data'))
 
-    def _get_vega(self, include_data=True):
-        if(include_data):
-            spec = _json.loads(self.__proxy__.call_function('get_spec'))
-            data = _json.loads(self.__proxy__.call_function('get_data'))
-            for x in range(len(spec["data"])):
-                if(spec["data"][x]["name"] == "source_2"):
-                    spec["data"][x] = data
-                    break
-            return spec
-        else:
-            return _json.loads(self.__proxy__.call_function('get_spec'))
+    def get_vega(self, include_data=True):
+        # TODO: allow autodetection of light/dark mode.
+        # Disabled for now, since the GUI side needs some work (ie. background color).
+        plot_variation = 0x10 # force light mode
+        return _json.loads(self.__proxy__.call_function('get_spec', {'include_data': include_data, 'variation': plot_variation}))
+
+    def materialize(self):
+        self.__proxy__.call_function('materialize')
 
     def _repr_javascript_(self):
         from IPython.core.display import display, HTML
 
-        vega_spec = self._get_vega(True)
+        self.materialize()
+        vega_spec = self.get_vega(True)
 
         vega_html = '<html lang="en"> \
                         <head> \

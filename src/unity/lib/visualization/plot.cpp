@@ -70,7 +70,8 @@ namespace turi{
       return vd.get_data_spec(100 /* percent_complete */);
     }
 
-    std::string Plot::get_spec(tc_plot_variation variation) {
+    std::string Plot::get_spec(tc_plot_variation variation,
+                               bool include_data) {
       // Replace config from predefined config (maintained separately so we don't
       // have to repeat the same config in each file, and we can make sure it stays
       // consistent across the different plots)
@@ -95,6 +96,7 @@ namespace turi{
       std::string titleFontSize = "18";
       std::string titleOffset = "30";
       std::string tickColor = escape_string("rgb(136,136,136)");
+      std::string data = "";
 
       // Default (medium) size is 720x550
       std::string width = "720";
@@ -136,6 +138,11 @@ namespace turi{
         titleOffset = "30";
       }
 
+      // Override for data inclusion
+      if (include_data) {
+        data = ", \"values\": [" + m_transformer->get()->vega_column_data() + "]";
+      }
+
       return format(ret, {
         {"{{gridColor}}", gridColor},
         {"{{axisTitlePadding}}", axisTitlePadding},
@@ -153,6 +160,7 @@ namespace turi{
         {"{{tickColor}}", tickColor},
         {"{{width}}", width},
         {"{{height}}", height},
+        {"{{pre_filled_data_values}}", data},
       });
     }
   }
