@@ -27,7 +27,8 @@ namespace turi {
         void materialize();
 
         // vega specification
-        std::string get_spec(tc_plot_variation variation = tc_plot_variation_default);
+        std::string get_spec(tc_plot_variation variation=tc_plot_variation_default,
+                             bool include_data=false);
 
         // streaming data aggregation
         double get_percent_complete() const; // out of 1.0
@@ -40,7 +41,7 @@ namespace turi {
         BEGIN_CLASS_MEMBER_REGISTRATION("_Plot")
         REGISTER_CLASS_MEMBER_FUNCTION(Plot::show, "path_to_client", "variation")
         REGISTER_CLASS_MEMBER_FUNCTION(Plot::materialize)
-        REGISTER_CLASS_MEMBER_FUNCTION(Plot::get_spec, "variation")
+        REGISTER_CLASS_MEMBER_FUNCTION(Plot::get_spec, "variation", "include_data")
         REGISTER_CLASS_MEMBER_FUNCTION(Plot::get_data)
         END_CLASS_MEMBER_REGISTRATION
     };
