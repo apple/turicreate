@@ -80,7 +80,15 @@ def convert_reshape(net, node, module, builder):
     input_name, output_name = _get_input_output_name(net, node)
     name = node['name']
     param = _get_attr(node)
+    # print('param')
+    # print(param)
     target_shape = literal_eval(param['shape'])
+    # print('target_shape')
+    # print(target_shape)
+    if param['shape'] == '(0, -1)':
+        convert_flatten(net, node, module, builder)
+        # import pdb; pdb.set_trace()
+        return
 
     if any(item <= 0 for item in target_shape):
         raise NotImplementedError('Special dimensional values less than or equal to 0 are not supported yet.'
@@ -745,7 +753,7 @@ def convert_slice_axis(net, node, module, builder):
                       output_name=output_name)
 
 
-def convert_softmax(net, node, module, builder):
+def convert_softmax_2(net, node, module, builder):
     input_name, output_name = _get_input_output_name(net, node)
     name = node['name']
     param = _get_attr(node)

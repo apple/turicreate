@@ -15,34 +15,6 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 
 _TMP_COL_RANDOM_ORDER = '_random_order'
 
-
-def _convert_image_to_raw(image):
-    # Decode image and make sure it has 3 channels
-    return _tc.image_analysis.resize(image, image.width, image.height, 3, decode=True)
-
-def _is_rectangle_annotation(ann):
-    return 'type' not in ann or ann['type'] == 'rectangle'
-
-
-def _is_valid_annotation(ann):
-    if not isinstance(ann, dict):
-        return False
-    if not _is_rectangle_annotation(ann):
-        # Not necessarily valid, but we bypass stricter checks (we simply do
-        # not care about non-rectangle types)
-        return True
-    return ('coordinates' in ann and
-            isinstance(ann['coordinates'], dict) and
-            set(ann['coordinates'].keys()) == {'x', 'y', 'width', 'height'} and
-            ann['coordinates']['width'] > 0 and
-            ann['coordinates']['height'] > 0 and
-            'label' in ann)
-
-
-def _is_valid_annotations_list(anns):
-    return all([_is_valid_annotation(ann) for ann in anns])
-
-
 # Encapsulates an SFrame, iterating over each row and returning an
 # (image, label, index) tuple.
 class _SFrameDataSource:
@@ -82,14 +54,18 @@ class _SFrameDataSource:
         row = self.sframe[row_index]
 
         turi_image = row[self.feature_column]        
+        image = turi_image
         # yeah, let's keep it like this for now.
-        if turi_image.channels!=3:
-            turi_image = _convert_image_to_raw(turi_image)
-        image = turi_image.pixel_data
+        # if turi_image.channels!=3:
+        #     turi_image = _convert_image_to_raw(turi_image)
+        # image = turi_image.pixel_data
 
         # Copy the annotated bounding boxes for this image, if requested.
         if self.load_labels:
             label = row[self.annotations_column]
+            # print(label)
+            # print(type(label))
+            # import pdb; pdb.set_trace()
             if label == None:
                 label = []
             elif type(label) == dict:
@@ -196,12 +172,12 @@ class SFrameRecognitionIter(_mx.io.DataIter):
     def __init__(self,
                  sframe,
                  batch_size,
+                 # class_to_index,
                  input_shape = [28,28],
                  # output_shape,
                  # anchors,
                  feature_column='bitmap',
-                 annotation_column='label',
-                 # class_to_index,
+                 annotations_column='label',
                  # aug_params={},
                  # loader_type='augmented',
                  load_labels=True,
@@ -254,7 +230,7 @@ class SFrameRecognitionIter(_mx.io.DataIter):
         # self.output_shape = output_shape
         # self.num_classes = num_classes
         # self.anchors = anchors
-        self.class_to_index = class_to_index
+        # self.class_to_index = class_to_index
         self.cur_iteration = 0
         self.num_epochs = epochs
         self.num_iterations = iterations
@@ -377,12 +353,17 @@ class SFrameRecognitionIter(_mx.io.DataIter):
                     pad = self.batch_size - b
                     for p in range(pad):
                         images.append(_mx.nd.zeros(images[0].shape))
-                        ymaps.append(_mx.nd.zeros(ymaps[0].shape))
+                        labels.append(0)
+                        # labels.append(_mx.nd.zeros(labels[0].shape))
+                        # ymaps.append(_mx.nd.zeros(ymaps[0].shape))
                         indices.append(0)
                         orig_shapes.append([0, 0, 0])
                     break
 
             raw_image, label, cur_sample = row
+            # print('label in _next')
+            # print(label)
+            # print(type(label))
 
             orig_image = _mx.nd.array(raw_image)
             image = orig_image
@@ -437,7 +418,10 @@ class SFrameRecognitionIter(_mx.io.DataIter):
             # classes.append(bbox[:, 0].astype(_np.int32))
 
         b_images = _mx.nd.stack(*images)
-        b_labels = _mx.nd.stack(*labels)
+        try:
+            b_labels = _mx.nd.array(labels, dtype=type(labels[0]))
+        except:
+            b_labels = _mx.nd.array(labels)
         b_indices = _mx.nd.array(indices)
         b_orig_shapes = _mx.nd.array(orig_shapes)
 

@@ -124,7 +124,8 @@ def _get_layer_converter_fn(layer):
 
 
 def convert(model, input_shape, class_labels=None, mode=None,
-            preprocessor_args=None, builder=None, verbose=True):
+            preprocessor_args=None, builder=None, verbose=True,
+            is_drawing_recognition=False):
     """Convert an MXNet model to the protobuf spec.
 
     Parameters
@@ -187,9 +188,18 @@ def convert(model, input_shape, class_labels=None, mode=None,
         shape_dict[op] = shapes[0][idx]
     for idx, op in enumerate(output_names):
         shape_dict[op] = shapes[1][idx]
+        # if is_drawing_recognition:
+        #     shape_dict['probabilities'] = shapes[1][idx]
     for idx, op in enumerate(aux_names):
         shape_dict[op] = shapes[2][idx]
     
+    # if is_drawing_recognition:
+    #     assert (len(output_names) == 1)
+    #     assert (output_names[0].endswith('_softmax0_output'))
+    #     output_names = ['probabilities']
+    # print('output_names')
+    # print(output_names)
+
     # Get the inputs and outputs
     output_dims = shapes[1]
     if mode is None:
@@ -207,6 +217,8 @@ def convert(model, input_shape, class_labels=None, mode=None,
     net = _json.loads(net.tojson())
     nodes = net['nodes']
 
+    # print('shape_dict')
+    # print(shape_dict)
     for i, node in enumerate(nodes):
         node['id'] = i
 
@@ -241,11 +253,14 @@ def convert(model, input_shape, class_labels=None, mode=None,
     for idx, node in enumerate(nodes):
         op = node['op']
         if op == 'null' or op in _MXNET_SKIP_LAYERS:
+            # print("skipping " + op)
             continue
         name = node['name']
         if verbose:
             print("%d : %s, %s" % (idx, name, op))
         converter_func = _get_layer_converter_fn(op)
+        # print('node')
+        # print(node)
         converter_func(net, node, model, builder)
 
     # Only finalize builder if it was created internally. Otherwise, leave it
