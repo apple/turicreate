@@ -1,0 +1,303 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v4.json", 
+  "autosize": "pad", 
+  "axes": [
+    {
+      "labelOverlap": true, 
+      "orient": "bottom", 
+      "scale": "x", 
+      "tickCount": {
+        "signal": "ceil(width/40)"
+      }, 
+      "title": "Values", 
+      "zindex": 1
+    }, 
+    {
+      "domain": false, 
+      "grid": true, 
+      "gridScale": "y", 
+      "labels": false, 
+      "maxExtent": 0, 
+      "minExtent": 0, 
+      "orient": "bottom", 
+      "scale": "x", 
+      "tickCount": {
+        "signal": "ceil(width/40)"
+      }, 
+      "ticks": false, 
+      "zindex": 0
+    }, 
+    {
+      "labelOverlap": true, 
+      "orient": "left", 
+      "scale": "y", 
+      "tickCount": {
+        "signal": "ceil(height/40)"
+      }, 
+      "title": "Count", 
+      "zindex": 1
+    }, 
+    {
+      "domain": false, 
+      "grid": true, 
+      "gridScale": "x", 
+      "labels": false, 
+      "maxExtent": 0, 
+      "minExtent": 0, 
+      "orient": "left", 
+      "scale": "y", 
+      "tickCount": {
+        "signal": "ceil(height/40)"
+      }, 
+      "ticks": false, 
+      "zindex": 0
+    }
+  ], 
+  "config": {
+    "axis": {
+      "labelColor": "rgba(0,0,0,0.65)", 
+      "labelFont": "HelveticaNeue, Arial", 
+      "labelFontSize": 12, 
+      "labelPadding": 10, 
+      "titleColor": "rgba(0,0,0,0.65)", 
+      "titleFont": "HelveticaNeue-Medium, Arial", 
+      "titleFontSize": 15, 
+      "titleFontWeight": "normal", 
+      "titlePadding": 30
+    }, 
+    "axisY": {
+      "minExtent": 30
+    }, 
+    "style": {
+      "group-title": {
+        "fill": "rgba(0,0,0,0.65)", 
+        "font": "HelveticaNeue, Arial", 
+        "fontSize": 29, 
+        "fontWeight": "normal"
+      }, 
+      "rect": {
+        "stroke": "rgba(200, 200, 200, 0.5)"
+      }
+    }
+  }, 
+  "data": [
+    {
+      "name": "source_2", 
+      "progress": 100.0, 
+      "values": [
+        {
+          "count": 67, 
+          "left": -0.0583308, 
+          "right": 0.465386
+        }, 
+        {
+          "count": 20, 
+          "left": 0.465386, 
+          "right": 0.989103
+        }, 
+        {
+          "count": 418, 
+          "left": 0.989103, 
+          "right": 1.51282
+        }, 
+        {
+          "count": 447, 
+          "left": 1.51282, 
+          "right": 2.03654
+        }, 
+        {
+          "count": 666, 
+          "left": 2.03654, 
+          "right": 2.56025
+        }, 
+        {
+          "count": 880, 
+          "left": 2.56025, 
+          "right": 3.08397
+        }, 
+        {
+          "count": 1154, 
+          "left": 3.08397, 
+          "right": 3.60769
+        }, 
+        {
+          "count": 1692, 
+          "left": 3.60769, 
+          "right": 4.1314
+        }, 
+        {
+          "count": 1269, 
+          "left": 4.1314, 
+          "right": 4.65512
+        }, 
+        {
+          "count": 1217, 
+          "left": 4.65512, 
+          "right": 5.17884
+        }, 
+        {
+          "count": 1023, 
+          "left": 5.17884, 
+          "right": 5.70255
+        }, 
+        {
+          "count": 534, 
+          "left": 5.70255, 
+          "right": 6.22627
+        }, 
+        {
+          "count": 308, 
+          "left": 6.22627, 
+          "right": 6.74999
+        }, 
+        {
+          "count": 164, 
+          "left": 6.74999, 
+          "right": 7.2737
+        }, 
+        {
+          "count": 66, 
+          "left": 7.2737, 
+          "right": 7.79742
+        }, 
+        {
+          "count": 26, 
+          "left": 7.79742, 
+          "right": 8.32114
+        }, 
+        {
+          "count": 13, 
+          "left": 8.32114, 
+          "right": 8.84485
+        }, 
+        {
+          "count": 15, 
+          "left": 8.84485, 
+          "right": 9.36857
+        }, 
+        {
+          "count": 14, 
+          "left": 9.36857, 
+          "right": 9.89229
+        }, 
+        {
+          "count": 7, 
+          "left": 9.89229, 
+          "right": 10.416
+        }
+      ]
+    }, 
+    {
+      "name": "data_0", 
+      "source": "source_2", 
+      "transform": [
+        {
+          "as": "left", 
+          "expr": "toNumber(datum[\"left\"])", 
+          "type": "formula"
+        }, 
+        {
+          "as": "right", 
+          "expr": "toNumber(datum[\"right\"])", 
+          "type": "formula"
+        }, 
+        {
+          "as": "count", 
+          "expr": "toNumber(datum[\"count\"])", 
+          "type": "formula"
+        }, 
+        {
+          "expr": "datum[\"left\"] !== null && !isNaN(datum[\"left\"]) && datum[\"count\"] !== null && !isNaN(datum[\"count\"])", 
+          "type": "filter"
+        }
+      ]
+    }
+  ], 
+  "description": "A simple bar chart with embedded data.", 
+  "height": 550, 
+  "marks": [
+    {
+      "encode": {
+        "hover": {
+          "fill": {
+            "value": "#7EC2F3"
+          }
+        }, 
+        "update": {
+          "fill": {
+            "value": "#108EE9"
+          }, 
+          "x": {
+            "field": "left", 
+            "scale": "x"
+          }, 
+          "x2": {
+            "field": "right", 
+            "scale": "x"
+          }, 
+          "y": {
+            "field": "count", 
+            "scale": "y"
+          }, 
+          "y2": {
+            "scale": "y", 
+            "value": 0
+          }
+        }
+      }, 
+      "from": {
+        "data": "data_0"
+      }, 
+      "name": "marks", 
+      "style": [
+        "rect"
+      ], 
+      "type": "rect"
+    }
+  ], 
+  "padding": 5, 
+  "scales": [
+    {
+      "domain": {
+        "data": "data_0", 
+        "fields": [
+          "left", 
+          "right"
+        ], 
+        "sort": true
+      }, 
+      "name": "x", 
+      "nice": true, 
+      "range": [
+        0, 
+        {
+          "signal": "width"
+        }
+      ], 
+      "type": "linear", 
+      "zero": false
+    }, 
+    {
+      "domain": {
+        "data": "data_0", 
+        "field": "count"
+      }, 
+      "name": "y", 
+      "nice": true, 
+      "range": [
+        {
+          "signal": "height"
+        }, 
+        0
+      ], 
+      "type": "linear", 
+      "zero": true
+    }
+  ], 
+  "style": "cell", 
+  "title": {
+    "offset": 30, 
+    "text": "Distribution of Values [float]"
+  }, 
+  "width": 720
+}

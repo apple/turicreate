@@ -11,6 +11,14 @@
 extern "C" {
 #endif
 
+#ifdef __APPLE__
+#include <CoreGraphics/CoreGraphics.h>
+#endif // __APPLE__
+
+#ifndef NS_OPTIONS
+#define NS_OPTIONS(_type, _name) enum _name : _type _name; enum _name : _type
+#endif
+
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
@@ -881,7 +889,7 @@ tc_variant* tc_function_call(
  * To apply multiple flags, simply OR them together.
  * (Note: only a single flag within each bit range should be used.)
  */
-typedef enum {
+typedef NS_OPTIONS(unsigned long, tc_plot_variation) {
     tc_plot_variation_default   = 0x00,
 
     // Sizes (defaults to medium)
@@ -894,7 +902,7 @@ typedef enum {
     tc_plot_color_light         = 0x10,
     tc_plot_color_dark          = 0x20,
 
-} tc_plot_variation;
+};
 
 // Default plot title / axis title sentinel value
 const char * const tc_plot_title_default_label = "__TURI_DEFAULT_LABEL";
@@ -934,10 +942,25 @@ tc_flexible_type* tc_plot_get_vega_spec(const tc_plot* plot,
 // computes the next batch of results, and returns a flex string of JSON data
 tc_flexible_type* tc_plot_get_next_data(const tc_plot* plot, const tc_parameters *params, tc_error** error); 
 
+#ifdef __APPLE__
+// pre-computes the final plot and renders it into a CoreGraphics context
+void tc_plot_render_final_into_context(const tc_plot* plot,
+                                       tc_plot_variation variation,
+                                       CGContextRef context,
+                                       const tc_parameters *params,
+                                       tc_error** error);
+
+// incrementally renders the plot into a CoreGraphics context
+// and returns true if streaming is finished (false if future renders may change)
+bool tc_plot_render_next_into_context(const tc_plot* plot,
+                                      tc_plot_variation variation,
+                                      CGContextRef context,
+                                      const tc_parameters *params,
+                                      tc_error** error);
+#endif // __APPLE__
+
 #ifdef __cplusplus
 }
 #endif
-
-
 
 #endif

@@ -32,12 +32,13 @@ add_library(_capi_objects OBJECT
   ${_turi_capi_source_files}
 )
 
-set(_capi_requires unity unity_core numerics)
+set(_capi_requires unity unity_core numerics VegaRenderer)
 add_dependencies(_capi_objects ${_capi_requires})
 
 make_library(capi 
   SOURCES
     "$<TARGET_OBJECTS:_capi_objects>"
+    "$<TARGET_OBJECTS:VegaRenderer>"
   REQUIRES
   ${_capi_requires})
     

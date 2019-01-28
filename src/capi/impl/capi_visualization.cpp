@@ -106,9 +106,42 @@ EXPORT bool tc_plot_finished_streaming(const tc_plot* plot,
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
-  CHECK_NOT_NULL(error, plot, "plot", NULL);
+  CHECK_NOT_NULL(error, plot, "plot", true);
   return plot->value->finished_streaming();
 
-  ERROR_HANDLE_END(error, NULL);
+  ERROR_HANDLE_END(error, true);
 }
+
+EXPORT void tc_plot_render_final_into_context(const tc_plot* plot,
+                                              tc_plot_variation variation,
+                                              CGContextRef context,
+                                              const tc_parameters *params,
+                                              tc_error** error) {
+  ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
+
+  CHECK_NOT_NULL(error, plot, "plot");
+  CHECK_NOT_NULL(error, context, "context");
+  plot->value->materialize();
+  bool result = plot->value->render(context, variation);
+  ASSERT_TRUE(result);
+  ERROR_HANDLE_END(error);
 }
+
+EXPORT bool tc_plot_render_next_into_context(const tc_plot* plot,
+                                             tc_plot_variation variation,
+                                             CGContextRef context,
+                                             const tc_parameters *params,
+                                             tc_error** error) {
+  ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
+
+  CHECK_NOT_NULL(error, plot, "plot", true);
+  CHECK_NOT_NULL(error, context, "context", true);
+  return plot->value->render(context, variation);
+
+  ERROR_HANDLE_END(error, true);
+
+}
+
+} // extern "C"
