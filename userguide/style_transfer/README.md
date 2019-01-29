@@ -72,6 +72,13 @@ model creation faster, as the cost of obtaining a potentially worse
 model. See [how it works](how-it-works.md) for more details on how this
 model works and some more details on advanced options available to you.
 
+#### Using GPUs
+
+GPUs are currently only supported while training on Linux, this makes training
+the style transfer model much faster. If your Linux machine has an
+NVIDIA GPU, you can setup Turi Create to use the GPU,
+[see instructions](https://github.com/apple/turicreate/blob/master/LinuxGPU.md).
+
 #### Creating stylized images
 
 Once your model is created, you can test by stylizing some new images
