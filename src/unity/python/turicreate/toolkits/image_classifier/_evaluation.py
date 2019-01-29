@@ -12,7 +12,8 @@ from __future__ import absolute_import as _
 from ...visualization import _get_client_app_path
 
 import subprocess as __subprocess
-import thread as _thread
+from six.moves import _thread
+
 import json as _json
 import base64 as _base64
 import sys as _sys
