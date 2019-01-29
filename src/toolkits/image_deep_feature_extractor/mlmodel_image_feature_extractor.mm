@@ -103,7 +103,7 @@ private:
 const std::map<const std::string, const neural_network_model_details> model_name_to_info =
   {{"resnet-50", {224, 224, 2048, "flatten0", "data",
                   "Resnet50.mlmodel"}},
-   {"VisionFeaturePrint_Screen", {299, 299, 2048, "output", "image_input", ""}},
+   {"VisionFeaturePrint_Scene", {299, 299, 2048, "output", "image_input", ""}},
    {"squeezenet_v1.1", {227, 227, 1000, "pool10", "image",
                         "https://docs-assets.developer.apple.com/coreml/models/SqueezeNet.mlmodel"}}};
 
@@ -123,8 +123,8 @@ const neural_network_model_details& get_model_info(const std::string& model_name
   return model_info_entry->second;
 }
 
-void build_vision_feature_print_screen_spec(const std::string& model_path) {
-  const neural_network_model_details& model_info = get_model_info("VisionFeaturePrint_Screen");
+void build_vision_feature_print_scene_spec(const std::string& model_path) {
+  const neural_network_model_details& model_info = get_model_info("VisionFeaturePrint_Scene");
 
   CoreML::Specification::Model spec = CoreML::Specification::Model();
   spec.set_specificationversion(CoreML::MLMODEL_SPECIFICATION_VERSION);
@@ -192,8 +192,8 @@ static MLModel *create_model(const std::string& download_path,
 
     // Create the modified model
     const std::string modified_model_path = download_path + "/" + model_name + "_modified.mlmodel";
-    if(model_name == "VisionFeaturePrint_Screen") {
-      build_vision_feature_print_screen_spec(modified_model_path);
+    if(model_name == "VisionFeaturePrint_Scene") {
+      build_vision_feature_print_scene_spec(modified_model_path);
     } else {
       std::string base_model_path;
       const neural_network_model_details& model_info = get_model_info(model_name);
@@ -403,7 +403,7 @@ mlmodel_image_feature_extractor::extract_features(gl_sarray data, bool verbose, 
     // Santiy check prediction shape
     NSArray<NSNumber *> * shape = [deep_features_values shape];
     size_t feature_dim = -1;
-    if(m_impl->name != "VisionFeaturePrint_Screen") {
+    if(m_impl->name != "VisionFeaturePrint_Scene") {
       ASSERT_EQ(shape.count, (unsigned long)5);
       ASSERT_EQ(shape[0].intValue, 1);
       ASSERT_EQ(shape[1].intValue, 1);

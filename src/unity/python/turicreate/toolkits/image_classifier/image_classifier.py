@@ -152,7 +152,7 @@ l2_penalty : float, optional
            - "squeezenet_v1.1" : Uses a pretrained squeezenet model.
                                  Exported Core ML model will be ~4.7M.
 
-           - "VisionFeaturePrint_Screen": Uses an OS internal feature extractor.
+           - "VisionFeaturePrint_Scene": Uses an OS internal feature extractor.
                                           Only on available on iOS 12.0+,
                                           macOS 10.14+ and tvOS 12.0+.
                                           Exported Core ML model will be ~41K.
@@ -225,7 +225,14 @@ l2_penalty : float, optional
     # Check model parameter
     allowed_models = list(_pre_trained_models.MODELS.keys())
     if _mac_ver() >= (10,14):
-        allowed_models.append('VisionFeaturePrint_Screen')
+        allowed_models.append('VisionFeaturePrint_Scene')
+
+        # Also, to make sure existing code doesn't break, replace incorrect name
+        # with the correct name version
+        if model == "VisionFeaturePrint_Screen":
+            print("WARNING: Correct spelling of model name is VisionFeaturePrint_Scene; VisionFeaturePrint_Screen will be removed in subsequent versions.")
+            model = "VisionFeaturePrint_Scene"
+
     _tkutl._check_categorical_option_type('model', model, allowed_models)
 
     # Check dataset parameter
@@ -279,7 +286,7 @@ l2_penalty : float, optional
     # set input image shape
     if model in _pre_trained_models.MODELS:
         input_image_shape = _pre_trained_models.MODELS[model].input_image_shape
-    else:    # model == VisionFeaturePrint_Screen
+    else:    # model == VisionFeaturePrint_Scene
         input_image_shape = (3, 299, 299)
 
     # Save the model
@@ -343,10 +350,14 @@ class ImageClassifier(_CustomModel):
         state['classifier'] = LogisticClassifier(state['classifier'])
         state['classes'] = state['classifier'].classes
 
+        # Correct models saved with a previous typo
+        if state['model'] == "VisionFeaturePrint_Screen":
+            state['model'] = "VisionFeaturePrint_Scene"
+ 
         # Load pre-trained model & feature extractor
         model_name = state['model']
-        if model_name == "VisionFeaturePrint_Screen" and _mac_ver() < (10,14):
-            raise ToolkitError("Can not load model on this operating system. This model uses VisionFeaturePrint_Screen, "
+        if model_name == "VisionFeaturePrint_Scene" and _mac_ver() < (10,14):
+            raise ToolkitError("Can not load model on this operating system. This model uses VisionFeaturePrint_Scene, "
                                "which is only supported on macOS 10.14 and higher.")
         state['feature_extractor'] = _image_feature_extractor._create_feature_extractor(model_name)
         state['input_image_shape'] = tuple([int(i) for i in state['input_image_shape']])
@@ -828,7 +839,7 @@ class ImageClassifier(_CustomModel):
 
 
         # Internal helper function
-        def _create_vision_feature_print_screen():
+        def _create_vision_feature_print_scene():
             prob_name = self.target + 'Probability'
 
             #
@@ -1002,8 +1013,8 @@ class ImageClassifier(_CustomModel):
             coreml_model = feature_extractor.get_coreml_model()
             spec = coreml_model.get_spec()
             nn_spec = spec.neuralNetworkClassifier
-        else:     # model == VisionFeaturePrint_Screen
-            spec = _create_vision_feature_print_screen()
+        else:     # model == VisionFeaturePrint_Scene
+            spec = _create_vision_feature_print_scene()
             nn_spec = spec.pipelineClassifier.pipeline.models[1].neuralNetworkClassifier
 
         _update_last_two_layers(nn_spec)

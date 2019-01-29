@@ -885,8 +885,9 @@ typedef enum {
     tc_plot_variation_default   = 0x00,
 
     // Sizes (defaults to medium)
-    //tc_plot_size_small        = 0x01,
+    tc_plot_size_small          = 0x01,
     tc_plot_size_medium         = 0x02,
+    tc_plot_size_large          = 0x03,
 
     // Color variations
     // default could be light/dark depending on OS settings
@@ -894,6 +895,9 @@ typedef enum {
     tc_plot_color_dark          = 0x20,
 
 } tc_plot_variation;
+
+// Default plot title / axis title sentinel value
+const char * const tc_plot_title_default_label = "__TURI_DEFAULT_LABEL";
 
 // Single SArray view (`.show` on an SArray)
 tc_plot* tc_plot_create_1d(const tc_sarray* sa,

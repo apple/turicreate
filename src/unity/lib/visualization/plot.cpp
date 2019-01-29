@@ -96,6 +96,10 @@ namespace turi{
       std::string titleOffset = "30";
       std::string tickColor = escape_string("rgb(136,136,136)");
 
+      // Default (medium) size is 720x550
+      std::string width = "720";
+      std::string height = "550";
+
       // Overrides for dark mode
       tc_plot_variation color_variation = (tc_plot_variation)((uint32_t)variation & 0xf0);
       if (color_variation == tc_plot_color_dark ||
@@ -104,6 +108,32 @@ namespace turi{
         gridColor = escape_string("rgba(255,255,255,0.098)");
         titleColor = labelColor;
         tickColor = escape_string("#A4AAAD");
+      }
+
+      // Overrides for small size
+      tc_plot_variation size_variation = (tc_plot_variation)((uint32_t)variation & 0x0f);
+      if (size_variation == tc_plot_size_small) {
+        // Small size is 320x280
+        width = "320";
+        height = "280";
+        axisTitleFontSize = "11";
+        axisTitlePadding = "8";
+        labelFontSize = "9";
+        labelPadding = "4";
+        titleFontSize = "13";
+        titleOffset = "16";
+      } else if (size_variation == tc_plot_size_large) {
+        // Large size is 960x840
+        width = "960";
+        height = "840";
+        axisTitleFontSize = "22";
+        axisTitleFontWeight = escape_string("bold");
+        axisTitlePadding = "18";
+        labelFontSize = "18";
+        labelPadding = "18";
+        titleFontSize = "26";
+        titleFontWeight = escape_string("bold");
+        titleOffset = "30";
       }
 
       return format(ret, {
@@ -121,6 +151,8 @@ namespace turi{
         {"{{titleFontWeight}}", titleFontWeight},
         {"{{titleOffset}}", titleOffset},
         {"{{tickColor}}", tickColor},
+        {"{{width}}", width},
+        {"{{height}}", height},
       });
     }
   }
