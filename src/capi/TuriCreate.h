@@ -17,7 +17,14 @@ extern "C" {
 
 #ifndef NS_OPTIONS
 #define NS_OPTIONS(_type, _name) enum _name : _type _name; enum _name : _type
-#endif
+#endif // NS_OPTIONS
+#ifdef __cplusplus
+// In C++, NS_OPTIONS doesn't seem to be valid syntax; skip it and just use a C++ enum.
+#define MAKE_NS_OPTIONS(_type, _name) enum _name : _type
+#else
+// In C and/or ObjC, define MAKE_NS_OPTIONS in terms of NS_OPTIONS
+#define MAKE_NS_OPTIONS(_type, _name) typedef NS_OPTIONS(_type, _name)
+#endif // __cplusplus
 
 #include <stdint.h>
 #include <stddef.h>
@@ -889,7 +896,7 @@ tc_variant* tc_function_call(
  * To apply multiple flags, simply OR them together.
  * (Note: only a single flag within each bit range should be used.)
  */
-typedef NS_OPTIONS(unsigned long, tc_plot_variation) {
+MAKE_NS_OPTIONS(unsigned long, tc_plot_variation) {
     tc_plot_variation_default   = 0x00,
 
     // Sizes (defaults to medium)
