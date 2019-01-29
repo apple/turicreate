@@ -19,7 +19,7 @@ make_library(xgboost
     -Wno-null-arithmetic
   COMPILE_FLAGS_EXTRA
     -Wno-unused-command-line-argument
+  NO_PCH
 )
 
-# TODO this doesn't seem to take effect at all
 set_property(TARGET xgboost APPEND_STRING PROPERTY COMPILE_FLAGS " -DXGBOOST_CUSTOMIZE_MSG_ -Wno-narrowing -msse2 -funroll-loops")

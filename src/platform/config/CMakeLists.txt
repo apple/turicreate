@@ -18,6 +18,7 @@ if(APPLE)
     REQUIRES
     ${foundation_config}
     EXTERNAL_VISIBILITY
+    NO_PCH
   )
 
 else()

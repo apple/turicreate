@@ -47,6 +47,7 @@ if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
         ${CORE_IMAGE}
         ${METAL}
         ${METAL_PERFORMANCE_SHADERS}
+      NO_PCH
     )
     target_compile_options(tcmps PUBLIC "-fobjc-arc -Wno-nullability-completeness -Wno-shadow-ivar")
     set(additional_unity_neural_net_requirements tcmps)

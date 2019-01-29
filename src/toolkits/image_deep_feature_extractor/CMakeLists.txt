@@ -27,6 +27,7 @@ if(HAS_CORE_ML)
           ${foundation}
           ${core_video}
         EXTERNAL_VISIBILITY
+        NO_PCH
   )
 
 endif()

@@ -339,7 +339,8 @@ set(CPP_REAL_COMPILER_FLAGS "-Wall ${DEBUG_INFO_FLAGS} ${CPP11_FLAGS} ${COMPILER
 if (CLANG)
   # clang 9.0.0 and earlier will warn (error with -Werror) on unused -pthread during linking
   # so adding only to compile options is what we need.
-  add_compile_options(-pthread)
+  set(C_REAL_COMPILER_FLAGS "${C_REAL_COMPILER_FLAGS} -Xclang -pthread")
+  set(CPP_REAL_COMPILER_FLAGS "${CPP_REAL_COMPILER_FLAGS} -Xclang -pthread")
 else()
   set(C_REAL_COMPILER_FLAGS "${C_REAL_COMPILER_FLAGS} -pthread")
   set(CPP_REAL_COMPILER_FLAGS "${CPP_REAL_COMPILER_FLAGS} -pthread")
@@ -494,6 +495,42 @@ set(CMAKE_CXX_FLAGS_RELEASE
   "${RELEASE_OPTIMIZATION_FLAGS} ${EXTRA_OPTIMIZATION_FLAGS} ${DISABLE_WARNING_FLAGS} ${PROFILING_FLAGS} -Wno-attributes ${ARCH_FLAG} ${MTUNE} ${CPP_REAL_COMPILER_FLAGS} ${WERROR_FLAGS} ${INT128_FLAGS} ${ALTERNATE_LINKER} -DNDEBUG -DHAVE_PTHREAD=1 -DARMA_NO_DEBUG"
   CACHE STRING "compiler options" FORCE)
 
+if (${CMAKE_BUILD_TYPE} MATCHES "Release")
+  set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS_RELEASE})
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS_RELEASE})
+else()
+  set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS_DEBUG})
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS_DEBUG})
+endif()
+
+#**************************************************************************/
+#*                                                                        */
+#*       Enable pre-compiled headers to speed up the build                */
+#*                                                                        */
+#**************************************************************************/
+# TODO - does this work in anything other than clang?
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/src/pch)
+add_custom_command(
+  OUTPUT ${CMAKE_BINARY_DIR}/src/pch/pch.hpp.gch
+  COMMAND ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS} -fvisibility=default -fvisibility-inlines-hidden -isystem ${CMAKE_SOURCE_DIR}/deps/local/include -o ${CMAKE_BINARY_DIR}/src/pch/pch.hpp.gch ${CMAKE_SOURCE_DIR}/src/pch/pch.in.hpp
+  COMMENT "Creating project-wide pre-compiled header with visibility=default"
+  DEPENDS
+    ${CMAKE_SOURCE_DIR}/src/pch/pch.in.hpp
+    boost
+)
+add_custom_command(
+  OUTPUT ${CMAKE_BINARY_DIR}/src/pch/pch_visibility_hidden.hpp.gch
+  COMMAND ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden -isystem ${CMAKE_SOURCE_DIR}/deps/local/include -o ${CMAKE_BINARY_DIR}/src/pch/pch_visibility_hidden.hpp.gch ${CMAKE_SOURCE_DIR}/src/pch/pch.in.hpp
+  COMMENT "Creating project-wide pre-compiled header with visibility=hidden"
+  DEPENDS
+    ${CMAKE_SOURCE_DIR}/src/pch/pch.in.hpp
+    boost
+)
+add_custom_target(
+  precompiled_header
+  DEPENDS ${CMAKE_BINARY_DIR}/src/pch/pch.hpp.gch
+  DEPENDS ${CMAKE_BINARY_DIR}/src/pch/pch_visibility_hidden.hpp.gch
+)
 
 #**************************************************************************/
 #*                                                                        */
@@ -685,7 +722,7 @@ endmacro()
 # Boost, pthread is always added as a default dependency. OpenMP is added
 # when possible.
 macro(make_library NAME)
-  set(options SHARED EXTERNAL_VISIBILITY SHARED_ALL_DEFINED DEAD_STRIP)
+  set(options SHARED EXTERNAL_VISIBILITY SHARED_ALL_DEFINED DEAD_STRIP NO_PCH)
   set(one_value_args COMPILE_FLAGS OUTPUT_NAME EXPORT_LINUX_MAP_FILE EXPORT_OSX_MAP_FILE)
   set(multi_value_args
     SOURCES REQUIRES MAC_REQUIRES LINUX_REQUIRES
@@ -736,14 +773,21 @@ macro(make_library NAME)
     endif()
   endif()
 
+  add_dependencies(${NAME} precompiled_header)
   if (${make_library_EXTERNAL_VISIBILITY})
     # do nothing
     message(STATUS "External Visibility: " ${NAME})
     target_compile_options(${NAME} PRIVATE "-fvisibility=default")
     target_compile_options(${NAME} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-fvisibility-inlines-hidden>)
+    if (NOT ${make_library_NO_PCH})
+      target_compile_options(${NAME} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-include-pch ${CMAKE_BINARY_DIR}/src/pch/pch.hpp.gch>)
+    endif()
   else()
     target_compile_options(${NAME} PRIVATE "-fvisibility=hidden")
     target_compile_options(${NAME} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-fvisibility-inlines-hidden>)
+    if (NOT ${make_library_NO_PCH})
+      target_compile_options(${NAME} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-include-pch ${CMAKE_BINARY_DIR}/src/pch/pch_visibility_hidden.hpp.gch>)
+    endif()
   endif()
 
   if(NOT CLANG)
