@@ -28,6 +28,7 @@
     },
     {
       "name":"source_2"
+      {{pre_filled_data_values}}
     },
     {
       "name":"data_2",

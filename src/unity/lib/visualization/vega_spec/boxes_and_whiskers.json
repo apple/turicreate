@@ -38,7 +38,8 @@
           "type": "collect",
           "sort": {"field": "median"}
         }
-      ] 
+      ]
+      {{pre_filled_data_values}}
     }
   ],
   "signals": [

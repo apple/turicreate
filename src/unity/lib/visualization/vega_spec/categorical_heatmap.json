@@ -137,14 +137,8 @@
   ],
   "data": [
     {
-      "name": "source_2",
-      "values": [
-        {
-          "x": 100000000,
-          "y": "loading_data_from_tc",
-          "count": 0
-        }
-      ]
+      "name": "source_2"
+      {{pre_filled_data_values}}
     }
   ],
   {{config}}
