@@ -19,7 +19,7 @@ from ._sframe_loader import SFrameRecognitionIter as _SFrameRecognitionIter
 from .. import _mxnet_utils
 
 class Model(_HybridBlock):
-    def __init__(self, **kwargs):
+    def __init__(self, num_classes, **kwargs):
         super(Model, self).__init__(**kwargs)
         with self.name_scope():
             # layers created in name_scope will inherit name space
@@ -32,7 +32,7 @@ class Model(_HybridBlock):
             self.pool3 = _nn.MaxPool2D(pool_size=(2,2))
             self.flatten = _nn.Flatten()
             self.fc1 = _nn.Dense(units=128, activation='relu')
-            self.fc2 = _nn.Dense(units=20, activation=None) # NUM_CLASSES
+            self.fc2 = _nn.Dense(units=num_classes, activation=None) # NUM_CLASSES
 
     def hybrid_forward(self, F, x):
         x = self.pool1(self.conv1(x))
@@ -50,7 +50,7 @@ class Model(_HybridBlock):
 #         return (output.argmax(axis=1) ==
 #                 label.astype('float32')).mean().asscalar()
 
-def create(dataset, annotations=None, num_epochs=25, feature=None, model=None,
+def create(dataset, annotations=None, num_epochs=100, feature=None, model=None,
            classes=None, batch_size=256, max_iterations=0, verbose=True,
            **kwargs):
     """
@@ -70,7 +70,9 @@ def create(dataset, annotations=None, num_epochs=25, feature=None, model=None,
     if classes is None:
         classes = dataset['label'].unique()
     classes = sorted(classes)
+    # print(classes)
     class_to_index = {name: index for index, name in enumerate(classes)}
+    # print(class_to_index)
 
     def update_progress(cur_loss, iteration):
         iteration_base1 = iteration + 1
@@ -100,13 +102,13 @@ def create(dataset, annotations=None, num_epochs=25, feature=None, model=None,
     loader = _SFrameRecognitionIter(dataset, batch_size,
                  feature_column='bitmap',
                  annotations_column='label',
-                 # class_to_index=class_to_index,
+                 class_to_index=class_to_index,
                  load_labels=True,
                  shuffle=True,
                  io_thread_buffer_size=0,
                  epochs=num_epochs,
                  iterations=None)
-    model = Model()
+    model = Model(num_classes = len(classes))
     softmax_cross_entropy = _mx.gluon.loss.SoftmaxCrossEntropyLoss()
     
     ctx = _mxnet_utils.get_mxnet_context(max_devices=batch_size)
@@ -216,7 +218,7 @@ class DrawingRecognition(_CustomModel):
         # net = _tiny_darknet(output_size=output_size)
         ctx = _mxnet_utils.get_mxnet_context(max_devices=state['_batch_size'])
 
-        net = Model()
+        net = Model(num_classes = len(state['_classes']))
         net_params = net.collect_params()
         _mxnet_utils.load_net_params_from_state(
             net_params, state['_model'], ctx=ctx 
@@ -335,13 +337,15 @@ class DrawingRecognition(_CustomModel):
 
     def _predict_with_options(self, dataset, with_ground_truth=True, verbose=True):
         loader = _SFrameRecognitionIter(dataset, self.batch_size,
-                     feature_column='bitmap',
-                     annotations_column='label',
-                     load_labels=True,
-                     shuffle=False,
-                     io_thread_buffer_size=0,
-                     epochs=1,
-                     iterations=None)
+                    class_to_index=self._class_to_index,
+                    feature_column='bitmap',
+                    annotations_column='label',
+                    load_labels=True,
+                    shuffle=False,
+                    io_thread_buffer_size=0,
+                    epochs=1,
+                    iterations=None,
+                    want_to_print=True)
         num_returns = 2 if with_ground_truth else 1
 
         # sf_builders = [
@@ -402,10 +406,15 @@ class DrawingRecognition(_CustomModel):
             #             import pdb; pdb.set_trace()
             predicted = z.argmax(axis=1)
             classes = self._classes
+            # print('classes')
+            # print(classes)
+            # print('predicted')
+            # print(predicted)
             predicted_sa = _tc.SArray(predicted).apply(lambda x: classes[x])
+            b_gt_sa = _tc.SArray(b_gt).apply(lambda x: classes[x])
             # import pdb; pdb.set_trace()
             all_predicted = all_predicted.append(predicted_sa)
-            all_gt = all_gt.append(_tc.SArray(b_gt))
+            all_gt = all_gt.append(b_gt_sa)
         # print('all_gt.shape')
         # print(all_gt.shape)
         # print('all_predicted.shape')

@@ -188,17 +188,17 @@ def convert(model, input_shape, class_labels=None, mode=None,
         shape_dict[op] = shapes[0][idx]
     for idx, op in enumerate(output_names):
         shape_dict[op] = shapes[1][idx]
-        # if is_drawing_recognition:
-        #     shape_dict['probabilities'] = shapes[1][idx]
+        if is_drawing_recognition:
+            shape_dict['probabilities'] = shapes[1][idx]
     for idx, op in enumerate(aux_names):
         shape_dict[op] = shapes[2][idx]
     
-    # if is_drawing_recognition:
-    #     assert (len(output_names) == 1)
-    #     assert (output_names[0].endswith('_softmax0_output'))
-    #     output_names = ['probabilities']
-    # print('output_names')
-    # print(output_names)
+    if is_drawing_recognition:
+        assert (len(output_names) == 1)
+        assert (output_names[0].endswith('_softmax0_output'))
+        output_names = ['probabilities']
+    print('output_names')
+    print(output_names)
 
     # Get the inputs and outputs
     output_dims = shapes[1]
@@ -245,6 +245,10 @@ def convert(model, input_shape, class_labels=None, mode=None,
         op = node['op']
         inputs = node['inputs']
         outputs = node['outputs']
+        print('node')
+        print(node)
+        print('outputs')
+        print(outputs)
         if op in _MXNET_SKIP_LAYERS:
             nodes[inputs[0][0]]['outputs'][0] = outputs[0]
             nodes[outputs[0][0]]['inputs'][0] = inputs[0]
@@ -253,14 +257,16 @@ def convert(model, input_shape, class_labels=None, mode=None,
     for idx, node in enumerate(nodes):
         op = node['op']
         if op == 'null' or op in _MXNET_SKIP_LAYERS:
-            # print("skipping " + op)
+            print("skipping " + op)
             continue
+        if is_drawing_recognition and node['name'].endswith('_softmax0_output'):
+            node['name'] = 'probabilities'
         name = node['name']
         if verbose:
             print("%d : %s, %s" % (idx, name, op))
         converter_func = _get_layer_converter_fn(op)
-        # print('node')
-        # print(node)
+        print('node')
+        print(node)
         converter_func(net, node, model, builder)
 
     # Only finalize builder if it was created internally. Otherwise, leave it

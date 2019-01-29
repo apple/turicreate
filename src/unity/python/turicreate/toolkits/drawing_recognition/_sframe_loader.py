@@ -172,7 +172,7 @@ class SFrameRecognitionIter(_mx.io.DataIter):
     def __init__(self,
                  sframe,
                  batch_size,
-                 # class_to_index,
+                 class_to_index,
                  input_shape = [28,28],
                  # output_shape,
                  # anchors,
@@ -184,7 +184,8 @@ class SFrameRecognitionIter(_mx.io.DataIter):
                  shuffle=True,
                  io_thread_buffer_size=0,
                  epochs=None,
-                 iterations=None):
+                 iterations=None,
+                 want_to_print=False):
 
         # Some checks (these errors are not well-reported by the threads)
         # @TODO: this check must be activated in some shape or form
@@ -230,10 +231,11 @@ class SFrameRecognitionIter(_mx.io.DataIter):
         # self.output_shape = output_shape
         # self.num_classes = num_classes
         # self.anchors = anchors
-        # self.class_to_index = class_to_index
+        self.class_to_index = class_to_index
         self.cur_iteration = 0
         self.num_epochs = epochs
         self.num_iterations = iterations
+        self.want_to_print = want_to_print
 
         # if load_labels:
         #     is_annotations_list = sframe[annotations_column].dtype == list
@@ -361,6 +363,11 @@ class SFrameRecognitionIter(_mx.io.DataIter):
                     break
 
             raw_image, label, cur_sample = row
+            # if self.want_to_print :
+            #     print('label')
+            #     print(label)
+            #     print('row')
+            #     print(row)
             # print('label in _next')
             # print(label)
             # print(type(label))
@@ -411,17 +418,22 @@ class SFrameRecognitionIter(_mx.io.DataIter):
 
             # images.append(_mx.nd.transpose(image01, [2, 0, 1]))
             images.append(image)
-            labels.append(label)
+            # if self.want_to_print:
+                # print('appending:')
+                # print(self.class_to_index[label])
+            labels.append(self.class_to_index[label])
             indices.append(cur_sample)
             orig_shapes.append(oshape)
             # bboxes.append(raw_bbox)
             # classes.append(bbox[:, 0].astype(_np.int32))
 
         b_images = _mx.nd.stack(*images)
-        try:
-            b_labels = _mx.nd.array(labels, dtype=type(labels[0]))
-        except:
-            b_labels = _mx.nd.array(labels)
+        b_labels = _mx.nd.array(labels, dtype='int32')
+        # try:
+        #     import pdb; pdb.set_trace()
+        #     b_labels = _mx.nd.array(labels, dtype=type(labels[0]))
+        # except:
+        #     b_labels = _mx.nd.array(labels)
         b_indices = _mx.nd.array(indices)
         b_orig_shapes = _mx.nd.array(orig_shapes)
 
