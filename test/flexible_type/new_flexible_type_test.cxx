@@ -135,6 +135,12 @@ struct new_flexible_type_test  {
 #ifdef __clang__
 #pragma clang diagnostic push
 #if defined(__has_warning) && __has_warning("-Wself-assign-overloaded")
+/*
+ * This new warning in Xcode 10.2 beta causes an error in our build (since
+ * we have -Werror on), but the thing we're trying to test only makes
+ * sense in the presence of compilers that don't have this error/warning.
+ * So for now, let's just suppress the warning in this test.
+ */
 #pragma clang diagnostic ignored "-Wself-assign-overloaded"
 #endif // __has_warning
 #endif // __clang__
