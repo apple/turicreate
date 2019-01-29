@@ -695,7 +695,8 @@ sframe supervised_learning_model_base::predict_topk(
  */
 std::map<std::string, variant_type> supervised_learning_model_base::evaluate(
             const ml_data& test_data,
-            const std::string& evaluation_type){
+            const std::string& evaluation_type,
+            bool with_prediction){
 
   // Timers.
   timer t;
@@ -890,7 +891,7 @@ std::map<std::string, variant_type> supervised_learning_model_base::evaluate(
   }
 
   
-  if (contains_prob_evaluator) {
+  if (contains_prob_evaluator && with_prediction) {
     gl_sframe sf_predictions;
     sf_predictions.add_column(prob_vectors, "probs");
     sf_predictions.add_column(predicted_classes, "class");
@@ -1157,7 +1158,7 @@ gl_sframe supervised_learning_model_base::api_classify(
  *  Evaluate the model
  */
 variant_map_type supervised_learning_model_base::api_evaluate(
-    gl_sframe data, std::string missing_value_action_str, std::string metric) {
+    gl_sframe data, std::string missing_value_action_str, std::string metric, bool with_prediction) {
   auto model = std::dynamic_pointer_cast<supervised_learning_model_base>(
       shared_from_this());
   ml_missing_value_action missing_value_action =
@@ -1181,7 +1182,7 @@ variant_map_type supervised_learning_model_base::api_evaluate(
       out["class"] = data[variant_get_ref<flexible_type>(state.at("target")).get<flex_string>()];
       out["predicted_class"] = api_predict(data, missing_value_action_str, "class");
 
-      variant_map_type ret = evaluate(m_data, "auto");
+      variant_map_type ret = evaluate(m_data, "auto", with_prediction);
 
       ret["confusion_matrix"] = confusion_matrix(out, target, pred_column);
       ret["report_by_class"] = classifier_report_by_class(out, target, pred_column);
@@ -1195,7 +1196,7 @@ variant_map_type supervised_learning_model_base::api_evaluate(
     }
   }
 
-  variant_map_type results = evaluate(m_data, metric);
+  variant_map_type results = evaluate(m_data, metric, with_prediction);
   return results;
 }
 
