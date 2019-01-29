@@ -433,7 +433,7 @@ class DrawingRecognition(_CustomModel):
         for row_num in range(num_total):
             if pred[row_num]['label'] == gt[row_num]['label']:
                 num_correct += 1
-        return num_correct / num_total
+        return {"accuracy": num_correct / num_total}
 
         # pred_df = pred.to_dataframe()
         # gt_df = gt.to_dataframe()
