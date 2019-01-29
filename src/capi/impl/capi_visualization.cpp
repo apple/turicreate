@@ -112,6 +112,7 @@ EXPORT bool tc_plot_finished_streaming(const tc_plot* plot,
   ERROR_HANDLE_END(error, true);
 }
 
+#ifdef __APPLE__
 EXPORT void tc_plot_render_final_into_context(const tc_plot* plot,
                                               tc_plot_variation variation,
                                               CGContextRef context,
@@ -143,5 +144,6 @@ EXPORT bool tc_plot_render_next_into_context(const tc_plot* plot,
   ERROR_HANDLE_END(error, true);
 
 }
+#endif
 
 } // extern "C"
