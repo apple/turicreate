@@ -8,6 +8,7 @@
   "data": [
     {
       "name": "source_2"
+      {{pre_filled_data_values}}
     }
   ],
   "marks": [

@@ -1,0 +1,26 @@
+.TCEvaluationImageViewerContainer{
+	width: 80%;
+	margin: auto;
+}
+
+.TCEvaluationImageViewerContainerTitle{
+	font-family: Helvetica;
+	font-size: 21px;
+	color: #484856;
+	line-height: 22px;
+	text-align: left;
+}
+
+.TCEvaluationImageViewerContainerPointer{
+	cursor: pointer;
+}
+
+.TCEvaluationImageViewerContainerImages{
+	width: 100%;
+	padding-top: 30px;
+}
+
+.TCEvaluationImageComponentWrapper{
+	display: inline-block;
+	padding: 20px;
+}

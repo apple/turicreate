@@ -17,16 +17,17 @@ class TCEvaluationImageComponent extends Component {
     const imageWidth = this.imgEl.current.clientWidth;
     const imageHeight = this.imgEl.current.clientHeight;
     if(imageWidth > imageHeight){
-      this.setState({"height" : 78})
+      this.setState({"height" : 130})
     }else{
-      this.setState({"width" : 78})
+      this.setState({"width" : 130})
     }
   }
 
   render() {
+
     return (
       <div className="TCEvaluationImageComponent">
-        <img src={this.props.src}
+        <img src={"data:image/"+this.props.src.format+";base64,"+this.props.src.data}
              className="TCEvaluationImageComponentImage"
              ref={this.imgEl}
              width={this.state.width}
