@@ -12,3 +12,4 @@ make_boost_test(test_od_yolo.cxx
     -Wno-unused-function  # NOTE: used for auto-generated protobuf source files
 )
 
+make_boost_test(test_od_evaluation.cxx REQUIRES unity_toolkits)

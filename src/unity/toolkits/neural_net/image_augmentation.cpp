@@ -32,6 +32,26 @@ void image_box::clip(image_box clip_box) {
   height = y_max - y;
 }
 
+void image_box::extend(const image_box& other) {
+
+  if (other.empty()) return;
+
+  if (empty()) {
+
+    *this = other;
+
+  } else {
+
+    float x_max = std::max(x + width, other.x + other.width);
+    x = std::min(x, other.x);
+    width = x_max - x;
+
+    float y_max = std::max(y + height, other.y + other.height);
+    y = std::min(y, other.y);
+    height = y_max - y;
+  }
+}
+
 bool operator==(const image_box& a, const image_box& b) {
   return a.x == b.x && a.y == b.y && a.width == b.width && a.height == b.height;
 }

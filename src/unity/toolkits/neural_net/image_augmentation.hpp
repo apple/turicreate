@@ -29,10 +29,11 @@ struct image_box {
     : x(x), y(y), width(width), height(height)
   {}
 
+  bool empty() const { return width <= 0.f || height <= 0.f; }
+
   // Computes the area if the width and height are positive, otherwise returns 0
   float area() const {
-    if (width < 0.f || height < 0.f) return 0.f;
-    return width * height;
+    return empty() ? 0.f : (width * height);
   }
 
   // Divides each coordinate and length by the appropriate normalizer.
@@ -42,6 +43,10 @@ struct image_box {
   // intersection exists, then the result will have area() of 0.f (and may have
   // negative width or height).
   void clip(image_box clip_box = image_box(0.f, 0.f, 1.f, 1.f));
+
+  // Grows this instance (minimally) so that its area contains the (non-empty)
+  // area of the other image_box.
+  void extend(const image_box& other);
 
   float x = 0.f;
   float y = 0.f;
