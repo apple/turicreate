@@ -6,14 +6,38 @@
 
 #include <unity/toolkits/object_detection/od_yolo.hpp>
 
+#include <algorithm>
+#include <cmath>
+
 #include <logger/assertions.hpp>
 
 namespace turi {
 namespace object_detection {
 
+using neural_net::float_array;
 using neural_net::image_annotation;
 using neural_net::image_box;
 using neural_net::model_spec;
+
+namespace {
+
+float sigmoid(float x) {
+  return 1.f / (1.f + std::exp(-x));
+}
+
+void apply_softmax(std::vector<float>* values) {
+  const float max_value = *std::max_element(values->begin(), values->end());
+  float norm = 0.f;
+  for (float& value : *values) {
+    value = std::exp(value - max_value);
+    norm += value;
+  }
+  for (float& value : *values) {
+    value /= norm;
+  }
+}
+
+}  // namespace
 
 void convert_annotations_to_yolo(
     const std::vector<image_annotation>& annotations, size_t output_height,
@@ -87,6 +111,86 @@ void convert_annotations_to_yolo(
       }
     }
   }
+}
+
+std::vector<image_annotation> convert_yolo_to_annotations(
+    const float_array& yolo_map,
+    const std::vector<std::pair<float, float>>& anchor_boxes,
+    float min_confidence) {
+
+  ASSERT_EQ(yolo_map.dim(), 3);
+  const size_t* const shape = yolo_map.shape();
+  const size_t output_height = shape[0];
+  const size_t output_width = shape[1];
+  const size_t num_channels = shape[2];
+
+  ASSERT_GT(anchor_boxes.size(), 0);
+  ASSERT_EQ(num_channels % anchor_boxes.size(), 0);
+  const size_t num_predictions = num_channels / anchor_boxes.size();
+
+  ASSERT_GT(num_predictions, 5);
+  const size_t num_classes = num_predictions - 5;
+
+  std::vector<image_annotation> result;
+  std::vector<float> class_scores(num_classes);  // Scratch buffer
+
+  // Iterate over each prediction (x/y/w/h/conf + one-hot encoding of class),
+  // for each anchor box, for each cell of the output grid.
+  const size_t row_stride = output_width * num_channels;
+  for (size_t output_y = 0; output_y < output_height; ++output_y) {
+
+    // For this output grid row, iterate over each cell.
+    const float* output_row_base = yolo_map.data() + output_y * row_stride;
+    for (size_t output_x = 0; output_x < output_width; ++output_x) {
+
+      // For this output grid cell, iterate over each anchor box.
+      const float* output_cell_base = output_row_base + output_x * num_channels;
+      for (size_t b = 0; b < anchor_boxes.size(); ++b) {
+
+        // Extract the prediction for this anchor and output grid cell.
+        const float* prediction_base = output_cell_base + b * num_predictions;
+        const float raw_x = prediction_base[0];
+        const float raw_y = prediction_base[1];
+        const float raw_w = prediction_base[2];
+        const float raw_h = prediction_base[3];
+        const float raw_conf = prediction_base[4];
+        const float* one_hot_base = prediction_base + 5;
+
+        // Convert from raw output to bounding box (in normalized coordinates)
+        const float anchor_w = anchor_boxes[b].first;
+        const float anchor_h = anchor_boxes[b].second;
+        const float x = (output_x + sigmoid(raw_x)) / output_width;
+        const float y = (output_y + sigmoid(raw_y)) / output_height;
+        const float w = std::exp(raw_w) * anchor_w / output_width;
+        const float h = std::exp(raw_h) * anchor_h / output_height;
+
+        // Convert overall object confidence and conditional class confidences.
+        const float conf = sigmoid(raw_conf);
+        std::copy(one_hot_base, one_hot_base + num_classes,
+                  class_scores.begin());
+        apply_softmax(&class_scores);
+
+        // Add to our results any predictions meeting our confidence threshold.
+        for (size_t c = 0; c < num_classes; ++c) {
+
+          const float class_conf = conf * class_scores[c];
+          if (class_conf >= min_confidence) {
+
+            image_annotation ann;
+            ann.identifier = static_cast<int>(c);
+            ann.confidence = class_conf;
+            ann.bounding_box.x = x - w/2;
+            ann.bounding_box.y = y - h/2;
+            ann.bounding_box.width = w;
+            ann.bounding_box.height = h;
+            result.push_back(std::move(ann));
+          }
+        }
+      }
+    }
+  }
+
+  return result;
 }
 
 void add_yolo(model_spec* nn_spec, const std::string& coordinates_name,

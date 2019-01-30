@@ -35,6 +35,23 @@ void convert_annotations_to_yolo(
     size_t num_classes, float* out);
 
 /**
+ * Parses the raw YOLO output map into annotations.
+ *
+ * \param yolo_map A float array with shape (H, W, B*(5+C)), where B is the
+ *            number of anchors, C is the number of classes, and H and W are the
+ *            height and width of the output grid.
+ * \param anchor_boxes The B anchor boxes used to train the YOLO model, as a
+ *            vector of (width, height) pairs (in the output grid coordinates).
+ * \param min_confidence The smallest confidence score to allow in the returned
+ *            results.
+ * \return Annotations in the coordinate space of the output grid.
+ */
+std::vector<neural_net::image_annotation> convert_yolo_to_annotations(
+    const neural_net::float_array& yolo_map,
+    const std::vector<std::pair<float, float>>& anchor_boxes,
+    float min_confidence);
+
+/**
  * Appends layers to an existing neural net spec, implementing the conversion
  * from a trained YOLO model to predicted bounding boxes and class labels.
  *
