@@ -26,27 +26,6 @@ class data_iterator {
 public:
 
   /**
-   * Writes a list of image_annotation values into an output float buffer.
-   *
-   * \param annotations The list of annotations (for one image) to write
-   * \param output_height The height of the YOLO output grid
-   * \param output_width The width of the YOLO output grid
-   * \param num_anchors The number of YOLO anchors
-   * \param num_classes The number of classes in the output one-hot encoding
-   * \param out Address to a float buffer of size output_height * output_width *
-   *            num_anchors * (5 + num_classes)
-   * \todo Add a mutable_float_array or shared_float_buffer type for functions
-   *       like this one to write into.
-   * \todo This strictly speaking doesn't belong in this data iterator type but
-   *       probably doesn't warrant its own file yet (and would be nice not to
-   *       bury in object_detector.cpp).
-   */
-  static void convert_annotations_to_yolo(
-      const std::vector<neural_net::image_annotation>& annotations,
-      size_t output_height, size_t output_width, size_t num_anchors,
-      size_t num_classes, float* out);
-
-  /**
    * Defines the inputs to a data_iterator factory function.
    */
   struct parameters {

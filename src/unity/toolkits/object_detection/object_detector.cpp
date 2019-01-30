@@ -624,9 +624,8 @@ shared_float_array object_detector::prepare_label_batch(
   float* result_out = result.data();
   for (const std::vector<image_annotation>& annotations : annotations_batch) {
 
-    data_iterator::convert_annotations_to_yolo(
-        annotations, GRID_SIZE, GRID_SIZE, anchor_boxes().size(), num_classes,
-        result_out);
+    convert_annotations_to_yolo(annotations, GRID_SIZE, GRID_SIZE,
+                                anchor_boxes().size(), num_classes, result_out);
 
     result_out += batch_stride;
   }
