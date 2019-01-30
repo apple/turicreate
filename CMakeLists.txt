@@ -773,7 +773,9 @@ macro(make_library NAME)
     endif()
   endif()
 
-  add_dependencies(${NAME} precompiled_header)
+  if (NOT ${make_library_NO_PCH})
+    add_dependencies(${NAME} precompiled_header)
+  endif()
   if (${make_library_EXTERNAL_VISIBILITY})
     # do nothing
     message(STATUS "External Visibility: " ${NAME})
