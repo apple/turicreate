@@ -14,9 +14,12 @@ from mxnet.gluon import HybridBlock as _HybridBlock
 from mxnet.gluon.data.vision import datasets as _datasets
 from mxnet.gluon.data.vision import transforms as _transforms
 from turicreate.toolkits._model import CustomModel as _CustomModel
+from turicreate.toolkits import evaluation as _evaluation
 import turicreate.toolkits._internal_utils as _tkutl
 from ._sframe_loader import SFrameRecognitionIter as _SFrameRecognitionIter
 from .. import _mxnet_utils
+
+
 
 class Model(_HybridBlock):
     def __init__(self, num_classes, **kwargs):
@@ -422,18 +425,56 @@ class DrawingRecognition(_CustomModel):
         return (_tc.SFrame({'label': _tc.SArray(all_predicted)}), 
             _tc.SFrame({'label': _tc.SArray(all_gt)}))
 
-    def evaluate(self, 
-        dataset, metric='auto', output_type='dict', verbose=True):
-        
-        pred, gt = self._predict_with_options(dataset, with_ground_truth=True,
-                                              verbose=verbose)
+    def evaluate(self, dataset, metric='auto', output_type='dict', verbose=True):
 
+        pred, target = self._predict_with_options(dataset, with_ground_truth=True,
+                                              verbose=verbose)
+        '''
+        ## Previous code
         num_correct = 0
         num_total = len(pred)
         for row_num in range(num_total):
-            if pred[row_num]['label'] == gt[row_num]['label']:
+            if pred[row_num]['label'] == target[row_num]['label']:
                 num_correct += 1
-        return {"accuracy": num_correct / num_total}
+        print 'accuracy : %.2f ' % ((1.0*num_correct)/ num_total)
+        '''
+        
+        '''
+            Metrics listed in image classifier evaluate - excluded log loss
+        '''
+        avail_metrics = ['accuracy', 'auc', 'precision', 'recall',
+                         'f1_score', 'confusion_matrix', 'roc_curve']
+
+        _tkutl._check_categorical_option_type(
+                        'metric', metric, avail_metrics + ['auto'])
+
+        if metric == 'auto':
+            metrics = avail_metrics
+        else:
+            metrics = [metric]
+
+        '''
+            Return type dict matches image_classifier returns type
+            TODO: auc, roc
+        '''
+        ret = {}
+        if 'accuracy' in metrics:
+            ret['accuracy'] = _evaluation.accuracy(target['label'], pred['label'])
+        #if 'auc' in metrics:
+        #    ret['auc'] = _evaluation.auc(target['label'], probs, index_map=self._target_id_map)
+        if 'precision' in metrics:
+            ret['precision'] = _evaluation.precision(target['label'], pred['label'])
+        if 'recall' in metrics:
+            ret['recall'] = _evaluation.recall(target['label'], pred['label'])
+        if 'f1_score' in metrics:
+            ret['f1_score'] = _evaluation.f1_score(target['label'], pred['label'])
+        if 'confusion_matrix' in metrics:
+            ret['confusion_matrix'] = _evaluation.confusion_matrix(target['label'], pred['label'])
+        #if 'roc_curve' in metrics:
+            #ret['roc_curve'] = _evaluation.roc_curve(target['label'], probs, index_map=self._target_id_map)
+        
+        return ret
+
 
         # pred_df = pred.to_dataframe()
         # gt_df = gt.to_dataframe()
