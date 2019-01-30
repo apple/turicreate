@@ -129,7 +129,6 @@
 #include <boost/circular_buffer.hpp>
 #include <boost/circular_buffer_fwd.hpp>
 #include <boost/compressed_pair.hpp>
-#include <boost/compute.hpp>
 #include <boost/concept_archetype.hpp>
 #include <boost/concept_check.hpp>
 #include <boost/config.hpp>
