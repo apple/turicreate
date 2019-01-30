@@ -315,7 +315,7 @@ if (CLANG)
     set(_cpp11_optional_flags "${_cpp11_optional_flags} -Wno-stdlibcxx-not-found")
   endif()
 
-  set(CPP11_FLAGS "-std=c++11 -stdlib=libc++ -Winvalid-pch -Wno-deprecated-register -Wno-enum-compare -Wno-conversion-null -Wno-constant-logical-operand -Wno-parentheses-equality -ftemplate-depth=900 ${_cpp11_optional_flags}")
+  set(CPP11_FLAGS "-std=c++11 -stdlib=libc++ -Wno-deprecated-register -Wno-enum-compare -Wno-conversion-null -Wno-constant-logical-operand -Wno-parentheses-equality -ftemplate-depth=900 ${_cpp11_optional_flags}")
 
   set(WERROR_FLAGS "-Werror")
 else()
@@ -510,17 +510,27 @@ endif()
 #**************************************************************************/
 # TODO - does this work in anything other than clang?
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/src/pch)
+set(PCH_HEADER ${CMAKE_BINARY_DIR}/src/pch/pch.hpp)
 add_custom_command(
-  OUTPUT ${CMAKE_BINARY_DIR}/src/pch/pch.hpp.gch
-  COMMAND ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS} -fvisibility=default -fvisibility-inlines-hidden -isystem ${CMAKE_SOURCE_DIR}/deps/local/include -o ${CMAKE_BINARY_DIR}/src/pch/pch.hpp.gch ${CMAKE_SOURCE_DIR}/src/pch/pch.in.hpp
+  OUTPUT ${PCH_HEADER}
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/pch/pch.in.hpp ${PCH_HEADER}
+)
+add_custom_command(
+  OUTPUT ${PCH_HEADER}.gch
+  COMMAND ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS} -fvisibility=default -fvisibility-inlines-hidden -isystem ${CMAKE_SOURCE_DIR}/deps/local/include -o ${PCH_HEADER}.gch ${PCH_HEADER}
   COMMENT "Creating project-wide pre-compiled header with visibility=default"
   DEPENDS
     ${CMAKE_SOURCE_DIR}/src/pch/pch.in.hpp
     boost
 )
+set(PCH_HEADER ${CMAKE_BINARY_DIR}/src/pch/pch_visibility_hidden.hpp)
 add_custom_command(
-  OUTPUT ${CMAKE_BINARY_DIR}/src/pch/pch_visibility_hidden.hpp.gch
-  COMMAND ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden -isystem ${CMAKE_SOURCE_DIR}/deps/local/include -o ${CMAKE_BINARY_DIR}/src/pch/pch_visibility_hidden.hpp.gch ${CMAKE_SOURCE_DIR}/src/pch/pch.in.hpp
+  OUTPUT ${PCH_HEADER}
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/pch/pch.in.hpp ${PCH_HEADER}
+)
+add_custom_command(
+  OUTPUT ${PCH_HEADER}.gch
+  COMMAND ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden -isystem ${CMAKE_SOURCE_DIR}/deps/local/include -o ${PCH_HEADER}.gch ${PCH_HEADER}
   COMMENT "Creating project-wide pre-compiled header with visibility=hidden"
   DEPENDS
     ${CMAKE_SOURCE_DIR}/src/pch/pch.in.hpp
@@ -528,7 +538,9 @@ add_custom_command(
 )
 add_custom_target(
   precompiled_header
+  DEPENDS ${CMAKE_BINARY_DIR}/src/pch/pch.hpp
   DEPENDS ${CMAKE_BINARY_DIR}/src/pch/pch.hpp.gch
+  DEPENDS ${CMAKE_BINARY_DIR}/src/pch/pch_visibility_hidden.hpp
   DEPENDS ${CMAKE_BINARY_DIR}/src/pch/pch_visibility_hidden.hpp.gch
 )
 
@@ -785,7 +797,7 @@ macro(make_library NAME)
       if(CLANG)
         target_compile_options(${NAME} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-include-pch ${CMAKE_BINARY_DIR}/src/pch/pch.hpp.gch>)
       else()
-        target_compile_options(${NAME} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-include ${CMAKE_BINARY_DIR}/src/pch/pch.hpp.gch>)
+        target_compile_options(${NAME} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-include ${CMAKE_BINARY_DIR}/src/pch/pch.hpp>)
       endif()
     endif()
   else()
@@ -795,7 +807,7 @@ macro(make_library NAME)
       if(CLANG)
         target_compile_options(${NAME} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-include-pch ${CMAKE_BINARY_DIR}/src/pch/pch_visibility_hidden.hpp.gch>)
       else()
-        target_compile_options(${NAME} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-include ${CMAKE_BINARY_DIR}/src/pch/pch_visibility_hidden.hpp.gch>)
+        target_compile_options(${NAME} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-include ${CMAKE_BINARY_DIR}/src/pch/pch_visibility_hidden.hpp>)
       endif()
     endif()
   endif()
