@@ -161,7 +161,9 @@ bool process::popen(const std::string &cmd,
 
     int exec_ret = execvp(&cmd[0], (char**)c_arglist);
     if(exec_ret == -1) {
-      std::cerr << "Fail to exec: " << strerror(errno) << std::endl;
+      std::stringstream msg;
+      msg << "Fail to exec command '" << cmd.c_str() << "': " << strerror(errno) << std::endl;
+      log_and_throw(msg.str());
     }
     _exit(0);
   } else {

@@ -8,12 +8,7 @@ add_subdirectory(turicreate)
 # no-longer needed in the build tree.  However, with pure *.py source, the
 # source is processed directly.  To handle this, we reproduce the availability
 # of the source files in the build tree.
-
-# Copy all the open source python stuff over first
-
-# Overwrite with the proprietary stuff
-
-make_copy_target(python_source
+make_symlink_target(python_source
   FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt
     ${CMAKE_CURRENT_SOURCE_DIR}/MANIFEST.in
