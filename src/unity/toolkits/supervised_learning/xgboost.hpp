@@ -176,7 +176,8 @@ class EXPORT xgboost_model : public supervised_learning_model_base {
    */
   std::map<std::string, variant_type> evaluate(
                const ml_data& test_data,
-               const std::string& evaluation_type="") override;
+               const std::string& evaluation_type="",
+               bool with_prediction=false) override;
 
   std::map<std::string, variant_type> evaluate_impl(
                const DMatrixMLData& dmat,
