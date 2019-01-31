@@ -18,17 +18,75 @@ using neural_net::image_box;
 
 namespace {
 
-float compute_iou(const image_annotation& a, const image_annotation& b) {
+float compute_iou(const image_box& a, const image_box& b) {
 
-  image_box intersection_box = a.bounding_box;
-  intersection_box.clip(b.bounding_box);
+  image_box intersection_box = a;
+  intersection_box.clip(b);
 
   float intersection_area = intersection_box.area();
-  float union_area =
-      a.bounding_box.area() + b.bounding_box.area() - intersection_area;
+  float union_area = a.area() + b.area() - intersection_area;
 
   return intersection_area / union_area;
 }
+
+// Helper class used to compute the average precision for a particular class.
+class precision_recall_curve {
+public:
+
+  // Requires the number of actual positive instances
+  precision_recall_curve(size_t num_ground_truth_labels)
+    : ground_truth_labels_used_(num_ground_truth_labels)
+  {}
+
+  // Registers a prediction not matched to a ground truth label.
+  void add_false_positive() {
+    ++num_predictions_;
+  }
+
+  // Registers a prediction matched to a ground truth label. The prediction will
+  // only count as a true positive if that label hasn't been matched to a
+  // previous (higher confidence) prediction.
+  void add_true_positive_if_available(size_t ground_truth_label_index) {
+
+    ++num_predictions_;
+
+    if (ground_truth_labels_used_[ground_truth_label_index]) return;
+
+    ground_truth_labels_used_[ground_truth_label_index] = true;
+
+    float num_true_positives = precisions_.size() + 1;
+    precisions_.push_back(num_true_positives / num_predictions_);
+  }
+
+  // Computes the average (across ground truth labels) of the precision required
+  // to get that label as a true positive.
+  float compute_average_precision() const {
+
+    if (ground_truth_labels_used_.empty()) return 0.f;
+
+    float sum = 0.f;
+    float max_precision = 0.f;
+    for (auto it = precisions_.rbegin(); it != precisions_.rend(); ++it) {
+
+      // For this ground truth label, use the best precision that includes it.
+      // This is the max of all precisions from this one in the vector.
+      max_precision = std::max(max_precision, *it);
+      sum += max_precision;
+    }
+
+    return sum / ground_truth_labels_used_.size();
+  }
+
+  bool has_total_recall() const {
+    return precisions_.size() == ground_truth_labels_used_.size();
+  }
+
+private:
+
+  size_t num_predictions_ = 0;
+  std::vector<bool> ground_truth_labels_used_;
+  std::vector<float> precisions_;
+};
 
 }  // namespace
 
@@ -69,7 +127,8 @@ std::vector<image_annotation> apply_non_maximum_suppression(
 
       // Remove lower-confidence predictions overlapping with *class_it.
       auto overlaps = [=](const image_annotation& ann) {
-        return compute_iou(*class_it, ann) > iou_threshold;
+        float iou = compute_iou(class_it->bounding_box, ann.bounding_box);
+        return iou > iou_threshold;
       };
       class_end = std::remove_if(class_it + 1, class_end, overlaps);
 
@@ -105,6 +164,124 @@ std::vector<image_annotation> apply_non_maximum_suppression(
   predictions.erase(result_end, predictions.end());
 
   return predictions;
+}
+
+average_precision_calculator::average_precision_calculator(
+    size_t num_classes, std::vector<float> iou_thresholds)
+  : data_(num_classes),
+    iou_thresholds_(std::move(iou_thresholds))
+{}
+
+void average_precision_calculator::add_row(
+    const std::vector<image_annotation>& predictions,
+    const std::vector<image_annotation>& ground_truth) {
+
+  // Keep track of which class_data values we're touching.
+  std::vector<bool> class_updated(data_.size(), false);
+
+  // Register all the model predictions.
+  for (const image_annotation& pred_annotation : predictions) {
+
+    int identifier = pred_annotation.identifier;
+    class_updated[identifier] = true;
+
+    // The next row index for this class is equal to the current size of the
+    // ground_truth_indices vector.
+    class_data& data = data_[identifier];
+    data.predictions.emplace_back(pred_annotation.confidence,
+                                  pred_annotation.bounding_box,
+                                  data.ground_truth_indices.size());
+  }
+
+  // Register all the ground truth labels.
+  for (const image_annotation& ground_truth_annotation : ground_truth) {
+
+    int identifier = ground_truth_annotation.identifier;
+    class_updated[identifier] = true;
+
+    class_data& data = data_[identifier];
+    data.ground_truth_boxes.push_back(ground_truth_annotation.bounding_box);
+  }
+
+  // For all updated class_values, register the new row index.
+  for (size_t i = 0; i < class_updated.size(); ++i) {
+
+    if (class_updated[i]) {
+
+      class_data& data = data_[i];
+      data.ground_truth_indices.push_back(data.ground_truth_boxes.size());
+    }
+  }
+}
+
+std::vector<std::map<float,float>> average_precision_calculator::evaluate() {
+
+  std::vector<std::map<float,float>> result;
+  result.reserve(data_.size());
+
+  for (size_t i = 0; i < data_.size(); ++i) {
+    result.push_back(evaluate_class(i));
+  }
+
+  return result;
+}
+
+std::map<float,float> average_precision_calculator::evaluate_class(
+    size_t identifier) {
+
+  class_data& data = data_[identifier];
+  std::vector<precision_recall_curve> pr_curves(
+      iou_thresholds_.size(),
+      precision_recall_curve(data.ground_truth_boxes.size()));
+
+  // Rank the predictions by confidence.
+  auto by_confidence = [](const prediction& a, const prediction& b) {
+    return a.confidence > b.confidence;
+  };
+  std::sort(data.predictions.begin(), data.predictions.end(), by_confidence);
+  for (const prediction& pred : data.predictions) {
+
+    // Find ground truth labels for the image associated with this predictions.
+    size_t gt_idx = 0;
+    size_t gt_count;
+    if (pred.row_index == 0) {
+      gt_count = data.ground_truth_indices[pred.row_index];
+    } else {
+      gt_idx = data.ground_truth_indices[pred.row_index - 1];
+      gt_count = data.ground_truth_indices[pred.row_index] - gt_idx;
+    }
+
+    // Find the ground truth label with the largest overlap with the prediction.
+    float best_iou = 0.f;
+    size_t best_gt_idx = 0;
+    for (size_t i = 0; i < gt_count; ++i) {
+      image_box gt_box = data.ground_truth_boxes[gt_idx + i];
+      float iou = compute_iou(pred.bounding_box, gt_box);
+      if (best_iou < iou) {
+        best_iou = iou;
+        best_gt_idx = gt_idx + i;
+      }
+    }
+
+    // For each IOU threshold, register this prediction as a true positive or a
+    // false positive, possibly depending on whether the matching ground-truth
+    // label has already counted for a true positive.
+    for (size_t i = 0; i < iou_thresholds_.size(); ++i) {
+      if (best_iou >= iou_thresholds_[i]) {
+        pr_curves[i].add_true_positive_if_available(best_gt_idx);
+      } else {
+        pr_curves[i].add_false_positive();
+      }
+    }
+  }
+
+  // Compute the average precisions and pack the results into a map.
+  std::map<float, float> result;
+  for (size_t i = 0; i < iou_thresholds_.size(); ++i) {
+    result.emplace(iou_thresholds_[i],
+                   pr_curves[i].compute_average_precision());
+  }
+  return result;
 }
 
 }  // object_detection
