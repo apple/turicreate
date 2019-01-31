@@ -520,7 +520,7 @@ add_custom_command(
   COMMAND ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS} -fvisibility=default -fvisibility-inlines-hidden -isystem ${CMAKE_SOURCE_DIR}/deps/local/include -o ${PCH_HEADER}.gch ${PCH_HEADER}
   COMMENT "Creating project-wide pre-compiled header with visibility=default"
   DEPENDS
-    ${CMAKE_SOURCE_DIR}/src/pch/pch.in.hpp
+    ${PCH_HEADER}
     boost
 )
 set(PCH_HEADER ${CMAKE_BINARY_DIR}/src/pch/pch_visibility_hidden.hpp)
