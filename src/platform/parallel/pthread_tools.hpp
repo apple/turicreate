@@ -3,20 +3,17 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_PTHREAD_TOOLS_HPP
 #define TURI_PTHREAD_TOOLS_HPP
 
-
-#include <cstdlib>
 #include <parallel/pthread_h.h>
 #include <semaphore.h>
 #include <sched.h>
 #include <signal.h>
 #include <sys/time.h>
-#include <vector>
-#include <list>
-#include <queue>
-#include <iostream>
 #include <boost/function.hpp>
 #include <logger/assertions.hpp>
 #include <parallel/atomic_ops.hpp>

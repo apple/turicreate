@@ -3,17 +3,14 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <vector>
-#include <queue>
-#include <cstdint>
-#include <cstddef>
+
+#include <pch/pch.hpp>
+
 #include <sys/mman.h>
 #include <signal.h>
 #include <unistd.h>
-#include <iostream>
 #include <errno.h>
 #include <string.h>
-#include <cstdlib>
 #include <user_pagefault/pagefile.hpp>
 #include <minipsutil/minipsutil.h>
 #include <random/random.hpp>

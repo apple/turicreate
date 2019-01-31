@@ -3,10 +3,8 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <cstring>
-#include <cstdlib>
-#include <iostream>
-#include <sstream>
+
+#include <pch/pch.hpp>
 
 #ifndef _WIN32
 #include <sys/types.h>

@@ -3,10 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef FAULT_QUERY_OBJECT_HPP
 #define FAULT_QUERY_OBJECT_HPP
-#include <vector>
-#include <cstdlib>
+
 #include <stdint.h>
 #include <fault/zmq/zmq_msg_vector.hpp>
 #include <fault/message_types.hpp>

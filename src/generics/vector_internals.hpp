@@ -3,20 +3,14 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_GL_VECTOR_INTERNALS_H_
 #define TURI_GL_VECTOR_INTERNALS_H_
 
-#include <cstdint>
-#include <cstdlib>
-#include <algorithm>
-#include <iterator>
-#include <memory>
-#include <exception>
-#include <type_traits>
-#include <initializer_list>
 #include <logger/assertions.hpp>
 #include <util/basic_types.hpp>
-#include <utility>
 
 #ifdef NDEBUG
 #define _VEC_NDEBUG_NOEXCEPT noexcept

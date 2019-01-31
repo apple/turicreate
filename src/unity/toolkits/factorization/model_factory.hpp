@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_FACTORIZATION_MODEL_CREATION_FACTORY_H_
 #define TURI_FACTORIZATION_MODEL_CREATION_FACTORY_H_
 
@@ -12,9 +15,6 @@
 #include <unity/toolkits/sgd/sgd_interface.hpp>
 #include <unity/toolkits/factorization/ranking_sgd_solver_explicit.hpp>
 #include <unity/toolkits/factorization/ranking_sgd_solver_implicit.hpp>
-
-#include <string>
-#include <cstdlib>
 
 ////////////////////////////////////////////////////////////////////////////////
 // All of the macros we use to create an instance of the solvers,

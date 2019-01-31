@@ -4,6 +4,9 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#ifndef __TURI_PRECOMPILED_HEADER
+#define __TURI_PRECOMPILED_HEADER
+
 // Pre-compiled header (source)
 // Used as input to the compiler to generate a pre-compiled header.
 
@@ -105,3 +108,5 @@
 #include <mutex>
 #include <future>
 #include <condition_variable>
+
+#endif // __TURI_PRECOMPILED_HEADER

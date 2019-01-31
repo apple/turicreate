@@ -3,12 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_DENSE_BITSET_HPP
 #define TURI_DENSE_BITSET_HPP
-
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
 #include <stdint.h>
 #include <logger/logger.hpp>
 #include <serialization/serialization_includes.hpp>

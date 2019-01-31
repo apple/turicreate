@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef _WIN32
 #include <pwd.h>
 #else
@@ -13,12 +16,6 @@
 #include <signal.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include <cstdio>
-#include <cstdlib>
-#include <iomanip>
-#include <sstream>
-#include <set>
-#include <string>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 #include <parallel/mutex.hpp>

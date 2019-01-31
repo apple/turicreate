@@ -24,6 +24,8 @@
  * logging calls at compile time.
  */
 
+#include <pch/pch.hpp>
+
 #ifndef TURI_LOG_LOG_HPP
 #define TURI_LOG_LOG_HPP
 
@@ -35,16 +37,10 @@
 #undef COMPILER_HAS_IOS_BASE_FAILURE_WITH_ERROR_CODE
 #endif
 
-#include <fstream>
-#include <sstream>
-#include <cstdlib>
-#include <cassert>
-#include <cstring>
-#include <cstdarg>
 #ifdef COMPILER_HAS_IOS_BASE_FAILURE_WITH_ERROR_CODE
 #include <system_error>
 #endif
-#include <functional>
+
 #include <parallel/pthread_h.h>
 #include <timer/timer.hpp>
 #include <logger/fail_method.hpp>

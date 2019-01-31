@@ -13,6 +13,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
+#include <pch/pch.hpp>
+
 #ifndef BOOST_INTERPROCESS_WIN32_API_HPP
 #define BOOST_INTERPROCESS_WIN32_API_HPP
 
@@ -27,14 +29,7 @@
 #include <boost/interprocess/detail/config_begin.hpp>
 #include <boost/interprocess/detail/workaround.hpp>
 #include <boost/date_time/filetime_functions.hpp>
-#include <cstddef>
-#include <cstring>
-#include <cstdlib>
-#include <cstdio>
-
 #include <boost/assert.hpp>
-#include <string>
-#include <vector>
 
 #ifdef BOOST_USE_WINDOWS_H
 #include <cross_platform/windows_wrapper.hpp>
@@ -53,7 +48,6 @@
 #endif
 
 #if defined (BOOST_INTERPROCESS_WINDOWS)
-#  include <cstdarg>
 #  include <boost/detail/interlocked.hpp>
 #else
 # error "This file can only be included in Windows OS"
