@@ -53,6 +53,14 @@ public:
     std::string image_column_name;
 
     /**
+     * The expected class labels, indexed by identifier.
+     *
+     * If empty, then the labels will be inferred from the data. If non-empty,
+     * an exception will be thrown upon encountering an unexpected label.
+     */
+    std::vector<std::string> class_labels;
+
+    /**
      * Whether to traverse the data more than once.
      */
     bool repeat = true;
@@ -119,7 +127,9 @@ private:
     size_t num_instances;
   };
 
-  annotation_properties compute_properties(const gl_sarray& annotations);
+  annotation_properties compute_properties(
+      const gl_sarray& annotations,
+      std::vector<std::string> expected_class_labels);
 
   gl_sframe data_;
   const size_t annotations_index_;

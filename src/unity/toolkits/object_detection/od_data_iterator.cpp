@@ -4,6 +4,7 @@
 #include <cmath>
 
 #include <image/io.hpp>
+#include <logger/logger.hpp>
 #include <unity/lib/image_util.hpp>
 
 namespace turi {
@@ -125,7 +126,9 @@ std::vector<image_annotation> parse_annotations(
 }  // namespace
 
 simple_data_iterator::annotation_properties
-simple_data_iterator::compute_properties(const gl_sarray& annotations) {
+simple_data_iterator::compute_properties(
+    const gl_sarray& annotations,
+    std::vector<std::string> expected_class_labels) {
 
   annotation_properties result;
 
@@ -144,14 +147,34 @@ simple_data_iterator::compute_properties(const gl_sarray& annotations) {
                                { flex_type_enum::STRING },
                                /* na_value */ FLEX_UNDEFINED, { "label" });
 
-  // Determine the list of unique class labels and construct the class-to-index
-  // map.
+  // Determine the list of unique class labels,
   gl_sarray classes = instances["label"].unique().sort();
-  result.classes.reserve(classes.size());
-  int i = 0;
-  for (const flexible_type& label : classes.range_iterator()) {
-    result.classes.push_back(label);
-    result.class_to_index_map[label] = i++;
+
+  if (expected_class_labels.empty()) {
+
+    // Infer the class-to-index map from the observed labels.
+    result.classes.reserve(classes.size());
+    int i = 0;
+    for (const flexible_type& label : classes.range_iterator()) {
+      result.classes.push_back(label);
+      result.class_to_index_map[label] = i++;
+    }
+  } else {
+
+    // Construct the class-to-index map from the expected labels.
+    result.classes = std::move(expected_class_labels);
+    int i = 0;
+    for (const std::string& label : result.classes) {
+      result.class_to_index_map[label] = i++;
+    }
+
+    // Use the map to verify that we only encountered expected labels.
+    for (const flexible_type& ft : classes.range_iterator()) {
+      std::string label(ft);  // Ensures correct overload resolution below.
+      if (result.class_to_index_map.count(label) == 0) {
+        log_and_throw("Annotations contained unexpected class label " + label);
+      }
+    }
   }
 
   // Record the number of labeled bounding boxes.
@@ -172,9 +195,10 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
     // Whether to traverse the SFrame more than once.
     repeat_(params.repeat),
 
-    // Identify the class labels and other annotation properties.
+    // Identify/verify the class labels and other annotation properties.
     annotation_properties_(
-        compute_properties(data_[params.annotations_column_name])),
+        compute_properties(data_[params.annotations_column_name],
+                           params.class_labels)),
 
     // Start an iteration through the entire SFrame.
     range_iterator_(data_.range_iterator()),
