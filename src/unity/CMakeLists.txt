@@ -36,17 +36,6 @@ endif()
     add_dependencies(unity ${loop_var})
   endforeach()
 
-  if(APPLE AND HAS_MLCUSTOMMODEL)
-    set(EXTRA_REQUIRES objcapi)
-  endif()
-
-  make_shared_library_from_static(unity_shared
-        REQUIRES unity TuriCreate_static ${EXTRA_REQUIRES}
-        OUTPUT_NAME unity_shared
-        EXPORT_MAP ${CMAKE_SOURCE_DIR}/cmake/stdcxx_reduce_exports.ver)
-
-set(UNITY_ALL_LIBRARIES unity_shared)
-set(UNITY_EXTENSION_LIBRARY unity_shared)
 
 if(${TC_BUILD_PYTHON})
   subdirs(python)

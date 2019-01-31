@@ -12,7 +12,7 @@ function(cython_add_turicreate_module _module_name _sources)
   set_source_files_properties( ${_sources} PROPERTIES CYTHON_IS_CXX TRUE)
   cython_add_module( ${_module_name} ${_sources} )
   set_property(TARGET ${_module_name} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,-rpath,\\$ORIGIN -Wl,-rpath,\\$ORIGIN/.. -Wl,-rpath,${CMAKE_CURRENT_BINARY_DIR} ")
-  target_link_libraries(${_module_name} boost nanomsg ${UNITY_EXTENSION_LIBRARY})
+  target_link_libraries(${_module_name} boost nanomsg unity_shared)
   set_property(TARGET ${_module_name} APPEND_STRING PROPERTY COMPILE_FLAGS " -include ${CMAKE_CURRENT_SOURCE_DIR}/cython_cpp_error_handler.hpp")
   set_property(TARGET ${_module_name} APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-writable-strings")
 
