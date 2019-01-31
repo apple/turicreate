@@ -68,7 +68,6 @@ class EXPORT object_detector: public ml_model_base {
       "    The number of training iterations. If 0, then it will be automatically\n"
       "    be determined based on the amount of data you provide.\n"
   );
-  // TODO: Addition training options: batch_size, max_iterations, etc.
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::export_to_coreml, "filename",
     "options");

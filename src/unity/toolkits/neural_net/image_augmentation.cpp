@@ -72,7 +72,7 @@ bool operator==(const image_annotation& a, const image_annotation& b) {
 image_augmenter::result resize_only_image_augmenter::prepare_images(
     std::vector<labeled_image> source_batch) {
 
-  const size_t n = source_batch.size();
+  const size_t n = opts_.batch_size;
   const size_t h = opts_.output_height;
   const size_t w = opts_.output_width;
   constexpr size_t c = 3;
@@ -80,11 +80,15 @@ image_augmenter::result resize_only_image_augmenter::prepare_images(
   result res;
   res.annotations_batch.reserve(n);
 
+  // Discard any source data in excess of the batch size.
+  if (source_batch.size() > n) {
+    source_batch.resize(n);
+  }
+
   // Allocate a float vector large enough to contain the entire image batch.
   std::vector<float> result_array(n * h * w * c);
 
-  // TODO: Parallelize this computation, which is currently the bottleneck in
-  // training!
+  // Note: this computation could probably be parallelized, if needed.
   auto out_it = result_array.begin();
   for (labeled_image& source : source_batch) {
     // Resize the input image.

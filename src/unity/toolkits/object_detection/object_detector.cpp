@@ -111,10 +111,11 @@ float_array_map get_training_config() {
   return config;
 }
 
-image_augmenter::options get_augmentation_options() {
+image_augmenter::options get_augmentation_options(flex_int batch_size) {
   image_augmenter::options opts;
 
   // Specify the fixed image size expected by the neural network.
+  opts.batch_size = static_cast<size_t>(batch_size);
   opts.output_width = GRID_SIZE * SPATIAL_REDUCTION;
   opts.output_height = GRID_SIZE * SPATIAL_REDUCTION;
 
@@ -472,10 +473,6 @@ void object_detector::init_train(gl_sframe data,
     log_and_throw("No neural network compute context provided");
   }
 
-  // Instantiate the data augmenter.
-  training_data_augmenter_ = training_compute_context_->create_image_augmenter(
-      get_augmentation_options());
-
   // Extract 'mlmodel_path' from the options, to avoid storing it as a model
   // field.
   auto mlmodel_path_iter = opts.find("mlmodel_path");
@@ -530,6 +527,10 @@ void object_detector::init_train(gl_sframe data,
   });
   // TODO: The original Python implementation also exposed "anchors",
   // "non_maximum_suppression_threshold", and "training_time".
+
+  // Instantiate the data augmenter.
+  training_data_augmenter_ = training_compute_context_->create_image_augmenter(
+      get_augmentation_options(options.value("batch_size")));
 
   // Instantiate the NN backend.
   int num_outputs_per_anchor =  // 4 bbox coords + 1 conf + one-hot class labels
@@ -615,13 +616,17 @@ shared_float_array object_detector::prepare_label_batch(
     std::vector<std::vector<image_annotation>> annotations_batch) const {
 
   // Allocate a float buffer of sufficient size.
+  size_t batch_size = static_cast<size_t>(options.value("batch_size"));
   size_t num_classes = training_data_iterator_->class_labels().size();
   size_t num_channels = anchor_boxes().size() * (5 + num_classes);  // C
   size_t batch_stride = GRID_SIZE * GRID_SIZE * num_channels;  // H * W * C
-  std::vector<float> result(annotations_batch.size() * batch_stride);  // NHWC
+  std::vector<float> result(batch_size * batch_stride);  // NHWC
 
   // Write the structured annotations into the float buffer.
   float* result_out = result.data();
+  if (annotations_batch.size() > batch_size) {
+    annotations_batch.resize(batch_size);
+  }
   for (const std::vector<image_annotation>& annotations : annotations_batch) {
 
     convert_annotations_to_yolo(annotations, GRID_SIZE, GRID_SIZE,

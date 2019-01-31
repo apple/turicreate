@@ -161,6 +161,9 @@ public:
    */
   struct options {
 
+    /** The N dimension of the resulting float array. */
+    size_t batch_size = 0;
+
     /** The W dimension of the resulting float array. */
     size_t output_width = 0;
 
@@ -224,7 +227,7 @@ public:
 
     /**
      * The transformed annotations for each augmented image. This vector's size
-     * should equal the size of the N dimension in the image_batch above, and
+     * should equal the size of the source batch that generated the result, and
      * each inner vector should have the same length as the corresponding input
      * image's annotations vector. */
     std::vector<std::vector<image_annotation>> annotations_batch;
@@ -237,6 +240,9 @@ public:
 
   /**
    * Performs augmentation on a batch of images (and their annotations).
+   *
+   * If the source batch is smaller than the batch size specified in the
+   * options, then the result is padded with zeroes as needed.
    */
   virtual result prepare_images(std::vector<labeled_image> source_batch) = 0;
 };
