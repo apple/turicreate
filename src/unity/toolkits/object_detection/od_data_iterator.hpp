@@ -51,6 +51,11 @@ public:
      * Each value is either an image or a path to an image file on disk.
      */
     std::string image_column_name;
+
+    /**
+     * Whether to traverse the data more than once.
+     */
+    bool repeat = true;
   };
 
   virtual ~data_iterator() = default;
@@ -58,9 +63,13 @@ public:
   /**
    * Returns a vector whose size is equal to `batch_size`.
    *
-   * Note that the iterator will cycle indefinitely through the SFrame over and
-   * over. The x,y coordinates in the returned annotations indicate the
-   * upper-left corner of the bounding box.
+   * If `repeat` was set in the parameters, then the iterator will cycle
+   * indefinitely through the SFrame over and over. Otherwise, the last
+   * non-empty batch may contain fewer than `batch_size` elements, and every
+   * batch after that will be empty.
+   *
+   * The x,y coordinates in the returned annotations indicate the upper-left
+   * corner of the bounding box.
    */
   virtual std::vector<neural_net::labeled_image>
       next_batch(size_t batch_size) = 0;
@@ -115,6 +124,7 @@ private:
   gl_sframe data_;
   const size_t annotations_index_;
   const size_t image_index_;
+  const bool repeat_;
 
   const annotation_properties annotation_properties_;
 

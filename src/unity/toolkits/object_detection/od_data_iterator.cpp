@@ -169,6 +169,9 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
     annotations_index_(data_.column_index(params.annotations_column_name)),
     image_index_(data_.column_index(params.image_column_name)),
 
+    // Whether to traverse the SFrame more than once.
+    repeat_(params.repeat),
+
     // Identify the class labels and other annotation properties.
     annotation_properties_(
         compute_properties(data_[params.annotations_column_name])),
@@ -180,23 +183,23 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
 
 std::vector<labeled_image> simple_data_iterator::next_batch(size_t batch_size) {
 
-  // For now, only return empty if we literally have no data at all.
-  if (data_.empty()) return {};
-
   std::vector<std::pair<flexible_type, flexible_type>> raw_batch;
   raw_batch.reserve(batch_size);
-  while (raw_batch.size() < batch_size) {
+  while (raw_batch.size() < batch_size && next_row_ != range_iterator_.end()) {
 
     const sframe_rows::row& row = *next_row_;
     raw_batch.emplace_back(row[image_index_], row[annotations_index_]);
 
-    if (++next_row_ == range_iterator_.end()) {
+    if (++next_row_ == range_iterator_.end() && repeat_) {
 
       // Shuffle the data.
       // TODO: This heavyweight shuffle operation introduces spikes into the
       // wall-clock time of this function. SFrame should either provide an
       // optimized implementation, or we should implement an approach that
       // amortizes the cost across calls.
+      // TODO: Avoid traversing the data in gl_sframe::apply by instead
+      // generating a gl_sarray from a sequence of the desired length and
+      // hashing each element.
       auto rng = [](const sframe_rows::row&) {
         return random::rand();
       };
@@ -211,8 +214,8 @@ std::vector<labeled_image> simple_data_iterator::next_batch(size_t batch_size) {
     }
   }
 
-  std::vector<labeled_image> result(batch_size);
-  for (size_t i = 0; i < batch_size; ++i) {
+  std::vector<labeled_image> result(raw_batch.size());
+  for (size_t i = 0; i < raw_batch.size(); ++i) {
 
     // Reads the undecoded image data from disk, if necessary.
     // TODO: Investigate parallelizing this file I/O.
