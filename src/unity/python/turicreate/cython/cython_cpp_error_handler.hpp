@@ -8,6 +8,8 @@
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#undef isspace
+#undef toupper
 #define __Pyx_CppExn2PyErr __Pyx_CppExn2PyErr2
 static void __Pyx_CppExn2PyErr() {
   // Catch a handful of different errors here and turn them into the

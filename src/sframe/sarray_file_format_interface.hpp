@@ -11,11 +11,12 @@
 
 #define BOOST_SPIRIT_THREADSAFE
 
-#include <fileio/general_fstream.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
-#include <sframe/sarray_index_file.hpp>
+
+#include <fileio/general_fstream.hpp>
 #include <flexible_type/flexible_type.hpp>
+#include <sframe/sarray_index_file.hpp>
 #include <sframe/sframe_rows.hpp>
 namespace turi {
 
