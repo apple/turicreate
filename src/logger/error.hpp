@@ -19,6 +19,9 @@ class io_error : public std::ios_base::failure {
 
   public:
     explicit io_error(const std::string &message);
+#ifdef COMPILER_HAS_IOS_BASE_FAILURE_WITH_ERROR_CODE
+    io_error(const std::string &message, const std::error_code& code);
+#endif
 
 #ifdef COMPILER_HAS_NOEXCEPT_WHAT_ON_EXCEPTIONS
   virtual const char *what() const noexcept override;
