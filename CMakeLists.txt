@@ -947,7 +947,6 @@ function (make_symlink_target NAME)
   set(one_value_args OUTPUT_DIR)
   set(multi_value_args FILES DIRECTORIES)
   CMAKE_PARSE_ARGUMENTS(symlink "" "${one_value_args}" "${multi_value_args}" ${ARGN})
-  message(STATUS "Making symlink target ${NAME}")
   if ("${symlink_OUTPUT_DIR}" STREQUAL "")
     set(symlink_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR})
   endif()
@@ -959,6 +958,7 @@ function (make_symlink_target NAME)
     file(REMOVE ${link})
     add_custom_command(
       OUTPUT ${link}
+      COMMENT "Creating symlink ${link} -> ${file}"
       COMMAND ${CMAKE_COMMAND} -E create_symlink "${file}" "${link}"
     )
     string(MAKE_C_IDENTIFIER "${link}_target" file_target)
@@ -980,7 +980,6 @@ function (make_symlink_target NAME)
         set(nested_files "")
         set(nested_directories "")
         foreach(file_path ${all_files})
-          message(STATUS "Found nested path to recurse: ${file_path}")
           if (IS_DIRECTORY "${file_path}")
             list(APPEND nested_directories "${file_path}")
           else()
@@ -1000,8 +999,8 @@ function (make_symlink_target NAME)
           DIRECTORIES
           ${nested_directories}
         )
+        add_dependencies(${NAME} ${directory_name})
   endforeach()
-
 endfunction()
 
 include(SharedLibraryFromStatic)
