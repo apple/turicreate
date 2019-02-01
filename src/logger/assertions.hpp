@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 // Copyright (c) 2005, Google Inc.
 // All rights reserved.
 //
@@ -53,10 +56,6 @@
 #include <string.h>    // for strlen(), strcmp()
 #include <assert.h>
 #include <errno.h>     // for errno
-#include <sstream>
-#include <cassert>
-#include <cmath>
-#include <sstream>
 #include <logger/logger.hpp>
 #include <logger/fail_method.hpp>
 #include <logger/backtrace.hpp>

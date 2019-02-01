@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #include <flexible_type/flexible_type_base_types.hpp>
 #include <sframe/sframe_iterators.hpp>
 #include <util/try_finally.hpp>
@@ -21,9 +24,7 @@
 #include <unity/toolkits/evaluation/metrics.hpp>
 #include <util/fast_top_k.hpp>
 #include <timer/timer.hpp>
-#include <algorithm>
 #include <logger/logger.hpp>
-#include <sstream>
 
 // Types
 #include <unity/lib/variant.hpp>

@@ -1,5 +1,4 @@
-#include <iostream>
-#include <memory>
+#include <pch/pch.hpp>
 
 #include "plot.hpp"
 #include <unity/lib/visualization/dark_mode.hpp>
@@ -12,7 +11,6 @@
 #include <unity/lib/visualization/item_frequency.hpp>
 #include <unity/lib/visualization/summary_view.hpp>
 #include <unity/lib/visualization/vega_spec/config.h>
-#include <sstream>
 
 namespace turi{
   namespace visualization{

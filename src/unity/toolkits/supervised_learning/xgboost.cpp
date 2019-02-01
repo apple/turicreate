@@ -4,6 +4,8 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #ifdef CHECK
 #undef CHECK
 #endif
@@ -17,9 +19,6 @@
 #include <toolkits/supervised_learning/xgboost.hpp>
 #include <toolkits/supervised_learning/xgboost_iterator.hpp>
 
-#include <limits>
-#include <sstream>
-#include <fstream>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/path.hpp>
 

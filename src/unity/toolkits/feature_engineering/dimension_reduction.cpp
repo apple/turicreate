@@ -4,6 +4,8 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #include <unity/toolkits/feature_engineering/dimension_reduction.hpp>
 #include <unity/toolkits/feature_engineering/transform_utils.hpp>
 
@@ -11,7 +13,6 @@
 #include <random/random.hpp>
 #include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
 #include <table_printer/table_printer.hpp>
-#include <sstream>
 
 namespace turi {
 namespace sdk_model {

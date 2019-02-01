@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #include <serialization/serialization_includes.hpp>
 #include <fileio/temp_files.hpp>
 #include <unity/lib/toolkit_function_macros.hpp>
@@ -13,9 +16,6 @@
 #include <sframe/sframe.hpp>
 #include <sframe/algorithm.hpp>
 #include <fileio/general_fstream.hpp>
-#include <sstream>
-#include <string>
-#include <iostream>
 #include <util/bitops.hpp>
 #include <unity/toolkits/text/unity_text.hpp>
 #include <unity/toolkits/text/topic_model.hpp>

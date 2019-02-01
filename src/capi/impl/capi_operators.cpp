@@ -4,6 +4,8 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #include <capi/TuriCreate.h>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>
@@ -12,8 +14,6 @@
 #include <unity/lib/unity_sarray.hpp>
 #include <unity/lib/gl_sarray.hpp>
 #include <export.hpp>
-#include <sstream>
-
 
 
 extern "C" {

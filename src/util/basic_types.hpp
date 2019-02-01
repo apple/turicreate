@@ -4,6 +4,8 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #ifndef TURI_BASIC_TYPES_H_
 #define TURI_BASIC_TYPES_H_
 
@@ -12,11 +14,6 @@
 #include <boost/optional.hpp>
 #include <boost/variant.hpp>
 #include <boost/variant/get.hpp>
-
-#include <set>
-#include <sstream>
-#include <unordered_set>
-#include <vector>
 
 using std::shared_ptr;
 
