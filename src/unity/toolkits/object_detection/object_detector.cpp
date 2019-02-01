@@ -247,7 +247,7 @@ void object_detector::load_version(iarchive& iarc, size_t version) {}
 void object_detector::train(gl_sframe data,
                             std::string annotations_column_name,
                             std::string image_column_name,
-                            std::map<std::string, flexible_type> options) {
+                            std::map<std::string, flexible_type> opts) {
 
   // Begin printing progress.
   // TODO: Make progress printing optional.
@@ -257,7 +257,7 @@ void object_detector::train(gl_sframe data,
   // Instantiate the training dependencies: data iterator, image augmenter,
   // backend NN module.
   init_train(std::move(data), std::move(annotations_column_name),
-             std::move(image_column_name), std::move(options));
+             std::move(image_column_name), std::move(opts));
 
   // Perform all the iterations at once.
   while (get_training_iterations() < get_max_iterations()) {
@@ -364,7 +364,7 @@ std::unique_ptr<model_spec> object_detector::init_model(
 }
 
 std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
-    std::string filename, std::map<std::string, flexible_type> options) {
+    std::string filename, std::map<std::string, flexible_type> opts) {
 
   // Initialize the result with the learned layers from the cnn_module.
   model_spec yolo_nn_spec(nn_spec_->get_coreml_spec());
@@ -373,23 +373,25 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
   std::string confidence_str = "confidence";
 
   // No options provided defaults to include Non Maximum Suppression.
-  if (options.count("include_non_maximum_suppression")==0)
-    options["include_non_maximum_suppression"] = 1;
+  if (opts.find("include_non_maximum_suppression") == opts.end()) {
+    opts["include_non_maximum_suppression"] = 1;
+  }
 
-  if (options["include_non_maximum_suppression"].to<bool>()){
+  if (opts["include_non_maximum_suppression"].to<bool>()){
     coordinates_str = "raw_coordinates";
     confidence_str = "raw_confidence";
     //Set default values if thresholds not provided.
-    if (options.find("iou_threshold") == options.end())
-      options["iou_threshold"] = 0.45;
-    if (options.find("confidence_threshold") == options.end())
-      options["confidence_threshold"] = 0.25;
+    if (opts.find("iou_threshold") == opts.end()) {
+      opts["iou_threshold"] = 0.45;
+    }
+    if (opts.find("confidence_threshold") == opts.end()) {
+      opts["confidence_threshold"] = 0.25;
+    }
   }
 
   // Add the layers that convert to intelligible predictions.
   add_yolo(&yolo_nn_spec, coordinates_str, confidence_str, "conv8_fwd",
-           anchor_boxes(),
-           variant_get_value<flex_int>(get_value_from_state("num_classes")),
+           anchor_boxes(), read_state<flex_int>("num_classes"),
            GRID_SIZE, GRID_SIZE);
 
   // Compute the string representation of the list of class labels.
@@ -415,10 +417,10 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
     };
 
   
-  if (options["include_non_maximum_suppression"].to<bool>()){
+  if (opts["include_non_maximum_suppression"].to<bool>()){
     user_defined_metadata.emplace_back("include_non_maximum_suppression", "True");
-    user_defined_metadata.emplace_back("confidence_threshold", options["confidence_threshold"]);
-    user_defined_metadata.emplace_back("iou_threshold", options["iou_threshold"]);
+    user_defined_metadata.emplace_back("confidence_threshold", opts["confidence_threshold"]);
+    user_defined_metadata.emplace_back("iou_threshold", opts["iou_threshold"]);
   }
 
   // TODO: Should we also be adding the non-user-defined keys, such as
@@ -431,7 +433,7 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
                                    class_labels.size(),
                                    GRID_SIZE*GRID_SIZE * anchor_boxes().size(),
                                    std::move(user_defined_metadata), std::move(class_labels),
-                                   std::move(options)); 
+                                   std::move(opts));
 
   if (!filename.empty()) {
     model_wrapper->save(filename);
@@ -582,10 +584,8 @@ void object_detector::perform_training_iteration() {
   }
 
   // Update the model fields tracking how much training we've done.
-  flex_int batch_size =
-      variant_get_value<flex_int>(get_value_from_state("batch_size"));
-  flex_int num_examples =
-      variant_get_value<flex_int>(get_value_from_state("num_examples"));
+  flex_int batch_size = read_state<flex_int>("batch_size");
+  flex_int num_examples = read_state<flex_int>("num_examples");
   add_or_update_state({
       { "training_iterations", iteration_idx + 1 },
       { "training_epochs", (iteration_idx + 1) * batch_size / num_examples },
@@ -642,11 +642,11 @@ shared_float_array object_detector::prepare_label_batch(
 }
 
 flex_int object_detector::get_max_iterations() const {
-  return variant_get_value<flex_int>(state.at("max_iterations"));
+  return read_state<flex_int>("max_iterations");
 }
 
 flex_int object_detector::get_training_iterations() const {
-  return variant_get_value<flex_int>(state.at("training_iterations"));
+  return read_state<flex_int>("training_iterations");
 }
 
 void object_detector::wait_for_training_batches(size_t max_pending) {

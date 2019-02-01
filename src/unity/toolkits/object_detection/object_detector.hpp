@@ -29,8 +29,7 @@ class EXPORT object_detector: public ml_model_base {
 
   // ml_model_base interface
 
-  void init_options(const std::map<std::string,
-                    flexible_type>& options) override;
+  void init_options(const std::map<std::string, flexible_type>& opts) override;
   size_t get_version() const override;
   void save_impl(oarchive& oarc) const override;
   void load_version(iarchive& iarc, size_t version) override;
@@ -39,9 +38,9 @@ class EXPORT object_detector: public ml_model_base {
 
   void train(gl_sframe data, std::string annotations_column_name,
              std::string image_column_name,
-             std::map<std::string, flexible_type> options);
+             std::map<std::string, flexible_type> opts);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
-      std::string filename, std::map<std::string, flexible_type> options);
+      std::string filename, std::map<std::string, flexible_type> opts);
 
   // Register with Unity server
 
@@ -116,10 +115,10 @@ class EXPORT object_detector: public ml_model_base {
   // Support for iterative training.
   // TODO: Expose via forthcoming C-API checkpointing mechanism?
 
-  void init_train(gl_sframe data, std::string annotations_column_name,
-                  std::string image_column_name,
-                  std::map<std::string, flexible_type> options);
-  void perform_training_iteration();
+  virtual void init_train(gl_sframe data, std::string annotations_column_name,
+                          std::string image_column_name,
+                          std::map<std::string, flexible_type> opts);
+  virtual void perform_training_iteration();
 
   // Utility code
 
