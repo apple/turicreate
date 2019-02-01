@@ -3,9 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef CPPIPC_IPC_DESERIALIZER_MINIMAL_HPP
 #define CPPIPC_IPC_DESERIALIZER_MINIMAL_HPP
-#include <type_traits>
 #include <serialization/iarchive.hpp>
 #include <cppipc/ipc_object_base.hpp>
 

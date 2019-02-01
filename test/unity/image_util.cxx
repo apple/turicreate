@@ -1,15 +1,10 @@
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE image_util
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
-#include <iostream>
-
 
 #include <unistd.h>
-#include <functional>
-#include <map>
-#include <set>
-#include <string>
-#include <vector>
 
 #include <fileio/fs_utils.hpp>
 #include <fileio/temp_files.hpp>

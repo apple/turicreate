@@ -3,14 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
-#include <string>
-#include <exception>
-#include <ios>
-#include <new>
-#include <typeinfo>
-#include <stdexcept>
 #define __Pyx_CppExn2PyErr __Pyx_CppExn2PyErr2
 static void __Pyx_CppExn2PyErr() {
   // Catch a handful of different errors here and turn them into the

@@ -3,12 +3,10 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #include <logger/logger.hpp>
-#include <cstdarg>
-#include <cstdio>
-#include <cstring>
-#include <fstream>
-#include <iostream>
 #include <parallel/pthread_h.h>
 #include <logger/backtrace.hpp>
 #include <export.hpp>

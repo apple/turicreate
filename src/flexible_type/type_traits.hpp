@@ -1,14 +1,10 @@
+#include <pch/pch.hpp>
+
 #ifndef TURI_TYPE_TRAITS_H_
 #define TURI_TYPE_TRAITS_H_
 
-#include <type_traits>
-#include <map>
-#include <unordered_map>
-#include <vector>
-#include <tuple>
 #include <generics/gl_vector.hpp>
 #include <generics/gl_string.hpp>
-
 
 namespace turi {
 

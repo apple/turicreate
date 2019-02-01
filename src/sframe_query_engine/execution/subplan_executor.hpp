@@ -3,12 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_SFRAME_QUERY_ENGINE_SUBPLAN_EXECUTOR_H_
 #define TURI_SFRAME_QUERY_ENGINE_SUBPLAN_EXECUTOR_H_
 
-#include <vector>
-#include <memory>
-#include <functional>
 #include <sframe/sframe.hpp>
 #include <sframe_query_engine/planning/materialize_options.hpp>
 

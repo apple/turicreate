@@ -3,15 +3,13 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_BITOPS_H
 #define TURI_BITOPS_H
 
 #include <util/int128_types.hpp>
-#include <cmath>
-#include <type_traits>
-#include <climits>
-// #include <bitset>
-// #include <iostream>
 
 #define bitsizeof(t) (8*sizeof(t))
 

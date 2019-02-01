@@ -3,12 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_PARALLEL_LAMBDA_OMP_HPP
 #define TURI_PARALLEL_LAMBDA_OMP_HPP
-#include <iterator>
-#include <utility>
-#include <functional>
-#include <type_traits>
 
 #include <util/basic_types.hpp>
 #include <parallel/thread_pool.hpp>

@@ -3,13 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_FLEXIBLE_TYPE_FLEXIBLE_TYPE_CONVERTER_HPP
 #define TURI_FLEXIBLE_TYPE_FLEXIBLE_TYPE_CONVERTER_HPP
-#include <vector>
-#include <map>
-#include <unordered_map>
-#include <tuple>
-#include <type_traits>
+
 #include <util/code_optimization.hpp>
 #include <flexible_type/flexible_type.hpp>
 #include <flexible_type/type_traits.hpp>

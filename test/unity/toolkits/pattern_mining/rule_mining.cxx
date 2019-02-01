@@ -1,19 +1,15 @@
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
 #include <stdlib.h>
-#include <vector>
-#include <string>
-#include <functional>
-#include <random>
 
 #include <unity/lib/gl_sframe.hpp>
 #include <unity/lib/unity_sframe.hpp>
 #include <unity/lib/variant_deep_serialize.hpp>
 #include <unity/toolkits/pattern_mining/rule_mining.hpp>
 #include <unity/toolkits/pattern_mining/fp_growth.hpp>
-
-#include <cfenv>
 
 using namespace turi;
 using namespace turi::pattern_mining;

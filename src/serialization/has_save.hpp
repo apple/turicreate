@@ -3,10 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef HAS_SAVE_HPP
 #define HAS_SAVE_HPP
-#include <typeinfo>
-#include <type_traits>
 namespace turi {
 namespace archive_detail {
 

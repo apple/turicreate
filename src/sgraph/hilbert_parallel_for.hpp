@@ -3,10 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_SGRAPH_HILBERT_PARALLE_FOR_HPP
 #define TURI_SGRAPH_HILBERT_PARALLE_FOR_HPP
-#include <utility>
-#include <functional>
 #include <parallel/lambda_omp.hpp>
 #include <sgraph/hilbert_curve.hpp>
 #include <sgraph/sgraph_constants.hpp>

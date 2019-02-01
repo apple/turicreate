@@ -3,9 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef CPPIPC_CLIENT_ISSUE_HPP
 #define CPPIPC_CLIENT_ISSUE_HPP
-#include <tuple>
 #include <boost/function.hpp>
 #include <boost/type_traits.hpp>
 #include <boost/function_types/function_type.hpp>
@@ -16,7 +18,6 @@
 #include <cppipc/util/generics/member_function_return_type.hpp>
 #include <cppipc/util/generics/tuple.hpp>
 #include <cppipc/ipc_object_base.hpp>
-#include <type_traits>
 
 namespace cppipc {
 

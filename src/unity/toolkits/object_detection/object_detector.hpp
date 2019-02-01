@@ -4,12 +4,10 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #ifndef TURI_OBJECT_DETECTION_OBJECT_DETECTOR_H_
 #define TURI_OBJECT_DETECTION_OBJECT_DETECTOR_H_
-
-#include <functional>
-#include <map>
-#include <memory>
 
 #include <table_printer/table_printer.hpp>
 #include <unity/lib/extensions/ml_model.hpp>

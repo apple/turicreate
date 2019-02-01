@@ -3,10 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef UNITY_LIB_UNITY_SARRAY_BINARY_OPERATIONS_HPP
 #define UNITY_LIB_UNITY_SARRAY_BINARY_OPERATIONS_HPP
-#include <string>
-#include <functional>
 #include <flexible_type/flexible_type.hpp>
 namespace turi {
 namespace unity_sarray_binary_operations {

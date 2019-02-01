@@ -3,16 +3,16 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef CPPIPC_COMMON_MESSAGE_TYPES_HPP
 #define CPPIPC_COMMON_MESSAGE_TYPES_HPP
-#include <string>
-#include <exception>
-#include <sstream>
-#include <map>
+
 #include <nanosockets/zmq_msg_vector.hpp>
-#include <typeinfo>
 #include <exceptions/error_types.hpp>
 #include <export.hpp>
+
 namespace cppipc {
 namespace nanosockets = turi::nanosockets;
 /**

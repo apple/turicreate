@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 // Modified from boost 1.37 boost::any
 // Extended to handle turicreate serialization/deserialization functions
 // See http://www.boost.org/libs/any for Documentation.
@@ -17,10 +20,6 @@
 // when:  July 2001
 // where: tested with BCC 5.5, MSVC 6.0, and g++ 2.95
 
-#include <algorithm>
-#include <typeinfo>
-#include <map>
-#include <iostream>
 #include <stdint.h>
 
 #include <boost/type_traits/remove_reference.hpp>

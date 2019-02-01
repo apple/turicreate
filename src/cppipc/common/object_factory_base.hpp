@@ -3,12 +3,14 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef CPPIPC_COMMON_OBJECT_FACTORY_BASE_HPP
 #define CPPIPC_COMMON_OBJECT_FACTORY_BASE_HPP
-#include <map>
-#include <string>
-#include <typeinfo>
+
 #include <cppipc/cppipc.hpp>
+
 namespace cppipc {
 
 

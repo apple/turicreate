@@ -3,14 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_UTIL_HOPSCOTCH_TABLE_HPP
 #define TURI_UTIL_HOPSCOTCH_TABLE_HPP
 
-#include <vector>
-#include <utility>
-#include <algorithm>
-#include <functional>
-#include <iterator>
 #include <logger/assertions.hpp>
 
 #define _HOPSCOTCH_TABLE_DEFAULT_HASH std::hash<T>

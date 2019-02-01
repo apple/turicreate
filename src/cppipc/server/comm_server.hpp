@@ -3,17 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef CPPIPC_SERVER_COMM_SERVER_HPP
 #define CPPIPC_SERVER_COMM_SERVER_HPP
-#include <string>
-#include <unordered_map>
-#include <map>
-#include <unordered_set>
-#include <functional>
-#include <memory>
-#include <algorithm>
-#include <iterator>
-#include <atomic>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/lock_guard.hpp>
 #include <nanosockets/socket_errors.hpp>

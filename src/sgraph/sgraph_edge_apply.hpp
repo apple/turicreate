@@ -3,14 +3,13 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_SGRAPH_SGRAPH_EDGE_APPLY_HPP
 #define TURI_SGRAPH_SGRAPH_EDGE_APPLY_HPP
 
-#include <vector>
-#include <tuple>
-#include <type_traits>
 #include <flexible_type/flexible_type.hpp>
-#include <functional>
 #include <sframe/sarray.hpp>
 #include <sgraph/sgraph.hpp>
 #include <sgraph/hilbert_parallel_for.hpp>

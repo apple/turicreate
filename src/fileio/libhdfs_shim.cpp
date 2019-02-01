@@ -3,16 +3,16 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 // libhdfs shim library
 #include <globals/global_constants.hpp>
 #include <logger/logger.hpp>
 #include <logger/assertions.hpp>
-#include <vector>
-#include <string>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 #include <parallel/execute_task_in_native_thread.hpp>
-#include <type_traits>
 #include <process/process.hpp>
 #ifdef HAS_HADOOP
 #ifndef _WIN32

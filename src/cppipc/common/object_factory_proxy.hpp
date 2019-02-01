@@ -3,11 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef CPPIPC_COMMON_OBJECT_FACTORY_PROXY_HPP
 #define CPPIPC_COMMON_OBJECT_FACTORY_PROXY_HPP
-#include <map>
-#include <string>
-#include <functional>
 #include <cppipc/client/object_proxy.hpp>
 #include <cppipc/common/object_factory_base.hpp>
 namespace cppipc {

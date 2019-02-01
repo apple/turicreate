@@ -4,14 +4,10 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #ifndef TURI_FLEXIBLE_TYPE_HPP
 #define TURI_FLEXIBLE_TYPE_HPP
-#include <string>
-#include <vector>
-#include <tuple>
-#include <iostream>
-#include <functional>
-#include <typeindex>
 #include <parallel/atomic.hpp>
 #include <util/int128_types.hpp>
 //#define FLEX_TYPE_ASSERT DASSERT_TRUE

@@ -4,14 +4,10 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #ifndef UNITY_TOOLKITS_NEURAL_NET_MODEL_SPEC_HPP_
 #define UNITY_TOOLKITS_NEURAL_NET_MODEL_SPEC_HPP_
-
-#include <array>
-#include <functional>
-#include <memory>
-#include <string>
-#include <vector>
 
 #include <unity/toolkits/neural_net/float_array.hpp>
 

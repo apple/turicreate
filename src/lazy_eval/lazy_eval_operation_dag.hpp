@@ -3,14 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_UNITY_GRAPH_OPERATION_DAG_HPP
 #define TURI_UNITY_GRAPH_OPERATION_DAG_HPP
-#include <functional>
-#include <queue>
-#include <vector>
-#include <memory>
-#include <map>
-#include <unordered_map>
 #include <util/mutable_queue.hpp>
 #include <lazy_eval/lazy_eval_operation.hpp>
 #include <logger/logger.hpp>

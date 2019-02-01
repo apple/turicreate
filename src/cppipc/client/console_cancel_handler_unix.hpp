@@ -3,10 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef CPPIPC_SERVER_CONSOLE_CANCEL_HANDLER_UNIX_HPP
 #define CPPIPC_SERVER_CONSOLE_CANCEL_HANDLER_UNIX_HPP
 
-#include <csignal>
 #include <cppipc/client/console_cancel_handler.hpp>
 
 namespace cppipc {

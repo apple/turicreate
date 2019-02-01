@@ -20,17 +20,11 @@
  *
  */
 
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
-#include <iostream>
-#include <typeinfo>       // operator typeid
-#include <cstddef>
-#include <functional>
-#include <iterator>
-#include <type_traits>
-#include <iterator>
-
 
 #include <generics/sparse_parallel_2d_array.hpp>
 

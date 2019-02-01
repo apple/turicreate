@@ -3,10 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_SFRAME_QUERY_MANAGER_BINARY_TRANSFORM_HPP
 #define TURI_SFRAME_QUERY_MANAGER_BINARY_TRANSFORM_HPP
 
-#include <functional>
 #include <logger/assertions.hpp>
 #include <flexible_type/flexible_type.hpp>
 #include <sframe_query_engine/operators/operator.hpp>

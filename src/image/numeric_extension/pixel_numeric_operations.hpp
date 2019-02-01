@@ -9,6 +9,8 @@
     or a copy at http://opensource.adobe.com/licenses.html)
 */
 
+#include <pch/pch.hpp>
+
 /*************************************************************************************************/
 
 #ifndef GIL_PIXEL_NUMERIC_OPERATIONS_HPP
@@ -27,7 +29,6 @@
 ///     pixel_assigns_t (=)
 */
 
-#include <functional>
 #include <boost/gil/gil_config.hpp>
 #include <boost/gil/pixel.hpp>
 #include <boost/gil/color_base_algorithm.hpp>

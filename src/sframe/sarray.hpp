@@ -3,11 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_UNITY_SFRAME_SARRAY_HPP
 #define TURI_UNITY_SFRAME_SARRAY_HPP
-#include <set>
-#include <iterator>
-#include <type_traits>
+
 #include <logger/logger.hpp>
 #include <logger/assertions.hpp>
 #include <boost/algorithm/string/predicate.hpp>
@@ -29,7 +30,6 @@
 #include <sframe/sframe_constants.hpp>
 #include <sframe/sarray_saving.hpp>
 #include <sframe/sframe_compact.hpp>
-
 
 namespace turi {
 

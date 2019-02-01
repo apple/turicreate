@@ -1,23 +1,15 @@
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
 #include <stdlib.h>
-#include <vector>
-#include <string>
-#include <functional>
-#include <random>
-#include <sstream>
-#include <iterator>
-#include <iostream>
-#include <algorithm>
 
 #include <unity/lib/gl_sframe.hpp>
 #include <unity/lib/gl_sarray.hpp>
 #include <unity/lib/variant_deep_serialize.hpp>
 #include <unity/toolkits/feature_engineering/tokenizer.hpp>
 #include <unity/lib/unity_sframe.hpp>
-
-#include <cfenv>
 
 using namespace turi;
 using namespace turi::sdk_model::feature_engineering;

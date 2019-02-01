@@ -3,7 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <functional>
+
+#include <pch/pch.hpp>
+
 #include <flexible_type/flexible_type.hpp>
 #include <sframe/sarray_v2_block_types.hpp>
 #include <sframe/sarray_v2_type_encoding.hpp>

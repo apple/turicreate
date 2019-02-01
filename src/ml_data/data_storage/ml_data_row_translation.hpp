@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_DML_DATA_ROW_TRANSATION_H_
 #define TURI_DML_DATA_ROW_TRANSATION_H_
 
@@ -12,12 +15,9 @@
 #include <ml_data/data_storage/internal_metadata.hpp>
 #include <flexible_type/flexible_type.hpp>
 #include <util/code_optimization.hpp>
-#include <type_traits>
 
 #include <numerics/armadillo.hpp>
 #include <numerics/armadillo.hpp>
-
-#include <array>
 
 namespace turi {
 

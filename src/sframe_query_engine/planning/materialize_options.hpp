@@ -3,13 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_SFRAME_QUERY_ENGINE_MATERIALIZE_OPTIONS_HPP
 #define TURI_SFRAME_QUERY_ENGINE_MATERIALIZE_OPTIONS_HPP
-#include <memory>
-#include <cstddef>
-#include <functional>
-#include <vector>
-#include <string>
 
 namespace turi {
 class sframe_rows;

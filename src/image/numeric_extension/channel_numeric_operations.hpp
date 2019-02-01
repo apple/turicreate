@@ -9,6 +9,8 @@
     or a copy at http://opensource.adobe.com/licenses.html)
 */
 
+#include <pch/pch.hpp>
+
 /*************************************************************************************************/
 
 #ifndef GIL_CHANNEL_NUMERIC_OPERATIONS_HPP
@@ -28,7 +30,6 @@
 ///    channel_halves_t (/=2), channel_zeros_t (=0), channel_assigns_t (=)
 */
 
-#include <functional>
 #include <boost/gil/gil_config.hpp>
 #include <boost/gil/channel.hpp>
 

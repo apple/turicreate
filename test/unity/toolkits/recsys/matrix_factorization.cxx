@@ -1,11 +1,10 @@
+#include <pch/pch.hpp>
+
 const bool enable_expensive_tests = false;
 
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
-#include <vector>
-#include <string>
-#include <functional>
 
 #include <random/random.hpp>
 
@@ -17,9 +16,6 @@ const bool enable_expensive_tests = false;
 #include <util/testing_utils.hpp>
 #include <util/testing_utils.hpp>
 #include <unity/lib/variant.hpp>
-
-
-#include <cfenv>
 
 using namespace turi;
 using namespace turi::recsys;
