@@ -4,15 +4,10 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #ifndef UNITY_TOOLKITS_NEURAL_NET_FLOAT_ARRAY_HPP_
 #define UNITY_TOOLKITS_NEURAL_NET_FLOAT_ARRAY_HPP_
-
-#include <cstddef>
-#include <future>
-#include <map>
-#include <memory>
-#include <string>
-#include <vector>
 
 namespace turi {
 namespace neural_net {

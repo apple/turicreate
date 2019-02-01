@@ -3,14 +3,14 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef __TC_PROCESS_WRAPPER
 #define __TC_PROCESS_WRAPPER
 
 #include "io_buffer.hpp"
 
-#include <cstdio>
-#include <string>
-#include <thread>
 #include <platform/parallel/pthread_tools.hpp>
 
 #include <process/process.hpp>

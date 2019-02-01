@@ -1,3 +1,5 @@
+#include <pch/pch.hpp>
+
 #include "layer.h"
 #include "pipe.h"
 
@@ -8,8 +10,6 @@
 
 #include <X11/Xlib.h>
 #include "include/base/cef_logging.h"
-#include <iostream>
-#include <thread>
 
 namespace {
   int XErrorHandlerImpl(Display* display, XErrorEvent* event) {

@@ -1,7 +1,8 @@
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
-#include <iostream>
 
 #include <parallel/pthread_tools.hpp>
 #include <parallel/thread_pool.hpp>
@@ -9,8 +10,6 @@
 #include <logger/assertions.hpp>
 #include <timer/timer.hpp>
 #include <boost/bind.hpp>
-#include <thread>
-#include <chrono>
 
 using namespace turi;
 

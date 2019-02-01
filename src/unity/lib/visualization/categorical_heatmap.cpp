@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #include "categorical_heatmap.hpp"
 
 #include "batch_size.hpp"
@@ -14,8 +17,6 @@
 #include <parallel/lambda_omp.hpp>
 #include <unity/lib/visualization/plot.hpp>
 #include <unity/lib/visualization/transformation.hpp>
-
-#include <thread>
 
 using namespace turi::visualization;
 

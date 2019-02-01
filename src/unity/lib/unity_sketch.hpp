@@ -3,10 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <vector>
-#include <limits>
-#include <future>
-#include <unordered_set>
+
+#include <pch/pch.hpp>
+
 #include <flexible_type/flexible_type.hpp>
 #include <unity/lib/api/unity_sketch_interface.hpp>
 #include <sframe/sarray.hpp>
@@ -16,6 +15,7 @@
 #include <sketches/streaming_quantile_sketch.hpp>
 #include <parallel/atomic.hpp>
 #include <logger/logger.hpp>
+
 namespace turi {
 
 // forward declarations

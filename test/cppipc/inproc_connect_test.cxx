@@ -1,11 +1,9 @@
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
-#include <string>
-#include <iostream>
 #include <cppipc/cppipc.hpp>
-#include <thread>
-#include <chrono>
 
 
 static volatile bool terminate = false;

@@ -1,13 +1,8 @@
+#include <pch/pch.hpp>
+
 #include "javascript_caller.h"
 
-#include <iostream>
-#include <thread>
-#include <chrono>
-#include <string>
-#include <sstream>
 #include <unistd.h>
-#include <thread>
-
 
 void JavascriptCaller::initialize(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefV8Context> context){
   Browser = browser;

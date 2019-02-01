@@ -3,15 +3,15 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #include "scatter.hpp"
 
 #include "process_wrapper.hpp"
 #include "thread.hpp"
 #include "vega_data.hpp"
 #include "vega_spec.hpp"
-
-#include <cmath>
-#include <thread>
 
 using namespace turi;
 using namespace turi::visualization;

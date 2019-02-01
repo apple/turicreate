@@ -1,11 +1,11 @@
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
 #include <cppipc/cppipc.hpp>
 #include <cppipc/common/authentication_token_method.hpp>
 #include <fileio/temp_files.hpp>
-#include <thread>
-#include <chrono>
 #include "test_object_base.hpp"
 
 void pester_server_with_new_friends(cppipc::comm_client& client, size_t num_times) {

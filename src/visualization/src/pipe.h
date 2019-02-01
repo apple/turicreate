@@ -1,12 +1,9 @@
+#include <pch/pch.hpp>
+
 #ifndef PIPE_H_
 #define PIPE_H_
 
 #include "layer.h"
-
-#include <thread>
-#include <mutex>
-#include <queue>
-#include <iostream>
 
 #include "include/cef_app.h"
 #include "include/cef_render_process_handler.h"
