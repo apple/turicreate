@@ -1,11 +1,10 @@
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <random/random.hpp>
 #include <random/alias.hpp>
 #include <parallel/thread_pool.hpp>
-#include <cmath>
-#include <iostream>
-#include <vector>
 
 
 typedef double vertex_data_type;

@@ -4,14 +4,11 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE test_object_detector
 
 #include <unity/toolkits/object_detection/object_detector.hpp>
-
-#include <array>
-#include <deque>
-#include <memory>
-#include <vector>
 
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>

@@ -3,13 +3,14 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_LAMBDA_GRAPH_PYLAMBDA_EVALUATOR_HPP
 #define TURI_LAMBDA_GRAPH_PYLAMBDA_EVALUATOR_HPP
 #include <lambda/graph_lambda_interface.hpp>
 #include <flexible_type/flexible_type.hpp>
-#include <vector>
 #include <parallel/mutex.hpp>
-#include <atomic>
 
 namespace turi {
 

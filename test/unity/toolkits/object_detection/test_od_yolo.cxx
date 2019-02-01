@@ -4,11 +4,11 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE test_od_yolo
 
 #include <unity/toolkits/object_detection/od_yolo.hpp>
-
-#include <algorithm>
 
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>

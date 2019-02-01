@@ -3,14 +3,15 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_RECSYS_USER_ITEM_GRAPH_H_
 #define TURI_RECSYS_USER_ITEM_GRAPH_H_
 
 #include <unity/toolkits/ml_data_2/ml_data.hpp>
 #include <sframe/sframe.hpp>
 #include <sgraph/sgraph_compute.hpp>
-#include <memory>
-#include <vector>
 
 namespace turi { namespace recsys {
 

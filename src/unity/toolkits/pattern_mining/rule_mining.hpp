@@ -3,15 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_FP_RULE_MINING_H
 #define TURI_FP_RULE_MINING_H
-
-#include <vector>
-#include <stack>
-#include <map>
-#include <string>
-#include <memory>
-#include <algorithm>
 
 #include <unity/lib/gl_sframe.hpp>
 #include <unity/lib/gl_sarray.hpp>

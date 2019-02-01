@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef PROCESS_HPP
 #define PROCESS_HPP
 
@@ -16,8 +19,6 @@
 #define STDERR_FILENO 2
 #endif
 
-#include <string>
-#include <vector>
 #include <util/syserr_reporting.hpp>
 
 #ifdef _WIN32

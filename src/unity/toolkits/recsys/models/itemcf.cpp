@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #include <unity/toolkits/recsys/models/itemcf.hpp>
 #include <unity/toolkits/ml_data_2/metadata.hpp>
 #include <unity/toolkits/ml_data_2/ml_data.hpp>
@@ -10,7 +13,6 @@
 #include <unity/lib/toolkit_util.hpp>
 #include <unity/lib/version_number.hpp>
 #include <random/random.hpp>
-#include <memory>
 #include <perf/memory_info.hpp>
 #include <unity/toolkits/util/algorithmic_utils.hpp>
 #include <sgraph/sgraph_compute.hpp> 

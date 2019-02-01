@@ -1,9 +1,9 @@
+#include <pch/pch.hpp>
+
 #ifndef MPS_MODULE_H_
 #define MPS_MODULE_H_
 
 #include <assert.h>
-#include <map>
-#include <vector>
 
 #import <Accelerate/Accelerate.h>
 #import <Foundation/Foundation.h>

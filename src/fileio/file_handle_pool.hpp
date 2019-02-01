@@ -3,11 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_FILEIO_FILE_HANDLE_POOL_HPP
 #define TURI_FILEIO_FILE_HANDLE_POOL_HPP
-#include <map>
-#include <string>
-#include <atomic>
 #include <parallel/mutex.hpp>
 #include <fileio/file_ownership_handle.hpp>
 namespace turi {

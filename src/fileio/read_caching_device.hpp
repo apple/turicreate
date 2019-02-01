@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_FILEIO_CACHING_DEVICE_HPP
 #define TURI_FILEIO_CACHING_DEVICE_HPP
 #include <logger/logger.hpp>
@@ -10,8 +13,6 @@
 #include <fileio/sanitize_url.hpp>
 #include <parallel/mutex.hpp>
 #include <util/basic_types.hpp>
-#include <mutex>
-#include <map>
 namespace turi {
 
 // private namespace 

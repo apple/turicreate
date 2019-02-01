@@ -4,10 +4,10 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #ifndef UNITY_TOOLKITS_NEURAL_NET_MPS_COMPUTE_CONTEXT_HPP_
 #define UNITY_TOOLKITS_NEURAL_NET_MPS_COMPUTE_CONTEXT_HPP_
-
-#include <memory>
 
 #include <unity/toolkits/neural_net/compute_context.hpp>
 

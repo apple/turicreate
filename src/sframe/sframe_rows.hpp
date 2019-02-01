@@ -3,10 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_SFRAME_sframe_rows_HPP
 #define TURI_SFRAME_sframe_rows_HPP
-#include <vector>
-#include <map>
 #include <flexible_type/flexible_type.hpp>
 namespace turi {
 class oarchive;

@@ -3,15 +3,13 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_FACTORIZATION_GENERAL_LINEAR_MODEL_SECOND_ORDER_H_
 #define TURI_FACTORIZATION_GENERAL_LINEAR_MODEL_SECOND_ORDER_H_
 
 #include <numerics/armadillo.hpp>
-#include <cmath>
-#include <vector>
-#include <string>
-#include <map>
-#include <algorithm>
 #include <util/branch_hints.hpp>
 #include <unity/lib/variant_deep_serialize.hpp>
 #include <flexible_type/flexible_type.hpp>

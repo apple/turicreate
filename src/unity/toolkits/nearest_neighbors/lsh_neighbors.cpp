@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 // ML Data
 #include <unity/toolkits/ml_data_2/ml_data.hpp>
 #include <unity/toolkits/ml_data_2/metadata.hpp>
@@ -16,9 +19,7 @@
 
 // Miscellaneous
 #include <timer/timer.hpp>
-#include <algorithm>
 #include <time.h>
-#include <string>
 #include <numerics/armadillo.hpp>
 #include <unity/lib/toolkit_util.hpp>
 #include <table_printer/table_printer.hpp>

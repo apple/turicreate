@@ -20,18 +20,11 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+#include <pch/pch.hpp>
+
 #ifndef TURI_STL_UTIL_HPP
 #define TURI_STL_UTIL_HPP
 
-
-#include <set>
-#include <map>
-#include <vector>
-#include <algorithm>
-#include <iterator>
-#include <sstream>
-#include <iostream>
-#include <iomanip>
 #include <logger/assertions.hpp>
 #include <boost/exception/detail/is_output_streamable.hpp>
 

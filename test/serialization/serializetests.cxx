@@ -1,12 +1,8 @@
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
-#include <fstream>
-#include <vector>
-#include <map>
-#include <string>
-#include <cstring>
-
 
 #include <boost/unordered_set.hpp>
 #include <boost/unordered_map.hpp>

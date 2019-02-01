@@ -3,10 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_UNITY_SARRAY_BUILDER_HPP
 #define TURI_UNITY_SARRAY_BUILDER_HPP
 
-#include <vector>
 #include <sframe/sarray.hpp>
 #include <boost/circular_buffer.hpp>
 #include <unity/lib/api/unity_sarray_builder_interface.hpp>

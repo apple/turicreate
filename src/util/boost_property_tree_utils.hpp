@@ -3,14 +3,14 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_INI_BOOST_PROPERTY_TREE_UTILS_HPP
 #define TURI_INI_BOOST_PROPERTY_TREE_UTILS_HPP
 
 #define BOOST_SPIRIT_THREADSAFE
 
-#include <map>
-#include <vector>
-#include <string>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/lexical_cast.hpp>
 #include <logger/logger.hpp>

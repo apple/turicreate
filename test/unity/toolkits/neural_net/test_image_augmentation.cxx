@@ -4,12 +4,11 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE test_image_augmentation
 
 #include <unity/toolkits/neural_net/image_augmentation.hpp>
-
-#include <algorithm>
-#include <vector>
 
 #include <boost/test/unit_test.hpp>
 #include <image/image_type.hpp>

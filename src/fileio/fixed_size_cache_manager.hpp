@@ -3,13 +3,13 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef FILEIO_FIXED_SIZE_CACHE_MANAGER_HPP
 #define FILEIO_FIXED_SIZE_CACHE_MANAGER_HPP
 
-#include <vector>
-#include <string>
 #include <parallel/pthread_tools.hpp>
-#include <unordered_map>
 #include <parallel/atomic.hpp>
 #include <fileio/temp_files.hpp>
 #include <fileio/general_fstream_sink.hpp>

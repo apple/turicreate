@@ -3,11 +3,8 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <map>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#include <cmath>
+
+#include <pch/pch.hpp>
 
 #include <sgraph/sgraph.hpp>
 

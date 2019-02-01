@@ -3,12 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_RECSYS_MODEL_BASE_H_
 #define TURI_RECSYS_MODEL_BASE_H_
-
-#include <map>
-#include <string>
-#include <set>
 
 #include <unity/lib/extensions/option_manager.hpp>
 #include <unity/lib/gl_sframe.hpp>

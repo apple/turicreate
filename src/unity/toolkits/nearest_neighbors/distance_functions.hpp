@@ -3,13 +3,14 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_NN_DISTANCE_FUNCTIONS_H_
 #define TURI_NN_DISTANCE_FUNCTIONS_H_
 
-#include <string>
 #include <numerics/armadillo.hpp>
 #include <numerics/armadillo.hpp>
-#include <memory>
 #include <util/logit_math.hpp>
 #include <unity/toolkits/util/algorithmic_utils.hpp>
 #include <flexible_type/flexible_type_base_types.hpp>

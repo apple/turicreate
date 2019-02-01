@@ -3,11 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_UTIL_FAST_SET
 #define TURI_UTIL_FAST_SET
 
-#include <vector>
-#include <algorithm>
 #include <util/cuckoo_set_pow2.hpp>
 
 /**

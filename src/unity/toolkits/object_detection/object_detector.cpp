@@ -4,17 +4,9 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <unity/toolkits/object_detection/object_detector.hpp>
+#include <pch/pch.hpp>
 
-#include <algorithm>
-#include <array>
-#include <cmath>
-#include <cstdio>
-#include <iostream>
-#include <limits>
-#include <numeric>
-#include <utility>
-#include <vector>
+#include <unity/toolkits/object_detection/object_detector.hpp>
 
 #include <logger/assertions.hpp>
 #include <logger/logger.hpp>

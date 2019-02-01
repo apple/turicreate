@@ -4,11 +4,12 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #include <util/basic_types.hpp>
 
 #include <logger/assertions.hpp>
 
-#include <vector>
 using std::vector;
 
 int64_t check(const char* desc, int64_t ret) {

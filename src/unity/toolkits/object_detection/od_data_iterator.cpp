@@ -1,7 +1,6 @@
-#include <unity/toolkits/object_detection/od_data_iterator.hpp>
+#include <pch/pch.hpp>
 
-#include <algorithm>
-#include <cmath>
+#include <unity/toolkits/object_detection/od_data_iterator.hpp>
 
 #include <image/io.hpp>
 #include <unity/lib/image_util.hpp>

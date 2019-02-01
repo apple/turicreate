@@ -3,9 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_SERIALIZE_VECTOR_HPP
 #define TURI_SERIALIZE_VECTOR_HPP
-#include <vector>
 #include <serialization/iarchive.hpp>
 #include <serialization/oarchive.hpp>
 #include <serialization/iterator.hpp>

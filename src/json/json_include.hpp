@@ -9,6 +9,8 @@
  * use "json_flexible_type.hpp" in src/unity/extensions/json.                 *
  ******************************************************************************/
 
+#include <pch/pch.hpp>
+
 #ifndef TURI_JSON_INCLUDE
 #define TURI_JSON_INCLUDE
 
@@ -34,8 +36,6 @@
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
-#include <vector>
-#include <map>
 // some useful utilities
 namespace turi {
 namespace json {

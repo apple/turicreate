@@ -4,13 +4,11 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE test_model_spec
 
 #include <unity/toolkits/neural_net/model_spec.hpp>
-
-#include <algorithm>
-#include <cstdint>
-#include <memory>
 
 #include <boost/test/unit_test.hpp>
 #include <unity/toolkits/coreml_export/mlmodel_include.hpp>

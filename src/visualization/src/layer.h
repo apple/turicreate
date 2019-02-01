@@ -1,9 +1,9 @@
+#include <pch/pch.hpp>
+
 #ifndef LAYER_H_
 #define LAYER_H_
 
 #include "javascript_caller.h"
-
-#include <memory>
 
 #include "include/cef_app.h"
 #include "include/cef_render_process_handler.h"

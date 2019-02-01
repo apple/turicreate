@@ -4,10 +4,10 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #ifndef TURI_OBJECT_DETECTION_CLASS_REGISTRATIONS
 #define TURI_OBJECT_DETECTION_CLASS_REGISTRATIONS
-
-#include <vector>
 
 #include <unity/lib/toolkit_class_specification.hpp>
 

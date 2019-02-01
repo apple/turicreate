@@ -3,9 +3,10 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #include <unity/toolkits/sparse_similarity/sliced_itemitem_matrix.hpp>
-#include <vector>
-#include <cmath>
 
 
 namespace turi { namespace sparse_sim {

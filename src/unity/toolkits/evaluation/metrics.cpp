@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #include <sframe/sarray.hpp>
 #include <sframe/sframe.hpp>
 #include <unity/lib/gl_sframe.hpp>
@@ -16,9 +19,6 @@
 #include <unity/toolkits/util/indexed_sframe_tools.hpp>
 #include <unity/toolkits/evaluation/evaluation_constants.hpp>
 #include <unity/toolkits/evaluation/metrics.hpp>
-
-#include <map>
-#include <algorithm>
 
 
 namespace turi {

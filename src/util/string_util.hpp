@@ -4,14 +4,12 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #ifndef TURI_STRING_UTIL_H_
 #define TURI_STRING_UTIL_H_
 
 #include <util/basic_types.hpp>
-
-#include <string>
-#include <sstream>
-#include <vector>
 
 using std::cerr;
 using std::endl;

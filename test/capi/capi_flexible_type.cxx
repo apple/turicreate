@@ -4,12 +4,13 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE capi_flexible_types
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
 
 #include <capi/TuriCreate.h>
-#include <vector>
 #include "capi_utils.hpp"
 
 BOOST_AUTO_TEST_CASE(test_tc_ft_create_empty) {

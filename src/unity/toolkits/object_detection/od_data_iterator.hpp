@@ -4,12 +4,10 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #ifndef TURI_OBJECT_DETECTION_OD_DATA_ITERATOR_HPP_
 #define TURI_OBJECT_DETECTION_OD_DATA_ITERATOR_HPP_
-
-#include <string>
-#include <unordered_map>
-#include <vector>
 
 #include <unity/lib/gl_sframe.hpp>
 #include <unity/toolkits/neural_net/float_array.hpp>

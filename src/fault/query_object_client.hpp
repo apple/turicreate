@@ -3,13 +3,13 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef QUERY_OBJECT_CLIENT_HPP
 #define QUERY_OBJECT_CLIENT_HPP
 
 #include <stdint.h>
-#include <vector>
-#include <string>
-#include <map>
 #include <boost/function.hpp>
 #include <zookeeper_util/key_value.hpp>
 #include <fault/sockets/async_request_socket.hpp>

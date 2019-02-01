@@ -20,12 +20,11 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+#include <pch/pch.hpp>
+
 #ifndef TURI_MUTABLE_PRIORITY_QUEUE_HPP
 #define TURI_MUTABLE_PRIORITY_QUEUE_HPP
 
-#include <vector>
-#include <map>
-#include <algorithm>
 #include <boost/unordered_map.hpp>
 
 namespace turi {

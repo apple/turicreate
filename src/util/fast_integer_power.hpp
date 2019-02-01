@@ -3,12 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_FAST_INTEGER_POWER_H_
 #define TURI_FAST_INTEGER_POWER_H_
 
-#include <iostream>
-#include <array>
-#include <algorithm>
 #include <util/bitops.hpp>
 #include <util/code_optimization.hpp>
 

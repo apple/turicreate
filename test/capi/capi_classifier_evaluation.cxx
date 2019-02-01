@@ -4,9 +4,10 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE capi_classifier_evaluations
 
-#include <vector>
 #include <boost/test/unit_test.hpp>
 #include <unity/lib/gl_sframe.hpp>
 #include <util/test_macros.hpp>

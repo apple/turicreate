@@ -4,6 +4,8 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #ifndef CAPI_TEST_UTILS
 #define CAPI_TEST_UTILS
 
@@ -13,9 +15,6 @@
 #include <unity/lib/gl_sarray.hpp>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <flexible_type/flexible_type.hpp>
-#include <cmath>
-#include <vector>
-#include <iostream>
 
 #define CAPI_CHECK_ERROR(error)                                     \
   do {                                                              \

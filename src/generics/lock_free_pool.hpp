@@ -3,10 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef LOCK_FREE_POOL_HPP
 #define LOCK_FREE_POOL_HPP
 #include <stdint.h>
-#include <vector>
 #include <logger/assertions.hpp>
 #include <parallel/atomic.hpp>
 #include <generics/lock_free_internal.hpp>

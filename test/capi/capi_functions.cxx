@@ -4,9 +4,9 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#define BOOST_TEST_MODULE capi_functions
+#include <pch/pch.hpp>
 
-#include <vector>
+#define BOOST_TEST_MODULE capi_functions
 
 #include <boost/test/unit_test.hpp>
 #include <capi/TuriCreate.h>

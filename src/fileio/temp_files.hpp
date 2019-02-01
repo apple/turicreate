@@ -3,10 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef FILEIO_TEMP_FILE_HPP 
 #define FILEIO_TEMP_FILE_HPP 
-#include <string>
-#include <vector>
 
 namespace turi {
 

@@ -3,12 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_SFRAME_SARRAY_V2_BLOCK_WRITER_HPP
 #define TURI_SFRAME_SARRAY_V2_BLOCK_WRITER_HPP
 #include <stdint.h>
-#include <vector>
-#include <fstream>
-#include <tuple>
 #include <parallel/pthread_tools.hpp>
 #include <parallel/atomic.hpp>
 #include <fileio/general_fstream.hpp>

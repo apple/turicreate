@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #include <unity/lib/extensions/option_manager.hpp>
 #include <unity/lib/unity_sframe.hpp>
 #include <unity/toolkits/recsys/models/popularity.hpp>
@@ -16,8 +19,6 @@
 #include <unity/toolkits/nearest_neighbors/ball_tree_neighbors.hpp>
 
 #include <random/random.hpp>
-#include <memory>
-#include <tuple>
 
 namespace turi { namespace recsys {
 

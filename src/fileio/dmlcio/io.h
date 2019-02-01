@@ -8,14 +8,11 @@
  * \file io.h
  * \brief defines serializable interface of dmlc
  */
+
+#include <pch/pch.hpp>
+
 #ifndef DMLC_IO_H_
 #define DMLC_IO_H_
-#include <cstdio>
-#include <string>
-#include <vector>
-#include <istream>
-#include <ostream>
-#include <streambuf>
 
 // include uint64_t only to make io standalone
 #ifdef _MSC_VER

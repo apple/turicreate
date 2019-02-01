@@ -3,10 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_TOOLKIT_FUNCTION_REGISTRY_HPP
 #define TURI_TOOLKIT_FUNCTION_REGISTRY_HPP
-#include <map>
-#include <string>
 #include <unity/lib/toolkit_function_specification.hpp>
 #include <unity/lib/api/function_closure_info.hpp>
 namespace turi {

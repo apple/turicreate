@@ -3,8 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <vector>
-#include <limits>
+
+#include <pch/pch.hpp>
+
 #include <sframe/sarray_v2_type_encoding.hpp>
 namespace turi {
 namespace type_heuristic_encode {

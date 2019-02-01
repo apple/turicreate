@@ -1,3 +1,4 @@
+#include <pch/pch.hpp>
 
 #ifndef __TC_ESCAPE
 #define __TC_ESCAPE
@@ -11,9 +12,6 @@
 #include <flexible_type/ndarray.hpp>
 #include <unity/lib/visualization/vega_data.hpp>
 #include <unity/lib/image_util.hpp>
-#include <string>
-#include <vector>
-#include <queue>
 
 namespace turi {
 namespace visualization {

@@ -3,16 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_FP_TREE_HEADER_H
 #define TURI_FP_TREE_HEADER_H
-
-#include <vector>
-#include <map>
-#include <stack>
-#include <string>
-#include <memory>
-#include <algorithm>
-#include <iostream>
 
 #include <unity/lib/gl_sframe.hpp>
 #include <unity/lib/gl_sarray.hpp>

@@ -1,14 +1,9 @@
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
-#include <string>
-#include <random>
-#include <set>
-#include <sstream>
-#include <vector>
-#include <algorithm>
 #include <util/cityhash_tc.hpp>
-#include <cmath>
 
 // SFrame and Flex type
 #include <unity/lib/flex_dict_view.hpp>

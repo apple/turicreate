@@ -3,11 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_ML2DATA_SFRAME_TRANSLATION_H_
 #define TURI_ML2DATA_SFRAME_TRANSLATION_H_
 
-#include <vector>
-#include <memory>
 #include <sframe/sframe.hpp>
 #include <unity/toolkits/ml_data_2/metadata.hpp>
 #include <unity/toolkits/ml_data_2/indexing/column_indexer.hpp>

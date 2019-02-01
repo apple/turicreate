@@ -3,11 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_UTIL_TRACEPOINT_HPP
 #define TURI_UTIL_TRACEPOINT_HPP
-#include <iostream>
-#include <vector>
-#include <string>
 #include <timer/timer.hpp>
 #include <util/branch_hints.hpp>
 #include <parallel/atomic.hpp>

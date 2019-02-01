@@ -3,16 +3,14 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_DML_DATA_TESTING_UTILS_H_
 #define TURI_DML_DATA_TESTING_UTILS_H_
 
 #include <sframe/sframe.hpp>
 #include <ml_data/ml_data.hpp>
-#include <vector>
-#include <string>
-#include <map>
-#include <iostream>
-#include <unordered_set>
 
 namespace turi {
 

@@ -3,11 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <vector>
-#include <set>
-#include <unordered_set>
-#include <algorithm>
-#include <map>
+
+#include <pch/pch.hpp>
+
 #include <flexible_type/flexible_type.hpp>
 #include <unity/toolkits/util/precision_recall.hpp>
 #include <unity/toolkits/util/algorithmic_utils.hpp>

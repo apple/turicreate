@@ -3,8 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <cassert>
-#include <vector>
+
+#include <pch/pch.hpp>
+
 #include <zmq.h>
 #include <fault/message_types.hpp>
 #include <fault/zmq/zmq_msg_standard_free.hpp>

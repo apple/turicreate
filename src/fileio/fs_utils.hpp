@@ -7,11 +7,11 @@
  * This file implements a collection of routines that operate and behave
  * uniformly on all supported protocols. (currently, HDFS, S3, local fs)
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_FILEIO_FS_UTILS_HPP
 #define TURI_FILEIO_FS_UTILS_HPP
-#include <tuple>
-#include <string>
-#include <vector>
 #include <fileio/sanitize_url.hpp>
 
 namespace turi {

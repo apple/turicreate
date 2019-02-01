@@ -3,10 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_LSH_FAMILY_H_
 #define TURI_LSH_FAMILY_H_
 
-#include <memory>
 #include <unity/toolkits/nearest_neighbors/nearest_neighbors.hpp>
 #include <unity/toolkits/nearest_neighbors/hash_map_container.hpp>
 

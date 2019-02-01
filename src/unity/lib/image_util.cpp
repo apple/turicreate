@@ -3,10 +3,10 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <unity/lib/image_util.hpp>
 
-#include <algorithm>
-#include <string>
+#include <pch/pch.hpp>
+
+#include <unity/lib/image_util.hpp>
 
 #include <image/image_util_impl.hpp>
 #include <sframe/sframe_iterators.hpp>

@@ -4,11 +4,9 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <unity/toolkits/neural_net/float_array.hpp>
+#include <pch/pch.hpp>
 
-#include <algorithm>
-#include <cassert>
-#include <numeric>
+#include <unity/toolkits/neural_net/float_array.hpp>
 
 #include <logger/assertions.hpp>
 

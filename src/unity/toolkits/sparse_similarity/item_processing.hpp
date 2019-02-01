@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_UNITY_SPARSE_SIMILARITY_ITEM_STATISTICS_H
 #define TURI_UNITY_SPARSE_SIMILARITY_ITEM_STATISTICS_H
 
@@ -14,9 +17,6 @@
 #include <table_printer/table_printer.hpp>
 #include <sframe/sarray.hpp>
 #include <flexible_type/flexible_type.hpp>
-#include <map>
-#include <vector>
-#include <string>
 
 namespace turi { namespace sparse_sim {
 

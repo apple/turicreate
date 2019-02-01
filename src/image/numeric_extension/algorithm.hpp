@@ -9,6 +9,8 @@
     or a copy at http://opensource.adobe.com/licenses.html)
 */
 
+#include <pch/pch.hpp>
+
 /*************************************************************************************************/
 
 #ifndef GIL_NUMERIC_ALGORITHM_HPP
@@ -22,10 +24,6 @@
 /// \date   2005-2007 \n Last updated on February 6, 2007
 */
 
-#include <cassert>
-#include <iterator>
-#include <algorithm>
-#include <numeric>
 #include "../../gil_config.hpp"
 #include "../../pixel_iterator.hpp"
 #include "../../metafunctions.hpp"

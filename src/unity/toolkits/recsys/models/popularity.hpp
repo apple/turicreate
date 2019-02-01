@@ -3,11 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_RECSYS_MODEL_POPULARITY_H_
 #define TURI_RECSYS_MODEL_POPULARITY_H_
 
-#include <vector>
-#include <string>
 #include <unity/toolkits/recsys/recsys_model_base.hpp>
 #include <unity/toolkits/nearest_neighbors/nearest_neighbors.hpp>
 #include <unity/toolkits/nearest_neighbors/ball_tree_neighbors.hpp>

@@ -4,9 +4,9 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <unity/toolkits/neural_net/image_augmentation.hpp>
+#include <pch/pch.hpp>
 
-#include <algorithm>
+#include <unity/toolkits/neural_net/image_augmentation.hpp>
 
 #include <logger/assertions.hpp>
 #include <unity/lib/image_util.hpp>

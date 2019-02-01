@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_GL_STRING_H_
 #define TURI_GL_STRING_H_
 
@@ -10,7 +13,6 @@
 #include <generics/string_internals.hpp>
 #include <util/cityhash_tc.hpp>
 #include <generics/is_memmovable.hpp>
-#include <algorithm>
 
 namespace turi {
 

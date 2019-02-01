@@ -3,14 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_SMALL_MAP_HPP
 #define TURI_SMALL_MAP_HPP
-
-
-#include <iostream>
-#include <set>
-#include <iterator>
-#include <algorithm>
 
 #include <serialization/iarchive.hpp>
 #include <serialization/oarchive.hpp>

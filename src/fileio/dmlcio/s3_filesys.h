@@ -9,10 +9,11 @@
  * \brief S3 access module
  * \author Tianqi Chen
  */
+
+#include <pch/pch.hpp>
+
 #ifndef DMLC_IO_S3_FILESYS_H_
 #define DMLC_IO_S3_FILESYS_H_
-#include <string>
-#include <vector>
 #include "./io.h"
 #include "./filesys.h"
 

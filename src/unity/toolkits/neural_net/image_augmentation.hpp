@@ -4,12 +4,10 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #ifndef TURI_NEURAL_NET_IMAGE_AUGMENTATION_HPP_
 #define TURI_NEURAL_NET_IMAGE_AUGMENTATION_HPP_
-
-#include <memory>
-#include <ostream>
-#include <vector>
 
 #include <image/image_type.hpp>
 #include <unity/toolkits/neural_net/float_array.hpp>

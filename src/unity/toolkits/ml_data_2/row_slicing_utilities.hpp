@@ -3,10 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef ML_DATA_ROW_SLICING_UTILITIES_H_
 #define ML_DATA_ROW_SLICING_UTILITIES_H_
 
-#include <vector>
 #include <unity/toolkits/ml_data_2/metadata.hpp> 
 #include <flexible_type/flexible_type.hpp>
 #include <numerics/armadillo.hpp>
