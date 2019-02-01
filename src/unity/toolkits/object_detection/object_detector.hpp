@@ -39,6 +39,8 @@ class EXPORT object_detector: public ml_model_base {
   void train(gl_sframe data, std::string annotations_column_name,
              std::string image_column_name,
              std::map<std::string, flexible_type> opts);
+  variant_map_type evaluate(gl_sframe data, std::string metric,
+                            std::map<std::string, flexible_type> opts);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
       std::string filename, std::map<std::string, flexible_type> opts);
 
@@ -67,6 +69,12 @@ class EXPORT object_detector: public ml_model_base {
       "    The number of training iterations. If 0, then it will be automatically\n"
       "    be determined based on the amount of data you provide.\n"
   );
+
+  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::evaluate, "data", "metric",
+                                 "options");
+  register_defaults("evaluate",
+      {{"metric", std::string("auto")},
+       {"options", to_variant(std::map<std::string, flexible_type>())}});
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::export_to_coreml, "filename",
     "options");
@@ -100,7 +108,7 @@ class EXPORT object_detector: public ml_model_base {
   // Factory for data_iterator
   virtual std::unique_ptr<data_iterator> create_iterator(
       gl_sframe data, std::string annotations_column_name,
-      std::string image_column_name) const;
+      std::string image_column_name, bool repeat) const;
 
   // Factory for compute_context
   virtual
@@ -128,6 +136,9 @@ class EXPORT object_detector: public ml_model_base {
   }
 
  private:
+
+  neural_net::float_array_map get_model_params() const;
+
   neural_net::shared_float_array prepare_label_batch(
       std::vector<std::vector<neural_net::image_annotation>> annotations_batch)
       const;

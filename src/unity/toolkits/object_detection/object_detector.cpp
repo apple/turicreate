@@ -13,6 +13,7 @@
 #include <iostream>
 #include <limits>
 #include <numeric>
+#include <queue>
 #include <utility>
 #include <vector>
 
@@ -20,6 +21,7 @@
 #include <logger/logger.hpp>
 #include <random/random.hpp>
 #include <unity/toolkits/coreml_export/neural_net_models_exporter.hpp>
+#include <unity/toolkits/object_detection/od_evaluation.hpp>
 #include <unity/toolkits/object_detection/od_yolo.hpp>
 
 using turi::coreml::MLModelWrapper;
@@ -67,6 +69,12 @@ constexpr float MPS_LOSS_MULTIPLIER = 8;
 
 constexpr float BASE_LEARNING_RATE = 0.001f / MPS_LOSS_MULTIPLIER;
 
+constexpr float DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD = 0.45f;
+
+// Predictions with confidence scores below this threshold will be discarded
+// before generation precision-recall curves.
+constexpr float EVAL_CONFIDENCE_THRESHOLD = 0.001f;
+
 // Each bounding box is evaluated relative to a list of pre-defined sizes.
 const std::vector<std::pair<float, float>>& anchor_boxes() {
   static const std::vector<std::pair<float, float>>* const default_boxes =
@@ -79,6 +87,19 @@ const std::vector<std::pair<float, float>>& anchor_boxes() {
       });
   return *default_boxes;
 };
+
+// For computing average precision averaged over IOU thresholds from 50% to 90%,
+// at intervals of 5%, as popularized by COCO.
+std::vector<float> iou_thresholds_for_evaluation() {
+
+  std::vector<float> result;
+
+  for (float x = 50.f; x < 100.f; x += 5.f) {
+    result.push_back(x / 100.f);
+  }
+
+  return result;
+}
 
 // These are the fixed values that the Python implementation currently passes
 // into TCMPS.
@@ -108,6 +129,14 @@ float_array_map get_training_config() {
       shared_float_array::wrap(10.0f * MPS_LOSS_MULTIPLIER);
   config["use_sgd"]                  = shared_float_array::wrap(1.0f);
   config["weight_decay"]             = shared_float_array::wrap(0.0005f);
+  return config;
+}
+
+float_array_map get_prediction_config() {
+  float_array_map config;
+  config["mode"]                     = shared_float_array::wrap(2.0f);
+  config["od_include_loss"]          = shared_float_array::wrap(0.0f);
+  config["od_include_network"]       = shared_float_array::wrap(1.0f);
   return config;
 }
 
@@ -286,6 +315,167 @@ void object_detector::train(gl_sframe data,
   nn_spec_->update_params(trained_weights);
 }
 
+variant_map_type object_detector::evaluate(
+    gl_sframe data, std::string metric,
+    std::map<std::string, flexible_type> opts) {
+
+  // TODO: Support user-configurable metric and options.
+
+  std::string image_column_name = read_state<flex_string>("feature");
+  std::string annotations_column_name = read_state<flex_string>("annotations");
+  size_t batch_size = static_cast<size_t>(options.value("batch_size"));
+  float iou_threshold =
+      read_state<flex_float>("non_maximum_suppression_threshold");
+
+  // Bind the data to a data iterator.
+  std::unique_ptr<data_iterator> data_iter = create_iterator(
+      data, annotations_column_name, image_column_name, /* repeat */ false);
+
+  // Instantiate the compute context.
+  std::unique_ptr<compute_context> ctx = create_compute_context();
+  if (ctx == nullptr) {
+    log_and_throw("No neural network compute context provided");
+  }
+
+  // Instantiate the data augmenter. Don't enable any of the actual
+  // augmentations, just resize the input images to the desired shape.
+  image_augmenter::options augmenter_opts;
+  augmenter_opts.batch_size = batch_size;
+  augmenter_opts.output_width = GRID_SIZE * SPATIAL_REDUCTION;
+  augmenter_opts.output_height = GRID_SIZE * SPATIAL_REDUCTION;
+  std::unique_ptr<image_augmenter> augmenter =
+      ctx->create_image_augmenter(augmenter_opts);
+
+  // Instantiate the NN backend.
+  // For each anchor box, we have 4 bbox coords + 1 conf + one-hot class labels
+  int num_outputs_per_anchor = 5 + read_state<int>("num_classes");
+  int num_output_channels = num_outputs_per_anchor * anchor_boxes().size();
+  std::unique_ptr<cnn_module> module = ctx->create_object_detector(
+      /* n */     options.value("batch_size"),
+      /* c_in */  NUM_INPUT_CHANNELS,
+      /* h_in */  GRID_SIZE * SPATIAL_REDUCTION,
+      /* w_in */  GRID_SIZE * SPATIAL_REDUCTION,
+      /* c_out */ num_output_channels,
+      /* h_out */ GRID_SIZE,
+      /* w_out */ GRID_SIZE,
+      get_prediction_config(),
+      get_model_params());
+
+  // Initialize the metric calculator
+  average_precision_calculator calculator(
+      data_iter->class_labels().size(), iou_thresholds_for_evaluation());
+
+  // To support double buffering, use a queue of pending inference results.
+  std::queue<image_augmenter::result> pending_batches;
+
+  // Helper function to process results until the queue reaches a given size.
+  auto pop_until_size = [&](size_t remaining) {
+
+    while (pending_batches.size() > remaining) {
+
+      // Pop one batch from the queue.
+      image_augmenter::result batch = pending_batches.front();
+      pending_batches.pop();
+
+      for (size_t i = 0; i < batch.annotations_batch.size(); ++i) {
+
+        // For this row (corresponding to one image), extract the prediction.
+        shared_float_array raw_prediction = batch.image_batch[i];
+
+        // Translate the raw output into predicted labels and bounding boxes.
+        std::vector<image_annotation> predicted_annotations =
+            convert_yolo_to_annotations(raw_prediction, anchor_boxes(),
+                                        EVAL_CONFIDENCE_THRESHOLD);
+
+        // Remove overlapping predictions.
+        predicted_annotations = apply_non_maximum_suppression(
+            std::move(predicted_annotations), iou_threshold);
+
+        // Tally the predictions and ground truth labels.
+        calculator.add_row(predicted_annotations, batch.annotations_batch[i]);
+      }
+    }
+  };
+
+  // Iterate through the data once.
+  std::vector<labeled_image> input_batch = data_iter->next_batch(batch_size);
+  while (!input_batch.empty()) {
+
+    // Wait until we have just one asynchronous batch outstanding. The work
+    // below should be concurrent with the neural net inference for that batch.
+    pop_until_size(1);
+
+    image_augmenter::result result_batch;
+
+    // Instead of giving the ground truth data to the image augmenter and the
+    // neural net, instead save them for later, pairing them with the future
+    // predictions.
+    result_batch.annotations_batch.resize(input_batch.size());
+    for (size_t i = 0; i < input_batch.size(); ++i) {
+      result_batch.annotations_batch[i] = std::move(input_batch[i].annotations);
+      input_batch[i].annotations.clear();
+    }
+
+    // Use the image augmenter to format the images into float arrays, and
+    // submit them to the neural net.
+    image_augmenter::result prepared_input_batch =
+        augmenter->prepare_images(std::move(input_batch));
+    auto pending_prediction = std::make_shared<deferred_float_array>(
+        module->predict(prepared_input_batch.image_batch));
+    result_batch.image_batch = shared_float_array(pending_prediction);
+
+    // Add the pending result to our queue and move on to the next input batch.
+    pending_batches.push(std::move(result_batch));
+    input_batch = data_iter->next_batch(batch_size);
+  }
+
+  // Process all remaining batches.
+  pop_until_size(0);
+
+  // Compute the average precision (area under the precision-recall curve) for
+  // each combination of IOU threshold and class label.
+  flex_list class_labels = read_state<flex_list>("classes");
+  std::vector<std::map<float,float>> raw_average_precisions =
+      calculator.evaluate();
+  ASSERT_EQ(class_labels.size(), raw_average_precisions.size());
+
+  std::vector<float> average_precision_50(class_labels.size());
+  std::vector<float> average_precision(class_labels.size());
+  for (size_t i = 0; i < class_labels.size(); ++i) {
+
+    // Extract the average precision for this class at IOU threshold 50%.
+    average_precision_50[i] = raw_average_precisions[i].at(0.5f);
+
+    // Compute the average precision for this class averaged over all the IOU
+    // threshold.
+    float sum = 0.f;
+    for (const auto& threshold_and_ap : raw_average_precisions[i]) {
+      sum += threshold_and_ap.second;
+    }
+    average_precision[i] = sum /= raw_average_precisions[i].size();
+  }
+
+  // Store the requested summary statistics.
+  // TODO: Respect the `metric` argument instead of supplying all metrics. Even
+  // though almost all the cost of computing these metrics is shared?
+  auto create_dict = [&class_labels](const std::vector<float>& v) {
+    variant_map_type class_map;
+    for (size_t i = 0; i < class_labels.size(); ++i) {
+      class_map[class_labels[i]] = v[i];
+    }
+    return class_map;
+  };
+  auto compute_mean = [](const std::vector<float>& v) {
+    return std::accumulate(v.begin(), v.end(), 0.f) / v.size();
+  };
+  variant_map_type result_map;
+  result_map["average_precision_50"] = create_dict(average_precision_50);
+  result_map["average_precision"] = create_dict(average_precision);
+  result_map["mean_average_precision_50"] = compute_mean(average_precision_50);
+  result_map["mean_average_precision"] = compute_mean(average_precision);
+  return result_map;
+}
+
 std::unique_ptr<model_spec> object_detector::init_model(
     const std::string& pretrained_mlmodel_path) const {
 
@@ -444,12 +634,13 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
 
 std::unique_ptr<data_iterator> object_detector::create_iterator(
     gl_sframe data, std::string annotations_column_name,
-    std::string image_column_name) const {
+    std::string image_column_name, bool repeat) const {
 
   data_iterator::parameters iterator_params;
   iterator_params.data = std::move(data);
   iterator_params.annotations_column_name = std::move(annotations_column_name);
   iterator_params.image_column_name = std::move(image_column_name);
+  iterator_params.repeat = repeat;
 
   return std::unique_ptr<data_iterator>(
       new simple_data_iterator(iterator_params));  
@@ -466,8 +657,8 @@ void object_detector::init_train(gl_sframe data,
                                  std::map<std::string, flexible_type> opts) {
 
   // Bind the data to a data iterator.
-  training_data_iterator_ = create_iterator(data, annotations_column_name,
-                                            image_column_name);
+  training_data_iterator_ = create_iterator(
+      data, annotations_column_name, image_column_name, /* repeat */ true);
 
   // Instantiate the compute context.
   training_compute_context_ = create_compute_context();
@@ -486,24 +677,6 @@ void object_detector::init_train(gl_sframe data,
 
   // Load the pre-trained model from the provided path.
   nn_spec_ = init_model(mlmodel_path);
-  float_array_map raw_model_params = nn_spec_->export_params_view();
-
-  // Strip the substring "_fwd" from any parameter names, for compatibility with
-  // the training backend. (We preserve the substring in nn_spec_ for inclusion
-  // in the final exported model.)
-  // TODO: Someday, this will all be an implementation detail of each
-  // cnn_module implementation, once they actually take model_spec values as
-  // inputs. Or maybe we should just not use "_fwd" in the exported model?
-  float_array_map model_params;
-  for (const float_array_map::value_type& kv : raw_model_params) {
-    const std::string modifier = "_fwd";
-    std::string name = kv.first;
-    size_t pos = name.find(modifier);
-    if (pos != std::string::npos) {
-      name.erase(pos, modifier.size());
-    }
-    model_params[name] = kv.second;
-  }
 
   // Validate options, and infer values for unspecified options. Note that this
   // depends on training data statistics in the general case.
@@ -521,6 +694,8 @@ void object_detector::init_train(gl_sframe data,
       { "input_image_shape", flex_list(input_image_shape.begin(),
                                        input_image_shape.end()) },
       { "model", "darknet-yolo" },
+      { "non_maximum_suppression_threshold",
+        DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD },
       { "num_bounding_boxes", training_data_iterator_->num_instances() },
       { "num_classes", training_data_iterator_->class_labels().size() },
       { "num_examples", data.size() },
@@ -547,7 +722,7 @@ void object_detector::init_train(gl_sframe data,
       /* h_out */ GRID_SIZE,
       /* w_out */ GRID_SIZE,
       get_training_config(),
-      std::move(model_params));
+      get_model_params());
 
   // Print the header last, after any logging triggered by initialization above.
   if (training_table_printer_) {
@@ -610,6 +785,30 @@ void object_detector::perform_training_iteration() {
   // Save the result, which is a future that can synchronize with the
   // completion of this batch.
   pending_training_batches_.emplace(iteration_idx, std::move(loss_batch));
+}
+
+float_array_map object_detector::get_model_params() const {
+
+  float_array_map raw_model_params = nn_spec_->export_params_view();
+
+  // Strip the substring "_fwd" from any parameter names, for compatibility with
+  // the compute backend. (We preserve the substring in nn_spec_ for inclusion
+  // in the final exported model.)
+  // TODO: Someday, this will all be an implementation detail of each
+  // cnn_module implementation, once they actually take model_spec values as
+  // inputs. Or maybe we should just not use "_fwd" in the exported model?
+  float_array_map model_params;
+  for (const float_array_map::value_type& kv : raw_model_params) {
+    const std::string modifier = "_fwd";
+    std::string name = kv.first;
+    size_t pos = name.find(modifier);
+    if (pos != std::string::npos) {
+      name.erase(pos, modifier.size());
+    }
+    model_params[name] = kv.second;
+  }
+
+  return model_params;
 }
 
 shared_float_array object_detector::prepare_label_batch(
