@@ -54,6 +54,7 @@ for m in [
           'shortest_path',
           'text_classifier',
           'svm_classifier',
+          'style_transfer',
           'text_analytics',
           'object_detector',
           'image_classifier',
