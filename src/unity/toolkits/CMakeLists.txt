@@ -2,6 +2,7 @@ project(unity_toolkits)
 
 subdirs(ml_model
         activity_classification
+        drawing_recognition
         coreml_export
         sparse_similarity
         factorization
@@ -39,6 +40,7 @@ make_empty_library(unity_toolkits
     unity_coreml_model_export
     unity_image_export
     unity_activity_classification
+    unity_drawing_recognition
     unity_object_detection
     unity_prototype
     )
