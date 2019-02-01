@@ -250,6 +250,7 @@ make_library(aws-sdk-cpp
     curl openssl uuid
   COMPILE_FLAGS_EXTRA_CLANG
     -Wno-delete-non-virtual-dtor
+    -Wno-return-std-move
   )
 
 target_include_directories(aws-sdk-cpp SYSTEM
