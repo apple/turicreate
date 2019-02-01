@@ -13,7 +13,7 @@ macro(make_extension NAME)
     COMPILE_FLAGS_EXTRA_GCC
       -Wno-unknown-pragmas  # NOTE: used for auto-generated protobuf source files
       -Wno-unused-function  # NOTE: used for auto-generated protobuf source files
-    STATIC)
+    )
 endmacro()
 #----------------------------
 make_extension(additional_sframe_utilities SOURCES additional_sframe_utilities.cpp)
