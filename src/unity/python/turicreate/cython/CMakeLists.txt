@@ -20,7 +20,7 @@ function(cython_add_turicreate_module _module_name _sources)
     set_property(TARGET ${_module_name} APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-sign-compare")
   endif()
 
-  add_dependencies(${_module_name} release_binaries)
+  add_dependencies(${_module_name} release_binaries boost nanomsg unity_shared)
 endfunction()
 
 

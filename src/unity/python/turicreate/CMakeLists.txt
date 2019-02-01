@@ -7,13 +7,12 @@ endif()
 # add the propretary extensions
 get_property(EXTENSIONS_LIST DIRECTORY "../../extensions" PROPERTY EXTENSIONS_LIST)
 foreach(loop_var ${EXTENSIONS_LIST})
-  message(STATUS "Copying Extension to turicreate python directory ${loop_var}")
-  list(APPEND INSTALLATION_EXTENSIONS ${loop_var})
+  message(STATUS "Building extension shared library in turicreate python directory: ${loop_var}")
+  make_shared_library_from_static(${loop_var}
+    REQUIRES ${loop_var}_static
+    OUTPUT_NAME ${loop_var}
+  )
 endforeach()
-
-# TODO - figure out where these targets need to go:
-# (Or rather, what build rules that produce them need to move here!)
-# ${INSTALLATION_EXTENSIONS}
 
 if(APPLE AND HAS_MLCUSTOMMODEL)
   set(EXTRA_REQUIRES objcapi)
@@ -38,8 +37,6 @@ ADD_CUSTOM_COMMAND(
 )
 
 add_subdirectory(cython)
-
-set_property(DIRECTORY PROPERTY INSTALLATION_EXTENSIONS "${INSTALLATION_EXTENSIONS}")
 
 if (APPLE)
   make_symlink_target(
