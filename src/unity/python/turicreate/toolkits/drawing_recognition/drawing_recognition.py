@@ -349,12 +349,14 @@ class DrawingRecognition(_CustomModel):
                     epochs=1,
                     iterations=None,
                     want_to_print=True)
-        num_returns = 2 if with_ground_truth else 1
 
-        # sf_builders = [
-        #     _tc.SFrameBuilder([str], column_names=['label'])
-        #     for _ in range(num_returns)
-        # ]
+        '''
+            TODO:
+            - Replace append op with assign.
+            - Change return type from tuple to SFrame.
+            - Remove dead code.
+        '''
+        num_returns = 2 if with_ground_truth else 1
 
         dataset_size = len(dataset)
         ctx = _mxnet_utils.get_mxnet_context()
@@ -367,22 +369,16 @@ class DrawingRecognition(_CustomModel):
         # assert dataset['label'].dtype == type(self._classes[0])
         all_gt = _tc.SArray(dtype=dataset['label'].dtype)
         all_predicted = _tc.SArray(dtype=dataset['label'].dtype)
-
+        all_probabilities = _np.zeros((len(dataset['label']),len(dataset['label'].unique())), dtype=float)
+        index = 0
         for batch in loader:
-            # print('batch deets in loader')
             if batch.pad is not None:
                 size = self.batch_size - batch.pad
                 b_data = _mx.nd.slice_axis(batch.data[0], axis=0, begin=0, end=size)
-                # print(batch.label[0])
                 b_gt = _mx.nd.slice_axis(batch.label[0], axis=0, begin=0, end=size).asnumpy()
-                # print(b_gt)
-                # b_oshapes = _mx.nd.slice_axis(batch.label[2], axis=0, begin=0, end=size)
             else:
                 b_data = batch.data[0]
-                # print(batch.label[0])
                 b_gt = batch.label[0].asnumpy()
-                # print(b_gt)
-                # b_oshapes = batch.label[2]
                 size = self.batch_size
 
             if b_data.shape[0] < len(ctx):
@@ -390,45 +386,30 @@ class DrawingRecognition(_CustomModel):
             else:
                 ctx0 = ctx
 
-            # split_data = _mx.gluon.utils.split_and_load(
-            #     b_data, ctx_list=[_mx.cpu(0)], batch_axis=0)[0]
-            # split_gt = _mx.nd.array(
-            #     _mx.gluon.utils.split_and_load(
-            #         b_gt, ctx_list=[_mx.cpu(0)], batch_axis=0)[0]
-            # )
-            # for data, gt in zip(split_data, split_gt):
             z = self._model(b_data).asnumpy()
-            # print(z)
-            # if self._coreml_model != None:
-            #     preds_from_coreml = self._coreml_model.predict({"bitmap": dataset[0]["bitmap"]})
-            #     probabilities = preds_from_coreml["model0_softmax0_output"]
-            #     for key in probabilities:
-            #         intkey = int(key)
-            #         if not _check_closeness(probabilities[key], z[0][intkey]):
-            #             print(intkey, probabilities[key], z[0][intkey])
-            #             import pdb; pdb.set_trace()
             predicted = z.argmax(axis=1)
             classes = self._classes
-            # print('classes')
-            # print(classes)
-            # print('predicted')
-            # print(predicted)
             predicted_sa = _tc.SArray(predicted).apply(lambda x: classes[x])
             b_gt_sa = _tc.SArray(b_gt).apply(lambda x: classes[x])
-            # import pdb; pdb.set_trace()
-            all_predicted = all_predicted.append(predicted_sa)
-            all_gt = all_gt.append(b_gt_sa)
-        # print('all_gt.shape')
-        # print(all_gt.shape)
-        # print('all_predicted.shape')
-        # print(all_predicted.shape)
+            all_predicted = all_predicted.append(predicted_sa) #need to remove append
+            all_gt = all_gt.append(b_gt_sa) #need to remove append
+            all_probabilities[index:index+z.shape[0]] = z
+            index += z.shape[0]
+            
+    
         return (_tc.SFrame({'label': _tc.SArray(all_predicted)}), 
-            _tc.SFrame({'label': _tc.SArray(all_gt)}))
+            _tc.SFrame({'label': _tc.SArray(all_probabilities)}))
 
+            
     def evaluate(self, dataset, metric='auto', output_type='dict', verbose=True):
 
-        pred, target = self._predict_with_options(dataset, with_ground_truth=True,
+        '''
+            TODO: change return type of _predict_with_options to return a single SFrame
+        '''
+        pred, probs = self._predict_with_options(dataset, with_ground_truth=True,
                                               verbose=verbose)
+        target = _tc.SFrame({'label': _tc.SArray(dataset['label'])}) # fix this
+ 
         '''
         ## Previous code
         num_correct = 0
@@ -455,13 +436,12 @@ class DrawingRecognition(_CustomModel):
 
         '''
             Return type dict matches image_classifier returns type
-            TODO: auc, roc
         '''
         ret = {}
         if 'accuracy' in metrics:
             ret['accuracy'] = _evaluation.accuracy(target['label'], pred['label'])
-        #if 'auc' in metrics:
-        #    ret['auc'] = _evaluation.auc(target['label'], probs, index_map=self._target_id_map)
+        if 'auc' in metrics:
+            ret['auc'] = _evaluation.auc(target['label'], probs['label'], index_map=self._class_to_index)
         if 'precision' in metrics:
             ret['precision'] = _evaluation.precision(target['label'], pred['label'])
         if 'recall' in metrics:
@@ -470,16 +450,12 @@ class DrawingRecognition(_CustomModel):
             ret['f1_score'] = _evaluation.f1_score(target['label'], pred['label'])
         if 'confusion_matrix' in metrics:
             ret['confusion_matrix'] = _evaluation.confusion_matrix(target['label'], pred['label'])
-        #if 'roc_curve' in metrics:
-            #ret['roc_curve'] = _evaluation.roc_curve(target['label'], probs, index_map=self._target_id_map)
+        if 'roc_curve' in metrics:
+            ret['roc_curve'] = _evaluation.roc_curve(target['label'], probs['label'], index_map=self._class_to_index)
         
         return ret
 
-
-        # pred_df = pred.to_dataframe()
-        # gt_df = gt.to_dataframe()
-
     def predict(self, dataset, verbose=True):
-        pred, gt = self._predict_with_options(dataset, with_ground_truth=True,
+        pred, _ = self._predict_with_options(dataset, with_ground_truth=True,
                                               verbose=verbose)
         return pred['label']
