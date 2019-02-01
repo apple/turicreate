@@ -3,14 +3,15 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <cassert>
+
+#include <pch/pch.hpp>
+
 #include <nanosockets/socket_errors.hpp>
 #include <nanosockets/socket_config.hpp>
 #include <nanosockets/publish_socket.hpp>
 #include <nanosockets/print_zmq_error.hpp>
 #include <nanosockets/get_next_port_number.hpp>
 #include <network/net_util.hpp>
-#include <mutex>
 #include <serialization/oarchive.hpp>
 extern "C" {
 #include <nanomsg/nn.h>

@@ -1,7 +1,7 @@
+#include <pch/pch.hpp>
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
-#include <iostream>
 #include <lambda/worker_pool.hpp>
 #include <parallel/lambda_omp.hpp>
 #include <fileio/fs_utils.hpp>

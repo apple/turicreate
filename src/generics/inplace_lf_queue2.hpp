@@ -3,13 +3,14 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_INPLACE_LOCKFREE_QUEUE2_HPP
 #define TURI_INPLACE_LOCKFREE_QUEUE2_HPP
 #include <stdint.h>
-#include <cstring>
 #include <parallel/atomic.hpp>
 #include <parallel/atomic_ops.hpp>
-#include <utility>
 namespace turi {
 
 /*

@@ -3,11 +3,13 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_PYTHON_CALLBACKS_H_
 #define TURI_PYTHON_CALLBACKS_H_
 
 #include <util/code_optimization.hpp>
-#include <string>
 #include <export.hpp>
 
 /** Provides a generic interface to call cython functions (which can

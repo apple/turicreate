@@ -3,10 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_SFRAME_SARRAY_V2_BLOCK_TYPES_HPP
 #define TURI_SFRAME_SARRAY_V2_BLOCK_TYPES_HPP
 #include <stdint.h>
-#include <tuple>
 #include <serialization/serializable_pod.hpp>
 namespace turi {
 

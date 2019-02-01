@@ -1,8 +1,9 @@
+#include <pch/pch.hpp>
+
 #ifndef _CITY_HASHER_HH
 #define _CITY_HASHER_HH
 
 #include <city.h>
-#include <string>
 
 /** \ingroup util
  * \addtogroup Hashing

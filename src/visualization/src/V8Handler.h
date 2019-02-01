@@ -1,7 +1,7 @@
+#include <pch/pch.hpp>
+
 #ifndef V8HANDLER_H_
 #define V8HANDLER_H_
-
-#include <iostream>
 
 class V8Handler : public CefV8Handler {
   public:

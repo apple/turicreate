@@ -3,12 +3,14 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_EVAL_INTERFACE_H_
 #define TURI_EVAL_INTERFACE_H_
 // Types
 #include <unity/lib/unity_sframe.hpp>
 #include <unity/lib/variant.hpp>
-#include <unordered_map>
 
 #ifdef __clang__
   #pragma clang diagnostic push

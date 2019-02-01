@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #include <logger/logger.hpp>
 #include <fileio/union_fstream.hpp>
 #include <fileio/cache_stream.hpp>
@@ -16,9 +19,6 @@
 #include <fileio/sanitize_url.hpp>
 #include <boost/algorithm/string.hpp>
 #include <fileio/fs_utils.hpp>
-
-#include <cstring>
-#include <cerrno>
 
 namespace turi {
 /**

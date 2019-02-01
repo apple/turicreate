@@ -33,14 +33,6 @@
 #define TURI_LOGGER_THROW_ON_FAILURE
 #endif
 
-#if defined(COMPILER_HAS_IOS_BASE_FAILURE_WITH_ERROR_CODE) && (_MSC_VER < 1600)
-#undef COMPILER_HAS_IOS_BASE_FAILURE_WITH_ERROR_CODE
-#endif
-
-#ifdef COMPILER_HAS_IOS_BASE_FAILURE_WITH_ERROR_CODE
-#include <system_error>
-#endif
-
 #include <parallel/pthread_h.h>
 #include <timer/timer.hpp>
 #include <logger/fail_method.hpp>

@@ -3,11 +3,13 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_UNITY_JSON_UTIL_HPP
 #define TURI_UNITY_JSON_UTIL_HPP
 #include <json/json_include.hpp>
 #include <unity/lib/api/client_base_types.hpp>
-#include <cmath>
 namespace turi {
   /**
    * Helper utility for converting from flexible_type to json.

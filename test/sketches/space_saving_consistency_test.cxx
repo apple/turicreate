@@ -1,13 +1,10 @@
+#include <pch/pch.hpp>
+
 #define ENABLE_SKETCH_CONSISTENCY_CHECKS
 
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
-#include <string>
-#include <iostream>
-#include <set>
-#include <cmath>
-#include <unordered_map>
 #include <flexible_type/flexible_type.hpp>
 #include <sketches/space_saving.hpp>
 #include <sketches/space_saving_flextype.hpp>

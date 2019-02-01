@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_SERIALIZE_UNORDERED_SET_HPP
 #define TURI_SERIALIZE_UNORDERED_SET_HPP
 
@@ -45,9 +48,7 @@ namespace archive_detail {
 
 
 
-// check if C++11 exists. If it does, also support the std::unordered_set
-#if defined(__cplusplus) && __cplusplus >= 201103L
-#include <unordered_set>
+// also support the std::unordered_set
 
 namespace turi {
 namespace archive_detail {
@@ -79,12 +80,6 @@ namespace archive_detail {
 
 } // archive_detail  
 } // turicreate
-
-
-#endif
-
-
-
 
 #endif 
 

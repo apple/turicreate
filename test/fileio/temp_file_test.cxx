@@ -1,9 +1,8 @@
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <iostream>
-#include <fstream>
 #include <util/test_macros.hpp>
-#include <string>
 #include <fileio/temp_files.hpp>
 
 using namespace turi;

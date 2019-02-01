@@ -3,11 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef categorical_imputer_INDEXER_H_
 #define categorical_imputer_INDEXER_H_
-#include <string>
-#include <unordered_map>
-#include <unordered_set>
 
 #include <export.hpp>
 

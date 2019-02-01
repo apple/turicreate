@@ -1,8 +1,9 @@
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/fs_util.hpp>
 #include <util/test_macros.hpp>
-#include <string>
 #include <stdio.h>
 #include <fileio/general_fstream.hpp>
 #include <fileio/hdfs.hpp>

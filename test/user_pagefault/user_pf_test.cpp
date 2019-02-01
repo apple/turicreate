@@ -3,11 +3,13 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #include <user_pagefault/user_pagefault.hpp>
 #include <random/random.hpp>
 #include <timer/timer.hpp>
 #include <parallel/lambda_omp.hpp>
-#include <iostream>
 using namespace turi;
 using namespace user_pagefault;
 

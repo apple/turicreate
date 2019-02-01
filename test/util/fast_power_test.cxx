@@ -1,10 +1,8 @@
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
-#include <vector>
-#include <cmath>
-
-#include <iostream>
 #include <logger/logger.hpp>
 #include <logger/assertions.hpp>
 #include <util/bitops.hpp>

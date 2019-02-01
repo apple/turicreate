@@ -1,8 +1,6 @@
-#include "handler.h"
+#include <pch/pch.hpp>
 
-#include <iostream>
-#include <sstream>
-#include <string>
+#include "handler.h"
 
 #include "include/base/cef_bind.h"
 #include "include/cef_app.h"

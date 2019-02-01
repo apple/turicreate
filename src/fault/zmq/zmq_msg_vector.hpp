@@ -3,12 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef ZMQ_MSG_VECTOR_HPP
 #define ZMQ_MSG_VECTOR_HPP
-#include <cassert>
-#include <string>
-#include <deque>
-#include <cstring>
 #include <zmq.h>
 #include <export.hpp>
 

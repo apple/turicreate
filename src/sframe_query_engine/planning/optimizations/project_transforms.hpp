@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_SFRAME_QUERY_OPTIMIZATION_PROJECTION_TRANSFORMS_H_
 #define TURI_SFRAME_QUERY_OPTIMIZATION_PROJECTION_TRANSFORMS_H_
 
@@ -12,8 +15,6 @@
 #include <sframe_query_engine/planning/optimization_node_info.hpp>
 #include <sframe_query_engine/operators/operator_properties.hpp>
 #include <flexible_type/flexible_type.hpp>
-
-#include <array> 
 
 namespace turi {
 namespace query_eval {

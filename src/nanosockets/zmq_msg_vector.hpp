@@ -3,12 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef NANOSOCKETS_ZMQ_MSG_VECTOR_HPP
 #define NANOSOCKETS_ZMQ_MSG_VECTOR_HPP
-#include <cassert>
-#include <string>
-#include <list>
-#include <cstring>
 #include <serialization/oarchive.hpp>
 #include <serialization/iarchive.hpp>
 #include <export.hpp>

@@ -1,8 +1,7 @@
+#include <pch/pch.hpp>
+
 #ifndef TURI_APPLE_SYSTEM_CONFIG_H_
 #define TURI_APPLE_SYSTEM_CONFIG_H_
-
-#include <string>
-
 
 #ifdef __APPLE__
 

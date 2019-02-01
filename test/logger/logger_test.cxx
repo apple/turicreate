@@ -1,7 +1,8 @@
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
-#include <fstream>
 #include <logger/logger.hpp>
 #include <logger/log_rotate.hpp>
 #include <logger/log_level_setter.hpp>

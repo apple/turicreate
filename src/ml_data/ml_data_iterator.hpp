@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_DML_DATA_ITERATOR_H_
 #define TURI_DML_DATA_ITERATOR_H_
 
@@ -16,8 +19,6 @@
 #include <sframe/sarray.hpp>
 
 #include <numerics/armadillo.hpp>
-
-#include <array>
 
 namespace turi {
 

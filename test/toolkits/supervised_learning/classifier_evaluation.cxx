@@ -1,6 +1,7 @@
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE classifier_evaluations
 
-#include <vector>
 #include <unity/toolkits/supervised_learning/classifier_evaluations.hpp>
 #include <boost/test/unit_test.hpp>
 #include <unity/lib/gl_sframe.hpp>

@@ -1,3 +1,5 @@
+#include <pch/pch.hpp>
+
 // Data structures
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
@@ -6,8 +8,6 @@
 #include <unity/lib/unity_sframe.hpp>
 #include <sframe/sframe.hpp>
 
-#include <vector>
-#include <string>
 #include <random/random.hpp>
 
 #include <sframe/testing_utils.hpp>

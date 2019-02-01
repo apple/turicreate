@@ -4,12 +4,12 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #ifndef __TC_VIS_EXTREMA
 #define __TC_VIS_EXTREMA
 
 #include "../gl_sarray.hpp"
-
-#include <ostream>
 
 namespace turi {
 namespace visualization {

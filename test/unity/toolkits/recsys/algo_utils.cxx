@@ -20,14 +20,11 @@
  *
  */
 
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
-#include <vector>
-#include <string>
-#include <set>
-#include <iostream>
-#include <sstream>
 
 #include <random/random.hpp>
 

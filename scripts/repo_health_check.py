@@ -13,7 +13,7 @@ exit_code = 0
 # Health check #1: make sure precompiled header is used instead of direct header includes.
 # (For each file in the precompiled header.)
 
-print("Health check #1: Looking for header includes that should be using PCH.")
+print("Health check #1: Looking for header includes that should be using the project-wide precompiled header.")
 with open('src/pch/pch.in.hpp', 'r') as f:
     for line in f:
         line = line.strip()
@@ -21,7 +21,7 @@ with open('src/pch/pch.in.hpp', 'r') as f:
             # We have an include line
             # Make sure it's not duplicated in any other source code
             p1 = subprocess.Popen(["git", "grep", line, "src", "test"], stdout=subprocess.PIPE)
-            p2 = subprocess.Popen(["grep", "-v", "^src\/external\/\|^src\/pch\/\|^src\/unity\/toolkits\/coreml_export\/\|^.*\.mm:\|^.*\.py:"], stdin=p1.stdout, stdout=subprocess.PIPE)
+            p2 = subprocess.Popen(["grep", "-v", "^src\/external\/\|^src\/pch\/\|^src\/unity\/toolkits\/coreml_export\/\|^.*\.mm:\|^.*\.py:\|^.*\.dox:"], stdin=p1.stdout, stdout=subprocess.PIPE)
             matching_files = p2.stdout.readlines()
             count = len(matching_files)
             if count != 0:
@@ -33,7 +33,7 @@ with open('src/pch/pch.in.hpp', 'r') as f:
     
     if exit_code != 0:
         print("")
-        print("Suggested fix: drop these includes from source, as the PCH already includes them. Make sure the first include in the file is for <pch/pch.hpp>.")
+        print("Suggested fix: remove these includes from source code, as the pre-compiled header already includes them. Make sure the first include in the file is for <pch/pch.hpp>.")
 
 print("")
 exit(exit_code)

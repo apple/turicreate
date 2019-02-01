@@ -3,10 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #include <signal.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include <cassert>
 #include <boost/bind.hpp>
 #include <fault/query_object_server_manager.hpp>
 #include <fault/query_object_client.hpp>

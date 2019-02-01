@@ -3,10 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_SERIALIZE_ITERATOR_HPP
 #define TURI_SERIALIZE_ITERATOR_HPP
 
-#include <iterator>
 #include <serialization/oarchive.hpp>
 #include <serialization/iarchive.hpp>
 

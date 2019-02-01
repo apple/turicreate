@@ -15,8 +15,6 @@
 #include <sframe/testing_utils.hpp>
 #include <util/testing_utils.hpp>
 
-#include <cfenv>
-
 using namespace turi;
 using namespace turi::supervised;
 using namespace turi::supervised::xgboost;

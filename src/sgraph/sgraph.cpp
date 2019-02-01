@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #include <sgraph/sgraph.hpp>
 #include <sgraph/hilbert_parallel_for.hpp>
 #include <sframe/shuffle.hpp>
@@ -10,7 +13,6 @@
 #include <sframe/sarray_sorted_buffer.hpp>
 #include <sframe/sarray_reader_buffer.hpp>
 #include <sframe/sframe_saving.hpp>
-#include <atomic>
 #include <timer/timer.hpp>
 #include <sparsehash/sparse_hash_set>
 

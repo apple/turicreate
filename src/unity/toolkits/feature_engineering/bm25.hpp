@@ -3,9 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef _BM25_H_
 #define _BM25_H_
-#include <string>
 #include <unity/lib/toolkit_class_macros.hpp>
 #include <unity/toolkits/feature_engineering/transformer_base.hpp>
 #include <unity/toolkits/feature_engineering/topk_indexer.hpp>

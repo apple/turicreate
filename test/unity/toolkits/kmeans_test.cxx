@@ -1,10 +1,8 @@
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
-#include <vector>
-#include <set>
-#include <string>
-#include <random>
 
 #include <sframe/testing_utils.hpp>
 #include <util/testing_utils.hpp>

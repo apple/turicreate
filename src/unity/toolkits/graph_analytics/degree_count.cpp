@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #include <unity/toolkits/graph_analytics/pagerank.hpp>
 #include <unity/lib/toolkit_function_macros.hpp>
 #include <unity/lib/toolkit_util.hpp>
@@ -10,7 +13,6 @@
 #include <unity/lib/unity_sgraph.hpp>
 #include <sgraph/sgraph_fast_triple_apply.hpp>
 #include <sframe/algorithm.hpp>
-#include <atomic>
 #include <export.hpp>
 
 namespace turi {

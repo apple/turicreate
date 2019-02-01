@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_CAPI_WRAPPER_STRUCTS_HPP_
 #define TURI_CAPI_WRAPPER_STRUCTS_HPP_
 
@@ -13,7 +16,6 @@
 #include <unity/lib/extensions/model_base.hpp>
 #include <unity/lib/gl_sarray.hpp>
 #include <unity/lib/gl_sframe.hpp>
-#include <utility>
 
 struct capi_struct_type_info {
   virtual const char* name() const = 0;

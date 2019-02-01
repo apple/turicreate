@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 // include these MLModel headers first so they don't get polluted by turi-create macros.
 // otherwise at least CHECK() collides with incompatible implementation.
 
@@ -31,7 +34,6 @@
 
 // Utilities
 #include <numerics/armadillo.hpp>
-#include <cmath>
 #include <serialization/serialization_includes.hpp>
 
 #define LOGISTIC_REGRESSION_NEWTON_VARIABLES_HARD_LIMIT 10000

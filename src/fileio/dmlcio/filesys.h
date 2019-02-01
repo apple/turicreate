@@ -9,11 +9,12 @@
  * \brief general file system io interface
  * \author Tianqi Chen
  */
+
+#include <pch/pch.hpp>
+
 #ifndef DMLC_IO_FILESYS_H_
 #define DMLC_IO_FILESYS_H_
 
-#include <cstring>
-#include <string>
 #include "io.h"
 
 namespace dmlc {

@@ -1,7 +1,8 @@
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
-#include <limits>
 #include <user_pagefault/type_heuristic_encode.hpp>
 #include <random/random.hpp>
 using namespace turi;

@@ -1,9 +1,9 @@
+#include <pch/pch.hpp>
+
 #include "handler.h"
 
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
-
-#include <string>
 
 #include "include/base/cef_logging.h"
 #include "include/cef_browser.h"

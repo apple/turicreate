@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_DML_DATA_COLUMN_STATISTICS_H_
 #define TURI_DML_DATA_COLUMN_STATISTICS_H_
 
@@ -12,7 +15,6 @@
 #include <ml_data/ml_data_column_modes.hpp>
 #include <parallel/pthread_tools.hpp>
 #include <boost/thread/lock_algorithms.hpp>
-#include <set>
 
 namespace turi { namespace ml_data_internal {
 

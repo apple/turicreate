@@ -3,11 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef FILEIO_GENERAL_ISTREAM_HPP
 #define FILEIO_GENERAL_ISTREAM_HPP
-#include <iostream>
-#include <string>
-#include <fstream>
 #include <boost/iostreams/stream.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
 #include <fileio/general_fstream_source.hpp>

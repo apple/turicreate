@@ -3,7 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <fstream>
+
+#include <pch/pch.hpp>
+
 #include <fileio/fs_utils.hpp>
 #include <fileio/temp_files.hpp>
 #include <fileio/fileio_constants.hpp>

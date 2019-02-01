@@ -17,7 +17,6 @@
 #include <unity/lib/gl_sarray.hpp>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <fileio/fileio_constants.hpp>
-#include <iostream>
 
 class capi_test_sarray {
  public:

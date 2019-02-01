@@ -4,6 +4,8 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE capi_datetime
 
 #include <boost/test/unit_test.hpp>
@@ -48,7 +50,6 @@ BOOST_AUTO_TEST_CASE(test_tc_datetime_create_from_posix_highres_timestamp) {
   TS_ASSERT(dt->value == expected);
 }
 
-#include <iostream>
 BOOST_AUTO_TEST_CASE(test_tc_datetime_create_from_string) {
   tc_error* error = nullptr;
 

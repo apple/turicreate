@@ -3,9 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef LIBFAULT_SOCKET_CONFIG_HPP
 #define LIBFAULT_SOCKET_CONFIG_HPP
-#include <string>
 namespace libfault {
 extern int SEND_TIMEOUT;
 extern int RECV_TIMEOUT;

@@ -4,6 +4,8 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
@@ -12,8 +14,6 @@
 #include "capi_utils.hpp"
 #include <unity/lib/visualization/plot.hpp>
 #include <unity/lib/visualization/show.hpp>
-
-#include <random>
 
 using namespace turi;
 using namespace turi::visualization;

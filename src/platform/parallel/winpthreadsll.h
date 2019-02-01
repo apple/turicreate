@@ -48,6 +48,8 @@
  * Fixes pthread_barrier_destroy() to wait for threads to exit the barrier.
  */
 
+#include <pch/pch.hpp>
+
 #ifndef GRAHPLAB_WIN_PTHREADS
 #define GRAHPLAB_WIN_PTHREADS
 
@@ -55,9 +57,6 @@
 #include <cross_platform/windows_wrapper.hpp>
 #undef WIN32_LEAN_AND_MEAN
 #include <errno.h>
-#include <ctime>
-#include <cstring>
-#include <cstddef>
 #define ETIMEDOUT 110
 
 #define PTHREAD_MUTEX_INITIALIZER {(void*)-1,-1,0,0,0,0}

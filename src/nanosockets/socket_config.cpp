@@ -134,7 +134,6 @@ std::string normalize_address(const std::string& address) {
      ipc sockets on Linux and Mac use Unix domain sockets which have a maximum
      length defined by
 
-     #include <iostream>
      #include <sys/socket.h>
      #include <sys/un.h>
 

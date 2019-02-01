@@ -3,9 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef LIBNANOSOCKETS_SOCKET_CONFIG_HPP
 #define LIBNANOSOCKETS_SOCKET_CONFIG_HPP
-#include <string>
 namespace turi {
 namespace nanosockets {
 extern int SEND_TIMEOUT;

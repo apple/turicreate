@@ -3,12 +3,13 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef _TFIDF_H_
 #define _TFIDF_H_
 
 #include <export.hpp>
-#include <string>
-#include <unordered_map>
 
 #include <unity/lib/toolkit_class_macros.hpp>
 #include <unity/toolkits/feature_engineering/transformer_base.hpp>

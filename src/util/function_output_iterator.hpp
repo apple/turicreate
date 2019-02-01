@@ -13,10 +13,10 @@
 // 27 Feb 2001   Jeremy Siek
 //      Initial checkin.
 
+#include <pch/pch.hpp>
+
 #ifndef TURI_FUNCTION_OUTPUT_ITERATOR_HPP
 #define TURI_FUNCTION_OUTPUT_ITERATOR_HPP
-
-#include <iterator>
 
 namespace turi {
 

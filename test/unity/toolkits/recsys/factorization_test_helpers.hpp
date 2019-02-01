@@ -19,9 +19,6 @@
 #include <util/testing_utils.hpp>
 #include <unity/lib/variant.hpp>
 
-
-#include <cfenv>
-
 using namespace turi;
 using namespace turi::recsys;
 

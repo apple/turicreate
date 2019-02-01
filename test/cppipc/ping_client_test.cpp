@@ -3,8 +3,10 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #include <cppipc/client/comm_client.hpp>
-#include <iostream>
 int main(int argc, char** argv) {
   //cppipc::comm_client client({"localhost:2181"}, "pingtest");
   cppipc::comm_client client({}, "tcp://127.0.0.1:19000");

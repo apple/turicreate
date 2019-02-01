@@ -3,12 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef __TC_VISUALIZATION_IO_BUFFER
 #define __TC_VISUALIZATION_IO_BUFFER
-
-#include <mutex>
-#include <string>
-#include <queue>
 
 namespace turi {
   namespace visualization {

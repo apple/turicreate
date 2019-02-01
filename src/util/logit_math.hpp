@@ -3,13 +3,15 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_LOGIT_MATH_H_
 #define TURI_LOGIT_MATH_H_
 
 
 #include <util/code_optimization.hpp>
 #include <logger/assertions.hpp>
-#include <cmath>
 
 
 namespace turi {

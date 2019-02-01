@@ -4,11 +4,12 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #include <util/string_util.hpp>
 
 #include <util/basic_types.hpp>
 
-#include <string>
 using std::max;
 using std::string;
 

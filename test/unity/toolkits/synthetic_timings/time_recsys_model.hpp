@@ -3,11 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_RECSYS_TIME_MODEL_H_
 #define TURI_RECSYS_TIME_MODEL_H_
 
-#include <vector>
-#include <string>
 #include <random/random.hpp>
 #include <unity/toolkits/ml_data_2/ml_data.hpp>
 #include <unity/toolkits/recsys/models.hpp>

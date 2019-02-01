@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 // ML Data
 #include <sframe/sframe.hpp>
 #include <sframe/algorithm.hpp>
@@ -24,7 +27,6 @@
 
 // Utilities
 #include <numerics/armadillo.hpp>
-#include <cmath>
 #include <serialization/serialization_includes.hpp>
 
 

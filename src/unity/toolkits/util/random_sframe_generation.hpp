@@ -3,12 +3,14 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_UNITY_RANDOM_SFRAME_GENERATION_H_
 #define TURI_UNITY_RANDOM_SFRAME_GENERATION_H_
 
 #include <unity/lib/gl_sarray.hpp>
 #include <unity/lib/gl_sframe.hpp>
-#include <string>
 
 turi::gl_sframe _generate_random_sframe(size_t num_rows, std::string column_types,
                                             size_t random_seed, bool generate_target, double noise_level);
