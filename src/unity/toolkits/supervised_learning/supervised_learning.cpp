@@ -695,7 +695,8 @@ sframe supervised_learning_model_base::predict_topk(
  */
 std::map<std::string, variant_type> supervised_learning_model_base::evaluate(
             const ml_data& test_data,
-            const std::string& evaluation_type){
+            const std::string& evaluation_type,
+            bool with_prediction){
 
   // Timers.
   timer t;
@@ -772,12 +773,34 @@ std::map<std::string, variant_type> supervised_learning_model_base::evaluate(
   for(size_t i=0; i < evaluators.size(); i++){
     evaluators[i]->init(n_threads);
   }
+  
+
+  std::shared_ptr<sarray<flexible_type>> prob_vectors = std::make_shared<sarray<flexible_type>>();
+  std::shared_ptr<sarray<flexible_type>> predicted_classes = std::make_shared<sarray<flexible_type>>();
+  
+  if (contains_prob_evaluator) {
+    // Save predictions as probability vectors  
+    prob_vectors->open_for_write(n_threads);
+    prob_vectors->set_type(flex_type_enum::VECTOR);
+
+    predicted_classes->open_for_write(n_threads);
+    predicted_classes->set_type((this->ml_mdata)->target_column_type());
+  }
 
   // Go through evaluators that require the predicted class.
   in_parallel([&](size_t thread_idx, size_t num_threads){
     flexible_type true_value, predicted_value, prob_vector;
     DenseVector x(variables);
     SparseVector x_sp(variables);
+    
+    sarray<flexible_type>::iterator writer_probs;
+    sarray<flexible_type>::iterator writer_classes;
+
+    if (contains_prob_evaluator) {
+      writer_probs = prob_vectors->get_output_iterator(thread_idx);
+      writer_classes = predicted_classes->get_output_iterator(thread_idx);
+    }
+
     for(auto it = test_data.get_iterator(thread_idx, num_threads);
                                                        !it.done(); ++it) {
       // Classifiers.
@@ -804,6 +827,21 @@ std::map<std::string, variant_type> supervised_learning_model_base::evaluate(
                                  prediction_type_enum::PROBABILITY_VECTOR);
           }
         }
+        
+        if (contains_prob_evaluator) {
+          double max_prob = 0;
+          for(size_t i = 0; i < prob_vector.size(); i++){
+            if (max_prob < prob_vector[i]) {
+              max_prob = prob_vector[i];
+              predicted_value = i;
+            }
+          }
+          *writer_probs = prob_vector;
+          ++writer_probs;
+          *writer_classes = (this->ml_mdata)->target_indexer()->map_index_to_value(predicted_value);
+          ++writer_classes;
+        }
+
         true_value = it->target_index();
       // Regression.
       } else {
@@ -841,10 +879,23 @@ std::map<std::string, variant_type> supervised_learning_model_base::evaluate(
     }
   });
 
+  if (contains_prob_evaluator) {
+    prob_vectors->close();
+    predicted_classes->close();
+  }
+
   // Get results
   std::map<std::string, variant_type> results;
   for(size_t i=0; i < evaluators.size(); i++){
       results[evaluator_names[i]] = evaluators[i]->get_metric();
+  }
+
+  
+  if (contains_prob_evaluator && with_prediction) {
+    gl_sframe sf_predictions;
+    sf_predictions.add_column(prob_vectors, "probs");
+    sf_predictions.add_column(predicted_classes, "class");
+    results["predictions"] = sf_predictions;
   }
 
   logstream(LOG_INFO) << "Evaluation done at "
@@ -1107,7 +1158,7 @@ gl_sframe supervised_learning_model_base::api_classify(
  *  Evaluate the model
  */
 variant_map_type supervised_learning_model_base::api_evaluate(
-    gl_sframe data, std::string missing_value_action_str, std::string metric) {
+    gl_sframe data, std::string missing_value_action_str, std::string metric, bool with_prediction) {
   auto model = std::dynamic_pointer_cast<supervised_learning_model_base>(
       shared_from_this());
   ml_missing_value_action missing_value_action =
@@ -1131,7 +1182,7 @@ variant_map_type supervised_learning_model_base::api_evaluate(
       out["class"] = data[variant_get_ref<flexible_type>(state.at("target")).get<flex_string>()];
       out["predicted_class"] = api_predict(data, missing_value_action_str, "class");
 
-      variant_map_type ret = evaluate(m_data, "auto");
+      variant_map_type ret = evaluate(m_data, "auto", with_prediction);
 
       ret["confusion_matrix"] = confusion_matrix(out, target, pred_column);
       ret["report_by_class"] = classifier_report_by_class(out, target, pred_column);
@@ -1145,7 +1196,7 @@ variant_map_type supervised_learning_model_base::api_evaluate(
     }
   }
 
-  variant_map_type results = evaluate(m_data, metric);
+  variant_map_type results = evaluate(m_data, metric, with_prediction);
   return results;
 }
 

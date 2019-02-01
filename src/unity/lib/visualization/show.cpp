@@ -64,7 +64,7 @@ namespace turi {
           // TODO -- actually show this with the axes the user asked for
           // but for now, just flip them
 
-          return plot_boxes_and_whiskers(y, x, xlabel, ylabel, title);
+          return plot_boxes_and_whiskers(y, x, ylabel, xlabel, title);
         } else if (isNumeric(y) && isString(x)) {
 
           return plot_boxes_and_whiskers(x, y, xlabel, ylabel, title);
