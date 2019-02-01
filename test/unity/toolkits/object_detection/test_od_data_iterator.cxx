@@ -150,8 +150,7 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_unexpected_classes) {
 
   // The data contains the label "foo", which is not among the expected class
   // labels.
-  simple_data_iterator* data_source;
-  TS_ASSERT_THROWS_ANYTHING(data_source = new simple_data_iterator(params));
+  TS_ASSERT_THROWS_ANYTHING(simple_data_iterator unused_var(params));
 }
 
 }  // namespace
