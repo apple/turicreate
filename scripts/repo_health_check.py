@@ -21,7 +21,7 @@ with open('src/pch/pch.in.hpp', 'r') as f:
             # We have an include line
             # Make sure it's not duplicated in any other source code
             p1 = subprocess.Popen(["git", "grep", line, "src", "test"], stdout=subprocess.PIPE)
-            p2 = subprocess.Popen(["grep", "-v", "^src\/external\/\|^src\/pch\/\|^src\/unity\/toolkits\/coreml_export\/"], stdin=p1.stdout, stdout=subprocess.PIPE)
+            p2 = subprocess.Popen(["grep", "-v", "^src\/external\/\|^src\/pch\/\|^src\/unity\/toolkits\/coreml_export\/\|^.*\.mm:"], stdin=p1.stdout, stdout=subprocess.PIPE)
             matching_files = p2.stdout.readlines()
             count = len(matching_files)
             if count != 0:

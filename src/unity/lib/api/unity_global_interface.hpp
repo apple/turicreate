@@ -3,12 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_UNITY_CLIENT_GLOBAL_HPP
 #define TURI_UNITY_CLIENT_GLOBAL_HPP
-#include <memory>
-#include <vector>
-#include <string>
-#include <map>
 #include <unity/lib/api/unity_sarray_interface.hpp>
 #include <unity/lib/api/unity_graph_interface.hpp>
 #include <unity/lib/toolkit_function_response.hpp>

@@ -3,12 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+ 
+#include <pch/pch.hpp>
+
 #ifndef TURI_SFRAME_QUERY_ENGINE_OPERATORS_QUERY_OPERATOR_HPP
 #define TURI_SFRAME_QUERY_ENGINE_OPERATORS_QUERY_OPERATOR_HPP
-#include <cstddef>
-#include <string>
-#include <map>
-#include <memory>
 #include <util/any.hpp>
 #include <flexible_type/flexible_type.hpp>
 #include <sframe_query_engine/planning/planner_node.hpp>

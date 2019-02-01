@@ -3,10 +3,10 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #include <fileio/hdfs.hpp>
-#include <map>
-#include <memory>
-#include <system_error>
 #include <parallel/mutex.hpp>
 #include <pthread.h>
 #include "export.hpp"

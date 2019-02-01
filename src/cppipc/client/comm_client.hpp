@@ -3,11 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef CPPIPC_SERVER_COMM_CLIENT_HPP
 #define CPPIPC_SERVER_COMM_CLIENT_HPP
-#include <map>
-#include <memory>
-#include <chrono>
 #include <parallel/atomic.hpp>
 #include <logger/logger.hpp>
 #include <boost/thread/thread.hpp>
@@ -22,8 +22,6 @@
 #include <cppipc/common/ipc_deserializer.hpp>
 #include <cppipc/client/console_cancel_handler.hpp>
 #include <exceptions/error_types.hpp>
-#include <cctype>
-#include <atomic>
 
 namespace cppipc {
 namespace nanosockets = turi::nanosockets;

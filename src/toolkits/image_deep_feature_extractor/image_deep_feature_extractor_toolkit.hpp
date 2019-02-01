@@ -3,10 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+ 
+#include <pch/pch.hpp>
+
 #ifndef IMAGE_DEEP_FEATURE_EXTRACTOR_TOOLKIT_HPP
 #define IMAGE_DEEP_FEATURE_EXTRACTOR_TOOLKIT_HPP
-
-#include <memory>
 
 #include <toolkits/image_deep_feature_extractor/image_feature_extractor.hpp>
 #include <unity/lib/gl_sframe.hpp>

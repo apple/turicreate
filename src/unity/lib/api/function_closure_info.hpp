@@ -3,16 +3,13 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+#include <pch/pch.hpp>
 // this file should not be included directly
 // due to circular include issues with variant.hpp
 // instead. we redirect to variant.hpp which will then include this again.
 #include <unity/lib/variant.hpp>
 #ifndef TURI_UNITY_LIB_API_FUNCTION_CLOSURE_INFO_HPP
 #define TURI_UNITY_LIB_API_FUNCTION_CLOSURE_INFO_HPP
-#include <string>
-#include <vector>
-#include <utility>
-#include <memory>
 #include <serialization/serialization_includes.hpp>
 namespace turi {
 /**

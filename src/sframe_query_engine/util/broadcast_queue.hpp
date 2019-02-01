@@ -3,11 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+ 
+#include <pch/pch.hpp>
+
 #ifndef SFRAME_QUERY_ENGINE_broadcast_queue_HPP
 #define SFRAME_QUERY_ENGINE_broadcast_queue_HPP
-#include <deque>
-#include <string>
-#include <memory>
 #include <fileio/general_fstream.hpp>
 #include <fileio/fixed_size_cache_manager.hpp>
 #include <logger/assertions.hpp>

@@ -3,13 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+ 
+#include <pch/pch.hpp>
+
 #ifndef TURI_SERIALIZATION_DIR_ARCHIVE_HPP
 #define TURI_SERIALIZATION_DIR_ARCHIVE_HPP
-#include <cstddef>
-#include <vector>
-#include <string>
-#include <memory>
-#include <map>
 #include <fileio/fs_utils.hpp>
 #include <fileio/general_fstream.hpp>
 namespace turi {

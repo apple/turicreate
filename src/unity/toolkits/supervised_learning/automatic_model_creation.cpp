@@ -1,9 +1,6 @@
-#include <unity/toolkits/supervised_learning/automatic_model_creation.hpp>
+#include <pch/pch.hpp>
 
-#include <algorithm>
-#include <memory>
-#include <string>
-#include <vector>
+#include <unity/toolkits/supervised_learning/automatic_model_creation.hpp>
 
 #include <unity/lib/api/unity_sframe_interface.hpp>
 #include <unity/lib/unity_sframe.hpp>

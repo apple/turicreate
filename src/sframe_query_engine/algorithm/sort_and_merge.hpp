@@ -3,13 +3,15 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+ 
+#include <pch/pch.hpp>
+
 #ifndef TURI_QUERY_EVAL_SORT_AND_MERGE_HPP
 #define TURI_QUERY_EVAL_SORT_AND_MERGE_HPP
 
 namespace turi {
 namespace query_eval {
 
-#include <memory>
 /**
  * \ingroup sframe_query_engine
  * \addtogroup Algorithms Algorithms

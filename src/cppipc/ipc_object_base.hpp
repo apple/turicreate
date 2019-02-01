@@ -3,9 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef CPPIPC_IPC_OBJECT_BASE_HPP
 #define CPPIPC_IPC_OBJECT_BASE_HPP
-#include <memory>
 #include <export.hpp>
 /**
  * All exported base classes must inherit from this class.

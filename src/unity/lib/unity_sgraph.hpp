@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_UNITY_SGRAPH_HPP
 #define TURI_UNITY_SGRAPH_HPP
 #include <unity/lib/api/unity_graph_interface.hpp>
@@ -10,7 +13,6 @@
 #include <unity/lib/sgraph_triple_apply_typedefs.hpp>
 #include <sgraph/sgraph_constants.hpp>
 #include <sframe/dataframe.hpp>
-#include <memory>
 #include <parallel/mutex.hpp>
 
 namespace turi {

@@ -3,14 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_UNITY_GL_SFRAME_HPP
 #define TURI_UNITY_GL_SFRAME_HPP
-#include <cmath>
-#include <memory>
-#include <cstddef>
-#include <string>
-#include <iostream>
-#include <map>
 #include <flexible_type/flexible_type.hpp>
 #include <sframe/group_aggregate_value.hpp>
 #include <sframe/sframe_rows.hpp>

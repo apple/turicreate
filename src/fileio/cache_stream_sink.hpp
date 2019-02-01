@@ -3,11 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef CACHE_STREAM_SINK_HPP
 #define CACHE_STREAM_SINK_HPP
 
-#include <iostream>
-#include <memory>
 #include <boost/iostreams/stream.hpp>
 #include <fileio/general_fstream_sink.hpp>
 #include <fileio/fixed_size_cache_manager.hpp>

@@ -5,7 +5,7 @@
  */
 #include <capi/TuriCreate.h>
 
-#include <memory>
+#include <pch/pch.hpp>
 
 #include <export.hpp>
 #include <capi/impl/capi_error_handling.hpp>

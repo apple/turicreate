@@ -3,9 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+ 
+#include <pch/pch.hpp>
+
 #ifndef TURI_UNITY_SFRAME_IS_SARRAY_LIKE_HPP
 #define TURI_UNITY_SFRAME_IS_SARRAY_LIKE_HPP
-#include <memory>
 #include <sframe/is_siterable.hpp>
 #include <sframe/is_swriter_base.hpp>
 namespace turi {

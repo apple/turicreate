@@ -3,12 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+ 
+#include <pch/pch.hpp>
+
 #ifndef TURI_SFRAME_QUERY_ENGINE_OPERATORS_EXECUTION_NODE_HPP
 #define TURI_SFRAME_QUERY_ENGINE_OPERATORS_EXECUTION_NODE_HPP
-
-#include <memory>
-#include <vector>
-#include <queue>
 
 #define BOOST_COROUTINES_NO_DEPRECATION_WARNING
 #include <boost/coroutine/coroutine.hpp>

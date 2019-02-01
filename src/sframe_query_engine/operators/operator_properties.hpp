@@ -3,13 +3,13 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+ 
+#include <pch/pch.hpp>
+
 #ifndef TURI_SFRAME_QUERY_ENGINE_INFER_OPERATOR_FIELD_H_
 #define TURI_SFRAME_QUERY_ENGINE_INFER_OPERATOR_FIELD_H_
 
 #include <logger/assertions.hpp>
-#include <memory>
-#include <vector>
-#include <string>
 #include <flexible_type/flexible_type.hpp> 
 
 namespace turi { namespace query_eval {

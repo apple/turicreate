@@ -9,6 +9,8 @@
     or a copy at http://opensource.adobe.com/licenses.html)
 */
 
+#include <pch/pch.hpp>
+
 /*************************************************************************************************/
 
 #ifndef GIL_KERNEL_HPP
@@ -22,11 +24,6 @@
 /// \date   2005-2007 \n Last updated on September 26, 2006
 */
 
-#include <cstddef>
-#include <cassert>
-#include <algorithm>
-#include <vector>
-#include <memory>
 #include <boost/array.hpp>
 #include "../../gil_config.hpp"
 #include "../../utilities.hpp"
