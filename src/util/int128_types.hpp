@@ -13,14 +13,14 @@
  * Also defines ostream printing, std::is_scalar, and boost::is_scalar on the
  * int128_t, uint128_t types.
  */
+
+#include <pch/pch.hpp>
+
 #ifndef _INT128_TYPES_H_
 #define _INT128_TYPES_H_
+
 #include <serialization/is_pod.hpp>
 #include <boost/type_traits/is_scalar.hpp>
-#include <type_traits>
-#include <cstdint>
-#include <ostream>
-#include <sstream>
 
 // not in turicreate source tree. try to use
 // compiler predefines to find int128

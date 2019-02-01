@@ -3,14 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_SFRAME_GROUPBY_AGGREGATE_HPP
 #define TURI_SFRAME_GROUPBY_AGGREGATE_HPP
 
-#include <memory>
-#include <vector>
-#include <cstdint>
-#include <functional>
-#include <unordered_set>
 #include <sframe/sframe.hpp>
 #include <sframe/sframe_constants.hpp>
 #include <sframe/group_aggregate_value.hpp>

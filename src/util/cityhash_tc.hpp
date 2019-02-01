@@ -3,10 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_CITYHASH_GL_H_
 #define TURI_CITYHASH_GL_H_
 
-#include <vector> 
 #include <util/code_optimization.hpp>
 
 // Copyright (c) 2011 Google, Inc.
@@ -82,9 +84,7 @@
 // of a+b is easily derived from the hashes of a and b.  This property
 // doesn't hold for any hash functions in this file.
 
-#include <algorithm>
 #include <string.h>  // for memcpy and memset
-#include <cstdint>
 
 #include "int128_types.hpp"
 

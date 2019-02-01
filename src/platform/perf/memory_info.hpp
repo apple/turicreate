@@ -3,12 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 #ifndef TURI_MEMORY_INFO_HPP
 #define TURI_MEMORY_INFO_HPP
 
-#include <string>
-#include <cstdint>
-#include <iostream>
 #ifdef HAS_TCMALLOC
 #include <google/malloc_extension.h>
 #endif

@@ -3,6 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <pch/pch.hpp>
+
 /*
    This files defines the serializer/deserializer for all basic types
    (as well as string and pair)  
@@ -10,10 +13,8 @@
 #ifndef ARCHIVE_BASIC_TYPES_HPP
 #define ARCHIVE_BASIC_TYPES_HPP
 
-#include <string>
 #include <serialization/serializable_pod.hpp>
 #include <logger/assertions.hpp>
-#include <cstdint>
 
 namespace turi {
   class oarchive;

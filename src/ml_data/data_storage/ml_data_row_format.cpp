@@ -4,7 +4,9 @@
  * be found in the LICENSE.txt file or at
  * https://opensource.org/licenses/BSD-3-Clause
  */
-#include <cstdint>
+
+#include <pch/pch.hpp>
+
 #include <globals/globals.hpp>
 #include <ml_data/data_storage/ml_data_row_format.hpp>
 #include <ml_data/metadata.hpp>

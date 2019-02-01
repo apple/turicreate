@@ -4,12 +4,11 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <pch/pch.hpp>
+
 #ifndef TURI_UNITY_FLEXIBLE_TYPE_BASE_TYPES_HPP
 #define TURI_UNITY_FLEXIBLE_TYPE_BASE_TYPES_HPP
-#include <string>
-#include <vector>
-#include <cstdint>
-#include <iostream>
+
 #include <serialization/serialization_includes.hpp>
 #include <flexible_type/ndarray.hpp>
 #include <image/image_type.hpp>
