@@ -3,6 +3,17 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+/* VegaCGCanvas is a partial implementation of JavaScript Canvas as described in:
+   https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API
+
+   VegaCGContext is a partial implementation of JavaScript CanvasRenderingContext2D as described in:
+   https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D
+
+   These are intended to support Vega rendering through a <canvas> element in JavaScriptCore.
+   They are not intended to be a full, or standards-compliant, web canvas implementation.
+*/
+
 #ifndef Canvas_h
 #define Canvas_h
 
