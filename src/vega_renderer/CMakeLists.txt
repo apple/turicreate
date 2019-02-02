@@ -18,27 +18,17 @@ if(APPLE)
    message( STATUS "CoreText found at ${CORETEXT_LIBRARY}")
 
    add_definitions(
-      -DOBJROOT=${CMAKE_CURRENT_BINARY_DIR}/VegaRenderer
-   )
-
-   set( VEGA_RENDERER_INCLUDE_DIRS
-   VegaRenderer
+      -DOBJROOT=${CMAKE_CURRENT_BINARY_DIR}
    )
 
    set( VEGA_RENDERER_PUBLIC_HEADERS
-   VegaRenderer/VegaRenderer.h
-   )
-
-   set( VEGA_RENDERER_PROJECT_HEADERS
-   )
-
-   set( VEGA_RENDERER_PRIVATE_HEADERS
+      VegaRenderer.h
    )
 
    set( VEGA_RENDERER_SOURCES
-   VegaRenderer/JSCanvas.m
-   VegaRenderer/VegaRenderer.m
-   VegaRenderer/colors.m
+      JSCanvas.m
+      VegaRenderer.m
+      colors.m
    )
 
    set( VEGA_RENDERER_STATIC_DEPENDENCIES
@@ -54,29 +44,28 @@ if(APPLE)
    ##
    ## Preprocessed JavaScript artifacts
    ##
-   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/VegaRenderer)
    add_custom_command(
       OUTPUT
-         ${CMAKE_CURRENT_BINARY_DIR}/VegaRenderer/vega-4.4.0.min.js.h
-         ${CMAKE_CURRENT_BINARY_DIR}/VegaRenderer/vega-lite-3.0.0-rc10.min.js.h
+         ${CMAKE_CURRENT_BINARY_DIR}/vega-4.4.0.min.js.h
+         ${CMAKE_CURRENT_BINARY_DIR}/vega-lite-3.0.0-rc10.min.js.h
       COMMENT "Running xxd to generate headers from JavaScript artifacts"
-      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/VegaRenderer
-      COMMAND xxd -i vega-4.4.0.min.js ${CMAKE_CURRENT_BINARY_DIR}/VegaRenderer/vega-4.4.0.min.js.h
-      COMMAND xxd -i vega-lite-3.0.0-rc10.min.js ${CMAKE_CURRENT_BINARY_DIR}/VegaRenderer/vega-lite-3.0.0-rc10.min.js.h
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+      COMMAND xxd -i vega-4.4.0.min.js ${CMAKE_CURRENT_BINARY_DIR}/vega-4.4.0.min.js.h
+      COMMAND xxd -i vega-lite-3.0.0-rc10.min.js ${CMAKE_CURRENT_BINARY_DIR}/vega-lite-3.0.0-rc10.min.js.h
       VERBATIM
    )
    add_custom_target(
       preprocessed_javascript
       DEPENDS
-         ${CMAKE_CURRENT_BINARY_DIR}/VegaRenderer/vega-4.4.0.min.js.h
-         ${CMAKE_CURRENT_BINARY_DIR}/VegaRenderer/vega-lite-3.0.0-rc10.min.js.h
+         ${CMAKE_CURRENT_BINARY_DIR}/vega-4.4.0.min.js.h
+         ${CMAKE_CURRENT_BINARY_DIR}/vega-lite-3.0.0-rc10.min.js.h
    )
 
    ##
    ## VegaRenderer
    ##
 
-   add_library( VegaRenderer OBJECT
+   add_library( vega_renderer OBJECT
    ${VEGA_RENDERER_SOURCES}
    ${VEGA_RENDERER_PUBLIC_HEADERS}
    ${VEGA_RENDERER_PROJECT_HEADERS}
@@ -85,12 +74,12 @@ if(APPLE)
    )
 
    add_dependencies(
-      VegaRenderer
+      vega_renderer
       preprocessed_javascript
    )
 
    target_link_libraries(
-      VegaRenderer
+      vega_renderer
       ${FOUNDATION_LIBRARY}
       ${APPKIT_LIBRARY}
       ${COREGRAPHICS_LIBRARY}
@@ -98,12 +87,6 @@ if(APPLE)
       ${CORETEXT_LIBRARY}
    )
 
-   target_include_directories(
-      VegaRenderer
-      PUBLIC
-      VegaRenderer
-   )
-
-   target_compile_options(VegaRenderer PUBLIC "-fobjc-arc")
+   target_compile_options(vega_renderer PUBLIC "-fobjc-arc")
 
 endif()

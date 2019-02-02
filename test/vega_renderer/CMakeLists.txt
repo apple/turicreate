@@ -15,13 +15,13 @@ if(APPLE)
             base_fixture.mm
             vega_webkit_renderer.mm
         REQUIRES
-            VegaRenderer
+            vega_renderer
             ${WEBKIT_LIBRARY}
             ${XCTEST_LIBRARY}
     )
 
-    make_boost_test(vega_example_tests.cxx REQUIRES VegaRenderer vega_renderer_test_utils)
-    make_boost_test(vega_lite_example_tests.cxx REQUIRES VegaRenderer vega_renderer_test_utils)
-    make_boost_test(turicreate_example_tests.cxx REQUIRES VegaRenderer vega_renderer_test_utils)
+    make_boost_test(vega_example_tests.cxx REQUIRES vega_renderer_test_utils)
+    make_boost_test(vega_lite_example_tests.cxx REQUIRES vega_renderer_test_utils)
+    make_boost_test(turicreate_example_tests.cxx REQUIRES vega_renderer_test_utils)
 
 endif()

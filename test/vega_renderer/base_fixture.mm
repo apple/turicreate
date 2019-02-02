@@ -11,7 +11,7 @@
 
 #include <thread>
 
-#import <vega_renderer/VegaRenderer/VegaRenderer.h>
+#import <vega_renderer/VegaRenderer.h>
 #import "vega_webkit_renderer.hpp"
 
 using namespace vega_renderer::test_utils;

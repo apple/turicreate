@@ -34,13 +34,13 @@ add_library(_capi_objects OBJECT
 
 set(_capi_requires unity unity_core numerics)
 if(APPLE)
-  set(_capi_requires ${_capi_requires} VegaRenderer)
+  set(_capi_requires ${_capi_requires} vega_renderer)
 endif()
 add_dependencies(_capi_objects ${_capi_requires})
 
 set(_capi_sources "$<TARGET_OBJECTS:_capi_objects>")
 if(APPLE)
-  set(_capi_sources ${_capi_sources} "$<TARGET_OBJECTS:VegaRenderer>")
+  set(_capi_sources ${_capi_sources} "$<TARGET_OBJECTS:vega_renderer>")
 endif()
 
 make_library(capi 

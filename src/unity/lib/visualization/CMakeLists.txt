@@ -8,7 +8,7 @@ project(unity)
 
 if(APPLE)
   set(VISUALIZATION_PLATFORM_SOURCES plot_macos.mm)
-  set(VISUALIZATION_PLATFORM_REQUIRES VegaRenderer)
+  set(VISUALIZATION_PLATFORM_REQUIRES vega_renderer)
 endif()
 
 make_library(
