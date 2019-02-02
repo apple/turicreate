@@ -12,6 +12,13 @@ foreach(loop_var ${EXTENSIONS_LIST})
     REQUIRES ${loop_var}_static
     OUTPUT_NAME ${loop_var}
   )
+  if (CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_custom_command(TARGET ${loop_var}
+      POST_BUILD
+      COMMAND strip -Sx "$<TARGET_FILE:${loop_var}>"
+      COMMENT "Stripping ${loop_var} library"
+    )
+  endif()
 endforeach()
 
 if(APPLE AND HAS_MLCUSTOMMODEL)
@@ -22,6 +29,14 @@ make_shared_library_from_static(unity_shared
       REQUIRES unity TuriCreate_static ${EXTRA_REQUIRES}
       OUTPUT_NAME unity_shared
       EXPORT_MAP ${CMAKE_SOURCE_DIR}/cmake/stdcxx_reduce_exports.ver)
+
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
+  add_custom_command(TARGET unity_shared
+    POST_BUILD
+    COMMAND strip -Sx "$<TARGET_FILE:unity_shared>"
+    COMMENT "Stripping unity_shared library"
+  )
+endif()
 
 make_symlink_target(release_binaries
         FILES
