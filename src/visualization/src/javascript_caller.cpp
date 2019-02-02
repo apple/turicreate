@@ -1,5 +1,3 @@
-#include <pch/pch.hpp>
-
 #include "javascript_caller.h"
 
 #include <unistd.h>

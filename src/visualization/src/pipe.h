@@ -1,5 +1,3 @@
-#include <pch/pch.hpp>
-
 #ifndef PIPE_H_
 #define PIPE_H_
 
@@ -8,6 +6,11 @@
 #include "include/cef_app.h"
 #include "include/cef_render_process_handler.h"
 #include "include/cef_base.h"
+
+#include <mutex>
+#include <queue>
+#include <string>
+#include <thread>
 
 class Pipe : public CefBaseRefCounted {
   public:

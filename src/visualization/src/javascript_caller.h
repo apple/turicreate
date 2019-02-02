@@ -1,5 +1,3 @@
-#include <pch/pch.hpp>
-
 #ifndef JAVASCRIPT_CALLER_H_
 #define JAVASCRIPT_CALLER_H_
 

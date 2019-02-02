@@ -1,5 +1,3 @@
-#include <pch/pch.hpp>
-
 #include "handler.h"
 
 #include <X11/Xatom.h>

@@ -1,5 +1,3 @@
-#include <pch/pch.hpp>
-
 #include "handler.h"
 
 #include "include/base/cef_bind.h"
@@ -8,6 +6,8 @@
 #include "include/views/cef_window.h"
 #include "include/wrapper/cef_closure_task.h"
 #include "include/wrapper/cef_helpers.h"
+
+#include <iostream>
 
 namespace {
   Handler* g_instance = NULL;

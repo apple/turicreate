@@ -1,5 +1,3 @@
-#include <pch/pch.hpp>
-
 #include "layer.h"
 #include "pipe.h"
 

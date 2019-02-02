@@ -1,5 +1,3 @@
-#include <pch/pch.hpp>
-
 #ifndef V8HANDLER_H_
 #define V8HANDLER_H_
 

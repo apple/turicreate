@@ -1,8 +1,9 @@
-#include <pch/pch.hpp>
-
 #include "pipe.h"
 
 #include "include/cef_process_message.h"
+
+#include <chrono>
+#include <iostream>
 
 Pipe::Pipe(){
 }

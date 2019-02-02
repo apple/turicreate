@@ -1,5 +1,3 @@
-#include <pch/pch.hpp>
-
 #ifndef LAYER_H_
 #define LAYER_H_
 
