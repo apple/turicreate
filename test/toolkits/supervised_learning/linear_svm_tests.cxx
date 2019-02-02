@@ -13,8 +13,14 @@
 #include <toolkits/supervised_learning/linear_svm_opt_interface.hpp>
 #include <sframe/testing_utils.hpp>
 
+#pragma GCC diagnostic push
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wreturn-type"
+#pragma clang diagnostic ignored "-Wreturn-type"
 #include <unity/toolkits/coreml_export/MLModel/src/Model.hpp>
 #include <unity/toolkits/coreml_export/MLModel/tests/framework/TestUtils.hpp>
+#pragma GCC diagnostic pop
+#pragma clang diagnostic pop
 
 using namespace turi;
 using namespace turi::supervised;
