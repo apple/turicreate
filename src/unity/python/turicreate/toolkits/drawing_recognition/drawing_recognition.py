@@ -339,6 +339,10 @@ class DrawingRecognition(_CustomModel):
         return coreml_model
 
     def _predict_with_options(self, dataset, with_ground_truth=True, verbose=True):
+        """
+            Predict with options for what kind of SFrame should be returned.
+        """
+
         loader = _SFrameRecognitionIter(dataset, self.batch_size,
                     class_to_index=self._class_to_index,
                     feature_column='bitmap',
@@ -350,79 +354,90 @@ class DrawingRecognition(_CustomModel):
                     iterations=None,
                     want_to_print=True)
 
-        '''
-            TODO:
-            - Replace append op with assign.
-            - Change return type from tuple to SFrame.
-            - Remove dead code.
-        '''
-        num_returns = 2 if with_ground_truth else 1
-
         dataset_size = len(dataset)
         ctx = _mxnet_utils.get_mxnet_context()
-        done = False
-        last_time = 0
-        raw_results = []
-
-        # TODO: figure out a real solution to this problem. 
-        # Need classes_to_index maybe
-        # assert dataset['label'].dtype == type(self._classes[0])
-        all_gt = _tc.SArray(dtype=dataset['label'].dtype)
-        all_predicted = _tc.SArray(dtype=dataset['label'].dtype)
-        all_probabilities = _np.zeros((len(dataset['label']),len(dataset['label'].unique())), dtype=float)
+        
+        all_predicted = ['']*dataset_size
+        all_probabilities = _np.zeros((dataset_size, len(self._classes)), dtype=float)
+        
         index = 0
         for batch in loader:
             if batch.pad is not None:
                 size = self.batch_size - batch.pad
-                b_data = _mx.nd.slice_axis(batch.data[0], axis=0, begin=0, end=size)
-                b_gt = _mx.nd.slice_axis(batch.label[0], axis=0, begin=0, end=size).asnumpy()
+                batch_data = _mx.nd.slice_axis(batch.data[0], axis=0, begin=0, end=size)
             else:
-                b_data = batch.data[0]
-                b_gt = batch.label[0].asnumpy()
+                batch_data = batch.data[0]
                 size = self.batch_size
 
-            if b_data.shape[0] < len(ctx):
-                ctx0 = ctx[:b_data.shape[0]]
+            if batch_data.shape[0] < len(ctx):
+                ctx0 = ctx[:batch_data.shape[0]]
             else:
                 ctx0 = ctx
 
-            z = self._model(b_data).asnumpy()
+            z = self._model(batch_data).asnumpy()
             predicted = z.argmax(axis=1)
             classes = self._classes
+            
             predicted_sa = _tc.SArray(predicted).apply(lambda x: classes[x])
-            b_gt_sa = _tc.SArray(b_gt).apply(lambda x: classes[x])
-            all_predicted = all_predicted.append(predicted_sa) #need to remove append
-            all_gt = all_gt.append(b_gt_sa) #need to remove append
+            
+            all_predicted[index:index+len(predicted_sa)] = predicted_sa
             all_probabilities[index:index+z.shape[0]] = z
             index += z.shape[0]
             
-    
-        return (_tc.SFrame({'label': _tc.SArray(all_predicted)}), 
-            _tc.SFrame({'label': _tc.SArray(all_probabilities)}))
+        return (_tc.SFrame({'label': _tc.SArray(all_predicted),
+            'probability': _tc.SArray(all_probabilities)}))
 
             
     def evaluate(self, dataset, metric='auto', output_type='dict', verbose=True):
+        """
+            Evaluate the model by making predictions of target values and comparing
+            these to actual values.
+            
+            Parameters
+            ----------
+            dataset : SFrame
+            Dataset of new observations. Must include columns with the same
+            names as the session_id, target and features used for model training.
+            Additional columns are ignored.
+            
+            metric : str, optional
+            Name of the evaluation metric.  Possible values are:
+            
+            - 'auto'             : Returns all available metrics.
+            - 'accuracy'         : Classification accuracy (micro average).
+            - 'auc'              : Area under the ROC curve (macro average)
+            - 'precision'        : Precision score (macro average)
+            - 'recall'           : Recall score (macro average)
+            - 'f1_score'         : F1 score (macro average)
+            - 'confusion_matrix' : An SFrame with counts of possible
+            prediction/true label combinations.
+            - 'roc_curve'        : An SFrame containing information needed for an
+            ROC curve
+            
+            Returns
+            -------
+            out : dict
+            Dictionary of evaluation results where the key is the name of the
+            evaluation metric (e.g. `accuracy`) and the value is the evaluation
+            score.
+            
+            See Also
+            ----------
+            create, predict
+            
+            Examples
+            ----------
+            .. sourcecode:: python
+            
+            >>> results = model.evaluate(data)
+            >>> print results['accuracy']
+            """
 
-        '''
-            TODO: change return type of _predict_with_options to return a single SFrame
-        '''
-        pred, probs = self._predict_with_options(dataset, with_ground_truth=True,
+        predicted = self._predict_with_options(dataset, with_ground_truth=True,
                                               verbose=verbose)
+
         target = _tc.SFrame({'label': _tc.SArray(dataset['label'])}) # fix this
- 
-        '''
-        ## Previous code
-        num_correct = 0
-        num_total = len(pred)
-        for row_num in range(num_total):
-            if pred[row_num]['label'] == target[row_num]['label']:
-                num_correct += 1
-        print 'accuracy : %.2f ' % ((1.0*num_correct)/ num_total)
-        '''
         
-        '''
-            Metrics listed in image classifier evaluate - excluded log loss
-        '''
         avail_metrics = ['accuracy', 'auc', 'precision', 'recall',
                          'f1_score', 'confusion_matrix', 'roc_curve']
 
@@ -434,28 +449,25 @@ class DrawingRecognition(_CustomModel):
         else:
             metrics = [metric]
 
-        '''
-            Return type dict matches image_classifier returns type
-        '''
         ret = {}
         if 'accuracy' in metrics:
-            ret['accuracy'] = _evaluation.accuracy(target['label'], pred['label'])
+            ret['accuracy'] = _evaluation.accuracy(target['label'], predicted['label'])
         if 'auc' in metrics:
-            ret['auc'] = _evaluation.auc(target['label'], probs['label'], index_map=self._class_to_index)
+            ret['auc'] = _evaluation.auc(target['label'], predicted['probability'], index_map=self._class_to_index)
         if 'precision' in metrics:
-            ret['precision'] = _evaluation.precision(target['label'], pred['label'])
+            ret['precision'] = _evaluation.precision(target['label'], predicted['label'])
         if 'recall' in metrics:
-            ret['recall'] = _evaluation.recall(target['label'], pred['label'])
+            ret['recall'] = _evaluation.recall(target['label'], predicted['label'])
         if 'f1_score' in metrics:
-            ret['f1_score'] = _evaluation.f1_score(target['label'], pred['label'])
+            ret['f1_score'] = _evaluation.f1_score(target['label'], predicted['label'])
         if 'confusion_matrix' in metrics:
-            ret['confusion_matrix'] = _evaluation.confusion_matrix(target['label'], pred['label'])
+            ret['confusion_matrix'] = _evaluation.confusion_matrix(target['label'], predicted['label'])
         if 'roc_curve' in metrics:
-            ret['roc_curve'] = _evaluation.roc_curve(target['label'], probs['label'], index_map=self._class_to_index)
+            ret['roc_curve'] = _evaluation.roc_curve(target['label'], predicted['probability'], index_map=self._class_to_index)
         
         return ret
 
     def predict(self, dataset, verbose=True):
-        pred, _ = self._predict_with_options(dataset, with_ground_truth=True,
+        predicted = self._predict_with_options(dataset, with_ground_truth=True,
                                               verbose=verbose)
-        return pred['label']
+        return predicted['label']
