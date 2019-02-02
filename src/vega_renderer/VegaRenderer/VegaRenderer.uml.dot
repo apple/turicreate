@@ -1,0 +1,11 @@
+digraph VegaRenderer {
+    fontname = "Helvetica Neue"
+    fontsize = 12
+    
+    node [ shape="record" ]
+    edge [ arrowtail="empty" ]
+
+    VegaRenderer [
+        label="{VegaRenderer|+ width : NSUInteger\l+ height : NSUInteger\l+ CGImage : CGImageRef\l+ CGLayer : CGLayerRef\l}"
+    ]
+}

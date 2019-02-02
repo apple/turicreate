@@ -36,7 +36,7 @@ if(APPLE)
    )
 
    set( VEGA_RENDERER_SOURCES
-   VegaRenderer/Canvas.m
+   VegaRenderer/JSCanvas.m
    VegaRenderer/VegaRenderer.m
    VegaRenderer/colors.m
    )
