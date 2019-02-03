@@ -15,7 +15,6 @@
 -(NSUInteger)width;
 -(NSUInteger)height;
 -(CGImageRef)CGImage;
--(CGLayerRef)CGLayer;
 
 // JS dependencies
 +(NSString *)vegaJS;

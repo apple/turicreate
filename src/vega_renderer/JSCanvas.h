@@ -160,7 +160,7 @@ JSExportAs(translate,
 @end
 
 @interface VegaCGContext : NSObject<VegaCGContextInterface>
-@property CGContextRef context;
+@property (readonly) CGContextRef context;
 @property CGLayerRef layer;
 @property double width;
 @property double height;

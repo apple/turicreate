@@ -26,9 +26,9 @@
 
 @interface VegaRenderer ()
 
-@property NSString *spec;
-@property JSContext *context;
-@property VegaCGCanvas *vegaCanvas;
+@property (strong) NSString *spec;
+@property (strong) JSContext *context;
+@property (strong) VegaCGCanvas *vegaCanvas;
 -(VegaCGContext *)vegaContext;
 
 @end
@@ -42,70 +42,69 @@
 -(instancetype) initWithSpec:(NSString *)spec
                      context:(CGContextRef)parentContext {
     self = [super init];
-    
+    self.spec = spec;
+
     // Initialize the JSContext first, so we can populate
     // the scene graph and get the width & height from spec
-    JSContext *context = [[JSContext alloc] init];
-    __block VegaCGCanvas *canvas = nil;
-    
-    // set up logging
-    [context evaluateScript:@"var console = {};"];
-    context[@"console"][@"log"] = ^() {
-        NSArray *message = [JSContext currentArguments];
-        NSLog(@"JS console log: %@", message);
-    };
-    context[@"console"][@"warn"] = ^() {
-        NSArray *message = [JSContext currentArguments];
-        NSLog(@"JS console warning: %@", message);
-    };
-    context[@"console"][@"error"] = ^() {
-        NSArray *message = [JSContext currentArguments];
-        NSLog(@"JS console error: %@", message);
-        assert(false);
-    };
-    
-    // set up error handling
-    context.exceptionHandler = ^(JSContext *context, JSValue *exception) {
-        NSLog(@"Unhandled exception: %@", [exception toString]);
-        NSLog(@"In context: %@", [context debugDescription]);
-        assert(false);
-    };
-    
-    JSValue *canvas2 = [JSValue valueWithObject:^(double width, double height) {
-        if (canvas == nil) {
-            canvas = [VegaCGCanvas alloc];
-        }
-        canvas = [canvas initWithWidth:width height:height context:parentContext];
-        return canvas;
-    } inContext:context];
-    canvas2[@"Image"] = [JSValue valueWithObject:^() {
-        assert([[JSContext currentArguments] count] == 0);
-        return [[VegaCGImage alloc] init];
-    } inContext:context];
-    
-    JSValue *require = [JSValue valueWithObject:^(NSString *module) {
-        if ([module isEqualToString:@"canvas"]) {
-            return canvas2;
-        }
+    self.context = [[JSContext alloc] init];
+
+    __unsafe_unretained typeof(self) weakSelf = self;
+
+    @autoreleasepool {
         
-        // fall through if we don't know what module it is
-        NSLog(@"Called require with unknown module %@", module);
-        return [JSValue valueWithNullInContext:context];
-    } inContext:context];
-    [context setObject:require forKeyedSubscript:@"require"];
-    
-    [context evaluateScript:[VegaRenderer vegaJS]];
-    [context evaluateScript:[VegaRenderer vegaliteJS]];
-    [context evaluateScript:[VegaRenderer vg2canvasJS]];
-    JSValue* render_fn = context[@"viewRender"];
-    [render_fn callWithArguments:@[spec]];
-    
-    assert(canvas != nil);
-    
-    self.spec = spec;
-    self.context = context;
-    self.vegaCanvas = canvas;
-    
+        // set up logging
+        [self.context evaluateScript:@"var console = {};"];
+        self.context[@"console"][@"log"] = ^() {
+            NSArray *message = [JSContext currentArguments];
+            NSLog(@"JS console log: %@", message);
+        };
+        self.context[@"console"][@"warn"] = ^() {
+            NSArray *message = [JSContext currentArguments];
+            NSLog(@"JS console warning: %@", message);
+        };
+        self.context[@"console"][@"error"] = ^() {
+            NSArray *message = [JSContext currentArguments];
+            NSLog(@"JS console error: %@", message);
+            assert(false);
+        };
+        
+        // set up error handling
+        self.context.exceptionHandler = ^(JSContext *context, JSValue *exception) {
+            NSLog(@"Unhandled exception: %@", [exception toString]);
+            NSLog(@"In context: %@", [context debugDescription]);
+            assert(false);
+        };
+        
+        JSValue *require = [JSValue valueWithObject:^(NSString *module) {
+            if ([module isEqualToString:@"canvas"]) {
+                JSValue *canvas2 = [JSValue valueWithObject:^(double width, double height) {
+                    weakSelf.vegaCanvas = [[VegaCGCanvas alloc] initWithWidth:width height:height context:parentContext];
+                    return weakSelf.vegaCanvas;
+                } inContext:weakSelf.context];
+                canvas2[@"Image"] = [JSValue valueWithObject:^() {
+                    assert([[JSContext currentArguments] count] == 0);
+                    return [[VegaCGImage alloc] init];
+                } inContext:weakSelf.context];
+                return canvas2;
+            }
+            
+            // fall through if we don't know what module it is
+            NSLog(@"Called require with unknown module %@", module);
+            return [JSValue valueWithNullInContext:weakSelf.context];
+        } inContext:self.context];
+
+        [self.context setObject:require forKeyedSubscript:@"require"];
+        
+        [self.context evaluateScript:[VegaRenderer vegaJS]];
+        [self.context evaluateScript:[VegaRenderer vegaliteJS]];
+        [self.context evaluateScript:[VegaRenderer vg2canvasJS]];
+        JSValue* render_fn = self.context[@"viewRender"];
+        [render_fn callWithArguments:@[self.spec]];
+        
+        assert(self.vegaCanvas!= nil);
+
+    }
+
     return self;
 }
 
@@ -146,15 +145,12 @@
     NSUInteger bitsPerComponent = 8;
     CGContextRef bitmapContext = CGBitmapContextCreate(NULL, self.width * scaleFactor, self.height * scaleFactor, bitsPerComponent, 0, colorSpace, kCGImageAlphaPremultipliedLast);
     CGContextScaleCTM(bitmapContext, scaleFactor, scaleFactor);
-    CGContextDrawLayerAtPoint(bitmapContext, CGPointMake(0, 0), self.vegaContext.layer);
+    CGLayerRef layer = self.vegaContext.layer;
+    CGContextDrawLayerAtPoint(bitmapContext, CGPointMake(0, 0), layer);
     CGImageRef bitmapImage = CGBitmapContextCreateImage(bitmapContext);
     CGColorSpaceRelease(colorSpace);
     CGContextRelease(bitmapContext);
     return bitmapImage;
-}
-
--(CGLayerRef)CGLayer {
-    return self.vegaContext.layer;
 }
 
 + (NSString*)vg2canvasJS {

@@ -9,8 +9,6 @@
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
 
-#include <thread>
-
 #import <vega_renderer/VegaRenderer.h>
 #import "vega_webkit_renderer.hpp"
 
@@ -171,63 +169,68 @@ double base_fixture::compare_expected_with_actual(CGImageRef expected,
 
 void base_fixture::expected_rendering(const std::string& spec,
                                       std::function<void(CGImageRef image)> completion_handler) {
+    @autoreleasepool {
 
-    NSString *vg2pngJS = @"function viewRender(spec, scale) {"
-    "    if (typeof spec === 'string') {"
-    "        spec = JSON.parse(spec);"
-    "    }"
-    "    if (spec['$schema'].startsWith('https://vega.github.io/schema/vega-lite/')) {"
-    "        spec = vl.compile(spec).spec;"
-    "    }"
-    "    new vega.View(vega.parse(spec), {"
-    "        logLevel: vega.Warn,"
-    "        renderer: 'canvas'"
-    "    })"
-    "    .initialize()"
-    "    .runAsync()"
-    "    .then(view => {"
-    "        view.toCanvas(scale).then(canvas => {"
-    "            window.webkit.messageHandlers.sendCanvasData.postMessage(canvas.toDataURL());"
-    "        })"
-    "        .catch(err => { window.webkit.messageHandlers.error.postMessage(err); });"
-    "    })"
-    "    .catch(err => { window.webkit.messageHandlers.error.postMessage(err); });"
-    "}";
+        NSString *vg2pngJS = @"function viewRender(spec, scale) {"
+        "    if (typeof spec === 'string') {"
+        "        spec = JSON.parse(spec);"
+        "    }"
+        "    if (spec['$schema'].startsWith('https://vega.github.io/schema/vega-lite/')) {"
+        "        spec = vl.compile(spec).spec;"
+        "    }"
+        "    new vega.View(vega.parse(spec), {"
+        "        logLevel: vega.Warn,"
+        "        renderer: 'canvas'"
+        "    })"
+        "    .initialize()"
+        "    .runAsync()"
+        "    .then(view => {"
+        "        view.toCanvas(scale).then(canvas => {"
+        "            window.webkit.messageHandlers.sendCanvasData.postMessage(canvas.toDataURL());"
+        "        })"
+        "        .catch(err => { window.webkit.messageHandlers.error.postMessage(err); });"
+        "    })"
+        "    .catch(err => { window.webkit.messageHandlers.error.postMessage(err); });"
+        "}";
 
-    NSString *script = @"viewRender(";
-    script = [script stringByAppendingString:[NSString stringWithUTF8String:spec.c_str()]];
-    script = [script stringByAppendingString:@", 2.0)"];
+        NSString *script = @"viewRender(";
+        script = [script stringByAppendingString:[NSString stringWithUTF8String:spec.c_str()]];
+        script = [script stringByAppendingString:@", 2.0)"];
 
-    XCTestExpectation *finishedRendering = [[XCTestExpectation alloc] initWithDescription:@"Wait for WKWebView to render the Vega spec"];
-    XCTestExpectation *finishedRunningScript = [[XCTestExpectation alloc] initWithDescription:@"Wait for WKWebView to run all JavaScript"];
+        XCTestExpectation *finishedRendering = [[XCTestExpectation alloc] initWithDescription:@"Wait for WKWebView to render the Vega spec"];
+        XCTestExpectation *finishedRunningScript = [[XCTestExpectation alloc] initWithDescription:@"Wait for WKWebView to run all JavaScript"];
 
-    WKWebViewConfiguration *webConfig = [[WKWebViewConfiguration alloc] init];
-    VegaWebKitRenderer *webRenderer = [[VegaWebKitRenderer alloc] initWithExpectation:finishedRendering completionHandler:completion_handler];
-    [[webConfig userContentController] addScriptMessageHandler:webRenderer name:@"sendCanvasData"];
-    [[webConfig userContentController] addScriptMessageHandler:webRenderer name:@"error"];
-    WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:webConfig];
-    [webView loadHTMLString:@"" baseURL:nil];
-    [webView evaluateJavaScript:VegaRenderer.vegaJS completionHandler:^(id _Nullable _, NSError * _Nullable error) {
-        TS_ASSERT_EQUALS(error, nil);
-        BOOST_TEST_MESSAGE("Finished loading vega.js.");
-        [webView evaluateJavaScript:VegaRenderer.vegaliteJS completionHandler:^(id _Nullable _, NSError * _Nullable error) {
+        WKWebViewConfiguration *webConfig = [[WKWebViewConfiguration alloc] init];
+        VegaWebKitRenderer *webRenderer = [[VegaWebKitRenderer alloc] initWithExpectation:finishedRendering completionHandler:completion_handler];
+        [[webConfig userContentController] addScriptMessageHandler:webRenderer name:@"sendCanvasData"];
+        [[webConfig userContentController] addScriptMessageHandler:webRenderer name:@"error"];
+        WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:webConfig];
+        [webView loadHTMLString:@"" baseURL:nil];
+        [webView evaluateJavaScript:VegaRenderer.vegaJS completionHandler:^(id _Nullable _, NSError * _Nullable error) {
             TS_ASSERT_EQUALS(error, nil);
-            BOOST_TEST_MESSAGE("Finished loading vega-lite.js.");
-            [webView evaluateJavaScript:vg2pngJS completionHandler:^(id _Nullable _, NSError * _Nullable error) {
+            BOOST_TEST_MESSAGE("Finished loading vega.js.");
+            [webView evaluateJavaScript:VegaRenderer.vegaliteJS completionHandler:^(id _Nullable _, NSError * _Nullable error) {
                 TS_ASSERT_EQUALS(error, nil);
-                BOOST_TEST_MESSAGE("Finished loading vg2png js.");
-                [webView evaluateJavaScript:script completionHandler:^(id _Nullable _, NSError * _Nullable error) {
+                BOOST_TEST_MESSAGE("Finished loading vega-lite.js.");
+                [webView evaluateJavaScript:vg2pngJS completionHandler:^(id _Nullable _, NSError * _Nullable error) {
                     TS_ASSERT_EQUALS(error, nil);
-                    BOOST_TEST_MESSAGE("Finished running JavaScript.");
-                    [finishedRunningScript fulfill];
+                    BOOST_TEST_MESSAGE("Finished loading vg2png js.");
+                    [webView evaluateJavaScript:script completionHandler:^(id _Nullable _, NSError * _Nullable error) {
+                        if (error != nil) {
+                            TS_WARN(error.debugDescription);
+                        }
+                        TS_ASSERT_EQUALS(error, nil);
+                        BOOST_TEST_MESSAGE("Finished running JavaScript.");
+                        [finishedRunningScript fulfill];
+                    }];
                 }];
             }];
         }];
-    }];
 
-    XCTWaiterResult result = [XCTWaiter waitForExpectations:@[finishedRendering, finishedRunningScript] timeout:20.0];
-    TS_ASSERT_EQUALS(result, XCTWaiterResultCompleted);
-    BOOST_TEST_MESSAGE("Returned from expected_rendering");
+        XCTWaiterResult result = [XCTWaiter waitForExpectations:@[finishedRendering, finishedRunningScript] timeout:60.0];
+        TS_ASSERT_EQUALS(result, XCTWaiterResultCompleted);
+        BOOST_TEST_MESSAGE("Returned from expected_rendering");
+    }
 }
 
 void base_fixture::run_test_case_with_path(const std::string& path) {
@@ -235,17 +238,21 @@ void base_fixture::run_test_case_with_path(const std::string& path) {
 }
 
 void base_fixture::run_test_case_with_path(const std::string& path, double acceptable_diff) {
-    BOOST_TEST_MESSAGE("Running test case with path: " + path);
-    const static std::string projectDir = QUOTE(PROJECT_DIR);
-    std::string fullSpecPath = projectDir + "/examples/" + path;
-    std::ifstream specStream(fullSpecPath, std::ios::in | std::ios::binary);
-    TS_ASSERT(specStream.good());
-    std::string spec = std::string((std::istreambuf_iterator<char>(specStream)), std::istreambuf_iterator<char>());
-    spec = this->replace_urls_with_values_in_spec(spec);
-    VegaRenderer *view = [[VegaRenderer alloc] initWithSpec:[NSString stringWithUTF8String:spec.c_str()]];
-    this->expected_rendering(spec, [this, &view, &path, acceptable_diff](CGImageRef expected) {
-        TS_ASSERT_DIFFERS(expected, nil);
-        double diffPct = this->compare_expected_with_actual(expected, view.CGImage, acceptable_diff);
-        BOOST_TEST_MESSAGE(path + " differed by " + std::to_string(diffPct));
-    });
+    @autoreleasepool {
+        BOOST_TEST_MESSAGE("Running test case with path: " + path);
+        const static std::string projectDir = QUOTE(PROJECT_DIR);
+        std::string fullSpecPath = projectDir + "/examples/" + path;
+        std::ifstream specStream(fullSpecPath, std::ios::in | std::ios::binary);
+        TS_ASSERT(specStream.good());
+        std::string spec = std::string((std::istreambuf_iterator<char>(specStream)), std::istreambuf_iterator<char>());
+        spec = this->replace_urls_with_values_in_spec(spec);
+        VegaRenderer *view = [[VegaRenderer alloc] initWithSpec:[NSString stringWithUTF8String:spec.c_str()]];
+        CGImageRef actual = view.CGImage;
+        this->expected_rendering(spec, [this, &actual, &path, acceptable_diff](CGImageRef expected) {
+            TS_ASSERT_DIFFERS(expected, nil);
+            double diffPct = this->compare_expected_with_actual(expected, actual, acceptable_diff);
+            BOOST_TEST_MESSAGE(path + " differed by " + std::to_string(diffPct));
+            CGImageRelease(actual);
+        });
+    }
 }

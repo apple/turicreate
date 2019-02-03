@@ -27,7 +27,7 @@
 }
 - (void)addColorStopWithOffset:(double)offset color:(NSString *)color {
     CGColorRef cgcolor = [VegaCGContext colorFromString:color];
-    [_colorStops addObject:@[@(offset), (__bridge id)cgcolor]];
+    [_colorStops addObject:@[@(offset), (__bridge_transfer id)cgcolor]];
 }
 - (void)fillWithContext:(CGContextRef)context {
     CGContextSaveGState(context);
@@ -52,6 +52,9 @@
     CGContextClip(context);
     CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, options);
     CGContextRestoreGState(context);
+    CGGradientRelease(gradient);
+    CGColorSpaceRelease(colorSpace);
+    CFRelease(colors);
 }
 @end
 
@@ -67,6 +70,9 @@
 
 @implementation VegaCGContext
 {
+    // MUST only use these from property setter/getters
+    CGLayerRef _layer;
+
     id _fillStyle;
     double _globalAlpha;
     NSString * _lineCap;
@@ -82,6 +88,20 @@
     CGContextRef _parentContext;
 }
 
+- (void)setLayer:(CGLayerRef)layer {
+    CFRetain(layer);
+    CGLayerRelease(_layer);
+    _layer = layer;
+}
+
+- (CGLayerRef)layer {
+    return _layer;
+}
+
+- (CGContextRef)context {
+    return CGLayerGetContext(self.layer);
+}
+
 + (CGAffineTransform)flipYAxisWithHeight:(double)height {
     // Flip vertically and move origin to bottom left instead of top left
     return CGAffineTransformScale(CGAffineTransformTranslate(CGAffineTransformIdentity, 0, height), 1.0, -1.0);
@@ -93,8 +113,10 @@
         // Because we are about to create a new layer, set up other relevant
         // instance properties so they are in the right state.
         _currentTransform = CGAffineTransformIdentity;
-        self.layer = CGLayerCreateWithContext(_parentContext, CGSizeMake(width, height), nil);
-        self.context = CGLayerGetContext(self.layer);
+        assert(self != nil);
+        CGLayerRef layer = CGLayerCreateWithContext(_parentContext, CGSizeMake(width, height), nil);
+        self.layer = layer;
+        CGLayerRelease(layer);
         CGContextConcatCTM(self.context, [self.class flipYAxisWithHeight:height]);
 
     }
@@ -120,14 +142,16 @@
                        height:(double)height
                       context:(CGContextRef)parentContext {
     self = [super init];
+    _layer = nil;
     _parentContext = parentContext;
     [self resizeWithWidth:width height:height];
+    assert(CFGetRetainCount(_layer) == 1);
     return self;
 }
 
 - (void)dealloc {
-    CGContextRelease(self.context);
-    self.context = nil;
+    CGLayerRelease(_layer);
+    _layer = nil;
 }
 
 // properties
@@ -216,6 +240,7 @@
     }
     assert(color != nil);
     NSColor *nsColor = [NSColor colorWithCGColor:color];
+    CGColorRelease(color);
     return @{
              NSFontAttributeName: _nsFont,
              NSForegroundColorAttributeName: nsColor,
@@ -439,6 +464,7 @@
     CGColorRef color = [self.class colorFromString:_strokeStyle];
     assert(color != nil);
     CGContextSetStrokeColorWithColor(self.context, color);
+    CGColorRelease(color);
 }
 - (NSString *)textAlign {
     return _textAlign;
