@@ -51,10 +51,6 @@ gl_sframe _drawing_recognition_prepare_data(const gl_sframe &data,
         
         gl_sframe_writer output_writer(output_column_names, output_column_types, 1);
 
-        // if (verbose) {
-        //   logprogress_stream << "Using sequences of size " << chunk_size << " for model creation." << std::endl;
-        // }
-
         time_t last_print_time = time(0);
         size_t processed_lines = 0;
 
@@ -72,41 +68,11 @@ gl_sframe _drawing_recognition_prepare_data(const gl_sframe &data,
             // flex_list current_label_list(1, current_label);
             // flex_nd_vec current_bitmap_nd_vec(1, current_bitmap);
 
-            fprintf(stdout, "made it here\n");
-
+            
             label_column.push_back(current_label);
-            fprintf(stdout, "pushed back to label_column\n"); 
             bitmap_column.push_back(current_bitmap);
 
-            fprintf(stdout, "about to write, mate\n");
             output_writer.write({current_bitmap, current_label}, 0);
-            
-            // If target column exists, the targets are aggregated for the duration
-            // of prediction_window.
-            // Each prediction_window subsampled into a single target value, by selecting
-            // the most frequent value (statistical mode) within the window.
-            // if (use_target) {
-            //     curr_window_targets.push_back(line[column_index_map[target]]);
-
-            //     if (curr_window_targets.size() == static_cast<size_t>(prediction_window)) {
-            //         auto target_val = vec_mode(curr_window_targets);
-            //         curr_chunk_targets.push_back(target_val);
-            //         curr_window_targets.clear();
-            //     }
-            // }
-            // Check if the aggregated chunk data has reached the maximal chunk length, and finalize
-            // the chunk processing.
-            // if (curr_chunk_features.size() == static_cast<size_t>(feature_size)) {
-            //     finalize_chunk(curr_chunk_features,
-            //                    curr_chunk_targets,
-            //                    curr_window_targets,
-            //                    curr_session_id,
-            //                    output_writer,
-            //                    chunk_size,
-            //                    feature_size,
-            //                    predictions_in_chunk,
-            //                    use_target);
-            // }
 
             time_t now = time(0);
             bool verbose = false; 
@@ -120,29 +86,8 @@ gl_sframe _drawing_recognition_prepare_data(const gl_sframe &data,
             processed_lines += 1;
         }
 
-
-        // output_writer.write({current_bitmap, current_label}, 0);
-
-        // Handle the tail of the data - the last few lines of the last chunk, which needs to be finalized.
-        // if (curr_chunk_features.size() > 0) {
-        //     finalize_chunk(curr_chunk_features,
-        //                    curr_chunk_targets,
-        //                    curr_window_targets,
-        //                    last_session_id,
-        //                    output_writer,
-        //                    chunk_size,
-        //                    feature_size,
-        //                    predictions_in_chunk,
-        //                    use_target);
-        // }
-
-        // Update the count of the last session in the dataset
-        // number_of_sessions++;
-
-        fprintf(stdout, "written!\n");
         gl_sframe converted_sframe = output_writer.close();
         converted_sframe.materialize();
-        fprintf(stdout, "returning!\n");
         return converted_sframe;
 
     } else {
