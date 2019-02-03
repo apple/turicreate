@@ -63,11 +63,6 @@ gl_sframe _drawing_recognition_prepare_data(const gl_sframe &data,
             flex_list current_stroke_based_drawing = line[column_index_map[feature]];
             flex_list current_bitmap = convert_stroke_based_drawing_to_bitmap(
                 current_stroke_based_drawing);
-
-            // flex_vec current_bitmap_vec(1, current_bitmap);
-            // flex_list current_label_list(1, current_label);
-            // flex_nd_vec current_bitmap_nd_vec(1, current_bitmap);
-
             
             label_column.push_back(current_label);
             bitmap_column.push_back(current_bitmap);
