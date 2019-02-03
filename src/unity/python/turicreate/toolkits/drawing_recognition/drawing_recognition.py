@@ -18,6 +18,8 @@ import turicreate.toolkits._internal_utils as _tkutl
 from ._sframe_loader import SFrameRecognitionIter as _SFrameRecognitionIter
 from .. import _mxnet_utils
 
+from turicreate import extensions as _extensions
+
 class Model(_HybridBlock):
     def __init__(self, num_classes, **kwargs):
         super(Model, self).__init__(**kwargs)
@@ -59,6 +61,11 @@ def create(dataset, annotations=None, num_epochs=100, feature=None, model=None,
 
     start_time = _time.time()
 
+    # dataset = _extensions._drawing_recognition_prepare_data(
+    #     dataset, "bitmap", "label", True)
+
+    # print("SUCCESS!")
+
     column_names = ['Iteration', 'Loss', 'Elapsed Time']
     num_columns = len(column_names)
     column_width = max(map(lambda x: len(x), column_names)) + 2
@@ -70,9 +77,7 @@ def create(dataset, annotations=None, num_epochs=100, feature=None, model=None,
     if classes is None:
         classes = dataset['label'].unique()
     classes = sorted(classes)
-    # print(classes)
     class_to_index = {name: index for index, name in enumerate(classes)}
-    # print(class_to_index)
 
     def update_progress(cur_loss, iteration):
         iteration_base1 = iteration + 1

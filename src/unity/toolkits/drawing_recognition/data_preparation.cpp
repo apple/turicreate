@@ -23,8 +23,8 @@ static std::map<std::string,size_t> generate_column_index_map(
     return  index_map;
 }
 
-flex_nd_vec convert_stroke_based_drawing_to_bitmap(
-    flex_nd_vec stroke_based_drawing) {
+flex_list convert_stroke_based_drawing_to_bitmap(
+    flex_list stroke_based_drawing) {
     // need stuff here
     return stroke_based_drawing;
 }
@@ -36,8 +36,8 @@ gl_sframe _drawing_recognition_prepare_data(const gl_sframe &data,
     DASSERT_TRUE(data.contains_column(feature));
     DASSERT_TRUE(data.contains_column(target));
 
-    flex_vec &bitmap_column;
-    flex_vec &label_column;
+    flex_list bitmap_column;
+    flex_list label_column;
     auto column_index_map = generate_column_index_map(data.column_names());
     
     if (is_stroke_input) {
@@ -46,7 +46,7 @@ gl_sframe _drawing_recognition_prepare_data(const gl_sframe &data,
         // ready format.
         std::vector<std::string> output_column_names = {"bitmap", "label"};
         std::vector<flex_type_enum> output_column_types = {
-            flex_type_enum::ND_VECTOR, data[target].dtype()
+            flex_type_enum::LIST, data[target].dtype()
         };
         
         gl_sframe_writer output_writer(output_column_names, output_column_types, 1);
@@ -62,16 +62,25 @@ gl_sframe _drawing_recognition_prepare_data(const gl_sframe &data,
         // whenever a the ending of a prediction_window, chunk or session is reached.
         for (const auto& line: data.range_iterator()) {
 
+            
             auto current_label = line[column_index_map[target]];
-            auto current_stroke_based_drawing = line[column_index_map[feature]];
-            auto current_bitmap = convert_stroke_based_drawing_to_bitmap(
+            flex_list current_stroke_based_drawing = line[column_index_map[feature]];
+            flex_list current_bitmap = convert_stroke_based_drawing_to_bitmap(
                 current_stroke_based_drawing);
 
-            label_column.push_back(current_label); 
-            // argument needs to be a flex_vec
-            bitmap_column.push_back(current_bitmap);
-            // argument needs to be a flex_vec
+            // flex_vec current_bitmap_vec(1, current_bitmap);
+            // flex_list current_label_list(1, current_label);
+            // flex_nd_vec current_bitmap_nd_vec(1, current_bitmap);
 
+            fprintf(stdout, "made it here\n");
+
+            label_column.push_back(current_label);
+            fprintf(stdout, "pushed back to label_column\n"); 
+            bitmap_column.push_back(current_bitmap);
+
+            fprintf(stdout, "about to write, mate\n");
+            output_writer.write({current_bitmap, current_label}, 0);
+            
             // If target column exists, the targets are aggregated for the duration
             // of prediction_window.
             // Each prediction_window subsampled into a single target value, by selecting
@@ -111,7 +120,8 @@ gl_sframe _drawing_recognition_prepare_data(const gl_sframe &data,
             processed_lines += 1;
         }
 
-        output_writer.write({bitmap_column, label_column}, 0);
+
+        // output_writer.write({current_bitmap, current_label}, 0);
 
         // Handle the tail of the data - the last few lines of the last chunk, which needs to be finalized.
         // if (curr_chunk_features.size() > 0) {
@@ -129,8 +139,11 @@ gl_sframe _drawing_recognition_prepare_data(const gl_sframe &data,
         // Update the count of the last session in the dataset
         // number_of_sessions++;
 
+        fprintf(stdout, "written!\n");
         gl_sframe converted_sframe = output_writer.close();
         converted_sframe.materialize();
+        fprintf(stdout, "returning!\n");
+        return converted_sframe;
 
     } else {
         // already a bitmap, we're good
