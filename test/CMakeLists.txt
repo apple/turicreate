@@ -30,6 +30,7 @@ subdirs(
         table_printer
         network
         process
+        vega_renderer
   )
 if(${TC_BUILD_CAPI}) 
   message("Building C API Tests.")
