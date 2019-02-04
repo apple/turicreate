@@ -129,8 +129,9 @@ def create(dataset, annotations=None, num_epochs=100, feature=None, model=None,
 
         dataset["bitmap"] = _tc.SArray(new_images)
     else:
-        dataset["bitmap"] = dataset["bitmap"].apply(
-            lambda I: I.pixel_data.reshape(1,28,28)/255.)
+        dataset["bitmap"] = temp_sarray_for_images.apply(
+            lambda I: _tc.image_analysis.resize(
+                I, 28, 28, 1).pixel_data.reshape(1,28,28)/255.)
 
     column_names = ['Iteration', 'Loss', 'Elapsed Time']
     num_columns = len(column_names)
@@ -410,7 +411,8 @@ class DrawingRecognition(_CustomModel):
         assert dataset["bitmap"].dtype == _tc.Image
         temp_sarray_for_images = dataset["bitmap"]
         dataset["bitmap"] = temp_sarray_for_images.apply(
-            lambda I: I.pixel_data.reshape(1,28,28)/255.)
+            lambda I: _tc.image_analysis.resize(
+                I, 28, 28, 1).pixel_data.reshape(1,28,28)/255.)
         loader = _SFrameRecognitionIter(dataset, self.batch_size,
                     class_to_index=self._class_to_index,
                     feature_column='bitmap',
