@@ -107,27 +107,30 @@ def create(dataset, annotations=None, num_epochs=100, feature=None, model=None,
 
     start_time = _time.time()
 
-    dataset = _extensions._drawing_recognition_prepare_data(
-        dataset, "bitmap", "label", is_stroke_input)
-    if is_stroke_input:
-        new_images = []
-        count = 0
-        for drawing in dataset["bitmap"]:
-            new_drawing = []
-            for stroke in drawing:
-                x_array = [p["x"] for p in stroke]
-                y_array = [p["y"] for p in stroke]
-                new_drawing.append([x_array, y_array])
-            new_image = vector_to_raster(new_drawing)
-            new_images.append(new_image)
-            # print("####################################")
-            # print(count)
-            # print("####################################")
-            # print(new_image)
-            # print("####################################")
-            count+=1
+    # need to automatically infer if it's stroke input or not
 
-        dataset["bitmap"] = _tc.SArray(new_images)
+    if is_stroke_input:
+        # This will only work on macOS right now
+        dataset = _extensions._drawing_recognition_prepare_data(
+            dataset, "bitmap", "label", is_stroke_input)
+        # new_images = []
+        # count = 0
+        # for drawing in dataset["bitmap"]:
+        #     new_drawing = []
+        #     for stroke in drawing:
+        #         x_array = [p["x"] for p in stroke]
+        #         y_array = [p["y"] for p in stroke]
+        #         new_drawing.append([x_array, y_array])
+        #     new_image = vector_to_raster(new_drawing)
+        #     new_images.append(new_image)
+        #     # print("####################################")
+        #     # print(count)
+        #     # print("####################################")
+        #     # print(new_image)
+        #     # print("####################################")
+        #     count+=1
+
+        # dataset["bitmap"] = _tc.SArray(new_images)
     else:
         dataset["bitmap"] = dataset["bitmap"].apply(
             lambda I: I.pixel_data.reshape(1,28,28)/255.)
