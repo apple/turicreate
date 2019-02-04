@@ -139,6 +139,10 @@
     return self.vegaCanvas.context.height;
 }
 
+-(CGLayerRef)CGLayer {
+    return self.vegaContext.layer;
+}
+
 -(CGImageRef)CGImage {
     double scaleFactor = 2.0;
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
