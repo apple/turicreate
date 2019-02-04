@@ -46,19 +46,92 @@ class Model(_HybridBlock):
         x = self.fc2(x)
         return F.softmax(x)
 
+# Add caircocffi as a dependency in requirements.txt before uncommenting this
+# import cairocffi as cairo
+
+# def vector_to_raster(vector_image, side=28, line_diameter=22, padding=0, bg_color=(0,0,0), fg_color=(1,1,1)):
+#     """
+#     padding and line_diameter are relative to the original 256x256 image.
+#     """
+    
+#     original_side = 256.
+    
+#     surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, side, side)
+#     ctx = cairo.Context(surface)
+#     ctx.set_antialias(cairo.ANTIALIAS_BEST)
+#     ctx.set_line_cap(cairo.LINE_CAP_ROUND)
+#     ctx.set_line_join(cairo.LINE_JOIN_ROUND)
+#     ctx.set_line_width(line_diameter)
+
+#     # scale to match the new size
+#     # add padding at the edges for the line_diameter
+#     # and add additional padding to account for antialiasing
+#     total_padding = padding * 2. + line_diameter
+#     new_scale = float(side) / float(original_side + total_padding)
+#     ctx.scale(new_scale, new_scale)
+#     ctx.translate(total_padding / 2., total_padding / 2.)
+
+#     raster_images = []
+#     # for vector_image in vector_images:
+#     # clear background
+#     ctx.set_source_rgb(*bg_color)
+#     ctx.paint()
+    
+#     bbox = _np.hstack(vector_image).max(axis=1)
+#     offset = ((original_side, original_side) - bbox) / 2.
+#     offset = offset.reshape(-1,1)
+#     centered = [stroke + offset for stroke in vector_image]
+
+#     # draw strokes, this is the most cpu-intensive part
+#     ctx.set_source_rgb(*fg_color)        
+#     for xv, yv in centered:
+#         ctx.move_to(xv[0], yv[0])
+#         for x, y in zip(xv, yv):
+#             ctx.line_to(x, y)
+#         ctx.stroke()
+
+#     data = surface.get_data()
+#     raster_image = _np.copy(_np.asarray(data)[::4])
+#     raster_image = raster_image.reshape(1, 28, 28)
+#     raster_image = raster_image/255.
+#     raster_images.append(raster_image)
+    
+#     return raster_image
+
 def create(dataset, annotations=None, num_epochs=100, feature=None, model=None,
-           classes=None, batch_size=256, max_iterations=0, verbose=True,
-           **kwargs):
+           classes=None, batch_size=256, max_iterations=0, verbose=True, 
+           is_stroke_input = False, **kwargs):
     """
     Create a :class:`DrawingRecognition` model.
     """
 
     start_time = _time.time()
 
-    # dataset = _extensions._drawing_recognition_prepare_data(
-    #     dataset, "bitmap", "label", True)
+    dataset = _extensions._drawing_recognition_prepare_data(
+        dataset, "bitmap", "label", is_stroke_input)
+    if is_stroke_input:
+        new_images = []
+        count = 0
+        for drawing in dataset["bitmap"]:
+            new_drawing = []
+            for stroke in drawing:
+                x_array = [p["x"] for p in stroke]
+                y_array = [p["y"] for p in stroke]
+                new_drawing.append([x_array, y_array])
+            new_image = vector_to_raster(new_drawing)
+            new_images.append(new_image)
+            # print("####################################")
+            # print(count)
+            # print("####################################")
+            # print(new_image)
+            # print("####################################")
+            count+=1
 
-    
+        dataset["bitmap"] = _tc.SArray(new_images)
+    else:
+        dataset["bitmap"] = dataset["bitmap"].apply(
+            lambda I: I.pixel_data.reshape(1,28,28)/255.)
+
     column_names = ['Iteration', 'Loss', 'Elapsed Time']
     num_columns = len(column_names)
     column_width = max(map(lambda x: len(x), column_names)) + 2
@@ -334,6 +407,10 @@ class DrawingRecognition(_CustomModel):
         return coreml_model
 
     def _predict_with_options(self, dataset, with_ground_truth=True, verbose=True):
+        assert dataset["bitmap"].dtype == _tc.Image
+        temp_sarray_for_images = dataset["bitmap"]
+        dataset["bitmap"] = temp_sarray_for_images.apply(
+            lambda I: I.pixel_data.reshape(1,28,28)/255.)
         loader = _SFrameRecognitionIter(dataset, self.batch_size,
                     class_to_index=self._class_to_index,
                     feature_column='bitmap',
@@ -381,6 +458,8 @@ class DrawingRecognition(_CustomModel):
             else:
                 ctx0 = ctx
 
+            # print('b_data')
+            # print(b_data)
             z = self._model(b_data).asnumpy()
             predicted = z.argmax(axis=1)
             classes = self._classes
@@ -390,9 +469,9 @@ class DrawingRecognition(_CustomModel):
             all_gt = all_gt.append(b_gt_sa) #need to remove append
             all_probabilities[index:index+z.shape[0]] = z
             index += z.shape[0]
-            
-    
-        return (_tc.SFrame({'label': _tc.SArray(all_predicted)}), 
+
+        dataset["bitmap"] = temp_sarray_for_images
+        return (_tc.SFrame({'label': all_predicted}), 
             _tc.SFrame({'label': _tc.SArray(all_probabilities)}))
 
             
