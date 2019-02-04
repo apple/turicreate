@@ -27,7 +27,7 @@
 
 // Regularizer
 #include <optimization/regularizers-inl.hpp>
-#include <optimization/lbfgs.hpp>
+#include <optimization/lbfgs-inl.hpp>
 #include <optimization/newton_method-inl.hpp>
 #include <optimization/accelerated_gradient-inl.hpp>
 
@@ -207,7 +207,7 @@ void linear_svm::train() {
   std::map<std::string, flexible_type> solver_opts
     = options.current_option_values();
   if (solver == "lbfgs") {
-    stats = turi::optimization::lbfgs_compat(scaled_logistic_svm_interface, init_point,
+    stats = turi::optimization::lbfgs(*scaled_logistic_svm_interface, init_point,
         solver_opts, smooth_reg);
   } else {
     std::ostringstream msg;

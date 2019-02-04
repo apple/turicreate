@@ -69,7 +69,6 @@ OPT_INTERRUPTED = 5,     	///< Optimization terminated by user.
 OPT_NUMERIC_ERROR = 6,    ///< Numerical underflow (not enough progress).
 OPT_NUMERIC_OVERFLOW = 7, ///< Numerical overflow. Step size parameter may be too large.
 OPT_LS_FAILURE= 8,        ///< Line search iteration limit hit.
-OPT_IN_PROGRESS = 9       ///< Optimization is doing fine and still having fun
 }; 
 
 

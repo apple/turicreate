@@ -358,9 +358,6 @@ std::string translate_solver_status(const OPTIMIZATION_STATUS& status){
      case OPTIMIZATION_STATUS::OPT_LS_FAILURE:
         ret = "TERMINATED: Terminated due to numerical difficulties in line search.";
         break;
-     case OPTIMIZATION_STATUS::OPT_IN_PROGRESS:
-        ret = "IN PROGRESS: Optimization is still in progress.";
-        break;
   }
 
   return ret;
@@ -378,7 +375,6 @@ std::string get_recourse_actions(const OPTIMIZATION_STATUS& status){
      case OPTIMIZATION_STATUS::OPT_UNSET:
      case OPTIMIZATION_STATUS::OPT_OPTIMAL:
      case OPTIMIZATION_STATUS::OPT_INTERRUPTED:
-     case OPTIMIZATION_STATUS::OPT_IN_PROGRESS:
         ret = "";
         break;
      case OPTIMIZATION_STATUS::OPT_LOADED:

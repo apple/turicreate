@@ -16,6 +16,7 @@
 #include <optimization/newton_method-inl.hpp>
 #include <optimization/gradient_descent-inl.hpp>
 #include <optimization/accelerated_gradient-inl.hpp>
+#include <optimization/lbfgs-inl.hpp>
 
 // Regularizer
 #include <optimization/regularizers-inl.hpp>
