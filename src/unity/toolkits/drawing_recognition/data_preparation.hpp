@@ -11,18 +11,7 @@
 #include <unity/lib/gl_sframe.hpp>
 #include <unity/lib/variant.hpp>
 #ifdef __APPLE__
-// #include <Foundation/Foundation.h>
 #include <CoreGraphics/CoreGraphics.h>
-#ifndef NS_OPTIONS
- #define NS_OPTIONS(_type, _name) enum _name : _type _name; enum _name : _type
- #endif // NS_OPTIONS
- #ifdef __cplusplus
- // In C++, NS_OPTIONS doesn't seem to be valid syntax; skip it and just use a C++ enum.
- #define MAKE_NS_OPTIONS(_type, _name) enum _name : _type
- #else
- // In C and/or ObjC, define MAKE_NS_OPTIONS in terms of NS_OPTIONS
- #define MAKE_NS_OPTIONS(_type, _name) typedef NS_OPTIONS(_type, _name)
- #endif // __cplusplus
 #endif // __APPLE__
 
 
