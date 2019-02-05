@@ -39,9 +39,6 @@ endif()
 add_dependencies(_capi_objects ${_capi_requires})
 
 set(_capi_sources "$<TARGET_OBJECTS:_capi_objects>")
-if(APPLE)
-  set(_capi_sources ${_capi_sources} "$<TARGET_OBJECTS:vega_renderer>")
-endif()
 
 make_library(capi 
   SOURCES
