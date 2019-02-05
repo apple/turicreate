@@ -23,6 +23,7 @@
 
 // Regularizer
 #include <optimization/regularizers-inl.hpp>
+#include <optimization/lbfgs-inl.hpp>
 #include <optimization/newton_method-inl.hpp>
 #include <optimization/accelerated_gradient-inl.hpp>
 

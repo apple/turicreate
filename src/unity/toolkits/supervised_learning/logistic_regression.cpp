@@ -22,7 +22,7 @@
 // Solvers
 #include <optimization/utils.hpp>
 #include <optimization/newton_method-inl.hpp>
-#include <optimization/lbfgs.hpp>
+#include <optimization/lbfgs-inl.hpp>
 #include <optimization/gradient_descent-inl.hpp>
 #include <optimization/accelerated_gradient-inl.hpp>
 
@@ -297,7 +297,7 @@ void logistic_regression::train() {
     stats = turi::optimization::newton_method(*lr_interface, init_point,
         solver_options, smooth_reg);
   } else if (solver == "lbfgs") {
-    stats = turi::optimization::lbfgs_compat(lr_interface, init_point,
+    stats = turi::optimization::lbfgs(*lr_interface, init_point,
         solver_options, smooth_reg);
   } else if (solver == "fista") {
     stats = turi::optimization::accelerated_gradient(*lr_interface,
