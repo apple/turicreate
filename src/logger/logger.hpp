@@ -50,6 +50,7 @@
 #include <logger/fail_method.hpp>
 #include <logger/backtrace.hpp>
 #include <logger/error.hpp>
+#include <cppipc/server/cancel_ops.hpp>
 #include <util/code_optimization.hpp> 
 #include <process/process_util.hpp>
 
@@ -684,6 +685,12 @@ struct log_stream_dispatch {};
 template <>
 struct log_stream_dispatch<true> {
   inline static file_logger& exec(int lineloglevel,const char* file,const char* function, int line, bool do_start = true) {
+    // First see if there is an interupt waiting.  This is a convenient place that a lot of people call.
+    if(cppipc::must_cancel()) {
+      log_and_throw("Canceled by user.");
+    }
+
+
     return global_logger().start_stream(lineloglevel, file, function, line, do_start);
   }
 };
@@ -691,6 +698,12 @@ struct log_stream_dispatch<true> {
 template <>
 struct log_stream_dispatch<false> {
   inline static null_stream exec(int lineloglevel,const char* file,const char* function, int line, bool do_start = true) {
+    
+    // First see if there is an interupt waiting.  This is a convenient place that a lot of people call.
+    if(cppipc::must_cancel()) {
+      log_and_throw("Canceled by user.");
+    }
+
     return null_stream();
   }
 };
