@@ -6,6 +6,7 @@ make_library(unity_object_detection
     object_detector.cpp
     od_data_iterator.cpp
     od_yolo.cpp
+    od_evaluation.cpp
   REQUIRES
     image_io
     random

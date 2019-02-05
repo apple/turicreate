@@ -29,8 +29,7 @@ class EXPORT object_detector: public ml_model_base {
 
   // ml_model_base interface
 
-  void init_options(const std::map<std::string,
-                    flexible_type>& options) override;
+  void init_options(const std::map<std::string, flexible_type>& opts) override;
   size_t get_version() const override;
   void save_impl(oarchive& oarc) const override;
   void load_version(iarchive& iarc, size_t version) override;
@@ -39,9 +38,11 @@ class EXPORT object_detector: public ml_model_base {
 
   void train(gl_sframe data, std::string annotations_column_name,
              std::string image_column_name,
-             std::map<std::string, flexible_type> options);
+             std::map<std::string, flexible_type> opts);
+  variant_map_type evaluate(gl_sframe data, std::string metric,
+                            std::map<std::string, flexible_type> opts);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
-      std::string filename, std::map<std::string, flexible_type> options);
+      std::string filename, std::map<std::string, flexible_type> opts);
 
   // Register with Unity server
 
@@ -68,7 +69,12 @@ class EXPORT object_detector: public ml_model_base {
       "    The number of training iterations. If 0, then it will be automatically\n"
       "    be determined based on the amount of data you provide.\n"
   );
-  // TODO: Addition training options: batch_size, max_iterations, etc.
+
+  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::evaluate, "data", "metric",
+                                 "options");
+  register_defaults("evaluate",
+      {{"metric", std::string("auto")},
+       {"options", to_variant(std::map<std::string, flexible_type>())}});
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::export_to_coreml, "filename",
     "options");
@@ -102,7 +108,7 @@ class EXPORT object_detector: public ml_model_base {
   // Factory for data_iterator
   virtual std::unique_ptr<data_iterator> create_iterator(
       gl_sframe data, std::string annotations_column_name,
-      std::string image_column_name) const;
+      std::string image_column_name, bool repeat) const;
 
   // Factory for compute_context
   virtual
@@ -117,10 +123,10 @@ class EXPORT object_detector: public ml_model_base {
   // Support for iterative training.
   // TODO: Expose via forthcoming C-API checkpointing mechanism?
 
-  void init_train(gl_sframe data, std::string annotations_column_name,
-                  std::string image_column_name,
-                  std::map<std::string, flexible_type> options);
-  void perform_training_iteration();
+  virtual void init_train(gl_sframe data, std::string annotations_column_name,
+                          std::string image_column_name,
+                          std::map<std::string, flexible_type> opts);
+  virtual void perform_training_iteration();
 
   // Utility code
 
@@ -130,6 +136,9 @@ class EXPORT object_detector: public ml_model_base {
   }
 
  private:
+
+  neural_net::float_array_map get_model_params() const;
+
   neural_net::shared_float_array prepare_label_batch(
       std::vector<std::vector<neural_net::image_annotation>> annotations_batch)
       const;

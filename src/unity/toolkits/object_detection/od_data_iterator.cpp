@@ -4,6 +4,7 @@
 #include <cmath>
 
 #include <image/io.hpp>
+#include <logger/logger.hpp>
 #include <unity/lib/image_util.hpp>
 
 namespace turi {
@@ -12,7 +13,6 @@ namespace object_detection {
 namespace {
 
 using neural_net::image_annotation;
-using neural_net::image_box;
 using neural_net::labeled_image;
 using neural_net::shared_float_array;
 
@@ -125,83 +125,10 @@ std::vector<image_annotation> parse_annotations(
 
 }  // namespace
 
-// static
-void data_iterator::convert_annotations_to_yolo(
-    const std::vector<image_annotation>& annotations, size_t output_height,
-    size_t output_width, size_t num_anchors, size_t num_classes, float* out) {
-
-  // Number of floats to represent bbox (4), confidence (1), and a one-hot
-  // encoding of the class (num_classes).
-  size_t label_size = 5 + num_classes;
-
-  // Initialize the output buffer. We can iterate by "label", which is
-  // conceptually the lowest-order dimension of the (H,W,num_anchors,label_size)
-  // array.
-  // TODO: Add a mutable float_array interface so we can validate size.
-  float* out_end =
-      out + output_height * output_width * num_anchors * label_size;
-  for (float* ptr = out; ptr < out_end; ptr += label_size) {
-
-    // Initialize the bounding boxes and confidences to 0.
-    std::fill(ptr, ptr + 5, 0.f);
-
-    // Initialize the class probabilities for each output-grid cell and anchor
-    // box to 1/num_classes.
-    std::fill(ptr + 5, ptr + label_size, 1.0f / num_classes);
-  }
-
-  // Iterate through all the annotations for one image.
-  for (const image_annotation& annotation : annotations) {
-
-    // Scale the bounding box to the output grid, converting to the YOLO
-    // representation, defining each box by its center.
-    const image_box& bbox = annotation.bounding_box;
-    float center_x = output_width * (bbox.x + (bbox.width / 2.f));
-    float center_y = output_height * (bbox.y + (bbox.height / 2.f));
-    float width = output_width * bbox.width;
-    float height = output_height * bbox.height;
-
-    // Skip bounding boxes with trivial area, to guard against issues in
-    // augmentation.
-    if (width * height < 0.001f) continue;
-
-    // Write the label into the output grid cell containing the bounding box
-    // center.
-    float icenter_x = std::floor(center_x);
-    float icenter_y = std::floor(center_y);
-    if (0.f <= icenter_x && icenter_x < output_width &&
-        0.f <= icenter_y && icenter_y < output_height) {
-
-      size_t output_grid_stride = num_anchors * label_size;
-      size_t output_grid_offset = static_cast<size_t>(icenter_x) +
-          static_cast<size_t>(icenter_y) * output_width;
-
-      // Write the label once for each anchor box.
-      float* anchor_out = out + output_grid_offset * output_grid_stride;
-      for (size_t anchor_idx = 0; anchor_idx < num_anchors; ++anchor_idx) {
-
-        // Write YOLO-formatted bounding box. YOLO uses (x, y)/(w, h) order.
-        anchor_out[0] = center_x - icenter_x;
-        anchor_out[1] = center_y - icenter_y;
-        anchor_out[2] = width;
-        anchor_out[3] = height;
-
-        // Set confidence to 1.
-        anchor_out[4] = 1.f;
-
-        // One-hot encoding of the class label.
-        std::fill(anchor_out + 5, anchor_out + label_size, 0.f);
-        anchor_out[5 + annotation.identifier] = 1.f;
-
-        // Advance the output iterator to the next anchor.
-        anchor_out += label_size;
-      }
-    }
-  }
-}
-
 simple_data_iterator::annotation_properties
-simple_data_iterator::compute_properties(const gl_sarray& annotations) {
+simple_data_iterator::compute_properties(
+    const gl_sarray& annotations,
+    std::vector<std::string> expected_class_labels) {
 
   annotation_properties result;
 
@@ -220,14 +147,34 @@ simple_data_iterator::compute_properties(const gl_sarray& annotations) {
                                { flex_type_enum::STRING },
                                /* na_value */ FLEX_UNDEFINED, { "label" });
 
-  // Determine the list of unique class labels and construct the class-to-index
-  // map.
+  // Determine the list of unique class labels,
   gl_sarray classes = instances["label"].unique().sort();
-  result.classes.reserve(classes.size());
-  int i = 0;
-  for (const flexible_type& label : classes.range_iterator()) {
-    result.classes.push_back(label);
-    result.class_to_index_map[label] = i++;
+
+  if (expected_class_labels.empty()) {
+
+    // Infer the class-to-index map from the observed labels.
+    result.classes.reserve(classes.size());
+    int i = 0;
+    for (const flexible_type& label : classes.range_iterator()) {
+      result.classes.push_back(label);
+      result.class_to_index_map[label] = i++;
+    }
+  } else {
+
+    // Construct the class-to-index map from the expected labels.
+    result.classes = std::move(expected_class_labels);
+    int i = 0;
+    for (const std::string& label : result.classes) {
+      result.class_to_index_map[label] = i++;
+    }
+
+    // Use the map to verify that we only encountered expected labels.
+    for (const flexible_type& ft : classes.range_iterator()) {
+      std::string label(ft);  // Ensures correct overload resolution below.
+      if (result.class_to_index_map.count(label) == 0) {
+        log_and_throw("Annotations contained unexpected class label " + label);
+      }
+    }
   }
 
   // Record the number of labeled bounding boxes.
@@ -245,9 +192,13 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
     annotations_index_(data_.column_index(params.annotations_column_name)),
     image_index_(data_.column_index(params.image_column_name)),
 
-    // Identify the class labels and other annotation properties.
+    // Whether to traverse the SFrame more than once.
+    repeat_(params.repeat),
+
+    // Identify/verify the class labels and other annotation properties.
     annotation_properties_(
-        compute_properties(data_[params.annotations_column_name])),
+        compute_properties(data_[params.annotations_column_name],
+                           params.class_labels)),
 
     // Start an iteration through the entire SFrame.
     range_iterator_(data_.range_iterator()),
@@ -256,23 +207,23 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
 
 std::vector<labeled_image> simple_data_iterator::next_batch(size_t batch_size) {
 
-  // For now, only return empty if we literally have no data at all.
-  if (data_.empty()) return {};
-
   std::vector<std::pair<flexible_type, flexible_type>> raw_batch;
   raw_batch.reserve(batch_size);
-  while (raw_batch.size() < batch_size) {
+  while (raw_batch.size() < batch_size && next_row_ != range_iterator_.end()) {
 
     const sframe_rows::row& row = *next_row_;
     raw_batch.emplace_back(row[image_index_], row[annotations_index_]);
 
-    if (++next_row_ == range_iterator_.end()) {
+    if (++next_row_ == range_iterator_.end() && repeat_) {
 
       // Shuffle the data.
       // TODO: This heavyweight shuffle operation introduces spikes into the
       // wall-clock time of this function. SFrame should either provide an
       // optimized implementation, or we should implement an approach that
       // amortizes the cost across calls.
+      // TODO: Avoid traversing the data in gl_sframe::apply by instead
+      // generating a gl_sarray from a sequence of the desired length and
+      // hashing each element.
       auto rng = [](const sframe_rows::row&) {
         return random::rand();
       };
@@ -287,8 +238,8 @@ std::vector<labeled_image> simple_data_iterator::next_batch(size_t batch_size) {
     }
   }
 
-  std::vector<labeled_image> result(batch_size);
-  for (size_t i = 0; i < batch_size; ++i) {
+  std::vector<labeled_image> result(raw_batch.size());
+  for (size_t i = 0; i < raw_batch.size(); ++i) {
 
     // Reads the undecoded image data from disk, if necessary.
     // TODO: Investigate parallelizing this file I/O.

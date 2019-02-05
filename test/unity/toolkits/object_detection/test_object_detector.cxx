@@ -205,7 +205,7 @@ public:
   using create_iterator_call =
       std::function<std::unique_ptr<data_iterator>(
           gl_sframe data, std::string annotations_column_name,
-          std::string image_column_name)>;
+          std::string image_column_name, bool repeat)>;
 
   using create_compute_context_call =
       std::function<std::unique_ptr<compute_context>()>;
@@ -221,13 +221,14 @@ public:
 
   std::unique_ptr<data_iterator> create_iterator(
       gl_sframe data, std::string annotations_column_name,
-      std::string image_column_name) const override {
+      std::string image_column_name, bool repeat) const override {
 
     TS_ASSERT(!create_iterator_calls_.empty());
     create_iterator_call expected_call =
         std::move(create_iterator_calls_.front());
     create_iterator_calls_.pop_front();
-    return expected_call(data, annotations_column_name, image_column_name);
+    return expected_call(data, annotations_column_name, image_column_name,
+                         repeat);
   }
 
   std::unique_ptr<compute_context> create_compute_context() const override {
@@ -377,10 +378,11 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
 
   auto create_iterator_impl = [&](gl_sframe data,
                                   std::string annotations_column_name,
-                                  std::string image_column_name) {
+                                  std::string image_column_name, bool repeat) {
 
     TS_ASSERT_EQUALS(annotations_column_name, test_annotations_name);
     TS_ASSERT_EQUALS(image_column_name, test_image_name);
+    TS_ASSERT(repeat);
 
     return std::move(mock_iterator);
   };

@@ -26,27 +26,6 @@ class data_iterator {
 public:
 
   /**
-   * Writes a list of image_annotation values into an output float buffer.
-   *
-   * \param annotations The list of annotations (for one image) to write
-   * \param output_height The height of the YOLO output grid
-   * \param output_width The width of the YOLO output grid
-   * \param num_anchors The number of YOLO anchors
-   * \param num_classes The number of classes in the output one-hot encoding
-   * \param out Address to a float buffer of size output_height * output_width *
-   *            num_anchors * (5 + num_classes)
-   * \todo Add a mutable_float_array or shared_float_buffer type for functions
-   *       like this one to write into.
-   * \todo This strictly speaking doesn't belong in this data iterator type but
-   *       probably doesn't warrant its own file yet (and would be nice not to
-   *       bury in object_detector.cpp).
-   */
-  static void convert_annotations_to_yolo(
-      const std::vector<neural_net::image_annotation>& annotations,
-      size_t output_height, size_t output_width, size_t num_anchors,
-      size_t num_classes, float* out);
-
-  /**
    * Defines the inputs to a data_iterator factory function.
    */
   struct parameters {
@@ -72,6 +51,19 @@ public:
      * Each value is either an image or a path to an image file on disk.
      */
     std::string image_column_name;
+
+    /**
+     * The expected class labels, indexed by identifier.
+     *
+     * If empty, then the labels will be inferred from the data. If non-empty,
+     * an exception will be thrown upon encountering an unexpected label.
+     */
+    std::vector<std::string> class_labels;
+
+    /**
+     * Whether to traverse the data more than once.
+     */
+    bool repeat = true;
   };
 
   virtual ~data_iterator() = default;
@@ -79,9 +71,13 @@ public:
   /**
    * Returns a vector whose size is equal to `batch_size`.
    *
-   * Note that the iterator will cycle indefinitely through the SFrame over and
-   * over. The x,y coordinates in the returned annotations indicate the
-   * upper-left corner of the bounding box.
+   * If `repeat` was set in the parameters, then the iterator will cycle
+   * indefinitely through the SFrame over and over. Otherwise, the last
+   * non-empty batch may contain fewer than `batch_size` elements, and every
+   * batch after that will be empty.
+   *
+   * The x,y coordinates in the returned annotations indicate the upper-left
+   * corner of the bounding box.
    */
   virtual std::vector<neural_net::labeled_image>
       next_batch(size_t batch_size) = 0;
@@ -131,11 +127,14 @@ private:
     size_t num_instances;
   };
 
-  annotation_properties compute_properties(const gl_sarray& annotations);
+  annotation_properties compute_properties(
+      const gl_sarray& annotations,
+      std::vector<std::string> expected_class_labels);
 
   gl_sframe data_;
   const size_t annotations_index_;
   const size_t image_index_;
+  const bool repeat_;
 
   const annotation_properties annotation_properties_;
 

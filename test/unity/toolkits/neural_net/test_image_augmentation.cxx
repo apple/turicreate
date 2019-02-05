@@ -110,6 +110,7 @@ BOOST_AUTO_TEST_CASE(test_resize_only_image_augmenter) {
 
   // Configure an augmenter to resize to 400x300.
   image_augmenter::options options;
+  options.batch_size = source_batch.size();
   options.output_width = 400;
   options.output_height = 300;
 
