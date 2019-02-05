@@ -1,0 +1,357 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v4.json", 
+  "autosize": {
+    "contains": "padding", 
+    "resize": true, 
+    "type": "fit"
+  }, 
+  "axes": [
+    {
+      "encode": {
+        "labels": {
+          "update": {
+            "align": {
+              "value": "right"
+            }, 
+            "angle": {
+              "value": 270
+            }, 
+            "baseline": {
+              "value": "middle"
+            }
+          }
+        }
+      }, 
+      "labelOverlap": true, 
+      "orient": "bottom", 
+      "scale": "x", 
+      "title": "Align After Open Bracket", 
+      "zindex": 1
+    }, 
+    {
+      "labelOverlap": true, 
+      "orient": "left", 
+      "scale": "y", 
+      "tickCount": {
+        "signal": "ceil(height/40)"
+      }, 
+      "title": "Lines Added (log)", 
+      "zindex": 1
+    }, 
+    {
+      "domain": false, 
+      "grid": true, 
+      "gridScale": "x", 
+      "labels": false, 
+      "maxExtent": 0, 
+      "minExtent": 0, 
+      "orient": "left", 
+      "scale": "y", 
+      "tickCount": {
+        "signal": "ceil(height/40)"
+      }, 
+      "ticks": false, 
+      "zindex": 0
+    }
+  ], 
+  "config": {
+    "axis": {
+      "labelColor": "rgba(0,0,0,0.65)", 
+      "labelFont": "HelveticaNeue, Arial", 
+      "labelFontSize": 12, 
+      "labelPadding": 10, 
+      "titleColor": "rgba(0,0,0,0.65)", 
+      "titleFont": "HelveticaNeue-Medium, Arial", 
+      "titleFontSize": 15, 
+      "titleFontWeight": "normal", 
+      "titlePadding": 30
+    }, 
+    "axisY": {
+      "minExtent": 30
+    }, 
+    "style": {
+      "group-title": {
+        "fill": "rgba(0,0,0,0.65)", 
+        "font": "HelveticaNeue, Arial", 
+        "fontSize": 29, 
+        "fontWeight": "normal"
+      }, 
+      "rect": {
+        "stroke": "rgba(200, 200, 200, 0.5)"
+      }
+    }
+  }, 
+  "data": [
+    {
+      "name": "source_2", 
+      "progress": 100.0, 
+      "values": [
+        {
+          "lower quartile": 3.04452, 
+          "max": 10.2413, 
+          "median": 4.00733, 
+          "min": 0, 
+          "upper quartile": 5.03044, 
+          "x": "AlwaysBreak"
+        }, 
+        {
+          "lower quartile": 3.04452, 
+          "max": 10.3446, 
+          "median": 4.00733, 
+          "min": 0, 
+          "upper quartile": 5.01728, 
+          "x": "DontAlign"
+        }, 
+        {
+          "lower quartile": 3.13549, 
+          "max": 10.3447, 
+          "median": 4.06044, 
+          "min": 0, 
+          "upper quartile": 5.03044, 
+          "x": "Align"
+        }
+      ]
+    }
+  ], 
+  "height": 550, 
+  "marks": [
+    {
+      "encode": {
+        "update": {
+          "stroke": {
+            "value": "black"
+          }, 
+          "x": {
+            "band": 0.5, 
+            "field": "x", 
+            "scale": "x"
+          }, 
+          "y": {
+            "field": "min", 
+            "scale": "y"
+          }, 
+          "y2": {
+            "field": "lower quartile", 
+            "scale": "y"
+          }
+        }
+      }, 
+      "from": {
+        "data": "source_2"
+      }, 
+      "name": "layer_0_marks", 
+      "style": [
+        "boxWhisker"
+      ], 
+      "type": "rule"
+    }, 
+    {
+      "encode": {
+        "update": {
+          "stroke": {
+            "value": "black"
+          }, 
+          "x": {
+            "band": 0.5, 
+            "field": "x", 
+            "scale": "x"
+          }, 
+          "y": {
+            "field": "upper quartile", 
+            "scale": "y"
+          }, 
+          "y2": {
+            "field": "max", 
+            "scale": "y"
+          }
+        }
+      }, 
+      "from": {
+        "data": "source_2"
+      }, 
+      "name": "layer_1_marks", 
+      "style": [
+        "boxWhisker"
+      ], 
+      "type": "rule"
+    }, 
+    {
+      "encode": {
+        "hover": {
+          "fill": {
+            "value": "#7EC2F3"
+          }
+        }, 
+        "update": {
+          "fill": {
+            "value": "#108EE9"
+          }, 
+          "width": {
+            "value": 20
+          }, 
+          "xc": {
+            "band": 0.5, 
+            "field": "x", 
+            "scale": "x"
+          }, 
+          "y": {
+            "field": "lower quartile", 
+            "scale": "y"
+          }, 
+          "y2": {
+            "field": "upper quartile", 
+            "scale": "y"
+          }
+        }
+      }, 
+      "from": {
+        "data": "source_2"
+      }, 
+      "name": "layer_2_marks", 
+      "style": [
+        "box"
+      ], 
+      "type": "rect"
+    }, 
+    {
+      "encode": {
+        "update": {
+          "fill": {
+            "value": "black"
+          }, 
+          "height": {
+            "value": 1
+          }, 
+          "opacity": {
+            "value": 0.7
+          }, 
+          "width": {
+            "value": 20
+          }, 
+          "xc": {
+            "band": 0.5, 
+            "field": "x", 
+            "scale": "x"
+          }, 
+          "yc": {
+            "field": "median", 
+            "scale": "y"
+          }
+        }
+      }, 
+      "from": {
+        "data": "source_2"
+      }, 
+      "name": "layer_3_marks", 
+      "style": [
+        "boxMid"
+      ], 
+      "type": "rect"
+    }
+  ], 
+  "metadata": {
+    "bubbleOpts": {
+      "fields": [
+        {
+          "field": "x"
+        }, 
+        {
+          "field": "min"
+        }, 
+        {
+          "field": "lower quartile"
+        }, 
+        {
+          "field": "median"
+        }, 
+        {
+          "field": "upper quartile"
+        }, 
+        {
+          "field": "max"
+        }
+      ], 
+      "showAllFields": false
+    }
+  }, 
+  "scales": [
+    {
+      "domain": {
+        "fields": [
+          {
+            "data": "source_2", 
+            "field": "x"
+          }
+        ]
+      }, 
+      "name": "x", 
+      "paddingInner": 0.1, 
+      "paddingOuter": 0.05, 
+      "range": {
+        "step": {
+          "signal": "x_step"
+        }
+      }, 
+      "type": "band"
+    }, 
+    {
+      "domain": {
+        "fields": [
+          {
+            "data": "source_2", 
+            "field": "min"
+          }, 
+          {
+            "data": "source_2", 
+            "field": "lower quartile"
+          }, 
+          {
+            "data": "source_2", 
+            "field": "upper quartile"
+          }, 
+          {
+            "data": "source_2", 
+            "field": "max"
+          }, 
+          {
+            "data": "source_2", 
+            "field": "lower quartile"
+          }, 
+          {
+            "data": "source_2", 
+            "field": "upper quartile"
+          }, 
+          {
+            "data": "source_2", 
+            "field": "median"
+          }
+        ], 
+        "sort": true
+      }, 
+      "name": "y", 
+      "nice": true, 
+      "range": [
+        {
+          "signal": "height"
+        }, 
+        0
+      ], 
+      "type": "linear", 
+      "zero": true
+    }
+  ], 
+  "signals": [
+    {
+      "name": "x_step", 
+      "value": 42
+    }, 
+    {
+      "name": "width", 
+      "update": "max(720, 100 + bandspace(domain('x').length, 0.1, 0.1) * x_step)"
+    }
+  ], 
+  "style": "cell", 
+  "title": {
+    "text": "Align After Open Bracket vs Lines Added (log)"
+  }
+}

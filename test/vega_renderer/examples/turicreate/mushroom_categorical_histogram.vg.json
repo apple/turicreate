@@ -1,0 +1,296 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v4.json", 
+  "autosize": "fit", 
+  "axes": [
+    {
+      "labelOverlap": true, 
+      "orient": "top", 
+      "scale": "x", 
+      "tickCount": {
+        "signal": "ceil(width/40)"
+      }, 
+      "title": "Count", 
+      "zindex": 1
+    }, 
+    {
+      "domain": false, 
+      "grid": true, 
+      "gridScale": "y", 
+      "labels": false, 
+      "maxExtent": 0, 
+      "minExtent": 0, 
+      "orient": "top", 
+      "scale": "x", 
+      "tickCount": {
+        "signal": "ceil(width/40)"
+      }, 
+      "ticks": false, 
+      "zindex": 0
+    }, 
+    {
+      "labelOverlap": true, 
+      "orient": "left", 
+      "scale": "y", 
+      "title": "Values", 
+      "zindex": 1
+    }
+  ], 
+  "config": {
+    "axis": {
+      "labelColor": "rgba(0,0,0,0.65)", 
+      "labelFont": "HelveticaNeue, Arial", 
+      "labelFontSize": 12, 
+      "labelPadding": 10, 
+      "titleColor": "rgba(0,0,0,0.65)", 
+      "titleFont": "HelveticaNeue-Medium, Arial", 
+      "titleFontSize": 15, 
+      "titleFontWeight": "normal", 
+      "titlePadding": 30
+    }, 
+    "axisY": {
+      "minExtent": 30
+    }, 
+    "style": {
+      "group-title": {
+        "fill": "rgba(0,0,0,0.65)", 
+        "font": "HelveticaNeue, Arial", 
+        "fontSize": 29, 
+        "fontWeight": "normal"
+      }, 
+      "rect": {
+        "stroke": "rgba(200, 200, 200, 0.5)"
+      }
+    }
+  }, 
+  "data": [
+    {
+      "name": "pts_store_store"
+    }, 
+    {
+      "name": "source_2", 
+      "progress": 100.0, 
+      "values": [
+        {
+          "count": 2284, 
+          "label": "n", 
+          "label_idx": 0, 
+          "percentage": "28.1142%"
+        }, 
+        {
+          "count": 1840, 
+          "label": "g", 
+          "label_idx": 1, 
+          "percentage": "22.6489%"
+        }, 
+        {
+          "count": 1500, 
+          "label": "e", 
+          "label_idx": 2, 
+          "percentage": "18.4638%"
+        }, 
+        {
+          "count": 1072, 
+          "label": "y", 
+          "label_idx": 3, 
+          "percentage": "13.1955%"
+        }, 
+        {
+          "count": 1040, 
+          "label": "w", 
+          "label_idx": 4, 
+          "percentage": "12.8016%"
+        }, 
+        {
+          "count": 168, 
+          "label": "b", 
+          "label_idx": 5, 
+          "percentage": "2.06795%"
+        }, 
+        {
+          "count": 144, 
+          "label": "p", 
+          "label_idx": 6, 
+          "percentage": "1.77253%"
+        }, 
+        {
+          "count": 44, 
+          "label": "c", 
+          "label_idx": 7, 
+          "percentage": "0.541605%"
+        }, 
+        {
+          "count": 16, 
+          "label": "r", 
+          "label_idx": 8, 
+          "percentage": "0.196947%"
+        }, 
+        {
+          "count": 16, 
+          "label": "u", 
+          "label_idx": 9, 
+          "percentage": "0.196947%"
+        }
+      ]
+    }, 
+    {
+      "name": "data_0", 
+      "source": "source_2", 
+      "transform": [
+        {
+          "as": "count", 
+          "expr": "toNumber(datum[\"count\"])", 
+          "type": "formula"
+        }, 
+        {
+          "expr": "datum[\"count\"] !== null && !isNaN(datum[\"count\"])", 
+          "type": "filter"
+        }
+      ]
+    }
+  ], 
+  "height": 410, 
+  "marks": [
+    {
+      "encode": {
+        "hover": {
+          "fill": {
+            "value": "#7EC2F3"
+          }
+        }, 
+        "update": {
+          "fill": {
+            "value": "#108EE9"
+          }, 
+          "height": {
+            "band": true, 
+            "scale": "y"
+          }, 
+          "x": {
+            "field": "count", 
+            "scale": "x"
+          }, 
+          "x2": {
+            "scale": "x", 
+            "value": 0
+          }, 
+          "y": {
+            "field": "label", 
+            "scale": "y"
+          }
+        }
+      }, 
+      "from": {
+        "data": "data_0"
+      }, 
+      "name": "marks", 
+      "style": [
+        "bar"
+      ], 
+      "type": "rect"
+    }
+  ], 
+  "metadata": {
+    "bubbleOpts": {
+      "fields": [
+        {
+          "field": "count"
+        }, 
+        {
+          "field": "label"
+        }, 
+        {
+          "field": "percentage"
+        }
+      ], 
+      "showAllFields": false
+    }
+  }, 
+  "padding": 5, 
+  "scales": [
+    {
+      "domain": {
+        "data": "data_0", 
+        "field": "count"
+      }, 
+      "name": "x", 
+      "nice": true, 
+      "range": [
+        0, 
+        {
+          "signal": "width"
+        }
+      ], 
+      "type": "linear", 
+      "zero": true
+    }, 
+    {
+      "domain": {
+        "data": "data_0", 
+        "field": "label", 
+        "sort": {
+          "field": "count", 
+          "op": "mean"
+        }
+      }, 
+      "name": "y", 
+      "paddingInner": 0.1, 
+      "paddingOuter": 0.05, 
+      "range": [
+        {
+          "signal": "height"
+        }, 
+        0
+      ], 
+      "type": "band"
+    }
+  ], 
+  "signals": [
+    {
+      "name": "unit", 
+      "on": [
+        {
+          "events": "mousemove", 
+          "update": "isTuple(group()) ? group() : unit"
+        }
+      ], 
+      "value": {}
+    }, 
+    {
+      "name": "pts_store", 
+      "update": "data(\"pts_store_store\").length && {count: data(\"pts_store_store\")[0].values[0]}"
+    }, 
+    {
+      "name": "pts_store_tuple", 
+      "on": [
+        {
+          "events": [
+            {
+              "source": "scope", 
+              "type": "click"
+            }
+          ], 
+          "force": true, 
+          "update": "datum && item().mark.marktype !== 'group' ? {unit: \"\", encodings: [\"x\"], fields: [\"count\"], values: [datum[\"count\"]]} : null"
+        }
+      ], 
+      "value": {}
+    }, 
+    {
+      "name": "pts_store_modify", 
+      "on": [
+        {
+          "events": {
+            "signal": "pts_store_tuple"
+          }, 
+          "update": "modify(\"pts_store_store\", pts_store_tuple, true)"
+        }
+      ]
+    }
+  ], 
+  "style": "cell", 
+  "title": {
+    "offset": 30, 
+    "text": "Distribution of Values [string]"
+  }, 
+  "width": 720
+}

@@ -1,5 +1,10 @@
 project(aws-sdk-cpp)
 
+set(__extra_clang_flags)
+check_cxx_compiler_flag("-Wno-return-std-move" __no_return_std_move)
+if(${__no_return_std_move})
+  set(__extra_clang_flags "-Wno-return-std-move")
+endif()
 
 make_library(aws-sdk-cpp
   SOURCES
@@ -250,7 +255,7 @@ make_library(aws-sdk-cpp
     curl openssl uuid
   COMPILE_FLAGS_EXTRA_CLANG
     -Wno-delete-non-virtual-dtor
-    -Wno-return-std-move
+    ${__extra_clang_flags}
   )
 
 target_include_directories(aws-sdk-cpp SYSTEM

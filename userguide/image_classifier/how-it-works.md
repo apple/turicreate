@@ -112,7 +112,7 @@ of accuracy as AlexNet but with 50 times fewer parameters.
 * License: BSD License
 * Core ML exported models are usually less than 5MB
 
-#### VisionFeaturePrint_Screen
+#### VisionFeaturePrint_Scene
 
 Only available on macOS 10.14 and higher. This model is included in the
 operating system, so the exported model size is very small.

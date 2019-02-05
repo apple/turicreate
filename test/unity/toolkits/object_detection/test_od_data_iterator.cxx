@@ -118,6 +118,41 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator) {
   assert_batch(batch, 0);
 }
 
+BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_expected_classes) {
+
+  static constexpr size_t NUM_ROWS = 1;
+  static constexpr size_t BATCH_SIZE = 1;
+
+  data_iterator::parameters params = create_data(NUM_ROWS);
+
+  std::vector<std::string> class_labels = { "bar", "foo" };
+  params.class_labels = class_labels;
+
+  simple_data_iterator data_source(params);
+  TS_ASSERT_EQUALS(data_source.class_labels(), class_labels);
+  TS_ASSERT_EQUALS(data_source.num_instances(), 1);
+
+  std::vector<labeled_image> batch = data_source.next_batch(BATCH_SIZE);
+  TS_ASSERT_EQUALS(batch.size(), BATCH_SIZE);
+
+  // Even though the data only contained one label, "foo", it should receive
+  // identifier 1 because we specified the class labels upfront.
+  TS_ASSERT_EQUALS(batch[0].annotations.size(), 1);
+  TS_ASSERT_EQUALS(batch[0].annotations[0].identifier, 1);
+}
+
+BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_unexpected_classes) {
+
+  static constexpr size_t NUM_ROWS = 1;
+
+  data_iterator::parameters params = create_data(NUM_ROWS);
+  params.class_labels = { "bar" };
+
+  // The data contains the label "foo", which is not among the expected class
+  // labels.
+  TS_ASSERT_THROWS_ANYTHING(simple_data_iterator unused_var(params));
+}
+
 }  // namespace
 }  // namespace object_detection
 }  // namespace turi

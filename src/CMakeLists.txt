@@ -39,5 +39,6 @@ subdirs(
   table_printer
   unity
   util
+  vega_renderer
   visualization
   )
