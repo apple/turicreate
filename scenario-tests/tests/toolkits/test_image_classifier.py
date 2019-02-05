@@ -265,10 +265,10 @@ class ImageClassifierSqueezeNetTest(ImageClassifierTest):
 
 # TODO: if on skip OS, test negative case
 @unittest.skipIf(_mac_ver() < (10,14), 'VisionFeaturePrint_Screen only supported on macOS 10.14+')
-class VisionFeaturePrintScreenTest(ImageClassifierTest):
+class VisionFeaturePrintSceneTest(ImageClassifierTest):
     @classmethod
     def setUpClass(self):
-        super(VisionFeaturePrintScreenTest, self).setUpClass(model='VisionFeaturePrint_Screen',
+        super(VisionFeaturePrintSceneTest, self).setUpClass(model='VisionFeaturePrint_Scene',
                                                               input_image_shape=(3, 299, 299),
                                                               tol=0.005, num_examples = 100,
                                                               label_type = str)
