@@ -47,7 +47,7 @@ class Evaluation(dict):
     
     return str(_json.dumps({ "evaluation_spec": evaluation_dictionary }, allow_nan = False))
 
-  def explore(self):
+  def _explore(self):
     _thread.start_new_thread(_start_process, (self._get_eval_json()+"\n", self.data["test_data"], self, ))
 
 
