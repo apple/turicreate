@@ -24,4 +24,11 @@ if(APPLE)
     make_boost_test(vega_lite_example_tests.cxx REQUIRES vega_renderer_test_utils)
     make_boost_test(turicreate_example_tests.cxx REQUIRES vega_renderer_test_utils)
 
+    add_custom_command(
+        TARGET vega_renderer_test_utils PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                ${CMAKE_CURRENT_SOURCE_DIR}/examples
+                ${CMAKE_CURRENT_BINARY_DIR}/examples
+    )
+
 endif()
