@@ -1,6 +1,6 @@
 project(vega_renderer_test)
 
-if(APPLE)
+if(APPLE AND NOT TC_BUILD_IOS)
 
     find_library( WEBKIT_LIBRARY WebKit )
     message( STATUS "WebKit found at ${WEBKIT_LIBRARY}")
