@@ -35,7 +35,7 @@ var searchData=
   ['add_5fpermute',['add_permute',['../classturi_1_1neural__net_1_1model__spec.html#a722e25fe02cf66dcea3694b68df5bd46',1,'turi::neural_net::model_spec']]],
   ['add_5fpollitem',['add_pollitem',['../classlibfault_1_1socket__receive__pollset.html#a085e0adecb97d6dd6000390fc002e57e',1,'libfault::socket_receive_pollset']]],
   ['add_5freshape',['add_reshape',['../classturi_1_1neural__net_1_1model__spec.html#a575b67647ae4cbf2be46a01438b05c8b',1,'turi::neural_net::model_spec']]],
-  ['add_5frow',['add_row',['../classturi_1_1join__impl_1_1join__hash__table.html#a4710cfdaa7f120d53b81ac911c5efa77',1,'turi::join_impl::join_hash_table']]],
+  ['add_5frow',['add_row',['../classturi_1_1join__impl_1_1join__hash__table.html#a4710cfdaa7f120d53b81ac911c5efa77',1,'turi::join_impl::join_hash_table::add_row()'],['../classturi_1_1object__detection_1_1average__precision__calculator.html#a6740ab481b23fadd6e0cb0fbc8776817',1,'turi::object_detection::average_precision_calculator::add_row()']]],
   ['add_5frow_5fnumber',['add_row_number',['../classturi_1_1gl__sframe.html#add8a9c6d44e842623fc68be80004493f',1,'turi::gl_sframe']]],
   ['add_5fscale',['add_scale',['../classturi_1_1neural__net_1_1model__spec.html#aacd3f9410da6627d678279231bcabfbb',1,'turi::neural_net::model_spec']]],
   ['add_5fside_5ffeatures_5fto_5frow',['add_side_features_to_row',['../classturi_1_1v2_1_1ml__data__side__features.html#ab94ab2b7c4145b30629a6c3b11112bcc',1,'turi::v2::ml_data_side_features::add_side_features_to_row(std::vector&lt; ml_data_entry &gt; &amp;x) const '],['../classturi_1_1v2_1_1ml__data__side__features.html#a4cfa04f6dd3711d759cdf96d489c8a0f',1,'turi::v2::ml_data_side_features::add_side_features_to_row(std::vector&lt; GlobalEntryType &gt; &amp;x) const '],['../classturi_1_1v2_1_1ml__data__side__features.html#add7e9b9d7a301f672277e6caf5457fb1',1,'turi::v2::ml_data_side_features::add_side_features_to_row(std::array&lt; EntryType, n &gt; &amp;x) const ']]],
@@ -58,7 +58,7 @@ var searchData=
   ['allocated_5fbytes',['allocated_bytes',['../namespaceturi_1_1memory__info.html#ad2121aa0b237239a8eedee9b30a2a0f4',1,'turi::memory_info']]],
   ['any',['any',['../classturi_1_1gl__sarray.html#ab396158e4c73f5e9cb2bf1d5899e6330',1,'turi::gl_sarray::any()'],['../classturi_1_1unity__sarray.html#a36e3325760714ce1da043251bf42fc3b',1,'turi::unity_sarray::any()'],['../classturi_1_1any.html#ac688f422e349f2cb828f52f663b7c6be',1,'turi::any::any()'],['../classturi_1_1any.html#a2bb54a772ee294d39b278b3ec7e54ca4',1,'turi::any::any(const ValueType &amp;value)'],['../classturi_1_1any.html#a6283c98bb4dcaa0b7733816961ddf3d5',1,'turi::any::any(const any &amp;other)']]],
   ['api_5fclassify',['api_classify',['../classturi_1_1supervised_1_1supervised__learning__model__base.html#ac3f1e140dce279466a427f0bb8de3cc7',1,'turi::supervised::supervised_learning_model_base']]],
-  ['api_5fevaluate',['api_evaluate',['../classturi_1_1supervised_1_1supervised__learning__model__base.html#a7bbefd95ceeef911f2c90606772210a2',1,'turi::supervised::supervised_learning_model_base']]],
+  ['api_5fevaluate',['api_evaluate',['../classturi_1_1supervised_1_1supervised__learning__model__base.html#a404cd92cb9550aed86f15b0054f731d6',1,'turi::supervised::supervised_learning_model_base']]],
   ['api_5fextract_5ffeatures',['api_extract_features',['../classturi_1_1supervised_1_1supervised__learning__model__base.html#a69f61933bd5f61a8b3408d88f8e241d9',1,'turi::supervised::supervised_learning_model_base']]],
   ['api_5fpredict',['api_predict',['../classturi_1_1supervised_1_1supervised__learning__model__base.html#ae4109a382d58db2a05703286788d7d55',1,'turi::supervised::supervised_learning_model_base']]],
   ['api_5fpredict_5ftopk',['api_predict_topk',['../classturi_1_1supervised_1_1supervised__learning__model__base.html#ab9aa2af3ccad97df27dada7c795a10a6',1,'turi::supervised::supervised_learning_model_base']]],
@@ -103,5 +103,6 @@ var searchData=
   ['available_5ftoolkit_5fclasses',['available_toolkit_classes',['../classturi_1_1toolkit__class__registry.html#a40b8f31d90110006457aab369160136e',1,'turi::toolkit_class_registry']]],
   ['available_5ftoolkit_5ffunctions',['available_toolkit_functions',['../classturi_1_1toolkit__function__registry.html#a7d4ad5cbae089170ba28da8137f38190',1,'turi::toolkit_function_registry']]],
   ['average_5fprecision',['average_precision',['../group__toolkit__util.html#gaf922f0d9f423d65ce03ecd08c32e8b48',1,'turi::recsys']]],
+  ['average_5fprecision_5fcalculator',['average_precision_calculator',['../classturi_1_1object__detection_1_1average__precision__calculator.html#a7fc8a94b668951c3a7a75553a6debb01',1,'turi::object_detection::average_precision_calculator']]],
   ['avg',['AVG',['../namespaceturi_1_1aggregate.html#a9201475dd6d9c2e8a5c7431d579ff1e8',1,'turi::aggregate']]]
 ];

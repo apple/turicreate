@@ -142,12 +142,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa4f853feb3f9bfda50579cf86428ba40"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classturi_1_1table__printer.html#aa4f853feb3f9bfda50579cf86428ba40">print_row</a> (const std::vector&lt; T &gt; &amp;row_string) const </td></tr>
 <tr class="separator:aa4f853feb3f9bfda50579cf86428ba40"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac17b2249568acd8264a0e97ad45f8365"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
-<tr class="memitem:ac17b2249568acd8264a0e97ad45f8365"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="group__util.html#ga8750328f64c9b85845e920eecaf7094e">GL_HOT_INLINE</a> void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classturi_1_1table__printer.html#ac17b2249568acd8264a0e97ad45f8365">print_timed_progress_row</a> (const Args &amp;...columns)</td></tr>
+<tr class="memitem:ac17b2249568acd8264a0e97ad45f8365"><td class="memTemplItemLeft" align="right" valign="top">GL_HOT_INLINE void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classturi_1_1table__printer.html#ac17b2249568acd8264a0e97ad45f8365">print_timed_progress_row</a> (const Args &amp;...columns)</td></tr>
 <tr class="separator:ac17b2249568acd8264a0e97ad45f8365"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebb1c82e1cd1292bbb72852839ba557c"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
-<tr class="memitem:aebb1c82e1cd1292bbb72852839ba557c"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="group__util.html#ga8750328f64c9b85845e920eecaf7094e">GL_HOT_INLINE</a> void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classturi_1_1table__printer.html#aebb1c82e1cd1292bbb72852839ba557c">print_progress_row</a> (size_t tick, const Args &amp;...columns)</td></tr>
+<tr class="memitem:aebb1c82e1cd1292bbb72852839ba557c"><td class="memTemplItemLeft" align="right" valign="top">GL_HOT_INLINE void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classturi_1_1table__printer.html#aebb1c82e1cd1292bbb72852839ba557c">print_progress_row</a> (size_t tick, const Args &amp;...columns)</td></tr>
 <tr class="separator:aebb1c82e1cd1292bbb72852839ba557c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac4e73d95fca83136a4114bcd757b86dc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__util.html#ga8750328f64c9b85845e920eecaf7094e">GL_HOT_INLINE</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1table__printer.html#ac4e73d95fca83136a4114bcd757b86dc">print_progress_row_strs</a> (size_t tick, const std::vector&lt; std::string &gt; &amp;cols)</td></tr>
+<tr class="memitem:ac4e73d95fca83136a4114bcd757b86dc"><td class="memItemLeft" align="right" valign="top">GL_HOT_INLINE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1table__printer.html#ac4e73d95fca83136a4114bcd757b86dc">print_progress_row_strs</a> (size_t tick, const std::vector&lt; std::string &gt; &amp;cols)</td></tr>
 <tr class="separator:ac4e73d95fca83136a4114bcd757b86dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a134abd6dcfc45cd305beaea121276ead"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1table__printer.html#a134abd6dcfc45cd305beaea121276ead">elapsed_time</a> () const </td></tr>
 <tr class="separator:a134abd6dcfc45cd305beaea121276ead"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -421,7 +421,7 @@ template&lt;typename... Args&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group__util.html#ga8750328f64c9b85845e920eecaf7094e">GL_HOT_INLINE</a> void turi::table_printer::print_progress_row </td>
+          <td class="memname">GL_HOT_INLINE void turi::table_printer::print_progress_row </td>
           <td>(</td>
           <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>tick</em>, </td>
@@ -448,7 +448,7 @@ template&lt;typename... Args&gt; </div>
 <p>The first argument is the tick, which can be something like samples processed or iterations. The time at which to update this is automatically determined based on the first 2 (or more, if calls are extremely frequent) calls.</p>
 <p>Example output: </p><pre class="fragment">table.print_row(5,  5, progress_time(1000), 0.01,  "Yours!!!!");
 </pre><p>Gives </p><pre class="fragment">| 5         | 16m 40s    | 0.01     | Yours!!!!        |</pre> 
-<p>Definition at line <a class="el" href="table__printer_8hpp_source.html#l00357">357</a> of file <a class="el" href="table__printer_8hpp_source.html">table_printer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="table__printer_8hpp_source.html#l00360">360</a> of file <a class="el" href="table__printer_8hpp_source.html">table_printer.hpp</a>.</p>
 
 </div>
 </div>
@@ -460,7 +460,7 @@ template&lt;typename... Args&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group__util.html#ga8750328f64c9b85845e920eecaf7094e">GL_HOT_INLINE</a> void turi::table_printer::print_progress_row_strs </td>
+          <td class="memname">GL_HOT_INLINE void turi::table_printer::print_progress_row_strs </td>
           <td>(</td>
           <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>tick</em>, </td>
@@ -486,7 +486,7 @@ template&lt;typename... Args&gt; </div>
 <p>Print a row associated with the progress of an algorithm.</p>
 <p>The first argument is the tick, which can be something like samples processed or iterations. The time at which to update this is automatically determined based on the first 2 (or more, if calls are extremely frequent) calls. </p>
 
-<p>Definition at line <a class="el" href="table__printer_8hpp_source.html#l00383">383</a> of file <a class="el" href="table__printer_8hpp_source.html">table_printer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="table__printer_8hpp_source.html#l00386">386</a> of file <a class="el" href="table__printer_8hpp_source.html">table_printer.hpp</a>.</p>
 
 </div>
 </div>
@@ -516,7 +516,7 @@ template&lt;typename... Args&gt; </div>
 <p>Print a row.</p>
 <p>Example output: </p><pre class="fragment">table.print_row(5, progress_time(1000), 0.01,  "Yours!!!!");
 </pre><p>Gives </p><pre class="fragment">| 5         | 16m 40s    | 0.01     | Yours!!!!        |</pre> 
-<p>Definition at line <a class="el" href="table__printer_8hpp_source.html#l00270">270</a> of file <a class="el" href="table__printer_8hpp_source.html">table_printer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="table__printer_8hpp_source.html#l00271">271</a> of file <a class="el" href="table__printer_8hpp_source.html">table_printer.hpp</a>.</p>
 
 </div>
 </div>
@@ -545,7 +545,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Same as print row but take a vector of one particular type. May be flexible type. </p>
 
-<p>Definition at line <a class="el" href="table__printer_8hpp_source.html#l00286">286</a> of file <a class="el" href="table__printer_8hpp_source.html">table_printer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="table__printer_8hpp_source.html#l00287">287</a> of file <a class="el" href="table__printer_8hpp_source.html">table_printer.hpp</a>.</p>
 
 </div>
 </div>
@@ -559,7 +559,7 @@ template&lt;typename... Args&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group__util.html#ga8750328f64c9b85845e920eecaf7094e">GL_HOT_INLINE</a> void turi::table_printer::print_timed_progress_row </td>
+          <td class="memname">GL_HOT_INLINE void turi::table_printer::print_timed_progress_row </td>
           <td>(</td>
           <td class="paramtype">const Args &amp;...&#160;</td>
           <td class="paramname"><em>columns</em></td><td>)</td>
@@ -574,7 +574,7 @@ template&lt;typename... Args&gt; </div>
 </div><div class="memdoc">
 <p>Print a row associated with the progress of an algorithm, but print at most once a second. </p>
 
-<p>Definition at line <a class="el" href="table__printer_8hpp_source.html#l00311">311</a> of file <a class="el" href="table__printer_8hpp_source.html">table_printer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="table__printer_8hpp_source.html#l00314">314</a> of file <a class="el" href="table__printer_8hpp_source.html">table_printer.hpp</a>.</p>
 
 </div>
 </div>

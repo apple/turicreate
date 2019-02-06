@@ -168,7 +168,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>Emits a log line output in printf format at a particular log level. lvl must be one of the log levels from LOG_DEBUG to LOG_FATAL. Emitting a LOG_FATAL will kill the process.</p>
 <p>Example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;logger(LOG_INFO, &quot;hello world: %d&quot;, 10);</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00267">267</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00268">268</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
@@ -201,11 +201,11 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">{    \</div><div class="line">  static <span class="keywordtype">bool</span> __printed__ = <span class="keyword">false</span>;    \</div><div class="line">  if (!__printed__) {                 \</div><div class="line">    __printed__ = <span class="keyword">true</span>;               \</div><div class="line">    (<a class="code" href="structlog__dispatch.html">log_dispatch&lt;(lvl &gt;</a>= <a class="code" href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a>)&gt;::exec(lvl,__FILE__, __func__ ,__LINE__,fmt,##__VA_ARGS__)); \</div><div class="line">  }  \</div><div class="line">}</div><div class="ttc" id="group__turilogger_html_ga3d18ed817dcda9f54a4f353ccf9b1b36"><div class="ttname"><a href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a></div><div class="ttdeci">#define OUTPUTLEVEL</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00112">logger.hpp:112</a></div></div>
-<div class="ttc" id="structlog__dispatch_html"><div class="ttname"><a href="structlog__dispatch.html">log_dispatch</a></div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00638">logger.hpp:638</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line">{    \</div><div class="line">  static <span class="keywordtype">bool</span> __printed__ = <span class="keyword">false</span>;    \</div><div class="line">  if (!__printed__) {                 \</div><div class="line">    __printed__ = <span class="keyword">true</span>;               \</div><div class="line">    (<a class="code" href="structlog__dispatch.html">log_dispatch&lt;(lvl &gt;</a>= <a class="code" href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a>)&gt;::exec(lvl,__FILE__, __func__ ,__LINE__,fmt,##__VA_ARGS__)); \</div><div class="line">  }  \</div><div class="line">}</div><div class="ttc" id="group__turilogger_html_ga3d18ed817dcda9f54a4f353ccf9b1b36"><div class="ttname"><a href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a></div><div class="ttdeci">#define OUTPUTLEVEL</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00113">logger.hpp:113</a></div></div>
+<div class="ttc" id="structlog__dispatch_html"><div class="ttname"><a href="structlog__dispatch.html">log_dispatch</a></div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00649">logger.hpp:649</a></div></div>
 </div><!-- fragment --><p>Emits a log line output in printf format at a particular log level, only the first time the line is encountered. lvl must be one of the log levels from LOG_DEBUG to LOG_FATAL. Emitting a LOG_FATAL will kill the process.</p>
 <p>Example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;logger_once(LOG_INFO, &quot;Class %s constructed&quot;, str);</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00278">278</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00279">279</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
@@ -245,11 +245,11 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">{    \</div><div class="line">  static <span class="keywordtype">float</span> last_print = -sec - 1;        \</div><div class="line">  float curtime = <a class="code" href="classturi_1_1timer.html#a6c57c6ce3fa05d78315158d237183543">turi::timer::approx_time_seconds</a>(); \</div><div class="line">  if (last_print + sec &lt;= curtime) {                 \</div><div class="line">    last_print = curtime;                     \</div><div class="line">    (<a class="code" href="structlog__dispatch.html">log_dispatch&lt;(lvl &gt;</a>= <a class="code" href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a>)&gt;::exec(lvl,__FILE__, __func__ ,__LINE__,fmt,##__VA_ARGS__)); \</div><div class="line">  }  \</div><div class="line">}</div><div class="ttc" id="classturi_1_1timer_html_a6c57c6ce3fa05d78315158d237183543"><div class="ttname"><a href="classturi_1_1timer.html#a6c57c6ce3fa05d78315158d237183543">turi::timer::approx_time_seconds</a></div><div class="ttdeci">static float approx_time_seconds()</div><div class="ttdoc">Returns the time since program start. </div></div>
-<div class="ttc" id="group__turilogger_html_ga3d18ed817dcda9f54a4f353ccf9b1b36"><div class="ttname"><a href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a></div><div class="ttdeci">#define OUTPUTLEVEL</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00112">logger.hpp:112</a></div></div>
-<div class="ttc" id="structlog__dispatch_html"><div class="ttname"><a href="structlog__dispatch.html">log_dispatch</a></div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00638">logger.hpp:638</a></div></div>
+<div class="ttc" id="group__turilogger_html_ga3d18ed817dcda9f54a4f353ccf9b1b36"><div class="ttname"><a href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a></div><div class="ttdeci">#define OUTPUTLEVEL</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00113">logger.hpp:113</a></div></div>
+<div class="ttc" id="structlog__dispatch_html"><div class="ttname"><a href="structlog__dispatch.html">log_dispatch</a></div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00649">logger.hpp:649</a></div></div>
 </div><!-- fragment --><p>Emits a log line output in printf format at a particular log level, but will only print approximately once every "sec" seconds. lvl must be one of the log levels from LOG_DEBUG to LOG_FATAL. Emitting a LOG_FATAL will kill the process.</p>
 <p>Example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;// only print once every 5 seconds</div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;logger_ontick(5, LOG_INFO, &quot;Class %s constructed&quot;, str);</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00295">295</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00296">296</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
@@ -278,7 +278,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>Emits a progress message using printf format.</p>
 <p>Example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;logprogress(&quot;hello world: %d&quot;, 10);</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00318">318</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00319">319</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
@@ -312,7 +312,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Emits a progress message using printf format, but will only print approximately once every "sec" seconds. Example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;// only print once every 5 seconds</div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;logprogress_ontick(5, &quot;Class %s constructed&quot;, str);</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00321">321</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00322">322</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
@@ -327,7 +327,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>Emits a progress message using a stream. The stream must terminate with a "\n" or std::endl at the end of the message.</p>
 <p>Example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;logprogress_stream &lt;&lt; &quot;hello world &quot; &lt;&lt; 10 &lt;&lt; std::endl;</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00319">319</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00320">320</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
@@ -346,7 +346,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>Emits a progress message using a stream. The stream must terminate with a "\n" or std::endl at the end of the message. This will only print approximately once every "sec" seconds. The stream must terminate with a "\n" or std::endl at the end of the message.</p>
 <p>Example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;logprogress_stream_ontick(5) &lt;&lt; &quot;Class &quot; &lt;&lt; str &lt;&lt; &quot; constructed&quot; </div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;                             &lt;&lt; std::endl;</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00322">322</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00323">323</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
@@ -365,7 +365,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>An output stream for specified log level. lvl must be one of the log levels from LOG_DEBUG to LOG_FATAL. Emitting a LOG_FATAL will kill the process. The stream must terminate with a "\n" or std::endl at the end of the message.</p>
 <p>Example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;logstream(LOG_INFO &lt;&lt; &quot;hello world: &quot; &lt;&lt; 10 &lt;&lt; std::endl;</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00275">275</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00276">276</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
@@ -382,10 +382,10 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">(*({    \</div><div class="line">  static <span class="keywordtype">bool</span> __printed__ = <span class="keyword">false</span>;    \</div><div class="line">  bool __prev_printed__ = __printed__; \</div><div class="line">  if (!__printed__) __printed__ = true;  \</div><div class="line">  &amp;(log_stream_dispatch&lt;(lvl &gt;= <a class="code" href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a>)&gt;::exec(lvl,__FILE__, __func__ ,__LINE__, !__prev_printed__) ); \</div><div class="line">}))</div><div class="ttc" id="group__turilogger_html_ga3d18ed817dcda9f54a4f353ccf9b1b36"><div class="ttname"><a href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a></div><div class="ttdeci">#define OUTPUTLEVEL</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00112">logger.hpp:112</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line">(*({    \</div><div class="line">  static <span class="keywordtype">bool</span> __printed__ = <span class="keyword">false</span>;    \</div><div class="line">  bool __prev_printed__ = __printed__; \</div><div class="line">  if (!__printed__) __printed__ = true;  \</div><div class="line">  &amp;(log_stream_dispatch&lt;(lvl &gt;= <a class="code" href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a>)&gt;::exec(lvl,__FILE__, __func__ ,__LINE__, !__prev_printed__) ); \</div><div class="line">}))</div><div class="ttc" id="group__turilogger_html_ga3d18ed817dcda9f54a4f353ccf9b1b36"><div class="ttname"><a href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a></div><div class="ttdeci">#define OUTPUTLEVEL</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00113">logger.hpp:113</a></div></div>
 </div><!-- fragment --><p>An output stream for specified log level. This will only output the first time the line is encountered. lvl must be one of the log levels from LOG_DEBUG to LOG_FATAL. Emitting a LOG_FATAL will kill the process. The stream must terminate with a "\n" or std::endl at the end of the message.</p>
 <p>Example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;logstream_once(LOG_INFO) &lt;&lt; &quot;Class &quot; &lt;&lt; str &lt;&lt; &quot; constructed&quot; &lt;&lt; std::endl;</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00287">287</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00288">288</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
@@ -413,10 +413,10 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">(*({    \</div><div class="line">  static <span class="keywordtype">float</span> last_print = -sec - 1;        \</div><div class="line">  float curtime = <a class="code" href="classturi_1_1timer.html#a6c57c6ce3fa05d78315158d237183543">turi::timer::approx_time_seconds</a>();        \</div><div class="line">  bool print_now = <span class="keyword">false</span>;             \</div><div class="line">  if (last_print + sec &lt;= curtime) {                 \</div><div class="line">    last_print = curtime;                 \</div><div class="line">    print_now = <span class="keyword">true</span>;                \</div><div class="line">  }                    \</div><div class="line">  &amp;(log_stream_dispatch&lt;(lvl &gt;= <a class="code" href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a>)&gt;::exec(lvl,__FILE__, __func__ ,__LINE__, print_now) ); \</div><div class="line">}))</div><div class="ttc" id="classturi_1_1timer_html_a6c57c6ce3fa05d78315158d237183543"><div class="ttname"><a href="classturi_1_1timer.html#a6c57c6ce3fa05d78315158d237183543">turi::timer::approx_time_seconds</a></div><div class="ttdeci">static float approx_time_seconds()</div><div class="ttdoc">Returns the time since program start. </div></div>
-<div class="ttc" id="group__turilogger_html_ga3d18ed817dcda9f54a4f353ccf9b1b36"><div class="ttname"><a href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a></div><div class="ttdeci">#define OUTPUTLEVEL</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00112">logger.hpp:112</a></div></div>
+<div class="ttc" id="group__turilogger_html_ga3d18ed817dcda9f54a4f353ccf9b1b36"><div class="ttname"><a href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a></div><div class="ttdeci">#define OUTPUTLEVEL</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00113">logger.hpp:113</a></div></div>
 </div><!-- fragment --><p>An output stream for specified log level. This will only print approximately once every "sec" seconds. lvl must be one of the log levels from LOG_DEBUG to LOG_FATAL. Emitting a LOG_FATAL will kill the process. The stream must terminate with a "\n" or std::endl at the end of the message.</p>
 <p>Example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;logstream_ontick(5, LOG_INFO) &lt;&lt; &quot;Class &quot; &lt;&lt; str &lt;&lt; &quot; constructed&quot; </div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;                              &lt;&lt; std::endl;</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00305">305</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00306">306</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>

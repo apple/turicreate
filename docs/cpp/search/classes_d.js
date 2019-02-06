@@ -36,6 +36,7 @@ var searchData=
   ['model_5fbase',['model_base',['../classturi_1_1model__base.html',1,'turi']]],
   ['model_5fproxy',['model_proxy',['../classturi_1_1model__proxy.html',1,'turi']]],
   ['model_5fspec',['model_spec',['../classturi_1_1neural__net_1_1model__spec.html',1,'turi::neural_net']]],
+  ['mps_5fcompute_5fcontext',['mps_compute_context',['../classturi_1_1neural__net_1_1mps__compute__context.html',1,'turi::neural_net']]],
   ['multiply_5fequal_5foperator',['multiply_equal_operator',['../structturi_1_1flexible__type__impl_1_1multiply__equal__operator.html',1,'turi::flexible_type_impl']]],
   ['mutable_5fqueue',['mutable_queue',['../classturi_1_1mutable__queue.html',1,'turi']]],
   ['mutex',['mutex',['../classturi_1_1mutex.html',1,'turi']]]

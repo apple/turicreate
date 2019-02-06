@@ -24,6 +24,7 @@ var files =
     [ "sframe_query_engine", "dir_449d2d1c0a0c2ae0452beb47d769b233.html", "dir_449d2d1c0a0c2ae0452beb47d769b233" ],
     [ "sgraph", "dir_42221aa3665b304dfbbdbf8fc6e55043.html", "dir_42221aa3665b304dfbbdbf8fc6e55043" ],
     [ "sketches", "dir_4443695bfa6f8499bc6801d0367fd8f2.html", "dir_4443695bfa6f8499bc6801d0367fd8f2" ],
+    [ "stack_trace", "dir_b615af376ba700e17ab39fa3fc27e183.html", "dir_b615af376ba700e17ab39fa3fc27e183" ],
     [ "startup_teardown", "dir_7bb0de70181e27226c25810d4a7be442.html", "dir_7bb0de70181e27226c25810d4a7be442" ],
     [ "table_printer", "dir_caf50557110298559cf177d6fb6ad064.html", "dir_caf50557110298559cf177d6fb6ad064" ],
     [ "toolkits", "dir_761dadd640577c8602b5e8cb956d0bb0.html", "dir_761dadd640577c8602b5e8cb956d0bb0" ],

@@ -165,8 +165,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a64ee1de348f3fa3f1991120809c9bbe2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a66e833929a097ce52e44585ed2d91ffd"><td class="memItemLeft" align="right" valign="top">virtual const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1model__base.html#a66e833929a097ce52e44585ed2d91ffd">uid</a> ()=0</td></tr>
 <tr class="separator:a66e833929a097ce52e44585ed2d91ffd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a364e269edba58d08dea5725efaaaa8dc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1model__base.html#a364e269edba58d08dea5725efaaaa8dc">save_model_to_file</a> (const variant_map_type &amp;side_data, const std::string &amp;url)</td></tr>
-<tr class="separator:a364e269edba58d08dea5725efaaaa8dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad51a44b7c739bc0c394b2ae900ef3d3b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1model__base.html#ad51a44b7c739bc0c394b2ae900ef3d3b">save_to_url</a> (const std::string &amp;url, const variant_map_type &amp;side_data={})</td></tr>
+<tr class="separator:ad51a44b7c739bc0c394b2ae900ef3d3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7aa4b8045eb17263d17612ee46d00aac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1model__base.html#a7aa4b8045eb17263d17612ee46d00aac">save_model_to_data</a> (std::ostream &amp;out)</td></tr>
 <tr class="separator:a7aa4b8045eb17263d17612ee46d00aac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a896fa17b7b442a614f58b0c465f311e0"><td class="memItemLeft" align="right" valign="top">const std::map&lt; std::string, std::vector&lt; std::string &gt; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1model__base.html#a896fa17b7b442a614f58b0c465f311e0">list_functions</a> ()</td></tr>
@@ -183,11 +183,11 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a88b45f92a382e58ab472535bfb526a27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac1fcbf6f4b850ff9eee2817eec833c4d"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1model__base.html#ac1fcbf6f4b850ff9eee2817eec833c4d">get_docstring</a> (const std::string &amp;symbol)</td></tr>
 <tr class="separator:ac1fcbf6f4b850ff9eee2817eec833c4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaeec48760b29bdc3ee50560c6aa989fc"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1model__base.html#aaeec48760b29bdc3ee50560c6aa989fc">perform_registration</a> ()</td></tr>
+<tr class="separator:aaeec48760b29bdc3ee50560c6aa989fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a071523ca5c32f79bc2857b847ee645fc"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1model__base.html#a071523ca5c32f79bc2857b847ee645fc">perform_registration</a> ()=0</td></tr>
-<tr class="separator:a071523ca5c32f79bc2857b847ee645fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7053781383d66795c4773da6b7df8a74"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1model__base.html#a7053781383d66795c4773da6b7df8a74">register_function</a> (std::string fnname, const std::vector&lt; std::string &gt; &amp;arguments, impl_fn fn)</td></tr>
 <tr class="separator:a7053781383d66795c4773da6b7df8a74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5cf40c6ddfcc9a6880e3fbc12887e674"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1model__base.html#a5cf40c6ddfcc9a6880e3fbc12887e674">register_defaults</a> (const std::string &amp;fnname, const variant_map_type &amp;arguments)</td></tr>
@@ -859,7 +859,7 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a071523ca5c32f79bc2857b847ee645fc"></a>
+<a class="anchor" id="aaeec48760b29bdc3ee50560c6aa989fc"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -875,13 +875,13 @@ Protected Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span><span class="mlabel">inherited</span></span>  </td>
+<span class="mlabels"><span class="mlabel">virtual</span><span class="mlabel">inherited</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Function implemented by BEGIN_CLASS_MEMBER_REGISTRATION and invoked the first time a public member function executes. </p>
+<p>Declare the base registration function. This class has to be handled specially; the macros don't work here due to the override declarations. </p>
 
-<p>Implemented in <a class="el" href="classturi_1_1model__proxy.html#aff35f9884f34c005ec2ac4a60fc2a363">turi::model_proxy</a>.</p>
+<p>Reimplemented in <a class="el" href="classturi_1_1model__proxy.html#aff35f9884f34c005ec2ac4a60fc2a363">turi::model_proxy</a>.</p>
 
 </div>
 </div>
@@ -1108,7 +1108,7 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a364e269edba58d08dea5725efaaaa8dc"></a>
+<a class="anchor" id="ad51a44b7c739bc0c394b2ae900ef3d3b"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1116,16 +1116,16 @@ Protected Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void turi::model_base::save_model_to_file </td>
+          <td class="memname">void turi::model_base::save_to_url </td>
           <td>(</td>
-          <td class="paramtype">const variant_map_type &amp;&#160;</td>
-          <td class="paramname"><em>side_data</em>, </td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>url</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>url</em>&#160;</td>
+          <td class="paramtype">const variant_map_type &amp;&#160;</td>
+          <td class="paramname"><em>side_data</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1142,8 +1142,8 @@ Protected Attributes</h2></td></tr>
 <p>Save a toolkit class to disk.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">sidedata</td><td>Any additional side information </td></tr>
     <tr><td class="paramname">url</td><td>The destination url to store the class. </td></tr>
+    <tr><td class="paramname">sidedata</td><td>Any additional side information </td></tr>
   </table>
   </dd>
 </dl>
@@ -1300,7 +1300,7 @@ Protected Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>All things python </p>
 
-<p>Definition at line <a class="el" href="ml__model_8hpp_source.html#l00204">204</a> of file <a class="el" href="ml__model_8hpp_source.html">ml_model.hpp</a>.</p>
+<p>Definition at line <a class="el" href="ml__model_8hpp_source.html#l00206">206</a> of file <a class="el" href="ml__model_8hpp_source.html">ml_model.hpp</a>.</p>
 
 </div>
 </div>

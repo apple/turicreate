@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['pad_5fprob',['pad_prob',['../structturi_1_1neural__net_1_1image__augmenter_1_1options.html#adbb46ef7c7ab4892473714da5704efd1',1,'turi::neural_net::image_augmenter::options']]],
   ['pagefile_5fallocations',['pagefile_allocations',['../structturi_1_1user__pagefault_1_1userpf__page__set.html#a371f279f26ad19cb64f67978f52bca18',1,'turi::user_pagefault::userpf_page_set']]],
   ['pagefile_5fmaintained',['pagefile_maintained',['../structturi_1_1user__pagefault_1_1userpf__page__set.html#abb0174c6225e4556d1a9f94f8942f303',1,'turi::user_pagefault::userpf_page_set']]],
   ['parameter_5ftype',['parameter_type',['../structturi_1_1option__handling_1_1option__info.html#af2d734d00196f03ddb93180065c5105f',1,'turi::option_handling::option_info']]],

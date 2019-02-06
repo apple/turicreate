@@ -17,7 +17,7 @@ var classturi_1_1model__proxy =
     [ "register_setter", "classturi_1_1model__proxy.html#a1b64c0bb643593609796742ac28a006a", null ],
     [ "save_impl", "classturi_1_1model__proxy.html#a9bdac02465003662c0418c4dd807797b", null ],
     [ "save_model_to_data", "classturi_1_1model__proxy.html#a7aa4b8045eb17263d17612ee46d00aac", null ],
-    [ "save_model_to_file", "classturi_1_1model__proxy.html#a364e269edba58d08dea5725efaaaa8dc", null ],
+    [ "save_to_url", "classturi_1_1model__proxy.html#ad51a44b7c739bc0c394b2ae900ef3d3b", null ],
     [ "set_property", "classturi_1_1model__proxy.html#a88b45f92a382e58ab472535bfb526a27", null ],
     [ "uid", "classturi_1_1model__proxy.html#ac8f4302f9f8f69eba617fa392b78f2fb", null ]
 ];

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.read_csv_with_errors &mdash; Turi Create API 5.2 documentation</title>
+  <title>turicreate.SFrame.read_csv_with_errors &mdash; Turi Create API 5.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 5.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +123,7 @@
 <h1>turicreate.SFrame.read_csv_with_errors<a class="headerlink" href="#turicreate-sframe-read-csv-with-errors" title="Permalink to this headline">¶</a></h1>
 <dl class="classmethod">
 <dt id="turicreate.SFrame.read_csv_with_errors">
-<em class="property">classmethod </em><code class="descclassname">SFrame.</code><code class="descname">read_csv_with_errors</code><span class="sig-paren">(</span><em>url, delimiter=',', header=True, comment_char='', escape_char='\\', double_quote=True, quote_char='&quot;', skip_initial_space=True, column_type_hints=None, na_values=['NA'], line_terminator='\n', usecols=[], nrows=None, skiprows=0, verbose=True, nrows_to_infer=100, **kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.read_csv_with_errors" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="descclassname">SFrame.</code><code class="descname">read_csv_with_errors</code><span class="sig-paren">(</span><em>url, delimiter=',', header=True, comment_char='', escape_char='\\', double_quote=True, quote_char='&quot;', skip_initial_space=True, column_type_hints=None, na_values=['NA'], line_terminator='\n', usecols=[], nrows=None, skiprows=0, verbose=True, nrows_to_infer=100, true_values=[], false_values=[], **kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.read_csv_with_errors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs an SFrame from a CSV file or a path to multiple CSVs, and
 returns a pair containing the SFrame and a dict of filenames to SArrays
 indicating for each file, what are the incorrectly parsed lines
@@ -149,7 +149,8 @@ default column names: &#8216;X1, X2, ...&#8217;.</p>
 remainder of the line is a comment.</p>
 </dd>
 <dt><strong>escape_char</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
-<dd><p class="first last">Character which begins a C escape sequence</p>
+<dd><p class="first last">Character which begins a C escape sequence. Defaults to backslash()
+Set to None to disable.</p>
 </dd>
 <dt><strong>double_quote</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
 <dd><p class="first last">If True, two consecutive quotes in a string are parsed to a single
@@ -182,6 +183,12 @@ should be parsed as an integer, and the rest will be type inferred.</li>
 </dd>
 <dt><strong>na_values</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str | list of str, optional</span></dt>
 <dd><p class="first last">A string or list of strings to be interpreted as missing values.</p>
+</dd>
+<dt><strong>true_values</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str | list of str, optional</span></dt>
+<dd><p class="first last">A string or list of strings to be interpreted as 1</p>
+</dd>
+<dt><strong>false_values</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str | list of str, optional</span></dt>
+<dd><p class="first last">A string or list of strings to be interpreted as 0</p>
 </dd>
 <dt><strong>line_terminator</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
 <dd><p class="first last">A string to be interpreted as the line terminator. Defaults to &#8220;n&#8221;
@@ -257,7 +264,7 @@ what are the incorrectly parsed lines encountered.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Nov 29, 2018.
+      Last updated on Feb 06, 2019.
     </p>
   </div>
 </footer>
@@ -275,7 +282,7 @@ what are the incorrectly parsed lines encountered.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.2',
+            VERSION:'5.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

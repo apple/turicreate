@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['class_5flabels',['class_labels',['../structturi_1_1object__detection_1_1data__iterator_1_1parameters.html#a0e245af51059e78cf01b69ba0822ae80',1,'turi::object_detection::data_iterator::parameters']]],
   ['classes',['classes',['../classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#a064301014e133a3101f03b21458e95d2',1,'turi::supervised::linear_svm_scaled_logistic_opt_interface::classes()'],['../structturi_1_1toolkit__function__invocation.html#aad7ab6fe8485616b6b2a80ded0ca2a8c',1,'turi::toolkit_function_invocation::classes()']]],
   ['coefs',['coefs',['../classturi_1_1supervised_1_1linear__regression.html#ac92df1840540edd18bd0bd1c349983fb',1,'turi::supervised::linear_regression::coefs()'],['../classturi_1_1supervised_1_1linear__svm.html#acda8cd069f59ea73006a0aaa695d5246',1,'turi::supervised::linear_svm::coefs()'],['../classturi_1_1supervised_1_1logistic__regression.html#a555669ac208821231c3b7c114043e4c9',1,'turi::supervised::logistic_regression::coefs()']]],
   ['column_5ffiles',['column_files',['../structturi_1_1sframe__index__file__information.html#a7198889333d7ee562bfd6fb774a1c98e',1,'turi::sframe_index_file_information']]],
@@ -16,6 +17,8 @@ var searchData=
   ['content_5ftype',['content_type',['../structturi_1_1index__file__information.html#a2930fe0ba4f1cbaaa43e7df393f4ced0',1,'turi::index_file_information::content_type()'],['../structturi_1_1v2__block__impl_1_1block__info.html#a97f7a87f2de482262c9215029a90325c',1,'turi::v2_block_impl::block_info::content_type()']]],
   ['contents',['contents',['../classturi_1_1any_1_1holder.html#a63d1109ccbcaffdffaa7d69af7b306d6',1,'turi::any::holder']]],
   ['continue_5fon_5ffailure',['continue_on_failure',['../structturi_1_1csv__file__handling__options.html#a5fc63f4383d4e9603c0990785d7a2854',1,'turi::csv_file_handling_options']]],
+  ['contrast_5fmax_5fjitter',['contrast_max_jitter',['../structturi_1_1neural__net_1_1image__augmenter_1_1options.html#a5354faa9f63b2af88333da5d92f4e096',1,'turi::neural_net::image_augmenter::options']]],
+  ['crop_5fprob',['crop_prob',['../structturi_1_1neural__net_1_1image__augmenter_1_1options.html#a394d4c4fba581eb86d0da3aa4ef2156a',1,'turi::neural_net::image_augmenter::options']]],
   ['current_5fblock_5findex',['current_block_index',['../classturi_1_1v2_1_1ml__data__iterator__base.html#a02affeb043b7bde7f2d13dc1ff69a921',1,'turi::v2::ml_data_iterator_base']]],
   ['current_5fin_5fblock_5findex',['current_in_block_index',['../classturi_1_1v2_1_1ml__data__iterator__base.html#a269c8c416a956120ab991727ca2febca',1,'turi::v2::ml_data_iterator_base']]],
   ['current_5frow_5findex',['current_row_index',['../classturi_1_1v2_1_1ml__data__iterator__base.html#aee511d0f1b45c9cb644d28941b47815a',1,'turi::v2::ml_data_iterator_base']]],

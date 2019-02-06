@@ -639,10 +639,10 @@ Functions</h2></td></tr>
 <tr class="separator:a9a238b8e9e1ac815ea7f3cd96b899a18"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac50d334ec1920c64f0eb5e5753a2683e"><td class="memItemLeft" align="right" valign="top">JSONNode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ac50d334ec1920c64f0eb5e5753a2683e">flexible_type_to_json</a> (const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;val, std::string name)</td></tr>
 <tr class="separator:ac50d334ec1920c64f0eb5e5753a2683e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a13115823b388e342edac6cb32fc8139a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a13115823b388e342edac6cb32fc8139a">unescape_string</a> (std::string &amp;cal, char escape_char, char quote_char, bool double_quote)</td></tr>
-<tr class="separator:a13115823b388e342edac6cb32fc8139a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0526311cf92a664dffb244238f7a85f1"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a0526311cf92a664dffb244238f7a85f1">unescape_string</a> (char *cal, size_t length, char escape_char, char quote_char, bool double_quote)</td></tr>
-<tr class="separator:a0526311cf92a664dffb244238f7a85f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ccc44c9454b45c43047d828b57d6fd1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a2ccc44c9454b45c43047d828b57d6fd1">unescape_string</a> (std::string &amp;cal, bool use_escape_char, char escape_char, char quote_char, bool double_quote)</td></tr>
+<tr class="separator:a2ccc44c9454b45c43047d828b57d6fd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa8e1c068cd0a8828f77ae63bc90b1274"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#aa8e1c068cd0a8828f77ae63bc90b1274">unescape_string</a> (char *cal, size_t length, bool use_escape_char, char escape_char, char quote_char, bool double_quote)</td></tr>
+<tr class="separator:aa8e1c068cd0a8828f77ae63bc90b1274"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae830551f09920d9b64680bf3515a6f32"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ae830551f09920d9b64680bf3515a6f32">escape_string</a> (const std::string &amp;val, char escape_char, bool use_escape_char, char quote_char, bool use_quote_char, bool double_quote, std::string &amp;output, size_t &amp;output_len)</td></tr>
 <tr class="separator:ae830551f09920d9b64680bf3515a6f32"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abdf4d2fbf53fba839b18a35d368924c6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#abdf4d2fbf53fba839b18a35d368924c6">decode_image_inplace</a> (<a class="el" href="classturi_1_1image__type.html">image_type</a> &amp;image)</td></tr>
@@ -751,6 +751,8 @@ template&lt;typename T &gt; </td></tr>
 <tr class="separator:a0589a45142c448725fa6849c56628f51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5b9a25864879a98c50594582bf2726f0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__threading.html#ga5b9a25864879a98c50594582bf2726f0">in_parallel</a> (const std::function&lt; void(size_t thread_id,                                                                                                                                                                                               size_t num_threads)&gt; &amp;fn)</td></tr>
 <tr class="separator:ga5b9a25864879a98c50594582bf2726f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6020e2e273ceaeef7a58bdd46032641"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ae6020e2e273ceaeef7a58bdd46032641">in_parallel_debug</a> (const std::function&lt; void(size_t thread_id,                                                                                                       size_t num_threads)&gt; &amp;fn)</td></tr>
+<tr class="separator:ae6020e2e273ceaeef7a58bdd46032641"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae01665f82adc1cb33d894854b82002ed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classturi_1_1thread__pool.html">thread_pool</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__threading.html#gae01665f82adc1cb33d894854b82002ed">get_parfor_thread_pool</a> ()</td></tr>
 <tr class="separator:gae01665f82adc1cb33d894854b82002ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac532f68a1b4c1c4b4d42ffd0fdff2784"><td class="memTemplParams" colspan="2">template&lt;typename FunctionType &gt; </td></tr>
@@ -941,8 +943,8 @@ template&lt;typename T &gt; </td></tr>
 <tr class="separator:a3ea795baef4339e4840897168c320738"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef2291d40ba400f9fed0fbcd55c20810"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#aef2291d40ba400f9fed0fbcd55c20810">setup_pipeline_from_mldata</a> (CoreML::Pipeline &amp;pipeline, std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; metadata)</td></tr>
 <tr class="separator:aef2291d40ba400f9fed0fbcd55c20810"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a36a787cb36718ba9d903eb9f46afa622"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; coreml::MLModelWrapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a36a787cb36718ba9d903eb9f46afa622">export_object_detector_model</a> (const <a class="el" href="classturi_1_1neural__net_1_1model__spec.html">neural_net::model_spec</a> &amp;nn_spec, size_t image_width, size_t image_height, size_t num_classes, size_t num_predictions, <a class="el" href="group__group__flexible__type__types.html#ga408eb4413a2a629b462fb3a5d4f42c24">flex_dict</a> user_defined_metadata)</td></tr>
-<tr class="separator:a36a787cb36718ba9d903eb9f46afa622"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9623f4cefedb6ecd21cb24d20c8f0070"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; coreml::MLModelWrapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a9623f4cefedb6ecd21cb24d20c8f0070">export_object_detector_model</a> (const <a class="el" href="classturi_1_1neural__net_1_1model__spec.html">neural_net::model_spec</a> &amp;nn_spec, size_t image_width, size_t image_height, size_t num_classes, size_t num_predictions, <a class="el" href="group__group__flexible__type__types.html#ga408eb4413a2a629b462fb3a5d4f42c24">flex_dict</a> user_defined_metadata, <a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a> class_labels, std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; options)</td></tr>
+<tr class="separator:a9623f4cefedb6ecd21cb24d20c8f0070"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf17c7990e00eab46358ea2f7865faee"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__group__flexible__type__types.html#ga408eb4413a2a629b462fb3a5d4f42c24">flex_dict</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#acf17c7990e00eab46358ea2f7865faee">to_flat_dict</a> (const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;dict_or_list, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;separator, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;undefined_string, std::function&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>(const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;)&gt; nonnumeric_value_handler)</td></tr>
 <tr class="separator:acf17c7990e00eab46358ea2f7865faee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a47dee7eafcb0830112b307af255480aa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__group__flexible__type__types.html#ga408eb4413a2a629b462fb3a5d4f42c24">flex_dict</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a47dee7eafcb0830112b307af255480aa">to_flat_dict</a> (const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;input, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;separator, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;undefined_string, const std::string &amp;image_policy=&quot;error&quot;, const std::string &amp;datetime_policy=&quot;error&quot;)</td></tr>
@@ -950,7 +952,7 @@ template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a540a5abba9cb87b36865e3a15c87de31"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classturi_1_1gl__sarray.html">gl_sarray</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a540a5abba9cb87b36865e3a15c87de31">to_sarray_of_flat_dictionaries</a> (<a class="el" href="classturi_1_1gl__sarray.html">gl_sarray</a> input, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;sep, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;undefined_string, const std::string &amp;image_policy=&quot;error&quot;, const std::string &amp;datetime_policy=&quot;error&quot;)</td></tr>
 <tr class="separator:a540a5abba9cb87b36865e3a15c87de31"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0897de203f0665490c3e558b3b8375b"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ac0897de203f0665490c3e558b3b8375b"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="group__util.html#ga8750328f64c9b85845e920eecaf7094e">GL_HOT_INLINE</a> std::pair&lt; size_t, size_t &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ac0897de203f0665490c3e558b3b8375b">find_slice_boundary_indices</a> (const std::vector&lt; std::pair&lt; size_t, T &gt; &gt; &amp;v, size_t item_index_lb, size_t item_index_ub)</td></tr>
+<tr class="memitem:ac0897de203f0665490c3e558b3b8375b"><td class="memTemplItemLeft" align="right" valign="top">GL_HOT_INLINE std::pair&lt; size_t, size_t &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ac0897de203f0665490c3e558b3b8375b">find_slice_boundary_indices</a> (const std::vector&lt; std::pair&lt; size_t, T &gt; &gt; &amp;v, size_t item_index_lb, size_t item_index_ub)</td></tr>
 <tr class="separator:ac0897de203f0665490c3e558b3b8375b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a845719d1ce226dde6c31d2aa468d8836"><td class="memTemplParams" colspan="2">template&lt;typename T , typename SliceInitFunction , typename RowProcessFunction , typename ElementProcessFunction , typename SliceFinalizeFunction &gt; </td></tr>
 <tr class="memitem:a845719d1ce226dde6c31d2aa468d8836"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a845719d1ce226dde6c31d2aa468d8836">iterate_through_sparse_item_array_by_slice</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; std::vector&lt; std::pair&lt; size_t, T &gt; &gt; &gt; &gt; &amp;data, const std::vector&lt; size_t &gt; &amp;slice_delimiters, SliceInitFunction &amp;&amp;init_slice, RowProcessFunction &amp;&amp;preprocess_row, ElementProcessFunction &amp;&amp;process_element, SliceFinalizeFunction &amp;&amp;finalize_slice)</td></tr>
@@ -1104,21 +1106,21 @@ template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ga8f5c8bed80f073bc71a67c4256f32c6b"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ga8f5c8bed80f073bc71a67c4256f32c6b"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__util.html#ga8f5c8bed80f073bc71a67c4256f32c6b">extract_and_sort_top_k</a> (std::vector&lt; T &gt; &amp;v, size_t top_k)</td></tr>
 <tr class="separator:ga8f5c8bed80f073bc71a67c4256f32c6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a963920bf11ee9d5069b14395b6e81cab"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a963920bf11ee9d5069b14395b6e81cab">sigmoid</a> (double x)</td></tr>
+<tr class="memitem:a963920bf11ee9d5069b14395b6e81cab"><td class="memItemLeft" align="right" valign="top">static GL_HOT_INLINE_FLATTEN double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a963920bf11ee9d5069b14395b6e81cab">sigmoid</a> (double x)</td></tr>
 <tr class="separator:a963920bf11ee9d5069b14395b6e81cab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad7e4555283ef5773a9e2d0f7d9a35ada"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ad7e4555283ef5773a9e2d0f7d9a35ada">log1pe</a> (double x)</td></tr>
+<tr class="memitem:ad7e4555283ef5773a9e2d0f7d9a35ada"><td class="memItemLeft" align="right" valign="top">static GL_HOT_INLINE_FLATTEN double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ad7e4555283ef5773a9e2d0f7d9a35ada">log1pe</a> (double x)</td></tr>
 <tr class="separator:ad7e4555283ef5773a9e2d0f7d9a35ada"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6395f16416d199a2df25a21c31cdb0c2"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a6395f16416d199a2df25a21c31cdb0c2">log1pen</a> (double x)</td></tr>
+<tr class="memitem:a6395f16416d199a2df25a21c31cdb0c2"><td class="memItemLeft" align="right" valign="top">static GL_HOT_INLINE_FLATTEN double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a6395f16416d199a2df25a21c31cdb0c2">log1pen</a> (double x)</td></tr>
 <tr class="separator:a6395f16416d199a2df25a21c31cdb0c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5600b7667813008a0a49e09e63ef3dc4"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a5600b7667813008a0a49e09e63ef3dc4">log1me</a> (double x)</td></tr>
+<tr class="memitem:a5600b7667813008a0a49e09e63ef3dc4"><td class="memItemLeft" align="right" valign="top">static GL_HOT_INLINE_FLATTEN double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a5600b7667813008a0a49e09e63ef3dc4">log1me</a> (double x)</td></tr>
 <tr class="separator:a5600b7667813008a0a49e09e63ef3dc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a89243ba817f3e0649f932f3d8519278e"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a89243ba817f3e0649f932f3d8519278e">log1men</a> (double x)</td></tr>
+<tr class="memitem:a89243ba817f3e0649f932f3d8519278e"><td class="memItemLeft" align="right" valign="top">static GL_HOT_INLINE_FLATTEN double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a89243ba817f3e0649f932f3d8519278e">log1men</a> (double x)</td></tr>
 <tr class="separator:a89243ba817f3e0649f932f3d8519278e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0877f2ccb7dbec498442c05d2a8af5a6"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a0877f2ccb7dbec498442c05d2a8af5a6">logem1</a> (double x)</td></tr>
+<tr class="memitem:a0877f2ccb7dbec498442c05d2a8af5a6"><td class="memItemLeft" align="right" valign="top">static GL_HOT_INLINE_FLATTEN double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a0877f2ccb7dbec498442c05d2a8af5a6">logem1</a> (double x)</td></tr>
 <tr class="separator:a0877f2ccb7dbec498442c05d2a8af5a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a15a04229ebad06076c37abc50d640c5e"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a15a04229ebad06076c37abc50d640c5e">log1pe_deriviative</a> (double x)</td></tr>
+<tr class="memitem:a15a04229ebad06076c37abc50d640c5e"><td class="memItemLeft" align="right" valign="top">static GL_HOT_INLINE_FLATTEN double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a15a04229ebad06076c37abc50d640c5e">log1pe_deriviative</a> (double x)</td></tr>
 <tr class="separator:a15a04229ebad06076c37abc50d640c5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a54021649246b9412defe52a7dce47e0c"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a54021649246b9412defe52a7dce47e0c">log1pen_deriviative</a> (double x)</td></tr>
+<tr class="memitem:a54021649246b9412defe52a7dce47e0c"><td class="memItemLeft" align="right" valign="top">static GL_HOT_INLINE_FLATTEN double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a54021649246b9412defe52a7dce47e0c">log1pen_deriviative</a> (double x)</td></tr>
 <tr class="separator:a54021649246b9412defe52a7dce47e0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf635a8e0c8dccabee631e325b1eaa255"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#gaf635a8e0c8dccabee631e325b1eaa255">md5</a> (std::string val)</td></tr>
 <tr class="separator:gaf635a8e0c8dccabee631e325b1eaa255"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1303,11 +1305,11 @@ Variables</h2></td></tr>
 <tr class="separator:ga9f1f371663b47e7e732b6a8659a1b9da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3d9472a9f9707e4c406223f64b712a57"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sgraph__main.html#ga3d9472a9f9707e4c406223f64b712a57">SGRAPH_HILBERT_CURVE_PARALLEL_FOR_NUM_THREADS</a></td></tr>
 <tr class="separator:ga3d9472a9f9707e4c406223f64b712a57"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae5579cc837c0c1dd19fe7508945b21e7"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mldata.html#gae5579cc837c0c1dd19fe7508945b21e7">mode_is_categorical</a> (<a class="el" href="group__mldata.html#ga7beaf7388ecc8bb34821c4a0b38b292f">ml_column_mode</a> mode)</td></tr>
+<tr class="memitem:gae5579cc837c0c1dd19fe7508945b21e7"><td class="memItemLeft" align="right" valign="top">static GL_HOT_INLINE_FLATTEN bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mldata.html#gae5579cc837c0c1dd19fe7508945b21e7">mode_is_categorical</a> (<a class="el" href="group__mldata.html#ga7beaf7388ecc8bb34821c4a0b38b292f">ml_column_mode</a> mode)</td></tr>
 <tr class="separator:gae5579cc837c0c1dd19fe7508945b21e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf7b982e837dafb8732be1d217e67bd79"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mldata.html#gaf7b982e837dafb8732be1d217e67bd79">mode_has_fixed_size</a> (<a class="el" href="group__mldata.html#ga7beaf7388ecc8bb34821c4a0b38b292f">ml_column_mode</a> mode)</td></tr>
+<tr class="memitem:gaf7b982e837dafb8732be1d217e67bd79"><td class="memItemLeft" align="right" valign="top">static GL_HOT_INLINE_FLATTEN bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mldata.html#gaf7b982e837dafb8732be1d217e67bd79">mode_has_fixed_size</a> (<a class="el" href="group__mldata.html#ga7beaf7388ecc8bb34821c4a0b38b292f">ml_column_mode</a> mode)</td></tr>
 <tr class="separator:gaf7b982e837dafb8732be1d217e67bd79"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga063ca313544fff079f668f77fa255089"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mldata.html#ga063ca313544fff079f668f77fa255089">mode_is_indexed</a> (<a class="el" href="group__mldata.html#ga7beaf7388ecc8bb34821c4a0b38b292f">ml_column_mode</a> mode)</td></tr>
+<tr class="memitem:ga063ca313544fff079f668f77fa255089"><td class="memItemLeft" align="right" valign="top">static GL_HOT_INLINE_FLATTEN bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mldata.html#ga063ca313544fff079f668f77fa255089">mode_is_indexed</a> (<a class="el" href="group__mldata.html#ga7beaf7388ecc8bb34821c4a0b38b292f">ml_column_mode</a> mode)</td></tr>
 <tr class="separator:ga063ca313544fff079f668f77fa255089"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa90807aacaf964777f174bde4526e902"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mldata.html#gaa90807aacaf964777f174bde4526e902">column_mode_enum_to_name</a> (<a class="el" href="group__mldata.html#ga7beaf7388ecc8bb34821c4a0b38b292f">ml_column_mode</a> mode)</td></tr>
 <tr class="separator:gaa90807aacaf964777f174bde4526e902"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -2632,7 +2634,7 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a36a787cb36718ba9d903eb9f46afa622"></a>
+<a class="anchor" id="a9623f4cefedb6ecd21cb24d20c8f0070"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -2670,7 +2672,19 @@ template&lt;typename T &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="group__group__flexible__type__types.html#ga408eb4413a2a629b462fb3a5d4f42c24">flex_dict</a>&#160;</td>
-          <td class="paramname"><em>user_defined_metadata</em>&#160;</td>
+          <td class="paramname"><em>user_defined_metadata</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a>&#160;</td>
+          <td class="paramname"><em>class_labels</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt;&#160;</td>
+          <td class="paramname"><em>options</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -2697,7 +2711,7 @@ template&lt;typename T &gt; </div>
 template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group__util.html#ga8750328f64c9b85845e920eecaf7094e">GL_HOT_INLINE</a> std::pair&lt;size_t, size_t&gt; turi::find_slice_boundary_indices </td>
+          <td class="memname">GL_HOT_INLINE std::pair&lt;size_t, size_t&gt; turi::find_slice_boundary_indices </td>
           <td>(</td>
           <td class="paramtype">const std::vector&lt; std::pair&lt; size_t, T &gt; &gt; &amp;&#160;</td>
           <td class="paramname"><em>v</em>, </td>
@@ -3138,6 +3152,38 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a class="anchor" id="ae6020e2e273ceaeef7a58bdd46032641"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::in_parallel_debug </td>
+          <td>(</td>
+          <td class="paramtype">const std::function&lt; void(size_t thread_id,                                                                                                       size_t num_threads)&gt; &amp;&#160;</td>
+          <td class="paramname"><em>fn</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Runs a provided function in parallel, as in <a class="el" href="group__threading.html#ga5b9a25864879a98c50594582bf2726f0">turi::in_parallel</a>, but may also be customized by setting the environment variable TURI_PARALLEL_DEBUG:</p>
+<ul>
+<li>TURI_PARALLEL_DEBUG=0: default behavior</li>
+<li>TURI_PARALLEL_DEBUG=1: one slice on calling thread, others in parallel</li>
+<li>TURI_PARALLEL_DEBUG=2: run all sequentially (no parallelism) </li>
+</ul>
+
+<p>Definition at line <a class="el" href="lambda__omp_8hpp_source.html#l00089">89</a> of file <a class="el" href="lambda__omp_8hpp_source.html">lambda_omp.hpp</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a099a2e1c2a154bf57ec26b704ed19d47"></a>
 <div class="memitem">
 <div class="memproto">
@@ -3414,7 +3460,7 @@ template&lt;typename T , typename SliceInitFunction , typename RowProcessFunctio
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double turi::log1me </td>
+          <td class="memname">static GL_HOT_INLINE_FLATTEN double turi::log1me </td>
           <td>(</td>
           <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>x</em></td><td>)</td>
@@ -3441,7 +3487,7 @@ template&lt;typename T , typename SliceInitFunction , typename RowProcessFunctio
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double turi::log1men </td>
+          <td class="memname">static GL_HOT_INLINE_FLATTEN double turi::log1men </td>
           <td>(</td>
           <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>x</em></td><td>)</td>
@@ -3468,7 +3514,7 @@ template&lt;typename T , typename SliceInitFunction , typename RowProcessFunctio
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double turi::log1pe </td>
+          <td class="memname">static GL_HOT_INLINE_FLATTEN double turi::log1pe </td>
           <td>(</td>
           <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>x</em></td><td>)</td>
@@ -3495,7 +3541,7 @@ template&lt;typename T , typename SliceInitFunction , typename RowProcessFunctio
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double turi::log1pe_deriviative </td>
+          <td class="memname">static GL_HOT_INLINE_FLATTEN double turi::log1pe_deriviative </td>
           <td>(</td>
           <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>x</em></td><td>)</td>
@@ -3522,7 +3568,7 @@ template&lt;typename T , typename SliceInitFunction , typename RowProcessFunctio
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double turi::log1pen </td>
+          <td class="memname">static GL_HOT_INLINE_FLATTEN double turi::log1pen </td>
           <td>(</td>
           <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>x</em></td><td>)</td>
@@ -3549,7 +3595,7 @@ template&lt;typename T , typename SliceInitFunction , typename RowProcessFunctio
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double turi::log1pen_deriviative </td>
+          <td class="memname">static GL_HOT_INLINE_FLATTEN double turi::log1pen_deriviative </td>
           <td>(</td>
           <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>x</em></td><td>)</td>
@@ -3576,7 +3622,7 @@ template&lt;typename T , typename SliceInitFunction , typename RowProcessFunctio
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double turi::logem1 </td>
+          <td class="memname">static GL_HOT_INLINE_FLATTEN double turi::logem1 </td>
           <td>(</td>
           <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>x</em></td><td>)</td>
@@ -4436,7 +4482,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double turi::sigmoid </td>
+          <td class="memname">static GL_HOT_INLINE_FLATTEN double turi::sigmoid </td>
           <td>(</td>
           <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>x</em></td><td>)</td>
@@ -4908,7 +4954,7 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a13115823b388e342edac6cb32fc8139a"></a>
+<a class="anchor" id="a2ccc44c9454b45c43047d828b57d6fd1"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -4917,6 +4963,12 @@ template&lt;typename T &gt; </div>
           <td>(</td>
           <td class="paramtype">std::string &amp;&#160;</td>
           <td class="paramname"><em>cal</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>use_escape_char</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -4947,7 +4999,7 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a0526311cf92a664dffb244238f7a85f1"></a>
+<a class="anchor" id="aa8e1c068cd0a8828f77ae63bc90b1274"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -4962,6 +5014,12 @@ template&lt;typename T &gt; </div>
           <td></td>
           <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>length</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>use_escape_char</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -5383,7 +5441,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>A global static variable to be used when an undefined value is needed. i.e. </p><div class="fragment"><div class="line">flexible_type f = <a class="code" href="namespaceturi.html#a239e289c661e697c9191abaaae05981d">FLEX_UNDEFINED</a>;</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01396">1396</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01404">1404</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>

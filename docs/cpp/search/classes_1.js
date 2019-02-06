@@ -14,5 +14,6 @@ var searchData=
   ['async_5frequest_5fsocket',['async_request_socket',['../classturi_1_1nanosockets_1_1async__request__socket.html',1,'turi::nanosockets']]],
   ['atomic_5fimpl_3c_20t_2c_20true_20_3e',['atomic_impl&lt; T, true &gt;',['../classturi_1_1turi__impl_1_1atomic__impl_3_01T_00_01true_01_4.html',1,'turi::turi_impl']]],
   ['auto_5fclose_5fsarrays',['auto_close_sarrays',['../classturi_1_1auto__close__sarrays.html',1,'turi']]],
-  ['average',['average',['../classturi_1_1groupby__operators_1_1average.html',1,'turi::groupby_operators']]]
+  ['average',['average',['../classturi_1_1groupby__operators_1_1average.html',1,'turi::groupby_operators']]],
+  ['average_5fprecision_5fcalculator',['average_precision_calculator',['../classturi_1_1object__detection_1_1average__precision__calculator.html',1,'turi::object_detection']]]
 ];

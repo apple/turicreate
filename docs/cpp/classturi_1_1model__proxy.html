@@ -134,8 +134,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a697bb86fbc190c92a89f9ccaced9736b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a64ee1de348f3fa3f1991120809c9bbe2"><td class="memItemLeft" align="right" valign="top">virtual const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1model__base.html#a64ee1de348f3fa3f1991120809c9bbe2">name</a> ()=0</td></tr>
 <tr class="separator:a64ee1de348f3fa3f1991120809c9bbe2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a364e269edba58d08dea5725efaaaa8dc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1model__base.html#a364e269edba58d08dea5725efaaaa8dc">save_model_to_file</a> (const variant_map_type &amp;side_data, const std::string &amp;url)</td></tr>
-<tr class="separator:a364e269edba58d08dea5725efaaaa8dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad51a44b7c739bc0c394b2ae900ef3d3b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1model__base.html#ad51a44b7c739bc0c394b2ae900ef3d3b">save_to_url</a> (const std::string &amp;url, const variant_map_type &amp;side_data={})</td></tr>
+<tr class="separator:ad51a44b7c739bc0c394b2ae900ef3d3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7aa4b8045eb17263d17612ee46d00aac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1model__base.html#a7aa4b8045eb17263d17612ee46d00aac">save_model_to_data</a> (std::ostream &amp;out)</td></tr>
 <tr class="separator:a7aa4b8045eb17263d17612ee46d00aac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a896fa17b7b442a614f58b0c465f311e0"><td class="memItemLeft" align="right" valign="top">const std::map&lt; std::string, std::vector&lt; std::string &gt; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1model__base.html#a896fa17b7b442a614f58b0c465f311e0">list_functions</a> ()</td></tr>
@@ -169,7 +169,7 @@ Protected Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Explicitly implemented proxy object. </p>
 
-<p>Definition at line <a class="el" href="model__base_8hpp_source.html#l00259">259</a> of file <a class="el" href="model__base_8hpp_source.html">model_base.hpp</a>.</p>
+<p>Definition at line <a class="el" href="model__base_8hpp_source.html#l00262">262</a> of file <a class="el" href="model__base_8hpp_source.html">model_base.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="abbc2ebab68ff9478dfca0654fe65c48e"></a>
 <div class="memitem">
@@ -280,7 +280,7 @@ Protected Member Functions</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classturi_1_1model__base.html#a7201757ce40107b06d5ab13dff7c6c70">turi::model_base</a>.</p>
 
-<p>Definition at line <a class="el" href="model__base_8hpp_source.html#l00281">281</a> of file <a class="el" href="model__base_8hpp_source.html">model_base.hpp</a>.</p>
+<p>Definition at line <a class="el" href="model__base_8hpp_source.html#l00284">284</a> of file <a class="el" href="model__base_8hpp_source.html">model_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -391,7 +391,7 @@ Protected Member Functions</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classturi_1_1model__base.html#a5d643a4da746b7235c2b2500e3bef4be">turi::model_base</a>.</p>
 
-<p>Definition at line <a class="el" href="model__base_8hpp_source.html#l00304">304</a> of file <a class="el" href="model__base_8hpp_source.html">model_base.hpp</a>.</p>
+<p>Definition at line <a class="el" href="model__base_8hpp_source.html#l00307">307</a> of file <a class="el" href="model__base_8hpp_source.html">model_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -440,11 +440,11 @@ Protected Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Function implemented by BEGIN_CLASS_MEMBER_REGISTRATION and invoked the first time a public member function executes. </p>
+<p>Declare the base registration function. This class has to be handled specially; the macros don't work here due to the override declarations. </p>
 
-<p>Implements <a class="el" href="classturi_1_1model__base.html#a071523ca5c32f79bc2857b847ee645fc">turi::model_base</a>.</p>
+<p>Reimplemented from <a class="el" href="classturi_1_1model__base.html#aaeec48760b29bdc3ee50560c6aa989fc">turi::model_base</a>.</p>
 
-<p>Definition at line <a class="el" href="model__base_8hpp_source.html#l00288">288</a> of file <a class="el" href="model__base_8hpp_source.html">model_base.hpp</a>.</p>
+<p>Definition at line <a class="el" href="model__base_8hpp_source.html#l00291">291</a> of file <a class="el" href="model__base_8hpp_source.html">model_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -644,7 +644,7 @@ Protected Member Functions</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classturi_1_1model__base.html#aa678b10977bca295024a31e020055abd">turi::model_base</a>.</p>
 
-<p>Definition at line <a class="el" href="model__base_8hpp_source.html#l00296">296</a> of file <a class="el" href="model__base_8hpp_source.html">model_base.hpp</a>.</p>
+<p>Definition at line <a class="el" href="model__base_8hpp_source.html#l00299">299</a> of file <a class="el" href="model__base_8hpp_source.html">model_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -673,7 +673,7 @@ Protected Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a364e269edba58d08dea5725efaaaa8dc"></a>
+<a class="anchor" id="ad51a44b7c739bc0c394b2ae900ef3d3b"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -681,16 +681,16 @@ Protected Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void turi::model_base::save_model_to_file </td>
+          <td class="memname">void turi::model_base::save_to_url </td>
           <td>(</td>
-          <td class="paramtype">const variant_map_type &amp;&#160;</td>
-          <td class="paramname"><em>side_data</em>, </td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>url</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>url</em>&#160;</td>
+          <td class="paramtype">const variant_map_type &amp;&#160;</td>
+          <td class="paramname"><em>side_data</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -707,8 +707,8 @@ Protected Member Functions</h2></td></tr>
 <p>Save a toolkit class to disk.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">sidedata</td><td>Any additional side information </td></tr>
     <tr><td class="paramname">url</td><td>The destination url to store the class. </td></tr>
+    <tr><td class="paramname">sidedata</td><td>Any additional side information </td></tr>
   </table>
   </dd>
 </dl>
@@ -775,7 +775,7 @@ Protected Member Functions</h2></td></tr>
 
 <p>Implements <a class="el" href="classturi_1_1model__base.html#a66e833929a097ce52e44585ed2d91ffd">turi::model_base</a>.</p>
 
-<p>Definition at line <a class="el" href="model__base_8hpp_source.html#l00285">285</a> of file <a class="el" href="model__base_8hpp_source.html">model_base.hpp</a>.</p>
+<p>Definition at line <a class="el" href="model__base_8hpp_source.html#l00288">288</a> of file <a class="el" href="model__base_8hpp_source.html">model_base.hpp</a>.</p>
 
 </div>
 </div>

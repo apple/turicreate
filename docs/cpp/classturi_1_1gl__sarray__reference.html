@@ -234,10 +234,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a17982d6c75bd80a8003260142496d67d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac206f4999af2e000946e10d451e3fedc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classturi_1_1gl__sarray.html">gl_sarray</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1gl__sarray.html#ac206f4999af2e000946e10d451e3fedc">builtin_rolling_apply</a> (const std::string &amp;fn_name, ssize_t start, ssize_t end, size_t min_observations=size_t(-1)) const </td></tr>
 <tr class="separator:ac206f4999af2e000946e10d451e3fedc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad91a25103ef1b78b91d1662fd91e55f4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1gl__sarray.html#ad91a25103ef1b78b91d1662fd91e55f4">show</a> (const std::string &amp;path_to_client, const std::string &amp;title, const std::string &amp;xlabel, const std::string &amp;ylabel) const </td></tr>
-<tr class="separator:ad91a25103ef1b78b91d1662fd91e55f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7cbc7395c7e3d64cd95858ce218c297e"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classturi_1_1model__base.html">model_base</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1gl__sarray.html#a7cbc7395c7e3d64cd95858ce218c297e">plot</a> (const std::string &amp;title, const std::string &amp;xlabel, const std::string &amp;ylabel) const </td></tr>
-<tr class="separator:a7cbc7395c7e3d64cd95858ce218c297e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a06099f54d7376da6730f01207951670d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1gl__sarray.html#a06099f54d7376da6730f01207951670d">show</a> (const std::string &amp;path_to_client, const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;title, const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;xlabel, const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;ylabel) const </td></tr>
+<tr class="separator:a06099f54d7376da6730f01207951670d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03532d1438ac19c68c5fee1a8929fab8"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; visualization::Plot &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1gl__sarray.html#a03532d1438ac19c68c5fee1a8929fab8">plot</a> (const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;title, const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;xlabel, const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;ylabel) const </td></tr>
+<tr class="separator:a03532d1438ac19c68c5fee1a8929fab8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Numeric operator overloads.</div></td></tr>
 <tr><td colspan="2"><div class="groupText"><p>Most operators are overloaded and will perform element-wise operations on the entire array.</p>
 <p>For instance: </p><div class="fragment"><div class="line"><a class="code" href="classturi_1_1gl__sarray.html#a473fb86600f477eaf83215cf58cab578">gl_sarray</a> a{1,2,3,4,5};</div><div class="line"><span class="comment">// an array of 5 exclamation marks</span></div><div class="line"><a class="code" href="classturi_1_1gl__sarray.html#a473fb86600f477eaf83215cf58cab578">gl_sarray</a> b = <a class="code" href="classturi_1_1gl__sarray.html#a5ade68413331c1519fe41d44ab8115a2">gl_sarray::from_const</a>(<span class="stringliteral">&quot;!&quot;</span>, 5);</div><div class="line"></div><div class="line"><span class="keyword">auto</span> ret = (2 * sa - 1).<a class="code" href="classturi_1_1gl__sarray.html#ac1a79d82fc9c2199ea7312502cae9f26">astype</a>(<a class="code" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76a63b588d5559f64f89a416e656880b949">flex_type_enum::STRING</a>) + b;</div><div class="line"><span class="comment">// results in ret being the array [&quot;1!&quot;, &quot;3!&quot;, &quot;5!&quot;, &quot;7!&quot;, &quot;9!&quot;];</span></div></div><!-- fragment --><p>Comparison operators will return a <a class="el" href="classturi_1_1gl__sarray.html">gl_sarray</a> of binary integers. </p><div class="fragment"><div class="line"><a class="code" href="classturi_1_1gl__sarray.html#a473fb86600f477eaf83215cf58cab578">gl_sarray</a> a{1,2,3,4,5};</div><div class="line"><span class="keyword">auto</span> ret = a &gt; 3; </div><div class="line"><span class="comment">// ret will be an integer array containing [0,0,0,1,1]</span></div></div><!-- fragment --><p>Logical and bitwise operators are equivalent: &amp; and &amp;&amp; mean the same thing and | and || and provide logical element-wise "and" and "or"s.</p>
@@ -1790,7 +1790,7 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a7cbc7395c7e3d64cd95858ce218c297e"></a>
+<a class="anchor" id="a03532d1438ac19c68c5fee1a8929fab8"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1798,21 +1798,21 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::shared_ptr&lt;<a class="el" href="classturi_1_1model__base.html">model_base</a>&gt; turi::gl_sarray::plot </td>
+          <td class="memname">std::shared_ptr&lt;visualization::Plot&gt; turi::gl_sarray::plot </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;&#160;</td>
           <td class="paramname"><em>title</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;&#160;</td>
           <td class="paramname"><em>xlabel</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;&#160;</td>
           <td class="paramname"><em>ylabel</em>&#160;</td>
         </tr>
         <tr>
@@ -2025,7 +2025,7 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ad91a25103ef1b78b91d1662fd91e55f4"></a>
+<a class="anchor" id="a06099f54d7376da6730f01207951670d"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -2041,19 +2041,19 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;&#160;</td>
           <td class="paramname"><em>title</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;&#160;</td>
           <td class="paramname"><em>xlabel</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;&#160;</td>
           <td class="paramname"><em>ylabel</em>&#160;</td>
         </tr>
         <tr>

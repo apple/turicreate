@@ -150,14 +150,17 @@ var namespaceturi =
     ] ],
     [ "neural_net", null, [
       [ "cnn_module", "classturi_1_1neural__net_1_1cnn__module.html", "classturi_1_1neural__net_1_1cnn__module" ],
+      [ "compute_context", "classturi_1_1neural__net_1_1compute__context.html", "classturi_1_1neural__net_1_1compute__context" ],
       [ "image_annotation", "structturi_1_1neural__net_1_1image__annotation.html", null ],
       [ "image_augmenter", "classturi_1_1neural__net_1_1image__augmenter.html", "classturi_1_1neural__net_1_1image__augmenter" ],
       [ "image_box", "structturi_1_1neural__net_1_1image__box.html", null ],
       [ "labeled_image", "structturi_1_1neural__net_1_1labeled__image.html", null ],
       [ "model_spec", "classturi_1_1neural__net_1_1model__spec.html", "classturi_1_1neural__net_1_1model__spec" ],
+      [ "mps_compute_context", "classturi_1_1neural__net_1_1mps__compute__context.html", "classturi_1_1neural__net_1_1mps__compute__context" ],
       [ "resize_only_image_augmenter", "classturi_1_1neural__net_1_1resize__only__image__augmenter.html", "classturi_1_1neural__net_1_1resize__only__image__augmenter" ]
     ] ],
     [ "object_detection", null, [
+      [ "average_precision_calculator", "classturi_1_1object__detection_1_1average__precision__calculator.html", "classturi_1_1object__detection_1_1average__precision__calculator" ],
       [ "data_iterator", "classturi_1_1object__detection_1_1data__iterator.html", "classturi_1_1object__detection_1_1data__iterator" ],
       [ "simple_data_iterator", "classturi_1_1object__detection_1_1simple__data__iterator.html", "classturi_1_1object__detection_1_1simple__data__iterator" ]
     ] ],

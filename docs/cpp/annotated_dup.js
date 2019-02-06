@@ -55,6 +55,9 @@ var annotated_dup =
       [ "subscribe_socket", "classlibfault_1_1subscribe__socket.html", "classlibfault_1_1subscribe__socket" ],
       [ "zmq_msg_vector", "classlibfault_1_1zmq__msg__vector.html", "classlibfault_1_1zmq__msg__vector" ]
     ] ],
+    [ "parser_impl", null, [
+      [ "parser_config", "structparser__impl_1_1parser__config.html", "structparser__impl_1_1parser__config" ]
+    ] ],
     [ "turi", "namespaceturi.html", "namespaceturi" ],
     [ "_MLModelSpecification", "struct__MLModelSpecification.html", null ],
     [ "barrier", "classbarrier.html", null ],

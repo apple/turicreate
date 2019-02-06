@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('classturi_1_1sketches_1_1hyperloglog.h
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="sketches_2hyperloglog_8hpp_source.html">sketches/hyperloglog.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="hyperloglog_8hpp_source.html">sketches/hyperloglog.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -139,7 +139,7 @@ Public Member Functions</h2></td></tr>
 <p>Implements the hyperloglog sketch algorithm as described in: Philippe Flajolet, Eric Fusy, Olivier Gandouet and Frederic Meunier. HyperLogLog: the analysis of a near-optimal cardinality estimation algorithm. Conference on Analysis of Algorithms (AofA) 2007.</p>
 <p>with further reference from: Stefan Heule, Marc Nunkesser and Alexander Hall. HyperLogLog in Practice: Algorithmic Engineering of a State of The Art Cardinality Estimation Algorithm. Proceedings of the EDBT 2013 Conference.</p>
 <p>Usage is simple. </p><div class="fragment"><div class="line"><a class="code" href="classturi_1_1sketches_1_1hyperloglog.html#a2cbe6b9a373af430cf560cf8a0f34a0e">hyperloglog</a> hll;</div><div class="line"><span class="comment">// repeatedly call</span></div><div class="line">hll.add(stuff) <span class="comment">// this is a templatized function. </span></div><div class="line">               <span class="comment">// will accept anything it can hash using std::hash.</span></div><div class="line">hll.estimate() <span class="comment">// will return an estimate of the number of unique element</span></div><div class="line">hll.error_bound() <span class="comment">// will return the standard deviation on the estimate</span></div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="sketches_2hyperloglog_8hpp_source.html#l00042">42</a> of file <a class="el" href="sketches_2hyperloglog_8hpp_source.html">hyperloglog.hpp</a>.</p>
+<p>Definition at line <a class="el" href="hyperloglog_8hpp_source.html#l00042">42</a> of file <a class="el" href="hyperloglog_8hpp_source.html">hyperloglog.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a2cbe6b9a373af430cf560cf8a0f34a0e"></a>
 <div class="memitem">
@@ -166,7 +166,7 @@ Public Member Functions</h2></td></tr>
 <p>Buckets. </p>
 <p>Constructs a hyperloglog sketch using 2^b buckets. The resultant hyperloglog datastructure will require 2^b bytes of memory. b must be at least 4. (i.e. 2^4 buckets). </p>
 
-<p>Definition at line <a class="el" href="sketches_2hyperloglog_8hpp_source.html#l00055">55</a> of file <a class="el" href="sketches_2hyperloglog_8hpp_source.html">hyperloglog.hpp</a>.</p>
+<p>Definition at line <a class="el" href="hyperloglog_8hpp_source.html#l00055">55</a> of file <a class="el" href="hyperloglog_8hpp_source.html">hyperloglog.hpp</a>.</p>
 
 </div>
 </div>
@@ -196,7 +196,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Adds an arbitrary object to be counted. Any object type can be used, and there are no restrictions as long as std::hash&lt;T&gt; can be used to obtain a hash value. </p>
 
-<p>Definition at line <a class="el" href="sketches_2hyperloglog_8hpp_source.html#l00080">80</a> of file <a class="el" href="sketches_2hyperloglog_8hpp_source.html">hyperloglog.hpp</a>.</p>
+<p>Definition at line <a class="el" href="hyperloglog_8hpp_source.html#l00080">80</a> of file <a class="el" href="hyperloglog_8hpp_source.html">hyperloglog.hpp</a>.</p>
 
 </div>
 </div>
@@ -223,7 +223,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Merge two hyperloglog datastructures. The two data structures must be constructed with the same number of buckets. Combining of two sketches constructed on two disjoint data streams produces identical results to generating one sketch on the both data streams. </p>
 
-<p>Definition at line <a class="el" href="sketches_2hyperloglog_8hpp_source.html#l00099">99</a> of file <a class="el" href="sketches_2hyperloglog_8hpp_source.html">hyperloglog.hpp</a>.</p>
+<p>Definition at line <a class="el" href="hyperloglog_8hpp_source.html#l00099">99</a> of file <a class="el" href="hyperloglog_8hpp_source.html">hyperloglog.hpp</a>.</p>
 
 </div>
 </div>
@@ -249,7 +249,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Returns the standard error of the estimate. </p>
 
-<p>Definition at line <a class="el" href="sketches_2hyperloglog_8hpp_source.html#l00110">110</a> of file <a class="el" href="sketches_2hyperloglog_8hpp_source.html">hyperloglog.hpp</a>.</p>
+<p>Definition at line <a class="el" href="hyperloglog_8hpp_source.html#l00110">110</a> of file <a class="el" href="hyperloglog_8hpp_source.html">hyperloglog.hpp</a>.</p>
 
 </div>
 </div>
@@ -275,12 +275,12 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Returns the estimate of the number of unique items. </p>
 
-<p>Definition at line <a class="el" href="sketches_2hyperloglog_8hpp_source.html#l00117">117</a> of file <a class="el" href="sketches_2hyperloglog_8hpp_source.html">hyperloglog.hpp</a>.</p>
+<p>Definition at line <a class="el" href="hyperloglog_8hpp_source.html#l00117">117</a> of file <a class="el" href="hyperloglog_8hpp_source.html">hyperloglog.hpp</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>sketches/<a class="el" href="sketches_2hyperloglog_8hpp_source.html">hyperloglog.hpp</a></li>
+<li>sketches/<a class="el" href="hyperloglog_8hpp_source.html">hyperloglog.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

@@ -14,6 +14,7 @@ var hierarchy =
     [ "libfault::async_request_socket", "classlibfault_1_1async__request__socket.html", null ],
     [ "turi::nanosockets::async_request_socket", "classturi_1_1nanosockets_1_1async__request__socket.html", null ],
     [ "turi::auto_close_sarrays", "classturi_1_1auto__close__sarrays.html", null ],
+    [ "turi::object_detection::average_precision_calculator", "classturi_1_1object__detection_1_1average__precision__calculator.html", null ],
     [ "turi::nearest_neighbors::ball_tree_neighbors", "classturi_1_1nearest__neighbors_1_1ball__tree__neighbors.html", null ],
     [ "barrier", "classbarrier.html", null ],
     [ "boost::gil::bilinear_sampler", "structboost_1_1gil_1_1bilinear__sampler.html", null ],
@@ -56,14 +57,17 @@ var hierarchy =
       [ "turi::v2::ml_data_internal::column_unique_indexer", "classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html", null ]
     ] ],
     [ "turi::ml_data_internal::column_indexer", "classturi_1_1ml__data__internal_1_1column__indexer.html", null ],
-    [ "turi::v2::ml_data_internal::column_metadata", "structturi_1_1v2_1_1ml__data__internal_1_1column__metadata.html", null ],
     [ "turi::ml_data_internal::column_metadata", "structturi_1_1ml__data__internal_1_1column__metadata.html", null ],
+    [ "turi::v2::ml_data_internal::column_metadata", "structturi_1_1v2_1_1ml__data__internal_1_1column__metadata.html", null ],
     [ "turi::v2::ml_data_internal::column_statistics", "classturi_1_1v2_1_1ml__data__internal_1_1column__statistics.html", [
       [ "turi::v2::ml_data_internal::basic_column_statistics", "classturi_1_1v2_1_1ml__data__internal_1_1basic__column__statistics.html", null ]
     ] ],
     [ "turi::ml_data_internal::column_statistics", "classturi_1_1ml__data__internal_1_1column__statistics.html", null ],
     [ "turi::v2::composite_row_container", "structturi_1_1v2_1_1composite__row__container.html", null ],
     [ "turi::v2::composite_row_specification", "classturi_1_1v2_1_1composite__row__specification.html", null ],
+    [ "turi::neural_net::compute_context", "classturi_1_1neural__net_1_1compute__context.html", [
+      [ "turi::neural_net::mps_compute_context", "classturi_1_1neural__net_1_1mps__compute__context.html", null ]
+    ] ],
     [ "turi::conditional", "classturi_1_1conditional.html", null ],
     [ "turi::conditional_test< bool, Cond, Args >", "structturi_1_1conditional__test.html", null ],
     [ "turi::sframe_rows::const_iterator", "structturi_1_1sframe__rows_1_1const__iterator.html", null ],
@@ -77,6 +81,7 @@ var hierarchy =
     [ "turi::nearest_neighbors::cosine", "structturi_1_1nearest__neighbors_1_1cosine.html", null ],
     [ "turi::sketches::countmin< T >", "classturi_1_1sketches_1_1countmin.html", null ],
     [ "turi::sketches::countsketch< T >", "classturi_1_1sketches_1_1countsketch.html", null ],
+    [ "turi::neural_net::image_augmenter::crop_options", "structturi_1_1neural__net_1_1image__augmenter_1_1crop__options.html", null ],
     [ "turi::csv_file_handling_options", "structturi_1_1csv__file__handling__options.html", null ],
     [ "turi::csv_line_tokenizer", "structturi_1_1csv__line__tokenizer.html", null ],
     [ "turi::csv_writer", "classturi_1_1csv__writer.html", null ],
@@ -413,6 +418,7 @@ var hierarchy =
     [ "turi::option_handling::option_info", "structturi_1_1option__handling_1_1option__info.html", null ],
     [ "turi::option_manager", "classturi_1_1option__manager.html", null ],
     [ "turi::neural_net::image_augmenter::options", "structturi_1_1neural__net_1_1image__augmenter_1_1options.html", null ],
+    [ "turi::neural_net::image_augmenter::pad_options", "structturi_1_1neural__net_1_1image__augmenter_1_1pad__options.html", null ],
     [ "turi::padded_integer", "structturi_1_1padded__integer.html", null ],
     [ "turi::padded_simple_spinlock", "classturi_1_1padded__simple__spinlock.html", null ],
     [ "turi::pagefile", "classturi_1_1pagefile.html", null ],
@@ -420,6 +426,7 @@ var hierarchy =
     [ "turi::parallel_sframe_iterator_initializer", "classturi_1_1parallel__sframe__iterator__initializer.html", null ],
     [ "turi::parallel_task_queue", "classturi_1_1parallel__task__queue.html", null ],
     [ "turi::object_detection::data_iterator::parameters", "structturi_1_1object__detection_1_1data__iterator_1_1parameters.html", null ],
+    [ "parser_impl::parser_config", "structparser__impl_1_1parser__config.html", null ],
     [ "boost::gil::pixel_assigns_t< PixelRef, PixelRefR >", "structboost_1_1gil_1_1pixel__assigns__t.html", null ],
     [ "boost::gil::pixel_divides_scalar_t< PixelRef, Scalar, PixelR >", "structboost_1_1gil_1_1pixel__divides__scalar__t.html", null ],
     [ "boost::gil::pixel_halves_t< PixelRef >", "structboost_1_1gil_1_1pixel__halves__t.html", null ],
@@ -486,8 +493,8 @@ var hierarchy =
     [ "turi::sframe_rows::row", "structturi_1_1sframe__rows_1_1row.html", null ],
     [ "turi::v2::ml_data_internal::row_data_block", "structturi_1_1v2_1_1ml__data__internal_1_1row__data__block.html", null ],
     [ "turi::ml_data_internal::row_data_block", "structturi_1_1ml__data__internal_1_1row__data__block.html", null ],
-    [ "turi::v2::ml_data_internal::row_metadata", "structturi_1_1v2_1_1ml__data__internal_1_1row__metadata.html", null ],
     [ "turi::ml_data_internal::row_metadata", "structturi_1_1ml__data__internal_1_1row__metadata.html", null ],
+    [ "turi::v2::ml_data_internal::row_metadata", "structturi_1_1v2_1_1ml__data__internal_1_1row__metadata.html", null ],
     [ "turi::v2::row_slicer", "classturi_1_1v2_1_1row__slicer.html", null ],
     [ "turi::pattern_mining::rule", "structturi_1_1pattern__mining_1_1rule.html", null ],
     [ "turi::pattern_mining::rule_list", "classturi_1_1pattern__mining_1_1rule__list.html", null ],
@@ -576,8 +583,8 @@ var hierarchy =
     [ "turi::sketches::streaming_quantile_sketch< T, Comparator >", "classturi_1_1sketches_1_1streaming__quantile__sketch.html", null ],
     [ "turi::sketches::streaming_quantile_sketch< double >", "classturi_1_1sketches_1_1streaming__quantile__sketch.html", null ],
     [ "turi::query_eval::subplan_executor", "classturi_1_1query__eval_1_1subplan__executor.html", null ],
-    [ "turi::nanosockets::subscribe_socket", "classturi_1_1nanosockets_1_1subscribe__socket.html", null ],
     [ "libfault::subscribe_socket", "classlibfault_1_1subscribe__socket.html", null ],
+    [ "turi::nanosockets::subscribe_socket", "classturi_1_1nanosockets_1_1subscribe__socket.html", null ],
     [ "turi::evaluation::supervised_evaluation_interface", "classturi_1_1evaluation_1_1supervised__evaluation__interface.html", [
       [ "turi::evaluation::classifier_accuracy", "classturi_1_1evaluation_1_1classifier__accuracy.html", null ],
       [ "turi::evaluation::confusion_matrix", "classturi_1_1evaluation_1_1confusion__matrix.html", [

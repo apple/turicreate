@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.style_transfer.StyleTransfer.export_coreml &mdash; Turi Create API 5.2 documentation</title>
+  <title>turicreate.style_transfer.StyleTransfer.export_coreml &mdash; Turi Create API 5.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 5.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -121,6 +121,41 @@
             
   <div class="section" id="turicreate-style-transfer-styletransfer-export-coreml">
 <h1>turicreate.style_transfer.StyleTransfer.export_coreml<a class="headerlink" href="#turicreate-style-transfer-styletransfer-export-coreml" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="turicreate.style_transfer.StyleTransfer.export_coreml">
+<code class="descclassname">StyleTransfer.</code><code class="descname">export_coreml</code><span class="sig-paren">(</span><em>path</em>, <em>image_shape=(256</em>, <em>256)</em>, <em>include_flexible_shape=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.style_transfer.StyleTransfer.export_coreml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the model in Core ML format. The Core ML model takes an image of
+fixed size, and a style index inputs and produces an output
+of an image of fixed size</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>path</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">A string to the path for saving the Core ML model.</p>
+</dd>
+<dt><strong>image_shape: tuple</strong></dt>
+<dd><p class="first last">A tuple (defaults to (256, 256)) will bind the coreml model to a fixed shape.</p>
+</dd>
+<dt><strong>include_flexible_shape: bool</strong></dt>
+<dd><p class="first last">A boolean value indicating whether flexible_shape should be included or not.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.style_transfer.StyleTransfer.save.html#turicreate.style_transfer.StyleTransfer.save" title="turicreate.style_transfer.StyleTransfer.save"><code class="xref py py-obj docutils literal"><span class="pre">save</span></code></a></p>
+</div>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">export_coreml</span><span class="p">(</span><span class="s1">&#39;StyleTransfer.mlmodel&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </div>
 
 
@@ -132,7 +167,7 @@
 
   <div role="contentinfo">
     <p>
-      Last updated on Nov 29, 2018.
+      Last updated on Feb 06, 2019.
     </p>
   </div>
 </footer>
@@ -150,7 +185,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.2',
+            VERSION:'5.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

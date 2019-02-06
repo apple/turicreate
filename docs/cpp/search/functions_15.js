@@ -2,7 +2,7 @@ var searchData=
 [
   ['uid',['uid',['../classturi_1_1model__base.html#a66e833929a097ce52e44585ed2d91ffd',1,'turi::model_base::uid()'],['../classturi_1_1model__proxy.html#ac8f4302f9f8f69eba617fa392b78f2fb',1,'turi::model_proxy::uid()']]],
   ['uncache',['uncache',['../classturi_1_1lazy__eval__operation__dag.html#a93375672bc1e808084bc265fc500e23e',1,'turi::lazy_eval_operation_dag']]],
-  ['unescape_5fstring',['unescape_string',['../namespaceturi.html#a13115823b388e342edac6cb32fc8139a',1,'turi::unescape_string(std::string &amp;cal, char escape_char, char quote_char, bool double_quote)'],['../namespaceturi.html#a0526311cf92a664dffb244238f7a85f1',1,'turi::unescape_string(char *cal, size_t length, char escape_char, char quote_char, bool double_quote)']]],
+  ['unescape_5fstring',['unescape_string',['../namespaceturi.html#a2ccc44c9454b45c43047d828b57d6fd1',1,'turi::unescape_string(std::string &amp;cal, bool use_escape_char, char escape_char, char quote_char, bool double_quote)'],['../namespaceturi.html#aa8e1c068cd0a8828f77ae63bc90b1274',1,'turi::unescape_string(char *cal, size_t length, bool use_escape_char, char escape_char, char quote_char, bool double_quote)']]],
   ['uniform',['uniform',['../classturi_1_1random_1_1generator.html#a9a35fd0238e471a20221ac15cf2b7136',1,'turi::random::generator::uniform()'],['../group__random.html#ga91f2105c3a3d51622598f13362d528c5',1,'turi::random::uniform()']]],
   ['union_5ffstream',['union_fstream',['../classturi_1_1union__fstream.html#a676218ef5658551a625be6dc5266565b',1,'turi::union_fstream']]],
   ['unique',['unique',['../classturi_1_1gl__sarray.html#a34984b913250f0fe75cf59c3f53aa2be',1,'turi::gl_sarray::unique()'],['../classturi_1_1gl__sframe.html#a4330bbe2e6276fcf0c94dca0405ddc48',1,'turi::gl_sframe::unique()']]],

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.style_transfer.StyleTransfer.stylize &mdash; Turi Create API 5.2 documentation</title>
+  <title>turicreate.style_transfer.StyleTransfer.stylize &mdash; Turi Create API 5.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 5.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -121,6 +121,91 @@
             
   <div class="section" id="turicreate-style-transfer-styletransfer-stylize">
 <h1>turicreate.style_transfer.StyleTransfer.stylize<a class="headerlink" href="#turicreate-style-transfer-styletransfer-stylize" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="turicreate.style_transfer.StyleTransfer.stylize">
+<code class="descclassname">StyleTransfer.</code><code class="descname">stylize</code><span class="sig-paren">(</span><em>images</em>, <em>style=None</em>, <em>verbose=True</em>, <em>max_size=800</em>, <em>batch_size=4</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.style_transfer.StyleTransfer.stylize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stylize an SFrame of Images given a style index or a list of
+styles.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>images</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame | Image</span></dt>
+<dd><p class="first last">A dataset that has the same content image column that was used
+during training.</p>
+</dd>
+<dt><strong>style</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int or list, optional</span></dt>
+<dd><p class="first last">The selected style or list of styles to use on the <code class="docutils literal"><span class="pre">images</span></code>. If
+<cite>None</cite>, all styles will be applied to each image in <code class="docutils literal"><span class="pre">images</span></code>.</p>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If True, print progress updates.</p>
+</dd>
+<dt><strong>max_size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int or tuple</span></dt>
+<dd><p class="first">Max input image size that will not get resized during stylization.</p>
+<p class="last">Images with a side larger than this value, will be scaled down, due
+to time and memory constraints. If tuple, interpreted as (max
+width, max height). Without resizing, larger input images take more
+time to stylize.  Resizing can effect the quality of the final
+stylized image.</p>
+</dd>
+<dt><strong>batch_size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">If you are getting memory errors, try decreasing this value. If you
+have a powerful computer, increasing this value may improve
+performance.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame or SArray or turicreate.Image</span></dt>
+<dd><p class="first last">If <code class="docutils literal"><span class="pre">style</span></code> is a list, an SFrame is always returned. If <code class="docutils literal"><span class="pre">style</span></code>
+is a single integer, the output type will match the input type
+(Image, SArray, or SFrame).</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.style_transfer.create.html#turicreate.style_transfer.create" title="turicreate.style_transfer.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a></p>
+</div>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">&quot;/path/to/image.jpg&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stylized_images</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">stylize</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="go">Data:</span>
+<span class="go">+--------+-------+------------------------+</span>
+<span class="go">| row_id | style |     stylized_image     |</span>
+<span class="go">+--------+-------+------------------------+</span>
+<span class="go">|   0    |   0   | Height: 256 Width: 256 |</span>
+<span class="go">|   0    |   1   | Height: 256 Width: 256 |</span>
+<span class="go">+--------+-------+------------------------+</span>
+<span class="go">[2 rows x 3 columns]</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">images</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">image_analysis</span><span class="o">.</span><span class="n">load_images</span><span class="p">(</span><span class="s1">&#39;/path/to/images&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stylized_images</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">stylize</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+<span class="go">Data:</span>
+<span class="go">+--------+-------+------------------------+</span>
+<span class="go">| row_id | style |     stylized_image     |</span>
+<span class="go">+--------+-------+------------------------+</span>
+<span class="go">|   0    |   0   | Height: 256 Width: 256 |</span>
+<span class="go">|   0    |   1   | Height: 256 Width: 256 |</span>
+<span class="go">|   0    |   2   | Height: 256 Width: 256 |</span>
+<span class="go">|   0    |   3   | Height: 256 Width: 256 |</span>
+<span class="go">|   1    |   0   | Height: 640 Width: 648 |</span>
+<span class="go">|   1    |   1   | Height: 640 Width: 648 |</span>
+<span class="go">|   1    |   2   | Height: 640 Width: 648 |</span>
+<span class="go">|   1    |   3   | Height: 640 Width: 648 |</span>
+<span class="go">+--------+-------+------------------------+</span>
+<span class="go">[8 rows x 3 columns]</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </div>
 
 
@@ -132,7 +217,7 @@
 
   <div role="contentinfo">
     <p>
-      Last updated on Nov 29, 2018.
+      Last updated on Feb 06, 2019.
     </p>
   </div>
 </footer>
@@ -150,7 +235,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.2',
+            VERSION:'5.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

@@ -134,11 +134,15 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a35643bcd9ec71f78916182d6b6e4eb36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a33d5d1496e0248e1f59f8eb447ee9185"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1csv__line__tokenizer.html#a33d5d1496e0248e1f59f8eb447ee9185">parse_as</a> (char **buf, size_t len, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;out, bool recursive_parse=false)</td></tr>
 <tr class="separator:a33d5d1496e0248e1f59f8eb447ee9185"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a241fcb0a3251da667f8e623aac97289b"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1csv__line__tokenizer.html#a241fcb0a3251da667f8e623aac97289b">get_last_parse_error_diagnosis</a> () const </td></tr>
+<tr class="separator:a241fcb0a3251da667f8e623aac97289b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a1baea9f19cb4cedf1c18f1068cd1675b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1csv__line__tokenizer.html#a1baea9f19cb4cedf1c18f1068cd1675b">preserve_quoting</a> = false</td></tr>
 <tr class="separator:a1baea9f19cb4cedf1c18f1068cd1675b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab300193d420d2fede5180471bd5cee3b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1csv__line__tokenizer.html#ab300193d420d2fede5180471bd5cee3b">use_escape_char</a> = true</td></tr>
+<tr class="separator:ab300193d420d2fede5180471bd5cee3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab22415e323a44191b6a729e72045272e"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1csv__line__tokenizer.html#ab22415e323a44191b6a729e72045272e">escape_char</a> = '\\'</td></tr>
 <tr class="separator:ab22415e323a44191b6a729e72045272e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a839eaf9c68ac8c72e0545c74e90ac197"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1csv__line__tokenizer.html#a839eaf9c68ac8c72e0545c74e90ac197">skip_initial_space</a> = true</td></tr>
@@ -157,6 +161,10 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a370510f1fee79093bbb8f3e4c9784aa6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4ee9fe422e418cb3a5e6edc09514280"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1csv__line__tokenizer.html#af4ee9fe422e418cb3a5e6edc09514280">na_values</a></td></tr>
 <tr class="separator:af4ee9fe422e418cb3a5e6edc09514280"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4419fed8f27bbffd3a95213c76349e16"><td class="memItemLeft" align="right" valign="top">std::unordered_set&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1csv__line__tokenizer.html#a4419fed8f27bbffd3a95213c76349e16">true_values</a></td></tr>
+<tr class="separator:a4419fed8f27bbffd3a95213c76349e16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a015772eb0fdb2c26df69aa440964f267"><td class="memItemLeft" align="right" valign="top">std::unordered_set&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1csv__line__tokenizer.html#a015772eb0fdb2c26df69aa440964f267">false_values</a></td></tr>
+<tr class="separator:a015772eb0fdb2c26df69aa440964f267"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>CSV Line Tokenizer.</p>
@@ -182,6 +190,22 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a241fcb0a3251da667f8e623aac97289b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string&amp; turi::csv_line_tokenizer::get_last_parse_error_diagnosis </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns a printable string describing the parse error. This is only filled when <a class="el" href="structturi_1_1csv__line__tokenizer.html#a2ce0f06e5faf8ed46866e6be3f5350f7">tokenize_line</a> fails. The string is <em>not</em> cleared when tokenize line succeeds so this should not be used for flagging parse errors. </p>
+
+</div>
+</div>
 <a class="anchor" id="a34a5fcf275ac80b0e474a29196d74de8"></a>
 <div class="memitem">
 <div class="memproto">
@@ -414,7 +438,7 @@ Public Attributes</h2></td></tr>
 * 333,zzz, 3 # this is also a comment
 * 444,aaa, 51
 * </pre> 
-<p>Definition at line <a class="el" href="csv__line__tokenizer_8hpp_source.html#l00091">91</a> of file <a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="csv__line__tokenizer_8hpp_source.html#l00095">95</a> of file <a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a>.</p>
 
 </div>
 </div>
@@ -429,7 +453,7 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>The delimiter character to use to separate fields (Default ",") </p>
 
-<p>Definition at line <a class="el" href="csv__line__tokenizer_8hpp_source.html#l00067">67</a> of file <a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="csv__line__tokenizer_8hpp_source.html#l00071">71</a> of file <a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a>.</p>
 
 </div>
 </div>
@@ -445,7 +469,7 @@ Public Attributes</h2></td></tr>
 <p>If set to true, pairs of quote characters in a quoted string are interpreted as a single quote (Default false). For instance, if set to true, the 2nd field of the 2nd line is read as <b>"hello "world""</b> </p><pre class="fragment">* user, message
 * 123, "hello ""world"""
 * </pre> 
-<p>Definition at line <a class="el" href="csv__line__tokenizer_8hpp_source.html#l00108">108</a> of file <a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="csv__line__tokenizer_8hpp_source.html#l00112">112</a> of file <a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a>.</p>
 
 </div>
 </div>
@@ -461,7 +485,22 @@ Public Attributes</h2></td></tr>
 <p>The character to use to identify the beginning of a C escape sequence (Defualt '\'). i.e. "\n" will be converted to the '<br />
 ' character, "\\" will be converted to "\", etc. Note that only the single character escapes are converted. unicode (), octal (), hexadecimal () are not interpreted. </p>
 
-<p>Definition at line <a class="el" href="csv__line__tokenizer_8hpp_source.html#l00056">56</a> of file <a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="csv__line__tokenizer_8hpp_source.html#l00060">60</a> of file <a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a015772eb0fdb2c26df69aa440964f267"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unordered_set&lt;std::string&gt; turi::csv_line_tokenizer::false_values</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>string values which map to numeric 0 </p>
+
+<p>Definition at line <a class="el" href="csv__line__tokenizer_8hpp_source.html#l00134">134</a> of file <a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a>.</p>
 
 </div>
 </div>
@@ -476,7 +515,7 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>Whether comment char is used </p>
 
-<p>Definition at line <a class="el" href="csv__line__tokenizer_8hpp_source.html#l00096">96</a> of file <a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="csv__line__tokenizer_8hpp_source.html#l00100">100</a> of file <a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a>.</p>
 
 </div>
 </div>
@@ -491,7 +530,7 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>The string to use to separate lines. Defaults to "\n". Setting the new line string to "\n" has special effects in that it causes "\r", "\r\n" and "\n" to be all interpreted as new lines. </p>
 
-<p>Definition at line <a class="el" href="csv__line__tokenizer_8hpp_source.html#l00075">75</a> of file <a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="csv__line__tokenizer_8hpp_source.html#l00079">79</a> of file <a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a>.</p>
 
 </div>
 </div>
@@ -507,7 +546,7 @@ Public Attributes</h2></td></tr>
 <p>The strings which will be parsed as missing values.</p>
 <p>(also see empty_string_in_na_values) </p>
 
-<p>Definition at line <a class="el" href="csv__line__tokenizer_8hpp_source.html#l00120">120</a> of file <a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="csv__line__tokenizer_8hpp_source.html#l00124">124</a> of file <a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a>.</p>
 
 </div>
 </div>
@@ -537,7 +576,7 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>The quote character to use (Default '"') </p>
 
-<p>Definition at line <a class="el" href="csv__line__tokenizer_8hpp_source.html#l00113">113</a> of file <a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="csv__line__tokenizer_8hpp_source.html#l00117">117</a> of file <a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a>.</p>
 
 </div>
 </div>
@@ -552,7 +591,37 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>If set to true, initial spaces before fields are ignored (Default true). </p>
 
-<p>Definition at line <a class="el" href="csv__line__tokenizer_8hpp_source.html#l00061">61</a> of file <a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="csv__line__tokenizer_8hpp_source.html#l00065">65</a> of file <a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a4419fed8f27bbffd3a95213c76349e16"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unordered_set&lt;std::string&gt; turi::csv_line_tokenizer::true_values</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>string values which map to numeric 1 </p>
+
+<p>Definition at line <a class="el" href="csv__line__tokenizer_8hpp_source.html#l00129">129</a> of file <a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab300193d420d2fede5180471bd5cee3b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool turi::csv_line_tokenizer::use_escape_char = true</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>If escape_char is used. </p>
+
+<p>Definition at line <a class="el" href="csv__line__tokenizer_8hpp_source.html#l00052">52</a> of file <a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a>.</p>
 
 </div>
 </div>

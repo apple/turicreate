@@ -112,7 +112,6 @@ $(document).ready(function(){initNavTree('classturi_1_1object__detection_1_1data
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="classturi_1_1object__detection_1_1data__iterator-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">turi::object_detection::data_iterator Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
@@ -134,11 +133,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a495b7618708aa3bc365f881c1914af49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab96770e8eba4d01b3bb4e85c83302493"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1object__detection_1_1data__iterator.html#ab96770e8eba4d01b3bb4e85c83302493">num_instances</a> () const  =0</td></tr>
 <tr class="separator:ab96770e8eba4d01b3bb4e85c83302493"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
-Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a0466e86477a114259c49dd426e457b30"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1object__detection_1_1data__iterator.html#a0466e86477a114259c49dd426e457b30">convert_annotations_to_yolo</a> (const std::vector&lt; <a class="el" href="structturi_1_1neural__net_1_1image__annotation.html">neural_net::image_annotation</a> &gt; &amp;annotations, size_t output_height, size_t output_width, size_t num_anchors, size_t num_classes, float *out)</td></tr>
-<tr class="separator:a0466e86477a114259c49dd426e457b30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Pure virtual interface for classes that produce batches of data (pre-augmentation) from a raw SFrame. </p>
@@ -171,76 +165,6 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a0466e86477a114259c49dd426e457b30"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void turi::object_detection::data_iterator::convert_annotations_to_yolo </td>
-          <td>(</td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="structturi_1_1neural__net_1_1image__annotation.html">neural_net::image_annotation</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>annotations</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>output_height</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>output_width</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>num_anchors</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>num_classes</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float *&#160;</td>
-          <td class="paramname"><em>out</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Writes a list of image_annotation values into an output float buffer.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">annotations</td><td>The list of annotations (for one image) to write </td></tr>
-    <tr><td class="paramname">output_height</td><td>The height of the YOLO output grid </td></tr>
-    <tr><td class="paramname">output_width</td><td>The width of the YOLO output grid </td></tr>
-    <tr><td class="paramname">num_anchors</td><td>The number of YOLO anchors </td></tr>
-    <tr><td class="paramname">num_classes</td><td>The number of classes in the output one-hot encoding </td></tr>
-    <tr><td class="paramname">out</td><td>Address to a float buffer of size output_height * output_width * num_anchors * (5 + num_classes) </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a class="anchor" id="af0f374d8d37314891662446490bde706"></a>
 <div class="memitem">
 <div class="memproto">
@@ -263,7 +187,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>Returns a vector whose size is equal to <code>batch_size</code>.</p>
-<p>Note that the iterator will cycle indefinitely through the SFrame over and over. The x,y coordinates in the returned annotations indicate the upper-left corner of the bounding box. </p>
+<p>If <code>repeat</code> was set in the parameters, then the iterator will cycle indefinitely through the SFrame over and over. Otherwise, the last non-empty batch may contain fewer than <code>batch_size</code> elements, and every batch after that will be empty.</p>
+<p>The x,y coordinates in the returned annotations indicate the upper-left corner of the bounding box. </p>
 
 <p>Implemented in <a class="el" href="classturi_1_1object__detection_1_1simple__data__iterator.html#a80407e63f9b87eed122ca356cf3f8e62">turi::object_detection::simple_data_iterator</a>.</p>
 

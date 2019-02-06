@@ -40,7 +40,7 @@ var group__unity =
       [ "list_set_properties", "classturi_1_1simple__model.html#adc73af9d8652d000927215b77044fcd7", null ],
       [ "load_version", "classturi_1_1simple__model.html#a3578a1f6e2b1aa7a67286d69b40c1bee", null ],
       [ "name", "classturi_1_1simple__model.html#a64ee1de348f3fa3f1991120809c9bbe2", null ],
-      [ "perform_registration", "classturi_1_1simple__model.html#a071523ca5c32f79bc2857b847ee645fc", null ],
+      [ "perform_registration", "classturi_1_1simple__model.html#aaeec48760b29bdc3ee50560c6aa989fc", null ],
       [ "register_defaults", "classturi_1_1simple__model.html#a5cf40c6ddfcc9a6880e3fbc12887e674", null ],
       [ "register_docstring", "classturi_1_1simple__model.html#ab578518d809d223221ff15ece653f298", null ],
       [ "register_function", "classturi_1_1simple__model.html#a7053781383d66795c4773da6b7df8a74", null ],
@@ -48,7 +48,7 @@ var group__unity =
       [ "register_setter", "classturi_1_1simple__model.html#a1b64c0bb643593609796742ac28a006a", null ],
       [ "save_impl", "classturi_1_1simple__model.html#ab43db5108d85d406aa8d5eb8b847fbcd", null ],
       [ "save_model_to_data", "classturi_1_1simple__model.html#a7aa4b8045eb17263d17612ee46d00aac", null ],
-      [ "save_model_to_file", "classturi_1_1simple__model.html#a364e269edba58d08dea5725efaaaa8dc", null ],
+      [ "save_to_url", "classturi_1_1simple__model.html#ad51a44b7c739bc0c394b2ae900ef3d3b", null ],
       [ "set_property", "classturi_1_1simple__model.html#a88b45f92a382e58ab472535bfb526a27", null ],
       [ "uid", "classturi_1_1simple__model.html#a66e833929a097ce52e44585ed2d91ffd", null ],
       [ "params", "classturi_1_1simple__model.html#ac48a20d0cc234f2ea76cb62e14f190d0", null ]

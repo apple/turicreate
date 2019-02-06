@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['pad_5foptions',['pad_options',['../structturi_1_1neural__net_1_1image__augmenter_1_1pad__options.html',1,'turi::neural_net::image_augmenter']]],
   ['padded_5finteger',['padded_integer',['../structturi_1_1padded__integer.html',1,'turi']]],
   ['padded_5fsimple_5fspinlock',['padded_simple_spinlock',['../classturi_1_1padded__simple__spinlock.html',1,'turi']]],
   ['pagefile',['pagefile',['../classturi_1_1pagefile.html',1,'turi']]],
@@ -7,6 +8,7 @@ var searchData=
   ['parallel_5fsframe_5fiterator_5finitializer',['parallel_sframe_iterator_initializer',['../classturi_1_1parallel__sframe__iterator__initializer.html',1,'turi']]],
   ['parallel_5ftask_5fqueue',['parallel_task_queue',['../classturi_1_1parallel__task__queue.html',1,'turi']]],
   ['parameters',['parameters',['../structturi_1_1object__detection_1_1data__iterator_1_1parameters.html',1,'turi::object_detection::data_iterator']]],
+  ['parser_5fconfig',['parser_config',['../structparser__impl_1_1parser__config.html',1,'parser_impl']]],
   ['pixel_5fassigns_5ft',['pixel_assigns_t',['../structboost_1_1gil_1_1pixel__assigns__t.html',1,'boost::gil']]],
   ['pixel_5fdivides_5fscalar_5ft',['pixel_divides_scalar_t',['../structboost_1_1gil_1_1pixel__divides__scalar__t.html',1,'boost::gil']]],
   ['pixel_5fhalves_5ft',['pixel_halves_t',['../structboost_1_1gil_1_1pixel__halves__t.html',1,'boost::gil']]],

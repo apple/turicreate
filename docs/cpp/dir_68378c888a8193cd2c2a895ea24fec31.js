@@ -14,6 +14,7 @@ var dir_68378c888a8193cd2c2a895ea24fec31 =
     [ "neural_net", "dir_bdaf11faeaa1f3f7e990168f65a35109.html", "dir_bdaf11faeaa1f3f7e990168f65a35109" ],
     [ "object_detection", "dir_053116dc6e85a9911486a8765a5e4ec2.html", "dir_053116dc6e85a9911486a8765a5e4ec2" ],
     [ "pattern_mining", "dir_066af60d9f86cc0b706926fe2effeaec.html", "dir_066af60d9f86cc0b706926fe2effeaec" ],
+    [ "prototype", "dir_e2148ec8a62a2951fed8e2a35759831d.html", "dir_e2148ec8a62a2951fed8e2a35759831d" ],
     [ "recsys", "dir_5f6fd12ab942ff12d3dfad81c820354d.html", "dir_5f6fd12ab942ff12d3dfad81c820354d" ],
     [ "sgd", "dir_c900cc39a15c3c618834c9906001af13.html", "dir_c900cc39a15c3c618834c9906001af13" ],
     [ "sparse_similarity", "dir_d88f622cfda09a180340ed7ce4ddc412.html", "dir_d88f622cfda09a180340ed7ce4ddc412" ],

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.image_classifier.create &mdash; Turi Create API 5.2 documentation</title>
+  <title>turicreate.image_classifier.create &mdash; Turi Create API 5.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 5.3 documentation" href="../index.html"/>
         <link rel="up" title="image_classifier" href="../turicreate.toolkits.image_classifier.html"/>
         <link rel="next" title="turicreate.image_classifier.ImageClassifier" href="turicreate.image_classifier.ImageClassifier.html"/>
         <link rel="prev" title="turicreate.image_classifier.ImageClassifier" href="turicreate.image_classifier.ImageClassifier.html"/> 
@@ -130,18 +130,21 @@
 <h1>turicreate.image_classifier.create<a class="headerlink" href="#turicreate-image-classifier-create" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="turicreate.image_classifier.create">
-<code class="descclassname">turicreate.image_classifier.</code><code class="descname">create</code><span class="sig-paren">(</span><em>dataset</em>, <em>target</em>, <em>feature=None</em>, <em>model='resnet-50'</em>, <em>validation_set='auto'</em>, <em>max_iterations=10</em>, <em>verbose=True</em>, <em>seed=None</em>, <em>batch_size=64</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.image_classifier.create" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a <a class="reference internal" href="turicreate.image_classifier.ImageClassifier.html#turicreate.image_classifier.ImageClassifier" title="turicreate.image_classifier.ImageClassifier"><code class="xref py py-class docutils literal"><span class="pre">ImageClassifier</span></code></a> model.</p>
+<code class="descclassname">turicreate.image_classifier.</code><code class="descname">create</code><span class="sig-paren">(</span><em>dataset</em>, <em>target</em>, <em>feature=None</em>, <em>model='resnet-50'</em>, <em>l2_penalty=0.01</em>, <em>l1_penalty=0.0</em>, <em>solver='auto'</em>, <em>feature_rescaling=True</em>, <em>convergence_threshold=0.01</em>, <em>step_size=1.0</em>, <em>lbfgs_memory_level=11</em>, <em>max_iterations=10</em>, <em>class_weights=None</em>, <em>validation_set='auto'</em>, <em>verbose=True</em>, <em>seed=None</em>, <em>batch_size=64</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.image_classifier.create" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>Create a <a class="reference internal" href="turicreate.image_classifier.ImageClassifier.html#turicreate.image_classifier.ImageClassifier" title="turicreate.image_classifier.ImageClassifier"><code class="xref py py-class docutils literal"><span class="pre">ImageClassifier</span></code></a> model.</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
-<dd><p class="first last">Input data. The column named by the &#8216;feature&#8217; parameter will be
+<dd><blockquote class="first">
+<div><p>Input data. The column named by the &#8216;feature&#8217; parameter will be
 extracted for modeling.</p>
-</dd>
-<dt><strong>target</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, or int</span></dt>
+</div></blockquote>
+<dl class="last docutils">
+<dt>target <span class="classifier-delimiter">:</span> <span class="classifier">string, or int</span></dt>
 <dd><p class="first last">Name of the column containing the target variable. The values in this
 column must be of string or integer type. String target variables are
 automatically mapped to integers in the order in which they are provided.
@@ -150,13 +153,83 @@ values is mapped to 0 and 1 respectively with 0 being the base class
 and 1 being the reference class. Use <cite>model.classes</cite> to retrieve
 the order in which the classes are mapped.</p>
 </dd>
-<dt><strong>feature</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dt>feature <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
 <dd><p class="first last">indicates that the SFrame has only column of Image type and that will
 Name of the column containing the input images. &#8216;None&#8217; (the default)
 indicates the only image column in <cite>dataset</cite> should be used as the
 feature.</p>
 </dd>
-<dt><strong>model</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string optional</span></dt>
+</dl>
+</dd>
+<dt><strong>l2_penalty</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><blockquote class="first">
+<div><p>Weight on l2 regularization of the model. The larger this weight, the
+more the model coefficients shrink toward 0. This introduces bias into
+the model but decreases variance, potentially leading to better
+predictions. The default value is 0.01; setting this parameter to 0
+corresponds to unregularized logistic regression. See the ridge
+regression reference for more detail.</p>
+</div></blockquote>
+<dl class="last docutils">
+<dt>l1_penalty <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Weight on l1 regularization of the model. Like the l2 penalty, the
+higher the l1 penalty, the more the estimated coefficients shrink toward
+0. The l1 penalty, however, completely zeros out sufficiently small
+coefficients, automatically indicating features that are not useful
+for the model. The default weight of 0 prevents any features from
+being discarded. See the LASSO regression reference for more detail.</p>
+</dd>
+<dt>solver <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first">Name of the solver to be used to solve the regression. See the
+references for more detail on each solver. Available solvers are:</p>
+<ul class="simple">
+<li><em>auto (default)</em>: automatically chooses the best solver for the data
+and model parameters.</li>
+<li><em>newton</em>: Newton-Raphson</li>
+<li><em>lbfgs</em>: limited memory BFGS</li>
+<li><em>fista</em>: accelerated gradient descent</li>
+</ul>
+<p>For this model, the Newton-Raphson method is equivalent to the
+iteratively re-weighted least squares algorithm. If the l1_penalty is
+greater than 0, use the &#8216;fista&#8217; solver.</p>
+<p>The model is trained using a carefully engineered collection of methods
+that are automatically picked based on the input data. The <code class="docutils literal"><span class="pre">newton</span></code>
+method  works best for datasets with plenty of examples and few features
+(long datasets). Limited memory BFGS (<code class="docutils literal"><span class="pre">lbfgs</span></code>) is a robust solver for
+wide datasets (i.e datasets with many coefficients).  <code class="docutils literal"><span class="pre">fista</span></code> is the
+default solver for l1-regularized linear regression. The solvers are all
+automatically tuned and the default options should function well. See
+the solver options guide for setting additional parameters for each of
+the solvers.</p>
+<p class="last">See the user guide for additional details on how the solver is chosen.
+(see <a class="reference external" href="https://apple.github.io/turicreate/docs/userguide/supervised-learning/linear-regression.html">here</a>)</p>
+</dd>
+<dt>feature_rescaling <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
+<dd><p class="first last">Feature rescaling is an important pre-processing step that ensures that
+all features are on the same scale. An l2-norm rescaling is performed
+to make sure that all features are of the same norm. Categorical
+features are also rescaled by rescaling the dummy variables that are
+used to represent them. The coefficients are returned in original scale
+of the problem. This process is particularly useful when features
+vary widely in their ranges.</p>
+</dd>
+<dt>convergence_threshold <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Convergence is tested using variation in the training objective. The
+variation in the training objective is calculated using the difference
+between the objective values between two steps. Consider reducing this
+below the default value (0.01) for a more accurately trained model.
+Beware of overfitting (i.e a model that works well only on the training
+data) if this parameter is set to a very low value.</p>
+</dd>
+<dt>lbfgs_memory_level <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">The L-BFGS algorithm keeps track of gradient information from the
+previous <code class="docutils literal"><span class="pre">lbfgs_memory_level</span></code> iterations. The storage requirement for
+each of these gradients is the <code class="docutils literal"><span class="pre">num_coefficients</span></code> in the problem.
+Increasing the <code class="docutils literal"><span class="pre">lbfgs_memory_level</span> <span class="pre">``can</span> <span class="pre">help</span> <span class="pre">improve</span> <span class="pre">the</span> <span class="pre">quality</span> <span class="pre">of</span>
+<span class="pre">the</span> <span class="pre">model</span> <span class="pre">trained.</span> <span class="pre">Setting</span> <span class="pre">this</span> <span class="pre">to</span> <span class="pre">more</span> <span class="pre">than</span> <span class="pre">``max_iterations</span></code> has the
+same effect as setting it to <code class="docutils literal"><span class="pre">max_iterations</span></code>.</p>
+</dd>
+<dt>model <span class="classifier-delimiter">:</span> <span class="classifier">string optional</span></dt>
 <dd><p class="first">Uses a pretrained model to bootstrap an image classifier:</p>
 <blockquote>
 <div><ul class="simple">
@@ -171,7 +244,7 @@ feature.</p>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt>&#8220;VisionFeaturePrint_Screen&#8221;: Uses an OS internal feature extractor.</dt>
+<dt>&#8220;VisionFeaturePrint_Scene&#8221;: Uses an OS internal feature extractor.</dt>
 <dd>Only on available on iOS 12.0+,
 macOS 10.14+ and tvOS 12.0+.
 Exported Core ML model will be ~41K.</dd>
@@ -182,7 +255,19 @@ Exported Core ML model will be ~41K.</dd>
 <p class="last">Models are downloaded from the internet if not available locally. Once
 downloaded, the models are cached for future use.</p>
 </dd>
-<dt><strong>validation_set</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
+<dt>step_size <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">The starting step size to use for the <code class="docutils literal"><span class="pre">fista</span></code> solver. The default is
+set to 1.0, this is an aggressive setting. If the first iteration takes
+a considerable amount of time, reducing this parameter may speed up
+model training.</p>
+</dd>
+<dt>class_weights <span class="classifier-delimiter">:</span> <span class="classifier">{dict, <cite>auto</cite>}, optional</span></dt>
+<dd><p class="first last">Weights the examples in the training data according to the given class
+weights. If set to <cite>None</cite>, all classes are supposed to have weight one. The
+<cite>auto</cite> mode set the class weight to be inversely proportional to number of
+examples in the training data with the given class.</p>
+</dd>
+<dt>validation_set <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
 <dd><p class="first last">A dataset for monitoring the model&#8217;s generalization performance.
 The format of this SFrame must be the same as the training set.
 By default this argument is set to &#8216;auto&#8217; and a validation set is
@@ -190,22 +275,24 @@ automatically sampled and used for progress printing. If
 validation_set is set to None, then no additional metrics
 are computed. The default value is &#8216;auto&#8217;.</p>
 </dd>
-<dt><strong>max_iterations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dt>max_iterations <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
 <dd><p class="first last">The maximum number of allowed passes through the data. More passes over
 the data can result in a more accurately trained model. Consider
 increasing this (the default value is 10) if the training accuracy is
 low and the <em>Grad-Norm</em> in the display is large.</p>
 </dd>
-<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dt>verbose <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
 <dd><p class="first last">If True, prints progress updates and model details.</p>
 </dd>
-<dt><strong>seed</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dt>seed <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
 <dd><p class="first last">Seed for random number generation. Set this value to ensure that the
 same model is created every time.</p>
 </dd>
-<dt><strong>batch_size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dt>batch_size <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
 <dd><p class="first last">If you are getting memory errors, try decreasing this value. If you
 have a powerful computer, increasing this value may improve performance.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </td>
@@ -219,10 +306,6 @@ have a powerful computer, increasing this value may improve performance.</p>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.image_classifier.ImageClassifier.html#turicreate.image_classifier.ImageClassifier" title="turicreate.image_classifier.ImageClassifier"><code class="xref py py-obj docutils literal"><span class="pre">ImageClassifier</span></code></a></p>
-</div>
 <p class="rubric">Examples</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">image_classifier</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;is_expensive&#39;</span><span class="p">)</span>
 
@@ -257,7 +340,7 @@ have a powerful computer, increasing this value may improve performance.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Nov 29, 2018.
+      Last updated on Feb 06, 2019.
     </p>
   </div>
 </footer>
@@ -275,7 +358,7 @@ have a powerful computer, increasing this value may improve performance.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.2',
+            VERSION:'5.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

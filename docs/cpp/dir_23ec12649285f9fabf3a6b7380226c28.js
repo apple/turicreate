@@ -28,6 +28,7 @@ var dir_23ec12649285f9fabf3a6b7380226c28 =
     [ "resizing_array_sink.hpp", "resizing__array__sink_8hpp_source.html", null ],
     [ "safe_circular_char_buffer.hpp", "safe__circular__char__buffer_8hpp_source.html", null ],
     [ "stl_util.hpp", "stl__util_8hpp_source.html", null ],
+    [ "string_util.hpp", "string__util_8hpp_source.html", null ],
     [ "sys_util.hpp", "sys__util_8hpp_source.html", null ],
     [ "syserr_reporting.hpp", "syserr__reporting_8hpp_source.html", null ],
     [ "test_macros.hpp", "test__macros_8hpp_source.html", null ],

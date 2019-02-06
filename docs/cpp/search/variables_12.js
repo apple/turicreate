@@ -4,6 +4,7 @@ var searchData=
   ['sarray_5ffrom_5ffile_5fbatch_5fsize',['SARRAY_FROM_FILE_BATCH_SIZE',['../group__sframe__main.html#gab4060e1d00eabb1bf74af3ecaef1751e',1,'turi']]],
   ['sarray_5fwriter_5finital_5felements_5fper_5fblock',['SARRAY_WRITER_INITAL_ELEMENTS_PER_BLOCK',['../group__sframe__main.html#ga71cf727dd3ad628263a73b11c6ad6528',1,'turi']]],
   ['sarray_5fwriter_5fmin_5felements_5fper_5fblock',['SARRAY_WRITER_MIN_ELEMENTS_PER_BLOCK',['../group__sframe__main.html#ga7281e1bb0446ea33004e78d51ea8c6a7',1,'turi']]],
+  ['saturation_5fmax_5fjitter',['saturation_max_jitter',['../structturi_1_1neural__net_1_1image__augmenter_1_1options.html#af6fddfda6b1b70fa3d0d2edaa64a1012',1,'turi::neural_net::image_augmenter::options']]],
   ['scale',['scale',['../classturi_1_1supervised_1_1l2__rescaling.html#ad4653236541b02dcf92135d5829f17ce',1,'turi::supervised::l2_rescaling::scale()'],['../classturi_1_1l2__rescaling.html#a48c0a8eeacad22315f896dbcd3237521',1,'turi::l2_rescaling::scale()']]],
   ['scaler',['scaler',['../classturi_1_1supervised_1_1linear__regression__opt__interface.html#a3c9b26a61adc6ed05ea564848c9ad48c',1,'turi::supervised::linear_regression_opt_interface']]],
   ['segment_5ffiles',['segment_files',['../structturi_1_1index__file__information.html#a2314f2c4e049493a2fb646ed5e5ee6bd',1,'turi::index_file_information::segment_files()'],['../structturi_1_1group__index__file__information.html#acadb5936d7075097a90036fd5723731d',1,'turi::group_index_file_information::segment_files()']]],
