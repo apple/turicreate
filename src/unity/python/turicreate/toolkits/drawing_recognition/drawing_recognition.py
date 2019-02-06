@@ -20,7 +20,7 @@ import turicreate.toolkits._internal_utils as _tkutl
 from ._sframe_loader import SFrameRecognitionIter as _SFrameRecognitionIter
 from .. import _mxnet_utils
 
-
+from turicreate import extensions as _extensions
 
 class Model(_HybridBlock):
     def __init__(self, num_classes, **kwargs):
@@ -48,13 +48,39 @@ class Model(_HybridBlock):
         return F.softmax(x)
 
 def create(dataset, annotations=None, num_epochs=100, feature=None, model=None,
-           classes=None, batch_size=256, max_iterations=0, verbose=True,
-           **kwargs):
+           classes=None, batch_size=256, max_iterations=0, verbose=True, 
+           is_stroke_input = False, **kwargs):
     """
     Create a :class:`DrawingRecognition` model.
     """
 
     start_time = _time.time()
+
+    dataset = _extensions._drawing_recognition_prepare_data(
+        dataset, "bitmap", "label", is_stroke_input)
+    if is_stroke_input:
+        new_images = []
+        count = 0
+        for drawing in dataset["bitmap"]:
+            new_drawing = []
+            for stroke in drawing:
+                x_array = [p["x"] for p in stroke]
+                y_array = [p["y"] for p in stroke]
+                new_drawing.append([x_array, y_array])
+            new_image = vector_to_raster(new_drawing)
+            new_images.append(new_image)
+            # print("####################################")
+            # print(count)
+            # print("####################################")
+            # print(new_image)
+            # print("####################################")
+            count+=1
+
+        dataset["bitmap"] = _tc.SArray(new_images)
+    else:
+        dataset["bitmap"] = temp_sarray_for_images.apply(
+            lambda I: _tc.image_analysis.resize(
+                I, 28, 28, 1).pixel_data.reshape(1,28,28)/255.)
 
     column_names = ['Iteration', 'Loss', 'Elapsed Time']
     num_columns = len(column_names)
@@ -67,9 +93,7 @@ def create(dataset, annotations=None, num_epochs=100, feature=None, model=None,
     if classes is None:
         classes = dataset['label'].unique()
     classes = sorted(classes)
-    # print(classes)
     class_to_index = {name: index for index, name in enumerate(classes)}
-    # print(class_to_index)
 
     def update_progress(cur_loss, iteration):
         iteration_base1 = iteration + 1
