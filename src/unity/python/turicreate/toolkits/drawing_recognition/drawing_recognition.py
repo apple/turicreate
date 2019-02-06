@@ -14,6 +14,7 @@ from mxnet.gluon import HybridBlock as _HybridBlock
 from mxnet.gluon.data.vision import datasets as _datasets
 from mxnet.gluon.data.vision import transforms as _transforms
 from turicreate.toolkits._model import CustomModel as _CustomModel
+from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits import evaluation as _evaluation
 import turicreate.toolkits._internal_utils as _tkutl
 from ._sframe_loader import SFrameRecognitionIter as _SFrameRecognitionIter
@@ -45,13 +46,6 @@ class Model(_HybridBlock):
         x = self.fc1(x)
         x = self.fc2(x)
         return F.softmax(x)
-
-# def _accuracy_metric(output, label):
-#         # output: (batch, num_output) float32 ndarray
-#         # label: (batch, ) int32 ndarray
-#         # print("Measuring accuracy")
-#         return (output.argmax(axis=1) ==
-#                 label.astype('float32')).mean().asscalar()
 
 def create(dataset, annotations=None, num_epochs=100, feature=None, model=None,
            classes=None, batch_size=256, max_iterations=0, verbose=True,
@@ -121,8 +115,7 @@ def create(dataset, annotations=None, num_epochs=100, feature=None, model=None,
     model.hybridize()
     trainer = _mx.gluon.Trainer(model.collect_params(), 'adam')
 
-    train_loss = 0. 
-    # train_acc = 0.
+    train_loss = 0.
     for batch in loader:
         data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0)[0]
         label = _mx.nd.array(
@@ -191,10 +184,15 @@ def create(dataset, annotations=None, num_epochs=100, feature=None, model=None,
 class DrawingRecognition(_CustomModel):
 
     def __init__(self, state):
+        self.__proxy__ = _PythonProxy(state)
+        # TODO: maybe remove the stuff below
+        '''
         self._model = state['_model']
         self._classes = state['_classes']
         self._class_to_index = state['_class_to_index']
+        '''
         self.batch_size = state['_batch_size']
+        
 
     @classmethod
     def _native_name(cls):
@@ -202,7 +200,7 @@ class DrawingRecognition(_CustomModel):
 
     def _get_native_state(self):
         state = self.__proxy__.get_state()
-        mxnet_params = self._model.collect_params()
+        mxnet_params = state['_model'].collect_params()
         state['_model'] = _mxnet_utils.get_gluon_net_params_state(mxnet_params)
         return state
 
@@ -211,24 +209,18 @@ class DrawingRecognition(_CustomModel):
 
     @classmethod
     def _load_version(cls, state, version):
+        
         _tkutl._model_version_check(version, 1)
-        # from ._model import tiny_darknet as _tiny_darknet
-
-        # num_anchors = len(state['anchors'])
-        # num_classes = state['num_classes']
-        # output_size = (num_classes + 5) * num_anchors
-
-        # net = _tiny_darknet(output_size=output_size)
+        net = Model(num_classes = len(state['_classes']), prefix = 'model0_')
         ctx = _mxnet_utils.get_mxnet_context(max_devices=state['_batch_size'])
-
-        net = Model(num_classes = len(state['_classes']))
+        
         net_params = net.collect_params()
+        
         _mxnet_utils.load_net_params_from_state(
             net_params, state['_model'], ctx=ctx 
             )
         state['_model'] = net
-        # state['input_image_shape'] = tuple([int(i) for i in [state['input_image_shape']]])
-        # state['_grid_shape'] = tuple([int(i) for i in state['_grid_shape']])
+        
         return DrawingRecognition(state)
 
     def export_coreml(self, filename):
@@ -240,102 +232,35 @@ class DrawingRecognition(_CustomModel):
 
         batch_size = 1
         image_shape = (batch_size,) + (1,28,28)
-        s_image_uint8 = _mx.sym.Variable('bitmap', 
+        s_image = _mx.sym.Variable('bitmap',
             shape=image_shape, dtype=_np.float32)
-        s_image = s_image_uint8
-
 
         net = copy(self._model)
         s_ymap = net(s_image)
+        
         mod = _mx.mod.Module(symbol=s_ymap, label_names=None, data_names=['bitmap'])
         mod.bind(for_training=False, data_shapes=[('bitmap', image_shape)])
         mod.init_params()
+        
         arg_params, aux_params = mod.get_params()
         net_params = net.collect_params()
+
         new_arg_params = {}
         for k, param in arg_params.items():
             new_arg_params[k] = net_params[k].data(net_params[k].list_ctx()[0])
         new_aux_params = {}
         for k, param in aux_params.items():
             new_aux_params[k] = net_params[k].data(net_params[k].list_ctx()[0])
-        # print('new_aux_params')
-        # print(new_aux_params)
-        # print('new_arg_params')
-        # print(new_arg_params)
-        mod.set_params(new_arg_params, new_aux_params)
-
-        input_dim = (1,28,28)
-        input_features = [('bitmap', datatypes.Array(*image_shape))]
-        # output_features = [('probabilities', datatypes.Dictionary(self._label_type)),('classLabel', self._label_type)]
         
-        # builder = neural_network.NeuralNetworkBuilder(input_features, 
-        #     output_features, mode='classifier')
+        mod.set_params(new_arg_params, new_aux_params)
 
         coreml_model = _mxnet_converter.convert(mod, mode='classifier',
                                 class_labels=self._classes,
                                 input_shape=[('bitmap', image_shape)],
                                 builder=None, verbose=False,
                                 is_drawing_recognition=True)
-
-        # self._coreml_model = coreml_model
+        
         coreml_model.save(filename)
-
-        # input_names = ['bitmap']
-        # input_dims = [(1,28,28)]
-
-        # output_names = ['probabilities', 'classLabel']
-        # _mxnet_converter._set_input_output_layers(
-        #     builder, input_names, output_names)
-        # builder.set_input(input_names, input_dims)
-        # builder.set_output(output_names, output_dims)
-        # builder.set_pre_processing_parameters(image_input_names=self.feature)
-        # model = builder.spec
-        # iouThresholdString = '(optional) IOU Threshold override (default: {})'
-        # confidenceThresholdString = ('(optional)' + 
-        #     ' Confidence Threshold override (default: {})')
-        # model_type = 'object detector (%s)' % self.model
-        # if include_non_maximum_suppression:
-        #     model_type += ' with non-maximum suppression'
-        # model.description.metadata.shortDescription = \
-        #     _coreml_utils._mlmodel_short_description(model_type)
-        # model.description.input[0].shortDescription = 'Input image'
-        # if include_non_maximum_suppression:
-        #     iouThresholdString = '(optional) IOU Threshold override (default: {})'
-        #     model.description.input[1].shortDescription = \
-        #         iouThresholdString.format(iou_threshold)
-        #     confidenceThresholdString = ('(optional)' + 
-        #         ' Confidence Threshold override (default: {})')
-        #     model.description.input[2].shortDescription = \
-        #         confidenceThresholdString.format(confidence_threshold)
-        # model.description.output[0].shortDescription = \
-        #     u'Boxes \xd7 Class confidence (see user-defined metadata "classes")'
-        # model.description.output[1].shortDescription = \
-        #     u'Boxes \xd7 [x, y, width, height] (relative to image size)'
-        # version = ObjectDetector._PYTHON_OBJECT_DETECTOR_VERSION
-        # partial_user_defined_metadata = {
-        #     'model': self.model,
-        #     'max_iterations': str(self.max_iterations),
-        #     'training_iterations': str(self.training_iterations),
-        #     'include_non_maximum_suppression': str(
-        #         include_non_maximum_suppression),
-        #     'non_maximum_suppression_threshold': str(
-        #         iou_threshold),
-        #     'confidence_threshold': str(confidence_threshold),
-        #     'iou_threshold': str(iou_threshold),
-        #     'feature': self.feature,
-        #     'annotations': self.annotations,
-        #     'classes': ','.join(self.classes)
-        # }
-        # user_defined_metadata = _coreml_utils._get_model_metadata(
-        #     self.__class__.__name__,
-        #     partial_user_defined_metadata,
-        #     version)
-        # model.description.metadata.userDefined.update(user_defined_metadata)
-
-
-        # import pdb; pdb.set_trace()
-        # from coremltools.models.utils import save_spec as _save_spec
-        # _save_spec(coreml_model, filename)
         return coreml_model
 
     def _predict_with_options(self, dataset, with_ground_truth=True, verbose=True):
@@ -431,7 +356,7 @@ class DrawingRecognition(_CustomModel):
             
             >>> results = model.evaluate(data)
             >>> print results['accuracy']
-            """
+        """
 
         predicted = self._predict_with_options(dataset, with_ground_truth=True,
                                               verbose=verbose)
@@ -468,6 +393,61 @@ class DrawingRecognition(_CustomModel):
         return ret
 
     def predict(self, dataset, verbose=True):
+        """ read this and fix:::
+            Predict object instances in an sframe of images.
+            
+            Parameters
+            ----------
+            dataset : SFrame | SArray | turicreate.Image
+            The images on which to perform object detection.
+            If dataset is an SFrame, it must have a column with the same name
+            as the feature column during training. Additional columns are
+            ignored.
+            
+            confidence_threshold : float
+            Only return predictions above this level of confidence. The
+            threshold can range from 0 to 1.
+            
+            verbose : bool
+            If True, prints prediction progress.
+            
+            Returns
+            -------
+            out : SArray
+            An SArray with model predictions. Each element corresponds to
+            an image and contains a list of dictionaries. Each dictionary
+            describes an object instances that was found in the image. If
+            `dataset` is a single image, the return value will be a single
+            prediction.
+            
+            See Also
+            --------
+            evaluate
+            
+            Examples
+            --------
+            .. sourcecode:: python
+            
+            # Make predictions
+            >>> pred = model.predict(data)
+            
+            # Stack predictions, for a better overview
+            >>> turicreate.object_detector.util.stack_annotations(pred)
+            Data:
+            +--------+------------+-------+-------+-------+-------+--------+
+            | row_id | confidence | label |   x   |   y   | width | height |
+            +--------+------------+-------+-------+-------+-------+--------+
+            |   0    |    0.98    |  dog  | 123.0 | 128.0 |  80.0 | 182.0  |
+            |   0    |    0.67    |  cat  | 150.0 | 183.0 | 129.0 | 101.0  |
+            |   1    |    0.8     |  dog  |  50.0 | 432.0 |  65.0 |  98.0  |
+            +--------+------------+-------+-------+-------+-------+--------+
+            [3 rows x 7 columns]
+            
+            # Visualize predictions by generating a new column of marked up images
+            >>> data['image_pred'] = turicreate.object_detector.util.draw_bounding_boxes(data['image'], data['predictions'])
+            """
+
         predicted = self._predict_with_options(dataset, with_ground_truth=True,
                                               verbose=verbose)
         return predicted['label']
+
