@@ -12,7 +12,6 @@ subdirs(
         logger
         timer
         random
-        # fault
         nanosockets
         fileio
         shmipc

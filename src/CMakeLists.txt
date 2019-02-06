@@ -13,7 +13,6 @@ subdirs(
   dot_graph_printer
   exceptions
   external
-  fault
   numerics
   fileio
   flexible_type
