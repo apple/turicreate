@@ -15,9 +15,9 @@
 #include <unity/lib/extensions/ml_model.hpp>
 #include <unity/lib/gl_sframe.hpp>
 #include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
-#include <unity/toolkits/neural_net/cnn_module.hpp>
 #include <unity/toolkits/neural_net/compute_context.hpp>
 #include <unity/toolkits/neural_net/image_augmentation.hpp>
+#include <unity/toolkits/neural_net/model_backend.hpp>
 #include <unity/toolkits/neural_net/model_spec.hpp>
 #include <unity/toolkits/object_detection/od_data_iterator.hpp>
 
@@ -156,7 +156,7 @@ class EXPORT object_detector: public ml_model_base {
   std::unique_ptr<neural_net::compute_context> training_compute_context_;
   std::unique_ptr<data_iterator> training_data_iterator_;
   std::unique_ptr<neural_net::image_augmenter> training_data_augmenter_;
-  std::unique_ptr<neural_net::cnn_module> training_module_;
+  std::unique_ptr<neural_net::model_backend> training_model_;
 
   // Nonnull while training is in progress, if progress printing is enabled.
   std::unique_ptr<table_printer> training_table_printer_;

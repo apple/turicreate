@@ -11,8 +11,8 @@
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 
-#include <unity/toolkits/neural_net/cnn_module.hpp>
 #include <unity/toolkits/neural_net/float_array.hpp>
+#include <unity/toolkits/neural_net/model_backend.hpp>
 
 #import "mps_utils.h"
 #import "mps_graph_networks.h"
@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 namespace turi {
 namespace neural_net {
 
-class mps_graph_cnn_module: public cnn_module {
+class mps_graph_cnn_module: public model_backend {
 public:
 
   mps_graph_cnn_module();
