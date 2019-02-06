@@ -242,11 +242,6 @@ else
   CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_CAPI=0"
 fi
 
-# If we don't need to build for IOS don't make the flag nothing
-if [[ $with_ios == 0 ]]; then
-  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_IOS=0"
-fi
-
 # Do we need to build the visualization toolkit?
 if [[ $with_visualization == 1 ]]; then
   CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_VISUALIZATION_CLIENT=1"

@@ -1,6 +1,6 @@
 project( vega_renderer )
 
-if(APPLE AND NOT ${TC_BUILD_IOS})
+if(APPLE AND NOT TC_BUILD_IOS)
 
    find_library( FOUNDATION_LIBRARY Foundation)
    message( STATUS "Foundation found at ${FOUNDATION_LIBRARY}")
