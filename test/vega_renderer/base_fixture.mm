@@ -7,6 +7,7 @@
 #include "base_fixture.hpp"
 
 #include <boost/test/unit_test.hpp>
+#include <boost/algorithm/string/replace.hpp>
 #include <util/test_macros.hpp>
 
 #import <vega_renderer/VegaRenderer.h>
@@ -19,6 +20,16 @@ using namespace vega_renderer::test_utils;
 
 // out of 100.0; chosen arbitrarily
 double base_fixture::acceptable_diff = 2.02;
+
+std::string base_fixture::make_format_string(unsigned char *raw_format_str_ptr,
+                                                    size_t raw_format_str_len) {
+  auto raw_format_str = std::string(
+    reinterpret_cast<char *>(raw_format_str_ptr),
+    raw_format_str_len);
+
+  boost::replace_all(raw_format_str, "\n", "");
+  return raw_format_str;
+}
 
 void base_fixture::replace_url_with_values_in_data_entry(CFMutableDictionaryRef cfDataEntry) {
     NSMutableDictionary *dataEntry = (__bridge NSMutableDictionary*)cfDataEntry;
@@ -233,25 +244,21 @@ void base_fixture::expected_rendering(const std::string& spec,
     }
 }
 
-void base_fixture::run_test_case_with_path(const std::string& path) {
-    this->run_test_case_with_path(path, base_fixture::acceptable_diff);
+void base_fixture::run_test_case_with_spec(const std::string& test_spec, const std::string& name) {
+    this->run_test_case_with_spec(test_spec, name, base_fixture::acceptable_diff);
 }
 
-void base_fixture::run_test_case_with_path(const std::string& path, double acceptable_diff) {
+void base_fixture::run_test_case_with_spec(const std::string& test_spec, const std::string& name,  double acceptable_diff) {
     @autoreleasepool {
-        BOOST_TEST_MESSAGE("Running test case with path: " + path);
-        const static std::string projectDir = QUOTE(PROJECT_DIR);
-        std::string fullSpecPath = projectDir + "/examples/" + path;
-        std::ifstream specStream(fullSpecPath, std::ios::in | std::ios::binary);
-        TS_ASSERT(specStream.good());
-        std::string spec = std::string((std::istreambuf_iterator<char>(specStream)), std::istreambuf_iterator<char>());
+        BOOST_TEST_MESSAGE("Running test case with name: " + name);
+        std::string spec = test_spec;
         spec = this->replace_urls_with_values_in_spec(spec);
         VegaRenderer *view = [[VegaRenderer alloc] initWithSpec:[NSString stringWithUTF8String:spec.c_str()]];
         CGImageRef actual = view.CGImage;
-        this->expected_rendering(spec, [this, &actual, &path, acceptable_diff](CGImageRef expected) {
+        this->expected_rendering(spec, [this, &actual, &name, acceptable_diff](CGImageRef expected) {
             TS_ASSERT_DIFFERS(expected, nil);
             double diffPct = this->compare_expected_with_actual(expected, actual, acceptable_diff);
-            BOOST_TEST_MESSAGE(path + " differed by " + std::to_string(diffPct));
+            BOOST_TEST_MESSAGE(name + " differed by " + std::to_string(diffPct));
             CGImageRelease(actual);
         });
     }
