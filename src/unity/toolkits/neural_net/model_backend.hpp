@@ -26,23 +26,6 @@ public:
   virtual ~model_backend() = default;
 
   /**
-   * Sets the learning rate to be used for future calls to train.
-   */
-  virtual void set_learning_rate(float lr) = 0;
-
-  /**
-   * Performs one forward-backward pass.
-   */
-  virtual deferred_float_array train(const float_array& input_batch,
-                                     const float_array& label_batch) = 0;
-
-  /**
-   * Performs a forward pass.
-   */
-  virtual deferred_float_array predict(
-      const float_array& input_batch) const = 0;
-
-  /**
    * Exports the network weights.
    *
    * \todo Someday, once no Python frontend depends on this method, this could
@@ -50,6 +33,37 @@ public:
    *       the model_backend).
    */
   virtual float_array_map export_weights() const = 0;
+
+  // TODO: Accessors describing name inputs and expected shapes.
+
+  /**
+   * Performs a forward pass.
+   *
+   * \param inputs A map containing all the named inputs required by the model.
+   * \return A map containing all the named outputs from the model. The values
+   *         may be deferred_float_array instances wrapping future
+   *         (asynchronous) results.
+   */
+  virtual float_array_map predict(const float_array_map& inputs) const = 0;
+
+  /**
+   * Sets the learning rate to be used for future calls to train.
+   */
+  virtual void set_learning_rate(float lr) = 0;
+
+  /**
+   * Performs one forward-backward pass.
+   *
+   * \param inputs A map containing all the named inputs and labels required by
+   *            the model.
+   * \return A map containing all the named outputs and loss images from the
+   *         model. The values may be deferred_float_array instances wrapping
+   *         future (asynchronous) results.
+   *
+   * \todo Introduce a separate mutable subclass, so that prediction-only models
+   *       don't need to have a `train` method at all.
+   */
+  virtual float_array_map train(const float_array_map& inputs) = 0;
 };
 
 }  // namespace neural_net

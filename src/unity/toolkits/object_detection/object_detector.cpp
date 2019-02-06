@@ -420,9 +420,9 @@ variant_map_type object_detector::evaluate(
     // submit them to the neural net.
     image_augmenter::result prepared_input_batch =
         augmenter->prepare_images(std::move(input_batch));
-    auto pending_prediction = std::make_shared<deferred_float_array>(
-        model->predict(prepared_input_batch.image_batch));
-    result_batch.image_batch = shared_float_array(pending_prediction);
+    std::map<std::string, shared_float_array> prediction_results =
+        model->predict({{"input", prepared_input_batch.image_batch}});
+    result_batch.image_batch = prediction_results.at("output");
 
     // Add the pending result to our queue and move on to the next input batch.
     pending_batches.push(std::move(result_batch));
@@ -779,8 +779,10 @@ void object_detector::perform_training_iteration() {
       prepare_label_batch(augmenter_result.annotations_batch);
 
   // Submit the batch to the neural net model.
-  deferred_float_array loss_batch = training_model_->train(
-      augmenter_result.image_batch, label_batch);
+  std::map<std::string, shared_float_array> results = training_model_->train(
+      { { "input",  augmenter_result.image_batch },
+        { "labels", label_batch                  }  });
+  shared_float_array loss_batch = results.at("loss");
 
   // Save the result, which is a future that can synchronize with the
   // completion of this batch.

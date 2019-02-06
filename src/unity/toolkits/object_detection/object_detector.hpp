@@ -162,7 +162,7 @@ class EXPORT object_detector: public ml_model_base {
   std::unique_ptr<table_printer> training_table_printer_;
 
   // Map from iteration index to the loss future.
-  std::map<size_t, neural_net::deferred_float_array> pending_training_batches_;
+  std::map<size_t, neural_net::shared_float_array> pending_training_batches_;
 };
 
 }  // object_detection

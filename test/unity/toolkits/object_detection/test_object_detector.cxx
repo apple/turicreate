@@ -103,11 +103,10 @@ public:
   using set_learning_rate_call = std::function<void(float lr)>;
 
   using train_call =
-      std::function<deferred_float_array(const float_array& input_batch,
-                                         const float_array& label_batch)>;
+      std::function<float_array_map(const float_array_map& inputs)>;
 
   using predict_call =
-      std::function<deferred_float_array(const float_array& input_batch)>;
+      std::function<float_array_map(const float_array_map& inputs)>;
 
   ~mock_model_backend() {
     TS_ASSERT(train_calls_.empty());
@@ -122,20 +121,20 @@ public:
     expected_call(lr);
   }
 
-  deferred_float_array train(const float_array& input_batch,
-                             const float_array& label_batch) override {
+  float_array_map train(const float_array_map& inputs) override {
 
     TS_ASSERT(!train_calls_.empty());
     train_call expected_call = std::move(train_calls_.front());
     train_calls_.pop_front();
-    return expected_call(input_batch, label_batch);
+    return expected_call(inputs);
   }
 
-  deferred_float_array predict(const float_array& input_batch) const override {
+  float_array_map predict(const float_array_map& inputs) const override {
+
     TS_ASSERT(!predict_calls_.empty());
     predict_call expected_call = std::move(predict_calls_.front());
     predict_calls_.pop_front();
-    return expected_call(input_batch);
+    return expected_call(inputs);
   }
 
   float_array_map export_weights() const override {
@@ -356,10 +355,10 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
     }
 
     // The mock_model_backend should expect `train` calls on every iteration.
-    auto train_impl = [=](const float_array& input_batch,
-                          const float_array& label_batch) {
+    auto train_impl = [=](const float_array_map& inputs) {
 
       // The input_batch should just be whatever the image_augmenter returned.
+      shared_float_array input_batch = inputs.at("input");
       TS_ASSERT_EQUALS(input_batch.data(), test_image_batch->data());
 
       // Track how many calls we've had.
@@ -367,7 +366,9 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
 
       // Multiply loss by 8 to offset the "mps_loss_mult" factor currently
       // hardwired in to avoid fp16 underflow in MPS.
-      return deferred_float_array(shared_float_array::wrap(8 * test_loss));
+      std::map<std::string, shared_float_array> result;
+      result["loss"] = shared_float_array::wrap(8 * test_loss);
+      return result;
     };
     mock_nn_model->train_calls_.push_back(train_impl);
   }
