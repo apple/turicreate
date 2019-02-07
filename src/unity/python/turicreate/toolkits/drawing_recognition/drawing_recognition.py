@@ -56,31 +56,16 @@ def create(dataset, annotations=None, num_epochs=100, feature=None, model=None,
 
     start_time = _time.time()
 
-    dataset = _extensions._drawing_recognition_prepare_data(
-        dataset, "bitmap", "label", is_stroke_input)
-    if is_stroke_input:
-        new_images = []
-        count = 0
-        for drawing in dataset["bitmap"]:
-            new_drawing = []
-            for stroke in drawing:
-                x_array = [p["x"] for p in stroke]
-                y_array = [p["y"] for p in stroke]
-                new_drawing.append([x_array, y_array])
-            new_image = vector_to_raster(new_drawing)
-            new_images.append(new_image)
-            # print("####################################")
-            # print(count)
-            # print("####################################")
-            # print(new_image)
-            # print("####################################")
-            count+=1
+    # need to automatically infer if it's stroke input or not
 
-        dataset["bitmap"] = _tc.SArray(new_images)
+    if is_stroke_input:
+        # This will only work on macOS right now
+        dataset = _extensions._drawing_recognition_prepare_data(
+            dataset, "bitmap", "label", is_stroke_input)
     else:
-        dataset["bitmap"] = temp_sarray_for_images.apply(
-            lambda I: _tc.image_analysis.resize(
-                I, 28, 28, 1).pixel_data.reshape(1,28,28)/255.)
+        sframe_images = dataset["bitmap"]
+        dataset["bitmap"] = sframe_images.apply(
+            lambda I: I.pixel_data.reshape(1,28,28)/255.)
 
     column_names = ['Iteration', 'Loss', 'Elapsed Time']
     num_columns = len(column_names)
@@ -175,6 +160,7 @@ def create(dataset, annotations=None, num_epochs=100, feature=None, model=None,
         '_classes': classes,
         '_batch_size': batch_size
     }
+    dataset["bitmap"] = sframe_images
     return DrawingRecognition(state)
 
 
@@ -213,6 +199,7 @@ class DrawingRecognition(_CustomModel):
         '''
         self._model = state['_model']
         self._classes = state['_classes']
+        self._label_type = type(self._classes[0])
         self._class_to_index = state['_class_to_index']
         '''
         self.batch_size = state['_batch_size']
@@ -244,7 +231,6 @@ class DrawingRecognition(_CustomModel):
             net_params, state['_model'], ctx=ctx 
             )
         state['_model'] = net
-        
         return DrawingRecognition(state)
 
     def export_coreml(self, filename):
@@ -275,15 +261,25 @@ class DrawingRecognition(_CustomModel):
         new_aux_params = {}
         for k, param in aux_params.items():
             new_aux_params[k] = net_params[k].data(net_params[k].list_ctx()[0])
-        
         mod.set_params(new_arg_params, new_aux_params)
 
+        input_dim = (1,28,28)
+        input_features = [('bitmap', datatypes.Array(*image_shape))]
+        output_features = [('probabilities', datatypes.Dictionary(self._label_type)),('classLabel', self._label_type)]
+        
         coreml_model = _mxnet_converter.convert(mod, mode='classifier',
                                 class_labels=self._classes,
                                 input_shape=[('bitmap', image_shape)],
                                 builder=None, verbose=False,
+                                preprocessor_args={'image_input_names':['bitmap']},
                                 is_drawing_recognition=True)
-        
+
+        from turicreate.toolkits import _coreml_utils
+        model_type = "drawing classifier"
+        coreml_model.short_description = _coreml_utils._mlmodel_short_description(model_type)
+        coreml_model.input_description['bitmap'] = u'bitmap'
+        coreml_model.output_description['probabilities'] = 'Prediction probabilities'
+        coreml_model.output_description['classLabel'] = 'Class label of Top Prediction'
         coreml_model.save(filename)
         return coreml_model
 

@@ -245,10 +245,6 @@ def convert(model, input_shape, class_labels=None, mode=None,
         op = node['op']
         inputs = node['inputs']
         outputs = node['outputs']
-        # print('node')
-        # print(node)
-        # print('outputs')
-        # print(outputs)
         if op in _MXNET_SKIP_LAYERS:
             nodes[inputs[0][0]]['outputs'][0] = outputs[0]
             nodes[outputs[0][0]]['inputs'][0] = inputs[0]
@@ -265,8 +261,6 @@ def convert(model, input_shape, class_labels=None, mode=None,
         if verbose:
             print("%d : %s, %s" % (idx, name, op))
         converter_func = _get_layer_converter_fn(op)
-        # print('node')
-        # print(node)
         converter_func(net, node, model, builder)
 
     # Only finalize builder if it was created internally. Otherwise, leave it

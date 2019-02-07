@@ -10,16 +10,20 @@
 //#include <sframe/sframe.hpp>
 #include <unity/lib/gl_sframe.hpp>
 #include <unity/lib/variant.hpp>
+#ifdef __APPLE__
+#include <CoreGraphics/CoreGraphics.h>
+#endif // __APPLE__
+
+
+
+// #include <cairommconfig.h>
+// #include <cairomm/context.h>
+// #include <cairomm/surface.h>
 
 
 namespace turi {
 namespace sdk_model {
 namespace drawing_recognition {
-
-// class sequence_iterator {
-
-// };
-
 
 /**
  *  Convert SFrame to batch form, where each row contains a sequence of length
