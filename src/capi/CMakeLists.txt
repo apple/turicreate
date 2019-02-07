@@ -135,7 +135,11 @@ if(APPLE)
     )
     set(_capi_requires
       ${_capi_requires}
+      ${ACCELERATE}
       ${APPKIT}
+      ${CORE_IMAGE}
+      ${METAL}
+      ${METAL_PERFORMANCE_SHADERS}
     )
   endif()
 endif()
