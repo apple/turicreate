@@ -38,7 +38,6 @@ set(_capi_objects
   # Also list all dependencies (including transitive dependencies)
 
   # External dependencies (built from src/external)
-  "$<TARGET_OBJECTS:aws-sdk-cpp>"
   "$<TARGET_OBJECTS:libjson>"
   "$<TARGET_OBJECTS:lz4>"
   "$<TARGET_OBJECTS:protobuf>"
@@ -139,6 +138,15 @@ if(APPLE)
       ${APPKIT}
     )
   endif()
+endif()
+
+if(NOT TC_BUILD_IOS)
+  # object targets that should be included in all APPLE and non-APPLE
+  # platforms except for iOS
+  set(_capi_objects
+    ${_capi_objects}
+    "$<TARGET_OBJECTS:aws-sdk-cpp>"
+  )
 endif()
 
 # Create a static version of the library that also bundles in the server initializer
