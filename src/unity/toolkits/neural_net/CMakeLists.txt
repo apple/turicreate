@@ -7,17 +7,6 @@ project(unity_toolkits)
 
 # When building for macOS, build the MetalPerformanceShaders-based backend.
 if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
-    find_library(ACCELERATE NAMES Accelerate)
-    message("Accelerate found at ${ACCELERATE}.")
-
-    find_library(CORE_IMAGE NAMES CoreImage)
-    message("CoreImage found at ${CORE_IMAGE}.")
-
-    find_library(METAL NAMES Metal)
-    message("Metal found at ${METAL}.")
-
-    find_library(METAL_PERFORMANCE_SHADERS NAMES MetalPerformanceShaders)
-    message("MetalPerformanceShaders found at ${METAL_PERFORMANCE_SHADERS}.")
 
     add_library(tcmps OBJECT
       TCMPSImageAugmenting.m
