@@ -117,15 +117,9 @@ if(APPLE)
   )
   set(_capi_requires
     ${_capi_requires}
-    ${ACCELERATE}
-    ${CORE_GRAPHICS}
-    ${CORE_IMAGE}
     ${CORE_ML}
     ${CORE_VIDEO}
     ${FOUNDATION}
-    ${JAVASCRIPTCORE}
-    ${METAL}
-    ${METAL_PERFORMANCE_SHADERS}
   )
   if(NOT TC_BUILD_IOS)
     set(_capi_objects
@@ -137,12 +131,16 @@ if(APPLE)
       ${_capi_requires}
       ${ACCELERATE}
       ${APPKIT}
+      ${CORE_GRAPHICS}
       ${CORE_IMAGE}
+      ${JAVASCRIPTCORE}
       ${METAL}
       ${METAL_PERFORMANCE_SHADERS}
     )
   endif()
 endif()
+
+message(WARNING "CAPI REQUIRES: ${_capi_requires}")
 
 if(NOT TC_BUILD_IOS)
   # object targets that should be included in all APPLE and non-APPLE
