@@ -9,4 +9,4 @@ make_boost_test(test_od_yolo.cxx
     unity_shared
 )
 
-make_boost_test(test_od_evaluation.cxx REQUIRES unity_toolkits)
+make_boost_test(test_od_evaluation.cxx REQUIRES unity_shared)

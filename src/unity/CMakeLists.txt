@@ -31,8 +31,12 @@ subdirs(extensions
     )
   endif()
 
+  if (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp)
+    file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp "")
+  endif()
   make_library(unity_shared
     SOURCES
+      ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp
       ${unity_shared_deps}
     REQUIRES
       TuriCreate_static
