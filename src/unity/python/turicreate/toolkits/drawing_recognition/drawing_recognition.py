@@ -113,26 +113,9 @@ def create(dataset, annotations=None, num_epochs=100, feature=None, model=None,
         # This will only work on macOS right now
         dataset = _extensions._drawing_recognition_prepare_data(
             dataset, "bitmap", "label", is_stroke_input)
-        # new_images = []
-        # count = 0
-        # for drawing in dataset["bitmap"]:
-        #     new_drawing = []
-        #     for stroke in drawing:
-        #         x_array = [p["x"] for p in stroke]
-        #         y_array = [p["y"] for p in stroke]
-        #         new_drawing.append([x_array, y_array])
-        #     new_image = vector_to_raster(new_drawing)
-        #     new_images.append(new_image)
-        #     # print("####################################")
-        #     # print(count)
-        #     # print("####################################")
-        #     # print(new_image)
-        #     # print("####################################")
-        #     count+=1
-
-        # dataset["bitmap"] = _tc.SArray(new_images)
     else:
-        dataset["bitmap"] = dataset["bitmap"].apply(
+        sframe_images = dataset["bitmap"]
+        dataset["bitmap"] = sframe_images.apply(
             lambda I: I.pixel_data.reshape(1,28,28)/255.)
 
     column_names = ['Iteration', 'Loss', 'Elapsed Time']
@@ -229,6 +212,7 @@ def create(dataset, annotations=None, num_epochs=100, feature=None, model=None,
         '_classes': classes,
         '_batch_size': batch_size
     }
+    dataset["bitmap"] = sframe_images
     return DrawingRecognition(state)
 
 
@@ -264,6 +248,7 @@ class DrawingRecognition(_CustomModel):
     def __init__(self, state):
         self._model = state['_model']
         self._classes = state['_classes']
+        self._label_type = type(self._classes[0])
         self._class_to_index = state['_class_to_index']
         self.batch_size = state['_batch_size']
 
@@ -298,8 +283,6 @@ class DrawingRecognition(_CustomModel):
             net_params, state['_model'], ctx=ctx 
             )
         state['_model'] = net
-        # state['input_image_shape'] = tuple([int(i) for i in [state['input_image_shape']]])
-        # state['_grid_shape'] = tuple([int(i) for i in state['_grid_shape']])
         return DrawingRecognition(state)
 
     def export_coreml(self, filename):
@@ -329,84 +312,26 @@ class DrawingRecognition(_CustomModel):
         new_aux_params = {}
         for k, param in aux_params.items():
             new_aux_params[k] = net_params[k].data(net_params[k].list_ctx()[0])
-        # print('new_aux_params')
-        # print(new_aux_params)
-        # print('new_arg_params')
-        # print(new_arg_params)
         mod.set_params(new_arg_params, new_aux_params)
 
         input_dim = (1,28,28)
         input_features = [('bitmap', datatypes.Array(*image_shape))]
-        # output_features = [('probabilities', datatypes.Dictionary(self._label_type)),('classLabel', self._label_type)]
+        output_features = [('probabilities', datatypes.Dictionary(self._label_type)),('classLabel', self._label_type)]
         
-        # builder = neural_network.NeuralNetworkBuilder(input_features, 
-        #     output_features, mode='classifier')
-
         coreml_model = _mxnet_converter.convert(mod, mode='classifier',
                                 class_labels=self._classes,
                                 input_shape=[('bitmap', image_shape)],
                                 builder=None, verbose=False,
+                                preprocessor_args={'image_input_names':['bitmap']},
                                 is_drawing_recognition=True)
 
-        # self._coreml_model = coreml_model
+        from turicreate.toolkits import _coreml_utils
+        model_type = "drawing classifier"
+        coreml_model.short_description = _coreml_utils._mlmodel_short_description(model_type)
+        coreml_model.input_description['bitmap'] = u'bitmap'
+        coreml_model.output_description['probabilities'] = 'Prediction probabilities'
+        coreml_model.output_description['classLabel'] = 'Class label of Top Prediction'
         coreml_model.save(filename)
-
-        # input_names = ['bitmap']
-        # input_dims = [(1,28,28)]
-
-        # output_names = ['probabilities', 'classLabel']
-        # _mxnet_converter._set_input_output_layers(
-        #     builder, input_names, output_names)
-        # builder.set_input(input_names, input_dims)
-        # builder.set_output(output_names, output_dims)
-        # builder.set_pre_processing_parameters(image_input_names=self.feature)
-        # model = builder.spec
-        # iouThresholdString = '(optional) IOU Threshold override (default: {})'
-        # confidenceThresholdString = ('(optional)' + 
-        #     ' Confidence Threshold override (default: {})')
-        # model_type = 'object detector (%s)' % self.model
-        # if include_non_maximum_suppression:
-        #     model_type += ' with non-maximum suppression'
-        # model.description.metadata.shortDescription = \
-        #     _coreml_utils._mlmodel_short_description(model_type)
-        # model.description.input[0].shortDescription = 'Input image'
-        # if include_non_maximum_suppression:
-        #     iouThresholdString = '(optional) IOU Threshold override (default: {})'
-        #     model.description.input[1].shortDescription = \
-        #         iouThresholdString.format(iou_threshold)
-        #     confidenceThresholdString = ('(optional)' + 
-        #         ' Confidence Threshold override (default: {})')
-        #     model.description.input[2].shortDescription = \
-        #         confidenceThresholdString.format(confidence_threshold)
-        # model.description.output[0].shortDescription = \
-        #     u'Boxes \xd7 Class confidence (see user-defined metadata "classes")'
-        # model.description.output[1].shortDescription = \
-        #     u'Boxes \xd7 [x, y, width, height] (relative to image size)'
-        # version = ObjectDetector._PYTHON_OBJECT_DETECTOR_VERSION
-        # partial_user_defined_metadata = {
-        #     'model': self.model,
-        #     'max_iterations': str(self.max_iterations),
-        #     'training_iterations': str(self.training_iterations),
-        #     'include_non_maximum_suppression': str(
-        #         include_non_maximum_suppression),
-        #     'non_maximum_suppression_threshold': str(
-        #         iou_threshold),
-        #     'confidence_threshold': str(confidence_threshold),
-        #     'iou_threshold': str(iou_threshold),
-        #     'feature': self.feature,
-        #     'annotations': self.annotations,
-        #     'classes': ','.join(self.classes)
-        # }
-        # user_defined_metadata = _coreml_utils._get_model_metadata(
-        #     self.__class__.__name__,
-        #     partial_user_defined_metadata,
-        #     version)
-        # model.description.metadata.userDefined.update(user_defined_metadata)
-
-
-        # import pdb; pdb.set_trace()
-        # from coremltools.models.utils import save_spec as _save_spec
-        # _save_spec(coreml_model, filename)
         return coreml_model
 
     def _predict_with_options(self, dataset, with_ground_truth=True, verbose=True):
@@ -441,7 +366,6 @@ class DrawingRecognition(_CustomModel):
 
         # TODO: figure out a real solution to this problem. 
         # Need classes_to_index maybe
-        # assert dataset['label'].dtype == type(self._classes[0])
         all_gt = _tc.SArray(dtype=dataset['label'].dtype)
         all_predicted = _tc.SArray(dtype=dataset['label'].dtype)
         all_probabilities = _np.zeros((len(dataset['label']),len(dataset['label'].unique())), dtype=float)
@@ -461,8 +385,6 @@ class DrawingRecognition(_CustomModel):
             else:
                 ctx0 = ctx
 
-            # print('b_data')
-            # print(b_data)
             z = self._model(b_data).asnumpy()
             predicted = z.argmax(axis=1)
             classes = self._classes
