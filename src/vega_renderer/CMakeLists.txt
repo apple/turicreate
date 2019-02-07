@@ -2,21 +2,6 @@ project( vega_renderer )
 
 if(APPLE AND NOT TC_BUILD_IOS)
 
-   find_library( FOUNDATION_LIBRARY Foundation)
-   message( STATUS "Foundation found at ${FOUNDATION_LIBRARY}")
-
-   find_library( APPKIT_LIBRARY AppKit)
-   message( STATUS "AppKit found at ${APPKIT_LIBRARY}")
-
-   find_library( COREGRAPHICS_LIBRARY CoreGraphics)
-   message( STATUS "CoreGraphics found at ${COREGRAPHICS_LIBRARY}")
-
-   find_library( JAVASCRIPTCORE_LIBRARY JavaScriptCore)
-   message( STATUS "JavaScriptCore found at ${JAVASCRIPTCORE_LIBRARY}")
-
-   find_library( CORETEXT_LIBRARY CoreText)
-   message( STATUS "CoreText found at ${CORETEXT_LIBRARY}")
-
    add_definitions(
       -DOBJROOT=${CMAKE_CURRENT_BINARY_DIR}
    )
@@ -29,16 +14,6 @@ if(APPLE AND NOT TC_BUILD_IOS)
       JSCanvas.m
       VegaRenderer.m
       colors.m
-   )
-
-   set( VEGA_RENDERER_STATIC_DEPENDENCIES
-   )
-
-   set( VEGA_RENDERER_DEPENDENCIES
-      ${FOUNDATION_LIBRARY}
-      ${APPKIT_LIBRARY}
-      ${COREGRAPHICS_LIBRARY}
-      ${JAVASCRIPTCORE_LIBRARY}
    )
 
    ##
@@ -65,11 +40,8 @@ if(APPLE AND NOT TC_BUILD_IOS)
    ## VegaRenderer
    ##
 
-   make_library( vega_renderer
-      SOURCES
-         ${VEGA_RENDERER_SOURCES}
-      REQUIRES
-         ${VEGA_RENDERER_DEPENDENCIES}
+   add_library( vega_renderer OBJECT
+      ${VEGA_RENDERER_SOURCES}
    )
 
    add_dependencies(

@@ -48,6 +48,12 @@ set(TC_PLATFORM_WIN32 false)
 if (APPLE)
   set(TC_PLATFORM_APPLE true)
   add_definitions(-DTC_PLATFORM_APPLE)
+  find_library(APPKIT AppKit)
+  find_library(CORE_GRAPHICS CoreGraphics)
+  find_library(JAVASCRIPTCORE JavaScriptCore)
+  find_library(FOUNDATION Foundation)
+  find_library(CORE_ML CoreML)
+  find_library(CORE_VIDEO CoreVideo)
 elseif (WIN32)
   set(TC_PLATFORM_WIN32 true)
   add_definitions(-DTC_PLATFORM_WIN32)
@@ -546,15 +552,18 @@ elseif(CMAKE_BUILD_TYPE MATCHES "Debug")
   message(STATUS "Debug build with C++ flags: " ${CMAKE_CXX_FLAGS_DEBUG})
   message(STATUS "Debug build with C flags: " ${CMAKE_C_FLAGS_DEBUG})
 else()
-  message(ERROR "Unknown build type: " ${CMAKE_BUILD_TYPE} "!. Rerun ./configure")
+  message(FATAL_ERROR "Unknown build type: " ${CMAKE_BUILD_TYPE} "!. Rerun ./configure")
 endif()
 
 
-
-
-
-
-
+#**************************************************************************/
+#*                                                                        */
+#*         Definitions and options to support dependencies                */
+#*                                                                        */
+#**************************************************************************/
+add_compile_options(-Dgoogle=__tc_google)
+add_compile_options(-DCoreML=__tc_CoreML)
+add_compile_options(-DHAVE_PTHREAD=1)
 
 ##############################################################################
 ##############################################################################
@@ -632,9 +641,9 @@ macro(make_target_impl NAME FLAGS REQUIREMENTS IS_LIBRARY SHARED SHARED_ALL_DEFI
 
   if (${IS_LIBRARY})
     if(${SHARED})
-            target_link_libraries(${NAME} PRIVATE ${REQUIREMENTS})
+      target_link_libraries(${NAME} PRIVATE ${REQUIREMENTS})
     else()
-            target_link_libraries(${NAME} PUBLIC ${REQUIREMENTS})
+      target_link_libraries(${NAME} PUBLIC ${REQUIREMENTS})
     endif()
   else()
     target_link_libraries(${NAME} ${REQUIREMENTS})
@@ -706,7 +715,6 @@ macro(make_library NAME)
   endif()
 
   if (${make_library_SHARED})
-    message(STATUS "Shared Library: " ${NAME})
     add_library(${NAME} SHARED ${make_library_SOURCES})
   else()
     add_library(${NAME} STATIC ${make_library_SOURCES})
@@ -864,7 +872,7 @@ function (make_executable NAME)
     COMPILE_FLAGS_EXTRA COMPILE_FLAGS_EXTRA_CLANG COMPILE_FLAGS_EXTRA_GCC)
   CMAKE_PARSE_ARGUMENTS(make_library "" "${one_value_args}" "${multi_value_args}" ${ARGN})
   if(NOT make_library_SOURCES)
-    MESSAGE(FATAL_ERROR "make_library call with no sources")
+    MESSAGE(FATAL_ERROR "make_executable call with no sources")
   endif()
 
   if (APPLE)
@@ -927,6 +935,14 @@ function (make_boost_test NAME)
   add_test(${NAME} ${NAME}test)
 endfunction()
 
+# Same as target_compile_options, but tests for whether the flag is known
+# to the compiler before proceeding.
+function (target_optional_compile_flag NAME FLAG)
+  check_cxx_compiler_flag(${FLAG} __has_flag)
+  if (${__has_flag})
+    target_compile_options(${NAME} PRIVATE ${FLAG})
+  endif()
+endfunction()
 
 # This is an external function
 # Usage:
@@ -1047,12 +1063,10 @@ add_custom_target(external_dependencies)
 include(ExternalProject)
 file(GLOB packages "${DEPS_CMAKE}/ExternalProject*.cmake")
 foreach(package ${packages})
-        message(STATUS "We found local package: ${package}")
         get_filename_component(packagename "${package}" NAME_WE)
         #package is of the form ExternalProjectXXX"
         include(${package})
         STRING(SUBSTRING "${packagename}" 15 -1 depname)
-        message(STATUS "We found local package definition: ${depname}")
         string(TOLOWER ${depname} depname)
         set(package_${depname} requires_${depname} CACHE STRING "Package map")
         add_dependencies(external_dependencies ex_${depname})
@@ -1060,6 +1074,9 @@ endforeach()
 
 include_directories(src)
 include_directories(SYSTEM src/external)
+include_directories(SYSTEM src/external/armadillo/include)
+include_directories(SYSTEM src/external/aws-sdk-cpp/aws-cpp-sdk-core/include)
+include_directories(SYSTEM src/external/aws-sdk-cpp/aws-cpp-sdk-s3/include)
 include_directories(SYSTEM src/external/google)
 include_directories(src/platform)
 

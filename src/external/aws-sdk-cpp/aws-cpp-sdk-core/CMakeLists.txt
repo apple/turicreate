@@ -334,9 +334,6 @@ if(ENABLE_OPENSSL_ENCRYPTION AND BUILD_OPENSSL)
     add_dependencies(aws-cpp-sdk-core OPENSSL)
 endif()
 
-target_include_directories(aws-cpp-sdk-core PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>)
 target_link_libraries(aws-cpp-sdk-core ${PLATFORM_DEP_LIBS} ${CLIENT_LIBS} ${CRYPTO_LIBS})
 
 

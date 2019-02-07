@@ -8,38 +8,32 @@ project(unity)
 
 if(APPLE)
   set(VISUALIZATION_PLATFORM_SOURCES plot_macos.mm)
-  set(VISUALIZATION_PLATFORM_REQUIRES vega_renderer)
 endif()
 
-make_library(
-  visualization
-  SOURCES
-    batch_size.cpp
-    boxes_and_whiskers.cpp
-    categorical_heatmap.cpp
-    dark_mode.cpp
-    escape.cpp
-    groupby.cpp
-    heatmap.cpp
-    histogram.cpp
-    io_buffer.cpp
-    item_frequency.cpp
-    plot.cpp
-    process_wrapper.cpp
-    registration.cpp
-    scatter.cpp
-    show.cpp
-    summary_view.cpp
-    thread.cpp
-    transformation.cpp
-    vega_data.cpp
-    vega_spec.cpp
-    ${VISUALIZATION_PLATFORM_SOURCES}
-  REQUIRES
-    process
-    EXTERNAL_VISIBILITY
-    ${VISUALIZATION_PLATFORM_REQUIRES}
+add_library(visualization OBJECT
+  batch_size.cpp
+  boxes_and_whiskers.cpp
+  categorical_heatmap.cpp
+  dark_mode.cpp
+  escape.cpp
+  groupby.cpp
+  heatmap.cpp
+  histogram.cpp
+  io_buffer.cpp
+  item_frequency.cpp
+  plot.cpp
+  process_wrapper.cpp
+  registration.cpp
+  scatter.cpp
+  show.cpp
+  summary_view.cpp
+  thread.cpp
+  transformation.cpp
+  vega_data.cpp
+  vega_spec.cpp
+  ${VISUALIZATION_PLATFORM_SOURCES}
 )
+add_dependencies(visualization boost)
 
 set(GENERATED_VEGA_JSON_HEADERS
   vega_spec/boxes_and_whiskers.json

@@ -1,7 +1,6 @@
 project(sframe_query_engine)
 
-make_library(sframe_query_engine
-   SOURCES
+add_library(sframe_query_engine OBJECT
    planning/optimizations/optimization_transforms.cpp
    planning/optimization_engine.cpp
    planning/planner_node.cpp
@@ -17,7 +16,5 @@ make_library(sframe_query_engine
    algorithm/ec_sort.cpp
    algorithm/ec_permute.cpp
    query_engine_lock.cpp
-   REQUIRES
-     sframe flexible_type pylambda dot_graph_printer
-    EXTERNAL_VISIBILITY
- )
+)
+add_dependencies(sframe_query_engine boost)

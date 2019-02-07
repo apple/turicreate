@@ -1,7 +1,8 @@
 project(TuriPlatformDepedentcode)
 
 subdirs(
-  crash_handler
+  # TODO - seems we can delete crash_handler? Nothing is using it.
+  #crash_handler
   minipsutil
   network
   parallel
@@ -10,6 +11,7 @@ subdirs(
   shmipc
   so_utils
   timer
-  user_pagefault
+  # TODO - seems we can delete user_pagefault? Nothing is using it.
+  #user_pagefault
   config
   )

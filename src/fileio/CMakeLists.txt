@@ -24,27 +24,31 @@ set(FILEIO_REMOTE_FS_REQUIRES curl openssl aws-sdk-cpp soft_hdfs)
 endif()
 
 
-make_library(fileio
-  SOURCES
+add_library(fileio OBJECT
   ${FILEIO_REMOTE_FS_SOURCES}
-    union_fstream.cpp
-    general_fstream_source.cpp
-    general_fstream_sink.cpp
-    general_fstream.cpp
-    cache_stream_source.cpp
-    cache_stream_sink.cpp
-    fixed_size_cache_manager.cpp
-    temp_files.cpp
-    sanitize_url.cpp
-    fs_utils.cpp
-    curl_downloader.cpp
-    file_handle_pool.cpp
-    fileio_constants.cpp
-    block_cache.cpp
-  REQUIRES
-  ${FILEIO_REMOTE_FS_REQUIRES} libxml2 logger pthread z cancel_serverside_ops globals process util ${PLATFORM_DEPENDENCIES} network random 
-  MAC_REQUIRES
-    iconv
-  )
-    
+  union_fstream.cpp
+  general_fstream_source.cpp
+  general_fstream_sink.cpp
+  general_fstream.cpp
+  cache_stream_source.cpp
+  cache_stream_sink.cpp
+  fixed_size_cache_manager.cpp
+  temp_files.cpp
+  sanitize_url.cpp
+  fs_utils.cpp
+  curl_downloader.cpp
+  file_handle_pool.cpp
+  fileio_constants.cpp
+  block_cache.cpp
+)
+add_dependencies(fileio
+  boost
+  libxml2
+  ${FILEIO_REMOTE_FS_REQUIRES}
+  ${PLATFORM_DEPENDENCIES}
+)
 
+# TODO is this necessary?
+if(APPLE)
+  add_dependencies(fileio iconv)
+endif()

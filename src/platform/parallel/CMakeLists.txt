@@ -1,12 +1,8 @@
 project(parallel)
 
-make_library(parallel 
-  SOURCES
-    pthread_tools.cpp
-    thread_pool.cpp
-    execute_task_in_native_thread.cpp
-  REQUIRES
-    platform_config
-    logger
-    EXTERNAL_VISIBILITY
+add_library(parallel OBJECT
+  pthread_tools.cpp
+  thread_pool.cpp
+  execute_task_in_native_thread.cpp
 )
+add_dependencies(parallel boost)

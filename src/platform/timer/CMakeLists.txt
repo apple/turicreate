@@ -6,11 +6,7 @@ project(random)
 #/*                                                                        */
 #/**************************************************************************/
 
-make_library(timer
-  SOURCES
-    timer.cpp
-  REQUIRES
-    parallel
-    boost
-  EXTERNAL_VISIBILITY
+add_library(timer OBJECT
+  timer.cpp
 )
+add_dependencies(timer boost)

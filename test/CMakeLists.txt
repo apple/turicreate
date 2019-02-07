@@ -6,7 +6,8 @@ subdirs(
         toolkits
         ml_data
         optimization
-        user_pagefault
+        # TODO - seems we can delete user_pagefault? Nothing is using it.
+        #user_pagefault
         util
         serialization
         logger

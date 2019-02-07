@@ -21,7 +21,6 @@ subdirs(
   globals
   image
   lambda
-  lazy_eval
   logger
   ml_data
   nanosockets

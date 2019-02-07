@@ -1,14 +1,10 @@
 project(stack_trace)
 
-make_library(stack_trace
-SOURCES 
+add_library(stack_trace OBJECT
   llvm_lib.cpp
   stack_trace.cpp
-REQUIRES 
-  logger 
-  flexible_type
-  boost
-EXTERNAL_VISIBILITY )
+)
+add_dependencies(stack_trace boost)
 
 if (${TC_HAS_LLVM})
   target_link_libraries(stack_trace PUBLIC ${TC_LLVM_LIBRARIES})

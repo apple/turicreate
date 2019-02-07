@@ -1,3 +1,3 @@
 project(lz4)
 
-make_library(lz4 SOURCES lz4.c lz4hc.c)
+add_library(lz4 OBJECT lz4.c lz4hc.c)

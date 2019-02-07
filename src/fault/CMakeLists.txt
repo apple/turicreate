@@ -22,7 +22,6 @@ make_library(fault_comm
   zeromq
   network
   util
-  parallel
   logger
   globals
 )
@@ -50,7 +49,6 @@ make_library(fault_comm_zookeeper
   zookeeper_util
   network
   util
-  parallel
   logger
   globals
 )
