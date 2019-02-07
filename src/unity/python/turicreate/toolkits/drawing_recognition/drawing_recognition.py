@@ -132,22 +132,14 @@ def create(dataset, annotations=None, num_epochs=100, feature=None, model=None,
             )
 
         with _autograd.record():
-            # print(data)
-            # import pdb; pdb.set_trace()
             output = model(data)
-            # debug tomorrow (Saturday)
-            # try:
             loss = softmax_cross_entropy(output, label)
-            # except:
-            #     import pdb; pdb.set_trace()
         loss.backward()
         # update parameters
         trainer.step(1)
-        # trainer.step(batch_size)
         # calculate training metrics
         cur_loss = loss.mean().asscalar()
-        # train_acc += _accuracy_metric(output, label)
-
+        
         update_progress(cur_loss, batch.iteration)
         iteration = batch.iteration
 
@@ -162,34 +154,6 @@ def create(dataset, annotations=None, num_epochs=100, feature=None, model=None,
     }
     dataset["bitmap"] = sframe_images
     return DrawingRecognition(state)
-
-
-    # train_dataset = gluon.data.dataset.ArrayDataset(x_train_mx, y_train_mx)
-    # train_data_iterator = gluon.data.DataLoader(
-    #     train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
-    
-    # for epoch in range(num_epochs):
-    #     train_loss, train_acc, valid_acc = 0., 0., 0.
-    #     tic = time.time()
-    #     for data, label in train_data_iterator:
-    #         # forward + backward
-    #         with autograd.record():
-    #             output = model(data)
-    #             loss = softmax_cross_entropy(output, label)
-    #         loss.backward()
-    #         # update parameters
-    #         trainer.step(batch_size)
-    #         # calculate training metrics
-    #         train_loss += loss.mean().asscalar()
-    #         train_acc += _accuracy_metric(output, label)
-        # calculate validation accuracy
-        # for data, label in valid_data:
-        #     valid_acc += acc(model(data), label)
-        # print("Epoch %d: loss %.3f, train acc %.3f, in %.1f sec" % (
-        #         epoch, train_loss/len(train_data_iterator), train_acc/len(train_data_iterator), time.time()-tic))
-
-# def _check_closeness(f1, f2):
-#     return (abs(f1-f2) < .01)
 
 class DrawingRecognition(_CustomModel):
 
@@ -288,6 +252,10 @@ class DrawingRecognition(_CustomModel):
             Predict with options for what kind of SFrame should be returned.
         """
 
+        sframe_images = dataset["bitmap"]
+        dataset["bitmap"] = sframe_images.apply(
+            lambda I: I.pixel_data.reshape(1,28,28)/255.)
+
         loader = _SFrameRecognitionIter(dataset, self.batch_size,
                     class_to_index=self._class_to_index,
                     feature_column='bitmap',
@@ -328,7 +296,9 @@ class DrawingRecognition(_CustomModel):
             all_predicted[index:index+len(predicted_sa)] = predicted_sa
             all_probabilities[index:index+z.shape[0]] = z
             index += z.shape[0]
-            
+        
+        dataset["bitmap"] = sframe_images
+
         return (_tc.SFrame({'label': _tc.SArray(all_predicted),
             'probability': _tc.SArray(all_probabilities)}))
 

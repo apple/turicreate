@@ -174,12 +174,8 @@ class SFrameRecognitionIter(_mx.io.DataIter):
                  batch_size,
                  class_to_index,
                  input_shape = [28,28],
-                 # output_shape,
-                 # anchors,
                  feature_column='bitmap',
                  annotations_column='label',
-                 # aug_params={},
-                 # loader_type='augmented',
                  load_labels=True,
                  shuffle=True,
                  io_thread_buffer_size=0,
@@ -192,86 +188,13 @@ class SFrameRecognitionIter(_mx.io.DataIter):
         # if sframe[feature_column].dtype != _tc.Image:
         #     raise ValueError('Feature column must be of type Image')
 
-        # num_classes = len(class_to_index)
-        # num_anchors = len(anchors)
-
-        # Load images with random pertubations
-        # if loader_type == 'augmented':
-        #     augs = _mx.image.CreateDetAugmenter(data_shape=(3,) + tuple(input_shape),
-        #             resize=aug_params['aug_resize'],
-        #             rand_crop=aug_params['aug_rand_crop'],
-        #             rand_pad=aug_params['aug_rand_pad'],
-        #             rand_mirror=aug_params['aug_horizontal_flip'],
-        #             rand_gray=aug_params['aug_rand_gray'],
-        #             mean=_np.zeros(3), std=_np.ones(3),
-        #             brightness=aug_params['aug_brightness'],
-        #             contrast=aug_params['aug_contrast'],
-        #             saturation=aug_params['aug_saturation'],
-        #             hue=aug_params['aug_hue'],
-        #             pca_noise=aug_params['aug_pca_noise'],
-        #             inter_method=aug_params['aug_inter_method'],
-        #             min_object_covered=aug_params['aug_min_object_covered'],
-        #             aspect_ratio_range=(1/aug_params['aug_aspect_ratio'], aug_params['aug_aspect_ratio']),
-        #             pad_val=(128, 128, 128),
-        #             min_eject_coverage=aug_params['aug_min_eject_coverage'],
-        #             area_range=aug_params['aug_area_range'])
-
-        # elif loader_type == 'stretched':
-        #     augs = _mx.image.CreateDetAugmenter(data_shape=(3,) + tuple(input_shape),
-        #             rand_crop=0.0, rand_pad=0.0, rand_mirror=False,
-        #             mean=_np.zeros(3), std=_np.ones(3), brightness=0.0,
-        #             contrast=0.0, saturation=0.0, hue=0, pca_noise=0.0,
-        #             inter_method=1)
-        # else:
-        #     raise ValueError('Unknown loader_type: {}'.format(loader_type))
-
-        # self.augmentations = augs
         self.batch_size = batch_size
         self.input_shape = input_shape
-        # self.output_shape = output_shape
-        # self.num_classes = num_classes
-        # self.anchors = anchors
         self.class_to_index = class_to_index
         self.cur_iteration = 0
         self.num_epochs = epochs
         self.num_iterations = iterations
         self.want_to_print = want_to_print
-
-        # if load_labels:
-        #     is_annotations_list = sframe[annotations_column].dtype == list
-        #     # Check that all annotations are valid
-        #     if is_annotations_list:
-        #         valids = sframe[annotations_column].apply(_is_valid_annotations_list)
-        #     else:
-        #         valids = sframe[annotations_column].apply(_is_valid_annotation)
-        #         # Deal with Nones, which are valid (pure negatives)
-        #         valids = valids.fillna(1)
-
-        #     if valids.nnz() != len(sframe):
-        #         # Fetch invalid row ids
-        #         invalid_ids = _tc.SFrame({'valid': valids}).add_row_number()[valids == 0]['id']
-        #         count = len(invalid_ids)
-        #         num_examples = 5
-
-        #         s = ""
-        #         for row_id in invalid_ids[:num_examples]:
-        #             # Find which annotations were invalid in the list
-        #             s += "\n\nRow ID {}:".format(row_id)
-        #             anns = sframe[row_id][annotations_column]
-        #             if not isinstance(anns, list):
-        #                 anns = [anns]
-        #             for ann in anns:
-        #                 if not _is_valid_annotation(ann):
-        #                     s += "\n" + str(ann)
-
-        #         if count > num_examples:
-        #             s += "\n\n... ({} row(s) omitted)".format(count - num_examples)
-
-        #         # There were invalid rows
-        #         raise _ToolkitError("Invalid object annotations discovered.\n\n"
-        #             "A valid annotation is a dictionary that defines 'label' and 'coordinates',\n"
-        #             "the latter being a dictionary that defines 'x', 'y', 'width', and 'height'.\n"
-        #             "The following row(s) did not conform to this format:" + s)
 
         # Compute the number of times we'll read a row from the SFrame.
         sample_limits = []
@@ -332,16 +255,13 @@ class SFrameRecognitionIter(_mx.io.DataIter):
         labels = []
         indices = []
         orig_shapes = []
-        # bboxes = []
         classes = []
         if self.cur_iteration == self.num_iterations:
             raise StopIteration
 
         # Since we pre-screened the annotations, at this point we just want to
         # check that it's the right type (rectangle) and the class is included
-        # def is_valid(ann):
-        #     return _is_rectangle_annotation(ann) and ann['label'] in self.class_to_index
-
+        
         pad = None
         for b in range(self.batch_size):
             try:
@@ -356,91 +276,26 @@ class SFrameRecognitionIter(_mx.io.DataIter):
                     for p in range(pad):
                         images.append(_mx.nd.zeros(images[0].shape))
                         labels.append(0)
-                        # labels.append(_mx.nd.zeros(labels[0].shape))
-                        # ymaps.append(_mx.nd.zeros(ymaps[0].shape))
                         indices.append(0)
                         orig_shapes.append([0, 0, 0])
                     break
 
             raw_image, label, cur_sample = row
-            # if self.want_to_print :
-            #     print('label')
-            #     print(label)
-            #     print('row')
-            #     print(row)
-            # print('label in _next')
-            # print(label)
-            # print(type(label))
 
             orig_image = _mx.nd.array(raw_image)
             image = orig_image
             oshape = orig_image.shape
-
-            # if label is not None:
-            #     # Unchanged boxes, for evaluation
-            #     raw_bbox = _np.array([[
-            #             ann['coordinates']['x'],
-            #             ann['coordinates']['y'],
-            #             ann['coordinates']['width'],
-            #             ann['coordinates']['height'],
-            #         ] for ann in label if is_valid(ann)]).reshape(-1, 4)
-
-            #     # MXNet-formatted boxes for input to data augmentation
-            #     bbox = _np.array([[
-            #             self.class_to_index[ann['label']],
-            #             (ann['coordinates']['x'] - ann['coordinates']['width'] / 2) / orig_image.shape[1],
-            #             (ann['coordinates']['y'] - ann['coordinates']['height'] / 2) / orig_image.shape[0],
-            #             (ann['coordinates']['x'] + ann['coordinates']['width'] / 2) / orig_image.shape[1],
-            #             (ann['coordinates']['y'] + ann['coordinates']['height'] / 2) / orig_image.shape[0],
-            #         ] for ann in label if is_valid(ann)]).reshape(-1, 5)
-            # else:
-            #     raw_bbox = _np.zeros((0, 4))
-            #     bbox = _np.zeros((0, 5))
-
-            # for aug in self.augmentations:
-            #     try:
-            #         image, bbox = aug(image, bbox)
-            #     except ValueError:
-            #         # It is extremely rare, but mxnet can fail for some reason.
-            #         # If this happens, remove all boxes.
-            #         bbox = _np.zeros((0, 5))
-
-            # @todo: this may be needed in the future
-            # image01 = image / 255.0
-
-            # np_ymap = _yolo_boxes_to_yolo_map(bbox,
-            #                                   input_shape=self.input_shape,
-            #                                   output_shape=self.output_shape,
-            #                                   num_classes=self.num_classes,
-            #                                   anchors=self.anchors)
-
-            # ymap = _mx.nd.array(np_ymap)
-
-            # images.append(_mx.nd.transpose(image01, [2, 0, 1]))
             images.append(image)
-            # if self.want_to_print:
-                # print('appending:')
-                # print(self.class_to_index[label])
             labels.append(self.class_to_index[label])
             indices.append(cur_sample)
             orig_shapes.append(oshape)
-            # bboxes.append(raw_bbox)
-            # classes.append(bbox[:, 0].astype(_np.int32))
-
+            
         b_images = _mx.nd.stack(*images)
         b_labels = _mx.nd.array(labels, dtype='int32')
-        # try:
-        #     import pdb; pdb.set_trace()
-        #     b_labels = _mx.nd.array(labels, dtype=type(labels[0]))
-        # except:
-        #     b_labels = _mx.nd.array(labels)
         b_indices = _mx.nd.array(indices)
         b_orig_shapes = _mx.nd.array(orig_shapes)
 
         batch = _mx.io.DataBatch([b_images], [b_labels], pad=pad)
-        # Attach additional information
-        # batch.raw_bboxes = bboxes
-        # batch.raw_classes = classes
         batch.iteration = self.cur_iteration
         self.cur_iteration += 1
         return batch

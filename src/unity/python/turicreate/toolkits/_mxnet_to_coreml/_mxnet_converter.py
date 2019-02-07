@@ -217,8 +217,6 @@ def convert(model, input_shape, class_labels=None, mode=None,
     net = _json.loads(net.tojson())
     nodes = net['nodes']
 
-    # print('shape_dict')
-    # print(shape_dict)
     for i, node in enumerate(nodes):
         node['id'] = i
 
