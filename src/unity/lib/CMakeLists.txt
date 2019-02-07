@@ -1,6 +1,9 @@
 project(unity)
 
-subdirs(visualization)
+subdirs(
+	annotations
+	visualization
+)
 
 make_library(unity_core
   SOURCES
@@ -35,7 +38,8 @@ make_library(unity_core
     unity_sframe_builder.cpp
     visualization/columnwise_summary.cpp
   REQUIRES
-    flexible_type
+    annotations
+	flexible_type
     pylambda 
     table_printer
     sframe cancel_serverside_ops 
