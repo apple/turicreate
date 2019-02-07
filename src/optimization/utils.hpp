@@ -157,40 +157,6 @@ std::string translate_solver_status(const OPTIMIZATION_STATUS& status);
 */
 void log_solver_summary_stats(const solver_return& stats, bool simple_mode = false);
 
-
-/**
- * Check if any element in a sparse vector is NaN.
- *
- * \param[in] x Sparse vector
- * \returns True if any element in the vector is Nan.
-*/
-bool isNan(const SparseVector& x);
-
-/**
- * Check if any element in a dense vector is NaN.
- *
- * \param[in] x dense vector
- * \returns True if any element in the vector is Nan.
-*/
-bool isNan(const DenseVector& x);
-
-/**
- * Check if any element in a dense vector is inf.
- *
- * \param[in] x Dense vector
- * \returns True if any element in the vector is Inf.
-*/
-bool isInf(const DenseVector& x);
-
-
-/**
- * Check if any element in a sparse vector is inf.
- *
- * \param[in] x Sparse vector
- * \returns True if any element in the vector is Inf.
-*/
-bool isInf(const SparseVector& x);
-
 /**
  * Performs left = left + right across sparse and dense vectors.
  *

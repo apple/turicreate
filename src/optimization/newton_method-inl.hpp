@@ -139,7 +139,7 @@ inline solver_return newton_method(second_order_opt_interface& model,
       point = point + delta_point;
       
       // Numerical overflow. (Step size was too large)
-      if (isNan(delta_point) || isInf(delta_point)){
+      if (!delta_point.array().isFinite().all()) {
         stats.status = OPTIMIZATION_STATUS::OPT_NUMERIC_OVERFLOW;
         break;
       }

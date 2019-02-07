@@ -98,7 +98,7 @@ inline solver_return gradient_descent(first_order_opt_interface& model,
     
 
     // Nan Checking!
-    if (std::isnan(residual) || std::isinf(residual)){
+    if (!std::isfinite(residual)) {
       stats.status = OPTIMIZATION_STATUS::OPT_NUMERIC_OVERFLOW;
     }
     
@@ -155,7 +155,7 @@ inline solver_return gradient_descent(first_order_opt_interface& model,
         break;
       }
       // Numerical error: Numerical overflow. (Step size was too large)
-      if (isNan(delta_point) || isInf(delta_point)){
+      if (!delta_point.array().array().isFinite().all()) {
         stats.status = OPTIMIZATION_STATUS::OPT_NUMERIC_OVERFLOW;
         break;
       }

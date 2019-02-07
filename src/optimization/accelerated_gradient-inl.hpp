@@ -179,7 +179,7 @@ inline solver_return accelerated_gradient(first_order_opt_interface& model,
         break;
       }
       // Numerical error: Numerical overflow. (Step size was too large)
-      if (isNan(delta_point) || isInf(delta_point)){
+      if (!delta_point.array().isFinite().all()) {
         stats.status = OPTIMIZATION_STATUS::OPT_NUMERIC_OVERFLOW;
         break;
       }

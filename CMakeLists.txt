@@ -141,8 +141,6 @@ if (EXISTS ${CMAKE_SOURCE_DIR}/deps/local/lib64)
   link_directories(${CMAKE_SOURCE_DIR}/deps/local/lib64)
 endif()
 
-
-
 #**************************************************************************
 #*                                                                        *
 #*                       Platform Specific Stuff                          *
@@ -817,7 +815,7 @@ macro(make_empty_library NAME)
   if (NOT EXISTS ${CMAKE_SOURCE_DIR}/dummy.cpp)
     file(WRITE ${CMAKE_SOURCE_DIR}/dummy.cpp "")
   endif()
-  add_library(${NAME} ${CMAKE_SOURCE_DIR}/dummy.cpp)
+  add_library(${NAME} STATIC ${CMAKE_SOURCE_DIR}/dummy.cpp)
   make_target_impl("${NAME}" ""
       "${make_library_REQUIRES}" TRUE FALSE FALSE)
 
