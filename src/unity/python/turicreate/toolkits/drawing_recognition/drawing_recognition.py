@@ -227,10 +227,6 @@ class DrawingRecognition(_CustomModel):
             new_aux_params[k] = net_params[k].data(net_params[k].list_ctx()[0])
         mod.set_params(new_arg_params, new_aux_params)
 
-        input_dim = (1,28,28)
-        input_features = [('bitmap', datatypes.Array(*image_shape))]
-        output_features = [('probabilities', datatypes.Dictionary(self._label_type)),('classLabel', self._label_type)]
-        
         coreml_model = _mxnet_converter.convert(mod, mode='classifier',
                                 class_labels=self._classes,
                                 input_shape=[('bitmap', image_shape)],
