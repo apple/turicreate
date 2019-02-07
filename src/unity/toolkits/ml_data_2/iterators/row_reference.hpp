@@ -13,13 +13,15 @@
 #include <unity/toolkits/ml_data_2/side_features.hpp>
 #include <util/code_optimization.hpp>
 
-#include <numerics/armadillo.hpp>
+#include <Eigen/SparseCore>
+#include <Eigen/Core>
 
 #include <array>
 
 namespace turi { namespace v2 {
 
-typedef arma::fvec DenseVector;
+typedef Eigen::Matrix<double, Eigen::Dynamic,1>  DenseVector;
+typedef Eigen::SparseVector<double> SparseVector;
 
 /**
  *  A class containing a reference to the row of an ml_data instance.
@@ -139,7 +141,7 @@ class ml_data_row_reference {
 
 
   /**
-   * Fill an observation vector, represented as a Sparse Vector, from
+   * Fill an observation vector, represented as an Eigen Sparse Vector, from
    * the current location in the iteration.
    *
    * \note A reference category is used in this version of the function.
@@ -171,15 +173,14 @@ class ml_data_row_reference {
    * \param[in,out] x   Data containing everything!
    *
    */
-  template <typename T, typename Index>
-  inline void fill(turi::sparse_vector<T,Index>& x) const {
+  inline void fill(SparseVector& x) const GL_HOT_INLINE_FLATTEN {
     
-    x.zeros();
+    x.setZero();
 
     if(!data_block->metadata->has_translated_columns())
       return;
 
-    ml_data_internal::copy_raw_into_array(
+    ml_data_internal::copy_raw_into_eigen_array(
         x,
         data_block->rm, current_data_iter(),
         side_features,
@@ -220,12 +221,12 @@ class ml_data_row_reference {
    */
   inline void fill(DenseVector& x) const  GL_HOT_INLINE_FLATTEN {
 
-    x.zeros();
+    x.setZero();
 
     if(!data_block->metadata->has_translated_columns())
       return;
 
-    ml_data_internal::copy_raw_into_array(
+    ml_data_internal::copy_raw_into_eigen_array(
         x,
         data_block->rm, current_data_iter(),
         side_features,
@@ -245,20 +246,20 @@ class ml_data_row_reference {
    *
    *   ...
    *
-   *   it.fill_row_expr(X.row(row_idx)); 
+   *   it.fill_eigen_row(X.row(row_idx));
    *  
    * ---------------------------------------------
    *
-   * \param[in,out] x   A row expression.
+   * \param[in,out] x   An eigen row expression.
    *
    */
   template <typename DenseRowXpr>
   GL_HOT_INLINE_FLATTEN
-  inline void fill_row_expr(DenseRowXpr&& x) const {
+  inline void fill_eigen_row(DenseRowXpr&& x) const {
 
-    x.zeros();
+    x.setZero();
     
-    ml_data_internal::copy_raw_into_array(
+    ml_data_internal::copy_raw_into_eigen_array(
         x,
         data_block->rm, current_data_iter(),
         side_features,

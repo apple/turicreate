@@ -6,13 +6,11 @@
 #ifndef TURI_BALL_TREE_NEIGHBORS_H_
 #define TURI_BALL_TREE_NEIGHBORS_H_
 
-// ML-Data Utils
-
 // Toolkits
 #include <unity/toolkits/nearest_neighbors/nearest_neighbors.hpp>
 
 // Miscellaneous
-#include <numerics/armadillo.hpp>
+#include <Eigen/SparseCore>
 
 
 namespace turi {

@@ -6,7 +6,7 @@
 #ifndef TURI_SUPERVISED_LEARNING_UTILS_H_
 #define TURI_SUPERVISED_LEARNING_UTILS_H_
 
-#include <numerics/armadillo.hpp>
+#include <Eigen/LU>
 // SFrame
 #include <sframe/sarray.hpp>
 #include <sframe/sframe.hpp>
@@ -16,7 +16,7 @@
 #include <ml_data/metadata.hpp>
 #include <util/testing_utils.hpp>
 // Supervised learning includes. 
-#include <toolkits/supervised_learning/supervised_learning.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
 
 // Types
 #include <unity/lib/variant.hpp>
@@ -36,12 +36,11 @@ namespace supervised {
 /**
  * Get standard errors from hessian. 
  */
-inline arma::vec get_stderr_from_hessian(
-    const arma::mat& hessian) {
-  DASSERT_EQ(hessian.n_rows, hessian.n_cols);
-  arma::mat I;
-  I.eye(hessian.n_rows, hessian.n_cols);
-  return arma::sqrt(arma::diagvec(arma::inv_sympd(hessian + 1E-8 * I)));
+
+inline Eigen::Matrix<double, Eigen::Dynamic,1> get_stderr_from_hessian(
+    const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>& hessian) {
+  DASSERT_EQ(hessian.rows(), hessian.cols());
+  return hessian.inverse().diagonal().cwiseSqrt();
 }
 
 /**
@@ -192,13 +191,13 @@ inline sframe setup_test_data_sframe(const sframe& sf,
  * [in,out] An ml_data_row_reference object from which we are reading. 
  * [in,out] An eigen expression (could be a sparse, dense, or row of a matrix) 
  */
-template <typename ArmaExpr>
+template <typename EigenExpr>
 GL_HOT_INLINE_FLATTEN
 inline void fill_reference_encoding(
     const ml_data_row_reference& row_ref, 
-    ArmaExpr && x) {
+    EigenExpr && x) {
 
-  x.zeros();
+  x.setZero();
   size_t offset = 0;
 
   row_ref.unpack(
@@ -222,7 +221,8 @@ inline void fill_reference_encoding(
         }
 
         DASSERT_GE(idx,  0);
-        x(idx) = value;
+        DASSERT_LT(idx, size_t(x.size()));
+        x.coeffRef(idx) = value;
 
       },
 
@@ -584,7 +584,7 @@ inline sframe add_na_std_err_to_coef(const sframe& sf_coef) {
 *
 * \returns coefs (as SFrame)
 */
-inline void get_one_hot_encoded_coefs(const arma::vec&
+inline void get_one_hot_encoded_coefs(const Eigen::Matrix<double, Eigen::Dynamic, 1>&
     coefs, std::shared_ptr<ml_metadata> metadata,
     std::vector<double>& one_hot_coefs) {
 
@@ -625,9 +625,9 @@ inline void get_one_hot_encoded_coefs(const arma::vec&
 * \returns coefs (as SFrame)
 */
 inline sframe get_coefficients_as_sframe(
-         const arma::vec& coefs,
+         const Eigen::Matrix<double, Eigen::Dynamic, 1>& coefs,
          std::shared_ptr<ml_metadata> metadata, 
-         const arma::vec& std_err) {
+         const Eigen::Matrix<double, Eigen::Dynamic, 1>& std_err) {
 
   DASSERT_TRUE(coefs.size() > 0);
   DASSERT_TRUE(metadata);
@@ -737,11 +737,11 @@ inline sframe get_coefficients_as_sframe(
   return sf_coef;
 }
 inline sframe get_coefficients_as_sframe(
-         const arma::vec& coefs,
+         const Eigen::Matrix<double, Eigen::Dynamic, 1>& coefs,
          std::shared_ptr<ml_metadata> metadata) {
-  arma::vec EMPTY;
-  return get_coefficients_as_sframe(coefs, metadata, EMPTY); 
-} 
+  Eigen::Matrix<double, Eigen::Dynamic, 1> EMPTY;
+  return get_coefficients_as_sframe(coefs, metadata, EMPTY);
+}
 
 /**
  * Get number of examples per class

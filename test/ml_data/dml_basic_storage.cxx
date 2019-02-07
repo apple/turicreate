@@ -10,6 +10,10 @@
 #include <util/test_macros.hpp>
 #include <vector>
 
+// Eigen
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
+
 // SFrame and Flex type
 #include <random/random.hpp>
 #include <unity/lib/flex_dict_view.hpp>

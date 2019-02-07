@@ -8,12 +8,17 @@
 
 #include <random>
 
+// ML-Data Utils
+#include <unity/toolkits/ml_data_1/ml_data.hpp>
+#include <unity/toolkits/ml_data_1/metadata.hpp>
+#include <unity/toolkits/ml_data_1/sframe_index_mapping.hpp>
+
 // Optimization Interface
 #include <optimization/optimization_interface.hpp>
 #include <optimization/utils.hpp>
 
 // Models
-#include <toolkits/supervised_learning/linear_regression.hpp>
+#include <unity/toolkits/supervised_learning/linear_regression.hpp>
 #include <sframe/testing_utils.hpp>
 
 #include <cfenv>
@@ -32,7 +37,7 @@ void run_linear_regression_test(std::map<std::string, flexible_type> opts) {
   // Answers
   // -----------------------------------------------------------------------
   DenseVector coefs(features+1);
-  coefs.randn();
+  coefs.setRandom();
 
   // Feature names
   std::vector<std::string> feature_names;
@@ -79,7 +84,6 @@ void run_linear_regression_test(std::map<std::string, flexible_type> opts) {
  *  Check linear regression
 */
 struct linear_regression_test  {
-
   public:
 
   void test_linear_regression_tiny() {

@@ -10,7 +10,9 @@
 #include <util/cityhash_tc.hpp>
 #include <cmath>
 
-#include <numerics/armadillo.hpp>
+// Eigen
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
 
 // SFrame and Flex type
 #include <unity/lib/flex_dict_view.hpp>
@@ -30,10 +32,11 @@
 // Testing utils common to all of ml_data
 #include <unity/toolkits/ml_data_2/testing_utils.hpp>
 
-using namespace turi;
 
-typedef arma::vec DenseVector;
-typedef sparse_vector<double, size_t> SparseVector;
+typedef Eigen::Matrix<double,Eigen::Dynamic,1>  DenseVector;
+typedef Eigen::SparseVector<double> SparseVector;
+
+using namespace turi;
 
 struct missing_values  {
  public:

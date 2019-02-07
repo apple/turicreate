@@ -9,7 +9,7 @@ macro(make_extension NAME)
     REQUIRES
       unity_shared
       boost
-      numerics
+      eigen
     COMPILE_FLAGS_EXTRA_GCC
       -Wno-unknown-pragmas  # NOTE: used for auto-generated protobuf source files
       -Wno-unused-function  # NOTE: used for auto-generated protobuf source files
@@ -31,6 +31,7 @@ make_extension(json SOURCES
 make_extension(xgboost_extension SOURCES ../toolkits/supervised_learning/xgboost_extension.cpp)
 make_extension(coreml_extension SOURCES ../toolkits/coreml_export/coreml_extension.cpp)
 
+
 #----------------------------
 make_extension(content_interpretation_extensions SOURCES
   ../toolkits/feature_engineering/content_interpretation_extensions.cpp)
@@ -46,5 +47,12 @@ make_extension(dictionary_transformation_extensions SOURCES
 #     timeseries/timeseries.cpp
 # )
 # target_link_libraries(timeseries PUBLIC grouped_sframe)
+
+#----------------------------
+# make_extension(_BayesianOnlineChangepoint
+#   SOURCES
+#      ../toolkits/anomaly_detection/bayesian_online_changepoint.cpp
+#      ../toolkits/anomaly_detection/class_registrations.cpp
+#  )
 
 set_property(DIRECTORY PROPERTY EXTENSIONS_LIST "${EXTENSIONS_LIST}")

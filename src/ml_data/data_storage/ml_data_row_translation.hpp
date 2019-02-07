@@ -14,15 +14,15 @@
 #include <util/code_optimization.hpp>
 #include <type_traits>
 
-#include <numerics/armadillo.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/SparseCore>
+#include <Eigen/Core>
 
 #include <array>
 
 namespace turi {
 
-typedef arma::vec  DenseVector;
-typedef sparse_vector<double> SparseVector;
+typedef Eigen::Matrix<double, Eigen::Dynamic,1>  DenseVector;
+typedef Eigen::SparseVector<double> SparseVector;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Translation routines to the basic ml_data_entry type

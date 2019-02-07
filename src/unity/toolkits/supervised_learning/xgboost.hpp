@@ -20,7 +20,7 @@
 #include <export.hpp>
 
 // Toolkits
-#include <toolkits/supervised_learning/supervised_learning.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
 #include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
 
 // Forward delcare

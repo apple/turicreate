@@ -6,7 +6,6 @@ make_library(unity_clustering
     class_registrations.cpp
     unity_kmeans.cpp
   REQUIRES
-    numerics
     unity_core
     unity_ml_model
     unity_ml_data_2

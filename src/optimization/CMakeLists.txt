@@ -6,6 +6,5 @@ make_library(optimization
     optimization_interface.cpp
   REQUIRES
     flexible_type
-    numerics
-    armadillo
+    eigen
     sframe)

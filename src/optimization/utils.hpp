@@ -10,7 +10,7 @@
 
 #include <optimization/optimization_interface.hpp>
 #include <flexible_type/flexible_type.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 
 namespace turi {
 
@@ -157,6 +157,55 @@ std::string translate_solver_status(const OPTIMIZATION_STATUS& status);
 */
 void log_solver_summary_stats(const solver_return& stats, bool simple_mode = false);
 
+
+/**
+ * Check if any element in a sparse vector is NaN.
+ *
+ * \param[in] x Sparse vector
+ * \returns True if any element in the vector is Nan.
+*/
+bool isNan(const SparseVector& x);
+
+/**
+ * Check if any element in a dense vector is NaN.
+ *
+ * \param[in] x dense vector
+ * \returns True if any element in the vector is Nan.
+*/
+bool isNan(const DenseVector& x);
+
+/**
+ * Check if any element in a dense vector is inf.
+ *
+ * \param[in] x Dense vector
+ * \returns True if any element in the vector is Inf.
+*/
+bool isInf(const DenseVector& x);
+
+
+/**
+ * Check if any element in a sparse vector is inf.
+ *
+ * \param[in] x Sparse vector
+ * \returns True if any element in the vector is Inf.
+*/
+bool isInf(const SparseVector& x);
+
+/**
+ * Performs left = left + right across sparse and dense vectors.
+ *
+ * \note Although Eigen is an amazing library. This operation is horribly
+ * inefficient when Left is a dense vector and Right is a sparse vector.
+ *
+ * \param[in,out] left  Vector
+ * \param[in]     right Rector
+*/
+template <typename L, typename R>
+void vector_add(L & left, const R & right);
+
+
+/// \}
+//
 } // Optimization
 
 } // turicreate

@@ -70,7 +70,7 @@ make_library(unity_coreml_model_export
     MLModel/src/transforms/Pipeline.cpp
     MLModel/src/transforms/TreeEnsemble.cpp
   REQUIRES
-    numerics
+    eigen
     protobuf
   COMPILE_FLAGS_EXTRA
     -Wno-return-type              # TODO: resolve these issues at the source level

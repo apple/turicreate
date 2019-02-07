@@ -22,6 +22,10 @@ make_executable(time_recsys_sgd
     -Wno-unused-function  # NOTE: used for auto-generated protobuf source files
   )
 
+make_executable(time_v1_ml_data
+  SOURCES time_v1_ml_data.cpp
+  REQUIRES unity_core unity_ml_data)
+
 make_executable(time_nearest_neighbors
   SOURCES time_nearest_neighbors
   REQUIRES unity_util unity_ml_data_2 unity_core unity_nearest_neighbors

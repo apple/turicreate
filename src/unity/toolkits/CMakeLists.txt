@@ -14,8 +14,8 @@ subdirs(ml_model
         evaluation
         supervised_learning
         nearest_neighbors
-        pattern_mining
         feature_engineering
+        pattern_mining
         text
         image
         neural_net
@@ -27,12 +27,12 @@ subdirs(ml_model
 make_empty_library(unity_toolkits
   REQUIRES
     unity_clustering
+    unity_graph_analytics
     unity_recsys
     unity_sparse_similarity
-    supervised_learning
+    unity_supervised_learning
     unity_nearest_neighbors
     unity_text
-    unity_ml_data_2
     unity_feature_engineering
     unity_pattern_mining
     unity_evaluation

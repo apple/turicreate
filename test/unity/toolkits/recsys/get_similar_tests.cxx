@@ -103,9 +103,9 @@ void run_exact_test(
   }
 
   logprogress_stream << "Getting similar items" << std::endl;
-  auto chosen_items = std::vector<flexible_type>{0};
+  auto chosen_items = std::vector<flexible_type>({0});
   auto items_sa = make_testing_sarray(flex_type_enum::INTEGER, chosen_items);
-  auto chosen_users = std::vector<flexible_type>{0};
+  auto chosen_users = std::vector<flexible_type>({0});
   auto users_sa = make_testing_sarray(flex_type_enum::INTEGER, chosen_users);
 
   size_t k = 5;

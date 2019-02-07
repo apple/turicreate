@@ -7,8 +7,8 @@
 #define TURI_KMEANS
 
 // Types
-#include <numerics/armadillo.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
 #include <sframe/sframe.hpp>
 #include <unity/lib/gl_sarray.hpp>
 #include <parallel/atomic.hpp>
@@ -27,7 +27,7 @@
 #include <unity/lib/extensions/option_manager.hpp>
 #include <unity/lib/variant_deep_serialize.hpp>
 #include <globals/globals.hpp>
-#include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
 
 // Miscellaneous
 #include <unity/lib/toolkit_util.hpp>
@@ -40,8 +40,8 @@ namespace turi {
 namespace kmeans {
 
 
-typedef arma::vec  dense_vector;
-typedef sparse_vector<double>  sparse_vector;
+typedef Eigen::Matrix<double, Eigen::Dynamic, 1>  dense_vector;
+typedef Eigen::SparseVector<double>  sparse_vector;
 
 
 /**
@@ -81,7 +81,7 @@ struct cluster {
 
   // Methods
   cluster(size_t dimension): center(dense_vector(dimension)), count(0) {
-    center.zeros();
+    center.setZero();
   };
 
   cluster() = delete;

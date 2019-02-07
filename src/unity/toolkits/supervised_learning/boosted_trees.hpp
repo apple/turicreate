@@ -6,7 +6,7 @@
 #ifndef TURI_BOOSTED_TREES_H_
 #define TURI_BOOSTED_TREES_H_
 // unity xgboost
-#include <toolkits/supervised_learning/xgboost.hpp>
+#include <unity/toolkits/supervised_learning/xgboost.hpp>
 #include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
 
 #include <export.hpp>

@@ -45,7 +45,7 @@ make_library(unity_core
     image_type image_io
     startup_teardown
     pylambda_worker
-    numerics
+    eigen
     visualization
     EXTERNAL_VISIBILITY
 )

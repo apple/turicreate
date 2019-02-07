@@ -10,7 +10,7 @@ make_library(unity_nearest_neighbors
   lsh_neighbors.cpp
   class_registrations.cpp
   REQUIRES
-    numerics
+    eigen
     unity_core
     unity_ml_model
     unity_ml_data_2

@@ -13,8 +13,8 @@
 #include <ml_data/ml_data.hpp>
 
 // Toolkits
-#include <toolkits/supervised_learning/logistic_regression_opt_interface.hpp>
-#include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <unity/toolkits/supervised_learning/logistic_regression_opt_interface.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
 
 // Core ML
 #include <unity/toolkits/coreml_export/linear_models_exporter.hpp>
@@ -30,9 +30,8 @@
 #include <optimization/regularizers-inl.hpp>
 
 // Utilities
-#include <numerics/armadillo.hpp>
+#include <Eigen/SparseCore>
 #include <cmath>
-#include <serialization/serialization_includes.hpp>
 
 #define LOGISTIC_REGRESSION_NEWTON_VARIABLES_HARD_LIMIT 10000
 #define LOGISTIC_REGRESSION_NEWTON_VARIABLES_SOFT_LIMIT 500
@@ -74,7 +73,7 @@ void logistic_regression::model_specific_init(const ml_data& data,
 
   // Initialize the solver and set initial solution.
   lr_interface.reset(new logistic_regression_opt_interface(data, valid_data, *this));
-  coefs = arma::zeros(variables);
+  coefs = DenseVector::Zero(variables);
 
 }
 
@@ -201,7 +200,7 @@ void logistic_regression::train() {
   // Set the initial point and write initial output to screen
   // ---------------------------------------------------------------------------
   DenseVector init_point(this->num_coefficients);
-  init_point.zeros();
+  init_point.setZero();
   if(!m_simple_mode) {
     display_classifier_training_summary("Logistic regression", m_simple_mode);
     if(!m_simple_mode) {
@@ -217,7 +216,7 @@ void logistic_regression::train() {
   // ---------------------------------------------------------------------------
   // Set regularize flag to all features except the intercept
   DenseVector is_regularized(this->num_coefficients);
-  is_regularized.ones();
+  is_regularized.setOnes();
   for(size_t i = 1; i < this->num_classes; i++){
     is_regularized(i * variables_per_class - 1) = 0;
   }
@@ -319,7 +318,7 @@ void logistic_regression::train() {
   // ---------------------------------------------------------------------------
   coefs = stats.solution;
   lr_interface->rescale_solution(coefs);
-  bool has_stderr = (stats.hessian.n_rows * stats.hessian.n_cols > 0) &&
+  bool has_stderr = (stats.hessian.rows() * stats.hessian.cols() > 0) &&
     (this->num_examples() > this->num_coefficients);
   if (has_stderr) {
     std_err = get_stderr_from_hessian(stats.hessian);
@@ -372,9 +371,9 @@ flexible_type logistic_regression::predict_single_example(
 
   // Binary classification
   if (this->num_classes == 2) {
-    double margin = dot(x, coefs);
-    double kernel = std::exp(-margin);
-    double row_prob = std::exp(-std::log1p(kernel));
+    double margin = x.dot(coefs);
+    double kernel = exp(-margin);
+    double row_prob = exp(-log1p(kernel));
 
     // Probability or Rank. Note that we sort by rank for probability.
     switch(output_type) {
@@ -408,10 +407,10 @@ flexible_type logistic_regression::predict_single_example(
 
     size_t variables_per_class = this->num_coefficients / (this->num_classes - 1);
     DenseMatrix coefsMat(coefs);
-    coefsMat.reshape(variables_per_class, this->num_classes-1);
-    DenseVector margin = coefsMat.t() * x;
-    DenseVector kernel = arma::exp(margin);
-    DenseVector prob = kernel / (1 + arma::sum(kernel));
+    coefsMat.resize(variables_per_class, this->num_classes-1);
+    DenseVector margin = coefsMat.transpose() * x;
+    DenseVector kernel = margin.array().exp();
+    DenseVector prob = kernel / (1 + kernel.sum());
 
     switch(output_type) {
 
@@ -421,9 +420,9 @@ flexible_type logistic_regression::predict_single_example(
       case prediction_type_enum::PROBABILITY_VECTOR:
       {
 
-        std::vector<double> prob_as_vector(prob.begin(),
-                                           prob.begin() + this->num_classes -1);
-        prob_as_vector.insert(prob_as_vector.begin(), 1 - arma::sum(prob));
+        std::vector<double> prob_as_vector(prob.data(),
+                                           prob.data() + this->num_classes -1);
+        prob_as_vector.insert(prob_as_vector.begin(), 1 - prob.sum());
         for(auto& d : prob_as_vector) {
           if (d < 0.0) d = 0.0;
           else if (d > 1.0) d = 1.0;
@@ -436,8 +435,8 @@ flexible_type logistic_regression::predict_single_example(
       case prediction_type_enum::MARGIN:
       {
 
-        std::vector<double> margin_as_vector(margin.begin(),
-                                             margin.begin() + this->num_classes -1);
+        std::vector<double> margin_as_vector(margin.data(),
+                                             margin.data() + this->num_classes -1);
         margin_as_vector.insert(margin_as_vector.begin(), 0);
         return margin_as_vector;
       }
@@ -467,7 +466,7 @@ flexible_type logistic_regression::predict_single_example(
       // Probability for best class
       case prediction_type_enum::MAX_PROBABILITY:
         return std::min<double>(std::max<double>(
-                std::max<double>(1 - arma::sum(prob), prob.max()),
+                std::max<double>(1 - prob.sum(), prob.maxCoeff()),
                0.0), 1.0);
 
       case prediction_type_enum::NA:
@@ -488,9 +487,9 @@ flexible_type logistic_regression::predict_single_example(
 
   // Binary classification
   if (this->num_classes == 2) {
-    double margin = dot(x, coefs);
-    double kernel = std::exp(-margin);
-    double row_prob = std::exp(-std::log1p(kernel));
+    double margin = x.dot(coefs);
+    double kernel = exp(-margin);
+    double row_prob = exp(-log1p(kernel));
 
     switch (output_type) {
 
@@ -525,10 +524,10 @@ flexible_type logistic_regression::predict_single_example(
     size_t variables_per_class = this->num_coefficients / (this->num_classes - 1);
 
     DenseMatrix coefsMat(coefs);
-    coefsMat.reshape(variables_per_class, this->num_classes-1);
-    DenseVector margin = coefsMat.t() * x;
-    DenseVector kernel = arma::exp(margin);
-    DenseVector prob = kernel / (1 + arma::sum(kernel));
+    coefsMat.resize(variables_per_class, this->num_classes-1);
+    DenseVector margin = coefsMat.transpose() * x;
+    DenseVector kernel = margin.array().exp();
+    DenseVector prob = kernel / (1 + kernel.sum());
 
     switch (output_type) {
 
@@ -536,11 +535,9 @@ flexible_type logistic_regression::predict_single_example(
       case prediction_type_enum::PROBABILITY:
       case prediction_type_enum::PROBABILITY_VECTOR:
       {
-        std::vector<double> prob_as_vector(this->num_classes);
-        prob_as_vector[0] = 1 - arma::sum(prob);
-        std::copy(prob.begin(), prob.begin() + this->num_classes-1,
-                  prob_as_vector.begin() + 1);
-
+        std::vector<double> prob_as_vector(prob.data(),
+                                           prob.data() + this->num_classes -1);
+        prob_as_vector.insert(prob_as_vector.begin(), 1 - prob.sum());
         return prob_as_vector;
       }
 
@@ -548,10 +545,9 @@ flexible_type logistic_regression::predict_single_example(
       case prediction_type_enum::MARGIN:
       case prediction_type_enum::RANK:
       {
-        std::vector<double> margin_as_vector(this->num_classes);
-        margin_as_vector[0] = 0;
-        std::copy(margin.begin(), margin.begin() + this->num_classes -1,
-                  margin_as_vector.begin() + 1);
+        std::vector<double> margin_as_vector(margin.data(),
+                                             margin.data() + this->num_classes -1);
+        margin_as_vector.insert(margin_as_vector.begin(), 0);
         return margin_as_vector;
       }
 
@@ -576,7 +572,7 @@ flexible_type logistic_regression::predict_single_example(
       }
       // Probability for best class
       case prediction_type_enum::MAX_PROBABILITY:
-        return std::max<double>(1 - arma::sum(prob), prob.max());
+        return std::max<double>(1 - prob.sum(), prob.maxCoeff());
 
       case prediction_type_enum::NA:
         log_and_throw("Output type not supported");
@@ -652,7 +648,7 @@ gl_sframe logistic_regression::fast_predict_topk(
       DenseVector dense_vec(variables);
       fill_reference_encoding(ml_data_row_reference::from_row(
                this->ml_mdata, row.get<flex_dict>(), na_enum), dense_vec);
-      dense_vec(variables - 1) = 1;
+      dense_vec.coeffRef(variables - 1) = 1;
       preds = predict_single_example(dense_vec, pred_type_enum);
 
     // Sparse predict.
@@ -660,7 +656,7 @@ gl_sframe logistic_regression::fast_predict_topk(
       SparseVector sparse_vec(variables);
       fill_reference_encoding(ml_data_row_reference::from_row(
                this->ml_mdata, row.get<flex_dict>(), na_enum), sparse_vec);
-      sparse_vec(variables - 1) = 1;
+      sparse_vec.coeffRef(variables - 1) = 1;
       preds = predict_single_example(sparse_vec, pred_type_enum);
     }
 

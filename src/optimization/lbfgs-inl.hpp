@@ -8,7 +8,7 @@
 
 #include <optimization/optimization_interface.hpp>
 #include <flexible_type/flexible_type.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 #include <sframe/sframe.hpp>
 
 #include <optimization/utils.hpp>
@@ -16,7 +16,6 @@
 #include <optimization/regularizer_interface.hpp>
 #include <optimization/line_search-inl.hpp>
 #include <table_printer/table_printer.hpp>
-#include <numerics/armadillo.hpp>
 
 
 // TODO: List of todo's for this file
@@ -123,7 +122,7 @@ inline solver_return lbfgs(first_order_opt_interface& model,
     // Keep track of previous point 
     DenseVector point = init_point;
     DenseVector delta_point = point;
-    delta_point.zeros();
+    delta_point.setZero();
     
     // First compute the gradient. Sometimes, you already have the solution
     // during the starting point. In these settings, you don't want to waste
@@ -132,7 +131,7 @@ inline solver_return lbfgs(first_order_opt_interface& model,
     DenseVector reg_gradient(point.size());
     DenseVector delta_grad = gradient;
     DenseVector new_grad = gradient;
-    delta_grad.zeros();
+    delta_grad.setZero();
 
     // Add regularizer to gradients.
     double func_value;
@@ -171,19 +170,19 @@ inline solver_return lbfgs(first_order_opt_interface& model,
     DenseVector alpha(m);        // Step sizes (prev m iters)
 
     int start_point = -1;
-    H0.ones();
-    s.zeros();
-    y.zeros();
-    r.zeros();
-    q.zeros();
-    rho.zeros();
-    alpha.zeros();
+    H0.setOnes();
+    s.setZero();
+    y.setZero();
+    r.setZero();
+    q.setZero();
+    rho.setZero();
+    alpha.setZero();
     beta = 0;
     gamma = 0;
     
 
     // Nan Checking!
-    if (!std::isfinite(residual)) {
+    if (std::isnan(residual) || std::isinf(residual)){
       stats.status = OPTIMIZATION_STATUS::OPT_NUMERIC_OVERFLOW;
     }
 
@@ -242,17 +241,17 @@ inline solver_return lbfgs(first_order_opt_interface& model,
         **/
         for (int j = 0; j <= std::min(iters, m-1); j++){
           int i = (start_point + j) % m;
-          alpha(i) = rho(i) * dot(s.col(i),q);
+          alpha(i) = rho(i) * s.col(i).dot(q);
           q = q - alpha(i) * y.col(i);
         }
         
         // Scaling factor according to Pg 178 of [1]. This ensures that the 
         // problem is better scaled and that a step size of 1 is mostly accepted.
-        gamma = 1 / (squared_norm(y.col(start_point)) * rho(start_point));
-        r = gamma * (arma::diagmat(H0) * q);
+        gamma = 1 / (y.col(start_point).squaredNorm() * rho(start_point));
+        r = gamma * q.cwiseProduct(H0);
         for (int j = std::min(iters, m-1); j >=0 ; j--){
           int i = (start_point + j) % m;
-          beta = rho(i) * dot(y.col(i), r);
+          beta = rho(i) * y.col(i).dot(r);
           r = r + s.col(i) * (alpha(i) - beta);
         }
 
@@ -288,12 +287,12 @@ inline solver_return lbfgs(first_order_opt_interface& model,
       }
       
       // Numerical error: Insufficient progress.
-      if (arma::norm(delta_point, 2) <= OPTIMIZATION_ZERO){
+      if (delta_point.norm() <= OPTIMIZATION_ZERO){
         stats.status = OPTIMIZATION_STATUS::OPT_NUMERIC_ERROR;
         break;
       }
       // Numerical error: Numerical overflow. (Step size was too large)
-      if (!delta_point.is_finite()) {
+      if (isNan(delta_point) || isInf(delta_point)){
         stats.status = OPTIMIZATION_STATUS::OPT_NUMERIC_OVERFLOW;
         break;
       }
@@ -310,7 +309,7 @@ inline solver_return lbfgs(first_order_opt_interface& model,
       residual = compute_residual(gradient);
 
       // Check for nan's in the function value.
-      if(!std::isfinite(func_value)) {
+      if(std::isinf(func_value) || std::isnan(func_value)) {
         stats.status = OPTIMIZATION_STATUS::OPT_NUMERIC_ERROR;
         break;
       }
@@ -326,7 +325,7 @@ inline solver_return lbfgs(first_order_opt_interface& model,
       start_point = (start_point + 1) % m;
       s.col(start_point) = delta_point;
       y.col(start_point) = delta_grad;
-      rho(start_point) = 1/ (dot(delta_point, delta_grad));
+      rho(start_point) = 1/ (delta_point.dot(delta_grad));
       iters++;
       
       // Log info for debugging. 
