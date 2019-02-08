@@ -4,6 +4,7 @@ global:
   _tc_*;
   extern "C++" {
     cppipc::*;
+    file_logger::*;
     turi::*;
   };
 local: *;
