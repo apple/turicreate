@@ -547,9 +547,6 @@ BOOST_AUTO_TEST_CASE(test_pod_method_1) {
 BOOST_AUTO_TEST_CASE(test_pod_method_2) {
   SerializeTestSuite::test_pod_method_2();
 }
-BOOST_AUTO_TEST_CASE(test_arma_serialization) {
-  SerializeTestSuite::test_arma_serialization();
-}
 BOOST_AUTO_TEST_CASE(test_directory_serialization) {
   SerializeTestSuite::test_directory_serialization();
 }

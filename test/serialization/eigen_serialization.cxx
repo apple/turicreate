@@ -1,46 +1,9 @@
-/*
-* Copyright (C) 2016 Turi
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Affero General Public License as
-* published by the Free Software Foundation, either version 3 of the
-* License, or (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Affero General Public License for more details.
-*
-* You should have received a copy of the GNU Affero General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-/**
- * Copyright (c) 2009 Carnegie Mellon University.
- *     All rights reserved.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing,
- *  software distributed under the License is distributed on an "AS
- *  IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- *  express or implied.  See the License for the specific language
- *  governing permissions and limitations under the License.
- *
- * For more about this software visit:
- *
- *      http://www.turicreate.ml.cmu.edu
- *
- */
-
-
+#define BOOST_TEST_MODULE
+#include <boost/test/unit_test.hpp>
+#include <util/test_macros.hpp>
+#
 #include <Eigen/Core>
 #include <Eigen/SparseCore>
-
-#include <cxxtest/TestSuite.h>
 
 #include <serialization/serialization_includes.hpp>
 
@@ -113,9 +76,6 @@ void check_array_save_load() {
   }
 }
 
-class EigenTestSuite : public CxxTest::TestSuite {
-public:
-
 
   ////////////////////////////////////////////////////////////////////////////////
   //
@@ -124,57 +84,57 @@ public:
 
   /********   double   ***********/
 
-  void test_array_simple_double() {
+BOOST_AUTO_TEST_CASE(test_array_simple_double) {
     check_array_save_load<Eigen::Array, double, -1, -1>();
   }
 
-  void test_array_fix_row_double() {
+BOOST_AUTO_TEST_CASE(test_array_fix_row_double) {
     check_array_save_load<Eigen::Array, double, -1, 8>();
   }
 
-  void test_array_fix_col_double() {
+BOOST_AUTO_TEST_CASE(test_array_fix_col_double) {
     check_array_save_load<Eigen::Array, double, 8, -1>();
   }
 
-  void test_array_fix_row_col_double() {
+BOOST_AUTO_TEST_CASE(test_array_fix_row_col_double) {
     check_array_save_load<Eigen::Array, double, 8, 8>();
   }
 
 
   /********   float   ***********/
 
-  void test_array_simple_float() {
+BOOST_AUTO_TEST_CASE(test_array_simple_float) {
     check_array_save_load<Eigen::Array, float, -1, -1>();
   }
 
-  void test_array_fix_row_float() {
+BOOST_AUTO_TEST_CASE(test_array_fix_row_float) {
     check_array_save_load<Eigen::Array, float, -1, 8>();
   }
 
-  void test_array_fix_col_float() {
+BOOST_AUTO_TEST_CASE(test_array_fix_col_float) {
     check_array_save_load<Eigen::Array, float, 8, -1>();
   }
 
-  void test_array_fix_row_col_float() {
+BOOST_AUTO_TEST_CASE(test_array_fix_row_col_float) {
     check_array_save_load<Eigen::Array, float, 8, 8>();
   }
 
 
   /********   int   ***********/
 
-  void test_array_simple_int() {
+BOOST_AUTO_TEST_CASE(test_array_simple_int) {
     check_array_save_load<Eigen::Array, int, -1, -1>();
   }
 
-  void test_array_fix_row_int() {
+BOOST_AUTO_TEST_CASE(test_array_fix_row_int) {
     check_array_save_load<Eigen::Array, int, -1, 8>();
   }
 
-  void test_array_fix_col_int() {
+BOOST_AUTO_TEST_CASE(test_array_fix_col_int) {
     check_array_save_load<Eigen::Array, int, 8, -1>();
   }
 
-  void test_array_fix_row_col_int() {
+BOOST_AUTO_TEST_CASE(test_array_fix_row_col_int) {
     check_array_save_load<Eigen::Array, int, 8, 8>();
   }
 
@@ -186,60 +146,57 @@ public:
 
   /********   double   ***********/
 
-  void test_matrix_simple_double() {
+BOOST_AUTO_TEST_CASE(test_matrix_simple_double) {
     check_array_save_load<Eigen::Matrix, double, -1, -1>();
   }
 
-  void test_matrix_fix_row_double() {
+BOOST_AUTO_TEST_CASE(test_matrix_fix_row_double) {
     check_array_save_load<Eigen::Matrix, double, -1, 8>();
   }
 
-  void test_matrix_fix_col_double() {
+BOOST_AUTO_TEST_CASE(test_matrix_fix_col_double) {
     check_array_save_load<Eigen::Matrix, double, 8, -1>();
   }
 
-  void test_matrix_fix_row_col_double() {
+BOOST_AUTO_TEST_CASE(test_matrix_fix_row_col_double) {
     check_array_save_load<Eigen::Matrix, double, 8, 8>();
   }
 
 
   /********   float   ***********/
 
-  void test_matrix_simple_float() {
+BOOST_AUTO_TEST_CASE(test_matrix_simple_float) {
     check_array_save_load<Eigen::Matrix, float, -1, -1>();
   }
 
-  void test_matrix_fix_row_float() {
+BOOST_AUTO_TEST_CASE(test_matrix_fix_row_float) {
     check_array_save_load<Eigen::Matrix, float, -1, 8>();
   }
 
-  void test_matrix_fix_col_float() {
+BOOST_AUTO_TEST_CASE(test_matrix_fix_col_float) {
     check_array_save_load<Eigen::Matrix, float, 8, -1>();
   }
 
-  void test_matrix_fix_row_col_float() {
+BOOST_AUTO_TEST_CASE(test_matrix_fix_row_col_float) {
     check_array_save_load<Eigen::Matrix, float, 8, 8>();
   }
 
 
   /********   int   ***********/
 
-  void test_matrix_simple_int() {
+BOOST_AUTO_TEST_CASE(test_matrix_simple_int) {
     check_array_save_load<Eigen::Matrix, int, -1, -1>();
   }
 
-  void test_matrix_fix_row_int() {
+BOOST_AUTO_TEST_CASE(test_matrix_fix_row_int) {
     check_array_save_load<Eigen::Matrix, int, -1, 8>();
   }
 
-  void test_matrix_fix_col_int() {
+BOOST_AUTO_TEST_CASE(test_matrix_fix_col_int) {
     check_array_save_load<Eigen::Matrix, int, 8, -1>();
   }
 
-  void test_matrix_fix_row_col_int() {
+BOOST_AUTO_TEST_CASE(test_matrix_fix_row_col_int) {
     check_array_save_load<Eigen::Matrix, int, 8, 8>();
   }
 
-
-
-};
