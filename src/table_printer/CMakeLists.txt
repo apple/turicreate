@@ -10,5 +10,5 @@ make_executable(table_printer_example
   SOURCES
     table_printer_examples.cpp
   REQUIRES
-    unity_shared
+    unity_shared_for_testing
 )

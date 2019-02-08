@@ -330,7 +330,7 @@ if (CLANG)
   set(WERROR_FLAGS "-Werror")
 else()
   # non-clang
-  set(CPP11_FLAGS "-std=c++11 -Wno-enum-compare -Wno-conversion-null -ftemplate-depth=900")
+  set(CPP11_FLAGS "-std=c++11 -Wno-enum-compare -Wno-conversion-null -ftemplate-depth=900 -Wno-unknown-pragmas")
   set(WERROR_FLAGS "-Werror")
 endif()
 

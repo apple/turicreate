@@ -16,7 +16,7 @@ make_executable(io_example
   SOURCES
     io_example.cpp
   REQUIRES
-    unity_shared
+    unity_shared_for_testing
 )
 
 add_library(image_io OBJECT
