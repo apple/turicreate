@@ -1,7 +1,9 @@
 {
-local:
-extern "C++"
-{
-        std::locale::id*;
-};
+global:
+  tc_*;
+  _tc_*;
+  extern "C++" {
+    turi::*;
+  };
+local: *;
 };
