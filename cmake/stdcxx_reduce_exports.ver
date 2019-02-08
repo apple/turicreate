@@ -3,6 +3,7 @@ global:
   tc_*;
   _tc_*;
   extern "C++" {
+    cppipc::*;
     turi::*;
   };
 local: *;
