@@ -47,7 +47,7 @@ class logistic_regression_opt_interface: public
 
   ml_data data;
   ml_data valid_data;
-  logistic_regression smodel;
+  logistic_regression& smodel;
 
   // number of examples, features, and total variables
   size_t examples = 0;

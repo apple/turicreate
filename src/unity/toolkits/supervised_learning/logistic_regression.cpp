@@ -308,12 +308,6 @@ void logistic_regression::train() {
     log_and_throw(msg.str());
   }
 
-  // Save final accuracies
-  if(lr_interface->num_validation_examples() > 0) {
-    state["validation_accuracy"] = lr_interface->get_validation_accuracy();
-  }
-  state["training_accuracy"] = lr_interface->get_training_accuracy();
-
   // Store the coefficients in the model
   // ---------------------------------------------------------------------------
   coefs = stats.solution;
@@ -335,6 +329,11 @@ void logistic_regression::train() {
   unity_coef->construct_from_sframe(sf_coef);
   state["coefficients"] = to_variant(unity_coef);
 
+  // Save final accuracies
+  if(lr_interface->num_validation_examples() > 0) {
+    state["validation_accuracy"] = lr_interface->get_validation_accuracy();
+  }
+  state["training_accuracy"] = lr_interface->get_training_accuracy();
 
   // Copy the training stats into the model
   // ---------------------------------------------------------------------------

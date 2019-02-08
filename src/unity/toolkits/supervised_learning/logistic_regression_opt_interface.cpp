@@ -67,11 +67,11 @@ void flattened_sparse_vector_outer_prod(const SparseVector& a,
 logistic_regression_opt_interface::logistic_regression_opt_interface(
     const ml_data& _data, 
     const ml_data& _valid_data, 
-    logistic_regression& _sp_model) {
+    logistic_regression& _sp_model)
+: smodel(_sp_model) {
 
   data = _data;
   if (_valid_data.num_rows() > 0) valid_data = _valid_data;
-  smodel = _sp_model;
 
   // Initialize reader and other data
   examples = data.num_rows();
