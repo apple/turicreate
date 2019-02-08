@@ -22,6 +22,8 @@ subdirs(extensions
   endforeach()
 
   set(unity_shared_deps
+    "$<TARGET_OBJECTS:pylambda_worker>"
+    "$<TARGET_OBJECTS:python_callbacks>"
   )
 
   if(APPLE AND HAS_MLCUSTOMMODEL)
@@ -55,6 +57,17 @@ subdirs(extensions
     ${unity_shared_deps}
   )
   target_link_libraries(unity_shared_for_testing PUBLIC TuriCreate_static)
+
+  # TODO - will this bloat the .so?
+  # If so, how do we get _just_ the right set of symbols exposed?
+  # ... how did we before this change??
+  if(CLANG)
+    set_target_properties(unity_shared PROPERTIES LINK_FLAGS "-Wl,-all_load")
+    set_target_properties(unity_shared_for_testing PROPERTIES LINK_FLAGS "-Wl,-all_load")
+  else()
+    set_target_properties(unity_shared PROPERTIES LINK_FLAGS "-Wl,--whole-archive")
+    set_target_properties(unity_shared_for_testing PROPERTIES LINK_FLAGS "-Wl,--whole-archive")
+  endif()
 
 # TODO are these used anywhere?
 set(UNITY_ALL_LIBRARIES unity_shared)

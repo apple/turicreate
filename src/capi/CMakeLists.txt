@@ -102,6 +102,7 @@ set(_capi_requires
   # External dependencies (from deps)
   armadillo
   boost
+  bz2
   curl
   libjpeg
   libpng
