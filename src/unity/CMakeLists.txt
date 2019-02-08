@@ -64,9 +64,6 @@ subdirs(extensions
   if(CLANG)
     set_target_properties(unity_shared PROPERTIES LINK_FLAGS "-Wl,-all_load")
     set_target_properties(unity_shared_for_testing PROPERTIES LINK_FLAGS "-Wl,-all_load")
-  else()
-    set_target_properties(unity_shared PROPERTIES LINK_FLAGS "-Wl,--whole-archive")
-    set_target_properties(unity_shared_for_testing PROPERTIES LINK_FLAGS "-Wl,--whole-archive")
   endif()
 
 # TODO are these used anywhere?
