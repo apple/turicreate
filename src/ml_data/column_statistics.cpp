@@ -237,8 +237,11 @@ void column_statistics::_finalize_global(
             // Adjust for many of the elements being zero
             sa.var_sum += std::pow(sa.mean, 2) * count * (1 - scale);
           }
-
-          s.stdev = std::sqrt(sa.var_sum / (total_row_count - 1));
+          if (total_row_count > 1) {
+            s.stdev = std::sqrt(sa.var_sum / (total_row_count - 1));
+          } else {
+            s.stdev = 0;
+          }
           DASSERT_FALSE(std::isnan(s.stdev));
         }
 
