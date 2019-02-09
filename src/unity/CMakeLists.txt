@@ -56,6 +56,11 @@ subdirs(extensions
   )
   target_link_libraries(unity_shared_for_testing ${_TC_COMMON_REQUIREMENTS})
 
+  # Note: this is not actually a build or link time dependency, but both of these
+  # targets are very expensive to link (in terms of RAM usage).
+  # Let's make sure they don't link at the same time.
+  add_dependencies(unity_shared_for_testing unity_shared)
+
 # TODO are these used anywhere?
 set(UNITY_ALL_LIBRARIES unity_shared)
 set(UNITY_EXTENSION_LIBRARY unity_shared)
