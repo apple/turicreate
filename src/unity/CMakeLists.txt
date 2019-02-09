@@ -40,10 +40,8 @@ subdirs(extensions
       ${_TC_COMMON_OBJECTS}
     REQUIRES
       ${_TC_COMMON_REQUIREMENTS}
-    EXPORT_LINUX_MAP_FILE "${CMAKE_SOURCE_DIR}/cmake/stdcxx_reduce_exports.ver"
-    # TODO this doesn't work on macOS, but doesn't appear to need to?
-    # (i.e. the collect_archive.sh script wasn't applying this on macOS previously)
-    #EXPORT_OSX_MAP_FILE "${CMAKE_SOURCE_DIR}/cmake/stdcxx_reduce_exports.ver"
+    EXPORT_LINUX_MAP_FILE "${CMAKE_CURRENT_SOURCE_DIR}/unity_exports.linux.ver"
+    EXPORT_OSX_MAP_FILE "${CMAKE_CURRENT_SOURCE_DIR}/unity_exports.mac.ver"
     SHARED
     SHARED_ALL_DEFINED
     DEAD_STRIP
