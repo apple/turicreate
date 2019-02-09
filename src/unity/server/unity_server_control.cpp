@@ -36,7 +36,7 @@ EXPORT void start_server(const unity_server_options& server_options,
   std::lock_guard<mutex> server_start_lg(_server_start_lock);
 
   namespace fs = boost::filesystem;
-  global_logger().set_log_level(LOG_INFO);
+  global_logger().set_log_level(LOG_PROGRESS);
   global_logger().set_log_to_console(false);
 
   if(SERVER) { 
