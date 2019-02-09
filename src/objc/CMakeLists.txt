@@ -6,10 +6,9 @@ if(APPLE AND HAS_MLCUSTOMMODEL)
     SOURCES
       TuriCreateObjC.m
       recommender_initialization.cpp
+      ${_TC_COMMON_OBJECTS}
     REQUIRES
-      ${FOUNDATION}
-      ${CORE_ML}
-      TuriCreate_static
+      ${_TC_COMMON_REQUIREMENTS}
     SHARED
     SHARED_ALL_DEFINED
     EXPORT_OSX_MAP_FILE "${CMAKE_CURRENT_SOURCE_DIR}/symbol_exports.ver"

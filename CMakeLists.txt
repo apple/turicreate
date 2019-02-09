@@ -1097,5 +1097,127 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/subtree)
   add_subdirectory(subtree)
 endif()
 
+# Collate all the object targets shared among static and shared library targets
+# These are used by C API, unity_shared, etc.
+set(_TC_DEFAULT_SERVER_INITIALIZER
+  "${CMAKE_SOURCE_DIR}/src/capi/default_server_initializer.cpp"
+)
+set(_TC_COMMON_OBJECTS
+  "$<TARGET_OBJECTS:capi>"
+
+  # Also list all dependencies (including transitive dependencies)
+
+  # External dependencies (built from src/external)
+  "$<TARGET_OBJECTS:libjson>"
+  "$<TARGET_OBJECTS:lz4>"
+  "$<TARGET_OBJECTS:protobuf>"
+  "$<TARGET_OBJECTS:uuid>"
+  "$<TARGET_OBJECTS:xgboost>"
+
+  # Then our own source code
+  "$<TARGET_OBJECTS:cancel_serverside_ops>"
+  "$<TARGET_OBJECTS:cppipc>"
+  "$<TARGET_OBJECTS:flexible_type>"
+  "$<TARGET_OBJECTS:globals>"
+  "$<TARGET_OBJECTS:fileio>"
+  "$<TARGET_OBJECTS:image_io>"
+  "$<TARGET_OBJECTS:image_type>"
+  "$<TARGET_OBJECTS:logger>"
+  "$<TARGET_OBJECTS:minipsutil>"
+  "$<TARGET_OBJECTS:ml_data>"
+  "$<TARGET_OBJECTS:nanosockets>"
+  "$<TARGET_OBJECTS:network>"
+  "$<TARGET_OBJECTS:optimization>"
+  "$<TARGET_OBJECTS:parallel>"
+  "$<TARGET_OBJECTS:process>"
+  "$<TARGET_OBJECTS:pylambda>"
+  "$<TARGET_OBJECTS:random>"
+  "$<TARGET_OBJECTS:serialization>"
+  "$<TARGET_OBJECTS:sframe>"
+  "$<TARGET_OBJECTS:sframe_query_engine>"
+  "$<TARGET_OBJECTS:sgraph>"
+  "$<TARGET_OBJECTS:shmipc>"
+  "$<TARGET_OBJECTS:stack_trace>"
+  "$<TARGET_OBJECTS:startup_teardown>"
+  "$<TARGET_OBJECTS:supervised_learning>"
+  "$<TARGET_OBJECTS:table_printer>"
+  "$<TARGET_OBJECTS:timer>"
+  "$<TARGET_OBJECTS:unity>"
+  "$<TARGET_OBJECTS:unity_activity_classification>"
+  "$<TARGET_OBJECTS:unity_core>"
+  "$<TARGET_OBJECTS:unity_coreml_model_export>"
+  "$<TARGET_OBJECTS:unity_clustering>"
+  "$<TARGET_OBJECTS:unity_evaluation>"
+  "$<TARGET_OBJECTS:unity_factorization>"
+  "$<TARGET_OBJECTS:unity_feature_engineering>"
+  "$<TARGET_OBJECTS:unity_graph_analytics>"
+  "$<TARGET_OBJECTS:unity_image_export>"
+  "$<TARGET_OBJECTS:unity_ml_data_2>"
+  "$<TARGET_OBJECTS:unity_ml_model>"
+  "$<TARGET_OBJECTS:unity_nearest_neighbors>"
+  "$<TARGET_OBJECTS:unity_neural_net>"
+  "$<TARGET_OBJECTS:unity_object_detection>"
+  "$<TARGET_OBJECTS:unity_pattern_mining>"
+  "$<TARGET_OBJECTS:unity_prototype>"
+  "$<TARGET_OBJECTS:unity_recsys>"
+  "$<TARGET_OBJECTS:unity_sgd>"
+  "$<TARGET_OBJECTS:unity_sparse_similarity>"
+  "$<TARGET_OBJECTS:unity_text>"
+  "$<TARGET_OBJECTS:unity_util>"
+  "$<TARGET_OBJECTS:util>"
+  "$<TARGET_OBJECTS:visualization>"
+)
+
+set(_TC_COMMON_REQUIREMENTS
+  # External dependencies (from deps)
+  armadillo
+  boost
+  bz2
+  curl
+  libjpeg
+  libpng
+  openssl
+  nanomsg
+)
+
+if(APPLE)
+  set(_TC_COMMON_OBJECTS
+    ${_TC_COMMON_OBJECTS}
+    "$<TARGET_OBJECTS:image_deep_feature_extractor>"
+    "$<TARGET_OBJECTS:platform_config>"
+  )
+  set(_TC_COMMON_REQUIREMENTS
+    ${_TC_COMMON_REQUIREMENTS}
+    ${CORE_ML}
+    ${CORE_VIDEO}
+    ${FOUNDATION}
+  )
+  if(NOT TC_BUILD_IOS)
+    set(_TC_COMMON_OBJECTS
+      ${_TC_COMMON_OBJECTS}
+      "$<TARGET_OBJECTS:tcmps>"
+      "$<TARGET_OBJECTS:vega_renderer>"
+    )
+    set(_TC_COMMON_REQUIREMENTS
+      ${_TC_COMMON_REQUIREMENTS}
+      ${ACCELERATE}
+      ${APPKIT}
+      ${CORE_GRAPHICS}
+      ${CORE_IMAGE}
+      ${JAVASCRIPTCORE}
+      ${METAL}
+      ${METAL_PERFORMANCE_SHADERS}
+    )
+  endif()
+endif()
+if(NOT TC_BUILD_IOS)
+  # object targets that should be included in all APPLE and non-APPLE
+  # platforms except for iOS
+  set(_TC_COMMON_OBJECTS
+    ${_TC_COMMON_OBJECTS}
+    "$<TARGET_OBJECTS:aws-sdk-cpp>"
+  )
+endif()
+
 add_subdirectory(src)
 add_subdirectory(test)

@@ -33,15 +33,13 @@ subdirs(extensions
     )
   endif()
 
-  if (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp)
-    file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp "")
-  endif()
   make_library(unity_shared
     SOURCES
-      ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp
       ${unity_shared_deps}
+      ${_TC_DEFAULT_SERVER_INITIALIZER}
+      ${_TC_COMMON_OBJECTS}
     REQUIRES
-      TuriCreate_static
+      ${_TC_COMMON_REQUIREMENTS}
     EXPORT_LINUX_MAP_FILE "${CMAKE_SOURCE_DIR}/cmake/stdcxx_reduce_exports.ver"
     # TODO this doesn't work on macOS, but doesn't appear to need to?
     # (i.e. the collect_archive.sh script wasn't applying this on macOS previously)
@@ -55,16 +53,10 @@ subdirs(extensions
   # uses add_library instead of make_library so dependencies' symbols can be exported.
   add_library(unity_shared_for_testing SHARED
     ${unity_shared_deps}
+    ${_TC_DEFAULT_SERVER_INITIALIZER}
+    ${_TC_COMMON_OBJECTS}
   )
-  target_link_libraries(unity_shared_for_testing PUBLIC TuriCreate_static)
-
-  # TODO - will this bloat the .so?
-  # If so, how do we get _just_ the right set of symbols exposed?
-  # ... how did we before this change??
-  if(CLANG)
-    set_target_properties(unity_shared PROPERTIES LINK_FLAGS "-Wl,-all_load")
-    set_target_properties(unity_shared_for_testing PROPERTIES LINK_FLAGS "-Wl,-all_load")
-  endif()
+  target_link_libraries(unity_shared_for_testing ${_TC_COMMON_REQUIREMENTS})
 
 # TODO are these used anywhere?
 set(UNITY_ALL_LIBRARIES unity_shared)
