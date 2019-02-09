@@ -1195,19 +1195,27 @@ if(APPLE)
   if(NOT TC_BUILD_IOS)
     set(_TC_COMMON_OBJECTS
       ${_TC_COMMON_OBJECTS}
-      "$<TARGET_OBJECTS:tcmps>"
       "$<TARGET_OBJECTS:vega_renderer>"
     )
     set(_TC_COMMON_REQUIREMENTS
       ${_TC_COMMON_REQUIREMENTS}
       ${APPKIT}
-      ${ACCELERATE}
       ${CORE_GRAPHICS}
-      ${CORE_IMAGE}
       ${JAVASCRIPTCORE}
-      ${METAL}
-      ${METAL_PERFORMANCE_SHADERS}
     )
+    if(HAS_MPS)
+      set(_TC_COMMON_OBJECTS
+        ${_TC_COMMON_OBJECTS}
+        "$<TARGET_OBJECTS:tcmps>"
+      )
+      set(_TC_COMMON_REQUIREMENTS
+        ${_TC_COMMON_REQUIREMENTS}
+        ${ACCELERATE}
+        ${CORE_IMAGE}
+        ${METAL}
+        ${METAL_PERFORMANCE_SHADERS}
+      )
+    endif()
   endif()
 endif()
 if(NOT TC_BUILD_IOS)
