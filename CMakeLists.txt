@@ -1200,6 +1200,7 @@ if(APPLE)
     )
     set(_TC_COMMON_REQUIREMENTS
       ${_TC_COMMON_REQUIREMENTS}
+      ${APPKIT}
       ${ACCELERATE}
       ${CORE_GRAPHICS}
       ${CORE_IMAGE}
