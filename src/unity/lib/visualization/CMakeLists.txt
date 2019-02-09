@@ -6,7 +6,7 @@ project(unity)
 # in release/test (C++ unit tests) - but not debug! And only on Linux.
 # Not sure why.
 
-if(APPLE)
+if(APPLE AND NOT TC_BUILD_IOS)
   set(VISUALIZATION_PLATFORM_SOURCES plot_macos.mm)
 endif()
 

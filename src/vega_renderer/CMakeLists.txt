@@ -1,6 +1,6 @@
 project( vega_renderer )
 
-if(APPLE)
+if(APPLE AND NOT TC_BUILD_IOS)
 
    add_definitions(
       -DOBJROOT=${CMAKE_CURRENT_BINARY_DIR}

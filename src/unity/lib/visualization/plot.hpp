@@ -9,9 +9,11 @@
 #include <capi/TuriCreate.h>
 
 #ifdef __APPLE__
+#ifndef TC_BUILD_IOS
 extern "C" {
 #include <CoreGraphics/CoreGraphics.h>
 }
+#endif // TC_BUILD_IOS
 #endif // __APPLE__
 
 namespace turi {
@@ -45,10 +47,12 @@ namespace turi {
         std::string get_data();
 
 #ifdef __APPLE__
+#ifndef TC_BUILD_IOS
         // Streaming render (based on current computation -
         // call materialize first to get a final rendering up front).
         // Returns true if streaming finished, false otherwise.
         bool render(CGContextRef context, tc_plot_variation variation=tc_plot_variation_default);
+#endif // TC_BUILD_IOS
 #endif // __APPLE__
 
         BEGIN_CLASS_MEMBER_REGISTRATION("_Plot")

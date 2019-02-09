@@ -1185,25 +1185,25 @@ if(APPLE)
     ${_TC_COMMON_OBJECTS}
     "$<TARGET_OBJECTS:image_deep_feature_extractor>"
     "$<TARGET_OBJECTS:platform_config>"
-    "$<TARGET_OBJECTS:vega_renderer>"
   )
   set(_TC_COMMON_REQUIREMENTS
     ${_TC_COMMON_REQUIREMENTS}
-    ${CORE_GRAPHICS}
     ${CORE_ML}
     ${CORE_VIDEO}
     ${FOUNDATION}
-    ${JAVASCRIPTCORE}
   )
   if(NOT TC_BUILD_IOS)
     set(_TC_COMMON_OBJECTS
       ${_TC_COMMON_OBJECTS}
       "$<TARGET_OBJECTS:tcmps>"
+      "$<TARGET_OBJECTS:vega_renderer>"
     )
     set(_TC_COMMON_REQUIREMENTS
       ${_TC_COMMON_REQUIREMENTS}
       ${ACCELERATE}
+      ${CORE_GRAPHICS}
       ${CORE_IMAGE}
+      ${JAVASCRIPTCORE}
       ${METAL}
       ${METAL_PERFORMANCE_SHADERS}
     )
