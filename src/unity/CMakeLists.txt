@@ -4,66 +4,48 @@ subdirs(extensions
   lib
   toolkits)
 
-  add_library(unity OBJECT
-    server/registration.cpp
-    server/unity_server.cpp
-    server/unity_server_init.cpp
-    server/unity_server_control.cpp
-    server/unity_server_init.cpp
-  )
-  add_dependencies(unity boost)
+add_library(unity OBJECT
+  server/registration.cpp
+  server/unity_server.cpp
+  server/unity_server_init.cpp
+  server/unity_server_control.cpp
+  server/unity_server_init.cpp
+)
+add_dependencies(unity boost)
 
-  # Pull in all the libraries in the extensions directory.
-  get_property(EXTENSIONS_LIST DIRECTORY "extensions" PROPERTY EXTENSIONS_LIST)
+# Pull in all the libraries in the extensions directory.
+get_property(EXTENSIONS_LIST DIRECTORY "extensions" PROPERTY EXTENSIONS_LIST)
 
-  foreach(loop_var ${EXTENSIONS_LIST})
-    message(STATUS "unity depending on extension ${loop_var}")
-    add_dependencies(unity ${loop_var})
-  endforeach()
+foreach(loop_var ${EXTENSIONS_LIST})
+  message(STATUS "unity depending on extension ${loop_var}")
+  add_dependencies(unity ${loop_var})
+endforeach()
 
+set(unity_shared_deps
+  "$<TARGET_OBJECTS:pylambda_worker>"
+  "$<TARGET_OBJECTS:python_callbacks>"
+)
+
+if(APPLE AND HAS_MLCUSTOMMODEL)
   set(unity_shared_deps
-    "$<TARGET_OBJECTS:pylambda_worker>"
-    "$<TARGET_OBJECTS:python_callbacks>"
-  )
-
-  if(APPLE AND HAS_MLCUSTOMMODEL)
-    set(unity_shared_deps
-      ${unity_shared_deps}
-      "$<TARGET_OBJECTS:objcapi>"
-    )
-  endif()
-
-  make_library(unity_shared
-    SOURCES
-      ${unity_shared_deps}
-      ${_TC_DEFAULT_SERVER_INITIALIZER}
-      ${_TC_COMMON_OBJECTS}
-    REQUIRES
-      ${_TC_COMMON_REQUIREMENTS}
-    EXPORT_LINUX_MAP_FILE "${CMAKE_CURRENT_SOURCE_DIR}/unity_exports.linux.ver"
-    EXPORT_OSX_MAP_FILE "${CMAKE_CURRENT_SOURCE_DIR}/unity_exports.mac.ver"
-    SHARED
-    SHARED_ALL_DEFINED
-    DEAD_STRIP
-  )
-
-  # same as unity_shared, but all symbols exported
-  # uses add_library instead of make_library so dependencies' symbols can be exported.
-  add_library(unity_shared_for_testing SHARED
     ${unity_shared_deps}
-    ${_TC_DEFAULT_SERVER_INITIALIZER}
-    ${_TC_COMMON_OBJECTS}
+    "$<TARGET_OBJECTS:objcapi>"
   )
-  target_link_libraries(unity_shared_for_testing ${_TC_COMMON_REQUIREMENTS})
+endif()
 
-  # Note: this is not actually a build or link time dependency, but both of these
-  # targets are very expensive to link (in terms of RAM usage).
-  # Let's make sure they don't link at the same time.
-  add_dependencies(unity_shared_for_testing unity_shared)
+# same as unity_shared, but all symbols exported
+# uses add_library instead of make_library so dependencies' symbols can be exported.
+add_library(unity_shared_for_testing SHARED
+  ${unity_shared_deps}
+  ${_TC_DEFAULT_SERVER_INITIALIZER}
+  ${_TC_COMMON_OBJECTS}
+)
+target_link_libraries(unity_shared_for_testing ${_TC_COMMON_REQUIREMENTS})
 
-# TODO are these used anywhere?
-set(UNITY_ALL_LIBRARIES unity_shared)
-set(UNITY_EXTENSION_LIBRARY unity_shared)
+# Note: this is not actually a build or link time dependency, but both of these
+# targets are very expensive to link (in terms of RAM usage).
+# Let's make sure they don't link at the same time.
+add_dependencies(unity_shared_for_testing unity_shared)
 
 if(${TC_BUILD_PYTHON})
   subdirs(python)
