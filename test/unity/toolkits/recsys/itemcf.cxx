@@ -33,7 +33,6 @@
 #include <unity/toolkits/ml_data_2/ml_data_iterators.hpp>
 #include <unity/toolkits/util/indexed_sframe_tools.hpp>
 
-#include <cxxtest/TestSuite.h>
 #include <Eigen/Core>
 
 using namespace turi;
