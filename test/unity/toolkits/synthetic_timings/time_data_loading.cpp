@@ -11,7 +11,7 @@
 #include <unity/server/toolkits/recsys/models/itemcf.hpp>
 #include <unity/server/toolkits/recsys/data_generators.hpp>
 #include <timer/timer.hpp>
-#include <Eigen/Core>
+#include <numerics/armadillo.hpp>
 #include <sframe/sframe.hpp>
 
 const bool use_strings = false;
