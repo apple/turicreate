@@ -392,10 +392,10 @@ struct recsys_itemcf_test  {
     b_d = 0.0;
     c_d = 1.0 / std::sqrt(3.) / std::sqrt(2.);
 
-    ans = { {1.,  a_b, a_c, a_d, },
-            {0.0, 1.,  b_c, b_d, },
-            {0.0, 0.0, 1.,  c_d, },
-            {0.0, 0.0, 0.0, 1.   } };
+  ans << 1. ,  a_b , a_c , a_d
+      ,0.0 , 1. ,  b_c , b_d
+      ,0.0 , 0.0 , 1. ,  c_d 
+      ,0.0 , 0.0 , 0.0 , 1.;
 
     // test getting item neighbors
     {

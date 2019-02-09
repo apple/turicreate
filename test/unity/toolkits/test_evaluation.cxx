@@ -12,8 +12,6 @@
 
 #include <sframe/testing_utils.hpp>
 #include <util/testing_utils.hpp>
-#include <unity/toolkits/ml_data_1/ml_data.hpp>
-#include <unity/toolkits/ml_data_1/sframe_index_mapping.hpp>
 #include <unity/toolkits/recsys/models.hpp>
 #include <unity/toolkits/evaluation/metrics.hpp>
 #include <sframe/testing_utils.hpp>
