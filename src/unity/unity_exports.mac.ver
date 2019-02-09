@@ -2,6 +2,7 @@ tc_*
 _tc_*
 *cppipc*
 *file_logger*
+*global_logger*
 *turi*
 *print_back_trace*
 *write_annotated_stack_trace_if_configured*
