@@ -31,7 +31,7 @@ void set_default_solver_options(const first_order_opt_interface& model, const
     
   std::stringstream msg;
 
-  if (model.num_variables() != point.size()){
+  if (size_t(model.num_variables()) != size_t(point.size())){
       msg << "Dimension mismatch: Initial point has " << point.size() <<
         " dimensions but the model has " << model.num_variables() <<
         " variables." << std::endl;
