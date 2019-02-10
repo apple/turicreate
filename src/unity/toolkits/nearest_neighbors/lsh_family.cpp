@@ -264,7 +264,7 @@ std::vector<int> lsh_jaccard::hash_vector_to_codes(const DenseVector& vec,
   size_t chunk_idx, chunk_offset;
   size_t permuted_idx;
   size_t cnt = 0;
-  for (size_t idx = 0; idx < vec.size(); ++idx) {
+  for (size_t idx = 0; idx < size_t(vec.size()); ++idx) {
     if (vec(idx) < 1e-8) {
       // skip
     } else {

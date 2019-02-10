@@ -54,7 +54,7 @@ void flattened_sparse_vector_outer_prod(const SparseVector& a,
   DASSERT_TRUE(out.size() == a.size() * b.size());
   out.reserve(a.nonZeros() * b.size());
   size_t a_size = a.size();
-  for(size_t j = 0; j < b.size(); j++){
+  for(size_t j = 0; j < size_t(b.size()); j++){
     for (SparseVector::InnerIterator i(a); i; ++i){
       out.coeffRef(i.index() + a_size * j)  = b(j) * i.value();
     }

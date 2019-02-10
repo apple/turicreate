@@ -368,7 +368,7 @@ void MPSCNNModule::Blob2MPSImage(const float_array& blob,
   const float* ptr = blob.data();
   MPSImage *img = batch[0];
   int stride = [img width] * [img height] * [img featureChannels];
-  for (int i = 0; i < [batch count]; ++i) {
+  for (size_t i = 0; i < [batch count]; ++i) {
     MPSImage *img = batch[i];
     [img writeBytes:ptr + stride * i
          dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
@@ -380,7 +380,7 @@ void MPSCNNModule::MPSImage2Blob(float *ptr, MPSImageBatch *batch) {
   assert([batch count] > 0);
   MPSImage *img = batch[0];
   int stride = [img width] * [img height] * [img featureChannels];
-  for (int i = 0; i < [batch count]; ++i) {
+  for (size_t i = 0; i < [batch count]; ++i) {
     MPSImage *img = batch[i];
     [img readBytes:ptr + stride * i
         dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];

@@ -727,7 +727,6 @@ public:
       const std::shared_ptr<v2::ml_data_side_features>& known_side_features) const {
 
     static constexpr size_t USER_COLUMN_INDEX = recsys::recsys_model_base::USER_COLUMN_INDEX;
-    static constexpr size_t ITEM_COLUMN_INDEX = recsys::recsys_model_base::ITEM_COLUMN_INDEX;
 
     DASSERT_GE(query_row.size(), 2);
     DASSERT_EQ(query_row[USER_COLUMN_INDEX].column_index, USER_COLUMN_INDEX);

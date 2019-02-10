@@ -252,7 +252,7 @@ struct jaccard final : public distance_metric {
     DASSERT_EQ(a.size(), b.size());
     double intersection_size = 0.;
     double union_size = 0.;    
-    for(size_t idx = 0; idx < std::min(a.size(), b.size()); ++idx) {
+    for(size_t idx = 0; idx < std::min<size_t>(a.size(), b.size()); ++idx) {
       if (a(idx) > 0. || b(idx) > 0.) {
         union_size += 1.;
         if (a(idx) > 0. && b(idx) > 0.) {
