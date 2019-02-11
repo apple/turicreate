@@ -34,7 +34,7 @@ add_library(_capi_objects OBJECT
 
 set(_capi_requires unity unity_core eigen)
 
-if(APPLE)
+if(APPLE AND NOT TC_BUILD_IOS)
   set(_capi_requires ${_capi_requires} vega_renderer)
 endif()
 
