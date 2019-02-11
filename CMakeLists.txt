@@ -1116,6 +1116,7 @@ set(_TC_COMMON_OBJECTS
 
   # Then our own source code
   "$<TARGET_OBJECTS:cancel_serverside_ops>"
+  "$<TARGET_OBJECTS:crash_handler>"
   "$<TARGET_OBJECTS:cppipc>"
   "$<TARGET_OBJECTS:flexible_type>"
   "$<TARGET_OBJECTS:globals>"
