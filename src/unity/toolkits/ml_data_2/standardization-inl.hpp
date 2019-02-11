@@ -365,7 +365,7 @@ class l2_rescaling: public standardization_interface {
    */
   void transform(DenseMatrix &points) const {
     DASSERT_EQ(points.cols(), total_size);
-    for (size_t i = 0; i < points.rows(); i++) {
+    for (size_t i = 0; i < size_t(points.rows()); i++) {
       points.row(i) = points.row(i).cwiseQuotient(scale.transpose());
     }
   }

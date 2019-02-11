@@ -92,7 +92,7 @@ struct standardization  {
     }
 
     // Check that each col has norm 1
-    for(size_t i = 0; i < Xmat.cols()-1; i++){
+    for(size_t i = 0; i < size_t(Xmat.cols()-1); i++){
       TS_ASSERT(std::abs(Xmat.col(i).norm()/std::sqrt(n) - 1) < 3e-1);
     }
 
@@ -130,7 +130,7 @@ struct standardization  {
     }
 
     // Check that each col has norm 1
-    for(size_t i = 0; i < Xmat.cols()-1; i++){
+    for(size_t i = 0; i < size_t(Xmat.cols()-1); i++){
       TS_ASSERT(std::abs(Xmat.col(i).norm()/std::sqrt(n) - 1) < 3e-1);
     }
 
@@ -180,7 +180,7 @@ struct standardization  {
     }
 
     // Check that each col has norm 1
-    for(size_t i = 0; i < Xmat.cols()-1; i++){
+    for(size_t i = 0; i < size_t(Xmat.cols()-1); i++){
       TS_ASSERT(std::abs(Xmat.col(i).norm()/std::sqrt(n) - 1) < 3e-1);
     }
   }
