@@ -114,14 +114,14 @@ build_source() {
   make clean_python
   # Make unity
   cd ${WORKSPACE}/${build_type}/src/unity
-  make -j${NUM_PROCS} -l${NUM_PROCS}
+  make -j${NUM_PROCS}
 
   # make test
   if [[ -z $SKIP_CPP_TEST ]]; then
     cd ${WORKSPACE}/test
     touch $(find . -name "*.cxx")
     cd ${WORKSPACE}/${build_type}/test
-    make -j${NUM_PROCS} -l${NUM_PROCS}
+    make -j${NUM_PROCS}
   fi
   pop_ld_library_path
 
