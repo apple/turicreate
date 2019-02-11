@@ -147,10 +147,15 @@ def create(dataset, annotations=None, num_epochs=100, feature=None, model=None,
     if verbose:
         print(hr)   # progress table footer
     state = {
-        '_model': model,
-        '_class_to_index': class_to_index,
-        '_classes': classes,
-        '_batch_size': batch_size
+        'model': model,
+        'class_to_index': class_to_index,
+        'num_classes': len(classes),
+        'classes': classes,
+        'input_image_shape': (1,28,28),
+        'batch_size': batch_size,
+        'training_loss': cur_loss,
+        'training_time': training_time,
+        'max_iterations': max_iterations
     }
     dataset["bitmap"] = sframe_images
     return DrawingRecognition(state)
@@ -297,8 +302,51 @@ class DrawingRecognition(_CustomModel):
 
         return (_tc.SFrame({'label': _tc.SArray(all_predicted),
             'probability': _tc.SArray(all_probabilities)}))
+     
+    def __repr__(self):
+        """
+        Print a string description of the model when the model name is entered
+        in the terminal.
+        """
 
-            
+        width = 40
+        sections, section_titles = self._get_summary_struct()
+        out = _tkutl._toolkit_repr_print(self, sections, section_titles,
+                                         width=width)
+        return out
+
+    def _get_summary_struct(self):
+        """
+        Returns a structured description of the model, including (where
+        relevant) the schema of the training data, description of the training
+        data, training statistics, and model hyperparameters.
+
+        Returns
+        -------
+        sections : list (of list of tuples)
+            A list of summary sections.
+              Each section is a list.
+                Each item in a section list is a tuple of the form:
+                  ('<label>','<field>')
+        section_titles: list
+            A list of section titles.
+              The order matches that of the 'sections' object.
+        """
+        model_fields = [
+            ('Model', 'model')
+            # ('Number of classes', 'num_classes'),
+            # ('Input image shape', 'input_image_shape'),
+        ]
+        training_fields = [
+            ('Training time', 'training_time'),
+            ('Training iterations', 'max_iterations'),
+            ('Batch size', 'batch_size'),
+            ('Final loss (specific to model)', 'training_loss'),
+        ]
+
+        section_titles = ['Schema', 'Training summary']
+        return([model_fields, training_fields], section_titles)
+
     def evaluate(self, dataset, metric='auto', output_type='dict', verbose=True):
         """
             Evaluate the model by making predictions of target values and comparing
