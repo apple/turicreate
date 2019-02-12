@@ -50,7 +50,7 @@ build_wheel_linux_python35:
   image: docker.apple.com/turi/build-image-centos6-python3.5:1802
   only:
     - master
-    - rel/wwdc-2018
+    - 5.4-release
   tags:
     - dockerized
   stage: build
@@ -74,7 +74,7 @@ build_wheel_linux_python36:
   image: docker.apple.com/turi/build-image-centos6-python3.6:1802
   only:
     - master
-    - rel/wwdc-2018
+    - 5.4-release
   tags:
     - dockerized
   stage: build
@@ -97,7 +97,7 @@ build_wheel_linux_python36:
 build_wheel_mac_10_14_python27:
   only:
     - master
-    - rel/wwdc-2018
+    - 5.4-release
   tags:
     - macos10.14
   stage: build
@@ -140,7 +140,7 @@ build_wheel_mac_10_14_python36:
     - macos10.14
   only:
     - master
-    - rel/wwdc-2018
+    - 5.4-release
   stage: build
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.6/bin/virtualenv"
@@ -160,7 +160,7 @@ build_wheel_mac_10_14_python36:
 build_recommender_macos_10_14:
   only:
     - master
-    - rel/wwdc-2018
+    - 5.4-release
     - recommender-bugfix
   tags:
     - macos10.14
@@ -178,7 +178,7 @@ build_recommender_macos_10_14:
 build_recommender_ios_12:
   only:
     - master
-    - rel/wwdc-2018
+    - 5.4-release
     - recommender-bugfix
   tags:
     - macos10.14
@@ -218,7 +218,7 @@ build_cpp_tests_linux:
 build_cpp_tests_mac:
   only:
     - master
-    - rel/wwdc-2018
+    - 5.4-release
   tags:
     - macos10.14
   stage: build
@@ -271,7 +271,7 @@ test_cpp_linux:
 test_cpp_mac_10_13:
   only:
     - master
-    - rel/wwdc-2018
+    - 5.4-release
   tags:
     - macos10.13
   stage: test
@@ -301,7 +301,7 @@ test_cpp_mac_10_13:
 test_cpp_mac_10_14:
   only:
     - master
-    - rel/wwdc-2018
+    - 5.4-release
   tags:
     - macos10.14
   stage: test
@@ -346,7 +346,7 @@ test_python_linux_python27:
 test_python_linux_python35:
   only:
     - master
-    - rel/wwdc-2018
+    - 5.4-release
   image: docker.apple.com/turi/build-image-centos7-python3.5:1802
   tags:
     - dockerized
@@ -364,7 +364,7 @@ test_python_linux_python35:
 test_python_linux_python36:
   only:
     - master
-    - rel/wwdc-2018
+    - 5.4-release
   image: docker.apple.com/turi/build-image-centos7-python3.6:1802
   tags:
     - dockerized
@@ -382,7 +382,7 @@ test_python_linux_python36:
 test_python_mac_python27_10_13:
   only:
     - master
-    - rel/wwdc-2018
+    - 5.4-release
   tags:
     - macos10.13
   stage: test
@@ -400,7 +400,7 @@ test_python_mac_python27_10_13:
 test_python_mac_python27_10_14:
   only:
     - master
-    - rel/wwdc-2018
+    - 5.4-release
   tags:
     - macos10.14
   stage: test
@@ -433,7 +433,7 @@ test_python_mac_python35_10_14:
 test_python_mac_python36_10_14:
   only:
     - master
-    - rel/wwdc-2018
+    - 5.4-release
   tags:
     - macos10.14
   stage: test
@@ -462,7 +462,7 @@ scenario_tests_linux_python27:
 scenario_tests_linux_python35:
   only:
     - master
-    - rel/wwdc-2018
+    - 5.4-release
   image: docker.apple.com/turi/build-image-centos7-python3.5:1802
   tags:
     - dockerized
@@ -476,7 +476,7 @@ scenario_tests_linux_python35:
 scenario_tests_linux_python36:
   only:
     - master
-    - rel/wwdc-2018
+    - 5.4-release
   image: docker.apple.com/turi/build-image-centos7-python3.6:1802
   tags:
     - dockerized
@@ -490,7 +490,7 @@ scenario_tests_linux_python36:
 scenario_tests_mac_python27_10_13:
   only:
     - master
-    - rel/wwdc-2018
+    - 5.4-release
   tags:
     - macos10.13
   stage: test
@@ -504,7 +504,7 @@ scenario_tests_mac_python27_10_13:
 scenario_tests_mac_python27_10_14:
   only:
     - master
-    - rel/wwdc-2018
+    - 5.4-release
   tags:
     - macos10.14
   stage: test
