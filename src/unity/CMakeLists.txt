@@ -21,7 +21,7 @@ endif()
           unity_core
           unity_toolkits
           perf
-          numerics
+          eigen
           ${additional_unity_requirements}
          COMPILE_FLAGS_EXTRA_GCC
           -Wno-unknown-pragmas  # NOTE: used for auto-generated protobuf source files

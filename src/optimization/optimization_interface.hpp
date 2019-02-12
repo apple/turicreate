@@ -8,8 +8,8 @@
 
 #include <string>
 #include <flexible_type/flexible_type.hpp>
-#include <numerics/armadillo.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
 #include <sframe/sframe.hpp>
 
 // TODO: List of todo's for this file
@@ -19,11 +19,11 @@
 namespace turi {
 
 // Typedefs for matrices and vectors
-typedef arma::vec  DenseVector;
-typedef arma::mat DenseMatrix;
-typedef arma::vec DiagonalMatrix;  // The "diaganol matrix" aspect of this is declared using a diagmat(...) expression operating on a vector.
-typedef sparse_vector<double> SparseVector;
-typedef arma::sp_mat SparseMatrix;
+typedef Eigen::Matrix<double, Eigen::Dynamic,1>  DenseVector;
+typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> DenseMatrix;
+typedef Eigen::DiagonalMatrix<double, Eigen::Dynamic> DiagonalMatrix;
+typedef Eigen::SparseVector<double> SparseVector;
+typedef Eigen::SparseMatrix<double> SparseMatrix;
 
 namespace optimization { 
 

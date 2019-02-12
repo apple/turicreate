@@ -17,7 +17,7 @@ namespace neural_net {
 void convert_chw_to_hwc(const float_array& image, float* out_first,
                         float* out_last) {
   assert(image.dim() >= 3);
-  assert(out_last - out_first == image.size());
+  assert(ptrdiff_t(out_last - out_first) == ptrdiff_t(image.size()));
 
   if (image.dim() == 3) {
     // Use Accelerate framework, interpreting each channel as an image plane.
@@ -75,7 +75,7 @@ void convert_chw_to_hwc(const float_array& image, float* out_first,
 void convert_hwc_to_chw(const float_array& image, float* out_first,
                         float* out_last) {
   assert(image.dim() >= 3);
-  assert(out_last - out_first == image.size());
+  assert(ptrdiff_t(out_last - out_first) == ptrdiff_t(image.size()));
 
   if (image.dim() == 3) {
     // Use Accelerate framework, writing each channel to its own image plane.

@@ -136,13 +136,13 @@ void composite_row_specification::fill(composite_row_container& crc,
   crc.dense_subrows.resize(n_dense_subrows);
   for(size_t i = 0; i < n_dense_subrows; ++i) {
     crc.dense_subrows[i].resize(dense_spec_sizes[i]);
-    crc.dense_subrows[i].zeros();
+    crc.dense_subrows[i].setZero();
   }
 
   crc.sparse_subrows.resize(n_sparse_subrows);
   for(size_t i = 0; i < n_sparse_subrows; ++i) {
     crc.sparse_subrows[i].resize(sparse_spec_sizes[i]);
-    crc.sparse_subrows[i].zeros();
+    crc.sparse_subrows[i].setZero();
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -163,14 +163,14 @@ void composite_row_specification::fill(composite_row_container& crc,
         if(!dense_spec[column_index].empty()) {
           for(size_t dense_subrow_index : dense_spec[column_index]) {
             size_t idx = feature_index + index_offsets[dense_subrow_index];
-            crc.dense_subrows[dense_subrow_index](idx) = value; 
+            crc.dense_subrows[dense_subrow_index].coeffRef(idx) = value;
           }
         }
 
         if(!sparse_spec[column_index].empty()) {
           for(size_t sparse_subrow_index : sparse_spec[column_index]) {
             size_t idx = feature_index + index_offsets[n_dense_subrows + sparse_subrow_index];
-            crc.sparse_subrows[sparse_subrow_index](idx) = value; 
+            crc.sparse_subrows[sparse_subrow_index].coeffRef(idx) = value;
           }
         }
       },

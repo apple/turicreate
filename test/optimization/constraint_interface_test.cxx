@@ -9,14 +9,17 @@
 #include <algorithm>
 #include <util/cityhash_tc.hpp>
 
+// Eigen
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
 
 // Constraints
 #include <optimization/constraints-inl.hpp>
-#include <numerics/armadillo.hpp>
+
 
 using namespace turi;
-typedef arma::vec  DenseVector;
-typedef sparse_vector<double> SparseVector;
+typedef Eigen::Matrix<double,Eigen::Dynamic,1>  DenseVector;
+typedef Eigen::SparseVector<double> SparseVector;
 
 
 
@@ -43,12 +46,12 @@ struct constraint_interface_test  {
       double ub_dbl = 1;
       DenseVector lb(variables);
       DenseVector ub(variables);
-      lb.zeros(variables);
-      ub.ones(variables);
+      lb.setZero(variables);
+      ub.setOnes(variables);
       srand(1);
-      init_point = {1 , -1 , 2 , -2 , 3 , -3 , 4 , -4 , 5 , -5};
-      solution_orthant = {1 ,  0 , 2 ,  0 , 3 ,  0 , 4 ,  0 , 5 ,  0};
-      solution_box = {1 ,  0 , 1 ,  0 , 1 ,  0 , 1 ,  0 , 1 , 0};
+      init_point    << 1 , -1 , 2 , -2 , 3 , -3 , 4 , -4 , 5 , -5;
+      solution_orthant << 1 ,  0 , 2 ,  0 , 3 ,  0 , 4 ,  0 , 5 ,  0;
+      solution_box  << 1 ,  0 , 1 ,  0 , 1 ,  0 , 1 ,  0 , 1 , 0;
 
 
       std::shared_ptr<optimization::non_negative_orthant> non_negative;
@@ -73,14 +76,14 @@ struct constraint_interface_test  {
       // Projection
       projected_point = init_point;
       non_negative->project(projected_point);
-      TS_ASSERT(arma::approx_equal(solution_orthant, projected_point,"absdiff", 1e-10));
+      TS_ASSERT(solution_orthant.isApprox(projected_point, 1e-10));
       
       // Not satisfied
       TS_ASSERT(not(non_negative->is_satisfied(init_point)));
 
       // Satisfied
       DenseVector test_point(variables);
-      test_point.zeros(variables);
+      test_point.setZero(variables);
       TS_ASSERT(non_negative->is_satisfied(test_point));
 
     }
@@ -96,12 +99,12 @@ struct constraint_interface_test  {
       // Projection
       projected_point = init_point;
       box->project(projected_point);
-      TS_ASSERT(arma::approx_equal(solution_box, projected_point,"absdiff", 1e-10));
+      TS_ASSERT(solution_box.isApprox(projected_point, 1e-10));
       
       // Not satisfied
       TS_ASSERT(not(box->is_satisfied(init_point)));
       DenseVector test_point(variables);
-      test_point.zeros(variables);
+      test_point.setZero(variables);
 
       // Satisfied
       TS_ASSERT(box->is_satisfied(test_point));
@@ -113,11 +116,11 @@ struct constraint_interface_test  {
       // Projection
       projected_point = init_point;
       box->project(projected_point);
-      TS_ASSERT(arma::approx_equal(solution_box, projected_point,"absdiff", 1e-10));
+      TS_ASSERT(solution_box.isApprox(projected_point, 1e-10));
       
       // Not satisfied
       TS_ASSERT(not(box->is_satisfied(init_point)));
-      test_point.zeros(variables);
+      test_point.setZero(variables);
 
       // Satisfied
       TS_ASSERT(box->is_satisfied(test_point));

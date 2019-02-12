@@ -304,14 +304,14 @@ class EXPORT ml_metadata {
    */
   inline ml_column_mode target_column_mode() const;
 
-  /** Returns the type of the column in the metadata
+  /** Returns the size of the columns in the metadata that were
    *  present at train time.
    *
    *  \param column_index The index of the column. 
    */
   inline flex_type_enum column_type(size_t column_index) const;
 
-  /** Returns the type of the column in the metadata 
+  /** Returns the size of the columns in the metadata that were
    *  present at train time.
    *
    *  \overload

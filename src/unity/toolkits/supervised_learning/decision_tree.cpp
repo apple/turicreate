@@ -5,8 +5,8 @@
  */
 #include <unity/toolkits/supervised_learning/decision_tree.hpp>
 #include <unity/toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
-
 #include <xgboost/src/learner/learner-inl.hpp>
+
 namespace turi {
 namespace supervised {
 namespace xgboost {
