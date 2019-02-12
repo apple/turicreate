@@ -27,8 +27,6 @@ make_library(unity_shared
     ${_TC_COMMON_OBJECTS}
   REQUIRES
     ${_TC_COMMON_REQUIREMENTS}
-  EXPORT_LINUX_MAP_FILE "${CMAKE_SOURCE_DIR}/src/unity/unity_exports.linux.ver"
-  EXPORT_OSX_MAP_FILE "${CMAKE_SOURCE_DIR}/src/unity/unity_exports.mac.ver"
   SHARED
   SHARED_ALL_DEFINED
   DEAD_STRIP
