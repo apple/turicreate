@@ -80,18 +80,20 @@ def _fit_model_mps(model, data_iter, valid_iter, max_iterations, verbose):
             if (is_train and actual_batch_len > 0):
                 weights /= actual_batch_len
 
-            if is_train:
-                model.begin_forward_backward_batch(batch_idx, input_data, labels, weights, loss_image_required=True)
-                model.update()
-            else:
-                model.begin_forward_batch(batch_idx, input_data, labels, weights, loss_image_required=True, is_train=False)
+            # MPS model requires 4-dimensional NHWC input
+            model_fn = model.train if is_train else model.predict_with_loss
+            (fwd_out, loss_out) = model_fn(_np.expand_dims(input_data, 1),
+                                           _np.expand_dims(labels, 1),
+                                           _np.expand_dims(weights, 1))
 
-
-            return {'labels' : labels, 'weights' : weights, 'actual_seq_len' : actual_seq_len, 'actual_batch_len' : actual_batch_len}
+            return {'labels' : labels, 'weights' : weights, 'actual_seq_len' : actual_seq_len, 'actual_batch_len' : actual_batch_len, 'fwd_out' : fwd_out, 'loss_out' : loss_out}
 
         # Encapsulates the work for processing a response from the model.
-        def finish_batch(batch_idx, is_train, labels, weights, actual_seq_len, actual_batch_len):
-            (forward_output, loss_per_sequence) = model.wait_for_batch(batch_idx)
+        def finish_batch(batch_idx, is_train, labels, weights, actual_seq_len, actual_batch_len, fwd_out, loss_out):
+            # MPS yields 4-dimensional NHWC output. Collapse the H dimension,
+            # which should have size 1.
+            forward_output = _np.squeeze(fwd_out.asnumpy(), axis=1)
+            loss_per_sequence = _np.squeeze(loss_out.asnumpy(), axis=1)
 
             batch_loss, batch_accuracy, acc_per_sequence = _calc_batch_metrics(
                 forward_output, labels, weights, actual_seq_len,
@@ -165,7 +167,11 @@ def _predict_mps(pred_model, data_iter):
         input_data = batch.data
         pad = batch.pad
 
-        output = pred_model.forward(input_data, is_train=False)
+        # Feed the input into the model, converting to and from the
+        # 4-dimensional NHWC shape that MPS expects.
+        raw_output = pred_model.predict(_np.expand_dims(input_data, 1))
+        output = _np.squeeze(raw_output.asnumpy(), axis=1)
+
         trimmed_output = output[0:output.shape[0]-pad].copy()
         output_list.append(trimmed_output)
 
