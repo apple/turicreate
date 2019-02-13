@@ -879,9 +879,15 @@ void recsys_itemcf::export_to_coreml(const std::string& filename) {
   auto bytes_value = CoreML::Specification::CustomModel::CustomModelParamValue();
 
   std::stringstream ss;
+
+  // Swap out the user data, as this doesn't need to get exported with the model.
+  auto user_data = this->metadata->indexer(USER_COLUMN_INDEX)->reset_and_return_values();
   this->save_model_to_data(ss);
+
   bytes_value.set_bytesvalue(ss.str());
   (*custom_model_parameters)["turi_create_model"] = bytes_value;
+
+  this->metadata->indexer(USER_COLUMN_INDEX)->set_values(std::move(user_data));
 
   if (filename != "") {
     CoreML::Result r = coreml_model->save(filename);

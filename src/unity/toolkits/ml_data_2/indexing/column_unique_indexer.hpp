@@ -159,6 +159,13 @@ class column_unique_indexer final : public column_indexer {
    *  Load the object.
    */
   void load_version(turi::iarchive& iarc, size_t version);
+
+  /** Set data directly.
+   *
+   */
+  void set_values(std::vector<flexible_type>&& values);
+
+  std::vector<flexible_type> reset_and_return_values();
   
  private:
 

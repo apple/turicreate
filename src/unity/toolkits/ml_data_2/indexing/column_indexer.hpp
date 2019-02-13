@@ -151,7 +151,8 @@ class column_indexer {
   /** Set data directly.
    *
    */
-  virtual void set_data(const std::map<std::string, variant_type>& params) {}
+  virtual void set_values(std::vector<flexible_type>&& values) = 0;
+  virtual std::vector<flexible_type> reset_and_return_values() = 0;
 
  public:
 

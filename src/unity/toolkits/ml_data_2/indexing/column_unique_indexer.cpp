@@ -302,11 +302,28 @@ void column_unique_indexer::load_version(turi::iarchive& iarc, size_t version) {
   std::map<std::string, variant_type> data;
   data = variant_get_value<decltype(data)>(data_v);
 
-  values_by_index_lookup
-      = variant_get_value<decltype(values_by_index_lookup)>(
-          data["values_by_index_lookup"]);
+  set_values(variant_get_value<std::vector<flexible_type> >(
+          data["values_by_index_lookup"]));
 
   _column_size = variant_get_value<size_t>(data["column_size"]);
+}
+
+// Reset and return all the values in the index.
+std::vector<flexible_type> column_unique_indexer::reset_and_return_values() {
+  // Clear out the hash indexing.
+  index_by_values_lookup.clear();
+
+  std::vector<flexible_type> ret;
+  ret.swap(values_by_index_lookup);
+
+  return ret;
+}
+
+
+// Set the values from a prior index.
+void column_unique_indexer::set_values(std::vector<flexible_type>&& values) {
+
+  values_by_index_lookup = values;
 
   // Now, we need to rebuild the index.
   if(mode == ml_column_mode::CATEGORICAL
@@ -336,6 +353,5 @@ void column_unique_indexer::load_version(turi::iarchive& iarc, size_t version) {
       });
   }
 }
-
 
 }}}
