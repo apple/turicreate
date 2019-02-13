@@ -9,7 +9,6 @@ make_library(unity_text
     perplexity.cpp
     class_registrations.cpp
   REQUIRES
-    numerics
     unity_core
     unity_ml_model
     random

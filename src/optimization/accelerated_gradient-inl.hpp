@@ -8,7 +8,7 @@
 
 // Types
 #include <flexible_type/flexible_type.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 
 // Optimization
 #include <optimization/utils.hpp>
@@ -16,7 +16,6 @@
 #include <optimization/regularizer_interface.hpp>
 #include <optimization/line_search-inl.hpp>
 #include <table_printer/table_printer.hpp>
-#include <numerics/armadillo.hpp>
 
 
 // TODO: List of todo's for this file
@@ -98,7 +97,7 @@ inline solver_return accelerated_gradient(first_order_opt_interface& model,
     DenseVector y = point;                            // Momentum
     DenseVector xp = point;                           // Point in the previos iter
     DenseVector x = point;                            // Point in the current 
-    delta_point.zeros();
+    delta_point.setZero();
 
     // First compute the residual. Sometimes, you already have the solution
     // during the starting point. In these settings, you don't want to waste
@@ -152,8 +151,8 @@ inline solver_return accelerated_gradient(first_order_opt_interface& model,
         // Compute 
         // f(y) + 0.5 * s * |delta_point|^2 + delta_point^T \grad_f(y)
         delta_point = (point - y);
-        Qply = fy  + dot(delta_point, gradient) + 0.5
-          * squared_norm(delta_point) / step_size;
+        Qply = fy  + delta_point.dot(gradient) + 0.5
+          * delta_point.squaredNorm() / step_size;
         
         if (fply < Qply){
           break;
@@ -175,12 +174,12 @@ inline solver_return accelerated_gradient(first_order_opt_interface& model,
       tp = t;
 
       // Numerical error: Insufficient progress.
-      if (squared_norm(delta_point) <= OPTIMIZATION_ZERO){
+      if (delta_point.norm() <= OPTIMIZATION_ZERO){
         stats.status = OPTIMIZATION_STATUS::OPT_NUMERIC_ERROR;
         break;
       }
       // Numerical error: Numerical overflow. (Step size was too large)
-      if (!delta_point.is_finite()) {
+      if (!delta_point.array().isFinite().all()) {
         stats.status = OPTIMIZATION_STATUS::OPT_NUMERIC_OVERFLOW;
         break;
       }
@@ -194,7 +193,7 @@ inline solver_return accelerated_gradient(first_order_opt_interface& model,
       iters++;
       
       // Check for nan's in the function value.
-      if(!std::isfinite(fy)) {
+      if(std::isinf(fy) || std::isnan(fy)) {
         stats.status = OPTIMIZATION_STATUS::OPT_NUMERIC_ERROR;
         break;
       }

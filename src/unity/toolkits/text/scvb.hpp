@@ -23,7 +23,7 @@
 #include <unity/lib/flex_dict_view.hpp>
 
 // External
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 #include <random/random.hpp>
 
 namespace turi {
@@ -70,11 +70,11 @@ class scvb0_solver {
   double kappa;
 
   // Variables needed for SCVB0
-  arma::mat N_Z;        /* < Estimate of N_Z for each topic. */
-  arma::mat N_theta_j;  /* < Estimate of N_theta for document j. */
-  arma::mat N_phi;      /* < Estimate of N_phi. */
-  arma::mat N_phi_hat;  /* < Estimate of N_phi based on a minibatch. */
-  arma::mat N_Z_hat;    /* < Estimate of N_Z based on a minibatch. */
+  Eigen::MatrixXd N_Z;        /* < Estimate of N_Z for each topic. */
+  Eigen::MatrixXd N_theta_j;  /* < Estimate of N_theta for document j. */
+  Eigen::MatrixXd N_phi;      /* < Estimate of N_phi. */
+  Eigen::MatrixXd N_phi_hat;  /* < Estimate of N_phi based on a minibatch. */
+  Eigen::MatrixXd N_Z_hat;    /* < Estimate of N_Z based on a minibatch. */
 
  private:
 
@@ -82,7 +82,7 @@ class scvb0_solver {
    * Initialize global estimate of N_theta_j. 
    */
   void initialize_N_theta_j(size_t C_j) {
-     N_theta_j = arma::zeros(model->num_topics, 1);
+     N_theta_j = Eigen::MatrixXd::Zero(model->num_topics, 1);
      for (size_t i = 0; i < C_j; ++i) {
        size_t ix = random::fast_uniform<size_t>(0, model->num_topics-1);
        N_theta_j(ix) += 1;
@@ -95,13 +95,13 @@ class scvb0_solver {
    * \params w_ij The integer id for the word that is the i'th token
    *              of document j.
    *
-   * \returns An EIGTODO vector of length num_topics containing the
+   * \returns An Eigen vector of length num_topics containing the
    * estimated probability the word belongs to each of the topics.
    */
-  arma::mat compute_gamma(size_t w_ij) {
+  Eigen::MatrixXd compute_gamma(size_t w_ij) {
     // DASSERT(j >= 0 && j < documents.size());
     // DASSERT(i >= 0 && i < vocab_size);
-    arma::mat gamma_ij(model->num_topics, 1);
+    Eigen::MatrixXd gamma_ij(model->num_topics, 1);
     for (size_t k = 0; k < model->num_topics; ++k) {
       gamma_ij(k, 0) = (N_phi(w_ij, k) + model->beta) * 
         (N_theta_j(k) + model->alpha) /
@@ -115,7 +115,7 @@ class scvb0_solver {
    * Compute a local estimate of topic proportions for this document.
    *
    */
-  void update_N_theta_j(const arma::mat& gamma_ij,
+  void update_N_theta_j(const Eigen::MatrixXd& gamma_ij,
                         size_t count_ij,
                         size_t C_j,
                         double rho) {
@@ -126,7 +126,7 @@ class scvb0_solver {
   /**
    * Update the local estimate of N_Z using the current token probabilities.
    */
-  void update_N_Z_hat(const arma::mat& gamma_ij,
+  void update_N_Z_hat(const Eigen::MatrixXd& gamma_ij,
                       size_t M, size_t C) {
     N_Z_hat += gamma_ij * C / M;
   }
@@ -148,7 +148,7 @@ class scvb0_solver {
   /**
    * Update local estimate of N_phi with the current token probabilities.
    */
-  void update_N_phi_hat(const arma::mat& gamma_ij,
+  void update_N_phi_hat(const Eigen::MatrixXd& gamma_ij,
                         size_t word_ij, 
                         size_t M, size_t C) {
     for (size_t k = 0; k < model->num_topics; ++k) {

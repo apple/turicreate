@@ -13,7 +13,7 @@
 #include <unity/toolkits/text/scvb.hpp>
 #include <logger/assertions.hpp>
 #include <timer/timer.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 
 namespace turi {
 namespace text {
@@ -36,17 +36,17 @@ void scvb0_solver::train(std::shared_ptr<sarray<flexible_type>> dataset, bool ve
   logprogress_stream << "Running SCVB0" << std::endl;
 
   // Initialize a set of estimates from current word_topic_counts 
-  N_phi = arma::zeros(model->vocab_size, model->num_topics);
-  for (size_t i = 0; i < (size_t) N_phi.n_rows; ++i) {
-    for (size_t j = 0; j < (size_t) N_phi.n_cols; ++j) {
+  N_phi = Eigen::MatrixXd::Zero(model->vocab_size, model->num_topics);
+  for (size_t i = 0; i < (size_t) N_phi.rows(); ++i) {
+    for (size_t j = 0; j < (size_t) N_phi.cols(); ++j) {
       N_phi(i, j) = (double) model->word_topic_counts(i, j);
     }
   }
 
   // Initialize other statistics matrices
-  N_phi_hat = arma::zeros(model->vocab_size, model->num_topics);
-  N_Z = arma::zeros(model->num_topics, 1);
-  N_Z_hat = arma::zeros(model->num_topics, 1);
+  N_phi_hat = Eigen::MatrixXd::Zero(model->vocab_size, model->num_topics);
+  N_Z = Eigen::MatrixXd::Zero(model->num_topics, 1);
+  N_Z_hat = Eigen::MatrixXd::Zero(model->num_topics, 1);
   N_Z = N_phi.colwise().sum();
 
   // Initialize timer
@@ -145,15 +145,15 @@ void scvb0_solver::train(std::shared_ptr<sarray<flexible_type>> dataset, bool ve
                 logprogress_stream << "M: " << M << std::endl;
                 logprogress_stream << "num_words: " << model->num_words << std::endl; 
                 logprogress_stream << std::setw(16) << "sum(N_theta_j) " 
-                                   << arma::sum(N_theta_j) << std::endl;
+                                   << N_theta_j.sum() << std::endl;
                 logprogress_stream << std::setw(16) << "sum(N_phi) " 
-                                   << model->arma::sum(word_topic_counts) << std::endl;
+                                   << model->word_topic_counts.sum() << std::endl;
                 logprogress_stream << std::setw(16) << "sum(N_phi_hat) " 
-                                   << arma::sum(N_phi_hat) << std::endl;
+                                   << N_phi_hat.sum() << std::endl;
                 logprogress_stream << std::setw(16) << "sum(N_Z) " 
-                                   << arma::sum(N_Z) << std::endl;
+                                   << N_Z.sum() << std::endl;
                 logprogress_stream << std::setw(16) << "sum(N_Z_hat) " 
-                                   << arma::sum(N_Z_hat) << std::endl;
+                                   << N_Z_hat.sum() << std::endl;
               }
 
               std::stringstream ss;
@@ -179,8 +179,8 @@ void scvb0_solver::train(std::shared_ptr<sarray<flexible_type>> dataset, bool ve
             }
 
             // Clear local statistics about the minibatch
-            N_Z_hat.zeros();
-            N_phi_hat.zeros();
+            N_Z_hat.setZero();
+            N_phi_hat.setZero();
 
           }
         }
@@ -193,8 +193,8 @@ void scvb0_solver::train(std::shared_ptr<sarray<flexible_type>> dataset, bool ve
   }
 
   // Copy estimates to the model. Take floor so that we have integers.
-  for (size_t i = 0; i < (size_t) N_phi.n_rows; ++i) {
-    for (size_t j = 0; j < (size_t) N_phi.n_cols; ++j) {
+  for (size_t i = 0; i < (size_t) N_phi.rows(); ++i) {
+    for (size_t j = 0; j < (size_t) N_phi.cols(); ++j) {
       model->word_topic_counts(i, j) = floor(N_phi(i, j));
     }
   }

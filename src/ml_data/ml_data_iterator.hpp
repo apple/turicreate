@@ -9,19 +9,24 @@
 #include <logger/assertions.hpp>
 #include <ml_data/data_storage/ml_data_row_translation.hpp>
 #include <ml_data/data_storage/ml_data_block_manager.hpp>
+#include <ml_data/ml_data.hpp>
 #include <ml_data/row_reference.hpp>
 #include <util/code_optimization.hpp>
 
 // SArray and Flex type
 #include <sframe/sarray.hpp>
 
-#include <numerics/armadillo.hpp>
+#include <Eigen/SparseCore>
+#include <Eigen/Core>
 
 #include <array>
 
 namespace turi {
 
 class ml_data;
+
+typedef Eigen::Matrix<double, Eigen::Dynamic,1>  DenseVector;
+typedef Eigen::SparseVector<double> SparseVector;
 
 /**
  * \ingroup mldata

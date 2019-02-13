@@ -43,7 +43,7 @@ std::unique_ptr<MPSGraphNetwork> createNetworkGraph(
 // MPS Network base class
 // ---------------------------------------------------------------------------------------
 MPSGraphNetwork::~MPSGraphNetwork() {
-  for (int i = 0; i < layers.size(); ++i) {
+  for (size_t i = 0; i < layers.size(); ++i) {
     delete layers[i];
   }
 }
@@ -53,13 +53,13 @@ void MPSGraphNetwork::Init(id<MTLDevice> _Nonnull device,
                            GraphMode mode,
                            const float_array_map& config,
                            const float_array_map& weights) {
-  for (int i = 0; i < layers.size(); ++i) {
+  for (size_t i = 0; i < layers.size(); ++i) {
     layers[i]->Init(device, cmd_queue, config, weights);
   }
   input_node =
       [MPSNNImageNode nodeWithHandle:[TCMPSGraphNodeHandle handleWithLabel:@"input"]];
   MPSNNImageNode *src = input_node;
-  for (int i = 0; i < layers.size(); ++i) {
+  for (size_t i = 0; i < layers.size(); ++i) {
     layers[i]->InitFwd(src);
     src = layers[i]->fwd_img_node;
   }
@@ -103,7 +103,7 @@ void MPSGraphNetwork::Init(id<MTLDevice> _Nonnull device,
 MPSImageBatch *MPSGraphNetwork::RunGraph(id<MTLCommandBuffer> cb,
                                     NSDictionary *inputs) {
   NSArray *input_to_graph = @[];
-  for (int i = 0; i < graph.sourceImageHandles.count; ++i) {
+  for (size_t i = 0; i < graph.sourceImageHandles.count; ++i) {
     // check keys
     input_to_graph = [input_to_graph
         arrayByAddingObject:[inputs objectForKey:[graph.sourceImageHandles[i]
@@ -131,7 +131,7 @@ MPSImageBatch *MPSGraphNetwork::RunGraph(id<MTLCommandBuffer> cb, MPSImageBatch 
 
 float_array_map MPSGraphNetwork::Export() const {
   float_array_map table;
-  for (int i = 0; i < layers.size(); ++i) {
+  for (size_t i = 0; i < layers.size(); ++i) {
     float_array_map layer_table = layers[i]->Export();
     table.insert(layer_table.begin(), layer_table.end());
     // TODO: In C++17, we can use std::map::merge to move the table entries

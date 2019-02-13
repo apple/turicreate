@@ -11,7 +11,7 @@ make_library(unity_recsys
     models/itemcf.cpp
     models/factorization_models.cpp
   REQUIRES
-    numerics
+    eigen
     unity_sparse_similarity
     unity_ml_model
     unity_ml_data_2

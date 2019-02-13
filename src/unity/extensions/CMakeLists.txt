@@ -9,7 +9,7 @@ macro(make_extension NAME)
     REQUIRES
       unity_shared
       boost
-      numerics
+      eigen
     COMPILE_FLAGS_EXTRA_GCC
       -Wno-unknown-pragmas  # NOTE: used for auto-generated protobuf source files
       -Wno-unused-function  # NOTE: used for auto-generated protobuf source files

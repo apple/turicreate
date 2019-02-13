@@ -19,7 +19,7 @@
 #include <algorithm>
 #include <time.h>
 #include <string>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 #include <unity/lib/toolkit_util.hpp>
 #include <table_printer/table_printer.hpp>
 #include <util/cityhash_tc.hpp>
@@ -149,10 +149,10 @@ void lsh_neighbors::train(const sframe& X, const std::vector<flexible_type>& ref
       }
     
       if (!is_sparse) { // dense 
-        it.fill_row_expr(v);
+        it.fill_observation(v);
         lsh_model->add_reference_data<DenseVector>(ref_idx, v);
       } else { //sparse
-        it.fill_row_expr(s);
+        it.fill_observation(s);
         lsh_model->add_reference_data<SparseVector>(ref_idx, s);
       }
 
@@ -229,7 +229,7 @@ sframe lsh_neighbors::query(const v2::ml_data& mld_queries,
         DenseVector vec(num_dimensions);
         std::vector<size_t> candidates;
         for (auto it = sampled_data.get_iterator(thread_idx, num_threads); !it.done(); ++it) {
-          it.fill_row_expr(vec);
+          it.fill_eigen_row(vec);
           candidates = lsh_model->query<DenseVector>(vec);
           num_candidates += candidates.size();
         }
@@ -239,8 +239,8 @@ sframe lsh_neighbors::query(const v2::ml_data& mld_queries,
         SparseVector vec(num_dimensions);
         std::vector<size_t> candidates;
         for (auto it = sampled_data.get_iterator(thread_idx, num_threads); !it.done(); ++it) {
-          it.fill_row_expr(vec);
-          num_nnz += vec.num_nonzeros();
+          it.fill_observation(vec);
+          num_nnz += vec.nonZeros();
           candidates = lsh_model->query<SparseVector>(vec);
           num_candidates += candidates.size();
         }
@@ -277,7 +277,7 @@ sframe lsh_neighbors::query(const v2::ml_data& mld_queries,
   std::vector<SparseVector> query_block_buff_sparse;
 
   if (!is_sparse){
-    query_block_buff_dense.zeros(max_block_size, num_dimensions);
+    query_block_buff_dense.setZero(max_block_size, num_dimensions);
   } else {
     query_block_buff_sparse.assign(max_block_size, SparseVector(num_dimensions));
   }
@@ -323,10 +323,10 @@ sframe lsh_neighbors::query(const v2::ml_data& mld_queries,
         DASSERT_TRUE(idx_query < block_end - block_start);
 
         if (!is_sparse){
-          it_query.fill_row_expr(query_block_buff_dense.row(idx_query));
-          candidates = lsh_model->query<DenseVector>(query_block_buff_dense.row(idx_query).t());
+          it_query.fill_eigen_row(query_block_buff_dense.row(idx_query));
+          candidates = lsh_model->query<DenseVector>(query_block_buff_dense.row(idx_query));
         } else {
-          it_query.fill_row_expr(query_block_buff_sparse[idx_query]);
+          it_query.fill_observation(query_block_buff_sparse[idx_query]);
           candidates = lsh_model->query<SparseVector>(query_block_buff_sparse[idx_query]);
         } 
       
@@ -367,16 +367,16 @@ sframe lsh_neighbors::query(const v2::ml_data& mld_queries,
         }
 
         if (!is_sparse) {
-          it_ref.fill_row_expr(ref_v);
+          it_ref.fill_observation(ref_v);
         } else {
-          it_ref.fill_row_expr(ref_s);
+          it_ref.fill_observation(ref_s);
         }
 
         for (const auto& idx_query : to_check_set) {
           double dist = 0;
           if (!is_sparse) { 
             dist = c.distance->distance(
-              ref_v, query_block_buff_dense.row(idx_query).t());
+              ref_v, query_block_buff_dense.row(idx_query));
           } else {
             dist = c.distance->distance(
               ref_s, query_block_buff_sparse[idx_query]);

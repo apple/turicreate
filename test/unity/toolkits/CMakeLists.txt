@@ -11,14 +11,14 @@ add_subdirectory(object_detection)
 add_subdirectory(coreml_export)
 
 make_boost_test(kmeans_test.cxx
-  REQUIRES unity_clustering util numerics
+  REQUIRES unity_clustering util eigen
   COMPILE_FLAGS_EXTRA_GCC
     -Wno-unknown-pragmas  # NOTE: used for auto-generated protobuf source files
     -Wno-unused-function  # NOTE: used for auto-generated protobuf source files
   )
 
 make_boost_test (nearest_neighbors.cxx
-  REQUIRES unity_nearest_neighbors numerics
+  REQUIRES unity_nearest_neighbors eigen
   COMPILE_FLAGS_EXTRA_GCC
     -Wno-unknown-pragmas  # NOTE: used for auto-generated protobuf source files
     -Wno-unused-function  # NOTE: used for auto-generated protobuf source files
@@ -32,7 +32,7 @@ make_boost_test (topic_model.cxx
   )
 
 make_boost_test (test_evaluation.cxx
-  REQUIRES unity_evaluation unity_recsys numerics
+  REQUIRES unity_evaluation unity_recsys eigen
   COMPILE_FLAGS_EXTRA_GCC
     -Wno-unknown-pragmas  # NOTE: used for auto-generated protobuf source files
     -Wno-unused-function  # NOTE: used for auto-generated protobuf source files
