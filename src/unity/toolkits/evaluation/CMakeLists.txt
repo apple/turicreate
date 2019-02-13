@@ -1,11 +1,7 @@
 project(unity_toolkits)
 
-make_library(unity_evaluation
-  SOURCES
-    metrics.cpp 
-    unity_evaluation.cpp
-  REQUIRES
-    ml_data
-    unity_core 
-    unity_recsys
-  )
+add_library(unity_evaluation OBJECT
+  metrics.cpp 
+  unity_evaluation.cpp
+)
+add_dependencies(unity_evaluation boost)

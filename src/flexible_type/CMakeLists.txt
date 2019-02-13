@@ -6,14 +6,10 @@ project(flexible_type)
 #/*                                                                        */
 #/**************************************************************************/
 
-make_library(flexible_type
-  SOURCES
-    flexible_type.cpp
-    string_escape.cpp
-    flexible_type_conversion_utilities.cpp
-    flexible_type_spirit_parser.cpp
-  REQUIRES
-    logger
-    image_type
-    EXTERNAL_VISIBILITY
-  )
+add_library(flexible_type OBJECT
+  flexible_type.cpp
+  string_escape.cpp
+  flexible_type_conversion_utilities.cpp
+  flexible_type_spirit_parser.cpp
+)
+add_dependencies(flexible_type boost)

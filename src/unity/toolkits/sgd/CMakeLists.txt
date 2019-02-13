@@ -1,8 +1,6 @@
 project(unity_toolkits)
 
-make_library(unity_sgd
-  SOURCES
-    sgd_solver_base.cpp
-  REQUIRES
-  unity_ml_data_2 eigen
-  )
+add_library(unity_sgd OBJECT
+  sgd_solver_base.cpp
+)
+add_dependencies(unity_sgd boost)

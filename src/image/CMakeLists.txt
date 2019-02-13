@@ -6,37 +6,29 @@ project(image)
 #/*                             Logger Library                             */
 #/*                                                                        */
 #/**************************************************************************/
-make_library(image_type
-  SOURCES
-    image_type.cpp
-    image_util_impl.cpp
-  REQUIRES
-    logger
-    image_io
-    EXTERNAL_VISIBILITY
+add_library(image_type OBJECT
+  image_type.cpp
+  image_util_impl.cpp
 )
+add_dependencies(image_type boost)
 
 make_executable(io_example
   SOURCES
     io_example.cpp
   REQUIRES
-    image_io
+    unity_shared_for_testing
 )
 
-make_library(image_io
-        SOURCES
-    io.cpp
-    jpeg_io.cpp
-    png_io.cpp
-    REQUIRES
-      libpng
-      libjpeg
-      logger
-      fileio
-      EXTERNAL_VISIBILITY)
+add_library(image_io OBJECT
+  io.cpp
+  jpeg_io.cpp
+  png_io.cpp
+)
+add_dependencies(image_io boost)
+
 #set to native if supported
 check_cxx_compiler_flag(-Wno-c++11-narrowing HAS_NARROWING)
 
 if(HAS_NARROWING)
-set_property(TARGET image_io APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-c++11-narrowing")
+  target_compile_options(image_io PRIVATE "-Wno-c++11-narrowing")
 endif()

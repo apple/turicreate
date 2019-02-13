@@ -1,7 +1,6 @@
 project(util)
 
-make_library(util 
-SOURCES 
+add_library(util OBJECT
   any.cpp 
   basic_types.cpp
   cityhash_tc.cpp 
@@ -12,8 +11,5 @@ SOURCES
   syserr_reporting.cpp 
   testing_utils.cpp 
   web_util.cpp
-REQUIRES 
-  logger 
-  flexible_type
-  boost
-  EXTERNAL_VISIBILITY )
+)
+add_dependencies(util boost)

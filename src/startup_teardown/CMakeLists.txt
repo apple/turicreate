@@ -1,8 +1,6 @@
 project(startup_teardown)
 
-make_library(startup_teardown
-  SOURCES
-    startup_teardown.cpp
-  REQUIRES
-    logger fileio parallel timer random crash_handler pylambda minipsutil_static
-  )
+add_library(startup_teardown OBJECT
+  startup_teardown.cpp
+)
+add_dependencies(startup_teardown boost)

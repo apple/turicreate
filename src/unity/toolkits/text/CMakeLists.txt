@@ -1,18 +1,11 @@
 project(unity_toolkits)
 
-make_library(unity_text
-  SOURCES
-    unity_text.cpp
-    topic_model.cpp
-    cgs.cpp
-    alias.cpp
-    perplexity.cpp
-    class_registrations.cpp
-  REQUIRES
-    unity_core
-    unity_ml_model
-    random
-    logger
-    unity_ml_data_2
-    unity_util
-  )
+add_library(unity_text OBJECT
+  unity_text.cpp
+  topic_model.cpp
+  cgs.cpp
+  alias.cpp
+  perplexity.cpp
+  class_registrations.cpp
+)
+add_dependencies(unity_text boost)
