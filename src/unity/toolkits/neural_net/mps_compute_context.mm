@@ -53,7 +53,7 @@ mps_compute_context::create_image_augmenter_for_testing(
   return std::unique_ptr<image_augmenter>(new mps_image_augmenter(opts, rng));
 }
 
-std::unique_ptr<cnn_module> mps_compute_context::create_object_detector(
+std::unique_ptr<model_backend> mps_compute_context::create_object_detector(
     int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
     const float_array_map& config, const float_array_map& weights) {
 

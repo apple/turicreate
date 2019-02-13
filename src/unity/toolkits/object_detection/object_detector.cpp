@@ -25,13 +25,13 @@
 #include <unity/toolkits/object_detection/od_yolo.hpp>
 
 using turi::coreml::MLModelWrapper;
-using turi::neural_net::cnn_module;
 using turi::neural_net::compute_context;
 using turi::neural_net::deferred_float_array;
 using turi::neural_net::float_array_map;
 using turi::neural_net::image_annotation;
 using turi::neural_net::image_augmenter;
 using turi::neural_net::labeled_image;
+using turi::neural_net::model_backend;
 using turi::neural_net::model_spec;
 using turi::neural_net::shared_float_array;
 
@@ -284,7 +284,7 @@ void object_detector::train(gl_sframe data,
       {{ "Iteration", 12}, {"Loss", 12}, {"Elapsed Time", 12}}));
 
   // Instantiate the training dependencies: data iterator, image augmenter,
-  // backend NN module.
+  // backend NN model.
   init_train(std::move(data), std::move(annotations_column_name),
              std::move(image_column_name), std::move(opts));
 
@@ -301,11 +301,11 @@ void object_detector::train(gl_sframe data,
   training_table_printer_.reset();
 
   // Sync trained weights to our local storage of the NN weights.
-  float_array_map raw_trained_weights = training_module_->export_weights();
+  float_array_map raw_trained_weights = training_model_->export_weights();
   float_array_map trained_weights;
   for (const auto& kv : raw_trained_weights) {
-    // Convert keys from the cnn_module names (e.g. "conv7_weight") to the names
-    // we're exporting to CoreML (e.g. "conv7_fwd_weight").
+    // Convert keys from the model_backend names (e.g. "conv7_weight") to the
+    // names we're exporting to CoreML (e.g. "conv7_fwd_weight").
     const std::string modifier = "_fwd";
     std::string key = kv.first;
     std::string::iterator it = std::find(key.begin(), key.end(), '_');
@@ -350,7 +350,7 @@ variant_map_type object_detector::evaluate(
   // For each anchor box, we have 4 bbox coords + 1 conf + one-hot class labels
   int num_outputs_per_anchor = 5 + read_state<int>("num_classes");
   int num_output_channels = num_outputs_per_anchor * anchor_boxes().size();
-  std::unique_ptr<cnn_module> module = ctx->create_object_detector(
+  std::unique_ptr<model_backend> model = ctx->create_object_detector(
       /* n */     options.value("batch_size"),
       /* c_in */  NUM_INPUT_CHANNELS,
       /* h_in */  GRID_SIZE * SPATIAL_REDUCTION,
@@ -420,9 +420,9 @@ variant_map_type object_detector::evaluate(
     // submit them to the neural net.
     image_augmenter::result prepared_input_batch =
         augmenter->prepare_images(std::move(input_batch));
-    auto pending_prediction = std::make_shared<deferred_float_array>(
-        module->predict(prepared_input_batch.image_batch));
-    result_batch.image_batch = shared_float_array(pending_prediction);
+    std::map<std::string, shared_float_array> prediction_results =
+        model->predict({{"input", prepared_input_batch.image_batch}});
+    result_batch.image_batch = prediction_results.at("output");
 
     // Add the pending result to our queue and move on to the next input batch.
     pending_batches.push(std::move(result_batch));
@@ -556,7 +556,7 @@ std::unique_ptr<model_spec> object_detector::init_model(
 std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
     std::string filename, std::map<std::string, flexible_type> opts) {
 
-  // Initialize the result with the learned layers from the cnn_module.
+  // Initialize the result with the learned layers from the model_backend.
   model_spec yolo_nn_spec(nn_spec_->get_coreml_spec());
   
   std::string coordinates_str = "coordinates";
@@ -713,7 +713,7 @@ void object_detector::init_train(gl_sframe data,
   int num_outputs_per_anchor =  // 4 bbox coords + 1 conf + one-hot class labels
       5 + static_cast<int>(training_data_iterator_->class_labels().size());
   int num_output_channels = num_outputs_per_anchor * anchor_boxes().size();
-  training_module_ = training_compute_context_->create_object_detector(
+  training_model_ = training_compute_context_->create_object_detector(
       /* n */     options.value("batch_size"),
       /* c_in */  NUM_INPUT_CHANNELS,
       /* h_in */  GRID_SIZE * SPATIAL_REDUCTION,
@@ -734,7 +734,7 @@ void object_detector::perform_training_iteration() {
   // Training must have been initialized.
   ASSERT_TRUE(training_data_iterator_ != nullptr);
   ASSERT_TRUE(training_data_augmenter_ != nullptr);
-  ASSERT_TRUE(training_module_ != nullptr);
+  ASSERT_TRUE(training_model_ != nullptr);
 
   // We want to have no more than two pending batches at a time (double
   // buffering). We're about to add a new one, so wait until we only have one.
@@ -746,16 +746,16 @@ void object_detector::perform_training_iteration() {
   flex_int max_iterations = get_max_iterations();
   if (iteration_idx == max_iterations / 2) {
 
-    training_module_->set_learning_rate(BASE_LEARNING_RATE / 10.f);
+    training_model_->set_learning_rate(BASE_LEARNING_RATE / 10.f);
 
   } else if (iteration_idx == max_iterations * 3 / 4) {
 
-    training_module_->set_learning_rate(BASE_LEARNING_RATE / 100.f);
+    training_model_->set_learning_rate(BASE_LEARNING_RATE / 100.f);
 
   } else if (iteration_idx == max_iterations) {
 
     // Handle any manually triggered iterations after the last planned one.
-    training_module_->set_learning_rate(BASE_LEARNING_RATE / 1000.f);
+    training_model_->set_learning_rate(BASE_LEARNING_RATE / 1000.f);
   }
 
   // Update the model fields tracking how much training we've done.
@@ -778,9 +778,11 @@ void object_detector::perform_training_iteration() {
   shared_float_array label_batch =
       prepare_label_batch(augmenter_result.annotations_batch);
 
-  // Submit the batch to the neural net module.
-  deferred_float_array loss_batch = training_module_->train(
-      augmenter_result.image_batch, label_batch);
+  // Submit the batch to the neural net model.
+  std::map<std::string, shared_float_array> results = training_model_->train(
+      { { "input",  augmenter_result.image_batch },
+        { "labels", label_batch                  }  });
+  shared_float_array loss_batch = results.at("loss");
 
   // Save the result, which is a future that can synchronize with the
   // completion of this batch.
@@ -795,7 +797,7 @@ float_array_map object_detector::get_model_params() const {
   // the compute backend. (We preserve the substring in nn_spec_ for inclusion
   // in the final exported model.)
   // TODO: Someday, this will all be an implementation detail of each
-  // cnn_module implementation, once they actually take model_spec values as
+  // model_backend implementation, once they actually take model_spec values as
   // inputs. Or maybe we should just not use "_fwd" in the exported model?
   float_array_map model_params;
   for (const float_array_map::value_type& kv : raw_model_params) {

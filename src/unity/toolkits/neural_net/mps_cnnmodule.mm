@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <iostream>
 
+#include <logger/assertions.hpp>
+
 #import "mps_device_manager.h"
 
 namespace turi {
@@ -22,26 +24,25 @@ MPSImageBatch * _Nonnull CreateImageBatch(id<MTLDevice> _Nonnull device,
 
 }  // anonymous namespace
 
-MPSCNNModule::MPSCNNModule() {
-  dev_ = [[TCMPSDeviceManager sharedInstance] preferredDevice];
-  assert(dev_ && "No valid Metal device. Availability should be checked before creating MPSCNNModule.");
-  id<MTLCommandQueue> cq = [dev_ newCommandQueue];
-  assert(cq);
-  cmd_queue_ = cq;
+mps_cnn_module::mps_cnn_module(id <MTLDevice> dev) {
 
-#if VERBOSE
-  NSLog(@"Selected dev: %@", dev_.name);
-#endif
+  dev_ = dev;
+  cmd_queue_ = [dev_ newCommandQueue];
+
+  ASSERT_TRUE(dev_ != nil);
+  ASSERT_TRUE(cmd_queue_ != nil);
 }
 
-void MPSCNNModule::Init(int network_id, int n, int c_in, int h_in, int w_in,
-                        int c_out, int h_out, int w_out, int updater_id,
-                        const float_array_map& config) {
+void mps_cnn_module::init(int network_id, int n, int c_in, int h_in, int w_in,
+                          int c_out, int h_out, int w_out, int updater_id,
+                          const float_array_map& config) {
+
+  @autoreleasepool {
 
   // Save output shape, used for initializing the labels (that can not
   // be pre-initialized without the data)
-  output_chn_ = c_out;
-  output_width_ = w_out;
+  output_chn_ = static_cast<size_t>(c_out);
+  output_width_ = static_cast<size_t>(w_out);
 
   input_desc_ = [MPSImageDescriptor
       imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat32
@@ -52,343 +53,210 @@ void MPSCNNModule::Init(int network_id, int n, int c_in, int h_in, int w_in,
                                  usage:MTLTextureUsageShaderWrite |
                                        MTLTextureUsageShaderRead];
 
-  input_ = CreateImageBatch(dev_, input_desc_, n);
-
-  // output_ and top_grad_ should only be allocated in Test mode, where they are used
-  // as inputs coming externally from python
-  LowLevelMode network_mode = (LowLevelMode) get_array_map_scalar(config, "mode", kLowLevelModeTrain);
-
-  if (kLowLevelModeTest == network_mode){
-      output_desc_ = [MPSImageDescriptor
-          imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat32
-                                     width:w_out
-                                    height:h_out
-                           featureChannels:c_out
-                            numberOfImages:1
-                                     usage:MTLTextureUsageShaderWrite |
-                                           MTLTextureUsageShaderRead];
-
-      output_ = CreateImageBatch(dev_, output_desc_, n);
-      top_grad_ = CreateImageBatch(dev_, output_desc_, n);
-  }
-
-  network_ = createNetwork((NetworkType)network_id, {n, h_in, w_in, c_in, h_out, w_out, c_out}, config);
+  network_.reset(createNetwork(static_cast<NetworkType>(network_id),
+                               {n, h_in, w_in, c_in, h_out, w_out, c_out},
+                               config));
   network_->batch_size = n;
   network_->Init(dev_, cmd_queue_, config);
   SetupUpdater(updater_id);
+
+  }  // @autoreleasepool
 }
 
-MPSCNNModule::~MPSCNNModule() {
-  delete network_;
-  delete updater_;
-}
+void mps_cnn_module::load(const float_array_map& weights) {
 
-MPSCNNModule::Batch* MPSCNNModule::StartBatch(int batch_id) {
-  if (active_batches_.find(batch_id) != active_batches_.end()) {
-    throw std::logic_error("Cannot start batch with ID already in use");
-  }
-
-  Batch& batch = active_batches_[batch_id];
-  if (free_batches_.empty()) {
-    // Allocate a new input MPSImageBatch.
-    batch.input = CreateImageBatch(dev_, input_desc_, network_->batch_size);
-  } else {
-    batch = std::move(free_batches_.back());
-    free_batches_.pop_back();
-
-    // Recycle MPSImageBatch allocations from a previous batch.
-    assert(batch.input);
-  }
-
-  return &batch;
-}
-
-void MPSCNNModule::WaitForBatch(int batch_id, float *forward_out,
-                                float *loss_out) {
-  std::map<int, Batch>::iterator it = active_batches_.find(batch_id);
-  if (it == active_batches_.end()) {
-    throw std::logic_error("Cannot wait for batch with unknown ID");
-  }
-
-  Batch &batch = it->second;
-  assert(batch.command_buffer);
-  [batch.command_buffer waitUntilCompleted];
-
-  if (forward_out) {
-    MPSImage2Blob(forward_out, batch.output);
-  }
-
-  if (loss_out) {
-    MPSImage2Blob(loss_out, batch.loss_images);
-  }
-
-  batch.command_buffer = nil;
-  batch.output = nil;
-  batch.top_grad = nil;
-  batch.loss_images = nil;
-  batch.loss_labels = nil;
-
-  free_batches_.push_back(std::move(batch));
-  active_batches_.erase(it);
-}
-
-void MPSCNNModule::Forward(const float_array& inputs, float *out,
-                           bool is_train) {
-  // may check shape here
-  Blob2MPSImage(inputs, input_);
   @autoreleasepool {
-    id<MTLCommandBuffer> commandBuffer = [cmd_queue_ commandBuffer];
 
-
-    // run network
-    output_ = network_->Forward(input_, commandBuffer, is_train);
-
-    for (NSUInteger i = 0; i < [output_ count]; ++i) {
-        [output_[i] synchronizeOnCommandBuffer:commandBuffer];
-    }
-
-    [commandBuffer commit];
-    [commandBuffer waitUntilCompleted];
-
-    // copy output
-    MPSImage2Blob(out, output_);
-  }
-}
-
-void MPSCNNModule::Backward(const float_array& gradient, float *out) {
-  Blob2MPSImage(gradient, top_grad_);
-  @autoreleasepool {
-    id<MTLCommandBuffer> commandBuffer = [cmd_queue_ commandBuffer];
-
-
-    // run backward
-    MPSImageBatch *bottom_grad = network_->Backward(top_grad_, commandBuffer);
-    for (NSUInteger i = 0; i < [bottom_grad count]; ++i) {
-        [bottom_grad[i] synchronizeOnCommandBuffer:commandBuffer];
-    }
-    network_->SyncState(commandBuffer);
-    [commandBuffer commit];
-    [commandBuffer waitUntilCompleted];
-    // copy output
-    MPSImage2Blob(out, bottom_grad);
-  }
-}
-
-void MPSCNNModule::Loss(const float_array& inputs, const float_array& labels,
-                        const float_array& weights, bool loss_image_required,
-                        float* out) {
-  Blob2MPSImage(inputs, output_);
-  @autoreleasepool {
-      id<MTLCommandBuffer> commandBuffer = [cmd_queue_ commandBuffer];
-
-
-      // Creating labels batch
-      loss_labels_ =
-          initLossLabelsBatch(dev_, labels, weights,
-                              network_->batch_size, output_width_, output_chn_);
-
-      // Calc loss
-      top_grad_ = network_->Loss(output_, loss_labels_, commandBuffer);
-
-      for (NSUInteger i = 0; i < [top_grad_ count]; ++i) {
-        [top_grad_[i] synchronizeOnCommandBuffer:commandBuffer];
-      }
-      
-      if (loss_image_required){
-        loss_images_ = ExtractLossImages(loss_labels_, commandBuffer);
-      }
-
-      [commandBuffer commit];
-      [commandBuffer waitUntilCompleted];
-
-      // copy output
-      MPSImage2Blob(out, top_grad_);
-  }
-}
-
-void MPSCNNModule::Forward(const float_array& inputs, const float_array& labels,
-                           const float_array& weights, bool loss_image_required,
-                           bool is_train, float* out) {
-    
-    TrainingWithLoss(/* batch */ nullptr, inputs, labels, weights,
-                     loss_image_required, /* wait_until_completed */ true, out,
-                     /* do_backward */ false, is_train);
-}
-void MPSCNNModule::ForwardBackward(
-    const float_array& inputs, const float_array& labels,
-    const float_array& weights, bool loss_image_required, float* out) {
-    
-    TrainingWithLoss(/* batch */ nullptr, inputs, labels, weights,
-                     loss_image_required, /* wait_until_completed */ true, out,
-                     /* do_backward */ true);
-}
-
-void MPSCNNModule::BeginForwardBatch(
-    int batch_id, const float_array& inputs, const float_array& labels,
-    const float_array& weights, bool loss_image_required, bool is_train) {
-  Batch* batch = StartBatch(batch_id);
-  TrainingWithLoss(batch, inputs, labels, weights,
-                   loss_image_required, /* wait_until_completed */ false,
-                   /* out */ nullptr, /* do_backward */ false, is_train);
-}
-
-void MPSCNNModule::BeginForwardBackwardBatch(
-    int batch_id, const float_array& inputs, const float_array& labels,
-    const float_array& weights, bool loss_image_required) {
-  Batch* batch = StartBatch(batch_id);
-  TrainingWithLoss(batch, inputs, labels, weights,
-                   loss_image_required, /* wait_until_completed */ false,
-                   /* out */ nullptr, /* do_backward */ true);
-}
-
-void MPSCNNModule::TrainingWithLoss(
-      Batch *batch, const float_array& inputs_array,
-      const float_array& labels_array, const float_array& weights_array,
-      bool loss_image_required, bool wait_until_completed, float *out,
-      bool do_backward, bool is_train) {
-    // may check shape here
-    if (batch) {
-      // TODO: Recycle non-temporary MPSImage instances using image allocators
-      // wrapping pools of recycled instances. Something similar can be done for
-      // MPSCNNLossLabels instances.
-      input_ = batch->input;
-      loss_images_ = batch->loss_images;
-      loss_labels_ = batch->loss_labels;
-    }
-    Blob2MPSImage(inputs_array, input_);
-    @autoreleasepool {
-        id<MTLCommandBuffer> commandBuffer = [cmd_queue_ commandBuffer];
-
-        // Creating labels batch
-        if (loss_labels_) {
-          // Recycle existing allocations
-          FillLossLabelsBatch(
-              loss_labels_, dev_, labels_array, weights_array,
-              network_->batch_size, output_width_, output_chn_);
-        } else {
-          loss_labels_ = initLossLabelsBatch(
-              dev_, labels_array, weights_array,
-              network_->batch_size, output_width_, output_chn_);
-        }
-
-        // run foward pass
-        output_ = network_->Forward(input_, commandBuffer, is_train);
-        
-        // Calc loss
-        top_grad_ = network_->Loss(output_, loss_labels_, commandBuffer);
-        
-        
-        if (loss_image_required){
-          loss_images_ = ExtractLossImages(loss_labels_, commandBuffer);
-        }
-        
-        if (do_backward){
-            // run backward pass
-            MPSImageBatch *bottom_grad = network_->Backward(top_grad_, commandBuffer);
-            if (kLowLevelModeTest == network_->network_mode_){
-                for (NSUInteger i = 0; i < [bottom_grad count]; ++i) {
-                    [bottom_grad[i] synchronizeOnCommandBuffer:commandBuffer];
-                }
-            } else {
-                // No one reads the result images from the backward pass.
-                // Decrement the read count now so that MPS can deallocate them,
-                // and to prevent assertion failures with Metal API validation
-                // enabled.
-                // TODO: Images intended for clients to (optionally) read should
-                // be non-temporary.
-                MPSImageBatchIncrementReadCount(bottom_grad, -1);
-            }
-        }
-        
-        for (NSUInteger i = 0; i < [output_ count]; ++i) {
-            [output_[i] synchronizeOnCommandBuffer:commandBuffer];
-        }
-
-        [commandBuffer commit];
-        
-        if (wait_until_completed) {
-          [commandBuffer waitUntilCompleted];
-        }
-
-        if (out) {
-          assert(wait_until_completed && "Error: Must wait for completion before reading output.");
-          MPSImage2Blob(out, output_);
-        }
-
-        if (batch) {
-          batch->command_buffer = commandBuffer;
-          batch->output = output_;
-          batch->top_grad = top_grad_;
-          batch->loss_images = loss_images_;
-          batch->loss_labels = loss_labels_;
-        }
-    }
-}
-
-void MPSCNNModule::GetLossImages(float *_Nonnull out) {
-  assert(loss_images_ && "Error: No Loss image found. Please call Loss() with loss_image_required=true.");
-    
-  // copy output
-  MPSImage2Blob(out, loss_images_);
-}
-
-void MPSCNNModule::Update() { network_->Update(updater_); }
-
-void MPSCNNModule::GpuUpdate(){
-    @autoreleasepool {
-        id<MTLCommandBuffer> commandBuffer = [cmd_queue_ commandBuffer];
-        network_->GpuUpdate(commandBuffer);
-        
-        [commandBuffer commit];
-
-        // Don't bother waiting for this command buffer to complete. Any
-        // observation or dependency on the results of this update must entail
-        // another later command, for which the observer must wait.
-    }
-}
-
-void MPSCNNModule::Load(const float_array_map& weights) {
   network_->Load(weights);
+
+  }  // @autoreleasepool
 }
 
-float_array_map MPSCNNModule::Export() const {
+float_array_map mps_cnn_module::export_weights() const {
+
+  @autoreleasepool {
+
   return network_->Export();
-}
-int MPSCNNModule::NumParams() { return network_->NumParams(); }
 
-void MPSCNNModule::SetupUpdater(int updater_id) {
-  updater_ = createUpdater(updater_id);
+  }  // @autoreleasepool
+}
+
+float_array_map mps_cnn_module::predict(const float_array_map& inputs) const {
+
+  @autoreleasepool {
+
+  return perform_batch(inputs, /* do_backward */ false);
+
+  }  // @autoreleasepool
+}
+
+void mps_cnn_module::set_learning_rate(float lr) {
+
+  @autoreleasepool {
+
+  if (updater_ != nullptr) {
+    updater_->SetLearningRate(lr);
+  }
+
+  }  // @autoreleasepool
+}
+
+float_array_map mps_cnn_module::train(const float_array_map& inputs) {
+
+  @autoreleasepool {
+
+  return perform_batch(inputs, /* do_backward */ true);
+
+  }  // @autoreleasepool
+}
+
+float_array_map mps_cnn_module::perform_batch(const float_array_map &inputs,
+                                              bool do_backward) const {
+
+  const bool loss_image_required = network_->is_train_;
+  ASSERT_TRUE(!do_backward || loss_image_required);
+
+  // TODO: The names should somehow be a parameter of this class.
+  auto input_iter = inputs.find("input");
+  auto labels_iter = inputs.find("labels");
+  auto weights_iter = inputs.find("weights");
+  if (input_iter == inputs.end()) {
+    log_and_throw("Cannot run model without argument named \"input\".");
+  }
+  if (loss_image_required) {
+    if (labels_iter == inputs.end()) {
+      log_and_throw("Cannot run model without argument named \"labels\".");
+    }
+    if (weights_iter == inputs.end()) {
+      log_and_throw("Cannot run model without argument named \"weights\".");
+    }
+  }
+
+  // Convert input from float_array to MPSImageBatch.
+  MPSImageBatch *inputBatch = copy_input(input_iter->second);
+
+  // Convert labels from float_array to MPSCNNLossLabelsBatch if needed.
+  MPSCNNLossLabelsBatch *labelsBatch = nil;
+  if (loss_image_required) {
+    labelsBatch = copy_labels(labels_iter->second, weights_iter->second);
+  }
+
+  // Schedule forward pass.
+  id <MTLCommandBuffer> commandBuffer = [cmd_queue_ commandBuffer];
+  MPSImageBatch *output =
+      network_->Forward(inputBatch, commandBuffer, do_backward);
+
+  MPSImageBatch *lossImages = nil;
+  if (loss_image_required) {
+
+    // Schedule computation of loss.
+    MPSImageBatch *topGrad =
+        network_->Loss(output, labelsBatch, commandBuffer);
+    lossImages = ExtractLossImages(labelsBatch, commandBuffer);
+
+    if (do_backward) {
+
+      // Schedule backward pass.
+      MPSImageBatch *bottomGrad = network_->Backward(topGrad, commandBuffer);
+
+      // No one reads the result images from the backward pass. Decrement the
+      // read count now so that MPS can deallocate them, and to prevent
+      // assertion failures with Metal API validation enabled.
+      // TODO: Images intended for clients to (optionally) read should be
+      // non-temporary.
+      MPSImageBatchIncrementReadCount(bottomGrad, -1);
+
+      // Schedule the actual weight update.
+      network_->GpuUpdate(commandBuffer);
+    }
+  }
+
+  // Copy the network output from GPU to CPU.
+  for (MPSImage *out in output) {
+    [out synchronizeOnCommandBuffer:commandBuffer];
+  }
+
+  // Set up promises/futures to receive asynchronous results.
+  // n.b. The block below must not capture `this`.
+  std::vector<size_t> output_shape =
+      { static_cast<size_t>(network_->batch_size), 1, output_width_,
+        output_chn_ };
+  auto output_promise = std::make_shared<std::promise<shared_float_array>>();
+  auto loss_promise = std::make_shared<std::promise<shared_float_array>>();
+  NSMutableArray<MPSImageBatch *> *recycled_inputs = recycled_inputs_;
+  NSMutableArray<MPSCNNLossLabelsBatch *> *recycled_labels = recycled_labels_;
+  [commandBuffer addCompletedHandler:^(id <MTLCommandBuffer> cmdBuf) {
+
+      // Propagate Metal errors as C++ exceptions.
+      if (cmdBuf.status == MTLCommandBufferStatusError) {
+        output_promise->set_exception(std::make_exception_ptr(
+            std::runtime_error(cmdBuf.error.localizedDescription.UTF8String)));
+        loss_promise->set_exception(std::make_exception_ptr(
+            std::runtime_error(cmdBuf.error.localizedDescription.UTF8String)));
+        return;
+      }
+
+      // Recycle reusable allocations.
+      @synchronized(recycled_inputs) {
+        [recycled_inputs addObject:inputBatch];
+      }
+      if (labelsBatch) {
+        @synchronized(recycled_labels) {
+          [recycled_labels addObject:labelsBatch];
+        }
+      }
+
+      // Fulfill promises, copying from Metal CPU buffers to float_array.
+      output_promise->set_value(copy_image_batch(output_shape, output));
+      if (lossImages) {
+        loss_promise->set_value(copy_image_batch({ output_shape[0], 1, 1, 1 },
+                                                 lossImages));
+      }
+  }];
+
+  // Dispatch the scheduled work to Metal.
+  [commandBuffer commit];
+
+  // Return the deferred_float_array values wrapping the future results.
+  float_array_map result;
+  if (lossImages) {
+    std::vector<size_t> loss_shape = { output_shape[0], 1, 1, 1 };
+    result.emplace("loss", std::make_shared<deferred_float_array>(
+        loss_promise->get_future(), std::move(loss_shape)));
+  }
+  result.emplace("output", std::make_shared<deferred_float_array>(
+      output_promise->get_future(), std::move(output_shape)));
+  return result;
+}
+
+void mps_cnn_module::SetupUpdater(int updater_id) {
+  updater_.reset(createUpdater(updater_id));
   updater_->Init(network_->layers, {1e-3});
 }
 
-void MPSCNNModule::Blob2MPSImage(const float_array& blob,
-                                 MPSImageBatch *batch) {
-  // add size chcek later
-  assert([batch count] > 0);
-  const float* ptr = blob.data();
-  MPSImage *img = batch[0];
-  int stride = [img width] * [img height] * [img featureChannels];
-  for (size_t i = 0; i < [batch count]; ++i) {
-    MPSImage *img = batch[i];
-    [img writeBytes:ptr + stride * i
-         dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
-  }
-}
+MPSImageBatch *mps_cnn_module::copy_input(const float_array& input) const {
 
-void MPSCNNModule::MPSImage2Blob(float *ptr, MPSImageBatch *batch) {
-  // add size chcek later
-  assert([batch count] > 0);
-  MPSImage *img = batch[0];
-  int stride = [img width] * [img height] * [img featureChannels];
-  for (size_t i = 0; i < [batch count]; ++i) {
-    MPSImage *img = batch[i];
-    [img readBytes:ptr + stride * i
-        dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
+  // TODO: Recycle non-temporary MPSImage instances using image allocators
+  // wrapping pools of recycled instances. Something similar can be done for
+  // MPSCNNLossLabels instances.
+  MPSImageBatch *batch = nil;
+  @synchronized(recycled_inputs_) {
+    if (recycled_inputs_.count > 0) {
+      batch = recycled_inputs_.lastObject;
+      [recycled_inputs_ removeLastObject];
+    }
   }
+  if (!batch) {
+    batch = CreateImageBatch(dev_, input_desc_, network_->batch_size);
+  }
+
+  fill_image_batch(input, batch);
+
+  return batch;
 }
 
 // static
-NSData *MPSCNNModule::EncodeLabels(
+NSData *mps_cnn_module::EncodeLabels(
     const float* labels, NSUInteger sequenceLength, NSUInteger numClasses) {
 
   NSUInteger dataLength = sequenceLength * numClasses * sizeof(float);
@@ -411,7 +279,7 @@ NSData *MPSCNNModule::EncodeLabels(
 }
 
 // static
-NSData *MPSCNNModule::EncodeWeights(
+NSData *mps_cnn_module::EncodeWeights(
       const float* weights, NSUInteger sequenceLength, NSUInteger numClasses) {
 
   NSUInteger dataLength = sequenceLength * numClasses * sizeof(float);
@@ -428,10 +296,26 @@ NSData *MPSCNNModule::EncodeWeights(
   return result;
 }
 
-MPSCNNLossLabelsBatch *MPSCNNModule::initLossLabelsBatch(
-      id<MTLDevice> device, const float_array& labels_array,
-      const float_array& weights_array, int batch_size, int seq_len,
-      int num_classes) {
+MPSCNNLossLabelsBatch *mps_cnn_module::copy_labels(
+    const float_array& labels_array, const float_array& weights_array) const {
+
+  const int batch_size = network_->batch_size;
+  const int seq_len = output_width_;
+  const int num_classes = output_chn_;
+
+  @synchronized(recycled_labels_) {
+    // Reuse an existing allocation if possible.
+    if (recycled_labels_.count > 0) {
+      MPSCNNLossLabelsBatch *batchLabels = recycled_labels_.lastObject;
+      [recycled_labels_ removeLastObject];
+
+      FillLossLabelsBatch(batchLabels, dev_, labels_array, weights_array,
+                          batch_size, seq_len, num_classes);
+      return batchLabels;
+    }
+  }
+
+  // TODO: Factor out more shared code from FillLossLabelsBatch and the below?
 
   const float* labels_ptr = labels_array.data();
   const float* weights_ptr = weights_array.data();
@@ -463,7 +347,7 @@ MPSCNNLossLabelsBatch *MPSCNNModule::initLossLabelsBatch(
                                                                             size:labelMtlSize];
       
     MPSCNNLossLabels *lossState =
-      [[MPSCNNLossLabels alloc] initWithDevice:device
+      [[MPSCNNLossLabels alloc] initWithDevice:dev_
                                  lossImageSize:{1, 1, 1}
                               labelsDescriptor:labelsDescriptor
                              weightsDescriptor:weightsDescriptor];
@@ -475,7 +359,7 @@ MPSCNNLossLabelsBatch *MPSCNNModule::initLossLabelsBatch(
 }
 
 // static
-void MPSCNNModule::FillLossLabelsBatch(
+void mps_cnn_module::FillLossLabelsBatch(
     MPSCNNLossLabelsBatch *labelsBatch, id <MTLDevice> device,
     const float_array& labels_array, const float_array& weights_array,
     int batch_size, int seq_len, int num_classes) {
@@ -531,7 +415,7 @@ void MPSCNNModule::FillLossLabelsBatch(
 }
 
 // static
-MPSImageBatch *MPSCNNModule::ExtractLossImages(
+MPSImageBatch *mps_cnn_module::ExtractLossImages(
     MPSCNNLossLabelsBatch *labelsBatch, id<MTLCommandBuffer> cb) {
   NSMutableArray<MPSImage *> *lossImages = [[NSMutableArray alloc] initWithCapacity:labelsBatch.count];
 

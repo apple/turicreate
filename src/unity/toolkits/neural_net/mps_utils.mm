@@ -13,6 +13,32 @@
 namespace turi {
 namespace neural_net {
 
+namespace {
+
+bool is_float16(MTLPixelFormat fmt) {
+  switch (fmt) {
+  case MTLPixelFormatR16Float:
+  case MTLPixelFormatRG16Float:
+  case MTLPixelFormatRGBA16Float:
+    return true;
+  default:
+    return false;
+  }
+}
+
+bool is_float32(MTLPixelFormat fmt) {
+  switch (fmt) {
+  case MTLPixelFormatR32Float:
+  case MTLPixelFormatRG32Float:
+  case MTLPixelFormatRGBA32Float:
+    return true;
+  default:
+    return false;
+  }
+}
+
+}  // namespace
+
 // Converts from CHW to HWC
 void convert_chw_to_hwc(const float_array& image, float* out_first,
                         float* out_last) {
@@ -145,7 +171,7 @@ shared_float_array copy_image_batch_float16(std::vector<size_t> shape,
     assert(img.height == shape[1]);
     assert(img.width == shape[2]);
     assert(img.featureChannels == shape[3]);
-    assert(img.pixelFormat == MTLPixelFormatRGBA16Float);
+    assert(is_float16(img.pixelFormat));
 
     [img readBytes:fp16_buffer.get() + stride * i
         dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
@@ -156,6 +182,33 @@ shared_float_array copy_image_batch_float16(std::vector<size_t> shape,
   std::vector<float> float_buffer(fp16_buffer.get(), fp16_buffer.get() + size);
 
   return shared_float_array::wrap(std::move(float_buffer), std::move(shape)); 
+}
+
+shared_float_array copy_image_batch(std::vector<size_t> shape,
+                                    MPSImageBatch *batch) {
+
+  assert(shape.size() == 4);  // NHWC
+
+  const size_t n = shape[0];  // N
+  const size_t stride = shape[1] * shape[2] * shape[3];  // H * W * C
+  const size_t size = n * stride;
+
+  assert(batch.count >= n);
+  std::vector<float> float_buffer(size);
+  for (size_t i = 0; i < n; ++i) {
+    MPSImage *img = batch[i];
+
+    assert(img.height == shape[1]);
+    assert(img.width == shape[2]);
+    assert(img.featureChannels == shape[3]);
+    assert(is_float32(img.pixelFormat));
+
+    [img readBytes:float_buffer.data() + stride * i
+        dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
+        imageIndex:0];
+  }
+
+  return shared_float_array::wrap(std::move(float_buffer), std::move(shape));
 }
 
 void fill_image_batch(const float_array& blob, MPSImageBatch *batch) {
@@ -170,7 +223,7 @@ void fill_image_batch(const float_array& blob, MPSImageBatch *batch) {
     assert(img.height == shape[1]);
     assert(img.width == shape[2]);
     assert(img.featureChannels == shape[3]);
-    assert(img.pixelFormat == MTLPixelFormatRGBA32Float);
+    assert(is_float32(img.pixelFormat));
 
     [img writeBytes:data
          dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
@@ -255,9 +308,9 @@ get_array_map_optimizer_options(const float_array_map &config) {
 
 float sumImage(MPSImage * _Nonnull image) {
   
-  if(image.pixelFormat == MTLPixelFormatR16Float || image.pixelFormat == MTLPixelFormatRG16Float || image.pixelFormat == MTLPixelFormatRGBA16Float){
+  if (is_float16(image.pixelFormat)) {
     return sumSingleImage<__fp16>(image);
-  } else if(image.pixelFormat == MTLPixelFormatR32Float || image.pixelFormat == MTLPixelFormatRG32Float || image.pixelFormat == MTLPixelFormatRGBA32Float){
+  } else if (is_float32(image.pixelFormat)) {
     return sumSingleImage<float>(image);
   } else if(image.pixelFormat == MTLPixelFormatR8Unorm|| image.pixelFormat == MTLPixelFormatRG8Unorm || image.pixelFormat == MTLPixelFormatRGBA8Unorm || image.pixelFormat == MTLPixelFormatBGRA8Unorm){
     return sumSingleImage<uint8_t>(image);
