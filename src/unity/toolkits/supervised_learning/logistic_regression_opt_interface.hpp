@@ -10,9 +10,9 @@
 #include <ml_data/ml_data.hpp>
 
 // Toolkits
-#include <toolkits/supervised_learning/standardization-inl.hpp>
-#include <toolkits/supervised_learning/supervised_learning.hpp>
-#include <toolkits/supervised_learning/logistic_regression.hpp>
+#include <unity/toolkits/supervised_learning/standardization-inl.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
+#include <unity/toolkits/supervised_learning/logistic_regression.hpp>
 
 // Optimization Interface
 #include <optimization/optimization_interface.hpp>
@@ -47,7 +47,7 @@ class logistic_regression_opt_interface: public
 
   ml_data data;
   ml_data valid_data;
-  logistic_regression smodel;
+  logistic_regression& smodel;
 
   // number of examples, features, and total variables
   size_t examples = 0;

@@ -1,4 +1,2 @@
-subdirs(
-  supervised_learning)
 
 

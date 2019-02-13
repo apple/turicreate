@@ -6,8 +6,6 @@
 #ifndef TURI_DISTANCES_H_
 #define TURI_DISTANCES_H_
 
-#include <numerics/armadillo.hpp>
-#include <numerics/sparse_vector.hpp>
 #include <unity/lib/toolkit_function_macros.hpp>
 #include <unity/toolkits/util/algorithmic_utils.hpp>
 #include <unity/toolkits/nearest_neighbors/distance_functions.hpp>
@@ -15,8 +13,8 @@
 
 namespace turi { namespace distances {
 
-typedef arma::vec dense_vector;
-typedef sparse_vector<double, size_t> sparse_vector;
+typedef Eigen::VectorXd dense_vector;
+typedef Eigen::SparseVector<double> sparse_vector;
 
 /**
  * Utility function for taking a pair of dictionaries whose keys are
@@ -41,7 +39,7 @@ std::pair<sparse_vector, sparse_vector>
       current_index++;
     }
     size_t index = value_to_index.at(kv.first);
-    av(index) = kv.second;
+    av.coeffRef(index) = kv.second;
   }
 
   // Iterate through the second dictionary, filling in the sparse_vector
@@ -51,7 +49,7 @@ std::pair<sparse_vector, sparse_vector>
       current_index++;
     }
     size_t index = value_to_index.at(kv.first);
-    bv(index) = kv.second;
+    bv.coeffRef(index) = kv.second;
   }
   return std::make_pair(av, bv);
 }
@@ -75,22 +73,22 @@ std::pair<sparse_vector, sparse_vector>
   for (const auto& v : a) {
     if (value_to_index.count(v) == 0) {
       value_to_index[v] = current_index;
-      av(current_index) = 0;
+      av.coeffRef(current_index) = 0;
       current_index++;
     }
     size_t index = value_to_index.at(v);
-    av(index) += 1;
+    av.coeffRef(index) += 1;
   }
 
   // Iterate through the second list, filling in the sparse_vector
   for (const auto& v : b) {
     if (value_to_index.count(v) == 0) {
       value_to_index[v] = current_index;
-      bv(current_index) = 0;
+      bv.coeffRef(current_index) = 0;
       current_index++;
     }
     size_t index = value_to_index.at(v);
-    bv(index) += 1;
+    bv.coeffRef(index) += 1;
   }
   return std::make_pair(av, bv);
 }
@@ -121,11 +119,10 @@ double compute_distance(std::string distance_name, const flexible_type& a, const
   if (a_t == flex_type_enum::VECTOR) {
     DASSERT_TRUE(a.size() == b.size());
     DASSERT_TRUE(a.size() > 0);
-    const auto& a_vec = a.get<flex_vec>();
-    const auto& b_vec = b.get<flex_vec>();
-    
-    arma::vec av(const_cast<double*>(a_vec.data()), a_vec.size(), false, false);
-    arma::vec bv(const_cast<double*>(b_vec.data()), b_vec.size(), false, false);
+    const auto& a_vec = a.get<std::vector<double>>();
+    const auto& b_vec = b.get<std::vector<double>>();
+    Eigen::Map<const dense_vector> av(a_vec.data(), a.size());
+    Eigen::Map<const dense_vector> bv(b_vec.data(), b.size());
 
     return d->distance(av, bv);
 

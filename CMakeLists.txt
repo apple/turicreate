@@ -151,8 +151,6 @@ if (EXISTS ${CMAKE_SOURCE_DIR}/deps/local/lib64)
   link_directories(${CMAKE_SOURCE_DIR}/deps/local/lib64)
 endif()
 
-
-
 #**************************************************************************
 #*                                                                        *
 #*                       Platform Specific Stuff                          *
@@ -327,7 +325,7 @@ if (CLANG)
 
   set(CPP11_FLAGS "-std=c++11 -stdlib=libc++ -Wno-deprecated-register -Wno-enum-compare -Wno-conversion-null -Wno-constant-logical-operand -Wno-parentheses-equality -ftemplate-depth=900 ${_cpp11_optional_flags}")
 
-  set(WERROR_FLAGS "-Werror")
+  set(WERROR_FLAGS "-Werror -Wall -Wsign-compare")
 else()
   # non-clang
   set(CPP11_FLAGS "-std=c++11 -Wno-enum-compare -Wno-conversion-null -ftemplate-depth=900 -Wno-unknown-pragmas")
@@ -1078,7 +1076,6 @@ endforeach()
 
 include_directories(src)
 include_directories(SYSTEM src/external)
-include_directories(SYSTEM src/external/armadillo/include)
 include_directories(SYSTEM src/external/aws-sdk-cpp/aws-cpp-sdk-core/include)
 include_directories(SYSTEM src/external/aws-sdk-cpp/aws-cpp-sdk-s3/include)
 include_directories(SYSTEM src/external/google)
@@ -1171,10 +1168,10 @@ set(_TC_COMMON_OBJECTS
 
 set(_TC_COMMON_REQUIREMENTS
   # External dependencies (from deps)
-  armadillo
   boost
   bz2
   curl
+  eigen
   libjpeg
   libpng
   openssl

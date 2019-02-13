@@ -13,7 +13,7 @@
 #include <unity/toolkits/recsys/recsys_model_base.hpp>
 #include <generics/symmetric_2d_array.hpp>
 
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 #include <limits>
 
 namespace turi {

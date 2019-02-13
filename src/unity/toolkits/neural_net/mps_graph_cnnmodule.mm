@@ -293,7 +293,7 @@ float_array_map mps_graph_cnn_module::export_weights() const {
 
 void mps_graph_cnn_module::set_learning_rate(float lr) {
   @autoreleasepool {
-    for (int i = 0; i < network_->layers.size(); ++i) {
+    for (size_t i = 0; i < network_->layers.size(); ++i) {
       network_->layers[i]->SetLearningRate(lr);
     }
   }

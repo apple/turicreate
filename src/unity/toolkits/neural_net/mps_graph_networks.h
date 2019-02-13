@@ -145,7 +145,7 @@ struct ODNetworkGraph : public MPSGraphNetwork {
 
     if (include_network) {
       std::vector<int> filter = {3, 16, 32, 64, 128, 256, 512, 1024, 1024};
-      for (int idx = 1; idx < filter.size(); ++idx) {
+      for (int idx = 1; size_t(idx) < filter.size(); ++idx) {
         std::string num = std::to_string(idx - 1);
 
         layers.push_back(new ConvGraphLayer(

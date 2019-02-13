@@ -253,7 +253,7 @@ std::shared_ptr<lsh_family> lsh_family::create_lsh_family(const std::string& dis
 template <typename T>
 void lsh_family::add_reference_data(size_t ref_id, const T& vec) {
 
-  ASSERT_MSG(vec.size() == num_input_dimensions, 
+  ASSERT_MSG(size_t(vec.size()) == num_input_dimensions, 
              "The input dimension does not match the previous ones!");
 
   auto hash_vec = hash_vector_to_codes(vec, true);
@@ -273,7 +273,7 @@ void lsh_family::add_reference_data(size_t ref_id, const T& vec) {
 template <typename T>
 std::vector<size_t> lsh_family::query(const T& vec) const {
 
-  ASSERT_MSG(vec.size() == num_input_dimensions,
+  ASSERT_MSG(size_t(vec.size()) == num_input_dimensions,
              "The input num_dimensions does not match the reference data!");
 
   std::unordered_set<size_t> ret;

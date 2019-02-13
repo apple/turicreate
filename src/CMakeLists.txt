@@ -8,12 +8,10 @@ else()
 endif()
 
 subdirs(
-  toolkits
   cppipc
   dot_graph_printer
   exceptions
   external
-  numerics
   fileio
   flexible_type
   generics
@@ -39,4 +37,5 @@ subdirs(
   util
   vega_renderer
   visualization
+  toolkits
   )

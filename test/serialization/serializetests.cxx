@@ -14,8 +14,6 @@
 #include <boost/iostreams/stream.hpp>
 
 #include <util/any.hpp>
-#include <numerics/armadillo.hpp>
-#include <numerics/row_major_matrix.hpp>
 #include <serialization/serialization_includes.hpp>
 
 
@@ -433,100 +431,6 @@ public:
     }
   }
 
-  template <typename T>
-  void save_and_load_arma_mat(T t) {
-    std::ofstream f; 
-    f.open("test.bin",std::fstream::binary);
-    oarchive a(f);
-    a << t;
-    f.close();
-
-    T t2;
-    std::ifstream g;
-    g.open("test.bin",std::fstream::binary);
-    iarchive b(g);
-    b >> t2;
-    g.close();
-    TS_ASSERT_EQUALS(t.n_rows, t2.n_rows);
-    TS_ASSERT_EQUALS(t.n_cols, t2.n_cols);
-    TS_ASSERT(arma::all(arma::vectorise(t)  == arma::vectorise(t2)));
-  }
-
-
-  template <typename T>
-  void save_and_load_row_major_mat(T t) {
-    std::ofstream f; 
-    f.open("test.bin",std::fstream::binary);
-    oarchive a(f);
-    a << t;
-    f.close();
-
-    T t2;
-    std::ifstream g;
-    g.open("test.bin",std::fstream::binary);
-    iarchive b(g);
-    b >> t2;
-    g.close();
-    TS_ASSERT_EQUALS(t.n_rows, t2.n_rows);
-    TS_ASSERT_EQUALS(t.n_cols, t2.n_cols);
-    TS_ASSERT(arma::all(arma::vectorise(t.X())  == arma::vectorise(t2.X())));
-  }
-
-  template <typename T>
-  void save_and_load_arma_vec(T t) {
-    std::ofstream f; 
-    f.open("test.bin",std::fstream::binary);
-    oarchive a(f);
-    a << t;
-    f.close();
-
-    T t2;
-    std::ifstream g;
-    g.open("test.bin",std::fstream::binary);
-    iarchive b(g);
-    b >> t2;
-    g.close();
-    TS_ASSERT_EQUALS(t.n_rows, t2.n_rows);
-    TS_ASSERT_EQUALS(t.n_cols, t2.n_cols);
-    TS_ASSERT(arma::all(t  == t2));
-  }
-
-  template <typename T>
-  turi::row_major_matrix<T> make_row_major() {
-    turi::row_major_matrix<T> ret(4,5);
-    for(size_t i = 0;i < 4; ++i) {
-      for(size_t j = 0;j < 5; ++j) {
-        ret(i,j) = i;
-      }
-    }
-    return ret;
-  }
-
-  void test_arma_serialization() {
-    save_and_load_arma_mat(arma::mat{{1,1,1,1},{2,2,2,2},{3,3,3,3},{4,4,4,4},{5,5,5,5}});
-    save_and_load_arma_mat(arma::fmat{{1,1,1,1},{2,2,2,2},{3,3,3,3},{4,4,4,4},{5,5,5,5}});
-    save_and_load_arma_mat(arma::umat{{1,1,1,1},{2,2,2,2},{3,3,3,3},{4,4,4,4},{5,5,5,5}});
-    save_and_load_arma_mat(arma::imat{{1,1,1,1},{2,2,2,2},{3,3,3,3},{4,4,4,4},{5,5,5,5}});
-    save_and_load_arma_mat(arma::imat{{1,1,1,1},{2,2,2,2},{3,3,3,3},{4,4,4,4},{5,5,5,5}});
-
-    save_and_load_arma_vec(arma::vec{1,2,3,1,2,3});
-    save_and_load_arma_vec(arma::dvec{1,2,3,1,2,3});
-    save_and_load_arma_vec(arma::fvec{1,2,3,1,2,3});
-    save_and_load_arma_vec(arma::uvec{1,2,3,1,2,3});
-    save_and_load_arma_vec(arma::ivec{1,2,3,1,2,3});
-
-    save_and_load_arma_vec(arma::rowvec{1,2,3,1,2,3});
-    save_and_load_arma_vec(arma::drowvec{1,2,3,1,2,3});
-    save_and_load_arma_vec(arma::frowvec{1,2,3,1,2,3});
-    save_and_load_arma_vec(arma::urowvec{1,2,3,1,2,3});
-    save_and_load_arma_vec(arma::irowvec{1,2,3,1,2,3});
-
-    save_and_load_row_major_mat(make_row_major<int>());
-    save_and_load_row_major_mat(make_row_major<float>());
-    save_and_load_row_major_mat(make_row_major<double>());
-    save_and_load_row_major_mat(make_row_major<long>());
-  }
-
   void test_directory_serialization() {
     // clean up for the test
     fileio::delete_path_recursive("test_dir");
@@ -642,9 +546,6 @@ BOOST_AUTO_TEST_CASE(test_pod_method_1) {
 }
 BOOST_AUTO_TEST_CASE(test_pod_method_2) {
   SerializeTestSuite::test_pod_method_2();
-}
-BOOST_AUTO_TEST_CASE(test_arma_serialization) {
-  SerializeTestSuite::test_arma_serialization();
 }
 BOOST_AUTO_TEST_CASE(test_directory_serialization) {
   SerializeTestSuite::test_directory_serialization();

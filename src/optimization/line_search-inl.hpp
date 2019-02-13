@@ -12,8 +12,7 @@
 // Optimization
 #include <optimization/optimization_interface.hpp>
 #include <optimization/regularizer_interface.hpp>
-#include <numerics/armadillo.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 
 // TODO: List of todo's for this file
 //------------------------------------------------------------------------------
@@ -352,7 +351,7 @@ inline ls_return more_thuente(
     // This can only occur of your gradients were computed incorrectly
     // or the problem is non-convex.
     DenseVector x0 = point;
-    double Dphi0 = dot(gradient, direction);
+    double Dphi0 = gradient.dot(direction);
     if ( (init_step <= 0) | (Dphi0 >= OPTIMIZATION_ZERO) ){
       logprogress_stream << " Error: Search direction is not a descent direction."
                           <<" \nDetected numerical difficulties." << std::endl;
@@ -368,11 +367,11 @@ inline ls_return more_thuente(
     // st, f, dg   : Values of the step, function, and derivative at current
     //               step
     //
-    // g           : Gradient w.r.t() x and step (vector) at the current point
+    // g           : Gradient w.r.t x and step (vector) at the current point
     //               
     double stx = LS_ZERO;
     double fx = init_func_value;
-    double dgx = Dphi0;                   // Derivative of f(x + s d) w.r.t() s
+    double dgx = Dphi0;                   // Derivative of f(x + s d) w.r.t s
     
     double sty = LS_ZERO;
     double fy = init_func_value;
@@ -453,7 +452,7 @@ inline ls_return more_thuente(
         g += reg_gradient;
       }
 
-      dg = dot(g, direction);
+      dg = g.dot(direction);
       double ftest = init_func_value + stp*wolfe_func_dec;
 
       // Termination checking
@@ -620,7 +619,7 @@ inline ls_return armijo_backtracking(
     // ------------------------------------------------------------------------
     // Min function decrease according to Armijo conditions.
     // The choice of constants are based on Nocedal and Wright [1].
-    double sufficient_decrease = LS_C1*(dot(gradient, direction));
+    double sufficient_decrease = LS_C1*(gradient.dot(direction));
     ls_return stats;
     double step_size = init_step;
     DenseVector new_point = point;
@@ -702,8 +701,8 @@ inline ls_return backtracking(
 
       delta_point = new_point - point;
       if (model.compute_function_value(new_point) <= 
-             init_func_value + dot(gradient, delta_point)
-                            + 0.5 * squared_norm(delta_point) /step_size){
+             init_func_value + gradient.dot(delta_point)
+                            + 0.5 * delta_point.squaredNorm()/step_size){
 
         stats.step_size = step_size;
         stats.status = true;
