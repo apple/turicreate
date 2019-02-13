@@ -145,7 +145,7 @@ void lbfgs_solver::setup(
 
   lbfgs_memory_level = get_param("lbfgs_memory_level");
   convergence_threshold = get_param("convergence_threshold");
-  m_status.step_size = 1.0;  // / std::sqrt(num_variables);
+  m_status.step_size = 1.0;
 
   num_variables = model->num_variables();  // Dimension of point
   DASSERT_EQ(num_variables, init_point.size());
@@ -400,10 +400,11 @@ RECOMPUTE_AT_NEW_POINT:;
     // between the current point and the previous point.  If these are too
     // similar, it indicates that the step size should have been larger.  If
     // they are antialigned then it indicates that it should have been smaller.
-    if (current_iteration == 1 || (function_value > previous_function_value) ||
-        (std::pow(gradient.dot(previous_gradient), 2) >
-         0.9 * gradient.squaredNorm() * previous_gradient.squaredNorm())) {
-
+    if (current_iteration == 1 
+        || (function_value > previous_function_value) 
+        || force_step_size_recompute 
+        || (std::pow(gradient.dot(previous_gradient), 2)
+            > 0.9 * gradient.squaredNorm() * previous_gradient.squaredNorm())) {
       // Reset the step size.
       ls_return lsm_status =
           more_thuente(*model, m_status.step_size, function_value, point,
