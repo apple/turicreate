@@ -4,11 +4,11 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <unity/lib/toolkit_function_macros.hpp>
-#include <toolkits/supervised_learning/supervised_learning.hpp>
-#include <toolkits/supervised_learning/xgboost.hpp>
-#include <toolkits/supervised_learning/linear_svm.hpp>
-#include <toolkits/supervised_learning/logistic_regression.hpp>
-#include <toolkits/supervised_learning/linear_regression.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
+#include <unity/toolkits/supervised_learning/xgboost.hpp>
+#include <unity/toolkits/supervised_learning/linear_svm.hpp>
+#include <unity/toolkits/supervised_learning/logistic_regression.hpp>
+#include <unity/toolkits/supervised_learning/linear_regression.hpp>
 #include <unity/toolkits/coreml_export/linear_models_exporter.hpp>
 #include <unity/toolkits/coreml_export/xgboost_exporter.hpp>
 
@@ -64,9 +64,10 @@ void _linear_svm_export_as_model_asset(
   if (lr_model == nullptr) {
     log_and_throw("Invalid model type. Expected linear regression models.");
   }
-
   auto metadata = lr_model->get_ml_metadata();
-  arma::vec coefs;
+
+  Eigen::Matrix<double, Eigen::Dynamic,1> coefs;
+
   lr_model->get_coefficients(coefs);
   export_linear_svm_as_model_asset(filename, metadata, coefs, context);
 }
@@ -79,9 +80,10 @@ void _logistic_classifier_export_as_model_asset(std::shared_ptr<supervised_learn
   if (logistic_model == nullptr) {
     log_and_throw("Invalid model type. Expected logistic classification models.");
   }
-
   auto metadata = logistic_model->get_ml_metadata();
-  arma::vec coefs;
+
+  Eigen::Matrix<double, Eigen::Dynamic,1> coefs;
+
   logistic_model->get_coefficients(coefs);
   export_logistic_model_as_model_asset(filename, metadata, coefs, context);
 }
@@ -94,9 +96,9 @@ void _linear_regression_export_as_model_asset(std::shared_ptr<supervised_learnin
    if (lr_model == nullptr) {
      log_and_throw("Invalid model type. Expected linear regression models.");
    }
-
-  arma::vec coefs;
+  Eigen::Matrix<double, Eigen::Dynamic,1> coefs;
   auto metadata = lr_model->get_ml_metadata();
+
   lr_model->get_coefficients(coefs);
   export_linear_regression_as_model_asset(filename, metadata, coefs, context);
 }

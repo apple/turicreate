@@ -10,7 +10,7 @@
 #include <string>
 #include <sframe/sarray.hpp>
 #include <flexible_type/flexible_type_base_types.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 #include <sframe/sframe.hpp>
 #include <parallel/pthread_tools.hpp>
 
@@ -31,7 +31,7 @@ class unity_graph;
   * Create an SArray of vector type, where each element is a row of the 
   * provided matrix.
   */
- std::shared_ptr<sarray<flexible_type>> matrix_to_sarray(const arma::mat& m);
+ std::shared_ptr<sarray<flexible_type>> matrix_to_sarray(const Eigen::MatrixXd& m);
 
 /** 
  * \ingroup toolkit_util

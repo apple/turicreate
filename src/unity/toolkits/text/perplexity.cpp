@@ -14,9 +14,6 @@
 #include <logger/assertions.hpp>
 #include <unity/toolkits/util/indexed_sframe_tools.hpp>
 #include <ml_data/ml_data.hpp>
-#include <numerics/armadillo.hpp>
-
-
 
 namespace turi {
 namespace text {

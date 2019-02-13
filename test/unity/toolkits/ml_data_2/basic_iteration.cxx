@@ -10,8 +10,9 @@
 #include <algorithm>
 #include <util/cityhash_tc.hpp>
 
-// Matrices
-#include <numerics/armadillo.hpp>
+// Eigen
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
 
 // SFrame and Flex type
 #include <unity/lib/flex_dict_view.hpp>
@@ -297,7 +298,7 @@ struct ml_data_numeric_iteration_test  {
         for(auto it = data.get_iterator(thread_idx, num_threads); !it.done(); ++it){
 
           it.fill_observation(x);
-           vec(&dense_vector_x[idx][0], total_size);
+          Eigen::Map<DenseVector> vec(&dense_vector_x[idx][0], total_size);
 
           for(int i = 0; i < vec.size(); ++i)
             ASSERT_EQ(vec[i], x[i]);
@@ -320,7 +321,7 @@ struct ml_data_numeric_iteration_test  {
 
         for(auto it = data.get_iterator(thread_idx, num_threads); !it.done(); ++it){
           it.fill_observation(x);
-          arma::vec dense_vec(&dense_vector_x[idx][0],total_size, false);
+          Eigen::Map<DenseVector> dense_vec(&dense_vector_x[idx][0],total_size);
           vec = dense_vec.sparseView(0,0);
           TS_ASSERT(vec.isApprox(x));
           idx++;
@@ -341,7 +342,8 @@ struct ml_data_numeric_iteration_test  {
 
         for(auto it = data.get_iterator(thread_idx, num_threads, false, true); !it.done(); ++it){
           it.fill_observation(x);
-          arma::vec vec(&dense_vector_reference_x[idx][0],total_size_reference, false);
+          Eigen::Map<DenseVector>
+              vec(&dense_vector_reference_x[idx][0],total_size_reference);
           TS_ASSERT(vec.isApprox(x));
           idx++;
         }
@@ -361,9 +363,9 @@ struct ml_data_numeric_iteration_test  {
 
         for(auto it = data.get_iterator(thread_idx, num_threads, false, true); !it.done(); ++it){
           it.fill_observation(x);
-          arma::vec
-              dense_vec(&dense_vector_reference_x[idx][0],total_size_reference, false);
-          vec = to_sparse(dense_vec);
+          Eigen::Map<DenseVector>
+              dense_vec(&dense_vector_reference_x[idx][0],total_size_reference);
+          vec = dense_vec.sparseView(0,0);
           TS_ASSERT(vec.isApprox(x));
           idx++;
         }

@@ -11,9 +11,9 @@
 
 
 // Toolkits
-#include <toolkits/supervised_learning/supervised_learning.hpp>
-#include <toolkits/supervised_learning/standardization-inl.hpp>
-#include <toolkits/supervised_learning/linear_regression.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
+#include <unity/toolkits/supervised_learning/standardization-inl.hpp>
+#include <unity/toolkits/supervised_learning/linear_regression.hpp>
 
 // Optimization Interface
 #include <optimization/optimization_interface.hpp>

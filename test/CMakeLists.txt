@@ -12,7 +12,6 @@ subdirs(
         logger
         timer
         random
-        # fault
         nanosockets
         fileio
         shmipc
@@ -30,7 +29,7 @@ subdirs(
         table_printer
         network
         process
-        vega_renderer
+        # vega_renderer
   )
 if(${TC_BUILD_CAPI}) 
   message("Building C API Tests.")

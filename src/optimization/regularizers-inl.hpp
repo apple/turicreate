@@ -9,6 +9,10 @@
 #include <string>
 #include <flexible_type/flexible_type.hpp>
 
+// Eigen
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
+
 // Optimizaiton
 #include <optimization/optimization_interface.hpp>
 #include <optimization/regularizer_interface.hpp>
@@ -67,7 +71,7 @@ class l2_norm : public smooth_regularizer_interface {
    */
   inline void compute_hessian(const DenseVector &point, DiagonalMatrix
       &hessian) const {
-    hessian = 2 * lambda;
+    hessian = 2 * lambda.asDiagonal();
   }
   
   /**
@@ -77,7 +81,7 @@ class l2_norm : public smooth_regularizer_interface {
    */
   inline double compute_function_value(const DenseVector &point) const{
     DASSERT_EQ(variables, point.size());
-    return dot(lambda, point % point);
+    return lambda.dot(point.cwiseAbs2());
   }
 
   
@@ -91,7 +95,7 @@ class l2_norm : public smooth_regularizer_interface {
   inline void compute_gradient(const DenseVector &point, DenseVector& gradient)
     const{
     DASSERT_EQ(variables, point.size());
-    gradient = 2 * point % lambda;
+    gradient = 2 * lambda.cwiseProduct(point);
   }
   
   /**
@@ -152,7 +156,7 @@ class l1_norm : public regularizer_interface {
    */
   inline double compute_function_value(const DenseVector &point) const{
     DASSERT_EQ(variables, point.size());
-    return dot(lambda, arma::abs(point));
+    return lambda.dot(point.cwiseAbs());
   }
 
   
@@ -165,7 +169,7 @@ class l1_norm : public regularizer_interface {
    */
   inline void compute_gradient(const DenseVector &point, DenseVector& gradient) const{
     DASSERT_EQ(variables, point.size());
-    gradient.zeros();
+    gradient.setZero();
     for(size_t i = 0; i < variables; i++)
       if (gradient[i] > OPTIMIZATION_ZERO)
         gradient[i] = lambda[i];
@@ -236,7 +240,7 @@ class elastic_net : public regularizer_interface {
    */
   inline double compute_function_value(const DenseVector &point) const{
     DASSERT_EQ(variables, point.size());
-    return dot(alpha, arma::abs(point)) + dot(beta, point % point);
+    return alpha.dot(point.cwiseAbs()) + beta.dot(point.cwiseAbs2());
   }
 
   
@@ -249,7 +253,7 @@ class elastic_net : public regularizer_interface {
    */
   inline void compute_gradient(const DenseVector &point, DenseVector& gradient) const{
     DASSERT_EQ(variables, point.size());
-    gradient = 2 * (point % beta);
+    gradient = 2 * beta.cwiseProduct(point);
     for(size_t i = 0; i < variables; i++)
       if (gradient[i] > OPTIMIZATION_ZERO)
         gradient[i] += alpha[i];

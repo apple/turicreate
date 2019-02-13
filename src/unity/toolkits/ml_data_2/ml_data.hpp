@@ -16,8 +16,8 @@
 #include <unity/toolkits/ml_data_2/data_storage/ml_data_row_format.hpp>
 #include <unity/toolkits/ml_data_2/side_features.hpp>
 
-#include <numerics/armadillo.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/SparseCore>
+#include <Eigen/Core>
 
 namespace turi { namespace v2 {
 
@@ -515,6 +515,7 @@ class ml_data {
       : ml_data(std::map<std::string, flexible_type>(l))
   {}
 
+  /// This is here to get around 2 clang bugs!
   typedef std::map<std::string, ml_column_mode> column_mode_map; 
   
   /**  Sets the data source.
@@ -681,8 +682,8 @@ class ml_data {
     return (untranslated_columns.size() != metadata()->num_columns(false));
   }
 
-  typedef arma::vec  DenseVector;
-  typedef sparse_vector<double> SparseVector;
+  typedef Eigen::Matrix<double, Eigen::Dynamic,1>  DenseVector;
+  typedef Eigen::SparseVector<double> SparseVector;
 
   /** Translates the ml_data_entry row format to the original flexible
    *  types.

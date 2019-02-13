@@ -32,10 +32,12 @@ add_library(_capi_objects OBJECT
   ${_turi_capi_source_files}
 )
 
-set(_capi_requires unity unity_core numerics)
-if(APPLE)
+set(_capi_requires unity unity_core eigen)
+
+if(APPLE AND NOT TC_BUILD_IOS)
   set(_capi_requires ${_capi_requires} vega_renderer)
 endif()
+
 add_dependencies(_capi_objects ${_capi_requires})
 
 set(_capi_sources "$<TARGET_OBJECTS:_capi_objects>")

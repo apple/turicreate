@@ -10,7 +10,9 @@
 #include <algorithm>
 #include <util/cityhash_tc.hpp>
 
-#include <numerics/armadillo.hpp>
+// Eigen
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
 
 // SFrame and Flex type
 #include <unity/lib/flex_dict_view.hpp>
@@ -79,9 +81,9 @@ struct test_row_slicing  {
 
       s_c1_c2.slice(vs, x_t, x_u);
 
-      ASSERT_EQ( arma::sum(vd != 0), 2);
-      ASSERT_EQ(size_t(vd(0)), 2);  // First row, 2nd column, by the slicer
-      ASSERT_EQ(size_t(vd(1)), 3);  // First row, 2nd column, by the slicer
+      ASSERT_EQ(vd.nonZeros(), 2);
+      ASSERT_EQ(size_t(vd.coeffRef(0)), 2);  // First row, 2nd column, by the slicer
+      ASSERT_EQ(size_t(vd.coeffRef(1)), 3);  // First row, 2nd column, by the slicer
 
       ++it;
 
@@ -98,9 +100,9 @@ struct test_row_slicing  {
 
       s_c1_c2.slice(vs, x_t, x_u);
 
-      ASSERT_EQ(vs.num_nonzeros(), 2);
-      ASSERT_EQ(size_t(vd(0)), 5);  // Second row, 2nd column, by the slicer
-      ASSERT_EQ(size_t(vd(1)), 6);  // Second row, 2nd column, by the slicer
+      ASSERT_EQ(vd.nonZeros(), 2);
+      ASSERT_EQ(size_t(vd.coeffRef(0)), 5);  // Second row, 2nd column, by the slicer
+      ASSERT_EQ(size_t(vd.coeffRef(1)), 6);  // Second row, 2nd column, by the slicer
 
       ++it;
       ASSERT_TRUE(it.done());

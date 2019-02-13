@@ -22,7 +22,6 @@ make_library(ml_data
     testing_utils.cpp
 
   REQUIRES
-    unity_core
-    armadillo
+    unity_core eigen
   EXTERNAL_VISIBILITY
   )

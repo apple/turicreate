@@ -14,8 +14,8 @@
 #undef MAX
 #endif
 
-#include <toolkits/supervised_learning/xgboost.hpp>
-#include <toolkits/supervised_learning/xgboost_iterator.hpp>
+#include <unity/toolkits/supervised_learning/xgboost.hpp>
+#include <unity/toolkits/supervised_learning/xgboost_iterator.hpp>
 
 #include <limits>
 #include <sstream>
@@ -41,9 +41,8 @@
 #include <xgboost/src/io/simple_dmatrix-inl.hpp>
 
 // Toolkits
-#include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
 #include <unity/toolkits/evaluation/metrics.hpp>
-#include <serialization/serialization_includes.hpp>
 
 namespace turi {
 namespace supervised {

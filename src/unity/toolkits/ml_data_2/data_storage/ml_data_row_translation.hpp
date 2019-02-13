@@ -15,14 +15,15 @@
 #include <unity/toolkits/ml_data_2/side_features.hpp>
 #include <type_traits>
 
-#include <numerics/armadillo.hpp>
+#include <Eigen/SparseCore>
+#include <Eigen/Core>
 
 #include <array>
 
 namespace turi { namespace v2 { namespace ml_data_internal {
 
-typedef arma::vec  DenseVector;
-typedef turi::sparse_vector<double, size_t> SparseVector;
+typedef Eigen::Matrix<double, Eigen::Dynamic,1>  DenseVector;
+typedef Eigen::SparseVector<double> SparseVector;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Create a fill function that works for both vectors and arrays of
@@ -102,10 +103,10 @@ static inline void copy_raw_into_ml_data_entry_row(
 
 // The main function that implements all of the above filling
 // techniques.
-template <typename SparesOrDenseVector>
+template <typename SparesOrDenseEigenVector>
 GL_HOT_INLINE_FLATTEN
-inline void copy_raw_into_array(
-    SparesOrDenseVector& x,
+inline void copy_raw_into_eigen_array(
+    SparesOrDenseEigenVector& x,
     const row_metadata& rm,
     const entry_value_iterator& row_block_ptr,
     const std::shared_ptr<ml_data_side_features>& side_features,
@@ -142,7 +143,8 @@ inline void copy_raw_into_array(
         }
  
         DASSERT_GE(idx,  0);
-        x(idx) = value;
+        DASSERT_LT(idx, size_t(x.size()));
+        x.coeffRef(idx) = value;
 
       },
 
