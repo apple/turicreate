@@ -6,7 +6,7 @@
 #ifndef TURI_DECISION_TREE_H_
 #define TURI_DECISION_TREE_H_
 // unity xgboost
-#include <toolkits/supervised_learning/xgboost.hpp>
+#include <unity/toolkits/supervised_learning/xgboost.hpp>
 #include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
 #include <export.hpp>
 

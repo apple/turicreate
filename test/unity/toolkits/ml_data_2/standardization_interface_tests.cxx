@@ -10,7 +10,9 @@
 #include <util/cityhash_tc.hpp>
 #include <cmath>
 
-#include <numerics/armadillo.hpp>
+// Eigen
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
 
 // ML-Data Utils
 #include <unity/toolkits/ml_data_2/standardization-inl.hpp>
@@ -18,12 +20,15 @@
 // Testing utils common to all of ml_data
 #include <unity/toolkits/ml_data_2/testing_utils.hpp>
 
+typedef Eigen::Matrix<double,Eigen::Dynamic,1>  DenseVector;
+typedef Eigen::SparseVector<double> SparseVector;
+
+typedef Eigen::Matrix<double, Eigen::Dynamic,1>  DenseVector;
+typedef Eigen::SparseVector<double> SparseVector;
+
+typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> DenseMatrix;
+
 using namespace turi;
-
-typedef arma::vec DenseVector;
-typedef sparse_vector<double, size_t> SparseVector;
-
-typedef arma::mat DenseMatrix;
 
 struct standardization  {
 
@@ -66,29 +71,29 @@ struct standardization  {
 
     for(auto it = data.get_iterator(0,1,false,true); !it.done(); ++it){
       // Densevector
-      x.zeros();
-      it.fill_row_expr(x);
+      x.setZero();
+      it.fill_observation(x);
       ans = x;
       scaler->transform(x);
-      Xmat.row(it.row_index()) = x.t();
+      Xmat.row(it.row_index()) = x;
       sp1 = x;
       scaler->inverse_transform(x);
-      TS_ASSERT(approx_equal(x, ans, "absdiff",  1e-5));
+      TS_ASSERT(x.isApprox(ans, 1e-5));
 
       // Sparse vector
-      sp_x.zeros();
-      it.fill_row_expr(sp_x);
+      sp_x.setZero();
+      it.fill_observation(sp_x);
       sp_ans = sp_x;
       scaler->transform(sp_x);
       sp2 = sp_x;
-      TS_ASSERT(approx_equal(sp1, sp2, "absdiff",  1e-5));
+      TS_ASSERT(sp1.isApprox(sp2, 1e-5));
       scaler->inverse_transform(sp_x);
-      TS_ASSERT(approx_equal(sp_x, sp_ans, "absdiff", 1e-5));
+      TS_ASSERT(sp_x.isApprox(sp_ans,1e-5));
     }
 
     // Check that each col has norm 1
-    for(size_t i = 0; i < Xmat.n_cols-1; i++){
-      TS_ASSERT(std::abs(arma::norm(Xmat.col(i), 2)/std::sqrt(n) - 1) < 3e-1);
+    for(size_t i = 0; i < size_t(Xmat.cols()-1); i++){
+      TS_ASSERT(std::abs(Xmat.col(i).norm()/std::sqrt(n) - 1) < 3e-1);
     }
 
     // Test without reference encoding.
@@ -104,29 +109,29 @@ struct standardization  {
     Xmat.resize(n, total_size);
 
     for(auto it = data.get_iterator(); !it.done(); ++it){
-      x.zeros();
-      it.fill_row_expr(x);
+      x.setZero();
+      it.fill_observation(x);
       ans = x;
       scaler->transform(x);
-      Xmat.row(it.row_index()) = x.t();
+      Xmat.row(it.row_index()) = x;
       sp1 = x;
       scaler->inverse_transform(x);
-      TS_ASSERT(approx_equal(x, ans, "absdiff",  1e-5));
+      TS_ASSERT(x.isApprox(ans, 1e-5));
 
       // Sparse vector
-      sp_x.zeros();
-      it.fill_row_expr(sp_x);
+      sp_x.setZero();
+      it.fill_observation(sp_x);
       sp_ans = sp_x;
       scaler->transform(sp_x);
       sp2 = sp_x;
-      TS_ASSERT(approx_equal(sp1, sp2, "absdiff",  1e-5));
+      TS_ASSERT(sp1.isApprox(sp2, 1e-5));
       scaler->inverse_transform(sp_x);
-      TS_ASSERT(approx_equal(sp_x, sp_ans, "absdiff",  1e-5));
+      TS_ASSERT(sp_x.isApprox(sp_ans, 1e-5));
     }
 
     // Check that each col has norm 1
-    for(size_t i = 0; i < Xmat.n_cols-1; i++){
-      TS_ASSERT(std::abs(arma::norm(Xmat.col(i), 2)/std::sqrt(n) - 1) < 3e-1);
+    for(size_t i = 0; i < size_t(Xmat.cols()-1); i++){
+      TS_ASSERT(std::abs(Xmat.col(i).norm()/std::sqrt(n) - 1) < 3e-1);
     }
 
     // Save and Load
@@ -154,29 +159,29 @@ struct standardization  {
 
     for(auto it = data.get_iterator(); !it.done(); ++it){
       // Densevector
-      x.zeros();
-      it.fill_row_expr(x);
+      x.setZero();
+      it.fill_observation(x);
       ans = x;
       scaler->transform(x);
-      Xmat.row(it.row_index()) = x.t();
+      Xmat.row(it.row_index()) = x;
       sp1 = x;
       scaler->inverse_transform(x);
-      TS_ASSERT(approx_equal(x, ans, "absdiff",  1e-5));
+      TS_ASSERT(x.isApprox(ans, 1e-5));
 
       // Sparse vector
-      sp_x.zeros();
-      it.fill_row_expr(sp_x);
+      sp_x.setZero();
+      it.fill_observation(sp_x);
       sp_ans = sp_x;
       scaler->transform(sp_x);
       sp2 = sp_x;
-      TS_ASSERT(approx_equal(sp1, sp2, "absdiff",  1e-5));
+      TS_ASSERT(sp1.isApprox(sp2, 1e-5));
       scaler->inverse_transform(sp_x);
-      TS_ASSERT(approx_equal(sp_x, sp_ans, "absdiff",  1e-5));
+      TS_ASSERT(sp_x.isApprox(sp_ans, 1e-5));
     }
 
     // Check that each col has norm 1
-    for(size_t i = 0; i < Xmat.n_cols-1; i++){
-      TS_ASSERT(std::abs(arma::norm(Xmat.col(i))/std::sqrt(n) - 1) < 3e-1);
+    for(size_t i = 0; i < size_t(Xmat.cols()-1); i++){
+      TS_ASSERT(std::abs(Xmat.col(i).norm()/std::sqrt(n) - 1) < 3e-1);
     }
   }
 

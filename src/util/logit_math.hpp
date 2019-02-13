@@ -41,14 +41,14 @@ GL_HOT_INLINE_FLATTEN
  */
 static inline GL_HOT_INLINE_FLATTEN double log1pe(double x)
 {
-  return __builtin_expect((x > 48), 0) ? x : std::log1p(std::exp(x));
+  return __builtin_expect((x > 48), 0) ? x : std::log1p(exp(x));
 }
 
 /** Numerically stable version of log(1 + exp(-x) )
  */
 static inline GL_HOT_INLINE_FLATTEN double log1pen(double x)
 {
-  return __builtin_expect((x < -48), 0) ? -x : std::log1p(std::exp(-x));
+  return __builtin_expect((x < -48), 0) ? -x : std::log1p(exp(-x));
 }
 
 /** Numerically stable version of log(1 - exp(x) )
@@ -56,7 +56,7 @@ static inline GL_HOT_INLINE_FLATTEN double log1pen(double x)
 static inline GL_HOT_INLINE_FLATTEN double log1me(double x)
 {
   DASSERT_LT(x, 0);
-  return __builtin_expect((x < -48), 0) ? 0 : std::log1p(-std::exp(x));
+  return __builtin_expect((x < -48), 0) ? 0 : std::log1p(-exp(x));
 }
 
 /** Numerically stable version of log(1 - exp(-x) )
@@ -64,7 +64,7 @@ static inline GL_HOT_INLINE_FLATTEN double log1me(double x)
 static inline GL_HOT_INLINE_FLATTEN double log1men(double x)
 {
   DASSERT_GT(x, 0);
-  return __builtin_expect((x > 48), 0) ? 0 : std::log1p(-std::exp(-x));
+  return __builtin_expect((x > 48), 0) ? 0 : std::log1p(-exp(-x));
 }
 
 /** Numerically stable version of log(exp(x) - 1)

@@ -22,7 +22,7 @@
 // Miscellaneous
 #include <timer/timer.hpp>
 #include <algorithm>
-#include <numerics/armadillo.hpp>
+#include <Eigen/SparseCore>
 #include <limits>
 #include <stack>
 #include <table_printer/table_printer.hpp>
@@ -170,10 +170,10 @@ void ball_tree_neighbors::train(const sframe& X,
   // should probably be chosen randomly.
 
   if (is_dense) {
-    mld_ref.get_iterator().fill_row_expr(x);
+    mld_ref.get_iterator().fill_observation(x);
     pivots[0] = x;
   } else {
-    mld_ref.get_iterator().fill_row_expr(x_sp);
+    mld_ref.get_iterator().fill_observation(x_sp);
     pivots_sp[0] = x_sp;
   }
 
@@ -205,7 +205,7 @@ void ball_tree_neighbors::train(const sframe& X,
 
       if (is_dense) {
         p = pivots[idx_node];
-        it.fill_row_expr(x);
+        it.fill_observation(x);
         pivot_dist[a] = c.distance->distance(x, p);
       
         // find the largest distance to the pivot and index of the point
@@ -216,7 +216,7 @@ void ball_tree_neighbors::train(const sframe& X,
 
       } else {  // data is not dense
         p_sp = pivots_sp[idx_node];
-        it.fill_row_expr(x_sp);
+        it.fill_observation(x_sp);
         pivot_dist[a] = c.distance->distance(x_sp, p_sp);
 
         // find the largest distance to the pivot and index of the point
@@ -242,7 +242,7 @@ void ball_tree_neighbors::train(const sframe& X,
 
       if (is_dense) {
         p = pivots[2 * idx_node + 1];
-        it.fill_row_expr(x);
+        it.fill_observation(x);
 
         // Find all of the distances to the first child and pick the second child
         // as the point furthest away.
@@ -255,7 +255,7 @@ void ball_tree_neighbors::train(const sframe& X,
 
       } else { // data is not dense
         p_sp = pivots_sp[2 * idx_node + 1];
-        it.fill_row_expr(x_sp);
+        it.fill_observation(x_sp);
 
         // Find all of the distances to the first child and pick the second child
         // as the point furthest away.
@@ -337,13 +337,13 @@ void ball_tree_neighbors::train(const sframe& X,
     if (is_dense) {
       // Find the largest distance to the pivot and index of that point
       p = pivots[idx_node];
-      it.fill_row_expr(x);
+      it.fill_observation(x);
       pivot_dist[a] = c.distance->distance(x, p);
 
     } else { // data is not dense
       // Find the largest distance to the pivot and index of that point
       p_sp = pivots_sp[idx_node];
-      it.fill_row_expr(x_sp);
+      it.fill_observation(x_sp);
       pivot_dist[a] = c.distance->distance(x_sp, p_sp);
     }
 
@@ -490,9 +490,9 @@ sframe ball_tree_neighbors::query(const v2::ml_data& mld_queries,
         ASSERT_TRUE(it_query.row_index() != NONE_FLAG);
 
         if (is_dense) {
-          it_query.fill_row_expr(q);
+          it_query.fill_observation(q);
         } else {
-          it_query.fill_row_expr(q_sp);
+          it_query.fill_observation(q_sp);
         }
 
         idx_query = it_query.row_index();
@@ -568,10 +568,10 @@ sframe ball_tree_neighbors::query(const v2::ml_data& mld_queries,
               for (it_ref.seek(idx_start); it_ref.row_index() != idx_end; ++it_ref) {
 
                 if (is_dense) {
-                  it_ref.fill_row_expr(x);
+                  it_ref.fill_observation(x);
                   dist = c.distance->distance(x, q);
                 } else {
-                  it_ref.fill_row_expr(x_sp);
+                  it_ref.fill_observation(x_sp);
                   dist = c.distance->distance(x_sp, q_sp);
                 }
 

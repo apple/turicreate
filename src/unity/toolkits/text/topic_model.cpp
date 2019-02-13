@@ -21,7 +21,7 @@
 #include <unity/toolkits/util/indexed_sframe_tools.hpp>
 #include <unity/toolkits/ml_data_2/metadata.hpp>
 #include <unity/lib/variant_deep_serialize.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 
 /**
  * TODO:
@@ -98,15 +98,15 @@ topic_model::get_topic(size_t topic_id, size_t num_words, double cdf_cutoff) {
   DASSERT_LT(topic_id, get_option_value("num_topics"));
 
   // Compute probabilities of words for this topic by normalizing smoothed counts.
-  arma::dvec topic_word_prob =
-      (arma::conv_to<arma::dvec>::from(topic_word_counts.row(topic_id)) + beta);
-  topic_word_prob = topic_word_prob / arma::sum(topic_word_prob);
+  Eigen::MatrixXd word_topic_prob =
+      (word_topic_counts.col(topic_id).cast<double>().array() + beta).matrix();
+  word_topic_prob = word_topic_prob.array() / word_topic_prob.sum();
 
   // Get a list of (word_id, score) pairs for this topic.
   std::vector<std::pair<int, double>> data(vocab_size);
   for(size_t i=0; i < data.size(); ++i) {
     data[i].first = i;
-    data[i].second = topic_word_prob(i);
+    data[i].second = word_topic_prob(i, 0);
   }
 
   // Sort column k of the topics matrix, phi.
@@ -138,11 +138,11 @@ topic_model::get_topic(size_t topic_id, size_t num_words, double cdf_cutoff) {
  * topic model estimates.
  */
 double topic_model::perplexity(std::shared_ptr<sarray<flexible_type> > dataset,
-                               const count_matrix_type& topic_doc_counts,
-                               const count_matrix_type& topic_word_counts) {
+                               const count_matrix_type& doc_topic_counts,
+                               const count_matrix_type& word_topic_counts) {
 
   // Number of documents must match the number for which we have topic estimates.
-  DASSERT_EQ(dataset->size(), (size_t) topic_doc_counts.n_cols);
+  DASSERT_EQ(dataset->size(), (size_t) doc_topic_counts.rows());
 
   // Construct an SFrame with one column (so that we may use ml_data)
   std::vector<std::shared_ptr<sarray<flexible_type>>> columns = {dataset};
@@ -154,21 +154,21 @@ double topic_model::perplexity(std::shared_ptr<sarray<flexible_type> > dataset,
   d.fill(dataset_sf);
 
 
-  typedef arma::Mat<double> prob_matrix_type;
+  typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> prob_matrix_type;
 
   // Compute probabilities by normalizing smoothed counts.
-  prob_matrix_type topic_doc_prob = arma::conv_to<arma::mat>::from(topic_doc_counts) + alpha;
-  prob_matrix_type topic_word_prob = arma::conv_to<arma::mat>::from(topic_word_counts) + beta;
-  arma::dvec doc_topic_total = arma::sum(topic_doc_prob, 0).t();
-  arma::dvec word_topic_total = arma::sum(topic_word_prob, 1);
+  prob_matrix_type doc_topic_prob = (doc_topic_counts.cast<double>().array() + alpha).matrix();
+  prob_matrix_type word_topic_prob = (word_topic_counts.cast<double>().array() + beta).matrix();
+  prob_matrix_type doc_topic_total = doc_topic_prob.rowwise().sum();
+  prob_matrix_type word_topic_total = word_topic_prob.colwise().sum();
 
-  size_t num_topics = topic_doc_counts.n_rows;
-  size_t num_docs = topic_doc_counts.n_cols;
+  size_t num_topics = doc_topic_counts.cols();
+  size_t num_docs = doc_topic_counts.rows();
   for (size_t d = 0; d < num_docs; ++d) {
-    topic_doc_prob.col(d) = topic_doc_prob.col(d) / doc_topic_total(d);
+    doc_topic_prob.row(d) = doc_topic_prob.row(d).array() / doc_topic_total(d, 0);
   }
   for (size_t k = 0; k < num_topics; ++k) {
-    topic_word_prob.row(k) = topic_word_prob.row(k) / word_topic_total(k);
+    word_topic_prob.col(k) = word_topic_prob.col(k).array() / word_topic_total(0, k);
   }
 
   // Initialize loglikelihood aggregator.
@@ -194,9 +194,9 @@ double topic_model::perplexity(std::shared_ptr<sarray<flexible_type> > dataset,
         if (word_id < vocab_size) {
           // Compute Pr(word | theta, phi) =
           //    \sum_k doc_topic_prob[doc_id, k] * word_topic_prob[word_id, k]
-          DASSERT_LT(word_id, topic_word_prob.n_cols);
-          DASSERT_LT(doc_id, topic_doc_prob.n_cols);
-          double prob = arma::dot(topic_doc_prob.col(doc_id),topic_word_prob.col(word_id));
+          DASSERT_LT(word_id, word_topic_prob.rows());
+          DASSERT_LT(doc_id, doc_topic_prob.rows());
+          double prob = doc_topic_prob.row(doc_id).dot(word_topic_prob.row(word_id));
 
           // Increment numerator and denominator of perplexity estimate
           llk_per_thread[thread_idx] += freq * log(prob);
@@ -211,7 +211,7 @@ double topic_model::perplexity(std::shared_ptr<sarray<flexible_type> > dataset,
   size_t num_words = std::accumulate(num_words_per_thread.begin(),
                                      num_words_per_thread.end(), 0.0);
 
-  double perp = std::exp(- llk / num_words);
+  double perp = exp(- llk / num_words);
   if (std::isnan(perp))
     log_and_throw("NaN detected while computing perplexity.");
 
@@ -269,14 +269,14 @@ void topic_model::set_topics(const std::shared_ptr<sarray<flexible_type>> word_t
     }
   } );
 
-  // Initialize topic_word_counts from the provided SArray
+  // Initialize word_topic_counts from the provided SArray
   vocab_size = metadata->indexer(0)->indexed_column_size();
-  topic_word_counts = arma::Mat<int>(num_topics, vocab_size);
-  for (size_t k = 0; k < num_topics; ++k) {
-    for (size_t i = 0; i < vocab_size; ++i) {
+  word_topic_counts = Eigen::MatrixXi::Zero(vocab_size, num_topics);
+  for (size_t i = 0; i < vocab_size; ++i) {
+    for (size_t k = 0; k < num_topics; ++k) {
       // Convert probabilities into (approximate) counts by
       // multiplying by the provided weight.
-      topic_word_counts(k, i) = (size_t) ceil(phi[i][k] * weight);
+      word_topic_counts(i, k) = (size_t) ceil(phi[i][k] * weight);
     }
   }
 
@@ -299,11 +299,11 @@ topic_model::count_matrix_type topic_model::predict_counts(std::shared_ptr<sarra
 
   // Initialize topic count matrices
   std::vector<size_t> topic_assignments;
-  count_matrix_type topic_doc_counts(num_topics, dataset->size());
-  topic_doc_counts.zeros();
+  count_matrix_type doc_topic_counts(dataset->size(), num_topics);
+  doc_topic_counts.setZero();
 
-  arma::ivec topic_counts = arma::conv_to<arma::ivec>::from(arma::sum(topic_word_counts, 1));
-  DASSERT_EQ(topic_counts.n_rows * topic_counts.n_cols, num_topics);
+  count_matrix_type topic_counts = word_topic_counts.colwise().sum();
+  DASSERT_EQ(topic_counts.cols(), num_topics);
 
   // Start iterating through documents in parallel
   in_parallel([&](size_t thread_idx, size_t n_threads) GL_GCC_ONLY(GL_HOT_FLATTEN) {
@@ -315,8 +315,8 @@ topic_model::count_matrix_type topic_model::predict_counts(std::shared_ptr<sarra
     topic_assignments.reserve(d.max_row_size());
 
     // Initialize probability vector
-    arma::vec gamma_base_vec(num_topics);
-    arma::vec gamma_vec(num_topics);
+    Eigen::VectorXd gamma_base_vec(num_topics);
+    Eigen::VectorXd gamma_vec(num_topics);
 
     for(auto it = d.get_iterator(thread_idx, n_threads); !it.done(); ++it) {
 
@@ -345,7 +345,7 @@ topic_model::count_matrix_type topic_model::predict_counts(std::shared_ptr<sarra
 
             size_t topic = it->second;
             topic_assignments.push_back(topic);
-            topic_doc_counts(topic, doc_id) += freq;
+            doc_topic_counts(doc_id, topic) += freq;
             // Ignore words outside of provided vocabulary
           } else {
 
@@ -353,22 +353,22 @@ topic_model::count_matrix_type topic_model::predict_counts(std::shared_ptr<sarra
             size_t topic = random::fast_uniform<size_t>(0, num_topics - 1);
             DASSERT_TRUE(topic < num_topics);
             topic_assignments.push_back(topic);
-            topic_doc_counts(topic, doc_id) += freq;
+            doc_topic_counts(doc_id, topic) += freq;
 
           }
         }
       }
 
-      DASSERT_EQ(arma::sum(topic_doc_counts.col(doc_id)), num_words_in_doc);
+      DASSERT_EQ(doc_topic_counts.row(doc_id).sum(), num_words_in_doc);
 
       // Compute the base probability of the gamma vector.
       gamma_base_vec =
-          ((arma::conv_to<arma::dvec>::from(topic_doc_counts.col(doc_id)) + alpha) /
-           (arma::conv_to<arma::dvec>::from(topic_counts) + vocab_size * beta));
+          ((doc_topic_counts.row(doc_id).cast<double>().array() + alpha) /
+           (topic_counts.cast<double>().array() + vocab_size * beta));
 
       auto gamma_base = [&](size_t doc_id, size_t topic, double freq) GL_GCC_ONLY(GL_HOT_INLINE_FLATTEN) {
-        return ((topic_doc_counts(topic, doc_id) + freq + alpha)
-                / (topic_counts(topic) + freq + vocab_size * beta));
+        return ((doc_topic_counts(doc_id, topic) + freq + alpha)
+                / (topic_counts(0, topic) + freq + vocab_size * beta));
       };
 
       // Sample topics for this document
@@ -386,23 +386,23 @@ topic_model::count_matrix_type topic_model::predict_counts(std::shared_ptr<sarra
           size_t topic = topic_assignments[j];
           gamma_base_vec[topic] = gamma_base(doc_id, topic, -freq);
 
-          DASSERT_TRUE(topic_doc_counts(topic, doc_id) >= 0);
+          DASSERT_TRUE(doc_topic_counts(doc_id, topic) >= 0);
 
-          gamma_vec = arma::conv_to<arma::dvec>::from(topic_word_counts.col(word_id)) + beta;
-          gamma_vec %= gamma_base_vec;
+          gamma_vec = word_topic_counts.row(word_id).cast<double>().array() + beta;
+          gamma_vec.array() *= gamma_base_vec.array();
 
           // Sample topic for this token
           size_t old_topic = topic;
-          topic = random::multinomial(gamma_vec, arma::sum(gamma_vec));
+          topic = random::multinomial(gamma_vec, gamma_vec.sum());
           topic_assignments[j] = topic;
 
           gamma_base_vec[topic] = gamma_base(doc_id, topic, freq);
 
           if(topic != old_topic) {
             // Increment counts
-            topic_doc_counts(old_topic, doc_id) -= freq;
-            topic_doc_counts(topic, doc_id) += freq;
-            DASSERT_EQ(arma::sum(topic_doc_counts.col(doc_id)), num_words_in_doc);
+            doc_topic_counts(doc_id, old_topic) -= freq;
+            doc_topic_counts(doc_id, topic) += freq;
+            DASSERT_EQ(doc_topic_counts.row(doc_id).sum(), num_words_in_doc);
           }
         }
 
@@ -413,7 +413,7 @@ topic_model::count_matrix_type topic_model::predict_counts(std::shared_ptr<sarra
     }
   });
 
-  return topic_doc_counts;
+  return doc_topic_counts;
 }
 
 /**
@@ -422,8 +422,8 @@ topic_model::count_matrix_type topic_model::predict_counts(std::shared_ptr<sarra
 std::shared_ptr<sarray<flexible_type> > topic_model::predict_gibbs(
     std::shared_ptr<sarray<flexible_type> > dataset, size_t num_burnin) {
 
-  count_matrix_type topic_doc_counts = predict_counts(dataset, num_burnin);
-  size_t n_docs = topic_doc_counts.n_cols;
+  count_matrix_type doc_topic_counts = predict_counts(dataset, num_burnin);
+  size_t n_docs = doc_topic_counts.rows();
   DASSERT_EQ(n_docs, dataset->size());
 
   size_t num_segments = thread::cpu_count();
@@ -446,9 +446,9 @@ std::shared_ptr<sarray<flexible_type> > topic_model::predict_gibbs(
 
         // Normalize to be proper probabilities.
         // Include hyperparameter alpha for smoothing.
-        double norm = arma::sum(topic_doc_counts.col(doc_id)) + num_topics * alpha;
+        double norm = doc_topic_counts.row(doc_id).sum() + num_topics * alpha;
         for(size_t topic_id = 0; topic_id < num_topics; ++topic_id) {
-          doc_preds[topic_id] = (topic_doc_counts(topic_id, doc_id) + alpha) / norm;
+          doc_preds[topic_id] = (doc_topic_counts(doc_id, topic_id) + alpha) / norm;
         }
 
         *out_it = doc_preds;
@@ -464,14 +464,15 @@ std::shared_ptr<sarray<flexible_type> > topic_model::predict_gibbs(
 std::shared_ptr<sarray<flexible_type>> topic_model::get_topics_matrix() {
 
   // Normalize smoothed counts.
-  arma::mat topic_word_prob = arma::conv_to<arma::mat>::from(topic_word_counts) + beta;
-  arma::mat topic_word_total = arma::sum(topic_word_prob, 1);
-  size_t num_topics = topic_word_counts.n_rows;
+  Eigen::MatrixXd word_topic_prob = (word_topic_counts.cast<double>().array() + beta).matrix();
+  Eigen::MatrixXd word_topic_total = word_topic_prob.colwise().sum();
+  size_t num_topics = word_topic_counts.cols();
   for (size_t k = 0; k < num_topics; ++k) {
-    topic_word_prob.row(k) = topic_word_prob.row(k) / topic_word_total(k);
+    word_topic_prob.col(k) = word_topic_prob.col(k).array() /
+        word_topic_total(0, k);
   }
 
-  return matrix_to_sarray(topic_word_prob.t());
+  return matrix_to_sarray(word_topic_prob);
 }
 
 /// Returns current vocabulary
@@ -482,7 +483,7 @@ std::shared_ptr<sarray<flexible_type>> topic_model::get_vocabulary() {
   column->set_type(flex_type_enum::STRING);
   auto it_out = column->get_output_iterator(0);
   //DASSERT_EQ(metadata.size(), 1);
-  for (size_t word_id = 0; word_id < (size_t) topic_word_counts.n_cols; ++word_id) {
+  for (size_t word_id = 0; word_id < (size_t) word_topic_counts.rows(); ++word_id) {
     *it_out = metadata->indexer(0)->map_index_to_value(word_id);
     ++it_out;
   }

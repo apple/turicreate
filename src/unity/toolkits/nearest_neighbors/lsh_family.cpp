@@ -66,38 +66,33 @@ void lsh_euclidean::pre_lsh(const v2::ml_data& mld_ref, bool is_sparse) {
     DenseMatrix sub_matrix(num_samples, num_input_dimensions);
     in_parallel([&](size_t thread_idx, size_t num_threads) {
       for (auto it = sampled_data.get_iterator(thread_idx, num_threads); !it.done(); ++it) {
-        it.fill_row_expr(sub_matrix.row(it.row_index()));
+        it.fill_eigen_row(sub_matrix.row(it.row_index()));
       }
     });
 
     all_pairs_squared_euclidean(sub_matrix, sub_matrix, distance_matrix);
-    distance_matrix.for_each([](double& x) { x = std::sqrt(x); });
+    distance_matrix = distance_matrix.unaryExpr([](double x) { return std::sqrt(x); });
   } else { // sparse 
     std::vector<SparseVector> sub_matrix(num_samples, SparseVector(num_input_dimensions));
     in_parallel([&](size_t thread_idx, size_t num_threads) {
       for (auto it = sampled_data.get_iterator(thread_idx, num_threads); !it.done(); ++it) {
-        it.fill(sub_matrix[it.row_index()]);
+        it.fill_observation(sub_matrix[it.row_index()]);
       }
     });
     
     std::vector<double> vec_norms(num_samples, 0.);
     parallel_for (0, num_samples, [&](size_t idx){
-      vec_norms[idx] = squared_norm(sub_matrix[idx]);
+      vec_norms[idx] = sub_matrix[idx].squaredNorm();
     });
     parallel_for (0, num_samples, [&](size_t idx_a){
       for (size_t idx_b = 0; idx_b < num_samples; ++idx_b) {
         distance_matrix(idx_a, idx_b) = std::sqrt(vec_norms[idx_a] 
-          + vec_norms[idx_b] - 2. * dot(sub_matrix[idx_a], sub_matrix[idx_b])); 
+          + vec_norms[idx_b] - 2. * sub_matrix[idx_a].dot(sub_matrix[idx_b]));
       }
     });
   }
-  
-  double global_mean = (arma::sum(arma::sum(distance_matrix)) 
-        / (distance_matrix.n_rows * distance_matrix.n_cols));
-
-  // What's going on here with the size_t ? 
-  w = std::max(size_t(1), static_cast<size_t>(global_mean)); 
-  rand_vec.for_each([&](double& x) { x = random::fast_uniform<double>(0., w); });
+  w = std::max(size_t(1), static_cast<size_t>(distance_matrix.mean()));
+  rand_vec = rand_vec.unaryExpr([&](double x) { return random::fast_uniform<double>(0., w); });
 }
 
 void lsh_euclidean::init_model(size_t num_dimensions) {
@@ -105,8 +100,8 @@ void lsh_euclidean::init_model(size_t num_dimensions) {
   w = 4;
   rand_mat.resize(num_projections, num_input_dimensions);
   rand_vec.resize(num_projections);
-  rand_mat.for_each([](double& x) { x = random::normal(0., 1.); });
-  rand_vec.for_each([&](double& x) { x = random::fast_uniform<double>(0., w); });
+  rand_mat = rand_mat.unaryExpr([](double x) { return random::normal(0., 1.); });
+  rand_vec = rand_vec.unaryExpr([&](double x) { return random::fast_uniform<double>(0., w); });
 }
 
 void lsh_euclidean::save(turi::oarchive& oarc) const {
@@ -133,7 +128,7 @@ std::vector<int> lsh_euclidean::hash_vector_to_codes(const DenseVector& vec,
 std::vector<int> lsh_euclidean::hash_vector_to_codes(const SparseVector& vec, 
                                                      bool is_reference_data) const {
   std::vector<int> ret(num_projections, -1);
-  if (vec.num_nonzeros() == 0) return ret;
+  if (vec.nonZeros() == 0) return ret;
 
   DenseVector hash_vec = rand_mat * vec + rand_vec;
   parallel_for (0, num_projections, [&](size_t hash_idx) {
@@ -153,36 +148,31 @@ void lsh_manhattan::pre_lsh(const v2::ml_data& mld_ref, bool is_sparse) {
     DenseMatrix sub_matrix(num_samples, num_input_dimensions);
     in_parallel([&](size_t thread_idx, size_t num_threads) {
       for (auto it = sampled_data.get_iterator(thread_idx, num_threads); !it.done(); ++it) {
-        it.fill_row_expr(sub_matrix.row(it.row_index()));
+        it.fill_eigen_row(sub_matrix.row(it.row_index()));
       }
     });
     parallel_for (0, num_samples, [&](size_t idx_a){
       for (size_t idx_b = 0; idx_b < num_samples; ++idx_b) {
-        distance_matrix(idx_a, idx_b) = arma::sum(arma::abs(sub_matrix.row(idx_a) - sub_matrix.row(idx_b)));
+        distance_matrix(idx_a, idx_b) = (sub_matrix.row(idx_a) - sub_matrix.row(idx_b)).cwiseAbs().sum();
       }
     });
   } else { // sparse 
     std::vector<SparseVector> sub_matrix(num_samples, SparseVector(num_input_dimensions));
     in_parallel([&](size_t thread_idx, size_t num_threads) {
       for (auto it = sampled_data.get_iterator(thread_idx, num_threads); !it.done(); ++it) {
-        it.fill(sub_matrix[it.row_index()]);
+        it.fill_observation(sub_matrix[it.row_index()]);
       }
     });
     
     parallel_for (0, num_samples, [&](size_t idx_a){
       for (size_t idx_b = 0; idx_b < num_samples; ++idx_b) {
-        distance_matrix(idx_a, idx_b) 
-          = bi_aggregate(sub_matrix[idx_a], sub_matrix[idx_b], 
-              [](double x, double y) { return std::fabs(x-y); } ); 
+        distance_matrix(idx_a, idx_b) = (sub_matrix[idx_a] - sub_matrix[idx_b]).cwiseAbs().sum();
       }
     });
   }
-  
-  double global_mean = (arma::sum(arma::sum(distance_matrix)) 
-        / (distance_matrix.n_rows * distance_matrix.n_cols));
-  
-  w = std::max(size_t(1), static_cast<size_t>(global_mean));
-  rand_vec.for_each([&](double& x) { x = random::fast_uniform<double>(0., w); });
+
+  w = std::max(size_t(1), static_cast<size_t>(distance_matrix.mean()));
+  rand_vec = rand_vec.unaryExpr([&](double x) { return random::fast_uniform<double>(0., w); });
 }
 
 void lsh_manhattan::init_model(size_t num_dimensions) {
@@ -190,14 +180,14 @@ void lsh_manhattan::init_model(size_t num_dimensions) {
   w = 4;
   rand_mat.resize(num_projections, num_input_dimensions);
   rand_vec.resize(num_projections);
-  rand_mat.for_each([](double& x) { x = random::cauchy(0., 1.); });
-  rand_vec.for_each([&](double& x) { x = random::fast_uniform<double>(0., w); });
+  rand_mat = rand_mat.unaryExpr([](double x) { return random::cauchy(0., 1.); });
+  rand_vec = rand_vec.unaryExpr([&](double x) { return random::fast_uniform<double>(0., w); });
 }
 
 void lsh_cosine::init_model(size_t num_dimensions) {
   num_input_dimensions = num_dimensions;
   rand_mat.resize(num_projections, num_input_dimensions);
-  rand_mat.for_each([](double& x) { x = random::normal(0., 1.); });
+  rand_mat = rand_mat.unaryExpr([](double x) { return random::normal(0., 1.); });
 }
 
 void lsh_cosine::save(turi::oarchive& oarc) const {
@@ -224,7 +214,7 @@ std::vector<int> lsh_cosine::hash_vector_to_codes(const SparseVector& vec,
                                                   bool is_reference_data) const {
   std::vector<int> ret(num_projections, -1);
 
-  if (vec.num_nonzeros() == 0) return ret;
+  if (vec.nonZeros() == 0) return ret;
 
   DenseVector hash_vec = rand_mat * vec;
   parallel_for (0, num_projections, [&](size_t hash_idx) {
@@ -274,7 +264,7 @@ std::vector<int> lsh_jaccard::hash_vector_to_codes(const DenseVector& vec,
   size_t chunk_idx, chunk_offset;
   size_t permuted_idx;
   size_t cnt = 0;
-  for (size_t idx = 0; idx < vec.size(); ++idx) {
+  for (size_t idx = 0; idx < size_t(vec.size()); ++idx) {
     if (vec(idx) < 1e-8) {
       // skip
     } else {
@@ -304,7 +294,7 @@ std::vector<int> lsh_jaccard::hash_vector_to_codes(const SparseVector& vec,
   // Initialize the hash code. All the values are set to D (num_input_dimensions). 
   std::vector<int> ret(num_projections, num_input_dimensions);
   
-  if (vec.num_nonzeros() == 0) return ret;
+  if (vec.nonZeros() == 0) return ret;
 
   // chunk_size = D/K, where K is num_projections
   // Note that the size of the last chunk might be larger than chunk_size, 
@@ -312,11 +302,10 @@ std::vector<int> lsh_jaccard::hash_vector_to_codes(const SparseVector& vec,
   size_t chunk_size = num_input_dimensions / num_projections;
   size_t chunk_idx, chunk_offset;
   size_t permuted_idx;
-  auto it = vec.begin(); 
-  
+  SparseVector::InnerIterator it(vec, 0);
   size_t idx;
-  while (it != vec.end()) {
-    idx = it->first;
+  while (it) {
+    idx = it.index();
     permuted_idx = rand_permutation[idx];
     // which chunk it is in
     chunk_idx = std::min(permuted_idx / chunk_size, num_projections - 1);
@@ -404,9 +393,9 @@ void lsh_dot_product::init_model(size_t num_dimensions) {
 
   // one extra dimension for the asymmetric vector transformation
   rand_mat.resize(num_projections, num_input_dimensions);
-  rand_mat.for_each([](double& x) { x = random::normal(0., 1.); });
+  rand_mat = rand_mat.unaryExpr([](double x) { return random::normal(0., 1.); });
   rand_vec.resize(num_projections);
-  rand_vec.for_each([](double& x) { x = random::normal(0., 1.); });
+  rand_vec = rand_vec.unaryExpr([](double x) { return random::normal(0., 1.); });
 }
 
 // get the max of the norm of the reference data
@@ -417,17 +406,17 @@ void lsh_dot_product::pre_lsh(const v2::ml_data& mld_ref, bool is_sparse) {
     in_parallel([&](size_t thread_idx, size_t num_threads) GL_GCC_ONLY(GL_HOT) {
       DenseVector v(num_input_dimensions);
       for (auto it = mld_ref.get_iterator(thread_idx, num_threads); !it.done(); ++it) {
-        it.fill_row_expr(v);
-        local_max_vec_norms[thread_idx] = std::max(local_max_vec_norms[thread_idx], arma::norm(v, 2));
+        it.fill_observation(v);
+        local_max_vec_norms[thread_idx] = std::max(local_max_vec_norms[thread_idx], v.norm());
       }
     });
   } else {
     in_parallel([&](size_t thread_idx, size_t num_threads) GL_GCC_ONLY(GL_HOT) {
       SparseVector s(num_input_dimensions);
       for (auto it = mld_ref.get_iterator(thread_idx, num_threads); !it.done(); ++it) {
-        it.fill_row_expr(s);
-        if (s.num_nonzeros() > 0) {
-          local_max_vec_norms[thread_idx] = std::max(local_max_vec_norms[thread_idx], std::sqrt(squared_norm(s)));
+        it.fill_observation(s);
+        if (s.nonZeros() > 0) {
+          local_max_vec_norms[thread_idx] = std::max(local_max_vec_norms[thread_idx], s.norm());
         } 
       }
     });
@@ -453,10 +442,10 @@ std::vector<int> lsh_dot_product::hash_vector_to_codes(const DenseVector& vec,
   
   if (is_reference_data) {
     hash_vec = rand_mat * vec / max_vec_norm + 
-        rand_vec * std::sqrt(1. - squared_norm(vec) / (max_vec_norm * max_vec_norm));
+        rand_vec * std::sqrt(1. - vec.squaredNorm() / (max_vec_norm * max_vec_norm));
   } else {
     // query vecs are normalized
-    double vec_norm = arma::norm(vec, 2);
+    double vec_norm = vec.norm();
     if (vec_norm > 1e-16) {
       hash_vec = rand_mat * vec / vec_norm;
     }
@@ -473,16 +462,16 @@ std::vector<int> lsh_dot_product::hash_vector_to_codes(const SparseVector& vec,
                                                        bool is_reference_data) const {
   std::vector<int> ret(num_projections, -1);
 
-  if (vec.num_nonzeros() == 0) return ret;
+  if (vec.nonZeros() == 0) return ret;
 
   DenseVector hash_vec(num_projections);
   
   if (is_reference_data) {
     hash_vec = rand_mat * vec / max_vec_norm + 
-        rand_vec * std::sqrt(1. - squared_norm(vec) / (max_vec_norm * max_vec_norm));
+        rand_vec * std::sqrt(1. - vec.squaredNorm() / (max_vec_norm * max_vec_norm));
   } else {
     // query vecs are normalized
-    double vec_norm = std::sqrt(squared_norm(vec));
+    double vec_norm = vec.norm();
     if (vec_norm > 1e-16) {
       hash_vec = rand_mat * vec / vec_norm;
     }

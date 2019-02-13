@@ -12,7 +12,7 @@ add_compile_options("-w")
 #3rd party source 
 
 add_subdirectory(libjson)
-add_subdirectory(armadillo)
+add_subdirectory(Eigen)
 add_subdirectory(sparsehash)
 add_subdirectory(google)
 add_subdirectory(lz4)

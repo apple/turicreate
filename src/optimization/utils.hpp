@@ -10,7 +10,7 @@
 
 #include <optimization/optimization_interface.hpp>
 #include <flexible_type/flexible_type.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 
 namespace turi {
 
@@ -157,6 +157,21 @@ std::string translate_solver_status(const OPTIMIZATION_STATUS& status);
 */
 void log_solver_summary_stats(const solver_return& stats, bool simple_mode = false);
 
+/**
+ * Performs left = left + right across sparse and dense vectors.
+ *
+ * \note Although Eigen is an amazing library. This operation is horribly
+ * inefficient when Left is a dense vector and Right is a sparse vector.
+ *
+ * \param[in,out] left  Vector
+ * \param[in]     right Rector
+*/
+template <typename L, typename R>
+void vector_add(L & left, const R & right);
+
+
+/// \}
+//
 } // Optimization
 
 } // turicreate

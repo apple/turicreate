@@ -15,11 +15,11 @@
 
 // Toolkits
 #include <optimization/optimization_interface.hpp>
-#include <toolkits/supervised_learning/xgboost.hpp>
-#include <toolkits/supervised_learning/supervised_learning.hpp>
-#include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
-#include <toolkits/supervised_learning/classifier_evaluations.hpp>
-#include <toolkits/supervised_learning/automatic_model_creation.hpp>
+#include <unity/toolkits/supervised_learning/xgboost.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <unity/toolkits/supervised_learning/classifier_evaluations.hpp>
+#include <unity/toolkits/supervised_learning/automatic_model_creation.hpp>
 
 // ML Data
 #include <ml_data/ml_data_iterator.hpp>
@@ -477,13 +477,13 @@ supervised_learning_model_base::predict(const ml_data& test_data,
       // Dense predict.
       if (this->is_dense()) {
         fill_reference_encoding(*it, x);
-        x(variables - 1) = 1;
+        x.coeffRef(variables - 1) = 1;
         preds = predict_single_example(x, output_type_enum);
 
       // Sparse predict.
       } else {
         fill_reference_encoding(*it, x_sp);
-        x_sp.insert(variables - 1, 1);
+        x_sp.coeffRef(variables - 1) = 1;
         preds = predict_single_example(x_sp, output_type_enum);
       }
 
@@ -536,14 +536,14 @@ gl_sarray supervised_learning_model_base::fast_predict(
       DenseVector dense_vec(variables);
       fill_reference_encoding(ml_data_row_reference::from_row(
                this->ml_mdata, row.get<flex_dict>(), na_enum), dense_vec);
-      dense_vec(variables - 1) = 1;
+      dense_vec.coeffRef(variables - 1) = 1;
       flexible_type pred = predict_single_example(dense_vec, pred_type_enum);
       writer.write(pred, 0);
     } else {
       SparseVector sparse_vec(variables);
       fill_reference_encoding(ml_data_row_reference::from_row(
                this->ml_mdata, row.get<flex_dict>(), na_enum), sparse_vec);
-      sparse_vec.insert(variables - 1, 1);
+      sparse_vec.coeffRef(variables - 1) = 1;
       flexible_type pred = predict_single_example(sparse_vec, pred_type_enum);
       writer.write(pred, 0);
     }
@@ -645,12 +645,12 @@ sframe supervised_learning_model_base::predict_topk(
       // Dense predict.
       if (this->is_dense()) {
         fill_reference_encoding(*it, x);
-        x(variables-1) = 1;
+        x.coeffRef(variables-1) = 1;
 	      preds = predict_single_example(x, output_type_enum);
       // Sparse predict.
       } else {
         fill_reference_encoding(*it, x_sp);
-        x_sp.insert(variables-1, 1);
+        x_sp.coeffRef(variables-1) = 1;
 	      preds = predict_single_example(x_sp, output_type_enum);
       }
 
@@ -809,7 +809,7 @@ std::map<std::string, variant_type> supervised_learning_model_base::evaluate(
         // Dense predict.
         if (is_dense) {
           fill_reference_encoding(*it, x);
-          x(variables-1) = 1;
+          x.coeffRef(variables-1) = 1;
 	        predicted_value = predict_single_example(x,
                                       prediction_type_enum::CLASS_INDEX);
           if (contains_prob_evaluator) {
@@ -819,7 +819,7 @@ std::map<std::string, variant_type> supervised_learning_model_base::evaluate(
         // Sparse predict.
         } else {
           fill_reference_encoding(*it, x_sp);
-          x_sp.insert(variables-1, 1);
+          x_sp.coeffRef(variables-1) = 1;
 	        predicted_value = predict_single_example(x_sp,
                                       prediction_type_enum::CLASS_INDEX);
           if (contains_prob_evaluator) {
@@ -849,13 +849,13 @@ std::map<std::string, variant_type> supervised_learning_model_base::evaluate(
         // Dense predict.
         if (is_dense) {
           fill_reference_encoding(*it, x);
-          x(variables-1) = 1;
+          x.coeffRef(variables-1) = 1;
 	        predicted_value = predict_single_example(x);
 
         // Sparse predict.
         } else {
           fill_reference_encoding(*it, x_sp);
-          x_sp.insert(variables-1, 1);
+          x_sp.coeffRef(variables-1) = 1;
 	        predicted_value = predict_single_example(x_sp);
         }
         true_value = it->target_value();

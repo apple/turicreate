@@ -6,7 +6,7 @@
 #ifndef TURI_FACTORIZATION_GLM_SGD_INTERFACE_H_
 #define TURI_FACTORIZATION_GLM_SGD_INTERFACE_H_
 
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 #include <cmath>
 #include <vector>
 #include <string>
@@ -27,9 +27,6 @@ namespace turi { namespace factorization {
  *  given by the parameters below.
  */
 enum class model_regularization_type {L2, ON_THE_FLY, NONE};
-
-////////////////////////////////////////////////////////////////////////////////
-// Utility functions
 
 template <typename T>
 GL_HOT_INLINE_FLATTEN
@@ -80,7 +77,7 @@ class factorization_sgd_interface final : public sgd::sgd_interface_base {
   typedef typename GLMModel::vector_type        vector_type;
 
   static constexpr model_factor_mode factor_mode   = GLMModel::factor_mode;
-  static constexpr flex_int num_factors_if_known   = GLMModel::num_factors_if_known;
+  static constexpr flex_int num_factors_if_known         = GLMModel::num_factors_if_known;
 
   // Enable item locking if we're in matrix factorization mode.
   static constexpr bool enable_item_locking = true; // (factor_mode == model_factor_mode::matrix_factorization);
@@ -106,7 +103,7 @@ class factorization_sgd_interface final : public sgd::sgd_interface_base {
   inline size_t num_factors() const GL_HOT_INLINE_FLATTEN {
     return ((factor_mode == model_factor_mode::pure_linear_model)
             ? 0
-            : ( (num_factors_if_known == DYNAMIC)
+            : ( (num_factors_if_known == Eigen::Dynamic)
                 ? model->num_factors()
                 : num_factors_if_known));
   }
@@ -258,8 +255,8 @@ class factorization_sgd_interface final : public sgd::sgd_interface_base {
 
   float adagrad_momentum_weighting = 1.0;
 
-  row_major_matrix<float> V_adagrad_g;
-  arma::fvec w_adagrad_g;
+  Eigen::Matrix<float, Eigen::Dynamic, num_factors_if_known, Eigen::RowMajor> V_adagrad_g;
+  Eigen::Matrix<float, Eigen::Dynamic, 1> w_adagrad_g;
 
   ////////////////////////////////////////////////////////////////////////////////
   // Set up and tear down methods for the different things.
@@ -364,7 +361,7 @@ class factorization_sgd_interface final : public sgd::sgd_interface_base {
     // Set up the stuff for adagrad
     if(adagrad_mode) {
       w_adagrad_g.resize(model->w.size());
-      V_adagrad_g.resize(model->V.n_rows, num_factors());
+      V_adagrad_g.resize(model->V.rows(), num_factors());
     }
   }
 
@@ -409,6 +406,29 @@ class factorization_sgd_interface final : public sgd::sgd_interface_base {
     current_iteration = iteration;
     current_iteration_step_size = step_size;
 
+    // The following text is saved for debugging mode stuff.
+
+    // if(adagrad_mode && factor_mode == model_factor_mode::factorization_machine) {
+    //   size_t idx = model->index_offsets[2];
+    //   logprogress_stream << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ " << std::endl;
+    //   logprogress_stream << "w = " << model->w[idx]
+    //                      << "; w_adagrad = " << w_adagrad_g[idx] << std::endl;
+    //   logprogress_stream << "V         = " << model->V.row(idx) << std::endl;
+    //   logprogress_stream << "V_adagrad = " << V_adagrad_g.row(idx) << std::endl;
+
+    //   logprogress_stream << "w0 = " << model->w0  << "; w0_adagrad = " << w0_adagrad_g << std::endl;
+
+    //   logprogress_stream << "w max = " << model->w.maxCoeff()
+    //                      << ";\t w min = " << model->w.minCoeff()
+    //                      << ";\t w_ada min = " << w_adagrad_g.minCoeff()
+    //                      << ";\t w_ada min = " << w_adagrad_g.maxCoeff() << std::endl;
+
+    //   logprogress_stream << "V max = " << model->V.maxCoeff()
+    //                      << ";\t V min = " << model->V.minCoeff()
+    //                      << ";\t V_ada min = " << V_adagrad_g.minCoeff()
+    //                      << ";\t V_ada max = " << V_adagrad_g.maxCoeff() << std::endl;
+    // }
+
     switch(regularization_type) {
       case model_regularization_type::L2: {
 
@@ -430,9 +450,9 @@ class factorization_sgd_interface final : public sgd::sgd_interface_base {
         double V_step_size = step_size;
 
         if(adagrad_mode) {
-          w_step_size /= std::max(1.0, std::sqrt(double(arma::mean(w_adagrad_g))));
-          if(V_adagrad_g.n_rows != 0)
-            V_step_size /= std::max(1.0, std::sqrt(double(arma::mean(arma::mean(V_adagrad_g.X())))));
+          w_step_size /= std::max(1.0, std::sqrt(double(w_adagrad_g.mean())));
+          if(V_adagrad_g.rows() != 0)
+            V_step_size /= std::max(1.0, std::sqrt(double(V_adagrad_g.mean())));
         }
         
         s_w_factor = 1.0 - w_step_size * lambda_w;
@@ -492,13 +512,11 @@ class factorization_sgd_interface final : public sgd::sgd_interface_base {
     if(adagrad_mode && adagrad_momentum_weighting != 1.0) {
       float rho = adagrad_momentum_weighting;
 
-      if(w_adagrad_g.size() != 0) {
-        w_adagrad_g = rho * w_adagrad_g + (1 - rho) * arma::mean(w_adagrad_g);
-      }
+      if(w_adagrad_g.size() != 0)
+        w_adagrad_g.array() = rho * w_adagrad_g.array() + (1 - rho) * w_adagrad_g.mean();
       
-      if(V_adagrad_g.n_rows != 0) {
-        V_adagrad_g = rho * V_adagrad_g.X() + (1 - rho) * arma::mean(arma::mean(V_adagrad_g.X()));
-      }
+      if(V_adagrad_g.rows() != 0)
+        V_adagrad_g.array() = rho * V_adagrad_g.array() + (1 - rho) * V_adagrad_g.mean();
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -568,7 +586,7 @@ class factorization_sgd_interface final : public sgd::sgd_interface_base {
     if(nmf_mode) {
       // Test for hitting the zero point.
       for(size_t i = 0; i < num_factor_dimensions(); ++i) {
-        if(arma::sum(model->V.row(i)) > 1e-16)
+        if(model->V.row(i).sum() > 1e-16)
           return true;
       }
 
@@ -589,8 +607,8 @@ class factorization_sgd_interface final : public sgd::sgd_interface_base {
     currently_in_trial_mode = trial_mode;
 
     if(adagrad_mode) {
-      w_adagrad_g.fill(1e-16);
-      V_adagrad_g.fill(1e-16);
+      w_adagrad_g.setConstant(1e-16);
+      V_adagrad_g.setConstant(1e-16);
       w0_adagrad_g = 1e-16;
     }
 
@@ -620,8 +638,8 @@ class factorization_sgd_interface final : public sgd::sgd_interface_base {
         size_t w_start_idx = (thread_idx * size_t(model->w.size())) / num_threads;
         size_t w_end_idx   = ((thread_idx + 1) * size_t(model->w.size())) / num_threads;
 
-        size_t V_start_idx = (thread_idx * size_t(model->V.n_rows)) / num_threads;
-        size_t V_end_idx   = ((thread_idx + 1) * size_t(model->V.n_rows)) / num_threads;
+        size_t V_start_idx = (thread_idx * size_t(model->V.rows())) / num_threads;
+        size_t V_end_idx   = ((thread_idx + 1) * size_t(model->V.rows())) / num_threads;
 
         if(regularization_type == model_regularization_type::ON_THE_FLY) {
 
@@ -641,20 +659,20 @@ class factorization_sgd_interface final : public sgd::sgd_interface_base {
               accumulative_regularization_penalty[thread_idx]
                   += (lambda_V
                       * on_the_fly__regularization_scaling_factors[i]
-                      * squared_norm(model->V.row(i)));
+                      * model->V.row(i).squaredNorm());
             }
           }
 
         } else {
 
-          if(lambda_w != 0 && w_start_idx != w_end_idx) {
+          if(lambda_w != 0) {
             accumulative_regularization_penalty[thread_idx] +=
-                double(lambda_w * squared_norm(model->w.subvec(w_start_idx, w_end_idx - 1)));
+                lambda_w * model->w.segment(w_start_idx, w_end_idx - w_start_idx).squaredNorm();
           }
 
-          if(lambda_V != 0 && V_start_idx != V_end_idx) {
+          if(lambda_V != 0) {
             accumulative_regularization_penalty[thread_idx] +=
-                double(lambda_V * squared_norm(model->V.tr_rows(V_start_idx, V_end_idx-1)));
+                lambda_V * model->V.block(V_start_idx, 0, V_end_idx - V_start_idx, num_factors()).squaredNorm();
           }
         }
 
@@ -781,7 +799,7 @@ class factorization_sgd_interface final : public sgd::sgd_interface_base {
 
         double fx_value = 0;
 
-        buffer.xv_accumulator.zeros();
+        buffer.xv_accumulator.setZero();
 
         for(size_t j = 0; j < x_size; ++j) {
           const v2::ml_data_entry& v = x[j];
@@ -819,7 +837,7 @@ class factorization_sgd_interface final : public sgd::sgd_interface_base {
           double fx_delta = 0;
           for(size_t j = 0; j < x.size(); ++j) {
             const auto& b = buffer.v[j];
-            fx_delta += dot(buffer.xv_accumulator, b.xV_row) - squared_norm(b.xV_row);
+            fx_delta += buffer.xv_accumulator.dot(b.xV_row) - b.xV_row.squaredNorm();
           }
 
           fx_value += 0.5*fx_delta;
@@ -866,12 +884,7 @@ class factorization_sgd_interface final : public sgd::sgd_interface_base {
           // Get the global index
           const size_t global_idx = (j == 0 ? 0 : model->index_offsets[1]) + v.index;
           b.index = global_idx;
-          
-          DASSERT_EQ(b.V_row.n_cols, num_factors());
-
           b.V_row = model->V.row(global_idx);
-
-          DASSERT_EQ(b.V_row.n_cols, num_factors());
           
           // No column scaling on the first two dimensions under MF model.
           DASSERT_EQ(v.value, 1);
@@ -907,7 +920,7 @@ class factorization_sgd_interface final : public sgd::sgd_interface_base {
         ////////////////////////////////////////////////////////////////////////////////
         //
         //  Step 3: Pull in the contribution from the factors.
-        fx_value += (s_V * s_V) * dot(buffer.v[0].V_row, buffer.v[1].V_row);
+        fx_value += (s_V * s_V) * (buffer.v[0].V_row.dot(buffer.v[1].V_row));
 
         ////////////////////////////////////////////////////////////////////////////////
         //
@@ -1063,7 +1076,7 @@ class factorization_sgd_interface final : public sgd::sgd_interface_base {
 
         // Prefetch all rows except the user terms.
         for(size_t j = 1; j < x_size; ++j)
-          __builtin_prefetch(&(model->V(buffer.v[j].index, 0)), 1, 1);
+          __builtin_prefetch(&(model->V(buffer.v[j].index)), 1, 1);
 
         // Now apply the gradient to w and to the factors in turn
         for(size_t j = 0; j < x_size; ++j) {
@@ -1100,6 +1113,8 @@ class factorization_sgd_interface final : public sgd::sgd_interface_base {
 
           // Use xV_row as a buffer to hold the gradient step
 
+          // Unclipped =
+
           // b.xV_row -= buffer.xv_accumulator;
 
           b.xV_row = (l_grad * (buffer.xv_accumulator - b.xV_row));
@@ -1124,7 +1139,7 @@ class factorization_sgd_interface final : public sgd::sgd_interface_base {
                 b.V_row[i] = 0;
             }
 
-            model->V.set_row(b.index, b.V_row);
+            model->V.row(b.index) = b.V_row;
 
           } else {
             if(using_on_the_fly_regularization) {
@@ -1134,9 +1149,10 @@ class factorization_sgd_interface final : public sgd::sgd_interface_base {
 
             } else {
               b.xV_row *= step_V_scale;
+              b.xV_row = b.xV_row.cwiseMin(float(1.0));
+              b.xV_row = b.xV_row.cwiseMax(float(-1.0));
 
-              // Clip for stability.
-              model->V.add_row(b.index, -s_V_new_inv * arma::clamp(b.xV_row, -1, 1)); 
+              model->V.row(b.index) -= s_V_new_inv * b.xV_row;
             }
           }
         }
@@ -1180,6 +1196,7 @@ class factorization_sgd_interface final : public sgd::sgd_interface_base {
         b0.xV_row = l_grad * b1.V_row;
         b1.xV_row = l_grad * b0.V_row;
 
+        // Clip for stability; apply to the temporary buffer.
 
         if(adagrad_mode) {
           for(size_t i = 0; i < num_factors(); ++i) {
@@ -1193,12 +1210,13 @@ class factorization_sgd_interface final : public sgd::sgd_interface_base {
           }
         }
 
-        // Clip for stability; apply to the temporary buffer.
         b0.xV_row *= step_size;
-        b0.xV_row = arma::clamp(b0.xV_row, -1, 1); 
+        b0.xV_row = b0.xV_row.cwiseMin(float(1.0));
+        b0.xV_row = b0.xV_row.cwiseMax(float(-1.0));
 
         b1.xV_row *= step_size;
-        b1.xV_row = arma::clamp(b1.xV_row, -1, 1); 
+        b1.xV_row = b1.xV_row.cwiseMin(float(1.0));
+        b1.xV_row = b1.xV_row.cwiseMax(float(-1.0));
 
         // Apply the gradient to the temporary buffer
         b0.V_row -= s_V_new_inv * b0.xV_row;
@@ -1210,13 +1228,12 @@ class factorization_sgd_interface final : public sgd::sgd_interface_base {
         }
 
         if(nmf_mode) {
-          for(size_t i = 0; i < model->num_factors(); ++i) { 
-            model->V(b0.index, i) = std::max<float>(0, b0.V_row(i));
-            model->V(b1.index, i) = std::max<float>(0, b1.V_row(i));
-          }
+          // Clip to non-negative values.
+          model->V.row(b0.index) = b0.V_row.cwiseMax(float(0));
+          model->V.row(b1.index) = b1.V_row.cwiseMax(float(0));
         } else {
-          model->V.set_row(b0.index, b0.V_row);
-          model->V.set_row(b1.index, b1.V_row);
+          model->V.row(b0.index) = b0.V_row;
+          model->V.row(b1.index) = b1.V_row;
         }
 
         break;

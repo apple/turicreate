@@ -9,7 +9,7 @@
 
 #include <unity/lib/variant_deep_serialize.hpp>
 #include <random/random.hpp>
-#include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
 #include <table_printer/table_printer.hpp>
 #include <sstream>
 
@@ -29,14 +29,14 @@ namespace feature_engineering {
  **********************/
 
 /*
- * Fill a dense matrix by drawing each entry from a Gaussian
+ * Fill an Eigen dense matrix by drawing each entry from a Gaussian
  * distribution. The Gaussian has mean 0 and variance 1, but the projection
  * needs to be scaled by 1 / sqrt(embedding_dimension).  Note that multiplying a
  * standard Gaussian by 1/sqrt(k) is equivalent to drawing a random variable
  * from N(0, 1/k), which is Scikit-learn's strategy. I think this code is more
  * readable.
  *
- * \param projection_matrix Shared pointer to a dense_matrix. Should be
+ * \param projection_matrix Shared pointer to an Eigen dense_matrix. Should be
  *                          sized correctly, but empty.
  * \param embedding_dimension Required here for the scale factor on the
  *                            projection matrix entries.
@@ -49,7 +49,9 @@ void fill_gaussian_projection_matrix(std::shared_ptr<dense_matrix> projection_ma
   double scale = 1 / std::sqrt(embedding_dimension);
   random::seed(random_seed);
 
-  projection_matrix->for_each([&](double& x) { x = scale * random::normal(0, 1); });
+  *projection_matrix = projection_matrix->unaryExpr([&](double x) {
+    return scale * random::normal(0, 1);
+  });
 }
 
 
@@ -163,12 +165,12 @@ flex_vec random_projection_apply(const sframe_rows::row& row,
     else if ((col_type == flex_type_enum::INTEGER) ||
              (col_type == flex_type_enum::FLOAT)) {
 
-      x(idx) = row[j];
+      x.coeffRef(idx) = row[j];
       idx++;
 
     } else if (col_type == flex_type_enum::VECTOR) {
       for (size_t k = 0; k < row[j].size(); ++k) {
-        x(idx) = row[j][k];
+        x.coeffRef(idx) = row[j][k];
         idx++;
       }
     }
@@ -187,7 +189,7 @@ flex_vec random_projection_apply(const sframe_rows::row& row,
   }
 
   // Embed the row by multiplying by the projection matrix.
-  dense_vector y = (x.t() * (*projection_matrix_ptr)).t();
+  dense_vector y = x.transpose() * (*projection_matrix_ptr);
 
   // Convert the result back to a flex_vec.
   flex_vec row_out(y.size());

@@ -11,7 +11,7 @@
 #include <unity/lib/gl_sframe.hpp>
 
 // Toolkits
-#include <toolkits/supervised_learning/supervised_learning.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
 #include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
 
 // Optimization Interface
@@ -37,7 +37,7 @@ class EXPORT linear_svm: public supervised_learning_model_base {
 
   protected:
 
-  arma::vec  coefs;    /**< Primal sol */
+  Eigen::Matrix<double, Eigen::Dynamic,1>  coefs;    /**< Primal sol */
   std::shared_ptr<linear_svm_scaled_logistic_opt_interface>
                                           scaled_logistic_svm_interface;
   

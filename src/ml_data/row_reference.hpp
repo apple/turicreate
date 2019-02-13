@@ -12,16 +12,16 @@
 #include <ml_data/ml_data.hpp>
 #include <util/code_optimization.hpp>
 
-#include <numerics/armadillo.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/SparseCore>
+#include <Eigen/Core>
 
 #include <array>
 #include <type_traits>
 
 namespace turi {
 
-typedef arma::vec DenseVector;
-typedef sparse_vector<double> SparseVector;
+typedef Eigen::Matrix<double, Eigen::Dynamic,1>  DenseVector;
+typedef Eigen::SparseVector<double> SparseVector;
 
 /**
  * \ingroup mldata
@@ -121,12 +121,12 @@ class ml_data_row_reference {
   inline void fill(std::vector<Entry>& x) const;
 
   /**
-   * Fill a 1-dimensionaal Armadillo container in the current location in the
+   * Fill a row of an Eigen expression in the current location in the
    * iteration.
    *
    * Example:
    *
-   *   arma::mat X;
+   *   Eigen::MatrixXd X;
    *
    *   ...
    *
@@ -137,60 +137,14 @@ class ml_data_row_reference {
    * \param[in,out] x   An eigen row expression.
    *
    */
-  template  <typename T>
+  template <typename EigenXpr>
   GL_HOT_INLINE_FLATTEN
-  inline void fill(arma::Col<T>& x) const {
+  inline void fill(
+      EigenXpr&& x,
+      typename std::enable_if<std::is_convertible<EigenXpr, DenseVector>::value >::type* = 0) const {
 
-    fill_arma(x);
+    fill_eigen(x);
   }
-
-  template  <typename T>
-  GL_HOT_INLINE_FLATTEN
-  inline void fill(arma::Col<T>&& x) const {
-
-    fill_arma(std::move(x));
-  }
-
-  template <typename T>
-  GL_HOT_INLINE_FLATTEN
-  inline void fill(arma::Row<T>& x) const {
-    fill_arma(x);
-  }
-
-  template <typename T>
-  GL_HOT_INLINE_FLATTEN
-  inline void fill(arma::Row<T>&& x) const {
-    fill_arma(std::move(x));
-  }
-
-  /**  The explicit version to fill an armadillo expression; allows use of
-   *   template temporaries.
-   */
-  template <typename ArmaExpr>
-  GL_HOT_INLINE_FLATTEN
-  inline void fill_arma(ArmaExpr&& x) const;
-
-  /**
-   * Fill a sparse_vector container in the current location in the
-   * iteration.
-   *
-   * Example:
-   *
-   *   sparse_vector<double> x;
-   *
-   *   ...
-   *
-   *   it.fill(x);
-   *
-   * ---------------------------------------------
-   *
-   * \param[in,out] x   An eigen row expression.
-   *
-   */
-  template <typename T, typename Index>
-  GL_HOT_INLINE_FLATTEN
-  inline void fill(sparse_vector<T, Index>& x) const;
-
 
   /**
    * Fill an observation vector with the untranslated columns, if any
@@ -199,6 +153,11 @@ class ml_data_row_reference {
    */
   void fill_untranslated_values(std::vector<flexible_type>& x) const;
 
+  /**  The explicit version to fill an eigen expression.
+   */
+  template <typename EigenXpr>
+  GL_HOT_INLINE_FLATTEN
+  inline void fill_eigen(EigenXpr&& x) const;
 
   /**  A generic function to unpack the values into a particular
    *   format.  This allows, e.g. custom distance functions and stuff
@@ -323,44 +282,11 @@ void ml_data_row_reference::fill(std::vector<Entry>& x) const {
 ////////////////////////////////////////////////////////////////////////////////
 // fill eigen stuff
 
-template <typename ArmaExpr>
+template <typename EigenXpr>
 GL_HOT_INLINE_FLATTEN
-inline void ml_data_row_reference::fill_arma(ArmaExpr&& x) const {
+inline void ml_data_row_reference::fill_eigen(EigenXpr&& x) const {
 
-  x.zeros();
-
-  unpack(
-
-      /** The function to write out the data to x.
-       */
-      [&](ml_column_mode mode, size_t column_index,
-          size_t feature_index, double value,
-          size_t index_size, size_t index_offset) {
-
-        if(UNLIKELY(feature_index >= index_size))
-          return;
-
-        size_t idx = index_offset + feature_index;
-
-        DASSERT_GE(idx,  0);
-        DASSERT_LT(idx, size_t(x.n_elem));
-        x(idx) = value;
-      },
-
-      /** The function to advance the offset, called after each column
-       *  is finished.
-       */
-      [&](ml_column_mode mode, size_t column_index, size_t index_size) {});
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// fill eigen stuff
-
-template <typename T, typename Index>
-GL_HOT_INLINE_FLATTEN
-inline void ml_data_row_reference::fill(sparse_vector<T, Index>& x) const {
-
-  x.clear();
+  x.setZero();
 
   unpack(
 
@@ -377,7 +303,7 @@ inline void ml_data_row_reference::fill(sparse_vector<T, Index>& x) const {
 
         DASSERT_GE(idx,  0);
         DASSERT_LT(idx, size_t(x.size()));
-        x.insert(static_cast<Index>(idx), value);
+        x.coeffRef(idx) = value;
       },
 
       /** The function to advance the offset, called after each column
@@ -385,8 +311,6 @@ inline void ml_data_row_reference::fill(sparse_vector<T, Index>& x) const {
        */
       [&](ml_column_mode mode, size_t column_index, size_t index_size) {});
 }
-
-
 
 }
 

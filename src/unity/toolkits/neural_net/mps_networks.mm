@@ -38,7 +38,7 @@ MPSNetwork *_Nonnull createNetwork(NetworkType network_id,
 // MPS Network base class
 // ---------------------------------------------------------------------------------------
 MPSNetwork::~MPSNetwork() {
-  for (int i = 0; i < layers.size(); ++i) {
+  for (size_t i = 0; i < layers.size(); ++i) {
     delete layers[i];
   }
   delete lossLayer;
@@ -47,7 +47,7 @@ MPSNetwork::~MPSNetwork() {
 void MPSNetwork::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q,
                       const float_array_map& config) {
     
-  for (int i = 0; i < layers.size(); ++i) {
+  for (size_t i = 0; i < layers.size(); ++i) {
     layers[i]->Init(device, cmd_q, config, is_train_, network_mode_ ,(i == layers.size() - 1));
   }
   
@@ -60,7 +60,7 @@ MPSImageBatch *_Nonnull MPSNetwork::Forward(MPSImageBatch *_Nonnull src,
                                             id<MTLCommandBuffer> _Nonnull cb,
                                             bool is_train) {
   MPSImageBatch *input = src;
-  for (int i = 0; i < layers.size(); ++i) {
+  for (size_t i = 0; i < layers.size(); ++i) {
       
     // MPSTempImages are created by default with readCount=1. This means
     // that after they are read once - they may be destroyed by the Metal
@@ -113,14 +113,14 @@ void MPSNetwork::SyncState(id<MTLCommandBuffer> _Nonnull cb) {
 }
 
 void MPSNetwork::Load(const float_array_map& weights) {
-  for (int i = 0; i < layers.size(); ++i) {
+  for (size_t i = 0; i < layers.size(); ++i) {
     layers[i]->Load(weights);
   }
 }
 
 float_array_map MPSNetwork::Export() const {
   float_array_map table;
-  for (int i = 0; i < layers.size(); ++i) {
+  for (size_t i = 0; i < layers.size(); ++i) {
     float_array_map layer_table = layers[i]->Export();
     table.insert(layer_table.begin(), layer_table.end());
     // TODO: In C++17, we can use std::map::merge to move the table entries
@@ -131,20 +131,20 @@ float_array_map MPSNetwork::Export() const {
 
 void MPSNetwork::Update(MPSUpdater *_Nonnull updater) {
   updater->NewIteration();
-  for (int i = 0; i < layers.size(); ++i) {
+  for (size_t i = 0; i < layers.size(); ++i) {
     layers[i]->Update(updater, i);
   }
 }
 
 void MPSNetwork::GpuUpdate(id<MTLCommandBuffer> _Nonnull cb){
-    for (int i = 0; i < layers.size(); ++i) {
+    for (size_t i = 0; i < layers.size(); ++i) {
         layers[i]->GpuUpdate(cb);
     }
 }
 
 int MPSNetwork::NumParams() {
   int ret = 0;
-  for (int i = 0; i < layers.size(); ++i) {
+  for (size_t i = 0; i < layers.size(); ++i) {
     LayerType type = layers[i]->type;
     switch (type) {
     case kConv:
