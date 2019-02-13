@@ -1,8 +1,9 @@
 project(Turi)
 
-# We require the most recent version of cmake and automatically
-# install the correct version when using the cmake lists
-cmake_minimum_required(VERSION 2.8.3)
+# We require a recent version of cmake and automatically
+# install a compatible version when using the cmake lists,
+# if one is not already present.
+cmake_minimum_required(VERSION 3.9.3)
 
 # Libraries linked via full path no longer produce linker search paths.
 cmake_policy(SET CMP0003 NEW)
