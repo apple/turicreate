@@ -3,15 +3,17 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <unity/toolkits/activity_classification/sequence_iterator.hpp>
+
 #include <time.h>
 #include <iomanip>
+
 #include <logger/assertions.hpp>
-#include "sequence_iterator.hpp"
-#include "random/random.hpp"
-#include "util/sys_util.hpp"
+#include <random/random.hpp>
+#include <util/sys_util.hpp>
 
 namespace turi {
-namespace sdk_model {
 namespace activity_classification {
 
 
@@ -292,6 +294,5 @@ variant_map_type _activity_classifier_prepare_data_verbose( const gl_sframe &dat
       prediction_window, predictions_in_chunk, target, true);
 }
 
-} //activity_classification
-} //sdk_model
-} //turi
+}  //activity_classification
+}  //turi

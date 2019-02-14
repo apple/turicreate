@@ -6,8 +6,83 @@
 #ifndef TURI_ACTIVITY_CLASSIFIER_H_
 #define TURI_ACTIVITY_CLASSIFIER_H_
 
+#include <unity/lib/extensions/ml_model.hpp>
+#include <unity/lib/gl_sframe.hpp>
 
-class activity_classifier {
+namespace turi {
+namespace activity_classification {
+
+class EXPORT activity_classifier: public ml_model_base {
+
+ public:
+
+  // Interface exposed via Unity server
+
+  void train(gl_sframe data, std::string target_column_name,
+             std::string session_id_column_name,
+             variant_type validation_data,
+             std::map<std::string, flexible_type> opts);
+
+  // TODO: Remainder of public interface: export, evaluate, predict, save/load
+
+  BEGIN_CLASS_MEMBER_REGISTRATION("activity_classifier")
+
+  IMPORT_BASE_CLASS_REGISTRATION(ml_model_base);
+
+  REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::train, "data", "target",
+                                 "session_id", "validation_data", "options");
+  register_defaults("train",
+                    {{"validation_data", to_variant(gl_sframe())},
+                     {"options",
+                      to_variant(std::map<std::string, flexible_type>())}});
+  REGISTER_CLASS_MEMBER_DOCSTRING(
+      activity_classifier::train,
+      "----------\n"
+      "data : SFrame\n"
+      "    Input data which consists of `sessions` of data where each session is\n"
+      "    a sequence of data. The data must be in `stacked` format, grouped by\n"
+      "    session. Within each session, the data is assumed to be sorted\n"
+      "    temporally. Columns in `features` will be used to train a model that\n"
+      "    will make a prediction using labels in the `target` column.\n"
+      "target : string\n"
+      "    Name of the column containing the target variable. The values in this\n"
+      "    column must be of string or integer type.\n"
+      "session_id : string\n"
+      "    Name of the column that contains a unique ID for each session.\n"
+      "validatation_data : SFrame or string\n"
+      "    A dataset for monitoring the model's generalization performance to\n"
+      "    prevent the model from overfitting to the training data.\n"
+      "\n"
+      "    For each row of the progress table, accuracy is measured over the\n"
+      "    provided training dataset and the `validation_data`. The format of\n"
+      "    this SFrame must be the same as the training set.\n"
+      "\n"
+      "    When set to 'auto', a validation set is automatically sampled from the\n"
+      "    training data (if the training data has > 100 sessions).\n"
+      "options : dict\n"
+      "\n"
+      "Options\n"
+      "-------\n"
+      "features : list[string]\n"
+      "    Name of the columns containing the input features that will be used\n"
+      "    for classification. If not set, all columns except `session_id` and\n"
+      "    `target` will be used.\n"
+      "prediction_window : int\n"
+      "    Number of time units between predictions. For example, if your input\n"
+      "    data is sampled at 100Hz, and the `prediction_window` is set to 100,\n"
+      "    then this model will make a prediction every 1 second.\n"
+      "max_iterations : int\n"
+      "    Maximum number of iterations/epochs made over the data during the\n"
+      "    training phase.\n"
+      "batch_size : int\n"
+      "    Number of sequence chunks used per training step. Must be greater than\n"
+      "    the number of GPUs in use.\n"
+  );
+
+  END_CLASS_MEMBER_REGISTRATION
 };
+
+}  // namespace activity_classification
+}  // namespace turi
 
 #endif //TURI_ACTIVITY_CLASSIFIER_H_

@@ -54,7 +54,6 @@ void register_functions(toolkit_function_registry& registry) {
 
   registry.register_toolkit_function(turi::evaluation::get_toolkit_function_registration());
   registry.register_toolkit_function(turi::supervised::get_toolkit_function_registration());
-  registry.register_toolkit_function(turi::sdk_model::activity_classification::get_toolkit_function_registration());
 
   registry.register_toolkit_function(image_util::get_toolkit_function_registration());
   registry.register_toolkit_function(visualization::get_toolkit_function_registration());
@@ -80,7 +79,7 @@ void register_functions(toolkit_function_registry& registry) {
   registry.register_toolkit_function(turi::image_util::get_toolkit_function_registration());
   registry.register_toolkit_function(turi::ml_model_sdk::get_toolkit_function_registration());
   registry.register_toolkit_function(turi::pattern_mining::get_toolkit_function_registration());
-  registry.register_toolkit_function(turi::sdk_model::activity_classification::get_toolkit_function_registration());
+  registry.register_toolkit_function(turi::activity_classification::get_toolkit_function_registration());
   registry.register_toolkit_function(turi::util::get_toolkit_function_registration());
 }
 
@@ -133,6 +132,9 @@ void register_models(toolkit_class_registry& registry) {
   // Object Detection
   registry.register_toolkit_class(turi::object_detection::get_toolkit_class_registration());
   
+  // Activity Classification
+  registry.register_toolkit_class(turi::activity_classification::get_toolkit_class_registration());
+
   // Various prototypes
   registry.register_toolkit_class(turi::prototype::get_toolkit_class_registration());
 

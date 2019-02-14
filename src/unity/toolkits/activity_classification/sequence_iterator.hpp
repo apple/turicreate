@@ -13,7 +13,6 @@
 
 
 namespace turi {
-namespace sdk_model {
 namespace activity_classification {
 
 class sequence_iterator {
@@ -54,7 +53,6 @@ EXPORT variant_map_type _activity_classifier_prepare_data_verbose(const gl_sfram
                                                    const int &prediction_window,
                                                    const int &predictions_in_chunk,
                                                    const std::string &target);
-}
 }
 }
 
