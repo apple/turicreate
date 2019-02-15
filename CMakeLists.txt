@@ -52,7 +52,7 @@ if (APPLE)
   find_library(ACCELERATE NAMES Accelerate)
   find_library(APPKIT AppKit)
   find_library(CORE_GRAPHICS CoreGraphics)
-  find_library(JAVASCRIPTCORE JavaScriptCore)
+  find_library(JAVASCRIPT_CORE JavaScriptCore)
   find_library(FOUNDATION Foundation)
   find_library(CORE_IMAGE NAMES CoreImage)
   find_library(CORE_ML CoreML)
@@ -1200,7 +1200,7 @@ if(APPLE)
       ${_TC_COMMON_REQUIREMENTS}
       ${APPKIT}
       ${CORE_GRAPHICS}
-      ${JAVASCRIPTCORE}
+      ${JAVASCRIPT_CORE}
     )
     if(HAS_MPS)
       set(_TC_COMMON_OBJECTS

@@ -30,7 +30,7 @@ if(APPLE AND NOT TC_BUILD_IOS)
         ${FOUNDATION}
         ${APPKIT}
         ${CORE_GRAPHICS}
-        ${JAVASCRIPTCORE}
+        ${JAVASCRIPT_CORE}
     )
 
     make_boost_test(vega_example_tests.cxx ${source_deps} REQUIRES ${target_deps})
