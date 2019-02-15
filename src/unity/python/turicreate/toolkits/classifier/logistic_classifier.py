@@ -161,7 +161,7 @@ def create(dataset, target, features=None,
         the model trained. Setting this to more than ``max_iterations`` has the
         same effect as setting it to ``max_iterations``.
 
-    max_iterations : float, optional
+    max_iterations : int, optional
 
         The maximum number of allowed passes through the data. More passes over
         the data can result in a more accurately trained model. Consider
