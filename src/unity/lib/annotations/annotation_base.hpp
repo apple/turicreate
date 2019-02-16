@@ -36,7 +36,7 @@ public:
 
   virtual annotate_spec::Annotations getAnnotations(size_t start, size_t end);
 
-  virtual bool setAnnotations(const annotate_spec::Annotations &annotation);
+  virtual bool setAnnotations(const annotate_spec::Annotations &annotations);
 
   virtual std::shared_ptr<unity_sframe>
   returnAnnotations(bool drop_null = true);

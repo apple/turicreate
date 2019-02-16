@@ -17,14 +17,17 @@ public:
 
   annotate_spec::Annotations getAnnotations(size_t start, size_t end);
 
-  bool setAnnotations(const annotate_spec::Annotations &annotation);
+  bool setAnnotations(const annotate_spec::Annotations &annotations);
 
   std::shared_ptr<unity_sframe> returnAnnotations(bool drop_null);
 
 private:
+  void _addAnnotationToSFrame(size_t index, std::string label);
+  void _addAnnotationToSFrame(size_t index, size_t label);
   std::shared_ptr<unity_sarray> _filterDataSFrame(size_t &start, size_t &end);
   std::shared_ptr<unity_sarray> _filterAnnotationSFrame(size_t &start,
                                                         size_t &end);
+  
 };
 
 } // namespace annotate

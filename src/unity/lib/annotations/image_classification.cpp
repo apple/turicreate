@@ -70,15 +70,57 @@ annotate_spec::Annotations ImageClassification::getAnnotations(size_t start,
 }
 
 bool ImageClassification::setAnnotations(
-    const annotate_spec::Annotations &annotation) {
+    const annotate_spec::Annotations &annotations) {
 
-  return false;
+  // For Image Classification a number of assumptions are made.
+  //
+  // - There can only be one label per image.
+  // - There can only be one image per label.
+  //
+  // (Note: the future we may support multi-class labeling, multiple images per
+  // label and this design supports it. To enable this feature refactor this
+  // code.)
+
+  for (int a_idx = 0; a_idx < annotations.annotation_size(); a_idx++) {
+    annotate_spec::Annotation annotation = annotations.annotation(a_idx);
+
+    annotate_spec::Label label = annotation.labels(0);
+    size_t sf_idx = annotation.datumhash(0);
+
+    assert(label.has_imageclassificationlabel());
+
+    switch (label.labelIdentifier_case()) {
+    case annotate_spec::Label::LabelIdentifierCase::kIntLabel:
+      _addAnnotationToSFrame(sf_idx, label.intlabel());
+      break;
+    case annotate_spec::Label::LabelIdentifierCase::kStringLabel:
+      _addAnnotationToSFrame(sf_idx, label.stringlabel());
+      break;
+    default:
+      throw std::runtime_error(
+          "Unexpected label type type. Expected INTEGER or STRING.");
+      return false;
+    }
+  }
+
+  return true;
 }
 
 std::shared_ptr<unity_sframe>
 ImageClassification::returnAnnotations(bool drop_null) {
   // TODO: add annotations in sframe format.
   return std::make_shared<unity_sframe>();
+}
+
+void ImageClassification::_addAnnotationToSFrame(size_t index,
+                                                 std::string label) {
+  // TODO: add to the index of `sf_idx` the label in `str_label` to the
+  // `annotation_column`
+}
+
+void ImageClassification::_addAnnotationToSFrame(size_t index, size_t label) {
+  // TODO: add to the index of `sf_idx` the label in `int_label` to the
+  // `annotation_column`
 }
 
 std::shared_ptr<unity_sarray>
