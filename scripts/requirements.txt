@@ -1,4 +1,4 @@
-coremltools==2.0b1
+coremltools==2.1.0
 scipy==0.19.1
 numpy==1.11.1
 cython==0.24
@@ -11,6 +11,7 @@ pandas==0.22.0
 pillow==5.0.0
 prettytable==0.7.2
 pytz==2016.3
+resampy==0.2.1
 requests>=2.9.1
 scikit-learn==0.17.1
 six==1.10.0
