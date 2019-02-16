@@ -10,11 +10,9 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-import mxnet as _mx
 import numpy as _np
 import time as _time
 
-from ._audio_feature_extractor import _get_feature_extractor
 from .. import _mxnet_utils
 
 import turicreate as _tc
@@ -56,6 +54,9 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
         If you are getting memory errors, try decreasing this value. If you
         have a powerful computer, increasing this value may improve performance.
     '''
+    from ._audio_feature_extractor import _get_feature_extractor
+    import mxnet as _mx
+
     start_time = _time.time()
 
     # check parameters
@@ -194,6 +195,8 @@ class SoundClassifier(_CustomModel):
         A function to load a previously saved SoundClassifier
         instance.
         """
+        from ._audio_feature_extractor import _get_feature_extractor
+
         state['_feature_extractor'] = _get_feature_extractor(state['feature_extractor_name'])
 
         # Load the custom nerual network
@@ -540,6 +543,8 @@ class SoundClassifier(_CustomModel):
         >>> class_predictions = model.predict(data, output_type='class')
 
         """
+        import mxnet as _mx
+
         if not isinstance(dataset, (_tc.SFrame, _tc.SArray, dict)):
             raise TypeError('\'dataset\' parameter must be either an SFrame, SArray or dictionary')
         if isinstance(dataset, dict):
