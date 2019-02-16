@@ -1,3 +1,3 @@
 project(crash_handler)
 
-add_library(crash_handler OBJECT crash_handler.cpp)
+make_library(crash_handler OBJECT SOURCES crash_handler.cpp)

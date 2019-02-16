@@ -13,11 +13,19 @@ if(HAS_CORE_ML)
   find_library(core_video NAMES CoreVideo)
   message("CoreVideo found at ${core_video}.")
 
-  add_library(image_deep_feature_extractor OBJECT
-    mlmodel_image_feature_extractor.mm
-    class_registrations.cpp
-    image_deep_feature_extractor_toolkit.cpp
+  make_library(image_deep_feature_extractor OBJECT
+    SOURCES
+      mlmodel_image_feature_extractor.mm
+      class_registrations.cpp
+      image_deep_feature_extractor_toolkit.cpp
+    REQUIRES
+      fileio
+      objc
+      unity_coreml_model_export
+      ${CORE_ML}
+      ${FOUNDATION}
+      ${CORE_VIDEO}
+    EXTERNAL_VISIBILITY
   )
-  add_dependencies(image_deep_feature_extractor boost)
 
 endif()

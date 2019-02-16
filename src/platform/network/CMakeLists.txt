@@ -1,6 +1,8 @@
 project(network)
 
-add_library(network OBJECT
-  net_util.cpp
+make_library(network OBJECT
+  SOURCES
+    net_util.cpp
+  REQUIRES
+    logger
 )
-add_dependencies(network boost)

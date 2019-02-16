@@ -10,8 +10,15 @@ if(WIN32)
   SET(PLATFORM_DEPENDENCIES crypt32)
 endif()
 
-add_library(random OBJECT
-  random.cpp
-  alias.cpp
+make_library(random OBJECT
+  SOURCES
+    random.cpp
+    alias.cpp
+  REQUIRES
+    boost
+    logger
+    parallel
+    util
+    ${PLATFORM_DEPENDENCIES}
+  EXTERNAL_VISIBILITY
 )
-add_dependencies(random boost)

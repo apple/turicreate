@@ -1,7 +1,9 @@
 project(shmipc)
 
-add_library(shmipc OBJECT
-  shmipc.cpp
-  shmipc_garbage_collect.cpp
+make_library(shmipc OBJECT
+  SOURCES
+    shmipc.cpp
+    shmipc_garbage_collect.cpp
+  REQUIRES
+    logger fileio
 )
-add_dependencies(shmipc boost)

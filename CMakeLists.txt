@@ -567,6 +567,7 @@ endif()
 add_compile_options(-Dgoogle=__tc_google)
 add_compile_options(-DCoreML=__tc_CoreML)
 add_compile_options(-DHAVE_PTHREAD=1)
+add_compile_options(-DEIGEN_MPL2_ONLY)
 
 ##############################################################################
 ##############################################################################
@@ -663,7 +664,9 @@ endmacro()
 #                 REQUIRES libx liby
 #                 MAC_REQUIRES libz libzz
 #                 LINUX_REQUIRES libk libj
-#                 [SHARED] [OUTPUT_NAME xxxx])
+#                 [SHARED] [OUTPUT_NAME xxxx] [SHARED_ALL_DEFINED]
+#                 [OBJECT]
+#                 )
 # Example:
 #
 # make_library(NAME fileio
@@ -690,6 +693,7 @@ endmacro()
 # SHARED will build a shared library instead of a static library
 # EXTERNAL_VISIBILITY will make the symbols be publicly visible. Default is hidden
 # SHARED_ALL_DEFINED will require shared libraries to have all symbols defined
+# OBJECT will build an object library instead of a static library
 #
 # All other targets which depends on this library (using the "requires" function)
 # will automatically include all recursive dependencies.
@@ -1167,6 +1171,9 @@ set(_TC_COMMON_OBJECTS
   "$<TARGET_OBJECTS:visualization>"
 )
 
+# TODO we can remove the requirements from here when target_link_libraries
+# works with OBJECT library targets (requires CMake 3.12)
+# See https://gitlab.kitware.com/cmake/cmake/issues/14778
 set(_TC_COMMON_REQUIREMENTS
   # External dependencies (from deps)
   boost

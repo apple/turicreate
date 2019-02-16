@@ -4,29 +4,42 @@ project(TuriCreate)
 # references everything correctly.
 set(__CAPI_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "")
 
-add_library(capi OBJECT
-  "impl/capi_error_handling.cpp"
-  "impl/capi_flexible_type.cpp"
-  "impl/capi_datetime.cpp"
-  "impl/capi_flex_dict.cpp"
-  "impl/capi_flex_list.cpp"
-  "impl/capi_flex_image.cpp"
-  "impl/capi_ndarray.cpp"
-  "impl/capi_functions.cpp"
-  "impl/capi_sarray.cpp"
-  "impl/capi_parameters.cpp"
-  "impl/capi_sframe.cpp"
-  "impl/capi_models.cpp"
-  "impl/capi_functions.cpp"
-  "impl/capi_initialization.cpp"
-  "impl/capi_variant.cpp"
-  "impl/capi_operators.cpp"
-  "impl/capi_flex_enum_list.cpp"
-  "impl/capi_wrapper_structs.cpp"
-  "impl/capi_memory_management.cpp"
-  "impl/capi_visualization.cpp"
+set(_capi_requires
+  eigen
+  unity
+  unity_core
 )
-add_dependencies(capi boost)
+
+if(APPLE AND NOT TC_BUILD_IOS)		
+   set(_capi_requires ${_capi_requires} vega_renderer)		
+ endif()
+
+make_library(capi
+  OBJECT
+  SOURCES
+    "impl/capi_error_handling.cpp"
+    "impl/capi_flexible_type.cpp"
+    "impl/capi_datetime.cpp"
+    "impl/capi_flex_dict.cpp"
+    "impl/capi_flex_list.cpp"
+    "impl/capi_flex_image.cpp"
+    "impl/capi_ndarray.cpp"
+    "impl/capi_functions.cpp"
+    "impl/capi_sarray.cpp"
+    "impl/capi_parameters.cpp"
+    "impl/capi_sframe.cpp"
+    "impl/capi_models.cpp"
+    "impl/capi_functions.cpp"
+    "impl/capi_initialization.cpp"
+    "impl/capi_variant.cpp"
+    "impl/capi_operators.cpp"
+    "impl/capi_flex_enum_list.cpp"
+    "impl/capi_wrapper_structs.cpp"
+    "impl/capi_memory_management.cpp"
+    "impl/capi_visualization.cpp"
+  REQUIRES
+    ${_capi_requires}
+)
 
 # A macro that allows building a custom C-API library.
 # 

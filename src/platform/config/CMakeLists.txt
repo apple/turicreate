@@ -8,8 +8,12 @@ project(config)
 
 if(APPLE)
 
-  add_library(platform_config OBJECT
-    apple_config.mm
+  make_library(platform_config OBJECT
+    SOURCES
+      apple_config.mm
+    REQUIRES
+      ${FOUNDATION}
+    EXTERNAL_VISIBILITY
   )
 
 endif()

@@ -6,8 +6,12 @@ else()
   SET(PLATFORM_SOURCES process_unix.cpp process_util_unix.cpp)
 endif()
 
-add_library(process OBJECT
-  process.cpp
-  ${PLATFORM_SOURCES}
+make_library(process OBJECT
+  SOURCES
+    process.cpp
+    ${PLATFORM_SOURCES}
+  REQUIRES
+    boost
+    util
+    logger
 )
-add_dependencies(process boost)

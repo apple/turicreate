@@ -15,8 +15,13 @@ if(APPLE AND HAS_MLCUSTOMMODEL)
     DEAD_STRIP
   )
 
-  add_library(objcapi OBJECT
-    TuriCreateObjC.m
+  make_library(objcapi OBJECT
+    SOURCES
+      TuriCreateObjC.m
+    REQUIRES
+      capi
+      ${FOUNDATION}
+      ${CORE_ML}
   )
 
   target_compile_options(objcapi PUBLIC "-fobjc-arc")

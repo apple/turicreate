@@ -1,8 +1,12 @@
 project(unity_toolkits)
 
-add_library(unity_clustering OBJECT
-  kmeans.cpp
-  class_registrations.cpp
-  unity_kmeans.cpp
+make_library(unity_clustering OBJECT
+  SOURCES
+    kmeans.cpp
+    class_registrations.cpp
+    unity_kmeans.cpp
+  REQUIRES
+    unity_core
+    unity_ml_model
+    unity_ml_data_2
 )
-add_dependencies(unity_clustering boost)

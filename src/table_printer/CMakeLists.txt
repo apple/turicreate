@@ -1,10 +1,15 @@
 project(table_printer)
 
-add_library(table_printer OBJECT
-  table_printer.cpp
-  table_element_printers.cpp
+make_library(table_printer OBJECT
+  SOURCES
+    table_printer.cpp
+    table_element_printers.cpp
+  REQUIRES
+    sframe
+    logger
+    globals
+  EXTERNAL_VISIBILITY
 )
-add_dependencies(table_printer boost)
 
 make_executable(table_printer_example
   SOURCES

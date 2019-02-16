@@ -4,14 +4,25 @@ subdirs(extensions
   lib
   toolkits)
 
-add_library(unity OBJECT
-  server/registration.cpp
-  server/unity_server.cpp
-  server/unity_server_init.cpp
-  server/unity_server_control.cpp
-  server/unity_server_init.cpp
+set(additional_unity_requirements)
+if(HAS_CORE_ML)
+  set(additional_unity_requirements image_deep_feature_extractor)
+endif()
+
+make_library(unity OBJECT
+  SOURCES
+    server/registration.cpp
+    server/unity_server.cpp
+    server/unity_server_init.cpp
+    server/unity_server_control.cpp
+    server/unity_server_init.cpp
+  REQUIRES
+    unity_core		
+    unity_toolkits
+    perf
+    eigen
+    ${additional_unity_requirements} 
 )
-add_dependencies(unity boost)
 
 # Pull in all the libraries in the extensions directory.
 get_property(EXTENSIONS_LIST DIRECTORY "extensions" PROPERTY EXTENSIONS_LIST)

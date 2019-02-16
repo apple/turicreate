@@ -1,6 +1,12 @@
 project(serialization)
 
-add_library(serialization OBJECT
-  dir_archive.cpp
+make_library(serialization OBJECT
+  SOURCES
+    dir_archive.cpp
+  REQUIRES
+    logger
+    fileio
+    util
+    random
+  EXTERNAL_VISIBILITY
 )
-add_dependencies(serialization boost)

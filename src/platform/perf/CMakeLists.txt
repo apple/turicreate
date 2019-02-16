@@ -1,6 +1,9 @@
 project(perf)
 
-add_library(perf OBJECT
-  tracepoint.cpp
+make_library(perf OBJECT
+  SOURCES
+    tracepoint.cpp
+  REQUIRES
+    logger
+  EXTERNAL_VISIBILITY
 )
-add_dependencies(perf boost)

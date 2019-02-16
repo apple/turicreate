@@ -6,11 +6,15 @@ project(image)
 #/*                             Logger Library                             */
 #/*                                                                        */
 #/**************************************************************************/
-add_library(image_type OBJECT
-  image_type.cpp
-  image_util_impl.cpp
+make_library(image_type OBJECT
+  SOURCES
+    image_type.cpp
+    image_util_impl.cpp
+  REQUIRES
+    logger
+    image_io
+  EXTERNAL_VISIBILITY
 )
-add_dependencies(image_type boost)
 
 make_executable(io_example
   SOURCES
@@ -19,12 +23,18 @@ make_executable(io_example
     unity_shared_for_testing
 )
 
-add_library(image_io OBJECT
-  io.cpp
-  jpeg_io.cpp
-  png_io.cpp
+make_library(image_io OBJECT
+  SOURCES
+    io.cpp
+    jpeg_io.cpp
+    png_io.cpp
+  REQUIRES
+    libpng		
+    libjpeg		
+    logger		
+    fileio		
+  EXTERNAL_VISIBILITY
 )
-add_dependencies(image_io boost)
 
 #set to native if supported
 check_cxx_compiler_flag(-Wno-c++11-narrowing HAS_NARROWING)

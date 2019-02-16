@@ -1,8 +1,11 @@
 project(unity_toolkits)
 
-add_library(unity_activity_classification OBJECT
-    activity_classifier.cpp
-    sequence_iterator.cpp
-    class_registrations.cpp
+make_library(unity_activity_classification OBJECT
+    SOURCES
+        activity_classifier.cpp
+        sequence_iterator.cpp
+        class_registrations.cpp
+    REQUIRES
+        unity_core
+        unity_ml_model
 )
-add_dependencies(unity_activity_classification boost)

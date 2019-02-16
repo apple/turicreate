@@ -1,8 +1,10 @@
 project(so_utils)
 
 if(NOT WIN32)
-  add_library(so_utils OBJECT
-    so_utils.cpp
+  make_library(so_utils OBJECT
+    SOURCES
+      so_utils.cpp
+    REQUIRES
+      dl
   )
-  add_dependencies(so_utils boost)
 endif()
