@@ -38,7 +38,6 @@ make_library(unity_core
     unity_sframe_builder.cpp
     visualization/columnwise_summary.cpp
   REQUIRES
-    annotations
 	flexible_type
     pylambda 
     table_printer
@@ -51,6 +50,7 @@ make_library(unity_core
     pylambda_worker
     numerics
     visualization
+    annotation
     EXTERNAL_VISIBILITY
 )
 

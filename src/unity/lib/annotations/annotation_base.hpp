@@ -1,43 +1,55 @@
 #ifndef TURI_ANNOTATIONS_ANNOTATION_BASE_HPP
 #define TURI_ANNOTATIONS_ANNOTATION_BASE_HPP
 
-#include <unity/lib/gl_sframe.hpp>
-#include <string>
 #include <map>
-#include "utils.hpp"
+#include <memory>
+#include <string>
+#include <vector>
+
+#include <flexible_type/flexible_type.hpp>
+
+#include <unity/lib/unity_sarray.hpp>
+#include <unity/lib/unity_sframe.hpp>
+
+#include "build/format/cpp/annotate.pb.h"
+#include "build/format/cpp/data.pb.h"
+
+namespace annotate_spec = TuriCreate::Annotation::Specification;
 
 namespace turi {
-namespace annotate{
+namespace annotate {
 
 class AnnotationBase {
-	public:
-		AnnotationBase(){};
-		AnnotationBase(const gl_sframe& data,
-					   const std::string& data_column,
-					   const std::string& annotation_column);
-		void start();
-		
-		// virtual method that must be implemented by the inhereting classes
-		
-		//// virtual gl_sframe get_items();
+public:
+  AnnotationBase(){};
+  AnnotationBase(const std::shared_ptr<unity_sframe> &data,
+                 const std::vector<std::string> &data_columns,
+                 const std::string &annotation_column = "");
 
-		//// virtual void add_annotation(std::map<>);
-		
-		// Return Annotation SFrame from SFrame builder	
-		// Add Annotation method
-		// modify annotation
-	private:
-		gl_sframe m_data;
-		std::string m_data_column;
-		std::string m_string_column;
-		
-		
-		// Base class should store the reference to the data being annotated
-		// SFrame builder to store all the annotated data
-		// sorted heuristic
+  virtual ~AnnotationBase(){};
+
+  void show(const std::string &path_to_client);
+
+  size_t size();
+
+  virtual annotate_spec::Data getItems(size_t start, size_t end);
+
+  virtual annotate_spec::Annotations getAnnotations(size_t start, size_t end);
+
+  virtual bool setAnnotations(const annotate_spec::Annotations &annotation);
+
+  virtual std::shared_ptr<unity_sframe>
+  returnAnnotations(bool drop_null = true);
+
+protected:
+  std::shared_ptr<unity_sframe> m_data;
+  std::vector<std::string> m_data_columns;
+  std::string m_annotation_column;
+
+  void _reshapeIndicies(size_t &start, size_t &end);
 };
 
-}
-}
+} // namespace annotate
+} // namespace turi
 
 #endif
