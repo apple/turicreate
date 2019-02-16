@@ -108,8 +108,15 @@ bool ImageClassification::setAnnotations(
 
 std::shared_ptr<unity_sframe>
 ImageClassification::returnAnnotations(bool drop_null) {
-  // TODO: add annotations in sframe format.
-  return std::make_shared<unity_sframe>();
+  if (!drop_null) {
+    return m_data;
+  }
+
+  std::vector<std::string> annotation_column_name = {m_annotation_column};
+  std::list<std::shared_ptr<unity_sframe_base>> dropped_missing =
+      m_data->drop_missing_values(annotation_column_name, false, false);
+
+  return std::static_pointer_cast<unity_sframe>(dropped_missing.front());
 }
 
 void ImageClassification::_addAnnotationToSFrame(size_t index,

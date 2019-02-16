@@ -27,7 +27,6 @@ private:
   std::shared_ptr<unity_sarray> _filterDataSFrame(size_t &start, size_t &end);
   std::shared_ptr<unity_sarray> _filterAnnotationSFrame(size_t &start,
                                                         size_t &end);
-  
 };
 
 } // namespace annotate
