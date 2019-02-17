@@ -2,13 +2,11 @@ project(vega_renderer_test)
 
 if(APPLE AND NOT TC_BUILD_IOS)
 
+    # sets XCTest_LIBRARIES
+    include(FindXCTest)
+
     find_library( WEBKIT WebKit )
     message( STATUS "WebKit found at ${WEBKIT}")
-
-    find_library( XCTEST XCTest )
-    message( STATUS "XCTest found at ${XCTEST}")
-
-    include_directories(${XCTEST})
 
     add_definitions(-DPROJECT_DIR=${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -19,7 +17,7 @@ if(APPLE AND NOT TC_BUILD_IOS)
         REQUIRES
             vega_renderer
             ${WEBKIT}
-            ${XCTEST}
+            ${XCTest_LIBRARIES}
     )
     target_compile_options(vega_renderer_test_utils PUBLIC "-fobjc-arc")
 
@@ -30,7 +28,7 @@ if(APPLE AND NOT TC_BUILD_IOS)
 
     set(target_deps
         ${WEBKIT}
-        ${XCTEST}
+        ${XCTest_LIBRARIES}
         ${FOUNDATION}
         ${APPKIT}
         ${CORE_GRAPHICS}
