@@ -756,7 +756,7 @@ macro(make_library NAME)
     endif()
   endif()
 
-  if (${make_library_EXTERNAL_VISIBILITY})
+  if (${make_library_EXTERNAL_VISIBILITY} OR ${make_library_OBJECT})
     # do nothing
     message(STATUS "External Visibility: " ${NAME})
     target_compile_options(${NAME} PRIVATE "-fvisibility=default")
@@ -1172,6 +1172,7 @@ set(_TC_COMMON_OBJECTS
   "$<TARGET_OBJECTS:unity_sparse_similarity>"
   "$<TARGET_OBJECTS:unity_text>"
   "$<TARGET_OBJECTS:unity_util>"
+  "$<TARGET_OBJECTS:user_pagefault>"
   "$<TARGET_OBJECTS:util>"
   "$<TARGET_OBJECTS:visualization>"
 )

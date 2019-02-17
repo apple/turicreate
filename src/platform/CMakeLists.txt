@@ -10,7 +10,6 @@ subdirs(
   shmipc
   so_utils
   timer
-  # TODO - seems we can delete user_pagefault? Nothing is using it.
-  #user_pagefault
+  user_pagefault
   config
   )
