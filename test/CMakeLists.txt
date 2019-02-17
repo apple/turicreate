@@ -6,7 +6,6 @@ subdirs(
         toolkits
         ml_data
         optimization
-        user_pagefault
         util
         serialization
         logger

@@ -1172,7 +1172,6 @@ set(_TC_COMMON_OBJECTS
   "$<TARGET_OBJECTS:unity_sparse_similarity>"
   "$<TARGET_OBJECTS:unity_text>"
   "$<TARGET_OBJECTS:unity_util>"
-  "$<TARGET_OBJECTS:user_pagefault>"
   "$<TARGET_OBJECTS:util>"
   "$<TARGET_OBJECTS:visualization>"
 )
