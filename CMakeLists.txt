@@ -3,18 +3,16 @@ project(Turi)
 # We require a recent version of cmake and automatically
 # install a compatible version when using the cmake lists,
 # if one is not already present.
-cmake_minimum_required(VERSION 3.9.3)
+cmake_minimum_required(VERSION 3.9.2)
 
 # Libraries linked via full path no longer produce linker search paths.
 cmake_policy(SET CMP0003 NEW)
 # Preprocessor definition values are now escaped automatically.
 cmake_policy(SET CMP0005 NEW)
 # for cmake 3.0
-if(${CMAKE_MAJOR_VERSION} GREATER 2)
 cmake_policy(SET CMP0045 OLD)
 cmake_policy(SET CMP0046 OLD)
 cmake_policy(SET CMP0042 NEW)
-endif()
 
 # Generate a compilation database for use with automated tools like IDE/editor
 # plugins. See http://clang.llvm.org/docs/JSONCompilationDatabase.html
