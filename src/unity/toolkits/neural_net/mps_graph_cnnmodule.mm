@@ -1,5 +1,7 @@
 #include "mps_graph_cnnmodule.h"
 
+#include <logger/logger.hpp>
+
 #import "mps_device_manager.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -108,8 +110,7 @@ void mps_graph_cnn_module::init(
   }
 }
 
-deferred_float_array mps_graph_cnn_module::train(
-      const float_array& input_batch, const float_array& label_batch) {
+float_array_map mps_graph_cnn_module::train(const float_array_map& inputs) {
 
   @autoreleasepool {
 
@@ -117,6 +118,18 @@ deferred_float_array mps_graph_cnn_module::train(
 
   id<MTLCommandBuffer> cb = [cmd_queue_ commandBuffer];
   TCMPSGraphModuleBatch *batch = [[TCMPSGraphModuleBatch alloc] initWithCommandBuffer:cb];
+
+  // TODO: The names should somehow be a parameter of this class.
+  auto input_iter = inputs.find("input");
+  auto labels_iter = inputs.find("labels");
+  if (input_iter == inputs.end()) {
+    log_and_throw("Cannot train without argument named \"input\".");
+  }
+  if (labels_iter == inputs.end()) {
+    log_and_throw("Cannot train without argument named \"labels\".");
+  }
+  const shared_float_array& input_batch = input_iter->second;
+  const shared_float_array& label_batch = labels_iter->second;
 
   // Copy from raw C inputs to MPS images and loss labels.
   batch.input = copy_input(input_batch);
@@ -167,19 +180,29 @@ deferred_float_array mps_graph_cnn_module::train(
   [cb commit];
 
   // Return the wrapped future from the promise.
-  return deferred_float_array(loss_promise->get_future(), {loss_size});
+  // TODO: The names should somehow be a parameter of this class.
+  shared_float_array loss(std::make_shared<deferred_float_array>(
+      loss_promise->get_future(), std::vector<size_t>({loss_size})));
+  return { { "loss", loss } };
 
   }  // @autoreleasepool
 }
 
-deferred_float_array
-mps_graph_cnn_module::predict(const float_array& input_batch) const {
+float_array_map
+mps_graph_cnn_module::predict(const float_array_map& inputs) const {
   @autoreleasepool {
 
   assert(mode_ == kGraphModeInference);
 
   id<MTLCommandBuffer> cb = [cmd_queue_ commandBuffer];
   TCMPSGraphModuleBatch *batch = [[TCMPSGraphModuleBatch alloc] initWithCommandBuffer:cb];
+
+  // TODO: The names should somehow be a parameter of this class.
+  auto input_iter = inputs.find("input");
+  if (input_iter == inputs.end()) {
+    log_and_throw("Cannot train without argument named \"input\".");
+  }
+  const shared_float_array& input_batch = input_iter->second;
 
   // Copy from raw C inputs to MPS images. Encode the forward pass.
   batch.input = copy_input(input_batch);
@@ -220,7 +243,10 @@ mps_graph_cnn_module::predict(const float_array& input_batch) const {
   [cb commit];
 
   // Return the wrapped future from the promise.
-  return deferred_float_array(result_promise->get_future(), result_shape_);
+  // TODO: The names should somehow be a parameter of this class.
+  shared_float_array output(std::make_shared<deferred_float_array>(
+      result_promise->get_future(), result_shape_));
+  return { { "output", output } };
 
   }  // @autoreleasepool
 }

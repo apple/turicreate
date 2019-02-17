@@ -34,7 +34,7 @@ public:
   std::vector<std::string> gpu_names() const override;
   size_t memory_budget() const override;
 
-  std::unique_ptr<cnn_module> create_object_detector(
+  std::unique_ptr<model_backend> create_object_detector(
       int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
       const float_array_map& config, const float_array_map& weights) override;
 
