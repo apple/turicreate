@@ -24,11 +24,46 @@ if(APPLE AND NOT TC_BUILD_IOS)
     make_boost_test(vega_lite_example_tests.cxx REQUIRES vega_renderer_test_utils)
     make_boost_test(turicreate_example_tests.cxx REQUIRES vega_renderer_test_utils)
 
-    add_custom_command(
-        TARGET vega_renderer_test_utils PRE_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-                ${CMAKE_CURRENT_SOURCE_DIR}/examples
-                ${CMAKE_CURRENT_BINARY_DIR}/examples
-    )
+    # loop through files in turicreate
+    file(GLOB_RECURSE VEGA_JSON_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.json)
+
+    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/examples/turicreate)
+    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/examples/vega)
+    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/examples/vega_lite)
+
+    include_directories(${CMAKE_CURRENT_BINARY_DIR})
+    
+    foreach(SOURCE_FILE ${VEGA_JSON_FILES})
+        string(
+            REGEX REPLACE
+            ".json$"
+            ".h"
+            GENERATED_FILE
+            ${CMAKE_CURRENT_BINARY_DIR}/${SOURCE_FILE}
+        )
+
+        add_custom_command(
+            OUTPUT ${GENERATED_FILE}
+            COMMAND xxd -i ${SOURCE_FILE} > ${GENERATED_FILE}
+            MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/${SOURCE_FILE}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            COMMENT "Generating ${GENERATED_FILE}"
+            VERBATIM
+        )
+
+        string(
+            MAKE_C_IDENTIFIER
+            ${SOURCE_FILE}
+            TARGET_NAME
+        )
+
+        add_custom_target(
+            Generate_${TARGET_NAME}
+            DEPENDS
+            ${GENERATED_FILE}
+        )
+
+        add_dependencies(vega_renderer_test_utils Generate_${TARGET_NAME})
+    endforeach(SOURCE_FILE)
 
 endif()

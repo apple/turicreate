@@ -29,8 +29,10 @@ namespace vega_renderer {
 
         protected:
             static double acceptable_diff;
-            void run_test_case_with_path(const std::string& path);
-            void run_test_case_with_path(const std::string& path, double acceptable_diff);
+            std::string make_format_string(unsigned char *raw_format_str_ptr,
+                                                    size_t raw_format_str_len);
+            void run_test_case_with_spec(const std::string& test_spec, const std::string& name);
+            void run_test_case_with_spec(const std::string& test_spec, const std::string& name,  double acceptable_diff);
         };
     }
 }
