@@ -6,8 +6,7 @@ subdirs(
         toolkits
         ml_data
         optimization
-        # TODO - seems we can delete user_pagefault? Nothing is using it.
-        #user_pagefault
+        user_pagefault
         util
         serialization
         logger
@@ -32,7 +31,7 @@ subdirs(
         process
         # vega_renderer
   )
-if(${TC_BUILD_CAPI}) 
+if(${TC_BUILD_CAPI})
   message("Building C API Tests.")
   subdirs(capi)
 else()

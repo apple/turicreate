@@ -523,12 +523,12 @@ endif()
 
 check_cxx_source_compiles("#include <ios>
                            #include <system_error>
-                                                    
+
                            class io_error : public std::ios_base::failure {
                              public:   /* The noexcept here is different between C++ 17 and C++ 11. */
-                              const char *what() const noexcept { return \"\"; } 
+                              const char *what() const noexcept { return \"\"; }
                            };
-                           int main(int argc, char** argv) { return 0; }" 
+                           int main(int argc, char** argv) { return 0; }"
                           COMPILER_HAS_NOEXCEPT_WHAT_ON_EXCEPTIONS)
 
 if(COMPILER_HAS_NOEXCEPT_WHAT_ON_EXCEPTIONS)
@@ -611,7 +611,7 @@ include(eval)
 #
 # Boost, pthread is always added as a default dependency. OpenMP is added
 # when possible.
-macro(make_target_impl NAME FLAGS REQUIREMENTS IS_LIBRARY SHARED SHARED_ALL_DEFINED)
+macro(make_target_impl NAME FLAGS REQUIREMENTS IS_LIBRARY SHARED SHARED_ALL_DEFINED OBJECT)
   # create the target
   if (${IS_LIBRARY})
     message(STATUS "Adding Library: ${NAME}")
@@ -644,6 +644,11 @@ macro(make_target_impl NAME FLAGS REQUIREMENTS IS_LIBRARY SHARED SHARED_ALL_DEFI
   if (${IS_LIBRARY})
     if(${SHARED})
       target_link_libraries(${NAME} PRIVATE ${REQUIREMENTS})
+    elseif(${OBJECT})
+      # TODO we can link the requirements from here when target_link_libraries
+      # works with OBJECT library targets (requires CMake 3.12)
+      # See https://gitlab.kitware.com/cmake/cmake/issues/14778
+      # For now, do nothing.
     else()
       target_link_libraries(${NAME} PUBLIC ${REQUIREMENTS})
     endif()
@@ -699,7 +704,7 @@ endmacro()
 # Boost, pthread is always added as a default dependency. OpenMP is added
 # when possible.
 macro(make_library NAME)
-  set(options SHARED EXTERNAL_VISIBILITY SHARED_ALL_DEFINED DEAD_STRIP)
+  set(options SHARED EXTERNAL_VISIBILITY SHARED_ALL_DEFINED DEAD_STRIP OBJECT)
   set(one_value_args COMPILE_FLAGS OUTPUT_NAME EXPORT_LINUX_MAP_FILE EXPORT_OSX_MAP_FILE)
   set(multi_value_args
     SOURCES REQUIRES MAC_REQUIRES LINUX_REQUIRES
@@ -721,12 +726,14 @@ macro(make_library NAME)
 
   if (${make_library_SHARED})
     add_library(${NAME} SHARED ${make_library_SOURCES})
+  elseif(${make_library_OBJECT})
+    add_library(${NAME} OBJECT ${make_library_SOURCES})
   else()
     add_library(${NAME} STATIC ${make_library_SOURCES})
   endif()
 
   make_target_impl("${NAME}" "${make_library_COMPILE_FLAGS}"
-    "${make_library_REQUIRES}" TRUE "${make_library_SHARED}" "${make_library_SHARED_ALL_DEFINED}")
+    "${make_library_REQUIRES}" TRUE "${make_library_SHARED}" "${make_library_SHARED_ALL_DEFINED}" "${make_library_OBJECT}")
 
   if (make_library_OUTPUT_NAME)
           message(STATUS "make_library ${NAME} ===> ${make_library_OUTPUT_NAME}")
@@ -832,7 +839,7 @@ macro(make_empty_library NAME)
   endif()
   add_library(${NAME} STATIC ${CMAKE_SOURCE_DIR}/dummy.cpp)
   make_target_impl("${NAME}" ""
-      "${make_library_REQUIRES}" TRUE FALSE FALSE)
+      "${make_library_REQUIRES}" TRUE FALSE FALSE FALSE)
 
     set_target_properties(${NAME} PROPERTIES EMPTY_LIBRARY TRUE)
 endmacro()
@@ -909,7 +916,7 @@ function (make_executable NAME)
   endif()
 
   make_target_impl("${NAME}" "${make_library_COMPILE_FLAGS}"
-    "${make_library_REQUIRES}" FALSE FALSE FALSE)
+    "${make_library_REQUIRES}" FALSE FALSE FALSE FALSE)
   if (make_library_OUTPUT_NAME)
           message(STATUS "make_executable ${NAME} ===> ${make_library_OUTPUT_NAME}")
           set_target_properties(${NAME} PROPERTIES OUTPUT_NAME ${make_library_OUTPUT_NAME})

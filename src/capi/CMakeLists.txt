@@ -10,12 +10,11 @@ set(_capi_requires
   unity_core
 )
 
-if(APPLE AND NOT TC_BUILD_IOS)		
-   set(_capi_requires ${_capi_requires} vega_renderer)		
+if(APPLE AND NOT TC_BUILD_IOS)
+   set(_capi_requires ${_capi_requires} vega_renderer)
  endif()
 
-make_library(capi
-  OBJECT
+make_library(capi OBJECT
   SOURCES
     "impl/capi_error_handling.cpp"
     "impl/capi_flexible_type.cpp"
@@ -42,16 +41,16 @@ make_library(capi
 )
 
 # A macro that allows building a custom C-API library.
-# 
-#  The main variable here is the initializer source file and whether or not to 
-#  build it as a framework. 
 #
-#  To build it with a custom server initialization function, which allows for 
-#  specifying which models are availalable for calling through the C-API, call 
+#  The main variable here is the initializer source file and whether or not to
+#  build it as a framework.
+#
+#  To build it with a custom server initialization function, which allows for
+#  specifying which models are availalable for calling through the C-API, call
 #
 #  make_capi_library(MyTuriExecutor INITIALIZER_SOURCE_FILE my_turi_model_init.cpp REQUIRES unity)
 #
-#  See default_server_initializer.cpp as a template for this. 
+#  See default_server_initializer.cpp as a template for this.
 #
 macro(make_capi_library NAME)
 
@@ -116,7 +115,7 @@ macro(make_capi_library NAME)
   else()
     #build out as a regular library
         make_library(${NAME}
-      SOURCES 
+      SOURCES
             ${__capi_INITIALIZER_SOURCE_FILE}
             ${_TC_COMMON_OBJECTS}
        REQUIRES

@@ -1,6 +1,9 @@
 project(unity_toolkits)
 
-add_library(unity_image_export OBJECT
-  image_fn_export.cpp
+make_library(unity_image_export OBJECT
+  SOURCES
+    image_fn_export.cpp
+  REQUIRES
+    unity_core
+  EXTERNAL_VISIBILITY
 )
-add_dependencies(unity_image_export boost)

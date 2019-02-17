@@ -16,6 +16,16 @@ if(APPLE AND NOT TC_BUILD_IOS)
       colors.m
    )
 
+   set( VEGA_RENDERER_STATIC_DEPENDENCIES
+   )
+
+   set( VEGA_RENDERER_DEPENDENCIES
+      ${FOUNDATION}
+      ${APPKIT}
+      ${CORE_GRAPHICS}
+      ${JAVASCRIPT_CORE}
+   )
+
    ##
    ## Preprocessed JavaScript artifacts
    ##
@@ -40,8 +50,11 @@ if(APPLE AND NOT TC_BUILD_IOS)
    ## VegaRenderer
    ##
 
-   add_library( vega_renderer OBJECT
-      ${VEGA_RENDERER_SOURCES}
+   make_library( vega_renderer OBJECT
+      SOURCES
+         ${VEGA_RENDERER_SOURCES}
+      REQUIRES
+         ${VEGA_RENDERER_DEPENDENCIES}
    )
 
    add_dependencies(

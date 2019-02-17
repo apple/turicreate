@@ -1,6 +1,9 @@
 project(unity_toolkits)
 
-add_library(unity_ml_model OBJECT
-  python_model.cpp
+make_library(unity_ml_model OBJECT
+  SOURCES
+    python_model.cpp
+  REQUIRES
+    unity_core
+    optimization
 )
-add_dependencies(unity_ml_model boost)

@@ -1,10 +1,16 @@
 project(unity_toolkits)
 
-add_library(unity_object_detection OBJECT
-  class_registrations.cpp
-  object_detector.cpp
-  od_data_iterator.cpp
-  od_yolo.cpp
-  od_evaluation.cpp
+make_library(unity_object_detection OBJECT
+  SOURCES
+    class_registrations.cpp
+    object_detector.cpp
+    od_data_iterator.cpp
+    od_yolo.cpp
+    od_evaluation.cpp
+  REQUIRES
+    image_io
+    random
+    table_printer
+    unity_core
+    unity_neural_net
 )
-add_dependencies(unity_object_detection boost)
