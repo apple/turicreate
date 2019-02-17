@@ -21,7 +21,7 @@
 #include <optimization/newton_method-inl.hpp>
 #include <optimization/gradient_descent-inl.hpp>
 #include <optimization/accelerated_gradient-inl.hpp>
-#include <optimization/lbfgs.hpp>
+#include <optimization/lbfgs-inl.hpp>
 
 
 using namespace turi;
@@ -128,7 +128,7 @@ class opt_interface: public optimization::second_order_opt_interface
       }
     }
   }
-
+  
   /**
    * Compute the first order stats at a random-coordinate (for
    * logistic_regression)
@@ -223,7 +223,7 @@ class opt_interface: public optimization::second_order_opt_interface
   double compute_function_value(const DenseVector& point, const size_t
       mbStart=0, const size_t mbSize =-1){
     double func = 0;
-
+    
     // Code copied from logistic_regression.cpp
     for (size_t i=0; i < examples; i++){
       DenseVector x = A.row(i);
@@ -240,7 +240,7 @@ class opt_interface: public optimization::second_order_opt_interface
     }
     return func;
   }
-
+  
   /**
    * Compute first order statistics at the given point.
    *
@@ -276,7 +276,7 @@ class opt_interface: public optimization::second_order_opt_interface
       gradient += G;
     }
   }
-
+  
   /**
    * Compute second order statistics at the given point.
    *
@@ -293,7 +293,7 @@ class opt_interface: public optimization::second_order_opt_interface
     func = 0;
     gradient.setZero();
     hessian.setZero();
-
+    
     // Code copied from logistic_regression.cpp
     for (size_t i=0; i < examples; i++){
       DenseVector x = A.row(i);
@@ -346,7 +346,7 @@ class opt_interface: public optimization::second_order_opt_interface
  * ------------------
  *
  * (1) Solvers + Regularizers
- * (2) Solvers + Constraints
+ * (2) Solvers + Constraints  
  * (3)
  *
  *
@@ -364,7 +364,7 @@ struct optimization_interface_test  {
   std::map<std::string, flexible_type> opts;
 
   public:
-
+    
     optimization_interface_test() {
       size_t examples = 100;
       size_t variables = 10;
@@ -377,7 +377,7 @@ struct optimization_interface_test  {
       A.setRandom();
       b.setRandom();
       init_point.setZero();
-
+      
       std::shared_ptr<opt_interface> solver_interface;
       solver_interface.reset(new opt_interface(A, b));
       std::map<std::string, flexible_type> opts =  {
@@ -417,7 +417,7 @@ struct optimization_interface_test  {
           init_point, opts);
       TS_ASSERT(stats.solution.isApprox(solution, 1e-2));
     }
-
+    
     void test_newton(){
       optimization::solver_return stats;
       stats = turi::optimization::newton_method(*solver_interface,
@@ -448,7 +448,7 @@ struct optimization_interface_test  {
     * Tests optimization utils.
     * ------------------------------------------------------------------------
     */
-
+    
     void check_gradient_checker(){
       for(size_t i=0; i < 10; i++){
         DenseVector point(variables);
@@ -458,7 +458,7 @@ struct optimization_interface_test  {
         TS_ASSERT(check_gradient(*solver_interface, point, gradient));
       }
     }
-
+    
     void check_hessian_checker(){
       for(size_t i=0; i < 10; i++){
         DenseVector point(variables);
