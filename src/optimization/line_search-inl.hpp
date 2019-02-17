@@ -13,6 +13,7 @@
 #include <optimization/optimization_interface.hpp>
 #include <optimization/regularizer_interface.hpp>
 #include <Eigen/Core>
+#include <logger/assertions.hpp>
 
 // TODO: List of todo's for this file
 //------------------------------------------------------------------------------
@@ -332,7 +333,9 @@ inline ls_return more_thuente(
     DenseVector point, 
     Vector gradient, 
     DenseVector direction,
-    const std::shared_ptr<smooth_regularizer_interface> reg=NULL){ 
+    double function_scaling = 1.0,
+    const std::shared_ptr<smooth_regularizer_interface> reg=NULL,
+    size_t max_function_evaluations = LS_MAX_ITER){
 
 
     // Initialize the return object
@@ -416,16 +419,13 @@ inline ls_return more_thuente(
         stmax = stp + xtrapf*(stp - stx);
       }
 
-
-
       // Force the step to be within the bounds 
       stp = std::max(stp,LS_ZERO);
       stp = std::min(stp,LS_MAX_STEP_SIZE);
 
       // If an unusual termination is to occur then let 'stp' be the lowest point
       // obtained so far.
-      if (   (stats.func_evals >= LS_MAX_ITER) 
-          || (infoc == false) 
+      if ( (infoc == false)
           || (brackt && (stmax-stmin <= LS_ZERO))){
 
          logprogress_stream << "Warning:" 
@@ -438,6 +438,12 @@ inline ls_return more_thuente(
          stp = stx;
       }
 
+      // Reached func evaluation limit -- return the best one so far.
+      if (size_t(stats.func_evals) >= max_function_evaluations){
+        stats.step_size = stx;
+        stats.status = true;
+        return stats;
+      }
 
       // Evaluate the function and gradient at stp and compute the directional
       // derivative.
@@ -452,7 +458,13 @@ inline ls_return more_thuente(
         g += reg_gradient;
       }
 
+      if(function_scaling != 1.0) {
+        f *= function_scaling;
+        g *= function_scaling;
+      }
+
       dg = g.dot(direction);
+
       double ftest = init_func_value + stp*wolfe_func_dec;
 
       // Termination checking
@@ -493,14 +505,7 @@ inline ls_return more_thuente(
         return stats;
       }
 
-      // Reached func evaluation limit
-      if (stats.func_evals >= LS_MAX_ITER){
-        logprogress_stream << "Error: Reached function"
-                           << " evaluation limit." << std::endl;
-        stats.step_size = stp;
-        stats.status = false;
-        return stats;
-      }
+
 
       // Relative width of the interval of uncertainty is reached.
       if (brackt && (stmax-stmin <= LS_ZERO)){ 
@@ -717,6 +722,105 @@ inline ls_return backtracking(
 
     return stats;
 }
+
+/** This function estimates a minumum point between
+ *  two function values with known gradients.
+ *
+ *  The minimum value must lie between the two function values, f1 and f2, and the
+ *  gradients must indicate the minimum lies between the two values and that the
+ *  function is convex.
+ *
+ *  Under these situations, a third degree polynomial / cubic spline can be fit
+ *  to the two function points, and this is gauranteed to have a single minimum
+ *  between f1 and f2.  This is what this function returns.
+ *
+ *  \param[in] dist  The distance between the points f1 and f2.
+ *  \param[in] f1    The value of the function at the left point.
+ *  \param[in] f2    The value of the function at the right point.
+ *  \param[in] g1    The derivative of the function at the left point.
+ *  \param[in] g2    The derivative of the function at the right point.
+ *
+ */
+inline double gradient_bracketed_linesearch(double dist, double f1, double f2,
+                                            double g1, double g2) {
+  // Assume f1 is evaluated at 0, f2 is evaluated at 1.  To make the latter true,
+  // we need to multiply the gradients by the appropriate scaling factor.
+  g1 *= dist;
+  g2 *= dist;
+
+  // We have to have this such that a minimum point is between f1 and f2, which
+  DASSERT_LE(g1, 1e-4);   // Condition 1
+  DASSERT_GE(g2, -1e-4);  // Condition 2
+
+  // Also make sure the function is convex;
+  DASSERT_LE(f2 - g2, f1 + 1e-4);  // Condition 3
+  DASSERT_LE(f1 + g1, f2 + 1e-4);  // Condition 4
+
+
+  // Now, we have 4 known variables, so construct a 3rd order polynomial to
+  // approximate the solution between the two points.  Then find the minimum of
+  // that.
+
+  // With the convexity coefficients above, a third order polynomial, given as
+  //
+  //   p(t) = a*t^3 + b*t^2 + c*t + d
+  //
+  // will have exactly one minima between 0 and 1 by the conditions above.
+  //
+  // The coefficients can be easily derived by:
+  // p(0) = f1
+  // p(1) = f2
+  // p'(0) = g1
+  // p'(1) = g2
+  //
+  // Some algebra yields:
+  //
+  const double a = -2*(f2 - f1) + (g2 + g1);
+  const double b = 3*(f2 - f1) - g2 - 2*g1;
+  const double c = g1;
+  const double d = f1;
+
+  // std::cout << "coeff = (" << a << ", " << b << ", " << c << std::endl;
+
+  // Starting iterate
+  double left = 0;
+  double right = 1;
+
+  double best_value = std::min(f1, f2);
+  double best_loc = f1 < f2 ? 0 : 1;
+
+
+  for(size_t m_iter = 0; m_iter < 32; ++m_iter) {
+
+    double t = 0.5 * (right + left);
+
+    // Make sure that the recent value is indeed better
+    double v = d + c*t + b*t*t + a*t*t*t;
+    // double vpp = 2*b + 6*a*t;
+
+    if(v < best_value) {
+      best_value = v;
+      best_loc = t;
+    }
+
+    if(right - left < 1e-6) {
+      break;
+    }
+
+    double vp = c + 2*b*t + 3*a*t*t;
+
+    if(vp > 0) {
+      right = t;
+    } else {
+      left = t;
+    }
+
+  }
+
+  return dist * best_loc;
+}
+
+
 
 
 /// \}
