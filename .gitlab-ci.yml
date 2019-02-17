@@ -48,9 +48,6 @@ build_wheel_linux_python27:
 
 build_wheel_linux_python35:
   image: docker.apple.com/turi/build-image-centos6-python3.5:1802
-  only:
-    - master
-    - 5.4-release
   tags:
     - dockerized
   stage: build
@@ -72,9 +69,6 @@ build_wheel_linux_python35:
 
 build_wheel_linux_python36:
   image: docker.apple.com/turi/build-image-centos6-python3.6:1802
-  only:
-    - master
-    - 5.4-release
   tags:
     - dockerized
   stage: build
@@ -95,9 +89,6 @@ build_wheel_linux_python36:
       - target/
 
 build_wheel_mac_10_14_python27:
-  only:
-    - master
-    - 5.4-release
   tags:
     - macos10.14
   stage: build
@@ -138,9 +129,6 @@ build_wheel_mac_10_14_python35:
 build_wheel_mac_10_14_python36:
   tags:
     - macos10.14
-  only:
-    - master
-    - 5.4-release
   stage: build
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.6/bin/virtualenv"
@@ -158,10 +146,6 @@ build_wheel_mac_10_14_python36:
       - target/
 
 build_recommender_macos_10_14:
-  only:
-    - master
-    - 5.4-release
-    - recommender-bugfix
   tags:
     - macos10.14
   stage: build
@@ -176,10 +160,6 @@ build_recommender_macos_10_14:
       - release/src/objc/libRecommender.dylib
 
 build_recommender_ios_12:
-  only:
-    - master
-    - 5.4-release
-    - recommender-bugfix
   tags:
     - macos10.14
   stage: build
@@ -216,9 +196,6 @@ build_cpp_tests_linux:
       - cxxtest_binaries.tar
 
 build_cpp_tests_mac:
-  only:
-    - master
-    - 5.4-release
   tags:
     - macos10.14
   stage: build
@@ -269,9 +246,6 @@ test_cpp_linux:
     - date
 
 test_cpp_mac_10_13:
-  only:
-    - master
-    - 5.4-release
   tags:
     - macos10.13
   stage: test
@@ -299,9 +273,6 @@ test_cpp_mac_10_13:
     - date
 
 test_cpp_mac_10_14:
-  only:
-    - master
-    - 5.4-release
   tags:
     - macos10.14
   stage: test
@@ -344,9 +315,6 @@ test_python_linux_python27:
       - pytest.*
 
 test_python_linux_python35:
-  only:
-    - master
-    - 5.4-release
   image: docker.apple.com/turi/build-image-centos7-python3.5:1802
   tags:
     - dockerized
@@ -362,9 +330,6 @@ test_python_linux_python35:
       - pytest.*
 
 test_python_linux_python36:
-  only:
-    - master
-    - 5.4-release
   image: docker.apple.com/turi/build-image-centos7-python3.6:1802
   tags:
     - dockerized
@@ -380,9 +345,6 @@ test_python_linux_python36:
       - pytest.*
 
 test_python_mac_python27_10_13:
-  only:
-    - master
-    - 5.4-release
   tags:
     - macos10.13
   stage: test
@@ -398,9 +360,6 @@ test_python_mac_python27_10_13:
       - pytest.*
 
 test_python_mac_python27_10_14:
-  only:
-    - master
-    - 5.4-release
   tags:
     - macos10.14
   stage: test
@@ -431,9 +390,6 @@ test_python_mac_python35_10_14:
       - pytest.*
 
 test_python_mac_python36_10_14:
-  only:
-    - master
-    - 5.4-release
   tags:
     - macos10.14
   stage: test
@@ -460,9 +416,6 @@ scenario_tests_linux_python27:
     - ./run_scenario_tests.sh ../target/turicreate-*.whl
 
 scenario_tests_linux_python35:
-  only:
-    - master
-    - 5.4-release
   image: docker.apple.com/turi/build-image-centos7-python3.5:1802
   tags:
     - dockerized
@@ -474,9 +427,6 @@ scenario_tests_linux_python35:
     - ./run_scenario_tests.sh ../target/turicreate-*.whl
 
 scenario_tests_linux_python36:
-  only:
-    - master
-    - 5.4-release
   image: docker.apple.com/turi/build-image-centos7-python3.6:1802
   tags:
     - dockerized
@@ -488,9 +438,6 @@ scenario_tests_linux_python36:
     - ./run_scenario_tests.sh ../target/turicreate-*.whl
 
 scenario_tests_mac_python27_10_13:
-  only:
-    - master
-    - 5.4-release
   tags:
     - macos10.13
   stage: test
@@ -502,9 +449,6 @@ scenario_tests_mac_python27_10_13:
     - ./run_scenario_tests.sh ../target/turicreate-*.whl
 
 scenario_tests_mac_python27_10_14:
-  only:
-    - master
-    - 5.4-release
   tags:
     - macos10.14
   stage: test
