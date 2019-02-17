@@ -96,7 +96,7 @@ void run_benchmark(size_t n_obs, std::string column_type_info) {
   }
 
   ////////////////////////////////////////////////////////////////////////////////
-  // Step 4:  Time parallel iterations with the sparse vector.
+  // Step 4:  Time parallel iterations with the Eigen sparse vector.
 
   for(size_t attempt : {1, 2})
   {
@@ -105,10 +105,12 @@ void run_benchmark(size_t n_obs, std::string column_type_info) {
 
     in_parallel([&](size_t thread_idx, size_t num_threads) {
 
-        turi::sparse_vector<double, size_t> x;
+        double cv = 0;
+        Eigen::SparseVector<double> x;
 
         for(auto it = mdata.get_iterator(thread_idx, num_threads); !it.done(); ++it) {
-          it.fill(x);
+          it.fill_observation(x);
+          cv += x.sum();
         }
 
       });

@@ -48,7 +48,7 @@ class EXPORT recsys_factorization_model_base : public recsys_model_base {
 
  private:
   mutable mutex _get_similar_buffers_lock;
-  mutable std::vector<arma::fvec>  _get_similar_buffers;
+  mutable std::vector<Eigen::Matrix<float, Eigen::Dynamic, 1> >  _get_similar_buffers;
 
 
  public:

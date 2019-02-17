@@ -94,7 +94,7 @@ row_slicer::row_slicer(const std::shared_ptr<ml_metadata>& metadata,
 
 /**  Take a row, represented by a pair of translated and
  *   untranslated columns (either of which may be empty), and
- *   use it to fill a sparse vector with the result. 
+ *   use it to fill an eigen sparse vector with the result.
  */
 void row_slicer::slice(sparse_vector& dest,
                        const std::vector<ml_data_entry>& x_t, const std::vector<flexible_type>&) const {
@@ -102,7 +102,7 @@ void row_slicer::slice(sparse_vector& dest,
   ASSERT_MSG(!pick_from_flexible_type, "Cannot be used for untranslated columns."); 
 
   dest.resize(_num_dimensions);
-  dest.zeros();
+  dest.setZero();
 
   for(const ml_data_entry& v : x_t) {
     DASSERT_LT(v.column_index, index_sizes.size()); 
@@ -114,7 +114,7 @@ void row_slicer::slice(sparse_vector& dest,
       continue;
 
     
-    dest(v.index + index_offsets[v.column_index]) = v.value; 
+    dest.coeffRef(v.index + index_offsets[v.column_index]) = v.value;
   }
 }
 
@@ -122,7 +122,7 @@ void row_slicer::slice(sparse_vector& dest,
 
 /**  Take a row, represented by a pair of translated and
  *   untranslated columns (either of which may be empty), and
- *   use it to fill a dense vector with the result. 
+ *   use it to fill an eigen dense vector with the result.
  */
 void row_slicer::slice(dense_vector& dest,
                        const std::vector<ml_data_entry>& x_t, const std::vector<flexible_type>& x_u) const {
@@ -130,7 +130,7 @@ void row_slicer::slice(dense_vector& dest,
   ASSERT_MSG(!pick_from_flexible_type, "Cannot be used for untranslated columns."); 
 
   dest.resize(_num_dimensions);
-  dest.zeros();
+  dest.setZero();
 
   for(const ml_data_entry& v : x_t) {
     DASSERT_LT(v.column_index, index_sizes.size());

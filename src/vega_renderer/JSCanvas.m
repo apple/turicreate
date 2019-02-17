@@ -566,7 +566,7 @@
     // so we don't flip the text upside down
     CGPoint coords = CGPointApplyAffineTransform(CGPointMake(x, y), flipYAxis);
     NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:string attributes:self.textAttributes];
-    CTLineRef line = CTLineCreateWithAttributedString((CFAttributedStringRef)attrStr);
+    CTLineRef line = CTLineCreateWithAttributedString((__bridge CFAttributedStringRef)attrStr);
     assert(line != nil);
     double width = attrStr.size.width;
     

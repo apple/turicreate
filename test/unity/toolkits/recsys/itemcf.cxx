@@ -33,7 +33,7 @@
 #include <unity/toolkits/ml_data_2/ml_data_iterators.hpp>
 #include <unity/toolkits/util/indexed_sframe_tools.hpp>
 
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 
 using namespace turi;
 
@@ -257,7 +257,7 @@ struct recsys_itemcf_test  {
     model->init_options(opts);
     model->setup_and_train(data);
 
-    arma::mat ans(4,4);
+    Eigen::MatrixXd ans(4,4);
 
     double a_b = 1./3.;
     double a_c = 1./4.;
@@ -266,10 +266,10 @@ struct recsys_itemcf_test  {
     double b_d = 0.;
     double c_d = 1./4.;
 
-    ans = { {1.,  a_b, a_c, a_d},
-            {0.0, 1.,  b_c, b_d},
-            {0.0, 0.0, 1.,  c_d},
-            {0.0, 0.0, 0.0, 1.}};
+    ans << 1.,  a_b, a_c, a_d,
+        0.0, 1.,  b_c, b_d,
+        0.0, 0.0, 1.,  c_d,
+        0.0, 0.0, 0.0, 1.;
 
     //
     // test getting item neighbors
@@ -392,10 +392,10 @@ struct recsys_itemcf_test  {
     b_d = 0.0;
     c_d = 1.0 / std::sqrt(3.) / std::sqrt(2.);
 
-    ans = { {1.,  a_b, a_c, a_d, },
-            {0.0, 1.,  b_c, b_d, },
-            {0.0, 0.0, 1.,  c_d, },
-            {0.0, 0.0, 0.0, 1.   } };
+  ans << 1. ,  a_b , a_c , a_d
+      ,0.0 , 1. ,  b_c , b_d
+      ,0.0 , 0.0 , 1. ,  c_d 
+      ,0.0 , 0.0 , 0.0 , 1.;
 
     // test getting item neighbors
     {
@@ -508,10 +508,10 @@ struct recsys_itemcf_test  {
     b_d = 0.;
     c_d = 0.;
 
-    ans = {{1.,  a_b, a_c, a_d},
-           {0.0, 1.,  b_c, b_d},
-           {0.0, 0.0, 1.,  c_d},
-           {0.0, 0.0, 0.0, 1.}};
+    ans << 1.,  a_b, a_c, a_d,
+        0.0, 1.,  b_c, b_d,
+        0.0, 0.0, 1.,  c_d,
+        0.0, 0.0, 0.0, 1.;
 
     // test getting item neighbors
     {
@@ -667,11 +667,11 @@ struct recsys_itemcf_test  {
     double c_d = (1. - c_mean) * (1. - d_mean) / std::sqrt(c_var) / std::sqrt(d_var);
 
 
-    arma::mat ans(4,4);
-    ans = {{1. , a_b, a_c, a_d},
-           {0.0, 1. , b_c, b_d},
-           {0.0, 0.0, 1.0, c_d},
-           {0.0, 0.0, 0.0, 1.0}};
+    Eigen::MatrixXd ans(4,4);
+    ans << 1. , a_b, a_c, a_d,
+        0.0, 1. , b_c, b_d,
+        0.0, 0.0, 1.0, c_d,
+        0.0, 0.0, 0.0, 1.0;
 
     std::vector<flexible_type> all_users_vec = {"0", "1", "2", "3"};
     std::vector<flexible_type> all_items_vec = {"A", "B", "C", "D"};
@@ -778,10 +778,10 @@ struct recsys_itemcf_test  {
     b_d = 0.0;
     c_d = 1.0 / std::sqrt(.5*.5 + .6*.6 + 1*1) / std::sqrt(1*1 + 1.5*1.5);
 
-    ans =  {{1.,  a_b, a_c, a_d},
-            {0.0, 1.,  b_c, b_d},
-            {0.0, 0.0, 1.,  c_d},
-            {0.0, 0.0, 0.0, 1.}};
+    ans << 1.,  a_b, a_c, a_d,
+        0.0, 1.,  b_c, b_d,
+        0.0, 0.0, 1.,  c_d,
+        0.0, 0.0, 0.0, 1.;
 
     // test getting item neighbors
     {
@@ -888,10 +888,10 @@ struct recsys_itemcf_test  {
     c_d = 1./4.;
 
     // removed the diagonal values
-    ans =  {{1.,  a_b, a_c, a_d},
-            {0.0, 1.,  b_c, b_d},
-            {0.0, 0.0, 1.,  c_d},
-            {0.0, 0.0, 0.0, 1.}};
+    ans << 1.,  a_b, a_c, a_d,
+        0.0, 1.,  b_c, b_d,
+        0.0, 0.0, 1.,  c_d,
+        0.0, 0.0, 0.0, 1.;
 
     // test getting item neighbors
     {

@@ -13,7 +13,5 @@ make_library(unity_factorization
     loss_model_profiles.cpp
     factorization_model_training.cpp
 REQUIRES
-    unity_ml_data_2 
-    unity_sgd 
-    numerics) 
+    unity_ml_data_2 unity_sgd eigen)
 

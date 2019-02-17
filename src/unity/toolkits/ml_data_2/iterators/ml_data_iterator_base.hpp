@@ -18,7 +18,8 @@
 // SArray and Flex type
 #include <sframe/sarray.hpp>
 
-#include <numerics/armadillo.hpp>
+#include <Eigen/SparseCore>
+#include <Eigen/Core>
 
 #include <array>
 
@@ -26,7 +27,8 @@ namespace turi { namespace v2 {
 
 class ml_data;
 
-typedef arma::fvec DenseVector;
+typedef Eigen::Matrix<double, Eigen::Dynamic,1>  DenseVector;
+typedef Eigen::SparseVector<double> SparseVector;
 
 /**
  * Just a simple iterator on the ml_data class.  It's just a
@@ -147,7 +149,7 @@ class ml_data_iterator_base {
   }
 
   /**
-   * Fill an observation vector, represented as a Sparse Vector, from
+   * Fill an observation vector, represented as an Eigen Sparse Vector, from
    * the current location in the iteration.
    *
    * \note A reference category is used in this version of the function.
@@ -179,16 +181,15 @@ class ml_data_iterator_base {
    * \param[in,out] x   Data containing everything!
    *
    */
-  template <typename T, typename Index>
-  GL_HOT_INLINE_FLATTEN
-  inline void fill(turi::sparse_vector<T, Index>& x) const {
+  inline void fill_observation(SparseVector& x) const GL_HOT_INLINE_FLATTEN {
 
-    x.zeros();
+
+    x.setZero();
 
     if(!has_translated_columns)
       return;
 
-    ml_data_internal::copy_raw_into_array(
+    ml_data_internal::copy_raw_into_eigen_array(
         x,
         rm, current_data_iter(),
         side_features,
@@ -197,7 +198,7 @@ class ml_data_iterator_base {
 
 
   /**
-   * Fill an observation vector, represented as a Dense Vector, from
+   * Fill an observation vector, represented as an Eigen Dense Vector, from
    * the current location in the iteration.
    *
    * \note The 0th category is used as a reference category.
@@ -230,12 +231,12 @@ class ml_data_iterator_base {
    */
   inline void fill_observation(DenseVector& x) const  GL_HOT_INLINE_FLATTEN {
 
-    x.zeros();
+    x.setZero();
 
     if(!has_translated_columns)
       return;
 
-    ml_data_internal::copy_raw_into_array(
+    ml_data_internal::copy_raw_into_eigen_array(
         x,
         rm, current_data_iter(),
         side_features,
@@ -244,34 +245,32 @@ class ml_data_iterator_base {
 
 
   /**
-   * Fill a row from the current location in the iteration.
+   * Fill a row of an Eigen Dense Vector, from
+   * the current location in the iteration.
    *
    * \note The 0th category is used as a reference category.
    *  
    *
    * Example:
    *
-   *   arma::mat X;
+   *   Eigen::MatrixXd X;
    *
    *   ...
    *
-   *   it.fill_row_expr(X.row(row_idx)); 
+   *   it.fill_eigen_row(X.row(row_idx));
    *  
    * ---------------------------------------------
    *
-   * \param[in,out] x   An armadillo row expression.
+   * \param[in,out] x   An eigen row expression.
    *
    */
   template <typename DenseRowXpr>
   GL_HOT_INLINE_FLATTEN
-  inline void fill_row_expr(DenseRowXpr&& x) const {
+  inline void fill_eigen_row(DenseRowXpr&& x) const {
 
-    x.zeros();
+    x.setZero();
     
-    if(!has_translated_columns)
-      return;
-    
-    ml_data_internal::copy_raw_into_array(
+    ml_data_internal::copy_raw_into_eigen_array(
         x,
         rm, current_data_iter(),
         side_features,
@@ -315,6 +314,8 @@ class ml_data_iterator_base {
     return get_target_index(rm, current_data_iter());
   }
 
+  ////////////////////////////////////////////////////////////////////////////////
+
   /**  Return a row reference instead of the actual observation.  The
    *   row reference can be used to fill the observation vectors just
    *   like the iterator can, and can easily be passed around by value.
@@ -329,6 +330,7 @@ class ml_data_iterator_base {
 
     return ref;
   }
+
 
   ////////////////////////////////////////////////////////////////////////////////
 

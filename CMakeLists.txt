@@ -1,19 +1,18 @@
 project(Turi)
 
-# We require the most recent version of cmake and automatically
-# install the correct version when using the cmake lists
-cmake_minimum_required(VERSION 2.8.3)
+# We require a recent version of cmake and automatically
+# install a compatible version when using the cmake lists,
+# if one is not already present.
+cmake_minimum_required(VERSION 3.9.2)
 
 # Libraries linked via full path no longer produce linker search paths.
 cmake_policy(SET CMP0003 NEW)
 # Preprocessor definition values are now escaped automatically.
 cmake_policy(SET CMP0005 NEW)
 # for cmake 3.0
-if(${CMAKE_MAJOR_VERSION} GREATER 2)
 cmake_policy(SET CMP0045 OLD)
 cmake_policy(SET CMP0046 OLD)
 cmake_policy(SET CMP0042 NEW)
-endif()
 
 # Generate a compilation database for use with automated tools like IDE/editor
 # plugins. See http://clang.llvm.org/docs/JSONCompilationDatabase.html
@@ -140,8 +139,6 @@ link_directories(${CMAKE_SOURCE_DIR}/deps/local/lib)
 if (EXISTS ${CMAKE_SOURCE_DIR}/deps/local/lib64)
   link_directories(${CMAKE_SOURCE_DIR}/deps/local/lib64)
 endif()
-
-
 
 #**************************************************************************
 #*                                                                        *
@@ -317,7 +314,7 @@ if (CLANG)
 
   set(CPP11_FLAGS "-std=c++11 -stdlib=libc++ -Wno-deprecated-register -Wno-enum-compare -Wno-conversion-null -Wno-constant-logical-operand -Wno-parentheses-equality -ftemplate-depth=900 ${_cpp11_optional_flags}")
 
-  set(WERROR_FLAGS "-Werror")
+  set(WERROR_FLAGS "-Werror -Wall -Wsign-compare")
 else()
   # non-clang
   set(CPP11_FLAGS "-std=c++11 -Wno-enum-compare -Wno-conversion-null -ftemplate-depth=900")

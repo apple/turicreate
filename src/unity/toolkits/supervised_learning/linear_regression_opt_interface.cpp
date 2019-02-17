@@ -6,22 +6,21 @@
 #include <unity/lib/unity_sframe.hpp>
 
 // Toolkits
-#include <toolkits/supervised_learning/supervised_learning.hpp>
-#include <toolkits/supervised_learning/linear_regression.hpp>
-#include <toolkits/supervised_learning/linear_regression_opt_interface.hpp>
-#include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
+#include <unity/toolkits/supervised_learning/linear_regression.hpp>
+#include <unity/toolkits/supervised_learning/linear_regression_opt_interface.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
 
 // Solvers
 #include <optimization/utils.hpp>
 #include <optimization/newton_method-inl.hpp>
 #include <optimization/gradient_descent-inl.hpp>
 #include <optimization/accelerated_gradient-inl.hpp>
-#include <optimization/lbfgs-inl.hpp>
+#include <optimization/lbfgs.hpp>
 
 // Regularizer
 #include <optimization/regularizers-inl.hpp>
-#include <numerics/armadillo.hpp>
-#include <serialization/serialization_includes.hpp>
+#include <Eigen/SparseCore>
 
 constexpr size_t LINEAR_REGRESSION_BATCH_SIZE = 1000;
 
@@ -36,6 +35,7 @@ namespace supervised {
  * Linear Regression Solver Interface
  * ****************************************************************************
  */
+
 
 /**
  * Constructor for Linear regression solver object.dual_linear_svm_dual_opt_interface
@@ -147,7 +147,7 @@ void linear_regression_opt_interface::compute_first_order_statistics(const
   DASSERT_TRUE(mbSize == (size_t)(-1));
 
   // Init
-  std::vector<DenseVector> G(n_threads, arma::zeros(variables));
+  std::vector<DenseVector> G(n_threads, Eigen::MatrixXd::Zero(variables,1));
   std::vector<double> f(n_threads, 0.0);
 
   // Dense data. 
@@ -170,16 +170,16 @@ void linear_regression_opt_interface::compute_first_order_statistics(const
           }
 
           // Resize will happen only once (last few rows).
-          x.resize(row_id, variables);
-          y.resize(row_id);
+          x.conservativeResize(row_id, variables);
+          y.conservativeResize(row_id);
           if(feature_rescaling){
             scaler->transform(x);
           }
           
           // Compute
           DenseVector r = x * point - y;
-          G[thread_idx] += 2 * x.t() * r;
-          f[thread_idx] += dot(r, r);
+          G[thread_idx] += 2 * x.transpose() * r;
+          f[thread_idx] += r.dot(r);
         }
       });
 
@@ -188,19 +188,19 @@ void linear_regression_opt_interface::compute_first_order_statistics(const
       in_parallel([&](size_t thread_idx, size_t num_threads) {
         SparseVector x(variables);
         double r = 0;
-        for(auto it = data.get_iterator(thread_idx, num_threads); !it.done(); ++it) {
+        for(auto it = data.get_iterator(thread_idx, num_threads);
+                                                            !it.done(); ++it) {
           // Fill.
           fill_reference_encoding(*it, x);
-          x(variables - 1) = 1;
+          x.coeffRef(variables - 1) = 1;
           if(feature_rescaling){
             scaler->transform(x);
           }
 
           // Compute.
-          r = dot(x, point) - it->target_value();
-          for(auto p : x) {
-            G[thread_idx][p.first]  += 2 * r * p.second;
-          }
+          r = x.dot(point) - it->target_value();
+          SparseVector G_buffer = 2 * r * x;
+          optimization::vector_add<DenseVector, SparseVector>(G[thread_idx], G_buffer);
           f[thread_idx] += r * r;
         }
       });
@@ -223,9 +223,9 @@ void linear_regression_opt_interface::compute_second_order_statistics( const
     function_value) {
 
   std::vector<DenseMatrix> H(n_threads, 
-                        arma::zeros(variables,variables));
+                        Eigen::MatrixXd::Zero(variables,variables));
   std::vector<DenseVector> G(n_threads, 
-                        arma::zeros(variables));
+                        Eigen::MatrixXd::Zero(variables,1));
   std::vector<double> f(n_threads, 0.0);
   
   // Dense data. 
@@ -246,17 +246,17 @@ void linear_regression_opt_interface::compute_second_order_statistics( const
         }
 
         // Resize will happen only once (last few rows).
-        x.resize(row_id, variables);
-        y.resize(row_id);
+        x.conservativeResize(row_id, variables);
+        y.conservativeResize(row_id);
         if(feature_rescaling){
           scaler->transform(x);
         }
 
         // Compute
         DenseVector r = x * point - y;
-        G[thread_idx] += 2 * x.t() * r;
-        f[thread_idx] += dot(r, r);
-        H[thread_idx] += 2 * x.t() * x;
+        G[thread_idx] += 2 * x.transpose() * r;
+        f[thread_idx] += r.dot(r);
+        H[thread_idx] += 2 * x.transpose() * x;
       }
     });
 
@@ -270,22 +270,20 @@ void linear_regression_opt_interface::compute_second_order_statistics( const
           // Fill.
           fill_reference_encoding(*it, x);
           y = it->target_value();
-          x(variables - 1) = 1;
+          x.coeffRef(variables - 1) = 1;
           if(feature_rescaling){
             scaler->transform(x);
           }
                             
           // Compute.       
-          r = dot(x, point) - y;
-          for(auto p : x) {
-            G[thread_idx][p.first]  += 2 * r * p.second;
-          }
-
+          r = x.dot(point) - y;
+          SparseVector G_buffer = 2 * r * x;
+          optimization::vector_add<DenseVector, SparseVector>(G[thread_idx],
+                                                              G_buffer);
           f[thread_idx] += r * r;
-
-          for (auto pi : x) {
-            for (auto pj : x) {
-              H[thread_idx](pi.first, pj.first) += 2 * pi.second * pj.second;
+          for (SparseVector::InnerIterator i(x); i; ++i){
+            for (SparseVector::InnerIterator j(x); j; ++j){
+              H[thread_idx](i.index(), j.index()) += 2 * i.value()* j.value();
             }
           }
         }

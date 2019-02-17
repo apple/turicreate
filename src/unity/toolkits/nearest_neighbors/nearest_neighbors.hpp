@@ -23,13 +23,13 @@
 #include <unity/lib/unity_base_types.hpp>
 #include <unity/lib/extensions/ml_model.hpp>
 #include <unity/toolkits/util/algorithmic_utils.hpp>
-#include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
 
 #include <unity/toolkits/nearest_neighbors/distance_functions.hpp>
 
 #include <export.hpp>
-#include <numerics/armadillo.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
 
 namespace turi {
 namespace nearest_neighbors {

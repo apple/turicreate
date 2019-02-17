@@ -105,12 +105,12 @@
       if(num_factors == 8)                                              \
         _CREATE_AND_RETURN(matrix_factorization, 8, __VA_ARGS__);       \
       else                                                              \
-        _CREATE_AND_RETURN(matrix_factorization, DYNAMIC, __VA_ARGS__);      \
+        _CREATE_AND_RETURN(matrix_factorization, -1, __VA_ARGS__);      \
     } else if(factor_mode == "factorization_machine") {                 \
       if(num_factors == 8)                                              \
         _CREATE_AND_RETURN(factorization_machine, 8, __VA_ARGS__);      \
       else                                                              \
-        _CREATE_AND_RETURN(factorization_machine, DYNAMIC, __VA_ARGS__);     \
+        _CREATE_AND_RETURN(factorization_machine, -1, __VA_ARGS__);     \
     } else {                                                            \
       _BAD(factor_mode);                                                \
     }                                                                   \
@@ -119,16 +119,16 @@
 #define _SUPPRESS_BY_FACTORS(...)                               \
   _SUPPRESS_SOLVER(pure_linear_model, 0, __VA_ARGS__);          \
   _SUPPRESS_SOLVER(matrix_factorization, 8, __VA_ARGS__);       \
-  _SUPPRESS_SOLVER(matrix_factorization, DYNAMIC, __VA_ARGS__);      \
+  _SUPPRESS_SOLVER(matrix_factorization, -1, __VA_ARGS__);      \
   _SUPPRESS_SOLVER(factorization_machine, 8, __VA_ARGS__);      \
-  _SUPPRESS_SOLVER(factorization_machine, DYNAMIC, __VA_ARGS__);     \
+  _SUPPRESS_SOLVER(factorization_machine, -1, __VA_ARGS__);     \
 
 #define _INSTANTIATE_BY_FACTORS(...)                            \
   _INSTANTIATE_SOLVER(pure_linear_model, 0, __VA_ARGS__);       \
   _INSTANTIATE_SOLVER(matrix_factorization, 8, __VA_ARGS__);    \
-  _INSTANTIATE_SOLVER(matrix_factorization, DYNAMIC, __VA_ARGS__);   \
+  _INSTANTIATE_SOLVER(matrix_factorization, -1, __VA_ARGS__);   \
   _INSTANTIATE_SOLVER(factorization_machine, 8, __VA_ARGS__);   \
-  _INSTANTIATE_SOLVER(factorization_machine, DYNAMIC, __VA_ARGS__);  \
+  _INSTANTIATE_SOLVER(factorization_machine, -1, __VA_ARGS__);  \
 
 
 ////////////////////////////////////////////////////////////////////////////////

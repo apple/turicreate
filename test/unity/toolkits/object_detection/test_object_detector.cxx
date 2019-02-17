@@ -21,7 +21,6 @@ namespace object_detection {
 namespace {
 
 using CoreML::Specification::NeuralNetwork;
-using turi::neural_net::cnn_module;
 using turi::neural_net::compute_context;
 using turi::neural_net::deferred_float_array;
 using turi::neural_net::float_array;
@@ -29,6 +28,7 @@ using turi::neural_net::float_array_map;
 using turi::neural_net::image_annotation;
 using turi::neural_net::image_augmenter;
 using turi::neural_net::labeled_image;
+using turi::neural_net::model_backend;
 using turi::neural_net::model_spec;
 using turi::neural_net::shared_float_array;
 
@@ -97,19 +97,18 @@ public:
   std::deque<prepare_images_call> prepare_images_calls_;
 };
 
-class mock_cnn_module: public cnn_module {
+class mock_model_backend: public model_backend {
 public:
 
   using set_learning_rate_call = std::function<void(float lr)>;
 
   using train_call =
-      std::function<deferred_float_array(const float_array& input_batch,
-                                         const float_array& label_batch)>;
+      std::function<float_array_map(const float_array_map& inputs)>;
 
   using predict_call =
-      std::function<deferred_float_array(const float_array& input_batch)>;
+      std::function<float_array_map(const float_array_map& inputs)>;
 
-  ~mock_cnn_module() {
+  ~mock_model_backend() {
     TS_ASSERT(train_calls_.empty());
     TS_ASSERT(predict_calls_.empty());
   }
@@ -122,20 +121,20 @@ public:
     expected_call(lr);
   }
 
-  deferred_float_array train(const float_array& input_batch,
-                             const float_array& label_batch) override {
+  float_array_map train(const float_array_map& inputs) override {
 
     TS_ASSERT(!train_calls_.empty());
     train_call expected_call = std::move(train_calls_.front());
     train_calls_.pop_front();
-    return expected_call(input_batch, label_batch);
+    return expected_call(inputs);
   }
 
-  deferred_float_array predict(const float_array& input_batch) const override {
+  float_array_map predict(const float_array_map& inputs) const override {
+
     TS_ASSERT(!predict_calls_.empty());
     predict_call expected_call = std::move(predict_calls_.front());
     predict_calls_.pop_front();
-    return expected_call(input_batch);
+    return expected_call(inputs);
   }
 
   float_array_map export_weights() const override {
@@ -154,13 +153,14 @@ public:
   using create_augmenter_call = std::function<std::unique_ptr<image_augmenter>(
       const image_augmenter::options& opts)>;
 
-  using create_cnn_module_call = std::function<std::unique_ptr<cnn_module>(
-      int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
-      const float_array_map& config, const float_array_map& weights)>;
+  using create_object_detector_call =
+      std::function<std::unique_ptr<model_backend>(
+          int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
+          const float_array_map& config, const float_array_map& weights)>;
 
   ~mock_compute_context() {
     TS_ASSERT(create_augmenter_calls_.empty());
-    TS_ASSERT(create_cnn_module_calls_.empty());
+    TS_ASSERT(create_object_detector_calls_.empty());
   }
 
   size_t memory_budget() const override {
@@ -181,21 +181,21 @@ public:
     return expected_call(opts);
   }
 
-  std::unique_ptr<cnn_module> create_object_detector(
+  std::unique_ptr<model_backend> create_object_detector(
       int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
       const float_array_map& config,
       const float_array_map& weights) override {
 
-    TS_ASSERT(!create_cnn_module_calls_.empty());
-    create_cnn_module_call expected_call =
-        std::move(create_cnn_module_calls_.front());
-    create_cnn_module_calls_.pop_front();
+    TS_ASSERT(!create_object_detector_calls_.empty());
+    create_object_detector_call expected_call =
+        std::move(create_object_detector_calls_.front());
+    create_object_detector_calls_.pop_front();
     return expected_call(n, c_in, h_in, w_in, c_out, h_out, w_out, config,
                          weights);
   }
 
   mutable std::deque<create_augmenter_call> create_augmenter_calls_;
-  mutable std::deque<create_cnn_module_call> create_cnn_module_calls_;
+  mutable std::deque<create_object_detector_call> create_object_detector_calls_;
 };
 
 // Subclass of object_detector that mocks out the methods that inject the
@@ -273,7 +273,8 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
   std::unique_ptr<mock_data_iterator> mock_iterator(new mock_data_iterator);
   std::unique_ptr<mock_image_augmenter> mock_augmenter(
       new mock_image_augmenter);
-  std::unique_ptr<mock_cnn_module> mock_module(new mock_cnn_module);
+  std::unique_ptr<mock_model_backend> mock_nn_model(
+      new mock_model_backend);
   std::unique_ptr<mock_compute_context> mock_context(new mock_compute_context);
 
   // We'll request 4 training iterations, since the learning rate schedule
@@ -343,21 +344,21 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
     };
     mock_augmenter->prepare_images_calls_.push_back(prepare_images_impl);
 
-    // The mock_module should expect calls to set_learning_rate just at the 50%
-    // and 75% marks.
+    // The mock_model_backend should expect calls to set_learning_rate just at
+    // the 50% and 75% marks.
     if (i == test_max_iterations / 2 || i == test_max_iterations * 3 / 4) {
 
       auto set_learning_rate_impl = [=](float lr) {
         TS_ASSERT_EQUALS(*num_iterations_submitted, i);
       };
-      mock_module->set_learning_rate_calls_.push_back(set_learning_rate_impl);
+      mock_nn_model->set_learning_rate_calls_.push_back(set_learning_rate_impl);
     }
 
-    // The mock_module should expect calls to train on every iteration.
-    auto train_impl = [=](const float_array& input_batch,
-                          const float_array& label_batch) {
+    // The mock_model_backend should expect `train` calls on every iteration.
+    auto train_impl = [=](const float_array_map& inputs) {
 
       // The input_batch should just be whatever the image_augmenter returned.
+      shared_float_array input_batch = inputs.at("input");
       TS_ASSERT_EQUALS(input_batch.data(), test_image_batch->data());
 
       // Track how many calls we've had.
@@ -365,9 +366,11 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
 
       // Multiply loss by 8 to offset the "mps_loss_mult" factor currently
       // hardwired in to avoid fp16 underflow in MPS.
-      return deferred_float_array(shared_float_array::wrap(8 * test_loss));
+      std::map<std::string, shared_float_array> result;
+      result["loss"] = shared_float_array::wrap(8 * test_loss);
+      return result;
     };
-    mock_module->train_calls_.push_back(train_impl);
+    mock_nn_model->train_calls_.push_back(train_impl);
   }
 
   const std::string test_annotations_name = "test_annotations";
@@ -413,7 +416,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
     return nn_spec;
   });
 
-  auto create_cnn_module_impl = [&](int n, int c_in, int h_in, int w_in,
+  auto create_object_detector_impl = [&](int n, int c_in, int h_in, int w_in,
                                     int c_out, int h_out, int w_out,
                                     const float_array_map& config,
                                     const float_array_map& weights) {
@@ -437,9 +440,10 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
 
     // TODO: Assert the config values?
 
-    return std::move(mock_module);
+    return std::move(mock_nn_model);
   };
-  mock_context->create_cnn_module_calls_.push_back(create_cnn_module_impl);
+  mock_context->create_object_detector_calls_.push_back(
+      create_object_detector_impl);
 
   auto create_compute_context_impl = [&] { return std::move(mock_context); };
   model.create_compute_context_calls_.push_back(create_compute_context_impl);

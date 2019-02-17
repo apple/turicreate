@@ -20,7 +20,7 @@ void MomUpdater::Init(const std::vector<Layer *> &net,
                       const std::vector<float> &fparam) {
   // set params
   state.resize(net.size());
-  for (int i = 0; i < net.size(); ++i) {
+  for (size_t i = 0; i < net.size(); ++i) {
     if (net[i]->type == kConv || net[i]->type == kBN) {
       state[i].resize(2);
     }
@@ -59,7 +59,7 @@ MPSUpdater *createUpdater(int updater_id) {
 
 void AdamUpdater::Init(const std::vector<Layer *> &net, const std::vector<float> &fparam) { 
     state.resize(net.size());
-    for (int i = 0; i < net.size(); ++i) {
+    for (size_t i = 0; i < net.size(); ++i) {
         if (net[i]->type == kConv || net[i]->type == kBN) {
             state[i].resize(4);
         }

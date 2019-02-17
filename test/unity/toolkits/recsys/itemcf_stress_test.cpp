@@ -35,8 +35,6 @@
 #include <unity/toolkits/ml_data_2/ml_data_iterators.hpp>
 #include <unity/toolkits/util/indexed_sframe_tools.hpp>
 
-#include <numerics/armadillo.hpp>
-
 using namespace turi;
 
 int main(int argc, char** argv) {

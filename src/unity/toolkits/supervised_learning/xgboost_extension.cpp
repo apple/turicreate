@@ -4,8 +4,8 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <unity/lib/toolkit_function_macros.hpp>
-#include <toolkits/supervised_learning/supervised_learning.hpp>
-#include <toolkits/supervised_learning/xgboost.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
+#include <unity/toolkits/supervised_learning/xgboost.hpp>
 
 using namespace turi;
 using namespace turi::supervised;

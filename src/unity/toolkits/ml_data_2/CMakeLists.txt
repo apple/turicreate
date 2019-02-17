@@ -30,9 +30,9 @@ make_library(unity_ml_data_2
     testing_utils.cpp
 
     row_slicing_utilities.cpp
-    
+
   REQUIRES
     unity_core
     unity_util
-    armadillo
+    eigen
   )
