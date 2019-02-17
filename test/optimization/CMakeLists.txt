@@ -1,5 +1,4 @@
 project(optimization_test)
 
-# TODO not sure why this one doesn't compile
-#make_boost_test(optimization_interface_test.cxx REQUIRES unity_shared_for_testing)
+make_boost_test(optimization_interface_test.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(constraint_interface_test.cxx REQUIRES unity_shared_for_testing)
