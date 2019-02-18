@@ -24,11 +24,10 @@
 #include <google/protobuf/arenastring.h>
 #include <google/protobuf/generated_message_table_driven.h>
 #include <google/protobuf/generated_message_util.h>
-#include <google/protobuf/metadata.h>
-#include <google/protobuf/message.h>
+#include <google/protobuf/metadata_lite.h>
+#include <google/protobuf/message_lite.h>
 #include <google/protobuf/repeated_field.h>  // IWYU pragma: export
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
-#include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 namespace TuriCreate {
 namespace Annotation {
@@ -69,7 +68,7 @@ void InitDefaults();
 
 // ===================================================================
 
-class ImageDatum : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.ImageDatum) */ {
+class ImageDatum : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.ImageDatum) */ {
  public:
   ImageDatum();
   virtual ~ImageDatum();
@@ -81,7 +80,6 @@ class ImageDatum : public ::google::protobuf::Message /* @@protoc_insertion_poin
     return *this;
   }
 
-  static const ::google::protobuf::Descriptor* descriptor();
   static const ImageDatum& default_instance();
 
   static inline const ImageDatum* internal_default_instance() {
@@ -98,8 +96,8 @@ class ImageDatum : public ::google::protobuf::Message /* @@protoc_insertion_poin
   inline ImageDatum* New() const PROTOBUF_FINAL { return New(NULL); }
 
   ImageDatum* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
-  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
   void CopyFrom(const ImageDatum& from);
   void MergeFrom(const ImageDatum& from);
   void Clear() PROTOBUF_FINAL;
@@ -110,13 +108,12 @@ class ImageDatum : public ::google::protobuf::Message /* @@protoc_insertion_poin
       ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
   void SerializeWithCachedSizes(
       ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
   int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
   private:
   void SharedCtor();
   void SharedDtor();
-  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void SetCachedSize(int size) const;
   void InternalSwap(ImageDatum* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
@@ -127,7 +124,7 @@ class ImageDatum : public ::google::protobuf::Message /* @@protoc_insertion_poin
   }
   public:
 
-  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
 
   // nested types ----------------------------------------------------
 
@@ -168,7 +165,7 @@ class ImageDatum : public ::google::protobuf::Message /* @@protoc_insertion_poin
   // @@protoc_insertion_point(class_scope:TuriCreate.Annotation.Specification.ImageDatum)
  private:
 
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
   ::google::protobuf::internal::ArenaStringPtr imgdata_;
   ::google::protobuf::int32 width_;
   ::google::protobuf::int32 height_;
@@ -178,7 +175,7 @@ class ImageDatum : public ::google::protobuf::Message /* @@protoc_insertion_poin
 };
 // -------------------------------------------------------------------
 
-class TextDatum : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.TextDatum) */ {
+class TextDatum : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.TextDatum) */ {
  public:
   TextDatum();
   virtual ~TextDatum();
@@ -190,7 +187,6 @@ class TextDatum : public ::google::protobuf::Message /* @@protoc_insertion_point
     return *this;
   }
 
-  static const ::google::protobuf::Descriptor* descriptor();
   static const TextDatum& default_instance();
 
   static inline const TextDatum* internal_default_instance() {
@@ -207,8 +203,8 @@ class TextDatum : public ::google::protobuf::Message /* @@protoc_insertion_point
   inline TextDatum* New() const PROTOBUF_FINAL { return New(NULL); }
 
   TextDatum* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
-  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
   void CopyFrom(const TextDatum& from);
   void MergeFrom(const TextDatum& from);
   void Clear() PROTOBUF_FINAL;
@@ -219,13 +215,12 @@ class TextDatum : public ::google::protobuf::Message /* @@protoc_insertion_point
       ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
   void SerializeWithCachedSizes(
       ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
   int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
   private:
   void SharedCtor();
   void SharedDtor();
-  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void SetCachedSize(int size) const;
   void InternalSwap(TextDatum* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
@@ -236,7 +231,7 @@ class TextDatum : public ::google::protobuf::Message /* @@protoc_insertion_point
   }
   public:
 
-  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
 
   // nested types ----------------------------------------------------
 
@@ -259,14 +254,14 @@ class TextDatum : public ::google::protobuf::Message /* @@protoc_insertion_point
   // @@protoc_insertion_point(class_scope:TuriCreate.Annotation.Specification.TextDatum)
  private:
 
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
   ::google::protobuf::internal::ArenaStringPtr text_;
   mutable int _cached_size_;
   friend struct protobuf_data_2eproto::TableStruct;
 };
 // -------------------------------------------------------------------
 
-class Datum : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.Datum) */ {
+class Datum : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.Datum) */ {
  public:
   Datum();
   virtual ~Datum();
@@ -278,7 +273,6 @@ class Datum : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
     return *this;
   }
 
-  static const ::google::protobuf::Descriptor* descriptor();
   static const Datum& default_instance();
 
   static inline const Datum* internal_default_instance() {
@@ -295,8 +289,8 @@ class Datum : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
   inline Datum* New() const PROTOBUF_FINAL { return New(NULL); }
 
   Datum* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
-  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
   void CopyFrom(const Datum& from);
   void MergeFrom(const Datum& from);
   void Clear() PROTOBUF_FINAL;
@@ -307,13 +301,12 @@ class Datum : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
       ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
   void SerializeWithCachedSizes(
       ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
   int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
   private:
   void SharedCtor();
   void SharedDtor();
-  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void SetCachedSize(int size) const;
   void InternalSwap(Datum* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
@@ -324,7 +317,7 @@ class Datum : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
   }
   public:
 
-  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
 
   // nested types ----------------------------------------------------
 
@@ -363,7 +356,7 @@ class Datum : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
   // @@protoc_insertion_point(class_scope:TuriCreate.Annotation.Specification.Datum)
  private:
 
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
   ::google::protobuf::RepeatedPtrField< ::TuriCreate::Annotation::Specification::ImageDatum > images_;
   ::google::protobuf::RepeatedPtrField< ::TuriCreate::Annotation::Specification::TextDatum > text_;
   ::google::protobuf::int64 datumhash_;
@@ -372,7 +365,7 @@ class Datum : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
 };
 // -------------------------------------------------------------------
 
-class Data : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.Data) */ {
+class Data : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.Data) */ {
  public:
   Data();
   virtual ~Data();
@@ -384,7 +377,6 @@ class Data : public ::google::protobuf::Message /* @@protoc_insertion_point(clas
     return *this;
   }
 
-  static const ::google::protobuf::Descriptor* descriptor();
   static const Data& default_instance();
 
   static inline const Data* internal_default_instance() {
@@ -401,8 +393,8 @@ class Data : public ::google::protobuf::Message /* @@protoc_insertion_point(clas
   inline Data* New() const PROTOBUF_FINAL { return New(NULL); }
 
   Data* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
-  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
   void CopyFrom(const Data& from);
   void MergeFrom(const Data& from);
   void Clear() PROTOBUF_FINAL;
@@ -413,13 +405,12 @@ class Data : public ::google::protobuf::Message /* @@protoc_insertion_point(clas
       ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
   void SerializeWithCachedSizes(
       ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
   int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
   private:
   void SharedCtor();
   void SharedDtor();
-  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void SetCachedSize(int size) const;
   void InternalSwap(Data* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
@@ -430,7 +421,7 @@ class Data : public ::google::protobuf::Message /* @@protoc_insertion_point(clas
   }
   public:
 
-  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
 
   // nested types ----------------------------------------------------
 
@@ -451,7 +442,7 @@ class Data : public ::google::protobuf::Message /* @@protoc_insertion_point(clas
   // @@protoc_insertion_point(class_scope:TuriCreate.Annotation.Specification.Data)
  private:
 
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
   ::google::protobuf::RepeatedPtrField< ::TuriCreate::Annotation::Specification::Datum > data_;
   mutable int _cached_size_;
   friend struct protobuf_data_2eproto::TableStruct;

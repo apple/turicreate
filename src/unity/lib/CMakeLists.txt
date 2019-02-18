@@ -1,7 +1,7 @@
 project(unity)
 
 subdirs(
-	annotations
+    annotation
 	visualization
 )
 
@@ -39,12 +39,12 @@ make_library(unity_core
     visualization/columnwise_summary.cpp
   REQUIRES
 	flexible_type
-    pylambda 
+    pylambda
     table_printer
-    sframe cancel_serverside_ops 
-    sframe_query_engine 
-    libjson sgraph 
-    curl 
+    sframe cancel_serverside_ops
+    sframe_query_engine
+    libjson sgraph
+    curl
     image_type image_io
     startup_teardown
     pylambda_worker

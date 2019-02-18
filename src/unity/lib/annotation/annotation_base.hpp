@@ -28,23 +28,25 @@ public:
 
   virtual ~AnnotationBase(){};
 
-  void show(const std::string &path_to_client);
+  void annotate(const std::string &path_to_client);
 
   size_t size();
 
-  virtual annotate_spec::Data getItems(size_t start, size_t end);
+  virtual annotate_spec::Data getItems(size_t start, size_t end) = 0;
 
-  virtual annotate_spec::Annotations getAnnotations(size_t start, size_t end);
+  virtual annotate_spec::Annotations getAnnotations(size_t start,
+                                                    size_t end) = 0;
 
-  virtual bool setAnnotations(const annotate_spec::Annotations &annotations);
+  virtual bool
+  setAnnotations(const annotate_spec::Annotations &annotations) = 0;
 
-  virtual std::shared_ptr<unity_sframe>
-  returnAnnotations(bool drop_null = true);
+  virtual std::shared_ptr<unity_sframe> returnAnnotations(bool drop_null) = 0;
 
 protected:
-  std::shared_ptr<unity_sframe> m_data;
-  std::vector<std::string> m_data_columns;
-  std::string m_annotation_column;
+  const std::shared_ptr<unity_sframe> m_data;
+  const std::vector<std::string> m_data_columns;
+  const std::string m_annotation_column;
+  std::shared_ptr<AnnotationBase> m_self;
 
   void _reshapeIndicies(size_t &start, size_t &end);
 };

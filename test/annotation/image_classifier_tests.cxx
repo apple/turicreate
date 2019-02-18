@@ -4,11 +4,29 @@
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
 
+#include <sframe/testing_utils.hpp>
+#include <util/testing_utils.hpp>
+
 struct image_classification_test {
 public:
   void test_pass_through() {
-    // TODO: test passing a basic sframe into annotate
-    // return it check if it's been modified
+    // 1) make an sframe with an image and annotation column
+    //    - make a function to generate image data
+
+    std::string image_column_name = "image";
+    std::string annotation_column_name = "annotation";
+
+    std::vector<std::string> column_names = {image_column_name,
+                                             annotation_column_name};
+
+    std::vector<flex_image> image_column_data;
+    std::vector<flex_image> annotation_column_data;
+
+    // TODO: generate random images
+    
+
+    // TODO: randomly generate annotation labels
+
     TS_ASSERT(true);
   }
 
@@ -24,25 +42,25 @@ public:
     TS_ASSERT(true);
   }
 
-  void test_set_annotations_pass(){
+  void test_set_annotations_pass() {
     // TODO: adding annotations to the class
     // test whether the annotations get properly added
     TS_ASSERT(true);
   }
 
-  void test_set_annotations_fail(){
+  void test_set_annotations_fail() {
     // TODO: add incorrect annotations to the class
     // test whether the incorrect annotations get caught
     TS_ASSERT(true);
   }
 
-  void test_return_annotations(){
+  void test_return_annotations() {
     // TODO: add and return the annotation sframe
     // test whether the returned sframe keeps na values
     TS_ASSERT(true);
   }
 
-  void test_return_annotations_drop_na(){
+  void test_return_annotations_drop_na() {
     // TODO: add and return the annotation sframe
     // test whether the returned sframe drops the na values
     TS_ASSERT(true);

@@ -1,8 +1,20 @@
 #include "image_classification.hpp"
 #include <functional>
 
+#include <unity/lib/gl_sarray.hpp>
+
+// TODO: add labels method
+
 namespace turi {
 namespace annotate {
+
+ImageClassification::ImageClassification() {
+  /* Since abstract classes cannot use std::make_shared and it needed for the
+   * annotate process, we need the child class to construct the shared pointer
+   * and store it in the protected variables of the inhereted abstract
+   * `AnnotationBase` class */
+  m_self = std::make_shared<ImageClassification>(*this);
+}
 
 annotate_spec::Data ImageClassification::getItems(size_t start, size_t end) {
   annotate_spec::Data data;
@@ -72,14 +84,14 @@ annotate_spec::Annotations ImageClassification::getAnnotations(size_t start,
 bool ImageClassification::setAnnotations(
     const annotate_spec::Annotations &annotations) {
 
-  // For Image Classification a number of assumptions are made.
-  //
-  // - There can only be one label per image.
-  // - There can only be one image per label.
-  //
-  // (Note: the future we may support multi-class labeling, multiple images per
-  // label and this design supports it. To enable this feature refactor this
-  // code.)
+  /* For Image Classification a number of assumptions are made.
+   *
+   * - There can only be one label per image.
+   * - There can only be one image per label.
+   *
+   * (Note: the future we may support multi-class labeling, multiple images per
+   * label and this design supports it. To enable this feature refactor this
+   * code.) */
 
   for (int a_idx = 0; a_idx < annotations.annotation_size(); a_idx++) {
     annotate_spec::Annotation annotation = annotations.annotation(a_idx);
@@ -128,6 +140,20 @@ void ImageClassification::_addAnnotationToSFrame(size_t index,
 void ImageClassification::_addAnnotationToSFrame(size_t index, size_t label) {
   // TODO: add to the index of `sf_idx` the label in `int_label` to the
   // `annotation_column`
+}
+
+// TODO: protobuf for metadata?
+std::vector<std::string> ImageClassification::uniqueLabels() {
+  std::shared_ptr<unity_sarray> data_sarray =
+      std::static_pointer_cast<unity_sarray>(
+          m_data->select_column(m_annotation_column));
+
+  gl_sarray in(data_sarray);
+  // TODO: rename gl_sarray
+  // TODO: get vector as string
+  in.unique();
+
+  return std::vector<std::string>();
 }
 
 std::shared_ptr<unity_sarray>

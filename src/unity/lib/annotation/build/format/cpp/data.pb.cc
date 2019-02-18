@@ -11,10 +11,7 @@
 #include <google/protobuf/stubs/once.h>
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/wire_format_lite_inl.h>
-#include <google/protobuf/descriptor.h>
-#include <google/protobuf/generated_message_reflection.h>
-#include <google/protobuf/reflection_ops.h>
-#include <google/protobuf/wire_format.h>
+#include <google/protobuf/io/zero_copy_stream_impl_lite.h>
 // @@protoc_insertion_point(includes)
 
 namespace TuriCreate {
@@ -30,13 +27,6 @@ class DataDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyC
 } _Data_default_instance_;
 
 namespace protobuf_data_2eproto {
-
-
-namespace {
-
-::google::protobuf::Metadata file_level_metadata[4];
-
-}  // namespace
 
 PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTableField
     const TableStruct::entries[] = {
@@ -55,84 +45,12 @@ PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTable const
   { NULL, NULL, 0, -1, -1, false },
 };
 
-const ::google::protobuf::uint32 TableStruct::offsets[] = {
-  ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ImageDatum, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ImageDatum, width_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ImageDatum, height_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ImageDatum, channels_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ImageDatum, imgdata_),
-  ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TextDatum, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TextDatum, text_),
-  ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Datum, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Datum, datumhash_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Datum, images_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Datum, text_),
-  ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Data, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Data, data_),
-};
-
-static const ::google::protobuf::internal::MigrationSchema schemas[] = {
-  { 0, -1, sizeof(ImageDatum)},
-  { 9, -1, sizeof(TextDatum)},
-  { 15, -1, sizeof(Datum)},
-  { 23, -1, sizeof(Data)},
-};
-
-static ::google::protobuf::Message const * const file_default_instances[] = {
-  reinterpret_cast<const ::google::protobuf::Message*>(&_ImageDatum_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&_TextDatum_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&_Datum_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&_Data_default_instance_),
-};
-
-namespace {
-
-void protobuf_AssignDescriptors() {
-  AddDescriptors();
-  ::google::protobuf::MessageFactory* factory = NULL;
-  AssignDescriptors(
-      "data.proto", schemas, file_default_instances, TableStruct::offsets, factory,
-      file_level_metadata, NULL, NULL);
-}
-
-void protobuf_AssignDescriptorsOnce() {
-  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
-  ::google::protobuf::GoogleOnceInit(&once, &protobuf_AssignDescriptors);
-}
-
-void protobuf_RegisterTypes(const ::std::string&) GOOGLE_ATTRIBUTE_COLD;
-void protobuf_RegisterTypes(const ::std::string&) {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::internal::RegisterAllTypes(file_level_metadata, 4);
-}
-
-}  // namespace
 
 void TableStruct::Shutdown() {
   _ImageDatum_default_instance_.Shutdown();
-  delete file_level_metadata[0].reflection;
   _TextDatum_default_instance_.Shutdown();
-  delete file_level_metadata[1].reflection;
   _Datum_default_instance_.Shutdown();
-  delete file_level_metadata[2].reflection;
   _Data_default_instance_.Shutdown();
-  delete file_level_metadata[3].reflection;
 }
 
 void TableStruct::InitDefaultsImpl() {
@@ -151,22 +69,6 @@ void InitDefaults() {
 }
 void AddDescriptorsImpl() {
   InitDefaults();
-  static const char descriptor[] = {
-      "\n\ndata.proto\022#TuriCreate.Annotation.Spec"
-      "ification\"N\n\nImageDatum\022\r\n\005width\030\001 \001(\005\022\016"
-      "\n\006height\030\002 \001(\005\022\020\n\010channels\030\003 \001(\005\022\017\n\007imgD"
-      "ata\030\n \001(\014\"\031\n\tTextDatum\022\014\n\004text\030\001 \001(\t\"\231\001\n"
-      "\005Datum\022\021\n\tdatumHash\030\001 \001(\003\022\?\n\006images\030\n \003("
-      "\0132/.TuriCreate.Annotation.Specification."
-      "ImageDatum\022<\n\004text\030\024 \003(\0132..TuriCreate.An"
-      "notation.Specification.TextDatum\"@\n\004Data"
-      "\0228\n\004data\030\001 \003(\0132*.TuriCreate.Annotation.S"
-      "pecification.Datumb\006proto3"
-  };
-  ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 386);
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
-    "data.proto", &protobuf_RegisterTypes);
   ::google::protobuf::internal::OnShutdown(&TableStruct::Shutdown);
 }
 
@@ -174,12 +76,14 @@ void AddDescriptors() {
   static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
   ::google::protobuf::GoogleOnceInit(&once, &AddDescriptorsImpl);
 }
+#ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 // Force AddDescriptors() to be called at static initialization time.
 struct StaticDescriptorInitializer {
   StaticDescriptorInitializer() {
     AddDescriptors();
   }
 } static_descriptor_initializer;
+#endif  // GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 
 }  // namespace protobuf_data_2eproto
 
@@ -194,7 +98,7 @@ const int ImageDatum::kImgDataFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ImageDatum::ImageDatum()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
   if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
     protobuf_data_2eproto::InitDefaults();
   }
@@ -202,7 +106,7 @@ ImageDatum::ImageDatum()
   // @@protoc_insertion_point(constructor:TuriCreate.Annotation.Specification.ImageDatum)
 }
 ImageDatum::ImageDatum(const ImageDatum& from)
-  : ::google::protobuf::Message(),
+  : ::google::protobuf::MessageLite(),
       _internal_metadata_(NULL),
       _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
@@ -237,11 +141,6 @@ void ImageDatum::SetCachedSize(int size) const {
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* ImageDatum::descriptor() {
-  protobuf_data_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_data_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const ImageDatum& ImageDatum::default_instance() {
   protobuf_data_2eproto::InitDefaults();
   return *internal_default_instance();
@@ -377,38 +276,6 @@ void ImageDatum::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_end:TuriCreate.Annotation.Specification.ImageDatum)
 }
 
-::google::protobuf::uint8* ImageDatum::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:TuriCreate.Annotation.Specification.ImageDatum)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // int32 width = 1;
-  if (this->width() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->width(), target);
-  }
-
-  // int32 height = 2;
-  if (this->height() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->height(), target);
-  }
-
-  // int32 channels = 3;
-  if (this->channels() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(3, this->channels(), target);
-  }
-
-  // bytes imgData = 10;
-  if (this->imgdata().size() > 0) {
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
-        10, this->imgdata(), target);
-  }
-
-  // @@protoc_insertion_point(serialize_to_array_end:TuriCreate.Annotation.Specification.ImageDatum)
-  return target;
-}
-
 size_t ImageDatum::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:TuriCreate.Annotation.Specification.ImageDatum)
   size_t total_size = 0;
@@ -448,19 +315,9 @@ size_t ImageDatum::ByteSizeLong() const {
   return total_size;
 }
 
-void ImageDatum::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:TuriCreate.Annotation.Specification.ImageDatum)
-  GOOGLE_DCHECK_NE(&from, this);
-  const ImageDatum* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const ImageDatum>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:TuriCreate.Annotation.Specification.ImageDatum)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:TuriCreate.Annotation.Specification.ImageDatum)
-    MergeFrom(*source);
-  }
+void ImageDatum::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const ImageDatum*>(&from));
 }
 
 void ImageDatum::MergeFrom(const ImageDatum& from) {
@@ -483,13 +340,6 @@ void ImageDatum::MergeFrom(const ImageDatum& from) {
   if (from.channels() != 0) {
     set_channels(from.channels());
   }
-}
-
-void ImageDatum::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:TuriCreate.Annotation.Specification.ImageDatum)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
 }
 
 void ImageDatum::CopyFrom(const ImageDatum& from) {
@@ -515,9 +365,8 @@ void ImageDatum::InternalSwap(ImageDatum* other) {
   std::swap(_cached_size_, other->_cached_size_);
 }
 
-::google::protobuf::Metadata ImageDatum::GetMetadata() const {
-  protobuf_data_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_data_2eproto::file_level_metadata[kIndexInFileMessages];
+::std::string ImageDatum::GetTypeName() const {
+  return "TuriCreate.Annotation.Specification.ImageDatum";
 }
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -627,7 +476,7 @@ const int TextDatum::kTextFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 TextDatum::TextDatum()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
   if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
     protobuf_data_2eproto::InitDefaults();
   }
@@ -635,7 +484,7 @@ TextDatum::TextDatum()
   // @@protoc_insertion_point(constructor:TuriCreate.Annotation.Specification.TextDatum)
 }
 TextDatum::TextDatum(const TextDatum& from)
-  : ::google::protobuf::Message(),
+  : ::google::protobuf::MessageLite(),
       _internal_metadata_(NULL),
       _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
@@ -665,11 +514,6 @@ void TextDatum::SetCachedSize(int size) const {
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* TextDatum::descriptor() {
-  protobuf_data_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_data_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const TextDatum& TextDatum::default_instance() {
   protobuf_data_2eproto::InitDefaults();
   return *internal_default_instance();
@@ -754,27 +598,6 @@ void TextDatum::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_end:TuriCreate.Annotation.Specification.TextDatum)
 }
 
-::google::protobuf::uint8* TextDatum::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:TuriCreate.Annotation.Specification.TextDatum)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // string text = 1;
-  if (this->text().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->text().data(), this->text().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "TuriCreate.Annotation.Specification.TextDatum.text");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        1, this->text(), target);
-  }
-
-  // @@protoc_insertion_point(serialize_to_array_end:TuriCreate.Annotation.Specification.TextDatum)
-  return target;
-}
-
 size_t TextDatum::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:TuriCreate.Annotation.Specification.TextDatum)
   size_t total_size = 0;
@@ -793,19 +616,9 @@ size_t TextDatum::ByteSizeLong() const {
   return total_size;
 }
 
-void TextDatum::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:TuriCreate.Annotation.Specification.TextDatum)
-  GOOGLE_DCHECK_NE(&from, this);
-  const TextDatum* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const TextDatum>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:TuriCreate.Annotation.Specification.TextDatum)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:TuriCreate.Annotation.Specification.TextDatum)
-    MergeFrom(*source);
-  }
+void TextDatum::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const TextDatum*>(&from));
 }
 
 void TextDatum::MergeFrom(const TextDatum& from) {
@@ -819,13 +632,6 @@ void TextDatum::MergeFrom(const TextDatum& from) {
 
     text_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.text_);
   }
-}
-
-void TextDatum::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:TuriCreate.Annotation.Specification.TextDatum)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
 }
 
 void TextDatum::CopyFrom(const TextDatum& from) {
@@ -848,9 +654,8 @@ void TextDatum::InternalSwap(TextDatum* other) {
   std::swap(_cached_size_, other->_cached_size_);
 }
 
-::google::protobuf::Metadata TextDatum::GetMetadata() const {
-  protobuf_data_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_data_2eproto::file_level_metadata[kIndexInFileMessages];
+::std::string TextDatum::GetTypeName() const {
+  return "TuriCreate.Annotation.Specification.TextDatum";
 }
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -920,7 +725,7 @@ const int Datum::kTextFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Datum::Datum()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
   if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
     protobuf_data_2eproto::InitDefaults();
   }
@@ -928,7 +733,7 @@ Datum::Datum()
   // @@protoc_insertion_point(constructor:TuriCreate.Annotation.Specification.Datum)
 }
 Datum::Datum(const Datum& from)
-  : ::google::protobuf::Message(),
+  : ::google::protobuf::MessageLite(),
       _internal_metadata_(NULL),
       images_(from.images_),
       text_(from.text_),
@@ -956,11 +761,6 @@ void Datum::SetCachedSize(int size) const {
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* Datum::descriptor() {
-  protobuf_data_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_data_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const Datum& Datum::default_instance() {
   protobuf_data_2eproto::InitDefaults();
   return *internal_default_instance();
@@ -1063,46 +863,17 @@ void Datum::SerializeWithCachedSizes(
 
   // repeated .TuriCreate.Annotation.Specification.ImageDatum images = 10;
   for (unsigned int i = 0, n = this->images_size(); i < n; i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
       10, this->images(i), output);
   }
 
   // repeated .TuriCreate.Annotation.Specification.TextDatum text = 20;
   for (unsigned int i = 0, n = this->text_size(); i < n; i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
       20, this->text(i), output);
   }
 
   // @@protoc_insertion_point(serialize_end:TuriCreate.Annotation.Specification.Datum)
-}
-
-::google::protobuf::uint8* Datum::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:TuriCreate.Annotation.Specification.Datum)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // int64 datumHash = 1;
-  if (this->datumhash() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(1, this->datumhash(), target);
-  }
-
-  // repeated .TuriCreate.Annotation.Specification.ImageDatum images = 10;
-  for (unsigned int i = 0, n = this->images_size(); i < n; i++) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageNoVirtualToArray(
-        10, this->images(i), deterministic, target);
-  }
-
-  // repeated .TuriCreate.Annotation.Specification.TextDatum text = 20;
-  for (unsigned int i = 0, n = this->text_size(); i < n; i++) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageNoVirtualToArray(
-        20, this->text(i), deterministic, target);
-  }
-
-  // @@protoc_insertion_point(serialize_to_array_end:TuriCreate.Annotation.Specification.Datum)
-  return target;
 }
 
 size_t Datum::ByteSizeLong() const {
@@ -1145,19 +916,9 @@ size_t Datum::ByteSizeLong() const {
   return total_size;
 }
 
-void Datum::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:TuriCreate.Annotation.Specification.Datum)
-  GOOGLE_DCHECK_NE(&from, this);
-  const Datum* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const Datum>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:TuriCreate.Annotation.Specification.Datum)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:TuriCreate.Annotation.Specification.Datum)
-    MergeFrom(*source);
-  }
+void Datum::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const Datum*>(&from));
 }
 
 void Datum::MergeFrom(const Datum& from) {
@@ -1172,13 +933,6 @@ void Datum::MergeFrom(const Datum& from) {
   if (from.datumhash() != 0) {
     set_datumhash(from.datumhash());
   }
-}
-
-void Datum::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:TuriCreate.Annotation.Specification.Datum)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
 }
 
 void Datum::CopyFrom(const Datum& from) {
@@ -1203,9 +957,8 @@ void Datum::InternalSwap(Datum* other) {
   std::swap(_cached_size_, other->_cached_size_);
 }
 
-::google::protobuf::Metadata Datum::GetMetadata() const {
-  protobuf_data_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_data_2eproto::file_level_metadata[kIndexInFileMessages];
+::std::string Datum::GetTypeName() const {
+  return "TuriCreate.Annotation.Specification.Datum";
 }
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -1294,7 +1047,7 @@ const int Data::kDataFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Data::Data()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
   if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
     protobuf_data_2eproto::InitDefaults();
   }
@@ -1302,7 +1055,7 @@ Data::Data()
   // @@protoc_insertion_point(constructor:TuriCreate.Annotation.Specification.Data)
 }
 Data::Data(const Data& from)
-  : ::google::protobuf::Message(),
+  : ::google::protobuf::MessageLite(),
       _internal_metadata_(NULL),
       data_(from.data_),
       _cached_size_(0) {
@@ -1327,11 +1080,6 @@ void Data::SetCachedSize(int size) const {
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* Data::descriptor() {
-  protobuf_data_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_data_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const Data& Data::default_instance() {
   protobuf_data_2eproto::InitDefaults();
   return *internal_default_instance();
@@ -1401,28 +1149,11 @@ void Data::SerializeWithCachedSizes(
 
   // repeated .TuriCreate.Annotation.Specification.Datum data = 1;
   for (unsigned int i = 0, n = this->data_size(); i < n; i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
       1, this->data(i), output);
   }
 
   // @@protoc_insertion_point(serialize_end:TuriCreate.Annotation.Specification.Data)
-}
-
-::google::protobuf::uint8* Data::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:TuriCreate.Annotation.Specification.Data)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // repeated .TuriCreate.Annotation.Specification.Datum data = 1;
-  for (unsigned int i = 0, n = this->data_size(); i < n; i++) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageNoVirtualToArray(
-        1, this->data(i), deterministic, target);
-  }
-
-  // @@protoc_insertion_point(serialize_to_array_end:TuriCreate.Annotation.Specification.Data)
-  return target;
 }
 
 size_t Data::ByteSizeLong() const {
@@ -1447,19 +1178,9 @@ size_t Data::ByteSizeLong() const {
   return total_size;
 }
 
-void Data::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:TuriCreate.Annotation.Specification.Data)
-  GOOGLE_DCHECK_NE(&from, this);
-  const Data* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const Data>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:TuriCreate.Annotation.Specification.Data)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:TuriCreate.Annotation.Specification.Data)
-    MergeFrom(*source);
-  }
+void Data::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const Data*>(&from));
 }
 
 void Data::MergeFrom(const Data& from) {
@@ -1470,13 +1191,6 @@ void Data::MergeFrom(const Data& from) {
   (void) cached_has_bits;
 
   data_.MergeFrom(from.data_);
-}
-
-void Data::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:TuriCreate.Annotation.Specification.Data)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
 }
 
 void Data::CopyFrom(const Data& from) {
@@ -1499,9 +1213,8 @@ void Data::InternalSwap(Data* other) {
   std::swap(_cached_size_, other->_cached_size_);
 }
 
-::google::protobuf::Metadata Data::GetMetadata() const {
-  protobuf_data_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_data_2eproto::file_level_metadata[kIndexInFileMessages];
+::std::string Data::GetTypeName() const {
+  return "TuriCreate.Annotation.Specification.Data";
 }
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS

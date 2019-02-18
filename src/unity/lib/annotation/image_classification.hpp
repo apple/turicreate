@@ -4,13 +4,15 @@
 #include "build/format/cpp/annotate.pb.h"
 #include "build/format/cpp/data.pb.h"
 
-#include "annotation_base.hpp"
+#include <unity/lib/annotation/annotation_base.hpp>
 
 namespace turi {
 namespace annotate {
 
 class ImageClassification : public AnnotationBase {
 public:
+  ImageClassification();
+
   ~ImageClassification(){};
 
   annotate_spec::Data getItems(size_t start, size_t end);
@@ -20,6 +22,9 @@ public:
   bool setAnnotations(const annotate_spec::Annotations &annotations);
 
   std::shared_ptr<unity_sframe> returnAnnotations(bool drop_null);
+
+  // Refactor to support all toolkits with a proto
+  std::vector<std::string> uniqueLabels();
 
 private:
   void _addAnnotationToSFrame(size_t index, std::string label);

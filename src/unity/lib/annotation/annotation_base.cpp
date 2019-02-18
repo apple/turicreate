@@ -1,7 +1,7 @@
 #include <unity/lib/visualization/process_wrapper.hpp>
 #include <unity/lib/visualization/thread.hpp>
 
-#include "annotation_base.hpp"
+#include <unity/lib/annotation/annotation_base.hpp>
 
 namespace turi {
 namespace annotate {
@@ -11,13 +11,13 @@ AnnotationBase::AnnotationBase(const std::shared_ptr<unity_sframe> &data,
                                const std::string &annotation_column)
     : m_data(data), m_data_columns(data_columns),
       m_annotation_column(annotation_column) {
-  // TODO: if annotation column isn't present create it.
+  /* TODO: if annotation column isn't present create it and fill it with all
+   * null values initially. Consequently another way of achieving the same thing
+   * would be to use the SFrame Builder and copy the data over. */
 }
 
-void AnnotationBase::show(const std::string &path_to_client) {
-  std::shared_ptr<AnnotationBase> self =
-      std::make_shared<AnnotationBase>(*this);
-
+void AnnotationBase::annotate(const std::string &path_to_client) {
+  std::shared_ptr<AnnotationBase> self = this->m_self;
   ::turi::visualization::run_thread([self, path_to_client]() {
     visualization::process_wrapper aw(path_to_client);
     // TODO: handle the messages to and from the client app.

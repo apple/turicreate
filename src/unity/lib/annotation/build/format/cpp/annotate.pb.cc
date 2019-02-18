@@ -11,10 +11,7 @@
 #include <google/protobuf/stubs/once.h>
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/wire_format_lite_inl.h>
-#include <google/protobuf/descriptor.h>
-#include <google/protobuf/generated_message_reflection.h>
-#include <google/protobuf/reflection_ops.h>
-#include <google/protobuf/wire_format.h>
+#include <google/protobuf/io/zero_copy_stream_impl_lite.h>
 // @@protoc_insertion_point(includes)
 
 namespace TuriCreate {
@@ -47,13 +44,6 @@ class AnnotationsDefaultTypeInternal : public ::google::protobuf::internal::Expl
 
 namespace protobuf_annotate_2eproto {
 
-
-namespace {
-
-::google::protobuf::Metadata file_level_metadata[8];
-
-}  // namespace
-
 PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTableField
     const TableStruct::entries[] = {
   {0, 0, 0, ::google::protobuf::internal::kInvalidMask, 0, 0},
@@ -75,131 +65,16 @@ PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTable const
   { NULL, NULL, 0, -1, -1, false },
 };
 
-const ::google::protobuf::uint32 TableStruct::offsets[] = {
-  ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ActivityClassificationLabel, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ActivityClassificationLabel, start_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ActivityClassificationLabel, stop_),
-  ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AudioClassificationLabel, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AudioClassificationLabel, start_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AudioClassificationLabel, stop_),
-  ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DrawingClassificationLabel, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ImageClassificationLabel, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ObjectDetectionLabel, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ObjectDetectionLabel, height_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ObjectDetectionLabel, width_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ObjectDetectionLabel, x_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ObjectDetectionLabel, y_),
-  ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Label, _internal_metadata_),
-  ~0u,  // no _extensions_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Label, _oneof_case_[0]),
-  ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET((&_Label_default_instance_), intlabel_),
-  GOOGLE_PROTOBUF_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET((&_Label_default_instance_), stringlabel_),
-  GOOGLE_PROTOBUF_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET((&_Label_default_instance_), activityclassificationlabel_),
-  GOOGLE_PROTOBUF_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET((&_Label_default_instance_), audioclassificationlabel_),
-  GOOGLE_PROTOBUF_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET((&_Label_default_instance_), drawingclassificationlabel_),
-  GOOGLE_PROTOBUF_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET((&_Label_default_instance_), imageclassificationlabel_),
-  GOOGLE_PROTOBUF_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET((&_Label_default_instance_), objectdetectionlabel_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Label, labelIdentifier_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Label, labelType_),
-  ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Annotation, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Annotation, labels_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Annotation, datumhash_),
-  ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Annotations, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Annotations, annotation_),
-};
-
-static const ::google::protobuf::internal::MigrationSchema schemas[] = {
-  { 0, -1, sizeof(ActivityClassificationLabel)},
-  { 7, -1, sizeof(AudioClassificationLabel)},
-  { 14, -1, sizeof(DrawingClassificationLabel)},
-  { 19, -1, sizeof(ImageClassificationLabel)},
-  { 24, -1, sizeof(ObjectDetectionLabel)},
-  { 33, -1, sizeof(Label)},
-  { 47, -1, sizeof(Annotation)},
-  { 54, -1, sizeof(Annotations)},
-};
-
-static ::google::protobuf::Message const * const file_default_instances[] = {
-  reinterpret_cast<const ::google::protobuf::Message*>(&_ActivityClassificationLabel_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&_AudioClassificationLabel_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&_DrawingClassificationLabel_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&_ImageClassificationLabel_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&_ObjectDetectionLabel_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&_Label_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&_Annotation_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&_Annotations_default_instance_),
-};
-
-namespace {
-
-void protobuf_AssignDescriptors() {
-  AddDescriptors();
-  ::google::protobuf::MessageFactory* factory = NULL;
-  AssignDescriptors(
-      "annotate.proto", schemas, file_default_instances, TableStruct::offsets, factory,
-      file_level_metadata, NULL, NULL);
-}
-
-void protobuf_AssignDescriptorsOnce() {
-  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
-  ::google::protobuf::GoogleOnceInit(&once, &protobuf_AssignDescriptors);
-}
-
-void protobuf_RegisterTypes(const ::std::string&) GOOGLE_ATTRIBUTE_COLD;
-void protobuf_RegisterTypes(const ::std::string&) {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::internal::RegisterAllTypes(file_level_metadata, 8);
-}
-
-}  // namespace
 
 void TableStruct::Shutdown() {
   _ActivityClassificationLabel_default_instance_.Shutdown();
-  delete file_level_metadata[0].reflection;
   _AudioClassificationLabel_default_instance_.Shutdown();
-  delete file_level_metadata[1].reflection;
   _DrawingClassificationLabel_default_instance_.Shutdown();
-  delete file_level_metadata[2].reflection;
   _ImageClassificationLabel_default_instance_.Shutdown();
-  delete file_level_metadata[3].reflection;
   _ObjectDetectionLabel_default_instance_.Shutdown();
-  delete file_level_metadata[4].reflection;
   _Label_default_instance_.Shutdown();
-  delete file_level_metadata[5].reflection;
   _Annotation_default_instance_.Shutdown();
-  delete file_level_metadata[6].reflection;
   _Annotations_default_instance_.Shutdown();
-  delete file_level_metadata[7].reflection;
 }
 
 void TableStruct::InitDefaultsImpl() {
@@ -214,19 +89,6 @@ void TableStruct::InitDefaultsImpl() {
   _Label_default_instance_.DefaultConstruct();
   _Annotation_default_instance_.DefaultConstruct();
   _Annotations_default_instance_.DefaultConstruct();
-  _Label_default_instance_.intlabel_ = GOOGLE_LONGLONG(0);
-  _Label_default_instance_.stringlabel_.UnsafeSetDefault(
-      &::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  _Label_default_instance_.activityclassificationlabel_ = const_cast< ::TuriCreate::Annotation::Specification::ActivityClassificationLabel*>(
-      ::TuriCreate::Annotation::Specification::ActivityClassificationLabel::internal_default_instance());
-  _Label_default_instance_.audioclassificationlabel_ = const_cast< ::TuriCreate::Annotation::Specification::AudioClassificationLabel*>(
-      ::TuriCreate::Annotation::Specification::AudioClassificationLabel::internal_default_instance());
-  _Label_default_instance_.drawingclassificationlabel_ = const_cast< ::TuriCreate::Annotation::Specification::DrawingClassificationLabel*>(
-      ::TuriCreate::Annotation::Specification::DrawingClassificationLabel::internal_default_instance());
-  _Label_default_instance_.imageclassificationlabel_ = const_cast< ::TuriCreate::Annotation::Specification::ImageClassificationLabel*>(
-      ::TuriCreate::Annotation::Specification::ImageClassificationLabel::internal_default_instance());
-  _Label_default_instance_.objectdetectionlabel_ = const_cast< ::TuriCreate::Annotation::Specification::ObjectDetectionLabel*>(
-      ::TuriCreate::Annotation::Specification::ObjectDetectionLabel::internal_default_instance());
 }
 
 void InitDefaults() {
@@ -235,39 +97,6 @@ void InitDefaults() {
 }
 void AddDescriptorsImpl() {
   InitDefaults();
-  static const char descriptor[] = {
-      "\n\016annotate.proto\022#TuriCreate.Annotation."
-      "Specification\":\n\033ActivityClassificationL"
-      "abel\022\r\n\005start\030\006 \001(\001\022\014\n\004stop\030\007 \001(\001\"7\n\030Aud"
-      "ioClassificationLabel\022\r\n\005start\030\006 \001(\001\022\014\n\004"
-      "stop\030\007 \001(\001\"\034\n\032DrawingClassificationLabel"
-      "\"\032\n\030ImageClassificationLabel\"K\n\024ObjectDe"
-      "tectionLabel\022\016\n\006height\030\001 \001(\001\022\r\n\005width\030\002 "
-      "\001(\001\022\t\n\001x\030\004 \001(\001\022\t\n\001y\030\005 \001(\001\"\307\004\n\005Label\022\022\n\010i"
-      "ntLabel\030\001 \001(\003H\000\022\025\n\013stringLabel\030\002 \001(\tH\000\022g"
-      "\n\033activityClassificationLabel\030d \001(\0132@.Tu"
-      "riCreate.Annotation.Specification.Activi"
-      "tyClassificationLabelH\001\022b\n\030audioClassifi"
-      "cationLabel\030\310\001 \001(\0132=.TuriCreate.Annotati"
-      "on.Specification.AudioClassificationLabe"
-      "lH\001\022f\n\032drawingClassificationLabel\030\254\002 \001(\013"
-      "2\?.TuriCreate.Annotation.Specification.D"
-      "rawingClassificationLabelH\001\022b\n\030imageClas"
-      "sificationLabel\030\220\003 \001(\0132=.TuriCreate.Anno"
-      "tation.Specification.ImageClassification"
-      "LabelH\001\022Z\n\024objectDetectionLabel\030\364\003 \001(\01329"
-      ".TuriCreate.Annotation.Specification.Obj"
-      "ectDetectionLabelH\001B\021\n\017labelIdentifierB\013"
-      "\n\tlabelType\"[\n\nAnnotation\022:\n\006labels\030\001 \003("
-      "\0132*.TuriCreate.Annotation.Specification."
-      "Label\022\021\n\tdatumHash\030\002 \003(\003\"R\n\013Annotations\022"
-      "C\n\nannotation\030\001 \003(\0132/.TuriCreate.Annotat"
-      "ion.Specification.Annotationb\006proto3"
-  };
-  ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 1076);
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
-    "annotate.proto", &protobuf_RegisterTypes);
   ::google::protobuf::internal::OnShutdown(&TableStruct::Shutdown);
 }
 
@@ -275,12 +104,14 @@ void AddDescriptors() {
   static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
   ::google::protobuf::GoogleOnceInit(&once, &AddDescriptorsImpl);
 }
+#ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 // Force AddDescriptors() to be called at static initialization time.
 struct StaticDescriptorInitializer {
   StaticDescriptorInitializer() {
     AddDescriptors();
   }
 } static_descriptor_initializer;
+#endif  // GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 
 }  // namespace protobuf_annotate_2eproto
 
@@ -293,7 +124,7 @@ const int ActivityClassificationLabel::kStopFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ActivityClassificationLabel::ActivityClassificationLabel()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
   if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
     protobuf_annotate_2eproto::InitDefaults();
   }
@@ -301,7 +132,7 @@ ActivityClassificationLabel::ActivityClassificationLabel()
   // @@protoc_insertion_point(constructor:TuriCreate.Annotation.Specification.ActivityClassificationLabel)
 }
 ActivityClassificationLabel::ActivityClassificationLabel(const ActivityClassificationLabel& from)
-  : ::google::protobuf::Message(),
+  : ::google::protobuf::MessageLite(),
       _internal_metadata_(NULL),
       _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
@@ -330,11 +161,6 @@ void ActivityClassificationLabel::SetCachedSize(int size) const {
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* ActivityClassificationLabel::descriptor() {
-  protobuf_annotate_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_annotate_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const ActivityClassificationLabel& ActivityClassificationLabel::default_instance() {
   protobuf_annotate_2eproto::InitDefaults();
   return *internal_default_instance();
@@ -432,26 +258,6 @@ void ActivityClassificationLabel::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_end:TuriCreate.Annotation.Specification.ActivityClassificationLabel)
 }
 
-::google::protobuf::uint8* ActivityClassificationLabel::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:TuriCreate.Annotation.Specification.ActivityClassificationLabel)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // double start = 6;
-  if (this->start() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(6, this->start(), target);
-  }
-
-  // double stop = 7;
-  if (this->stop() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(7, this->stop(), target);
-  }
-
-  // @@protoc_insertion_point(serialize_to_array_end:TuriCreate.Annotation.Specification.ActivityClassificationLabel)
-  return target;
-}
-
 size_t ActivityClassificationLabel::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:TuriCreate.Annotation.Specification.ActivityClassificationLabel)
   size_t total_size = 0;
@@ -473,19 +279,9 @@ size_t ActivityClassificationLabel::ByteSizeLong() const {
   return total_size;
 }
 
-void ActivityClassificationLabel::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:TuriCreate.Annotation.Specification.ActivityClassificationLabel)
-  GOOGLE_DCHECK_NE(&from, this);
-  const ActivityClassificationLabel* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const ActivityClassificationLabel>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:TuriCreate.Annotation.Specification.ActivityClassificationLabel)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:TuriCreate.Annotation.Specification.ActivityClassificationLabel)
-    MergeFrom(*source);
-  }
+void ActivityClassificationLabel::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const ActivityClassificationLabel*>(&from));
 }
 
 void ActivityClassificationLabel::MergeFrom(const ActivityClassificationLabel& from) {
@@ -501,13 +297,6 @@ void ActivityClassificationLabel::MergeFrom(const ActivityClassificationLabel& f
   if (from.stop() != 0) {
     set_stop(from.stop());
   }
-}
-
-void ActivityClassificationLabel::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:TuriCreate.Annotation.Specification.ActivityClassificationLabel)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
 }
 
 void ActivityClassificationLabel::CopyFrom(const ActivityClassificationLabel& from) {
@@ -531,9 +320,8 @@ void ActivityClassificationLabel::InternalSwap(ActivityClassificationLabel* othe
   std::swap(_cached_size_, other->_cached_size_);
 }
 
-::google::protobuf::Metadata ActivityClassificationLabel::GetMetadata() const {
-  protobuf_annotate_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_annotate_2eproto::file_level_metadata[kIndexInFileMessages];
+::std::string ActivityClassificationLabel::GetTypeName() const {
+  return "TuriCreate.Annotation.Specification.ActivityClassificationLabel";
 }
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -577,7 +365,7 @@ const int AudioClassificationLabel::kStopFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 AudioClassificationLabel::AudioClassificationLabel()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
   if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
     protobuf_annotate_2eproto::InitDefaults();
   }
@@ -585,7 +373,7 @@ AudioClassificationLabel::AudioClassificationLabel()
   // @@protoc_insertion_point(constructor:TuriCreate.Annotation.Specification.AudioClassificationLabel)
 }
 AudioClassificationLabel::AudioClassificationLabel(const AudioClassificationLabel& from)
-  : ::google::protobuf::Message(),
+  : ::google::protobuf::MessageLite(),
       _internal_metadata_(NULL),
       _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
@@ -614,11 +402,6 @@ void AudioClassificationLabel::SetCachedSize(int size) const {
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* AudioClassificationLabel::descriptor() {
-  protobuf_annotate_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_annotate_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const AudioClassificationLabel& AudioClassificationLabel::default_instance() {
   protobuf_annotate_2eproto::InitDefaults();
   return *internal_default_instance();
@@ -716,26 +499,6 @@ void AudioClassificationLabel::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_end:TuriCreate.Annotation.Specification.AudioClassificationLabel)
 }
 
-::google::protobuf::uint8* AudioClassificationLabel::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:TuriCreate.Annotation.Specification.AudioClassificationLabel)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // double start = 6;
-  if (this->start() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(6, this->start(), target);
-  }
-
-  // double stop = 7;
-  if (this->stop() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(7, this->stop(), target);
-  }
-
-  // @@protoc_insertion_point(serialize_to_array_end:TuriCreate.Annotation.Specification.AudioClassificationLabel)
-  return target;
-}
-
 size_t AudioClassificationLabel::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:TuriCreate.Annotation.Specification.AudioClassificationLabel)
   size_t total_size = 0;
@@ -757,19 +520,9 @@ size_t AudioClassificationLabel::ByteSizeLong() const {
   return total_size;
 }
 
-void AudioClassificationLabel::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:TuriCreate.Annotation.Specification.AudioClassificationLabel)
-  GOOGLE_DCHECK_NE(&from, this);
-  const AudioClassificationLabel* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const AudioClassificationLabel>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:TuriCreate.Annotation.Specification.AudioClassificationLabel)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:TuriCreate.Annotation.Specification.AudioClassificationLabel)
-    MergeFrom(*source);
-  }
+void AudioClassificationLabel::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const AudioClassificationLabel*>(&from));
 }
 
 void AudioClassificationLabel::MergeFrom(const AudioClassificationLabel& from) {
@@ -785,13 +538,6 @@ void AudioClassificationLabel::MergeFrom(const AudioClassificationLabel& from) {
   if (from.stop() != 0) {
     set_stop(from.stop());
   }
-}
-
-void AudioClassificationLabel::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:TuriCreate.Annotation.Specification.AudioClassificationLabel)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
 }
 
 void AudioClassificationLabel::CopyFrom(const AudioClassificationLabel& from) {
@@ -815,9 +561,8 @@ void AudioClassificationLabel::InternalSwap(AudioClassificationLabel* other) {
   std::swap(_cached_size_, other->_cached_size_);
 }
 
-::google::protobuf::Metadata AudioClassificationLabel::GetMetadata() const {
-  protobuf_annotate_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_annotate_2eproto::file_level_metadata[kIndexInFileMessages];
+::std::string AudioClassificationLabel::GetTypeName() const {
+  return "TuriCreate.Annotation.Specification.AudioClassificationLabel";
 }
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -859,7 +604,7 @@ void AudioClassificationLabel::set_stop(double value) {
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 DrawingClassificationLabel::DrawingClassificationLabel()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
   if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
     protobuf_annotate_2eproto::InitDefaults();
   }
@@ -867,7 +612,7 @@ DrawingClassificationLabel::DrawingClassificationLabel()
   // @@protoc_insertion_point(constructor:TuriCreate.Annotation.Specification.DrawingClassificationLabel)
 }
 DrawingClassificationLabel::DrawingClassificationLabel(const DrawingClassificationLabel& from)
-  : ::google::protobuf::Message(),
+  : ::google::protobuf::MessageLite(),
       _internal_metadata_(NULL),
       _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
@@ -891,11 +636,6 @@ void DrawingClassificationLabel::SetCachedSize(int size) const {
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* DrawingClassificationLabel::descriptor() {
-  protobuf_annotate_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_annotate_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const DrawingClassificationLabel& DrawingClassificationLabel::default_instance() {
   protobuf_annotate_2eproto::InitDefaults();
   return *internal_default_instance();
@@ -948,16 +688,6 @@ void DrawingClassificationLabel::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_end:TuriCreate.Annotation.Specification.DrawingClassificationLabel)
 }
 
-::google::protobuf::uint8* DrawingClassificationLabel::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:TuriCreate.Annotation.Specification.DrawingClassificationLabel)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // @@protoc_insertion_point(serialize_to_array_end:TuriCreate.Annotation.Specification.DrawingClassificationLabel)
-  return target;
-}
-
 size_t DrawingClassificationLabel::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:TuriCreate.Annotation.Specification.DrawingClassificationLabel)
   size_t total_size = 0;
@@ -969,19 +699,9 @@ size_t DrawingClassificationLabel::ByteSizeLong() const {
   return total_size;
 }
 
-void DrawingClassificationLabel::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:TuriCreate.Annotation.Specification.DrawingClassificationLabel)
-  GOOGLE_DCHECK_NE(&from, this);
-  const DrawingClassificationLabel* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const DrawingClassificationLabel>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:TuriCreate.Annotation.Specification.DrawingClassificationLabel)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:TuriCreate.Annotation.Specification.DrawingClassificationLabel)
-    MergeFrom(*source);
-  }
+void DrawingClassificationLabel::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const DrawingClassificationLabel*>(&from));
 }
 
 void DrawingClassificationLabel::MergeFrom(const DrawingClassificationLabel& from) {
@@ -991,13 +711,6 @@ void DrawingClassificationLabel::MergeFrom(const DrawingClassificationLabel& fro
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-}
-
-void DrawingClassificationLabel::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:TuriCreate.Annotation.Specification.DrawingClassificationLabel)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
 }
 
 void DrawingClassificationLabel::CopyFrom(const DrawingClassificationLabel& from) {
@@ -1019,9 +732,8 @@ void DrawingClassificationLabel::InternalSwap(DrawingClassificationLabel* other)
   std::swap(_cached_size_, other->_cached_size_);
 }
 
-::google::protobuf::Metadata DrawingClassificationLabel::GetMetadata() const {
-  protobuf_annotate_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_annotate_2eproto::file_level_metadata[kIndexInFileMessages];
+::std::string DrawingClassificationLabel::GetTypeName() const {
+  return "TuriCreate.Annotation.Specification.DrawingClassificationLabel";
 }
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -1035,7 +747,7 @@ void DrawingClassificationLabel::InternalSwap(DrawingClassificationLabel* other)
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ImageClassificationLabel::ImageClassificationLabel()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
   if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
     protobuf_annotate_2eproto::InitDefaults();
   }
@@ -1043,7 +755,7 @@ ImageClassificationLabel::ImageClassificationLabel()
   // @@protoc_insertion_point(constructor:TuriCreate.Annotation.Specification.ImageClassificationLabel)
 }
 ImageClassificationLabel::ImageClassificationLabel(const ImageClassificationLabel& from)
-  : ::google::protobuf::Message(),
+  : ::google::protobuf::MessageLite(),
       _internal_metadata_(NULL),
       _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
@@ -1067,11 +779,6 @@ void ImageClassificationLabel::SetCachedSize(int size) const {
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* ImageClassificationLabel::descriptor() {
-  protobuf_annotate_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_annotate_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const ImageClassificationLabel& ImageClassificationLabel::default_instance() {
   protobuf_annotate_2eproto::InitDefaults();
   return *internal_default_instance();
@@ -1124,16 +831,6 @@ void ImageClassificationLabel::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_end:TuriCreate.Annotation.Specification.ImageClassificationLabel)
 }
 
-::google::protobuf::uint8* ImageClassificationLabel::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:TuriCreate.Annotation.Specification.ImageClassificationLabel)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // @@protoc_insertion_point(serialize_to_array_end:TuriCreate.Annotation.Specification.ImageClassificationLabel)
-  return target;
-}
-
 size_t ImageClassificationLabel::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:TuriCreate.Annotation.Specification.ImageClassificationLabel)
   size_t total_size = 0;
@@ -1145,19 +842,9 @@ size_t ImageClassificationLabel::ByteSizeLong() const {
   return total_size;
 }
 
-void ImageClassificationLabel::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:TuriCreate.Annotation.Specification.ImageClassificationLabel)
-  GOOGLE_DCHECK_NE(&from, this);
-  const ImageClassificationLabel* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const ImageClassificationLabel>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:TuriCreate.Annotation.Specification.ImageClassificationLabel)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:TuriCreate.Annotation.Specification.ImageClassificationLabel)
-    MergeFrom(*source);
-  }
+void ImageClassificationLabel::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const ImageClassificationLabel*>(&from));
 }
 
 void ImageClassificationLabel::MergeFrom(const ImageClassificationLabel& from) {
@@ -1167,13 +854,6 @@ void ImageClassificationLabel::MergeFrom(const ImageClassificationLabel& from) {
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-}
-
-void ImageClassificationLabel::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:TuriCreate.Annotation.Specification.ImageClassificationLabel)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
 }
 
 void ImageClassificationLabel::CopyFrom(const ImageClassificationLabel& from) {
@@ -1195,9 +875,8 @@ void ImageClassificationLabel::InternalSwap(ImageClassificationLabel* other) {
   std::swap(_cached_size_, other->_cached_size_);
 }
 
-::google::protobuf::Metadata ImageClassificationLabel::GetMetadata() const {
-  protobuf_annotate_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_annotate_2eproto::file_level_metadata[kIndexInFileMessages];
+::std::string ImageClassificationLabel::GetTypeName() const {
+  return "TuriCreate.Annotation.Specification.ImageClassificationLabel";
 }
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -1215,7 +894,7 @@ const int ObjectDetectionLabel::kYFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ObjectDetectionLabel::ObjectDetectionLabel()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
   if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
     protobuf_annotate_2eproto::InitDefaults();
   }
@@ -1223,7 +902,7 @@ ObjectDetectionLabel::ObjectDetectionLabel()
   // @@protoc_insertion_point(constructor:TuriCreate.Annotation.Specification.ObjectDetectionLabel)
 }
 ObjectDetectionLabel::ObjectDetectionLabel(const ObjectDetectionLabel& from)
-  : ::google::protobuf::Message(),
+  : ::google::protobuf::MessageLite(),
       _internal_metadata_(NULL),
       _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
@@ -1252,11 +931,6 @@ void ObjectDetectionLabel::SetCachedSize(int size) const {
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* ObjectDetectionLabel::descriptor() {
-  protobuf_annotate_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_annotate_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const ObjectDetectionLabel& ObjectDetectionLabel::default_instance() {
   protobuf_annotate_2eproto::InitDefaults();
   return *internal_default_instance();
@@ -1392,36 +1066,6 @@ void ObjectDetectionLabel::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_end:TuriCreate.Annotation.Specification.ObjectDetectionLabel)
 }
 
-::google::protobuf::uint8* ObjectDetectionLabel::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:TuriCreate.Annotation.Specification.ObjectDetectionLabel)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // double height = 1;
-  if (this->height() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(1, this->height(), target);
-  }
-
-  // double width = 2;
-  if (this->width() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(2, this->width(), target);
-  }
-
-  // double x = 4;
-  if (this->x() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(4, this->x(), target);
-  }
-
-  // double y = 5;
-  if (this->y() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(5, this->y(), target);
-  }
-
-  // @@protoc_insertion_point(serialize_to_array_end:TuriCreate.Annotation.Specification.ObjectDetectionLabel)
-  return target;
-}
-
 size_t ObjectDetectionLabel::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:TuriCreate.Annotation.Specification.ObjectDetectionLabel)
   size_t total_size = 0;
@@ -1453,19 +1097,9 @@ size_t ObjectDetectionLabel::ByteSizeLong() const {
   return total_size;
 }
 
-void ObjectDetectionLabel::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:TuriCreate.Annotation.Specification.ObjectDetectionLabel)
-  GOOGLE_DCHECK_NE(&from, this);
-  const ObjectDetectionLabel* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const ObjectDetectionLabel>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:TuriCreate.Annotation.Specification.ObjectDetectionLabel)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:TuriCreate.Annotation.Specification.ObjectDetectionLabel)
-    MergeFrom(*source);
-  }
+void ObjectDetectionLabel::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const ObjectDetectionLabel*>(&from));
 }
 
 void ObjectDetectionLabel::MergeFrom(const ObjectDetectionLabel& from) {
@@ -1487,13 +1121,6 @@ void ObjectDetectionLabel::MergeFrom(const ObjectDetectionLabel& from) {
   if (from.y() != 0) {
     set_y(from.y());
   }
-}
-
-void ObjectDetectionLabel::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:TuriCreate.Annotation.Specification.ObjectDetectionLabel)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
 }
 
 void ObjectDetectionLabel::CopyFrom(const ObjectDetectionLabel& from) {
@@ -1519,9 +1146,8 @@ void ObjectDetectionLabel::InternalSwap(ObjectDetectionLabel* other) {
   std::swap(_cached_size_, other->_cached_size_);
 }
 
-::google::protobuf::Metadata ObjectDetectionLabel::GetMetadata() const {
-  protobuf_annotate_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_annotate_2eproto::file_level_metadata[kIndexInFileMessages];
+::std::string ObjectDetectionLabel::GetTypeName() const {
+  return "TuriCreate.Annotation.Specification.ObjectDetectionLabel";
 }
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -1598,7 +1224,7 @@ const int Label::kObjectDetectionLabelFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Label::Label()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
   if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
     protobuf_annotate_2eproto::InitDefaults();
   }
@@ -1606,7 +1232,7 @@ Label::Label()
   // @@protoc_insertion_point(constructor:TuriCreate.Annotation.Specification.Label)
 }
 Label::Label(const Label& from)
-  : ::google::protobuf::Message(),
+  : ::google::protobuf::MessageLite(),
       _internal_metadata_(NULL),
       _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
@@ -1678,11 +1304,6 @@ void Label::SetCachedSize(int size) const {
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* Label::descriptor() {
-  protobuf_annotate_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_annotate_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const Label& Label::default_instance() {
   protobuf_annotate_2eproto::InitDefaults();
   return *internal_default_instance();
@@ -1896,96 +1517,35 @@ void Label::SerializeWithCachedSizes(
 
   // .TuriCreate.Annotation.Specification.ActivityClassificationLabel activityClassificationLabel = 100;
   if (has_activityclassificationlabel()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
       100, *labelType_.activityclassificationlabel_, output);
   }
 
   // .TuriCreate.Annotation.Specification.AudioClassificationLabel audioClassificationLabel = 200;
   if (has_audioclassificationlabel()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
       200, *labelType_.audioclassificationlabel_, output);
   }
 
   // .TuriCreate.Annotation.Specification.DrawingClassificationLabel drawingClassificationLabel = 300;
   if (has_drawingclassificationlabel()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
       300, *labelType_.drawingclassificationlabel_, output);
   }
 
   // .TuriCreate.Annotation.Specification.ImageClassificationLabel imageClassificationLabel = 400;
   if (has_imageclassificationlabel()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
       400, *labelType_.imageclassificationlabel_, output);
   }
 
   // .TuriCreate.Annotation.Specification.ObjectDetectionLabel objectDetectionLabel = 500;
   if (has_objectdetectionlabel()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
       500, *labelType_.objectdetectionlabel_, output);
   }
 
   // @@protoc_insertion_point(serialize_end:TuriCreate.Annotation.Specification.Label)
-}
-
-::google::protobuf::uint8* Label::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:TuriCreate.Annotation.Specification.Label)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // int64 intLabel = 1;
-  if (has_intlabel()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(1, this->intlabel(), target);
-  }
-
-  // string stringLabel = 2;
-  if (has_stringlabel()) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->stringlabel().data(), this->stringlabel().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "TuriCreate.Annotation.Specification.Label.stringLabel");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        2, this->stringlabel(), target);
-  }
-
-  // .TuriCreate.Annotation.Specification.ActivityClassificationLabel activityClassificationLabel = 100;
-  if (has_activityclassificationlabel()) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageNoVirtualToArray(
-        100, *labelType_.activityclassificationlabel_, deterministic, target);
-  }
-
-  // .TuriCreate.Annotation.Specification.AudioClassificationLabel audioClassificationLabel = 200;
-  if (has_audioclassificationlabel()) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageNoVirtualToArray(
-        200, *labelType_.audioclassificationlabel_, deterministic, target);
-  }
-
-  // .TuriCreate.Annotation.Specification.DrawingClassificationLabel drawingClassificationLabel = 300;
-  if (has_drawingclassificationlabel()) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageNoVirtualToArray(
-        300, *labelType_.drawingclassificationlabel_, deterministic, target);
-  }
-
-  // .TuriCreate.Annotation.Specification.ImageClassificationLabel imageClassificationLabel = 400;
-  if (has_imageclassificationlabel()) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageNoVirtualToArray(
-        400, *labelType_.imageclassificationlabel_, deterministic, target);
-  }
-
-  // .TuriCreate.Annotation.Specification.ObjectDetectionLabel objectDetectionLabel = 500;
-  if (has_objectdetectionlabel()) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageNoVirtualToArray(
-        500, *labelType_.objectdetectionlabel_, deterministic, target);
-  }
-
-  // @@protoc_insertion_point(serialize_to_array_end:TuriCreate.Annotation.Specification.Label)
-  return target;
 }
 
 size_t Label::ByteSizeLong() const {
@@ -2058,19 +1618,9 @@ size_t Label::ByteSizeLong() const {
   return total_size;
 }
 
-void Label::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:TuriCreate.Annotation.Specification.Label)
-  GOOGLE_DCHECK_NE(&from, this);
-  const Label* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const Label>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:TuriCreate.Annotation.Specification.Label)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:TuriCreate.Annotation.Specification.Label)
-    MergeFrom(*source);
-  }
+void Label::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const Label*>(&from));
 }
 
 void Label::MergeFrom(const Label& from) {
@@ -2120,13 +1670,6 @@ void Label::MergeFrom(const Label& from) {
   }
 }
 
-void Label::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:TuriCreate.Annotation.Specification.Label)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
 void Label::CopyFrom(const Label& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:TuriCreate.Annotation.Specification.Label)
   if (&from == this) return;
@@ -2150,9 +1693,8 @@ void Label::InternalSwap(Label* other) {
   std::swap(_cached_size_, other->_cached_size_);
 }
 
-::google::protobuf::Metadata Label::GetMetadata() const {
-  protobuf_annotate_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_annotate_2eproto::file_level_metadata[kIndexInFileMessages];
+::std::string Label::GetTypeName() const {
+  return "TuriCreate.Annotation.Specification.Label";
 }
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -2550,7 +2092,7 @@ const int Annotation::kDatumHashFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Annotation::Annotation()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
   if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
     protobuf_annotate_2eproto::InitDefaults();
   }
@@ -2558,7 +2100,7 @@ Annotation::Annotation()
   // @@protoc_insertion_point(constructor:TuriCreate.Annotation.Specification.Annotation)
 }
 Annotation::Annotation(const Annotation& from)
-  : ::google::protobuf::Message(),
+  : ::google::protobuf::MessageLite(),
       _internal_metadata_(NULL),
       labels_(from.labels_),
       datumhash_(from.datumhash_),
@@ -2584,11 +2126,6 @@ void Annotation::SetCachedSize(int size) const {
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* Annotation::descriptor() {
-  protobuf_annotate_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_annotate_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const Annotation& Annotation::default_instance() {
   protobuf_annotate_2eproto::InitDefaults();
   return *internal_default_instance();
@@ -2677,7 +2214,7 @@ void Annotation::SerializeWithCachedSizes(
 
   // repeated .TuriCreate.Annotation.Specification.Label labels = 1;
   for (unsigned int i = 0, n = this->labels_size(); i < n; i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
       1, this->labels(i), output);
   }
 
@@ -2692,35 +2229,6 @@ void Annotation::SerializeWithCachedSizes(
   }
 
   // @@protoc_insertion_point(serialize_end:TuriCreate.Annotation.Specification.Annotation)
-}
-
-::google::protobuf::uint8* Annotation::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:TuriCreate.Annotation.Specification.Annotation)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // repeated .TuriCreate.Annotation.Specification.Label labels = 1;
-  for (unsigned int i = 0, n = this->labels_size(); i < n; i++) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageNoVirtualToArray(
-        1, this->labels(i), deterministic, target);
-  }
-
-  // repeated int64 datumHash = 2;
-  if (this->datumhash_size() > 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteTagToArray(
-      2,
-      ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED,
-      target);
-    target = ::google::protobuf::io::CodedOutputStream::WriteVarint32ToArray(
-      _datumhash_cached_byte_size_, target);
-    target = ::google::protobuf::internal::WireFormatLite::
-      WriteInt64NoTagToArray(this->datumhash_, target);
-  }
-
-  // @@protoc_insertion_point(serialize_to_array_end:TuriCreate.Annotation.Specification.Annotation)
-  return target;
 }
 
 size_t Annotation::ByteSizeLong() const {
@@ -2760,19 +2268,9 @@ size_t Annotation::ByteSizeLong() const {
   return total_size;
 }
 
-void Annotation::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:TuriCreate.Annotation.Specification.Annotation)
-  GOOGLE_DCHECK_NE(&from, this);
-  const Annotation* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const Annotation>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:TuriCreate.Annotation.Specification.Annotation)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:TuriCreate.Annotation.Specification.Annotation)
-    MergeFrom(*source);
-  }
+void Annotation::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const Annotation*>(&from));
 }
 
 void Annotation::MergeFrom(const Annotation& from) {
@@ -2784,13 +2282,6 @@ void Annotation::MergeFrom(const Annotation& from) {
 
   labels_.MergeFrom(from.labels_);
   datumhash_.MergeFrom(from.datumhash_);
-}
-
-void Annotation::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:TuriCreate.Annotation.Specification.Annotation)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
 }
 
 void Annotation::CopyFrom(const Annotation& from) {
@@ -2814,9 +2305,8 @@ void Annotation::InternalSwap(Annotation* other) {
   std::swap(_cached_size_, other->_cached_size_);
 }
 
-::google::protobuf::Metadata Annotation::GetMetadata() const {
-  protobuf_annotate_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_annotate_2eproto::file_level_metadata[kIndexInFileMessages];
+::std::string Annotation::GetTypeName() const {
+  return "TuriCreate.Annotation.Specification.Annotation";
 }
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -2891,7 +2381,7 @@ const int Annotations::kAnnotationFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Annotations::Annotations()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
   if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
     protobuf_annotate_2eproto::InitDefaults();
   }
@@ -2899,7 +2389,7 @@ Annotations::Annotations()
   // @@protoc_insertion_point(constructor:TuriCreate.Annotation.Specification.Annotations)
 }
 Annotations::Annotations(const Annotations& from)
-  : ::google::protobuf::Message(),
+  : ::google::protobuf::MessageLite(),
       _internal_metadata_(NULL),
       annotation_(from.annotation_),
       _cached_size_(0) {
@@ -2924,11 +2414,6 @@ void Annotations::SetCachedSize(int size) const {
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* Annotations::descriptor() {
-  protobuf_annotate_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_annotate_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const Annotations& Annotations::default_instance() {
   protobuf_annotate_2eproto::InitDefaults();
   return *internal_default_instance();
@@ -2998,28 +2483,11 @@ void Annotations::SerializeWithCachedSizes(
 
   // repeated .TuriCreate.Annotation.Specification.Annotation annotation = 1;
   for (unsigned int i = 0, n = this->annotation_size(); i < n; i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
       1, this->annotation(i), output);
   }
 
   // @@protoc_insertion_point(serialize_end:TuriCreate.Annotation.Specification.Annotations)
-}
-
-::google::protobuf::uint8* Annotations::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:TuriCreate.Annotation.Specification.Annotations)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // repeated .TuriCreate.Annotation.Specification.Annotation annotation = 1;
-  for (unsigned int i = 0, n = this->annotation_size(); i < n; i++) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageNoVirtualToArray(
-        1, this->annotation(i), deterministic, target);
-  }
-
-  // @@protoc_insertion_point(serialize_to_array_end:TuriCreate.Annotation.Specification.Annotations)
-  return target;
 }
 
 size_t Annotations::ByteSizeLong() const {
@@ -3044,19 +2512,9 @@ size_t Annotations::ByteSizeLong() const {
   return total_size;
 }
 
-void Annotations::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:TuriCreate.Annotation.Specification.Annotations)
-  GOOGLE_DCHECK_NE(&from, this);
-  const Annotations* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const Annotations>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:TuriCreate.Annotation.Specification.Annotations)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:TuriCreate.Annotation.Specification.Annotations)
-    MergeFrom(*source);
-  }
+void Annotations::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const Annotations*>(&from));
 }
 
 void Annotations::MergeFrom(const Annotations& from) {
@@ -3067,13 +2525,6 @@ void Annotations::MergeFrom(const Annotations& from) {
   (void) cached_has_bits;
 
   annotation_.MergeFrom(from.annotation_);
-}
-
-void Annotations::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:TuriCreate.Annotation.Specification.Annotations)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
 }
 
 void Annotations::CopyFrom(const Annotations& from) {
@@ -3096,9 +2547,8 @@ void Annotations::InternalSwap(Annotations* other) {
   std::swap(_cached_size_, other->_cached_size_);
 }
 
-::google::protobuf::Metadata Annotations::GetMetadata() const {
-  protobuf_annotate_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_annotate_2eproto::file_level_metadata[kIndexInFileMessages];
+::std::string Annotations::GetTypeName() const {
+  return "TuriCreate.Annotation.Specification.Annotations";
 }
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS

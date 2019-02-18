@@ -1,0 +1,30 @@
+syntax = "proto3";
+option optimize_for = LITE_RUNTIME;
+
+package TuriCreate.Annotation.Specification;
+
+message ActivityClassificationLMeta{
+
+}
+
+message AudioClassificationMeta {
+
+}
+
+message DrawingClassificationMeta {
+
+}
+
+message ImageClassificationMeta {
+
+}
+
+message ObjectDetectionMeta {
+
+}
+
+message MetaData {
+  oneof Type{
+
+  }
+}

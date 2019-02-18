@@ -12,8 +12,8 @@ set(TC_ANNOTATIONS_SOURCE_FILES
 
 make_library(annotation
   SOURCES
-    ${TC_ANNOTATIONS_PROTO_FILES}
     ${TC_ANNOTATIONS_SOURCE_FILES}
+    ${TC_ANNOTATIONS_PROTO_FILES}
   REQUIRES
     protobuf
     process

@@ -24,11 +24,10 @@
 #include <google/protobuf/arenastring.h>
 #include <google/protobuf/generated_message_table_driven.h>
 #include <google/protobuf/generated_message_util.h>
-#include <google/protobuf/metadata.h>
-#include <google/protobuf/message.h>
+#include <google/protobuf/metadata_lite.h>
+#include <google/protobuf/message_lite.h>
 #include <google/protobuf/repeated_field.h>  // IWYU pragma: export
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
-#include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 namespace TuriCreate {
 namespace Annotation {
@@ -81,7 +80,7 @@ void InitDefaults();
 
 // ===================================================================
 
-class ActivityClassificationLabel : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.ActivityClassificationLabel) */ {
+class ActivityClassificationLabel : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.ActivityClassificationLabel) */ {
  public:
   ActivityClassificationLabel();
   virtual ~ActivityClassificationLabel();
@@ -93,7 +92,6 @@ class ActivityClassificationLabel : public ::google::protobuf::Message /* @@prot
     return *this;
   }
 
-  static const ::google::protobuf::Descriptor* descriptor();
   static const ActivityClassificationLabel& default_instance();
 
   static inline const ActivityClassificationLabel* internal_default_instance() {
@@ -110,8 +108,8 @@ class ActivityClassificationLabel : public ::google::protobuf::Message /* @@prot
   inline ActivityClassificationLabel* New() const PROTOBUF_FINAL { return New(NULL); }
 
   ActivityClassificationLabel* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
-  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
   void CopyFrom(const ActivityClassificationLabel& from);
   void MergeFrom(const ActivityClassificationLabel& from);
   void Clear() PROTOBUF_FINAL;
@@ -122,13 +120,12 @@ class ActivityClassificationLabel : public ::google::protobuf::Message /* @@prot
       ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
   void SerializeWithCachedSizes(
       ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
   int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
   private:
   void SharedCtor();
   void SharedDtor();
-  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void SetCachedSize(int size) const;
   void InternalSwap(ActivityClassificationLabel* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
@@ -139,7 +136,7 @@ class ActivityClassificationLabel : public ::google::protobuf::Message /* @@prot
   }
   public:
 
-  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
 
   // nested types ----------------------------------------------------
 
@@ -160,7 +157,7 @@ class ActivityClassificationLabel : public ::google::protobuf::Message /* @@prot
   // @@protoc_insertion_point(class_scope:TuriCreate.Annotation.Specification.ActivityClassificationLabel)
  private:
 
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
   double start_;
   double stop_;
   mutable int _cached_size_;
@@ -168,7 +165,7 @@ class ActivityClassificationLabel : public ::google::protobuf::Message /* @@prot
 };
 // -------------------------------------------------------------------
 
-class AudioClassificationLabel : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.AudioClassificationLabel) */ {
+class AudioClassificationLabel : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.AudioClassificationLabel) */ {
  public:
   AudioClassificationLabel();
   virtual ~AudioClassificationLabel();
@@ -180,7 +177,6 @@ class AudioClassificationLabel : public ::google::protobuf::Message /* @@protoc_
     return *this;
   }
 
-  static const ::google::protobuf::Descriptor* descriptor();
   static const AudioClassificationLabel& default_instance();
 
   static inline const AudioClassificationLabel* internal_default_instance() {
@@ -197,8 +193,8 @@ class AudioClassificationLabel : public ::google::protobuf::Message /* @@protoc_
   inline AudioClassificationLabel* New() const PROTOBUF_FINAL { return New(NULL); }
 
   AudioClassificationLabel* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
-  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
   void CopyFrom(const AudioClassificationLabel& from);
   void MergeFrom(const AudioClassificationLabel& from);
   void Clear() PROTOBUF_FINAL;
@@ -209,13 +205,12 @@ class AudioClassificationLabel : public ::google::protobuf::Message /* @@protoc_
       ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
   void SerializeWithCachedSizes(
       ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
   int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
   private:
   void SharedCtor();
   void SharedDtor();
-  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void SetCachedSize(int size) const;
   void InternalSwap(AudioClassificationLabel* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
@@ -226,7 +221,7 @@ class AudioClassificationLabel : public ::google::protobuf::Message /* @@protoc_
   }
   public:
 
-  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
 
   // nested types ----------------------------------------------------
 
@@ -247,7 +242,7 @@ class AudioClassificationLabel : public ::google::protobuf::Message /* @@protoc_
   // @@protoc_insertion_point(class_scope:TuriCreate.Annotation.Specification.AudioClassificationLabel)
  private:
 
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
   double start_;
   double stop_;
   mutable int _cached_size_;
@@ -255,7 +250,7 @@ class AudioClassificationLabel : public ::google::protobuf::Message /* @@protoc_
 };
 // -------------------------------------------------------------------
 
-class DrawingClassificationLabel : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.DrawingClassificationLabel) */ {
+class DrawingClassificationLabel : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.DrawingClassificationLabel) */ {
  public:
   DrawingClassificationLabel();
   virtual ~DrawingClassificationLabel();
@@ -267,7 +262,6 @@ class DrawingClassificationLabel : public ::google::protobuf::Message /* @@proto
     return *this;
   }
 
-  static const ::google::protobuf::Descriptor* descriptor();
   static const DrawingClassificationLabel& default_instance();
 
   static inline const DrawingClassificationLabel* internal_default_instance() {
@@ -284,8 +278,8 @@ class DrawingClassificationLabel : public ::google::protobuf::Message /* @@proto
   inline DrawingClassificationLabel* New() const PROTOBUF_FINAL { return New(NULL); }
 
   DrawingClassificationLabel* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
-  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
   void CopyFrom(const DrawingClassificationLabel& from);
   void MergeFrom(const DrawingClassificationLabel& from);
   void Clear() PROTOBUF_FINAL;
@@ -296,13 +290,12 @@ class DrawingClassificationLabel : public ::google::protobuf::Message /* @@proto
       ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
   void SerializeWithCachedSizes(
       ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
   int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
   private:
   void SharedCtor();
   void SharedDtor();
-  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void SetCachedSize(int size) const;
   void InternalSwap(DrawingClassificationLabel* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
@@ -313,7 +306,7 @@ class DrawingClassificationLabel : public ::google::protobuf::Message /* @@proto
   }
   public:
 
-  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
 
   // nested types ----------------------------------------------------
 
@@ -322,13 +315,13 @@ class DrawingClassificationLabel : public ::google::protobuf::Message /* @@proto
   // @@protoc_insertion_point(class_scope:TuriCreate.Annotation.Specification.DrawingClassificationLabel)
  private:
 
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
   mutable int _cached_size_;
   friend struct protobuf_annotate_2eproto::TableStruct;
 };
 // -------------------------------------------------------------------
 
-class ImageClassificationLabel : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.ImageClassificationLabel) */ {
+class ImageClassificationLabel : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.ImageClassificationLabel) */ {
  public:
   ImageClassificationLabel();
   virtual ~ImageClassificationLabel();
@@ -340,7 +333,6 @@ class ImageClassificationLabel : public ::google::protobuf::Message /* @@protoc_
     return *this;
   }
 
-  static const ::google::protobuf::Descriptor* descriptor();
   static const ImageClassificationLabel& default_instance();
 
   static inline const ImageClassificationLabel* internal_default_instance() {
@@ -357,8 +349,8 @@ class ImageClassificationLabel : public ::google::protobuf::Message /* @@protoc_
   inline ImageClassificationLabel* New() const PROTOBUF_FINAL { return New(NULL); }
 
   ImageClassificationLabel* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
-  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
   void CopyFrom(const ImageClassificationLabel& from);
   void MergeFrom(const ImageClassificationLabel& from);
   void Clear() PROTOBUF_FINAL;
@@ -369,13 +361,12 @@ class ImageClassificationLabel : public ::google::protobuf::Message /* @@protoc_
       ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
   void SerializeWithCachedSizes(
       ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
   int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
   private:
   void SharedCtor();
   void SharedDtor();
-  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void SetCachedSize(int size) const;
   void InternalSwap(ImageClassificationLabel* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
@@ -386,7 +377,7 @@ class ImageClassificationLabel : public ::google::protobuf::Message /* @@protoc_
   }
   public:
 
-  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
 
   // nested types ----------------------------------------------------
 
@@ -395,13 +386,13 @@ class ImageClassificationLabel : public ::google::protobuf::Message /* @@protoc_
   // @@protoc_insertion_point(class_scope:TuriCreate.Annotation.Specification.ImageClassificationLabel)
  private:
 
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
   mutable int _cached_size_;
   friend struct protobuf_annotate_2eproto::TableStruct;
 };
 // -------------------------------------------------------------------
 
-class ObjectDetectionLabel : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.ObjectDetectionLabel) */ {
+class ObjectDetectionLabel : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.ObjectDetectionLabel) */ {
  public:
   ObjectDetectionLabel();
   virtual ~ObjectDetectionLabel();
@@ -413,7 +404,6 @@ class ObjectDetectionLabel : public ::google::protobuf::Message /* @@protoc_inse
     return *this;
   }
 
-  static const ::google::protobuf::Descriptor* descriptor();
   static const ObjectDetectionLabel& default_instance();
 
   static inline const ObjectDetectionLabel* internal_default_instance() {
@@ -430,8 +420,8 @@ class ObjectDetectionLabel : public ::google::protobuf::Message /* @@protoc_inse
   inline ObjectDetectionLabel* New() const PROTOBUF_FINAL { return New(NULL); }
 
   ObjectDetectionLabel* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
-  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
   void CopyFrom(const ObjectDetectionLabel& from);
   void MergeFrom(const ObjectDetectionLabel& from);
   void Clear() PROTOBUF_FINAL;
@@ -442,13 +432,12 @@ class ObjectDetectionLabel : public ::google::protobuf::Message /* @@protoc_inse
       ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
   void SerializeWithCachedSizes(
       ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
   int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
   private:
   void SharedCtor();
   void SharedDtor();
-  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void SetCachedSize(int size) const;
   void InternalSwap(ObjectDetectionLabel* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
@@ -459,7 +448,7 @@ class ObjectDetectionLabel : public ::google::protobuf::Message /* @@protoc_inse
   }
   public:
 
-  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
 
   // nested types ----------------------------------------------------
 
@@ -492,7 +481,7 @@ class ObjectDetectionLabel : public ::google::protobuf::Message /* @@protoc_inse
   // @@protoc_insertion_point(class_scope:TuriCreate.Annotation.Specification.ObjectDetectionLabel)
  private:
 
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
   double height_;
   double width_;
   double x_;
@@ -502,7 +491,7 @@ class ObjectDetectionLabel : public ::google::protobuf::Message /* @@protoc_inse
 };
 // -------------------------------------------------------------------
 
-class Label : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.Label) */ {
+class Label : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.Label) */ {
  public:
   Label();
   virtual ~Label();
@@ -514,7 +503,6 @@ class Label : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
     return *this;
   }
 
-  static const ::google::protobuf::Descriptor* descriptor();
   static const Label& default_instance();
 
   enum LabelIdentifierCase {
@@ -546,8 +534,8 @@ class Label : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
   inline Label* New() const PROTOBUF_FINAL { return New(NULL); }
 
   Label* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
-  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
   void CopyFrom(const Label& from);
   void MergeFrom(const Label& from);
   void Clear() PROTOBUF_FINAL;
@@ -558,13 +546,12 @@ class Label : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
       ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
   void SerializeWithCachedSizes(
       ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
   int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
   private:
   void SharedCtor();
   void SharedDtor();
-  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void SetCachedSize(int size) const;
   void InternalSwap(Label* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
@@ -575,7 +562,7 @@ class Label : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
   }
   public:
 
-  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
 
   // nested types ----------------------------------------------------
 
@@ -672,7 +659,7 @@ class Label : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
   void clear_labelType();
   inline void clear_has_labelType();
 
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
   union LabelIdentifierUnion {
     LabelIdentifierUnion() {}
     ::google::protobuf::int64 intlabel_;
@@ -693,7 +680,7 @@ class Label : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
 };
 // -------------------------------------------------------------------
 
-class Annotation : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.Annotation) */ {
+class Annotation : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.Annotation) */ {
  public:
   Annotation();
   virtual ~Annotation();
@@ -705,7 +692,6 @@ class Annotation : public ::google::protobuf::Message /* @@protoc_insertion_poin
     return *this;
   }
 
-  static const ::google::protobuf::Descriptor* descriptor();
   static const Annotation& default_instance();
 
   static inline const Annotation* internal_default_instance() {
@@ -722,8 +708,8 @@ class Annotation : public ::google::protobuf::Message /* @@protoc_insertion_poin
   inline Annotation* New() const PROTOBUF_FINAL { return New(NULL); }
 
   Annotation* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
-  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
   void CopyFrom(const Annotation& from);
   void MergeFrom(const Annotation& from);
   void Clear() PROTOBUF_FINAL;
@@ -734,13 +720,12 @@ class Annotation : public ::google::protobuf::Message /* @@protoc_insertion_poin
       ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
   void SerializeWithCachedSizes(
       ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
   int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
   private:
   void SharedCtor();
   void SharedDtor();
-  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void SetCachedSize(int size) const;
   void InternalSwap(Annotation* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
@@ -751,7 +736,7 @@ class Annotation : public ::google::protobuf::Message /* @@protoc_insertion_poin
   }
   public:
 
-  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
 
   // nested types ----------------------------------------------------
 
@@ -784,7 +769,7 @@ class Annotation : public ::google::protobuf::Message /* @@protoc_insertion_poin
   // @@protoc_insertion_point(class_scope:TuriCreate.Annotation.Specification.Annotation)
  private:
 
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
   ::google::protobuf::RepeatedPtrField< ::TuriCreate::Annotation::Specification::Label > labels_;
   ::google::protobuf::RepeatedField< ::google::protobuf::int64 > datumhash_;
   mutable int _datumhash_cached_byte_size_;
@@ -793,7 +778,7 @@ class Annotation : public ::google::protobuf::Message /* @@protoc_insertion_poin
 };
 // -------------------------------------------------------------------
 
-class Annotations : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.Annotations) */ {
+class Annotations : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.Annotations) */ {
  public:
   Annotations();
   virtual ~Annotations();
@@ -805,7 +790,6 @@ class Annotations : public ::google::protobuf::Message /* @@protoc_insertion_poi
     return *this;
   }
 
-  static const ::google::protobuf::Descriptor* descriptor();
   static const Annotations& default_instance();
 
   static inline const Annotations* internal_default_instance() {
@@ -822,8 +806,8 @@ class Annotations : public ::google::protobuf::Message /* @@protoc_insertion_poi
   inline Annotations* New() const PROTOBUF_FINAL { return New(NULL); }
 
   Annotations* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
-  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
   void CopyFrom(const Annotations& from);
   void MergeFrom(const Annotations& from);
   void Clear() PROTOBUF_FINAL;
@@ -834,13 +818,12 @@ class Annotations : public ::google::protobuf::Message /* @@protoc_insertion_poi
       ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
   void SerializeWithCachedSizes(
       ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
   int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
   private:
   void SharedCtor();
   void SharedDtor();
-  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void SetCachedSize(int size) const;
   void InternalSwap(Annotations* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
@@ -851,7 +834,7 @@ class Annotations : public ::google::protobuf::Message /* @@protoc_insertion_poi
   }
   public:
 
-  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
 
   // nested types ----------------------------------------------------
 
@@ -872,7 +855,7 @@ class Annotations : public ::google::protobuf::Message /* @@protoc_insertion_poi
   // @@protoc_insertion_point(class_scope:TuriCreate.Annotation.Specification.Annotations)
  private:
 
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
   ::google::protobuf::RepeatedPtrField< ::TuriCreate::Annotation::Specification::Annotation > annotation_;
   mutable int _cached_size_;
   friend struct protobuf_annotate_2eproto::TableStruct;
