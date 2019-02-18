@@ -1,0 +1,8 @@
+^Test project .*/Tests/RunCMake/CTestCommandLine/TestLoad
+\*\*\*\*\* WAITING, System Load: 5, Max Allowed Load: 3, Smallest test TestLoad[1-2] requires 1\*\*\*\*\*
+    Start 1: TestLoad1
+    Start 2: TestLoad2
+1/2 Test #[1-2]: TestLoad[1-2] ........................   Passed +[0-9.]+ sec
+2/2 Test #[1-2]: TestLoad[1-2] ........................   Passed +[0-9.]+ sec
++
+100% tests passed, 0 tests failed out of 2

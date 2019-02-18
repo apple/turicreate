@@ -1,0 +1,4 @@
+^CMake Error at MATH-TooManyArguments.cmake:1 \(math\):
+  math EXPR called with incorrect arguments.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

@@ -1,0 +1,176 @@
+^\{
+  "componentGroups" :[ ]
+  \{
+    "f12" :[ ]
+    \{
+      "components" :[ ]
+      \[
+        "f1",
+        "f2"
+      \],
+      "description" : "Component group for files 1 and 2",
+      "displayName" : "Files 1 and 2",
+      "isBold" : false,
+      "isExpandedByDefault" : false,
+      "name" : "f12",
+      "parentGroup" : "f1234",
+      "subgroups" : \[\]
+    \},
+    "f1234" :[ ]
+    \{
+      "components" : \[\],
+      "description" : "Component group for all files",
+      "displayName" : "Files 1-4",
+      "isBold" : false,
+      "isExpandedByDefault" : false,
+      "name" : "f1234",
+      "subgroups" :[ ]
+      \[
+        "f12",
+        "f34"
+      \]
+    \},
+    "f34" :[ ]
+    \{
+      "components" :[ ]
+      \[
+        "f3",
+        "f4"
+      \],
+      "description" : "Component group for files 3 and 4",
+      "displayName" : "Files 3 and 4",
+      "isBold" : false,
+      "isExpandedByDefault" : false,
+      "name" : "f34",
+      "parentGroup" : "f1234",
+      "subgroups" : \[\]
+    \}
+  \},
+  "components" :[ ]
+  \{
+    "f1" :[ ]
+    \{
+      "archiveFile" : "",
+      "dependencies" : \[\],
+      "description" : "Component for file 1",
+      "displayName" : "File 1",
+      "group" : "f12",
+      "installationTypes" :[ ]
+      \[
+        "full",
+        "f12"
+      \],
+      "isDisabledByDefault" : false,
+      "isDownloaded" : false,
+      "isHidden" : false,
+      "isRequired" : false,
+      "name" : "f1"
+    \},
+    "f2" :[ ]
+    \{
+      "archiveFile" : "",
+      "dependencies" :[ ]
+      \[
+        "f1"
+      \],
+      "description" : "Component for file 2",
+      "displayName" : "File 2",
+      "group" : "f12",
+      "installationTypes" :[ ]
+      \[
+        "full",
+        "f12"
+      \],
+      "isDisabledByDefault" : false,
+      "isDownloaded" : false,
+      "isHidden" : false,
+      "isRequired" : false,
+      "name" : "f2"
+    \},
+    "f3" :[ ]
+    \{
+      "archiveFile" : "",
+      "dependencies" :[ ]
+      \[
+        "f1",
+        "f2"
+      \],
+      "description" : "Component for file 3",
+      "displayName" : "File 3",
+      "group" : "f34",
+      "installationTypes" :[ ]
+      \[
+        "full"
+      \],
+      "isDisabledByDefault" : false,
+      "isDownloaded" : false,
+      "isHidden" : false,
+      "isRequired" : false,
+      "name" : "f3"
+    \},
+    "f4" :[ ]
+    \{
+      "archiveFile" : "",
+      "dependencies" :[ ]
+      \[
+        "f2",
+        "f3",
+        "f1"
+      \],
+      "description" : "Component for file 4",
+      "displayName" : "File 4",
+      "group" : "f34",
+      "installationTypes" :[ ]
+      \[
+        "full"
+      \],
+      "isDisabledByDefault" : false,
+      "isDownloaded" : false,
+      "isHidden" : false,
+      "isRequired" : false,
+      "name" : "f4"
+    \}
+  \},
+  "errorOnAbsoluteInstallDestination" : false,
+  "formatVersionMajor" : 1,
+  "formatVersionMinor" : 0,
+  "installationTypes" :[ ]
+  \{
+    "f12" :[ ]
+    \{
+      "displayName" : "Only files 1 and 2",
+      "index" : 2,
+      "name" : "f12"
+    \},
+    "full" :[ ]
+    \{
+      "displayName" : "Full installation",
+      "index" : 1,
+      "name" : "full"
+    \}
+  \},
+  "packageDescriptionFile" : ".*/Templates/CPack\.GenericDescription\.txt",
+  "packageDescriptionSummary" : "EXTERNAL-(none|good(_multi)?|invalid_good)-subtest-(MONOLITHIC|COMPONENT)-type built using CMake",
+  "packageName" : "external",
+  "packageVersion" : "0\.1\.1",
+  "projects" :[ ]
+  \[
+    \{
+      "component" : "ALL",
+      "components" :[ ]
+      \[
+        "f1",
+        "f2",
+        "f3",
+        "f4"
+      \],
+      "directory" : ".*/Tests/RunCMake/External/CPack/EXTERNAL-build-(none|good(_multi)?|invalid_good)-subtest",
+      "installationTypes" : \[\],
+      "projectName" : "EXTERNAL-(none|good(_multi)?|invalid_good)-subtest-(MONOLITHIC|COMPONENT)-type",
+      "subDirectory" : "/"
+    \}
+  \],
+  "setDestdir" : false,
+  "stripFiles" : false,
+  "warnOnAbsoluteInstallDestination" : false
+\}$

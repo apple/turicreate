@@ -1,0 +1,12 @@
+
+#include "@TARGET_NAME@.h"
+
+int @TARGET_NAME@(void)
+{
+  return 0;
+}
+
+int main(int argc, char* argv[])
+{
+  return @TARGET_NAME@();
+}

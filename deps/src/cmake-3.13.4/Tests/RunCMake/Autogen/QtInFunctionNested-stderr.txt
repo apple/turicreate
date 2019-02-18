@@ -1,0 +1,8 @@
+^CMake Warning \(dev\) in CMakeLists.txt:
+  AUTOGEN: No valid Qt version found for target main.  AUTOMOC, AUTOUIC,
+  AUTORCC disabled.  Consider adding:
+
+    find_package\(Qt5 COMPONENTS Widgets\)
+
+  to your CMakeLists.txt file.
+This warning is for project developers.  Use -Wno-dev to suppress it.

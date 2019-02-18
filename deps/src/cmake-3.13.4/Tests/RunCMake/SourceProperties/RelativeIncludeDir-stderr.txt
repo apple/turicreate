@@ -1,0 +1,4 @@
+CMake Error in CMakeLists.txt:
+  Found relative path while evaluating include directories of "empty.c":
+
+    "relative"

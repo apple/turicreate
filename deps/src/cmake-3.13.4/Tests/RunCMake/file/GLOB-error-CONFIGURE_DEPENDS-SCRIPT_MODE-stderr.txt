@@ -1,0 +1,1 @@
+.*CONFIGURE_DEPENDS is invalid for script and find package modes\.

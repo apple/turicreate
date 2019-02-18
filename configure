@@ -402,7 +402,7 @@ function check_version {
 
 function install_cmake {
   echo "Running script to build bundled cmake version."
-  CC=$CCCMD CXX=$CXXCMD ./scripts/cmake_setup.sh ${PWD}/deps/src/cmake-3.9.3 ${PWD}/deps/local || exit 1
+  CC=$CCCMD CXX=$CXXCMD ./scripts/cmake_setup.sh ${PWD}/deps/src/cmake-3.13.4 ${PWD}/deps/local || exit 1
   return $?
 }
 
@@ -429,9 +429,9 @@ function check_cmake {
     #test cmake version
     echo "Testing existing cmake version..."
     currentversion=`$CMAKE --version | awk -F "patch" '{print $1;}' | tr -dc '[0-9].'`
-    echo "Detected ${currentversion}. Required 3.9.2"
+    echo "Detected ${currentversion}. Required 3.12.0"
 
-    check_version $currentversion "3.9.2"
+    check_version $currentversion "3.12.0"
 
     if [ $? -ne 2 ]; then
       echo "CMake version is good; using built-in version."

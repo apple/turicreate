@@ -1,0 +1,9 @@
+Run dashboard with to-be-determined model
+   Source directory: .*/Tests/RunCMake/ctest_start/AppendDifferentTrack
+   Build directory: .*/Tests/RunCMake/ctest_start/AppendDifferentTrack-build
+   Track: ExperimentalDifferent
+   Reading ctest configuration file: .*/Tests/RunCMake/ctest_start/AppendDifferentTrack/CTestConfig.cmake
+   Site: test-site
+   Build name: test-build-name
+  Use existing tag: 19551112-2204 - ExperimentalDifferent
+   Use ExperimentalDifferent tag: [0-9-]+

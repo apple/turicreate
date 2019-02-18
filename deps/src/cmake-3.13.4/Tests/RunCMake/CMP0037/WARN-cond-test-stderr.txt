@@ -1,0 +1,11 @@
+^CMake Warning \(dev\) at WARN-cond-test.cmake:3 \(add_custom_target\):
+  Policy CMP0037 is not set: Target names should not be reserved and should
+  match a validity pattern.  Run "cmake --help-policy CMP0037" for policy
+  details.  Use the cmake_policy command to set the policy and suppress this
+  warning.
+
+  The target name "test" is reserved when CTest testing is enabled.  It may
+  result in undefined behavior.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.$

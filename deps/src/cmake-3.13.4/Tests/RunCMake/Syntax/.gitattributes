@@ -1,0 +1,3 @@
+CommandTabs.cmake   whitespace=-tab-in-indent
+StringCRLF.cmake    eol=crlf
+BracketCRLF.cmake   eol=crlf

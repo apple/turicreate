@@ -1,0 +1,3 @@
+^CMake Error: Error processing file: nosuchcachefile.txt
+CMake Error: The source directory ".*/Tests/RunCMake/CommandLine/Cno-file-build" does not appear to contain CMakeLists.txt.
+Specify --help for usage, or press the help button on the CMake GUI.$

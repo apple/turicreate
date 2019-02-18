@@ -1,0 +1,75 @@
+[
+{ "message": "Testing basic message handling:" },
+
+{ "sendRaw": "Sometext"},
+{ "recv": {"cookie":"","errorMessage":"Failed to parse JSON input.","inReplyTo":"","type":"error"} },
+
+{ "message": "Testing invalid json input"},
+{ "send": { "test": "sometext" } },
+{ "recv": {"cookie":"","errorMessage":"No type given in request.","inReplyTo":"","type":"error"} },
+
+{ "send": {"test": "sometext","cookie":"monster"} },
+{ "recv": {"cookie":"monster","errorMessage":"No type given in request.","inReplyTo":"","type":"error"} },
+
+{ "message": "Testing commands before handshake" },
+{ "send": {"type": "cache","cookie":"monster"} },
+{ "recv": {"cookie":"monster","errorMessage":"Waiting for type \"handshake\".","inReplyTo":"cache","type":"error"} },
+
+{ "message": "Testing handshake" },
+{ "send": {"type": "sometype","cookie":"monster2"} },
+{ "recv": {"cookie":"monster2","errorMessage":"Waiting for type \"handshake\".","inReplyTo":"sometype","type":"error"} },
+
+{ "send": {"type": "handshake"} },
+{ "recv": {"cookie":"","errorMessage":"\"protocolVersion\" is required for \"handshake\".","inReplyTo":"handshake","type":"error"} },
+
+{ "send": {"type": "handshake","foo":"bar"} },
+{ "recv": {"cookie":"","errorMessage":"\"protocolVersion\" is required for \"handshake\".","inReplyTo":"handshake","type":"error"} },
+
+{ "send": {"type": "handshake","protocolVersion":"bar"} },
+{ "recv": {"cookie":"","errorMessage":"\"protocolVersion\" must be a JSON object.","inReplyTo":"handshake","type":"error"} },
+
+{ "send": {"type": "handshake","protocolVersion":{}} },
+{ "recv": {"cookie":"","errorMessage":"\"major\" must be set and an integer.","inReplyTo":"handshake","type":"error"} },
+
+{ "send": {"type": "handshake","protocolVersion":{"major":"foo"}} },
+{ "recv": {"cookie":"","errorMessage":"\"major\" must be set and an integer.","inReplyTo":"handshake","type":"error"} },
+
+{ "send": {"type": "handshake","protocolVersion":{"major":1, "minor":"foo"}} },
+{ "recv": {"cookie":"","errorMessage":"\"minor\" must be unset or an integer.","inReplyTo":"handshake","type":"error"} },
+
+{ "send": {"type": "handshake","protocolVersion":{"major":-1, "minor":-1}} },
+{ "recv": {"cookie":"","errorMessage":"\"major\" must be >= 0.","inReplyTo":"handshake","type":"error"} },
+
+{ "send": {"type": "handshake","protocolVersion":{"major":10, "minor":-1}} },
+{ "recv": {"cookie":"","errorMessage":"\"minor\" must be >= 0 when set.","inReplyTo":"handshake","type":"error"} },
+
+{ "send": {"type": "handshake","protocolVersion":{"major":10000}} },
+{ "recv": {"cookie":"","errorMessage":"Protocol version not supported.","inReplyTo":"handshake","type":"error"} },
+
+{ "send": {"type": "handshake","protocolVersion":{"major":1, "minor":10000}} },
+{ "recv": {"cookie":"","errorMessage":"Protocol version not supported.","inReplyTo":"handshake","type":"error"} },
+
+{ "send": {"cookie":"zimtstern","type": "handshake","protocolVersion":{"major":1}} },
+{ "recv": {"cookie":"zimtstern","inReplyTo":"handshake","type":"error","errorMessage":"Failed to activate protocol version: \"buildDirectory\" is missing."} },
+
+{ "message": "Testing protocol version specific options (1.0):" },
+{ "send": {"cookie":"zimtstern","type": "handshake","protocolVersion":{"major":1},"sourceDirectory":"/tmp/src"} },
+{ "recv": {"cookie":"zimtstern","inReplyTo":"handshake","type":"error","errorMessage":"Failed to activate protocol version: \"buildDirectory\" is missing."} },
+
+{ "send": {"cookie":"zimtstern","type": "handshake","protocolVersion":{"major":1},"sourceDirectory":"/tmp/src","buildDirectory":"/tmp/build"} },
+{ "recv": {"cookie":"zimtstern","inReplyTo":"handshake","type":"error","errorMessage":"Failed to activate protocol version: \"sourceDirectory\" is not a directory."} },
+
+{ "send": {"cookie":"zimtstern","type": "handshake","protocolVersion":{"major":1},"sourceDirectory":".","buildDirectory":"/tmp/build","extraGenerator":"CodeBlocks"} },
+{ "recv": {"cookie":"zimtstern","inReplyTo":"handshake","type":"error","errorMessage":"Failed to activate protocol version: \"generator\" is unset but required."} },
+
+{ "send": {"cookie":"zimtstern","type": "handshake","protocolVersion":{"major":1},"sourceDirectory":".","buildDirectory":"/tmp/build","generator":"XXXX","extraGenerator":"CodeBlocks"} },
+{ "recv": {"cookie":"zimtstern","inReplyTo":"handshake","type":"error","errorMessage":"Failed to activate protocol version: Generator \"XXXX\" not supported."} },
+
+{ "send": {"cookie":"zimtstern","type": "handshake","protocolVersion":{"major":1},"sourceDirectory":".","buildDirectory":"/tmp/build","generator":"Ninja","extraGenerator":"XXXX"} },
+{ "recv": {"cookie":"zimtstern","inReplyTo":"handshake","type":"error","errorMessage":"Failed to activate protocol version: The combination of generator \"Ninja\" and extra generator \"XXXX\" is not supported."} },
+
+{ "send": {"cookie":"zimtstern","type": "handshake","protocolVersion":{"major":1},"sourceDirectory":".","buildDirectory":"/tmp/build","generator":"Ninja","extraGenerator":"CodeBlocks"} },
+{ "recv": {"cookie":"zimtstern","inReplyTo":"handshake","type":"reply"} },
+
+{ "message": "Everything ok." }
+]

@@ -1,0 +1,19 @@
+^CMake Error at UPLOAD-netrc-bad\.cmake:[0-9]+ \(file\):
+  file UPLOAD missing level value for NETRC\.
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:[0-9]+ \(include\)
++
+CMake Error at UPLOAD-netrc-bad\.cmake:[0-9]+ \(file\):
+  file UPLOAD missing file value for NETRC_FILE\.
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:[0-9]+ \(include\)
++
+CMake Error at UPLOAD-netrc-bad\.cmake:[0-9]+ \(file\):
+  file NETRC accepts OPTIONAL, IGNORED or REQUIRED but got: INVALID
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:[0-9]+ \(include\)
++
+CMake Error at UPLOAD-netrc-bad\.cmake:[0-9]+ \(file\):
+  file NETRC accepts OPTIONAL, IGNORED or REQUIRED but got: FALSE
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:[0-9]+ \(include\)$

@@ -1,0 +1,4 @@
+CMake Error at JoinNoVar.cmake:1 \(string\):
+  string sub-command JOIN requires at least two arguments.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

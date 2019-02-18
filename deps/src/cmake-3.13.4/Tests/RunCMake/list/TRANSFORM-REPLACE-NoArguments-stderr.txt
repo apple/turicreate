@@ -1,0 +1,4 @@
+^CMake Error at TRANSFORM-REPLACE-NoArguments.cmake:2 \(list\):
+  list sub-command TRANSFORM, action REPLACE expects 2 argument\(s\).
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

@@ -1,0 +1,7 @@
+( *|[0-9]+>)CMake Error at .*GoogleTestAddTests.cmake:[0-9]+ \(message\):
+( *|[0-9]+>)  Error running test executable.
+?( *|[0-9]+>)
+( *|[0-9]+>)    Path: '.*discovery_timeout_test(\.exe)?'
+( *|[0-9]+>)    Result: Process terminated due to timeout
+( *|[0-9]+>)    Output:
+( *|[0-9]+>)     +

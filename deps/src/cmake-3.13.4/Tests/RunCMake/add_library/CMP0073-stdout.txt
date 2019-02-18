@@ -1,0 +1,3 @@
+-- warn_LIB_DEPENDS='general;bar;'
+-- old_LIB_DEPENDS='general;bar;'
+-- new_LIB_DEPENDS=''

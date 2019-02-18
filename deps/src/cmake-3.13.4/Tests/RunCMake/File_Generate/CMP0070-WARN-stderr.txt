@@ -1,0 +1,27 @@
+^CMake Warning \(dev\) in CMakeLists.txt:
+  Policy CMP0070 is not set: Define file\(GENERATE\) behavior for relative
+  paths.  Run "cmake --help-policy CMP0070" for policy details.  Use the
+  cmake_policy command to set the policy and suppress this warning.
+
+  file\(GENERATE\) given relative INPUT path:
+
+    relative-input-WARN.txt
+
+  This is not defined behavior unless CMP0070 is set to NEW.  For
+  compatibility with older versions of CMake, the previous undefined behavior
+  will be used.
+This warning is for project developers.  Use -Wno-dev to suppress it.(
++
+CMake Warning \(dev\) in CMakeLists.txt:
+  Policy CMP0070 is not set: Define file\(GENERATE\) behavior for relative
+  paths.  Run "cmake --help-policy CMP0070" for policy details.  Use the
+  cmake_policy command to set the policy and suppress this warning.
+
+  file\(GENERATE\) given relative OUTPUT path:
+
+    relative-output-WARN.txt
+
+  This is not defined behavior unless CMP0070 is set to NEW.  For
+  compatibility with older versions of CMake, the previous undefined behavior
+  will be used.
+This warning is for project developers.  Use -Wno-dev to suppress it.)+$

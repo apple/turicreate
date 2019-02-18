@@ -1,0 +1,8 @@
+Run dashboard with to-be-determined model
+   Source directory: .*/Tests/RunCMake/ctest_start/AppendNoModel
+   Build directory: .*/Tests/RunCMake/ctest_start/AppendNoModel-build
+   Reading ctest configuration file: .*/Tests/RunCMake/ctest_start/AppendNoModel/CTestConfig.cmake
+   Site: test-site
+   Build name: test-build-name
+  Use existing tag: 19551112-2204 - ContinuousTrack
+   Use ContinuousTrack tag: [0-9-]+
