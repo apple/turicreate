@@ -23,7 +23,7 @@ public:
 
   std::shared_ptr<unity_sframe> returnAnnotations(bool drop_null);
 
-  // Refactor to support all toolkits with a proto
+  // TODO: refactor to support all toolkits with a proto
   std::vector<std::string> uniqueLabels();
 
 private:
