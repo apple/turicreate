@@ -42,6 +42,8 @@ public:
 
   virtual std::shared_ptr<unity_sframe> returnAnnotations(bool drop_null) = 0;
 
+  virtual std::vector<std::string> metaData() = 0;
+
 protected:
   const std::shared_ptr<unity_sframe> m_data;
   const std::vector<std::string> m_data_columns;

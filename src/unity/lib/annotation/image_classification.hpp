@@ -24,7 +24,7 @@ public:
   std::shared_ptr<unity_sframe> returnAnnotations(bool drop_null);
 
   // TODO: refactor to support all toolkits with a proto
-  std::vector<std::string> uniqueLabels();
+  std::vector<std::string> metaData();
 
 private:
   void _addAnnotationToSFrame(size_t index, std::string label);

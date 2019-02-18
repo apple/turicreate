@@ -11,7 +11,7 @@ namespace annotate {
 ImageClassification::ImageClassification() {
   /* Since abstract classes cannot use std::make_shared and it needed for the
    * annotate process, we need the child class to construct the shared pointer
-   * and store it in the protected variables of the inhereted abstract
+   * and store it in the protected variables of the inherited abstract
    * `AnnotationBase` class */
   m_self = std::make_shared<ImageClassification>(*this);
 }
@@ -143,7 +143,7 @@ void ImageClassification::_addAnnotationToSFrame(size_t index, size_t label) {
 }
 
 // TODO: protobuf for metadata?
-std::vector<std::string> ImageClassification::uniqueLabels() {
+std::vector<std::string> ImageClassification::metaData() {
   std::shared_ptr<unity_sarray> data_sarray =
       std::static_pointer_cast<unity_sarray>(
           m_data->select_column(m_annotation_column));
