@@ -1,7 +1,7 @@
 project(unity_test_toolkits)
 
-make_boost_test(test_transpose.cxx REQUIRES unity_core)
-make_boost_test(test_itemitem_matrix.cxx REQUIRES unity_core)
-make_boost_test(test_matrix_utilities.cxx REQUIRES unity_sparse_similarity unity_core)
-make_boost_test(test_brute_force_all_pairs.cxx REQUIRES unity_core)
-make_boost_test(test_item_similarity_consistency.cxx REQUIRES unity_sparse_similarity unity_core)
+make_boost_test(test_transpose.cxx REQUIRES unity_shared_for_testing)
+make_boost_test(test_itemitem_matrix.cxx REQUIRES unity_shared_for_testing)
+make_boost_test(test_matrix_utilities.cxx REQUIRES unity_shared_for_testing)
+make_boost_test(test_brute_force_all_pairs.cxx REQUIRES unity_shared_for_testing)
+make_boost_test(test_item_similarity_consistency.cxx REQUIRES unity_shared_for_testing)

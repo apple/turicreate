@@ -1,6 +1,6 @@
 project(unity_toolkits)
 
-make_library(unity_text
+make_library(unity_text OBJECT
   SOURCES
     unity_text.cpp
     topic_model.cpp
@@ -15,4 +15,4 @@ make_library(unity_text
     logger
     unity_ml_data_2
     unity_util
-  )
+)

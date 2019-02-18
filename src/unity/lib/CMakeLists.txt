@@ -2,7 +2,7 @@ project(unity)
 
 subdirs(visualization)
 
-make_library(unity_core
+make_library(unity_core OBJECT
   SOURCES
     api/function_closure_info.cpp
     extensions/model_base.cpp
@@ -36,21 +36,16 @@ make_library(unity_core
     visualization/columnwise_summary.cpp
   REQUIRES
     flexible_type
-    pylambda 
+    pylambda
     table_printer
-    sframe cancel_serverside_ops 
-    sframe_query_engine 
-    libjson sgraph 
-    curl 
+    sframe cancel_serverside_ops
+    sframe_query_engine
+    libjson sgraph
+    curl
     image_type image_io
     startup_teardown
     pylambda_worker
     eigen
     visualization
-    EXTERNAL_VISIBILITY
+  EXTERNAL_VISIBILITY
 )
-
-make_shared_library_from_static(unity_core_shared
-                                REQUIRES
-                                unity_core)
-

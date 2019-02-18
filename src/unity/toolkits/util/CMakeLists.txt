@@ -1,6 +1,6 @@
 project(unity_toolkits)
 
-make_library(unity_util
+make_library(unity_util OBJECT
   SOURCES
     precision_recall.cpp
     data_generators.cpp
@@ -9,5 +9,5 @@ make_library(unity_util
     class_registrations.cpp
     random_sframe_generation.cpp
   REQUIRES
-  unity_core
-  )
+    unity_core
+)

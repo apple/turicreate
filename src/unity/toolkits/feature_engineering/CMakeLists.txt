@@ -1,6 +1,6 @@
 project(unity_toolkits)
 
-make_library(unity_feature_engineering
+make_library(unity_feature_engineering OBJECT
   SOURCES
     class_registrations.cpp
     dict_transform_utils.cpp
@@ -28,7 +28,4 @@ make_library(unity_feature_engineering
     unity_clustering
     unity_graph_analytics
     unity_ml_model
-  COMPILE_FLAGS_EXTRA_GCC
-    -Wno-unknown-pragmas  # NOTE: used for auto-generated protobuf source files
-    -Wno-unused-function  # NOTE: used for auto-generated protobuf source files
-    )
+)
