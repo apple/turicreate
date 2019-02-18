@@ -6,7 +6,7 @@
 #include <unity/toolkits/util/data_generators.hpp>
 #include <sframe/testing_utils.hpp>
 #include <random/random.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 
 namespace turi { namespace recsys {
 
@@ -52,7 +52,7 @@ lm_data_generator::lm_data_generator(
   
   w.resize(dim);
   V.resize(dim, n_factors);
-  V.zeros();
+  V.setZero();
 
   ////////////////////////////////////////////////////////////
   // Fill these up!
@@ -246,14 +246,14 @@ std::pair<sframe, sframe> lm_data_generator::generate_for_ranking(
 
 double lm_data_generator::evaluate(const std::vector<flexible_type>& x, double noise_sd) const {
 
-  arma::mat Vtemp(1, n_factors);
+  Eigen::MatrixXd Vtemp(1, n_factors);
 
   double y = w0;
 
   size_t idx_start = 0;
   size_t n_columns = n_categorical_values.size(); 
 
-  Vtemp.zeros();
+  Vtemp.setZero();
 
   double vcenter = 0; 
 
@@ -264,17 +264,17 @@ double lm_data_generator::evaluate(const std::vector<flexible_type>& x, double n
     if(n_categorical_values[j] == 0) {
       y += v * w[idx_start];
       Vtemp += v * V.row(idx_start);
-      vcenter += arma::norm(v * V.row(idx_start), 2);
+      vcenter += (v * V.row(idx_start)).squaredNorm();
       idx_start += 1; 
     } else {
       y += w[idx_start + x[j]];
       Vtemp += V.row(idx_start + x[j]);
-      vcenter += std::pow(arma::norm(V.row(idx_start + x[j]), 2), 2);
+      vcenter += (V.row(idx_start + x[j])).squaredNorm();
       idx_start += n_categorical_values[j];
     }
   }
 
-  y += 0.5 * (std::pow(arma::norm(Vtemp, 2), 2) - vcenter);
+  y += 0.5 * (Vtemp.squaredNorm() - vcenter);
 
   y += random::normal(0, noise_sd);
 

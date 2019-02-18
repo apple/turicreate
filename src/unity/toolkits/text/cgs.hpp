@@ -93,12 +93,12 @@ class EXPORT cgs_topic_model : public topic_model {
   std::shared_ptr<sarray<std::vector<size_t>>>
       forward_sample(const v2::ml_data& d,
                      count_vector_type& topic_counts,
-                     count_matrix_type& topic_doc_counts);
+                     count_matrix_type& doc_topic_counts);
 
   std::map<std::string, size_t>
       sample_counts(const v2::ml_data& d,
                     count_vector_type& topic_counts,
-                    count_matrix_type& topic_doc_counts,
+                    count_matrix_type& doc_topic_counts,
                     std::shared_ptr<sarray<std::vector<size_t>>>& assignments);
 
   // TODO: convert interface above to use the extensions methods here

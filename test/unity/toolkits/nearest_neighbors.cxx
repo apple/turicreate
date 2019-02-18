@@ -11,8 +11,8 @@
 #include <util/cityhash_tc.hpp>
 
 // Eigen
-#include <numerics/armadillo.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
 
 // SFrame and Flex type
 #include <unity/lib/flex_dict_view.hpp>
@@ -114,25 +114,25 @@ struct test_nearest_neighbors_utils  {
     nearest_neighbors::DenseMatrix A(4, 2);
     nearest_neighbors::DenseMatrix B(3, 2);
     
-    A = {{1, 1},
-         {4, 4},
-         {5, 5},
-         {2, 2}};
+    A << 1, 1,
+         4, 4,
+         5, 5,
+         2, 2;
 
-    B = {{1, 2},
-         {4, 4},
-         {3, 5}};
+    B << 1, 2,
+         4, 4,
+         3, 5;
 
     nearest_neighbors::DenseMatrix dists(4, 3);
     nearest_neighbors::all_pairs_squared_euclidean(A, B, dists);
 
     nearest_neighbors::DenseMatrix ans(4, 3);
-    ans = {{1, 18, 20},
-           {13, 0, 2},
-           {25, 2, 4},
-           {1, 8, 10}};
+    ans << 1, 18, 20,
+           13, 0, 2,
+           25, 2, 4,
+           1, 8, 10;
 
-    ASSERT_TRUE(arma::all(arma::all(dists == ans)));
+    ASSERT_EQ(dists, ans);
   }
 };
 
@@ -398,20 +398,9 @@ struct test_nn_consistency  {
         std::vector<std::vector<flexible_type> > result_2
             = testing_extract_sframe_data(nn_sl_1->query(data[q_idx], y[q_idx], k, radius));
 
-        ASSERT_EQ(result_1.size(), result_2.size());
-        for (size_t i = 0; i < result_1.size(); ++i) {
-          ASSERT_EQ(result_1[i].size(), result_2[i].size());
-          for (size_t j = 0;j < result_1[i].size(); ++j) {
-            if (result_1[i][j].get_type() == flex_type_enum::FLOAT) {
-              TS_ASSERT_DELTA((flex_float)result_1[i][j], (flex_float)result_2[i][j], 1E-8);
-            } else {
-              ASSERT_EQ(result_1[i][j], result_2[i][j]);
-            }
-          }
-        }
+        ASSERT_TRUE(result_1 == result_2);
       });
 
-    
     save_and_load_object(*nn_sl_2, *nn);
 
     parallel_for(size_t(0), size_t(2 * 3 * 3), [&](size_t main_idx) {
@@ -426,17 +415,7 @@ struct test_nn_consistency  {
         std::vector<std::vector<flexible_type> > result_2
             = testing_extract_sframe_data(nn_sl_2->query(data[q_idx], y[q_idx], k, radius));
 
-        ASSERT_EQ(result_1.size(), result_2.size());
-        for (size_t i = 0; i < result_1.size(); ++i) {
-          ASSERT_EQ(result_1[i].size(), result_2[i].size());
-          for (size_t j = 0;j < result_1[i].size(); ++j) {
-            if (result_1[i][j].get_type() == flex_type_enum::FLOAT) {
-              TS_ASSERT_DELTA((flex_float)result_1[i][j], (flex_float)result_2[i][j], 1E-8);
-            } else {
-              ASSERT_EQ(result_1[i][j], result_2[i][j]);
-            }
-          }
-        }
+        ASSERT_TRUE(result_1 == result_2);
       });
   }
 

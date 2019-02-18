@@ -7,15 +7,15 @@
 #define TURI_DIMENSION_REDUCTION_H_
 #include <unity/lib/toolkit_class_macros.hpp>
 #include <unity/toolkits/feature_engineering/transformer_base.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 #include <export.hpp>
 
 namespace turi {
 namespace sdk_model {
 namespace feature_engineering {
 
-typedef arma::mat dense_matrix;
-typedef arma::vec dense_vector;
+typedef Eigen::MatrixXd dense_matrix;
+typedef Eigen::Matrix<double, Eigen::Dynamic, 1> dense_vector;
 
 
 /**

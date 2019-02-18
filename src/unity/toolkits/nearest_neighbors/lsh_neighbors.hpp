@@ -7,8 +7,6 @@
 #define TURI_LSH_NEIGHBORS_H_
 
 
-// ML-Data Utils
-
 // Toolkits
 #include <unity/toolkits/nearest_neighbors/nearest_neighbors.hpp>
 #include <unity/toolkits/nearest_neighbors/lsh_family.hpp>

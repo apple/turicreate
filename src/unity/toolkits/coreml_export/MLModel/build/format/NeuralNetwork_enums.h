@@ -8,6 +8,7 @@ enum MLNeuralNetworkPreprocessingpreprocessor: int {
     MLNeuralNetworkPreprocessingpreprocessor_NOT_SET = 0,
 };
 
+__attribute__((__unused__))
 static const char * MLNeuralNetworkPreprocessingpreprocessor_Name(MLNeuralNetworkPreprocessingpreprocessor x) {
     switch (x) {
         case MLNeuralNetworkPreprocessingpreprocessor_scaler:
@@ -36,6 +37,7 @@ enum MLActivationParamsNonlinearityType: int {
     MLActivationParamsNonlinearityType_NOT_SET = 0,
 };
 
+__attribute__((__unused__))
 static const char * MLActivationParamsNonlinearityType_Name(MLActivationParamsNonlinearityType x) {
     switch (x) {
         case MLActivationParamsNonlinearityType_linear:
@@ -112,6 +114,7 @@ enum MLNeuralNetworkLayerlayer: int {
     MLNeuralNetworkLayerlayer_NOT_SET = 0,
 };
 
+__attribute__((__unused__))
 static const char * MLNeuralNetworkLayerlayer_Name(MLNeuralNetworkLayerlayer x) {
     switch (x) {
         case MLNeuralNetworkLayerlayer_convolution:
@@ -222,6 +225,7 @@ enum MLQuantizationParamsQuantizationType: int {
     MLQuantizationParamsQuantizationType_NOT_SET = 0,
 };
 
+__attribute__((__unused__))
 static const char * MLQuantizationParamsQuantizationType_Name(MLQuantizationParamsQuantizationType x) {
     switch (x) {
         case MLQuantizationParamsQuantizationType_linearQuantization:
@@ -239,6 +243,7 @@ enum MLConvolutionLayerParamsConvolutionPaddingType: int {
     MLConvolutionLayerParamsConvolutionPaddingType_NOT_SET = 0,
 };
 
+__attribute__((__unused__))
 static const char * MLConvolutionLayerParamsConvolutionPaddingType_Name(MLConvolutionLayerParamsConvolutionPaddingType x) {
     switch (x) {
         case MLConvolutionLayerParamsConvolutionPaddingType_valid:
@@ -263,6 +268,7 @@ enum MLPoolingLayerParamsPoolingPaddingType: int {
     MLPoolingLayerParamsPoolingPaddingType_NOT_SET = 0,
 };
 
+__attribute__((__unused__))
 static const char * MLPoolingLayerParamsPoolingPaddingType_Name(MLPoolingLayerParamsPoolingPaddingType x) {
     switch (x) {
         case MLPoolingLayerParamsPoolingPaddingType_valid:
@@ -283,6 +289,7 @@ enum MLPaddingLayerParamsPaddingType: int {
     MLPaddingLayerParamsPaddingType_NOT_SET = 0,
 };
 
+__attribute__((__unused__))
 static const char * MLPaddingLayerParamsPaddingType_Name(MLPaddingLayerParamsPaddingType x) {
     switch (x) {
         case MLPaddingLayerParamsPaddingType_constant:
@@ -363,6 +370,7 @@ enum MLCustomLayerParamValuevalue: int {
     MLCustomLayerParamValuevalue_NOT_SET = 0,
 };
 
+__attribute__((__unused__))
 static const char * MLCustomLayerParamValuevalue_Name(MLCustomLayerParamValuevalue x) {
     switch (x) {
         case MLCustomLayerParamValuevalue_doubleValue:
@@ -386,6 +394,7 @@ enum MLNeuralNetworkClassifierClassLabels: int {
     MLNeuralNetworkClassifierClassLabels_NOT_SET = 0,
 };
 
+__attribute__((__unused__))
 static const char * MLNeuralNetworkClassifierClassLabels_Name(MLNeuralNetworkClassifierClassLabels x) {
     switch (x) {
         case MLNeuralNetworkClassifierClassLabels_stringClassLabels:

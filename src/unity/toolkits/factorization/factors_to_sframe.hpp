@@ -16,7 +16,7 @@ namespace turi { namespace factorization {
 /**  Fills a unity_sframe object with data from the features in the
  *   model.
  */
-template <typename VectorType, typename MatrixType>
+template <typename VectorType, typename EigenMatrixType>
 sframe fill_linear_model_sframe_from_eigen_data(
     const std::shared_ptr<v2::ml_metadata>& metadata,
 
@@ -32,7 +32,7 @@ sframe fill_linear_model_sframe_from_eigen_data(
     bool include_V_terms,
     size_t V_idx_offset,
     const std::string& V_name,
-    const MatrixType& V) {
+    const EigenMatrixType& V) {
 
   bool is_categorical;
   size_t n_rows;
@@ -101,7 +101,7 @@ sframe fill_linear_model_sframe_from_eigen_data(
   }
 
   if(include_V_terms) {
-    DASSERT_LE(V_idx_offset + n, V.n_rows);
+    DASSERT_LE(V_idx_offset + n, V.rows());
 
     V_col_idx = names.size();
     names.push_back(V_name);
@@ -116,7 +116,7 @@ sframe fill_linear_model_sframe_from_eigen_data(
 
   out.open_for_write(names, types, "", num_segments);
 
-  size_t num_factors = V.n_cols;
+  size_t num_factors = V.cols();
 
   in_parallel([&](size_t thread_idx, size_t num_threads) {
 

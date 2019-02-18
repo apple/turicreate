@@ -13,8 +13,8 @@
 #include <ml_data/ml_data_entry.hpp>
 #include <ml_data/ml_data_column_modes.hpp>
 
-#include <numerics/armadillo.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/SparseCore>
+#include <Eigen/Core>
 
 namespace turi {
 

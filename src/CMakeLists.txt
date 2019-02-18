@@ -8,20 +8,16 @@ else()
 endif()
 
 subdirs(
-  toolkits
   cppipc
   dot_graph_printer
   exceptions
   external
-  fault
-  numerics
   fileio
   flexible_type
   generics
   globals
   image
   lambda
-  lazy_eval
   logger
   ml_data
   nanosockets
@@ -39,5 +35,7 @@ subdirs(
   table_printer
   unity
   util
+  vega_renderer
   visualization
+  toolkits
   )

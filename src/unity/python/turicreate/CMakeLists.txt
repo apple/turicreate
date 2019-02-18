@@ -21,14 +21,17 @@ foreach(loop_var ${EXTENSIONS_LIST})
   endif()
 endforeach()
 
-if(APPLE AND HAS_MLCUSTOMMODEL)
-  set(EXTRA_REQUIRES objcapi)
-endif()
-
-make_shared_library_from_static(unity_shared
-      REQUIRES unity TuriCreate_static ${EXTRA_REQUIRES}
-      OUTPUT_NAME unity_shared
-      EXPORT_MAP ${CMAKE_SOURCE_DIR}/cmake/stdcxx_reduce_exports.ver)
+make_library(unity_shared
+  SOURCES
+    ${unity_shared_deps}
+    ${_TC_DEFAULT_SERVER_INITIALIZER}
+    ${_TC_COMMON_OBJECTS}
+  REQUIRES
+    ${_TC_COMMON_REQUIREMENTS}
+  SHARED
+  SHARED_ALL_DEFINED
+  DEAD_STRIP
+)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Release")
   add_custom_command(TARGET unity_shared
@@ -38,10 +41,6 @@ if (CMAKE_BUILD_TYPE STREQUAL "Release")
   )
 endif()
 
-make_symlink_target(release_binaries
-        FILES
-          ${INSTALLATION_SYSTEM_BINARY_FILES}
-        )
 
 ADD_CUSTOM_TARGET (clean_turicreate_binaries)
 ADD_CUSTOM_COMMAND(

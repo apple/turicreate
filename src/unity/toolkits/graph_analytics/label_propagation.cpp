@@ -12,8 +12,7 @@
 #include <sframe/algorithm.hpp>
 #include <table_printer/table_printer.hpp>
 #include <unity/lib/gl_sarray.hpp>
-#include <numerics/armadillo.hpp>
-#include <numerics/row_major_matrix.hpp>
+#include <Eigen/Core>
 #include <export.hpp>
 
 namespace turi {
@@ -148,7 +147,7 @@ namespace label_propagation {
      *
      * prev_label_pb is a store the copy of the previous iteration. 
      */
-    typedef row_major_matrix<FLOAT_TYPE> matrix_type;
+    typedef Eigen::Matrix<FLOAT_TYPE, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> matrix_type;
     std::unique_ptr<std::vector<matrix_type>> current_label_pb(
         new std::vector<matrix_type>(num_partitions));
     std::unique_ptr<std::vector<matrix_type>> prev_label_pb(
@@ -157,10 +156,8 @@ namespace label_propagation {
 
     // Initialize class probability to zero
     for (size_t i = 0; i < num_partitions; ++i) {
-      (*current_label_pb)[i] = matrix_type(size_of_partition[i], num_classes);
-      (*current_label_pb)[i].zeros();
-      (*prev_label_pb)[i] = matrix_type(size_of_partition[i], num_classes);
-      (*prev_label_pb)[i].zeros();
+      (*current_label_pb)[i] = matrix_type::Zero(size_of_partition[i], num_classes);
+      (*prev_label_pb)[i] = matrix_type::Zero(size_of_partition[i], num_classes);
       vertex_locks[i].resize(size_of_partition[i]);
     }
 
@@ -180,7 +177,7 @@ namespace label_propagation {
           (*prev_label_pb)[i](j, class_label) = 1.0;
         } else {
           // uniform
-          (*prev_label_pb)[i].row(j).fill(BASELINE_PROB);
+          (*prev_label_pb)[i].row(j).setConstant(BASELINE_PROB);
         }
       });
     }
@@ -203,7 +200,7 @@ namespace label_propagation {
            FLOAT_TYPE weight = use_edge_weight ? (flex_float)scope.edge()[2] : 1.0;
 
            {
-             arma::Row<FLOAT_TYPE> delta = (*prev_label_pb)[source_addr.partition_id].row(source_addr.local_id) * weight;
+             auto delta = (*prev_label_pb)[source_addr.partition_id].row(source_addr.local_id) * weight;
              auto& mtx = vertex_locks[target_addr.partition_id][target_addr.local_id];
              std::lock_guard<mutex> lock(mtx);
              (*current_label_pb)[target_addr.partition_id].row(target_addr.local_id) += delta;
@@ -211,7 +208,7 @@ namespace label_propagation {
 
            // Propagate from target to source 
            if (undirected) {
-             arma::Row<FLOAT_TYPE> delta = (*prev_label_pb)[target_addr.partition_id].row(target_addr.local_id) * weight;
+             auto delta = (*prev_label_pb)[target_addr.partition_id].row(target_addr.local_id) * weight;
              auto& mtx = vertex_locks[source_addr.partition_id][source_addr.local_id];
              std::lock_guard<mutex> lock(mtx);
              (*current_label_pb)[source_addr.partition_id].row(source_addr.local_id) += delta;
@@ -236,7 +233,7 @@ namespace label_propagation {
 
       // initialize with the self weight of the the previous label value
       for (size_t i = 0; i < num_partitions; ++i) {
-        (*current_label_pb)[i] = (*prev_label_pb)[i].X() * self_weight;
+        (*current_label_pb)[i] = (*prev_label_pb)[i] * self_weight;
       }
 
       // Label Propagation
@@ -253,17 +250,14 @@ namespace label_propagation {
         size_t num_vertices_in_partition = vertex_labels[i].size();
         parallel_for (0, num_vertices_in_partition, [&](size_t j) {
           if (!vertex_labels[i][j].is_na()) {
-            (*current_label_pb)[i].row(j).zeros();
+            (*current_label_pb)[i].row(j).setZero();
             size_t class_label = vertex_labels[i][j];
             (*current_label_pb)[i](j, class_label) = 1.0;
           } else {
-            (*current_label_pb)[i].row(j) /= arma::sum((*current_label_pb)[i].row(j));
+            (*current_label_pb)[i].row(j) /= (*current_label_pb)[i].row(j).sum();
           }
         });
-        double diff = 0.0;
-        for (size_t j = 0; j < (*current_label_pb)[i].n_rows; ++j) {
-          diff += arma::norm((*current_label_pb)[i].row(j) - (*prev_label_pb)[i].row(j));
-        }
+        auto diff = (((*current_label_pb)[i] - (*prev_label_pb)[i]).rowwise().norm().sum());
         total_l2_diff += diff;
       }
 
@@ -294,7 +288,8 @@ namespace label_propagation {
       matrix_type& mat = (*prev_label_pb)[i];
       parallel_for(0, num_vertices_in_partition, [&](size_t rowid) {
         // Get the index of the largest value in the row, and store it in preds[rowid]
-        size_t best_class_id = arma::index_max(mat.row(rowid));
+        int best_class_id = -1;
+        mat.row(rowid).maxCoeff(&best_class_id);
         // If we still get uniform distribution, output NONE
         if (fabs(mat(rowid, best_class_id) - BASELINE_PROB) < EPSILON) {
           preds[rowid] = FLEX_UNDEFINED;
@@ -305,12 +300,16 @@ namespace label_propagation {
     }
     g.add_vertex_field(predicted_labels, PREDICTED_LABEL_COLUMN_NAME, flex_type_enum::INTEGER);
 
+    // Write the probability vector back to graph vertex data
+    typedef Eigen::Map<Eigen::Matrix<double, 1, Eigen::Dynamic, Eigen::RowMajor>>
+        vector_buffer_type;
+
     // output_columns[class_index][partition_index]
     std::vector<std::vector<std::shared_ptr<sarray<flexible_type>>>> output_columns(num_classes);
     for (auto& c : output_columns) c.resize(num_partitions);
 
     parallel_for(0, num_partitions, [&](size_t i) {
-      size_t num_rows = (*prev_label_pb)[i].n_rows;
+      size_t num_rows = (*prev_label_pb)[i].rows();
 
       std::vector<sarray<flexible_type>::iterator>
         out_iterators(num_classes);
@@ -326,10 +325,12 @@ namespace label_propagation {
 
       // write to sarray
       flex_vec raw_buffer(num_classes);
+      vector_buffer_type mapped_buffer(&(raw_buffer[0]),
+                                       num_classes);
       for (size_t j = 0; j < num_rows; ++j) {
-      arma::Row<FLOAT_TYPE> row = (*prev_label_pb)[i].row(j);
+        mapped_buffer = ((*prev_label_pb)[i].row(j)).template cast<double>();
         for (size_t k = 0; k < num_classes; ++k) {
-          *(out_iterators[k])++ = row[k];
+          *(out_iterators[k])++ = raw_buffer[k];
         }
       }
 

@@ -250,7 +250,7 @@ class CloudPickler(Pickler):
         except Exception as e:
             emsg = e
             if hasattr(e, "message"):
-                emsg = excp.message
+                emsg = e.message
             else:
                 emsg = str(e)
             if "'i' format requires" in emsg:

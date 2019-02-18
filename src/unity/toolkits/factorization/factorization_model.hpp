@@ -6,7 +6,7 @@
 #ifndef TURI_FACTORIZATION_MODEL_BASE_H_
 #define TURI_FACTORIZATION_MODEL_BASE_H_
 
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 #include <cmath>
 #include <vector>
 #include <string>
@@ -175,7 +175,7 @@ class factorization_model {
   virtual void get_item_similarity_scores(
       size_t item, std::vector<std::pair<size_t, double> >& sim_scores) const = 0;
 
-  typedef arma::fvec vector_type;
+  typedef Eigen::Matrix<float, Eigen::Dynamic, 1> vector_type;
 
   /** Computes the cosine similarity between a particular factor
    * within a column and all the other factors within that column.

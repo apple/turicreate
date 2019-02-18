@@ -1,0 +1,297 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v4.json", 
+  "autosize": "fit", 
+  "axes": [
+    {
+      "encode": {
+        "labels": {
+          "update": {
+            "align": {
+              "value": "right"
+            }, 
+            "angle": {
+              "value": 270
+            }, 
+            "baseline": {
+              "value": "middle"
+            }
+          }
+        }
+      }, 
+      "labelOverlap": true, 
+      "orient": "bottom", 
+      "scale": "x", 
+      "tickCount": {
+        "signal": "min(ceil(width/40), 60)"
+      }, 
+      "title": "Habitat", 
+      "zindex": 1
+    }, 
+    {
+      "labelOverlap": true, 
+      "orient": "left", 
+      "scale": "y", 
+      "tickCount": {
+        "signal": "min(ceil(height/40), 40)"
+      }, 
+      "title": "Population", 
+      "zindex": 1
+    }
+  ], 
+  "config": {
+    "axis": {
+      "labelColor": "rgba(0,0,0,0.65)", 
+      "labelFont": "HelveticaNeue, Arial", 
+      "labelFontSize": 12, 
+      "labelPadding": 10, 
+      "titleColor": "rgba(0,0,0,0.65)", 
+      "titleFont": "HelveticaNeue-Medium, Arial", 
+      "titleFontSize": 15, 
+      "titleFontWeight": "normal", 
+      "titlePadding": 30
+    }, 
+    "axisY": {
+      "minExtent": 30
+    }, 
+    "legend": {
+      "cornerRadius": 30, 
+      "gradientWidth": 600, 
+      "labelColor": "rgba(0,0,0,0.65)", 
+      "labelFont": "HelveticaNeue, Arial", 
+      "titleColor": "rgba(0,0,0,0.65)", 
+      "titleFont": "HelveticaNeue, Arial"
+    }, 
+    "range": {
+      "heatmap": {
+        "scheme": "greenblue"
+      }
+    }, 
+    "style": {
+      "cell": {
+        "stroke": "transparent"
+      }, 
+      "group-title": {
+        "fill": "rgba(0,0,0,0.65)", 
+        "font": "HelveticaNeue, Arial", 
+        "fontSize": 29, 
+        "fontWeight": "normal"
+      }
+    }
+  }, 
+  "data": [
+    {
+      "name": "source_2", 
+      "progress": 100.0, 
+      "values": [
+        {
+          "count": 720, 
+          "x": "l", 
+          "y": "v"
+        }, 
+        {
+          "count": 96, 
+          "x": "d", 
+          "y": "s"
+        }, 
+        {
+          "count": 808, 
+          "x": "p", 
+          "y": "v"
+        }, 
+        {
+          "count": 36, 
+          "x": "d", 
+          "y": "c"
+        }, 
+        {
+          "count": 128, 
+          "x": "m", 
+          "y": "n"
+        }, 
+        {
+          "count": 272, 
+          "x": "g", 
+          "y": "n"
+        }, 
+        {
+          "count": 36, 
+          "x": "m", 
+          "y": "v"
+        }, 
+        {
+          "count": 128, 
+          "x": "m", 
+          "y": "s"
+        }, 
+        {
+          "count": 192, 
+          "x": "w", 
+          "y": "c"
+        }, 
+        {
+          "count": 840, 
+          "x": "g", 
+          "y": "s"
+        }, 
+        {
+          "count": 48, 
+          "x": "u", 
+          "y": "y"
+        }, 
+        {
+          "count": 136, 
+          "x": "u", 
+          "y": "s"
+        }, 
+        {
+          "count": 384, 
+          "x": "g", 
+          "y": "a"
+        }, 
+        {
+          "count": 184, 
+          "x": "u", 
+          "y": "v"
+        }, 
+        {
+          "count": 1112, 
+          "x": "d", 
+          "y": "y"
+        }, 
+        {
+          "count": 1904, 
+          "x": "d", 
+          "y": "v"
+        }, 
+        {
+          "count": 288, 
+          "x": "p", 
+          "y": "y"
+        }, 
+        {
+          "count": 48, 
+          "x": "p", 
+          "y": "s"
+        }, 
+        {
+          "count": 112, 
+          "x": "l", 
+          "y": "c"
+        }, 
+        {
+          "count": 388, 
+          "x": "g", 
+          "y": "v"
+        }, 
+        {
+          "count": 264, 
+          "x": "g", 
+          "y": "y"
+        }
+      ]
+    }
+  ], 
+  "height": 550, 
+  "legends": [
+    {
+      "direction": "horizontal", 
+      "fill": "color", 
+      "gradientLength": {
+        "signal": "width"
+      }, 
+      "orient": "top", 
+      "title": "Count", 
+      "titleFontSize": 12, 
+      "titlePadding": 4, 
+      "type": "gradient"
+    }
+  ], 
+  "marks": [
+    {
+      "encode": {
+        "enter": {
+          "height": {
+            "band": true, 
+            "scale": "y"
+          }, 
+          "width": {
+            "band": true, 
+            "scale": "x"
+          }, 
+          "x": {
+            "field": "x", 
+            "scale": "x"
+          }, 
+          "y": {
+            "field": "y", 
+            "scale": "y"
+          }
+        }, 
+        "update": {
+          "fill": {
+            "field": "count", 
+            "scale": "color"
+          }
+        }
+      }, 
+      "from": {
+        "data": "source_2"
+      }, 
+      "type": "rect"
+    }
+  ], 
+  "padding": 0, 
+  "scales": [
+    {
+      "domain": {
+        "data": "source_2", 
+        "field": "x", 
+        "sort": true
+      }, 
+      "name": "x", 
+      "range": [
+        0, 
+        {
+          "signal": "width"
+        }
+      ], 
+      "type": "band", 
+      "zero": false
+    }, 
+    {
+      "domain": {
+        "data": "source_2", 
+        "field": "y", 
+        "sort": true
+      }, 
+      "name": "y", 
+      "range": [
+        {
+          "signal": "height"
+        }, 
+        0
+      ], 
+      "type": "band", 
+      "zero": false
+    }, 
+    {
+      "domain": {
+        "data": "source_2", 
+        "field": "count"
+      }, 
+      "name": "color", 
+      "nice": false, 
+      "range": "heatmap", 
+      "type": "sequential", 
+      "zero": false
+    }
+  ], 
+  "title": {
+    "anchor": "middle", 
+    "fontSize": 16, 
+    "frame": "group", 
+    "offset": 4, 
+    "text": "Mushrooms by Habitat"
+  }, 
+  "width": 720
+}

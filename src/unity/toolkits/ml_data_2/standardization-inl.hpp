@@ -9,7 +9,9 @@
 #include <string>
 #include <flexible_type/flexible_type.hpp>
 
-#include <numerics/armadillo.hpp>
+// Eigen
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
 
 // Optimizaiton
 #include <optimization/optimization_interface.hpp>
@@ -252,7 +254,7 @@ class l2_rescaling: public standardization_interface {
 
     // Init the scale
     scale.resize(total_size);
-    scale.zeros();
+    scale.setZero();
     size_t idx = 0;
 
     for(size_t i = 0; i < ml_metadata->num_columns(); i++){
@@ -334,7 +336,8 @@ class l2_rescaling: public standardization_interface {
       } // End of column-switch-case
     } // End-of metadata for
 
-    scale.for_each([](double& x){x = std::sqrt(std::max(x,optimization::OPTIMIZATION_ZERO));});
+    scale = scale.cwiseMax(optimization::OPTIMIZATION_ZERO);
+    scale = scale.array().pow(0.5);
     scale(total_size-1) = 1;
 
   } // End of constructor
@@ -350,7 +353,7 @@ class l2_rescaling: public standardization_interface {
    */
   void transform(DenseVector &point) const {
     DASSERT_EQ(point.size(), total_size);
-    point /= scale;
+    point = point.cwiseQuotient(scale);
 
   }
 
@@ -361,9 +364,9 @@ class l2_rescaling: public standardization_interface {
    *
    */
   void transform(DenseMatrix &points) const {
-    DASSERT_EQ(points.n_cols, total_size);
-    for (size_t i = 0; i < points.n_rows; i++) {
-      points.row(i) /= scale.t(); 
+    DASSERT_EQ(points.cols(), total_size);
+    for (size_t i = 0; i < size_t(points.rows()); i++) {
+      points.row(i) = points.row(i).cwiseQuotient(scale.transpose());
     }
   }
 
@@ -375,9 +378,7 @@ class l2_rescaling: public standardization_interface {
    */
   void inverse_transform(DenseVector &point) const {
     DASSERT_EQ(point.size(), total_size);
-    for(size_t i = 0; i < point.size(); ++i) { 
-      point[i] *= scale[i]; 
-    }
+    point = point.cwiseProduct(scale);
   }
 
   // Sparse Vectors
@@ -391,8 +392,8 @@ class l2_rescaling: public standardization_interface {
    */
   void inverse_transform(SparseVector &point) const {
     DASSERT_EQ(point.size(), total_size);
-    for(auto& p : point) { 
-      p.second *= scale(p.first); 
+    for (SparseVector::InnerIterator i(point); i; ++i){
+      i.valueRef() = i.value() * scale(i.index());
     }
 
   }
@@ -405,8 +406,8 @@ class l2_rescaling: public standardization_interface {
    */
   void transform(SparseVector &point) const {
     DASSERT_EQ(point.size(), total_size);
-    for(auto& p : point) { 
-      p.second /= scale(p.first); 
+    for (SparseVector::InnerIterator i(point); i; ++i){
+      i.valueRef() = i.value() / scale(i.index());
     }
   }
 

@@ -10,6 +10,10 @@
 #include <util/test_macros.hpp>
 #include <vector>
 
+// Eigen
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
+
 // SFrame and Flex type
 #include <random/random.hpp>
 #include <unity/lib/flex_dict_view.hpp>
@@ -20,15 +24,19 @@
 #include <ml_data/ml_data_entry.hpp>
 
 // Testing utils common to all of ml_data_iterator
-#include <ml_data/testing_utils.hpp>
-#include <numerics/armadillo.hpp>
-#include <numerics/sparse_vector.hpp>
 #include <sframe/testing_utils.hpp>
+#include <ml_data/testing_utils.hpp>
 #include <util/testing_utils.hpp>
 
 #include <globals/globals.hpp>
 
 using namespace turi;
+
+typedef Eigen::Matrix<double, Eigen::Dynamic,1>  DenseVector;
+typedef Eigen::SparseVector<double> SparseVector;
+
+
+
 
 // Test the block iterator by stress-testing a large number of
 // combinations of bounds, threads, sizes, and types
@@ -99,9 +107,9 @@ static void run_storage_check_test(size_t n, const std::string& run_string,
   parallel_for(0, data_v.size() * 4 * 4, [&](size_t main_idx) {
 
     std::vector<ml_data_entry> x;
-    arma::vec xd;
-    arma::mat xdr;
-    turi::sparse_vector<double> xs;
+        DenseVector xd;
+        Eigen::MatrixXd xdr;
+        SparseVector xs;
     std::vector<ml_data_entry_global_index> x_gi;
 
     std::vector<flexible_type> row_x;
@@ -120,7 +128,7 @@ static void run_storage_check_test(size_t n, const std::string& run_string,
     xs.resize(data.metadata()->num_dimensions());
 
     xdr.resize(3, data.metadata()->num_dimensions());
-    xdr.zeros();
+        xdr.setZero();
 
     ////////////////////////////////////////////////////////////////////////////////
     // Report
@@ -184,9 +192,9 @@ static void run_storage_check_test(size_t n, const std::string& run_string,
               break;
             }
             case 4: {
-              it->fill_arma(xdr.row(1));
+                  it->fill(xdr.row(1));
 
-              xd = xdr.row(1).t();
+                  xd = xdr.row(1);
 
               row_x = translate_row_to_original(data.metadata(), xd);
               break;
