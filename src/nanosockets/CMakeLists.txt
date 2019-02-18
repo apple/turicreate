@@ -11,11 +11,11 @@ make_library(nanosockets OBJECT
     publish_socket.cpp
     get_next_port_number.cpp
   REQUIRES
-    network		
-    util		
-    timer		
-    parallel		
-    logger		
-    globals		
+    network
+    util
+    timer
+    parallel
+    logger
+    globals
     nanomsg
 )

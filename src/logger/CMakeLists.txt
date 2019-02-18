@@ -14,10 +14,10 @@ make_library(logger OBJECT
     log_rotate.cpp
     log_level_setter.cpp
   REQUIRES
-    boost		
-    timer		
-    parallel		
-    stack_trace		
-    cppipc		
+    boost
+    timer
+    parallel
+    stack_trace
+    cppipc
   EXTERNAL_VISIBILITY
 )

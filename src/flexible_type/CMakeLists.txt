@@ -13,7 +13,7 @@ make_library(flexible_type OBJECT
     flexible_type_conversion_utilities.cpp
     flexible_type_spirit_parser.cpp
   REQUIRES
-    logger		
-    image_type		
+    logger
+    image_type
   EXTERNAL_VISIBILITY
 )
