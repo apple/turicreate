@@ -301,7 +301,7 @@ class block_manager {
   /** 
    * file handle pool management. We implement a simple LIFO pool.
    */
-  std::deque<std::shared_ptr<general_ifstream> > m_file_handle_pool;
+  std::deque<std::weak_ptr<general_ifstream> > m_file_handle_pool;
 
   /// Pool of buffers used for decompression, returns, etc.
   buffer_pool<std::vector<char> > m_buffer_pool;

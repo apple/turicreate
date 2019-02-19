@@ -57,15 +57,42 @@ class sarray_reader_buffer {
     init(reader, row_start, row_end, buffer_size);
   }
 
+  /**
+   * Construction of a reader_buffer where the reader_buffer owns a
+   * reference to the underlying reader.
+   */
   void init(std::shared_ptr<typename sarray<T>::reader_type>& reader,
             size_t row_start, size_t row_end,
             size_t internal_buffer_size = DEFAULT_SARRAY_READER_BUFFER_SIZE) {
     m_reader = reader;
+    m_reader_weak = m_reader.get();
     m_buffer_pos = 0;
     m_iter = row_start;
     m_original_row_start = row_start;
     m_row_start = row_start;
-    m_row_end = std::min(row_end, m_reader->size());
+    m_row_end = std::min(row_end, m_reader_weak->size());
+    m_buffer_size = internal_buffer_size;
+    m_buffer.clear();
+  }
+
+  /**
+   * Construction of a reader_buffer where the reader_buffer DOES NOT own
+   * a reference to the underlying reader.
+   * \note This is quite unsafe to use since its not even a weak_ptr
+   * but a raw pointer. The user has to be careful to ensure that the
+   * sarray_reader's lifespan exceeds that of the reader_buffer. This is
+   * provided only to support a circular case where the sarray_reader itself
+   * uses sarray_reader_buffer for buffering.
+   */
+  void init(typename sarray<T>::reader_type* reader_weak,
+            size_t row_start, size_t row_end,
+            size_t internal_buffer_size = DEFAULT_SARRAY_READER_BUFFER_SIZE) {
+    m_reader_weak = reader_weak;
+    m_buffer_pos = 0;
+    m_iter = row_start;
+    m_original_row_start = row_start;
+    m_row_start = row_start;
+    m_row_end = std::min(row_end, m_reader_weak->size());
     m_buffer_size = internal_buffer_size;
     m_buffer.clear(); 
   }
@@ -98,6 +125,7 @@ class sarray_reader_buffer {
 
   /// The underlying reader as a data source.
   std::shared_ptr<reader_type> m_reader;
+  reader_type* m_reader_weak = nullptr;
 
   /// Current position of the buffer reader.
   size_t m_buffer_pos = 0;
@@ -137,7 +165,7 @@ bool sarray_reader_buffer<T>::has_next() {
 template<typename T>
 void sarray_reader_buffer<T>::refill() {
   size_t size_of_refill = std::min<size_t>(m_row_end - m_row_start, m_buffer_size);
-  m_reader->read_rows(m_row_start, m_row_start + size_of_refill, m_buffer);
+  m_reader_weak->read_rows(m_row_start, m_row_start + size_of_refill, m_buffer);
   m_row_start += size_of_refill;
 }
 
