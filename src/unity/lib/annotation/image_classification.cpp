@@ -115,6 +115,8 @@ bool ImageClassification::setAnnotations(
     }
   }
 
+  m_data->materialize();
+
   return true;
 }
 
@@ -126,7 +128,34 @@ void ImageClassification::_addAnnotationToSFrame(size_t index,
       m_data->dtype().at(annotation_column_index);
   assert(annotation_column_dtype == flex_type_enum::STRING);
 
-  // TODO: add column to sframe
+
+  std::shared_ptr<unity_sarray> data_sarray =
+      std::static_pointer_cast<unity_sarray>(
+          m_data->select_column(m_annotation_column));
+
+  m_data->remove_column(annotation_column_index);
+
+  std::shared_ptr<unity_sarray> place_holder =
+        std::make_shared<unity_sarray>();
+
+  place_holder->construct_from_const(label, 1, flex_type_enum::STRING);
+
+  /* if index is not equal to the first index */
+  if(index != 0){
+    std::shared_ptr<unity_sarray> top_sarray = std::static_pointer_cast<unity_sarray>(data_sarray->copy_range(0, 1, index));
+    place_holder = std::static_pointer_cast<unity_sarray>(top_sarray->append(place_holder));
+  }
+
+  /* if index is not equal to the last index */
+  if(index != (m_data->size()-1)){
+    std::shared_ptr<unity_sarray_base> bottom_sarray = data_sarray->copy_range((index + 1), 1, m_data->size());
+    place_holder = std::static_pointer_cast<unity_sarray>(place_holder->append(bottom_sarray));
+  }
+
+  /* Assert that the sarray we just created and the sframe are the same size. */
+  assert(place_holder->size() == m_data->size());
+
+  m_data->add_column(place_holder, m_annotation_column);
 }
 
 void ImageClassification::_addAnnotationToSFrame(size_t index, int label) {
@@ -136,7 +165,33 @@ void ImageClassification::_addAnnotationToSFrame(size_t index, int label) {
       m_data->dtype().at(annotation_column_index);
   assert(annotation_column_dtype == flex_type_enum::INTEGER);
 
-  // TODO: add column to sframe
+  std::shared_ptr<unity_sarray> data_sarray =
+      std::static_pointer_cast<unity_sarray>(
+          m_data->select_column(m_annotation_column));
+
+  m_data->remove_column(annotation_column_index);
+
+  std::shared_ptr<unity_sarray> place_holder =
+        std::make_shared<unity_sarray>();
+
+  place_holder->construct_from_const(label, 1, flex_type_enum::INTEGER);
+
+  /* if index is not equal to the first index */
+  if(index != 0){
+    std::shared_ptr<unity_sarray> top_sarray = std::static_pointer_cast<unity_sarray>(data_sarray->copy_range(0, 1, index));
+    place_holder = std::static_pointer_cast<unity_sarray>(top_sarray->append(place_holder));
+  }
+
+  /* if index is not equal to the last index */
+  if(index != (m_data->size()-1)){
+    std::shared_ptr<unity_sarray_base> bottom_sarray = data_sarray->copy_range((index + 1), 1, m_data->size());
+    place_holder = std::static_pointer_cast<unity_sarray>(place_holder->append(bottom_sarray));
+  }
+
+  /* Assert that the sarray we just created and the sframe are the same size. */
+  assert(place_holder->size() == m_data->size());
+
+  m_data->add_column(place_holder, m_annotation_column);
 }
 
 annotate_spec::MetaData ImageClassification::metaData() {
@@ -161,6 +216,7 @@ ImageClassification::_filterDataSFrame(size_t &start, size_t &end) {
    *
    * Assume for Image Classification that there's only one column in the
    * annotation and that the column is of Type Image */
+
   std::shared_ptr<unity_sarray> data_sarray =
       std::static_pointer_cast<unity_sarray>(
           m_data->select_column(m_data_columns.at(0)));

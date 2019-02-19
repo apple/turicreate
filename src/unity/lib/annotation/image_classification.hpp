@@ -14,7 +14,7 @@ public:
   ImageClassification();
 
   ~ImageClassification(){};
-
+  
   annotate_spec::MetaData metaData();
 
   annotate_spec::Data getItems(size_t start, size_t end);
