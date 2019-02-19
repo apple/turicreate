@@ -11,6 +11,10 @@
 
 struct image_classification_test {
 public:
+
+  /*
+   *
+   */
   void test_pass_through() {
     // 1) make an sframe with an image and annotation column
     //    - make a function to generate image data
