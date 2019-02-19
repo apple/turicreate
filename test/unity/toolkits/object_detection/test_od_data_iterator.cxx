@@ -46,7 +46,7 @@ data_iterator::parameters create_data(size_t num_rows) {
     // the right until eventually resetting to the left and moving down.
     annotations[i] = flex_list();
     annotations[i].push_back(flex_dict({
-          {"label", "foo"},
+          {"label", flexible_type(i).to<std::string>()},
           {"coordinates", flex_dict({ {"x", 8 + i % 112},
                                       {"y", 8 + i / 112},
                                       {"width", 16},
@@ -73,19 +73,31 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator) {
   static constexpr size_t BATCH_SIZE = 4;
 
   data_iterator::parameters params = create_data(NUM_ROWS);
-
-  std::vector<std::string> class_labels = { "foo" };
+  
 
   simple_data_iterator data_source(params);
-  TS_ASSERT_EQUALS(data_source.class_labels(), class_labels);
-  TS_ASSERT_EQUALS(data_source.num_instances(), 4);
+  TS_ASSERT_EQUALS(data_source.class_labels().size(), NUM_ROWS);
+  TS_ASSERT_EQUALS(data_source.num_instances(), NUM_ROWS);
+
+  std::vector<size_t> read_labels(NUM_ROWS);
+  for(size_t i = 0; i < NUM_ROWS; ++i) {
+    read_labels[i] = flexible_type(data_source.class_labels()[i]).to<size_t>();
+  }
+
+  std::sort(read_labels.begin(), read_labels.end()); 
+
+  for(size_t i = 0; i < NUM_ROWS; ++i) {
+    TS_ASSERT_EQUALS(read_labels[i], i); 
+  }
 
   auto assert_batch = [](const std::vector<labeled_image>& batch,
                          size_t row_offset) {
     for (size_t i = 0; i < batch.size(); ++i) {
 
       const labeled_image& example = batch[i];
-      size_t row = (row_offset + i) % NUM_ROWS;
+      
+      // The original row in the dataset
+      size_t row = flexible_type(example.annotations[0].identifier).to<flex_int>();
 
       TS_ASSERT_EQUALS(example.image.m_height, IMAGE_HEIGHT);
       TS_ASSERT_EQUALS(example.image.m_width, IMAGE_WIDTH);
@@ -97,7 +109,6 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator) {
                        row % 256);
 
       TS_ASSERT_EQUALS(example.annotations.size(), 1);
-      TS_ASSERT_EQUALS(example.annotations[0].identifier, 0);
       TS_ASSERT_EQUALS(example.annotations[0].confidence, 1.f);
       TS_ASSERT_EQUALS(example.annotations[0].bounding_box,
                        image_box(static_cast<float>(row % 112) / IMAGE_WIDTH,
@@ -125,7 +136,7 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_expected_classes) {
 
   data_iterator::parameters params = create_data(NUM_ROWS);
 
-  std::vector<std::string> class_labels = { "bar", "foo" };
+  std::vector<std::string> class_labels = { "99999", "0" };
   params.class_labels = class_labels;
 
   simple_data_iterator data_source(params);
@@ -146,9 +157,9 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_unexpected_classes) {
   static constexpr size_t NUM_ROWS = 1;
 
   data_iterator::parameters params = create_data(NUM_ROWS);
-  params.class_labels = { "bar" };
+  params.class_labels = { "99999" };
 
-  // The data contains the label "foo", which is not among the expected class
+  // The data contains the label 99999, which is not among the expected class
   // labels.
   TS_ASSERT_THROWS_ANYTHING(simple_data_iterator unused_var(params));
 }
