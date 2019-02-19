@@ -3,28 +3,24 @@ option optimize_for = LITE_RUNTIME;
 
 package TuriCreate.Annotation.Specification;
 
-message ActivityClassificationLMeta{
+message ActivityClassificationMeta { repeated string labels = 1; }
 
-}
+message AudioClassificationMeta { repeated string labels = 1; }
 
-message AudioClassificationMeta {
+message DrawingClassificationMeta { repeated string labels = 1; }
 
-}
+message ImageClassificationMeta { repeated string labels = 1; }
 
-message DrawingClassificationMeta {
-
-}
-
-message ImageClassificationMeta {
-
-}
-
-message ObjectDetectionMeta {
-
-}
+message ObjectDetectionMeta { repeated string labels = 1; }
 
 message MetaData {
-  oneof Type{
+  int64 num_examples = 1;
 
+  oneof Type {
+    ActivityClassificationMeta activity_classification = 100;
+    AudioClassificationMeta audio_classification = 101;
+    DrawingClassificationMeta drawing_classification = 102;
+    ImageClassificationMeta image_classification = 103;
+    ObjectDetectionMeta object_detection = 104;
   }
 }

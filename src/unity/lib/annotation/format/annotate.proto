@@ -42,6 +42,4 @@ message Annotation {
   repeated int64 datumHash = 2;
 }
 
-message Annotations {
-  repeated Annotation annotation = 1;
-}
+message Annotations { repeated Annotation annotation = 1; }

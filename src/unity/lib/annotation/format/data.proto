@@ -11,17 +11,13 @@ message ImageDatum {
   bytes imgData = 10;
 }
 
-message TextDatum {
-  string text = 1;
-}
+message TextDatum { string text = 1; }
 
 message Datum {
   int64 datumHash = 1;
-  
+
   repeated ImageDatum images = 10;
   repeated TextDatum text = 20;
 }
 
-message Data {
-  repeated Datum data = 1;
-}
+message Data { repeated Datum data = 1; }
