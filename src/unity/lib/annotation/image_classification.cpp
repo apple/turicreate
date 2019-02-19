@@ -118,28 +118,25 @@ bool ImageClassification::setAnnotations(
   return true;
 }
 
-std::shared_ptr<unity_sframe>
-ImageClassification::returnAnnotations(bool drop_null) {
-  if (!drop_null) {
-    return m_data;
-  }
-
-  std::vector<std::string> annotation_column_name = {m_annotation_column};
-  std::list<std::shared_ptr<unity_sframe_base>> dropped_missing =
-      m_data->drop_missing_values(annotation_column_name, false, false);
-
-  return std::static_pointer_cast<unity_sframe>(dropped_missing.front());
-}
-
 void ImageClassification::_addAnnotationToSFrame(size_t index,
                                                  std::string label) {
-  // TODO: add to the index of `sf_idx` the label in `str_label` to the
-  // `annotation_column`
+  /* Assert that the column type is indeed of type flex_enum::STRING */
+  size_t annotation_column_index = m_data->column_index(m_annotation_column);
+  flex_type_enum annotation_column_dtype =
+      m_data->dtype().at(annotation_column_index);
+  assert(annotation_column_dtype == flex_type_enum::STRING);
+
+  // TODO: add column to sframe
 }
 
-void ImageClassification::_addAnnotationToSFrame(size_t index, size_t label) {
-  // TODO: add to the index of `sf_idx` the label in `int_label` to the
-  // `annotation_column`
+void ImageClassification::_addAnnotationToSFrame(size_t index, int label) {
+  /* Assert that the column type is indeed of type flex_enum::INTEGER */
+  size_t annotation_column_index = m_data->column_index(m_annotation_column);
+  flex_type_enum annotation_column_dtype =
+      m_data->dtype().at(annotation_column_index);
+  assert(annotation_column_dtype == flex_type_enum::INTEGER);
+
+  // TODO: add column to sframe
 }
 
 // TODO: protobuf for metadata?
@@ -160,6 +157,10 @@ std::shared_ptr<unity_sarray>
 ImageClassification::_filterDataSFrame(size_t &start, size_t &end) {
   this->_reshapeIndicies(start, end);
 
+  /* ASSUMPTION
+   *
+   * Assume for Image Classification that there's only one column in the
+   * annotation and that the column is of Type Image */
   std::shared_ptr<unity_sarray> data_sarray =
       std::static_pointer_cast<unity_sarray>(
           m_data->select_column(m_data_columns.at(0)));

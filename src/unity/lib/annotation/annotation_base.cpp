@@ -11,10 +11,9 @@ AnnotationBase::AnnotationBase(const std::shared_ptr<unity_sframe> &data,
                                const std::string &annotation_column)
     : m_data(data), m_data_columns(data_columns),
       m_annotation_column(annotation_column) {
-  if (annotation_column == "" || false) {
-    /* TODO: if annotation column isn't present create it and fill it with all
-   * null values initially. */
-  }
+  this->_addAnnotationColumn();
+  this->_addIndexColumn();
+  this->_checkDataSet();
 }
 
 void AnnotationBase::annotate(const std::string &path_to_client) {
@@ -28,7 +27,76 @@ void AnnotationBase::annotate(const std::string &path_to_client) {
   });
 }
 
+std::shared_ptr<unity_sframe>
+AnnotationBase::returnAnnotations(bool drop_null) {
+  /* POTENTIAL ISSUE
+   *
+   * once the user calls returnAnnotations the annotation tool
+   * won't work anymore since the idx column is removed. They'll then have to
+   * reload the returned sframe in the constructor of the AnnotationBase class.
+   */
+  size_t id_column = m_data->column_index("__idx");
+  m_data->remove_column(id_column);
+
+  if (!drop_null) {
+    return m_data;
+  }
+
+  std::vector<std::string> annotation_column_name = {m_annotation_column};
+  std::list<std::shared_ptr<unity_sframe_base>> dropped_missing =
+      m_data->drop_missing_values(annotation_column_name, false, false);
+
+  return std::static_pointer_cast<unity_sframe>(dropped_missing.front());
+}
+
 size_t AnnotationBase::size() { return m_data->size(); }
+
+void AnnotationBase::_addAnnotationColumn() {
+  std::vector<std::string> column_names = m_data->column_names();
+
+  if (m_annotation_column == "") {
+    m_annotation_column = "annotations";
+  }
+
+  if (!(std::find(column_names.begin(), column_names.end(),
+                  m_annotation_column) != column_names.end())) {
+    std::shared_ptr<unity_sarray> empty_annotation_sarray =
+        std::make_shared<unity_sarray>();
+
+    empty_annotation_sarray->construct_from_const(
+        FLEX_UNDEFINED, m_data->size(), flex_type_enum::STRING);
+
+    m_data->add_column(empty_annotation_sarray, m_annotation_column);
+  }
+}
+
+void AnnotationBase::_addIndexColumn() {
+  std::vector<flexible_type> indicies;
+
+  for (size_t x = 0; x < m_data->size(); x++) {
+    indicies.push_back(x);
+  }
+
+  std::shared_ptr<unity_sarray> empty_annotation_sarray =
+      std::make_shared<unity_sarray>();
+
+  empty_annotation_sarray->construct_from_vector(indicies,
+                                                 flex_type_enum::INTEGER);
+
+  m_data->add_column(empty_annotation_sarray, "__idx");
+}
+
+void AnnotationBase::_checkDataSet() {
+  size_t image_column_index = m_data->column_index(m_data_columns.at(0));
+  flex_type_enum image_column_dtype = m_data->dtype().at(image_column_index);
+  assert(image_column_dtype == flex_type_enum::IMAGE);
+
+  size_t annotation_column_index = m_data->column_index(m_annotation_column);
+  flex_type_enum annotation_column_dtype =
+      m_data->dtype().at(annotation_column_index);
+  assert(annotation_column_dtype == flex_type_enum::STRING ||
+         annotation_column_dtype == flex_type_enum::INTEGER);
+}
 
 void AnnotationBase::_reshapeIndicies(size_t &start, size_t &end) {
   size_t data_size = this->size();

@@ -15,20 +15,19 @@ public:
 
   ~ImageClassification(){};
 
+  // TODO: refactor to support all toolkits with a proto
+  std::vector<std::string> metaData();
+
   annotate_spec::Data getItems(size_t start, size_t end);
 
   annotate_spec::Annotations getAnnotations(size_t start, size_t end);
 
   bool setAnnotations(const annotate_spec::Annotations &annotations);
 
-  std::shared_ptr<unity_sframe> returnAnnotations(bool drop_null);
-
-  // TODO: refactor to support all toolkits with a proto
-  std::vector<std::string> metaData();
-
 private:
   void _addAnnotationToSFrame(size_t index, std::string label);
-  void _addAnnotationToSFrame(size_t index, size_t label);
+  void _addAnnotationToSFrame(size_t index, int label);
+
   std::shared_ptr<unity_sarray> _filterDataSFrame(size_t &start, size_t &end);
   std::shared_ptr<unity_sarray> _filterAnnotationSFrame(size_t &start,
                                                         size_t &end);

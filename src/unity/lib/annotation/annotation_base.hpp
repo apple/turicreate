@@ -24,13 +24,17 @@ public:
   AnnotationBase(){};
   AnnotationBase(const std::shared_ptr<unity_sframe> &data,
                  const std::vector<std::string> &data_columns,
-                 const std::string &annotation_column = "");
+                 const std::string &annotation_column);
 
   virtual ~AnnotationBase(){};
 
   void annotate(const std::string &path_to_client);
 
   size_t size();
+
+  std::shared_ptr<unity_sframe> returnAnnotations(bool drop_null);
+
+  virtual std::vector<std::string> metaData() = 0;
 
   virtual annotate_spec::Data getItems(size_t start, size_t end) = 0;
 
@@ -40,16 +44,15 @@ public:
   virtual bool
   setAnnotations(const annotate_spec::Annotations &annotations) = 0;
 
-  virtual std::shared_ptr<unity_sframe> returnAnnotations(bool drop_null) = 0;
-
-  virtual std::vector<std::string> metaData() = 0;
-
 protected:
   const std::shared_ptr<unity_sframe> m_data;
   const std::vector<std::string> m_data_columns;
-  const std::string m_annotation_column;
+  std::string m_annotation_column;
   std::shared_ptr<AnnotationBase> m_self;
 
+  void _addAnnotationColumn();
+  void _addIndexColumn();
+  void _checkDataSet();
   void _reshapeIndicies(size_t &start, size_t &end);
 };
 
