@@ -13,12 +13,20 @@
 
 #include "build/format/cpp/annotate.pb.h"
 #include "build/format/cpp/data.pb.h"
+#include "build/format/cpp/meta.pb.h"
 
 namespace annotate_spec = TuriCreate::Annotation::Specification;
 
 namespace turi {
 namespace annotate {
 
+/**
+ * Every annotation backend extends from this class. This forces the annotation
+ * api to remain consistent across all implementations. The reason the virtual
+ * methods exist rather than a switch statement in the annotate method is to
+ * expose this functionality to the capi so that other developers have the
+ * ability to tie their own annotations UI's to use this api.
+ */
 class AnnotationBase {
 public:
   AnnotationBase(){};
@@ -34,7 +42,7 @@ public:
 
   std::shared_ptr<unity_sframe> returnAnnotations(bool drop_null);
 
-  virtual std::vector<std::string> metaData() = 0;
+  virtual annotate_spec::MetaData metaData() = 0;
 
   virtual annotate_spec::Data getItems(size_t start, size_t end) = 0;
 

@@ -139,8 +139,7 @@ void ImageClassification::_addAnnotationToSFrame(size_t index, int label) {
   // TODO: add column to sframe
 }
 
-// TODO: protobuf for metadata?
-std::vector<std::string> ImageClassification::metaData() {
+annotate_spec::MetaData ImageClassification::metaData() {
   std::shared_ptr<unity_sarray> data_sarray =
       std::static_pointer_cast<unity_sarray>(
           m_data->select_column(m_annotation_column));
@@ -150,7 +149,8 @@ std::vector<std::string> ImageClassification::metaData() {
   // TODO: get vector as string
   in.unique();
 
-  return std::vector<std::string>();
+  annotate_spec::MetaData meta_data;
+  return meta_data;
 }
 
 std::shared_ptr<unity_sarray>

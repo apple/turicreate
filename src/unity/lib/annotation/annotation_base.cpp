@@ -20,7 +20,9 @@ void AnnotationBase::annotate(const std::string &path_to_client) {
   std::shared_ptr<AnnotationBase> self = this->m_self;
   ::turi::visualization::run_thread([self, path_to_client]() {
     visualization::process_wrapper aw(path_to_client);
-    // TODO: handle the messages to and from the client app.
+    /* TODO: Easier to Implement when working on the Front End. Hold off
+     * implementation until front end PR. Will be more clear what to implement
+     * there */
     while (aw.good()) {
       break;
     }
@@ -31,7 +33,7 @@ std::shared_ptr<unity_sframe>
 AnnotationBase::returnAnnotations(bool drop_null) {
   /* POTENTIAL ISSUE
    *
-   * once the user calls returnAnnotations the annotation tool
+   * Once the user calls returnAnnotations the annotation tool
    * won't work anymore since the idx column is removed. They'll then have to
    * reload the returned sframe in the constructor of the AnnotationBase class.
    */

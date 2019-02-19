@@ -15,8 +15,7 @@ public:
 
   ~ImageClassification(){};
 
-  // TODO: refactor to support all toolkits with a proto
-  std::vector<std::string> metaData();
+  annotate_spec::MetaData metaData();
 
   annotate_spec::Data getItems(size_t start, size_t end);
 
