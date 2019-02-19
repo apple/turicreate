@@ -47,6 +47,16 @@ set(TC_PLATFORM_WIN32 false)
 if (APPLE)
   set(TC_PLATFORM_APPLE true)
   add_definitions(-DTC_PLATFORM_APPLE)
+  find_library(ACCELERATE NAMES Accelerate)
+  find_library(APPKIT AppKit)
+  find_library(CORE_GRAPHICS CoreGraphics)
+  find_library(JAVASCRIPT_CORE JavaScriptCore)
+  find_library(FOUNDATION Foundation)
+  find_library(CORE_IMAGE NAMES CoreImage)
+  find_library(CORE_ML CoreML)
+  find_library(CORE_VIDEO CoreVideo)
+  find_library(METAL NAMES Metal)
+  find_library(METAL_PERFORMANCE_SHADERS NAMES MetalPerformanceShaders)
 elseif (WIN32)
   set(TC_PLATFORM_WIN32 true)
   add_definitions(-DTC_PLATFORM_WIN32)
@@ -55,12 +65,6 @@ else()
   add_definitions(-DTC_PLATFORM_LINUX)
 endif()
 
-if(NOT APPLE)
-  include(FindLAPACK)
-  if(NOT ${LAPACK_FOUND})
-    message(FATAL_ERROR "lapack is not installed")
-  endif()
-endif()
 
 include(CheckLibraryExists)
 include(CheckFunctionExists)
@@ -317,7 +321,7 @@ if (CLANG)
   set(WERROR_FLAGS "-Werror -Wall -Wsign-compare")
 else()
   # non-clang
-  set(CPP11_FLAGS "-std=c++11 -Wno-enum-compare -Wno-conversion-null -ftemplate-depth=900")
+  set(CPP11_FLAGS "-std=c++11 -Wno-enum-compare -Wno-conversion-null -ftemplate-depth=900 -Wno-unknown-pragmas")
   set(WERROR_FLAGS "-Werror")
 endif()
 
@@ -513,12 +517,12 @@ endif()
 
 check_cxx_source_compiles("#include <ios>
                            #include <system_error>
-                                                    
+
                            class io_error : public std::ios_base::failure {
                              public:   /* The noexcept here is different between C++ 17 and C++ 11. */
-                              const char *what() const noexcept { return \"\"; } 
+                              const char *what() const noexcept { return \"\"; }
                            };
-                           int main(int argc, char** argv) { return 0; }" 
+                           int main(int argc, char** argv) { return 0; }"
                           COMPILER_HAS_NOEXCEPT_WHAT_ON_EXCEPTIONS)
 
 if(COMPILER_HAS_NOEXCEPT_WHAT_ON_EXCEPTIONS)
@@ -543,15 +547,19 @@ elseif(CMAKE_BUILD_TYPE MATCHES "Debug")
   message(STATUS "Debug build with C++ flags: " ${CMAKE_CXX_FLAGS_DEBUG})
   message(STATUS "Debug build with C flags: " ${CMAKE_C_FLAGS_DEBUG})
 else()
-  message(ERROR "Unknown build type: " ${CMAKE_BUILD_TYPE} "!. Rerun ./configure")
+  message(FATAL_ERROR "Unknown build type: " ${CMAKE_BUILD_TYPE} "!. Rerun ./configure")
 endif()
 
 
-
-
-
-
-
+#**************************************************************************/
+#*                                                                        */
+#*         Definitions and options to support dependencies                */
+#*                                                                        */
+#**************************************************************************/
+add_compile_options(-Dgoogle=__tc_google)
+add_compile_options(-DCoreML=__tc_CoreML)
+add_compile_options(-DHAVE_PTHREAD=1)
+add_compile_options(-DEIGEN_MPL2_ONLY)
 
 ##############################################################################
 ##############################################################################
@@ -597,7 +605,7 @@ include(eval)
 #
 # Boost, pthread is always added as a default dependency. OpenMP is added
 # when possible.
-macro(make_target_impl NAME FLAGS REQUIREMENTS IS_LIBRARY SHARED SHARED_ALL_DEFINED)
+macro(make_target_impl NAME FLAGS REQUIREMENTS IS_LIBRARY SHARED SHARED_ALL_DEFINED OBJECT)
   # create the target
   if (${IS_LIBRARY})
     message(STATUS "Adding Library: ${NAME}")
@@ -629,9 +637,14 @@ macro(make_target_impl NAME FLAGS REQUIREMENTS IS_LIBRARY SHARED SHARED_ALL_DEFI
 
   if (${IS_LIBRARY})
     if(${SHARED})
-            target_link_libraries(${NAME} PRIVATE ${REQUIREMENTS})
+      target_link_libraries(${NAME} PRIVATE ${REQUIREMENTS})
+    elseif(${OBJECT})
+      # TODO we can link the requirements from here when target_link_libraries
+      # works with OBJECT library targets (requires CMake 3.12)
+      # See https://gitlab.kitware.com/cmake/cmake/issues/14778
+      # For now, do nothing.
     else()
-            target_link_libraries(${NAME} PUBLIC ${REQUIREMENTS})
+      target_link_libraries(${NAME} PUBLIC ${REQUIREMENTS})
     endif()
   else()
     target_link_libraries(${NAME} ${REQUIREMENTS})
@@ -648,7 +661,9 @@ endmacro()
 #                 REQUIRES libx liby
 #                 MAC_REQUIRES libz libzz
 #                 LINUX_REQUIRES libk libj
-#                 [SHARED] [OUTPUT_NAME xxxx])
+#                 [SHARED] [OUTPUT_NAME xxxx] [SHARED_ALL_DEFINED]
+#                 [OBJECT]
+#                 )
 # Example:
 #
 # make_library(NAME fileio
@@ -675,6 +690,7 @@ endmacro()
 # SHARED will build a shared library instead of a static library
 # EXTERNAL_VISIBILITY will make the symbols be publicly visible. Default is hidden
 # SHARED_ALL_DEFINED will require shared libraries to have all symbols defined
+# OBJECT will build an object library instead of a static library
 #
 # All other targets which depends on this library (using the "requires" function)
 # will automatically include all recursive dependencies.
@@ -682,7 +698,7 @@ endmacro()
 # Boost, pthread is always added as a default dependency. OpenMP is added
 # when possible.
 macro(make_library NAME)
-  set(options SHARED EXTERNAL_VISIBILITY SHARED_ALL_DEFINED DEAD_STRIP)
+  set(options SHARED EXTERNAL_VISIBILITY SHARED_ALL_DEFINED DEAD_STRIP OBJECT)
   set(one_value_args COMPILE_FLAGS OUTPUT_NAME EXPORT_LINUX_MAP_FILE EXPORT_OSX_MAP_FILE)
   set(multi_value_args
     SOURCES REQUIRES MAC_REQUIRES LINUX_REQUIRES
@@ -703,14 +719,15 @@ macro(make_library NAME)
   endif()
 
   if (${make_library_SHARED})
-    message(STATUS "Shared Library: " ${NAME})
     add_library(${NAME} SHARED ${make_library_SOURCES})
+  elseif(${make_library_OBJECT})
+    add_library(${NAME} OBJECT ${make_library_SOURCES})
   else()
     add_library(${NAME} STATIC ${make_library_SOURCES})
   endif()
 
   make_target_impl("${NAME}" "${make_library_COMPILE_FLAGS}"
-    "${make_library_REQUIRES}" TRUE "${make_library_SHARED}" "${make_library_SHARED_ALL_DEFINED}")
+    "${make_library_REQUIRES}" TRUE "${make_library_SHARED}" "${make_library_SHARED_ALL_DEFINED}" "${make_library_OBJECT}")
 
   if (make_library_OUTPUT_NAME)
           message(STATUS "make_library ${NAME} ===> ${make_library_OUTPUT_NAME}")
@@ -733,7 +750,7 @@ macro(make_library NAME)
     endif()
   endif()
 
-  if (${make_library_EXTERNAL_VISIBILITY})
+  if (${make_library_EXTERNAL_VISIBILITY} OR ${make_library_OBJECT})
     # do nothing
     message(STATUS "External Visibility: " ${NAME})
     target_compile_options(${NAME} PRIVATE "-fvisibility=default")
@@ -816,7 +833,7 @@ macro(make_empty_library NAME)
   endif()
   add_library(${NAME} STATIC ${CMAKE_SOURCE_DIR}/dummy.cpp)
   make_target_impl("${NAME}" ""
-      "${make_library_REQUIRES}" TRUE FALSE FALSE)
+      "${make_library_REQUIRES}" TRUE FALSE FALSE FALSE)
 
     set_target_properties(${NAME} PROPERTIES EMPTY_LIBRARY TRUE)
 endmacro()
@@ -861,7 +878,7 @@ function (make_executable NAME)
     COMPILE_FLAGS_EXTRA COMPILE_FLAGS_EXTRA_CLANG COMPILE_FLAGS_EXTRA_GCC)
   CMAKE_PARSE_ARGUMENTS(make_library "" "${one_value_args}" "${multi_value_args}" ${ARGN})
   if(NOT make_library_SOURCES)
-    MESSAGE(FATAL_ERROR "make_library call with no sources")
+    MESSAGE(FATAL_ERROR "make_executable call with no sources")
   endif()
 
   if (APPLE)
@@ -893,7 +910,7 @@ function (make_executable NAME)
   endif()
 
   make_target_impl("${NAME}" "${make_library_COMPILE_FLAGS}"
-    "${make_library_REQUIRES}" FALSE FALSE FALSE)
+    "${make_library_REQUIRES}" FALSE FALSE FALSE FALSE)
   if (make_library_OUTPUT_NAME)
           message(STATUS "make_executable ${NAME} ===> ${make_library_OUTPUT_NAME}")
           set_target_properties(${NAME} PROPERTIES OUTPUT_NAME ${make_library_OUTPUT_NAME})
@@ -924,6 +941,14 @@ function (make_boost_test NAME)
   add_test(${NAME} ${NAME}test)
 endfunction()
 
+# Same as target_compile_options, but tests for whether the flag is known
+# to the compiler before proceeding.
+function (target_optional_compile_flag NAME FLAG)
+  check_cxx_compiler_flag(${FLAG} __has_flag)
+  if (${__has_flag})
+    target_compile_options(${NAME} PRIVATE ${FLAG})
+  endif()
+endfunction()
 
 # This is an external function
 # Usage:
@@ -1044,12 +1069,10 @@ add_custom_target(external_dependencies)
 include(ExternalProject)
 file(GLOB packages "${DEPS_CMAKE}/ExternalProject*.cmake")
 foreach(package ${packages})
-        message(STATUS "We found local package: ${package}")
         get_filename_component(packagename "${package}" NAME_WE)
         #package is of the form ExternalProjectXXX"
         include(${package})
         STRING(SUBSTRING "${packagename}" 15 -1 depname)
-        message(STATUS "We found local package definition: ${depname}")
         string(TOLOWER ${depname} depname)
         set(package_${depname} requires_${depname} CACHE STRING "Package map")
         add_dependencies(external_dependencies ex_${depname})
@@ -1057,6 +1080,8 @@ endforeach()
 
 include_directories(src)
 include_directories(SYSTEM src/external)
+include_directories(SYSTEM src/external/aws-sdk-cpp/aws-cpp-sdk-core/include)
+include_directories(SYSTEM src/external/aws-sdk-cpp/aws-cpp-sdk-s3/include)
 include_directories(SYSTEM src/external/google)
 include_directories(src/platform)
 
@@ -1071,6 +1096,140 @@ include_directories(SYSTEM ${CMAKE_BINARY_DIR}/src)
 if(EXISTS ${CMAKE_SOURCE_DIR}/subtree)
   include_directories(SYSTEM subtree)
   add_subdirectory(subtree)
+endif()
+
+# Collate all the object targets shared among static and shared library targets
+# These are used by C API, unity_shared, etc.
+set(_TC_DEFAULT_SERVER_INITIALIZER
+  "${CMAKE_SOURCE_DIR}/src/capi/default_server_initializer.cpp"
+)
+set(_TC_COMMON_OBJECTS
+  "$<TARGET_OBJECTS:capi>"
+
+  # Also list all dependencies (including transitive dependencies)
+
+  # External dependencies (built from src/external)
+  "$<TARGET_OBJECTS:libjson>"
+  "$<TARGET_OBJECTS:lz4>"
+  "$<TARGET_OBJECTS:protobuf>"
+  "$<TARGET_OBJECTS:uuid>"
+  "$<TARGET_OBJECTS:xgboost>"
+
+  # Then our own source code
+  "$<TARGET_OBJECTS:cancel_serverside_ops>"
+  "$<TARGET_OBJECTS:crash_handler>"
+  "$<TARGET_OBJECTS:cppipc>"
+  "$<TARGET_OBJECTS:flexible_type>"
+  "$<TARGET_OBJECTS:globals>"
+  "$<TARGET_OBJECTS:fileio>"
+  "$<TARGET_OBJECTS:image_io>"
+  "$<TARGET_OBJECTS:image_type>"
+  "$<TARGET_OBJECTS:logger>"
+  "$<TARGET_OBJECTS:minipsutil>"
+  "$<TARGET_OBJECTS:ml_data>"
+  "$<TARGET_OBJECTS:nanosockets>"
+  "$<TARGET_OBJECTS:network>"
+  "$<TARGET_OBJECTS:optimization>"
+  "$<TARGET_OBJECTS:parallel>"
+  "$<TARGET_OBJECTS:process>"
+  "$<TARGET_OBJECTS:pylambda>"
+  "$<TARGET_OBJECTS:random>"
+  "$<TARGET_OBJECTS:serialization>"
+  "$<TARGET_OBJECTS:sframe>"
+  "$<TARGET_OBJECTS:sframe_query_engine>"
+  "$<TARGET_OBJECTS:sgraph>"
+  "$<TARGET_OBJECTS:shmipc>"
+  "$<TARGET_OBJECTS:stack_trace>"
+  "$<TARGET_OBJECTS:startup_teardown>"
+  "$<TARGET_OBJECTS:supervised_learning>"
+  "$<TARGET_OBJECTS:table_printer>"
+  "$<TARGET_OBJECTS:timer>"
+  "$<TARGET_OBJECTS:unity>"
+  "$<TARGET_OBJECTS:unity_activity_classification>"
+  "$<TARGET_OBJECTS:unity_core>"
+  "$<TARGET_OBJECTS:unity_coreml_model_export>"
+  "$<TARGET_OBJECTS:unity_clustering>"
+  "$<TARGET_OBJECTS:unity_evaluation>"
+  "$<TARGET_OBJECTS:unity_factorization>"
+  "$<TARGET_OBJECTS:unity_feature_engineering>"
+  "$<TARGET_OBJECTS:unity_graph_analytics>"
+  "$<TARGET_OBJECTS:unity_image_export>"
+  "$<TARGET_OBJECTS:unity_ml_data_2>"
+  "$<TARGET_OBJECTS:unity_ml_model>"
+  "$<TARGET_OBJECTS:unity_nearest_neighbors>"
+  "$<TARGET_OBJECTS:unity_neural_net>"
+  "$<TARGET_OBJECTS:unity_object_detection>"
+  "$<TARGET_OBJECTS:unity_pattern_mining>"
+  "$<TARGET_OBJECTS:unity_prototype>"
+  "$<TARGET_OBJECTS:unity_recsys>"
+  "$<TARGET_OBJECTS:unity_sgd>"
+  "$<TARGET_OBJECTS:unity_sparse_similarity>"
+  "$<TARGET_OBJECTS:unity_text>"
+  "$<TARGET_OBJECTS:unity_util>"
+  "$<TARGET_OBJECTS:util>"
+  "$<TARGET_OBJECTS:visualization>"
+)
+
+# TODO we can remove the requirements from here when target_link_libraries
+# works with OBJECT library targets (requires CMake 3.12)
+# See https://gitlab.kitware.com/cmake/cmake/issues/14778
+set(_TC_COMMON_REQUIREMENTS
+  # External dependencies (from deps)
+  boost
+  bz2
+  curl
+  eigen
+  libjpeg
+  libpng
+  openssl
+  nanomsg
+)
+
+if(APPLE)
+  set(_TC_COMMON_OBJECTS
+    ${_TC_COMMON_OBJECTS}
+    "$<TARGET_OBJECTS:image_deep_feature_extractor>"
+    "$<TARGET_OBJECTS:platform_config>"
+  )
+  set(_TC_COMMON_REQUIREMENTS
+    ${_TC_COMMON_REQUIREMENTS}
+    ${CORE_ML}
+    ${CORE_VIDEO}
+    ${FOUNDATION}
+  )
+  if(NOT TC_BUILD_IOS)
+    set(_TC_COMMON_OBJECTS
+      ${_TC_COMMON_OBJECTS}
+      "$<TARGET_OBJECTS:vega_renderer>"
+    )
+    set(_TC_COMMON_REQUIREMENTS
+      ${_TC_COMMON_REQUIREMENTS}
+      ${APPKIT}
+      ${CORE_GRAPHICS}
+      ${JAVASCRIPT_CORE}
+    )
+    if(HAS_MPS)
+      set(_TC_COMMON_OBJECTS
+        ${_TC_COMMON_OBJECTS}
+        "$<TARGET_OBJECTS:tcmps>"
+      )
+      set(_TC_COMMON_REQUIREMENTS
+        ${_TC_COMMON_REQUIREMENTS}
+        ${ACCELERATE}
+        ${CORE_IMAGE}
+        ${METAL}
+        ${METAL_PERFORMANCE_SHADERS}
+      )
+    endif()
+  endif()
+endif()
+if(NOT TC_BUILD_IOS)
+  # object targets that should be included in all APPLE and non-APPLE
+  # platforms except for iOS
+  set(_TC_COMMON_OBJECTS
+    ${_TC_COMMON_OBJECTS}
+    "$<TARGET_OBJECTS:aws-sdk-cpp>"
+  )
 endif()
 
 add_subdirectory(src)

@@ -16,7 +16,7 @@
 #include <unity/toolkits/supervised_learning/linear_svm_opt_interface.hpp>
 #include <sframe/testing_utils.hpp>
 
-#include <unity/toolkits/coreml_export/MLModel/src/Model.hpp>
+#include <unity/toolkits/coreml_export/mlmodel_include.hpp>
 #include <unity/toolkits/coreml_export/MLModel/tests/framework/TestUtils.hpp>
 
 using namespace turi;

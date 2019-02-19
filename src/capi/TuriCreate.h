@@ -950,6 +950,7 @@ tc_flexible_type* tc_plot_get_vega_spec(const tc_plot* plot,
 tc_flexible_type* tc_plot_get_next_data(const tc_plot* plot, const tc_parameters *params, tc_error** error); 
 
 #ifdef __APPLE__
+#ifndef TC_BUILD_IOS
 // pre-computes the final plot and renders it into a CoreGraphics context
 void tc_plot_render_final_into_context(const tc_plot* plot,
                                        tc_plot_variation variation,
@@ -964,6 +965,7 @@ bool tc_plot_render_next_into_context(const tc_plot* plot,
                                       CGContextRef context,
                                       const tc_parameters *params,
                                       tc_error** error);
+#endif // TC_BUILD_IOS
 #endif // __APPLE__
 
 #ifdef __cplusplus

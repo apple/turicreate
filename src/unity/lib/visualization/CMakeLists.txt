@@ -6,13 +6,11 @@ project(unity)
 # in release/test (C++ unit tests) - but not debug! And only on Linux.
 # Not sure why.
 
-if(APPLE)
+if(APPLE AND NOT TC_BUILD_IOS)
   set(VISUALIZATION_PLATFORM_SOURCES plot_macos.mm)
-  set(VISUALIZATION_PLATFORM_REQUIRES vega_renderer)
 endif()
 
-make_library(
-  visualization
+make_library(visualization OBJECT
   SOURCES
     batch_size.cpp
     boxes_and_whiskers.cpp
@@ -35,10 +33,9 @@ make_library(
     vega_data.cpp
     vega_spec.cpp
     ${VISUALIZATION_PLATFORM_SOURCES}
-  REQUIRES
-    process
-    EXTERNAL_VISIBILITY
-    ${VISUALIZATION_PLATFORM_REQUIRES}
+  REQUIRES		
+    process		
+  EXTERNAL_VISIBILITY		
 )
 
 set(GENERATED_VEGA_JSON_HEADERS

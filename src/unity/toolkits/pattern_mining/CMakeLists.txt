@@ -1,6 +1,6 @@
 project(unity_toolkits)
 
-make_library(unity_pattern_mining
+make_library(unity_pattern_mining OBJECT
   SOURCES
     class_registrations.cpp
     fp_growth.cpp
@@ -13,5 +13,4 @@ make_library(unity_pattern_mining
     unity_core
     unity_ml_model
     unity_feature_engineering
-  )
-
+)

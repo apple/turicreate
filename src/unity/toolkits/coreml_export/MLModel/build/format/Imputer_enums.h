@@ -13,6 +13,7 @@ enum MLImputerImputedValue: int {
     MLImputerImputedValue_NOT_SET = 0,
 };
 
+__attribute__((__unused__))
 static const char * MLImputerImputedValue_Name(MLImputerImputedValue x) {
     switch (x) {
         case MLImputerImputedValue_imputedDoubleValue:
@@ -41,6 +42,7 @@ enum MLImputerReplaceValue: int {
     MLImputerReplaceValue_NOT_SET = 0,
 };
 
+__attribute__((__unused__))
 static const char * MLImputerReplaceValue_Name(MLImputerReplaceValue x) {
     switch (x) {
         case MLImputerReplaceValue_replaceDoubleValue:
