@@ -20,7 +20,6 @@
 
 namespace turi {
 
-static turi::mutex reader_shared_ptr_lock;
 /**
  * Constructs a dataframe from data represented a collection of 
  * columns of flexible_type.
@@ -266,9 +265,8 @@ std::vector<flexible_type> gl_sframe::operator[](int64_t i) {
   if (i < 0 || (size_t)i >= size()) {
     throw std::string("Index out of range");
   }
-  ensure_has_sframe_reader();
   std::vector<std::vector<flexible_type> > rows(1);
-  size_t rows_read  = m_sframe_reader->read_rows(i, i + 1, rows);
+  size_t rows_read  = get_sframe_reader()->read_rows(i, i + 1, rows);
   ASSERT_TRUE(rows.size() > 0);
   ASSERT_EQ(rows_read, 1);
   return rows[0];
@@ -278,9 +276,8 @@ std::vector<flexible_type> gl_sframe::operator[](int64_t i) const {
   if (i < 0 || (size_t)i >= size()) {
     throw std::string("Index out of range");
   }
-  ensure_has_sframe_reader();
   std::vector<std::vector<flexible_type> > rows(1);
-  size_t rows_read  = m_sframe_reader->read_rows(i, i + 1, rows);
+  size_t rows_read  = get_sframe_reader()->read_rows(i, i + 1, rows);
   ASSERT_TRUE(rows.size() > 0);
   ASSERT_EQ(rows_read, 1);
   return rows[0];
@@ -369,8 +366,7 @@ gl_sframe_range gl_sframe::range_iterator(size_t start, size_t end) const {
         (start == 0 && end == 0))) {
     throw std::string("Index out of range");
   }
-  ensure_has_sframe_reader();
-  return gl_sframe_range(m_sframe_reader, start, end);
+  return gl_sframe_range(get_sframe_reader(), start, end);
 }
 
 /**************************************************************************/
@@ -442,13 +438,8 @@ void gl_sframe::instantiate_new() {
   m_sframe = std::make_shared<unity_sframe>();
 }
 
-void gl_sframe::ensure_has_sframe_reader() const {
-  if (!m_sframe_reader) {
-    std::lock_guard<mutex> guard(reader_shared_ptr_lock);
-    if (!m_sframe_reader) {
-      m_sframe_reader = get_proxy()->get_underlying_sframe()->get_reader();
-    }
-  }
+std::shared_ptr<sframe_reader> gl_sframe::get_sframe_reader() const {
+  return get_proxy()->get_underlying_sframe()->get_reader();
 }
 
 std::vector<std::string> gl_sframe::column_names() const {
@@ -1012,10 +1003,10 @@ std::ostream& operator<<(std::ostream& out, const gl_sframe& other) {
 /**************************************************************************/
 
 gl_sframe_range::gl_sframe_range(
-    std::shared_ptr<sframe_reader> m_sframe_reader,
+    std::shared_ptr<sframe_reader> _sframe_reader,
     size_t start, size_t end) {
   m_sframe_reader_buffer = 
-      std::make_shared<sframe_reader_buffer>(m_sframe_reader, start, end);
+      std::make_shared<sframe_reader_buffer>(_sframe_reader, start, end);
   // load the first value if available
   if (m_sframe_reader_buffer->has_next()) {
     m_sframe_reader_buffer->next();

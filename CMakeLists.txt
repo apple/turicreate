@@ -65,12 +65,6 @@ else()
   add_definitions(-DTC_PLATFORM_LINUX)
 endif()
 
-if(NOT APPLE)
-  include(FindLAPACK)
-  if(NOT ${LAPACK_FOUND})
-    message(FATAL_ERROR "lapack is not installed")
-  endif()
-endif()
 
 include(CheckLibraryExists)
 include(CheckFunctionExists)
