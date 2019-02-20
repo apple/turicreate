@@ -328,6 +328,16 @@ public:
     }
   }
 
+  /*
+   * Test Annotation Registry
+   *
+   * This test checks the `get_annotation_registry` method on the
+   * ImageClassification. If the user were to forget to save their Annotation to
+   * a variable this test show that they can still recover their annotations
+   * without fail.
+   *
+   */
+
   void test_annotation_registry() {
     std::string image_column_name = "image";
     std::string annotation_column_name = "annotate";
@@ -348,8 +358,8 @@ public:
     turi::annotate::ImageClassification back_up_annotation =
         turi::annotate::ImageClassification();
 
-    std::shared_ptr<turi::annotate::annotation_global> annotation_global_sframe =
-        back_up_annotation.get_annotation_registry();
+    std::shared_ptr<turi::annotate::annotation_global>
+        annotation_global_sframe = back_up_annotation.get_annotation_registry();
 
     std::shared_ptr<turi::unity_sframe> recovered_sf =
         annotation_global_sframe->annotation_sframe;
