@@ -116,9 +116,43 @@ public:
   }
 
   void test_set_annotations_pass() {
-    // TODO: adding annotations to the class
-    // test whether the annotations get properly added
-    TS_ASSERT(true);
+    std::string image_column_name = "image";
+    std::string annotation_column_name = "annotate";
+    std::shared_ptr<turi::unity_sframe> annotation_sf =
+        annotation_testing::random_sframe(50, image_column_name,
+                                          annotation_column_name);
+
+    turi::annotate::ImageClassification ic_annotate =
+        turi::annotate::ImageClassification(
+            annotation_sf, std::vector<std::string>({image_column_name}),
+            annotation_column_name);
+
+    /* Add Annotations */
+    TuriCreate::Annotation::Specification::Annotations annotations;
+    TuriCreate::Annotation::Specification::Annotation *annotation =
+        annotations.add_annotation();
+
+    annotate_spec::Label *label = annotation->add_labels();
+
+    std::string label_value = annotation_testing::random_string();
+    label->set_stringlabel(label_value);
+
+    annotation->add_rowindex(10);
+
+    /* Check if the annotations get properly added */
+    TS_ASSERT(ic_annotate.setAnnotations(annotations));
+
+    std::shared_ptr<turi::unity_sframe> returned_sf =
+        ic_annotate.returnAnnotations();
+
+    std::shared_ptr<turi::unity_sarray> labels_sa =
+        std::static_pointer_cast<turi::unity_sarray>(
+            returned_sf->select_column(annotation_column_name));
+
+    std::vector<turi::flexible_type> labels_vector = labels_sa->to_vector();
+
+    /* Check that the labels are equal */
+    TS_ASSERT(label_value == labels_vector.at(10).to<std::string>());
   }
 
   void test_set_annotations_fail() {

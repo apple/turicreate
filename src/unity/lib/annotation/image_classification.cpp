@@ -95,13 +95,19 @@ bool ImageClassification::setAnnotations(
    * label and this design supports it. To enable this feature refactor this
    * code.) */
 
+  bool error = true;
   for (int a_idx = 0; a_idx < annotations.annotation_size(); a_idx++) {
+
     annotate_spec::Annotation annotation = annotations.annotation(a_idx);
 
     annotate_spec::Label label = annotation.labels(0);
     size_t sf_idx = annotation.rowindex(0);
 
-    assert(label.has_imageclassificationlabel());
+    if (sf_idx < 0 || sf_idx >= m_data->size()) {
+      throw std::runtime_error("Out of range error: Annotation rowIndex "
+                               "exceeds the acceptable range");
+      error = false;
+    }
 
     switch (label.labelIdentifier_case()) {
     case annotate_spec::Label::LabelIdentifierCase::kIntLabel:
@@ -113,13 +119,13 @@ bool ImageClassification::setAnnotations(
     default:
       throw std::runtime_error(
           "Unexpected label type type. Expected INTEGER or STRING.");
-      return false;
+      error = false;
     }
   }
 
   m_data->materialize();
 
-  return true;
+  return error;
 }
 
 void ImageClassification::_addAnnotationToSFrame(size_t index,
