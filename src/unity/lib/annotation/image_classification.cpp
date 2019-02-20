@@ -3,12 +3,14 @@
 
 #include <unity/lib/gl_sarray.hpp>
 
-// TODO: add labels method
-
 namespace turi {
 namespace annotate {
 
-ImageClassification::ImageClassification() {
+ImageClassification::ImageClassification(
+    const std::shared_ptr<unity_sframe> &data,
+    const std::vector<std::string> &data_columns,
+    const std::string &annotation_column)
+    : AnnotationBase(data, data_columns, annotation_column) {
   /* Since abstract classes cannot use std::make_shared and it needed for the
    * annotate process, we need the child class to construct the shared pointer
    * and store it in the protected variables of the inherited abstract
@@ -207,8 +209,6 @@ annotate_spec::MetaData ImageClassification::metaData() {
           m_data->select_column(m_annotation_column));
 
   gl_sarray in(data_sarray);
-  // TODO: rename gl_sarray
-  // TODO: get vector as string
   in.unique();
 
   annotate_spec::MetaData meta_data;
