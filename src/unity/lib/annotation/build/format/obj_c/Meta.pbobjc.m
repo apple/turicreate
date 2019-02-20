@@ -43,16 +43,16 @@ static GPBFileDescriptor *MetaRoot_FileDescriptor(void) {
   return descriptor;
 }
 
-#pragma mark - ActivityClassificationMeta
+#pragma mark - MetaString
 
-@implementation ActivityClassificationMeta
+@implementation MetaString
 
 @dynamic labelsArray, labelsArray_Count;
 
-typedef struct ActivityClassificationMeta__storage_ {
+typedef struct MetaString__storage_ {
   uint32_t _has_storage_[1];
   NSMutableArray *labelsArray;
-} ActivityClassificationMeta__storage_;
+} MetaString__storage_;
 
 // This method is threadsafe because it is initially called
 // in +initialize for each subclass.
@@ -63,11 +63,109 @@ typedef struct ActivityClassificationMeta__storage_ {
       {
         .name = "labelsArray",
         .dataTypeSpecific.className = NULL,
-        .number = ActivityClassificationMeta_FieldNumber_LabelsArray,
+        .number = MetaString_FieldNumber_LabelsArray,
         .hasIndex = GPBNoHasBit,
-        .offset = (uint32_t)offsetof(ActivityClassificationMeta__storage_, labelsArray),
+        .offset = (uint32_t)offsetof(MetaString__storage_, labelsArray),
         .flags = GPBFieldRepeated,
         .dataType = GPBDataTypeString,
+      },
+    };
+    GPBDescriptor *localDescriptor =
+        [GPBDescriptor allocDescriptorForClass:[MetaString class]
+                                     rootClass:[MetaRoot class]
+                                          file:MetaRoot_FileDescriptor()
+                                        fields:fields
+                                    fieldCount:(uint32_t)(sizeof(fields) / sizeof(GPBMessageFieldDescription))
+                                   storageSize:sizeof(MetaString__storage_)
+                                         flags:GPBDescriptorInitializationFlag_None];
+    NSAssert(descriptor == nil, @"Startup recursed!");
+    descriptor = localDescriptor;
+  }
+  return descriptor;
+}
+
+@end
+
+#pragma mark - MetaInteger
+
+@implementation MetaInteger
+
+@dynamic labelsArray, labelsArray_Count;
+
+typedef struct MetaInteger__storage_ {
+  uint32_t _has_storage_[1];
+  GPBInt64Array *labelsArray;
+} MetaInteger__storage_;
+
+// This method is threadsafe because it is initially called
+// in +initialize for each subclass.
++ (GPBDescriptor *)descriptor {
+  static GPBDescriptor *descriptor = nil;
+  if (!descriptor) {
+    static GPBMessageFieldDescription fields[] = {
+      {
+        .name = "labelsArray",
+        .dataTypeSpecific.className = NULL,
+        .number = MetaInteger_FieldNumber_LabelsArray,
+        .hasIndex = GPBNoHasBit,
+        .offset = (uint32_t)offsetof(MetaInteger__storage_, labelsArray),
+        .flags = (GPBFieldFlags)(GPBFieldRepeated | GPBFieldPacked),
+        .dataType = GPBDataTypeInt64,
+      },
+    };
+    GPBDescriptor *localDescriptor =
+        [GPBDescriptor allocDescriptorForClass:[MetaInteger class]
+                                     rootClass:[MetaRoot class]
+                                          file:MetaRoot_FileDescriptor()
+                                        fields:fields
+                                    fieldCount:(uint32_t)(sizeof(fields) / sizeof(GPBMessageFieldDescription))
+                                   storageSize:sizeof(MetaInteger__storage_)
+                                         flags:GPBDescriptorInitializationFlag_None];
+    NSAssert(descriptor == nil, @"Startup recursed!");
+    descriptor = localDescriptor;
+  }
+  return descriptor;
+}
+
+@end
+
+#pragma mark - ActivityClassificationMeta
+
+@implementation ActivityClassificationMeta
+
+@dynamic labelOneOfCase;
+@dynamic strings;
+@dynamic integers;
+
+typedef struct ActivityClassificationMeta__storage_ {
+  uint32_t _has_storage_[2];
+  MetaString *strings;
+  MetaInteger *integers;
+} ActivityClassificationMeta__storage_;
+
+// This method is threadsafe because it is initially called
+// in +initialize for each subclass.
++ (GPBDescriptor *)descriptor {
+  static GPBDescriptor *descriptor = nil;
+  if (!descriptor) {
+    static GPBMessageFieldDescription fields[] = {
+      {
+        .name = "strings",
+        .dataTypeSpecific.className = GPBStringifySymbol(MetaString),
+        .number = ActivityClassificationMeta_FieldNumber_Strings,
+        .hasIndex = -1,
+        .offset = (uint32_t)offsetof(ActivityClassificationMeta__storage_, strings),
+        .flags = GPBFieldOptional,
+        .dataType = GPBDataTypeMessage,
+      },
+      {
+        .name = "integers",
+        .dataTypeSpecific.className = GPBStringifySymbol(MetaInteger),
+        .number = ActivityClassificationMeta_FieldNumber_Integers,
+        .hasIndex = -1,
+        .offset = (uint32_t)offsetof(ActivityClassificationMeta__storage_, integers),
+        .flags = GPBFieldOptional,
+        .dataType = GPBDataTypeMessage,
       },
     };
     GPBDescriptor *localDescriptor =
@@ -78,6 +176,12 @@ typedef struct ActivityClassificationMeta__storage_ {
                                     fieldCount:(uint32_t)(sizeof(fields) / sizeof(GPBMessageFieldDescription))
                                    storageSize:sizeof(ActivityClassificationMeta__storage_)
                                          flags:GPBDescriptorInitializationFlag_None];
+    static const char *oneofs[] = {
+      "label",
+    };
+    [localDescriptor setupOneofs:oneofs
+                           count:(uint32_t)(sizeof(oneofs) / sizeof(char*))
+                   firstHasIndex:-1];
     NSAssert(descriptor == nil, @"Startup recursed!");
     descriptor = localDescriptor;
   }
@@ -86,15 +190,23 @@ typedef struct ActivityClassificationMeta__storage_ {
 
 @end
 
+void ActivityClassificationMeta_ClearLabelOneOfCase(ActivityClassificationMeta *message) {
+  GPBDescriptor *descriptor = [message descriptor];
+  GPBOneofDescriptor *oneof = [descriptor.oneofs objectAtIndex:0];
+  GPBMaybeClearOneof(message, oneof, -1, 0);
+}
 #pragma mark - AudioClassificationMeta
 
 @implementation AudioClassificationMeta
 
-@dynamic labelsArray, labelsArray_Count;
+@dynamic labelOneOfCase;
+@dynamic strings;
+@dynamic integers;
 
 typedef struct AudioClassificationMeta__storage_ {
-  uint32_t _has_storage_[1];
-  NSMutableArray *labelsArray;
+  uint32_t _has_storage_[2];
+  MetaString *strings;
+  MetaInteger *integers;
 } AudioClassificationMeta__storage_;
 
 // This method is threadsafe because it is initially called
@@ -104,13 +216,22 @@ typedef struct AudioClassificationMeta__storage_ {
   if (!descriptor) {
     static GPBMessageFieldDescription fields[] = {
       {
-        .name = "labelsArray",
-        .dataTypeSpecific.className = NULL,
-        .number = AudioClassificationMeta_FieldNumber_LabelsArray,
-        .hasIndex = GPBNoHasBit,
-        .offset = (uint32_t)offsetof(AudioClassificationMeta__storage_, labelsArray),
-        .flags = GPBFieldRepeated,
-        .dataType = GPBDataTypeString,
+        .name = "strings",
+        .dataTypeSpecific.className = GPBStringifySymbol(MetaString),
+        .number = AudioClassificationMeta_FieldNumber_Strings,
+        .hasIndex = -1,
+        .offset = (uint32_t)offsetof(AudioClassificationMeta__storage_, strings),
+        .flags = GPBFieldOptional,
+        .dataType = GPBDataTypeMessage,
+      },
+      {
+        .name = "integers",
+        .dataTypeSpecific.className = GPBStringifySymbol(MetaInteger),
+        .number = AudioClassificationMeta_FieldNumber_Integers,
+        .hasIndex = -1,
+        .offset = (uint32_t)offsetof(AudioClassificationMeta__storage_, integers),
+        .flags = GPBFieldOptional,
+        .dataType = GPBDataTypeMessage,
       },
     };
     GPBDescriptor *localDescriptor =
@@ -121,6 +242,12 @@ typedef struct AudioClassificationMeta__storage_ {
                                     fieldCount:(uint32_t)(sizeof(fields) / sizeof(GPBMessageFieldDescription))
                                    storageSize:sizeof(AudioClassificationMeta__storage_)
                                          flags:GPBDescriptorInitializationFlag_None];
+    static const char *oneofs[] = {
+      "label",
+    };
+    [localDescriptor setupOneofs:oneofs
+                           count:(uint32_t)(sizeof(oneofs) / sizeof(char*))
+                   firstHasIndex:-1];
     NSAssert(descriptor == nil, @"Startup recursed!");
     descriptor = localDescriptor;
   }
@@ -129,15 +256,23 @@ typedef struct AudioClassificationMeta__storage_ {
 
 @end
 
+void AudioClassificationMeta_ClearLabelOneOfCase(AudioClassificationMeta *message) {
+  GPBDescriptor *descriptor = [message descriptor];
+  GPBOneofDescriptor *oneof = [descriptor.oneofs objectAtIndex:0];
+  GPBMaybeClearOneof(message, oneof, -1, 0);
+}
 #pragma mark - DrawingClassificationMeta
 
 @implementation DrawingClassificationMeta
 
-@dynamic labelsArray, labelsArray_Count;
+@dynamic labelOneOfCase;
+@dynamic strings;
+@dynamic integers;
 
 typedef struct DrawingClassificationMeta__storage_ {
-  uint32_t _has_storage_[1];
-  NSMutableArray *labelsArray;
+  uint32_t _has_storage_[2];
+  MetaString *strings;
+  MetaInteger *integers;
 } DrawingClassificationMeta__storage_;
 
 // This method is threadsafe because it is initially called
@@ -147,13 +282,22 @@ typedef struct DrawingClassificationMeta__storage_ {
   if (!descriptor) {
     static GPBMessageFieldDescription fields[] = {
       {
-        .name = "labelsArray",
-        .dataTypeSpecific.className = NULL,
-        .number = DrawingClassificationMeta_FieldNumber_LabelsArray,
-        .hasIndex = GPBNoHasBit,
-        .offset = (uint32_t)offsetof(DrawingClassificationMeta__storage_, labelsArray),
-        .flags = GPBFieldRepeated,
-        .dataType = GPBDataTypeString,
+        .name = "strings",
+        .dataTypeSpecific.className = GPBStringifySymbol(MetaString),
+        .number = DrawingClassificationMeta_FieldNumber_Strings,
+        .hasIndex = -1,
+        .offset = (uint32_t)offsetof(DrawingClassificationMeta__storage_, strings),
+        .flags = GPBFieldOptional,
+        .dataType = GPBDataTypeMessage,
+      },
+      {
+        .name = "integers",
+        .dataTypeSpecific.className = GPBStringifySymbol(MetaInteger),
+        .number = DrawingClassificationMeta_FieldNumber_Integers,
+        .hasIndex = -1,
+        .offset = (uint32_t)offsetof(DrawingClassificationMeta__storage_, integers),
+        .flags = GPBFieldOptional,
+        .dataType = GPBDataTypeMessage,
       },
     };
     GPBDescriptor *localDescriptor =
@@ -164,6 +308,12 @@ typedef struct DrawingClassificationMeta__storage_ {
                                     fieldCount:(uint32_t)(sizeof(fields) / sizeof(GPBMessageFieldDescription))
                                    storageSize:sizeof(DrawingClassificationMeta__storage_)
                                          flags:GPBDescriptorInitializationFlag_None];
+    static const char *oneofs[] = {
+      "label",
+    };
+    [localDescriptor setupOneofs:oneofs
+                           count:(uint32_t)(sizeof(oneofs) / sizeof(char*))
+                   firstHasIndex:-1];
     NSAssert(descriptor == nil, @"Startup recursed!");
     descriptor = localDescriptor;
   }
@@ -172,15 +322,23 @@ typedef struct DrawingClassificationMeta__storage_ {
 
 @end
 
+void DrawingClassificationMeta_ClearLabelOneOfCase(DrawingClassificationMeta *message) {
+  GPBDescriptor *descriptor = [message descriptor];
+  GPBOneofDescriptor *oneof = [descriptor.oneofs objectAtIndex:0];
+  GPBMaybeClearOneof(message, oneof, -1, 0);
+}
 #pragma mark - ImageClassificationMeta
 
 @implementation ImageClassificationMeta
 
-@dynamic labelsArray, labelsArray_Count;
+@dynamic labelOneOfCase;
+@dynamic strings;
+@dynamic integers;
 
 typedef struct ImageClassificationMeta__storage_ {
-  uint32_t _has_storage_[1];
-  NSMutableArray *labelsArray;
+  uint32_t _has_storage_[2];
+  MetaString *strings;
+  MetaInteger *integers;
 } ImageClassificationMeta__storage_;
 
 // This method is threadsafe because it is initially called
@@ -190,13 +348,22 @@ typedef struct ImageClassificationMeta__storage_ {
   if (!descriptor) {
     static GPBMessageFieldDescription fields[] = {
       {
-        .name = "labelsArray",
-        .dataTypeSpecific.className = NULL,
-        .number = ImageClassificationMeta_FieldNumber_LabelsArray,
-        .hasIndex = GPBNoHasBit,
-        .offset = (uint32_t)offsetof(ImageClassificationMeta__storage_, labelsArray),
-        .flags = GPBFieldRepeated,
-        .dataType = GPBDataTypeString,
+        .name = "strings",
+        .dataTypeSpecific.className = GPBStringifySymbol(MetaString),
+        .number = ImageClassificationMeta_FieldNumber_Strings,
+        .hasIndex = -1,
+        .offset = (uint32_t)offsetof(ImageClassificationMeta__storage_, strings),
+        .flags = GPBFieldOptional,
+        .dataType = GPBDataTypeMessage,
+      },
+      {
+        .name = "integers",
+        .dataTypeSpecific.className = GPBStringifySymbol(MetaInteger),
+        .number = ImageClassificationMeta_FieldNumber_Integers,
+        .hasIndex = -1,
+        .offset = (uint32_t)offsetof(ImageClassificationMeta__storage_, integers),
+        .flags = GPBFieldOptional,
+        .dataType = GPBDataTypeMessage,
       },
     };
     GPBDescriptor *localDescriptor =
@@ -207,6 +374,12 @@ typedef struct ImageClassificationMeta__storage_ {
                                     fieldCount:(uint32_t)(sizeof(fields) / sizeof(GPBMessageFieldDescription))
                                    storageSize:sizeof(ImageClassificationMeta__storage_)
                                          flags:GPBDescriptorInitializationFlag_None];
+    static const char *oneofs[] = {
+      "label",
+    };
+    [localDescriptor setupOneofs:oneofs
+                           count:(uint32_t)(sizeof(oneofs) / sizeof(char*))
+                   firstHasIndex:-1];
     NSAssert(descriptor == nil, @"Startup recursed!");
     descriptor = localDescriptor;
   }
@@ -215,15 +388,23 @@ typedef struct ImageClassificationMeta__storage_ {
 
 @end
 
+void ImageClassificationMeta_ClearLabelOneOfCase(ImageClassificationMeta *message) {
+  GPBDescriptor *descriptor = [message descriptor];
+  GPBOneofDescriptor *oneof = [descriptor.oneofs objectAtIndex:0];
+  GPBMaybeClearOneof(message, oneof, -1, 0);
+}
 #pragma mark - ObjectDetectionMeta
 
 @implementation ObjectDetectionMeta
 
-@dynamic labelsArray, labelsArray_Count;
+@dynamic labelOneOfCase;
+@dynamic strings;
+@dynamic integers;
 
 typedef struct ObjectDetectionMeta__storage_ {
-  uint32_t _has_storage_[1];
-  NSMutableArray *labelsArray;
+  uint32_t _has_storage_[2];
+  MetaString *strings;
+  MetaInteger *integers;
 } ObjectDetectionMeta__storage_;
 
 // This method is threadsafe because it is initially called
@@ -233,13 +414,22 @@ typedef struct ObjectDetectionMeta__storage_ {
   if (!descriptor) {
     static GPBMessageFieldDescription fields[] = {
       {
-        .name = "labelsArray",
-        .dataTypeSpecific.className = NULL,
-        .number = ObjectDetectionMeta_FieldNumber_LabelsArray,
-        .hasIndex = GPBNoHasBit,
-        .offset = (uint32_t)offsetof(ObjectDetectionMeta__storage_, labelsArray),
-        .flags = GPBFieldRepeated,
-        .dataType = GPBDataTypeString,
+        .name = "strings",
+        .dataTypeSpecific.className = GPBStringifySymbol(MetaString),
+        .number = ObjectDetectionMeta_FieldNumber_Strings,
+        .hasIndex = -1,
+        .offset = (uint32_t)offsetof(ObjectDetectionMeta__storage_, strings),
+        .flags = GPBFieldOptional,
+        .dataType = GPBDataTypeMessage,
+      },
+      {
+        .name = "integers",
+        .dataTypeSpecific.className = GPBStringifySymbol(MetaInteger),
+        .number = ObjectDetectionMeta_FieldNumber_Integers,
+        .hasIndex = -1,
+        .offset = (uint32_t)offsetof(ObjectDetectionMeta__storage_, integers),
+        .flags = GPBFieldOptional,
+        .dataType = GPBDataTypeMessage,
       },
     };
     GPBDescriptor *localDescriptor =
@@ -250,6 +440,12 @@ typedef struct ObjectDetectionMeta__storage_ {
                                     fieldCount:(uint32_t)(sizeof(fields) / sizeof(GPBMessageFieldDescription))
                                    storageSize:sizeof(ObjectDetectionMeta__storage_)
                                          flags:GPBDescriptorInitializationFlag_None];
+    static const char *oneofs[] = {
+      "label",
+    };
+    [localDescriptor setupOneofs:oneofs
+                           count:(uint32_t)(sizeof(oneofs) / sizeof(char*))
+                   firstHasIndex:-1];
     NSAssert(descriptor == nil, @"Startup recursed!");
     descriptor = localDescriptor;
   }
@@ -258,6 +454,11 @@ typedef struct ObjectDetectionMeta__storage_ {
 
 @end
 
+void ObjectDetectionMeta_ClearLabelOneOfCase(ObjectDetectionMeta *message) {
+  GPBDescriptor *descriptor = [message descriptor];
+  GPBOneofDescriptor *oneof = [descriptor.oneofs objectAtIndex:0];
+  GPBMaybeClearOneof(message, oneof, -1, 0);
+}
 #pragma mark - MetaData
 
 @implementation MetaData

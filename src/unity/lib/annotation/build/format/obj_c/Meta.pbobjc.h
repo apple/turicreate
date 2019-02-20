@@ -31,6 +31,8 @@ CF_EXTERN_C_BEGIN
 @class AudioClassificationMeta;
 @class DrawingClassificationMeta;
 @class ImageClassificationMeta;
+@class MetaInteger;
+@class MetaString;
 @class ObjectDetectionMeta;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -50,75 +52,173 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MetaRoot : GPBRootObject
 @end
 
+#pragma mark - MetaString
+
+typedef GPB_ENUM(MetaString_FieldNumber) {
+  MetaString_FieldNumber_LabelsArray = 1,
+};
+
+@interface MetaString : GPBMessage
+
+@property(nonatomic, readwrite, strong, null_resettable) NSMutableArray<NSString*> *labelsArray;
+/** The number of items in @c labelsArray without causing the array to be created. */
+@property(nonatomic, readonly) NSUInteger labelsArray_Count;
+
+@end
+
+#pragma mark - MetaInteger
+
+typedef GPB_ENUM(MetaInteger_FieldNumber) {
+  MetaInteger_FieldNumber_LabelsArray = 1,
+};
+
+@interface MetaInteger : GPBMessage
+
+@property(nonatomic, readwrite, strong, null_resettable) GPBInt64Array *labelsArray;
+/** The number of items in @c labelsArray without causing the array to be created. */
+@property(nonatomic, readonly) NSUInteger labelsArray_Count;
+
+@end
+
 #pragma mark - ActivityClassificationMeta
 
 typedef GPB_ENUM(ActivityClassificationMeta_FieldNumber) {
-  ActivityClassificationMeta_FieldNumber_LabelsArray = 1,
+  ActivityClassificationMeta_FieldNumber_Strings = 1,
+  ActivityClassificationMeta_FieldNumber_Integers = 2,
+};
+
+typedef GPB_ENUM(ActivityClassificationMeta_Label_OneOfCase) {
+  ActivityClassificationMeta_Label_OneOfCase_GPBUnsetOneOfCase = 0,
+  ActivityClassificationMeta_Label_OneOfCase_Strings = 1,
+  ActivityClassificationMeta_Label_OneOfCase_Integers = 2,
 };
 
 @interface ActivityClassificationMeta : GPBMessage
 
-@property(nonatomic, readwrite, strong, null_resettable) NSMutableArray<NSString*> *labelsArray;
-/** The number of items in @c labelsArray without causing the array to be created. */
-@property(nonatomic, readonly) NSUInteger labelsArray_Count;
+@property(nonatomic, readonly) ActivityClassificationMeta_Label_OneOfCase labelOneOfCase;
+
+@property(nonatomic, readwrite, strong, null_resettable) MetaString *strings;
+
+@property(nonatomic, readwrite, strong, null_resettable) MetaInteger *integers;
 
 @end
+
+/**
+ * Clears whatever value was set for the oneof 'label'.
+ **/
+void ActivityClassificationMeta_ClearLabelOneOfCase(ActivityClassificationMeta *message);
 
 #pragma mark - AudioClassificationMeta
 
 typedef GPB_ENUM(AudioClassificationMeta_FieldNumber) {
-  AudioClassificationMeta_FieldNumber_LabelsArray = 1,
+  AudioClassificationMeta_FieldNumber_Strings = 1,
+  AudioClassificationMeta_FieldNumber_Integers = 2,
+};
+
+typedef GPB_ENUM(AudioClassificationMeta_Label_OneOfCase) {
+  AudioClassificationMeta_Label_OneOfCase_GPBUnsetOneOfCase = 0,
+  AudioClassificationMeta_Label_OneOfCase_Strings = 1,
+  AudioClassificationMeta_Label_OneOfCase_Integers = 2,
 };
 
 @interface AudioClassificationMeta : GPBMessage
 
-@property(nonatomic, readwrite, strong, null_resettable) NSMutableArray<NSString*> *labelsArray;
-/** The number of items in @c labelsArray without causing the array to be created. */
-@property(nonatomic, readonly) NSUInteger labelsArray_Count;
+@property(nonatomic, readonly) AudioClassificationMeta_Label_OneOfCase labelOneOfCase;
+
+@property(nonatomic, readwrite, strong, null_resettable) MetaString *strings;
+
+@property(nonatomic, readwrite, strong, null_resettable) MetaInteger *integers;
 
 @end
+
+/**
+ * Clears whatever value was set for the oneof 'label'.
+ **/
+void AudioClassificationMeta_ClearLabelOneOfCase(AudioClassificationMeta *message);
 
 #pragma mark - DrawingClassificationMeta
 
 typedef GPB_ENUM(DrawingClassificationMeta_FieldNumber) {
-  DrawingClassificationMeta_FieldNumber_LabelsArray = 1,
+  DrawingClassificationMeta_FieldNumber_Strings = 1,
+  DrawingClassificationMeta_FieldNumber_Integers = 2,
+};
+
+typedef GPB_ENUM(DrawingClassificationMeta_Label_OneOfCase) {
+  DrawingClassificationMeta_Label_OneOfCase_GPBUnsetOneOfCase = 0,
+  DrawingClassificationMeta_Label_OneOfCase_Strings = 1,
+  DrawingClassificationMeta_Label_OneOfCase_Integers = 2,
 };
 
 @interface DrawingClassificationMeta : GPBMessage
 
-@property(nonatomic, readwrite, strong, null_resettable) NSMutableArray<NSString*> *labelsArray;
-/** The number of items in @c labelsArray without causing the array to be created. */
-@property(nonatomic, readonly) NSUInteger labelsArray_Count;
+@property(nonatomic, readonly) DrawingClassificationMeta_Label_OneOfCase labelOneOfCase;
+
+@property(nonatomic, readwrite, strong, null_resettable) MetaString *strings;
+
+@property(nonatomic, readwrite, strong, null_resettable) MetaInteger *integers;
 
 @end
+
+/**
+ * Clears whatever value was set for the oneof 'label'.
+ **/
+void DrawingClassificationMeta_ClearLabelOneOfCase(DrawingClassificationMeta *message);
 
 #pragma mark - ImageClassificationMeta
 
 typedef GPB_ENUM(ImageClassificationMeta_FieldNumber) {
-  ImageClassificationMeta_FieldNumber_LabelsArray = 1,
+  ImageClassificationMeta_FieldNumber_Strings = 1,
+  ImageClassificationMeta_FieldNumber_Integers = 2,
+};
+
+typedef GPB_ENUM(ImageClassificationMeta_Label_OneOfCase) {
+  ImageClassificationMeta_Label_OneOfCase_GPBUnsetOneOfCase = 0,
+  ImageClassificationMeta_Label_OneOfCase_Strings = 1,
+  ImageClassificationMeta_Label_OneOfCase_Integers = 2,
 };
 
 @interface ImageClassificationMeta : GPBMessage
 
-@property(nonatomic, readwrite, strong, null_resettable) NSMutableArray<NSString*> *labelsArray;
-/** The number of items in @c labelsArray without causing the array to be created. */
-@property(nonatomic, readonly) NSUInteger labelsArray_Count;
+@property(nonatomic, readonly) ImageClassificationMeta_Label_OneOfCase labelOneOfCase;
+
+@property(nonatomic, readwrite, strong, null_resettable) MetaString *strings;
+
+@property(nonatomic, readwrite, strong, null_resettable) MetaInteger *integers;
 
 @end
+
+/**
+ * Clears whatever value was set for the oneof 'label'.
+ **/
+void ImageClassificationMeta_ClearLabelOneOfCase(ImageClassificationMeta *message);
 
 #pragma mark - ObjectDetectionMeta
 
 typedef GPB_ENUM(ObjectDetectionMeta_FieldNumber) {
-  ObjectDetectionMeta_FieldNumber_LabelsArray = 1,
+  ObjectDetectionMeta_FieldNumber_Strings = 1,
+  ObjectDetectionMeta_FieldNumber_Integers = 2,
+};
+
+typedef GPB_ENUM(ObjectDetectionMeta_Label_OneOfCase) {
+  ObjectDetectionMeta_Label_OneOfCase_GPBUnsetOneOfCase = 0,
+  ObjectDetectionMeta_Label_OneOfCase_Strings = 1,
+  ObjectDetectionMeta_Label_OneOfCase_Integers = 2,
 };
 
 @interface ObjectDetectionMeta : GPBMessage
 
-@property(nonatomic, readwrite, strong, null_resettable) NSMutableArray<NSString*> *labelsArray;
-/** The number of items in @c labelsArray without causing the array to be created. */
-@property(nonatomic, readonly) NSUInteger labelsArray_Count;
+@property(nonatomic, readonly) ObjectDetectionMeta_Label_OneOfCase labelOneOfCase;
+
+@property(nonatomic, readwrite, strong, null_resettable) MetaString *strings;
+
+@property(nonatomic, readwrite, strong, null_resettable) MetaInteger *integers;
 
 @end
+
+/**
+ * Clears whatever value was set for the oneof 'label'.
+ **/
+void ObjectDetectionMeta_ClearLabelOneOfCase(ObjectDetectionMeta *message);
 
 #pragma mark - MetaData
 

@@ -204,14 +204,39 @@ void ImageClassification::_addAnnotationToSFrame(size_t index, int label) {
 }
 
 annotate_spec::MetaData ImageClassification::metaData() {
+  annotate_spec::MetaData meta_data;
+  annotate_spec::ImageClassificationMeta image_classification_meta =
+      meta_data.image_classification();
+
+  meta_data.set_num_examples(m_data->size());
+
   std::shared_ptr<unity_sarray> data_sarray =
       std::static_pointer_cast<unity_sarray>(
           m_data->select_column(m_annotation_column));
 
   gl_sarray in(data_sarray);
-  in.unique();
+  std::shared_ptr<unity_sarray> unity_sa =
+      std::shared_ptr<unity_sarray>(in.unique());
 
-  annotate_spec::MetaData meta_data;
+  flex_type_enum array_type = unity_sa->dtype();
+
+  assert(array_type == flex_type_enum::STRING ||
+         array_type == flex_type_enum::INTEGER);
+
+  if (array_type == flex_type_enum::STRING) {
+    annotate_spec::MetaString strings = image_classification_meta.strings();
+    for (auto const &value : unity_sa->to_vector()) {
+      strings.add_labels(value.to<std::string>());
+    }
+  }
+
+  if (array_type == flex_type_enum::INTEGER) {
+    annotate_spec::MetaInteger integers = image_classification_meta.integers();
+    for (auto const &value : unity_sa->to_vector()) {
+      integers.add_labels(value);
+    }
+  }
+
   return meta_data;
 }
 

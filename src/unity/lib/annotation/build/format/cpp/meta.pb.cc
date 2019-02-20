@@ -17,15 +17,34 @@
 namespace TuriCreate {
 namespace Annotation {
 namespace Specification {
+class MetaStringDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<MetaString> {
+} _MetaString_default_instance_;
+class MetaIntegerDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<MetaInteger> {
+} _MetaInteger_default_instance_;
 class ActivityClassificationMetaDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<ActivityClassificationMeta> {
+  public:
+  const ::TuriCreate::Annotation::Specification::MetaString* strings_;
+  const ::TuriCreate::Annotation::Specification::MetaInteger* integers_;
 } _ActivityClassificationMeta_default_instance_;
 class AudioClassificationMetaDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<AudioClassificationMeta> {
+  public:
+  const ::TuriCreate::Annotation::Specification::MetaString* strings_;
+  const ::TuriCreate::Annotation::Specification::MetaInteger* integers_;
 } _AudioClassificationMeta_default_instance_;
 class DrawingClassificationMetaDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<DrawingClassificationMeta> {
+  public:
+  const ::TuriCreate::Annotation::Specification::MetaString* strings_;
+  const ::TuriCreate::Annotation::Specification::MetaInteger* integers_;
 } _DrawingClassificationMeta_default_instance_;
 class ImageClassificationMetaDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<ImageClassificationMeta> {
+  public:
+  const ::TuriCreate::Annotation::Specification::MetaString* strings_;
+  const ::TuriCreate::Annotation::Specification::MetaInteger* integers_;
 } _ImageClassificationMeta_default_instance_;
 class ObjectDetectionMetaDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<ObjectDetectionMeta> {
+  public:
+  const ::TuriCreate::Annotation::Specification::MetaString* strings_;
+  const ::TuriCreate::Annotation::Specification::MetaInteger* integers_;
 } _ObjectDetectionMeta_default_instance_;
 class MetaDataDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<MetaData> {
   public:
@@ -55,10 +74,14 @@ PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTable const
   { NULL, NULL, 0, -1, -1, false },
   { NULL, NULL, 0, -1, -1, false },
   { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
 };
 
 
 void TableStruct::Shutdown() {
+  _MetaString_default_instance_.Shutdown();
+  _MetaInteger_default_instance_.Shutdown();
   _ActivityClassificationMeta_default_instance_.Shutdown();
   _AudioClassificationMeta_default_instance_.Shutdown();
   _DrawingClassificationMeta_default_instance_.Shutdown();
@@ -71,6 +94,8 @@ void TableStruct::InitDefaultsImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::internal::InitProtobufDefaults();
+  _MetaString_default_instance_.DefaultConstruct();
+  _MetaInteger_default_instance_.DefaultConstruct();
   _ActivityClassificationMeta_default_instance_.DefaultConstruct();
   _AudioClassificationMeta_default_instance_.DefaultConstruct();
   _DrawingClassificationMeta_default_instance_.DefaultConstruct();
@@ -107,7 +132,491 @@ struct StaticDescriptorInitializer {
 // ===================================================================
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int ActivityClassificationMeta::kLabelsFieldNumber;
+const int MetaString::kLabelsFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+MetaString::MetaString()
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_meta_2eproto::InitDefaults();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:TuriCreate.Annotation.Specification.MetaString)
+}
+MetaString::MetaString(const MetaString& from)
+  : ::google::protobuf::MessageLite(),
+      _internal_metadata_(NULL),
+      labels_(from.labels_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:TuriCreate.Annotation.Specification.MetaString)
+}
+
+void MetaString::SharedCtor() {
+  _cached_size_ = 0;
+}
+
+MetaString::~MetaString() {
+  // @@protoc_insertion_point(destructor:TuriCreate.Annotation.Specification.MetaString)
+  SharedDtor();
+}
+
+void MetaString::SharedDtor() {
+}
+
+void MetaString::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const MetaString& MetaString::default_instance() {
+  protobuf_meta_2eproto::InitDefaults();
+  return *internal_default_instance();
+}
+
+MetaString* MetaString::New(::google::protobuf::Arena* arena) const {
+  MetaString* n = new MetaString;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void MetaString::Clear() {
+// @@protoc_insertion_point(message_clear_start:TuriCreate.Annotation.Specification.MetaString)
+  labels_.Clear();
+}
+
+bool MetaString::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:TuriCreate.Annotation.Specification.MetaString)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated string labels = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->add_labels()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->labels(this->labels_size() - 1).data(),
+            this->labels(this->labels_size() - 1).length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "TuriCreate.Annotation.Specification.MetaString.labels"));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:TuriCreate.Annotation.Specification.MetaString)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:TuriCreate.Annotation.Specification.MetaString)
+  return false;
+#undef DO_
+}
+
+void MetaString::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:TuriCreate.Annotation.Specification.MetaString)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated string labels = 1;
+  for (int i = 0, n = this->labels_size(); i < n; i++) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->labels(i).data(), this->labels(i).length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "TuriCreate.Annotation.Specification.MetaString.labels");
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      1, this->labels(i), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:TuriCreate.Annotation.Specification.MetaString)
+}
+
+size_t MetaString::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:TuriCreate.Annotation.Specification.MetaString)
+  size_t total_size = 0;
+
+  // repeated string labels = 1;
+  total_size += 1 *
+      ::google::protobuf::internal::FromIntSize(this->labels_size());
+  for (int i = 0, n = this->labels_size(); i < n; i++) {
+    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
+      this->labels(i));
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void MetaString::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const MetaString*>(&from));
+}
+
+void MetaString::MergeFrom(const MetaString& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:TuriCreate.Annotation.Specification.MetaString)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  labels_.MergeFrom(from.labels_);
+}
+
+void MetaString::CopyFrom(const MetaString& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:TuriCreate.Annotation.Specification.MetaString)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool MetaString::IsInitialized() const {
+  return true;
+}
+
+void MetaString::Swap(MetaString* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void MetaString::InternalSwap(MetaString* other) {
+  labels_.InternalSwap(&other->labels_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::std::string MetaString::GetTypeName() const {
+  return "TuriCreate.Annotation.Specification.MetaString";
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// MetaString
+
+// repeated string labels = 1;
+int MetaString::labels_size() const {
+  return labels_.size();
+}
+void MetaString::clear_labels() {
+  labels_.Clear();
+}
+const ::std::string& MetaString::labels(int index) const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.MetaString.labels)
+  return labels_.Get(index);
+}
+::std::string* MetaString::mutable_labels(int index) {
+  // @@protoc_insertion_point(field_mutable:TuriCreate.Annotation.Specification.MetaString.labels)
+  return labels_.Mutable(index);
+}
+void MetaString::set_labels(int index, const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.MetaString.labels)
+  labels_.Mutable(index)->assign(value);
+}
+#if LANG_CXX11
+void MetaString::set_labels(int index, ::std::string&& value) {
+  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.MetaString.labels)
+  labels_.Mutable(index)->assign(std::move(value));
+}
+#endif
+void MetaString::set_labels(int index, const char* value) {
+  GOOGLE_DCHECK(value != NULL);
+  labels_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:TuriCreate.Annotation.Specification.MetaString.labels)
+}
+void MetaString::set_labels(int index, const char* value, size_t size) {
+  labels_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:TuriCreate.Annotation.Specification.MetaString.labels)
+}
+::std::string* MetaString::add_labels() {
+  // @@protoc_insertion_point(field_add_mutable:TuriCreate.Annotation.Specification.MetaString.labels)
+  return labels_.Add();
+}
+void MetaString::add_labels(const ::std::string& value) {
+  labels_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:TuriCreate.Annotation.Specification.MetaString.labels)
+}
+#if LANG_CXX11
+void MetaString::add_labels(::std::string&& value) {
+  labels_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:TuriCreate.Annotation.Specification.MetaString.labels)
+}
+#endif
+void MetaString::add_labels(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
+  labels_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:TuriCreate.Annotation.Specification.MetaString.labels)
+}
+void MetaString::add_labels(const char* value, size_t size) {
+  labels_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:TuriCreate.Annotation.Specification.MetaString.labels)
+}
+const ::google::protobuf::RepeatedPtrField< ::std::string>&
+MetaString::labels() const {
+  // @@protoc_insertion_point(field_list:TuriCreate.Annotation.Specification.MetaString.labels)
+  return labels_;
+}
+::google::protobuf::RepeatedPtrField< ::std::string>*
+MetaString::mutable_labels() {
+  // @@protoc_insertion_point(field_mutable_list:TuriCreate.Annotation.Specification.MetaString.labels)
+  return &labels_;
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int MetaInteger::kLabelsFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+MetaInteger::MetaInteger()
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_meta_2eproto::InitDefaults();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:TuriCreate.Annotation.Specification.MetaInteger)
+}
+MetaInteger::MetaInteger(const MetaInteger& from)
+  : ::google::protobuf::MessageLite(),
+      _internal_metadata_(NULL),
+      labels_(from.labels_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:TuriCreate.Annotation.Specification.MetaInteger)
+}
+
+void MetaInteger::SharedCtor() {
+  _cached_size_ = 0;
+}
+
+MetaInteger::~MetaInteger() {
+  // @@protoc_insertion_point(destructor:TuriCreate.Annotation.Specification.MetaInteger)
+  SharedDtor();
+}
+
+void MetaInteger::SharedDtor() {
+}
+
+void MetaInteger::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const MetaInteger& MetaInteger::default_instance() {
+  protobuf_meta_2eproto::InitDefaults();
+  return *internal_default_instance();
+}
+
+MetaInteger* MetaInteger::New(::google::protobuf::Arena* arena) const {
+  MetaInteger* n = new MetaInteger;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void MetaInteger::Clear() {
+// @@protoc_insertion_point(message_clear_start:TuriCreate.Annotation.Specification.MetaInteger)
+  labels_.Clear();
+}
+
+bool MetaInteger::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:TuriCreate.Annotation.Specification.MetaInteger)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated int64 labels = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, this->mutable_labels())));
+        } else if (static_cast< ::google::protobuf::uint8>(tag) ==
+                   static_cast< ::google::protobuf::uint8>(8u)) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 1, 10u, input, this->mutable_labels())));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:TuriCreate.Annotation.Specification.MetaInteger)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:TuriCreate.Annotation.Specification.MetaInteger)
+  return false;
+#undef DO_
+}
+
+void MetaInteger::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:TuriCreate.Annotation.Specification.MetaInteger)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated int64 labels = 1;
+  if (this->labels_size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteTag(1, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
+    output->WriteVarint32(_labels_cached_byte_size_);
+  }
+  for (int i = 0, n = this->labels_size(); i < n; i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64NoTag(
+      this->labels(i), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:TuriCreate.Annotation.Specification.MetaInteger)
+}
+
+size_t MetaInteger::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:TuriCreate.Annotation.Specification.MetaInteger)
+  size_t total_size = 0;
+
+  // repeated int64 labels = 1;
+  {
+    size_t data_size = ::google::protobuf::internal::WireFormatLite::
+      Int64Size(this->labels_);
+    if (data_size > 0) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
+    }
+    int cached_size = ::google::protobuf::internal::ToCachedSize(data_size);
+    GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+    _labels_cached_byte_size_ = cached_size;
+    GOOGLE_SAFE_CONCURRENT_WRITES_END();
+    total_size += data_size;
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void MetaInteger::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const MetaInteger*>(&from));
+}
+
+void MetaInteger::MergeFrom(const MetaInteger& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:TuriCreate.Annotation.Specification.MetaInteger)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  labels_.MergeFrom(from.labels_);
+}
+
+void MetaInteger::CopyFrom(const MetaInteger& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:TuriCreate.Annotation.Specification.MetaInteger)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool MetaInteger::IsInitialized() const {
+  return true;
+}
+
+void MetaInteger::Swap(MetaInteger* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void MetaInteger::InternalSwap(MetaInteger* other) {
+  labels_.InternalSwap(&other->labels_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::std::string MetaInteger::GetTypeName() const {
+  return "TuriCreate.Annotation.Specification.MetaInteger";
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// MetaInteger
+
+// repeated int64 labels = 1;
+int MetaInteger::labels_size() const {
+  return labels_.size();
+}
+void MetaInteger::clear_labels() {
+  labels_.Clear();
+}
+::google::protobuf::int64 MetaInteger::labels(int index) const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.MetaInteger.labels)
+  return labels_.Get(index);
+}
+void MetaInteger::set_labels(int index, ::google::protobuf::int64 value) {
+  labels_.Set(index, value);
+  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.MetaInteger.labels)
+}
+void MetaInteger::add_labels(::google::protobuf::int64 value) {
+  labels_.Add(value);
+  // @@protoc_insertion_point(field_add:TuriCreate.Annotation.Specification.MetaInteger.labels)
+}
+const ::google::protobuf::RepeatedField< ::google::protobuf::int64 >&
+MetaInteger::labels() const {
+  // @@protoc_insertion_point(field_list:TuriCreate.Annotation.Specification.MetaInteger.labels)
+  return labels_;
+}
+::google::protobuf::RepeatedField< ::google::protobuf::int64 >*
+MetaInteger::mutable_labels() {
+  // @@protoc_insertion_point(field_mutable_list:TuriCreate.Annotation.Specification.MetaInteger.labels)
+  return &labels_;
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int ActivityClassificationMeta::kStringsFieldNumber;
+const int ActivityClassificationMeta::kIntegersFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ActivityClassificationMeta::ActivityClassificationMeta()
@@ -121,13 +630,27 @@ ActivityClassificationMeta::ActivityClassificationMeta()
 ActivityClassificationMeta::ActivityClassificationMeta(const ActivityClassificationMeta& from)
   : ::google::protobuf::MessageLite(),
       _internal_metadata_(NULL),
-      labels_(from.labels_),
       _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
+  clear_has_Label();
+  switch (from.Label_case()) {
+    case kStrings: {
+      mutable_strings()->::TuriCreate::Annotation::Specification::MetaString::MergeFrom(from.strings());
+      break;
+    }
+    case kIntegers: {
+      mutable_integers()->::TuriCreate::Annotation::Specification::MetaInteger::MergeFrom(from.integers());
+      break;
+    }
+    case LABEL_NOT_SET: {
+      break;
+    }
+  }
   // @@protoc_insertion_point(copy_constructor:TuriCreate.Annotation.Specification.ActivityClassificationMeta)
 }
 
 void ActivityClassificationMeta::SharedCtor() {
+  clear_has_Label();
   _cached_size_ = 0;
 }
 
@@ -137,6 +660,9 @@ ActivityClassificationMeta::~ActivityClassificationMeta() {
 }
 
 void ActivityClassificationMeta::SharedDtor() {
+  if (has_Label()) {
+    clear_Label();
+  }
 }
 
 void ActivityClassificationMeta::SetCachedSize(int size) const {
@@ -157,9 +683,28 @@ ActivityClassificationMeta* ActivityClassificationMeta::New(::google::protobuf::
   return n;
 }
 
+void ActivityClassificationMeta::clear_Label() {
+// @@protoc_insertion_point(one_of_clear_start:TuriCreate.Annotation.Specification.ActivityClassificationMeta)
+  switch (Label_case()) {
+    case kStrings: {
+      delete Label_.strings_;
+      break;
+    }
+    case kIntegers: {
+      delete Label_.integers_;
+      break;
+    }
+    case LABEL_NOT_SET: {
+      break;
+    }
+  }
+  _oneof_case_[0] = LABEL_NOT_SET;
+}
+
+
 void ActivityClassificationMeta::Clear() {
 // @@protoc_insertion_point(message_clear_start:TuriCreate.Annotation.Specification.ActivityClassificationMeta)
-  labels_.Clear();
+  clear_Label();
 }
 
 bool ActivityClassificationMeta::MergePartialFromCodedStream(
@@ -172,17 +717,24 @@ bool ActivityClassificationMeta::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated string labels = 1;
+      // .TuriCreate.Annotation.Specification.MetaString strings = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(10u)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->add_labels()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->labels(this->labels_size() - 1).data(),
-            this->labels(this->labels_size() - 1).length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "TuriCreate.Annotation.Specification.ActivityClassificationMeta.labels"));
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_strings()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .TuriCreate.Annotation.Specification.MetaInteger integers = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_integers()));
         } else {
           goto handle_unusual;
         }
@@ -216,14 +768,16 @@ void ActivityClassificationMeta::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // repeated string labels = 1;
-  for (int i = 0, n = this->labels_size(); i < n; i++) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->labels(i).data(), this->labels(i).length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "TuriCreate.Annotation.Specification.ActivityClassificationMeta.labels");
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      1, this->labels(i), output);
+  // .TuriCreate.Annotation.Specification.MetaString strings = 1;
+  if (has_strings()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      1, *Label_.strings_, output);
+  }
+
+  // .TuriCreate.Annotation.Specification.MetaInteger integers = 2;
+  if (has_integers()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      2, *Label_.integers_, output);
   }
 
   // @@protoc_insertion_point(serialize_end:TuriCreate.Annotation.Specification.ActivityClassificationMeta)
@@ -233,14 +787,25 @@ size_t ActivityClassificationMeta::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:TuriCreate.Annotation.Specification.ActivityClassificationMeta)
   size_t total_size = 0;
 
-  // repeated string labels = 1;
-  total_size += 1 *
-      ::google::protobuf::internal::FromIntSize(this->labels_size());
-  for (int i = 0, n = this->labels_size(); i < n; i++) {
-    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
-      this->labels(i));
+  switch (Label_case()) {
+    // .TuriCreate.Annotation.Specification.MetaString strings = 1;
+    case kStrings: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *Label_.strings_);
+      break;
+    }
+    // .TuriCreate.Annotation.Specification.MetaInteger integers = 2;
+    case kIntegers: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *Label_.integers_);
+      break;
+    }
+    case LABEL_NOT_SET: {
+      break;
+    }
   }
-
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = cached_size;
@@ -260,7 +825,19 @@ void ActivityClassificationMeta::MergeFrom(const ActivityClassificationMeta& fro
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  labels_.MergeFrom(from.labels_);
+  switch (from.Label_case()) {
+    case kStrings: {
+      mutable_strings()->::TuriCreate::Annotation::Specification::MetaString::MergeFrom(from.strings());
+      break;
+    }
+    case kIntegers: {
+      mutable_integers()->::TuriCreate::Annotation::Specification::MetaInteger::MergeFrom(from.integers());
+      break;
+    }
+    case LABEL_NOT_SET: {
+      break;
+    }
+  }
 }
 
 void ActivityClassificationMeta::CopyFrom(const ActivityClassificationMeta& from) {
@@ -279,7 +856,8 @@ void ActivityClassificationMeta::Swap(ActivityClassificationMeta* other) {
   InternalSwap(other);
 }
 void ActivityClassificationMeta::InternalSwap(ActivityClassificationMeta* other) {
-  labels_.InternalSwap(&other->labels_);
+  std::swap(Label_, other->Label_);
+  std::swap(_oneof_case_[0], other->_oneof_case_[0]);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -290,81 +868,118 @@ void ActivityClassificationMeta::InternalSwap(ActivityClassificationMeta* other)
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // ActivityClassificationMeta
 
-// repeated string labels = 1;
-int ActivityClassificationMeta::labels_size() const {
-  return labels_.size();
+// .TuriCreate.Annotation.Specification.MetaString strings = 1;
+bool ActivityClassificationMeta::has_strings() const {
+  return Label_case() == kStrings;
 }
-void ActivityClassificationMeta::clear_labels() {
-  labels_.Clear();
+void ActivityClassificationMeta::set_has_strings() {
+  _oneof_case_[0] = kStrings;
 }
-const ::std::string& ActivityClassificationMeta::labels(int index) const {
-  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.ActivityClassificationMeta.labels)
-  return labels_.Get(index);
+void ActivityClassificationMeta::clear_strings() {
+  if (has_strings()) {
+    delete Label_.strings_;
+    clear_has_Label();
+  }
 }
-::std::string* ActivityClassificationMeta::mutable_labels(int index) {
-  // @@protoc_insertion_point(field_mutable:TuriCreate.Annotation.Specification.ActivityClassificationMeta.labels)
-  return labels_.Mutable(index);
+ const ::TuriCreate::Annotation::Specification::MetaString& ActivityClassificationMeta::strings() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.ActivityClassificationMeta.strings)
+  return has_strings()
+      ? *Label_.strings_
+      : ::TuriCreate::Annotation::Specification::MetaString::default_instance();
 }
-void ActivityClassificationMeta::set_labels(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.ActivityClassificationMeta.labels)
-  labels_.Mutable(index)->assign(value);
+::TuriCreate::Annotation::Specification::MetaString* ActivityClassificationMeta::mutable_strings() {
+  if (!has_strings()) {
+    clear_Label();
+    set_has_strings();
+    Label_.strings_ = new ::TuriCreate::Annotation::Specification::MetaString;
+  }
+  // @@protoc_insertion_point(field_mutable:TuriCreate.Annotation.Specification.ActivityClassificationMeta.strings)
+  return Label_.strings_;
 }
-#if LANG_CXX11
-void ActivityClassificationMeta::set_labels(int index, ::std::string&& value) {
-  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.ActivityClassificationMeta.labels)
-  labels_.Mutable(index)->assign(std::move(value));
+::TuriCreate::Annotation::Specification::MetaString* ActivityClassificationMeta::release_strings() {
+  // @@protoc_insertion_point(field_release:TuriCreate.Annotation.Specification.ActivityClassificationMeta.strings)
+  if (has_strings()) {
+    clear_has_Label();
+    ::TuriCreate::Annotation::Specification::MetaString* temp = Label_.strings_;
+    Label_.strings_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
 }
-#endif
-void ActivityClassificationMeta::set_labels(int index, const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  labels_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:TuriCreate.Annotation.Specification.ActivityClassificationMeta.labels)
-}
-void ActivityClassificationMeta::set_labels(int index, const char* value, size_t size) {
-  labels_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:TuriCreate.Annotation.Specification.ActivityClassificationMeta.labels)
-}
-::std::string* ActivityClassificationMeta::add_labels() {
-  // @@protoc_insertion_point(field_add_mutable:TuriCreate.Annotation.Specification.ActivityClassificationMeta.labels)
-  return labels_.Add();
-}
-void ActivityClassificationMeta::add_labels(const ::std::string& value) {
-  labels_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:TuriCreate.Annotation.Specification.ActivityClassificationMeta.labels)
-}
-#if LANG_CXX11
-void ActivityClassificationMeta::add_labels(::std::string&& value) {
-  labels_.Add(std::move(value));
-  // @@protoc_insertion_point(field_add:TuriCreate.Annotation.Specification.ActivityClassificationMeta.labels)
-}
-#endif
-void ActivityClassificationMeta::add_labels(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  labels_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:TuriCreate.Annotation.Specification.ActivityClassificationMeta.labels)
-}
-void ActivityClassificationMeta::add_labels(const char* value, size_t size) {
-  labels_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:TuriCreate.Annotation.Specification.ActivityClassificationMeta.labels)
-}
-const ::google::protobuf::RepeatedPtrField< ::std::string>&
-ActivityClassificationMeta::labels() const {
-  // @@protoc_insertion_point(field_list:TuriCreate.Annotation.Specification.ActivityClassificationMeta.labels)
-  return labels_;
-}
-::google::protobuf::RepeatedPtrField< ::std::string>*
-ActivityClassificationMeta::mutable_labels() {
-  // @@protoc_insertion_point(field_mutable_list:TuriCreate.Annotation.Specification.ActivityClassificationMeta.labels)
-  return &labels_;
+void ActivityClassificationMeta::set_allocated_strings(::TuriCreate::Annotation::Specification::MetaString* strings) {
+  clear_Label();
+  if (strings) {
+    set_has_strings();
+    Label_.strings_ = strings;
+  }
+  // @@protoc_insertion_point(field_set_allocated:TuriCreate.Annotation.Specification.ActivityClassificationMeta.strings)
 }
 
+// .TuriCreate.Annotation.Specification.MetaInteger integers = 2;
+bool ActivityClassificationMeta::has_integers() const {
+  return Label_case() == kIntegers;
+}
+void ActivityClassificationMeta::set_has_integers() {
+  _oneof_case_[0] = kIntegers;
+}
+void ActivityClassificationMeta::clear_integers() {
+  if (has_integers()) {
+    delete Label_.integers_;
+    clear_has_Label();
+  }
+}
+ const ::TuriCreate::Annotation::Specification::MetaInteger& ActivityClassificationMeta::integers() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.ActivityClassificationMeta.integers)
+  return has_integers()
+      ? *Label_.integers_
+      : ::TuriCreate::Annotation::Specification::MetaInteger::default_instance();
+}
+::TuriCreate::Annotation::Specification::MetaInteger* ActivityClassificationMeta::mutable_integers() {
+  if (!has_integers()) {
+    clear_Label();
+    set_has_integers();
+    Label_.integers_ = new ::TuriCreate::Annotation::Specification::MetaInteger;
+  }
+  // @@protoc_insertion_point(field_mutable:TuriCreate.Annotation.Specification.ActivityClassificationMeta.integers)
+  return Label_.integers_;
+}
+::TuriCreate::Annotation::Specification::MetaInteger* ActivityClassificationMeta::release_integers() {
+  // @@protoc_insertion_point(field_release:TuriCreate.Annotation.Specification.ActivityClassificationMeta.integers)
+  if (has_integers()) {
+    clear_has_Label();
+    ::TuriCreate::Annotation::Specification::MetaInteger* temp = Label_.integers_;
+    Label_.integers_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void ActivityClassificationMeta::set_allocated_integers(::TuriCreate::Annotation::Specification::MetaInteger* integers) {
+  clear_Label();
+  if (integers) {
+    set_has_integers();
+    Label_.integers_ = integers;
+  }
+  // @@protoc_insertion_point(field_set_allocated:TuriCreate.Annotation.Specification.ActivityClassificationMeta.integers)
+}
+
+bool ActivityClassificationMeta::has_Label() const {
+  return Label_case() != LABEL_NOT_SET;
+}
+void ActivityClassificationMeta::clear_has_Label() {
+  _oneof_case_[0] = LABEL_NOT_SET;
+}
+ActivityClassificationMeta::LabelCase ActivityClassificationMeta::Label_case() const {
+  return ActivityClassificationMeta::LabelCase(_oneof_case_[0]);
+}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int AudioClassificationMeta::kLabelsFieldNumber;
+const int AudioClassificationMeta::kStringsFieldNumber;
+const int AudioClassificationMeta::kIntegersFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 AudioClassificationMeta::AudioClassificationMeta()
@@ -378,13 +993,27 @@ AudioClassificationMeta::AudioClassificationMeta()
 AudioClassificationMeta::AudioClassificationMeta(const AudioClassificationMeta& from)
   : ::google::protobuf::MessageLite(),
       _internal_metadata_(NULL),
-      labels_(from.labels_),
       _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
+  clear_has_Label();
+  switch (from.Label_case()) {
+    case kStrings: {
+      mutable_strings()->::TuriCreate::Annotation::Specification::MetaString::MergeFrom(from.strings());
+      break;
+    }
+    case kIntegers: {
+      mutable_integers()->::TuriCreate::Annotation::Specification::MetaInteger::MergeFrom(from.integers());
+      break;
+    }
+    case LABEL_NOT_SET: {
+      break;
+    }
+  }
   // @@protoc_insertion_point(copy_constructor:TuriCreate.Annotation.Specification.AudioClassificationMeta)
 }
 
 void AudioClassificationMeta::SharedCtor() {
+  clear_has_Label();
   _cached_size_ = 0;
 }
 
@@ -394,6 +1023,9 @@ AudioClassificationMeta::~AudioClassificationMeta() {
 }
 
 void AudioClassificationMeta::SharedDtor() {
+  if (has_Label()) {
+    clear_Label();
+  }
 }
 
 void AudioClassificationMeta::SetCachedSize(int size) const {
@@ -414,9 +1046,28 @@ AudioClassificationMeta* AudioClassificationMeta::New(::google::protobuf::Arena*
   return n;
 }
 
+void AudioClassificationMeta::clear_Label() {
+// @@protoc_insertion_point(one_of_clear_start:TuriCreate.Annotation.Specification.AudioClassificationMeta)
+  switch (Label_case()) {
+    case kStrings: {
+      delete Label_.strings_;
+      break;
+    }
+    case kIntegers: {
+      delete Label_.integers_;
+      break;
+    }
+    case LABEL_NOT_SET: {
+      break;
+    }
+  }
+  _oneof_case_[0] = LABEL_NOT_SET;
+}
+
+
 void AudioClassificationMeta::Clear() {
 // @@protoc_insertion_point(message_clear_start:TuriCreate.Annotation.Specification.AudioClassificationMeta)
-  labels_.Clear();
+  clear_Label();
 }
 
 bool AudioClassificationMeta::MergePartialFromCodedStream(
@@ -429,17 +1080,24 @@ bool AudioClassificationMeta::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated string labels = 1;
+      // .TuriCreate.Annotation.Specification.MetaString strings = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(10u)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->add_labels()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->labels(this->labels_size() - 1).data(),
-            this->labels(this->labels_size() - 1).length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "TuriCreate.Annotation.Specification.AudioClassificationMeta.labels"));
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_strings()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .TuriCreate.Annotation.Specification.MetaInteger integers = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_integers()));
         } else {
           goto handle_unusual;
         }
@@ -473,14 +1131,16 @@ void AudioClassificationMeta::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // repeated string labels = 1;
-  for (int i = 0, n = this->labels_size(); i < n; i++) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->labels(i).data(), this->labels(i).length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "TuriCreate.Annotation.Specification.AudioClassificationMeta.labels");
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      1, this->labels(i), output);
+  // .TuriCreate.Annotation.Specification.MetaString strings = 1;
+  if (has_strings()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      1, *Label_.strings_, output);
+  }
+
+  // .TuriCreate.Annotation.Specification.MetaInteger integers = 2;
+  if (has_integers()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      2, *Label_.integers_, output);
   }
 
   // @@protoc_insertion_point(serialize_end:TuriCreate.Annotation.Specification.AudioClassificationMeta)
@@ -490,14 +1150,25 @@ size_t AudioClassificationMeta::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:TuriCreate.Annotation.Specification.AudioClassificationMeta)
   size_t total_size = 0;
 
-  // repeated string labels = 1;
-  total_size += 1 *
-      ::google::protobuf::internal::FromIntSize(this->labels_size());
-  for (int i = 0, n = this->labels_size(); i < n; i++) {
-    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
-      this->labels(i));
+  switch (Label_case()) {
+    // .TuriCreate.Annotation.Specification.MetaString strings = 1;
+    case kStrings: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *Label_.strings_);
+      break;
+    }
+    // .TuriCreate.Annotation.Specification.MetaInteger integers = 2;
+    case kIntegers: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *Label_.integers_);
+      break;
+    }
+    case LABEL_NOT_SET: {
+      break;
+    }
   }
-
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = cached_size;
@@ -517,7 +1188,19 @@ void AudioClassificationMeta::MergeFrom(const AudioClassificationMeta& from) {
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  labels_.MergeFrom(from.labels_);
+  switch (from.Label_case()) {
+    case kStrings: {
+      mutable_strings()->::TuriCreate::Annotation::Specification::MetaString::MergeFrom(from.strings());
+      break;
+    }
+    case kIntegers: {
+      mutable_integers()->::TuriCreate::Annotation::Specification::MetaInteger::MergeFrom(from.integers());
+      break;
+    }
+    case LABEL_NOT_SET: {
+      break;
+    }
+  }
 }
 
 void AudioClassificationMeta::CopyFrom(const AudioClassificationMeta& from) {
@@ -536,7 +1219,8 @@ void AudioClassificationMeta::Swap(AudioClassificationMeta* other) {
   InternalSwap(other);
 }
 void AudioClassificationMeta::InternalSwap(AudioClassificationMeta* other) {
-  labels_.InternalSwap(&other->labels_);
+  std::swap(Label_, other->Label_);
+  std::swap(_oneof_case_[0], other->_oneof_case_[0]);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -547,81 +1231,118 @@ void AudioClassificationMeta::InternalSwap(AudioClassificationMeta* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // AudioClassificationMeta
 
-// repeated string labels = 1;
-int AudioClassificationMeta::labels_size() const {
-  return labels_.size();
+// .TuriCreate.Annotation.Specification.MetaString strings = 1;
+bool AudioClassificationMeta::has_strings() const {
+  return Label_case() == kStrings;
 }
-void AudioClassificationMeta::clear_labels() {
-  labels_.Clear();
+void AudioClassificationMeta::set_has_strings() {
+  _oneof_case_[0] = kStrings;
 }
-const ::std::string& AudioClassificationMeta::labels(int index) const {
-  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.AudioClassificationMeta.labels)
-  return labels_.Get(index);
+void AudioClassificationMeta::clear_strings() {
+  if (has_strings()) {
+    delete Label_.strings_;
+    clear_has_Label();
+  }
 }
-::std::string* AudioClassificationMeta::mutable_labels(int index) {
-  // @@protoc_insertion_point(field_mutable:TuriCreate.Annotation.Specification.AudioClassificationMeta.labels)
-  return labels_.Mutable(index);
+ const ::TuriCreate::Annotation::Specification::MetaString& AudioClassificationMeta::strings() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.AudioClassificationMeta.strings)
+  return has_strings()
+      ? *Label_.strings_
+      : ::TuriCreate::Annotation::Specification::MetaString::default_instance();
 }
-void AudioClassificationMeta::set_labels(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.AudioClassificationMeta.labels)
-  labels_.Mutable(index)->assign(value);
+::TuriCreate::Annotation::Specification::MetaString* AudioClassificationMeta::mutable_strings() {
+  if (!has_strings()) {
+    clear_Label();
+    set_has_strings();
+    Label_.strings_ = new ::TuriCreate::Annotation::Specification::MetaString;
+  }
+  // @@protoc_insertion_point(field_mutable:TuriCreate.Annotation.Specification.AudioClassificationMeta.strings)
+  return Label_.strings_;
 }
-#if LANG_CXX11
-void AudioClassificationMeta::set_labels(int index, ::std::string&& value) {
-  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.AudioClassificationMeta.labels)
-  labels_.Mutable(index)->assign(std::move(value));
+::TuriCreate::Annotation::Specification::MetaString* AudioClassificationMeta::release_strings() {
+  // @@protoc_insertion_point(field_release:TuriCreate.Annotation.Specification.AudioClassificationMeta.strings)
+  if (has_strings()) {
+    clear_has_Label();
+    ::TuriCreate::Annotation::Specification::MetaString* temp = Label_.strings_;
+    Label_.strings_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
 }
-#endif
-void AudioClassificationMeta::set_labels(int index, const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  labels_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:TuriCreate.Annotation.Specification.AudioClassificationMeta.labels)
-}
-void AudioClassificationMeta::set_labels(int index, const char* value, size_t size) {
-  labels_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:TuriCreate.Annotation.Specification.AudioClassificationMeta.labels)
-}
-::std::string* AudioClassificationMeta::add_labels() {
-  // @@protoc_insertion_point(field_add_mutable:TuriCreate.Annotation.Specification.AudioClassificationMeta.labels)
-  return labels_.Add();
-}
-void AudioClassificationMeta::add_labels(const ::std::string& value) {
-  labels_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:TuriCreate.Annotation.Specification.AudioClassificationMeta.labels)
-}
-#if LANG_CXX11
-void AudioClassificationMeta::add_labels(::std::string&& value) {
-  labels_.Add(std::move(value));
-  // @@protoc_insertion_point(field_add:TuriCreate.Annotation.Specification.AudioClassificationMeta.labels)
-}
-#endif
-void AudioClassificationMeta::add_labels(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  labels_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:TuriCreate.Annotation.Specification.AudioClassificationMeta.labels)
-}
-void AudioClassificationMeta::add_labels(const char* value, size_t size) {
-  labels_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:TuriCreate.Annotation.Specification.AudioClassificationMeta.labels)
-}
-const ::google::protobuf::RepeatedPtrField< ::std::string>&
-AudioClassificationMeta::labels() const {
-  // @@protoc_insertion_point(field_list:TuriCreate.Annotation.Specification.AudioClassificationMeta.labels)
-  return labels_;
-}
-::google::protobuf::RepeatedPtrField< ::std::string>*
-AudioClassificationMeta::mutable_labels() {
-  // @@protoc_insertion_point(field_mutable_list:TuriCreate.Annotation.Specification.AudioClassificationMeta.labels)
-  return &labels_;
+void AudioClassificationMeta::set_allocated_strings(::TuriCreate::Annotation::Specification::MetaString* strings) {
+  clear_Label();
+  if (strings) {
+    set_has_strings();
+    Label_.strings_ = strings;
+  }
+  // @@protoc_insertion_point(field_set_allocated:TuriCreate.Annotation.Specification.AudioClassificationMeta.strings)
 }
 
+// .TuriCreate.Annotation.Specification.MetaInteger integers = 2;
+bool AudioClassificationMeta::has_integers() const {
+  return Label_case() == kIntegers;
+}
+void AudioClassificationMeta::set_has_integers() {
+  _oneof_case_[0] = kIntegers;
+}
+void AudioClassificationMeta::clear_integers() {
+  if (has_integers()) {
+    delete Label_.integers_;
+    clear_has_Label();
+  }
+}
+ const ::TuriCreate::Annotation::Specification::MetaInteger& AudioClassificationMeta::integers() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.AudioClassificationMeta.integers)
+  return has_integers()
+      ? *Label_.integers_
+      : ::TuriCreate::Annotation::Specification::MetaInteger::default_instance();
+}
+::TuriCreate::Annotation::Specification::MetaInteger* AudioClassificationMeta::mutable_integers() {
+  if (!has_integers()) {
+    clear_Label();
+    set_has_integers();
+    Label_.integers_ = new ::TuriCreate::Annotation::Specification::MetaInteger;
+  }
+  // @@protoc_insertion_point(field_mutable:TuriCreate.Annotation.Specification.AudioClassificationMeta.integers)
+  return Label_.integers_;
+}
+::TuriCreate::Annotation::Specification::MetaInteger* AudioClassificationMeta::release_integers() {
+  // @@protoc_insertion_point(field_release:TuriCreate.Annotation.Specification.AudioClassificationMeta.integers)
+  if (has_integers()) {
+    clear_has_Label();
+    ::TuriCreate::Annotation::Specification::MetaInteger* temp = Label_.integers_;
+    Label_.integers_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void AudioClassificationMeta::set_allocated_integers(::TuriCreate::Annotation::Specification::MetaInteger* integers) {
+  clear_Label();
+  if (integers) {
+    set_has_integers();
+    Label_.integers_ = integers;
+  }
+  // @@protoc_insertion_point(field_set_allocated:TuriCreate.Annotation.Specification.AudioClassificationMeta.integers)
+}
+
+bool AudioClassificationMeta::has_Label() const {
+  return Label_case() != LABEL_NOT_SET;
+}
+void AudioClassificationMeta::clear_has_Label() {
+  _oneof_case_[0] = LABEL_NOT_SET;
+}
+AudioClassificationMeta::LabelCase AudioClassificationMeta::Label_case() const {
+  return AudioClassificationMeta::LabelCase(_oneof_case_[0]);
+}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int DrawingClassificationMeta::kLabelsFieldNumber;
+const int DrawingClassificationMeta::kStringsFieldNumber;
+const int DrawingClassificationMeta::kIntegersFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 DrawingClassificationMeta::DrawingClassificationMeta()
@@ -635,13 +1356,27 @@ DrawingClassificationMeta::DrawingClassificationMeta()
 DrawingClassificationMeta::DrawingClassificationMeta(const DrawingClassificationMeta& from)
   : ::google::protobuf::MessageLite(),
       _internal_metadata_(NULL),
-      labels_(from.labels_),
       _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
+  clear_has_Label();
+  switch (from.Label_case()) {
+    case kStrings: {
+      mutable_strings()->::TuriCreate::Annotation::Specification::MetaString::MergeFrom(from.strings());
+      break;
+    }
+    case kIntegers: {
+      mutable_integers()->::TuriCreate::Annotation::Specification::MetaInteger::MergeFrom(from.integers());
+      break;
+    }
+    case LABEL_NOT_SET: {
+      break;
+    }
+  }
   // @@protoc_insertion_point(copy_constructor:TuriCreate.Annotation.Specification.DrawingClassificationMeta)
 }
 
 void DrawingClassificationMeta::SharedCtor() {
+  clear_has_Label();
   _cached_size_ = 0;
 }
 
@@ -651,6 +1386,9 @@ DrawingClassificationMeta::~DrawingClassificationMeta() {
 }
 
 void DrawingClassificationMeta::SharedDtor() {
+  if (has_Label()) {
+    clear_Label();
+  }
 }
 
 void DrawingClassificationMeta::SetCachedSize(int size) const {
@@ -671,9 +1409,28 @@ DrawingClassificationMeta* DrawingClassificationMeta::New(::google::protobuf::Ar
   return n;
 }
 
+void DrawingClassificationMeta::clear_Label() {
+// @@protoc_insertion_point(one_of_clear_start:TuriCreate.Annotation.Specification.DrawingClassificationMeta)
+  switch (Label_case()) {
+    case kStrings: {
+      delete Label_.strings_;
+      break;
+    }
+    case kIntegers: {
+      delete Label_.integers_;
+      break;
+    }
+    case LABEL_NOT_SET: {
+      break;
+    }
+  }
+  _oneof_case_[0] = LABEL_NOT_SET;
+}
+
+
 void DrawingClassificationMeta::Clear() {
 // @@protoc_insertion_point(message_clear_start:TuriCreate.Annotation.Specification.DrawingClassificationMeta)
-  labels_.Clear();
+  clear_Label();
 }
 
 bool DrawingClassificationMeta::MergePartialFromCodedStream(
@@ -686,17 +1443,24 @@ bool DrawingClassificationMeta::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated string labels = 1;
+      // .TuriCreate.Annotation.Specification.MetaString strings = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(10u)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->add_labels()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->labels(this->labels_size() - 1).data(),
-            this->labels(this->labels_size() - 1).length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "TuriCreate.Annotation.Specification.DrawingClassificationMeta.labels"));
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_strings()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .TuriCreate.Annotation.Specification.MetaInteger integers = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_integers()));
         } else {
           goto handle_unusual;
         }
@@ -730,14 +1494,16 @@ void DrawingClassificationMeta::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // repeated string labels = 1;
-  for (int i = 0, n = this->labels_size(); i < n; i++) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->labels(i).data(), this->labels(i).length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "TuriCreate.Annotation.Specification.DrawingClassificationMeta.labels");
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      1, this->labels(i), output);
+  // .TuriCreate.Annotation.Specification.MetaString strings = 1;
+  if (has_strings()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      1, *Label_.strings_, output);
+  }
+
+  // .TuriCreate.Annotation.Specification.MetaInteger integers = 2;
+  if (has_integers()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      2, *Label_.integers_, output);
   }
 
   // @@protoc_insertion_point(serialize_end:TuriCreate.Annotation.Specification.DrawingClassificationMeta)
@@ -747,14 +1513,25 @@ size_t DrawingClassificationMeta::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:TuriCreate.Annotation.Specification.DrawingClassificationMeta)
   size_t total_size = 0;
 
-  // repeated string labels = 1;
-  total_size += 1 *
-      ::google::protobuf::internal::FromIntSize(this->labels_size());
-  for (int i = 0, n = this->labels_size(); i < n; i++) {
-    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
-      this->labels(i));
+  switch (Label_case()) {
+    // .TuriCreate.Annotation.Specification.MetaString strings = 1;
+    case kStrings: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *Label_.strings_);
+      break;
+    }
+    // .TuriCreate.Annotation.Specification.MetaInteger integers = 2;
+    case kIntegers: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *Label_.integers_);
+      break;
+    }
+    case LABEL_NOT_SET: {
+      break;
+    }
   }
-
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = cached_size;
@@ -774,7 +1551,19 @@ void DrawingClassificationMeta::MergeFrom(const DrawingClassificationMeta& from)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  labels_.MergeFrom(from.labels_);
+  switch (from.Label_case()) {
+    case kStrings: {
+      mutable_strings()->::TuriCreate::Annotation::Specification::MetaString::MergeFrom(from.strings());
+      break;
+    }
+    case kIntegers: {
+      mutable_integers()->::TuriCreate::Annotation::Specification::MetaInteger::MergeFrom(from.integers());
+      break;
+    }
+    case LABEL_NOT_SET: {
+      break;
+    }
+  }
 }
 
 void DrawingClassificationMeta::CopyFrom(const DrawingClassificationMeta& from) {
@@ -793,7 +1582,8 @@ void DrawingClassificationMeta::Swap(DrawingClassificationMeta* other) {
   InternalSwap(other);
 }
 void DrawingClassificationMeta::InternalSwap(DrawingClassificationMeta* other) {
-  labels_.InternalSwap(&other->labels_);
+  std::swap(Label_, other->Label_);
+  std::swap(_oneof_case_[0], other->_oneof_case_[0]);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -804,81 +1594,118 @@ void DrawingClassificationMeta::InternalSwap(DrawingClassificationMeta* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // DrawingClassificationMeta
 
-// repeated string labels = 1;
-int DrawingClassificationMeta::labels_size() const {
-  return labels_.size();
+// .TuriCreate.Annotation.Specification.MetaString strings = 1;
+bool DrawingClassificationMeta::has_strings() const {
+  return Label_case() == kStrings;
 }
-void DrawingClassificationMeta::clear_labels() {
-  labels_.Clear();
+void DrawingClassificationMeta::set_has_strings() {
+  _oneof_case_[0] = kStrings;
 }
-const ::std::string& DrawingClassificationMeta::labels(int index) const {
-  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.DrawingClassificationMeta.labels)
-  return labels_.Get(index);
+void DrawingClassificationMeta::clear_strings() {
+  if (has_strings()) {
+    delete Label_.strings_;
+    clear_has_Label();
+  }
 }
-::std::string* DrawingClassificationMeta::mutable_labels(int index) {
-  // @@protoc_insertion_point(field_mutable:TuriCreate.Annotation.Specification.DrawingClassificationMeta.labels)
-  return labels_.Mutable(index);
+ const ::TuriCreate::Annotation::Specification::MetaString& DrawingClassificationMeta::strings() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.DrawingClassificationMeta.strings)
+  return has_strings()
+      ? *Label_.strings_
+      : ::TuriCreate::Annotation::Specification::MetaString::default_instance();
 }
-void DrawingClassificationMeta::set_labels(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.DrawingClassificationMeta.labels)
-  labels_.Mutable(index)->assign(value);
+::TuriCreate::Annotation::Specification::MetaString* DrawingClassificationMeta::mutable_strings() {
+  if (!has_strings()) {
+    clear_Label();
+    set_has_strings();
+    Label_.strings_ = new ::TuriCreate::Annotation::Specification::MetaString;
+  }
+  // @@protoc_insertion_point(field_mutable:TuriCreate.Annotation.Specification.DrawingClassificationMeta.strings)
+  return Label_.strings_;
 }
-#if LANG_CXX11
-void DrawingClassificationMeta::set_labels(int index, ::std::string&& value) {
-  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.DrawingClassificationMeta.labels)
-  labels_.Mutable(index)->assign(std::move(value));
+::TuriCreate::Annotation::Specification::MetaString* DrawingClassificationMeta::release_strings() {
+  // @@protoc_insertion_point(field_release:TuriCreate.Annotation.Specification.DrawingClassificationMeta.strings)
+  if (has_strings()) {
+    clear_has_Label();
+    ::TuriCreate::Annotation::Specification::MetaString* temp = Label_.strings_;
+    Label_.strings_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
 }
-#endif
-void DrawingClassificationMeta::set_labels(int index, const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  labels_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:TuriCreate.Annotation.Specification.DrawingClassificationMeta.labels)
-}
-void DrawingClassificationMeta::set_labels(int index, const char* value, size_t size) {
-  labels_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:TuriCreate.Annotation.Specification.DrawingClassificationMeta.labels)
-}
-::std::string* DrawingClassificationMeta::add_labels() {
-  // @@protoc_insertion_point(field_add_mutable:TuriCreate.Annotation.Specification.DrawingClassificationMeta.labels)
-  return labels_.Add();
-}
-void DrawingClassificationMeta::add_labels(const ::std::string& value) {
-  labels_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:TuriCreate.Annotation.Specification.DrawingClassificationMeta.labels)
-}
-#if LANG_CXX11
-void DrawingClassificationMeta::add_labels(::std::string&& value) {
-  labels_.Add(std::move(value));
-  // @@protoc_insertion_point(field_add:TuriCreate.Annotation.Specification.DrawingClassificationMeta.labels)
-}
-#endif
-void DrawingClassificationMeta::add_labels(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  labels_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:TuriCreate.Annotation.Specification.DrawingClassificationMeta.labels)
-}
-void DrawingClassificationMeta::add_labels(const char* value, size_t size) {
-  labels_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:TuriCreate.Annotation.Specification.DrawingClassificationMeta.labels)
-}
-const ::google::protobuf::RepeatedPtrField< ::std::string>&
-DrawingClassificationMeta::labels() const {
-  // @@protoc_insertion_point(field_list:TuriCreate.Annotation.Specification.DrawingClassificationMeta.labels)
-  return labels_;
-}
-::google::protobuf::RepeatedPtrField< ::std::string>*
-DrawingClassificationMeta::mutable_labels() {
-  // @@protoc_insertion_point(field_mutable_list:TuriCreate.Annotation.Specification.DrawingClassificationMeta.labels)
-  return &labels_;
+void DrawingClassificationMeta::set_allocated_strings(::TuriCreate::Annotation::Specification::MetaString* strings) {
+  clear_Label();
+  if (strings) {
+    set_has_strings();
+    Label_.strings_ = strings;
+  }
+  // @@protoc_insertion_point(field_set_allocated:TuriCreate.Annotation.Specification.DrawingClassificationMeta.strings)
 }
 
+// .TuriCreate.Annotation.Specification.MetaInteger integers = 2;
+bool DrawingClassificationMeta::has_integers() const {
+  return Label_case() == kIntegers;
+}
+void DrawingClassificationMeta::set_has_integers() {
+  _oneof_case_[0] = kIntegers;
+}
+void DrawingClassificationMeta::clear_integers() {
+  if (has_integers()) {
+    delete Label_.integers_;
+    clear_has_Label();
+  }
+}
+ const ::TuriCreate::Annotation::Specification::MetaInteger& DrawingClassificationMeta::integers() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.DrawingClassificationMeta.integers)
+  return has_integers()
+      ? *Label_.integers_
+      : ::TuriCreate::Annotation::Specification::MetaInteger::default_instance();
+}
+::TuriCreate::Annotation::Specification::MetaInteger* DrawingClassificationMeta::mutable_integers() {
+  if (!has_integers()) {
+    clear_Label();
+    set_has_integers();
+    Label_.integers_ = new ::TuriCreate::Annotation::Specification::MetaInteger;
+  }
+  // @@protoc_insertion_point(field_mutable:TuriCreate.Annotation.Specification.DrawingClassificationMeta.integers)
+  return Label_.integers_;
+}
+::TuriCreate::Annotation::Specification::MetaInteger* DrawingClassificationMeta::release_integers() {
+  // @@protoc_insertion_point(field_release:TuriCreate.Annotation.Specification.DrawingClassificationMeta.integers)
+  if (has_integers()) {
+    clear_has_Label();
+    ::TuriCreate::Annotation::Specification::MetaInteger* temp = Label_.integers_;
+    Label_.integers_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void DrawingClassificationMeta::set_allocated_integers(::TuriCreate::Annotation::Specification::MetaInteger* integers) {
+  clear_Label();
+  if (integers) {
+    set_has_integers();
+    Label_.integers_ = integers;
+  }
+  // @@protoc_insertion_point(field_set_allocated:TuriCreate.Annotation.Specification.DrawingClassificationMeta.integers)
+}
+
+bool DrawingClassificationMeta::has_Label() const {
+  return Label_case() != LABEL_NOT_SET;
+}
+void DrawingClassificationMeta::clear_has_Label() {
+  _oneof_case_[0] = LABEL_NOT_SET;
+}
+DrawingClassificationMeta::LabelCase DrawingClassificationMeta::Label_case() const {
+  return DrawingClassificationMeta::LabelCase(_oneof_case_[0]);
+}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int ImageClassificationMeta::kLabelsFieldNumber;
+const int ImageClassificationMeta::kStringsFieldNumber;
+const int ImageClassificationMeta::kIntegersFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ImageClassificationMeta::ImageClassificationMeta()
@@ -892,13 +1719,27 @@ ImageClassificationMeta::ImageClassificationMeta()
 ImageClassificationMeta::ImageClassificationMeta(const ImageClassificationMeta& from)
   : ::google::protobuf::MessageLite(),
       _internal_metadata_(NULL),
-      labels_(from.labels_),
       _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
+  clear_has_Label();
+  switch (from.Label_case()) {
+    case kStrings: {
+      mutable_strings()->::TuriCreate::Annotation::Specification::MetaString::MergeFrom(from.strings());
+      break;
+    }
+    case kIntegers: {
+      mutable_integers()->::TuriCreate::Annotation::Specification::MetaInteger::MergeFrom(from.integers());
+      break;
+    }
+    case LABEL_NOT_SET: {
+      break;
+    }
+  }
   // @@protoc_insertion_point(copy_constructor:TuriCreate.Annotation.Specification.ImageClassificationMeta)
 }
 
 void ImageClassificationMeta::SharedCtor() {
+  clear_has_Label();
   _cached_size_ = 0;
 }
 
@@ -908,6 +1749,9 @@ ImageClassificationMeta::~ImageClassificationMeta() {
 }
 
 void ImageClassificationMeta::SharedDtor() {
+  if (has_Label()) {
+    clear_Label();
+  }
 }
 
 void ImageClassificationMeta::SetCachedSize(int size) const {
@@ -928,9 +1772,28 @@ ImageClassificationMeta* ImageClassificationMeta::New(::google::protobuf::Arena*
   return n;
 }
 
+void ImageClassificationMeta::clear_Label() {
+// @@protoc_insertion_point(one_of_clear_start:TuriCreate.Annotation.Specification.ImageClassificationMeta)
+  switch (Label_case()) {
+    case kStrings: {
+      delete Label_.strings_;
+      break;
+    }
+    case kIntegers: {
+      delete Label_.integers_;
+      break;
+    }
+    case LABEL_NOT_SET: {
+      break;
+    }
+  }
+  _oneof_case_[0] = LABEL_NOT_SET;
+}
+
+
 void ImageClassificationMeta::Clear() {
 // @@protoc_insertion_point(message_clear_start:TuriCreate.Annotation.Specification.ImageClassificationMeta)
-  labels_.Clear();
+  clear_Label();
 }
 
 bool ImageClassificationMeta::MergePartialFromCodedStream(
@@ -943,17 +1806,24 @@ bool ImageClassificationMeta::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated string labels = 1;
+      // .TuriCreate.Annotation.Specification.MetaString strings = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(10u)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->add_labels()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->labels(this->labels_size() - 1).data(),
-            this->labels(this->labels_size() - 1).length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "TuriCreate.Annotation.Specification.ImageClassificationMeta.labels"));
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_strings()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .TuriCreate.Annotation.Specification.MetaInteger integers = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_integers()));
         } else {
           goto handle_unusual;
         }
@@ -987,14 +1857,16 @@ void ImageClassificationMeta::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // repeated string labels = 1;
-  for (int i = 0, n = this->labels_size(); i < n; i++) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->labels(i).data(), this->labels(i).length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "TuriCreate.Annotation.Specification.ImageClassificationMeta.labels");
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      1, this->labels(i), output);
+  // .TuriCreate.Annotation.Specification.MetaString strings = 1;
+  if (has_strings()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      1, *Label_.strings_, output);
+  }
+
+  // .TuriCreate.Annotation.Specification.MetaInteger integers = 2;
+  if (has_integers()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      2, *Label_.integers_, output);
   }
 
   // @@protoc_insertion_point(serialize_end:TuriCreate.Annotation.Specification.ImageClassificationMeta)
@@ -1004,14 +1876,25 @@ size_t ImageClassificationMeta::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:TuriCreate.Annotation.Specification.ImageClassificationMeta)
   size_t total_size = 0;
 
-  // repeated string labels = 1;
-  total_size += 1 *
-      ::google::protobuf::internal::FromIntSize(this->labels_size());
-  for (int i = 0, n = this->labels_size(); i < n; i++) {
-    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
-      this->labels(i));
+  switch (Label_case()) {
+    // .TuriCreate.Annotation.Specification.MetaString strings = 1;
+    case kStrings: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *Label_.strings_);
+      break;
+    }
+    // .TuriCreate.Annotation.Specification.MetaInteger integers = 2;
+    case kIntegers: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *Label_.integers_);
+      break;
+    }
+    case LABEL_NOT_SET: {
+      break;
+    }
   }
-
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = cached_size;
@@ -1031,7 +1914,19 @@ void ImageClassificationMeta::MergeFrom(const ImageClassificationMeta& from) {
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  labels_.MergeFrom(from.labels_);
+  switch (from.Label_case()) {
+    case kStrings: {
+      mutable_strings()->::TuriCreate::Annotation::Specification::MetaString::MergeFrom(from.strings());
+      break;
+    }
+    case kIntegers: {
+      mutable_integers()->::TuriCreate::Annotation::Specification::MetaInteger::MergeFrom(from.integers());
+      break;
+    }
+    case LABEL_NOT_SET: {
+      break;
+    }
+  }
 }
 
 void ImageClassificationMeta::CopyFrom(const ImageClassificationMeta& from) {
@@ -1050,7 +1945,8 @@ void ImageClassificationMeta::Swap(ImageClassificationMeta* other) {
   InternalSwap(other);
 }
 void ImageClassificationMeta::InternalSwap(ImageClassificationMeta* other) {
-  labels_.InternalSwap(&other->labels_);
+  std::swap(Label_, other->Label_);
+  std::swap(_oneof_case_[0], other->_oneof_case_[0]);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -1061,81 +1957,118 @@ void ImageClassificationMeta::InternalSwap(ImageClassificationMeta* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // ImageClassificationMeta
 
-// repeated string labels = 1;
-int ImageClassificationMeta::labels_size() const {
-  return labels_.size();
+// .TuriCreate.Annotation.Specification.MetaString strings = 1;
+bool ImageClassificationMeta::has_strings() const {
+  return Label_case() == kStrings;
 }
-void ImageClassificationMeta::clear_labels() {
-  labels_.Clear();
+void ImageClassificationMeta::set_has_strings() {
+  _oneof_case_[0] = kStrings;
 }
-const ::std::string& ImageClassificationMeta::labels(int index) const {
-  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.ImageClassificationMeta.labels)
-  return labels_.Get(index);
+void ImageClassificationMeta::clear_strings() {
+  if (has_strings()) {
+    delete Label_.strings_;
+    clear_has_Label();
+  }
 }
-::std::string* ImageClassificationMeta::mutable_labels(int index) {
-  // @@protoc_insertion_point(field_mutable:TuriCreate.Annotation.Specification.ImageClassificationMeta.labels)
-  return labels_.Mutable(index);
+ const ::TuriCreate::Annotation::Specification::MetaString& ImageClassificationMeta::strings() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.ImageClassificationMeta.strings)
+  return has_strings()
+      ? *Label_.strings_
+      : ::TuriCreate::Annotation::Specification::MetaString::default_instance();
 }
-void ImageClassificationMeta::set_labels(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.ImageClassificationMeta.labels)
-  labels_.Mutable(index)->assign(value);
+::TuriCreate::Annotation::Specification::MetaString* ImageClassificationMeta::mutable_strings() {
+  if (!has_strings()) {
+    clear_Label();
+    set_has_strings();
+    Label_.strings_ = new ::TuriCreate::Annotation::Specification::MetaString;
+  }
+  // @@protoc_insertion_point(field_mutable:TuriCreate.Annotation.Specification.ImageClassificationMeta.strings)
+  return Label_.strings_;
 }
-#if LANG_CXX11
-void ImageClassificationMeta::set_labels(int index, ::std::string&& value) {
-  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.ImageClassificationMeta.labels)
-  labels_.Mutable(index)->assign(std::move(value));
+::TuriCreate::Annotation::Specification::MetaString* ImageClassificationMeta::release_strings() {
+  // @@protoc_insertion_point(field_release:TuriCreate.Annotation.Specification.ImageClassificationMeta.strings)
+  if (has_strings()) {
+    clear_has_Label();
+    ::TuriCreate::Annotation::Specification::MetaString* temp = Label_.strings_;
+    Label_.strings_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
 }
-#endif
-void ImageClassificationMeta::set_labels(int index, const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  labels_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:TuriCreate.Annotation.Specification.ImageClassificationMeta.labels)
-}
-void ImageClassificationMeta::set_labels(int index, const char* value, size_t size) {
-  labels_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:TuriCreate.Annotation.Specification.ImageClassificationMeta.labels)
-}
-::std::string* ImageClassificationMeta::add_labels() {
-  // @@protoc_insertion_point(field_add_mutable:TuriCreate.Annotation.Specification.ImageClassificationMeta.labels)
-  return labels_.Add();
-}
-void ImageClassificationMeta::add_labels(const ::std::string& value) {
-  labels_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:TuriCreate.Annotation.Specification.ImageClassificationMeta.labels)
-}
-#if LANG_CXX11
-void ImageClassificationMeta::add_labels(::std::string&& value) {
-  labels_.Add(std::move(value));
-  // @@protoc_insertion_point(field_add:TuriCreate.Annotation.Specification.ImageClassificationMeta.labels)
-}
-#endif
-void ImageClassificationMeta::add_labels(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  labels_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:TuriCreate.Annotation.Specification.ImageClassificationMeta.labels)
-}
-void ImageClassificationMeta::add_labels(const char* value, size_t size) {
-  labels_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:TuriCreate.Annotation.Specification.ImageClassificationMeta.labels)
-}
-const ::google::protobuf::RepeatedPtrField< ::std::string>&
-ImageClassificationMeta::labels() const {
-  // @@protoc_insertion_point(field_list:TuriCreate.Annotation.Specification.ImageClassificationMeta.labels)
-  return labels_;
-}
-::google::protobuf::RepeatedPtrField< ::std::string>*
-ImageClassificationMeta::mutable_labels() {
-  // @@protoc_insertion_point(field_mutable_list:TuriCreate.Annotation.Specification.ImageClassificationMeta.labels)
-  return &labels_;
+void ImageClassificationMeta::set_allocated_strings(::TuriCreate::Annotation::Specification::MetaString* strings) {
+  clear_Label();
+  if (strings) {
+    set_has_strings();
+    Label_.strings_ = strings;
+  }
+  // @@protoc_insertion_point(field_set_allocated:TuriCreate.Annotation.Specification.ImageClassificationMeta.strings)
 }
 
+// .TuriCreate.Annotation.Specification.MetaInteger integers = 2;
+bool ImageClassificationMeta::has_integers() const {
+  return Label_case() == kIntegers;
+}
+void ImageClassificationMeta::set_has_integers() {
+  _oneof_case_[0] = kIntegers;
+}
+void ImageClassificationMeta::clear_integers() {
+  if (has_integers()) {
+    delete Label_.integers_;
+    clear_has_Label();
+  }
+}
+ const ::TuriCreate::Annotation::Specification::MetaInteger& ImageClassificationMeta::integers() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.ImageClassificationMeta.integers)
+  return has_integers()
+      ? *Label_.integers_
+      : ::TuriCreate::Annotation::Specification::MetaInteger::default_instance();
+}
+::TuriCreate::Annotation::Specification::MetaInteger* ImageClassificationMeta::mutable_integers() {
+  if (!has_integers()) {
+    clear_Label();
+    set_has_integers();
+    Label_.integers_ = new ::TuriCreate::Annotation::Specification::MetaInteger;
+  }
+  // @@protoc_insertion_point(field_mutable:TuriCreate.Annotation.Specification.ImageClassificationMeta.integers)
+  return Label_.integers_;
+}
+::TuriCreate::Annotation::Specification::MetaInteger* ImageClassificationMeta::release_integers() {
+  // @@protoc_insertion_point(field_release:TuriCreate.Annotation.Specification.ImageClassificationMeta.integers)
+  if (has_integers()) {
+    clear_has_Label();
+    ::TuriCreate::Annotation::Specification::MetaInteger* temp = Label_.integers_;
+    Label_.integers_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void ImageClassificationMeta::set_allocated_integers(::TuriCreate::Annotation::Specification::MetaInteger* integers) {
+  clear_Label();
+  if (integers) {
+    set_has_integers();
+    Label_.integers_ = integers;
+  }
+  // @@protoc_insertion_point(field_set_allocated:TuriCreate.Annotation.Specification.ImageClassificationMeta.integers)
+}
+
+bool ImageClassificationMeta::has_Label() const {
+  return Label_case() != LABEL_NOT_SET;
+}
+void ImageClassificationMeta::clear_has_Label() {
+  _oneof_case_[0] = LABEL_NOT_SET;
+}
+ImageClassificationMeta::LabelCase ImageClassificationMeta::Label_case() const {
+  return ImageClassificationMeta::LabelCase(_oneof_case_[0]);
+}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int ObjectDetectionMeta::kLabelsFieldNumber;
+const int ObjectDetectionMeta::kStringsFieldNumber;
+const int ObjectDetectionMeta::kIntegersFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ObjectDetectionMeta::ObjectDetectionMeta()
@@ -1149,13 +2082,27 @@ ObjectDetectionMeta::ObjectDetectionMeta()
 ObjectDetectionMeta::ObjectDetectionMeta(const ObjectDetectionMeta& from)
   : ::google::protobuf::MessageLite(),
       _internal_metadata_(NULL),
-      labels_(from.labels_),
       _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
+  clear_has_Label();
+  switch (from.Label_case()) {
+    case kStrings: {
+      mutable_strings()->::TuriCreate::Annotation::Specification::MetaString::MergeFrom(from.strings());
+      break;
+    }
+    case kIntegers: {
+      mutable_integers()->::TuriCreate::Annotation::Specification::MetaInteger::MergeFrom(from.integers());
+      break;
+    }
+    case LABEL_NOT_SET: {
+      break;
+    }
+  }
   // @@protoc_insertion_point(copy_constructor:TuriCreate.Annotation.Specification.ObjectDetectionMeta)
 }
 
 void ObjectDetectionMeta::SharedCtor() {
+  clear_has_Label();
   _cached_size_ = 0;
 }
 
@@ -1165,6 +2112,9 @@ ObjectDetectionMeta::~ObjectDetectionMeta() {
 }
 
 void ObjectDetectionMeta::SharedDtor() {
+  if (has_Label()) {
+    clear_Label();
+  }
 }
 
 void ObjectDetectionMeta::SetCachedSize(int size) const {
@@ -1185,9 +2135,28 @@ ObjectDetectionMeta* ObjectDetectionMeta::New(::google::protobuf::Arena* arena) 
   return n;
 }
 
+void ObjectDetectionMeta::clear_Label() {
+// @@protoc_insertion_point(one_of_clear_start:TuriCreate.Annotation.Specification.ObjectDetectionMeta)
+  switch (Label_case()) {
+    case kStrings: {
+      delete Label_.strings_;
+      break;
+    }
+    case kIntegers: {
+      delete Label_.integers_;
+      break;
+    }
+    case LABEL_NOT_SET: {
+      break;
+    }
+  }
+  _oneof_case_[0] = LABEL_NOT_SET;
+}
+
+
 void ObjectDetectionMeta::Clear() {
 // @@protoc_insertion_point(message_clear_start:TuriCreate.Annotation.Specification.ObjectDetectionMeta)
-  labels_.Clear();
+  clear_Label();
 }
 
 bool ObjectDetectionMeta::MergePartialFromCodedStream(
@@ -1200,17 +2169,24 @@ bool ObjectDetectionMeta::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated string labels = 1;
+      // .TuriCreate.Annotation.Specification.MetaString strings = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(10u)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->add_labels()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->labels(this->labels_size() - 1).data(),
-            this->labels(this->labels_size() - 1).length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "TuriCreate.Annotation.Specification.ObjectDetectionMeta.labels"));
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_strings()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .TuriCreate.Annotation.Specification.MetaInteger integers = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_integers()));
         } else {
           goto handle_unusual;
         }
@@ -1244,14 +2220,16 @@ void ObjectDetectionMeta::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // repeated string labels = 1;
-  for (int i = 0, n = this->labels_size(); i < n; i++) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->labels(i).data(), this->labels(i).length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "TuriCreate.Annotation.Specification.ObjectDetectionMeta.labels");
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      1, this->labels(i), output);
+  // .TuriCreate.Annotation.Specification.MetaString strings = 1;
+  if (has_strings()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      1, *Label_.strings_, output);
+  }
+
+  // .TuriCreate.Annotation.Specification.MetaInteger integers = 2;
+  if (has_integers()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      2, *Label_.integers_, output);
   }
 
   // @@protoc_insertion_point(serialize_end:TuriCreate.Annotation.Specification.ObjectDetectionMeta)
@@ -1261,14 +2239,25 @@ size_t ObjectDetectionMeta::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:TuriCreate.Annotation.Specification.ObjectDetectionMeta)
   size_t total_size = 0;
 
-  // repeated string labels = 1;
-  total_size += 1 *
-      ::google::protobuf::internal::FromIntSize(this->labels_size());
-  for (int i = 0, n = this->labels_size(); i < n; i++) {
-    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
-      this->labels(i));
+  switch (Label_case()) {
+    // .TuriCreate.Annotation.Specification.MetaString strings = 1;
+    case kStrings: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *Label_.strings_);
+      break;
+    }
+    // .TuriCreate.Annotation.Specification.MetaInteger integers = 2;
+    case kIntegers: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *Label_.integers_);
+      break;
+    }
+    case LABEL_NOT_SET: {
+      break;
+    }
   }
-
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = cached_size;
@@ -1288,7 +2277,19 @@ void ObjectDetectionMeta::MergeFrom(const ObjectDetectionMeta& from) {
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  labels_.MergeFrom(from.labels_);
+  switch (from.Label_case()) {
+    case kStrings: {
+      mutable_strings()->::TuriCreate::Annotation::Specification::MetaString::MergeFrom(from.strings());
+      break;
+    }
+    case kIntegers: {
+      mutable_integers()->::TuriCreate::Annotation::Specification::MetaInteger::MergeFrom(from.integers());
+      break;
+    }
+    case LABEL_NOT_SET: {
+      break;
+    }
+  }
 }
 
 void ObjectDetectionMeta::CopyFrom(const ObjectDetectionMeta& from) {
@@ -1307,7 +2308,8 @@ void ObjectDetectionMeta::Swap(ObjectDetectionMeta* other) {
   InternalSwap(other);
 }
 void ObjectDetectionMeta::InternalSwap(ObjectDetectionMeta* other) {
-  labels_.InternalSwap(&other->labels_);
+  std::swap(Label_, other->Label_);
+  std::swap(_oneof_case_[0], other->_oneof_case_[0]);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -1318,75 +2320,111 @@ void ObjectDetectionMeta::InternalSwap(ObjectDetectionMeta* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // ObjectDetectionMeta
 
-// repeated string labels = 1;
-int ObjectDetectionMeta::labels_size() const {
-  return labels_.size();
+// .TuriCreate.Annotation.Specification.MetaString strings = 1;
+bool ObjectDetectionMeta::has_strings() const {
+  return Label_case() == kStrings;
 }
-void ObjectDetectionMeta::clear_labels() {
-  labels_.Clear();
+void ObjectDetectionMeta::set_has_strings() {
+  _oneof_case_[0] = kStrings;
 }
-const ::std::string& ObjectDetectionMeta::labels(int index) const {
-  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.ObjectDetectionMeta.labels)
-  return labels_.Get(index);
+void ObjectDetectionMeta::clear_strings() {
+  if (has_strings()) {
+    delete Label_.strings_;
+    clear_has_Label();
+  }
 }
-::std::string* ObjectDetectionMeta::mutable_labels(int index) {
-  // @@protoc_insertion_point(field_mutable:TuriCreate.Annotation.Specification.ObjectDetectionMeta.labels)
-  return labels_.Mutable(index);
+ const ::TuriCreate::Annotation::Specification::MetaString& ObjectDetectionMeta::strings() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.ObjectDetectionMeta.strings)
+  return has_strings()
+      ? *Label_.strings_
+      : ::TuriCreate::Annotation::Specification::MetaString::default_instance();
 }
-void ObjectDetectionMeta::set_labels(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.ObjectDetectionMeta.labels)
-  labels_.Mutable(index)->assign(value);
+::TuriCreate::Annotation::Specification::MetaString* ObjectDetectionMeta::mutable_strings() {
+  if (!has_strings()) {
+    clear_Label();
+    set_has_strings();
+    Label_.strings_ = new ::TuriCreate::Annotation::Specification::MetaString;
+  }
+  // @@protoc_insertion_point(field_mutable:TuriCreate.Annotation.Specification.ObjectDetectionMeta.strings)
+  return Label_.strings_;
 }
-#if LANG_CXX11
-void ObjectDetectionMeta::set_labels(int index, ::std::string&& value) {
-  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.ObjectDetectionMeta.labels)
-  labels_.Mutable(index)->assign(std::move(value));
+::TuriCreate::Annotation::Specification::MetaString* ObjectDetectionMeta::release_strings() {
+  // @@protoc_insertion_point(field_release:TuriCreate.Annotation.Specification.ObjectDetectionMeta.strings)
+  if (has_strings()) {
+    clear_has_Label();
+    ::TuriCreate::Annotation::Specification::MetaString* temp = Label_.strings_;
+    Label_.strings_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
 }
-#endif
-void ObjectDetectionMeta::set_labels(int index, const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  labels_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:TuriCreate.Annotation.Specification.ObjectDetectionMeta.labels)
-}
-void ObjectDetectionMeta::set_labels(int index, const char* value, size_t size) {
-  labels_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:TuriCreate.Annotation.Specification.ObjectDetectionMeta.labels)
-}
-::std::string* ObjectDetectionMeta::add_labels() {
-  // @@protoc_insertion_point(field_add_mutable:TuriCreate.Annotation.Specification.ObjectDetectionMeta.labels)
-  return labels_.Add();
-}
-void ObjectDetectionMeta::add_labels(const ::std::string& value) {
-  labels_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:TuriCreate.Annotation.Specification.ObjectDetectionMeta.labels)
-}
-#if LANG_CXX11
-void ObjectDetectionMeta::add_labels(::std::string&& value) {
-  labels_.Add(std::move(value));
-  // @@protoc_insertion_point(field_add:TuriCreate.Annotation.Specification.ObjectDetectionMeta.labels)
-}
-#endif
-void ObjectDetectionMeta::add_labels(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  labels_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:TuriCreate.Annotation.Specification.ObjectDetectionMeta.labels)
-}
-void ObjectDetectionMeta::add_labels(const char* value, size_t size) {
-  labels_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:TuriCreate.Annotation.Specification.ObjectDetectionMeta.labels)
-}
-const ::google::protobuf::RepeatedPtrField< ::std::string>&
-ObjectDetectionMeta::labels() const {
-  // @@protoc_insertion_point(field_list:TuriCreate.Annotation.Specification.ObjectDetectionMeta.labels)
-  return labels_;
-}
-::google::protobuf::RepeatedPtrField< ::std::string>*
-ObjectDetectionMeta::mutable_labels() {
-  // @@protoc_insertion_point(field_mutable_list:TuriCreate.Annotation.Specification.ObjectDetectionMeta.labels)
-  return &labels_;
+void ObjectDetectionMeta::set_allocated_strings(::TuriCreate::Annotation::Specification::MetaString* strings) {
+  clear_Label();
+  if (strings) {
+    set_has_strings();
+    Label_.strings_ = strings;
+  }
+  // @@protoc_insertion_point(field_set_allocated:TuriCreate.Annotation.Specification.ObjectDetectionMeta.strings)
 }
 
+// .TuriCreate.Annotation.Specification.MetaInteger integers = 2;
+bool ObjectDetectionMeta::has_integers() const {
+  return Label_case() == kIntegers;
+}
+void ObjectDetectionMeta::set_has_integers() {
+  _oneof_case_[0] = kIntegers;
+}
+void ObjectDetectionMeta::clear_integers() {
+  if (has_integers()) {
+    delete Label_.integers_;
+    clear_has_Label();
+  }
+}
+ const ::TuriCreate::Annotation::Specification::MetaInteger& ObjectDetectionMeta::integers() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.ObjectDetectionMeta.integers)
+  return has_integers()
+      ? *Label_.integers_
+      : ::TuriCreate::Annotation::Specification::MetaInteger::default_instance();
+}
+::TuriCreate::Annotation::Specification::MetaInteger* ObjectDetectionMeta::mutable_integers() {
+  if (!has_integers()) {
+    clear_Label();
+    set_has_integers();
+    Label_.integers_ = new ::TuriCreate::Annotation::Specification::MetaInteger;
+  }
+  // @@protoc_insertion_point(field_mutable:TuriCreate.Annotation.Specification.ObjectDetectionMeta.integers)
+  return Label_.integers_;
+}
+::TuriCreate::Annotation::Specification::MetaInteger* ObjectDetectionMeta::release_integers() {
+  // @@protoc_insertion_point(field_release:TuriCreate.Annotation.Specification.ObjectDetectionMeta.integers)
+  if (has_integers()) {
+    clear_has_Label();
+    ::TuriCreate::Annotation::Specification::MetaInteger* temp = Label_.integers_;
+    Label_.integers_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void ObjectDetectionMeta::set_allocated_integers(::TuriCreate::Annotation::Specification::MetaInteger* integers) {
+  clear_Label();
+  if (integers) {
+    set_has_integers();
+    Label_.integers_ = integers;
+  }
+  // @@protoc_insertion_point(field_set_allocated:TuriCreate.Annotation.Specification.ObjectDetectionMeta.integers)
+}
+
+bool ObjectDetectionMeta::has_Label() const {
+  return Label_case() != LABEL_NOT_SET;
+}
+void ObjectDetectionMeta::clear_has_Label() {
+  _oneof_case_[0] = LABEL_NOT_SET;
+}
+ObjectDetectionMeta::LabelCase ObjectDetectionMeta::Label_case() const {
+  return ObjectDetectionMeta::LabelCase(_oneof_case_[0]);
+}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
