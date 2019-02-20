@@ -347,11 +347,11 @@ class Datum : public ::google::protobuf::MessageLite /* @@protoc_insertion_point
   const ::google::protobuf::RepeatedPtrField< ::TuriCreate::Annotation::Specification::TextDatum >&
       text() const;
 
-  // int64 datumHash = 1;
-  void clear_datumhash();
-  static const int kDatumHashFieldNumber = 1;
-  ::google::protobuf::int64 datumhash() const;
-  void set_datumhash(::google::protobuf::int64 value);
+  // int64 rowIndex = 1;
+  void clear_rowindex();
+  static const int kRowIndexFieldNumber = 1;
+  ::google::protobuf::int64 rowindex() const;
+  void set_rowindex(::google::protobuf::int64 value);
 
   // @@protoc_insertion_point(class_scope:TuriCreate.Annotation.Specification.Datum)
  private:
@@ -359,7 +359,7 @@ class Datum : public ::google::protobuf::MessageLite /* @@protoc_insertion_point
   ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
   ::google::protobuf::RepeatedPtrField< ::TuriCreate::Annotation::Specification::ImageDatum > images_;
   ::google::protobuf::RepeatedPtrField< ::TuriCreate::Annotation::Specification::TextDatum > text_;
-  ::google::protobuf::int64 datumhash_;
+  ::google::protobuf::int64 rowindex_;
   mutable int _cached_size_;
   friend struct protobuf_data_2eproto::TableStruct;
 };
@@ -611,18 +611,18 @@ inline void TextDatum::set_allocated_text(::std::string* text) {
 
 // Datum
 
-// int64 datumHash = 1;
-inline void Datum::clear_datumhash() {
-  datumhash_ = GOOGLE_LONGLONG(0);
+// int64 rowIndex = 1;
+inline void Datum::clear_rowindex() {
+  rowindex_ = GOOGLE_LONGLONG(0);
 }
-inline ::google::protobuf::int64 Datum::datumhash() const {
-  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.Datum.datumHash)
-  return datumhash_;
+inline ::google::protobuf::int64 Datum::rowindex() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.Datum.rowIndex)
+  return rowindex_;
 }
-inline void Datum::set_datumhash(::google::protobuf::int64 value) {
+inline void Datum::set_rowindex(::google::protobuf::int64 value) {
   
-  datumhash_ = value;
-  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.Datum.datumHash)
+  rowindex_ = value;
+  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.Datum.rowIndex)
 }
 
 // repeated .TuriCreate.Annotation.Specification.ImageDatum images = 10;

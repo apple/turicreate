@@ -754,25 +754,25 @@ class Annotation : public ::google::protobuf::MessageLite /* @@protoc_insertion_
   const ::google::protobuf::RepeatedPtrField< ::TuriCreate::Annotation::Specification::Label >&
       labels() const;
 
-  // repeated int64 datumHash = 2;
-  int datumhash_size() const;
-  void clear_datumhash();
-  static const int kDatumHashFieldNumber = 2;
-  ::google::protobuf::int64 datumhash(int index) const;
-  void set_datumhash(int index, ::google::protobuf::int64 value);
-  void add_datumhash(::google::protobuf::int64 value);
+  // repeated int64 rowIndex = 2;
+  int rowindex_size() const;
+  void clear_rowindex();
+  static const int kRowIndexFieldNumber = 2;
+  ::google::protobuf::int64 rowindex(int index) const;
+  void set_rowindex(int index, ::google::protobuf::int64 value);
+  void add_rowindex(::google::protobuf::int64 value);
   const ::google::protobuf::RepeatedField< ::google::protobuf::int64 >&
-      datumhash() const;
+      rowindex() const;
   ::google::protobuf::RepeatedField< ::google::protobuf::int64 >*
-      mutable_datumhash();
+      mutable_rowindex();
 
   // @@protoc_insertion_point(class_scope:TuriCreate.Annotation.Specification.Annotation)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
   ::google::protobuf::RepeatedPtrField< ::TuriCreate::Annotation::Specification::Label > labels_;
-  ::google::protobuf::RepeatedField< ::google::protobuf::int64 > datumhash_;
-  mutable int _datumhash_cached_byte_size_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::int64 > rowindex_;
+  mutable int _rowindex_cached_byte_size_;
   mutable int _cached_size_;
   friend struct protobuf_annotate_2eproto::TableStruct;
 };
@@ -1416,34 +1416,34 @@ Annotation::labels() const {
   return labels_;
 }
 
-// repeated int64 datumHash = 2;
-inline int Annotation::datumhash_size() const {
-  return datumhash_.size();
+// repeated int64 rowIndex = 2;
+inline int Annotation::rowindex_size() const {
+  return rowindex_.size();
 }
-inline void Annotation::clear_datumhash() {
-  datumhash_.Clear();
+inline void Annotation::clear_rowindex() {
+  rowindex_.Clear();
 }
-inline ::google::protobuf::int64 Annotation::datumhash(int index) const {
-  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.Annotation.datumHash)
-  return datumhash_.Get(index);
+inline ::google::protobuf::int64 Annotation::rowindex(int index) const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.Annotation.rowIndex)
+  return rowindex_.Get(index);
 }
-inline void Annotation::set_datumhash(int index, ::google::protobuf::int64 value) {
-  datumhash_.Set(index, value);
-  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.Annotation.datumHash)
+inline void Annotation::set_rowindex(int index, ::google::protobuf::int64 value) {
+  rowindex_.Set(index, value);
+  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.Annotation.rowIndex)
 }
-inline void Annotation::add_datumhash(::google::protobuf::int64 value) {
-  datumhash_.Add(value);
-  // @@protoc_insertion_point(field_add:TuriCreate.Annotation.Specification.Annotation.datumHash)
+inline void Annotation::add_rowindex(::google::protobuf::int64 value) {
+  rowindex_.Add(value);
+  // @@protoc_insertion_point(field_add:TuriCreate.Annotation.Specification.Annotation.rowIndex)
 }
 inline const ::google::protobuf::RepeatedField< ::google::protobuf::int64 >&
-Annotation::datumhash() const {
-  // @@protoc_insertion_point(field_list:TuriCreate.Annotation.Specification.Annotation.datumHash)
-  return datumhash_;
+Annotation::rowindex() const {
+  // @@protoc_insertion_point(field_list:TuriCreate.Annotation.Specification.Annotation.rowIndex)
+  return rowindex_;
 }
 inline ::google::protobuf::RepeatedField< ::google::protobuf::int64 >*
-Annotation::mutable_datumhash() {
-  // @@protoc_insertion_point(field_mutable_list:TuriCreate.Annotation.Specification.Annotation.datumHash)
-  return &datumhash_;
+Annotation::mutable_rowindex() {
+  // @@protoc_insertion_point(field_mutable_list:TuriCreate.Annotation.Specification.Annotation.rowIndex)
+  return &rowindex_;
 }
 
 // -------------------------------------------------------------------

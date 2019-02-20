@@ -177,7 +177,7 @@ void Label_ClearLabelTypeOneOfCase(Label *message);
 
 typedef GPB_ENUM(Annotation_FieldNumber) {
   Annotation_FieldNumber_LabelsArray = 1,
-  Annotation_FieldNumber_DatumHashArray = 2,
+  Annotation_FieldNumber_RowIndexArray = 2,
 };
 
 @interface Annotation : GPBMessage
@@ -186,9 +186,9 @@ typedef GPB_ENUM(Annotation_FieldNumber) {
 /** The number of items in @c labelsArray without causing the array to be created. */
 @property(nonatomic, readonly) NSUInteger labelsArray_Count;
 
-@property(nonatomic, readwrite, strong, null_resettable) GPBInt64Array *datumHashArray;
-/** The number of items in @c datumHashArray without causing the array to be created. */
-@property(nonatomic, readonly) NSUInteger datumHashArray_Count;
+@property(nonatomic, readwrite, strong, null_resettable) GPBInt64Array *rowIndexArray;
+/** The number of items in @c rowIndexArray without causing the array to be created. */
+@property(nonatomic, readonly) NSUInteger rowIndexArray_Count;
 
 @end
 

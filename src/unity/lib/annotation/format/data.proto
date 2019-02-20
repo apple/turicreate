@@ -14,7 +14,7 @@ message ImageDatum {
 message TextDatum { string text = 1; }
 
 message Datum {
-  int64 datumHash = 1;
+  int64 rowIndex = 1;
 
   repeated ImageDatum images = 10;
   repeated TextDatum text = 20;

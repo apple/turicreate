@@ -84,14 +84,14 @@ typedef GPB_ENUM(TextDatum_FieldNumber) {
 #pragma mark - Datum
 
 typedef GPB_ENUM(Datum_FieldNumber) {
-  Datum_FieldNumber_DatumHash = 1,
+  Datum_FieldNumber_RowIndex = 1,
   Datum_FieldNumber_ImagesArray = 10,
   Datum_FieldNumber_TextArray = 20,
 };
 
 @interface Datum : GPBMessage
 
-@property(nonatomic, readwrite) int64_t datumHash;
+@property(nonatomic, readwrite) int64_t rowIndex;
 
 @property(nonatomic, readwrite, strong, null_resettable) NSMutableArray<ImageDatum*> *imagesArray;
 /** The number of items in @c imagesArray without causing the array to be created. */

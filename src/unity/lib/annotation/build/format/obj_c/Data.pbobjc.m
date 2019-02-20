@@ -170,7 +170,7 @@ typedef struct TextDatum__storage_ {
 
 @implementation Datum
 
-@dynamic datumHash;
+@dynamic rowIndex;
 @dynamic imagesArray, imagesArray_Count;
 @dynamic textArray, textArray_Count;
 
@@ -178,7 +178,7 @@ typedef struct Datum__storage_ {
   uint32_t _has_storage_[1];
   NSMutableArray *imagesArray;
   NSMutableArray *textArray;
-  int64_t datumHash;
+  int64_t rowIndex;
 } Datum__storage_;
 
 // This method is threadsafe because it is initially called
@@ -188,11 +188,11 @@ typedef struct Datum__storage_ {
   if (!descriptor) {
     static GPBMessageFieldDescription fields[] = {
       {
-        .name = "datumHash",
+        .name = "rowIndex",
         .dataTypeSpecific.className = NULL,
-        .number = Datum_FieldNumber_DatumHash,
+        .number = Datum_FieldNumber_RowIndex,
         .hasIndex = 0,
-        .offset = (uint32_t)offsetof(Datum__storage_, datumHash),
+        .offset = (uint32_t)offsetof(Datum__storage_, rowIndex),
         .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
         .dataType = GPBDataTypeInt64,
       },
@@ -225,7 +225,7 @@ typedef struct Datum__storage_ {
                                          flags:GPBDescriptorInitializationFlag_None];
 #if !GPBOBJC_SKIP_MESSAGE_TEXTFORMAT_EXTRAS
     static const char *extraTextFormatInfo =
-        "\001\001\t\000";
+        "\001\001\010\000";
     [localDescriptor setupExtraTextInfo:extraTextFormatInfo];
 #endif  // !GPBOBJC_SKIP_MESSAGE_TEXTFORMAT_EXTRAS
     NSAssert(descriptor == nil, @"Startup recursed!");

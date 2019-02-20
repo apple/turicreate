@@ -2088,7 +2088,7 @@ Label::LabelTypeCase Label::labelType_case() const {
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int Annotation::kLabelsFieldNumber;
-const int Annotation::kDatumHashFieldNumber;
+const int Annotation::kRowIndexFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Annotation::Annotation()
@@ -2103,7 +2103,7 @@ Annotation::Annotation(const Annotation& from)
   : ::google::protobuf::MessageLite(),
       _internal_metadata_(NULL),
       labels_(from.labels_),
-      datumhash_(from.datumhash_),
+      rowindex_(from.rowindex_),
       _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:TuriCreate.Annotation.Specification.Annotation)
@@ -2142,7 +2142,7 @@ Annotation* Annotation::New(::google::protobuf::Arena* arena) const {
 void Annotation::Clear() {
 // @@protoc_insertion_point(message_clear_start:TuriCreate.Annotation.Specification.Annotation)
   labels_.Clear();
-  datumhash_.Clear();
+  rowindex_.Clear();
 }
 
 bool Annotation::MergePartialFromCodedStream(
@@ -2167,18 +2167,18 @@ bool Annotation::MergePartialFromCodedStream(
         break;
       }
 
-      // repeated int64 datumHash = 2;
+      // repeated int64 rowIndex = 2;
       case 2: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(18u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
                    ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
-                 input, this->mutable_datumhash())));
+                 input, this->mutable_rowindex())));
         } else if (static_cast< ::google::protobuf::uint8>(tag) ==
                    static_cast< ::google::protobuf::uint8>(16u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
                    ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
-                 1, 18u, input, this->mutable_datumhash())));
+                 1, 18u, input, this->mutable_rowindex())));
         } else {
           goto handle_unusual;
         }
@@ -2218,14 +2218,14 @@ void Annotation::SerializeWithCachedSizes(
       1, this->labels(i), output);
   }
 
-  // repeated int64 datumHash = 2;
-  if (this->datumhash_size() > 0) {
+  // repeated int64 rowIndex = 2;
+  if (this->rowindex_size() > 0) {
     ::google::protobuf::internal::WireFormatLite::WriteTag(2, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
-    output->WriteVarint32(_datumhash_cached_byte_size_);
+    output->WriteVarint32(_rowindex_cached_byte_size_);
   }
-  for (int i = 0, n = this->datumhash_size(); i < n; i++) {
+  for (int i = 0, n = this->rowindex_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteInt64NoTag(
-      this->datumhash(i), output);
+      this->rowindex(i), output);
   }
 
   // @@protoc_insertion_point(serialize_end:TuriCreate.Annotation.Specification.Annotation)
@@ -2246,17 +2246,17 @@ size_t Annotation::ByteSizeLong() const {
     }
   }
 
-  // repeated int64 datumHash = 2;
+  // repeated int64 rowIndex = 2;
   {
     size_t data_size = ::google::protobuf::internal::WireFormatLite::
-      Int64Size(this->datumhash_);
+      Int64Size(this->rowindex_);
     if (data_size > 0) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
     }
     int cached_size = ::google::protobuf::internal::ToCachedSize(data_size);
     GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-    _datumhash_cached_byte_size_ = cached_size;
+    _rowindex_cached_byte_size_ = cached_size;
     GOOGLE_SAFE_CONCURRENT_WRITES_END();
     total_size += data_size;
   }
@@ -2281,7 +2281,7 @@ void Annotation::MergeFrom(const Annotation& from) {
   (void) cached_has_bits;
 
   labels_.MergeFrom(from.labels_);
-  datumhash_.MergeFrom(from.datumhash_);
+  rowindex_.MergeFrom(from.rowindex_);
 }
 
 void Annotation::CopyFrom(const Annotation& from) {
@@ -2301,7 +2301,7 @@ void Annotation::Swap(Annotation* other) {
 }
 void Annotation::InternalSwap(Annotation* other) {
   labels_.InternalSwap(&other->labels_);
-  datumhash_.InternalSwap(&other->datumhash_);
+  rowindex_.InternalSwap(&other->rowindex_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -2342,34 +2342,34 @@ Annotation::labels() const {
   return labels_;
 }
 
-// repeated int64 datumHash = 2;
-int Annotation::datumhash_size() const {
-  return datumhash_.size();
+// repeated int64 rowIndex = 2;
+int Annotation::rowindex_size() const {
+  return rowindex_.size();
 }
-void Annotation::clear_datumhash() {
-  datumhash_.Clear();
+void Annotation::clear_rowindex() {
+  rowindex_.Clear();
 }
-::google::protobuf::int64 Annotation::datumhash(int index) const {
-  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.Annotation.datumHash)
-  return datumhash_.Get(index);
+::google::protobuf::int64 Annotation::rowindex(int index) const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.Annotation.rowIndex)
+  return rowindex_.Get(index);
 }
-void Annotation::set_datumhash(int index, ::google::protobuf::int64 value) {
-  datumhash_.Set(index, value);
-  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.Annotation.datumHash)
+void Annotation::set_rowindex(int index, ::google::protobuf::int64 value) {
+  rowindex_.Set(index, value);
+  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.Annotation.rowIndex)
 }
-void Annotation::add_datumhash(::google::protobuf::int64 value) {
-  datumhash_.Add(value);
-  // @@protoc_insertion_point(field_add:TuriCreate.Annotation.Specification.Annotation.datumHash)
+void Annotation::add_rowindex(::google::protobuf::int64 value) {
+  rowindex_.Add(value);
+  // @@protoc_insertion_point(field_add:TuriCreate.Annotation.Specification.Annotation.rowIndex)
 }
 const ::google::protobuf::RepeatedField< ::google::protobuf::int64 >&
-Annotation::datumhash() const {
-  // @@protoc_insertion_point(field_list:TuriCreate.Annotation.Specification.Annotation.datumHash)
-  return datumhash_;
+Annotation::rowindex() const {
+  // @@protoc_insertion_point(field_list:TuriCreate.Annotation.Specification.Annotation.rowIndex)
+  return rowindex_;
 }
 ::google::protobuf::RepeatedField< ::google::protobuf::int64 >*
-Annotation::mutable_datumhash() {
-  // @@protoc_insertion_point(field_mutable_list:TuriCreate.Annotation.Specification.Annotation.datumHash)
-  return &datumhash_;
+Annotation::mutable_rowindex() {
+  // @@protoc_insertion_point(field_mutable_list:TuriCreate.Annotation.Specification.Annotation.rowIndex)
+  return &rowindex_;
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS

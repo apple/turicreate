@@ -425,12 +425,12 @@ void Label_ClearLabelTypeOneOfCase(Label *message) {
 @implementation Annotation
 
 @dynamic labelsArray, labelsArray_Count;
-@dynamic datumHashArray, datumHashArray_Count;
+@dynamic rowIndexArray, rowIndexArray_Count;
 
 typedef struct Annotation__storage_ {
   uint32_t _has_storage_[1];
   NSMutableArray *labelsArray;
-  GPBInt64Array *datumHashArray;
+  GPBInt64Array *rowIndexArray;
 } Annotation__storage_;
 
 // This method is threadsafe because it is initially called
@@ -449,11 +449,11 @@ typedef struct Annotation__storage_ {
         .dataType = GPBDataTypeMessage,
       },
       {
-        .name = "datumHashArray",
+        .name = "rowIndexArray",
         .dataTypeSpecific.className = NULL,
-        .number = Annotation_FieldNumber_DatumHashArray,
+        .number = Annotation_FieldNumber_RowIndexArray,
         .hasIndex = GPBNoHasBit,
-        .offset = (uint32_t)offsetof(Annotation__storage_, datumHashArray),
+        .offset = (uint32_t)offsetof(Annotation__storage_, rowIndexArray),
         .flags = (GPBFieldFlags)(GPBFieldRepeated | GPBFieldPacked | GPBFieldTextFormatNameCustom),
         .dataType = GPBDataTypeInt64,
       },
@@ -468,7 +468,7 @@ typedef struct Annotation__storage_ {
                                          flags:GPBDescriptorInitializationFlag_None];
 #if !GPBOBJC_SKIP_MESSAGE_TEXTFORMAT_EXTRAS
     static const char *extraTextFormatInfo =
-        "\001\002\000datumHash\000";
+        "\001\002\000rowIndex\000";
     [localDescriptor setupExtraTextInfo:extraTextFormatInfo];
 #endif  // !GPBOBJC_SKIP_MESSAGE_TEXTFORMAT_EXTRAS
     NSAssert(descriptor == nil, @"Startup recursed!");

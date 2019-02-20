@@ -45,7 +45,7 @@ annotate_spec::Data ImageClassification::getItems(size_t start, size_t end) {
     img_datum->set_channels(img_channels);
     img_datum->set_imgdata((void *)img_bytes, img.m_image_data_size);
 
-    datum->set_datumhash(start + i);
+    datum->set_rowindex(start + i);
   }
 
   return data;
@@ -77,7 +77,7 @@ annotate_spec::Annotations ImageClassification::getAnnotations(size_t start,
       label->set_intlabel(label_value);
     }
 
-    annotation->add_datumhash(start + i);
+    annotation->add_rowindex(start + i);
   }
 
   return annotations;
@@ -99,7 +99,7 @@ bool ImageClassification::setAnnotations(
     annotate_spec::Annotation annotation = annotations.annotation(a_idx);
 
     annotate_spec::Label label = annotation.labels(0);
-    size_t sf_idx = annotation.datumhash(0);
+    size_t sf_idx = annotation.rowindex(0);
 
     assert(label.has_imageclassificationlabel());
 

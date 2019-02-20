@@ -39,7 +39,7 @@ message Label {
 
 message Annotation {
   repeated Label labels = 1;
-  repeated int64 datumHash = 2;
+  repeated int64 rowIndex = 2;
 }
 
 message Annotations { repeated Annotation annotation = 1; }

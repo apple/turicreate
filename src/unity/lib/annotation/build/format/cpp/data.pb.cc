@@ -719,7 +719,7 @@ void TextDatum::set_allocated_text(::std::string* text) {
 // ===================================================================
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int Datum::kDatumHashFieldNumber;
+const int Datum::kRowIndexFieldNumber;
 const int Datum::kImagesFieldNumber;
 const int Datum::kTextFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
@@ -739,12 +739,12 @@ Datum::Datum(const Datum& from)
       text_(from.text_),
       _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  datumhash_ = from.datumhash_;
+  rowindex_ = from.rowindex_;
   // @@protoc_insertion_point(copy_constructor:TuriCreate.Annotation.Specification.Datum)
 }
 
 void Datum::SharedCtor() {
-  datumhash_ = GOOGLE_LONGLONG(0);
+  rowindex_ = GOOGLE_LONGLONG(0);
   _cached_size_ = 0;
 }
 
@@ -778,7 +778,7 @@ void Datum::Clear() {
 // @@protoc_insertion_point(message_clear_start:TuriCreate.Annotation.Specification.Datum)
   images_.Clear();
   text_.Clear();
-  datumhash_ = GOOGLE_LONGLONG(0);
+  rowindex_ = GOOGLE_LONGLONG(0);
 }
 
 bool Datum::MergePartialFromCodedStream(
@@ -791,14 +791,14 @@ bool Datum::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // int64 datumHash = 1;
+      // int64 rowIndex = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(8u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
-                 input, &datumhash_)));
+                 input, &rowindex_)));
         } else {
           goto handle_unusual;
         }
@@ -856,9 +856,9 @@ void Datum::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int64 datumHash = 1;
-  if (this->datumhash() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt64(1, this->datumhash(), output);
+  // int64 rowIndex = 1;
+  if (this->rowindex() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(1, this->rowindex(), output);
   }
 
   // repeated .TuriCreate.Annotation.Specification.ImageDatum images = 10;
@@ -902,11 +902,11 @@ size_t Datum::ByteSizeLong() const {
     }
   }
 
-  // int64 datumHash = 1;
-  if (this->datumhash() != 0) {
+  // int64 rowIndex = 1;
+  if (this->rowindex() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::Int64Size(
-        this->datumhash());
+        this->rowindex());
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -930,8 +930,8 @@ void Datum::MergeFrom(const Datum& from) {
 
   images_.MergeFrom(from.images_);
   text_.MergeFrom(from.text_);
-  if (from.datumhash() != 0) {
-    set_datumhash(from.datumhash());
+  if (from.rowindex() != 0) {
+    set_rowindex(from.rowindex());
   }
 }
 
@@ -953,7 +953,7 @@ void Datum::Swap(Datum* other) {
 void Datum::InternalSwap(Datum* other) {
   images_.InternalSwap(&other->images_);
   text_.InternalSwap(&other->text_);
-  std::swap(datumhash_, other->datumhash_);
+  std::swap(rowindex_, other->rowindex_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -964,18 +964,18 @@ void Datum::InternalSwap(Datum* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // Datum
 
-// int64 datumHash = 1;
-void Datum::clear_datumhash() {
-  datumhash_ = GOOGLE_LONGLONG(0);
+// int64 rowIndex = 1;
+void Datum::clear_rowindex() {
+  rowindex_ = GOOGLE_LONGLONG(0);
 }
-::google::protobuf::int64 Datum::datumhash() const {
-  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.Datum.datumHash)
-  return datumhash_;
+::google::protobuf::int64 Datum::rowindex() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.Datum.rowIndex)
+  return rowindex_;
 }
-void Datum::set_datumhash(::google::protobuf::int64 value) {
+void Datum::set_rowindex(::google::protobuf::int64 value) {
   
-  datumhash_ = value;
-  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.Datum.datumHash)
+  rowindex_ = value;
+  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.Datum.rowIndex)
 }
 
 // repeated .TuriCreate.Annotation.Specification.ImageDatum images = 10;
