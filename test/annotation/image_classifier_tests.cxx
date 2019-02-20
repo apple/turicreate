@@ -221,15 +221,57 @@ public:
   }
 
   void test_return_annotations() {
-    // TODO: add and return the annotation sframe
-    // test whether the returned sframe keeps na values
-    TS_ASSERT(true);
+    std::string image_column_name = "image";
+    std::string annotation_column_name = "annotate";
+    std::shared_ptr<turi::unity_sframe> annotation_sf =
+        annotation_testing::random_sframe(50, image_column_name,
+                                          annotation_column_name, true);
+
+    turi::annotate::ImageClassification ic_annotate =
+        turi::annotate::ImageClassification(
+            annotation_sf, std::vector<std::string>({image_column_name}),
+            annotation_column_name);
+
+    std::shared_ptr<turi::unity_sframe> returned_sf =
+        ic_annotate.returnAnnotations(false);
+
+    TS_ASSERT(annotation_testing::check_equality(annotation_sf, returned_sf));
   }
 
   void test_return_annotations_drop_na() {
-    // TODO: add and return the annotation sframe
-    // test whether the returned sframe drops the na values
-    TS_ASSERT(true);
+    std::string image_column_name = "image";
+    std::string annotation_column_name = "annotate";
+    std::shared_ptr<turi::unity_sframe> annotation_sf =
+        annotation_testing::random_sframe(50, image_column_name,
+                                          annotation_column_name, true);
+
+    turi::annotate::ImageClassification ic_annotate =
+        turi::annotate::ImageClassification(
+            annotation_sf, std::vector<std::string>({image_column_name}),
+            annotation_column_name);
+
+    std::shared_ptr<turi::unity_sframe> returned_sf =
+        ic_annotate.returnAnnotations(true);
+
+    std::shared_ptr<turi::unity_sarray> labels_sa =
+        std::static_pointer_cast<turi::unity_sarray>(
+            returned_sf->select_column(annotation_column_name));
+
+    labels_sa = std::static_pointer_cast<turi::unity_sarray>(
+        labels_sa->drop_missing_values());
+
+    TS_ASSERT(labels_sa->size() == annotation_sf->size());
+
+    std::shared_ptr<turi::unity_sarray> expected_sa =
+        std::static_pointer_cast<turi::unity_sarray>(
+            annotation_sf->select_column(annotation_column_name));
+
+    std::vector<turi::flexible_type> flex_data_first = expected_sa->to_vector();
+    std::vector<turi::flexible_type> flex_data_second = labels_sa->to_vector();
+
+    for (std::vector<int>::size_type x = 0; x != flex_data_first.size(); x++) {
+      TS_ASSERT(flex_data_first[x] == flex_data_second[x]);
+    }
   }
 };
 

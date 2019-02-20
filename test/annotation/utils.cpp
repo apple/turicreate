@@ -53,10 +53,15 @@ std::shared_ptr<turi::unity_sarray> random_image_sarray(size_t length) {
   return sa;
 }
 
-std::shared_ptr<turi::unity_sarray> random_string_sarray(size_t length) {
+std::shared_ptr<turi::unity_sarray> random_string_sarray(size_t length,
+                                                         bool fill_na) {
   std::vector<turi::flexible_type> annotation_column_data;
   for (int x = 0; x < length; x++) {
-    annotation_column_data.push_back(random_string());
+    if (rand() % 20 > 15) {
+      annotation_column_data.push_back("");
+    } else {
+      annotation_column_data.push_back(random_string());
+    }
   }
 
   std::shared_ptr<turi::unity_sarray> sa =
@@ -68,9 +73,10 @@ std::shared_ptr<turi::unity_sarray> random_string_sarray(size_t length) {
 
 std::shared_ptr<turi::unity_sframe>
 random_sframe(size_t length, std::string image_column_name,
-              std::string annotation_column_name) {
+              std::string annotation_column_name, bool fill_na) {
   std::shared_ptr<turi::unity_sarray> image_sa = random_image_sarray(length);
-  std::shared_ptr<turi::unity_sarray> string_sa = random_string_sarray(length);
+  std::shared_ptr<turi::unity_sarray> string_sa =
+      random_string_sarray(length, fill_na);
 
   std::shared_ptr<turi::unity_sframe> annotate_sf =
       std::make_shared<turi::unity_sframe>();
@@ -147,7 +153,7 @@ bool check_equality(std::shared_ptr<turi::unity_sframe> first,
          second_sa->dtype() == turi::flex_type_enum::INTEGER)) {
       for (std::vector<int>::size_type x = 0; x != flex_data_first.size();
            x++) {
-        if (flex_data_first[i] != flex_data_second[i]) {
+        if (flex_data_first[x] != flex_data_second[x]) {
           printf("The SArray elements are different\n");
           return false;
         }
