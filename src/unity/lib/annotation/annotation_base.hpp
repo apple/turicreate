@@ -69,7 +69,6 @@ protected:
   std::shared_ptr<unity_sframe> m_data;
   const std::vector<std::string> m_data_columns;
   std::string m_annotation_column;
-  std::shared_ptr<AnnotationBase> m_self;
 
   void _addAnnotationColumn();
   void _addIndexColumn();
