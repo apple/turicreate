@@ -37,6 +37,7 @@ env:
 script:
   # Set cache size to 2G (defaults to 512M)
   - ccache -M 2G
+  - ccache -s
 
   # We sometimes get `error: No space left on device`
   # The workaround seems to be to force blocking I/O
@@ -55,3 +56,6 @@ script:
 
   # Build the wheel
   - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=3 --debug --skip_cpp_test --skip_doc
+
+  # See the changes in ccache
+  - ccache -s
