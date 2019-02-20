@@ -204,6 +204,7 @@ void topk_indexer::delete_all_marked() {
  * Retain only top-k.
  */
 void topk_indexer::retain_only_top_k_values() {
+  DASSERT_TRUE(topk >= 0);
   // k = max(size() - topk, 0)
   size_t botk = topk < size() ? size() - topk : 0;
 
@@ -238,6 +239,7 @@ void topk_indexer::retain_only_top_k_values() {
  * Retain only values with count >= threshold
  */
 void topk_indexer::retain_min_count_values() {
+  DASSERT_TRUE(threshold >= 0);
   if (threshold > 1) {
     for(size_t i=0; i < size(); i++){
       if (counts[i] < threshold){
@@ -248,6 +250,7 @@ void topk_indexer::retain_min_count_values() {
 }
 
 void topk_indexer::delete_min_count_values() {
+  DASSERT_TRUE(max_threshold >= 0);
   if (threshold < (size_t) -1) {
     for(size_t i=0; i < size(); i++){
       if (counts[i] > max_threshold){

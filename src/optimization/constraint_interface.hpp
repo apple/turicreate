@@ -9,6 +9,10 @@
 #include <string>
 #include <flexible_type/flexible_type.hpp>
 
+// Eigen
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
+
 // Optimizaiton
 #include <optimization/optimization_interface.hpp>
 

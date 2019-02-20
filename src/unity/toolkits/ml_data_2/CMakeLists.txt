@@ -1,6 +1,6 @@
 project(unity_toolkits)
 
-make_library(unity_ml_data_2
+make_library(unity_ml_data_2 OBJECT
   SOURCES
     data_storage/ml_data_block_manager.cpp
     ml_data.cpp
@@ -30,9 +30,9 @@ make_library(unity_ml_data_2
     testing_utils.cpp
 
     row_slicing_utilities.cpp
-    
+
   REQUIRES
     unity_core
     unity_util
-    armadillo
-  )
+    eigen
+)

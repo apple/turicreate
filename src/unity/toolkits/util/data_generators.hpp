@@ -7,7 +7,7 @@
 #define TURI_TESTING_DATA_GENERATORS_H_
 
 #include <sframe/sframe.hpp> 
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 #include <map>
 #include <string>
 
@@ -72,8 +72,8 @@ class lm_data_generator {
   double evaluate(const std::vector<flexible_type>& x, double noise_sd) const;
 
   double w0;
-  arma::vec w;
-  arma::mat V;
+  Eigen::VectorXd w;
+  Eigen::MatrixXd V;
 
   std::vector<std::string> column_names;
   std::vector<size_t> n_categorical_values;

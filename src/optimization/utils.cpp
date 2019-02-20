@@ -6,12 +6,14 @@
 #include <flexible_type/flexible_type.hpp>
 #include <optimization/optimization_interface.hpp>
 #include <optimization/utils.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
 #include <string>
 
 // TODO: List of todo's for this file
 //------------------------------------------------------------------------------
 // 1. Implement numerical hessian checks.
+// 2. Implement better sparse and dense isNan & isInf functions.
 // 3. Model computes residual?
 
 namespace turi {
@@ -29,7 +31,7 @@ void set_default_solver_options(const first_order_opt_interface& model, const
     
   std::stringstream msg;
 
-  if (model.num_variables() != point.size()){
+  if (size_t(model.num_variables()) != size_t(point.size())){
       msg << "Dimension mismatch: Initial point has " << point.size() <<
         " dimensions but the model has " << model.num_variables() <<
         " variables." << std::endl;
@@ -113,18 +115,17 @@ void set_default_solver_options(const first_order_opt_interface& model, const
  * Compute residual gradient.
 */
 double compute_residual(const SparseVector& gradient){
-  double inf_norm = 0;
-  for(auto p : gradient) {
-    inf_norm = std::max(inf_norm, std::fabs(p.second));
-  }
-  return inf_norm;
+
+  // Make this more efficient
+  DenseVector dense_grad = gradient;
+  return compute_residual(dense_grad);
 }
 
 /**
  * Compute residual gradient.
 */
 double compute_residual(const DenseVector& gradient){
-  double infNorm = arma::norm(gradient, "inf");
+  double infNorm = gradient.lpNorm<Eigen::Infinity>();
   return infNorm;
 }
 
@@ -137,10 +138,10 @@ bool check_gradient(first_order_opt_interface& model, const DenseVector&
 
   size_t mbEnd = std::min(model.num_examples(), mbStart + mbSize);
   // Check that the dimensions match
-  if (gradient.n_cols != point.n_cols){
-    logprogress_stream << "Gradient is (" << gradient.n_rows << "x" << gradient.n_cols
+  if (gradient.cols() != point.cols()){
+    logprogress_stream << "Gradient is (" << gradient.rows() << "x" << gradient.cols()
                   <<") which is mismatched with dimension of point (" 
-                  << point.n_cols << ")" <<  std::endl;
+                  << point.cols() << ")" <<  std::endl;
     return false;
   }
 
@@ -159,7 +160,7 @@ bool check_gradient(first_order_opt_interface& model, const DenseVector&
   }
 
 
-  size_t n = point.n_cols;                 // Dimension
+  size_t n = point.cols();                 // Dimension
   DenseVector new_point = point;           // New point
   double f_l, f_r, grad_i;
   double rel_toler;                     
@@ -210,10 +211,7 @@ bool check_gradient(first_order_opt_interface& model, const DenseVector&
     point, const SparseVector& gradient, const size_t mbStart, const size_t
     mbSize){
 
-    DenseVector dense_gradient;
-    dense_gradient.zeros();
-    dense_gradient += gradient;
-
+    DenseVector dense_gradient = gradient;
     return check_gradient(model, point, dense_gradient, mbStart, mbSize);
 }
 
@@ -227,15 +225,15 @@ bool check_hessian(second_order_opt_interface& model, const DenseVector& point,
     const DenseMatrix& hessian){
 
 
-  if (hessian.n_cols != hessian.n_rows){
-    logprogress_stream << "Hessian (" << hessian.n_rows << "x"
-                       << hessian.n_cols <<") not square." << std::endl;
+  if (hessian.cols() != hessian.rows()){
+    logprogress_stream << "Hessian (" << hessian.rows() << "x"
+                       << hessian.cols() <<") not square." << std::endl;
     return false;
   }
-  if (hessian.n_cols != point.size()){
-    logprogress_stream << "Hessian size (" << hessian.n_rows << "x"
-                       << hessian.n_cols <<") mismatched with variables ("
-                       << point.n_cols << ")" <<  std::endl;
+  if (hessian.cols() != point.size()){
+    logprogress_stream << "Hessian size (" << hessian.rows() << "x"
+                       << hessian.cols() <<") mismatched with variables ("
+                       << point.cols() << ")" <<  std::endl;
     return false;
   }
 
@@ -358,6 +356,9 @@ std::string translate_solver_status(const OPTIMIZATION_STATUS& status){
      case OPTIMIZATION_STATUS::OPT_LS_FAILURE:
         ret = "TERMINATED: Terminated due to numerical difficulties in line search.";
         break;
+     case OPTIMIZATION_STATUS::OPT_IN_PROGRESS:
+        ret = "Optimization still in progress.";
+        break;
   }
 
   return ret;
@@ -380,6 +381,7 @@ std::string get_recourse_actions(const OPTIMIZATION_STATUS& status){
      case OPTIMIZATION_STATUS::OPT_LOADED:
      case OPTIMIZATION_STATUS::OPT_TIME_LIMIT:
         ret = "Internal error.";
+     case OPTIMIZATION_STATUS::OPT_IN_PROGRESS:
      case OPTIMIZATION_STATUS::OPT_ITERATION_LIMIT:
         ret += "This model may not be optimal. To improve it, consider ";
         ret += "increasing `max_iterations`.\n";
@@ -432,6 +434,35 @@ void log_solver_summary_stats(const solver_return& stats, bool simple_mode){
 
 }
 
+/**
+ * Performs left = left + right
+ * \note Doing this natively in Eigen is super slow!
+ * \note Speciaized implementation for the one corner case of the template function
+ * vector_add
+*/
+template<>
+void vector_add<DenseVector, SparseVector>(DenseVector& left,
+                                           const SparseVector& right){
+  DASSERT_EQ(left.size(), right.size());
+ for (SparseVector::InnerIterator i(right); i; ++i){
+   left[i.index()] += i.value();
+ }
+}
+
+/**
+ * Performs left = left + right
+*/
+template<>
+void vector_add<DenseVector, DenseVector>(DenseVector& left,
+                                           const DenseVector& right){
+  left += right;
+}
+
+template<>
+void vector_add<SparseVector, SparseVector>(SparseVector& left,
+                                           const SparseVector& right){
+  left += right;
+}
 
 } // optimizaiton
 } // turicreate

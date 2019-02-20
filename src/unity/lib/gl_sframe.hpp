@@ -2816,15 +2816,14 @@ class gl_sframe {
 
   virtual std::shared_ptr<unity_sframe> get_proxy() const;
 
+
  private:
   void instantiate_new();
-  void ensure_has_sframe_reader() const;
 
   std::shared_ptr<unity_sframe> m_sframe;
-  mutable std::shared_ptr<sframe_reader> m_sframe_reader;
 
+  std::shared_ptr<sframe_reader> get_sframe_reader() const;
 };
-
 
 /**
  * Provides printing of the gl_sframe.

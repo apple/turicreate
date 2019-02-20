@@ -7,6 +7,7 @@ enum MLNonMaximumSuppressionSuppressionMethod: int {
     MLNonMaximumSuppressionSuppressionMethod_NOT_SET = 0,
 };
 
+__attribute__((__unused__))
 static const char * MLNonMaximumSuppressionSuppressionMethod_Name(MLNonMaximumSuppressionSuppressionMethod x) {
     switch (x) {
         case MLNonMaximumSuppressionSuppressionMethod_pickTop:
@@ -22,6 +23,7 @@ enum MLNonMaximumSuppressionClassLabels: int {
     MLNonMaximumSuppressionClassLabels_NOT_SET = 0,
 };
 
+__attribute__((__unused__))
 static const char * MLNonMaximumSuppressionClassLabels_Name(MLNonMaximumSuppressionClassLabels x) {
     switch (x) {
         case MLNonMaximumSuppressionClassLabels_stringClassLabels:

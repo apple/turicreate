@@ -74,7 +74,7 @@ def create(dataset, target, feature=None, model = 'resnet-50',
         indicates the only image column in `dataset` should be used as the
         feature.
         
-l2_penalty : float, optional
+    l2_penalty : float, optional
         Weight on l2 regularization of the model. The larger this weight, the
         more the model coefficients shrink toward 0. This introduces bias into
         the model but decreases variance, potentially leading to better
@@ -180,7 +180,7 @@ l2_penalty : float, optional
         validation_set is set to None, then no additional metrics
         are computed. The default value is 'auto'.
 
-    max_iterations : float, optional
+    max_iterations : int, optional
         The maximum number of allowed passes through the data. More passes over
         the data can result in a more accurately trained model. Consider
         increasing this (the default value is 10) if the training accuracy is

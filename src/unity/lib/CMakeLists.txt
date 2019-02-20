@@ -5,7 +5,7 @@ subdirs(
     visualization
 )
 
-make_library(unity_core
+make_library(unity_core OBJECT
   SOURCES
     api/function_closure_info.cpp
     extensions/model_base.cpp
@@ -48,13 +48,8 @@ make_library(unity_core
     image_type image_io
     startup_teardown
     pylambda_worker
-    numerics
+    eigen
     visualization
     annotation
     EXTERNAL_VISIBILITY
 )
-
-make_shared_library_from_static(unity_core_shared
-                                REQUIRES
-                                unity_core)
-

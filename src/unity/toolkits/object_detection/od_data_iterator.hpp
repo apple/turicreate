@@ -64,6 +64,9 @@ public:
      * Whether to traverse the data more than once.
      */
     bool repeat = true;
+
+    /** Whether to shuffle the data on subsequent traversals. */
+    bool shuffle = true;
   };
 
   virtual ~data_iterator() = default;
@@ -135,6 +138,7 @@ private:
   const size_t annotations_index_;
   const size_t image_index_;
   const bool repeat_;
+  const bool shuffle_;
 
   const annotation_properties annotation_properties_;
 

@@ -6,7 +6,7 @@ project(flexible_type)
 #/*                                                                        */
 #/**************************************************************************/
 
-make_library(flexible_type
+make_library(flexible_type OBJECT
   SOURCES
     flexible_type.cpp
     string_escape.cpp
@@ -15,5 +15,5 @@ make_library(flexible_type
   REQUIRES
     logger
     image_type
-    EXTERNAL_VISIBILITY
-  )
+  EXTERNAL_VISIBILITY
+)

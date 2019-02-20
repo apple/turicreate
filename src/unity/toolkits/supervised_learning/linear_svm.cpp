@@ -12,9 +12,9 @@
 #include <ml_data/metadata.hpp>
 
 // Toolkits
-#include <toolkits/supervised_learning/supervised_learning.hpp>
-#include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
-#include <toolkits/supervised_learning/linear_svm_opt_interface.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <unity/toolkits/supervised_learning/linear_svm_opt_interface.hpp>
 
 // CoreML
 #include <unity/toolkits/coreml_export/linear_models_exporter.hpp>
@@ -27,14 +27,13 @@
 
 // Regularizer
 #include <optimization/regularizers-inl.hpp>
-#include <optimization/lbfgs-inl.hpp>
+#include <optimization/lbfgs.hpp>
 #include <optimization/newton_method-inl.hpp>
 #include <optimization/accelerated_gradient-inl.hpp>
 
 // Utilities
-#include <numerics/armadillo.hpp>
+#include <Eigen/SparseCore>
 #include <cmath>
-#include <serialization/serialization_includes.hpp>
 
 
 namespace turi {
@@ -81,7 +80,7 @@ void linear_svm::model_specific_init(const ml_data& data,
   // --------------------------------------------------------------------------
   scaled_logistic_svm_interface.reset(new
       linear_svm_scaled_logistic_opt_interface(data, valid_data, *this));
-  coefs = arma::zeros(variables);
+  coefs = DenseVector::Zero(variables);
 }
 
 
@@ -179,7 +178,7 @@ void linear_svm::train() {
   // Set the initial point and write initial output to screen
   // ---------------------------------------------------------------------------
   DenseVector init_point(variables);
-  init_point.zeros();
+  init_point.setZero();
 
   // Box constriants for L1 loss SVM
   float penalty = options.value("penalty");
@@ -195,7 +194,7 @@ void linear_svm::train() {
   // ---------------------------------------------------------------------------
   optimization::solver_return stats;
   DenseVector is_regularized(variables);
-  is_regularized.ones();
+  is_regularized.setOnes();
   is_regularized(variables - 1) = 0;
 
   // Set the regularization penalty
@@ -207,7 +206,7 @@ void linear_svm::train() {
   std::map<std::string, flexible_type> solver_opts
     = options.current_option_values();
   if (solver == "lbfgs") {
-    stats = turi::optimization::lbfgs(*scaled_logistic_svm_interface, init_point,
+    stats = turi::optimization::lbfgs_compat(scaled_logistic_svm_interface, init_point,
         solver_opts, smooth_reg);
   } else {
     std::ostringstream msg;
@@ -255,7 +254,7 @@ void linear_svm::train() {
 flexible_type linear_svm::predict_single_example(
          const DenseVector& x, 
          const prediction_type_enum& output_type){
-  double margin = dot(x, coefs);
+  double margin = x.dot(coefs);
   switch (output_type) {
     // Margin
     case prediction_type_enum::MARGIN:
@@ -292,7 +291,7 @@ flexible_type linear_svm::predict_single_example(
 flexible_type linear_svm::predict_single_example(
          const SparseVector& x, 
          const prediction_type_enum& output_type){
-  double margin = dot(x, coefs);
+  double margin = x.dot(coefs);
   switch (output_type) {
     // Margin
     case prediction_type_enum::MARGIN:

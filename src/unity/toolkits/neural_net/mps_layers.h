@@ -206,7 +206,7 @@ virtual void AllocImage(id<MTLDevice> _Nonnull device , bool is_train = true) {
     if (weights.count(key) > 0) {
       const shared_float_array &arr = weights.at(key);
       LogStdString("Loading weight: " + key);
-      assert(arr.size() == dst_size);
+      assert(arr.size() == size_t(dst_size));
       size_t size = dst_size * sizeof(float);
       void *dest = (void *)dst;
       const float* src = arr.data();

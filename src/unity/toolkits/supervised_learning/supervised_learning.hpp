@@ -25,7 +25,8 @@
 #include <unity/lib/variant_deep_serialize.hpp>
 #include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
 
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
 
 #include <export.hpp>
 
@@ -40,8 +41,8 @@ namespace turi {
 namespace supervised {
 
 class supervised_learning_model_base;
-typedef arma::vec  DenseVector;
-typedef sparse_vector<double>  SparseVector;
+typedef Eigen::Matrix<double, Eigen::Dynamic,1>  DenseVector;
+typedef Eigen::SparseVector<double>  SparseVector;
 
 /**
  * An enumeration over the possible types of prediction that are supported.

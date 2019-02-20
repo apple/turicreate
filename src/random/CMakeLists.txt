@@ -10,7 +10,7 @@ if(WIN32)
   SET(PLATFORM_DEPENDENCIES crypt32)
 endif()
 
-make_library(random
+make_library(random OBJECT
   SOURCES
     random.cpp
     alias.cpp
@@ -20,5 +20,5 @@ make_library(random
     parallel
     util
     ${PLATFORM_DEPENDENCIES}
-    EXTERNAL_VISIBILITY
-  )
+  EXTERNAL_VISIBILITY
+)

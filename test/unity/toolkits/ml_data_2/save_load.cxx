@@ -10,7 +10,9 @@
 #include <util/cityhash_tc.hpp>
 #include <cmath>
 
-#include <numerics/armadillo.hpp>
+// Eigen
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
 
 // SFrame and Flex type
 #include <unity/lib/flex_dict_view.hpp>
@@ -49,6 +51,12 @@ struct test_save_load  {
 
     ////////////////////////////////////////
     v2::ml_data saved_data;
+
+
+
+
+
+
 
     saved_data.metadata = data.metadata;
     saved_data.target_metadata = data.target_metadata;

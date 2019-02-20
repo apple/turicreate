@@ -10,7 +10,9 @@
 #include <algorithm>
 #include <util/cityhash_tc.hpp>
 
-#include <numerics/armadillo.hpp>
+// Eigen
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
 
 // SFrame and Flex type
 #include <unity/lib/flex_dict_view.hpp>
@@ -84,7 +86,7 @@ struct test_composite_rows  {
       const auto& vs = crc.sparse_subrows[sparse_row_index];
 
       ASSERT_EQ(vs.size(), 1);
-      ASSERT_EQ(size_t(vs(0)), 3);  // First row, 3nd column
+      ASSERT_EQ(size_t(vs.coeff(0)), 3);  // First row, 3nd column
 
       // The untranslated column.
       const auto& vf = crc.flex_subrows[flex_row_index];
@@ -115,7 +117,7 @@ struct test_composite_rows  {
 
       // One numerical column
       ASSERT_EQ(vs.size(), 1);
-      ASSERT_EQ(size_t(vs(0)), 6);  // First row, 3nd column
+      ASSERT_EQ(size_t(vs.coeff(0)), 6);  // First row, 3nd column
 
       // The untranslated column.
       const auto& vf = crc.flex_subrows[flex_row_index];
@@ -205,10 +207,10 @@ struct test_composite_rows  {
       for(size_t i = 0; i < row_slicers.size(); ++i) {
 
         row_slicers[i].slice(vd, x_t, x_u);
-        ASSERT_TRUE(arma::all(vd == crc.dense_subrows[dense_row_indices[i]]));
+        ASSERT_TRUE(vd == crc.dense_subrows[dense_row_indices[i]]);
 
         row_slicers[i].slice(vs, x_t, x_u);
-        ASSERT_TRUE(arma::all(vs.to_dense() == crc.sparse_subrows[sparse_row_indices[i]].to_dense()));
+        ASSERT_TRUE(vs.toDense() == crc.sparse_subrows[sparse_row_indices[i]].toDense());
       }
 
       // Now, do the same with the untranslated columns

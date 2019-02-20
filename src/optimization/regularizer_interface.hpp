@@ -9,9 +9,16 @@
 #include <string>
 #include <flexible_type/flexible_type.hpp>
 
+// Eigen
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
+
 // Optimizaiton
 #include <optimization/optimization_interface.hpp>
 
+// TODO: List of todo's for this file
+//------------------------------------------------------------------------------
+//
 
 namespace turi {
 
@@ -116,7 +123,8 @@ class smooth_regularizer_interface: public regularizer_interface {
    * \param[in,out]  hessian Diagonal matrix as the hessian gradient.
    *
    */
-  virtual void compute_hessian(const DenseVector &point, DiagonalMatrix &hessian) const = 0;
+  virtual void compute_hessian(const DenseVector &point, DiagonalMatrix
+      &hessian) const = 0;
 
 };
 

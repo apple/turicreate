@@ -9,7 +9,9 @@
 #include <algorithm>
 #include <util/cityhash_tc.hpp>
 
-#include <numerics/armadillo.hpp>
+// Eigen
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
 
 // Optimization Interface
 #include <optimization/optimization_interface.hpp>
@@ -19,13 +21,12 @@
 #include <optimization/newton_method-inl.hpp>
 #include <optimization/gradient_descent-inl.hpp>
 #include <optimization/accelerated_gradient-inl.hpp>
-#include <optimization/lbfgs-inl.hpp>
+#include <optimization/lbfgs.hpp>
 
 
 using namespace turi;
-typedef arma::vec  DenseVector;
-typedef sparse_vector<double> SparseVector;
-
+typedef Eigen::Matrix<double,Eigen::Dynamic,1>  DenseVector;
+typedef Eigen::SparseVector<double> SparseVector;
 
 
 /**
@@ -65,8 +66,8 @@ class opt_interface: public optimization::second_order_opt_interface
    * Default constructor.
    */
   opt_interface(DenseMatrix _A, DenseVector _b){
-    examples = _A.n_rows;
-    variables = _A.n_cols;
+    examples = _A.rows();
+    variables = _A.cols();
     A = _A;
     b = _b;
   }
@@ -115,19 +116,76 @@ class opt_interface: public optimization::second_order_opt_interface
    */
   void compute_hessian(const DenseVector& point, DenseMatrix& hessian){
     // Code copied from logistic_regression.cpp
-    hessian.zeros();
+    hessian.setZero();
     for (size_t i=0; i < examples; i++){
-      DenseVector x = A.row(i).t();
-      double kernel = exp(-1.0 * (arma::dot(x, point)));
+      DenseVector x = A.row(i);
+      double kernel = exp(-1.0 * (x.dot(point)));
       double row_prob = exp(-log1p(kernel));
       if (row_prob > optimization::OPTIMIZATION_ZERO &&
         row_prob < (1 - optimization::OPTIMIZATION_ZERO)) {
-        DenseMatrix H = ((row_prob * (1.0 - row_prob)) * x) * x.t();
+        DenseMatrix H = ((row_prob * (1.0 - row_prob)) * x) * x.transpose();
         hessian += H;
       }
     }
   }
   
+  /**
+   * Compute the first order stats at a random-coordinate (for
+   * logistic_regression)
+   *
+   * \param[in]  point    Point at which we are computing the gradient.
+   * \param[out] gradient Dense gradient
+   *
+   * \warning: This implementation is STUPID and is only for testing purposes.
+   * Do not copy it over for logistic_regression
+   *
+   */
+  void compute_first_order_stats_per_coordinate(const DenseVector &point, const
+      size_t block_size, DenseVector& gradient, DenseVector& hessian_diag,
+      size_t& block_start){
+
+
+    // Code copied from logistic_regression.cpp
+    DenseVector full_grad(variables);
+    DenseVector full_diag_hessian(variables);
+    full_grad.setZero();
+    full_diag_hessian.setZero();
+
+    for (size_t i=0; i < examples; i++){
+      DenseVector x = A.row(i);
+      double kernel = exp(-1.0 * (x.dot(point)));
+      double row_prob = exp(-log1p(kernel));
+      DenseVector G = x * (row_prob - b(i));
+      full_grad += G;
+      if (row_prob > optimization::OPTIMIZATION_ZERO &&
+        row_prob < (1 - optimization::OPTIMIZATION_ZERO)) {
+        full_diag_hessian  += ((row_prob * (1.0 - row_prob))
+            * x).cwiseProduct(x);
+      }
+    }
+
+    gradient = full_grad.segment(coordinate, block_size);
+    hessian_diag = full_diag_hessian.segment(coordinate, block_size);
+
+    block_start = coordinate;
+    coordinate  = std::min(coordinate + block_size, variables);
+    if (coordinate == variables){
+      reset(0);
+    }
+  }
+
+  /**
+   * Compute the gradient at a "random" point. (Not tested yet)
+   *
+   * \param[in]  point    Point at which we are computing the gradient.
+   * \param[out] gradient Dense gradient
+   *
+   * \warning: Currently, we do not test SGD in this test case. Will add
+   * these ASAP.
+   */
+  void compute_gradient_per_example(const DenseVector& point, DenseVector&
+      gradient){
+  }
 
   /**
    * Compute the gradient at the given point. (for logistic_regression)
@@ -141,11 +199,11 @@ class opt_interface: public optimization::second_order_opt_interface
    */
   void compute_gradient(const DenseVector& point, DenseVector& gradient, const
       size_t mbStart=0, const size_t mbSize=-1){
-    gradient.zeros();
+    gradient.setZero();
     // Code copied from logistic_regression.cpp
     for (size_t i=0; i < examples; i++){
-      DenseVector x = A.row(i).t();
-      double kernel = exp(-1.0 * (arma::dot(x, point)));
+      DenseVector x = A.row(i);
+      double kernel = exp(-1.0 * (x.dot(point)));
       double row_prob = exp(-log1p(kernel));
       DenseVector G = x * (row_prob - b(i));
       gradient += G;
@@ -168,8 +226,8 @@ class opt_interface: public optimization::second_order_opt_interface
     
     // Code copied from logistic_regression.cpp
     for (size_t i=0; i < examples; i++){
-      DenseVector x = A.row(i).t();
-      double margin = arma::dot(x, point);
+      DenseVector x = A.row(i);
+      double margin = x.dot(point);
       double row_func;
 
       if (margin >= 0.0) {
@@ -197,12 +255,12 @@ class opt_interface: public optimization::second_order_opt_interface
       gradient, double& func, const size_t mbStart, const size_t
       mbSize) {
     func = 0;
-    gradient.zeros();
+    gradient.setZero();
 
     // Code copied from logistic_regression.cpp
     for (size_t i=0; i < examples; i++){
-      DenseVector x = A.row(i).t();
-      double margin = arma::dot(x, point);
+      DenseVector x = A.row(i);
+      double margin = x.dot(point);
       double row_func;
 
       if (margin >= 0.0) {
@@ -233,13 +291,13 @@ class opt_interface: public optimization::second_order_opt_interface
   void compute_second_order_statistics(const DenseVector& point, DenseMatrix&
       hessian, DenseVector& gradient, double& func) {
     func = 0;
-    gradient.zeros();
-    hessian.zeros();
+    gradient.setZero();
+    hessian.setZero();
     
     // Code copied from logistic_regression.cpp
     for (size_t i=0; i < examples; i++){
-      DenseVector x = A.row(i).t();
-      double margin = arma::dot(x, point);
+      DenseVector x = A.row(i);
+      double margin = x.dot(point);
       double row_func;
 
       if (margin >= 0.0) {
@@ -254,7 +312,7 @@ class opt_interface: public optimization::second_order_opt_interface
       gradient += x * (row_prob - b(i));
       if (row_prob > optimization::OPTIMIZATION_ZERO &&
         row_prob < (1 - optimization::OPTIMIZATION_ZERO)) {
-        DenseMatrix H = ((row_prob * (1.0 - row_prob)) * x) * x.t();
+        DenseMatrix H = ((row_prob * (1.0 - row_prob)) * x) * x.transpose();
         hessian += H;
       }
     }
@@ -316,9 +374,9 @@ struct optimization_interface_test  {
       DenseVector init_point(variables);
 
       srand(1);
-      A.randu();
-      b.randu();
-      init_point.zeros();
+      A.setRandom();
+      b.setRandom();
+      init_point.setZero();
       
       std::shared_ptr<opt_interface> solver_interface;
       solver_interface.reset(new opt_interface(A, b));
@@ -357,7 +415,7 @@ struct optimization_interface_test  {
       optimization::solver_return stats;
       stats = turi::optimization::gradient_descent(*solver_interface,
           init_point, opts);
-      TS_ASSERT(arma::approx_equal(stats.solution, solution,"absdiff", 1e-2));
+      TS_ASSERT(stats.solution.isApprox(solution, 1e-2));
     }
     
     void test_newton(){
@@ -373,16 +431,16 @@ struct optimization_interface_test  {
 
     void test_lbfgs(){
       optimization::solver_return stats;
-      stats = turi::optimization::lbfgs(*solver_interface,
+      stats = turi::optimization::lbfgs_compat(solver_interface,
           init_point, opts);
-      TS_ASSERT(arma::approx_equal(stats.solution, solution,"absdiff", 1e-2));
+      TS_ASSERT(stats.solution.isApprox(solution, 1e-2));
     }
 
     void test_fista(){
       optimization::solver_return stats;
       stats = turi::optimization::accelerated_gradient(*solver_interface,
           init_point, opts);
-      TS_ASSERT(arma::approx_equal(stats.solution, solution,"absdiff", 1e-2));
+      TS_ASSERT(stats.solution.isApprox(solution, 1e-2));
     }
 
 
@@ -394,7 +452,7 @@ struct optimization_interface_test  {
     void check_gradient_checker(){
       for(size_t i=0; i < 10; i++){
         DenseVector point(variables);
-        point.randn();
+        point.setRandom();
         DenseVector gradient(variables);
         solver_interface->compute_gradient(point, gradient);
         TS_ASSERT(check_gradient(*solver_interface, point, gradient));
@@ -404,7 +462,7 @@ struct optimization_interface_test  {
     void check_hessian_checker(){
       for(size_t i=0; i < 10; i++){
         DenseVector point(variables);
-        point.randn();
+        point.setRandom();
         DenseMatrix hessian(variables, variables);
         solver_interface->compute_hessian(point, hessian);
         TS_ASSERT(check_hessian(*solver_interface, point, hessian));

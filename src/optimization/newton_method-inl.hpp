@@ -8,7 +8,8 @@
 
 #include <optimization/optimization_interface.hpp>
 #include <flexible_type/flexible_type.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
+#include <Eigen/Cholesky>
 
 #include <optimization/utils.hpp>
 #include <optimization/optimization_interface.hpp>
@@ -99,15 +100,9 @@ inline solver_return newton_method(second_order_opt_interface& model,
     }
     double residual = compute_residual(gradient);
 
-    std::vector<std::string> stat_info = {std::to_string(iters),
-                                          std::to_string(stats.num_passes),
-                                          std::to_string(t.current_time())};
-    std::vector<std::string> row = model.get_status(point, stat_info);
-    printer.print_progress_row_strs(iters, row);
-
     // Keep track of previous point 
     DenseVector delta_point = point;
-    delta_point.zeros();
+    delta_point.setZero();
 
 
     // Nan Checking!
@@ -123,17 +118,11 @@ inline solver_return newton_method(second_order_opt_interface& model,
       // Add regularizer hessian
       if (reg != NULL){
         reg->compute_hessian(point, reg_hessian);
-        hessian += diagmat(reg_hessian);
+        hessian += reg_hessian;
       }
-
-      // OLD EIGEN CODE: delta_point = -step_size * hessian.ldlt().solve(gradient);
-      //delta_point = (-step_size) * arma::solve(hessian, gradient);
-      delta_point = (-step_size) * solve_ldlt(hessian, gradient);
-
-      DenseVector pika = hessian*delta_point + gradient;
-      relative_error = arma::norm(pika, 2)
-        / std::max(arma::norm(gradient, 2), OPTIMIZATION_ZERO);
-
+      delta_point = -step_size * hessian.ldlt().solve(gradient);
+      relative_error = (hessian*delta_point + gradient).norm()
+        / std::max(gradient.norm(), OPTIMIZATION_ZERO);
 
       // LDLT Decomposition failed.
       if (relative_error > convergence_threshold){
@@ -150,7 +139,7 @@ inline solver_return newton_method(second_order_opt_interface& model,
       point = point + delta_point;
       
       // Numerical overflow. (Step size was too large)
-      if (!delta_point.is_finite()) {
+      if (!delta_point.array().isFinite().all()) {
         stats.status = OPTIMIZATION_STATUS::OPT_NUMERIC_OVERFLOW;
         break;
       }
@@ -178,11 +167,12 @@ inline solver_return newton_method(second_order_opt_interface& model,
       }
 
       // Print progress
-      stat_info = {std::to_string(iters),
-                   std::to_string(stats.num_passes),
-                   std::to_string(t.current_time())};
-      row = model.get_status(point, stat_info);
+      auto stat_info = {std::to_string(iters),
+                        std::to_string(stats.num_passes),
+                        std::to_string(t.current_time())};
+      auto row = model.get_status(point, stat_info);
       printer.print_progress_row_strs(iters, row);
+
     }
     printer.print_footer();
 
@@ -214,6 +204,7 @@ inline solver_return newton_method(second_order_opt_interface& model,
 
 } // optimizaiton
 
+/// \}
 } // turicreate
 
 #endif 
