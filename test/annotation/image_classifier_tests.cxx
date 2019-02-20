@@ -21,6 +21,7 @@ public:
    * format.
    *
    */
+
   void test_pass_through() {
     std::string image_column_name = "image";
     std::string annotation_column_name = "annotate";
@@ -115,6 +116,14 @@ public:
     TS_ASSERT(items.data_size() == 0);
   }
 
+  /*
+   * Test Set Annotations Pass
+   *
+   * This test checks the `setAnnotations` method on the ImageClassification
+   * class. It adds an annotation and check whether that annotation is set.
+   *
+   */
+
   void test_set_annotations_pass() {
     std::string image_column_name = "image";
     std::string annotation_column_name = "annotate";
@@ -155,6 +164,15 @@ public:
     TS_ASSERT(label_value == labels_vector.at(10).to<std::string>());
   }
 
+  /*
+   * Test Set Annotations Out Of Index
+   *
+   * This test checks the `setAnnotations` method on the ImageClassification
+   * class. Check the annotation see if an error get's returned when the
+   * annotation is set to an index that isn't present in the SFrame.
+   *
+   */
+
   void test_set_annotations_out_of_index() {
     std::string image_column_name = "image";
     std::string annotation_column_name = "annotate";
@@ -182,6 +200,15 @@ public:
     TS_ASSERT(!ic_annotate.setAnnotations(annotations));
   }
 
+  /*
+   * Test Set Annotations Wrong Type
+   *
+   * This test checks the `setAnnotations` method on the ImageClassification
+   * class. Check the annotation see if it errors out when an undefined
+   * annotation type gets passed into the method.
+   *
+   */
+
   void test_set_annotations_wrong_type() {
     std::string image_column_name = "image";
     std::string annotation_column_name = "annotate";
@@ -203,6 +230,15 @@ public:
     TS_ASSERT(!ic_annotate.setAnnotations(annotations));
   }
 
+  /*
+   * Test Set Annotations Empty
+   *
+   * This test checks the `setAnnotations` method on the ImageClassification
+   * class. Check the annotation see if it errors out when empty set of
+   * annotations get passed into the method.
+   *
+   */
+
   void test_set_annotations_empty() {
     std::string image_column_name = "image";
     std::string annotation_column_name = "annotate";
@@ -219,6 +255,15 @@ public:
 
     TS_ASSERT(ic_annotate.setAnnotations(annotations));
   }
+
+  /*
+   * Test Return Annotations
+   *
+   * This test checks the `returnAnnotations` method on the ImageClassification
+   * class. Check if the return value matches (with the Null values) the
+   * expected SFrame
+   *
+   */
 
   void test_return_annotations() {
     std::string image_column_name = "image";
@@ -237,6 +282,15 @@ public:
 
     TS_ASSERT(annotation_testing::check_equality(annotation_sf, returned_sf));
   }
+
+  /*
+   * Test Return Annotations Drop Na
+   *
+   * This test checks the `returnAnnotations` method on the ImageClassification
+   * class. Check if the return value matches (without the Null values) the
+   * expected SFrame
+   *
+   */
 
   void test_return_annotations_drop_na() {
     std::string image_column_name = "image";
