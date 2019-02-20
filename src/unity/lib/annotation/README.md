@@ -1,6 +1,6 @@
 # Annotation
 
-The backend and message formats for TuriCreate Annotation are defined in this directory. 
+The backend and message formats for Turi Create Annotation are defined in this directory.
 
 ## OVERVIEW: The Annotation API
 
