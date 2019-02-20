@@ -254,7 +254,7 @@ ImageClassification::_filterDataSFrame(size_t &start, size_t &end) {
           m_data->select_column(m_data_columns.at(0)));
 
   return std::static_pointer_cast<unity_sarray>(
-      data_sarray->subslice(start, 1, end));
+      data_sarray->copy_range(start, 1, end));
 }
 
 std::shared_ptr<unity_sarray>
@@ -266,7 +266,7 @@ ImageClassification::_filterAnnotationSFrame(size_t &start, size_t &end) {
           m_data->select_column(m_annotation_column));
 
   return std::static_pointer_cast<unity_sarray>(
-      data_sarray->subslice(start, 1, end));
+      data_sarray->copy_range(start, 1, end));
 }
 
 } // namespace annotate
