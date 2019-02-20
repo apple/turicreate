@@ -23,7 +23,7 @@ annotate_spec::Data ImageClassification::getItems(size_t start, size_t end) {
 
   std::shared_ptr<unity_sarray> filtered_data =
       this->_filterDataSFrame(start, end);
-
+      
   assert(filtered_data->dtype() == flex_type_enum::IMAGE);
 
   std::vector<flexible_type> flex_data = filtered_data->to_vector();

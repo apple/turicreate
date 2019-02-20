@@ -42,10 +42,12 @@ public:
   /*
    * Test Get Items
    *
-   * This test is supposed to check that the items that are in the sframe get
-   * properly formatted in the data protobuf object.
+   * This test checks that the items that are in the sframe get properly
+   * formatted in the data protobuf object.
    *
    */
+
+  // FAILURE
   void test_get_items() {
     std::string image_column_name = "image";
     std::string annotation_column_name = "annotate";
@@ -65,6 +67,15 @@ public:
     TS_ASSERT(true);
   }
 
+  /*
+   * Test Get Items Out of Index
+   *
+   * This test checks that when an invalid range is passed into the parameters
+   * of `getItems` an empty data object gets returned.
+   *
+   */
+
+  // FAILURE
   void test_get_items_out_of_index() {
     std::string image_column_name = "image";
     std::string annotation_column_name = "annotate";
