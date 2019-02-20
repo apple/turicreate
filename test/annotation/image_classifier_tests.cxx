@@ -327,6 +327,35 @@ public:
       TS_ASSERT(flex_data_first[x] == flex_data_second[x]);
     }
   }
+
+  void test_annotation_registry() {
+    std::string image_column_name = "image";
+    std::string annotation_column_name = "annotate";
+    std::shared_ptr<turi::unity_sframe> annotation_sf =
+        annotation_testing::random_sframe(50, image_column_name,
+                                          annotation_column_name, true);
+
+    turi::annotate::ImageClassification ic_annotate =
+        turi::annotate::ImageClassification(
+            annotation_sf, std::vector<std::string>({image_column_name}),
+            annotation_column_name);
+
+    std::shared_ptr<turi::unity_sframe> returned_sf =
+        ic_annotate.returnAnnotations(false);
+
+    TS_ASSERT(annotation_testing::check_equality(annotation_sf, returned_sf));
+
+    turi::annotate::ImageClassification back_up_annotation =
+        turi::annotate::ImageClassification();
+
+    std::shared_ptr<turi::annotate::annotation_global> annotation_global_sframe =
+        back_up_annotation.get_annotation_registry();
+
+    std::shared_ptr<turi::unity_sframe> recovered_sf =
+        annotation_global_sframe->annotation_sframe;
+
+    TS_ASSERT(annotation_testing::check_equality(annotation_sf, recovered_sf));
+  }
 };
 
 BOOST_FIXTURE_TEST_SUITE(_image_classification_test, image_classification_test)
@@ -356,5 +385,8 @@ BOOST_AUTO_TEST_CASE(test_return_annotations) {
 }
 BOOST_AUTO_TEST_CASE(test_return_annotations_drop_na) {
   image_classification_test::test_return_annotations_drop_na();
+}
+BOOST_AUTO_TEST_CASE(test_annotation_registry) {
+  image_classification_test::test_annotation_registry();
 }
 BOOST_AUTO_TEST_SUITE_END()

@@ -43,7 +43,11 @@ AnnotationBase::returnAnnotations(bool drop_null) {
   size_t id_column = copy_data->column_index("__idx");
   copy_data->remove_column(id_column);
 
+  std::shared_ptr<annotation_global> annotation_global =
+      this->get_annotation_registry();
+
   if (!drop_null) {
+    annotation_global->annotation_sframe = copy_data;
     return copy_data;
   }
 
@@ -54,9 +58,6 @@ AnnotationBase::returnAnnotations(bool drop_null) {
   std::shared_ptr<unity_sframe> final_sf =
       std::static_pointer_cast<unity_sframe>(dropped_missing.front());
 
-  std::shared_ptr<annotation_global> annotation_global =
-      this->get_annotation_registry();
-      
   annotation_global->annotation_sframe = final_sf;
 
   return final_sf;

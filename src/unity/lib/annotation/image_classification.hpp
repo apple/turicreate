@@ -11,7 +11,7 @@ namespace annotate {
 
 class ImageClassification : public AnnotationBase {
 public:
-  ImageClassification(){};
+  ImageClassification() : AnnotationBase(){};
   ImageClassification(const std::shared_ptr<unity_sframe> &data,
                       const std::vector<std::string> &data_columns,
                       const std::string &annotation_column);

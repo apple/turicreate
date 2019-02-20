@@ -23,7 +23,7 @@ namespace annotate {
 /**
  *
  * Fallback
- * 
+ *
  * If the user forgets to assign a return variable in their Python script this
  * global will hold the last annotated sframe
  */
