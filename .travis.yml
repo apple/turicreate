@@ -35,9 +35,8 @@ env:
     - CXX=g++-5
 
 script:
-  # Let's see the current ccache status
-  # We should have a primed cache already (from master builds)
-  - ccache -s
+  # Set cache size to 2G (defaults to 512M)
+  - ccache -M 2G
 
   # We sometimes get `error: No space left on device`
   # The workaround seems to be to force blocking I/O
@@ -56,7 +55,3 @@ script:
 
   # Build the wheel
   - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=3 --debug --skip_cpp_test --skip_doc
-
-  # Let's see the current ccache status again
-  # We should have more in the cache (and maybe some cache hits)
-  - ccache -s
