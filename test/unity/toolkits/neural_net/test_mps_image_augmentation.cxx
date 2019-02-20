@@ -33,8 +33,8 @@ image_type create_image(
 
   size_t size = height * width * 3;
   std::unique_ptr<uint8_t[]> buffer(new uint8_t[size]);
-  for (int j = 0; j < height; ++j) {
-    for (int i = 0; i < width; ++i) {
+  for (size_t j = 0; j < height; ++j) {
+    for (size_t i = 0; i < width; ++i) {
       uint8_t* pixel = buffer.get() + j * width * 3 + i * 3;
       std::tie(pixel[0], pixel[1], pixel[2]) = rgb_generator(i, j);
     }

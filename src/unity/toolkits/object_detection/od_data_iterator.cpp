@@ -192,8 +192,9 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
     annotations_index_(data_.column_index(params.annotations_column_name)),
     image_index_(data_.column_index(params.image_column_name)),
 
-    // Whether to traverse the SFrame more than once.
+    // Whether to traverse the SFrame more than once, and whether to shuffle.
     repeat_(params.repeat),
+    shuffle_(params.shuffle),
 
     // Identify/verify the class labels and other annotation properties.
     annotation_properties_(
@@ -216,21 +217,23 @@ std::vector<labeled_image> simple_data_iterator::next_batch(size_t batch_size) {
 
     if (++next_row_ == range_iterator_.end() && repeat_) {
 
-      // Shuffle the data.
-      // TODO: This heavyweight shuffle operation introduces spikes into the
-      // wall-clock time of this function. SFrame should either provide an
-      // optimized implementation, or we should implement an approach that
-      // amortizes the cost across calls.
-      // TODO: Avoid traversing the data in gl_sframe::apply by instead
-      // generating a gl_sarray from a sequence of the desired length and
-      // hashing each element.
-      auto rng = [](const sframe_rows::row&) {
-        return random::rand();
-      };
-      data_.add_column(data_.apply(rng, flex_type_enum::INTEGER),
-                       "_random_order");
-      data_ = data_.sort("_random_order");
-      data_.remove_column("_random_order");
+      if (shuffle_) {
+        // Shuffle the data.
+        // TODO: This heavyweight shuffle operation introduces spikes into the
+        // wall-clock time of this function. SFrame should either provide an
+        // optimized implementation, or we should implement an approach that
+        // amortizes the cost across calls.
+        // TODO: Avoid traversing the data in gl_sframe::apply by instead
+        // generating a gl_sarray from a sequence of the desired length and
+        // hashing each element.
+        auto rng = [](const sframe_rows::row&) {
+          return random::rand();
+        };
+        data_.add_column(data_.apply(rng, flex_type_enum::INTEGER),
+                         "_random_order");
+        data_ = data_.sort("_random_order");
+        data_.remove_column("_random_order");
+      }
 
       // Reset iteration.
       range_iterator_ = data_.range_iterator();

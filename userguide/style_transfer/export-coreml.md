@@ -26,7 +26,7 @@ the 4th style, then index should be
 let numStyles  = 8
 let styleIndex = 3
 
-let styleArray = try? MLMultiArray(shape: [numStyles] as [NSNumber] dataType: MLMultiArrayDataType.double)
+let styleArray = try? MLMultiArray(shape: [numStyles] as [NSNumber], dataType: MLMultiArrayDataType.double)
 
 for i in 0...((styleArray?.count)!-1) {
     styleArray?[i] = 0.0

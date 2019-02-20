@@ -1,6 +1,6 @@
 project(serialization)
 
-make_library(serialization
+make_library(serialization OBJECT
   SOURCES
     dir_archive.cpp
   REQUIRES
@@ -8,5 +8,5 @@ make_library(serialization
     fileio
     util
     random
-    EXTERNAL_VISIBILITY
-  )
+  EXTERNAL_VISIBILITY
+)

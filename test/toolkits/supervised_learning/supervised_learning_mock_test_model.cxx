@@ -9,14 +9,13 @@
 #include <cfenv>
 
 #include <ml_data/ml_data.hpp>
-#include <toolkits/supervised_learning/supervised_learning.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
 #include <sframe/testing_utils.hpp>
-#include <numerics/armadillo.hpp>
 
 using namespace turi;
 using namespace turi::supervised;
 
-typedef arma::vec  DenseVector;
+typedef Eigen::Matrix<double, Eigen::Dynamic,1>  DenseVector;
 
 /**
  * Supervised_learning model example toolkit
@@ -192,7 +191,7 @@ void run_predict_constant_test(std::map<std::string, flexible_type> opts) {
   // Answers
   // -----------------------------------------------------------------------
   DenseVector coefs(features);
-  coefs.randn();
+  coefs.setRandom();
 
   // Feature names
   std::vector<std::string> feature_names;
@@ -207,14 +206,14 @@ void run_predict_constant_test(std::map<std::string, flexible_type> opts) {
   std::vector<std::vector<flexible_type>> X_data;
   for(size_t i=0; i < examples; i++){
     DenseVector x((size_t) features);
-    x.randn();
+    x.setRandom();
     std::vector<flexible_type> x_tmp;
     for(size_t k=0; k < features; k++){
       x_tmp.push_back(x(k));
     }
 
     // Compute the prediction for this
-    double t = arma::dot(x, coefs);
+    double t = x.dot(coefs);
     std::vector<flexible_type> y_tmp;
     y_tmp.push_back(t);
     X_data.push_back(x_tmp);

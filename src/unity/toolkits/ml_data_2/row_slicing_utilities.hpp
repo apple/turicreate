@@ -9,15 +9,15 @@
 #include <vector>
 #include <unity/toolkits/ml_data_2/metadata.hpp> 
 #include <flexible_type/flexible_type.hpp>
-#include <numerics/armadillo.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
 #include <unity/lib/variant.hpp> 
 #include <unity/lib/variant_deep_serialize.hpp> 
 
 namespace turi { namespace v2 {
 
-typedef arma::vec  dense_vector;
-typedef turi::sparse_vector<double, size_t> sparse_vector;
+typedef Eigen::Matrix<double, Eigen::Dynamic,1>  dense_vector;
+typedef Eigen::SparseVector<double> sparse_vector;
 
 /** A slicer class that allows taking a row and splitting it up by
  *  columns.
@@ -118,14 +118,14 @@ class row_slicer {
 
   /**  Take a row, represented by a pair of translated and
    *   untranslated columns (either of which may be empty), and
-   *   use it to fill a sparse vector with the result. 
+   *   use it to fill an eigen sparse vector with the result.
    */
   void slice(sparse_vector& dest,
              const std::vector<ml_data_entry>& x_t, const std::vector<flexible_type>& x_u) const;
 
   /**  Take a row, represented by a pair of translated and
    *   untranslated columns (either of which may be empty), and
-   *   use it to fill a dense vector with the result. 
+   *   use it to fill an eigen dense vector with the result.
    */
   void slice(dense_vector& dest,
              const std::vector<ml_data_entry>& x_t, const std::vector<flexible_type>& x_u) const;

@@ -1,6 +1,6 @@
 project(unity_toolkits)
 
-make_library(unity_object_detection
+make_library(unity_object_detection OBJECT
   SOURCES
     class_registrations.cpp
     object_detector.cpp

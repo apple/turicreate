@@ -277,27 +277,29 @@ EXPORT bool create_directory_or_throw(const std::string& path) {
 
   // this function throws if the directory still doesn't exist
   // at that location
-  file_status status = get_file_status(path);
-  switch (status) {
-    case file_status::MISSING:
-      log_and_throw_io_failure(
-        "Unable to create directory structure at " +
-        path +
-        ". Ensure that you have write permission to this location, or try again with a different path."
-      );
-      break;
-    case file_status::REGULAR_FILE:
-      log_and_throw_io_failure(
-        "Unable to create directory at " +
-        path +
-        ". A non-directory file already exists there. Delete that file, or try again with a different path."
-      );
-    case file_status::DIRECTORY:
-      // happy path, return below
-      break;
-    default:
-      // not sure what error message to give; fall back to current I/O error
-      log_and_throw_current_io_failure();
+  if (!boost::starts_with(path, "s3://")) {
+    file_status status = get_file_status(path);
+    switch (status) {
+      case file_status::MISSING:
+        log_and_throw_io_failure(
+          "Unable to create directory structure at " +
+          sanitize_url(path) +
+          ". Ensure that you have write permission to this location, or try again with a different path."
+        );
+        break;
+      case file_status::REGULAR_FILE:
+        log_and_throw_io_failure(
+          "Unable to create directory at " +
+          sanitize_url(path) +
+          ". A non-directory file already exists there. Delete that file, or try again with a different path."
+        );
+      case file_status::DIRECTORY:
+        // happy path, return below
+        break;
+      default:
+        // not sure what error message to give; fall back to current I/O error
+        log_and_throw_current_io_failure();
+    }
   }
 
   // result will still indicate whether it was created or not

@@ -12,9 +12,9 @@
 #include <ml_data/ml_data.hpp>
 
 // Toolkits
-#include <toolkits/supervised_learning/supervised_learning.hpp>
-#include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
-#include <toolkits/supervised_learning/linear_svm.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <unity/toolkits/supervised_learning/linear_svm.hpp>
 
 // Solvers
 #include <optimization/utils.hpp>
@@ -23,18 +23,16 @@
 
 // Regularizer
 #include <optimization/regularizers-inl.hpp>
-#include <optimization/lbfgs-inl.hpp>
+#include <optimization/lbfgs.hpp>
 #include <optimization/newton_method-inl.hpp>
 #include <optimization/accelerated_gradient-inl.hpp>
 
-#include <toolkits/supervised_learning/linear_svm.hpp>
-#include <toolkits/supervised_learning/linear_svm_opt_interface.hpp>
+#include <unity/toolkits/supervised_learning/linear_svm.hpp>
+#include <unity/toolkits/supervised_learning/linear_svm_opt_interface.hpp>
 
 // Utilities
-#include <numerics/armadillo.hpp>
-#include <util/logit_math.hpp>
+#include <Eigen/SparseCore>
 #include <cmath>
-#include <serialization/serialization_includes.hpp>
 
 
 namespace turi {
@@ -218,7 +216,7 @@ void linear_svm_scaled_logistic_opt_interface::compute_first_order_statistics(co
 
   // Init
   std::vector<double> f(n_threads, 0.0);
-  std::vector<DenseVector> G(n_threads, arma::zeros(primal_variables));
+  std::vector<DenseVector> G(n_threads, Eigen::MatrixXd::Zero(primal_variables, 1));
 
   // Dense data. 
   if (this->is_dense) {
@@ -226,9 +224,10 @@ void linear_svm_scaled_logistic_opt_interface::compute_first_order_statistics(co
       DenseVector x(primal_variables);
       double y, row_prob, margin, row_func;
       size_t class_idx = 0;
-      for(auto it = data.get_iterator(thread_idx, num_threads);!it.done(); ++it) {
+      for(auto it = data.get_iterator(thread_idx, num_threads);
+                                                              !it.done(); ++it) {
         fill_reference_encoding(*it, x);
-        x(primal_variables - 1) = 1;
+        x.coeffRef(primal_variables - 1) = 1;
         if(feature_rescaling){
           scaler->transform(x);
         }
@@ -236,11 +235,15 @@ void linear_svm_scaled_logistic_opt_interface::compute_first_order_statistics(co
         // Map 
         class_idx = it->target_index();
         y = class_idx * 2 - 1.0;
-        margin = -gamma * (y * dot(x, point) - 1);
-
-        row_prob = - sigmoid(margin);
-        row_func = log1pe(margin);
-
+        margin = -gamma * (y * x.dot(point) - 1);
+        row_prob = -1.0/(1 + exp(-margin));
+        if (margin < -100){
+          row_func = 0;
+        } else if (margin > 50){
+          row_func = margin;
+        } else {
+          row_func = log1p(exp(margin));
+        }
         f[thread_idx] += class_weights[class_idx] * row_func / gamma;
         G[thread_idx] += class_weights[class_idx] * y * x * row_prob;
       }
@@ -252,9 +255,10 @@ void linear_svm_scaled_logistic_opt_interface::compute_first_order_statistics(co
       SparseVector x(primal_variables);
       double y, row_prob, margin, row_func;
       size_t class_idx = 0;
-      for(auto it = data.get_iterator(thread_idx, num_threads); !it.done(); ++it) {
+      for(auto it = data.get_iterator(thread_idx, num_threads);
+                                                              !it.done(); ++it) {
         fill_reference_encoding(*it, x);
-        x(primal_variables - 1) = 1;
+        x.coeffRef(primal_variables - 1) = 1;
         if(feature_rescaling){
           scaler->transform(x);
         }
@@ -262,15 +266,18 @@ void linear_svm_scaled_logistic_opt_interface::compute_first_order_statistics(co
         // Map 
         class_idx = it->target_index();
         y = class_idx * 2 - 1.0;
-        margin = -gamma * (y * dot(x, point) - 1);
-
-        row_prob = -sigmoid(margin);
-        row_func = log1pe(margin);
-
-        f[thread_idx] += class_weights[class_idx] * row_func / gamma;
-        for(auto p : x) {
-          G[thread_idx][p.first] += (class_weights[class_idx] * y * row_prob) * p.second;
+        margin = -gamma * (y * x.dot(point) - 1);
+        row_prob = -1.0/(1 + exp(-margin));
+        if (margin < -100){
+          row_func = 0;
+        } else if (margin > 50){
+          row_func = margin;
+        } else {
+          row_func = log1p(exp(margin));
         }
+        f[thread_idx] += class_weights[class_idx] * row_func / gamma;
+        SparseVector G_tmp = class_weights[class_idx] * y * x * row_prob;
+        optimization::vector_add<DenseVector, SparseVector>(G[thread_idx], G_tmp);
       }
     });
   }

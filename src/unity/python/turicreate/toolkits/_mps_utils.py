@@ -494,7 +494,7 @@ class MpsGraphAPI(object):
         result_handle = _ctypes.c_void_p()
         status_code = self._LIB.TCMPSTrainGraph(
             self.handle, input_array.handle, label_array.handle,
-                _ctypes.byref(result_handle))
+            _ctypes.byref(result_handle))
 
         assert status_code == 0, "Error calling TCMPSTrainGraph"
         assert result_handle, "TCMPSTrainGraph unexpectedly returned NULL pointer"
@@ -624,104 +624,8 @@ class MpsLowLevelAPI(object):
         sz = n * c_in * h_in * w_in
         self._buf_g = (_ctypes.c_float * sz)()
 
-        if (h_in == 1 and h_out == 1):
-            self._ishape = (n, w_in, c_in)
-            self._oshape = (n, w_out, c_out)
-        else:
-            self._ishape = (n, h_in, w_in, c_in)
-            self._oshape = (n, h_out, w_out, c_out)
-
-    def forward(self, x, is_train=True):
-        assert x.shape == self._ishape
-        x_array = MpsFloatArray(x)
-
-        self._LIB.TCMPSForward(
-            self.handle, x_array.handle, _ctypes.byref(self._buf),
-            _ctypes.c_bool(is_train))
-
-        output = (_np.frombuffer(self._buf, dtype=_np.float32).reshape(self._oshape)).copy()
-        return output
-
-    def forward_with_loss(self, x, labels, weights, loss_image_required, is_train=True):
-        assert x.shape == self._ishape
-        return self._loss_or_iteration_call(self._LIB.TCMPSForwardWithLoss, x, labels, weights, loss_image_required, is_train=is_train)
-
-    def backward(self, g):
-        assert g.shape == self._oshape
-        g_array = MpsFloatArray(g)
-
-        self._LIB.TCMPSBackward(self.handle, g_array.handle,
-                                _ctypes.byref(self._buf_g))
-
-        output = (_np.frombuffer(self._buf_g, dtype=_np.float32).reshape(self._ishape)).copy()
-        return output
-
-    def loss(self, x, labels, weights, loss_image_required):
-        assert x.shape == self._oshape
-        return self._loss_or_iteration_call(self._LIB.TCMPSLoss, x, labels, weights, loss_image_required)
-
-    def _loss_or_iteration_call(self, lib_method, x, labels, weights, loss_image_required, is_train=None, async_batch_id=None):
-        expected_label_shape = (self._oshape[:-1] + (1,))
-
-        assert labels.shape == expected_label_shape
-        assert weights.shape == expected_label_shape
-
-        x_array = MpsFloatArray(x)
-        labels_array = MpsFloatArray(labels)
-        weights_array = MpsFloatArray(weights)
-        loss_rq_bool = _ctypes.c_bool(loss_image_required)
-
-        if async_batch_id is not None:
-            batch_id = _ctypes.c_int(async_batch_id)
-            if is_train is None:
-                lib_method(self.handle, batch_id, x_array.handle,
-                           labels_array.handle, weights_array.handle,
-                           loss_rq_bool)
-            else:
-                lib_method(self.handle, batch_id, x_array.handle,
-                           labels_array.handle, weights_array.handle,
-                           loss_rq_bool, _ctypes.c_bool(is_train))
-            return  # Async requests don't return anything immediately
-
-        if is_train is None:
-            lib_method(self.handle, x_array.handle, labels_array.handle,
-                       weights_array.handle, loss_rq_bool,
-                       _ctypes.byref(self._buf))
-        else:
-            lib_method(self.handle, x_array.handle, labels_array.handle,
-                       weights_array.handle, loss_rq_bool,
-                       _ctypes.c_bool(is_train), _ctypes.byref(self._buf))
-
-        output = (_np.frombuffer(self._buf, dtype=_np.float32).reshape(self._oshape)).copy()
-        return output
-
-    def forward_backward(self, x, labels, weights, loss_image_required):
-        assert x.shape == self._ishape
-        return self._loss_or_iteration_call(self._LIB.TCMPSForwardBackward, x, labels, weights, loss_image_required)
-
-    def get_loss_output(self):
-        batch_size = self._ishape[0]
-        loss_buff = (_ctypes.c_float * batch_size)()
-        self._LIB.TCMPSGetLossImages(self.handle, _ctypes.byref(loss_buff))
-        output = (_np.frombuffer(loss_buff, dtype=_np.float32)).copy()
-        return output
-
-    def begin_forward_batch(self, async_batch_id, x, labels, weights, loss_image_required, is_train=True):
-        assert x.shape == self._ishape
-        self._loss_or_iteration_call(self._LIB.TCMPSBeginForwardBatch, x, labels, weights, loss_image_required, is_train=is_train, async_batch_id=async_batch_id)
-
-    def begin_forward_backward_batch(self, async_batch_id, x, labels, weights, loss_image_required):
-        assert x.shape == self._ishape
-        self._loss_or_iteration_call(self._LIB.TCMPSBeginForwardBackwardBatch, x, labels, weights, loss_image_required, async_batch_id=async_batch_id)
-
-    def wait_for_batch(self, async_batch_id):
-        batch_size = self._ishape[0]
-        loss_buff = (_ctypes.c_float * batch_size)()
-        self._LIB.TCMPSWaitForBatch(self.handle, _ctypes.c_int(async_batch_id),
-                               _ctypes.byref(self._buf), _ctypes.byref(loss_buff))
-        forward_output = (_np.frombuffer(self._buf, dtype=_np.float32).reshape(self._oshape)).copy()
-        loss_output = (_np.frombuffer(loss_buff, dtype=_np.float32)).copy()
-        return (forward_output, loss_output)
+        self._ishape = (n, h_in, w_in, c_in)
+        self._oshape = (n, h_out, w_out, c_out)
 
     def load(self, weights):
         weights_items, weights_name, weights_arr, weights_sz = _prepare_network_parameters(weights)
@@ -734,15 +638,62 @@ class MpsLowLevelAPI(object):
         assert status_code == 0
         return dict(MpsFloatArrayIterator(iter_handle))
 
-    def cpu_update(self):
-        self._LIB.TCMPSCpuUpdate(self.handle)
-
-    def update(self):
-        self._LIB.TCMPSUpdate(self.handle)
-
     def initalize_weights(self):
         args = self.export()
         for key, val in args.items():
             if key.endswith("weight"):
                 args[key] = _xavier_init(val)
         self.load(args)
+
+    def _loss_or_iteration_call(self, lib_method, input, labels, weights):
+        expected_label_shape = (self._oshape[:-1] + (1,))
+        assert input.shape == self._ishape
+        assert labels.shape == expected_label_shape
+        assert weights.shape == expected_label_shape
+
+        input_array = MpsFloatArray(input)
+        labels_array = MpsFloatArray(labels)
+        weights_array = MpsFloatArray(weights)
+        output_handle = _ctypes.c_void_p()
+        loss_handle = _ctypes.c_void_p()
+        status_code = lib_method(
+            self.handle,
+            input_array.handle, labels_array.handle, weights_array.handle,
+            _ctypes.byref(output_handle), _ctypes.byref(loss_handle))
+
+        assert status_code == 0, "Error calling TCMPS"
+        assert output_handle, "TCMPS unexpectedly returned NULL pointer"
+        assert loss_handle, "TCMPS unexpectedly returned NULL pointer"
+
+        output = MpsFloatArray(output_handle)
+        loss = MpsFloatArray(loss_handle)
+
+        assert output.shape() == self._oshape
+        assert loss.shape() == (self._oshape[0], 1, 1, 1)
+
+        return (output, loss)
+
+    def train(self, input, labels, weights):
+        return self._loss_or_iteration_call(self._LIB.TCMPSTrain, input, labels,
+                                            weights)
+
+    def predict_with_loss(self, input, labels, weights):
+        return self._loss_or_iteration_call(self._LIB.TCMPSPredict, input,
+                                            labels, weights)
+
+    def predict(self, input):
+        assert input.shape == self._ishape
+
+        input_array = MpsFloatArray(input)
+        output_handle = _ctypes.c_void_p()
+        status_code = self._LIB.TCMPSPredict(
+            self.handle, input_array.handle, None, None,
+            _ctypes.byref(output_handle), None)
+
+        assert status_code == 0, "Error calling TCMPSPredict"
+        assert output_handle, "TCMPSPredict unexpectedly returned NULL pointer"
+
+        output = MpsFloatArray(output_handle)
+        assert output.shape() == self._oshape
+
+        return output

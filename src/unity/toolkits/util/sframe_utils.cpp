@@ -73,7 +73,7 @@ std::pair<sframe,sframe> split_sframe_on_index(const sframe& src, std::function<
  * an element in the SArray with vector type.
  */
 std::shared_ptr<sarray<flexible_type>> 
-matrix_to_sarray(const arma::mat& m) {
+matrix_to_sarray(const Eigen::MatrixXd& m) {
 
   // Write the probabilities to an SArray of vector type.
   std::shared_ptr<sarray<flexible_type> > sa(new sarray<flexible_type>);
@@ -81,8 +81,8 @@ matrix_to_sarray(const arma::mat& m) {
   sa->open_for_write(num_segments);
   sa->set_type(flex_type_enum::VECTOR);
  
-  size_t num_rows = m.n_rows;
-  size_t num_cols = m.n_cols;
+  size_t num_rows = m.rows();
+  size_t num_cols = m.cols();
   in_parallel([&](size_t thread_idx, size_t num_threads) {
     auto it_out = sa->get_output_iterator(thread_idx);
     size_t segment_row_start = size_t(thread_idx * num_rows / num_segments);

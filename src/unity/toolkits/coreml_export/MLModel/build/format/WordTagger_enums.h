@@ -7,6 +7,7 @@ enum MLWordTaggerTags: int {
     MLWordTaggerTags_NOT_SET = 0,
 };
 
+__attribute__((__unused__))
 static const char * MLWordTaggerTags_Name(MLWordTaggerTags x) {
     switch (x) {
         case MLWordTaggerTags_stringTags:

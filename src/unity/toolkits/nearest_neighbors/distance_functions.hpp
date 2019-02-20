@@ -7,8 +7,8 @@
 #define TURI_NN_DISTANCE_FUNCTIONS_H_
 
 #include <string>
-#include <numerics/armadillo.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/SparseCore>
+#include <Eigen/Core>
 #include <memory>
 #include <util/logit_math.hpp>
 #include <unity/toolkits/util/algorithmic_utils.hpp>
@@ -19,9 +19,10 @@
 namespace turi {
 namespace nearest_neighbors {
 
-typedef arma::vec DenseVector;
-typedef arma::mat DenseMatrix;
-typedef sparse_vector<double, size_t> SparseVector;
+typedef Eigen::VectorXd DenseVector;
+typedef Eigen::MatrixXd DenseMatrix;
+typedef Eigen::SparseVector<double> SparseVector;
+typedef Eigen::SparseMatrix<double, 1> SparseMatrix; // row-major
 
 /**
  * Compute the Euclidean distance between the Cartesian product of rows in two
@@ -31,18 +32,18 @@ void inline all_pairs_squared_euclidean(const DenseMatrix& A,
                                         const DenseMatrix& B, 
                                         DenseMatrix& dists) {
 
-  DASSERT_EQ(A.n_cols, B.n_cols);
-  DASSERT_EQ(A.n_rows, dists.n_rows);
-  DASSERT_EQ(B.n_rows, dists.n_cols);
+  DASSERT_EQ(A.cols(), B.cols());
+  DASSERT_EQ(A.rows(), dists.rows());
+  DASSERT_EQ(B.rows(), dists.cols());
 
-  dists = -2 * A * B.t();
+  dists = -2 * A * B.transpose();
 
-  for (size_t i = 0; i < (size_t)A.n_rows; ++i) {
-    dists.row(i) += squared_norm(A.row(i));
+  for (size_t i = 0; i < (size_t)A.rows(); ++i) {
+    dists.row(i).array() += A.row(i).squaredNorm();
   }
 
-  for (size_t j = 0; j < (size_t)B.n_rows; ++j) {
-    dists.col(j) += squared_norm(B.row(j)); 
+  for (size_t j = 0; j < (size_t)B.rows(); ++j) {
+    dists.col(j).array() += B.row(j).squaredNorm();
   }
 }
 
@@ -50,35 +51,35 @@ void inline all_pairs_squared_euclidean(const DenseMatrix& A,
 void inline all_pairs_cosine(const DenseMatrix& A, const DenseMatrix& B, 
                              DenseMatrix& dists) {
 
-  DASSERT_EQ(A.n_cols, B.n_cols);
-  DASSERT_EQ(A.n_rows, dists.n_rows);
-  DASSERT_EQ(B.n_rows, dists.n_cols);
+  DASSERT_EQ(A.cols(), B.cols());
+  DASSERT_EQ(A.rows(), dists.rows());
+  DASSERT_EQ(B.rows(), dists.cols());
 
-  dists = -1 * A * B.t();
+  dists = -1 * A * B.transpose();
 
-  for (size_t i = 0; i < (size_t)A.n_rows; ++i) {
-    double row_norm = std::max(1e-16, std::sqrt(squared_norm(A.row(i))));
-    dists.row(i) /= row_norm;
+  for (size_t i = 0; i < (size_t)A.rows(); ++i) {
+    double row_norm = std::max(1e-16, A.row(i).norm());
+    dists.row(i).array() /= row_norm;
   }
 
-  for (size_t j = 0; j < (size_t)B.n_rows; ++j) {
-    double col_norm = std::max(1e-16, std::sqrt(squared_norm(B.row(j))));
-    dists.col(j) /= col_norm;
+  for (size_t j = 0; j < (size_t)B.rows(); ++j) {
+    double col_norm = std::max(1e-16, B.row(j).norm());
+    dists.col(j).array() /= col_norm;
   }
 
-  dists += 1;
+  dists.array() += 1;
 }
 
 
 void inline all_pairs_dot_product(const DenseMatrix& A, const DenseMatrix& B, 
                                   DenseMatrix& dists) {
 
-  DASSERT_EQ(A.n_cols, B.n_cols);
-  DASSERT_EQ(A.n_rows, dists.n_rows);
-  DASSERT_EQ(B.n_rows, dists.n_cols);
+  DASSERT_EQ(A.cols(), B.cols());
+  DASSERT_EQ(A.rows(), dists.rows());
+  DASSERT_EQ(B.rows(), dists.cols());
 
-  dists = A * B.t();
-  dists.for_each([](double& x) { x = 1.0 / (std::max(x, 1e-10)); });
+  dists = A * B.transpose();
+  dists = dists.cwiseMax(1e-10).cwiseInverse();
 }
 
 
@@ -86,12 +87,12 @@ void inline all_pairs_transformed_dot_product(const DenseMatrix& A,
                                               const DenseMatrix& B, 
                                               DenseMatrix& dists) {
 
-  DASSERT_EQ(A.n_cols, B.n_cols);
-  DASSERT_EQ(A.n_rows, dists.n_rows);
-  DASSERT_EQ(B.n_rows, dists.n_cols);
+  DASSERT_EQ(A.cols(), B.cols());
+  DASSERT_EQ(A.rows(), dists.rows());
+  DASSERT_EQ(B.rows(), dists.cols());
 
-  dists = A * B.t();
-  dists.for_each([](double& x) { x = log1pen(x); });
+  dists = A * B.transpose();
+  dists = dists.unaryExpr([](double x) { return log1pen(x); });
 }
 
 
@@ -132,12 +133,11 @@ struct distance_metric {
 struct gaussian_kernel final : public distance_metric {
 
   double distance(const DenseVector& a, const DenseVector& b) const  {
-    return 1 - std::exp( - ( squared_norm(a - b)) );
+    return 1 - std::exp( - ( (a - b).squaredNorm() ) );
   }
 
   double distance(const SparseVector& a, const SparseVector& b) const  {
-    double d = bi_aggregate(a, b, [](double x, double y) { return (x-y)*(x-y); });
-    return 1 - std::exp(-d);
+    return 1 - std::exp(-( (a.squaredNorm() + b.squaredNorm() - 2 * (a.dot(b))) ));
   }
 
 };
@@ -147,11 +147,11 @@ struct gaussian_kernel final : public distance_metric {
 struct squared_euclidean final : public distance_metric {
 
   double distance(const DenseVector& a, const DenseVector& b) const  {
-    return squared_norm(a - b);
+    return (a - b).squaredNorm();
   }
 
   double distance(const SparseVector& a, const SparseVector& b) const  {
-    return bi_aggregate(a, b, [](double x, double y) { return (x - y)*(x-y); });
+    return (a.squaredNorm() + b.squaredNorm() - 2 * (a.dot(b)));
   }
 
 };
@@ -163,11 +163,11 @@ struct euclidean final : public distance_metric {
   double distance(const DenseVector& a, const DenseVector& b) const {
     DASSERT_TRUE(a.size() == b.size());
     DASSERT_TRUE(a.size() > 0);
-    return arma::norm(a - b, 2);
+    return std::sqrt((a - b).squaredNorm());
   }
 
   double distance(const SparseVector& a, const SparseVector& b) const {
-    return std::sqrt(bi_aggregate(a, b, [](double x, double y) { return (x - y)*(x-y); }));
+    return std::sqrt(a.squaredNorm() + b.squaredNorm() - 2 * (a.dot(b)));
   }
 
 };
@@ -179,12 +179,13 @@ struct manhattan final : public distance_metric {
   double distance(const DenseVector& a, const DenseVector& b) const {
     DASSERT_TRUE(a.size() == b.size());
     DASSERT_TRUE(a.size() > 0);
-    return arma::sum(arma::abs(a - b));
+    return (a - b).cwiseAbs().sum();
   }
 
   double distance(const SparseVector& a, const SparseVector& b) const {
-    return bi_aggregate(a, b, [](double x, double y) { return std::fabs(x - y); });
+    return (a - b).cwiseAbs().sum();
   }
+
 };
 
 /** cosine distance.
@@ -194,15 +195,13 @@ struct cosine final : public distance_metric {
   double distance(const DenseVector& a, const DenseVector& b) const {
     DASSERT_TRUE(a.size() == b.size());
     DASSERT_TRUE(a.size() > 0);
-    
-    double similarity = dot(a, b) / std::max(1e-16, std::sqrt(squared_norm(a) * squared_norm(b)));
 
-    double ret = 1.0 - similarity;
-    return ret;
+    double similarity = (double)a.dot(b) / std::max(1e-16, a.norm() * b.norm());
+    return  1 - similarity;
   }
 
   double distance(const SparseVector& a, const SparseVector& b) const {
-    double similarity = dot(a, b) / std::max(1e-16, std::sqrt(squared_norm(a) * squared_norm(b)));
+    double similarity = (double)a.dot(b) / std::max(1e-16, a.norm() * b.norm());
     return  1 - similarity;
   }
 
@@ -216,12 +215,12 @@ struct dot_product final : public distance_metric {
     DASSERT_TRUE(a.size() == b.size());
     DASSERT_TRUE(a.size() > 0);
 
-    double dot_product = dot(a, b);
+    double dot_product = (double)a.dot(b);
     return 1.0 / std::max(dot_product, 1e-10);
   }
 
   double distance(const SparseVector& a, const SparseVector& b) const {
-    double dot_product = dot(a, b);
+    double dot_product = (double)a.dot(b);
     return 1.0 / std::max(dot_product, 1e-10);
   }
 };
@@ -234,12 +233,12 @@ struct transformed_dot_product final : public distance_metric {
     DASSERT_TRUE(a.size() == b.size());
     DASSERT_TRUE(a.size() > 0);
 
-    double dot_product = (double)dot(a, b);
+    double dot_product = (double)a.dot(b);
     return log1pen(dot_product);
   }
 
   double distance(const SparseVector& a, const SparseVector& b) const {
-    double dot_product = (double)dot(a, b);
+    double dot_product = (double)a.dot(b);
     return log1pen(dot_product);
   }
 };
@@ -253,7 +252,7 @@ struct jaccard final : public distance_metric {
     DASSERT_EQ(a.size(), b.size());
     double intersection_size = 0.;
     double union_size = 0.;    
-    for(size_t idx = 0; idx < std::min(a.size(), b.size()); ++idx) {
+    for(size_t idx = 0; idx < std::min<size_t>(a.size(), b.size()); ++idx) {
       if (a(idx) > 0. || b(idx) > 0.) {
         union_size += 1.;
         if (a(idx) > 0. && b(idx) > 0.) {
@@ -267,15 +266,15 @@ struct jaccard final : public distance_metric {
 
   double distance(const SparseVector& a, const SparseVector& b) const GL_HOT_FLATTEN {
 
-    size_t intersection_size = 0;  
+    size_t intersection_size = 0;
 
-    auto it_a = a.begin();
-    auto it_b = b.begin();
+    SparseVector::InnerIterator it_a(a, 0);
+    SparseVector::InnerIterator it_b(b, 0);
 
-    while(it_a != a.end() && it_b != b.end()) {
-      if(it_a->first < it_b->first) {
+    while(it_a && it_b) {
+      if(it_a.index() < it_b.index()) {
         ++it_a;
-      } else if(it_a->first > it_b->first) {
+      } else if(it_a.index() > it_b.index()) {
         ++it_b;
       } else {
         ++intersection_size;
@@ -283,7 +282,7 @@ struct jaccard final : public distance_metric {
       }
     }
 
-    size_t d = a.num_nonzeros() + b.num_nonzeros() - intersection_size;
+    size_t d = a.nonZeros() + b.nonZeros() - intersection_size;
     
     return 1.0 - double(intersection_size) / d;
   }
@@ -313,33 +312,33 @@ struct weighted_jaccard final : public distance_metric {
 
   double distance(const SparseVector& a, const SparseVector& b) const {
 
-    auto it_a = a.begin(); 
-    auto it_b = b.begin(); 
+    SparseVector::InnerIterator it_a(a, 0);
+    SparseVector::InnerIterator it_b(b, 0);
 
     double cwise_min_sum = 0; 
     double cwise_max_sum = 0; 
 
-    while(it_a != a.end() && it_b !=b.end()) {
-      if(it_a->first < it_b->first) {
-        cwise_max_sum += it_a->second; 
+    while(it_a && it_b) {
+      if(it_a.index() < it_b.index()) {
+        cwise_max_sum += it_a.value();
         ++it_a;
-      } else if(it_a->first > it_b->first) {
-        cwise_max_sum += it_b->second; 
+      } else if(it_a.index() > it_b.index()) {
+        cwise_max_sum += it_b.value();
         ++it_b;
       } else {
-        cwise_min_sum += std::min(it_a->second, it_b->second); 
-        cwise_max_sum += std::max(it_a->second, it_b->second); 
+        cwise_min_sum += std::min(it_a.value(), it_b.value());
+        cwise_max_sum += std::max(it_a.value(), it_b.value());
         ++it_a, ++it_b;
       }
     }
 
-    while(it_a != a.end()) {
-      cwise_max_sum += it_a->second; 
+    while(it_a) {
+      cwise_max_sum += it_a.value();
       ++it_a; 
     }
 
-    while(it_b != b.end()) {
-      cwise_max_sum += it_b->second; 
+    while(it_b) {
+      cwise_max_sum += it_b.value();
       ++it_b; 
     }
     

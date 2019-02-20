@@ -521,7 +521,7 @@ def convert_pooling(net, node, module, builder):
 
 
 def convert_batchnorm(net, node, module, builder):
-    """Convert a transpose layer from mxnet to coreml.
+    """Convert a batchnorm layer from mxnet to coreml.
 
     Parameters
     ----------
@@ -793,7 +793,7 @@ def convert_custom(net, node, module, builder):
         raise TypeError("MXNet layer of type Custom is not supported.")
 
 def convert_embedding(net, node, model, builder):
-    """Convert a flatten layer from mxnet to coreml.
+    """Convert an embedding layer from mxnet to coreml.
 
     Parameters
     ----------
@@ -861,7 +861,7 @@ def convert_elementwise_add(net, node, model, builder):
     builder.add_elementwise(name, input_names, output_name, 'ADD')
 
 def convert_scalar_add(net, node, model, builder):
-    """Convert a transpose layer from mxnet to coreml.
+    """Convert a scalar add layer from mxnet to coreml.
 
     Parameters
     ----------
@@ -888,7 +888,7 @@ def convert_scalar_add(net, node, model, builder):
 
 
 def convert_scalar_multiply(net, node, model, builder):
-    """Convert a transpose layer from mxnet to coreml.
+    """Convert a scalar multiply layer from mxnet to coreml.
 
     Parameters
     ----------
@@ -913,7 +913,7 @@ def convert_scalar_multiply(net, node, model, builder):
             output_name = output_name, W = alpha, has_bias=False, b=None)
 
 def convert_scalar_divide(net, node, model, builder):
-    """Convert a transpose layer from mxnet to coreml.
+    """Convert a scalar divide layer from mxnet to coreml.
 
     Parameters
     ----------
@@ -938,7 +938,7 @@ def convert_scalar_divide(net, node, model, builder):
             output_name = output_name, W = alpha, has_bias=False, b=None)
 
 def convert_instancenorm(net, node, model, builder):
-    """Convert a transpose layer from mxnet to coreml.
+    """Convert an instance norm layer from mxnet to coreml.
 
     Parameters
     ----------

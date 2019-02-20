@@ -1,7 +1,0 @@
-{
-local:
-extern "C++"
-{
-        std::locale::id*;
-};
-};

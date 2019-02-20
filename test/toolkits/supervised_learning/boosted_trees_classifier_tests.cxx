@@ -12,8 +12,8 @@
 #include <ml_data/ml_data.hpp>
 
 // Models
-#include <toolkits/supervised_learning/supervised_learning.hpp>
-#include <toolkits/supervised_learning/boosted_trees.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
+#include <unity/toolkits/supervised_learning/boosted_trees.hpp>
 
 #include <sframe/testing_utils.hpp>
 #include <util/testing_utils.hpp>
@@ -36,7 +36,7 @@ void run_boosted_trees_classifier_test(
   // Answers
   // -----------------------------------------------------------------------
   DenseVector coefs(features+1);
-  coefs.randn();
+  coefs.setRandom();
 
   // Feature names
   std::vector<std::string> feature_names;
@@ -51,14 +51,14 @@ void run_boosted_trees_classifier_test(
   std::vector<std::vector<flexible_type>> X_data;
   for(size_t i=0; i < examples; i++){
     DenseVector x(features);
-    x.randn();
+    x.setRandom();
     std::vector<flexible_type> x_tmp;
     for(size_t k=0; k < features; k++){
       x_tmp.push_back(x(k));
     }
 
     // Compute the prediction for this
-    double t = dot(x, coefs.subvec(0, features-1)) + coefs(features);
+    double t = x.dot(coefs.segment(0, features)) + coefs(features);
     t = 1.0/(1.0+exp(-1.0*t));
     int c = turi::random::bernoulli(t);
     std::vector<flexible_type> y_tmp;
@@ -112,14 +112,14 @@ void run_boosted_trees_classifier_test(
   std::vector<std::vector<flexible_type>> X_v;
   for(size_t i=0; i < 5; i++){
     DenseVector x(features);
-    x.randn();
+    x.setRandom();
     std::vector<flexible_type> x_tmp;
     for(size_t k=0; k < features; k++){
       x_tmp.push_back(x(k));
     }
 
     // Compute the prediction for this
-    double t = dot(x, coefs.subvec(0, features-1)) + coefs(features);
+    double t = x.dot(coefs.segment(0, features)) + coefs(features);
     t = 1.0/(1.0+exp(-1.0*t));
     int c = turi::random::bernoulli(t);
     std::vector<flexible_type> y_tmp;

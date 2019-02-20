@@ -7,8 +7,10 @@
 #define TURI_UTIL_SPMAT_H_
 
 #include <vector>
+#include <map>
 #include <random/alias.hpp>
-#include <armadillo>
+#include <Eigen/Core>
+
 
 /**
  * \ingroup toolkit_util
@@ -77,9 +79,9 @@ class spmat {
   }
 
   /** 
-   * Convert to Arma matrix.
+   * Convert to Eigen matrix.
    */
-  arma::Mat<int> as_matrix() {
+  Eigen::MatrixXi as_matrix() {
     size_t nrows = m.size();
     size_t ncols = 0;
     for (size_t i = 0; i < nrows; ++i) {
@@ -89,38 +91,13 @@ class spmat {
         if (col >= ncols) ncols = col+1; // zero-based indexing
       }
     }
-    arma::Mat<int> ret(nrows, ncols);
+    auto ret = Eigen::MatrixXi(nrows, ncols);
     for (size_t i = 0; i < nrows; ++i) {
       auto row = get_row(i); 
       for (auto it = row.begin(); it != row.end(); ++it) {
         auto j = it->first;
         auto v = it->second;
         ret(i, j) = v;
-      }
-    }
-    return ret;
-  }
- 
-  /** 
-   * Convert to Arma matrix.
-   */
-  arma::Mat<int> as_matrix_transpose() {
-    size_t nrows = m.size();
-    size_t ncols = 0;
-    for (size_t i = 0; i < nrows; ++i) {
-      auto row = get_row(i); 
-      for (auto it = row.begin(); it != row.end(); ++it) {
-        auto col = it->first;
-        if (col >= ncols) ncols = col+1; // zero-based indexing
-      }
-    }
-    arma::Mat<int> ret(ncols, nrows);
-    for (size_t i = 0; i < nrows; ++i) {
-      auto row = get_row(i); 
-      for (auto it = row.begin(); it != row.end(); ++it) {
-        auto j = it->first;
-        auto v = it->second;
-        ret(j, i) = v;
       }
     }
     return ret;

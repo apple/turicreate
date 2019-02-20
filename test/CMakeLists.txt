@@ -7,13 +7,11 @@ subdirs(
         toolkits
         ml_data
         optimization
-        user_pagefault
         util
         serialization
         logger
         timer
         random
-        # fault
         nanosockets
         fileio
         shmipc
@@ -33,7 +31,7 @@ subdirs(
         process
         # vega_renderer
   )
-if(${TC_BUILD_CAPI}) 
+if(${TC_BUILD_CAPI})
   message("Building C API Tests.")
   subdirs(capi)
 else()

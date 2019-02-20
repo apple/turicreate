@@ -7,56 +7,42 @@ project(unity_toolkits)
 
 # When building for macOS, build the MetalPerformanceShaders-based backend.
 if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
-    find_library(ACCELERATE NAMES Accelerate)
-    message("Accelerate found at ${ACCELERATE}.")
 
-    find_library(CORE_GRAPHICS NAMES CoreGraphics)
-    message("CoreGraphics found at ${CORE_GRAPHICS}.")
-
-    find_library(CORE_IMAGE NAMES CoreImage)
-    message("CoreImage found at ${CORE_IMAGE}.")
-
-    find_library(METAL NAMES Metal)
-    message("Metal found at ${METAL}.")
-
-    find_library(METAL_PERFORMANCE_SHADERS NAMES MetalPerformanceShaders)
-    message("MetalPerformanceShaders found at ${METAL_PERFORMANCE_SHADERS}.")
-
-    make_library(tcmps
-        SOURCES
-        TCMPSImageAugmenting.m
-        mps_image_augmentation.mm
-        mps_compute_context.mm
-        mps_graph_trainer.mm
-        mps_graph_networks.mm
-        mps_updater.mm
-        mps_utils.mm
-        mps_graph_cnnmodule.mm
-        mps_layers.mm
-        mps_networks.mm
-        mps_trainer.mm
-        mps_lstm_helper.mm
-        mps_cnnmodule.mm
-        mps_graph_layers.mm
-        mps_weight.mm
-        mps_device_manager.m
-      REQUIRES
-        unity_core
-        ${ACCELERATE}
-        ${CORE_GRAPHICS}
-        ${CORE_IMAGE}
-        ${METAL}
-        ${METAL_PERFORMANCE_SHADERS}
-    )
-    target_compile_options(tcmps PUBLIC "-fobjc-arc -Wno-nullability-completeness -Wno-shadow-ivar")
-    set(additional_unity_neural_net_requirements tcmps)
+  make_library(tcmps OBJECT
+    SOURCES
+      TCMPSImageAugmenting.m
+      mps_image_augmentation.mm
+      mps_compute_context.mm
+      mps_graph_trainer.mm
+      mps_graph_networks.mm
+      mps_updater.mm
+      mps_utils.mm
+      mps_graph_cnnmodule.mm
+      mps_layers.mm
+      mps_networks.mm
+      mps_trainer.mm
+      mps_lstm_helper.mm
+      mps_cnnmodule.mm
+      mps_graph_layers.mm
+      mps_weight.mm
+      mps_device_manager.m
+    REQUIRES
+      unity_core
+      ${ACCELERATE}
+      ${CORE_GRAPHICS}
+      ${CORE_IMAGE}
+      ${METAL}
+      ${METAL_PERFORMANCE_SHADERS}
+  )
+  target_compile_options(tcmps PUBLIC "-fobjc-arc -Wno-nullability-completeness -Wno-shadow-ivar")
+  set(additional_unity_neural_net_requirements tcmps)
 else()
-    set(additional_unity_neural_net_requirements "")
+  set(additional_unity_neural_net_requirements "")
 endif()
 
 # TODO: a backend wrapping MXNet.
 
-make_library(unity_neural_net
+make_library(unity_neural_net OBJECT
   SOURCES
     compute_context.cpp
     float_array.cpp
@@ -68,7 +54,4 @@ make_library(unity_neural_net
     unity_core
     unity_coreml_model_export
     ${additional_unity_neural_net_requirements}
-  COMPILE_FLAGS_EXTRA_GCC
-    -Wno-unknown-pragmas  # NOTE: used for auto-generated protobuf source files
-    -Wno-unused-function  # NOTE: used for auto-generated protobuf source files
 )
