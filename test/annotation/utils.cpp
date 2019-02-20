@@ -11,8 +11,8 @@ char *generate_data(size_t data_size) {
 }
 
 turi::flex_image *random_image() {
-  size_t height = 25;
-  size_t width = 25;
+  size_t height = ((size_t)(rand() % 10) + 15);
+  size_t width = ((size_t)(rand() % 10) + 15);
   size_t channels = 3;
 
   size_t data_size = height * width * channels;
