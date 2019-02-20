@@ -112,8 +112,7 @@ public:
     TuriCreate::Annotation::Specification::Data items =
         ic_annotate.getItems(50, 100);
 
-    // TODO: check if items is empty
-    TS_ASSERT(true);
+    TS_ASSERT(items.data_size() == 0);
   }
 
   void test_set_annotations_pass() {
