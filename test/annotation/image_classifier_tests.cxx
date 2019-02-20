@@ -47,14 +47,40 @@ public:
    *
    */
   void test_get_items() {
-    // TODO: retrieving items from sframe
-    // check if data is streamed properly into protobuf format
+    std::string image_column_name = "image";
+    std::string annotation_column_name = "annotate";
+    std::shared_ptr<turi::unity_sframe> annotation_sf =
+        annotation_testing::random_sframe(50, image_column_name,
+                                          annotation_column_name);
+
+    turi::annotate::ImageClassification ic_annotate =
+        turi::annotate::ImageClassification(
+            annotation_sf, std::vector<std::string>({image_column_name}),
+            annotation_column_name);
+
+    TuriCreate::Annotation::Specification::Data items =
+        ic_annotate.getItems(0, 10);
+
+    // TODO: check if items equals the values in the annotation_sf
     TS_ASSERT(true);
   }
 
   void test_get_items_out_of_index() {
-    // TODO: retrieving items from sframe
-    // check if data object is undefined
+    std::string image_column_name = "image";
+    std::string annotation_column_name = "annotate";
+    std::shared_ptr<turi::unity_sframe> annotation_sf =
+        annotation_testing::random_sframe(50, image_column_name,
+                                          annotation_column_name);
+
+    turi::annotate::ImageClassification ic_annotate =
+        turi::annotate::ImageClassification(
+            annotation_sf, std::vector<std::string>({image_column_name}),
+            annotation_column_name);
+
+    TuriCreate::Annotation::Specification::Data items =
+        ic_annotate.getItems(50, 100);
+
+    // TODO: check if items is empty
     TS_ASSERT(true);
   }
 
