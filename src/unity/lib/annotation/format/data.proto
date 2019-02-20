@@ -8,6 +8,9 @@ message ImageDatum {
   int32 height = 2;
   int32 channels = 3;
 
+  /* TODO: MISSING IMAGE TYPE. IF WE DON'T HAVE THIS THEN THE BYTE DATA IS
+   * POINTLESS */
+
   bytes imgData = 10;
 }
 
