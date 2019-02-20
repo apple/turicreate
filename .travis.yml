@@ -1,6 +1,8 @@
 dist: trusty
 sudo: required
-cache: ccache
+cache:
+  directories:
+    - $HOME/.ccache
 
 language: python
 
