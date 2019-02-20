@@ -119,15 +119,11 @@ set(Boost_LIBRARIES
   ${BOOST_LIBS_DIR}/libboost_regex.a)
 
 
-message(STATUS "Boost libs: " ${Boost_LIBRARIES})
-
 # add an imported library for each boost library
 #
 set(libnames "")
 foreach(blib ${Boost_LIBRARIES})
-  message(STATUS "Boost libs: " ${blib})
   string(REGEX REPLACE "\\.a$" ${CMAKE_SHARED_LIBRARY_SUFFIX} bout ${blib})
-  message(STATUS "Boost dyn libs: " ${bout})
   set(Boost_SHARED_LIBRARIES ${Boost_SHARED_LIBRARIES} ${bout})
   get_filename_component(FNAME ${blib} NAME)
   add_library(${FNAME} STATIC IMPORTED)
@@ -135,8 +131,6 @@ foreach(blib ${Boost_LIBRARIES})
   list(APPEND libnames ${FNAME})
 endforeach()
 
-
-message(STATUS "Boost Shared libs: " ${Boost_SHARED_LIBRARIES})
 
 add_dependencies(ex_boost ex_libbz2 ex_libz)
 # add_definitions(-DBOOST_DATE_TIME_POSIX_TIME_STD_CONFIG)
@@ -168,7 +162,6 @@ set(Boost_Test_LIBRARIES
 
 set(libnames "")
 foreach(blib ${Boost_Test_LIBRARIES})
-  message(STATUS "Boost libs: " ${blib})
   string(REGEX REPLACE "\\.a$" ${CMAKE_SHARED_LIBRARY_SUFFIX} bout ${blib})
   get_filename_component(FNAME ${blib} NAME)
   add_library(${FNAME} STATIC IMPORTED)

@@ -1,13 +1,20 @@
+/* Copyright © 2017 Apple Inc. All rights reserved.
+ *
+ * Use of this source code is governed by a BSD-3-clause license that can
+ * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ */
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
 #include <boost/range/combine.hpp>
 #include <unity/lib/gl_sarray.hpp>
 #include <unity/lib/gl_sframe.hpp>
+#include <unity/lib/unity_sframe.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/filesystem.hpp>
 #include <parallel/lambda_omp.hpp>
 #include <sframe/sframe.hpp>
+#include <sframe/testing_utils.hpp>
 
 using namespace turi;
 
@@ -193,6 +200,7 @@ struct gl_sframe_test {
     void test_join() {
       gl_sframe sf(_make_reference_frame());
       gl_sframe sf2(_make_reference_frame());
+
       sf2.rename({{"b", "c"}});
       gl_sframe sf3 = sf.join(sf2, {"a"}, "left");
 
@@ -376,6 +384,29 @@ struct gl_sframe_test {
     TS_ASSERT(!sf.contains_column("the-column-of-awesome"));
   }
 
+  void test_sframe_sort_repeated() {
+    // The following code would hit some bug conditions related to cache
+    // invalidation.
+    gl_sframe sf(make_random_sframe(4, "nnn"));
+
+    for(size_t i = 0; i < 500; ++i) {
+      sf["X1-n"] = gl_sframe(make_random_sframe(4, "n"))["X1-n"];
+      sf.sort("X1-n");
+    }
+  }
+
+  void test_sframe_iterator_invalidation() {
+    // This tests the root cause of the sort bug above.
+    gl_sframe sf;
+    sf["col"] = gl_sarray{0};
+
+    sf.range_iterator();
+
+    sf["col"] = gl_sarray{1};
+
+    TS_ASSERT_EQUALS((*sf.range_iterator().begin())[0], 1);
+  }
+
 
     gl_sframe _make_reference_frame() {
       gl_sframe sf;
@@ -514,4 +545,12 @@ BOOST_AUTO_TEST_CASE(test_sframe_casts) {
 BOOST_AUTO_TEST_CASE(test_sframe_contains_column) {
   gl_sframe_test::test_sframe_contains_column();
 }
+
+BOOST_AUTO_TEST_CASE(test_sframe_sort_repeated) {
+  gl_sframe_test::test_sframe_sort_repeated();
+}
+BOOST_AUTO_TEST_CASE(test_sframe_iterator_invalidation) {
+  gl_sframe_test::test_sframe_iterator_invalidation();
+}
+
 BOOST_AUTO_TEST_SUITE_END()

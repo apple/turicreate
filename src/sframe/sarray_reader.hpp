@@ -208,7 +208,7 @@ class sarray_reader: public siterable<sarray_iterator<T> > {
 
 
 
-  ~sarray_reader() { 
+  ~sarray_reader() {
     if (reader) delete reader;
   }
 
@@ -563,31 +563,7 @@ class sarray_reader: public siterable<sarray_iterator<T> > {
     for (size_t i = 0;i < m_segment_lengths.size(); ++i) {
       m_segment_lengths[i] = 
           segment_row_start_end[i].second - segment_row_start_end[i].first;
-      /*
-       * We would like to reuse the sarray_reader_buffer here.
-       * However, we have a singularly annoying problem. Which is that
-       * the sarray_reader_buffer takes a shared_ptr to the sarray_reader.
-       * There are 5 possible solutions:
-       *  - change sarray.get_reader() to return a shared_ptr and have sarray
-       *    inherit from std::enable_shared_from_this. This will allow me to
-       *    hand off a shared_ptr to the sarray_reader_buffer and be reference
-       *    counted correctly. However, this is bad since it introduces a 
-       *    circular reference meaning sarray_reader will never be deleted.
-       *  - change sarray.get_reader() to return a shared_ptr and have sarray
-       *    inherit from std::enable_shared_from_this. And modify 
-       *    sarray_reader_buffer to take a weak_ptr to break the circular 
-       *    reference. Problematic and liable to break things. For instance
-       *    if sarray_reader_buffer is constructed from a get_reader() and
-       *    the reader is thrown away.
-       *  - change sarray_reader_buffer to a regular pointer. Problematic.
-       *    like the above.
-       *  - Re-implement the sarray_reader_buffer here. Code duplication is ugly.
-       *  - keep the shared_ptr in the sarray_reader_buffer, but give it a 
-       *    shared_ptr that doesn't actually delete the pointer. Not pretty, 
-       *    but works.
-       */
-      std::shared_ptr<sarray_reader<T>> bad_ptr_to_this(this, [](void*){});
-      m_read_buffers[i].init(bad_ptr_to_this, 
+      m_read_buffers[i].init(this,
                              segment_row_start_end[i].first, 
                              segment_row_start_end[i].second);
     }

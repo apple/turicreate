@@ -20,8 +20,6 @@ addons:
       - gcc-5
       - g++-5
       - libstdc++6
-      - libblas-dev
-      - liblapack-dev
       - python-setuptools
       - libgif-dev
       - vim-common

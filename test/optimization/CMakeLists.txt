@@ -1,4 +1,4 @@
 project(optimization_test)
 
-make_boost_test(optimization_interface_test.cxx REQUIRES optimization table_printer)
-make_boost_test(constraint_interface_test.cxx REQUIRES optimization)
+make_boost_test(optimization_interface_test.cxx REQUIRES unity_shared_for_testing)
+make_boost_test(constraint_interface_test.cxx REQUIRES unity_shared_for_testing)

@@ -60,6 +60,7 @@ data_iterator::parameters create_data(size_t num_rows) {
       {"test_image", gl_sarray(images)},
       {"test_annotations", gl_sarray(annotations)},
   });
+  result.shuffle = false;
 
   return result;
 }

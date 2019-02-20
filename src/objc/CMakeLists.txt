@@ -1,32 +1,25 @@
 project(TuriCreateObjC)
 
 if(APPLE AND HAS_MLCUSTOMMODEL)
-  find_library(FOUNDATION NAMES Foundation)
-  message("Foundation found at ${FOUNDATION}.")
-
-  find_library(CORE_ML NAMES CoreML)
-  message("CoreML found at ${CORE_ML}.")
 
   make_library(Recommender
     SOURCES
       TuriCreateObjC.m
       recommender_initialization.cpp
+      ${_TC_COMMON_OBJECTS}
     REQUIRES
-      unity_recsys
-      capi
-      ${FOUNDATION}
-      ${CORE_ML}
+      ${_TC_COMMON_REQUIREMENTS}
     SHARED
     SHARED_ALL_DEFINED
-    EXPORT_OSX_MAP_FILE ${CMAKE_CURRENT_SOURCE_DIR}/symbol_exports.ver
+    EXPORT_OSX_MAP_FILE "${CMAKE_CURRENT_SOURCE_DIR}/symbol_exports.ver"
     DEAD_STRIP
   )
 
-  make_library(objcapi
+  make_library(objcapi OBJECT
     SOURCES
       TuriCreateObjC.m
     REQUIRES
-      TuriCreate_static
+      capi
       ${FOUNDATION}
       ${CORE_ML}
   )
