@@ -100,13 +100,21 @@ bool ImageClassification::setAnnotations(
 
     annotate_spec::Annotation annotation = annotations.annotation(a_idx);
 
+    if (annotation.labels_size() < 1) {
+      std::cerr << "No Labels present in the Annotation" << std::endl;
+      error = false;
+      continue;
+    }
+
     annotate_spec::Label label = annotation.labels(0);
     size_t sf_idx = annotation.rowindex(0);
 
     if (sf_idx < 0 || sf_idx >= m_data->size()) {
-      throw std::runtime_error("Out of range error: Annotation rowIndex "
-                               "exceeds the acceptable range");
+      std::cerr << "Out of range error: Annotation rowIndex exceeds the "
+                   "acceptable range"
+                << std::endl;
       error = false;
+      continue;
     }
 
     switch (label.labelIdentifier_case()) {
@@ -117,8 +125,8 @@ bool ImageClassification::setAnnotations(
       _addAnnotationToSFrame(sf_idx, label.stringlabel());
       break;
     default:
-      throw std::runtime_error(
-          "Unexpected label type type. Expected INTEGER or STRING.");
+      std::cerr << "Unexpected label type type. Expected INTEGER or STRING."
+                << std::endl;
       error = false;
     }
   }

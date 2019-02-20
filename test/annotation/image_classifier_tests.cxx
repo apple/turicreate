@@ -90,7 +90,7 @@ public:
   }
 
   /*
-   * Test Get Items Out of Index
+   * Test Get Items Out Of Index
    *
    * This test checks that when an invalid range is passed into the parameters
    * of `getItems` an empty data object gets returned.
@@ -155,10 +155,69 @@ public:
     TS_ASSERT(label_value == labels_vector.at(10).to<std::string>());
   }
 
-  void test_set_annotations_fail() {
-    // TODO: add incorrect annotations to the class
-    // test whether the incorrect annotations get caught
-    TS_ASSERT(true);
+  void test_set_annotations_out_of_index() {
+    std::string image_column_name = "image";
+    std::string annotation_column_name = "annotate";
+    std::shared_ptr<turi::unity_sframe> annotation_sf =
+        annotation_testing::random_sframe(50, image_column_name,
+                                          annotation_column_name);
+
+    turi::annotate::ImageClassification ic_annotate =
+        turi::annotate::ImageClassification(
+            annotation_sf, std::vector<std::string>({image_column_name}),
+            annotation_column_name);
+
+    TuriCreate::Annotation::Specification::Annotations annotations;
+    TuriCreate::Annotation::Specification::Annotation *annotation =
+        annotations.add_annotation();
+
+    annotate_spec::Label *label = annotation->add_labels();
+
+    std::string label_value = annotation_testing::random_string();
+    label->set_stringlabel(label_value);
+
+    annotation->add_rowindex(100);
+
+    /* Check if the annotations get properly handled */
+    TS_ASSERT(!ic_annotate.setAnnotations(annotations));
+  }
+
+  void test_set_annotations_wrong_type() {
+    std::string image_column_name = "image";
+    std::string annotation_column_name = "annotate";
+    std::shared_ptr<turi::unity_sframe> annotation_sf =
+        annotation_testing::random_sframe(50, image_column_name,
+                                          annotation_column_name);
+
+    turi::annotate::ImageClassification ic_annotate =
+        turi::annotate::ImageClassification(
+            annotation_sf, std::vector<std::string>({image_column_name}),
+            annotation_column_name);
+
+    TuriCreate::Annotation::Specification::Annotations annotations;
+    TuriCreate::Annotation::Specification::Annotation *annotation =
+        annotations.add_annotation();
+
+    annotation->add_rowindex(100);
+
+    TS_ASSERT(!ic_annotate.setAnnotations(annotations));
+  }
+
+  void test_set_annotations_empty() {
+    std::string image_column_name = "image";
+    std::string annotation_column_name = "annotate";
+    std::shared_ptr<turi::unity_sframe> annotation_sf =
+        annotation_testing::random_sframe(50, image_column_name,
+                                          annotation_column_name);
+
+    turi::annotate::ImageClassification ic_annotate =
+        turi::annotate::ImageClassification(
+            annotation_sf, std::vector<std::string>({image_column_name}),
+            annotation_column_name);
+
+    TuriCreate::Annotation::Specification::Annotations annotations;
+
+    TS_ASSERT(ic_annotate.setAnnotations(annotations));
   }
 
   void test_return_annotations() {
@@ -187,8 +246,14 @@ BOOST_AUTO_TEST_CASE(test_get_items) {
 BOOST_AUTO_TEST_CASE(test_set_annotations_pass) {
   image_classification_test::test_set_annotations_pass();
 }
-BOOST_AUTO_TEST_CASE(test_set_annotations_fail) {
-  image_classification_test::test_set_annotations_fail();
+BOOST_AUTO_TEST_CASE(test_set_annotations_out_of_index) {
+  image_classification_test::test_set_annotations_out_of_index();
+}
+BOOST_AUTO_TEST_CASE(test_set_annotations_wrong_type) {
+  image_classification_test::test_set_annotations_wrong_type();
+}
+BOOST_AUTO_TEST_CASE(test_set_annotations_empty) {
+  image_classification_test::test_set_annotations_empty();
 }
 BOOST_AUTO_TEST_CASE(test_return_annotations) {
   image_classification_test::test_return_annotations();
