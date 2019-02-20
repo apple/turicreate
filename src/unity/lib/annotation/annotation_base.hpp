@@ -21,6 +21,17 @@ namespace turi {
 namespace annotate {
 
 /**
+ *
+ * Fallback
+ * 
+ * If the user forgets to assign a return variable in their Python script this
+ * global will hold the last annotated sframe
+ */
+struct annotation_global {
+  std::shared_ptr<unity_sframe> annotation_sframe;
+};
+
+/**
  * Every annotation backend extends from this class. This forces the annotation
  * api to remain consistent across all implementations. The reason the virtual
  * methods exist rather than a switch statement in the annotate method is to
@@ -41,6 +52,8 @@ public:
   size_t size();
 
   std::shared_ptr<unity_sframe> returnAnnotations(bool drop_null = false);
+
+  std::shared_ptr<annotation_global> get_annotation_registry();
 
   virtual annotate_spec::MetaData metaData() = 0;
 
