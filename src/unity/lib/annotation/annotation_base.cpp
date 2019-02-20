@@ -11,6 +11,11 @@ AnnotationBase::AnnotationBase(const std::shared_ptr<unity_sframe> &data,
                                const std::string &annotation_column)
     : m_data(data), m_data_columns(data_columns),
       m_annotation_column(annotation_column) {
+
+  /* Copy as so not to mutate the sframe passed into the function */
+  m_data = std::static_pointer_cast<unity_sframe>(
+      m_data->copy_range(0, 1, m_data->size()));
+
   this->_addAnnotationColumn();
   this->_addIndexColumn();
   this->_checkDataSet();

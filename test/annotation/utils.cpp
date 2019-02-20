@@ -84,7 +84,77 @@ random_sframe(size_t length, std::string image_column_name,
 bool check_equality(std::shared_ptr<turi::unity_sframe> first,
                     std::shared_ptr<turi::unity_sframe> second) {
 
-  // TODO: check for equality
+  // Step one: check column names are the same
+  std::vector<std::string> first_column_names = first->column_names();
+  std::vector<std::string> second_column_names = second->column_names();
+
+  for (std::vector<int>::size_type i = 0; i != first_column_names.size(); i++) {
+    if (first_column_names[i] != second_column_names[i]) {
+      printf("The SFrame column names don't match\n");
+      return false;
+    }
+  }
+
+  // Step two: check both sframes have the same length
+  if (first->size() != second->size()) {
+    printf("The SFrame's have different sizes\n");
+    return false;
+  }
+
+  // Step three: check both sframes have the same type
+  std::vector<turi::flex_type_enum> first_type = first->dtype();
+  std::vector<turi::flex_type_enum> second_type = second->dtype();
+
+  if (first_type.size() != second_type.size()) {
+    printf("The SFrame type arrays are different sizes\n");
+    return false;
+  }
+
+  for (std::vector<int>::size_type i = 0; i != first_type.size(); i++) {
+    if (first_type[i] != second_type[i]) {
+      printf("The SFrame type's are different\n");
+      return false;
+    }
+  }
+
+  // Step four: check both sarray's are the same
+  for (std::vector<int>::size_type i = 0; i != first_column_names.size(); i++) {
+
+    std::shared_ptr<turi::unity_sarray> first_sa =
+        std::static_pointer_cast<turi::unity_sarray>(
+            first->select_column(first_column_names[i]));
+
+    std::shared_ptr<turi::unity_sarray> second_sa =
+        std::static_pointer_cast<turi::unity_sarray>(
+            second->select_column(second_column_names[i]));
+
+    std::vector<turi::flexible_type> flex_data_first = first_sa->to_vector();
+    std::vector<turi::flexible_type> flex_data_second = second_sa->to_vector();
+
+    if (flex_data_first.size() != flex_data_second.size()) {
+      printf("The SArray sizes are different\n");
+      return false;
+    }
+    /**
+     * ASSUMPTION
+     *
+     * Not checking image column elements since we don't modify them. Seems a
+     * bit useless to check pixel by pixel if the values haven't changed.
+     */
+    if ((first_sa->dtype() == turi::flex_type_enum::STRING &&
+         second_sa->dtype() == turi::flex_type_enum::STRING) ||
+        (first_sa->dtype() == turi::flex_type_enum::INTEGER &&
+         second_sa->dtype() == turi::flex_type_enum::INTEGER)) {
+      for (std::vector<int>::size_type x = 0; x != flex_data_first.size();
+           x++) {
+        if (flex_data_first[i] != flex_data_second[i]) {
+          printf("The SArray elements are different\n");
+          return false;
+        }
+      }
+    }
+  }
+
   return true;
 }
 

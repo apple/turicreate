@@ -53,7 +53,7 @@ public:
   setAnnotations(const annotate_spec::Annotations &annotations) = 0;
 
 protected:
-  const std::shared_ptr<unity_sframe> m_data;
+  std::shared_ptr<unity_sframe> m_data;
   const std::vector<std::string> m_data_columns;
   std::string m_annotation_column;
   std::shared_ptr<AnnotationBase> m_self;
