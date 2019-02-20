@@ -9,53 +9,21 @@
 
 #include <image/image_type.hpp>
 
+#include "utils.cpp"
+
 struct image_classification_test {
 public:
-
   /*
-   *
+   * TODO: add a description of what this test is supposed to check for
    */
   void test_pass_through() {
-    // 1) make an sframe with an image and annotation column
-    //    - make a function to generate image data
-
     std::string image_column_name = "image";
-    std::string annotation_column_name = "annotation";
+    std::string annotation_column_name = "annotate";
+    std::shared_ptr<turi::unity_sframe> annotation_sf =
+        annotation_testing::random_sframe(50, image_column_name,
+                                          annotation_column_name);
 
-    std::vector<std::string> column_names = {image_column_name,
-                                             annotation_column_name};
-
-    std::vector<turi::flex_image> image_column_data;
-    std::vector<turi::flex_image> annotation_column_data;
-
-    char data[] = {static_cast<char>(255), static_cast<char>(0), static_cast<char>(255),
-                   static_cast<char>(255), static_cast<char>(0), static_cast<char>(255),
-                   static_cast<char>(255), static_cast<char>(0), static_cast<char>(255),
-                   static_cast<char>(255), static_cast<char>(0), static_cast<char>(255)};
-
-    char * img_data = data;                 
-    size_t height = 2;
-    size_t width = 2;
-    size_t channels = 3;
     
-    size_t data_size = 12;
-    size_t image_type_version = IMAGE_TYPE_CURRENT_VERSION;
-    size_t format = 2;
-
-    turi::flex_image* img_new = new turi::image_type(img_data, height, width,
-                                                    channels, data_size,
-                                                    image_type_version, format);
-
-    const unsigned char * image_data = img_new->get_image_data();
-
-    for(int x = 0; x < 12; x++) {
-      printf("%d\n", (uint8_t)(image_data[x]));
-    }
-
-
-    // TODO: generate random images
-    // TODO: randomly generate annotation labels
-
     TS_ASSERT(true);
   }
 
