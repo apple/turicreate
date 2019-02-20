@@ -31,22 +31,20 @@ void AnnotationBase::annotate(const std::string &path_to_client) {
 
 std::shared_ptr<unity_sframe>
 AnnotationBase::returnAnnotations(bool drop_null) {
-  /* POTENTIAL ISSUE
-   *
-   * Once the user calls returnAnnotations the annotation tool
-   * won't work anymore since the idx column is removed. They'll then have to
-   * reload the returned sframe in the constructor of the AnnotationBase class.
-   */
-  size_t id_column = m_data->column_index("__idx");
-  m_data->remove_column(id_column);
+  std::shared_ptr<unity_sframe> copy_data =
+      std::static_pointer_cast<unity_sframe>(
+          m_data->copy_range(0, 1, m_data->size()));
+
+  size_t id_column = copy_data->column_index("__idx");
+  copy_data->remove_column(id_column);
 
   if (!drop_null) {
-    return m_data;
+    return copy_data;
   }
 
   std::vector<std::string> annotation_column_name = {m_annotation_column};
   std::list<std::shared_ptr<unity_sframe_base>> dropped_missing =
-      m_data->drop_missing_values(annotation_column_name, false, false);
+      copy_data->drop_missing_values(annotation_column_name, false, false);
 
   return std::static_pointer_cast<unity_sframe>(dropped_missing.front());
 }
