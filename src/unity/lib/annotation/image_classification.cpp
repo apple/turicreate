@@ -10,13 +10,7 @@ ImageClassification::ImageClassification(
     const std::shared_ptr<unity_sframe> &data,
     const std::vector<std::string> &data_columns,
     const std::string &annotation_column)
-    : AnnotationBase(data, data_columns, annotation_column) {
-  /* Since abstract classes cannot use std::make_shared and it needed for the
-   * annotate process, we need the child class to construct the shared pointer
-   * and store it in the protected variables of the inherited abstract
-   * `AnnotationBase` class */
-  m_self = std::make_shared<ImageClassification>(*this);
-}
+    : AnnotationBase(data, data_columns, annotation_column) {}
 
 annotate_spec::Data ImageClassification::getItems(size_t start, size_t end) {
   annotate_spec::Data data;

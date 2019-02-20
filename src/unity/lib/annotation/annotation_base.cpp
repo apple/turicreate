@@ -22,16 +22,13 @@ AnnotationBase::AnnotationBase(const std::shared_ptr<unity_sframe> &data,
 }
 
 void AnnotationBase::annotate(const std::string &path_to_client) {
-  std::shared_ptr<AnnotationBase> self = this->m_self;
-  ::turi::visualization::run_thread([self, path_to_client]() {
-    visualization::process_wrapper aw(path_to_client);
-    /* TODO: Easier to Implement when working on the Front End. Hold off
-     * implementation until front end PR. Will be more clear what to implement
-     * there */
-    while (aw.good()) {
-      break;
-    }
-  });
+  visualization::process_wrapper aw(path_to_client);
+  /* TODO: Easier to Implement when working on the Front End. Hold off
+   * implementation until front end PR. Will be more clear what to implement
+   * there */
+  while (aw.good()) {
+    break;
+  }
 }
 
 std::shared_ptr<unity_sframe>
