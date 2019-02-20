@@ -40,7 +40,7 @@ public:
 
   size_t size();
 
-  std::shared_ptr<unity_sframe> returnAnnotations(bool drop_null);
+  std::shared_ptr<unity_sframe> returnAnnotations(bool drop_null=false);
 
   virtual annotate_spec::MetaData metaData() = 0;
 

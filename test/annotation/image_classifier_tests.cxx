@@ -14,7 +14,12 @@
 struct image_classification_test {
 public:
   /*
-   * TODO: add a description of what this test is supposed to check for
+   * Test Pass Through
+   *
+   * This test is supposed to check that the data that gets passed into the
+   * annotation utility gets passed out in the same manner with the same data
+   * format.
+   *
    */
   void test_pass_through() {
     std::string image_column_name = "image";
@@ -23,10 +28,24 @@ public:
         annotation_testing::random_sframe(50, image_column_name,
                                           annotation_column_name);
 
-    
-    TS_ASSERT(true);
+    turi::annotate::ImageClassification ic_annotate =
+        turi::annotate::ImageClassification(
+            annotation_sf, std::vector<std::string>({image_column_name}),
+            annotation_column_name);
+
+    std::shared_ptr<turi::unity_sframe> returned_sf =
+        ic_annotate.returnAnnotations(false);
+
+    TS_ASSERT(annotation_testing::check_equality(annotation_sf, returned_sf));
   }
 
+  /*
+   * Test Get Items
+   *
+   * This test is supposed to check that the items that are in the sframe get
+   * properly formatted in the data protobuf object.
+   *
+   */
   void test_get_items() {
     // TODO: retrieving items from sframe
     // check if data is streamed properly into protobuf format

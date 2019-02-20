@@ -25,6 +25,8 @@ std::shared_ptr<turi::unity_sframe>
 random_sframe(size_t length, std::string image_column_name = "image",
               std::string annotation_column_name = "annotation");
 
+bool check_equality(std::shared_ptr<turi::unity_sframe> first,
+                    std::shared_ptr<turi::unity_sframe> second);
 } // namespace annotation_testing
 
 #endif

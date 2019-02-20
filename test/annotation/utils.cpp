@@ -81,4 +81,11 @@ random_sframe(size_t length, std::string image_column_name,
   return annotate_sf;
 }
 
+bool check_equality(std::shared_ptr<turi::unity_sframe> first,
+                    std::shared_ptr<turi::unity_sframe> second) {
+
+  // TODO: check for equality
+  return true;
+}
+
 } // namespace annotation_testing
