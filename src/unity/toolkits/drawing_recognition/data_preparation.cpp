@@ -163,11 +163,18 @@ flex_list simplify_stroke(flex_list raw_drawing) {
 
 flex_list rasterize(flex_list simplified_drawing) {
 #ifdef __APPLE__
+    int MAC_OS_STRIDE = 64;
+    int INTERMEDIATE_BITMAP_WIDTH = 256;
+    int INTERMEDIATE_BITMAP_HEIGHT = 256;
+    int FINAL_BITMAP_WIDTH = 28;
+    int FINAL_BITMAP_HEIGHT = 28;
+    float STROKE_WIDTH = 20.0;
     size_t num_strokes = simplified_drawing.size();
     flex_list final_bitmap; // 1 x 28 x 28
     CGColorSpaceRef grayscale = CGColorSpaceCreateDeviceGray();
     CGContextRef bitmap_context = CGBitmapContextCreate(
-        NULL, 256, 256, 8, 0, grayscale, kCGImageAlphaNone);
+        NULL, INTERMEDIATE_BITMAP_WIDTH, INTERMEDIATE_BITMAP_HEIGHT, 
+        8, 0, grayscale, kCGImageAlphaNone);
     CGContextSetRGBStrokeColor(bitmap_context, 1.0, 1.0, 1.0, 1.0);
     CGAffineTransform transform = CGAffineTransformIdentity;
     CGMutablePathRef path = CGPathCreateMutable();
@@ -176,39 +183,44 @@ flex_list rasterize(flex_list simplified_drawing) {
         const flex_dict &start_point_dict = stroke[0].get<flex_dict>();
         size_t num_points_in_stroke = stroke.size();
         Point P; make_point(&P, start_point_dict);
-        // CGPoint start_vertex = CGPointMake(P.x, P.y);
-        // @TODO: Need some sophisticated iOS/macOS checking here to figure out
-        // whether we need to subtract 256 or not........
-        CGPathMoveToPoint(path, &transform, P.x, 256.0-P.y);
+        // @TODO: When we make a dylib, we'll need some sophisticated 
+        // iOS/macOS checking here to figure out whether we need to 
+        // subtract 256 or not........
+        CGPathMoveToPoint(path, &transform, 
+            P.x, ((float)(INTERMEDIATE_BITMAP_WIDTH))-P.y);
         for (size_t j = 1; j < num_points_in_stroke; j++) {
             const flex_dict &point_dict = stroke[j].get<flex_dict>();
             make_point(&P, point_dict);
-            // CGPoint vertex = CGPointMake(P.x, P.y);
-            CGPathAddLineToPoint(path, &transform, P.x, 256.0-P.y);
+            CGPathAddLineToPoint(path, &transform, 
+                P.x, ((float)(INTERMEDIATE_BITMAP_WIDTH))-P.y);
         }
     }
-    CGContextSetLineWidth(bitmap_context, 20.0);
+    CGContextSetLineWidth(bitmap_context, STROKE_WIDTH);
     CGContextBeginPath(bitmap_context);
     CGContextAddPath(bitmap_context, path);
     CGContextStrokePath(bitmap_context);
     CGPathRelease(path);
     CGImageRef image = CGBitmapContextCreateImage(bitmap_context);
-    CGRect rectangle = CGRectMake(0.0, 0.0, 512.0, 512.0);
+    CGRect rectangle = CGRectMake(0.0, 0.0, 
+        ((float)(INTERMEDIATE_BITMAP_WIDTH)), 
+        ((float)(INTERMEDIATE_BITMAP_HEIGHT)));
     CGImageRef cropped_image = CGImageCreateWithImageInRect(image, rectangle);
     CGContextRef scale_28_context = CGBitmapContextCreate(NULL, 
-        28, 28, 8, 0, grayscale, kCGImageAlphaNone);
-    CGRect new_rect = CGRectMake(0.0, 0.0, 28.0, 28.0);
+        FINAL_BITMAP_WIDTH, FINAL_BITMAP_HEIGHT, 8, 0, grayscale, 
+        kCGImageAlphaNone);
+    CGRect new_rect = CGRectMake(0.0, 0.0, 
+        ((float)(FINAL_BITMAP_WIDTH)), ((float)(FINAL_BITMAP_HEIGHT)));
     CGContextDrawImage(scale_28_context, new_rect, cropped_image);
     CGImageRef cropped_image_gray = CGBitmapContextCreateImage(scale_28_context);
     CFDataRef pixel_data = CGDataProviderCopyData(
         CGImageGetDataProvider(cropped_image_gray));
     const uint8_t* data_ptr = CFDataGetBytePtr(pixel_data);
     flex_list outer_layer;
-    for (size_t row = 0; row < 28; row++) {
+    for (size_t row = 0; row < FINAL_BITMAP_WIDTH; row++) {
         flex_list current_row;
-        for (size_t col = 0; col < 28; col++) {
+        for (size_t col = 0; col < FINAL_BITMAP_HEIGHT; col++) {
             // check platform here okay
-            uint32_t val = (uint32_t)(data_ptr[row*64+col]);
+            uint32_t val = (uint32_t)(data_ptr[row * MAC_OS_STRIDE + col]);
             current_row.push_back(val/255.0);
         }
         outer_layer.push_back(current_row);

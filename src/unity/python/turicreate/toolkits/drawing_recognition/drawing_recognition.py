@@ -68,6 +68,7 @@ def create(dataset, annotations=None, num_epochs=100, feature="bitmap", model=No
         # This only works on macOS right now
         copied_dataset = _extensions._drawing_recognition_prepare_data(
             dataset, "bitmap", "label")
+        import pdb; pdb.set_trace()
     else:
         copied_dataset = deepcopy(dataset)
         copied_dataset["bitmap"] = copied_dataset["bitmap"].apply(

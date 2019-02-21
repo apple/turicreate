@@ -82,7 +82,7 @@ void register_functions(toolkit_function_registry& registry) {
   registry.register_toolkit_function(turi::ml_model_sdk::get_toolkit_function_registration());
   registry.register_toolkit_function(turi::pattern_mining::get_toolkit_function_registration());
   registry.register_toolkit_function(turi::sdk_model::activity_classification::get_toolkit_function_registration());
-  registry.register_toolkit_function(turi::sdk_model::drawing_recognition::get_toolkit_function_registration());
+  registry.register_toolkit_function(turi::drawing_recognition::get_toolkit_function_registration());
   registry.register_toolkit_function(turi::util::get_toolkit_function_registration());
 }
 
