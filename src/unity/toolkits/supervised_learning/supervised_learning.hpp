@@ -747,7 +747,7 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
       "evaluate", supervised_learning_model_base::api_evaluate, "data",
-      "missing_value_action", "metric", "with_prediction");
+      "missing_value_action", "metric", "predictions", "with_predictions");
 
   register_defaults("evaluate",
                     {{"metric", std::string("_report")},
