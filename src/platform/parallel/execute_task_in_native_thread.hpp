@@ -6,6 +6,9 @@
 #ifndef TURI_PARALLEL_EXECUTE_TASK_IN_NATIVE_THREAD_HPP
 #define TURI_PARALLEL_EXECUTE_TASK_IN_NATIVE_THREAD_HPP
 #include <functional>
+#include <boost/mpl/vector.hpp>
+#include <boost/fusion/functional/invocation/invoke.hpp>
+#include <boost/fusion/include/make_vector.hpp>
 
 namespace turi {
 
@@ -27,10 +30,58 @@ struct value_type {
     return ret;
   }
 
-  template <typename F, typename ... Args>
-  void run_as_native(F f, Args... args) {
+  template <typename F, typename A1>
+  void run_as_native(F f, A1 a1) {
     auto except = execute_task_in_native_thread([&](void)->void {
-      ret = f(args...);
+      ret = f(a1);
+    });
+    if (except) std::rethrow_exception(except);
+  }
+
+  template <typename F, typename A1, typename A2>
+  void run_as_native(F f, A1 a1, A2 a2) {
+    auto except = execute_task_in_native_thread([&](void)->void {
+      ret = f(a1, a2);
+    });
+    if (except) std::rethrow_exception(except);
+  }
+
+  template <typename F, typename A1, typename A2, typename A3>
+  void run_as_native(F f, A1 a1, A2 a2, A3 a3) {
+    auto except = execute_task_in_native_thread([&](void)->void {
+      ret = f(a1, a2, a3);
+    });
+    if (except) std::rethrow_exception(except);
+  }
+
+  template <typename F, typename A1, typename A2, typename A3, typename A4>
+  void run_as_native(F f, A1 a1, A2 a2, A3 a3, A4 a4) {
+    auto except = execute_task_in_native_thread([&](void)->void {
+      ret = f(a1, a2, a3, a4);
+    });
+    if (except) std::rethrow_exception(except);
+  }
+
+  template <typename F, typename A1, typename A2, typename A3, typename A4, typename A5>
+  void run_as_native(F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5) {
+    auto except = execute_task_in_native_thread([&](void)->void {
+      ret = f(a1, a2, a3, a4, a5);
+    });
+    if (except) std::rethrow_exception(except);
+  }
+
+  template <typename F, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6>
+  void run_as_native(F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6) {
+    auto except = execute_task_in_native_thread([&](void)->void {
+      ret = f(a1, a2, a3, a4, a5, a6);
+    });
+    if (except) std::rethrow_exception(except);
+  }
+
+  template <typename F, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7>
+  void run_as_native(F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7) {
+    auto except = execute_task_in_native_thread([&](void)->void {
+      ret = f(a1, a2, a3, a4, a5, a6, a7);
     });
     if (except) std::rethrow_exception(except);
   }
@@ -41,10 +92,58 @@ struct value_type<void> {
 
   void get_result() { }
 
-  template <typename F, typename ... Args>
-  void run_as_native(F f, Args... args) {
+  template <typename F, typename A1>
+  void run_as_native(F f, A1 a1) {
     auto except = execute_task_in_native_thread([&](void)->void {
-      f(args...);
+      f(a1);
+    });
+    if (except) std::rethrow_exception(except);
+  }
+
+  template <typename F, typename A1, typename A2>
+  void run_as_native(F f, A1 a1, A2 a2) {
+    auto except = execute_task_in_native_thread([&](void)->void {
+      f(a1, a2);
+    });
+    if (except) std::rethrow_exception(except);
+  }
+
+  template <typename F, typename A1, typename A2, typename A3>
+  void run_as_native(F f, A1 a1, A2 a2, A3 a3) {
+    auto except = execute_task_in_native_thread([&](void)->void {
+      f(a1, a2, a3);
+    });
+    if (except) std::rethrow_exception(except);
+  }
+
+  template <typename F, typename A1, typename A2, typename A3, typename A4>
+  void run_as_native(F f, A1 a1, A2 a2, A3 a3, A4 a4) {
+    auto except = execute_task_in_native_thread([&](void)->void {
+      f(a1, a2, a3, a4);
+    });
+    if (except) std::rethrow_exception(except);
+  }
+
+  template <typename F, typename A1, typename A2, typename A3, typename A4, typename A5>
+  void run_as_native(F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5) {
+    auto except = execute_task_in_native_thread([&](void)->void {
+      f(a1, a2, a3, a4, a5);
+    });
+    if (except) std::rethrow_exception(except);
+  }
+
+  template <typename F, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6>
+  void run_as_native(F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6) {
+    auto except = execute_task_in_native_thread([&](void)->void {
+      f(a1, a2, a3, a4, a5, a6);
+    });
+    if (except) std::rethrow_exception(except);
+  }
+
+  template <typename F, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7>
+  void run_as_native(F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7) {
+    auto except = execute_task_in_native_thread([&](void)->void {
+      f(a1, a2, a3, a4, a5, a6, a7);
     });
     if (except) std::rethrow_exception(except);
   }
