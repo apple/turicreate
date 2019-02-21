@@ -53,13 +53,14 @@ class _SFrameDataSource:
         # Copy the image data for this row into a NumPy array.
         row = self.sframe[row_index]
 
-        turi_image = row[self.feature_column]        
-        image = turi_image
-        # yeah, let's keep it like this for now.
-        # if turi_image.channels!=3:
-        #     turi_image = _convert_image_to_raw(turi_image)
-        # image = turi_image.pixel_data
-
+        drawing_feature = row[self.feature_column]
+        is_stroke_input = (type(drawing_feature) != _tc.Image)
+        if is_stroke_input:
+            pixels_01 = drawing_feature
+        else:    
+            image = _tc.image_analysis.resize(drawing_feature, 28, 28, 1)
+            pixels_01 = image.pixel_data.reshape(1, 28, 28) / 255.
+        
         # Copy the annotated bounding boxes for this image, if requested.
         if self.load_labels:
             label = row[self.annotations_column]
@@ -73,7 +74,7 @@ class _SFrameDataSource:
         else:
             label = None
 
-        return image, label, row_index
+        return pixels_01, label, row_index
 
     def reset(self):
         self.cur_sample = 0
@@ -180,8 +181,7 @@ class SFrameRecognitionIter(_mx.io.DataIter):
                  shuffle=True,
                  io_thread_buffer_size=0,
                  epochs=None,
-                 iterations=None,
-                 want_to_print=False):
+                 iterations=None):
 
         # Some checks (these errors are not well-reported by the threads)
         # @TODO: this check must be activated in some shape or form
@@ -194,7 +194,6 @@ class SFrameRecognitionIter(_mx.io.DataIter):
         self.cur_iteration = 0
         self.num_epochs = epochs
         self.num_iterations = iterations
-        self.want_to_print = want_to_print
 
         # Compute the number of times we'll read a row from the SFrame.
         sample_limits = []

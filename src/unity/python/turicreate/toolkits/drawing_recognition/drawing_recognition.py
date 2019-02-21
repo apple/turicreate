@@ -54,7 +54,7 @@ class Model(_HybridBlock):
         x = self.fc2(x)
         return F.softmax(x)
 
-def create(dataset, annotations=None, num_epochs=100, feature="bitmap", model=None,
+def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap", model=None,
            classes=None, batch_size=256, max_iterations=0, verbose=True, 
            **kwargs):
     """
@@ -62,19 +62,14 @@ def create(dataset, annotations=None, num_epochs=100, feature="bitmap", model=No
     """
     start_time = _time.time()
 
-    is_stroke_input = (dataset[feature].dtype != _tc.Image)
+    is_stroke_input = (input_dataset[feature].dtype != _tc.Image)
 
     if is_stroke_input:
         # This only works on macOS right now
-        copied_dataset = _extensions._drawing_recognition_prepare_data(
-            dataset, "bitmap", "label")
-        import pdb; pdb.set_trace()
+        dataset = _extensions._drawing_recognition_prepare_data(
+            input_dataset, "bitmap", "label")
     else:
-        copied_dataset = deepcopy(dataset)
-        copied_dataset["bitmap"] = copied_dataset["bitmap"].apply(
-            lambda I: _tc.image_analysis.resize(I,
-                BITMAP_WIDTH, BITMAP_HEIGHT, 1).pixel_data.reshape(
-                1, BITMAP_WIDTH, BITMAP_HEIGHT) / 255.)
+        dataset = input_dataset
 
     column_names = ['Iteration', 'Loss', 'Elapsed Time']
     num_columns = len(column_names)
@@ -85,7 +80,7 @@ def create(dataset, annotations=None, num_epochs=100, feature="bitmap", model=No
     iteration = 0
 
     if classes is None:
-        classes = copied_dataset['label'].unique()
+        classes = dataset['label'].unique()
     classes = sorted(classes)
     class_to_index = {name: index for index, name in enumerate(classes)}
 
@@ -117,7 +112,7 @@ def create(dataset, annotations=None, num_epochs=100, feature="bitmap", model=No
                 time=elapsed_time , width=column_width-1))
             progress['last_time'] = cur_time
 
-    loader = _SFrameRecognitionIter(copied_dataset, batch_size,
+    loader = _SFrameRecognitionIter(dataset, batch_size,
                  feature_column='bitmap',
                  annotations_column='label',
                  class_to_index=class_to_index,
@@ -177,14 +172,6 @@ class DrawingRecognition(_CustomModel):
 
     def __init__(self, state):
         self.__proxy__ = _PythonProxy(state)
-        # TODO: maybe remove the stuff below
-        '''
-        self._model = state['_model']
-        self._classes = state['_classes']
-        self._label_type = type(self._classes[0])
-        self._class_to_index = state['_class_to_index']
-        '''
-        self.batch_size = state['batch_size']
         
 
     @classmethod
@@ -193,8 +180,8 @@ class DrawingRecognition(_CustomModel):
 
     def _get_native_state(self):
         state = self.__proxy__.get_state()
-        mxnet_params = state['_model'].collect_params()
-        state['_model'] = _mxnet_utils.get_gluon_net_params_state(mxnet_params)
+        mxnet_params = state['model'].collect_params()
+        state['model'] = _mxnet_utils.get_gluon_net_params_state(mxnet_params)
         return state
 
     def _get_version(self):
@@ -203,13 +190,13 @@ class DrawingRecognition(_CustomModel):
     @classmethod
     def _load_version(cls, state, version):
         _tkutl._model_version_check(version, 1)
-        net = Model(num_classes = len(state['_classes']), prefix = 'model0_')
-        ctx = _mxnet_utils.get_mxnet_context(max_devices=state['_batch_size'])
+        net = Model(num_classes = len(state['classes']), prefix = 'model0_')
+        ctx = _mxnet_utils.get_mxnet_context(max_devices=state['batch_size'])
         net_params = net.collect_params()
         _mxnet_utils.load_net_params_from_state(
-            net_params, state['_model'], ctx=ctx 
+            net_params, state['model'], ctx=ctx 
             )
-        state['_model'] = net
+        state['model'] = net
         return DrawingRecognition(state)
 
     def export_coreml(self, filename):
@@ -219,11 +206,11 @@ class DrawingRecognition(_CustomModel):
         from coremltools.models import datatypes, neural_network
 
         batch_size = 1
-        image_shape = (batch_size,) + (1,BITMAP_WIDTH,BITMAP_HEIGHT)
+        image_shape = (batch_size,) + (1, BITMAP_WIDTH, BITMAP_HEIGHT)
         s_image = _mx.sym.Variable('bitmap',
             shape=image_shape, dtype=_np.float32)
 
-        net = copy(self._model)
+        net = copy(self.model)
         s_ymap = net(s_image)
         
         mod = _mx.mod.Module(symbol=s_ymap, label_names=None, data_names=['bitmap'])
@@ -242,7 +229,7 @@ class DrawingRecognition(_CustomModel):
         mod.set_params(new_arg_params, new_aux_params)
 
         coreml_model = _mxnet_converter.convert(mod, mode='classifier',
-                                class_labels=self._classes,
+                                class_labels=self.classes,
                                 input_shape=[('bitmap', image_shape)],
                                 builder=None, verbose=False,
                                 preprocessor_args={'image_input_names':['bitmap']},
@@ -257,42 +244,44 @@ class DrawingRecognition(_CustomModel):
         coreml_model.save(filename)
         return coreml_model
 
-    def _predict_with_options(self, dataset, verbose=True):
+    def _predict_with_options(self, input_dataset, verbose=True):
         """
             Predict with options for what kind of SFrame should be returned.
         """
 
-        copied_dataset = deepcopy(dataset)
-        copied_dataset["bitmap"] = copied_dataset["bitmap"].apply(
-            lambda I: _tc.image_analysis.resize(I,
-                BITMAP_WIDTH, BITMAP_HEIGHT, 1).pixel_data.reshape(
-                1, BITMAP_WIDTH, BITMAP_HEIGHT)/255.)
+        is_stroke_input = (input_dataset['bitmap'].dtype != _tc.Image)
 
-        loader = _SFrameRecognitionIter(copied_dataset, self.batch_size,
-                    class_to_index=self._class_to_index,
+        if is_stroke_input:
+            # @TODO: Make it work for Linux
+            # @TODO: Make it work if labels are not passed in.
+            dataset = _extensions._drawing_recognition_prepare_data(
+                input_dataset, "bitmap", "label")
+        else:
+            dataset = input_dataset
+
+        loader = _SFrameRecognitionIter(dataset, self.batch_size,
+                    class_to_index=self.class_to_index,
                     feature_column='bitmap',
                     annotations_column='label',
                     load_labels=True,
                     shuffle=False,
                     io_thread_buffer_size=0,
                     epochs=1,
-                    iterations=None,
-                    want_to_print=True)
+                    iterations=None)
 
-        dataset_size = len(copied_dataset)
+        dataset_size = len(dataset)
         ctx = _mxnet_utils.get_mxnet_context()
         
         all_predicted = ['']*dataset_size
-        all_probabilities = _np.zeros((dataset_size, len(self._classes)), dtype=float)
+        all_probabilities = _np.zeros((dataset_size, len(self.classes)), 
+            dtype=float)
         
         index = 0
         for batch in loader:
             if batch.pad is not None:
                 size = self.batch_size - batch.pad
                 batch_data = _mx.nd.slice_axis(batch.data[0], 
-                    axis=0, 
-                    begin=0, 
-                    end=size)
+                    axis=0, begin=0, end=size)
             else:
                 batch_data = batch.data[0]
                 size = self.batch_size
@@ -302,9 +291,9 @@ class DrawingRecognition(_CustomModel):
             else:
                 ctx0 = ctx
 
-            z = self._model(batch_data).asnumpy()
+            z = self.model(batch_data).asnumpy()
             predicted = z.argmax(axis=1)
-            classes = self._classes
+            classes = self.classes
             
             predicted_sa = _tc.SArray(predicted).apply(lambda x: classes[x])
             
@@ -421,7 +410,7 @@ class DrawingRecognition(_CustomModel):
         if 'accuracy' in metrics:
             ret['accuracy'] = _evaluation.accuracy(target['label'], predicted['label'])
         if 'auc' in metrics:
-            ret['auc'] = _evaluation.auc(target['label'], predicted['probability'], index_map=self._class_to_index)
+            ret['auc'] = _evaluation.auc(target['label'], predicted['probability'], index_map=self.class_to_index)
         if 'precision' in metrics:
             ret['precision'] = _evaluation.precision(target['label'], predicted['label'])
         if 'recall' in metrics:
@@ -431,7 +420,7 @@ class DrawingRecognition(_CustomModel):
         if 'confusion_matrix' in metrics:
             ret['confusion_matrix'] = _evaluation.confusion_matrix(target['label'], predicted['label'])
         if 'roc_curve' in metrics:
-            ret['roc_curve'] = _evaluation.roc_curve(target['label'], predicted['probability'], index_map=self._class_to_index)
+            ret['roc_curve'] = _evaluation.roc_curve(target['label'], predicted['probability'], index_map=self.class_to_index)
         
         return ret
 
