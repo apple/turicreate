@@ -1,0 +1,1 @@
+list(SORT mylist CASE BAD_CASE_OPTION)

@@ -1,0 +1,12 @@
+CMake Error in CMakeLists.txt:
+  Target "somelib" has source files which vary by configuration.  This is not
+  supported by the "[^"]+" generator.
+
+  Config "Debug":
+
+    .*/Tests/RunCMake/TargetSources/empty_1.cpp
+    .*/Tests/RunCMake/TargetSources/empty_2.cpp
+
+  Config "Release":
+
+    .*/Tests/RunCMake/TargetSources/empty_1.cpp

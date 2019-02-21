@@ -1,0 +1,37 @@
+^(CMake Error:
+  Error evaluating generator expression:
+
+    \$<TARGET_PROPERTY:INCLUDE_DIRECTORIES>
+
+  Self reference on target "BadSelfReference1".
++)+(CMake Error:
+  Error evaluating generator expression:
+
+    \$<TARGET_PROPERTY:INCLUDE_DIRECTORIES>
+
+  Self reference on target "BadSelfReference2".
++)+(CMake Error:
+  Error evaluating generator expression:
+
+    \$<TARGET_PROPERTY:BadSelfReference3,INCLUDE_DIRECTORIES>
+
+  Self reference on target "BadSelfReference3".
++)+(CMake Error:
+  Error evaluating generator expression:
+
+    \$<TARGET_PROPERTY:BadSelfReference4,INCLUDE_DIRECTORIES>
+
+  Self reference on target "BadSelfReference4".
++)+(CMake Error:
+  Error evaluating generator expression:
+
+    \$<TARGET_PROPERTY:COMPILE_DEFINITIONS>
+
+  Self reference on target "BadSelfReference5".
++)+(CMake Error:
+  Error evaluating generator expression:
+
+    \$<TARGET_PROPERTY:BadSelfReference6,COMPILE_DEFINITIONS>
+
+  Self reference on target "BadSelfReference6".
+*)+$

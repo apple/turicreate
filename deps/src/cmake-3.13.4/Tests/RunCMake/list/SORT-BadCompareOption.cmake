@@ -1,0 +1,1 @@
+list(SORT mylist COMPARE BAD_COMPARE_OPTION)

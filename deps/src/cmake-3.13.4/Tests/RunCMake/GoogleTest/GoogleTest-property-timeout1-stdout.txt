@@ -1,0 +1,10 @@
+Test project .*GoogleTest-build
+[ \t]*Start [0-9]+: property_timeout.case_no_discovery
+[^\n]+property_timeout.case_no_discovery +\.+\*\*\*Timeout +[0-9.]+ sec
++
+0% tests passed, 1 tests failed out of 1
++
+Total Test time \(real\) = +[0-9.]+ sec
++
+The following tests FAILED:
+[^\n]*property_timeout.case_no_discovery \(Timeout\)

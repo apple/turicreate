@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+#=============================================================================
+# Copyright 2010-2012 Kitware, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#=============================================================================
+
+# This script makes optional suggestions for working with Git.
+
+# Project configuration instructions: NONE
+
+egrep_q() {
+	egrep "$@" >/dev/null 2>/dev/null
+}
+
+# Suggest color configuration.
+if test -z "$(git config --get color.ui)"; then
+	echo '
+One may enable color output from Git commands with
+
+  git config --global color.ui auto
+'
+fi
+
+# Suggest bash completion.
+if ! bash -i -c 'echo $PS1' | egrep_q '__git_ps1'; then
+	echo '
+A dynamic, informative Git shell prompt can be obtained by sourcing
+the git bash-completion script in your "~/.bashrc".  Set the PS1
+environmental variable as suggested in the comments at the top of the
+bash-completion script.  You may need to install the bash-completion
+package from your distribution to obtain it.
+'
+fi
+
+# Suggest merge tool.
+if test -z "$(git config --get merge.tool)"; then
+	echo '
+One may configure Git to load a merge tool with
+
+  git config merge.tool <toolname>
+
+See "git help mergetool" for more information.
+'
+fi

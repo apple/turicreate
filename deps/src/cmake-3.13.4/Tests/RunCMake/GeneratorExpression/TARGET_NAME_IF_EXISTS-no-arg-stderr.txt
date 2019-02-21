@@ -1,0 +1,8 @@
+CMake Error at TARGET_NAME_IF_EXISTS-no-arg.cmake:2 \(file\):
+  Error evaluating generator expression:
+
+    \$<TARGET_NAME_IF_EXISTS>
+
+  \$<TARGET_NAME_IF_EXISTS> expression requires exactly one parameter.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)

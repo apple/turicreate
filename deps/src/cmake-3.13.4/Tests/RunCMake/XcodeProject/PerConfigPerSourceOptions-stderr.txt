@@ -1,0 +1,8 @@
+^CMake Error in CMakeLists.txt:
+  Xcode does not support per-config per-source COMPILE_OPTIONS:
+
+    \$<\$<CONFIG:Debug>:-DMYDEBUG>
+
+  specified for source:
+
+    .*/Tests/RunCMake/XcodeProject/main.c$

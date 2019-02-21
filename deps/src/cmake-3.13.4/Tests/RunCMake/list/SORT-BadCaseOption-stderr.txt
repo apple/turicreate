@@ -1,0 +1,4 @@
+^CMake Error at SORT-BadCaseOption.cmake:1 \(list\):
+  list sub-command SORT value "BAD_CASE_OPTION" for option "CASE" is invalid.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

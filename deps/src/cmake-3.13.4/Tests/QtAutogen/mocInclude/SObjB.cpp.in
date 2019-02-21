@@ -1,0 +1,11 @@
+#include "SObjB.hpp"
+
+SObjB::SObjB()
+{
+}
+
+SObjB::~SObjB()
+{
+}
+
+#include "SObjB.moc"

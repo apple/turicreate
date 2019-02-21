@@ -1,0 +1,50 @@
+^CMake Warning \(dev\) at [^
+]*/Modules/CheckIncludeFile.cmake:[0-9]+ \(message\):
+  Policy CMP0075 is not set: Include file check macros honor
+  CMAKE_REQUIRED_LIBRARIES.  Run "cmake --help-policy CMP0075" for policy
+  details.  Use the cmake_policy command to set the policy and suppress this
+  warning.
+
+  CMAKE_REQUIRED_LIBRARIES is set to:
+
+    does_not_exist
+
+  For compatibility with CMake 3.11 and below this check is ignoring it.
+Call Stack \(most recent call first\):
+  CMP0075.cmake:11 \(check_include_file\)
+  CMakeLists.txt:[0-9]+ \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.
++
+CMake Warning \(dev\) at [^
+]*/Modules/CheckIncludeFileCXX.cmake:[0-9]+ \(message\):
+  Policy CMP0075 is not set: Include file check macros honor
+  CMAKE_REQUIRED_LIBRARIES.  Run "cmake --help-policy CMP0075" for policy
+  details.  Use the cmake_policy command to set the policy and suppress this
+  warning.
+
+  CMAKE_REQUIRED_LIBRARIES is set to:
+
+    does_not_exist
+
+  For compatibility with CMake 3.11 and below this check is ignoring it.
+Call Stack \(most recent call first\):
+  CMP0075.cmake:26 \(check_include_file_cxx\)
+  CMakeLists.txt:[0-9]+ \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.
++
+CMake Warning \(dev\) at [^
+]*/Modules/CheckIncludeFiles.cmake:[0-9]+ \(message\):
+  Policy CMP0075 is not set: Include file check macros honor
+  CMAKE_REQUIRED_LIBRARIES.  Run "cmake --help-policy CMP0075" for policy
+  details.  Use the cmake_policy command to set the policy and suppress this
+  warning.
+
+  CMAKE_REQUIRED_LIBRARIES is set to:
+
+    does_not_exist
+
+  For compatibility with CMake 3.11 and below this check is ignoring it.
+Call Stack \(most recent call first\):
+  CMP0075.cmake:41 \(check_include_files\)
+  CMakeLists.txt:[0-9]+ \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.$

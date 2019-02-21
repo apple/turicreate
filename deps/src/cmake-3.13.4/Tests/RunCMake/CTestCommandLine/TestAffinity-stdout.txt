@@ -1,0 +1,1 @@
+1: CPU affinity (mask count is '1'|not supported on this platform)\.

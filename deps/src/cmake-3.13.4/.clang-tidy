@@ -1,0 +1,35 @@
+---
+Checks: "-*,\
+google-readability-casting,\
+misc-*,\
+-misc-incorrect-roundings,\
+-misc-macro-parentheses,\
+-misc-misplaced-widening-cast,\
+-misc-static-assert,\
+modernize-*,\
+-modernize-deprecated-headers,\
+-modernize-pass-by-value,\
+-modernize-raw-string-literal,\
+-modernize-return-braced-init-list,\
+-modernize-use-auto,\
+-modernize-use-default-member-init,\
+-modernize-use-emplace,\
+-modernize-use-equals-default,\
+-modernize-use-equals-delete,\
+-modernize-use-noexcept,\
+-modernize-use-transparent-functors,\
+-modernize-use-using,\
+performance-*,\
+-performance-inefficient-string-concatenation,\
+readability-*,\
+-readability-function-size,\
+-readability-identifier-naming,\
+-readability-implicit-bool-cast,\
+-readability-inconsistent-declaration-parameter-name,\
+-readability-named-parameter,\
+-readability-redundant-declaration,\
+-readability-redundant-member-init,\
+-readability-simplify-boolean-expr,\
+"
+HeaderFilterRegex: 'Source/cm[^/]*\.(h|hxx|cxx)$'
+...

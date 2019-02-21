@@ -1,0 +1,59 @@
+/*============================================================================
+  Kitware Information Macro Library
+  Copyright 2010-2018 Kitware, Inc.
+  All rights reserved.
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+
+  * Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+
+  * Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+
+  * Neither the name of Kitware, Inc. nor the names of its contributors
+    may be used to endorse or promote products derived from this
+    software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+============================================================================*/
+#ifndef KWIML_VERSION_H
+#define KWIML_VERSION_H
+/*
+This header defines macros with information about this version of KWIML.
+
+An includer may test the following macros after inclusion:
+
+  KWIML_VERSION = KWIML version number encoded in an integer as
+                  `printf("%d%03d%03d", MAJOR, MINOR, PATCH)`.
+                  MAJOR is incremented on incompatible changes.
+                  MINOR is incremented on interface additions.
+                  PATCH is incremented on implementation updates.
+
+  KWIML_VERSION_STRING = KWIML version number in string formatted as
+                         `printf("%d.%d.%d", MAJOR, MINOR PATCH)`.
+
+  KWIML_VERSION_HAS_ABI_H = header 'kwiml/abi.h' is available
+  KWIML_VERSION_HAS_INT_H = header 'kwiml/int.h' is available
+*/
+
+#define KWIML_VERSION @KWIML_VERSION_DECIMAL@
+#define KWIML_VERSION_STRING "@KWIML_VERSION@"
+
+#define KWIML_VERSION_HAS_ABI_H 1
+#define KWIML_VERSION_HAS_INT_H 1
+
+#endif
