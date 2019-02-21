@@ -1010,7 +1010,6 @@ void supervised_learning_model_base::api_train(
 
   gl_sframe validation_data;
   std::tie(data, validation_data) = create_validation_data(data, _validation_data);
-  add_or_update_state({{"validation_data", validation_data}});
 
   gl_sframe f_data = data;
   f_data.remove_column(target);
@@ -1027,10 +1026,6 @@ void supervised_learning_model_base::api_train(
         log_and_throw("Empty feature set has been specified");
       }
       f_data = f_data.select_columns(ftv);
-
-      // Sync those changes back to the validation data.
-      ftv.push_back(target);
-      validation_data = validation_data.select_columns(ftv);
 
       options.erase(ft_it);
     }
@@ -1051,8 +1046,14 @@ void supervised_learning_model_base::api_train(
     valid_X = validation_data.select_columns(f_data.column_names()).materialize_to_sframe();
     
     valid_y = validation_data.select_columns({target}).materialize_to_sframe();
+
     
     check_target_column_type(this->name(), valid_y);
+
+    auto valid_filter_names = f_data.column_names();
+    valid_filter_names.push_back(target);
+    validation_data = validation_data.select_columns(valid_filter_names);
+    add_or_update_state({{"validation_data", validation_data}});
   }
 
   this->init(X, y, valid_X, valid_y, missing_value_action);
