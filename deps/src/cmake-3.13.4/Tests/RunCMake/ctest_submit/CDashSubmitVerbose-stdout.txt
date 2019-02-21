@@ -1,0 +1,1 @@
+Upload file: .* to http:\/\/-no-site-\?FileName=test-site___test-build-name___.*-Experimental___XML___Configure.xml&build=test-build-name&site=test-site&stamp=.*-Experimental&subproject=mysubproj&MD5=.* Size: .*

@@ -1,0 +1,323 @@
+# This file is configured at cmake time, and loaded at cpack time.
+# To pass variables to cpack from cmake, they must be configured
+# in this file.
+
+if(CPACK_GENERATOR MATCHES "NSIS")
+  set(CPACK_NSIS_INSTALL_ROOT "@CPACK_NSIS_INSTALL_ROOT@")
+
+  # set the install/unistall icon used for the installer itself
+  # There is a bug in NSI that does not handle full unix paths properly.
+  set(CPACK_NSIS_MUI_ICON "@CMake_SOURCE_DIR@/Utilities/Release\\CMakeLogo.ico")
+  set(CPACK_NSIS_MUI_UNIICON "@CMake_SOURCE_DIR@/Utilities/Release\\CMakeLogo.ico")
+  # set the package header icon for MUI
+  set(CPACK_PACKAGE_ICON "@CMake_SOURCE_DIR@/Utilities/Release\\CMakeInstall.bmp")
+  # tell cpack to create links to the doc files
+  set(CPACK_NSIS_MENU_LINKS
+    "@CMAKE_DOC_DIR@/html/index.html" "CMake Documentation"
+    "https://cmake.org" "CMake Web Site"
+    )
+  # Use the icon from cmake-gui for add-remove programs
+  set(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\cmake-gui.exe")
+
+  set(CPACK_NSIS_PACKAGE_NAME "@CPACK_NSIS_PACKAGE_NAME@")
+  set(CPACK_NSIS_DISPLAY_NAME "@CPACK_NSIS_PACKAGE_NAME@, a cross-platform, open-source build system")
+  set(CPACK_NSIS_HELP_LINK "https://cmake.org")
+  set(CPACK_NSIS_URL_INFO_ABOUT "http://www.kitware.com")
+  set(CPACK_NSIS_CONTACT @CPACK_PACKAGE_CONTACT@)
+  set(CPACK_NSIS_MODIFY_PATH ON)
+endif()
+
+# include the cpack options for qt dialog if they exist
+# they might not if qt was not enabled for the build
+include("@QT_DIALOG_CPACK_OPTIONS_FILE@" OPTIONAL)
+
+if(CPACK_GENERATOR MATCHES "IFW")
+
+  # Installer configuration
+  set(CPACK_IFW_PACKAGE_TITLE "CMake Build Tool")
+  set(CPACK_IFW_PRODUCT_URL "https://cmake.org")
+  @_CPACK_IFW_PACKAGE_ICON@
+  set(CPACK_IFW_PACKAGE_WINDOW_ICON
+    "@CMake_SOURCE_DIR@/Source/QtDialog/CMakeSetup128.png")
+  set(CPACK_IFW_PACKAGE_CONTROL_SCRIPT
+    "@CMake_SOURCE_DIR@/Source/QtIFW/controlscript.qs")
+
+  # Uninstaller configuration
+  set(CPACK_IFW_PACKAGE_MAINTENANCE_TOOL_NAME "cmake-maintenance")
+  @_CPACK_IFW_COMPONENTS_CONFIGURATION@
+  # Unspecified
+  set(CPACK_IFW_COMPONENT_@_CPACK_IFW_COMPONENT_UNSPECIFIED_UNAME@_VERSION
+    "@CMake_IFW_ROOT_COMPONENT_VERSION@")
+
+  # Package configuration group
+  set(CPACK_IFW_PACKAGE_GROUP CMake)
+
+  # Group configuration
+
+  # CMake
+  set(CPACK_COMPONENT_GROUP_CMAKE_DISPLAY_NAME
+    "@CPACK_PACKAGE_NAME@")
+  set(CPACK_COMPONENT_GROUP_CMAKE_DESCRIPTION
+    "@CPACK_PACKAGE_DESCRIPTION_SUMMARY@")
+  @_CPACK_IFW_COMPONENT_GROUP_CMAKE@
+
+  # Tools
+  set(CPACK_COMPONENT_GROUP_TOOLS_DISPLAY_NAME "Command-Line Tools")
+  set(CPACK_COMPONENT_GROUP_TOOLS_DESCRIPTION
+    "Command-Line Tools: cmake, ctest and cpack")
+  set(CPACK_COMPONENT_GROUP_TOOLS_PARENT_GROUP CMake)
+  set(CPACK_IFW_COMPONENT_GROUP_TOOLS_PRIORITY 90)
+  set(CPACK_IFW_COMPONENT_GROUP_TOOLS_VERSION
+    "@CMake_IFW_ROOT_COMPONENT_VERSION@")
+
+  set(CPACK_COMPONENT_CMAKE_DISPLAY_NAME "cmake")
+  set(CPACK_COMPONENT_CMAKE_DESCRIPTION
+    "The \"cmake\" executable is the CMake command-line interface")
+  set(CPACK_COMPONENT_CMAKE_REQUIRED TRUE)
+  set(CPACK_COMPONENT_CMAKE_GROUP Tools)
+  set(CPACK_IFW_COMPONENT_CMAKE_NAME "CMake")
+  set(CPACK_IFW_COMPONENT_CMAKE_PRIORITY 89)
+  set(CPACK_IFW_COMPONENT_CMAKE_VERSION
+    "@CMake_IFW_ROOT_COMPONENT_VERSION@")
+
+  set(CPACK_COMPONENT_CTEST_DISPLAY_NAME "ctest")
+  set(CPACK_COMPONENT_CTEST_DESCRIPTION
+    "The \"ctest\" executable is the CMake test driver program")
+  set(CPACK_COMPONENT_CTEST_REQUIRED TRUE)
+  set(CPACK_COMPONENT_CTEST_GROUP Tools)
+  set(CPACK_IFW_COMPONENT_CTEST_NAME "CTest")
+  set(CPACK_IFW_COMPONENT_CTEST_PRIORITY 88)
+  set(CPACK_IFW_COMPONENT_CTEST_VERSION
+    "@CMake_IFW_ROOT_COMPONENT_VERSION@")
+
+  set(CPACK_COMPONENT_CPACK_DISPLAY_NAME "cpack")
+  set(CPACK_COMPONENT_CPACK_DESCRIPTION
+    "The \"cpack\" executable is the CMake packaging program")
+  set(CPACK_COMPONENT_CPACK_REQUIRED TRUE)
+  set(CPACK_COMPONENT_CPACK_GROUP Tools)
+  set(CPACK_IFW_COMPONENT_CPACK_NAME "CPack")
+  set(CPACK_IFW_COMPONENT_CPACK_PRIORITY 87)
+  set(CPACK_IFW_COMPONENT_CPACK_VERSION
+    "@CMake_IFW_ROOT_COMPONENT_VERSION@")
+
+  set(CPACK_COMPONENT_CMCLDEPS_DISPLAY_NAME "cmcldeps")
+  set(CPACK_COMPONENT_CMCLDEPS_DESCRIPTION
+    "The \"cmcldeps\" executable is wrapper around \"cl\" program")
+  set(CPACK_COMPONENT_CMCLDEPS_GROUP Tools)
+  set(CPACK_IFW_COMPONENT_CMCLDEPS_NAME "CMClDeps")
+  set(CPACK_IFW_COMPONENT_CMCLDEPS_PRIORITY 86)
+  set(CPACK_IFW_COMPONENT_CMCLDEPS_VERSION
+    "@CMake_IFW_ROOT_COMPONENT_VERSION@")
+
+  set(CPACK_COMPONENT_CMAKEXBUILD_DISPLAY_NAME "cmakexbuild")
+  set(CPACK_COMPONENT_CMAKEXBUILD_DESCRIPTION
+    "The \"cmakexbuild\" executable is a wrapper program for \"xcodebuild\"")
+  set(CPACK_COMPONENT_CMAKEXBUILD_REQUIRED TRUE)
+  set(CPACK_COMPONENT_CMAKEXBUILD_GROUP Tools)
+  set(CPACK_IFW_COMPONENT_CMAKEXBUILD_NAME "CMakeXBuild")
+  set(CPACK_IFW_COMPONENT_CMAKEXBUILD_PRIORITY 85)
+  set(CPACK_IFW_COMPONENT_CMAKEXBUILD_VERSION
+    "@CMake_IFW_ROOT_COMPONENT_VERSION@")
+
+  # Dialogs
+  set(CPACK_COMPONENT_GROUP_DIALOGS_DISPLAY_NAME "Interactive Dialogs")
+  set(CPACK_COMPONENT_GROUP_DIALOGS_DESCRIPTION
+    "Interactive Dialogs with Console and GUI interfaces")
+  set(CPACK_COMPONENT_GROUP_DIALOGS_PARENT_GROUP CMake)
+  set(CPACK_IFW_COMPONENT_GROUP_DIALOGS_PRIORITY 80)
+  set(CPACK_IFW_COMPONENT_GROUP_DIALOGS_VERSION
+    "@CMake_IFW_ROOT_COMPONENT_VERSION@")
+
+  set(CPACK_COMPONENT_CMAKE-GUI_DISPLAY_NAME "cmake-gui")
+  set(CPACK_COMPONENT_CMAKE-GUI_GROUP Dialogs)
+  set(CPACK_IFW_COMPONENT_CMAKE-GUI_NAME "QtGUI")
+  set(CPACK_IFW_COMPONENT_CMAKE-GUI_SCRIPT
+    "@CMake_BINARY_DIR@/CMake.Dialogs.QtGUI.qs")
+  set(CPACK_IFW_COMPONENT_CMAKE-GUI_VERSION
+    "@CMake_IFW_ROOT_COMPONENT_VERSION@")
+  @_CPACK_IFW_COMPONENT_CMAKE-GUI_LICENSES@
+
+  set(CPACK_COMPONENT_CCMAKE_DISPLAY_NAME "ccmake")
+  set(CPACK_COMPONENT_CCMAKE_GROUP Dialogs)
+  set(CPACK_IFW_COMPONENT_CCMAKE_NAME "CursesGUI")
+  set(CPACK_IFW_COMPONENT_CCMAKE_VERSION
+    "@CMake_IFW_ROOT_COMPONENT_VERSION@")
+
+  # Documentation
+  set(CPACK_COMPONENT_GROUP_DOCUMENTATION_DISPLAY_NAME "Documentation")
+  set(CPACK_COMPONENT_GROUP_DOCUMENTATION_DESCRIPTION
+    "CMake Documentation in different formats (html, man, qch)")
+  set(CPACK_COMPONENT_GROUP_DOCUMENTATION_PARENT_GROUP CMake)
+  set(CPACK_IFW_COMPONENT_GROUP_DOCUMENTATION_PRIORITY 60)
+  set(CPACK_IFW_COMPONENT_GROUP_DOCUMENTATION_VERSION
+    "@CMake_IFW_ROOT_COMPONENT_VERSION@")
+
+  set(CPACK_COMPONENT_SPHINX-MAN_DISPLAY_NAME "man")
+  set(CPACK_COMPONENT_SPHINX-MAN_GROUP Documentation)
+  set(CPACK_COMPONENT_SPHINX-MAN_DISABLED TRUE)
+  set(CPACK_IFW_COMPONENT_SPHINX-MAN_NAME "SphinxMan")
+  set(CPACK_IFW_COMPONENT_SPHINX-MAN_VERSION
+    "@CMake_IFW_ROOT_COMPONENT_VERSION@")
+
+  set(CPACK_COMPONENT_SPHINX-HTML_DISPLAY_NAME "HTML")
+  set(CPACK_COMPONENT_SPHINX-HTML_GROUP Documentation)
+  set(CPACK_IFW_COMPONENT_SPHINX-HTML_NAME "SphinxHTML")
+  set(CPACK_IFW_COMPONENT_SPHINX-HTML_SCRIPT
+    "@CMake_BINARY_DIR@/CMake.Documentation.SphinxHTML.qs")
+  set(CPACK_IFW_COMPONENT_SPHINX-HTML_VERSION
+    "@CMake_IFW_ROOT_COMPONENT_VERSION@")
+
+  set(CPACK_COMPONENT_SPHINX-SINGLEHTML_DISPLAY_NAME "Single HTML")
+  set(CPACK_COMPONENT_SPHINX-SINGLEHTML_GROUP Documentation)
+  set(CPACK_COMPONENT_SPHINX-SINGLEHTML_DISABLED TRUE)
+  set(CPACK_IFW_COMPONENT_SPHINX-SINGLEHTML_NAME "SphinxSingleHTML")
+  set(CPACK_IFW_COMPONENT_SPHINX-SINGLEHTML_VERSION
+    "@CMake_IFW_ROOT_COMPONENT_VERSION@")
+
+  set(CPACK_COMPONENT_SPHINX-QTHELP_DISPLAY_NAME "Qt Compressed Help")
+  set(CPACK_COMPONENT_SPHINX-QTHELP_GROUP Documentation)
+  set(CPACK_COMPONENT_SPHINX-QTHELP_DISABLED TRUE)
+  set(CPACK_IFW_COMPONENT_SPHINX-QTHELP_NAME "SphinxQtHelp")
+  set(CPACK_IFW_COMPONENT_SPHINX-QTHELP_VERSION
+    "@CMake_IFW_ROOT_COMPONENT_VERSION@")
+
+  # Developer Reference
+  set(CPACK_COMPONENT_GROUP_DEVELOPERREFERENCE_DISPLAY_NAME "Developer Reference")
+  set(CPACK_COMPONENT_GROUP_DEVELOPERREFERENCE_DESCRIPTION
+    "CMake Reference in different formats (html, qch)")
+  set(CPACK_COMPONENT_GROUP_DEVELOPERREFERENCE_PARENT_GROUP CMake)
+  set(CPACK_IFW_COMPONENT_GROUP_DEVELOPERREFERENCE_PRIORITY 50)
+  set(CPACK_IFW_COMPONENT_GROUP_DEVELOPERREFERENCE_VERSION
+    "@CMake_IFW_ROOT_COMPONENT_VERSION@")
+
+  set(CPACK_COMPONENT_CMAKE-DEVELOPER-REFERENCE-HTML_DISPLAY_NAME "HTML")
+  set(CPACK_COMPONENT_CMAKE-DEVELOPER-REFERENCE-HTML_GROUP DeveloperReference)
+  set(CPACK_COMPONENT_CMAKE-DEVELOPER-REFERENCE-HTML_DISABLED TRUE)
+  set(CPACK_IFW_COMPONENT_CMAKE-DEVELOPER-REFERENCE-HTML_NAME "HTML")
+  set(CPACK_IFW_COMPONENT_CMAKE-DEVELOPER-REFERENCE-HTML_SCRIPT
+    "@CMake_BINARY_DIR@/CMake.DeveloperReference.HTML.qs")
+  set(CPACK_IFW_COMPONENT_CMAKE-DEVELOPER-REFERENCE-HTML_VERSION
+    "@CMake_IFW_ROOT_COMPONENT_VERSION@")
+
+  set(CPACK_COMPONENT_CMAKE-DEVELOPER-REFERENCE-QTHELP_DISPLAY_NAME "Qt Compressed Help")
+  set(CPACK_COMPONENT_CMAKE-DEVELOPER-REFERENCE-QTHELP_GROUP DeveloperReference)
+  set(CPACK_COMPONENT_CMAKE-DEVELOPER-REFERENCE-QTHELP_DISABLED TRUE)
+  set(CPACK_IFW_COMPONENT_CMAKE-DEVELOPER-REFERENCE-QTHELP_NAME "QtHelp")
+  set(CPACK_IFW_COMPONENT_CMAKE-DEVELOPER-REFERENCE-QTHELP_VERSION
+    "@CMake_IFW_ROOT_COMPONENT_VERSION@")
+
+endif()
+
+if("${CPACK_GENERATOR}" STREQUAL "PackageMaker")
+  if(CMAKE_PACKAGE_QTGUI)
+    set(CPACK_PACKAGE_DEFAULT_LOCATION "/Applications")
+  else()
+    set(CPACK_PACKAGE_DEFAULT_LOCATION "/usr")
+  endif()
+endif()
+
+if("${CPACK_GENERATOR}" STREQUAL "DragNDrop")
+  set(CPACK_DMG_BACKGROUND_IMAGE
+      "@CMake_SOURCE_DIR@/Packaging/CMakeDMGBackground.tif")
+  set(CPACK_DMG_DS_STORE_SETUP_SCRIPT
+      "@CMake_SOURCE_DIR@/Packaging/CMakeDMGSetup.scpt")
+endif()
+
+if("${CPACK_GENERATOR}" STREQUAL "WIX")
+  # Reset CPACK_PACKAGE_VERSION to deal with WiX restriction.
+  # But the file names still use the full CMake_VERSION value:
+  set(CPACK_PACKAGE_FILE_NAME
+    "cmake-@CMake_VERSION@-${CPACK_SYSTEM_NAME}")
+  set(CPACK_SOURCE_PACKAGE_FILE_NAME
+    "cmake-@CMake_VERSION@")
+
+  if(NOT CPACK_WIX_SIZEOF_VOID_P)
+    set(CPACK_WIX_SIZEOF_VOID_P "@CMAKE_SIZEOF_VOID_P@")
+  endif()
+
+  set(CPACK_PACKAGE_VERSION
+    "@CMake_VERSION_MAJOR@.@CMake_VERSION_MINOR@")
+  # WIX installers require at most a 4 component version number, where
+  # each component is an integer between 0 and 65534 inclusive
+  set(patch "@CMake_VERSION_PATCH@")
+  if(patch MATCHES "^[0-9]+$" AND patch LESS 65535)
+    set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION}.${patch}")
+  endif()
+
+  set(CPACK_WIX_PROPERTY_ARPURLINFOABOUT "https://cmake.org")
+
+  set(CPACK_WIX_PROPERTY_ARPCONTACT "@CPACK_PACKAGE_CONTACT@")
+
+  set(CPACK_WIX_PROPERTY_ARPCOMMENTS
+    "CMake is a cross-platform, open-source build system."
+  )
+
+  set(CPACK_WIX_PRODUCT_ICON
+    "@CMake_SOURCE_DIR@/Utilities/Release/CMakeLogo.ico"
+  )
+
+  set_property(INSTALL "@CMAKE_DOC_DIR@/html/index.html" PROPERTY
+    CPACK_START_MENU_SHORTCUTS "CMake Documentation"
+  )
+
+  set_property(INSTALL "cmake.org.html" PROPERTY
+    CPACK_START_MENU_SHORTCUTS "CMake Web Site"
+  )
+
+  set(CPACK_WIX_LIGHT_EXTRA_FLAGS "-dcl:high")
+
+  set(CPACK_WIX_UI_BANNER
+    "@CMake_SOURCE_DIR@/Utilities/Release/WiX/ui_banner.jpg"
+  )
+
+  set(CPACK_WIX_UI_DIALOG
+    "@CMake_SOURCE_DIR@/Utilities/Release/WiX/ui_dialog.jpg"
+  )
+
+  set(CPACK_WIX_EXTRA_SOURCES
+    "@CMake_SOURCE_DIR@/Utilities/Release/WiX/install_dir.wxs"
+    "@CMake_SOURCE_DIR@/Utilities/Release/WiX/cmake_extra_dialog.wxs"
+  )
+
+  set(_WIX_CUSTOM_ACTION_ENABLED "@WIX_CUSTOM_ACTION_ENABLED@")
+  if(_WIX_CUSTOM_ACTION_ENABLED)
+    list(APPEND CPACK_WIX_EXTRA_SOURCES
+      "@CMake_SOURCE_DIR@/Utilities/Release/WiX/cmake_nsis_overwrite_dialog.wxs"
+      )
+    list(APPEND CPACK_WIX_CANDLE_EXTRA_FLAGS -dCHECK_NSIS=1)
+
+    set(_WIX_CUSTOM_ACTION_MULTI_CONFIG "@WIX_CUSTOM_ACTION_MULTI_CONFIG@")
+    if(_WIX_CUSTOM_ACTION_MULTI_CONFIG)
+      if(CPACK_BUILD_CONFIG)
+        set(_WIX_CUSTOM_ACTION_CONFIG "${CPACK_BUILD_CONFIG}")
+      else()
+        set(_WIX_CUSTOM_ACTION_CONFIG "Release")
+      endif()
+
+      list(APPEND CPACK_WIX_EXTRA_SOURCES
+        "@CMake_BINARY_DIR@/Utilities/Release/WiX/custom_action_dll-${_WIX_CUSTOM_ACTION_CONFIG}.wxs")
+    else()
+      list(APPEND CPACK_WIX_EXTRA_SOURCES
+        "@CMake_BINARY_DIR@/Utilities/Release/WiX/custom_action_dll.wxs")
+    endif()
+  endif()
+
+  set(CPACK_WIX_UI_REF "CMakeUI_InstallDir")
+
+  set(CPACK_WIX_PATCH_FILE
+    "@CMake_SOURCE_DIR@/Utilities/Release/WiX/patch_path_env.xml"
+  )
+
+  set(CPACK_WIX_TEMPLATE
+    "@CMake_SOURCE_DIR@/Utilities/Release/WiX/WIX.template.in"
+  )
+
+  set(BUILD_QtDialog "@BUILD_QtDialog@")
+
+  if(BUILD_QtDialog)
+    list(APPEND CPACK_WIX_PATCH_FILE
+      "@CMake_SOURCE_DIR@/Utilities/Release/WiX/patch_desktop_shortcut.xml"
+      )
+    list(APPEND CPACK_WIX_CANDLE_EXTRA_FLAGS -dBUILD_QtDialog=1)
+  endif()
+endif()

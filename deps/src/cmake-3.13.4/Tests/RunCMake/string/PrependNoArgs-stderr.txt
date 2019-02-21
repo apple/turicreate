@@ -1,0 +1,4 @@
+CMake Error at PrependNoArgs.cmake:1 \(string\):
+  string sub-command PREPEND requires at least one argument.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

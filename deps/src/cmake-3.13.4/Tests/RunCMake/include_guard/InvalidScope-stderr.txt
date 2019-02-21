@@ -1,0 +1,4 @@
+CMake Error at InvalidScope.cmake:1 \(include_guard\):
+  include_guard given an invalid scope: INVALID
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

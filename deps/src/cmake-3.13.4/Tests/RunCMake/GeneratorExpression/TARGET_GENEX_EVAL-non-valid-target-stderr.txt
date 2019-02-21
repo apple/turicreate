@@ -1,0 +1,8 @@
+^CMake Error at TARGET_GENEX_EVAL-non-valid-target.cmake:2 \(add_custom_command\):
+  Error evaluating generator expression:
+
+    \$<TARGET_GENEX_EVAL:bad-target,>
+
+  \$<TARGET_GENEX_EVAL:tgt, ...> target "bad-target" not found.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

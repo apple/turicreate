@@ -1,0 +1,3 @@
+^'--parallel' invalid number '12ab' given\.
++
+Usage: cmake --build <dir> \[options\] \[-- \[native-options\]\]

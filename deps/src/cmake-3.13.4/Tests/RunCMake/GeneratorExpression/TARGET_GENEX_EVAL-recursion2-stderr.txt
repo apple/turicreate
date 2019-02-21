@@ -1,0 +1,26 @@
+^CMake Error at TARGET_GENEX_EVAL-recursion2.cmake:10 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<TARGET_GENEX_EVAL:recursion1,\$<TARGET_PROPERTY:recursion1,CUSTOM_PROPERTY1>>
+
+  Dependency loop found.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+
+
+CMake Error at TARGET_GENEX_EVAL-recursion2.cmake:10 \(add_custom_target\):
+  Loop step 1
+
+    \$<TARGET_GENEX_EVAL:recursion2,\$<TARGET_PROPERTY:recursion2,CUSTOM_PROPERTY2>>
+
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+
+
+CMake Error at TARGET_GENEX_EVAL-recursion2.cmake:10 \(add_custom_target\):
+  Loop step 2
+
+    \$<TARGET_GENEX_EVAL:recursion1,\$<TARGET_PROPERTY:recursion1,CUSTOM_PROPERTY1>>
+
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

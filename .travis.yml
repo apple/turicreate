@@ -37,6 +37,11 @@ script:
   - ccache -M 4G
   - ccache -s
 
+  # Download and install cmake
+  - curl -L https://github.com/Kitware/CMake/releases/download/v3.13.4/cmake-3.13.4-Linux-x86_64.tar.gz -o cmake-3.13.4-Linux-x86_64.tar.gz 
+  - tar xf cmake-3.13.4-Linux-x86_64.tar.gz
+  - export PATH=${PWD}/cmake-3.13.4-Linux-x86_64/bin:${PATH}
+
   # We sometimes get `error: No space left on device`
   # The workaround seems to be to force blocking I/O
   # See https://github.com/travis-ci/travis-ci/issues/8902 and
@@ -57,3 +62,4 @@ script:
 
   # See the changes in ccache
   - ccache -s
+

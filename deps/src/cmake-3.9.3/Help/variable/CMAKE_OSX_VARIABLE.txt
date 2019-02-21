@@ -1,6 +1,0 @@
-The value of this variable should be set prior to the first
-:command:`project` or :command:`enable_language` command invocation
-because it may influence configuration of the toolchain and flags.
-It is intended to be set locally by the user creating a build tree.
-
-This variable is ignored on platforms other than OS X.

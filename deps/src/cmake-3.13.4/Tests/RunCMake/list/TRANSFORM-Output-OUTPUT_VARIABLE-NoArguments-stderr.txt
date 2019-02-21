@@ -1,0 +1,4 @@
+^CMake Error at TRANSFORM-Output-OUTPUT_VARIABLE-NoArguments.cmake:2 \(list\):
+  list sub-command TRANSFORM, OUTPUT_VARIABLE expects variable name argument.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$
