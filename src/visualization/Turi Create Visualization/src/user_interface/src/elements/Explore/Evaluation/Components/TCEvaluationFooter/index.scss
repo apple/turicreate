@@ -13,6 +13,20 @@ $transition-speed: 0.3s;
 	height:auto;
 }
 
+.TCEvaluationErrorsPill{
+	display:inline-block;
+	background: #E36373;
+	padding: 0px;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-right: 10px;
+	border-radius: 20px;
+	font-family: Helvetica;
+	font-size: 12px;
+	color: #FFFFFF;
+	text-align: center;
+}
+
 .TCEvaluationFooterContainer{
 	width: 100%;
 	display: flex;
