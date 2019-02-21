@@ -71,16 +71,16 @@ public:
 
     std::vector<turi::flexible_type> image_vector = image_sa->to_vector();
 
-    for (size_t x = 0; x < items.data_size(); x++) {
+    for (int x = 0; x < items.data_size(); x++) {
       TuriCreate::Annotation::Specification::Datum item = items.data(x);
       TS_ASSERT(item.images_size() == 1);
 
       TuriCreate::Annotation::Specification::ImageDatum image_datum =
           item.images(0);
 
-      int datum_width = image_datum.width();
-      int datum_height = image_datum.height();
-      int datum_channels = image_datum.channels();
+      size_t datum_width = image_datum.width();
+      size_t datum_height = image_datum.height();
+      size_t datum_channels = image_datum.channels();
 
       turi::flex_image image = image_vector.at(x).get<turi::flex_image>();
 

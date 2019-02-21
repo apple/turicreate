@@ -6,7 +6,7 @@ make_library(
     utils.cpp
   REQUIRES
     annotation
-    unity_core
+    unity_shared_for_testing
 )
 
 make_boost_test(image_classifier_tests.cxx

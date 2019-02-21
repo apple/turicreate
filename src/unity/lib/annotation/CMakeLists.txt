@@ -11,7 +11,7 @@ set(TC_ANNOTATIONS_SOURCE_FILES
   image_classification.cpp
 )
 
-make_library(annotation
+make_library(annotation OBJECT
   SOURCES
     ${TC_ANNOTATIONS_SOURCE_FILES}
     ${TC_ANNOTATIONS_PROTO_FILES}
@@ -19,5 +19,5 @@ make_library(annotation
     protobuf
     process
     visualization
-    EXTERNAL_VISIBILITY
+  EXTERNAL_VISIBILITY
 )

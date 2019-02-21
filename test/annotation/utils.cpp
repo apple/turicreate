@@ -34,7 +34,7 @@ turi::flex_string random_string() {
   std::string randomString("");
   size_t lengthString = rand() % MAX_LENGTH_STRING;
 
-  for (int i = 0; i < lengthString; ++i) {
+  for (size_t i = 0; i < lengthString; ++i) {
     randomString += allowedcharacters[rand() % (sizeof(allowedcharacters) - 1)];
   }
 
@@ -43,7 +43,7 @@ turi::flex_string random_string() {
 
 std::shared_ptr<turi::unity_sarray> random_image_sarray(size_t length) {
   std::vector<turi::flexible_type> image_column_data;
-  for (int x = 0; x < length; x++) {
+  for (size_t x = 0; x < length; x++) {
     image_column_data.push_back(*random_image());
   }
 
@@ -56,7 +56,7 @@ std::shared_ptr<turi::unity_sarray> random_image_sarray(size_t length) {
 std::shared_ptr<turi::unity_sarray> random_string_sarray(size_t length,
                                                          bool fill_na) {
   std::vector<turi::flexible_type> annotation_column_data;
-  for (int x = 0; x < length; x++) {
+  for (size_t x = 0; x < length; x++) {
     if (rand() % 20 > 15) {
       annotation_column_data.push_back("");
     } else {
