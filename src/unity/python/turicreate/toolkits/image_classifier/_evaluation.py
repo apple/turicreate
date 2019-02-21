@@ -47,7 +47,7 @@ class Evaluation(dict):
     
     return str(_json.dumps({ "evaluation_spec": evaluation_dictionary }, allow_nan = False))
 
-  def _explore(self):
+  def explore(self):
     _thread.start_new_thread(_start_process, (self._get_eval_json()+"\n", self.data["test_data"], self, ))
 
 
@@ -193,7 +193,7 @@ def _image_conversion(image):
 
     image_buffer = BytesIO()
     image._to_pil_image().save(image_buffer, format='PNG')
-    result["data"] = str(_base64.b64encode(image_buffer.getvalue()))
+    result["data"] = _base64.b64encode(image_buffer.getvalue())
 
   else:
     import cStringIO

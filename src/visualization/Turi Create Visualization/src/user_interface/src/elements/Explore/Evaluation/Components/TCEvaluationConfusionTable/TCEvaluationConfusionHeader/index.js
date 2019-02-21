@@ -20,20 +20,20 @@ class TCEvaluationConfusionHeader extends Component {
   render() {
     return (
       <div className="TCEvaluationConfusionHeader">
-        <TCEvaluationConfusionHeaderCell name="ACTUAL"
+        <TCEvaluationConfusionHeaderCell name="ACTUAL CLASS"
                                          onclick={this.clickActual.bind(this)}
                                          enabled={(this.props.sort_by_confusions == "actual")}
                                          direction={!this.props.sort_direction_confusions} />
-        <TCEvaluationConfusionHeaderCell name="PREDICTED"
+        <TCEvaluationConfusionHeaderCell name="PREDICTED CLASS"
                                          onclick={this.clickPredicted.bind(this)}
                                          enabled={(this.props.sort_by_confusions == "predicted")}
                                          direction={!this.props.sort_direction_confusions}/>
-        <TCEvaluationConfusionHeaderCell name="COUNT"
+        <TCEvaluationConfusionHeaderCell name="NUMBER INCORRECT"
                                          type="percent"
                                          onclick={this.clickCount.bind(this)}
                                          enabled={(this.props.sort_by_confusions == "count")}
                                          direction={!this.props.sort_direction_confusions}/>
-        <TCEvaluationConfusionHeaderCell name="EXAMPLE IMAGES"
+        <TCEvaluationConfusionHeaderCell name="INCORRECT CLASSIFICATIONS"
                                          type="images"/>
       </div>
     );
