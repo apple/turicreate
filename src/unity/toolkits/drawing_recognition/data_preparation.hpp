@@ -7,7 +7,6 @@
 #define TURI_DRAWING_DATA_PREPARATION_H_
 
 #include <export.hpp>
-//#include <sframe/sframe.hpp>
 #include <unity/lib/gl_sframe.hpp>
 #include <unity/lib/variant.hpp>
 #include <unity/lib/image_util.hpp>
@@ -16,33 +15,28 @@
 #endif // __APPLE__
 
 namespace turi {
-namespace sdk_model {
 namespace drawing_recognition {
 
 /**
- *  Convert SFrame to batch form, where each row contains a sequence of length
- *  predictions_in_chunk * prediction_window, and there is a single label per
- *  prediction window.
+ *  This function is responsible for converting stroke-based drawing data
+ *  to 28x28 bitmaps to make it ready for training with the Neural Network.
+ *  
+ * 
+ * \param[in] data 					SFrame from the user, which contains 
+ *									stroke-based drawings
+ * \param[in] feature				Name of the feature column
+ * \param[in] target				Name of the target (label) column
+ * 
+ * 
  *
- * \param[in] data                  Original data. Sframe containing one line per time sample.
- * \param[in] features              List of names of the columns containing the input features.
- * \param[in] session_id            Name of the column containing ids for each session in the dataset.
- *                                  A session is a single user time-series sequence.
- * \param[in] prediction_window     Number of time samples in every prediction window. A label is expected
- *                                  (for training), or predicted (in inference) every time a sequence of
- *                                  prediction_window samples have been collected.
- * \param[in] predictions_in_chunk  Each session is chunked into shorter sequences. This is the number of
- *                                  prediction windows desired in each chunk.
- * \param[in] target                Name of the coloumn containing the output labels. Empty string if None.
- *
- * \return                          SFrame with the data converted to batch form.
+ * \return                          SFrame with the stroke-based drawings 
+ *									converted to bitmaps.
  */
 EXPORT gl_sframe _drawing_recognition_prepare_data(const gl_sframe &data,
                                                    const std::string &feature,
                                                    const std::string &target);
 
 
-}
 }
 }
 

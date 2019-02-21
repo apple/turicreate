@@ -13,7 +13,6 @@
 #include "util/sys_util.hpp"
 
 namespace turi {
-namespace sdk_model {
 namespace drawing_recognition {
 
 struct Point {
@@ -248,5 +247,4 @@ gl_sframe _drawing_recognition_prepare_data(const gl_sframe &data,
 }    
 
 } //drawing_recognition
-} //sdk_model
 } //turi

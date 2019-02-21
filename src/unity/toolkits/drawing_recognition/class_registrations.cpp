@@ -6,11 +6,9 @@
 #include "class_registrations.hpp"
 #include "data_preparation.hpp"
 
-//#include <unity/lib/toolkit_class_macros.hpp>
 #include <unity/lib/toolkit_function_macros.hpp>
 
 namespace turi {
-namespace sdk_model {
 namespace drawing_recognition {
 
 BEGIN_FUNCTION_REGISTRATION
@@ -18,5 +16,4 @@ REGISTER_FUNCTION(_drawing_recognition_prepare_data , "data" , "feature" , "targ
 END_FUNCTION_REGISTRATION
 
 }// drawing_recognition
-}// sdk_model
-}// turicreate
+}// turi
