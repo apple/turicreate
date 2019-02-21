@@ -18,9 +18,9 @@ _TMP_COL_RANDOM_ORDER = '_random_order'
 # Encapsulates an SFrame, iterating over each row and returning an
 # (image, label, index) tuple.
 class _SFrameDataSource:
-    def __init__(self, sframe, feature_column, annotations_column,
+    def __init__(self, sframe, feature_column, target_column,
                  load_labels=True, shuffle=True, samples=None):
-        self.annotations_column = annotations_column
+        self.target_column = target_column
         self.feature_column = feature_column
         self.load_labels = load_labels
         self.shuffle = shuffle
@@ -63,10 +63,7 @@ class _SFrameDataSource:
         
         # Copy the annotated bounding boxes for this image, if requested.
         if self.load_labels:
-            label = row[self.annotations_column]
-            # print(label)
-            # print(type(label))
-            # import pdb; pdb.set_trace()
+            label = row[self.target_column]
             if label == None:
                 label = []
             elif type(label) == dict:
@@ -83,7 +80,7 @@ class _SFrameDataSource:
 # A wrapper around _SFrameDataSource that uses a dedicated worker thread for
 # performing SFrame operations.
 class _SFrameAsyncDataSource:
-    def __init__(self, sframe, feature_column, annotations_column,
+    def __init__(self, sframe, feature_column, target_column,
                  load_labels=True, shuffle=True, samples=None, buffer_size=256):
         # This buffer_reset_queue will be used to communicate to the background
         # thread. Each "message" is itself a _Queue that the background thread
@@ -91,7 +88,7 @@ class _SFrameAsyncDataSource:
         buffer_reset_queue = _Queue()
         def worker():
             data_source = _SFrameDataSource(
-                sframe, feature_column, annotations_column,
+                sframe, feature_column, target_column,
                 load_labels=load_labels, shuffle=shuffle, samples=samples)
             while True:
                 buffer = buffer_reset_queue.get()
@@ -176,7 +173,7 @@ class SFrameRecognitionIter(_mx.io.DataIter):
                  class_to_index,
                  input_shape = [28,28],
                  feature_column='bitmap',
-                 annotations_column='label',
+                 target_column='label',
                  load_labels=True,
                  shuffle=True,
                  io_thread_buffer_size=0,
@@ -207,12 +204,12 @@ class SFrameRecognitionIter(_mx.io.DataIter):
             # thread to Python-based work of copying to MxNet and scheduling
             # augmentation work in the MXNet backend.
             self.data_source = _SFrameAsyncDataSource(
-                sframe, feature_column, annotations_column,
+                sframe, feature_column, target_column,
                 load_labels=load_labels, shuffle=shuffle, samples=samples,
                 buffer_size=io_thread_buffer_size * batch_size)
         else:
             self.data_source = _SFrameDataSource(
-                sframe, feature_column, annotations_column,
+                sframe, feature_column, target_column,
                 load_labels=load_labels, shuffle=shuffle, samples=samples)
 
         self._provide_data = [
@@ -221,7 +218,6 @@ class SFrameRecognitionIter(_mx.io.DataIter):
                             layout='NCHW')
         ]
 
-        # output_size = (num_classes + 5) * num_anchors
         self._provide_label = [
             _mx.io.DataDesc(name='label_map',
                             shape=(batch_size, 1),
@@ -252,15 +248,10 @@ class SFrameRecognitionIter(_mx.io.DataIter):
     def _next(self):
         images = []
         labels = []
-        indices = []
-        orig_shapes = []
         classes = []
         if self.cur_iteration == self.num_iterations:
             raise StopIteration
 
-        # Since we pre-screened the annotations, at this point we just want to
-        # check that it's the right type (rectangle) and the class is included
-        
         pad = None
         for b in range(self.batch_size):
             try:
@@ -275,24 +266,16 @@ class SFrameRecognitionIter(_mx.io.DataIter):
                     for p in range(pad):
                         images.append(_mx.nd.zeros(images[0].shape))
                         labels.append(0)
-                        indices.append(0)
-                        orig_shapes.append([0, 0, 0])
                     break
 
             raw_image, label, cur_sample = row
 
-            orig_image = _mx.nd.array(raw_image)
-            image = orig_image
-            oshape = orig_image.shape
+            image = _mx.nd.array(raw_image)
             images.append(image)
             labels.append(self.class_to_index[label])
-            indices.append(cur_sample)
-            orig_shapes.append(oshape)
             
         b_images = _mx.nd.stack(*images)
         b_labels = _mx.nd.array(labels, dtype='int32')
-        b_indices = _mx.nd.array(indices)
-        b_orig_shapes = _mx.nd.array(orig_shapes)
 
         batch = _mx.io.DataBatch([b_images], [b_labels], pad=pad)
         batch.iteration = self.cur_iteration

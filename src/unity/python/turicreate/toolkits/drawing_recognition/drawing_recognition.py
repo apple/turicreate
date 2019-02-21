@@ -114,7 +114,7 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap", mo
 
     loader = _SFrameRecognitionIter(dataset, batch_size,
                  feature_column='bitmap',
-                 annotations_column='label',
+                 target_column='label',
                  class_to_index=class_to_index,
                  load_labels=True,
                  shuffle=True,
@@ -262,7 +262,7 @@ class DrawingRecognition(_CustomModel):
         loader = _SFrameRecognitionIter(dataset, self.batch_size,
                     class_to_index=self.class_to_index,
                     feature_column='bitmap',
-                    annotations_column='label',
+                    target_column='label',
                     load_labels=True,
                     shuffle=False,
                     io_thread_buffer_size=0,

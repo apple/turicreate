@@ -197,9 +197,7 @@ def convert(model, input_shape, class_labels=None, mode=None,
         assert (len(output_names) == 1)
         assert (output_names[0].endswith('_softmax0_output'))
         output_names = ['probabilities']
-    # print('output_names')
-    # print(output_names)
-
+    
     # Get the inputs and outputs
     output_dims = shapes[1]
     if mode is None:
@@ -251,7 +249,6 @@ def convert(model, input_shape, class_labels=None, mode=None,
     for idx, node in enumerate(nodes):
         op = node['op']
         if op == 'null' or op in _MXNET_SKIP_LAYERS:
-            # print("skipping " + op)
             continue
         if is_drawing_recognition and node['name'].endswith('_softmax0_output'):
             node['name'] = 'probabilities'
