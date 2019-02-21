@@ -483,10 +483,10 @@ set(CMAKE_CXX_FLAGS_DEBUG
   CACHE STRING "compiler options" FORCE)
 
 set(CMAKE_C_FLAGS_RELEASE
-  "${RELEASE_OPTIMIZATION_FLAGS} -Wno-attributes ${ARCH_FLAG} ${MTUNE} ${PROFILING_FLAGS} ${C_REAL_COMPILER_FLAGS} ${WERROR_FLAGS} -DNDEBUG ${ALTERNATE_LINKER} -DHAVE_PTHREAD=1 -DARMA_NO_DEBUG"
+  "${RELEASE_OPTIMIZATION_FLAGS} -Wno-attributes ${ARCH_FLAG} ${MTUNE} ${PROFILING_FLAGS} ${C_REAL_COMPILER_FLAGS} ${WERROR_FLAGS} -DNDEBUG ${ALTERNATE_LINKER} -DHAVE_PTHREAD=1"
   CACHE STRING "compiler options" FORCE)
 set(CMAKE_CXX_FLAGS_RELEASE
-  "${RELEASE_OPTIMIZATION_FLAGS} ${EXTRA_OPTIMIZATION_FLAGS} ${DISABLE_WARNING_FLAGS} ${PROFILING_FLAGS} -Wno-attributes ${ARCH_FLAG} ${MTUNE} ${CPP_REAL_COMPILER_FLAGS} ${WERROR_FLAGS} ${INT128_FLAGS} ${ALTERNATE_LINKER} -DNDEBUG -DHAVE_PTHREAD=1 -DARMA_NO_DEBUG"
+  "${RELEASE_OPTIMIZATION_FLAGS} ${EXTRA_OPTIMIZATION_FLAGS} ${DISABLE_WARNING_FLAGS} ${PROFILING_FLAGS} -Wno-attributes ${ARCH_FLAG} ${MTUNE} ${CPP_REAL_COMPILER_FLAGS} ${WERROR_FLAGS} ${INT128_FLAGS} ${ALTERNATE_LINKER} -DNDEBUG -DHAVE_PTHREAD=1"
   CACHE STRING "compiler options" FORCE)
 
 #**************************************************************************/
@@ -552,7 +552,6 @@ endif()
 add_compile_options(-Dgoogle=__tc_google)
 add_compile_options(-DCoreML=__tc_CoreML)
 add_compile_options(-DHAVE_PTHREAD=1)
-add_compile_options(-DEIGEN_MPL2_ONLY)
 
 ##############################################################################
 ##############################################################################
