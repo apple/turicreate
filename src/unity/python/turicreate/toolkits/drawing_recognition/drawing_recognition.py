@@ -21,6 +21,10 @@ from ._sframe_loader import SFrameRecognitionIter as _SFrameRecognitionIter
 from .. import _mxnet_utils
 
 from turicreate import extensions as _extensions
+from copy import copy, deepcopy
+
+BITMAP_WIDTH = 28
+BITMAP_HEIGHT = 28
 
 class Model(_HybridBlock):
     def __init__(self, num_classes, **kwargs):
@@ -28,15 +32,18 @@ class Model(_HybridBlock):
         with self.name_scope():
             # layers created in name_scope will inherit name space
             # from parent layer.
-            self.conv1 = _nn.Conv2D(channels=16, kernel_size=(3,3), padding=(1,1), activation='relu')
+            self.conv1 = _nn.Conv2D(channels=16, kernel_size=(3,3), 
+                                    padding=(1,1), activation='relu')
             self.pool1 = _nn.MaxPool2D(pool_size=(2,2))
-            self.conv2 = _nn.Conv2D(channels=32, kernel_size=(3,3), padding=(1,1), activation='relu')
+            self.conv2 = _nn.Conv2D(channels=32, kernel_size=(3,3), 
+                                    padding=(1,1), activation='relu')
             self.pool2 = _nn.MaxPool2D(pool_size=(2,2))
-            self.conv3 = _nn.Conv2D(channels=64, kernel_size=(3,3), padding=(1,1), activation='relu')
+            self.conv3 = _nn.Conv2D(channels=64, kernel_size=(3,3), 
+                                    padding=(1,1), activation='relu')
             self.pool3 = _nn.MaxPool2D(pool_size=(2,2))
             self.flatten = _nn.Flatten()
             self.fc1 = _nn.Dense(units=128, activation='relu')
-            self.fc2 = _nn.Dense(units=num_classes, activation=None) # NUM_CLASSES
+            self.fc2 = _nn.Dense(units=num_classes, activation=None)
 
     def hybrid_forward(self, F, x):
         x = self.pool1(self.conv1(x))
@@ -47,25 +54,26 @@ class Model(_HybridBlock):
         x = self.fc2(x)
         return F.softmax(x)
 
-def create(dataset, annotations=None, num_epochs=100, feature=None, model=None,
+def create(dataset, annotations=None, num_epochs=100, feature="bitmap", model=None,
            classes=None, batch_size=256, max_iterations=0, verbose=True, 
-           is_stroke_input = False, **kwargs):
+           **kwargs):
     """
     Create a :class:`DrawingRecognition` model.
     """
-
     start_time = _time.time()
 
-    # need to automatically infer if it's stroke input or not
+    is_stroke_input = (dataset[feature].dtype != _tc.Image)
 
     if is_stroke_input:
-        # This will only work on macOS right now
-        dataset = _extensions._drawing_recognition_prepare_data(
-            dataset, "bitmap", "label", is_stroke_input)
+        # This only works on macOS right now
+        copied_dataset = _extensions._drawing_recognition_prepare_data(
+            dataset, "bitmap", "label")
     else:
-        sframe_images = dataset["bitmap"]
-        dataset["bitmap"] = sframe_images.apply(
-            lambda I: I.pixel_data.reshape(1,28,28)/255.)
+        copied_dataset = deepcopy(dataset)
+        copied_dataset["bitmap"] = copied_dataset["bitmap"].apply(
+            lambda I: _tc.image_analysis.resize(I,
+                BITMAP_WIDTH, BITMAP_HEIGHT, 1).pixel_data.reshape(
+                1, BITMAP_WIDTH, BITMAP_HEIGHT) / 255.)
 
     column_names = ['Iteration', 'Loss', 'Elapsed Time']
     num_columns = len(column_names)
@@ -76,7 +84,7 @@ def create(dataset, annotations=None, num_epochs=100, feature=None, model=None,
     iteration = 0
 
     if classes is None:
-        classes = dataset['label'].unique()
+        classes = copied_dataset['label'].unique()
     classes = sorted(classes)
     class_to_index = {name: index for index, name in enumerate(classes)}
 
@@ -85,7 +93,8 @@ def create(dataset, annotations=None, num_epochs=100, feature=None, model=None,
         if progress['smoothed_loss'] is None:
             progress['smoothed_loss'] = cur_loss
         else:
-            progress['smoothed_loss'] = 0.9 * progress['smoothed_loss'] + 0.1 * cur_loss
+            progress['smoothed_loss'] = (0.9 * progress['smoothed_loss'] 
+                + 0.1 * cur_loss)
         cur_time = _time.time()
 
         # Printing of table header is deferred, so that start-of-training
@@ -93,19 +102,21 @@ def create(dataset, annotations=None, num_epochs=100, feature=None, model=None,
         if verbose and iteration == 0:
             # Print progress table header
             print(hr)
-            print(('| {:<{width}}' * num_columns + '|').format(*column_names, width=column_width-1))
+            print(('| {:<{width}}' * num_columns + '|').format(*column_names, 
+                width=column_width-1))
             print(hr)
 
         if verbose and (cur_time > progress['last_time'] + 10 or
                         iteration_base1 == max_iterations):
             # Print progress table row
             elapsed_time = cur_time - start_time
-            print("| {cur_iter:<{width}}| {loss:<{width}.3f}| {time:<{width}.1f}|".format(
+            print(
+                "| {cur_iter:<{width}}| {loss:<{width}.3f}| {time:<{width}.1f}|".format(
                 cur_iter=iteration_base1, loss=progress['smoothed_loss'],
                 time=elapsed_time , width=column_width-1))
             progress['last_time'] = cur_time
 
-    loader = _SFrameRecognitionIter(dataset, batch_size,
+    loader = _SFrameRecognitionIter(copied_dataset, batch_size,
                  feature_column='bitmap',
                  annotations_column='label',
                  class_to_index=class_to_index,
@@ -126,9 +137,11 @@ def create(dataset, annotations=None, num_epochs=100, feature=None, model=None,
 
     train_loss = 0.
     for batch in loader:
-        data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0)[0]
+        data = _mx.gluon.utils.split_and_load(batch.data[0], 
+            ctx_list=ctx, batch_axis=0)[0]
         label = _mx.nd.array(
-            _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0)[0]
+            _mx.gluon.utils.split_and_load(batch.label[0], 
+                ctx_list=ctx, batch_axis=0)[0]
             )
 
         with _autograd.record():
@@ -151,13 +164,12 @@ def create(dataset, annotations=None, num_epochs=100, feature=None, model=None,
         'class_to_index': class_to_index,
         'num_classes': len(classes),
         'classes': classes,
-        'input_image_shape': (1,28,28),
+        'input_image_shape': (1, BITMAP_WIDTH, BITMAP_HEIGHT),
         'batch_size': batch_size,
         'training_loss': cur_loss,
         'training_time': training_time,
         'max_iterations': max_iterations
     }
-    dataset["bitmap"] = sframe_images
     return DrawingRecognition(state)
 
 class DrawingRecognition(_CustomModel):
@@ -171,7 +183,7 @@ class DrawingRecognition(_CustomModel):
         self._label_type = type(self._classes[0])
         self._class_to_index = state['_class_to_index']
         '''
-        self.batch_size = state['_batch_size']
+        self.batch_size = state['batch_size']
         
 
     @classmethod
@@ -189,13 +201,10 @@ class DrawingRecognition(_CustomModel):
 
     @classmethod
     def _load_version(cls, state, version):
-        
         _tkutl._model_version_check(version, 1)
         net = Model(num_classes = len(state['_classes']), prefix = 'model0_')
         ctx = _mxnet_utils.get_mxnet_context(max_devices=state['_batch_size'])
-        
         net_params = net.collect_params()
-        
         _mxnet_utils.load_net_params_from_state(
             net_params, state['_model'], ctx=ctx 
             )
@@ -207,10 +216,9 @@ class DrawingRecognition(_CustomModel):
         from .._mxnet_to_coreml import _mxnet_converter
         import coremltools
         from coremltools.models import datatypes, neural_network
-        from copy import copy
 
         batch_size = 1
-        image_shape = (batch_size,) + (1,28,28)
+        image_shape = (batch_size,) + (1,BITMAP_WIDTH,BITMAP_HEIGHT)
         s_image = _mx.sym.Variable('bitmap',
             shape=image_shape, dtype=_np.float32)
 
@@ -244,20 +252,22 @@ class DrawingRecognition(_CustomModel):
         coreml_model.short_description = _coreml_utils._mlmodel_short_description(model_type)
         coreml_model.input_description['bitmap'] = u'bitmap'
         coreml_model.output_description['probabilities'] = 'Prediction probabilities'
-        coreml_model.output_description['classLabel'] = 'Class label of Top Prediction'
+        coreml_model.output_description['classLabel'] = 'Class Label of Top Prediction'
         coreml_model.save(filename)
         return coreml_model
 
-    def _predict_with_options(self, dataset, with_ground_truth=True, verbose=True):
+    def _predict_with_options(self, dataset, verbose=True):
         """
             Predict with options for what kind of SFrame should be returned.
         """
 
-        sframe_images = dataset["bitmap"]
-        dataset["bitmap"] = sframe_images.apply(
-            lambda I: I.pixel_data.reshape(1,28,28)/255.)
+        copied_dataset = deepcopy(dataset)
+        copied_dataset["bitmap"] = copied_dataset["bitmap"].apply(
+            lambda I: _tc.image_analysis.resize(I,
+                BITMAP_WIDTH, BITMAP_HEIGHT, 1).pixel_data.reshape(
+                1, BITMAP_WIDTH, BITMAP_HEIGHT)/255.)
 
-        loader = _SFrameRecognitionIter(dataset, self.batch_size,
+        loader = _SFrameRecognitionIter(copied_dataset, self.batch_size,
                     class_to_index=self._class_to_index,
                     feature_column='bitmap',
                     annotations_column='label',
@@ -268,7 +278,7 @@ class DrawingRecognition(_CustomModel):
                     iterations=None,
                     want_to_print=True)
 
-        dataset_size = len(dataset)
+        dataset_size = len(copied_dataset)
         ctx = _mxnet_utils.get_mxnet_context()
         
         all_predicted = ['']*dataset_size
@@ -278,7 +288,10 @@ class DrawingRecognition(_CustomModel):
         for batch in loader:
             if batch.pad is not None:
                 size = self.batch_size - batch.pad
-                batch_data = _mx.nd.slice_axis(batch.data[0], axis=0, begin=0, end=size)
+                batch_data = _mx.nd.slice_axis(batch.data[0], 
+                    axis=0, 
+                    begin=0, 
+                    end=size)
             else:
                 batch_data = batch.data[0]
                 size = self.batch_size
@@ -298,8 +311,6 @@ class DrawingRecognition(_CustomModel):
             all_probabilities[index:index+z.shape[0]] = z
             index += z.shape[0]
         
-        dataset["bitmap"] = sframe_images
-
         return (_tc.SFrame({'label': _tc.SArray(all_predicted),
             'probability': _tc.SArray(all_probabilities)}))
      
@@ -334,8 +345,6 @@ class DrawingRecognition(_CustomModel):
         """
         model_fields = [
             ('Model', 'model')
-            # ('Number of classes', 'num_classes'),
-            # ('Input image shape', 'input_image_shape'),
         ]
         training_fields = [
             ('Training time', 'training_time'),
@@ -392,8 +401,7 @@ class DrawingRecognition(_CustomModel):
             >>> print results['accuracy']
         """
 
-        predicted = self._predict_with_options(dataset, with_ground_truth=True,
-                                              verbose=verbose)
+        predicted = self._predict_with_options(dataset, verbose=verbose)
 
         target = _tc.SFrame({'label': _tc.SArray(dataset['label'])}) # fix this
         
@@ -480,8 +488,6 @@ class DrawingRecognition(_CustomModel):
             # Visualize predictions by generating a new column of marked up images
             >>> data['image_pred'] = turicreate.object_detector.util.draw_bounding_boxes(data['image'], data['predictions'])
             """
-
-        predicted = self._predict_with_options(dataset, with_ground_truth=True,
-                                              verbose=verbose)
+        predicted = self._predict_with_options(dataset, verbose=verbose)
         return predicted['label']
 

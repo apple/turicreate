@@ -10,16 +10,10 @@
 //#include <sframe/sframe.hpp>
 #include <unity/lib/gl_sframe.hpp>
 #include <unity/lib/variant.hpp>
+#include <unity/lib/image_util.hpp>
 #ifdef __APPLE__
 #include <CoreGraphics/CoreGraphics.h>
 #endif // __APPLE__
-
-
-
-// #include <cairommconfig.h>
-// #include <cairomm/context.h>
-// #include <cairomm/surface.h>
-
 
 namespace turi {
 namespace sdk_model {
@@ -45,17 +39,9 @@ namespace drawing_recognition {
  */
 EXPORT gl_sframe _drawing_recognition_prepare_data(const gl_sframe &data,
                                                    const std::string &feature,
-                                                   const std::string &target,
-                                                   const bool is_stroke_input);
+                                                   const std::string &target);
 
 
-// Same as above, with verbose=True
-// EXPORT variant_map_type _drawing_recognition_prepare_data_verbose(const gl_sframe &data,
-//                                                    const std::vector<std::string> &features,
-//                                                    const std::string &session_id,
-//                                                    const int &prediction_window,
-//                                                    const int &predictions_in_chunk,
-//                                                    const std::string &target);
 }
 }
 }

@@ -14,7 +14,7 @@ namespace sdk_model {
 namespace drawing_recognition {
 
 BEGIN_FUNCTION_REGISTRATION
-REGISTER_FUNCTION(_drawing_recognition_prepare_data , "data" , "feature" , "target" , "is_stroke_input")
+REGISTER_FUNCTION(_drawing_recognition_prepare_data , "data" , "feature" , "target")
 END_FUNCTION_REGISTRATION
 
 }// drawing_recognition

@@ -153,25 +153,12 @@ flex_list simplify_stroke(flex_list raw_drawing) {
             flex_dict new_point;
             new_point.push_back(std::make_pair("x", new_x));
             new_point.push_back(std::make_pair("y", new_y));
-            // for (auto key_value_pair: point) {
-            //     const flex_string &key = key_value_pair.first.get<flex_string>();
-            //     const flex_float &value = key_value_pair.second.get<flex_float>();
-            //     if (key.compare("x") == 0) {
-            //         value = new_x;
-            //     } else {
-            //         value = new_y;
-            //     }
-            // }
             new_stroke.push_back(new_point);
         }
         // Apply RDP Line Algorithm
         flex_list compressed_stroke = ramer_douglas_peucker(new_stroke, 2.0);
         simplified_drawing.push_back(compressed_stroke);
     }
-    // for (size_t i = 0; i < num_strokes; i++) {
-    //     flex_list &stroke = raw_drawing[i].mutable_get<flex_list>();
-    //     flex_list compressed_stroke = ramer_douglas_peucker(stroke, 2.0);
-    // }
     return simplified_drawing;
 }
 
@@ -233,15 +220,6 @@ flex_list rasterize(flex_list simplified_drawing) {
     return simplified_drawing;
 }
 
-static std::map<std::string,size_t> generate_column_index_map(
-    const std::vector<std::string>& column_names) {
-    std::map<std::string,size_t> index_map;
-    for (size_t k=0; k < column_names.size(); ++k) {
-        index_map[column_names[k]] = k;
-    }
-    return  index_map;
-}
-
 flex_list convert_stroke_based_drawing_to_bitmap(
     flex_list stroke_based_drawing) {
     flex_list normalized_drawing = simplify_stroke(stroke_based_drawing);
@@ -251,64 +229,22 @@ flex_list convert_stroke_based_drawing_to_bitmap(
 
 gl_sframe _drawing_recognition_prepare_data(const gl_sframe &data,
                                             const std::string &feature,
-                                            const std::string &target,
-                                            const bool is_stroke_input) {
+                                            const std::string &target) {
     DASSERT_TRUE(data.contains_column(feature));
     DASSERT_TRUE(data.contains_column(target));
 
-    flex_list bitmap_column;
-    flex_list label_column;
-    auto column_index_map = generate_column_index_map(data.column_names());
+    gl_sarray bitmaps = data[feature].apply([](const flexible_type &strokes) {
+        flex_list current_stroke_based_drawing = strokes.to<flex_list>();
+        flex_list current_bitmap = convert_stroke_based_drawing_to_bitmap(
+            current_stroke_based_drawing);
+        return current_bitmap;
+    }, flex_type_enum::LIST);
+
+    gl_sframe converted_sframe = gl_sframe(data);
+    converted_sframe.replace_add_column(bitmaps, "bitmap");
     
-    if (is_stroke_input) {
-        // need to convert strokes to bitmap
-        // Prepare an output SFrame writer, that will write a new SFrame in the converted batch-processing
-        // ready format.
-        std::vector<std::string> output_column_names = {"bitmap", "label"};
-        std::vector<flex_type_enum> output_column_types = {
-            flex_type_enum::LIST, data[target].dtype()
-        };
-        
-        gl_sframe_writer output_writer(output_column_names, output_column_types, 1);
-
-        time_t last_print_time = time(0);
-        size_t processed_lines = 0;
-
-        // Iterate over the user data. The features and targets are aggregated, and handled
-        // whenever a the ending of a prediction_window, chunk or session is reached.
-        for (const auto& line: data.range_iterator()) {
-
-            
-            auto current_label = line[column_index_map[target]];
-            flex_list current_stroke_based_drawing = line[column_index_map[feature]];
-            flex_list current_bitmap = convert_stroke_based_drawing_to_bitmap(
-                current_stroke_based_drawing);
-            
-            label_column.push_back(current_label);
-            bitmap_column.push_back(current_bitmap);
-
-            output_writer.write({current_bitmap, current_label}, 0);
-
-            time_t now = time(0);
-            bool verbose = false; 
-            // maybe have two wrappers around this function: 
-            // verbose and non-verbose
-            if (verbose && difftime(now, last_print_time) > 10) {
-                logprogress_stream << "Pre-processing: " << std::setw(3) << (100 * processed_lines / data.size()) << "% complete"  << std::endl;
-                last_print_time = now;
-            }
-
-            processed_lines += 1;
-        }
-
-        gl_sframe converted_sframe = output_writer.close();
-        converted_sframe.materialize();
-        return converted_sframe;
-
-    } else {
-        // already a bitmap, we're good
-        return data;
-    }
+    converted_sframe.materialize();
+    return converted_sframe;
 }    
 
 } //drawing_recognition
