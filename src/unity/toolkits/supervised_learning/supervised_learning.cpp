@@ -1053,8 +1053,10 @@ void supervised_learning_model_base::api_train(
     auto valid_filter_names = f_data.column_names();
     valid_filter_names.push_back(target);
     validation_data = validation_data.select_columns(valid_filter_names);
-    add_or_update_state({{"validation_data", validation_data}});
   }
+
+  // Add it to the state, even if it's empty.  
+  add_or_update_state({{"validation_data", validation_data}});
 
   this->init(X, y, valid_X, valid_y, missing_value_action);
 
