@@ -407,6 +407,11 @@ function install_cmake {
 }
 
 CMAKE=`which cmake || echo ""`
+if [[ ! -f ${CMAKE} ]] ; then
+  if [[ -f /Applications/CMake.app/Contents/bin/cmake ]] ; then
+    CMAKE=/Applications/CMake.app/Contents/bin/cmake
+  fi
+fi
 
 function check_cmake { 
 
