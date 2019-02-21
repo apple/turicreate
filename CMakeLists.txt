@@ -1120,6 +1120,7 @@ set(_TC_COMMON_OBJECTS
   "$<TARGET_OBJECTS:xgboost>"
 
   # Then our own source code
+  "$<TARGET_OBJECTS:annotation>"
   "$<TARGET_OBJECTS:cancel_serverside_ops>"
   "$<TARGET_OBJECTS:crash_handler>"
   "$<TARGET_OBJECTS:cppipc>"
