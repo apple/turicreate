@@ -1,11 +1,9 @@
 project(annotation_test)
 
-make_library(
-  annotation_test_utils
+make_library(annotation_test_utils
   SOURCES
     utils.cpp
   REQUIRES
-    annotation
     unity_shared_for_testing
 )
 
