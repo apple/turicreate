@@ -33,8 +33,8 @@ env:
     - CXX=g++-5
 
 script:
-  # Set cache size to 2G (defaults to 512M)
-  - ccache -M 2G
+  # Set cache size to 4G (defaults to 512M)
+  - ccache -M 4G
   - ccache -s
 
   # We sometimes get `error: No space left on device`
