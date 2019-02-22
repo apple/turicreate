@@ -4,18 +4,25 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <unity/toolkits/activity_classification/sequence_iterator.hpp>
+#include <unity/toolkits/activity_classification/ac_data_iterator.hpp>
 
 #include <time.h>
+
+#include <algorithm>
 #include <iomanip>
+#include <sstream>
 
 #include <logger/assertions.hpp>
+#include <logger/logger.hpp>
 #include <random/random.hpp>
 #include <util/sys_util.hpp>
 
 namespace turi {
 namespace activity_classification {
 
+namespace {
+
+using ::turi::neural_net::shared_float_array;
 
 static std::map<std::string,size_t> generate_column_index_map(const std::vector<std::string>& column_names) {
     std::map<std::string,size_t> index_map;
@@ -117,7 +124,6 @@ static void finalize_chunk(flex_vec&            curr_chunk_features,
 
     return;
 }
-
 
 variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
                                                         const std::vector<std::string> &features,
@@ -274,6 +280,8 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
     return result_dict;
 }
 
+}  // namespace
+
 variant_map_type _activity_classifier_prepare_data( const gl_sframe &data,
                                                     const std::vector<std::string> &features,
                                                     const std::string &session_id,
@@ -292,6 +300,167 @@ variant_map_type _activity_classifier_prepare_data_verbose( const gl_sframe &dat
                                                             const std::string &target) {
   return _activity_classifier_prepare_data_impl(data, features, session_id,
       prediction_window, predictions_in_chunk, target, true);
+}
+
+data_iterator::~data_iterator() = default;
+
+// static
+simple_data_iterator::preprocessed_data simple_data_iterator::preprocess_data(
+    const parameters& params) {
+
+  gl_sframe data = params.data;
+  flex_list class_labels = params.class_labels;
+  bool has_target = !params.target_column_name.empty();
+
+  std::vector<std::string> feature_column_names = params.feature_column_names;
+  if (feature_column_names.empty()) {
+    // Default to using all columns besides the target and session-id columns.
+    feature_column_names = data.column_names();
+    auto new_end = std::remove(feature_column_names.begin(),
+                               feature_column_names.end(),
+                               params.target_column_name);
+    new_end = std::remove(feature_column_names.begin(), new_end,
+                          params.session_id_column_name);
+    feature_column_names.erase(new_end, feature_column_names.end());
+  }
+
+  if (has_target) {
+
+    // Copy the SFrame so we can mutate it without affecting the caller's copy.
+    data = data.select_columns(data.column_names());
+
+    // Assemble the list of class labels if necessary.
+    if (class_labels.empty()) {
+      gl_sarray target_values = data[params.target_column_name].unique().sort();
+      gl_sarray_range range = target_values.range_iterator();
+      class_labels = flex_list(range.begin(), range.end());
+    }
+
+    // Replace the target column with an encoded version.
+    auto encoding_fn = [&class_labels](const flexible_type& ft) {
+      auto it = std::find(class_labels.begin(), class_labels.end(), ft);
+      if (it == class_labels.end()) {
+        std::stringstream ss;
+        ss << "Cannot evaluate data with unexpected class label " << ft;
+        log_and_throw(ss.str());
+      }
+      return static_cast<float>(it - class_labels.begin());
+    };
+    data[params.target_column_name] =
+      data[params.target_column_name].apply(encoding_fn, flex_type_enum::FLOAT);
+  }
+
+  // Chunk the data, so that each row of the resulting SFrame corresponds to a
+  // sequence of up to predictions_in_chunk prediction windows (from the same
+  // session), each comprising up to prediction_window rows from the original
+  // SFrame.
+  variant_map_type result_map = _activity_classifier_prepare_data_impl(
+      data, feature_column_names, params.session_id_column_name,
+      static_cast<int>(params.prediction_window),
+      static_cast<int>(params.predictions_in_chunk), params.target_column_name,
+      /* verbose */ true);
+
+  preprocessed_data result;
+  result.chunks = variant_get_value<gl_sframe>(result_map.at("converted_data"));
+  result.num_sessions =
+      variant_get_value<size_t>(result_map.at("num_of_sessions"));
+  result.has_target = has_target;
+  result.features_column_index = result.chunks.column_index("features");
+  result.labels_column_index = result.chunks.column_index("target");
+  result.weights_column_index = result.chunks.column_index("weights");
+  result.feature_names = flex_list(feature_column_names.begin(),
+                                   feature_column_names.end());
+  result.class_labels = std::move(class_labels);
+  return result;
+}
+
+simple_data_iterator::simple_data_iterator(const parameters& params)
+  : data_(preprocess_data(params)),
+    num_samples_per_prediction_(params.prediction_window),
+    num_predictions_per_chunk_(params.predictions_in_chunk),
+    range_iterator_(data_.chunks.range_iterator()),
+    next_row_(range_iterator_.begin())
+{}
+
+const flex_list& simple_data_iterator::feature_names() const {
+  return data_.feature_names;
+}
+
+const flex_list& simple_data_iterator::class_labels() const {
+  return data_.class_labels;
+}
+
+data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
+
+  size_t num_samples_per_chunk =
+      num_samples_per_prediction_ * num_predictions_per_chunk_;
+  size_t num_features = data_.feature_names.size();
+  size_t features_stride = num_samples_per_chunk * num_features;
+  size_t features_size = batch_size * features_stride;
+
+  // Allocate buffers for the resulting batch data.
+  std::vector<float> features(features_size, 0.f);
+  std::vector<float> labels;
+  std::vector<float> weights;
+  if (data_.has_target) {
+    size_t labels_size = batch_size * num_predictions_per_chunk_;
+    labels.resize(labels_size, 0.f);
+    weights.resize(labels_size, 0.f);
+  }
+
+  // Iterate through SFrame rows until filling the batch or reaching the end of
+  // the data.
+  size_t batch_idx = 0;
+  float* features_out = features.data();
+  float* labels_out = labels.data();
+  float* weights_out = weights.data();
+  while (batch_idx < batch_size && next_row_ != range_iterator_.end()) {
+
+    const sframe_rows::row& row = *next_row_;
+
+    // Copy the feature values (converting from double to float).
+    const flex_vec& feature_vec =
+        row[data_.features_column_index].get<flex_vec>();
+    ASSERT_EQ(feature_vec.size(), features_stride);
+    features_out = std::copy(feature_vec.begin(), feature_vec.end(),
+                             features_out);
+
+    if (data_.has_target) {
+
+      // Also copy the labels and weights.
+      const flex_vec& target_vec =
+          row[data_.labels_column_index].get<flex_vec>();
+      const flex_vec& weight_vec =
+          row[data_.weights_column_index].get<flex_vec>();
+      labels_out = std::copy(target_vec.begin(), target_vec.end(), labels_out);
+      weights_out = std::copy(weight_vec.begin(), weight_vec.end(),
+                              weights_out);
+    }
+
+    ++batch_idx;
+    ++next_row_;
+  }
+
+  // Wrap the buffers as float_array values.
+  batch result;
+  result.features = shared_float_array::wrap(
+      std::move(features),
+      { batch_size, 1, num_samples_per_chunk, num_features });
+  if (data_.has_target) {
+    result.labels = shared_float_array::wrap(
+        std::move(labels), { batch_size, 1, num_predictions_per_chunk_, 1 });
+    result.weights = shared_float_array::wrap(
+        std::move(weights), { batch_size, 1, num_predictions_per_chunk_, 1 });
+  }
+  result.size = batch_idx;
+
+  return result;
+}
+
+void simple_data_iterator::reset() {
+
+  range_iterator_ = data_.chunks.range_iterator();
+  next_row_ = range_iterator_.begin();
 }
 
 }  //activity_classification

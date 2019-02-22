@@ -8,8 +8,8 @@
 
 #include <unity/lib/toolkit_class_macros.hpp>
 #include <unity/lib/toolkit_function_macros.hpp>
+#include <unity/toolkits/activity_classification/ac_data_iterator.hpp>
 #include <unity/toolkits/activity_classification/activity_classifier.hpp>
-#include <unity/toolkits/activity_classification/sequence_iterator.hpp>
 
 namespace turi {
 namespace activity_classification {
