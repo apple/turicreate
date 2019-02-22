@@ -33,6 +33,8 @@ print_help() {
   echo
   echo "  --debug                  Use debug build instead of release."
   echo
+  echo "  --docker                 Use docker to build in Ubuntu 10.04 with GCC 4.8."
+  echo
   echo "  --num_procs=n            Specify the number of proceses to run in parallel."
   echo
   echo "  --target-dir=[dir]       The directory where the wheel and associated files are put."
@@ -56,6 +58,7 @@ while [ $# -gt 0 ]
     --skip_doc)             SKIP_DOC=1;;
     --release)              build_type="release";;
     --debug)                build_type="debug";;
+    --docker)               USE_DOCKER=1;;
     --help)                 print_help ;;
     *) unknown_option $1 ;;
   esac
@@ -64,6 +67,14 @@ done
 
 
 set -x
+
+# If running in Docker, send this command into Docker and bail out of here.
+if [[ -n "${USE_DOCKER}" ]]; then
+  # TODO plumb through parameters
+  # For now, just do default
+  docker build $SCRIPT_DIR -t turicreate-temporary-build-image
+  docker run --rm -v $WORKSPACE:/build -it turicreate-temporary-build-image /build/scripts/make_wheel.sh
+fi
 
 if [[ -z "${BUILD_NUMBER}" ]]; then
   BUILD_NUMBER="0"
@@ -312,7 +323,7 @@ set_git_SHA() {
   if [ $? -ne 0 ]; then
     GIT_SHA = "NA"
   fi
-  
+
   cd ${WORKSPACE}/${build_type}/src/unity/python/
   sed -i -e "s/'.*'#{{GIT_SHA}}/'${GIT_SHA}'#{{GIT_SHA}}/g" turicreate/version_info.py
 }
