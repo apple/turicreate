@@ -155,7 +155,7 @@ class SupervisedLearningModel(Model):
 
         _raise_error_if_not_sframe(dataset, "dataset")
         results = self.__proxy__.evaluate(
-            dataset, missing_value_action, metric, with_predictions);
+            dataset, missing_value_action, metric, with_predictions=with_predictions);
         return results
         
     def _training_stats(self):

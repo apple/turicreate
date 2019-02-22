@@ -180,7 +180,11 @@ template<typename T, typename U> struct std_pair_hash {
   }
 };
 
+#pragma push_macro("check")
+#undef check
 int64_t check(const char* desc, int64_t ret);
+#pragma pop_macro("check")
+
 void* check_ptr(const char* desc, void* ptr);
 
 #endif
