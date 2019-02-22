@@ -291,4 +291,21 @@ void unescape_string(std::string& cal, bool use_escape_char, char escape_char,
   cal.resize(new_length);
 }
 
+/**
+ * Unescapes a string inplace
+ */
+void unescape_string(std::string& cal, char escape_char,
+                     char quote_char, bool double_quote) {
+
+  unescape_string(cal, true, escape_char, quote_char, double_quote);
+}
+
+size_t unescape_string(char* cal,
+                       size_t length, char escape_char,
+                       char quote_char, bool double_quote) {
+
+  return unescape_string(cal, length, true, escape_char, quote_char, double_quote);
+}
+
+
 }

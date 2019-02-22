@@ -1010,7 +1010,6 @@ void supervised_learning_model_base::api_train(
 
   gl_sframe validation_data;
   std::tie(data, validation_data) = create_validation_data(data, _validation_data);
-  add_or_update_state({{"validation_data", validation_data}});
 
   gl_sframe f_data = data;
   f_data.remove_column(target);
@@ -1027,6 +1026,7 @@ void supervised_learning_model_base::api_train(
         log_and_throw("Empty feature set has been specified");
       }
       f_data = f_data.select_columns(ftv);
+
       options.erase(ft_it);
     }
   }
@@ -1043,14 +1043,20 @@ void supervised_learning_model_base::api_train(
 
   if(validation_data.num_columns() != 0) {
 
-    gl_sframe f_v_data = validation_data;
-    f_v_data.remove_column(target);
-    valid_X = f_v_data.materialize_to_sframe(); 
+    valid_X = validation_data.select_columns(f_data.column_names()).materialize_to_sframe();
     
     valid_y = validation_data.select_columns({target}).materialize_to_sframe();
+
     
     check_target_column_type(this->name(), valid_y);
+
+    auto valid_filter_names = f_data.column_names();
+    valid_filter_names.push_back(target);
+    validation_data = validation_data.select_columns(valid_filter_names);
   }
+
+  // Add it to the state, even if it's empty.  
+  add_or_update_state({{"validation_data", validation_data}});
 
   this->init(X, y, valid_X, valid_y, missing_value_action);
 
@@ -1158,7 +1164,9 @@ gl_sframe supervised_learning_model_base::api_classify(
  *  Evaluate the model
  */
 variant_map_type supervised_learning_model_base::api_evaluate(
-    gl_sframe data, std::string missing_value_action_str, std::string metric, bool with_prediction) {
+    gl_sframe data, std::string missing_value_action_str, std::string metric,
+    gl_sarray predictions, bool with_prediction) {
+
   auto model = std::dynamic_pointer_cast<supervised_learning_model_base>(
       shared_from_this());
   ml_missing_value_action missing_value_action =
@@ -1180,14 +1188,18 @@ variant_map_type supervised_learning_model_base::api_evaluate(
       gl_sframe out;
 
       out["class"] = data[variant_get_ref<flexible_type>(state.at("target")).get<flex_string>()];
-      out["predicted_class"] = api_predict(data, missing_value_action_str, "class");
+      if(predictions.empty()) {
+        out[pred_column] = api_predict(data, missing_value_action_str, "class");
+      } else {
+        out[pred_column] = predictions;
+      }
 
       variant_map_type ret = evaluate(m_data, "auto", with_prediction);
 
       ret["confusion_matrix"] = confusion_matrix(out, target, pred_column);
       ret["report_by_class"] = classifier_report_by_class(out, target, pred_column);
       ret["accuracy"] =
-          double((out["class"] == out["predicted_class"]).sum()) / out.size();
+          double((out["class"] == out[pred_column]).sum()) / out.size();
 
       return ret;
 

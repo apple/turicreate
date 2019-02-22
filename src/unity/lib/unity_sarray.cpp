@@ -279,7 +279,7 @@ void unity_sarray::construct_from_json_record_files(std::string url) {
             }
 
             logstream(LOG_PROGRESS)
-                << "Successfully parsed an SArray of " << num_elems_parsed
+                << "Successfully parsed " << num_elems_parsed
                 << " elements from the JSON file " << sanitize_url(p.first);
 
             if (has_non_dict_elements) {

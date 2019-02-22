@@ -12,15 +12,15 @@ class TCEvaluation extends Component {
       "precision_visible": false,
       "f1_score_visible": false,
       "recall_visible": false,
-      "sort_by": "class",
-      "sort_direction": false,
+      "sort_by": "accuracy",
+      "sort_direction": true,
       "incorrect_classification": this.props.spec.label_metrics.reduce(function(map, data) {
         map[data.label] = null;
         return map;
       }, {}),
       "correct_classification":[],
       "filter_confusion":null,
-      "sort_by_confusions": "predicted",
+      "sort_by_confusions": "count",
       "sort_direction_confusions": false,
       "selected_actual_confusion": null,
       "selected_actual_prediction": null,
@@ -98,6 +98,12 @@ class TCEvaluation extends Component {
   updateFooterOpen = () => {
     this.setState({
       footer_open:!this.state.footer_open
+    });
+  }
+
+  setFooterOpen = () => {
+    this.setState({
+      footer_open:true
     });
   }
 
@@ -183,6 +189,10 @@ class TCEvaluation extends Component {
   }
 
   updatedSelectedRow = (value) =>{
+    if(value !== null){
+      this.setFooterOpen();
+    }
+
     this.setState({"filter_confusion": value})
   }
 
