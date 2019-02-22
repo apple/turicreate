@@ -73,6 +73,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
   # TODO plumb through parameters
   # For now, just do default
   docker build $SCRIPT_DIR -t turicreate-temporary-build-image
+  # TODO ccache persistence in turicreate/.docker-ccache
   docker run --rm -v $WORKSPACE:/build -it turicreate-temporary-build-image /build/scripts/make_wheel.sh
 fi
 
