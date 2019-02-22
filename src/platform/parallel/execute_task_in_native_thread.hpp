@@ -6,9 +6,6 @@
 #ifndef TURI_PARALLEL_EXECUTE_TASK_IN_NATIVE_THREAD_HPP
 #define TURI_PARALLEL_EXECUTE_TASK_IN_NATIVE_THREAD_HPP
 #include <functional>
-#include <boost/mpl/vector.hpp>
-#include <boost/fusion/functional/invocation/invoke.hpp>
-#include <boost/fusion/include/make_vector.hpp>
 
 namespace turi {
 
