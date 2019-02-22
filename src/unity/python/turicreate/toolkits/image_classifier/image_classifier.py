@@ -21,7 +21,6 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate import config as _tc_config
 from .._internal_utils import _mac_ver
-from .. import _mxnet_utils
 from .. import _pre_trained_models
 from .. import _image_feature_extractor
 from ._evaluation import Evaluation as _Evaluation

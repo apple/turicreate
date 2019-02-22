@@ -31,7 +31,6 @@ from coremltools.proto import FeatureTypes_pb2 as _FeatureTypes_pb2
 from coremltools.models import MLModel as _MLModel
 
 import json as _json
-import mxnet as _mxnet
 import numpy as _np
 
 _MXNET_LAYER_REGISTRY  = {
@@ -60,7 +59,7 @@ _MXNET_LAYER_REGISTRY  = {
     'InstanceNorm'   : _layers.convert_instancenorm,
     'Embedding'      : _layers.convert_embedding,
     '_plus_scalar'   : _layers.convert_scalar_add,
-    '_ones'          : _layers.convert_skip, 
+    '_ones'          : _layers.convert_skip,
     '_zeros'         : _layers.convert_skip,
     'UpSampling'     : _layers.convert_upsample,
 }
@@ -79,6 +78,7 @@ def check_error(model, path, shapes, output = 'softmax_output', verbose = True):
     """
     Check the difference between predictions from MXNet and CoreML.
     """
+    import mxnet as _mxnet
     coreml_model = _coremltools.models.MLModel(path)
     input_data = {}
     input_data_copy = {}
@@ -189,7 +189,7 @@ def convert(model, input_shape, class_labels=None, mode=None,
         shape_dict[op] = shapes[1][idx]
     for idx, op in enumerate(aux_names):
         shape_dict[op] = shapes[2][idx]
-    
+
     # Get the inputs and outputs
     output_dims = shapes[1]
     if mode is None:

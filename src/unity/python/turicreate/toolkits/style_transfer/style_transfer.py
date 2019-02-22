@@ -12,7 +12,6 @@ from datetime import datetime as _datetime
 import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits import _coreml_utils
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe, _mac_ver
-from .. import _mxnet_utils
 from ._utils import _seconds_as_string
 from .. import _pre_trained_models
 from turicreate.toolkits._model import CustomModel as _CustomModel
@@ -114,6 +113,7 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     from ._sframe_loader import SFrameSTIter as _SFrameSTIter
     import mxnet as _mx
+    from .._mxnet import _mxnet_utils
 
     if style_feature is None:
         style_feature = _tkutl._find_only_image_column(style_dataset)
@@ -426,6 +426,7 @@ class StyleTransfer(_CustomModel):
         return "style_transfer"
 
     def _get_native_state(self):
+        from .._mxnet import _mxnet_utils
         state = self.__proxy__.get_state()
         mxnet_params = state['_model'].collect_params()
         state['_model'] = _mxnet_utils.get_gluon_net_params_state(mxnet_params)
@@ -437,6 +438,8 @@ class StyleTransfer(_CustomModel):
     @classmethod
     def _load_version(cls, state, version):
         from ._model import Transformer as _Transformer
+        from .._mxnet import _mxnet_utils
+
         _tkutl._model_version_check(version, cls._PYTHON_STYLE_TRANSFER_VERSION)
 
         net = _Transformer(state['num_styles'], state['batch_size'])
@@ -628,6 +631,8 @@ class StyleTransfer(_CustomModel):
         from ._sframe_loader import SFrameSTIter as _SFrameSTIter
         import mxnet as _mx
         from mxnet import gluon as _gluon
+        from .._mxnet import _mxnet_utils
+
         set_of_all_idx = self._style_indices()
         style, single_style = self._style_input_check(style)
 

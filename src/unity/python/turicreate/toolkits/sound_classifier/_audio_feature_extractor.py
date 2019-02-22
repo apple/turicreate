@@ -1,7 +1,7 @@
 import time as _time
 
 from coremltools.models import MLModel
-import mxnet as mx
+from ...mx import mxnet_wrapper as mx
 from mxnet.gluon import nn, utils
 import numpy as _np
 import turicreate as _tc

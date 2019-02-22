@@ -26,7 +26,6 @@ from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits._internal_utils import (_raise_error_if_not_sframe,
                                                  _numeric_param_check_range)
 from turicreate import config as _tc_config
-from .. import _mxnet_utils
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from .. import _pre_trained_models
 from ._evaluation import average_precision as _average_precision
@@ -182,6 +181,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     from ._sframe_loader import SFrameDetectionIter as _SFrameDetectionIter
     from ._manual_scheduler import ManualScheduler as _ManualScheduler
     import mxnet as _mx
+    from .._mxnet import _mxnet_utils
+
     if len(dataset) == 0:
         raise _ToolkitError('Unable to train on empty dataset')
 
@@ -639,6 +640,7 @@ class ObjectDetector(_CustomModel):
         return "object_detector"
 
     def _get_native_state(self):
+        from .._mxnet import _mxnet_utils
         state = self.__proxy__.get_state()
         mxnet_params = state['_model'].collect_params()
         state['_model'] = _mxnet_utils.get_gluon_net_params_state(mxnet_params)
@@ -651,6 +653,7 @@ class ObjectDetector(_CustomModel):
     def _load_version(cls, state, version):
         _tkutl._model_version_check(version, cls._PYTHON_OBJECT_DETECTOR_VERSION)
         from ._model import tiny_darknet as _tiny_darknet
+        from .._mxnet import _mxnet_utils
 
         num_anchors = len(state['anchors'])
         num_classes = state['num_classes']
@@ -741,6 +744,8 @@ class ObjectDetector(_CustomModel):
         from ._detection import (yolo_map_to_bounding_boxes as _yolo_map_to_bounding_boxes,
                                  non_maximum_suppression as _non_maximum_suppression,
                                  bbox_to_ybox as _bbox_to_ybox)
+
+        from .._mxnet import _mxnet_utils
         import mxnet as _mx
         loader = _SFrameDetectionIter(dataset,
                                       batch_size=self.batch_size,
@@ -1191,7 +1196,7 @@ class ObjectDetector(_CustomModel):
         >>> model.export_coreml('detector.mlmodel')
         """
         import mxnet as _mx
-        from .._mxnet_to_coreml import _mxnet_converter
+        from .._mxnet._mxnet_to_coreml import _mxnet_converter
         import coremltools
         from coremltools.models import datatypes, neural_network
 

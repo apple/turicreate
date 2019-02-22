@@ -11,7 +11,7 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 from math import ceil as _ceil
 import time as _time
-import mxnet as _mx
+from .._mxnet import mxnet as _mx
 import numpy as _np
 
 from turicreate import extensions as _extensions

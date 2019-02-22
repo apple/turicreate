@@ -4,7 +4,7 @@
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 
-import mxnet as _mx
+from .._mxnet import mxnet as _mx
 from mxnet.gluon import nn as _nn
 from mxnet.gluon import HybridBlock as _HybridBlock
 

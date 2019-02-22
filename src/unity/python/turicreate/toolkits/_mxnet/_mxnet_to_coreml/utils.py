@@ -23,7 +23,7 @@ from __future__ import absolute_import as _
 # specific language governing permissions and limitations
 # under the License.
 
-import mxnet as mx
+from ...mx import mxnet_wrapper as mx
 
 
 def load_model(model_name, epoch_num, data_shapes, label_shapes, label_names, gpus=''):
@@ -123,4 +123,3 @@ def create_module(sym, data_shapes, label_shapes, label_names, gpus=''):
         label_shapes=label_shapes
     )
     return mod
-

@@ -12,7 +12,6 @@ from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits import evaluation as _evaluation
 import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
-from .. import _mxnet_utils
 from turicreate import extensions as _extensions
 from .. import _pre_trained_models
 
@@ -130,6 +129,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     from mxnet import autograd as _autograd
     from ._model_architecture import Model as _Model
     from ._sframe_loader import SFrameClassifierIter as _SFrameClassifierIter
+    from .._mxnet import _mxnet_utils
     
     start_time = _time.time()
 
@@ -334,6 +334,7 @@ class DrawingClassifier(_CustomModel):
         return "drawing_classifier"
 
     def _get_native_state(self):
+        from .._mxnet import _mxnet_utils
         state = self.__proxy__.get_state()
         mxnet_params = state['_model'].collect_params()
         state['_model'] = _mxnet_utils.get_gluon_net_params_state(mxnet_params)
@@ -347,6 +348,7 @@ class DrawingClassifier(_CustomModel):
         _tkutl._model_version_check(version, 
             cls._PYTHON_DRAWING_CLASSIFIER_VERSION)
         from ._model_architecture import Model as _Model
+        from .._mxnet import _mxnet_utils
         net = _Model(num_classes = len(state['classes']), prefix = 'drawing_')
         ctx = _mxnet_utils.get_mxnet_context(max_devices=state['batch_size'])
         net_params = net.collect_params()
@@ -521,6 +523,7 @@ class DrawingClassifier(_CustomModel):
         that the model predicted for the data provided to the function.
         """
 
+        from .._mxnet import _mxnet_utils
         import mxnet as _mx
         from ._sframe_loader import SFrameClassifierIter as _SFrameClassifierIter
 
