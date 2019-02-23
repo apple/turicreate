@@ -87,6 +87,7 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
     if verbose:
         print("Extracting deep features")
     deep_features = feature_extractor.extract_features(preprocessed_data)
+    del preprocessed_data
 
     if batch_size > len(deep_features):
         batch_size = len(deep_features)
@@ -580,6 +581,7 @@ class SoundClassifier(_CustomModel):
 
         preprocessed_data, example_id = self._feature_extractor.preprocess_data(dataset, range(len(dataset)))
         deep_features = self._feature_extractor.extract_features(preprocessed_data)
+        del preprocessed_data
 
         if batch_size > len(deep_features):
             batch_size = len(deep_features)
