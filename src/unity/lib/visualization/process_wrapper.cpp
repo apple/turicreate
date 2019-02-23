@@ -50,7 +50,7 @@ process_wrapper::process_wrapper(const std::string& path_to_client) : m_alive(tr
           if (!msg.empty()) {
             m_inputBuffer.write(msg);
           }
-          ss = std::stringstream(); // clear the stream
+          ss.str(std::string()); // clear the stream
         } else {
           ss << c;
         }
