@@ -102,6 +102,17 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
 
     trainer = _mx.gluon.Trainer(custom_NN.collect_params(), 'nag', {'learning_rate': 0.01, 'momentum': 0.9})
 
+    if verbose:
+        # Setup progress table
+        column_names = ['Epoch', 'Accuracy (%)', 'Elapsed Time (seconds)']
+        num_columns = len(column_names)
+        column_width = max(map(lambda x: len(x), column_names)) + 2
+        hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
+        # Print progress table header
+        print(hr)
+        print(('| {:<{width}}' * num_columns + '|').format(*column_names, width=column_width-1))
+        print(hr)
+
     metric = _mx.metric.Accuracy()
     softmax_cross_entropy_loss = _mx.gluon.loss.SoftmaxCrossEntropyLoss()
     for i in range(max_iterations):
@@ -129,7 +140,11 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
 
         metric_name, accuracy = metric.get()
         if verbose:
-            print("Epoch #{} - {} = {}".format(i, metric_name, accuracy))
+            # Print progress row
+            print("| {epoch:<{width}}| {accuracy:<{width}.3f}| {time:<{width}.1f}|".format(
+                epoch=i, accuracy=accuracy, time=_time.time()-start_time,
+                width=column_width-1))
+            print(hr)
 
         train_data.reset()
         metric.reset()
