@@ -28,7 +28,7 @@ RUN apt-get update
 RUN apt-get -y upgrade
 
 # Install dependencies
-RUN apt-get -y install vim-common gcc-4.8 g++-4.8 libgif-dev libx11-dev ccache make zlib1g-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev perl-modules patch
+RUN apt-get -y install vim-common gcc-4.8 g++-4.8 libgif-dev libx11-dev ccache make zlib1g-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev perl-modules patch rsync
 
 # Install cmake from binary release
 ADD https://cmake.org/files/v3.13/cmake-3.13.4-Linux-x86_64.tar.gz /opt/cmake-3.13.4-Linux-x86_64.tar.gz
