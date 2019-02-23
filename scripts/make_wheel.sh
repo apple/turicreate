@@ -49,7 +49,6 @@ print_help() {
 while [ $# -gt 0 ]
   do case $1 in
     --build_number=*)       BUILD_NUMBER=${1##--build_number=} ;;
-    --toolchain=*)          toolchain=${1##--toolchain=} ;;
     --target-dir=*)         TARGET_DIR=${1##--target-dir=} ;;
     --num_procs=*)          NUM_PROCS=${1##--num_procs=} ;;
     --skip_test)            SKIP_TEST=1;;
@@ -68,15 +67,6 @@ done
 
 set -x
 
-# If running in Docker, send this command into Docker and bail out of here.
-if [[ -n "${USE_DOCKER}" ]]; then
-  # TODO plumb through parameters
-  # For now, just do default
-  docker build $SCRIPT_DIR -t turicreate-temporary-build-image
-  docker run --rm --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated -it turicreate-temporary-build-image /build/scripts/make_wheel.sh
-  exit 0
-fi
-
 if [[ -z "${BUILD_NUMBER}" ]]; then
   BUILD_NUMBER="0"
 fi
@@ -87,6 +77,37 @@ fi
 
 if [[ -z "${TARGET_DIR}" ]]; then
   TARGET_DIR=${WORKSPACE}/target
+fi
+
+# If running in Docker, send this command into Docker and bail out of here.
+if [[ -n "${USE_DOCKER}" ]]; then
+  # TODO plumb through parameters
+  # For now, just do default
+  docker build $SCRIPT_DIR -t turicreate-temporary-build-image
+
+  make_wheel_args="--build_number=$BUILD_NUMBER --num_procs=$NUM_PROCS"
+  if [[ -n $SKIP_BUILD ]]; then
+    make_wheel_args="$make_wheel_args --skip_build"
+  fi
+  if [[ -n $SKIP_TEST ]]; then
+    make_wheel_args="$make_wheel_args --skip_test"
+  fi
+  if [[ -n $SKIP_CPP_TEST ]]; then
+    make_wheel_args="$make_wheel_args --skip_cpp_test"
+  fi
+  if [[ -z $SKIP_DOC ]]; then
+    make_wheel_args="$make_wheel_args --skip_doc"
+  fi
+  if [[ "$build_type" == "debug" ]]; then
+    make_wheel_args="$make_wheel_args --debug"
+  fi
+
+  docker run --rm \
+    --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
+    -it turicreate-temporary-build-image \
+    /build/scripts/make_wheel.sh \
+    $make_wheel_args
+  exit 0
 fi
 
 mkdir -p ${TARGET_DIR}
