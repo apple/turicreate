@@ -21,7 +21,7 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 
 def load_audio(path, with_path=True, recursive=True, ignore_failure=True, random_order=False):
     """
-    Loads WAV file(s) from a path. 
+    Loads WAV file(s) from a path.
 
     Parameters
     ----------
@@ -46,9 +46,13 @@ def load_audio(path, with_path=True, recursive=True, ignore_failure=True, random
     -------
     out : SFrame
         Returns an SFrame with either an 'audio' column or both an 'audio' and
-        a 'path' column. The 'audio' column is a column of dictionary. Each 
-        dictionary contains two items. One items will be the sample rate with 
-        int value type. Second item will be the data as a numpy array.
+        a 'path' column. The 'audio' column is a column of dictionaries.
+
+        Each dictionary contains two items. One item is the sample rate, in
+        samples per second (int type). The other item will be the data in a numpy
+        array. If the wav file has a single channel, the array will have a single
+        dimension. If there are multiple channels, the array will have shape
+        (L,C) where L is the number of samples and C is the number of channels.
 
     Examples
     --------
@@ -69,7 +73,7 @@ def load_audio(path, with_path=True, recursive=True, ignore_failure=True, random
 
     if random_order:
         _shuffle(all_wav_files)
-        
+
     audio, read_wav_files = [], []
     for cur_file_path in all_wav_files:
         try:
@@ -80,7 +84,7 @@ def load_audio(path, with_path=True, recursive=True, ignore_failure=True, random
                 raise _ToolkitError(error_string)
             print(error_string)
             continue
-            
+
         audio.append({'sample rate': sample_rate, 'data': data})
         read_wav_files.append(cur_file_path)
 
