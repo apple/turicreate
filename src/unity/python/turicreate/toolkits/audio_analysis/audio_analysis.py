@@ -74,7 +74,7 @@ def load_audio(path, with_path=True, recursive=True, ignore_failure=True, random
     if random_order:
         _shuffle(all_wav_files)
 
-    audio, read_wav_files = [], []
+    result_builder = _tc.SFrameBuilder(column_types=[dict, str], column_names=['audio', 'path'])
     for cur_file_path in all_wav_files:
         try:
             sample_rate, data = _wavfile.read(cur_file_path)
@@ -82,14 +82,13 @@ def load_audio(path, with_path=True, recursive=True, ignore_failure=True, random
             error_string = "Could not read {}: {}".format(cur_file_path, e)
             if not ignore_failure:
                 raise _ToolkitError(error_string)
-            print(error_string)
-            continue
+            else:
+                print(error_string)
+                continue
 
-        audio.append({'sample_rate': sample_rate, 'data': data})
-        read_wav_files.append(cur_file_path)
+        result_builder.append([{'sample_rate': sample_rate, 'data': data}, cur_file_path])
 
-    result = {'audio': audio}
-    if with_path:
-        result['path'] = read_wav_files
-
-    return _tc.SFrame(result)
+    result = result_builder.close()
+    if not with_path:
+        del result['path']
+    return result
