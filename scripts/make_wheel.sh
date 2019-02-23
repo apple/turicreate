@@ -73,7 +73,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
   # TODO plumb through parameters
   # For now, just do default
   docker build $SCRIPT_DIR -t turicreate-temporary-build-image
-  docker run --rm --mount type=bind,source=$WORKSPACE,target=/build -it turicreate-temporary-build-image /build/scripts/make_wheel.sh
+  docker run --rm --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated -it turicreate-temporary-build-image /build/scripts/make_wheel.sh
   exit 0
 fi
 
