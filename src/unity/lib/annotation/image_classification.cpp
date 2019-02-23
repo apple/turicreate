@@ -18,7 +18,7 @@ annotate_spec::Data ImageClassification::getItems(size_t start, size_t end) {
   std::shared_ptr<unity_sarray> filtered_data =
       this->_filterDataSFrame(start, end);
 
-  assert(filtered_data->dtype() == flex_type_enum::IMAGE);
+  DASSERT_EQ(filtered_data->dtype(), flex_type_enum::IMAGE);
 
   std::vector<flexible_type> flex_data = filtered_data->to_vector();
 
@@ -52,8 +52,8 @@ annotate_spec::Annotations ImageClassification::getAnnotations(size_t start,
   std::shared_ptr<unity_sarray> filtered_data =
       this->_filterAnnotationSFrame(start, end);
 
-  assert((filtered_data->dtype() == flex_type_enum::STRING) ||
-         (filtered_data->dtype() == flex_type_enum::INTEGER));
+  DASSERT_TRUE((filtered_data->dtype() == flex_type_enum::STRING) ||
+               (filtered_data->dtype() == flex_type_enum::INTEGER));
 
   std::vector<flexible_type> flex_data = filtered_data->to_vector();
 
@@ -134,9 +134,7 @@ void ImageClassification::_addAnnotationToSFrame(size_t index,
                                                  std::string label) {
   /* Assert that the column type is indeed of type flex_enum::STRING */
   size_t annotation_column_index = m_data->column_index(m_annotation_column);
-  flex_type_enum annotation_column_dtype =
-      m_data->dtype().at(annotation_column_index);
-  assert(annotation_column_dtype == flex_type_enum::STRING);
+  DASSERT_EQ(m_data->dtype().at(annotation_column_index), flex_type_enum::STRING);
 
   std::shared_ptr<unity_sarray> data_sarray =
       std::static_pointer_cast<unity_sarray>(
@@ -166,7 +164,7 @@ void ImageClassification::_addAnnotationToSFrame(size_t index,
   }
 
   /* Assert that the sarray we just created and the sframe are the same size. */
-  assert(place_holder->size() == m_data->size());
+  DASSERT_EQ(place_holder->size(), m_data->size());
 
   m_data->add_column(place_holder, m_annotation_column);
 }
@@ -174,9 +172,7 @@ void ImageClassification::_addAnnotationToSFrame(size_t index,
 void ImageClassification::_addAnnotationToSFrame(size_t index, int label) {
   /* Assert that the column type is indeed of type flex_enum::INTEGER */
   size_t annotation_column_index = m_data->column_index(m_annotation_column);
-  flex_type_enum annotation_column_dtype =
-      m_data->dtype().at(annotation_column_index);
-  assert(annotation_column_dtype == flex_type_enum::INTEGER);
+  DASSERT_EQ(m_data->dtype().at(annotation_column_index), flex_type_enum::INTEGER);
 
   std::shared_ptr<unity_sarray> data_sarray =
       std::static_pointer_cast<unity_sarray>(
@@ -206,7 +202,7 @@ void ImageClassification::_addAnnotationToSFrame(size_t index, int label) {
   }
 
   /* Assert that the sarray we just created and the sframe are the same size. */
-  assert(place_holder->size() == m_data->size());
+  DASSERT_EQ(place_holder->size(), m_data->size());
 
   m_data->add_column(place_holder, m_annotation_column);
 }
@@ -228,8 +224,8 @@ annotate_spec::MetaData ImageClassification::metaData() {
 
   flex_type_enum array_type = unity_sa->dtype();
 
-  assert(array_type == flex_type_enum::STRING ||
-         array_type == flex_type_enum::INTEGER);
+  DASSERT_TRUE(array_type == flex_type_enum::STRING ||
+               array_type == flex_type_enum::INTEGER);
 
   if (array_type == flex_type_enum::STRING) {
     annotate_spec::MetaString strings = image_classification_meta.strings();
