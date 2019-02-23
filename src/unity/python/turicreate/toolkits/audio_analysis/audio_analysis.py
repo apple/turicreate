@@ -85,7 +85,7 @@ def load_audio(path, with_path=True, recursive=True, ignore_failure=True, random
             print(error_string)
             continue
 
-        audio.append({'sample rate': sample_rate, 'data': data})
+        audio.append({'sample_rate': sample_rate, 'data': data})
         read_wav_files.append(cur_file_path)
 
     result = {'audio': audio}

@@ -39,7 +39,7 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
     feature : string, optional
         Name of the column containing the feature column. This column must
         contain audio data (represented as dicts with key 'data' and
-        'sample rate').
+        'sample_rate').
 
     max_iterations : int, optional
         The maximum number of allowed passes through the data. More passes over
@@ -64,7 +64,7 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
         raise _ToolkitError('Unable to train on empty dataset')
     if feature not in dataset.column_names():
         raise _ToolkitError("Audio feature column '%s' does not exist" % feature)
-    if (dataset[feature].dtype != dict) or (set(dataset[feature][0].keys()) != {'sample rate', 'data'}):
+    if (dataset[feature].dtype != dict) or (set(dataset[feature][0].keys()) != {'sample_rate', 'data'}):
         raise _ToolkitError("'%s' column is not audio data." % feature)
     if target not in dataset.column_names():
         raise _ToolkitError("Target column '%s' does not exist" % target)
@@ -548,7 +548,7 @@ class SoundClassifier(_CustomModel):
         if not isinstance(dataset, (_tc.SFrame, _tc.SArray, dict)):
             raise TypeError('\'dataset\' parameter must be either an SFrame, SArray or dictionary')
         if isinstance(dataset, dict):
-            if(set(dataset.keys()) != {'sample rate', 'data'}):
+            if(set(dataset.keys()) != {'sample_rate', 'data'}):
                 raise ValueError('\'dataset\' parameter is a dictionary but does not appear to be audio data.')
             dataset = _tc.SArray([dataset])
         elif isinstance(dataset, _tc.SFrame):

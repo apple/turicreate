@@ -92,7 +92,7 @@ class ReadAudioTest(unittest.TestCase):
 
             # Check the audio file
             audio1 = sf.filter_by([file1], 'path')['audio'][0]
-            self.assertEqual(audio1['sample rate'], self.sample_rate1)
+            self.assertEqual(audio1['sample_rate'], self.sample_rate1)
             self.assertTrue(all(audio1['data'] == self.noise1))
 
     def _assert_audio_sframe_correct(self, sf, file1, file2):
@@ -101,12 +101,12 @@ class ReadAudioTest(unittest.TestCase):
 
         # Check the first audio file
         audio1 = sf.filter_by([file1], 'path')['audio'][0]
-        self.assertEqual(audio1['sample rate'], self.sample_rate1)
+        self.assertEqual(audio1['sample_rate'], self.sample_rate1)
         self.assertTrue(all(audio1['data'] == self.noise1))
 
         # Check the second audio file
         audio2 = sf.filter_by([file2], 'path')['audio'][0]
-        self.assertEqual(audio2['sample rate'], self.sample_rate2)
+        self.assertEqual(audio2['sample_rate'], self.sample_rate2)
         self.assertTrue(all(audio2['data'] == self.noise2))
 
     def _write_audio_files_in_dir(self, dir_path):
@@ -125,7 +125,7 @@ def _generate_binary_test_data():
         scale = random.randint(80, 130)
         size = int(length * sample_rate)
         data = random.normal(loc=loc, scale=scale, size=size).astype('int16')
-        return {'sample rate': sample_rate, 'data': data}
+        return {'sample_rate': sample_rate, 'data': data}
 
     def generate_sine_wave(length, sample_rate):
         data = []
@@ -133,7 +133,7 @@ def _generate_binary_test_data():
         freq = random.randint(300, 800)
         for x in range(int(length * sample_rate)):
             data.append(volume * math.sin(2 * math.pi * freq * (x / float(sample_rate))))
-        return {'sample rate': sample_rate, 'data': np.asarray(data, dtype='int16')}
+        return {'sample_rate': sample_rate, 'data': np.asarray(data, dtype='int16')}
 
     white_noise = [generate_white_noise(3, 16000), generate_white_noise(5.1, 48000),
                    generate_white_noise(1, 16500)]
@@ -224,9 +224,9 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
             core_ml_model = coremltools.models.MLModel(file_name)
 
         for cur_audio in self.data['audio']:
-            cur_sample_rate = cur_audio['sample rate']
+            cur_sample_rate = cur_audio['sample_rate']
             first_sec_audio = cur_audio['data'][:cur_sample_rate]
-            x = [{'data': first_sec_audio, 'sample rate': cur_sample_rate}]
+            x = [{'data': first_sec_audio, 'sample_rate': cur_sample_rate}]
             preprocessed_audio, _ = self.model._feature_extractor.preprocess_data(x, [None])
 
             tc_prob_vector = self.model.predict(tc.SArray(x), output_type='probability_vector')[0]
@@ -291,7 +291,7 @@ class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabel
     def setUpClass(self):
         def generate_constant_noise(length, sample_rate):
             data = np.ones((int(length * sample_rate))).astype('int16')
-            return {'sample rate': sample_rate, 'data': data}
+            return {'sample_rate': sample_rate, 'data': data}
 
         constant_noise = [generate_constant_noise(2.5, 17000), generate_constant_noise(5, 17000),
                           generate_constant_noise(1, 17000)]

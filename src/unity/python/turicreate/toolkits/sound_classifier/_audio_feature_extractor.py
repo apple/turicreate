@@ -45,7 +45,7 @@ class VGGishFeatureExtractor(object):
         preprocessed_data, output_labels = [], []
         for i, audio_dict in enumerate(audio_data):
             scaled_data = audio_dict['data'] / 32768.0
-            data = waveform_to_examples(scaled_data, audio_dict['sample rate'])
+            data = waveform_to_examples(scaled_data, audio_dict['sample_rate'])
 
             for j in data:
                 preprocessed_data.append([j])
