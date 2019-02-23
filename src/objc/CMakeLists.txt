@@ -15,9 +15,6 @@ if(APPLE AND HAS_MLCUSTOMMODEL)
     DEAD_STRIP
   )
 
-  find_library(ACCELERATE NAMES Accelerate)
-  message("Accelerate found at ${ACCELERATE}.")
-
   make_library(AudioPreprocessing
     SOURCES
       AudioPreprocessing.m
