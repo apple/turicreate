@@ -14,6 +14,7 @@
 #include <vector>
 
 #include <unity/toolkits/neural_net/float_array.hpp>
+#include <unity/toolkits/neural_net/weight_init.hpp>
 
 // Forward declare CoreML::Specification::NeuralNetwork in lieu of including
 // problematic protocol buffer headers.
@@ -35,15 +36,6 @@ namespace neural_net {
  */
 class model_spec {
 public:
-
-  /**
-   * Callback type used to initialize an underlying WeightParams instance.
-   *
-   * The callback should write the desired values into the provided iterator
-   * range, which is initialized to 0.f.
-   */
-  using weight_initializer = std::function<void(float* first_weight,
-                                                float* last_weight)>;
 
   /** Parameter for convolution and pooling layers. */
   enum class padding_type {
@@ -305,28 +297,6 @@ public:
    */
   void add_channel_slice(const std::string& name, const std::string& input,
                          int start_index, int end_index, size_t stride);
-
-  /** Convenience struct to hold all the weight initializers required by LSTM */
-  struct lstm_weight_initializers {
-
-    // Initializers for matrices applied to sequence input
-    weight_initializer input_gate_weight_fn;
-    weight_initializer forget_gate_weight_fn;
-    weight_initializer block_input_weight_fn;
-    weight_initializer output_gate_weight_fn;
-
-    // Initializers for matrices applied to hidden state
-    weight_initializer input_gate_recursion_fn;
-    weight_initializer forget_gate_recursion_fn;
-    weight_initializer block_input_recursion_fn;
-    weight_initializer output_gate_recursion_fn;
-
-    // Initializers for bias
-    weight_initializer input_gate_bias_fn;
-    weight_initializer forget_gate_bias_fn;
-    weight_initializer block_input_bias_fn;
-    weight_initializer output_gate_bias_fn;
-  };
 
   /**
    * Appends an LSTM layer.

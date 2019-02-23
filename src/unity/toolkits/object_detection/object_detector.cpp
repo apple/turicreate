@@ -34,6 +34,7 @@ using turi::neural_net::labeled_image;
 using turi::neural_net::model_backend;
 using turi::neural_net::model_spec;
 using turi::neural_net::shared_float_array;
+using turi::neural_net::xavier_weight_initializer;
 
 using padding_type = model_spec::padding_type;
 
@@ -499,13 +500,7 @@ std::unique_ptr<model_spec> object_detector::init_model(
   // Append conv7, initialized using the Xavier method (with base magnitude 3).
   // The conv7 weights have shape [1024, 1024, 3, 3], so fan in and fan out are
   // both 1024*3*3.
-  static constexpr size_t CONV7_FAN_IN = 1024 * 3 * 3;
-  const float conv7_magnitude = std::sqrt(3.f / CONV7_FAN_IN);
-  auto conv7_init_fn = [conv7_magnitude](float* w, float* w_end) {
-    while (w != w_end) {
-      *w++ = random::fast_uniform(-conv7_magnitude, conv7_magnitude);
-    }
-  };
+  xavier_weight_initializer conv7_init_fn(1024*3*3, 1024*3*3);
   nn_spec->add_convolution(/* name */                "conv7_fwd",
                            /* input */               "leakyrelu6_fwd",
                            /* num_output_channels */ 1024,

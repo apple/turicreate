@@ -454,7 +454,7 @@ std::vector<char> load_file(const std::string& path) {
 }
 
 void init_weight_params(WeightParams* params, size_t size,
-                        const model_spec::weight_initializer& weight_init_fn) {
+                        const weight_initializer& weight_init_fn) {
 
   params->mutable_floatvalue()->Resize(static_cast<int>(size), 0.f);
   float* weights = params->mutable_floatvalue()->mutable_data();
