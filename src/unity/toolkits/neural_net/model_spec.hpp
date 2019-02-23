@@ -45,6 +45,12 @@ public:
   using weight_initializer = std::function<void(float* first_weight,
                                                 float* last_weight)>;
 
+  /** Parameter for convolution and pooling layers. */
+  enum class padding_type {
+    VALID,
+    SAME,
+  };
+
   /**
    * Creates an empty model_spec (with no layers).
    */
@@ -124,6 +130,14 @@ public:
   bool has_layer_output(const std::string& layer_name) const;
 
   /**
+   * Appends a ReLU activation layer.
+   *
+   * \param name The name of the layer and its output
+   * \param input The name of the layer's input
+   */
+  void add_relu(const std::string& name, const std::string& input);
+
+  /**
    * Appends a leaky ReLU activation layer.
    *
    * \param name The name of the layer and its output
@@ -155,9 +169,26 @@ public:
    */
   void add_convolution(const std::string& name, const std::string& input,
                        size_t num_output_channels, size_t num_kernel_channels,
-                       size_t kernel_size,
+                       size_t kernel_height, size_t kernel_width,
+                       size_t stride_h, size_t stride_w, padding_type padding,
                        weight_initializer weight_initializer_fn,
                        weight_initializer bias_initializer_fn = nullptr);
+
+  /**
+   * Appends an inner-product (dense, fully connected) layer.
+   *
+   * \param name The name of the layer and its output
+   * \param input The name of the layer's input
+   * \param num_output_channels Size of the output vector
+   * \param num_input_channels Size of the input vector
+   * \param weight_initializer_fn Callback used to initialize the weights
+   * \param bias_initializer_fn Callback used to initialize the bias. If
+   *            nullptr, then no bias vector is set.
+   */
+  void add_inner_product(const std::string& name, const std::string& input,
+                         size_t num_output_channels, size_t num_input_channels,
+                         weight_initializer weight_initializer_fn,
+                         weight_initializer bias_initializer_fn = nullptr);
 
   /**
    * Appends a batch norm layer.
@@ -274,6 +305,50 @@ public:
    */
   void add_channel_slice(const std::string& name, const std::string& input,
                          int start_index, int end_index, size_t stride);
+
+  /** Convenience struct to hold all the weight initializers required by LSTM */
+  struct lstm_weight_initializers {
+
+    // Initializers for matrices applied to sequence input
+    weight_initializer input_gate_weight_fn;
+    weight_initializer forget_gate_weight_fn;
+    weight_initializer block_input_weight_fn;
+    weight_initializer output_gate_weight_fn;
+
+    // Initializers for matrices applied to hidden state
+    weight_initializer input_gate_recursion_fn;
+    weight_initializer forget_gate_recursion_fn;
+    weight_initializer block_input_recursion_fn;
+    weight_initializer output_gate_recursion_fn;
+
+    // Initializers for bias
+    weight_initializer input_gate_bias_fn;
+    weight_initializer forget_gate_bias_fn;
+    weight_initializer block_input_bias_fn;
+    weight_initializer output_gate_bias_fn;
+  };
+
+  /**
+   * Appends an LSTM layer.
+   *
+   * \param name The name of the layer and its output
+   * \param input The name of the layer's input
+   * \param hidden_input The name of the initial hidden state
+   * \param cell_input The name of the initial cell state
+   * \param hidden_output The name of the resulting hidden state
+   * \param cell_output The name of the resulting cell state
+   * \param input_vector_size The size of the input vector
+   * \param output_vector_size The size of the output vector (hidden state and
+   *            cell state)
+   * \param cell_clip_threshold Maximum magnitude of cell state values
+   * \param initializers LSTM weights
+   */
+  void add_lstm(const std::string& name, const std::string& input,
+                const std::string& hidden_input, const std::string& cell_input,
+                const std::string& hidden_output,
+                const std::string& cell_output, size_t input_vector_size,
+                size_t output_vector_size, float cell_clip_threshold,
+                const lstm_weight_initializers& initializers);
 
   // TODO: Support additional layers (and further parameterize the above) as
   // needed. If/when we support the full range of NeuralNetworkLayer values,

@@ -52,7 +52,8 @@ BOOST_AUTO_TEST_CASE(test_object_detector_export_coreml_with_nms) {
     flex_list t_class_labels = flex_list(test_class_labels.begin(), test_class_labels.end());
     
     model_spec yolo_nn_spec;
-    yolo_nn_spec.add_convolution("test_layer", "image", 16, 16, 3,
+    yolo_nn_spec.add_convolution("test_layer", "image", 16, 16, 3, 3, 1, 1,
+                                 model_spec::padding_type::SAME,
                                  /* weight_init_fn */ [](float*w , float* w_end) {
                                      for (int i = 0; i < w_end - w; ++i) {
                                          w[i] = static_cast<float>(i);

@@ -35,6 +35,8 @@ using turi::neural_net::model_backend;
 using turi::neural_net::model_spec;
 using turi::neural_net::shared_float_array;
 
+using padding_type = model_spec::padding_type;
+
 namespace turi {
 namespace object_detection {
 
@@ -508,7 +510,11 @@ std::unique_ptr<model_spec> object_detector::init_model(
                            /* input */               "leakyrelu6_fwd",
                            /* num_output_channels */ 1024,
                            /* num_kernel_channels */ 1024,
-                           /* kernel_size */         3,
+                           /* kernel_height */       3,
+                           /* kernel_width */        3,
+                           /* stride_height */       1,
+                           /* stride_width */        1,
+                           /* padding */             padding_type::SAME,
                            /* weight_init_fn */      conv7_init_fn);
 
   // Append batchnorm7.
@@ -546,7 +552,11 @@ std::unique_ptr<model_spec> object_detector::init_model(
                            /* input */               "leakyrelu7_fwd",
                            /* num_output_channels */ conv8_c_out,
                            /* num_kernel_channels */ 1024,
-                           /* kernel_size */         1,
+                           /* kernel_height */       1,
+                           /* kernel_width */        1,
+                           /* stride_height */       1,
+                           /* stride_width */        1,
+                           /* padding */             padding_type::SAME,
                            /* weight_init_fn */      conv8_weight_init_fn,
                            /* bias_init_fn */        conv8_bias_init_fn);
 

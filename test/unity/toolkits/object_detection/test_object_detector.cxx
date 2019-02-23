@@ -407,7 +407,8 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
     TS_ASSERT_EQUALS(model_path, test_mlmodel_path);
 
     std::unique_ptr<model_spec> nn_spec(new model_spec);
-    nn_spec->add_convolution("test_layer", "test_input", 16, 16, 3,
+    nn_spec->add_convolution("test_layer", "test_input", 16, 16, 3, 3, 1, 1,
+                             model_spec::padding_type::SAME,
                              /* weight_init_fn */ [](float*w , float* w_end) {
                                for (int i = 0; i < w_end - w; ++i) {
                                  w[i] = static_cast<float>(i);
