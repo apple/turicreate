@@ -146,6 +146,7 @@ def _generate_binary_test_data():
     return data
 
 
+@unittest.skip('VGGish not currently available')     # TODO: Remove this
 class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
 
     @classmethod
