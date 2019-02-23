@@ -1,17 +1,18 @@
 # vim: set ft=dockerfile:
 
 # Based on Ubuntu 10.04 for compatibility with older glibc versions
-# And builds using GCC 4.8 for compatibility with older libstdc++ versions
+# Builds using GCC 4.8 for compatibility with older libstdc++ versions
 
 FROM ubuntu:10.04
 
 # Prevent apt-get from asking questions and expecting answers
 ENV DEBIAN_FRONTEND noninteractive
 
-# Set env variables for cmake/autoconf/automake to pick up
+# Set env variables for tools to pick up
 ENV CC="gcc-4.8"
 ENV CXX="g++-4.8"
 ENV PATH="/usr/local/bin:${PATH}"
+ENV CCACHE_DIR=/build/.docker_ccache
 
 # Fix path to new location for older Ubuntu releases
 RUN sed -i -e 's/archive\./old-releases\./g' /etc/apt/sources.list
@@ -66,3 +67,8 @@ RUN pip install virtualenv
 
 # Start at repo root (mounted into Docker)
 WORKDIR /build
+
+# Set ccache size to 4GB
+CMD mkdir -p $CCACHE_DIR
+CMD ccache -s
+CMD ccache -M 4G

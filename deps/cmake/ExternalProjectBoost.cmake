@@ -24,8 +24,12 @@ elseif(WIN32 AND ${MSYS_MAKEFILES})
   SET(ADD_BOOST_BOOTSTRAP --with-toolset=mingw)
   SET(ADD_BOOST_COMPILE_TOOLCHAIN toolset=gcc)
   SET(EXTRA_CONFIGURE_COMMANDS && perl -pi -e "s/mingw/gcc/g" ./project-config.jam)
+elseif(LINUX)
+  SET(cxxflags "-std=c++11 ${CPP_REAL_COMPILER_FLAGS}")
+  SET(ADD_BOOST_BOOTSTRAP --with-toolset=gcc)
+  SET(ADD_BOOST_COMPILE_TOOLCHAIN "toolset=gcc cxxflags=\"${cxxflags}\"")
 else()
-  SET(ADD_BOOST_BOOTSTRAP "")
+  set(ADD_BOOST_BOOTSTRAP "")
   SET(ADD_BOOST_COMPILE_TOOLCHAIN "")
 endif()
 
@@ -44,8 +48,8 @@ else()
   endif()
   if(TC_BUILD_IOS)
     execute_process(
-      COMMAND bash -c "xcrun --sdk iphoneos --show-sdk-path" 
-      OUTPUT_VARIABLE _ios_sdk_path 
+      COMMAND bash -c "xcrun --sdk iphoneos --show-sdk-path"
+      OUTPUT_VARIABLE _ios_sdk_path
       OUTPUT_STRIP_TRAILING_WHITESPACE
     )
     set(OPTIONAL_SDKROOT "SDKROOT=${_ios_sdk_path}")
