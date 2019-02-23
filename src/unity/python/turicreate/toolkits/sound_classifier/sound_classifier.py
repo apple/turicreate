@@ -482,7 +482,7 @@ class SoundClassifier(_CustomModel):
         input.name = 'preprocessed_' + self.feature
         input.type.CopyFrom(feature_extractor_spec.description.input[0].type)
 
-        # Set ouputs
+        # Set outputs
         prob_output = desc.output.add()
         prob_output.name = prob_name
         label_output = desc.output.add()
@@ -497,7 +497,7 @@ class SoundClassifier(_CustomModel):
             prob_output.type.dictionaryType.stringKeyType.MergeFromString(b'')
             label_output.type.stringType.MergeFromString(b'')
 
-        # Add the feature extractor, updating it's input name
+        # Add the feature extractor, updating its input name
         pipeline = top_level_spec.pipelineClassifier.pipeline
         pipeline.models.add().CopyFrom(feature_extractor_spec)
         pipeline.models[0].description.input[0].name = input.name
