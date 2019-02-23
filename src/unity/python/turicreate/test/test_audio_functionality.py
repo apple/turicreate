@@ -69,7 +69,7 @@ class ReadAudioTest(unittest.TestCase):
     def test_ignore_failure(self):
         with TempDirectory() as temp_dir:
             file1, file2 = self._write_audio_files_in_dir(temp_dir)
-            with open(temp_dir + '/junk.wav', 'wb') as f:
+            with open(temp_dir + '/junk.wav', 'w') as f:
                 f.write('junk, junk, junk. Not audio data!')
 
             with self.assertRaises(ToolkitError):
