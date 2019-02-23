@@ -81,10 +81,14 @@ fi
 
 # If running in Docker, send this command into Docker and bail out of here.
 if [[ -n "${USE_DOCKER}" ]]; then
-  # TODO plumb through parameters
-  # For now, just do default
+  # cleanup build directories
+  rm -rf ${WORKSPACE}/${build_type}
+
+  # create the build image
+  # (this should ideally be a no-op if the image exists and is current)
   docker build $SCRIPT_DIR -t turicreate-temporary-build-image
 
+  # set up arguments to make_wheel.sh within docker
   make_wheel_args="--build_number=$BUILD_NUMBER --num_procs=$NUM_PROCS"
   if [[ -n $SKIP_BUILD ]]; then
     make_wheel_args="$make_wheel_args --skip_build"
