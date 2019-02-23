@@ -29,7 +29,7 @@ elseif(UNIX)
   SET(ADD_BOOST_BOOTSTRAP --with-toolset=gcc)
   SET(ADD_BOOST_COMPILE_TOOLCHAIN "toolset=gcc cxxflags=\"${cxxflags}\"")
 else()
-  set(ADD_BOOST_BOOTSTRAP "")
+  SET(ADD_BOOST_BOOTSTRAP "")
   SET(ADD_BOOST_COMPILE_TOOLCHAIN "")
 endif()
 

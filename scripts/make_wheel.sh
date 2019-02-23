@@ -79,7 +79,8 @@ if [[ -z "${TARGET_DIR}" ]]; then
   TARGET_DIR=${WORKSPACE}/target
 fi
 
-# If running in Docker, send this command into Docker and bail out of here.
+# If we are going to run in Docker,
+# send this command into Docker and bail out of here when done.
 if [[ -n "${USE_DOCKER}" ]]; then
   # cleanup build directories
   rm -rf ${WORKSPACE}/${build_type}
@@ -106,6 +107,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
     make_wheel_args="$make_wheel_args --debug"
   fi
 
+  # Run the make_wheel.sh script inside Docker
   docker run --rm \
     --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
     -it turicreate-temporary-build-image \
