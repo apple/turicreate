@@ -82,9 +82,6 @@ fi
 # If we are going to run in Docker,
 # send this command into Docker and bail out of here when done.
 if [[ -n "${USE_DOCKER}" ]]; then
-  # cleanup build directories
-  rm -rf ${WORKSPACE}/${build_type}
-
   # create the build image
   # (this should ideally be a no-op if the image exists and is current)
   docker build $SCRIPT_DIR -t turicreate-temporary-build-image
@@ -138,8 +135,6 @@ pop_ld_library_path() {
 ### Build the source with version number ###
 build_source() {
   echo -e "\n\n\n================= Build Release: VERSION ${BUILD_NUMBER} ================\n\n\n"
-  # cleanup build
-  rm -rf ${WORKSPACE}/${build_type}/src/unity/python
 
   # Configure
   cd ${WORKSPACE}
@@ -237,8 +232,6 @@ package_wheel() {
   fi
   echo -e "\n\n\n================= Packaging Wheel  ================\n\n\n"
   cd ${WORKSPACE}/${build_type}/src/unity/python
-  # cleanup old builds
-  rm -rf dist
 
   # strip binaries
   if [[ ! $OSTYPE == darwin* ]]; then
