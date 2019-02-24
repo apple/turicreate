@@ -15,7 +15,7 @@ env:
 
 before_script:
   - mkdir -p $HOME/.docker_images
-  - test -f $HOME/.docker_images/image.gz && docker load -i $HOME/.docker_images/image.gz
+  - (test -f $HOME/.docker_images/image.gz && docker load -i $HOME/.docker_images/image.gz) || true
 
 script:
   # We sometimes get `error: No space left on device`
