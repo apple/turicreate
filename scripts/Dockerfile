@@ -20,16 +20,17 @@ RUN sed -i -e 's/archive\./old-releases\./g' /etc/apt/sources.list
 # Update package database
 RUN apt-get update
 
-# Install add-apt-repository and set up PPA for GCC 4.8
+# Install add-apt-repository and set up PPA for GCC 4.8 and git
 RUN apt-get -y install python-software-properties
 RUN add-apt-repository ppa:ubuntu-toolchain-r/test
+RUN add-apt-repository ppa:git-core/ppa
 
 # Upgrade all possible packages
 RUN apt-get update
 RUN apt-get -y upgrade
 
 # Install dependencies
-RUN apt-get -y install vim-common gcc-4.8 g++-4.8 libgif-dev libx11-dev ccache make zlib1g-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev perl-modules patch rsync
+RUN apt-get -y install vim-common gcc-4.8 g++-4.8 libgif-dev libx11-dev ccache make zlib1g-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev perl-modules patch rsync git
 RUN ln -s /usr/bin/gcc-4.8 /usr/bin/gcc
 RUN ln -s /usr/bin/g++-4.8 /usr/bin/g++
 
