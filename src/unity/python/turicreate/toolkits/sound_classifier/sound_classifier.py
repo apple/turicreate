@@ -428,6 +428,7 @@ class SoundClassifier(_CustomModel):
         >>> model.export_coreml('./myModel.mlmodel')
         """
         import coremltools
+        from coremltools.proto.FeatureTypes_pb2 import ArrayFeatureType
 
         prob_name = self.target + 'Probability'
 
@@ -474,15 +475,14 @@ class SoundClassifier(_CustomModel):
 
 
         top_level_spec = coremltools.proto.Model_pb2.Model()
-        top_level_spec.specificationVersion = 1
-
-        feature_extractor_spec = self._feature_extractor.get_spec()
+        top_level_spec.specificationVersion = 3
 
         # Set input
         desc = top_level_spec.description
         input = desc.input.add()
-        input.name = 'preprocessed_' + self.feature
-        input.type.CopyFrom(feature_extractor_spec.description.input[0].type)
+        input.name = self.feature
+        input.type.multiArrayType.dataType = ArrayFeatureType.ArrayDataType.Value('FLOAT32')
+        input.type.multiArrayType.shape.append(15600)
 
         # Set outputs
         prob_output = desc.output.add()
@@ -499,19 +499,38 @@ class SoundClassifier(_CustomModel):
             prob_output.type.dictionaryType.stringKeyType.MergeFromString(b'')
             label_output.type.stringType.MergeFromString(b'')
 
-        # Add the feature extractor, updating its input name
-        pipeline = top_level_spec.pipelineClassifier.pipeline
-        pipeline.models.add().CopyFrom(feature_extractor_spec)
-        pipeline.models[0].description.input[0].name = input.name
-        pipeline.models[0].neuralNetwork.layers[0].input[0] = input.name
 
-        # Add the custom model
+        pipeline = top_level_spec.pipelineClassifier.pipeline
+
+        # Add the preprocessing model
+        preprocessing_model = pipeline.models.add()
+        preprocessing_model.customModel.className = 'TCSoundClassifierPreprocessing'
+        preprocessing_model.specificationVersion = 3
+        preprocessing_input = preprocessing_model.description.input.add()
+        preprocessing_input.CopyFrom(input)
+
+        preprocessed_output = preprocessing_model.description.output.add()
+        preprocessed_output.name = 'preprocessed_data'
+        preprocessed_output.type.multiArrayType.dataType = ArrayFeatureType.ArrayDataType.Value('DOUBLE')
+        preprocessed_output.type.multiArrayType.shape.append(1)
+        preprocessed_output.type.multiArrayType.shape.append(96)
+        preprocessed_output.type.multiArrayType.shape.append(64)
+
+        # Add the feature extractor, updating its input name
+        feature_extractor_spec = self._feature_extractor.get_spec()
+        pipeline.models.add().CopyFrom(feature_extractor_spec)
+        pipeline.models[-1].description.input[0].name = preprocessed_output.name
+        pipeline.models[-1].neuralNetwork.layers[0].input[0] = preprocessed_output.name
+
+        # Add the custom neural network
         pipeline.models.add().CopyFrom(get_custom_model_spec())
 
+        # Set key type for the probability dictionary
+        prob_output_type = pipeline.models[-1].description.output[0].type.dictionaryType
         if type(self.classes[0]) == int:
-            top_level_spec.pipelineClassifier.pipeline.models[1].description.output[0].type.dictionaryType.int64KeyType.MergeFromString(b'')
-        else:
-            top_level_spec.pipelineClassifier.pipeline.models[1].description.output[0].type.dictionaryType.stringKeyType.MergeFromString(b'')
+            prob_output_type.int64KeyType.MergeFromString(b'')
+        else:    # String labels
+            prob_output_type.stringKeyType.MergeFromString(b'')
 
         mlmodel = coremltools.models.MLModel(top_level_spec)
         mlmodel.save(filename)
