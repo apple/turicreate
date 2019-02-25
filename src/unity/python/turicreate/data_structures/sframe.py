@@ -4852,7 +4852,7 @@ class SFrame(object):
         ret_sf.add_columns(new_sf, inplace=True)
         return ret_sf
 
-    def unpack(self, column_name, column_name_prefix=None, column_types=None,
+    def unpack(self, column_name=None, column_name_prefix=None, column_types=None,
                na_value=None, limit=None):
         """
         Expand one column of this SFrame to multiple columns with each value in
@@ -4974,6 +4974,17 @@ class SFrame(object):
         +----+-----------+-----------+-----------+
         [3 rows x 4 columns]
         """
+        if column_name==None:
+            if len(self.column_names())==1:
+                if column_name_prefix==None:
+                    column_name=self.column_names()[0]
+                    column_name_prefix=""
+                else:
+                    column_name=self.column_names()[0]
+            else:
+                raise RuntimeError("column name needed to unpack")
+        
+
         if column_name not in self.column_names():
             raise KeyError("column '" + column_name + "' does not exist in current SFrame")
 
