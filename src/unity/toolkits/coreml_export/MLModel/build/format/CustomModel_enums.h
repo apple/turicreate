@@ -1,7 +1,5 @@
 #ifndef __CUSTOMMODEL_ENUMS_H
 #define __CUSTOMMODEL_ENUMS_H
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-function"
 enum MLCustomModelParamValuevalue: int {
     MLCustomModelParamValuevalue_doubleValue = 10,
     MLCustomModelParamValuevalue_stringValue = 20,
@@ -30,7 +28,7 @@ static const char * MLCustomModelParamValuevalue_Name(MLCustomModelParamValueval
         case MLCustomModelParamValuevalue_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
-#pragma clang diagnostic pop
 #endif

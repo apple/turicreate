@@ -1,7 +1,5 @@
 #ifndef __IMPUTER_ENUMS_H
 #define __IMPUTER_ENUMS_H
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-function"
 enum MLImputerImputedValue: int {
     MLImputerImputedValue_imputedDoubleValue = 1,
     MLImputerImputedValue_imputedInt64Value = 2,
@@ -33,6 +31,7 @@ static const char * MLImputerImputedValue_Name(MLImputerImputedValue x) {
         case MLImputerImputedValue_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLImputerReplaceValue: int {
@@ -54,7 +53,7 @@ static const char * MLImputerReplaceValue_Name(MLImputerReplaceValue x) {
         case MLImputerReplaceValue_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
-#pragma clang diagnostic pop
 #endif

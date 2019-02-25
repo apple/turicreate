@@ -1,7 +1,5 @@
 #ifndef __SVM_ENUMS_H
 #define __SVM_ENUMS_H
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-function"
 enum MLKernelkernel: int {
     MLKernelkernel_linearKernel = 1,
     MLKernelkernel_rbfKernel = 2,
@@ -24,6 +22,7 @@ static const char * MLKernelkernel_Name(MLKernelkernel x) {
         case MLKernelkernel_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLSupportVectorRegressorsupportVectors: int {
@@ -42,6 +41,7 @@ static const char * MLSupportVectorRegressorsupportVectors_Name(MLSupportVectorR
         case MLSupportVectorRegressorsupportVectors_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLSupportVectorClassifiersupportVectors: int {
@@ -60,6 +60,7 @@ static const char * MLSupportVectorClassifiersupportVectors_Name(MLSupportVector
         case MLSupportVectorClassifiersupportVectors_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLSupportVectorClassifierClassLabels: int {
@@ -78,7 +79,7 @@ static const char * MLSupportVectorClassifierClassLabels_Name(MLSupportVectorCla
         case MLSupportVectorClassifierClassLabels_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
-#pragma clang diagnostic pop
 #endif

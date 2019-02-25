@@ -1,7 +1,5 @@
 #ifndef __MODEL_ENUMS_H
 #define __MODEL_ENUMS_H
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-function"
 enum MLModelType: int {
     MLModelType_pipelineClassifier = 200,
     MLModelType_pipelineRegressor = 201,
@@ -93,7 +91,7 @@ static const char * MLModelType_Name(MLModelType x) {
         case MLModelType_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
-#pragma clang diagnostic pop
 #endif

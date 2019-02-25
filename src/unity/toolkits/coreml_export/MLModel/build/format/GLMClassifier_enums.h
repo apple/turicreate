@@ -1,7 +1,5 @@
 #ifndef __GLMCLASSIFIER_ENUMS_H
 #define __GLMCLASSIFIER_ENUMS_H
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-function"
 enum MLPostEvaluationTransform: int {
     MLPostEvaluationTransformLogit = 0,
     MLPostEvaluationTransformProbit = 1,
@@ -28,7 +26,7 @@ static const char * MLGLMClassifierClassLabels_Name(MLGLMClassifierClassLabels x
         case MLGLMClassifierClassLabels_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
-#pragma clang diagnostic pop
 #endif

@@ -1,7 +1,5 @@
 #ifndef __CATEGORICALMAPPING_ENUMS_H
 #define __CATEGORICALMAPPING_ENUMS_H
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-function"
 enum MLCategoricalMappingMappingType: int {
     MLCategoricalMappingMappingType_stringToInt64Map = 1,
     MLCategoricalMappingMappingType_int64ToStringMap = 2,
@@ -18,6 +16,7 @@ static const char * MLCategoricalMappingMappingType_Name(MLCategoricalMappingMap
         case MLCategoricalMappingMappingType_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLCategoricalMappingValueOnUnknown: int {
@@ -36,7 +35,7 @@ static const char * MLCategoricalMappingValueOnUnknown_Name(MLCategoricalMapping
         case MLCategoricalMappingValueOnUnknown_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
-#pragma clang diagnostic pop
 #endif

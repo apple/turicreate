@@ -1,7 +1,5 @@
 #ifndef __NONMAXIMUMSUPPRESSION_ENUMS_H
 #define __NONMAXIMUMSUPPRESSION_ENUMS_H
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-function"
 enum MLNonMaximumSuppressionSuppressionMethod: int {
     MLNonMaximumSuppressionSuppressionMethod_pickTop = 1,
     MLNonMaximumSuppressionSuppressionMethod_NOT_SET = 0,
@@ -15,6 +13,7 @@ static const char * MLNonMaximumSuppressionSuppressionMethod_Name(MLNonMaximumSu
         case MLNonMaximumSuppressionSuppressionMethod_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLNonMaximumSuppressionClassLabels: int {
@@ -33,7 +32,7 @@ static const char * MLNonMaximumSuppressionClassLabels_Name(MLNonMaximumSuppress
         case MLNonMaximumSuppressionClassLabels_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
-#pragma clang diagnostic pop
 #endif

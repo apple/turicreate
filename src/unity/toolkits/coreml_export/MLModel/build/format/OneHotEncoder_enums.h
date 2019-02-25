@@ -1,7 +1,5 @@
 #ifndef __ONEHOTENCODER_ENUMS_H
 #define __ONEHOTENCODER_ENUMS_H
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-function"
 enum MLHandleUnknown: int {
     MLHandleUnknownErrorOnUnknown = 0,
     MLHandleUnknownIgnoreUnknown = 1,
@@ -23,7 +21,7 @@ static const char * MLOneHotEncoderCategoryType_Name(MLOneHotEncoderCategoryType
         case MLOneHotEncoderCategoryType_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
-#pragma clang diagnostic pop
 #endif
