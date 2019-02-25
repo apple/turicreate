@@ -31,6 +31,8 @@ print_help() {
   echo
   echo "  --skip_doc               Skip the generation of documentation."
   echo
+  echo "  --skip_smoke_test        Skip importing the wheel and running a quick smoke test."
+  echo
   echo "  --debug                  Use debug build instead of release."
   echo
   echo "  --docker                 Use docker to build in Ubuntu 10.04 with GCC 4.8."
@@ -55,6 +57,7 @@ while [ $# -gt 0 ]
     --skip_cpp_test)        SKIP_CPP_TEST=1;;
     --skip_build)           SKIP_BUILD=1;;
     --skip_doc)             SKIP_DOC=1;;
+    --skip_smoke_test)      SKIP_SMOKE_TEST=1;;
     --release)              build_type="release";;
     --debug)                build_type="debug";;
     --docker)               USE_DOCKER=1;;
@@ -87,7 +90,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
   docker build $SCRIPT_DIR -t turicreate-temporary-build-image
 
   # set up arguments to make_wheel.sh within docker
-  make_wheel_args="--build_number=$BUILD_NUMBER --num_procs=$NUM_PROCS"
+  make_wheel_args="--build_number=$BUILD_NUMBER --num_procs=$NUM_PROCS --skip_smoke_test"
   if [[ -n $SKIP_BUILD ]]; then
     make_wheel_args="$make_wheel_args --skip_build"
   fi
@@ -97,7 +100,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
   if [[ -n $SKIP_CPP_TEST ]]; then
     make_wheel_args="$make_wheel_args --skip_cpp_test"
   fi
-  if [[ -z $SKIP_DOC ]]; then
+  if [[ -n $SKIP_DOC ]]; then
     make_wheel_args="$make_wheel_args --skip_doc"
   fi
   if [[ "$build_type" == "debug" ]]; then
@@ -110,6 +113,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
     -it turicreate-temporary-build-image \
     /build/scripts/make_wheel.sh \
     $make_wheel_args
+
   exit 0
 fi
 
@@ -258,13 +262,10 @@ package_wheel() {
   fi
 
   cd ${WORKSPACE}/${build_type}/src/unity/python
-  rm -rf build
   dist_type="bdist_wheel"
 
   VERSION_NUMBER=`${PYTHON_EXECUTABLE} -c "import turicreate; print(turicreate.version_info.version)"`
   ${PYTHON_EXECUTABLE} setup.py ${dist_type} # This produced an wheel starting with turicreate-${VERSION_NUMBER} under dist/
-
-  rm -f turicreate/util/turicreate_env.py
 
   cd ${WORKSPACE}
 
@@ -301,11 +302,14 @@ package_wheel() {
       WHEEL_PATH=${NEW_WHEEL_PATH}
   fi
 
-  # Install the wheel and do a sanity check
-  unset PYTHONPATH
-  $PIP_EXECUTABLE uninstall turicreate # make sure any existing build is uninstalled first
-  $PIP_EXECUTABLE install ${WHEEL_PATH}
-  $PYTHON_EXECUTABLE -c "import turicreate; turicreate.SArray(range(100)).apply(lambda x: x)"
+  if [[ -z $SKIP_SMOKE_TEST ]]; then
+    # Install the wheel and do a smoke test
+    unset PYTHONPATH
+
+    $PIP_EXECUTABLE uninstall turicreate # make sure any existing build is uninstalled first
+    $PIP_EXECUTABLE install ${WHEEL_PATH}
+    $PYTHON_EXECUTABLE -c "import turicreate; turicreate.SArray(range(100)).apply(lambda x: x)"
+  fi
 
   # Done copy to the target directory
   cp $WHEEL_PATH ${TARGET_DIR}/
