@@ -587,8 +587,10 @@ class SoundClassifier(_CustomModel):
             batch_size = len(deep_features)
 
         y = []
-        ctx = _mxnet_utils.get_mxnet_context()
         for batch in _mx.io.NDArrayIter(deep_features, batch_size=batch_size):
+            ctx = _mxnet_utils.get_mxnet_context()
+            if(len(batch.data[0]) < len(ctx)):
+                ctx = ctx[:len(batch.data[0])]
             batch_data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
             if batch.pad != 0:
                 batch_data[0] = batch_data[0][:-batch.pad]    # prevent batches looping back

@@ -107,7 +107,11 @@ class VGGishFeatureExtractor(object):
         if _mac_ver() < (10, 13):
             # Use MXNet
             preprocessed_data = mx.nd.array(preprocessed_data)
-            batches = utils.split_and_load(preprocessed_data, ctx_list=self.ctx, even_split=False)
+
+            ctx_list = self.ctx
+            if len(preprocessed_data) < len(ctx_list):
+                ctx_list = ctx_list[:len(preprocessed_data)]
+            batches = utils.split_and_load(preprocessed_data, ctx_list=ctx_list, even_split=False)
 
             deep_features = []
             for cur_batch in batches:
