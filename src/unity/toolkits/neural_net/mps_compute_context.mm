@@ -9,6 +9,7 @@
 #import <unity/toolkits/neural_net/mps_device_manager.h>
 
 #include <logger/logger.hpp>
+#include <unity/toolkits/neural_net/mps_cnnmodule.h>
 #include <unity/toolkits/neural_net/mps_graph_cnnmodule.h>
 #include <unity/toolkits/neural_net/mps_image_augmentation.hpp>
 
@@ -60,8 +61,21 @@ std::unique_ptr<model_backend> mps_compute_context::create_object_detector(
   std::unique_ptr<mps_graph_cnn_module> result(
       new mps_graph_cnn_module(impl_->dev));
 
-  result->init(/* netword_id */ kODGraphNet, n, c_in, h_in, w_in, c_out, h_out,
+  result->init(/* network_id */ kODGraphNet, n, c_in, h_in, w_in, c_out, h_out,
                w_out, config, weights);
+
+  return result;
+}
+
+std::unique_ptr<model_backend> mps_compute_context::create_activity_classifier(
+    int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
+    const float_array_map& config, const float_array_map& weights) {
+
+  std::unique_ptr<mps_cnn_module> result(new mps_cnn_module(impl_->dev));
+
+  result->init(/* network_id */ kActivityClassifierNet, n, c_in, h_in, w_in,
+               c_out, h_out, w_out, /* updater_id */ 2 /* Adam */,  config);
+  result->load(weights);
 
   return result;
 }
