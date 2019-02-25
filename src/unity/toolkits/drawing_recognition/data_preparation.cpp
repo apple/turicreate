@@ -265,10 +265,10 @@ flex_image rasterize(flex_list simplified_drawing) {
     int MAC_OS_STRIDE = 64;
 #ifdef __APPLE__
     CGColorSpaceRef grayscale = CGColorSpaceCreateDeviceGray();
-    CGContextRef bitmap_context = CGBitmapContextCreate(
+    CGContextRef intermediate_bitmap_context = CGBitmapContextCreate(
         NULL, INTERMEDIATE_BITMAP_WIDTH, INTERMEDIATE_BITMAP_HEIGHT, 
         8, 0, grayscale, kCGImageAlphaNone);
-    CGContextSetRGBStrokeColor(bitmap_context, 1.0, 1.0, 1.0, 1.0);
+    CGContextSetRGBStrokeColor(intermediate_bitmap_context, 1.0, 1.0, 1.0, 1.0);
     CGAffineTransform transform = CGAffineTransformIdentity;
     CGMutablePathRef path = CGPathCreateMutable();
     for (size_t i = 0; i < num_strokes; i++) {
@@ -288,26 +288,23 @@ flex_image rasterize(flex_list simplified_drawing) {
                 P.x, ((float)(INTERMEDIATE_BITMAP_WIDTH))-P.y);
         }
     }
-    CGContextSetLineWidth(bitmap_context, STROKE_WIDTH);
-    CGContextBeginPath(bitmap_context);
-    CGContextAddPath(bitmap_context, path);
-    CGContextStrokePath(bitmap_context);
-    CGPathRelease(path);
-    CGImageRef image = CGBitmapContextCreateImage(bitmap_context);
-    CGRect rectangle = CGRectMake(0.0, 0.0, 
-        ((float)(INTERMEDIATE_BITMAP_WIDTH)), 
-        ((float)(INTERMEDIATE_BITMAP_HEIGHT)));
-    CGImageRef cropped_image = CGImageCreateWithImageInRect(image, rectangle);
-    CGContextRef scale_28_context = CGBitmapContextCreate(NULL, 
+    CGContextSetLineWidth(intermediate_bitmap_context, STROKE_WIDTH);
+    CGContextBeginPath(intermediate_bitmap_context);
+    CGContextAddPath(intermediate_bitmap_context, path);
+    CGContextStrokePath(intermediate_bitmap_context);
+    CGImageRef intermediate_bitmap_cg = CGBitmapContextCreateImage(
+        intermediate_bitmap_context);
+    CGContextRef final_bitmap_context = CGBitmapContextCreate(NULL, 
         FINAL_BITMAP_WIDTH, FINAL_BITMAP_HEIGHT, 8, 0, grayscale, 
         kCGImageAlphaNone);
-    CGRect new_rect = CGRectMake(0.0, 0.0, 
+    CGRect final_bitmap_rect = CGRectMake(0.0, 0.0, 
         ((float)(FINAL_BITMAP_WIDTH)), ((float)(FINAL_BITMAP_HEIGHT)));
-    CGContextDrawImage(scale_28_context, new_rect, cropped_image);
-    CGImageRef cropped_image_gray = CGBitmapContextCreateImage(
-        scale_28_context);
+    CGContextDrawImage(final_bitmap_context, final_bitmap_rect, 
+        intermediate_bitmap_cg);
+    CGImageRef final_bitmap_cg = CGBitmapContextCreateImage(
+        final_bitmap_context);
     CFDataRef pixel_data = CGDataProviderCopyData(
-        CGImageGetDataProvider(cropped_image_gray));
+        CGImageGetDataProvider(final_bitmap_cg));
     const uint8_t* data_ptr = CFDataGetBytePtr(pixel_data);
     uint8_t real_data[FINAL_BITMAP_WIDTH * FINAL_BITMAP_HEIGHT];
     for (size_t row = 0; row < FINAL_BITMAP_WIDTH; row++) {
@@ -317,6 +314,12 @@ flex_image rasterize(flex_list simplified_drawing) {
                 data_ptr[row * MAC_OS_STRIDE + col]);
         }
     }
+    CGPathRelease(path);
+    CGImageRelease(final_bitmap_cg);
+    CGImageRelease(intermediate_bitmap_cg);
+    CGContextRelease(final_bitmap_context);
+    CGContextRelease(intermediate_bitmap_context);
+    CGColorSpaceRelease(grayscale);
     return flex_image((const char *)real_data, 
         FINAL_BITMAP_WIDTH, FINAL_BITMAP_HEIGHT, 1, 
         FINAL_BITMAP_WIDTH * FINAL_BITMAP_HEIGHT, 1, 2);

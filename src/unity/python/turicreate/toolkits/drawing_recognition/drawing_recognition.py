@@ -71,7 +71,6 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap", mo
     is_stroke_input = (input_dataset[feature].dtype != _tc.Image)
 
     if is_stroke_input:
-        # This only works on macOS right now
         dataset = _extensions._drawing_recognition_prepare_data(
             input_dataset, "bitmap", "label")
     else:
