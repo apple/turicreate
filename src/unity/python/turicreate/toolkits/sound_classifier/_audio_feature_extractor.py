@@ -1,3 +1,4 @@
+from coremltools.models import MLModel
 import mxnet as mx
 from mxnet.gluon import nn, utils
 
@@ -84,11 +85,9 @@ class VGGishFeatureExtractor(object):
             self.vggish_model = VGGishFeatureExtractor._build_net()
             net_params = self.vggish_model.collect_params()
             self.ctx = _mxnet_utils.get_mxnet_context()
-            net_params.initialize(mx.init.Xavier(), ctx=self.ctx)    # TODO: verify on Linux that we don't need this line.
             net_params.load(model_path, ctx=self.ctx)
         else:
             # Use Core ML
-            from coremltools.models import MLModel
             model_path = vggish_model_file.get_model_path(format='coreml')
             self.vggish_model = MLModel(model_path)
 
@@ -137,5 +136,6 @@ class VGGishFeatureExtractor(object):
         if _mac_ver() >= (10, 13):
             return self.vggish_model.get_spec()
         else:
-            # TODO: make this work on Linux
-            assert(False)
+            vggish_model_file = VGGish()
+            coreml_model_path = vggish_model_file.get_model_path(format='coreml')
+            return MLModel(coreml_model_path).get_spec()

@@ -11,7 +11,6 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 
 import numpy as _np
-import time as _time
 
 from .. import _mxnet_utils
 
@@ -56,6 +55,7 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
     '''
     from ._audio_feature_extractor import _get_feature_extractor
     import mxnet as _mx
+    import time as _time
 
     start_time = _time.time()
 
@@ -441,11 +441,12 @@ class SoundClassifier(_CustomModel):
                                            [(prob_name, Dictionary(String))],
                                            'classifier')
 
+            ctx = _mxnet_utils.get_mxnet_context()[0]
             input_name, output_name = input_name, 0
             for i, cur_layer in enumerate(self._custom_classifier):
-                W = cur_layer.weight.data().asnumpy()
+                W = cur_layer.weight.data(ctx).asnumpy()
                 nC, nB = W.shape
-                Wb = cur_layer.bias.data().asnumpy()
+                Wb = cur_layer.bias.data(ctx).asnumpy()
 
                 builder.add_inner_product(name="inner_product_"+str(i),
                                           W=W,

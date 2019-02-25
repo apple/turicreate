@@ -242,8 +242,10 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
 
     @unittest.skipIf(platform == 'darwin', 'Already testing in more comprehensive way.')
     def test_linux_export_core_ml(self):
-        # TODO: just test that calling `export_coreml(...)` produces a .mlmodel file
-        pass
+        with TempDirectory() as temp_dir:
+            file_name = temp_dir + '/model.mlmodel'
+            self.model.export_coreml(file_name)
+            core_ml_model = coremltools.models.MLModel(file_name)
 
     def test_evaluate(self):
         evaluation = self.model.evaluate(self.data)
