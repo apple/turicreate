@@ -4866,8 +4866,11 @@ class SFrame(object):
 
         Parameters
         ----------
-        column_name : str
-            Name of the unpacked column
+        column_name : str, optional
+            If provided, it unpacks the column with the given name. If not provided
+            and only one column is present then the column is unpacked. In case of 
+            multiple columns, name must be provided to know which column to be unpacked.
+        
 
         column_name_prefix : str, optional
             If provided, unpacked column names would start with the given
@@ -4973,6 +4976,19 @@ class SFrame(object):
         | 3  |    3.0    |    4.0    |    5.0    |
         +----+-----------+-----------+-----------+
         [3 rows x 4 columns]
+        
+        >>> sf = turicreate.SFrame([{'a':1,'b':2,'c':3},{'a':4,'b':5,'c':6}])
+        >>> sf.unpack()
+        +---+---+---+
+        | a | b | c |
+        +---+---+---+
+        | 1 | 2 | 3 |
+        | 4 | 5 | 6 |
+        +---+---+---+
+        [2 rows x 3 columns]
+
+
+
         """
         if column_name==None:
             if len(self.column_names())==1:

@@ -2135,6 +2135,14 @@ class SFrameTest(unittest.TestCase):
         sf = sf.unpack('a', column_name_prefix = '')
         self.assertEqual(sf['a'].dtype, list)
 
+        sf = SFrame({'a':[{'a':["haha", "hoho"]}, {'a':array.array('d', [1,2,3])}]})
+        sf = sf.unpack()
+        self.assertEqual(sf['a'].dtype, list)
+
+        sf = SFrame({'a':[{'a':["haha", "hoho"]}, {'a':None}]})
+        sf = sf.unpack('a', column_name_prefix = '')
+        self.assertEqual(sf['a'].dtype, list)
+
         sf = SFrame({'a':[{'a':["haha", "hoho"]}, {'a':None}]})
         sf = sf.unpack('a', column_name_prefix = '')
         self.assertEqual(sf['a'].dtype, list)
@@ -2291,12 +2299,34 @@ class SFrameTest(unittest.TestCase):
         assert_frame_equal(result.to_dataframe(), e.to_dataframe())
 
     def test_unpack_dict(self):
+
+        sf = SFrame([{'a':1,'b':2,'c':3},{'a':4,'b':5,'c':6}])
+        expected_sf = SFrame()
+        expected_sf["a"] = [1,4]
+        expected_sf["b"] = [2,5]
+        expected_sf["c"] = [3,6]
+        unpacked_sf = sf.unpack()
+        assert_frame_equal(unpacked_sf.to_dataframe(), expected_sf.to_dataframe())
+
+        expected_sf = SFrame()
+        expected_sf["xx.a"] = [1,4]
+        expected_sf["xx.b"] = [2,5]
+        expected_sf["xx.c"] = [3,6]
+        unpacked_sf = sf.unpack(column_name_prefix='xx')
+        assert_frame_equal(unpacked_sf.to_dataframe(), expected_sf.to_dataframe())
+
+        packed_sf = SFrame({"X1":{'a':1,'b':2,'c':3},"X2":{'a':4,'b':5,'c':6}})
+
+        with self.assertRaises(RuntimeError):
+            packed_sf.unpack()
+
         sf = SFrame()
 
         sf["user_id"] = [1,2,3,4,5,6,7]
         sf["is_restaurant"] =  [1,   1,0,0,   1, None, None]
         sf["is_retail"] =      [None,1,1,None,1, None, None]
         sf["is_electronics"] = ["yes",   "no","yes",None,"no", None, None]
+
 
         packed_sf = SFrame()
         packed_sf['user_id'] = sf['user_id']
@@ -2322,7 +2352,8 @@ class SFrameTest(unittest.TestCase):
         expected_sf = SFrame()
         expected_sf["is_retail"] = sf["is_retail"]
         unpacked_sf = packed_sf['category'].unpack(limit=["is_retail"], column_types=[int], column_name_prefix=None)
-        assert_frame_equal(unpacked_sf.to_dataframe(), expected_sf.to_dataframe())
+        assert_frame_equal(unpacked_sf.to_dataframe(), expected_sf.to_dataframe()) 
+
 
         # unpack all
         unpacked_sf = packed_sf['category'].unpack(column_name_prefix=None, column_types=[int, int, str], limit=["is_restaurant", "is_retail", "is_electronics"])
