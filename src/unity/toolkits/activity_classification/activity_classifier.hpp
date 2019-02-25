@@ -6,8 +6,13 @@
 #ifndef TURI_ACTIVITY_CLASSIFIER_H_
 #define TURI_ACTIVITY_CLASSIFIER_H_
 
+#include <table_printer/table_printer.hpp>
 #include <unity/lib/extensions/ml_model.hpp>
 #include <unity/lib/gl_sframe.hpp>
+#include <unity/toolkits/activity_classification/ac_data_iterator.hpp>
+#include <unity/toolkits/neural_net/compute_context.hpp>
+#include <unity/toolkits/neural_net/model_backend.hpp>
+#include <unity/toolkits/neural_net/model_spec.hpp>
 
 namespace turi {
 namespace activity_classification {
@@ -15,6 +20,10 @@ namespace activity_classification {
 class EXPORT activity_classifier: public ml_model_base {
 
  public:
+
+  // ml_model_base interface
+
+  void init_options(const std::map<std::string, flexible_type>& opts) override;
 
   // Interface exposed via Unity server
 
@@ -80,6 +89,51 @@ class EXPORT activity_classifier: public ml_model_base {
   );
 
   END_CLASS_MEMBER_REGISTRATION
+
+ protected:
+
+  // Override points allowing subclasses to inject dependencies
+
+  // Factory for data_iterator
+  virtual std::unique_ptr<data_iterator> create_iterator(
+      const data_iterator::parameters& params) const;
+
+  // Factory for compute_context
+  virtual
+  std::unique_ptr<neural_net::compute_context> create_compute_context() const;
+
+  // Returns the initial neural network to train
+  virtual std::unique_ptr<neural_net::model_spec> init_model() const;
+
+  // Support for iterative training.
+  // TODO: Expose via forthcoming C-API checkpointing mechanism?
+
+  virtual void init_train(gl_sframe data, std::string target_column_name,
+                          std::string session_id_column_name,
+                          variant_type validation_data,
+                          std::map<std::string, flexible_type> opts);
+  virtual void perform_training_iteration();
+
+  // Utility code
+
+  template <typename T>
+  T read_state(const std::string& key) const {
+    return variant_get_value<T>(get_state().at(key));
+  }
+
+ private:
+
+  // Primary representation for the trained model.
+  std::unique_ptr<neural_net::model_spec> nn_spec_;
+
+  // Primary dependencies for training. These should be nonnull while training
+  // is in progress.
+  std::unique_ptr<data_iterator> training_data_iterator_;
+  std::unique_ptr<neural_net::compute_context> training_compute_context_;
+  std::unique_ptr<neural_net::model_backend> training_model_;
+
+  // Nonnull while training is in progress, if progress printing is enabled.
+  std::unique_ptr<table_printer> training_table_printer_;
 };
 
 }  // namespace activity_classification
