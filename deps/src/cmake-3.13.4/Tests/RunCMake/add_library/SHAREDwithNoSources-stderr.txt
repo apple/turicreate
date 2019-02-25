@@ -1,0 +1,4 @@
+^CMake Error at SHAREDwithNoSources.cmake:[0-9]+ \(add_library\):
+  No SOURCES given to target: TestSharedLibWithoutSources
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)$

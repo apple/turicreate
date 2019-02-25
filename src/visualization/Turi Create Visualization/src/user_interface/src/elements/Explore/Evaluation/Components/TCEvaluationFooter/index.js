@@ -24,6 +24,14 @@ class TCEvaluationFooter extends Component {
     return element.actual == this.props.selected_actual && element.predicted == this.props.selected_prediction;
   }
 
+  filterErrorData = (element) => {
+    if(this.props.filter_confusion != null){
+      return element.actual == this.props.filter_confusion;
+    }else{
+      return true;
+    }
+  }
+
   render_table = () => {
     if((this.props.selected_actual != null) && (this.props.selected_prediction != null)){
       return (
@@ -46,6 +54,36 @@ class TCEvaluationFooter extends Component {
     }
   }
 
+  renderPill = (key, value) => {
+    return (
+      <div className="TCEvaluationFooterLabelIcon">
+        <span>
+          {key} :&nbsp;
+        </span>
+        {value}
+        &nbsp;
+        &nbsp;
+        <img src={cancel} 
+         onClick={this.resetFilter.bind(this)}/>
+        </div>
+    )
+  }
+
+  renderPredictedPill = (key, value) => {
+    return (
+      <div className="TCEvaluationFooterLabelIcon">
+        <span>
+          {key} :&nbsp;
+        </span>
+        {value}
+        &nbsp;
+        &nbsp;
+        <img src={cancel} 
+         onClick={this.props.selectRowConfusions.bind(this, null, null)}/>
+        </div>
+    )
+  }
+
   resetFilter = () => {
     this.props.row_click(null);
   }
@@ -54,17 +92,7 @@ class TCEvaluationFooter extends Component {
     if(this.props.filter_confusion != null){
       return(
         <div className="TCEvaluationFooterLabel">
-          <div className="TCEvaluationFooterLabelIcon">
-            <span>
-              Actual :&nbsp;
-            </span>
-                
-            {this.props.filter_confusion}
-            &nbsp;
-            &nbsp;
-            <img src={cancel} 
-                 onClick={this.resetFilter.bind(this)}/>
-          </div>
+          {this.renderPill("Actual", this.props.filter_confusion)}
         </div>
       );
     }
@@ -74,15 +102,21 @@ class TCEvaluationFooter extends Component {
     return (
       <div className="TCEvaluationFooter"
            style={this.cssOpenStyleContainer()}>
-        <div className="TCEvaluationFooterContainer"
-             onClick={this.props.updateFooterOpen.bind(this)}>
+        <div className="TCEvaluationFooterContainer">
           <div className="TCEvaluationFooterText">
             <div>
+              <div className="TCEvaluationErrorsPill">
+                {this.props.considerations.filter(this.filterErrorData).length}
+              </div>
               Errors
             </div>
             {this.renderLabel()}
+            <div className="TCEvaluationFooterLabel">
+              {(this.props.selected_prediction != null)?this.renderPredictedPill("Predicted", this.props.considerations.filter(this.filterData)[0].predicted):[]}
+            </div>
           </div>
-          <div className="TCEvaluationFooterCarret">
+          <div className="TCEvaluationFooterCarret"
+               onClick={this.props.updateFooterOpen.bind(this)}>
             <img src={down_arrow}
                  className="TCEvaluationFooterCarretImage"
                  style={this.cssOpenStyleIcon()}/>

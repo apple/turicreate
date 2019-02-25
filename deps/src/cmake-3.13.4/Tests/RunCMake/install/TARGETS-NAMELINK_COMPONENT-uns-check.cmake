@@ -1,0 +1,38 @@
+if(WIN32)
+  set(_check_files
+    [[lib]]
+    [[lib/(lib)?namelink-uns-dev\.dll]]
+    [[lib/(lib)?namelink-uns\.dll]]
+  )
+elseif(CYGWIN)
+  set(_check_files
+    [[lib]]
+    [[lib/cygnamelink-uns-1\.dll]]
+    [[lib/cygnamelink-uns-dev-1\.dll]]
+  )
+elseif(APPLE)
+  set(_check_files
+    [[lib]]
+    [[lib/libnamelink-uns-dev\.1\.0\.dylib]]
+    [[lib/libnamelink-uns-dev\.1\.dylib]]
+    [[lib/libnamelink-uns\.1\.0\.dylib]]
+    [[lib/libnamelink-uns\.1\.dylib]]
+    [[lib/libnamelink-uns\.dylib]]
+  )
+elseif(NO_NAMELINK)
+  set(_check_files
+    [[lib]]
+    [[lib/libnamelink-uns-dev\.so]]
+    [[lib/libnamelink-uns\.so]]
+  )
+else()
+  set(_check_files
+    [[lib]]
+    [[lib/libnamelink-uns-dev\.so\.1]]
+    [[lib/libnamelink-uns-dev\.so\.1\.0]]
+    [[lib/libnamelink-uns\.so]]
+    [[lib/libnamelink-uns\.so\.1]]
+    [[lib/libnamelink-uns\.so\.1\.0]]
+  )
+endif()
+check_installed("^${_check_files}$")

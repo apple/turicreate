@@ -1,0 +1,7 @@
+CMake Warning \(dev\) at CMP0077-WARN.cmake:5 \(option\):
+  Policy CMP0077 is not set: option\(\) honors normal variables.  Run "cmake
+  --help-policy CMP0077" for policy details.  Use the cmake_policy command to
+  set the policy and suppress this warning.
+
+  For compatibility with older versions of CMake, option is clearing the
+  normal variable 'OPT_LOCAL_VAR'.

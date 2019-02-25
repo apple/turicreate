@@ -1,0 +1,2 @@
+-- PREFIX='_'
+-- TARGET NAME='example'

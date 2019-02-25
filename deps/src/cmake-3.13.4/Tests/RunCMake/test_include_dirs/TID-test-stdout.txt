@@ -1,0 +1,17 @@
+Test project .*
+    Start 1: house\.dog
+1/6 Test #1: house\.dog \.+ +Passed +[0-9.]+ sec
+    Start 2: house\.cat
+2/6 Test #2: house\.cat \.+ +Passed +[0-9.]+ sec
+    Start 3: farm\.cow
+3/6 Test #3: farm\.cow \.+ +Passed +[0-9.]+ sec
+    Start 4: farm\.pig
+4/6 Test #4: farm\.pig \.+ +Passed +[0-9.]+ sec
+    Start 5: zoo\.fox
+5/6 Test #5: zoo\.fox \.+ +Passed +[0-9.]+ sec
+    Start 6: zoo\.emu
+6/6 Test #6: zoo\.emu \.+ +Passed +[0-9.]+ sec
+
+100% tests passed, 0 tests failed out of 6
+
+Total Test time \(real\) = +[0-9.]+ sec

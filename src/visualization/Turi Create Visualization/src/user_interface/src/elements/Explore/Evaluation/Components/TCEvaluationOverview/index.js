@@ -29,14 +29,6 @@ class TCEvaluationOverview extends Component {
       )
     }
 
-    if(this.props.f1_score_visible){
-      returnMetrics.push(
-        <TCEvaluationMetrics title={"F1 Score"}
-                             value={this.formatDecimal(((2*(this.props.recall * this.props.precision))/(this.props.recall + this.props.precision))*100) + "%"}
-                             tooltip={"A harmonic average of precision and recall"}/>
-      )
-    }
-
     if(this.props.precision_visible){
       returnMetrics.push(
         <TCEvaluationMetrics title={"Precision"}
@@ -52,6 +44,20 @@ class TCEvaluationOverview extends Component {
                              tooltip={"Out of the correct labels, which were predicted by the model"}/>
       )
     }
+
+    if(this.props.f1_score_visible){
+      returnMetrics.push(
+        <TCEvaluationMetrics title={"F1 Score"}
+                             value={this.formatDecimal(((2*(this.props.recall * this.props.precision))/(this.props.recall + this.props.precision))*100) + "%"}
+                             tooltip={"A harmonic average of precision and recall"}/>
+      )
+    }
+
+    returnMetrics.push(
+      <TCEvaluationMetrics title={"Total Tested"}
+                           value={this.props.total_num}
+                           tooltip={"Total number of examples tested"}/>
+    )
 
     return returnMetrics;
   }

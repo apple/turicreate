@@ -1,0 +1,25 @@
+Test project .*
+    Start 1: TEST:basic\.case_foo!1
+1/8 Test #1: TEST:basic\.case_foo!1 \.+ +Passed +[0-9.]+ sec
+    Start 2: TEST:basic\.case_bar!1
+2/8 Test #2: TEST:basic\.case_bar!1 \.+ +Passed +[0-9.]+ sec
+    Start 3: TEST:basic\.disabled_case!1
+3/8 Test #3: TEST:basic\.disabled_case!1 \.+\*+Not Run \(Disabled\) +[0-9.]+ sec
+    Start 4: TEST:disabled\.case!1
+4/8 Test #4: TEST:disabled\.case!1 \.+\*+Not Run \(Disabled\) +[0-9.]+ sec
+    Start 5: TEST:typed/short\.case!1
+5/8 Test #5: TEST:typed/short\.case!1 \.+ +Passed +[0-9.]+ sec
+    Start 6: TEST:typed/float\.case!1
+6/8 Test #6: TEST:typed/float\.case!1 \.+ +Passed +[0-9.]+ sec
+    Start 7: TEST:value/test\.case/1!1
+7/8 Test #7: TEST:value/test\.case/1!1 \.+ +Passed +[0-9.]+ sec
+    Start 8: TEST:value/test\.case/"foo"!1
+8/8 Test #8: TEST:value/test\.case/"foo"!1 \.+ +Passed +[0-9.]+ sec
+
+100% tests passed, 0 tests failed out of 6
+
+Total Test time \(real\) = +[0-9.]+ sec
+
+The following tests did not run:
+.*3 - TEST:basic\.disabled_case!1 \(Disabled\)
+.*4 - TEST:disabled\.case!1 \(Disabled\)

@@ -1,6 +1,9 @@
 project(unity)
 
-subdirs(visualization)
+subdirs(
+    annotation
+    visualization
+)
 
 make_library(unity_core OBJECT
   SOURCES
@@ -47,5 +50,6 @@ make_library(unity_core OBJECT
     pylambda_worker
     eigen
     visualization
-  EXTERNAL_VISIBILITY
+    annotation
+    EXTERNAL_VISIBILITY
 )

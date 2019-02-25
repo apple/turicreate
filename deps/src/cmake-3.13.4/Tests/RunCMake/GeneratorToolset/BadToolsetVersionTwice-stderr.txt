@@ -1,0 +1,10 @@
+CMake Error at CMakeLists.txt:[0-9]+ \(project\):
+  Generator
+
+    .*
+
+  given toolset specification
+
+    Test Toolset,version=Test Toolset Version,version=Test Toolset Version
+
+  that contains duplicate field key 'version'\.$
