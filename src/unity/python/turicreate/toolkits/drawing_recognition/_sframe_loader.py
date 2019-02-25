@@ -61,12 +61,11 @@ class _SFrameDataSource:
             image = _tc.image_analysis.resize(drawing_feature, 28, 28, 1)
             pixels_01 = image.pixel_data.reshape(1, 28, 28) / 255.
         
-        # Copy the annotated bounding boxes for this image, if requested.
         if self.load_labels:
             label = row[self.target_column]
-            if label == None:
+            if label is None:
                 label = []
-            elif type(label) == dict:
+            elif type(label) is dict:
                 label = [label]
         else:
             label = None

@@ -744,7 +744,7 @@ def convert_softmax(net, node, module, builder):
     name = node['name']
     param = _get_attr(node)
 
-    if param != None and 'axis' in param:
+    if param is not None and 'axis' in param:
         axis = literal_eval(param['axis'])
         assert axis == 1, "Only softmax with axis 1 is supported"
 
