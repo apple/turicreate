@@ -105,7 +105,6 @@ void AnnotationBase::_addIndexColumn() {
 }
 
 void AnnotationBase::_checkDataSet() {
-  #ifndef NDEBUG
   size_t image_column_index = m_data->column_index(m_data_columns.at(0));
   flex_type_enum image_column_dtype = m_data->dtype().at(image_column_index);
   DASSERT_EQ(image_column_dtype, flex_type_enum::IMAGE);
@@ -115,7 +114,11 @@ void AnnotationBase::_checkDataSet() {
       m_data->dtype().at(annotation_column_index);
   DASSERT_TRUE(annotation_column_dtype == flex_type_enum::STRING ||
                annotation_column_dtype == flex_type_enum::INTEGER);
-  #endif
+
+#pragma unused(image_column_index)
+#pragma unused(image_column_dtype)
+#pragma unused(annotation_column_index)
+#pragma unused(annotation_column_dtype)
 }
 
 void AnnotationBase::_reshapeIndicies(size_t &start, size_t &end) {
