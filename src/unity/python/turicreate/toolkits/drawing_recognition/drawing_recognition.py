@@ -51,6 +51,18 @@ class Model(_HybridBlock):
         x = self.fc2(x)
         return F.softmax(x)
 
+def _raise_error_if_not_drawing_classifier_input_sframe(dataset, feature):
+    from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
+    _raise_error_if_not_sframe(dataset)
+    if feature not in dataset.column_names():
+        raise _ToolkitError("Feature column '%s' does not exist" % feature)
+    if (dataset[feature].dtype != _tc.Image 
+        and dataset[feature].dtype != list):
+        raise _ToolkitError("Feature column must contain images" 
+            + " or stroke-based drawings encoded as lists of strokes" 
+            + " where each stroke is a list of points and" 
+            + " each point is stored as a dictionary")
+
 def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap", model=None,
            classes=None, batch_size=256, max_iterations=0, verbose=True, 
            **kwargs):
@@ -58,6 +70,8 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap", mo
     Create a :class:`DrawingRecognition` model.
     """
     start_time = _time.time()
+
+    _raise_error_if_not_drawing_classifier_input_sframe(input_dataset, feature)
 
     is_stroke_input = (input_dataset[feature].dtype != _tc.Image)
 
