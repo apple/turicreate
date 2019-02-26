@@ -71,96 +71,6 @@ class _SFrameDataSource:
     def reset(self):
         self.cur_sample = 0
 
-
-# A wrapper around _SFrameDataSource that uses a dedicated worker thread for
-# performing SFrame operations.
-class _SFrameAsyncDataSource:
-    def __init__(self, sframe, feature_column, target_column,
-                 load_labels=True, shuffle=True, samples=None, buffer_size=256):
-        # This buffer_reset_queue will be used to communicate to the background
-        # thread. Each "message" is itself a _Queue that the background thread
-        # will use to communicate with us.
-        buffer_reset_queue = _Queue()
-        def worker():
-            data_source = _SFrameDataSource(
-                sframe, feature_column, target_column,
-                load_labels=load_labels, shuffle=shuffle, samples=samples)
-            while True:
-                buffer = buffer_reset_queue.get()
-                if buffer is None:
-                    break  # No more work to do, exit this thread.
-
-                for row in data_source:
-                    buffer.put(row)
-
-                    # Check if we've been reset (or told to exit).
-                    if not buffer_reset_queue.empty():
-                        break
-
-                # Always end each output buffer with None to signal completion.
-                buffer.put(None)
-                data_source.reset()
-        self.worker_thread = _Thread(target=worker)
-        self.worker_thread.daemon = True
-        self.worker_thread.start()
-
-        self.buffer_reset_queue = buffer_reset_queue
-        self.buffer_size = buffer_size
-
-        # Create the initial buffer and send it to the background thread, so
-        # that it begins sending us annotated images.
-        self.buffer = _Queue(self.buffer_size)
-        self.buffer_reset_queue.put(self.buffer)
-
-    def __del__(self):
-        # Tell the background thread to shut down.
-        self.buffer_reset_queue.put(None)
-
-        # Drain self.buffer to ensure that the background thread isn't stuck
-        # waiting to put something into it (and therefore never receives the
-        # shutdown request).
-        if self.buffer is not None:
-            while self.buffer.get() is not None:
-                pass
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        return self._next()
-
-    def next(self):
-        return self._next()
-
-    def _next(self):
-        # Guard against repeated calls after we've finished.
-        if self.buffer is None:
-            raise StopIteration
-
-        result = self.buffer.get()
-        if result is None:
-            # Any future attempt to get from self.buffer will block forever,
-            # since the background thread won't put anything else into it.
-            self.buffer = None
-            raise StopIteration
-
-        return result
-
-    def reset(self):
-        # Send a new buffer to the background thread, telling it to reset.
-        buffer = _Queue(self.buffer_size)
-        self.buffer_reset_queue.put(buffer)
-
-        # Drain self.buffer to ensure that the background thread isn't stuck
-        # waiting to put something into it (and therefore never receives the
-        # new buffer).
-        if self.buffer is not None:
-            while self.buffer.get() is not None:
-                pass
-
-        self.buffer = buffer
-
-
 class SFrameRecognitionIter(_mx.io.DataIter):
     def __init__(self,
                  sframe,
@@ -171,7 +81,6 @@ class SFrameRecognitionIter(_mx.io.DataIter):
                  target_column='label',
                  load_labels=True,
                  shuffle=True,
-                 io_thread_buffer_size=0,
                  epochs=None,
                  iterations=None):
 
@@ -194,18 +103,9 @@ class SFrameRecognitionIter(_mx.io.DataIter):
         if epochs is not None:
             sample_limits.append(epochs * len(sframe))
         samples = min(sample_limits) if len(sample_limits) > 0 else None
-        if io_thread_buffer_size > 0:
-            # Delegate SFrame operations to a background thread, leaving this
-            # thread to Python-based work of copying to MxNet and scheduling
-            # augmentation work in the MXNet backend.
-            self.data_source = _SFrameAsyncDataSource(
-                sframe, feature_column, target_column,
-                load_labels=load_labels, shuffle=shuffle, samples=samples,
-                buffer_size=io_thread_buffer_size * batch_size)
-        else:
-            self.data_source = _SFrameDataSource(
-                sframe, feature_column, target_column,
-                load_labels=load_labels, shuffle=shuffle, samples=samples)
+        self.data_source = _SFrameDataSource(
+            sframe, feature_column, target_column,
+            load_labels=load_labels, shuffle=shuffle, samples=samples)
 
         self._provide_data = [
             _mx.io.DataDesc(name='bitmap',

@@ -195,7 +195,6 @@ def convert(model, input_shape, class_labels=None, mode=None,
     
     if is_drawing_recognition:
         assert (len(output_names) == 1)
-        # import pdb; pdb.set_trace()
         assert (output_names[0].endswith('_softmax0_output'))
         output_names = ['probabilities']
     
@@ -257,7 +256,6 @@ def convert(model, input_shape, class_labels=None, mode=None,
         if verbose:
             print("%d : %s, %s" % (idx, name, op))
         converter_func = _get_layer_converter_fn(op)
-        print(converter_func)
         converter_func(net, node, model, builder)
 
     # Only finalize builder if it was created internally. Otherwise, leave it

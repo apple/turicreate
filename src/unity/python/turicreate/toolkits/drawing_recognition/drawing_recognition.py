@@ -115,7 +115,6 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap", mo
                  class_to_index=class_to_index,
                  load_labels=True,
                  shuffle=True,
-                 io_thread_buffer_size=0,
                  epochs=num_epochs,
                  iterations=None)
     model = Model(num_classes = len(classes))
@@ -262,7 +261,6 @@ class DrawingRecognition(_CustomModel):
                     target_column='label',
                     load_labels=True,
                     shuffle=False,
-                    io_thread_buffer_size=0,
                     epochs=1,
                     iterations=None)
 
