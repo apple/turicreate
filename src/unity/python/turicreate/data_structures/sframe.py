@@ -4990,13 +4990,11 @@ class SFrame(object):
 
 
         """
-        if column_name==None:
-            if len(self.column_names())==1:
+        if column_name is None:
+            if self.num_columns()==1:
+                column_name=self.column_names()[0]
                 if column_name_prefix==None:
-                    column_name=self.column_names()[0]
                     column_name_prefix=""
-                else:
-                    column_name=self.column_names()[0]
             else:
                 raise RuntimeError("column name needed to unpack")
         
