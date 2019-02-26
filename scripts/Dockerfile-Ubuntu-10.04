@@ -1,7 +1,9 @@
 # vim: set ft=dockerfile:
 
-# Based on Ubuntu 10.04 for compatibility with older glibc versions
-# Builds using GCC 4.8 for compatibility with older libstdc++ versions
+# This image is intended for building Turi Create for maximum compatibility
+# with various Linux distributions.
+# Based on Ubuntu 10.04 for compatibility with older glibc versions.
+# Builds using GCC 4.8 for compatibility with older libstdc++ versions.
 
 FROM ubuntu:10.04
 
@@ -13,6 +15,7 @@ ENV CC="gcc"
 ENV CXX="g++"
 ENV PATH="/usr/local/bin:${PATH}"
 ENV CCACHE_DIR=/build/.docker_ccache
+ENV CCACHE_COMPILERCHECK=content
 
 # Fix path to new location for older Ubuntu releases
 RUN sed -i -e 's/archive\./old-releases\./g' /etc/apt/sources.list

@@ -11,7 +11,7 @@ fi
 
 BUILD_TYPE=$1
 date
-(test -d $BUILD_TYPE) || ./configure
+(test -d $BUILD_TYPE) || ./configure --install-python-toolchain
 date
 source deps/env/bin/activate
 date

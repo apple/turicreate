@@ -40,7 +40,11 @@ print_help() {
   echo
   echo "  --debug                  Use debug build instead of release."
   echo
-  echo "  --docker                 Use docker to build in Ubuntu 10.04 with GCC 4.8."
+  echo "  --docker-python2.7       Use docker to build for Python 2.7 in Ubuntu 10.04 with GCC 4.8."
+  echo
+  echo "  --docker-python3.5       Use docker to build for Python 3.5 in Ubuntu 10.04 with GCC 4.8."
+  echo
+  echo "  --docker-python3.6       Use docker to build for Python 3.6 in Ubuntu 10.04 with GCC 4.8."
   echo
   echo "  --num_procs=n            Specify the number of proceses to run in parallel."
   echo
@@ -65,7 +69,9 @@ while [ $# -gt 0 ]
     --skip_smoke_test)      SKIP_SMOKE_TEST=1;;
     --release)              build_type="release";;
     --debug)                build_type="debug";;
-    --docker)               USE_DOCKER=1;;
+    --docker-python2.7)     USE_DOCKER=1;DOCKER_PYTHON=2.7;;
+    --docker-python3.5)     USE_DOCKER=1;DOCKER_PYTHON=3.5;;
+    --docker-python3.6)     USE_DOCKER=1;DOCKER_PYTHON=3.6;;
     --help)                 print_help ;;
     *) unknown_option $1 ;;
   esac
@@ -92,16 +98,10 @@ fi
 if [[ -n "${USE_DOCKER}" ]]; then
   # create the build image
   # (this should ideally be a no-op if the image exists and is current)
-  docker build $SCRIPT_DIR -t turicreate-temporary-build-image
+  docker build -f $SCRIPT_DIR/Dockerfile-Ubuntu-10.04 -t turicreate-temporary-build-image
 
   # set up arguments to make_wheel.sh within docker
-  make_wheel_args="--build_number=$BUILD_NUMBER --num_procs=$NUM_PROCS --skip_smoke_test"
-  if [[ -n $SKIP_BUILD ]]; then
-    make_wheel_args="$make_wheel_args --skip_build"
-  fi
-  if [[ -n $SKIP_TEST ]]; then
-    make_wheel_args="$make_wheel_args --skip_test"
-  fi
+  make_wheel_args="--build_number=$BUILD_NUMBER --num_procs=$NUM_PROCS --skip_smoke_test --skip_test"
   if [[ -n $SKIP_CPP_TEST ]]; then
     make_wheel_args="$make_wheel_args --skip_cpp_test"
   fi
@@ -115,6 +115,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
   # Run the make_wheel.sh script inside Docker
   docker run --rm \
     --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
+    -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}"
     -it turicreate-temporary-build-image \
     /build/scripts/make_wheel.sh \
     $make_wheel_args
