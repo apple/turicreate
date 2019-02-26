@@ -22,6 +22,7 @@ env:
 jobs:
   include:
     - stage: create_images
+      name: create_images_python2.7
       env: PYTHON_VERSION=2.7
       before_script:
         - mkdir -p $HOME/.docker_images
@@ -40,6 +41,7 @@ jobs:
         - docker save turicreate-temporary-build-image-14.04 | gzip -c > $HOME/.docker_images/image-14.04.gz
 
     - stage: create_images
+      name: create_images_python3.5
       env: PYTHON_VERSION=3.5
       before_script:
         - mkdir -p $HOME/.docker_images
@@ -55,6 +57,7 @@ jobs:
         - docker save turicreate-temporary-build-image-14.04 | gzip -c > $HOME/.docker_images/image-14.04.gz
 
     - stage: build
+      name: build_10.04_python2.7
       env: PYTHON_VERSION=2.7
       before_script:
         - docker load -i $HOME/.docker_images/image-10.04.gz
@@ -74,6 +77,7 @@ jobs:
         - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=3 --debug --skip_cpp_test --skip_test --skip_doc --docker-python${PYTHON_VERSION}
 
     - stage: build
+      name: build_10.04_python3.5
       env: PYTHON_VERSION=3.5
       before_script:
         - docker load -i $HOME/.docker_images/image-10.04.gz
@@ -93,7 +97,7 @@ jobs:
         - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=3 --debug --skip_cpp_test --skip_test --skip_doc --docker-python${PYTHON_VERSION}
 
     - stage: test
-      name: test_12.04
+      name: test_12.04_python2.7
       env: PYTHON_VERSION=2.7
       before_script:
         - docker load -i $HOME/.docker_images/image-12.04.gz
@@ -109,7 +113,7 @@ jobs:
 
     - stage: test
       env: PYTHON_VERSION=3.5
-      name: test_14.04
+      name: test_14.04_python3.5
       before_script:
         - docker load -i $HOME/.docker_images/image-14.04.gz
       script:
