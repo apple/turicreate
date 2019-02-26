@@ -4867,9 +4867,10 @@ class SFrame(object):
         Parameters
         ----------
         column_name : str, optional
-            If provided, it unpacks the column with the given name. If not provided
-            and only one column is present then the column is unpacked. In case of 
-            multiple columns, name must be provided to know which column to be unpacked.
+            Name of the unpacked column, if provided. If not provided
+            and only one column is present then the column is unpacked. 
+            In case of multiple columns, name must be provided to know 
+            which column to be unpacked.
         
 
         column_name_prefix : str, optional
@@ -4992,17 +4993,24 @@ class SFrame(object):
         """
         if column_name is None:
             if self.num_columns()==0:
-                raise RuntimeError("no column exists in the current SFrame")
-            if self.num_columns()==1:
-                column_name=self.column_names()[0]
-                if column_name_prefix==None:
+                raise RuntimeError("No column exists in the current SFrame")
+            unpack_columns,column_number=0,0
+            for t in range(self.num_columns()):
+                column_type = self.column_types()[t]
+                if column_type==type(dict()) or column_type==type(list()) or column_type==type(array.array('c','he')):
+                    
+                    if column_name is None:
+                        column_name = self.column_names()[t]
+                    else:
+                        raise RuntimeError("Column name needed to unpack")
+            if column_name is not None and column_name_prefix is None:
                     column_name_prefix=""
-            else:
-                raise RuntimeError("column name needed to unpack")
-        
+
+            if column_name is None:
+                raise RuntimeError("No columns can be unpacked")
 
         if column_name not in self.column_names():
-            raise KeyError("column '" + column_name + "' does not exist in current SFrame")
+            raise KeyError("Column '" + column_name + "' does not exist in current SFrame")
 
         if column_name_prefix is None:
             column_name_prefix = column_name
