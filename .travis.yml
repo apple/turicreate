@@ -18,13 +18,14 @@ env:
   global:
     - CI=false
     - OMP_NUM_THREADS=4
-  matrix:
-    - PYTHON_VERSION=2.7
-    - PYTHON_VERSION=3.5
 
 jobs:
   include:
     - stage: create_images
+      env:
+        matrix:
+          - PYTHON_VERSION=2.7
+          - PYTHON_VERSION=3.5
       before_script:
         - mkdir -p $HOME/.docker_images
         - (test -f $HOME/.docker_images/image-10.04.gz && docker load -i $HOME/.docker_images/image-10.04.gz) || true
@@ -42,6 +43,10 @@ jobs:
         - docker save turicreate-temporary-build-image-14.04 | gzip -c > $HOME/.docker_images/image-14.04.gz
 
     - stage: build
+      env:
+        matrix:
+          - PYTHON_VERSION=2.7
+          - PYTHON_VERSION=3.5
       before_script:
         - docker load -i $HOME/.docker_images/image-10.04.gz
       script:
@@ -61,6 +66,7 @@ jobs:
 
     - stage: test
       name: test_12.04
+      env: PYTHON_VERSION=2.7
       before_script:
         - docker load -i $HOME/.docker_images/image-12.04.gz
       script:
@@ -74,6 +80,10 @@ jobs:
           scripts/test_python.sh release python${PYTHON_VERSION}
 
     - stage: test
+      env:
+        matrix:
+          - PYTHON_VERSION=2.7
+          - PYTHON_VERSION=3.5
       name: test_14.04
       before_script:
         - docker load -i $HOME/.docker_images/image-14.04.gz
