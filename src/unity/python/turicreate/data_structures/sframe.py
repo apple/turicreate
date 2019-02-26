@@ -4991,6 +4991,8 @@ class SFrame(object):
 
         """
         if column_name is None:
+            if self.num_columns()==0:
+                raise RuntimeError("no column exists in the current SFrame")
             if self.num_columns()==1:
                 column_name=self.column_names()[0]
                 if column_name_prefix==None:
