@@ -98,7 +98,7 @@ fi
 if [[ -n "${USE_DOCKER}" ]]; then
   # create the build image
   # (this should ideally be a no-op if the image exists and is current)
-  docker build -f $SCRIPT_DIR/Dockerfile-Ubuntu-10.04 -t turicreate-temporary-build-image
+  docker build -f $SCRIPT_DIR/Dockerfile-Ubuntu-10.04 -t turicreate-temporary-build-image-10.04
 
   # set up arguments to make_wheel.sh within docker
   make_wheel_args="--build_number=$BUILD_NUMBER --num_procs=$NUM_PROCS --skip_smoke_test --skip_test"
@@ -116,7 +116,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
   docker run --rm \
     --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
     -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}"
-    -it turicreate-temporary-build-image \
+    -it turicreate-temporary-build-image-10.04 \
     /build/scripts/make_wheel.sh \
     $make_wheel_args
 

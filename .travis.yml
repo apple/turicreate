@@ -21,30 +21,29 @@ env:
   matrix:
     - PYTHON_VERSION=2.7
     - PYTHON_VERSION=3.5
-    - PYTHON_VERSION=3.6
 
 jobs:
   include:
     - stage: create_images
-      env:
-        - UBUNTU_VERSION=10.04
-        - UBUNTU_VERSION=12.04
-        - UBUNTU_VERSION=14.04
       before_script:
         - mkdir -p $HOME/.docker_images
-        - (test -f $HOME/.docker_images/image.gz && docker load -i $HOME/.docker_images/image.gz) || true
+        - (test -f $HOME/.docker_images/image-10.04.gz && docker load -i $HOME/.docker_images/image-10.04.gz) || true
+        - (test -f $HOME/.docker_images/image-12.04.gz && docker load -i $HOME/.docker_images/image-12.04.gz) || true
+        - (test -f $HOME/.docker_images/image-14.04.gz && docker load -i $HOME/.docker_images/image-14.04.gz) || true
       script:
         # clear target out of the cache, in case it's there from a previous build
         - rm -rf target
-        - docker build -f scripts/Dockerfile-Ubuntu-${UBUNTU_VERSION} -t turicreate-temporary-build-image
+        - docker build -f scripts/Dockerfile-Ubuntu-10.04 -t turicreate-temporary-build-image-10.04
+        - docker build -f scripts/Dockerfile-Ubuntu-12.04 -t turicreate-temporary-build-image-12.04
+        - docker build -f scripts/Dockerfile-Ubuntu-14.04 -t turicreate-temporary-build-image-14.04
       before_cache:
-        - docker save turicreate-temporary-build-image | gzip -c > $HOME/.docker_images/image.gz
+        - docker save turicreate-temporary-build-image-10.04 | gzip -c > $HOME/.docker_images/image-10.04.gz
+        - docker save turicreate-temporary-build-image-12.04 | gzip -c > $HOME/.docker_images/image-12.04.gz
+        - docker save turicreate-temporary-build-image-14.04 | gzip -c > $HOME/.docker_images/image-14.04.gz
 
     - stage: build
-      env:
-        - UBUNTU_VERSION=10.04
       before_script:
-        - docker load -i $HOME/.docker_images/image.gz
+        - docker load -i $HOME/.docker_images/image-10.04.gz
       script:
         # We sometimes get `error: No space left on device`
         # The workaround seems to be to force blocking I/O
@@ -61,11 +60,9 @@ jobs:
         - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=3 --debug --skip_cpp_test --skip_test --skip_doc --docker-python${PYTHON_VERSION}
 
     - stage: test
-      env:
-        - UBUNTU_VERSION=12.04
-        - UBUNTU_VERSION=14.04
+      name: test_12.04
       before_script:
-        - docker load -i $HOME/.docker_images/image.gz
+        - docker load -i $HOME/.docker_images/image-12.04.gz
       script:
         # Remove style transfer unit test due to out-of-memory error.
         # Remove some additional tests temporarily to get under the two-hour timeout.
@@ -73,5 +70,19 @@ jobs:
         - docker run --rm \
           --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
           -e "VIRTUALENV=virtualenv --python=python${PYTHON_VERSION}"
-          -it turicreate-temporary-build-image \
+          -it turicreate-temporary-build-image-12.04 \
+          scripts/test_python.sh release python${PYTHON_VERSION}
+
+    - stage: test
+      name: test_14.04
+      before_script:
+        - docker load -i $HOME/.docker_images/image-14.04.gz
+      script:
+        # Remove style transfer unit test due to out-of-memory error.
+        # Remove some additional tests temporarily to get under the two-hour timeout.
+        - rm src/unity/python/turicreate/test/test_style_transfer.py src/unity/python/turicreate/test/test_object_detector.py
+        - docker run --rm \
+          --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
+          -e "VIRTUALENV=virtualenv --python=python${PYTHON_VERSION}"
+          -it turicreate-temporary-build-image-14.04 \
           scripts/test_python.sh release python${PYTHON_VERSION}
