@@ -6,7 +6,11 @@
 #include <string>
 #include <vector>
 
+#include <export.hpp>
+
 #include <flexible_type/flexible_type.hpp>
+
+#include <unity/lib/extensions/ml_model.hpp>
 
 #include <unity/lib/unity_sarray.hpp>
 #include <unity/lib/unity_sframe.hpp>
@@ -27,8 +31,14 @@ namespace annotate {
  * If the user forgets to assign a return variable in their Python script this
  * global will hold the last annotated sframe
  */
-struct annotation_global {
+struct EXPORT annotation_global : public ml_model_base {
   std::shared_ptr<unity_sframe> annotation_sframe;
+
+  std::shared_ptr<unity_sframe> get_value() { return annotation_sframe; }
+
+  BEGIN_CLASS_MEMBER_REGISTRATION("annotation_global")
+  REGISTER_GETTER("annotation_sframe", annotation_global::get_value)
+  END_CLASS_MEMBER_REGISTRATION
 };
 
 /**
@@ -38,7 +48,7 @@ struct annotation_global {
  * expose this functionality to the capi so that other developers have the
  * ability to tie their own annotations UI's to use this api.
  */
-class AnnotationBase {
+class EXPORT AnnotationBase : public ml_model_base {
 public:
   AnnotationBase(){};
   AnnotationBase(const std::shared_ptr<unity_sframe> &data,
@@ -64,6 +74,26 @@ public:
 
   virtual bool
   setAnnotations(const annotate_spec::Annotations &annotations) = 0;
+
+  BEGIN_BASE_CLASS_MEMBER_REGISTRATION()
+
+  IMPORT_BASE_CLASS_REGISTRATION(ml_model_base);
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("annotate", AnnotationBase::annotate,
+                                       "path_to_client");
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("returnAnnotations",
+                                       AnnotationBase::returnAnnotations,
+                                       "drop_null");
+  register_defaults("returnAnnotations", {{"drop_null", false}});
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_annotation_registry",
+                                       AnnotationBase::get_annotation_registry);
+
+  // TODO: Figure out how to plumb `::google::protobuf::MessageLite` to variant
+  //       type.
+
+  END_CLASS_MEMBER_REGISTRATION
 
 protected:
   std::shared_ptr<unity_sframe> m_data;
