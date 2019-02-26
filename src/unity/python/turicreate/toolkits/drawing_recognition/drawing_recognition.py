@@ -153,7 +153,7 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap", mo
     if verbose:
         print(hr)   # progress table footer
     state = {
-        'model': model,
+        '_model': model,
         '_class_to_index': class_to_index,
         'num_classes': len(classes),
         'classes': classes,
@@ -177,8 +177,8 @@ class DrawingRecognition(_CustomModel):
 
     def _get_native_state(self):
         state = self.__proxy__.get_state()
-        mxnet_params = state['model'].collect_params()
-        state['model'] = _mxnet_utils.get_gluon_net_params_state(mxnet_params)
+        mxnet_params = state['_model'].collect_params()
+        state['_model'] = _mxnet_utils.get_gluon_net_params_state(mxnet_params)
         return state
 
     def _get_version(self):
@@ -191,9 +191,9 @@ class DrawingRecognition(_CustomModel):
         ctx = _mxnet_utils.get_mxnet_context(max_devices=state['batch_size'])
         net_params = net.collect_params()
         _mxnet_utils.load_net_params_from_state(
-            net_params, state['model'], ctx=ctx 
+            net_params, state['_model'], ctx=ctx 
             )
-        state['model'] = net
+        state['_model'] = net
         return DrawingRecognition(state)
 
     def export_coreml(self, filename, verbose=False):
@@ -207,7 +207,7 @@ class DrawingRecognition(_CustomModel):
         s_image = _mx.sym.Variable('bitmap',
             shape=image_shape, dtype=_np.float32)
 
-        net = _copy(self.model)
+        net = _copy(self._model)
         s_ymap = net(s_image)
         
         mod = _mx.mod.Module(symbol=s_ymap, label_names=None, data_names=['bitmap'])
@@ -241,9 +241,9 @@ class DrawingRecognition(_CustomModel):
         coreml_model.save(filename)
         return coreml_model
 
-    def _predict_with_options(self, input_dataset):
+    def _predict_with_probabilities(self, input_dataset):
         """
-            Predict with options for what kind of SFrame should be returned.
+        Predict with probabilities.
         """
 
         is_stroke_input = (input_dataset['bitmap'].dtype != _tc.Image)
@@ -288,7 +288,7 @@ class DrawingRecognition(_CustomModel):
             else:
                 ctx0 = ctx
 
-            z = self.model(batch_data).asnumpy()
+            z = self._model(batch_data).asnumpy()
             predicted = z.argmax(axis=1)
             classes = self.classes
             
@@ -331,7 +331,7 @@ class DrawingRecognition(_CustomModel):
               The order matches that of the 'sections' object.
         """
         model_fields = [
-            ('Model', 'model')
+            ('Model', '_model')
         ]
         training_fields = [
             ('Training time', 'training_time'),
@@ -388,7 +388,7 @@ class DrawingRecognition(_CustomModel):
             >>> print results['accuracy']
         """
 
-        predicted = self._predict_with_options(dataset)
+        predicted = self._predict_with_probabilities(dataset)
 
         target = _tc.SFrame({'label': _tc.SArray(dataset['label'])}) # fix this
         
@@ -422,59 +422,9 @@ class DrawingRecognition(_CustomModel):
         return ret
 
     def predict(self, dataset):
-        """ read this and fix:::
-            Predict object instances in an sframe of images.
-            
-            Parameters
-            ----------
-            dataset : SFrame | SArray | turicreate.Image
-            The images on which to perform object detection.
-            If dataset is an SFrame, it must have a column with the same name
-            as the feature column during training. Additional columns are
-            ignored.
-            
-            confidence_threshold : float
-            Only return predictions above this level of confidence. The
-            threshold can range from 0 to 1.
-            
-            verbose : bool
-            If True, prints prediction progress.
-            
-            Returns
-            -------
-            out : SArray
-            An SArray with model predictions. Each element corresponds to
-            an image and contains a list of dictionaries. Each dictionary
-            describes an object instances that was found in the image. If
-            `dataset` is a single image, the return value will be a single
-            prediction.
-            
-            See Also
-            --------
-            evaluate
-            
-            Examples
-            --------
-            .. sourcecode:: python
-            
-            # Make predictions
-            >>> pred = model.predict(data)
-            
-            # Stack predictions, for a better overview
-            >>> turicreate.object_detector.util.stack_annotations(pred)
-            Data:
-            +--------+------------+-------+-------+-------+-------+--------+
-            | row_id | confidence | label |   x   |   y   | width | height |
-            +--------+------------+-------+-------+-------+-------+--------+
-            |   0    |    0.98    |  dog  | 123.0 | 128.0 |  80.0 | 182.0  |
-            |   0    |    0.67    |  cat  | 150.0 | 183.0 | 129.0 | 101.0  |
-            |   1    |    0.8     |  dog  |  50.0 | 432.0 |  65.0 |  98.0  |
-            +--------+------------+-------+-------+-------+-------+--------+
-            [3 rows x 7 columns]
-            
-            # Visualize predictions by generating a new column of marked up images
-            >>> data['image_pred'] = turicreate.object_detector.util.draw_bounding_boxes(data['image'], data['predictions'])
-            """
-        predicted = self._predict_with_options(dataset)
+        """ 
+        Docfix coming soon
+        """
+        predicted = self._predict_with_probabilities(dataset)
         return predicted['label']
 

@@ -63,10 +63,6 @@ class _SFrameDataSource:
         
         if self.load_labels:
             label = row[self.target_column]
-            if label is None:
-                label = []
-            elif type(label) is dict:
-                label = [label]
         else:
             label = None
 

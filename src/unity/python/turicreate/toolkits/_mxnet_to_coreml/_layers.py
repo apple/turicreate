@@ -65,10 +65,10 @@ def convert_reshape(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         An mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -81,7 +81,7 @@ def convert_reshape(net, node, module, builder):
     name = node['name']
     param = _get_attr(node)
     target_shape = literal_eval(param['shape'])
-    if param['shape'] == '(0, -1)':
+    if target_shape == (0, -1):
         convert_flatten(net, node, module, builder)
         return
 
@@ -102,10 +102,10 @@ def convert_transpose(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -127,10 +127,10 @@ def convert_flatten(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -149,10 +149,10 @@ def convert_activation(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -197,10 +197,10 @@ def make_convert_elementwise(mode):
 
         Parameters
         ----------
-        network: net
+        net: network
             A mxnet network object.
 
-        layer: node
+        node: layer
             Node to convert.
 
         module: module
@@ -226,10 +226,10 @@ def convert_elementwise_mul_scalar(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -257,10 +257,10 @@ def convert_elementwise_div_scalar(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -288,10 +288,10 @@ def convert_dense(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -330,10 +330,10 @@ def convert_convolution(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -424,10 +424,10 @@ def convert_pooling(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -503,10 +503,10 @@ def convert_batchnorm(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -553,10 +553,10 @@ def convert_concat(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -578,10 +578,10 @@ def convert_deconvolution(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -664,10 +664,10 @@ def convert_upsample(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -791,10 +791,10 @@ def convert_embedding(net, node, model, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     model: model
@@ -837,10 +837,10 @@ def convert_elementwise_add(net, node, model, builder):
 
         Parameters
         ----------
-        network: net
+        net: network
         A mxnet network object.
 
-        layer: node
+        node: layer
         Node to convert.
 
         model: model
@@ -859,10 +859,10 @@ def convert_scalar_add(net, node, model, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     model: model
@@ -886,10 +886,10 @@ def convert_scalar_multiply(net, node, model, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     model: model
@@ -911,10 +911,10 @@ def convert_scalar_divide(net, node, model, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     model: model
@@ -936,10 +936,10 @@ def convert_instancenorm(net, node, model, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     model: model
