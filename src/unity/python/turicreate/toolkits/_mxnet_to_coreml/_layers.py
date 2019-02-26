@@ -728,10 +728,10 @@ def convert_softmax(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
