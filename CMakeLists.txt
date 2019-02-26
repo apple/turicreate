@@ -404,7 +404,28 @@ if (MARCH)
 elseif (ARCH)
   set(ARCH_FLAG "-arch ${ARCH}")
 else()
-  set(MARCH "nehalem")  # Old CPU archetecture; enables SSE up to 4.2 + popcnt + other instructions. 
+  check_cxx_compiler_flag(-march=nehalem HAS_MARCH_NEHALEM)
+  if(HAS_MARCH_NEHALEM)
+    # Old CPU archetecture; enables SSE up to 4.2 + popcnt + other instructions.
+    # Supported on GCC 4.9.x and above
+    set(MARCH "nehalem")
+  else()
+    # Old CPU archetecture; enables SSE up to 3
+    # Supported on at least GCC 4.8.x, maybe earlier
+    set(MARCH "core2")
+    check_cxx_compiler_flag(-msse4 HAS_M_SSE4)
+    if(HAS_M_SSE4)
+      set(MARCH "${MARCH} -msse4")
+    endif()
+    check_cxx_compiler_flag(-msse4 HAS_M_SSE4_1)
+    if(HAS_M_SSE4_1)
+      set(MARCH "${MARCH} -msse4.1")
+    endif()
+    check_cxx_compiler_flag(-msse4 HAS_M_SSE4_2)
+    if(HAS_M_SSE4_2)
+      set(MARCH "${MARCH} -msse4.2")
+    endif()
+  endif()
   set(ARCH_FLAG "-march=${MARCH}")
 endif()
 
