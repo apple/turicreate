@@ -16,6 +16,11 @@ WORKSPACE=${SCRIPT_DIR}/..
 build_type="release"
 #export LD_LIBRARY_PATH=${ROOT_DIR}/deps/local/lib:${ROOT_DIR}/deps/local/lib64:$LD_LIBRARY_PATH
 
+unknown_option() {
+  echo "Unknown option $1. Exiting."
+  exit 1
+}
+
 print_help() {
   echo "Builds the release branch and produce a wheel to the targets directory "
   echo
