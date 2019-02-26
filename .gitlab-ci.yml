@@ -10,6 +10,7 @@ build_wheel_debug_linux_python27:
   variables:
     CI: 'false'
   script:
+    - apk add bash
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --debug --docker-python2.7
   artifacts:
     expire_in: 2 weeks
@@ -22,6 +23,7 @@ build_wheel_linux_python27:
   image: docker
   stage: build
   script:
+    - apk add bash
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python2.7
   artifacts:
     expire_in: 2 weeks
@@ -34,6 +36,7 @@ build_wheel_linux_python35:
   image: docker
   stage: build
   script:
+    - apk add bash
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.5
   artifacts:
     expire_in: 2 weeks
@@ -46,6 +49,7 @@ build_wheel_linux_python36:
   image: docker
   stage: build
   script:
+    - apk add bash
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.6
   artifacts:
     expire_in: 2 weeks
@@ -175,6 +179,7 @@ test_python_linux_python27:
   dependencies:
     - build_wheel_linux_python27
   script:
+    - apk add bash
     - bash scripts/test_python.sh release python2.7
   artifacts:
     when: always
@@ -190,6 +195,7 @@ test_python_linux_python35:
   dependencies:
     - build_wheel_linux_python35
   script:
+    - apk add bash
     - bash scripts/test_python.sh release python3.5
   artifacts:
     when: always
@@ -205,6 +211,7 @@ test_python_linux_python36:
   dependencies:
     - build_wheel_linux_python36
   script:
+    - apk add bash
     - bash scripts/test_python.sh release python3.6
   artifacts:
     when: always
