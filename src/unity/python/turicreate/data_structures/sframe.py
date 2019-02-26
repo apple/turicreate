@@ -4994,7 +4994,7 @@ class SFrame(object):
         if column_name is None:
             if self.num_columns()==0:
                 raise RuntimeError("No column exists in the current SFrame")
-            unpack_columns,column_number=0,0
+            
             for t in range(self.num_columns()):
                 column_type = self.column_types()[t]
                 if column_type==type(dict()) or column_type==type(list()) or column_type==type(array.array('c','he')):
@@ -5003,17 +5003,18 @@ class SFrame(object):
                         column_name = self.column_names()[t]
                     else:
                         raise RuntimeError("Column name needed to unpack")
-            if column_name is not None and column_name_prefix is None:
-                    column_name_prefix=""
+            
 
             if column_name is None:
                 raise RuntimeError("No columns can be unpacked")
-
-        if column_name not in self.column_names():
+            elif column_name_prefix is None:
+                column_name_prefix=""
+        elif column_name not in self.column_names():
             raise KeyError("Column '" + column_name + "' does not exist in current SFrame")
 
         if column_name_prefix is None:
             column_name_prefix = column_name
+
 
         new_sf = self[column_name].unpack(column_name_prefix, column_types, na_value, limit)
 
