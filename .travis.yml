@@ -22,10 +22,7 @@ env:
 jobs:
   include:
     - stage: create_images
-      env:
-        matrix:
-          - PYTHON_VERSION=2.7
-          - PYTHON_VERSION=3.5
+      env: PYTHON_VERSION=2.7
       before_script:
         - mkdir -p $HOME/.docker_images
         - (test -f $HOME/.docker_images/image-10.04.gz && docker load -i $HOME/.docker_images/image-10.04.gz) || true
@@ -42,11 +39,42 @@ jobs:
         - docker save turicreate-temporary-build-image-12.04 | gzip -c > $HOME/.docker_images/image-12.04.gz
         - docker save turicreate-temporary-build-image-14.04 | gzip -c > $HOME/.docker_images/image-14.04.gz
 
+    - stage: create_images
+      env: PYTHON_VERSION=3.5
+      before_script:
+        - mkdir -p $HOME/.docker_images
+        - (test -f $HOME/.docker_images/image-10.04.gz && docker load -i $HOME/.docker_images/image-10.04.gz) || true
+        - (test -f $HOME/.docker_images/image-14.04.gz && docker load -i $HOME/.docker_images/image-14.04.gz) || true
+      script:
+        # clear target out of the cache, in case it's there from a previous build
+        - rm -rf target
+        - docker build -f scripts/Dockerfile-Ubuntu-10.04 -t turicreate-temporary-build-image-10.04 .
+        - docker build -f scripts/Dockerfile-Ubuntu-14.04 -t turicreate-temporary-build-image-14.04 .
+      before_cache:
+        - docker save turicreate-temporary-build-image-10.04 | gzip -c > $HOME/.docker_images/image-10.04.gz
+        - docker save turicreate-temporary-build-image-14.04 | gzip -c > $HOME/.docker_images/image-14.04.gz
+
     - stage: build
-      env:
-        matrix:
-          - PYTHON_VERSION=2.7
-          - PYTHON_VERSION=3.5
+      env: PYTHON_VERSION=2.7
+      before_script:
+        - docker load -i $HOME/.docker_images/image-10.04.gz
+      script:
+        # We sometimes get `error: No space left on device`
+        # The workaround seems to be to force blocking I/O
+        # See https://github.com/travis-ci/travis-ci/issues/8902 and
+        # https://github.com/travis-ci/travis-ci/issues/4704#issuecomment-348435959
+        # Check whether O_NONBLOCK is set (probably should print "1"):
+        - python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); print(flags&os.O_NONBLOCK);'
+        # Turn off O_NONBLOCK:
+        - python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK);'
+        # Check whether O_NONBLOCK is set (should print "0"):
+        - python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); print(flags&os.O_NONBLOCK);'
+
+        # Build the wheel
+        - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=3 --debug --skip_cpp_test --skip_test --skip_doc --docker-python${PYTHON_VERSION}
+
+    - stage: build
+      env: PYTHON_VERSION=3.5
       before_script:
         - docker load -i $HOME/.docker_images/image-10.04.gz
       script:
@@ -80,10 +108,7 @@ jobs:
           scripts/test_python.sh release python${PYTHON_VERSION}
 
     - stage: test
-      env:
-        matrix:
-          - PYTHON_VERSION=2.7
-          - PYTHON_VERSION=3.5
+      env: PYTHON_VERSION=3.5
       name: test_14.04
       before_script:
         - docker load -i $HOME/.docker_images/image-14.04.gz
