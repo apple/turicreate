@@ -63,9 +63,9 @@ def _raise_error_if_not_drawing_classifier_input_sframe(dataset, feature):
             + " where each stroke is a list of points and" 
             + " each point is stored as a dictionary")
 
-def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap", model=None,
-           classes=None, batch_size=256, max_iterations=0, verbose=True, 
-           **kwargs):
+def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap", 
+           target="label", model=None, classes=None, batch_size=256, 
+           max_iterations=0, verbose=True, **kwargs):
     """
     Create a :class:`DrawingRecognition` model.
     """
@@ -78,7 +78,7 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap", mo
     if is_stroke_input:
         # This only works on macOS right now
         dataset = _extensions._drawing_recognition_prepare_data(
-            input_dataset, "bitmap", "label")
+            input_dataset, feature, target)
     else:
         dataset = input_dataset
 
@@ -91,7 +91,7 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap", mo
     iteration = 0
 
     if classes is None:
-        classes = dataset['label'].unique()
+        classes = dataset[target].unique()
     classes = sorted(classes)
     class_to_index = {name: index for index, name in enumerate(classes)}
 
@@ -124,8 +124,8 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap", mo
             progress['last_time'] = cur_time
 
     loader = _SFrameRecognitionIter(dataset, batch_size,
-                 feature_column='bitmap',
-                 target_column='label',
+                 feature_column=feature,
+                 target_column=target,
                  class_to_index=class_to_index,
                  load_labels=True,
                  shuffle=True,
@@ -174,7 +174,10 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap", mo
         'batch_size': batch_size,
         'training_loss': cur_loss,
         'training_time': training_time,
-        'max_iterations': max_iterations
+        'max_iterations': max_iterations,
+        'target': target,
+        'feature': feature,
+        'num_examples': len(input_dataset)
     }
     return DrawingRecognition(state)
 
@@ -346,10 +349,11 @@ class DrawingRecognition(_CustomModel):
             ('Model', '_model')
         ]
         training_fields = [
-            ('Training time', 'training_time'),
-            ('Training iterations', 'max_iterations'),
-            ('Batch size', 'batch_size'),
-            ('Final loss (specific to model)', 'training_loss'),
+            ('Training Time', 'training_time'),
+            ('Training Iterations', 'max_iterations'),
+            ('Number of Examples', 'num_examples'),
+            ('Batch Size', 'batch_size'),
+            ('Final Loss (specific to model)', 'training_loss'),
         ]
 
         section_titles = ['Schema', 'Training summary']
