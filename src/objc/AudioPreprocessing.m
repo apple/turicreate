@@ -12,19 +12,19 @@
 
 
 // TODO: Make some of these parameters to the model
-const int inputLength = 15600;
-const NSUInteger windowLength = 400;
-const int hopLength = 160;
+static const int inputLength = 15600;
+static const NSUInteger windowLength = 400;
+static const int hopLength = 160;
 
-const float minFrequency = 125;
-const float maxFrequency = 7500;
+static const float minFrequency = 125;
+static const float maxFrequency = 7500;
 
-const NSUInteger numBands = 64;
-const double sampleRate = 16000;
-const NSUInteger fftLength = 512;
-const int spectrumSize = 257;
+static const NSUInteger numBands = 64;
+static const double sampleRate = 16000;
+static const NSUInteger fftLength = 512;
+static const int spectrumSize = 257;
 
-const float log_offset = 0.01;
+static const float log_offset = 0.01;
 
 
 API_AVAILABLE(macos(10.13))
@@ -37,22 +37,22 @@ static void setErrorMsg(const char* errorMsg,  NSError** error) {
 }
 
 static inline float hzToMel(float freq) {
-    return 1127.0 * log(1 + freq/700.0f);
+    return 1127.0f * logf(1 + freq/700.0f);
 }
 
 
-@interface PowerSpectrum : NSObject
+@interface TCSoundClassifierPowerSpectrum : NSObject
 
 @property (readonly) float* PowerSpectrum;
 
--(id)initWithFFTLength:(NSUInteger)fftLength withFrameLength:(NSUInteger)frameLength;
+-(id)initWithFFTLength:(NSUInteger)fftLength frameLength:(NSUInteger)frameLength;
 -(void)applyHammingWindow:(float*)signal numSamples:(NSUInteger)numSamples;
 -(void)calculatePowerSpectrum:(float*)signal numSamples:(NSUInteger)numSamples;
 
 @end
 
 
-@implementation PowerSpectrum {
+@implementation TCSoundClassifierPowerSpectrum {
     float *_hammingWindow, *_workingFrame;
 
     DSPSplitComplex _spectrum;
@@ -62,7 +62,7 @@ static inline float hzToMel(float freq) {
 }
 
 
--(id)initWithFFTLength:(NSUInteger)fftLength withFrameLength:(NSUInteger)frameLength {
+-(id)initWithFFTLength:(NSUInteger)fftLength frameLength:(NSUInteger)frameLength {
     
     self = [super init];
     
@@ -116,16 +116,14 @@ static inline float hzToMel(float freq) {
 -(void)_generateHammingWindow:(NSUInteger)frameLength {
     // Don't use vDSP_hamm_window because it uses a slightly different implementation
     for(size_t i = 0; i < frameLength; i++) {
-        _hammingWindow[i] = 0.5 - 0.5*cos((2*M_PI*i)/(frameLength));
+        _hammingWindow[i] = 0.5f - 0.5f*cosf((2*M_PI*i)/(frameLength));
     }
 }
 
-@end // Power Spectrum implementation
+@end // TCSoundClassifierPowerSpectrum
 
 
-@interface MelFrequencyFilterBank : NSObject
-
-@property (readonly) float* MelSpectrum;
+@interface TCSoundClassifierMelFrequencyFilterBank : NSObject
 
 -(id)initWithMinFrequency:(float)minFreq
              maxFrequency:(float)maxFrequency
@@ -136,10 +134,10 @@ static inline float hzToMel(float freq) {
 -(void)apply:(const float*)powerSpectrum
       output:(float *)out;
 
-@end   // MelFrequencyFilterBank interface
+@end
 
 
-@implementation MelFrequencyFilterBank {
+@implementation TCSoundClassifierMelFrequencyFilterBank {
     float _minFreq, _maxFreq, _sampleRate;
     NSUInteger _numMelBands, _numBins;
     NSMutableArray* _filters;
@@ -223,6 +221,13 @@ static inline float hzToMel(float freq) {
     return self;
 }
 
+-(void)dealloc {
+  for(size_t i = 0; i < _numMelBands; i++) {
+    free(_filterBanks[i]);
+  }
+  free(_filterBanks);
+}
+
 -(void)apply:(const float *)powerSpectrum
       output:(float *)out {
 
@@ -233,15 +238,13 @@ static inline float hzToMel(float freq) {
   }
 }
 
-@end   // MelFrequencyFilterBank implementation
+@end   //  TCSoundClassifierMelFrequencyFilterBank
 
 
-
-@implementation TCSoundClassifierPreprocessing
-
-PowerSpectrum* _powerSpectrum;
-MelFrequencyFilterBank* _melFilterBank;
-
+@implementation TCSoundClassifierPreprocessing {
+  TCSoundClassifierPowerSpectrum* _powerSpectrum;
+  TCSoundClassifierMelFrequencyFilterBank* _melFilterBank;
+}
 
 - (nullable instancetype)initWithModelDescription:(MLModelDescription *)modelDescription
                               parameterDictionary:(NSDictionary<NSString *, id> *)parameters
@@ -289,14 +292,14 @@ MelFrequencyFilterBank* _melFilterBank;
     return nil;
   }
 
-  _powerSpectrum = [[PowerSpectrum alloc] initWithFFTLength:fftLength
-                                            withFrameLength:windowLength];
+  _powerSpectrum = [[TCSoundClassifierPowerSpectrum alloc] initWithFFTLength:fftLength
+                                                             frameLength:windowLength];
 
-  _melFilterBank = [[MelFrequencyFilterBank alloc] initWithMinFrequency:minFrequency
-                                                           maxFrequency:maxFrequency
-                                                             sampleRate:sampleRate
-                                                            numMelBands:numBands
-                                                                numBins:fftLength/2];
+  _melFilterBank = [[TCSoundClassifierMelFrequencyFilterBank alloc] initWithMinFrequency:minFrequency
+                                                                            maxFrequency:maxFrequency
+                                                                              sampleRate:sampleRate
+                                                                             numMelBands:numBands
+                                                                                 numBins:fftLength/2];
   
   return self;
 }
@@ -362,4 +365,4 @@ MelFrequencyFilterBank* _melFilterBank;
   return result;
 }
 
-@end
+@end  // TCSoundClassifierPreprocessing
