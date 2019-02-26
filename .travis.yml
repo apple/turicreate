@@ -34,9 +34,9 @@ jobs:
       script:
         # clear target out of the cache, in case it's there from a previous build
         - rm -rf target
-        - docker build -f scripts/Dockerfile-Ubuntu-10.04 -t turicreate-temporary-build-image-10.04
-        - docker build -f scripts/Dockerfile-Ubuntu-12.04 -t turicreate-temporary-build-image-12.04
-        - docker build -f scripts/Dockerfile-Ubuntu-14.04 -t turicreate-temporary-build-image-14.04
+        - docker build -f scripts/Dockerfile-Ubuntu-10.04 -t turicreate-temporary-build-image-10.04 .
+        - docker build -f scripts/Dockerfile-Ubuntu-12.04 -t turicreate-temporary-build-image-12.04 .
+        - docker build -f scripts/Dockerfile-Ubuntu-14.04 -t turicreate-temporary-build-image-14.04 .
       before_cache:
         - docker save turicreate-temporary-build-image-10.04 | gzip -c > $HOME/.docker_images/image-10.04.gz
         - docker save turicreate-temporary-build-image-12.04 | gzip -c > $HOME/.docker_images/image-12.04.gz
