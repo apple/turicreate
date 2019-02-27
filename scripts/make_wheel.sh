@@ -2,7 +2,7 @@
 
 set -e
 
-TC_BUILD_IMAGE_VERSION=1.0
+TC_BUILD_IMAGE_VERSION=1.0.1
 
 # Force LD_LIBRARY_PATH to look up from deps
 # Otherwise, binaries run during compilation will prefer system libraries,

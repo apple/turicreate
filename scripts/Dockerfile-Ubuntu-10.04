@@ -65,11 +65,35 @@ RUN make -j4
 RUN make install
 RUN ldconfig
 
+# Install Python 3.5 from source
+ADD https://www.python.org/ftp/python/3.5.6/Python-3.5.6.tgz /src/Python-3.5.6.tgz
+WORKDIR /src
+RUN tar xvf Python-3.5.6.tgz
+WORKDIR /src/Python-3.5.6
+RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enable-loadable-sqlite-extensions
+RUN make -j4
+RUN make install
+RUN ldconfig
+
+# Install Python 3.6 from source
+ADD https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tgz /src/Python-3.6.8.tgz
+WORKDIR /src
+RUN tar xvf Python-3.6.8.tgz
+WORKDIR /src/Python-3.6.8
+RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enable-loadable-sqlite-extensions
+RUN make -j4
+RUN make install
+RUN ldconfig
+
 # Install pip and virtualenv
 ADD https://bootstrap.pypa.io/get-pip.py /src/get-pip.py
 WORKDIR /src
-RUN python get-pip.py
-RUN pip install virtualenv
+RUN python2.7 get-pip.py
+RUN pip2.7 install virtualenv
+RUN python3.5 get-pip.py
+RUN pip3.5 install virtualenv
+RUN python3.6 get-pip.py
+RUN pip3.6 install virtualenv
 
 # Start at repo root (mounted into Docker)
 WORKDIR /build

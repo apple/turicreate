@@ -18,7 +18,7 @@ env:
   global:
     - CI=false
     - OMP_NUM_THREADS=4
-    - TC_BUILD_IMAGE_VERSION=1.0
+    - TC_BUILD_IMAGE_VERSION=1.0.1
 
 jobs:
   include:
