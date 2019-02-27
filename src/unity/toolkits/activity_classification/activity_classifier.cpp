@@ -189,15 +189,18 @@ void activity_classifier::init_train(
     std::string session_id_column_name, variant_type validation_data,
     std::map<std::string, flexible_type> opts)
 {
-  // Read user options.
-  init_options(opts);
+  // Extract feature names from options.
   std::vector<std::string> feature_column_names;
   auto features_it = opts.find("features");
   if (features_it != opts.end()) {
     for (const flexible_type& feature : features_it->second.to<flex_list>()) {
       feature_column_names.push_back(feature.to<std::string>());
     }
+
+    // Don't pass "features" to init_options, which doesn't recognize it.
+    opts.erase(features_it);
   }
+  init_options(opts);
 
   // Bind the data to a data iterator.
   data_iterator::parameters data_params;
