@@ -119,7 +119,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
   docker run --rm \
     --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
     -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
-    -it turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} \
+    turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} \
     /build/scripts/make_wheel.sh \
     $make_wheel_args
 
