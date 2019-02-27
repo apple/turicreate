@@ -145,7 +145,7 @@ build_wheel_mac_10_14_python36:
       - shared_objects.tar
       - target/
 
-build_recommender_macos_10_14:
+build_dylib_macos_10_14:
   tags:
     - macos10.14
   stage: build
@@ -157,9 +157,10 @@ build_recommender_macos_10_14:
   artifacts:
     expire_in: 2 weeks
     paths:
+      - release/src/objc/libAudioPreprocessing.dylib
       - release/src/objc/libRecommender.dylib
 
-build_recommender_ios_12:
+build_dylib_ios_12:
   tags:
     - macos10.14
   stage: build
@@ -171,6 +172,7 @@ build_recommender_ios_12:
   artifacts:
     expire_in: 2 weeks
     paths:
+      - release/src/objc/libAudioPreprocessing.dylib
       - release/src/objc/libRecommender.dylib
 
 build_cpp_tests_linux:
