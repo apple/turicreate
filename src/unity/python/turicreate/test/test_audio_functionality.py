@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright © 2017 Apple Inc. All rights reserved.
+# Copyright © 2019 Apple Inc. All rights reserved.
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
@@ -24,7 +24,7 @@ from scipy.io import wavfile
 import turicreate as tc
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sarray
 from turicreate.toolkits._main import ToolkitError
-from turicreate.toolkits.sound_classifier import mel_features
+from turicreate.toolkits.sound_classifier import mel_features, vggish_input
 
 
 class ReadAudioTest(unittest.TestCase):
@@ -302,3 +302,45 @@ class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabel
 
         self.is_binary_classification = False
         self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio')
+
+
+@unittest.skipIf(platform != 'darwin', 'Can not test something which uses Core ML.')
+class CoreMlCustomModelPreprocessingTest(unittest.TestCase):
+    sample_rate = 16000
+    frame_length = int(.975 * sample_rate)
+
+    def test_case(self):
+        model = coremltools.proto.Model_pb2.Model()
+        model.customModel.className = 'TCSoundClassifierPreprocessing'
+        model.specificationVersion = 3
+
+        # Input - float array with shape (frame_length)
+        x = model.description.input.add()
+        x.name = 'x'
+        x.type.multiArrayType.dataType = FeatureTypes_pb2.ArrayFeatureType.ArrayDataType.Value('FLOAT32')
+        input_range = x.type.multiArrayType.shapeRange.sizeRanges.add()
+        input_range.lowerBound = self.frame_length
+        input_range.upperBound = self.frame_length
+
+        # Output - float array with shape (frame_length, 64)
+        y = model.description.output.add()
+        y.name = 'y'
+        y.type.multiArrayType.dataType = FeatureTypes_pb2.ArrayFeatureType.ArrayDataType.Value('FLOAT32')
+        output_range = y.type.multiArrayType.shapeRange.sizeRanges.add()
+        output_range.upperBound = self.frame_length
+        output_range.lowerBound = self.frame_length
+        output_range = y.type.multiArrayType.shapeRange.sizeRanges.add()
+        output_range.upperBound = 64
+        output_range.lowerBound = 64
+
+        with TempDirectory() as temp_dir:
+            model = coremltools.models.MLModel(model)
+            model_path = temp_dir + '/test.mlmodel'
+            model.save(model_path)
+            model = coremltools.models.MLModel(model_path)
+
+        input_data = np.arange(self.frame_length) * 0.00001
+        y1 = vggish_input.waveform_to_examples(input_data, self.sample_rate)[0]
+        y2 = model.predict({'x': np.float32(input_data)})['y']
+
+        self.assertTrue(np.isclose(y1, y2, atol=1e-04).all())
