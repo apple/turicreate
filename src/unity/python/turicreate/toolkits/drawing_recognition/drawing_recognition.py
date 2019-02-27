@@ -7,10 +7,6 @@
 import turicreate as _tc
 import numpy as _np
 import time as _time
-import mxnet as _mx
-from mxnet import autograd as _autograd
-from mxnet.gluon import nn as _nn
-from mxnet.gluon import HybridBlock as _HybridBlock
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits import evaluation as _evaluation
@@ -18,38 +14,9 @@ import turicreate.toolkits._internal_utils as _tkutl
 from ._sframe_loader import SFrameRecognitionIter as _SFrameRecognitionIter
 from .. import _mxnet_utils
 from turicreate import extensions as _extensions
-from copy import copy as _copy
 
 BITMAP_WIDTH = 28
 BITMAP_HEIGHT = 28
-
-class Model(_HybridBlock):
-    def __init__(self, num_classes, **kwargs):
-        super(Model, self).__init__(**kwargs)
-        with self.name_scope():
-            # layers created in name_scope will inherit name space
-            # from parent layer.
-            self.conv1 = _nn.Conv2D(channels=16, kernel_size=(3,3), 
-                                    padding=(1,1), activation='relu')
-            self.pool1 = _nn.MaxPool2D(pool_size=(2,2))
-            self.conv2 = _nn.Conv2D(channels=32, kernel_size=(3,3), 
-                                    padding=(1,1), activation='relu')
-            self.pool2 = _nn.MaxPool2D(pool_size=(2,2))
-            self.conv3 = _nn.Conv2D(channels=64, kernel_size=(3,3), 
-                                    padding=(1,1), activation='relu')
-            self.pool3 = _nn.MaxPool2D(pool_size=(2,2))
-            self.flatten = _nn.Flatten()
-            self.fc1 = _nn.Dense(units=128, activation='relu')
-            self.fc2 = _nn.Dense(units=num_classes, activation=None)
-
-    def hybrid_forward(self, F, x):
-        x = self.pool1(self.conv1(x))
-        x = self.pool2(self.conv2(x))
-        x = self.pool3(self.conv3(x))
-        x = self.flatten(x)
-        x = self.fc1(x)
-        x = self.fc2(x)
-        return F.softmax(x)
 
 def _raise_error_if_not_drawing_classifier_input_sframe(dataset, feature):
     from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
@@ -69,6 +36,10 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap",
     """
     Create a :class:`DrawingRecognition` model.
     """
+    import mxnet as _mx
+    from mxnet import autograd as _autograd
+    from ._model_architecture import Model as _Model
+    
     start_time = _time.time()
 
     _raise_error_if_not_drawing_classifier_input_sframe(input_dataset, feature)
@@ -131,7 +102,8 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap",
                  shuffle=True,
                  epochs=num_epochs,
                  iterations=None)
-    model = Model(num_classes = len(classes))
+
+    model = _Model(num_classes = len(classes))
     softmax_cross_entropy = _mx.gluon.loss.SoftmaxCrossEntropyLoss()
     
     ctx = _mxnet_utils.get_mxnet_context(max_devices=batch_size)
@@ -203,7 +175,9 @@ class DrawingRecognition(_CustomModel):
     @classmethod
     def _load_version(cls, state, version):
         _tkutl._model_version_check(version, 1)
-        net = Model(num_classes = len(state['classes']), prefix = 'model0_')
+
+        from ._model_architecture import Model as _Model
+        net = _Model(num_classes = len(state['classes']), prefix = 'model0_')
         ctx = _mxnet_utils.get_mxnet_context(max_devices=state['batch_size'])
         net_params = net.collect_params()
         _mxnet_utils.load_net_params_from_state(
@@ -215,14 +189,14 @@ class DrawingRecognition(_CustomModel):
     def export_coreml(self, filename, verbose=False):
         import mxnet as _mx
         from .._mxnet_to_coreml import _mxnet_converter
-        import coremltools
-        from coremltools.models import datatypes, neural_network
+        import coremltools as _coremltools
 
         batch_size = 1
         image_shape = (batch_size,) + (1, BITMAP_WIDTH, BITMAP_HEIGHT)
         s_image = _mx.sym.Variable('bitmap',
             shape=image_shape, dtype=_np.float32)
 
+        from copy import copy as _copy
         net = _copy(self._model)
         s_ymap = net(s_image)
         
@@ -271,6 +245,8 @@ class DrawingRecognition(_CustomModel):
         """
         Predict with probabilities.
         """
+
+        import mxnet as _mx
 
         is_stroke_input = (input_dataset['bitmap'].dtype != _tc.Image)
 
@@ -340,6 +316,8 @@ class DrawingRecognition(_CustomModel):
 
     def _get_summary_struct(self):
         """
+        @TODO: Make this function better, more informative, and hide the 
+               network architecture.
         Returns a structured description of the model, including (where
         relevant) the schema of the training data, description of the training
         data, training statistics, and model hyperparameters.
