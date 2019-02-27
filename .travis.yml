@@ -34,19 +34,19 @@ jobs:
         # clear target out of the cache, in case it's there from a previous build
         - rm -rf target
         # build each, if needed (skip if version is already in the cache)
-        - (docker image ls tc-build-image-10.04:${TC_BUILD_IMAGE_VERSION} | grep tc-build-image) ||
-           docker build -f scripts/Dockerfile-Ubuntu-10.04 -t tc-build-image-10.04:${TC_BUILD_IMAGE_VERSION} . &&
-           docker tag turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION}
-        - (docker image ls tc-build-image-12.04:${TC_BUILD_IMAGE_VERSION} | grep tc-build-image) ||
-           docker build -f scripts/Dockerfile-Ubuntu-12.04 -t tc-build-image-12.04:${TC_BUILD_IMAGE_VERSION} . &&
-           docker tag turicreate/build-image-12.04:${TC_BUILD_IMAGE_VERSION}
-        - (docker image ls tc-build-image-14.04:${TC_BUILD_IMAGE_VERSION} | grep tc-build-image) ||
-           docker build -f scripts/Dockerfile-Ubuntu-14.04 -t tc-build-image-14.04:${TC_BUILD_IMAGE_VERSION} . &&
-           docker tag turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION}
+        - (docker image ls turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) ||
+           docker build -f scripts/Dockerfile-Ubuntu-10.04 -t turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} . &&
+           docker tag turicreate/build-image-10.04 turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION}
+        - (docker image ls turicreate/build-image-12.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) ||
+           docker build -f scripts/Dockerfile-Ubuntu-12.04 -t turicreate/build-image-12.04:${TC_BUILD_IMAGE_VERSION} . &&
+           docker tag turicreate/build-image-12.04 turicreate/build-image-12.04:${TC_BUILD_IMAGE_VERSION}
+        - (docker image ls turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) ||
+           docker build -f scripts/Dockerfile-Ubuntu-14.04 -t turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} . &&
+           docker tag turicreate/build-image-14.04 turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION}
       before_cache:
-        - docker save tc-build-image-10.04:${TC_BUILD_IMAGE_VERSION} | gzip -c > $HOME/.docker_images/image-10.04.gz
-        - docker save tc-build-image-12.04:${TC_BUILD_IMAGE_VERSION} | gzip -c > $HOME/.docker_images/image-12.04.gz
-        - docker save tc-build-image-14.04:${TC_BUILD_IMAGE_VERSION} | gzip -c > $HOME/.docker_images/image-14.04.gz
+        - docker save turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} | gzip -c > $HOME/.docker_images/image-10.04.gz
+        - docker save turicreate/build-image-12.04:${TC_BUILD_IMAGE_VERSION} | gzip -c > $HOME/.docker_images/image-12.04.gz
+        - docker save turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} | gzip -c > $HOME/.docker_images/image-14.04.gz
 
     - stage: create_images
       name: create_images_python3.5
@@ -59,15 +59,15 @@ jobs:
         # clear target out of the cache, in case it's there from a previous build
         - rm -rf target
         # build each, if needed (skip if version is already in the cache)
-        - (docker image ls tc-build-image-10.04:${TC_BUILD_IMAGE_VERSION} | grep tc-build-image) ||
-           docker build -f scripts/Dockerfile-Ubuntu-10.04 -t tc-build-image-10.04:${TC_BUILD_IMAGE_VERSION} . &&
-           docker tag turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION}
-        - (docker image ls tc-build-image-14.04:${TC_BUILD_IMAGE_VERSION} | grep tc-build-image) ||
-           docker build -f scripts/Dockerfile-Ubuntu-14.04 -t tc-build-image-14.04:${TC_BUILD_IMAGE_VERSION} . &&
-           docker tag turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION}
+        - (docker image ls turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) ||
+           docker build -f scripts/Dockerfile-Ubuntu-10.04 -t turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} . &&
+           docker tag turicreate/build-image-10.04 turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION}
+        - (docker image ls turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) ||
+           docker build -f scripts/Dockerfile-Ubuntu-14.04 -t turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} . &&
+           docker tag turicreate/build-image-14.04 turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION}
       before_cache:
-        - docker save tc-build-image-10.04:${TC_BUILD_IMAGE_VERSION} | gzip -c > $HOME/.docker_images/image-10.04.gz
-        - docker save tc-build-image-14.04:${TC_BUILD_IMAGE_VERSION} | gzip -c > $HOME/.docker_images/image-14.04.gz
+        - docker save turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} | gzip -c > $HOME/.docker_images/image-10.04.gz
+        - docker save turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} | gzip -c > $HOME/.docker_images/image-14.04.gz
 
     - stage: build
       name: build_10.04_python2.7
@@ -121,7 +121,7 @@ jobs:
         - docker run --rm
           --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated
           -e "VIRTUALENV=virtualenv --python=python${PYTHON_VERSION}"
-          -it tc-build-image-12.04
+          -it turicreate/build-image-12.04
           scripts/test_python.sh release python${PYTHON_VERSION}
 
     - stage: test
@@ -136,5 +136,5 @@ jobs:
         - docker run --rm
           --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated
           -e "VIRTUALENV=virtualenv --python=python${PYTHON_VERSION}"
-          -it tc-build-image-14.04
+          -it turicreate/build-image-14.04
           scripts/test_python.sh release python${PYTHON_VERSION}
