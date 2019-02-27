@@ -4,11 +4,15 @@ stages:
 
 build_wheel_debug_linux_python27:
   tags:
-    - dockerized
-  image: docker
+    - docker-in-docker
+  services:
+    - docker:dind
+  image: docker:stable
   stage: build
   variables:
     CI: 'false'
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
   script:
     - apk add bash
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --debug --docker-python2.7
@@ -19,9 +23,14 @@ build_wheel_debug_linux_python27:
 
 build_wheel_linux_python27:
   tags:
-    - dockerized
-  image: docker
+    - docker-in-docker
+  services:
+    - docker:dind
+  image: docker:stable
   stage: build
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
   script:
     - apk add bash
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python2.7
@@ -32,9 +41,14 @@ build_wheel_linux_python27:
 
 build_wheel_linux_python35:
   tags:
-    - dockerized
-  image: docker
+    - docker-in-docker
+  services:
+    - docker:dind
+  image: docker:stable
   stage: build
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
   script:
     - apk add bash
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.5
@@ -45,9 +59,14 @@ build_wheel_linux_python35:
 
 build_wheel_linux_python36:
   tags:
-    - dockerized
-  image: docker
+    - docker-in-docker
+  services:
+    - docker:dind
+  image: docker:stable
   stage: build
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
   script:
     - apk add bash
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.6
@@ -125,9 +144,14 @@ build_recommender_ios_12:
 
 test_cpp_linux:
   tags:
-    - dockerized
-  image: docker
+    - docker-in-docker
+  services:
+    - docker:dind
+  image: docker:stable
   stage: test
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
   dependencies:
     - build_wheel_linux_python27
   script:
@@ -173,9 +197,14 @@ test_cpp_mac_10_14:
 
 test_python_linux_python27:
   tags:
-    - dockerized
-  image: docker
+    - docker-in-docker
+  services:
+    - docker:dind
+  image: docker:stable
   stage: test
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
   dependencies:
     - build_wheel_linux_python27
   script:
@@ -189,9 +218,14 @@ test_python_linux_python27:
 
 test_python_linux_python35:
   tags:
-    - dockerized
-  image: docker
+    - docker-in-docker
+  services:
+    - docker:dind
+  image: docker:stable
   stage: test
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
   dependencies:
     - build_wheel_linux_python35
   script:
@@ -205,9 +239,14 @@ test_python_linux_python35:
 
 test_python_linux_python36:
   tags:
-    - dockerized
-  image: docker
+    - docker-in-docker
+  services:
+    - docker:dind
+  image: docker:stable
   stage: test
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
   dependencies:
     - build_wheel_linux_python36
   script:
@@ -281,9 +320,14 @@ test_python_mac_python36_10_14:
 
 scenario_tests_linux_python27:
   tags:
-    - dockerized
-  image: docker
+    - docker-in-docker
+  services:
+    - docker:dind
+  image: docker:stable
   stage: test
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
   dependencies:
     - build_wheel_linux_python27
   script:
@@ -292,9 +336,14 @@ scenario_tests_linux_python27:
 
 scenario_tests_linux_python35:
   tags:
-    - dockerized
-  image: docker
+    - docker-in-docker
+  services:
+    - docker:dind
+  image: docker:stable
   stage: test
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
   dependencies:
     - build_wheel_linux_python35
   script:
@@ -303,9 +352,14 @@ scenario_tests_linux_python35:
 
 scenario_tests_linux_python36:
   tags:
-    - dockerized
-  image: docker
+    - docker-in-docker
+  services:
+    - docker:dind
+  image: docker:stable
   stage: test
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
   dependencies:
     - build_wheel_linux_python36
   script:
