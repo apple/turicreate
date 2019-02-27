@@ -114,6 +114,7 @@ EXPORT bool tc_plot_finished_streaming(const tc_plot* plot,
 
 #ifdef __APPLE__
 #ifndef TC_BUILD_IOS
+
 EXPORT void tc_plot_render_final_into_context(const tc_plot* plot,
                                               tc_plot_variation variation,
                                               CGContextRef context,
@@ -145,6 +146,21 @@ EXPORT bool tc_plot_render_next_into_context(const tc_plot* plot,
   ERROR_HANDLE_END(error, true);
 
 }
+
+EXPORT void tc_plot_render_vega_spec_into_context(const char * vega_spec,
+                                                  CGContextRef context,
+                                                  const tc_parameters *params,
+                                                  tc_error** error) {
+  ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
+
+  CHECK_NOT_NULL(error, vega_spec, "vega_spec");
+  CHECK_NOT_NULL(error, context, "context");
+  turi::visualization::Plot::render(vega_spec, context);
+
+  ERROR_HANDLE_END(error);
+}
+
 #endif // TC_BUILD_IOS
 #endif // __APPLE__
 
