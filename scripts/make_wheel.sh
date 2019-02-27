@@ -2,6 +2,8 @@
 
 set -e
 
+TC_BUILD_IMAGE_VERSION=1.0
+
 # Force LD_LIBRARY_PATH to look up from deps
 # Otherwise, binaries run during compilation will prefer system libraries,
 # which might not use the correct glibc version.
@@ -98,7 +100,9 @@ fi
 if [[ -n "${USE_DOCKER}" ]]; then
   # create the build image
   # (this should ideally be a no-op if the image exists and is current)
-  docker build -f $SCRIPT_DIR/Dockerfile-Ubuntu-10.04 -t turicreate-temporary-build-image-10.04 .
+  (docker image ls tc-build-image-14.04:${TC_BUILD_IMAGE_VERSION} | grep tc-build-image) || \
+   docker build -f $SCRIPT_DIR/Dockerfile-Ubuntu-10.04 -t tc-build-image-10.04 . && \
+   docker tag turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION}
 
   # set up arguments to make_wheel.sh within docker
   make_wheel_args="--build_number=$BUILD_NUMBER --num_procs=$NUM_PROCS --skip_smoke_test --skip_test"
