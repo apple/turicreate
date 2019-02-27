@@ -4997,7 +4997,7 @@ class SFrame(object):
             
             for t in range(self.num_columns()):
                 column_type = self.column_types()[t]
-                if column_type==type(dict()) or column_type==type(list()) or column_type==type(array.array('c','he')):
+                if column_type==dict or column_type==list or column_type==array.array:
                     
                     if column_name is None:
                         column_name = self.column_names()[t]
