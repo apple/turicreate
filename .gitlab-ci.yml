@@ -1,6 +1,48 @@
 stages:
+  - create_images
   - build
   - test
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - .docker_ccache
+
+variables:
+  TC_BUILD_IMAGE_VERSION: '1.0.1'
+
+create_images:
+  tags:
+    - docker-in-docker
+  services:
+    - docker:dind
+  image: docker:stable
+  stage: create_images
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+  script:
+    - mkdir -p .docker_images
+    - (test -f .docker_images/image-10.04.gz && docker load -i .docker_images/image-10.04.gz) || true
+    - (test -f .docker_images/image-12.04.gz && docker load -i .docker_images/image-12.04.gz) || true
+    - (test -f .docker_images/image-14.04.gz && docker load -i .docker_images/image-14.04.gz) || true
+    # clear target out of the cache, in case it's there from a previous build
+    - rm -rf target
+    # build each, if needed (skip if version is already in the cache)
+    - (docker image ls turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) ||
+        docker build -f scripts/Dockerfile-Ubuntu-10.04 -t turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} .
+    - (docker image ls turicreate/build-image-12.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) ||
+        docker build -f scripts/Dockerfile-Ubuntu-12.04 -t turicreate/build-image-12.04:${TC_BUILD_IMAGE_VERSION} .
+    - (docker image ls turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) ||
+        docker build -f scripts/Dockerfile-Ubuntu-14.04 -t turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} .
+    - docker save turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} | gzip -c > .docker_images/image-10.04.gz
+    - docker save turicreate/build-image-12.04:${TC_BUILD_IMAGE_VERSION} | gzip -c > .docker_images/image-12.04.gz
+    - docker save turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} | gzip -c > .docker_images/image-14.04.gz
+  artifacts:
+    expire_in: 2 weeks
+    paths:
+      - .docker_images/
+
 
 build_wheel_debug_linux_python27:
   tags:
@@ -15,6 +57,7 @@ build_wheel_debug_linux_python27:
     DOCKER_DRIVER: overlay2
   script:
     - apk add bash
+    - docker load -i .docker_images/image-10.04.gz
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --debug --docker-python2.7
   artifacts:
     expire_in: 2 weeks
@@ -33,6 +76,7 @@ build_wheel_linux_python27:
     DOCKER_DRIVER: overlay2
   script:
     - apk add bash
+    - docker load -i .docker_images/image-10.04.gz
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python2.7
   artifacts:
     expire_in: 2 weeks
@@ -51,6 +95,7 @@ build_wheel_linux_python35:
     DOCKER_DRIVER: overlay2
   script:
     - apk add bash
+    - docker load -i .docker_images/image-10.04.gz
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.5
   artifacts:
     expire_in: 2 weeks
@@ -69,6 +114,7 @@ build_wheel_linux_python36:
     DOCKER_DRIVER: overlay2
   script:
     - apk add bash
+    - docker load -i .docker_images/image-10.04.gz
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.6
   artifacts:
     expire_in: 2 weeks
