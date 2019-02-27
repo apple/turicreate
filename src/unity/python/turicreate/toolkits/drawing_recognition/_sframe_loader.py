@@ -108,7 +108,7 @@ class SFrameRecognitionIter(_mx.io.DataIter):
             load_labels=load_labels, shuffle=shuffle, samples=samples)
 
         self._provide_data = [
-            _mx.io.DataDesc(name='bitmap',
+            _mx.io.DataDesc(name=feature_column,
                             shape=(batch_size, 1, 28, 28),
                             layout='NCHW')
         ]

@@ -193,15 +193,15 @@ class DrawingRecognition(_CustomModel):
 
         batch_size = 1
         image_shape = (batch_size,) + (1, BITMAP_WIDTH, BITMAP_HEIGHT)
-        s_image = _mx.sym.Variable('bitmap',
+        s_image = _mx.sym.Variable(self.feature,
             shape=image_shape, dtype=_np.float32)
 
         from copy import copy as _copy
         net = _copy(self._model)
         s_ymap = net(s_image)
         
-        mod = _mx.mod.Module(symbol=s_ymap, label_names=None, data_names=['bitmap'])
-        mod.bind(for_training=False, data_shapes=[('bitmap', image_shape)])
+        mod = _mx.mod.Module(symbol=s_ymap, label_names=None, data_names=[self.feature])
+        mod.bind(for_training=False, data_shapes=[(self.feature, image_shape)])
         mod.init_params()
         
         arg_params, aux_params = mod.get_params()
@@ -217,9 +217,9 @@ class DrawingRecognition(_CustomModel):
 
         coreml_model = _mxnet_converter.convert(mod, mode='classifier',
                                 class_labels=self.classes,
-                                input_shape=[('bitmap', image_shape)],
+                                input_shape=[(self.feature, image_shape)],
                                 builder=None, verbose=verbose,
-                                preprocessor_args={'image_input_names':['bitmap']})
+                                preprocessor_args={'image_input_names':[self.feature]})
 
         DESIRED_OUTPUT_NAME = self.target + "probabilities"
         spec = coreml_model._spec
@@ -393,7 +393,7 @@ class DrawingRecognition(_CustomModel):
 
         predicted = self._predict_with_probabilities(dataset)
 
-        target = _tc.SFrame({'label': _tc.SArray(dataset['label'])}) # fix this
+        target = _tc.SFrame({self.target: _tc.SArray(dataset[self.target])}) # fix this
         
         avail_metrics = ['accuracy', 'auc', 'precision', 'recall',
                          'f1_score', 'confusion_matrix', 'roc_curve']
@@ -408,19 +408,19 @@ class DrawingRecognition(_CustomModel):
 
         ret = {}
         if 'accuracy' in metrics:
-            ret['accuracy'] = _evaluation.accuracy(target['label'], predicted['label'])
+            ret['accuracy'] = _evaluation.accuracy(target[self.target], predicted[self.target])
         if 'auc' in metrics:
-            ret['auc'] = _evaluation.auc(target['label'], predicted['probability'], index_map=self._class_to_index)
+            ret['auc'] = _evaluation.auc(target[self.target], predicted['probability'], index_map=self._class_to_index)
         if 'precision' in metrics:
-            ret['precision'] = _evaluation.precision(target['label'], predicted['label'])
+            ret['precision'] = _evaluation.precision(target[self.target], predicted[self.target])
         if 'recall' in metrics:
-            ret['recall'] = _evaluation.recall(target['label'], predicted['label'])
+            ret['recall'] = _evaluation.recall(target[self.target], predicted[self.target])
         if 'f1_score' in metrics:
-            ret['f1_score'] = _evaluation.f1_score(target['label'], predicted['label'])
+            ret['f1_score'] = _evaluation.f1_score(target[self.target], predicted[self.target])
         if 'confusion_matrix' in metrics:
-            ret['confusion_matrix'] = _evaluation.confusion_matrix(target['label'], predicted['label'])
+            ret['confusion_matrix'] = _evaluation.confusion_matrix(target[self.target], predicted[self.target])
         if 'roc_curve' in metrics:
-            ret['roc_curve'] = _evaluation.roc_curve(target['label'], predicted['probability'], index_map=self._class_to_index)
+            ret['roc_curve'] = _evaluation.roc_curve(target[self.target], predicted['probability'], index_map=self._class_to_index)
         
         return ret
 
@@ -429,5 +429,5 @@ class DrawingRecognition(_CustomModel):
         Docfix coming soon
         """
         predicted = self._predict_with_probabilities(dataset)
-        return predicted['label']
+        return predicted[self.target]
 
