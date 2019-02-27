@@ -101,8 +101,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
   # create the build image
   # (this should ideally be a no-op if the image exists and is current)
   (docker image ls turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) || \
-   docker build -f $SCRIPT_DIR/Dockerfile-Ubuntu-10.04 -t turicreate/build-image-10.04 . && \
-   docker tag turicreate/build-image-10.04 turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION}
+   docker build -f $SCRIPT_DIR/Dockerfile-Ubuntu-10.04 -t turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} .
 
   # set up arguments to make_wheel.sh within docker
   make_wheel_args="--build_number=$BUILD_NUMBER --num_procs=$NUM_PROCS --skip_smoke_test --skip_test"
@@ -120,7 +119,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
   docker run --rm \
     --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
     -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}"
-    -it turicreate-temporary-build-image-10.04 \
+    -it turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} \
     /build/scripts/make_wheel.sh \
     $make_wheel_args
 

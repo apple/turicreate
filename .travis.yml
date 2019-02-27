@@ -35,14 +35,11 @@ jobs:
         - rm -rf target
         # build each, if needed (skip if version is already in the cache)
         - (docker image ls turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) ||
-           docker build -f scripts/Dockerfile-Ubuntu-10.04 -t turicreate/build-image-10.04 . &&
-           docker tag turicreate/build-image-10.04 turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION}
+           docker build -f scripts/Dockerfile-Ubuntu-10.04 -t turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} .
         - (docker image ls turicreate/build-image-12.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) ||
-           docker build -f scripts/Dockerfile-Ubuntu-12.04 -t turicreate/build-image-12.04 . &&
-           docker tag turicreate/build-image-12.04 turicreate/build-image-12.04:${TC_BUILD_IMAGE_VERSION}
+           docker build -f scripts/Dockerfile-Ubuntu-12.04 -t turicreate/build-image-12.04:${TC_BUILD_IMAGE_VERSION} .
         - (docker image ls turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) ||
-           docker build -f scripts/Dockerfile-Ubuntu-14.04 -t turicreate/build-image-14.04 . &&
-           docker tag turicreate/build-image-14.04 turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION}
+           docker build -f scripts/Dockerfile-Ubuntu-14.04 -t turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} .
       before_cache:
         - docker save turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} | gzip -c > $HOME/.docker_images/image-10.04.gz
         - docker save turicreate/build-image-12.04:${TC_BUILD_IMAGE_VERSION} | gzip -c > $HOME/.docker_images/image-12.04.gz
@@ -60,11 +57,9 @@ jobs:
         - rm -rf target
         # build each, if needed (skip if version is already in the cache)
         - (docker image ls turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) ||
-           docker build -f scripts/Dockerfile-Ubuntu-10.04 -t turicreate/build-image-10.04 . &&
-           docker tag turicreate/build-image-10.04 turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION}
+           docker build -f scripts/Dockerfile-Ubuntu-10.04 -t turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} .
         - (docker image ls turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) ||
-           docker build -f scripts/Dockerfile-Ubuntu-14.04 -t turicreate/build-image-14.04 . &&
-           docker tag turicreate/build-image-14.04 turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION}
+           docker build -f scripts/Dockerfile-Ubuntu-14.04 -t turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} .
       before_cache:
         - docker save turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} | gzip -c > $HOME/.docker_images/image-10.04.gz
         - docker save turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} | gzip -c > $HOME/.docker_images/image-14.04.gz
@@ -118,10 +113,11 @@ jobs:
         # Remove style transfer unit test due to out-of-memory error.
         # Remove some additional tests temporarily to get under the two-hour timeout.
         - rm src/unity/python/turicreate/test/test_style_transfer.py src/unity/python/turicreate/test/test_object_detector.py
+        # TODO move this into test_wheel.sh (same command line args as make_wheel)
         - docker run --rm
           --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated
           -e "VIRTUALENV=virtualenv --python=python${PYTHON_VERSION}"
-          -it turicreate/build-image-12.04
+          -it turicreate/build-image-12.04:${TC_BUILD_IMAGE_VERSION}
           scripts/test_python.sh release python${PYTHON_VERSION}
 
     - stage: test
@@ -133,8 +129,9 @@ jobs:
         # Remove style transfer unit test due to out-of-memory error.
         # Remove some additional tests temporarily to get under the two-hour timeout.
         - rm src/unity/python/turicreate/test/test_style_transfer.py src/unity/python/turicreate/test/test_object_detector.py
+        # TODO move this into test_wheel.sh (same command line args as make_wheel)
         - docker run --rm
           --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated
           -e "VIRTUALENV=virtualenv --python=python${PYTHON_VERSION}"
-          -it turicreate/build-image-14.04
+          -it turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION}
           scripts/test_python.sh release python${PYTHON_VERSION}
