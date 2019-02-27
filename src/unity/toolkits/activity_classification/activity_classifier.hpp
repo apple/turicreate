@@ -78,14 +78,14 @@ class EXPORT activity_classifier: public ml_model_base {
       "    `target` will be used.\n"
       "prediction_window : int\n"
       "    Number of time units between predictions. For example, if your input\n"
-      "    data is sampled at 100Hz, and the `prediction_window` is set to 100,\n"
-      "    then this model will make a prediction every 1 second.\n"
+      "    data is sampled at 100Hz, and the `prediction_window` is set to 100\n"
+      "    (the default), then this model will make a prediction every 1 second.\n"
       "max_iterations : int\n"
       "    Maximum number of iterations/epochs made over the data during the\n"
-      "    training phase.\n"
+      "    training phase. The default is 10 iterations.\n"
       "batch_size : int\n"
       "    Number of sequence chunks used per training step. Must be greater than\n"
-      "    the number of GPUs in use.\n"
+      "    the number of GPUs in use. The default is 32.\n"
   );
 
   END_CLASS_MEMBER_REGISTRATION
