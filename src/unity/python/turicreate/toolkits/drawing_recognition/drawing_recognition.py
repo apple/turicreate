@@ -221,8 +221,7 @@ class DrawingRecognition(_CustomModel):
                                 builder=None, verbose=verbose,
                                 preprocessor_args={'image_input_names':['bitmap']})
 
-        DESIRED_OUTPUT_NAME = "probabilities"
-        class_label_output_index = 1
+        DESIRED_OUTPUT_NAME = self.target + "probabilities"
         spec = coreml_model._spec
         class_label_output_index = 0 if spec.description.output[0].name == "classLabel" else 1
         probabilities_output_index = 1-class_label_output_index
@@ -234,7 +233,7 @@ class DrawingRecognition(_CustomModel):
         from turicreate.toolkits import _coreml_utils
         model_type = "drawing classifier"
         spec.description.metadata.shortDescription = _coreml_utils._mlmodel_short_description(model_type)
-        spec.description.input[0].shortDescription = u'bitmap'
+        spec.description.input[0].shortDescription = self.feature
         spec.description.output[probabilities_output_index].shortDescription = 'Prediction probabilities'
         spec.description.output[class_label_output_index].shortDescription = 'Class Label of Top Prediction'
         from coremltools.models.utils import save_spec as _save_spec
@@ -248,20 +247,20 @@ class DrawingRecognition(_CustomModel):
 
         import mxnet as _mx
 
-        is_stroke_input = (input_dataset['bitmap'].dtype != _tc.Image)
+        is_stroke_input = (input_dataset[self.feature].dtype != _tc.Image)
 
         if is_stroke_input:
             # @TODO: Make it work for Linux
             # @TODO: Make it work if labels are not passed in.
             dataset = _extensions._drawing_recognition_prepare_data(
-                input_dataset, "bitmap", "label")
+                input_dataset, self.feature, self.target)
         else:
             dataset = input_dataset
 
         loader = _SFrameRecognitionIter(dataset, self.batch_size,
                     class_to_index=self._class_to_index,
-                    feature_column='bitmap',
-                    target_column='label',
+                    feature_column=self.feature,
+                    target_column=self.target,
                     load_labels=True,
                     shuffle=False,
                     epochs=1,
@@ -299,7 +298,7 @@ class DrawingRecognition(_CustomModel):
             all_probabilities[index:index+z.shape[0]] = z
             index += z.shape[0]
         
-        return (_tc.SFrame({'label': _tc.SArray(all_predicted),
+        return (_tc.SFrame({self.target: _tc.SArray(all_predicted),
             'probability': _tc.SArray(all_probabilities)}))
      
     def __repr__(self):
