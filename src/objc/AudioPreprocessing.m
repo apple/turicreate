@@ -216,8 +216,9 @@ static inline float hzToMel(float freq) {
             filterBank[k] = (k == 0) ? 0.0 : fmax(0.0, fmin(lowerBank[k], upperBank[k]));
         }
 
-        _filterBanks[i] = calloc(spectrumSize, sizeof(float));
         _filterBanks[i] = filterBank;
+        free(lowerBank);
+        free(upperBank);
     }
 
     return self;
