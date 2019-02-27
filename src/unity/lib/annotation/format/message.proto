@@ -1,0 +1,22 @@
+syntax = "proto3";
+option optimize_for = LITE_RUNTIME;
+
+import public "annotate.proto";
+import public "data.proto";
+import public "meta.proto";
+
+package TuriCreate.Annotation.Specification;
+
+message Parcel {
+	oneof Message {
+		Annotations annotations = 1;
+		Data data = 2;
+		MetaData metadata = 3;
+	}
+}
+
+/*
+message ClientRequest {
+	// TODO: wait until the JAVASCRIPT SERIALIZATION IS DEFINED
+}
+*/

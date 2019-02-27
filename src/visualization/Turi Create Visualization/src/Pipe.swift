@@ -117,6 +117,10 @@ class Pipe {
             if let accordion_spec = json["accordion_spec"] as? [String: Any] {
                 self.graph_data.add_accordion(accordion_spec: accordion_spec)
             }
+            
+            if let proto_spec = json["protobuf"] as? String {
+                self.graph_data.send_proto(protobuf: proto_spec)
+            }
 
         } catch let error as NSError {
             log("Got error: \"\(error.localizedDescription)\" while trying to read:\n\(data)\n")

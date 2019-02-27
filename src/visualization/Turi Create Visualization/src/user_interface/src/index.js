@@ -88,6 +88,12 @@ window.setSpec = function setSpec(value) {
     }
 }
 
+window.setProtoMessage = function setProtoMessage(value){
+    // TODO: figure out how to deserialize
+    // call proper element.
+    console.log(value);
+}
+
 window.updateData = function updateData(data) {
     switch(spec_type){
         case SpecType.table:

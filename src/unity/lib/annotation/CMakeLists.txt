@@ -3,6 +3,7 @@ project(unity)
 set(TC_ANNOTATIONS_PROTO_FILES
   build/format/cpp/annotate.pb.cc
   build/format/cpp/data.pb.cc
+  build/format/cpp/message.pb.cc
   build/format/cpp/meta.pb.cc
 )
 

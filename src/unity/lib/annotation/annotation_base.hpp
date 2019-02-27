@@ -17,6 +17,7 @@
 
 #include "build/format/cpp/annotate.pb.h"
 #include "build/format/cpp/data.pb.h"
+#include "build/format/cpp/message.pb.h"
 #include "build/format/cpp/meta.pb.h"
 
 namespace annotate_spec = TuriCreate::Annotation::Specification;
@@ -90,7 +91,7 @@ public:
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_annotation_registry",
                                        AnnotationBase::get_annotation_registry);
 
-  // TODO: Figure out how to plumb `::google::protobuf::MessageLite` to variant
+  // TODO: Potentially plumb `::google::protobuf::MessageLite` to variant
   //       type.
 
   END_CLASS_MEMBER_REGISTRATION
@@ -104,6 +105,16 @@ protected:
   void _addIndexColumn();
   void _checkDataSet();
   void _reshapeIndicies(size_t &start, size_t &end);
+
+private:
+  /* A little trick to overload the `__serialize_proto` function at compile time
+   * so I don't have to define that for every Annotation::Specification type.
+   *
+   * Using the SFINAE method: https://en.cppreference.com/w/cpp/language/sfinae
+   */
+  template <typename T, typename = typename std::enable_if<std::is_base_of<
+                            ::google::protobuf::MessageLite, T>::value>::type>
+  std::string __serialize_proto(T message);
 };
 
 } // namespace annotate

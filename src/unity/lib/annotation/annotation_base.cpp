@@ -2,7 +2,14 @@
 #include <unity/lib/visualization/thread.hpp>
 
 #include <logger/assertions.hpp>
+
 #include <unity/lib/annotation/annotation_base.hpp>
+#include <unity/lib/annotation/utils.hpp>
+
+#include <boost/archive/iterators/base64_from_binary.hpp>
+#include <boost/archive/iterators/transform_width.hpp>
+
+#include <sstream>
 
 namespace turi {
 namespace annotate {
@@ -24,9 +31,10 @@ AnnotationBase::AnnotationBase(const std::shared_ptr<unity_sframe> &data,
 
 void AnnotationBase::annotate(const std::string &path_to_client) {
   visualization::process_wrapper aw(path_to_client);
-  /* TODO: Easier to Implement when working on the Front End. Hold off
-   * implementation until front end PR. Will be more clear what to implement
-   * there */
+
+  aw << this->__serialize_proto<annotate_spec::MetaData>(this->metaData())
+            .c_str();
+
   while (aw.good()) {
     break;
   }
@@ -146,6 +154,36 @@ void AnnotationBase::_reshapeIndicies(size_t &start, size_t &end) {
   if (end >= data_size) {
     end = data_size - 1;
   }
+}
+
+template <typename T, typename>
+std::string AnnotationBase::__serialize_proto(T message) {
+  std::stringstream ss;
+  ss << "{\"protobuf\": \"";
+
+  annotate_spec::Parcel parcel;
+
+  populate_parcel<T>(parcel, message);
+
+  std::string proto_intermediary;
+  parcel.SerializeToString(&proto_intermediary);
+  const char *parcel_data = proto_intermediary.c_str();
+
+  size_t parcel_size = parcel.ByteSizeLong();
+
+  std::copy(
+      boost::archive::iterators::base64_from_binary<
+          boost::archive::iterators::transform_width<const unsigned char *, 6,
+                                                     8>>(parcel_data),
+      boost::archive::iterators::base64_from_binary<
+          boost::archive::iterators::transform_width<const unsigned char *, 6,
+                                                     8>>(parcel_data +
+                                                         parcel_size),
+      std::ostream_iterator<char>(ss));
+
+  ss << "\"}\n";
+
+  return ss.str();
 }
 
 } // namespace annotate
