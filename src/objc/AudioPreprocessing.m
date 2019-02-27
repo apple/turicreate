@@ -45,7 +45,7 @@ static inline float hzToMel(float freq) {
 
 @property (readonly) float* PowerSpectrum;
 
--(id)initWithFFTLength:(NSUInteger)fftLength frameLength:(NSUInteger)frameLength;
+-(nullable instancetype)initWithFFTLength:(NSUInteger)fftLength frameLength:(NSUInteger)frameLength;
 -(void)applyHammingWindow:(float*)signal numSamples:(NSUInteger)numSamples;
 -(void)calculatePowerSpectrum:(float*)signal numSamples:(NSUInteger)numSamples;
 
@@ -62,10 +62,11 @@ static inline float hzToMel(float freq) {
 }
 
 
--(id)initWithFFTLength:(NSUInteger)fftLength frameLength:(NSUInteger)frameLength {
+-(nullable instancetype)initWithFFTLength:(NSUInteger)fftLength frameLength:(NSUInteger)frameLength {
     
     self = [super init];
-    
+    if (!self) return nil;
+
     _fftLength = fftLength;
     _frameLength = frameLength;
     
@@ -125,11 +126,11 @@ static inline float hzToMel(float freq) {
 
 @interface TCSoundClassifierMelFrequencyFilterBank : NSObject
 
--(id)initWithMinFrequency:(float)minFreq
-             maxFrequency:(float)maxFrequency
-               sampleRate:(double)sampleRate
-              numMelBands:(NSUInteger)numMelBands
-                  numBins:(NSUInteger)numBins;
+-(nullable instancetype)initWithMinFrequency:(float)minFreq
+                                maxFrequency:(float)maxFrequency
+                                  sampleRate:(double)sampleRate
+                                 numMelBands:(NSUInteger)numMelBands
+                                     numBins:(NSUInteger)numBins;
 
 -(void)apply:(const float*)powerSpectrum
       output:(float *)out;
@@ -144,13 +145,14 @@ static inline float hzToMel(float freq) {
     float** _filterBanks;
 }
 
--(id)initWithMinFrequency:(float)minFreq
-             maxFrequency:(float)maxFreq
-               sampleRate:(double)sampleRate
-              numMelBands:(NSUInteger)numMelBands
-                  numBins:(NSUInteger)numBins {
+-(nullable instancetype)initWithMinFrequency:(float)minFreq
+                                maxFrequency:(float)maxFreq
+                                  sampleRate:(double)sampleRate
+                                 numMelBands:(NSUInteger)numMelBands
+                                     numBins:(NSUInteger)numBins {
 
     self = [super init];
+    if (!self) return nil;
 
     _minFreq = minFreq;
     _maxFreq = maxFreq;
