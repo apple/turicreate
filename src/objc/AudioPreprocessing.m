@@ -337,7 +337,8 @@ static inline float hzToMel(float freq) {
   const MLMultiArray* output = [[MLMultiArray alloc] initWithShape:@[@(1), @(numFrames), @(numBands)]
                                                     dataType:MLMultiArrayDataTypeDouble
                                                        error:error];
-  if (*error) {
+  if(output == nil) {
+    setErrorMsg("Can not create MLMultiArray output", error);
     return nil;
   }
   double* outputPtr = (double*) output.dataPointer;
@@ -362,7 +363,8 @@ static inline float hzToMel(float freq) {
   id<MLFeatureProvider> result = [[MLDictionaryFeatureProvider alloc]
                                    initWithDictionary:@{self.outputFeatureName: output}
                                                 error:error];
-  if(*error) {
+  if(result == nil) {
+    setErrorMsg("Can not set output", error);
     return nil;
   }
   return result;
