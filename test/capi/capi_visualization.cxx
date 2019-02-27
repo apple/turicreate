@@ -349,7 +349,6 @@ class capi_test_visualization {
                                                     kCGImageAlphaNoneSkipLast); // RGBA
             // draw a white background
             CGContextSaveGState(ctx);
-            CGContextSetFillColorWithColor(ctx, NSColor.whiteColor.CGColor);
             CGContextFillRect(ctx, CGRectMake(0, 0, width, height));
             CGContextRestoreGState(ctx);
             CGColorSpaceRelease(colorSpace);
@@ -369,11 +368,10 @@ class capi_test_visualization {
             CAPI_CHECK_ERROR(error);
             std::string actual_spec(actual_spec_data, actual_spec_length);
 
-            CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
             CGContextRef ctx = create_cgcontext(800, 600); // some random size - should be larger than the plot
 
             // render plot onto it and check for errors
-            tc_plot_render_final_into_context(plot, tc_plot_variation_default, ctx, nullptr, &error);
+            tc_plot_render_final_into_context(plot_obj, tc_plot_variation_default, ctx, nullptr, &error);
             CAPI_CHECK_ERROR(error);
             CGContextRelease(ctx);
 
@@ -398,4 +396,11 @@ BOOST_AUTO_TEST_CASE(test_2d_plots) {
 BOOST_AUTO_TEST_CASE(test_sframe_summary_plot) {
   capi_test_visualization::test_sframe_summary_plot();
 }
+#ifdef __APPLE__
+#ifndef TC_BUILD_IOS
+BOOST_AUTO_TEST_CASE(test_rendering) {
+  capi_test_visualization::test_rendering();
+}
+#endif // TC_BUILD_IOS
+#endif // __APPLE__
 BOOST_AUTO_TEST_SUITE_END()
