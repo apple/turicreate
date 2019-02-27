@@ -7,7 +7,6 @@ Jinja2==2.9.6
 MarkupSafe==1.0
 Pygments==2.2.0
 pytz==2017.2
-requests==2.14.2
 six==1.10.0
 snowballstemmer==1.2.1
 Sphinx==1.6.1
