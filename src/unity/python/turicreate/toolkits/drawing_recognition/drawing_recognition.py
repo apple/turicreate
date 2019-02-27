@@ -245,17 +245,27 @@ class DrawingRecognition(_CustomModel):
                                 class_labels=self.classes,
                                 input_shape=[('bitmap', image_shape)],
                                 builder=None, verbose=verbose,
-                                preprocessor_args={'image_input_names':['bitmap']},
-                                is_drawing_recognition=True)
+                                preprocessor_args={'image_input_names':['bitmap']})
 
+        DESIRED_OUTPUT_NAME = "probabilities"
+        class_label_output_index = 1
+        spec = coreml_model._spec
+        class_label_output_index = 0 if spec.description.output[0].name == "classLabel" else 1
+        probabilities_output_index = 1-class_label_output_index
+        spec.neuralNetworkClassifier.labelProbabilityLayerName = DESIRED_OUTPUT_NAME
+        spec.neuralNetworkClassifier.layers[-1].name = DESIRED_OUTPUT_NAME
+        spec.neuralNetworkClassifier.layers[-1].output[0] = DESIRED_OUTPUT_NAME
+        spec.description.predictedProbabilitiesName = DESIRED_OUTPUT_NAME
+        spec.description.output[probabilities_output_index].name = DESIRED_OUTPUT_NAME
         from turicreate.toolkits import _coreml_utils
         model_type = "drawing classifier"
-        coreml_model.short_description = _coreml_utils._mlmodel_short_description(model_type)
-        coreml_model.input_description['bitmap'] = u'bitmap'
-        coreml_model.output_description['probabilities'] = 'Prediction probabilities'
-        coreml_model.output_description['classLabel'] = 'Class Label of Top Prediction'
-        coreml_model.save(filename)
-        return coreml_model
+        spec.description.metadata.shortDescription = _coreml_utils._mlmodel_short_description(model_type)
+        spec.description.input[0].shortDescription = u'bitmap'
+        spec.description.output[probabilities_output_index].shortDescription = 'Prediction probabilities'
+        spec.description.output[class_label_output_index].shortDescription = 'Class Label of Top Prediction'
+        from coremltools.models.utils import save_spec as _save_spec
+        _save_spec(spec, filename)
+
 
     def _predict_with_probabilities(self, input_dataset):
         """
