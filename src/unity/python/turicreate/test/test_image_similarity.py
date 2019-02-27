@@ -96,7 +96,9 @@ class ImageSimilarityTest(unittest.TestCase):
            'feature_extractor' : lambda x: callable(x.extract_features),
            'num_features': lambda x: x == self.lm_model.num_features,
            'num_examples': lambda x: x == self.lm_model.num_examples,
-           'model': lambda x: x == self.pre_trained_model,
+           'model': lambda x: (x == self.pre_trained_model 
+               or (self.pre_trained_model == "VisionFeaturePrint_Screen" 
+                   and x == "VisionFeaturePrint_Scene"))
         }
         self.fields_ans = self.get_ans.keys()
 
@@ -238,9 +240,19 @@ class ImageSimilaritySqueezeNetTest(ImageSimilarityTest):
                                                               input_image_shape=(3, 227, 227))
 
 
-@unittest.skipIf(_mac_ver() < (10,14), 'VisionFeaturePrint_Screen only supported on macOS 10.14+')
-class ImageSimilarityVisionFeaturePrintScreenTest(ImageSimilarityTest):
+@unittest.skipIf(_mac_ver() < (10,14), 'VisionFeaturePrint_Scene only supported on macOS 10.14+')
+class ImageSimilarityVisionFeaturePrintSceneTest(ImageSimilarityTest):
     @classmethod
     def setUpClass(self):
-        super(ImageSimilarityVisionFeaturePrintScreenTest, self).setUpClass(model='VisionFeaturePrint_Screen',
-                                                                            input_image_shape=(3, 299, 299))
+        super(ImageSimilarityVisionFeaturePrintSceneTest, self).setUpClass(model='VisionFeaturePrint_Scene',
+                                                                             input_image_shape=(3, 299, 299))
+
+# A test to gaurantee that old code using the incorrect name still works.
+
+@unittest.skipIf(_mac_ver() < (10,14), 'VisionFeaturePrint_Scene only supported on macOS 10.14+')
+class ImageSimilarityVisionFeaturePrintSceneTest_bad_name(ImageSimilarityTest):
+    @classmethod
+    def setUpClass(self):
+        super(ImageSimilarityVisionFeaturePrintSceneTest_bad_name, self).setUpClass(model='VisionFeaturePrint_Screen',
+                                                                             input_image_shape=(3, 299, 299))
+

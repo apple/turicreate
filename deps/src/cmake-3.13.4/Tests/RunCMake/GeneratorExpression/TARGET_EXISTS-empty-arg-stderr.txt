@@ -1,0 +1,8 @@
+CMake Error at TARGET_EXISTS-empty-arg.cmake:2 \(file\):
+  Error evaluating generator expression:
+
+    \$<TARGET_EXISTS:>
+
+  \$<TARGET_EXISTS:tgt> expression requires a non-empty valid target name.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)

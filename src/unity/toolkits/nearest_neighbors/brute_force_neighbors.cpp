@@ -17,7 +17,7 @@
 #include <timer/timer.hpp>
 #include <algorithm>
 #include <string>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 #include <unity/lib/toolkit_util.hpp>
 #include <table_printer/table_printer.hpp>
 

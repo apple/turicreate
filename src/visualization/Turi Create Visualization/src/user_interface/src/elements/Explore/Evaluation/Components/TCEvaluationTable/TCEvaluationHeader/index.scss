@@ -1,0 +1,20 @@
+.TCEvaluationHeader{
+	position: fixed;
+  	top: 150px;
+	width: 100%;
+	padding-top: 30px;
+	background: white;
+	z-index: 998;
+}
+
+.TCEvaluationHeaderContainer{
+	display: flex;
+	justify-content: center;
+	margin: 0px 30px 0px 30px;
+	border-bottom-style: solid;
+  	border-bottom-width: thin;
+  	border-bottom-color: #D4D7D9;
+  	padding-bottom: 17px;
+  	background: white;
+  	z-index: 998;
+}

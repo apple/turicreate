@@ -8,11 +8,13 @@
 #import "mps_graph_cnnmodule.h"
 
 using turi::neural_net::deferred_float_array;
+using turi::neural_net::external_float_array;
 using turi::neural_net::float_array;
 using turi::neural_net::float_array_map;
 using turi::neural_net::float_array_map_iterator;
 using turi::neural_net::make_array_map;
 using turi::neural_net::mps_graph_cnn_module;
+using turi::neural_net::shared_float_array;
 
 int TCMPSHasHighPowerMetalDevice(bool *has_device) {
   API_BEGIN();
@@ -66,8 +68,13 @@ int TCMPSTrainGraph(MPSHandle handle, TCMPSFloatArrayRef inputs,
   mps_graph_cnn_module *obj = (mps_graph_cnn_module *)handle;
   float_array* inputs_ptr = reinterpret_cast<float_array*>(inputs);
   float_array* labels_ptr = reinterpret_cast<float_array*>(labels);
-  deferred_float_array* loss =
-      new deferred_float_array(obj->train(*inputs_ptr, *labels_ptr));
+  shared_float_array inputs_array(
+      std::make_shared<external_float_array>(*inputs_ptr));
+  shared_float_array labels_array(
+      std::make_shared<external_float_array>(*labels_ptr));
+  auto outputs = obj->train({ { "input",  inputs_array },
+                              { "labels", labels_array }  });
+  shared_float_array* loss = new shared_float_array(outputs.at("loss"));
   *loss_out = reinterpret_cast<TCMPSFloatArrayRef>(loss);
   API_END();
 }
@@ -77,9 +84,11 @@ int TCMPSPredictGraph(MPSHandle handle, TCMPSFloatArrayRef inputs,
   API_BEGIN();
   mps_graph_cnn_module *obj = (mps_graph_cnn_module *)handle;
   float_array* inputs_ptr = reinterpret_cast<float_array*>(inputs);
-  deferred_float_array* outputs =
-      new deferred_float_array(obj->predict(*inputs_ptr));
-  *outputs_ptr = reinterpret_cast<TCMPSFloatArrayRef>(outputs);
+  shared_float_array inputs_array(
+      std::make_shared<external_float_array>(*inputs_ptr));
+  auto outputs = obj->predict({ { "input",  inputs_array } });
+  shared_float_array* output = new shared_float_array(outputs.at("output"));
+  *outputs_ptr = reinterpret_cast<TCMPSFloatArrayRef>(output);
   API_END();
 }
 

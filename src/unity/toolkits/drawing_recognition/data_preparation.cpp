@@ -82,6 +82,9 @@ std::vector<T> slice(std::vector<T> const &v, int m, int n) {
     return vec;
 }
 
+/* Ramer Douglas Peucker Algorithm:
+ * https://en.wikipedia.org/wiki/Ramer–Douglas–Peucker_algorithm
+ */
 flex_list ramer_douglas_peucker(flex_list stroke, float epsilon) {
     float dmax = 0;
     int index = 0;

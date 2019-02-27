@@ -1,0 +1,3 @@
+void cpp_static()
+{
+}

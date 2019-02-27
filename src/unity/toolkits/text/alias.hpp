@@ -22,9 +22,11 @@ TODO:
   both training set and validation set? That way we aren't starting from
   scratch on the validation set.
 - combine all the word alias computation into one method
+- use Eigen Vector instead of matrices with one row.
 - Make sure to use const auto& where appropriate.
 - Choose whether to use w, s, t, d, psdw, etc.
 - Track MH acceptance ratio
+- Consider using row-order Eigen matrices and checking for speedup
   (at least for CGS word_topic_counts?)
  */
 
@@ -165,8 +167,8 @@ class EXPORT alias_topic_model : public topic_model {
   atomic<size_t> token_count;
 
   // Word pdf datastructures
-  arma::mat q;  // pmf for each word
-  arma::mat Q;  // normalizing const for each word
+  Eigen::MatrixXd q;  // pmf for each word
+  Eigen::MatrixXd Q;  // normalizing const for each word
   std::vector<random::alias_sampler> word_samplers;
   std::vector<std::vector<size_t>> word_samples;
 

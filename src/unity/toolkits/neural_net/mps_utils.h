@@ -72,6 +72,10 @@ shared_float_array copy_image_batch_float16(std::vector<size_t> shape,
                                         MPSImageBatch * _Nonnull batch);
 
 API_AVAILABLE(macos(10.14))
+shared_float_array copy_image_batch(std::vector<size_t> shape,
+                                    MPSImageBatch * _Nonnull batch);
+
+API_AVAILABLE(macos(10.14))
 void fill_image_batch(const float_array& data, MPSImageBatch * _Nonnull batch);
 
 void convert_chw_to_hwc(const float_array& image, float* out_first,

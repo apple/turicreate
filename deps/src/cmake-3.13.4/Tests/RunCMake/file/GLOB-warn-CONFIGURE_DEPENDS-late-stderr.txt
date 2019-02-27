@@ -1,0 +1,6 @@
+^CMake Warning \(dev\) at GLOB-warn-CONFIGURE_DEPENDS-late\.cmake:[0-9]+ \(file\):
+  CONFIGURE_DEPENDS flag was given after a glob expression was already
+  evaluated\.
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:[0-9]+ \(include\)
+This warning is for project developers\.  Use -Wno-dev to suppress it\.$

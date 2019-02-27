@@ -1,0 +1,23 @@
+.TCEvaluationOverview{
+	text-align:left;
+	padding: 35px;
+	display: flex;
+	flex-direction: column;
+}
+
+.TCEvaluationOverviewTitle{
+	font-family: Helvetica;
+	font-size: 32px;
+	color: #484856;
+	line-height: 36px;
+}
+
+.TCEvaluationOverviewTitleContainer{
+	display: flex;
+	justify-content: space-between;
+}
+
+.TCEvaluationOverviewMetricsContainer{
+	display: flex;
+	justify-content: space-between;
+}

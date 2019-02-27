@@ -1,0 +1,7 @@
+^CMake Error at .*/Modules/ExternalProject.cmake:[0-9]+ \(message\):
+  error: ExternalProject module must be explicitly included before using
+  ExternalProject_Add function
+Call Stack \(most recent call first\):
+  .*/Modules/ExternalProject.cmake:[0-9]+ \(_ep_parse_arguments\)
+  IncludeScope-Add.cmake:[0-9]+ \(ExternalProject_Add\)
+  CMakeLists.txt:[0-9]+ \(include\)$

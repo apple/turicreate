@@ -108,24 +108,24 @@ factorization_model::factory_load(
 
   if(factor_mode_str == "factorization_machine") {
 
-    if(num_factors_if_known == DYNAMIC) {
-      m.reset(new factorization_model_impl<model_factor_mode::factorization_machine, DYNAMIC>());
+    if(num_factors_if_known == Eigen::Dynamic) {
+      m.reset(new factorization_model_impl<model_factor_mode::factorization_machine, Eigen::Dynamic>());
     } else if(num_factors_if_known == 8) {
       m.reset(new factorization_model_impl<model_factor_mode::factorization_machine, 8>());
     } else {
       ASSERT_MSG(false, ("DESERIALIZE ERROR: For factorization_machine, "
-                         "num_factors_if_known must be DYNAMIC (-1) or 8."));
+                         "num_factors_if_known must be Eigen::Dynamic or 8."));
     }
     
   } else if(factor_mode_str == "matrix_factorization") {
 
-    if(num_factors_if_known == DYNAMIC) {
-      m.reset(new factorization_model_impl<model_factor_mode::matrix_factorization, DYNAMIC>());
+    if(num_factors_if_known == Eigen::Dynamic) {
+      m.reset(new factorization_model_impl<model_factor_mode::matrix_factorization, Eigen::Dynamic>());
     } else if(num_factors_if_known == 8) {
       m.reset(new factorization_model_impl<model_factor_mode::matrix_factorization, 8>());
     } else {
       ASSERT_MSG(false, ("DESERIALIZE ERROR: For matrix_factorization, "
-                         "num_factors_if_known must be -1 or 8."));
+                         "num_factors_if_known must be Eigen::Dynamic or 8."));
     }
 
   } else if(factor_mode_str == "pure_linear_model") {

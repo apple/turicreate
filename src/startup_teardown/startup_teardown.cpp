@@ -14,6 +14,7 @@
 #include <crash_handler/crash_handler.hpp>
 #include <signal.h>
 #endif
+#include <Eigen/Core>
 #include <globals/globals.hpp>
 #include <globals/global_constants.hpp>
 #include <sframe/sframe_constants.hpp>
@@ -217,6 +218,7 @@ void global_startup::perform_startup() {
   if (startup_performed) return;
   startup_performed = true;
   // non turicreate stuff
+  Eigen::initParallel();
   install_sighandlers();
   MEMORY_RELEASE_THREAD = new memory_release_thread();
   MEMORY_RELEASE_THREAD->start();

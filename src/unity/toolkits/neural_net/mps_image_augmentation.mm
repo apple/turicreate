@@ -289,13 +289,18 @@ mps_image_augmenter::mps_image_augmenter(
 mps_image_augmenter::result mps_image_augmenter::prepare_images(
     std::vector<labeled_image> source_batch) {
 
-  const size_t n = source_batch.size();
+  const size_t n = opts_.batch_size;
   const size_t h = opts_.output_height;
   const size_t w = opts_.output_width;
   constexpr size_t c = 3;
 
+  // Discard any source data in excess of the batch size.
+  if (source_batch.size() > n) {
+    source_batch.resize(n);
+  }
+
   result res;
-  res.annotations_batch.resize(n);
+  res.annotations_batch.resize(source_batch.size());
 
   // Allocate a float vector large enough to contain the entire image batch.
   const size_t result_array_stride = h * w * c;
@@ -322,7 +327,7 @@ mps_image_augmenter::result mps_image_augmenter::prepare_images(
 
   // Distribute work across threads, each writing into different regions of
   // result_array and res.annotations_batch.
-  parallel_for(0, n, apply_augmentations_for_image);
+  parallel_for(0, source_batch.size(), apply_augmentations_for_image);
 
   // Wrap and return the results.
   res.image_batch = shared_float_array::wrap(std::move(result_array),

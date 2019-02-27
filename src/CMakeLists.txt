@@ -8,20 +8,16 @@ else()
 endif()
 
 subdirs(
-  toolkits
   cppipc
   dot_graph_printer
   exceptions
   external
-  fault
-  numerics
   fileio
   flexible_type
   generics
   globals
   image
   lambda
-  lazy_eval
   logger
   ml_data
   nanosockets
@@ -34,9 +30,12 @@ subdirs(
   sframe_query_engine
   sgraph
   sketches
+  stack_trace
   startup_teardown
   table_printer
   unity
   util
+  vega_renderer
   visualization
+  toolkits
   )

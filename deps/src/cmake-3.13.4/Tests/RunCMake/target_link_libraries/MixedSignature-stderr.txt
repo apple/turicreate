@@ -1,0 +1,5 @@
+CMake Error at MixedSignature.cmake:6 \(target_link_libraries\):
+  The INTERFACE, PUBLIC or PRIVATE option must appear as the second argument,
+  just after the target name.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

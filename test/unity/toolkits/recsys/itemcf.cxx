@@ -1,23 +1,7 @@
-/*
- * Copyright (c) 2013 Turi
- *     All rights reserved.
+/* Copyright © 2017 Apple Inc. All rights reserved.
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing,
- *  software distributed under the License is distributed on an "AS
- *  IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- *  express or implied.  See the License for the specific language
- *  governing permissions and limitations under the License.
- *
- * For more about this software visit:
- *
- *      http://www.turicreate.com
- *
+ * Use of this source code is governed by a BSD-3-clause license that can
+ * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
@@ -33,7 +17,7 @@
 #include <unity/toolkits/ml_data_2/ml_data_iterators.hpp>
 #include <unity/toolkits/util/indexed_sframe_tools.hpp>
 
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 
 using namespace turi;
 
@@ -257,7 +241,7 @@ struct recsys_itemcf_test  {
     model->init_options(opts);
     model->setup_and_train(data);
 
-    arma::mat ans(4,4);
+    Eigen::MatrixXd ans(4,4);
 
     double a_b = 1./3.;
     double a_c = 1./4.;
@@ -266,10 +250,10 @@ struct recsys_itemcf_test  {
     double b_d = 0.;
     double c_d = 1./4.;
 
-    ans = { {1.,  a_b, a_c, a_d},
-            {0.0, 1.,  b_c, b_d},
-            {0.0, 0.0, 1.,  c_d},
-            {0.0, 0.0, 0.0, 1.}};
+    ans << 1.,  a_b, a_c, a_d,
+        0.0, 1.,  b_c, b_d,
+        0.0, 0.0, 1.,  c_d,
+        0.0, 0.0, 0.0, 1.;
 
     //
     // test getting item neighbors
@@ -392,10 +376,10 @@ struct recsys_itemcf_test  {
     b_d = 0.0;
     c_d = 1.0 / std::sqrt(3.) / std::sqrt(2.);
 
-    ans = { {1.,  a_b, a_c, a_d, },
-            {0.0, 1.,  b_c, b_d, },
-            {0.0, 0.0, 1.,  c_d, },
-            {0.0, 0.0, 0.0, 1.   } };
+  ans << 1. ,  a_b , a_c , a_d
+      ,0.0 , 1. ,  b_c , b_d
+      ,0.0 , 0.0 , 1. ,  c_d 
+      ,0.0 , 0.0 , 0.0 , 1.;
 
     // test getting item neighbors
     {
@@ -508,10 +492,10 @@ struct recsys_itemcf_test  {
     b_d = 0.;
     c_d = 0.;
 
-    ans = {{1.,  a_b, a_c, a_d},
-           {0.0, 1.,  b_c, b_d},
-           {0.0, 0.0, 1.,  c_d},
-           {0.0, 0.0, 0.0, 1.}};
+    ans << 1.,  a_b, a_c, a_d,
+        0.0, 1.,  b_c, b_d,
+        0.0, 0.0, 1.,  c_d,
+        0.0, 0.0, 0.0, 1.;
 
     // test getting item neighbors
     {
@@ -667,11 +651,11 @@ struct recsys_itemcf_test  {
     double c_d = (1. - c_mean) * (1. - d_mean) / std::sqrt(c_var) / std::sqrt(d_var);
 
 
-    arma::mat ans(4,4);
-    ans = {{1. , a_b, a_c, a_d},
-           {0.0, 1. , b_c, b_d},
-           {0.0, 0.0, 1.0, c_d},
-           {0.0, 0.0, 0.0, 1.0}};
+    Eigen::MatrixXd ans(4,4);
+    ans << 1. , a_b, a_c, a_d,
+        0.0, 1. , b_c, b_d,
+        0.0, 0.0, 1.0, c_d,
+        0.0, 0.0, 0.0, 1.0;
 
     std::vector<flexible_type> all_users_vec = {"0", "1", "2", "3"};
     std::vector<flexible_type> all_items_vec = {"A", "B", "C", "D"};
@@ -778,10 +762,10 @@ struct recsys_itemcf_test  {
     b_d = 0.0;
     c_d = 1.0 / std::sqrt(.5*.5 + .6*.6 + 1*1) / std::sqrt(1*1 + 1.5*1.5);
 
-    ans =  {{1.,  a_b, a_c, a_d},
-            {0.0, 1.,  b_c, b_d},
-            {0.0, 0.0, 1.,  c_d},
-            {0.0, 0.0, 0.0, 1.}};
+    ans << 1.,  a_b, a_c, a_d,
+        0.0, 1.,  b_c, b_d,
+        0.0, 0.0, 1.,  c_d,
+        0.0, 0.0, 0.0, 1.;
 
     // test getting item neighbors
     {
@@ -888,10 +872,10 @@ struct recsys_itemcf_test  {
     c_d = 1./4.;
 
     // removed the diagonal values
-    ans =  {{1.,  a_b, a_c, a_d},
-            {0.0, 1.,  b_c, b_d},
-            {0.0, 0.0, 1.,  c_d},
-            {0.0, 0.0, 0.0, 1.}};
+    ans << 1.,  a_b, a_c, a_d,
+        0.0, 1.,  b_c, b_d,
+        0.0, 0.0, 1.,  c_d,
+        0.0, 0.0, 0.0, 1.;
 
     // test getting item neighbors
     {

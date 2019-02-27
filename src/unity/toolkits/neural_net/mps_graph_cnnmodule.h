@@ -11,8 +11,8 @@
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 
-#include <unity/toolkits/neural_net/cnn_module.hpp>
 #include <unity/toolkits/neural_net/float_array.hpp>
+#include <unity/toolkits/neural_net/model_backend.hpp>
 
 #import "mps_utils.h"
 #import "mps_graph_networks.h"
@@ -22,9 +22,11 @@ NS_ASSUME_NONNULL_BEGIN
 namespace turi {
 namespace neural_net {
 
-class mps_graph_cnn_module: public cnn_module {
+class mps_graph_cnn_module: public model_backend {
 public:
+
   mps_graph_cnn_module();
+  mps_graph_cnn_module(id <MTLDevice> dev);
 
   void init(int network_id, int n, int c_in, int h_in, int w_in, int c_out,
             int h_out, int w_out,
@@ -37,11 +39,10 @@ public:
 
   // Training
   void set_learning_rate(float lr) override;
-  deferred_float_array train(const float_array& input_batch,
-                             const float_array& label_batch) override;
+  float_array_map train(const float_array_map& inputs) override;
 
   // Inference
-  deferred_float_array predict(const float_array& input_batch) const override;
+  float_array_map predict(const float_array_map& inputs) const override;
 
   // Forward-backward pass with specified input and top-gradient images
   deferred_float_array train_return_grad(const float_array& input_batch,
@@ -49,9 +50,8 @@ public:
 
   float_array_map export_weights() const override;
 
-  std::vector<std::string> gpu_names() const override;
-
 private:
+
   MPSImageBatch *create_image_batch(MPSImageDescriptor *desc) const;
   MPSImageBatch *copy_input(const float_array& input) const;
   MPSImageBatch *copy_grad(const float_array& gradient) const;

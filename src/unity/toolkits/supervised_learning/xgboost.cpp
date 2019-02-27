@@ -14,8 +14,8 @@
 #undef MAX
 #endif
 
-#include <toolkits/supervised_learning/xgboost.hpp>
-#include <toolkits/supervised_learning/xgboost_iterator.hpp>
+#include <unity/toolkits/supervised_learning/xgboost.hpp>
+#include <unity/toolkits/supervised_learning/xgboost_iterator.hpp>
 
 #include <limits>
 #include <sstream>
@@ -41,9 +41,8 @@
 #include <xgboost/src/io/simple_dmatrix-inl.hpp>
 
 // Toolkits
-#include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
 #include <unity/toolkits/evaluation/metrics.hpp>
-#include <serialization/serialization_includes.hpp>
 
 namespace turi {
 namespace supervised {
@@ -1244,7 +1243,8 @@ sframe xgboost_model::predict_topk_impl(
  */
 std::map<std::string, variant_type> xgboost_model::evaluate(
     const ml_data& test_data,
-    const std::string& evaluation_type) {
+    const std::string& evaluation_type,
+    bool with_prediction) {
   // XGboost data format conversion.
   DMatrixMLData dmat(test_data);
   return evaluate_impl(dmat, evaluation_type);

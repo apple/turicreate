@@ -1,0 +1,10 @@
+CMake Warning \(dev\) in CMakeLists.txt:
+  Policy CMP0081 is not set: Relative paths not allowed in LINK_DIRECTORIES
+  target property.  Run "cmake --help-policy CMP0081" for policy details.
+  Use the cmake_policy command to set the policy and suppress this warning.
+
+  Found relative path while evaluating link directories of "foo":
+
+    "../lib"
+
+This warning is for project developers.  Use -Wno-dev to suppress it.

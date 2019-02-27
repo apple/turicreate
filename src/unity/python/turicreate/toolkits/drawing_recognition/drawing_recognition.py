@@ -5,74 +5,51 @@
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 
 import turicreate as _tc
-import urllib as _urllib
-import os as _os
-import glob as _glob
 import numpy as _np
-import mxnet as _mx
 import time as _time
-import mxnet as _mx
-from mxnet import autograd as _autograd
-from mxnet import nd as _nd
-from mxnet import gluon as _gluon
-from mxnet.gluon import nn as _nn
-from mxnet.gluon import HybridBlock as _HybridBlock
-from mxnet.gluon.data.vision import datasets as _datasets
-from mxnet.gluon.data.vision import transforms as _transforms
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits import evaluation as _evaluation
 import turicreate.toolkits._internal_utils as _tkutl
 from ._sframe_loader import SFrameRecognitionIter as _SFrameRecognitionIter
 from .. import _mxnet_utils
-
 from turicreate import extensions as _extensions
-from copy import copy, deepcopy
 
 BITMAP_WIDTH = 28
 BITMAP_HEIGHT = 28
 
-class Model(_HybridBlock):
-    def __init__(self, num_classes, **kwargs):
-        super(Model, self).__init__(**kwargs)
-        with self.name_scope():
-            # layers created in name_scope will inherit name space
-            # from parent layer.
-            self.conv1 = _nn.Conv2D(channels=16, kernel_size=(3,3), 
-                                    padding=(1,1), activation='relu')
-            self.pool1 = _nn.MaxPool2D(pool_size=(2,2))
-            self.conv2 = _nn.Conv2D(channels=32, kernel_size=(3,3), 
-                                    padding=(1,1), activation='relu')
-            self.pool2 = _nn.MaxPool2D(pool_size=(2,2))
-            self.conv3 = _nn.Conv2D(channels=64, kernel_size=(3,3), 
-                                    padding=(1,1), activation='relu')
-            self.pool3 = _nn.MaxPool2D(pool_size=(2,2))
-            self.flatten = _nn.Flatten()
-            self.fc1 = _nn.Dense(units=128, activation='relu')
-            self.fc2 = _nn.Dense(units=num_classes, activation=None)
+def _raise_error_if_not_drawing_classifier_input_sframe(dataset, feature):
+    from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
+    _raise_error_if_not_sframe(dataset)
+    if feature not in dataset.column_names():
+        raise _ToolkitError("Feature column '%s' does not exist" % feature)
+    if (dataset[feature].dtype != _tc.Image 
+        and dataset[feature].dtype != list):
+        raise _ToolkitError("Feature column must contain images" 
+            + " or stroke-based drawings encoded as lists of strokes" 
+            + " where each stroke is a list of points and" 
+            + " each point is stored as a dictionary")
 
-    def hybrid_forward(self, F, x):
-        x = self.pool1(self.conv1(x))
-        x = self.pool2(self.conv2(x))
-        x = self.pool3(self.conv3(x))
-        x = self.flatten(x)
-        x = self.fc1(x)
-        x = self.fc2(x)
-        return F.softmax(x)
-
-def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap", model=None,
-           classes=None, batch_size=256, max_iterations=0, verbose=True, 
-           **kwargs):
+def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap", 
+           target="label", model=None, classes=None, batch_size=256, 
+           max_iterations=0, verbose=True, **kwargs):
     """
     Create a :class:`DrawingRecognition` model.
     """
+    import mxnet as _mx
+    from mxnet import autograd as _autograd
+    from ._model_architecture import Model as _Model
+    
     start_time = _time.time()
+
+    _raise_error_if_not_drawing_classifier_input_sframe(input_dataset, feature)
 
     is_stroke_input = (input_dataset[feature].dtype != _tc.Image)
 
     if is_stroke_input:
+        # This only works on macOS right now
         dataset = _extensions._drawing_recognition_prepare_data(
-            input_dataset, "bitmap", "label")
+            input_dataset, feature, target)
     else:
         dataset = input_dataset
 
@@ -85,7 +62,7 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap", mo
     iteration = 0
 
     if classes is None:
-        classes = dataset['label'].unique()
+        classes = dataset[target].unique()
     classes = sorted(classes)
     class_to_index = {name: index for index, name in enumerate(classes)}
 
@@ -118,15 +95,15 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap", mo
             progress['last_time'] = cur_time
 
     loader = _SFrameRecognitionIter(dataset, batch_size,
-                 feature_column='bitmap',
-                 target_column='label',
+                 feature_column=feature,
+                 target_column=target,
                  class_to_index=class_to_index,
                  load_labels=True,
                  shuffle=True,
-                 io_thread_buffer_size=0,
                  epochs=num_epochs,
                  iterations=None)
-    model = Model(num_classes = len(classes))
+
+    model = _Model(num_classes = len(classes))
     softmax_cross_entropy = _mx.gluon.loss.SoftmaxCrossEntropyLoss()
     
     ctx = _mxnet_utils.get_mxnet_context(max_devices=batch_size)
@@ -161,15 +138,18 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap", mo
     if verbose:
         print(hr)   # progress table footer
     state = {
-        'model': model,
-        'class_to_index': class_to_index,
+        '_model': model,
+        '_class_to_index': class_to_index,
         'num_classes': len(classes),
         'classes': classes,
         'input_image_shape': (1, BITMAP_WIDTH, BITMAP_HEIGHT),
         'batch_size': batch_size,
         'training_loss': cur_loss,
         'training_time': training_time,
-        'max_iterations': max_iterations
+        'max_iterations': max_iterations,
+        'target': target,
+        'feature': feature,
+        'num_examples': len(input_dataset)
     }
     return DrawingRecognition(state)
 
@@ -185,8 +165,8 @@ class DrawingRecognition(_CustomModel):
 
     def _get_native_state(self):
         state = self.__proxy__.get_state()
-        mxnet_params = state['model'].collect_params()
-        state['model'] = _mxnet_utils.get_gluon_net_params_state(mxnet_params)
+        mxnet_params = state['_model'].collect_params()
+        state['_model'] = _mxnet_utils.get_gluon_net_params_state(mxnet_params)
         return state
 
     def _get_version(self):
@@ -195,31 +175,32 @@ class DrawingRecognition(_CustomModel):
     @classmethod
     def _load_version(cls, state, version):
         _tkutl._model_version_check(version, 1)
-        net = Model(num_classes = len(state['classes']), prefix = 'model0_')
+        from ._model_architecture import Model as _Model
+        net = _Model(num_classes = len(state['classes']), prefix = 'model0_')
         ctx = _mxnet_utils.get_mxnet_context(max_devices=state['batch_size'])
         net_params = net.collect_params()
         _mxnet_utils.load_net_params_from_state(
-            net_params, state['model'], ctx=ctx 
+            net_params, state['_model'], ctx=ctx 
             )
-        state['model'] = net
+        state['_model'] = net
         return DrawingRecognition(state)
 
-    def export_coreml(self, filename):
+    def export_coreml(self, filename, verbose=False):
         import mxnet as _mx
         from .._mxnet_to_coreml import _mxnet_converter
-        import coremltools
-        from coremltools.models import datatypes, neural_network
+        import coremltools as _coremltools
 
         batch_size = 1
         image_shape = (batch_size,) + (1, BITMAP_WIDTH, BITMAP_HEIGHT)
-        s_image = _mx.sym.Variable('bitmap',
+        s_image = _mx.sym.Variable(self.feature,
             shape=image_shape, dtype=_np.float32)
 
-        net = copy(self.model)
+        from copy import copy as _copy
+        net = _copy(self._model)
         s_ymap = net(s_image)
         
-        mod = _mx.mod.Module(symbol=s_ymap, label_names=None, data_names=['bitmap'])
-        mod.bind(for_training=False, data_shapes=[('bitmap', image_shape)])
+        mod = _mx.mod.Module(symbol=s_ymap, label_names=None, data_names=[self.feature])
+        mod.bind(for_training=False, data_shapes=[(self.feature, image_shape)])
         mod.init_params()
         
         arg_params, aux_params = mod.get_params()
@@ -235,42 +216,52 @@ class DrawingRecognition(_CustomModel):
 
         coreml_model = _mxnet_converter.convert(mod, mode='classifier',
                                 class_labels=self.classes,
-                                input_shape=[('bitmap', image_shape)],
-                                builder=None, verbose=False,
-                                preprocessor_args={'image_input_names':['bitmap']},
-                                is_drawing_recognition=True)
+                                input_shape=[(self.feature, image_shape)],
+                                builder=None, verbose=verbose,
+                                preprocessor_args={'image_input_names':[self.feature]})
 
+        DESIRED_OUTPUT_NAME = self.target + "probabilities"
+        spec = coreml_model._spec
+        class_label_output_index = 0 if spec.description.output[0].name == "classLabel" else 1
+        probabilities_output_index = 1-class_label_output_index
+        spec.neuralNetworkClassifier.labelProbabilityLayerName = DESIRED_OUTPUT_NAME
+        spec.neuralNetworkClassifier.layers[-1].name = DESIRED_OUTPUT_NAME
+        spec.neuralNetworkClassifier.layers[-1].output[0] = DESIRED_OUTPUT_NAME
+        spec.description.predictedProbabilitiesName = DESIRED_OUTPUT_NAME
+        spec.description.output[probabilities_output_index].name = DESIRED_OUTPUT_NAME
         from turicreate.toolkits import _coreml_utils
         model_type = "drawing classifier"
-        coreml_model.short_description = _coreml_utils._mlmodel_short_description(model_type)
-        coreml_model.input_description['bitmap'] = u'bitmap'
-        coreml_model.output_description['probabilities'] = 'Prediction probabilities'
-        coreml_model.output_description['classLabel'] = 'Class Label of Top Prediction'
-        coreml_model.save(filename)
-        return coreml_model
+        spec.description.metadata.shortDescription = _coreml_utils._mlmodel_short_description(model_type)
+        spec.description.input[0].shortDescription = self.feature
+        spec.description.output[probabilities_output_index].shortDescription = 'Prediction probabilities'
+        spec.description.output[class_label_output_index].shortDescription = 'Class Label of Top Prediction'
+        from coremltools.models.utils import save_spec as _save_spec
+        _save_spec(spec, filename)
 
-    def _predict_with_options(self, input_dataset, verbose=True):
+
+    def _predict_with_probabilities(self, input_dataset):
         """
-            Predict with options for what kind of SFrame should be returned.
+        Predict with probabilities.
         """
 
-        is_stroke_input = (input_dataset['bitmap'].dtype != _tc.Image)
+        import mxnet as _mx
+
+        is_stroke_input = (input_dataset[self.feature].dtype != _tc.Image)
 
         if is_stroke_input:
             # @TODO: Make it work for Linux
             # @TODO: Make it work if labels are not passed in.
             dataset = _extensions._drawing_recognition_prepare_data(
-                input_dataset, "bitmap", "label")
+                input_dataset, self.feature, self.target)
         else:
             dataset = input_dataset
 
         loader = _SFrameRecognitionIter(dataset, self.batch_size,
-                    class_to_index=self.class_to_index,
-                    feature_column='bitmap',
-                    target_column='label',
+                    class_to_index=self._class_to_index,
+                    feature_column=self.feature,
+                    target_column=self.target,
                     load_labels=True,
                     shuffle=False,
-                    io_thread_buffer_size=0,
                     epochs=1,
                     iterations=None)
 
@@ -296,7 +287,7 @@ class DrawingRecognition(_CustomModel):
             else:
                 ctx0 = ctx
 
-            z = self.model(batch_data).asnumpy()
+            z = self._model(batch_data).asnumpy()
             predicted = z.argmax(axis=1)
             classes = self.classes
             
@@ -306,7 +297,7 @@ class DrawingRecognition(_CustomModel):
             all_probabilities[index:index+z.shape[0]] = z
             index += z.shape[0]
         
-        return (_tc.SFrame({'label': _tc.SArray(all_predicted),
+        return (_tc.SFrame({self.target: _tc.SArray(all_predicted),
             'probability': _tc.SArray(all_probabilities)}))
      
     def __repr__(self):
@@ -323,6 +314,8 @@ class DrawingRecognition(_CustomModel):
 
     def _get_summary_struct(self):
         """
+        @TODO: Make this function better, more informative, and hide the 
+               network architecture.
         Returns a structured description of the model, including (where
         relevant) the schema of the training data, description of the training
         data, training statistics, and model hyperparameters.
@@ -339,19 +332,20 @@ class DrawingRecognition(_CustomModel):
               The order matches that of the 'sections' object.
         """
         model_fields = [
-            ('Model', 'model')
+            ('Model', '_model')
         ]
         training_fields = [
-            ('Training time', 'training_time'),
-            ('Training iterations', 'max_iterations'),
-            ('Batch size', 'batch_size'),
-            ('Final loss (specific to model)', 'training_loss'),
+            ('Training Time', 'training_time'),
+            ('Training Iterations', 'max_iterations'),
+            ('Number of Examples', 'num_examples'),
+            ('Batch Size', 'batch_size'),
+            ('Final Loss (specific to model)', 'training_loss'),
         ]
 
         section_titles = ['Schema', 'Training summary']
         return([model_fields, training_fields], section_titles)
 
-    def evaluate(self, dataset, metric='auto', output_type='dict', verbose=True):
+    def evaluate(self, dataset, metric='auto', output_type='dict'):
         """
             Evaluate the model by making predictions of target values and comparing
             these to actual values.
@@ -396,9 +390,9 @@ class DrawingRecognition(_CustomModel):
             >>> print results['accuracy']
         """
 
-        predicted = self._predict_with_options(dataset, verbose=verbose)
+        predicted = self._predict_with_probabilities(dataset)
 
-        target = _tc.SFrame({'label': _tc.SArray(dataset['label'])}) # fix this
+        target = _tc.SFrame({self.target: _tc.SArray(dataset[self.target])}) # fix this
         
         avail_metrics = ['accuracy', 'auc', 'precision', 'recall',
                          'f1_score', 'confusion_matrix', 'roc_curve']
@@ -413,76 +407,25 @@ class DrawingRecognition(_CustomModel):
 
         ret = {}
         if 'accuracy' in metrics:
-            ret['accuracy'] = _evaluation.accuracy(target['label'], predicted['label'])
+            ret['accuracy'] = _evaluation.accuracy(target[self.target], predicted[self.target])
         if 'auc' in metrics:
-            ret['auc'] = _evaluation.auc(target['label'], predicted['probability'], index_map=self.class_to_index)
+            ret['auc'] = _evaluation.auc(target[self.target], predicted['probability'], index_map=self._class_to_index)
         if 'precision' in metrics:
-            ret['precision'] = _evaluation.precision(target['label'], predicted['label'])
+            ret['precision'] = _evaluation.precision(target[self.target], predicted[self.target])
         if 'recall' in metrics:
-            ret['recall'] = _evaluation.recall(target['label'], predicted['label'])
+            ret['recall'] = _evaluation.recall(target[self.target], predicted[self.target])
         if 'f1_score' in metrics:
-            ret['f1_score'] = _evaluation.f1_score(target['label'], predicted['label'])
+            ret['f1_score'] = _evaluation.f1_score(target[self.target], predicted[self.target])
         if 'confusion_matrix' in metrics:
-            ret['confusion_matrix'] = _evaluation.confusion_matrix(target['label'], predicted['label'])
+            ret['confusion_matrix'] = _evaluation.confusion_matrix(target[self.target], predicted[self.target])
         if 'roc_curve' in metrics:
-            ret['roc_curve'] = _evaluation.roc_curve(target['label'], predicted['probability'], index_map=self.class_to_index)
+            ret['roc_curve'] = _evaluation.roc_curve(target[self.target], predicted['probability'], index_map=self._class_to_index)
         
         return ret
 
-    def predict(self, dataset, verbose=True):
-        """ read this and fix:::
-            Predict object instances in an sframe of images.
-            
-            Parameters
-            ----------
-            dataset : SFrame | SArray | turicreate.Image
-            The images on which to perform object detection.
-            If dataset is an SFrame, it must have a column with the same name
-            as the feature column during training. Additional columns are
-            ignored.
-            
-            confidence_threshold : float
-            Only return predictions above this level of confidence. The
-            threshold can range from 0 to 1.
-            
-            verbose : bool
-            If True, prints prediction progress.
-            
-            Returns
-            -------
-            out : SArray
-            An SArray with model predictions. Each element corresponds to
-            an image and contains a list of dictionaries. Each dictionary
-            describes an object instances that was found in the image. If
-            `dataset` is a single image, the return value will be a single
-            prediction.
-            
-            See Also
-            --------
-            evaluate
-            
-            Examples
-            --------
-            .. sourcecode:: python
-            
-            # Make predictions
-            >>> pred = model.predict(data)
-            
-            # Stack predictions, for a better overview
-            >>> turicreate.object_detector.util.stack_annotations(pred)
-            Data:
-            +--------+------------+-------+-------+-------+-------+--------+
-            | row_id | confidence | label |   x   |   y   | width | height |
-            +--------+------------+-------+-------+-------+-------+--------+
-            |   0    |    0.98    |  dog  | 123.0 | 128.0 |  80.0 | 182.0  |
-            |   0    |    0.67    |  cat  | 150.0 | 183.0 | 129.0 | 101.0  |
-            |   1    |    0.8     |  dog  |  50.0 | 432.0 |  65.0 |  98.0  |
-            +--------+------------+-------+-------+-------+-------+--------+
-            [3 rows x 7 columns]
-            
-            # Visualize predictions by generating a new column of marked up images
-            >>> data['image_pred'] = turicreate.object_detector.util.draw_bounding_boxes(data['image'], data['predictions'])
-            """
-        predicted = self._predict_with_options(dataset, verbose=verbose)
-        return predicted['label']
-
+    def predict(self, dataset):
+        """ 
+        Docfix coming soon
+        """
+        predicted = self._predict_with_probabilities(dataset)
+        return predicted[self.target]

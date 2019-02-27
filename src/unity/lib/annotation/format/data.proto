@@ -1,0 +1,26 @@
+syntax = "proto3";
+option optimize_for = LITE_RUNTIME;
+
+package TuriCreate.Annotation.Specification;
+
+message ImageDatum {
+  int32 width = 1;
+  int32 height = 2;
+  int32 channels = 3;
+
+  /* TODO: MISSING IMAGE TYPE. IF WE DON'T HAVE THIS THEN THE BYTE DATA IS
+   * POINTLESS */
+
+  bytes imgData = 10;
+}
+
+message TextDatum { string text = 1; }
+
+message Datum {
+  int64 rowIndex = 1;
+
+  repeated ImageDatum images = 10;
+  repeated TextDatum text = 20;
+}
+
+message Data { repeated Datum data = 1; }

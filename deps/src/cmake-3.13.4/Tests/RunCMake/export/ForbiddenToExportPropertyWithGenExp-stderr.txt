@@ -1,0 +1,3 @@
+CMake Error in CMakeLists.txt:
+  Target \"foo\" contains property \"JUST_A_PROPERTY\" in EXPORT_PROPERTIES but
+  this property contains a generator expression.  This is not allowed.

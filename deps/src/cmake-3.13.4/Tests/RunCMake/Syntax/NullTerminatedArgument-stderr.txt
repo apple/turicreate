@@ -1,0 +1,5 @@
+CMake Error at NullTerminatedArgument.cmake:1:
+  Parse error.  Function missing ending "\)".  Instead found bad character
+  with text "".
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

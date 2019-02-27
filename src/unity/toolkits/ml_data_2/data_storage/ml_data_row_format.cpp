@@ -434,7 +434,7 @@ size_t fill_row_buffer_from_column_buffer(
               }
 
               // Now, we want to sort the dictionaries by index; this
-              // permits easy filling of a sparse vector when
+              // permits easy filling of an Eigen sparse vector when
               // the data is loaded, as we can insert it by index
               // order.
               std::sort(index_vect.begin(), index_vect.end());
@@ -506,7 +506,7 @@ size_t fill_row_buffer_from_column_buffer(
               }
 
               // Now, we want to sort the dictionaries by index; this
-              // permits easy filling of a sparse vector when
+              // permits easy filling of an Eigen sparse vector when
               // the data is loaded, as we can insert it by index
               // order.
               std::sort(idx_value_vect.begin(), idx_value_vect.end());

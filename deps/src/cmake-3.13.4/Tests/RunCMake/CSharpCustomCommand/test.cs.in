@@ -1,0 +1,8 @@
+class TestCs
+{
+  public static int Main(string[] args)
+  {
+    System.Console.WriteLine("Test C#");
+    return 0;
+  }
+}

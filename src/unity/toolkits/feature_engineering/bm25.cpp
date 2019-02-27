@@ -8,7 +8,6 @@
 #include <unity/lib/toolkit_class_macros.hpp>
 #include <unity/lib/variant_deep_serialize.hpp>
 
-
 #include <unity/toolkits/feature_engineering/transform_utils.hpp>
 #include <unity/toolkits/feature_engineering/bm25.hpp>
 #include <unity/toolkits/feature_engineering/topk_indexer.hpp>
@@ -122,7 +121,7 @@ flexible_type calc_avg_document_lengths(const gl_sarray& src){
       DASSERT_TRUE(false);
       break;
   }
-  flexible_type avg_document_size = (doc_lengths).sum() / num_documents;
+  flexible_type avg_document_size = doc_lengths.sum() / num_documents;
   return avg_document_size;
 }
 

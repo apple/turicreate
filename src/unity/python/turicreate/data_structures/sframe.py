@@ -4852,7 +4852,7 @@ class SFrame(object):
         ret_sf.add_columns(new_sf, inplace=True)
         return ret_sf
 
-    def unpack(self, column_name, column_name_prefix=None, column_types=None,
+    def unpack(self, column_name=None, column_name_prefix=None, column_types=None,
                na_value=None, limit=None):
         """
         Expand one column of this SFrame to multiple columns with each value in
@@ -4866,8 +4866,12 @@ class SFrame(object):
 
         Parameters
         ----------
-        column_name : str
-            Name of the unpacked column
+        column_name : str, optional
+            Name of the unpacked column, if provided. If not provided
+            and only one column is present then the column is unpacked. 
+            In case of multiple columns, name must be provided to know 
+            which column to be unpacked.
+        
 
         column_name_prefix : str, optional
             If provided, unpacked column names would start with the given
@@ -4973,12 +4977,44 @@ class SFrame(object):
         | 3  |    3.0    |    4.0    |    5.0    |
         +----+-----------+-----------+-----------+
         [3 rows x 4 columns]
+        
+        >>> sf = turicreate.SFrame([{'a':1,'b':2,'c':3},{'a':4,'b':5,'c':6}])
+        >>> sf.unpack()
+        +---+---+---+
+        | a | b | c |
+        +---+---+---+
+        | 1 | 2 | 3 |
+        | 4 | 5 | 6 |
+        +---+---+---+
+        [2 rows x 3 columns]
+
+
+
         """
-        if column_name not in self.column_names():
-            raise KeyError("column '" + column_name + "' does not exist in current SFrame")
+        if column_name is None:
+            if self.num_columns()==0:
+                raise RuntimeError("No column exists in the current SFrame")
+            
+            for t in range(self.num_columns()):
+                column_type = self.column_types()[t]
+                if column_type==dict or column_type==list or column_type==array.array:
+                    
+                    if column_name is None:
+                        column_name = self.column_names()[t]
+                    else:
+                        raise RuntimeError("Column name needed to unpack")
+            
+
+            if column_name is None:
+                raise RuntimeError("No columns can be unpacked")
+            elif column_name_prefix is None:
+                column_name_prefix=""
+        elif column_name not in self.column_names():
+            raise KeyError("Column '" + column_name + "' does not exist in current SFrame")
 
         if column_name_prefix is None:
             column_name_prefix = column_name
+
 
         new_sf = self[column_name].unpack(column_name_prefix, column_types, na_value, limit)
 

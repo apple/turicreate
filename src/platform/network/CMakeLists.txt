@@ -1,12 +1,8 @@
 project(network)
 
-if(WIN32)
-  SET(PLATFORM_DEPENDENCIES iphlpapi ws2_32)
-endif()
-
-make_library(network
+make_library(network OBJECT
   SOURCES
-   net_util.cpp
+    net_util.cpp
   REQUIRES
-   logger ${PLATFORM_DEPENDENCIES}
+    logger
 )

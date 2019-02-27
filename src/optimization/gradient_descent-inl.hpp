@@ -7,15 +7,13 @@
 #define TURI_GRADIENT_DESCENT_H_
 
 #include <flexible_type/flexible_type.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 
 #include <optimization/utils.hpp>
 #include <optimization/optimization_interface.hpp>
 #include <optimization/regularizer_interface.hpp>
 #include <optimization/line_search-inl.hpp>
 #include <table_printer/table_printer.hpp>
-
-#include <numerics/armadillo.hpp>
 
 
 // TODO: List of todo's for this file
@@ -92,7 +90,7 @@ inline solver_return gradient_descent(first_order_opt_interface& model,
 
     // Needs to store previous point and gradient information
     DenseVector delta_point = point;
-    delta_point.zeros();
+    delta_point.setZero();
     
     // First iteration will take longer. Warn the user.
     logprogress_stream <<"Tuning step size. First iteration could take longer"
@@ -152,12 +150,12 @@ inline solver_return gradient_descent(first_order_opt_interface& model,
       delta_point = point - delta_point;
 
       // Numerical error: Insufficient progress.
-      if (arma::norm(delta_point) <= OPTIMIZATION_ZERO){
+      if (delta_point.norm() <= OPTIMIZATION_ZERO){
         stats.status = OPTIMIZATION_STATUS::OPT_NUMERIC_ERROR;
         break;
       }
       // Numerical error: Numerical overflow. (Step size was too large)
-      if (!delta_point.is_finite() ) {
+      if (!delta_point.array().array().isFinite().all()) {
         stats.status = OPTIMIZATION_STATUS::OPT_NUMERIC_OVERFLOW;
         break;
       }

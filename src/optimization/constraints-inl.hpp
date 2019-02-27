@@ -9,13 +9,14 @@
 #include <string>
 #include <flexible_type/flexible_type.hpp>
 
+// Eigen
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
 
 // Optimizaiton
+#include <optimization/utils.hpp>
 #include <optimization/optimization_interface.hpp>
 #include <optimization/constraint_interface.hpp>
-#include <optimization/utils.hpp>
-
-#include <numerics/armadillo.hpp>
 
 // TODO: List of todo's for this file
 //------------------------------------------------------------------------------
@@ -69,7 +70,7 @@ class non_negative_orthant : public constraint_interface {
    */
   inline void project(DenseVector &point) const {
     DASSERT_EQ(variables, point.size());
-    inplace_elementwise_max(point, 0);
+    point = point.cwiseMax(0);
   }
   
   /**
@@ -87,7 +88,7 @@ class non_negative_orthant : public constraint_interface {
       size_t block_size) const {
     DASSERT_LE(variables, block_start + block_size);
     DASSERT_EQ(block_size, point.size());
-    inplace_elementwise_max(point, 0);
+    point = point.cwiseMax(0);
   }
   
   /**
@@ -158,9 +159,9 @@ class box_constraints: public constraint_interface {
       _variables){
     variables = _variables;
     lb.resize(variables);
-    lb.fill(_lb);
+    lb.setConstant(_lb);
     ub.resize(variables);
-    ub.fill(_ub);
+    ub.setConstant(_ub);
   }
   
   /**
@@ -169,7 +170,8 @@ class box_constraints: public constraint_interface {
    * \param[in]  _lb Lower bound
    * \param[in]  _ub Upper bound
    */
-  box_constraints(const DenseVector& _lb, const DenseVector& _ub){
+  box_constraints(const DenseVector& _lb, const
+      DenseVector& _ub){
     variables = _lb.size();
     DASSERT_EQ(variables, _ub.size());
     lb = _lb;

@@ -1,0 +1,2 @@
+^.*/Tests/RunCMake/CommandLine/CMakeLists.txt\(1\):  cmake_minimum_required\(VERSION 3.0 \)
+.*/Tests/RunCMake/CommandLine/CMakeLists.txt\(2\):  project\(trace-expand-warn-uninitialized NONE \)

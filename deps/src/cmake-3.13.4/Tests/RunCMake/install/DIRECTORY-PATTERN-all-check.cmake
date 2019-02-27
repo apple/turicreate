@@ -1,0 +1,1 @@
+check_installed([[^dir1;dir1/empty\.c;dir1/empty\.h;dir2;dir2/pattern;dir2/pattern/empty\.txt;dir3;dir3/empty\.c;dir3/empty\.h;dir3/empty\.txt;dir4;dir4/empty\.c;dir4/empty\.h;dir4/empty\.txt;empty$]])

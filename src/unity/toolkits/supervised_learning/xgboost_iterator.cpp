@@ -6,7 +6,7 @@
 #include <boost/algorithm/string.hpp>
 #include <future>
 #include <minipsutil/minipsutil.h>
-#include <toolkits/supervised_learning/xgboost_iterator.hpp>
+#include <unity/toolkits/supervised_learning/xgboost_iterator.hpp>
 #include <util/dense_bitset.hpp>
 
 #include <xgboost/src/utils/io.h>

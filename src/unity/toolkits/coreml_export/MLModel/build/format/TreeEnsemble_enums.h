@@ -25,6 +25,7 @@ enum MLTreeEnsembleClassifierClassLabels: int {
     MLTreeEnsembleClassifierClassLabels_NOT_SET = 0,
 };
 
+__attribute__((__unused__))
 static const char * MLTreeEnsembleClassifierClassLabels_Name(MLTreeEnsembleClassifierClassLabels x) {
     switch (x) {
         case MLTreeEnsembleClassifierClassLabels_stringClassLabels:

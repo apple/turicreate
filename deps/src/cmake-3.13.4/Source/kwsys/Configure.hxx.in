@@ -1,0 +1,61 @@
+/* Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
+   file Copyright.txt or https://cmake.org/licensing#kwsys for details.  */
+#ifndef @KWSYS_NAMESPACE@_Configure_hxx
+#define @KWSYS_NAMESPACE@_Configure_hxx
+
+/* Include C configuration.  */
+#include <@KWSYS_NAMESPACE@/Configure.h>
+
+/* Whether wstring is available.  */
+#define @KWSYS_NAMESPACE@_STL_HAS_WSTRING @KWSYS_STL_HAS_WSTRING@
+/* Whether <ext/stdio_filebuf.h> is available. */
+#define @KWSYS_NAMESPACE@_CXX_HAS_EXT_STDIO_FILEBUF_H                         \
+  @KWSYS_CXX_HAS_EXT_STDIO_FILEBUF_H@
+
+#if defined(__SUNPRO_CC) && __SUNPRO_CC > 0x5130 && defined(__has_attribute)
+#  define @KWSYS_NAMESPACE@__has_cpp_attribute(x) __has_attribute(x)
+#elif defined(__has_cpp_attribute)
+#  define @KWSYS_NAMESPACE@__has_cpp_attribute(x) __has_cpp_attribute(x)
+#else
+#  define @KWSYS_NAMESPACE@__has_cpp_attribute(x) 0
+#endif
+
+#if __cplusplus >= 201103L
+#  define @KWSYS_NAMESPACE@_NULLPTR nullptr
+#else
+#  define @KWSYS_NAMESPACE@_NULLPTR 0
+#endif
+
+#ifndef @KWSYS_NAMESPACE@_FALLTHROUGH
+#  if __cplusplus >= 201703L &&                                               \
+    @KWSYS_NAMESPACE@__has_cpp_attribute(fallthrough)
+#    define @KWSYS_NAMESPACE@_FALLTHROUGH [[fallthrough]]
+#  elif __cplusplus >= 201103L &&                                             \
+    @KWSYS_NAMESPACE@__has_cpp_attribute(gnu::fallthrough)
+#    define @KWSYS_NAMESPACE@_FALLTHROUGH [[gnu::fallthrough]]
+#  elif __cplusplus >= 201103L &&                                             \
+    @KWSYS_NAMESPACE@__has_cpp_attribute(clang::fallthrough)
+#    define @KWSYS_NAMESPACE@_FALLTHROUGH [[clang::fallthrough]]
+#  endif
+#endif
+#ifndef @KWSYS_NAMESPACE@_FALLTHROUGH
+#  define @KWSYS_NAMESPACE@_FALLTHROUGH static_cast<void>(0)
+#endif
+
+#undef @KWSYS_NAMESPACE@__has_cpp_attribute
+
+/* If building a C++ file in kwsys itself, give the source file
+   access to the macros without a configured namespace.  */
+#if defined(KWSYS_NAMESPACE)
+#  if !@KWSYS_NAMESPACE@_NAME_IS_KWSYS
+#    define kwsys @KWSYS_NAMESPACE@
+#  endif
+#  define KWSYS_NAME_IS_KWSYS @KWSYS_NAMESPACE@_NAME_IS_KWSYS
+#  define KWSYS_STL_HAS_WSTRING @KWSYS_NAMESPACE@_STL_HAS_WSTRING
+#  define KWSYS_CXX_HAS_EXT_STDIO_FILEBUF_H                                   \
+    @KWSYS_NAMESPACE@_CXX_HAS_EXT_STDIO_FILEBUF_H
+#  define KWSYS_FALLTHROUGH @KWSYS_NAMESPACE@_FALLTHROUGH
+#  define KWSYS_NULLPTR @KWSYS_NAMESPACE@_NULLPTR
+#endif
+
+#endif
