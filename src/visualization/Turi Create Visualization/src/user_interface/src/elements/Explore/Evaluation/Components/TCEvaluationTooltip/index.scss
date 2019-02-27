@@ -1,0 +1,26 @@
+.TCEvaluationTooltip{
+	position: absolute;
+	width:max-content;
+	top: -30px;
+	right: 0px;
+}
+
+.TCEvaluationTooltipText{
+	font-family: Helvetica;
+	font-size: 13px;
+	color: #FFFFFF;
+	line-height: 18px;
+	background: #363643;
+	padding: 6px 11px;
+	border-radius: 4px;
+}
+
+.TCEvaluationCarret{
+	position: relative;
+}
+
+.TCEvaluationCarretIcon{
+	position: absolute;
+	top: -2px;
+	right: 10px;
+}

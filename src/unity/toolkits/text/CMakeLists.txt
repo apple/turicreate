@@ -1,6 +1,6 @@
 project(unity_toolkits)
 
-make_library(unity_text
+make_library(unity_text OBJECT
   SOURCES
     unity_text.cpp
     topic_model.cpp
@@ -9,11 +9,10 @@ make_library(unity_text
     perplexity.cpp
     class_registrations.cpp
   REQUIRES
-    numerics
     unity_core
     unity_ml_model
     random
     logger
     unity_ml_data_2
     unity_util
-  )
+)

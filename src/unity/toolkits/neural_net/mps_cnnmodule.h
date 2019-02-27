@@ -1,9 +1,9 @@
 #ifndef MPS_MODULE_H_
 #define MPS_MODULE_H_
 
-#include <assert.h>
 #include <map>
-#include <vector>
+#include <memory>
+#include <string>
 
 #import <Accelerate/Accelerate.h>
 #import <Foundation/Foundation.h>
@@ -11,91 +11,44 @@
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 
 #include <unity/toolkits/neural_net/float_array.hpp>
+#include <unity/toolkits/neural_net/model_backend.hpp>
 
 #import "mps_networks.h"
 #import "mps_updater.h"
 #import "mps_utils.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 namespace turi {
 namespace neural_net {
 
-class MPSCNNModule {
+class mps_cnn_module: public model_backend {
 public:
-  MPSCNNModule();
-  ~MPSCNNModule();
-  void Init(int network_id, int n, int c_in, int h_in, int w_in, int c_out,
+
+  mps_cnn_module(id <MTLDevice> dev);
+
+  void init(int network_id, int n, int c_in, int h_in, int w_in, int c_out,
             int h_out, int w_out, int updater_id,
             const float_array_map& config);
-  void Forward(const float_array& inputs, float* out, bool is_train = true);
-  void Backward(const float_array& gradient, float* out);
-  void ForwardBackward(const float_array& inputs, const float_array& labels,
-                       const float_array& weights, bool loss_image_required,
-                       float* out);
-  void Forward(const float_array& inputs, const float_array& labels,
-               const float_array& weights, bool loss_image_required,
-               bool is_train, float* out);
-  void Loss(const float_array& inputs, const float_array& labels,
-            const float_array& weights, bool loss_image_required,
-            float* out);
-  void BeginForwardBatch(
-      int batch_id, const float_array& inputs, const float_array& labels,
-      const float_array& weights, bool loss_image_required, bool is_train);
-  void BeginForwardBackwardBatch(
-      int batch_id, const float_array& inputs, const float_array& labels,
-      const float_array& weights, bool loss_image_required);
-  void WaitForBatch(int batch_id, float *forward_out, float *loss_out);
-  void GetLossImages(float *_Nonnull out);
-  void Update();
-  void GpuUpdate();
-  void Load(const float_array_map& weights);
-  float_array_map Export() const;
-  void SetLearningRate(float new_lr) {
-    if (updater_ != nil) {
-      updater_->SetLearningRate(new_lr);
-    }
-  }
-  int NumParams();
+  void load(const float_array_map& weights);
+
+  float_array_map export_weights() const override;
+  float_array_map predict(const float_array_map& inputs) const override;
+
+  void set_learning_rate(float lr) override;
+  float_array_map train(const float_array_map& inputs) override;
 
 private:
-  // Used by the asynchronous API.
-  struct Batch {
-    id<MTLCommandBuffer> _Nullable command_buffer = nil;
-    MPSImageBatch * _Nonnull input = nil;
-    MPSImageBatch * _Nonnull output = nil;
-    MPSImageBatch * _Nonnull top_grad = nil;
-    MPSImageBatch * _Nullable loss_images = nil;
-    MPSCNNLossLabelsBatch * _Nullable loss_labels = nil;
-  };
-
-  id<MTLDevice> _Nonnull dev_;
-  id<MTLCommandQueue> _Nonnull cmd_queue_;
-  MPSImageDescriptor *_Nonnull input_desc_ = nil;
-  MPSImageDescriptor *_Nonnull output_desc_ = nil;
-  MPSImageBatch *_Nonnull input_;
-  MPSImageBatch *_Nonnull output_;
-  MPSImageBatch *_Nonnull top_grad_;
-  MPSImageBatch *_Nullable loss_images_{nil};
-  MPSCNNLossLabelsBatch *_Nullable loss_labels_ = nil;
-  MPSNetwork *_Nonnull network_{nil};
-  MPSUpdater *_Nonnull updater_{nil};
-  int output_chn_;
-  int output_width_;
-
-  // Used by the asynchronous API.
-  std::map<int, Batch> active_batches_;  // Keyed by batch ID
-  std::vector<Batch> free_batches_;
-
-private:
-  Batch* StartBatch(int batch_id);  // Throws if ID is already in use
-
   void SetupUpdater(int updater_id);
-  void Blob2MPSImage(const float_array& blob, MPSImageBatch *batch);
-  void MPSImage2Blob(float *_Nonnull ptr, MPSImageBatch *_Nonnull batch);
 
   static NSData *EncodeLabels(const float* labels, NSUInteger sequenceLength,
                               NSUInteger numClasses);
   static NSData *EncodeWeights(const float* weights, NSUInteger sequenceLength,
                                NSUInteger numClasses);
+
+  MPSImageBatch *copy_input(const float_array& input) const;
+  MPSCNNLossLabelsBatch *copy_labels(const float_array& labels,
+                                     const float_array& weights) const;
 
   MPSCNNLossLabelsBatch *initLossLabelsBatch(
       id<MTLDevice> device, const float_array& labels,
@@ -107,14 +60,24 @@ private:
   static MPSImageBatch *ExtractLossImages(MPSCNNLossLabelsBatch *labelsBatch,
                                           id<MTLCommandBuffer> cb);
     
-  void TrainingWithLoss(
-      Batch *batch, const float_array& inputs, const float_array& labels,
-      const float_array& weights,
-      bool loss_image_required, bool wait_until_completed, float *out,
-      bool do_backward, bool is_train = true);
+  float_array_map perform_batch(const float_array_map& inputs,
+                                bool do_backward) const;
+
+  id <MTLDevice> dev_ = nil;
+  id <MTLCommandQueue> cmd_queue_ = nil;
+  MPSImageDescriptor *input_desc_ = nil;
+  std::unique_ptr<MPSNetwork> network_;
+  std::unique_ptr<MPSUpdater> updater_;
+  size_t output_chn_ = 0;
+  size_t output_width_ = 0;
+
+  NSMutableArray<MPSImageBatch *> *recycled_inputs_ = nil;
+  NSMutableArray<MPSCNNLossLabelsBatch *> *recycled_labels_ = nil;
 };
 
 }  // namespace neural_net
 }  // namespace turi
+
+NS_ASSUME_NONNULL_END
 
 #endif

@@ -15,8 +15,9 @@
 #include <unity/lib/extensions/ml_model.hpp>
 #include <unity/lib/gl_sframe.hpp>
 #include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
-#include <unity/toolkits/neural_net/cnn_module.hpp>
+#include <unity/toolkits/neural_net/compute_context.hpp>
 #include <unity/toolkits/neural_net/image_augmentation.hpp>
+#include <unity/toolkits/neural_net/model_backend.hpp>
 #include <unity/toolkits/neural_net/model_spec.hpp>
 #include <unity/toolkits/object_detection/od_data_iterator.hpp>
 
@@ -28,8 +29,7 @@ class EXPORT object_detector: public ml_model_base {
 
   // ml_model_base interface
 
-  void init_options(const std::map<std::string,
-                    flexible_type>& options) override;
+  void init_options(const std::map<std::string, flexible_type>& opts) override;
   size_t get_version() const override;
   void save_impl(oarchive& oarc) const override;
   void load_version(iarchive& iarc, size_t version) override;
@@ -38,9 +38,11 @@ class EXPORT object_detector: public ml_model_base {
 
   void train(gl_sframe data, std::string annotations_column_name,
              std::string image_column_name,
-             std::map<std::string, flexible_type> options);
+             std::map<std::string, flexible_type> opts);
+  variant_map_type evaluate(gl_sframe data, std::string metric,
+                            std::map<std::string, flexible_type> opts);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
-      std::string filename, std::map<std::string, flexible_type> options);
+      std::string filename, std::map<std::string, flexible_type> opts);
 
   // Register with Unity server
 
@@ -67,7 +69,12 @@ class EXPORT object_detector: public ml_model_base {
       "    The number of training iterations. If 0, then it will be automatically\n"
       "    be determined based on the amount of data you provide.\n"
   );
-  // TODO: Addition training options: batch_size, max_iterations, etc.
+
+  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::evaluate, "data", "metric",
+                                 "options");
+  register_defaults("evaluate",
+      {{"metric", std::string("auto")},
+       {"options", to_variant(std::map<std::string, flexible_type>())}});
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::export_to_coreml, "filename",
     "options");
@@ -101,31 +108,25 @@ class EXPORT object_detector: public ml_model_base {
   // Factory for data_iterator
   virtual std::unique_ptr<data_iterator> create_iterator(
       gl_sframe data, std::string annotations_column_name,
-      std::string image_column_name) const;
+      std::string image_column_name, bool repeat) const;
 
-  // Factory for image_augmenter
-  virtual std::unique_ptr<neural_net::image_augmenter> create_augmenter(
-      const neural_net::image_augmenter::options& opts) const;
+  // Factory for compute_context
+  virtual
+  std::unique_ptr<neural_net::compute_context> create_compute_context() const;
 
   // Returns the initial neural network to train (represented by its CoreML
   // spec), given the path to a mlmodel file containing the pretrained weights.
   virtual std::unique_ptr<neural_net::model_spec> init_model(
       const std::string& pretrained_mlmodel_path) const;
 
-  // Factory for cnn_module
-  virtual std::unique_ptr<neural_net::cnn_module> create_cnn_module(
-      int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
-      const neural_net::float_array_map& config,
-      const neural_net::float_array_map& weights) const;
-
 
   // Support for iterative training.
   // TODO: Expose via forthcoming C-API checkpointing mechanism?
 
-  void init_train(gl_sframe data, std::string annotations_column_name,
-                  std::string image_column_name,
-                  std::map<std::string, flexible_type> options);
-  void perform_training_iteration();
+  virtual void init_train(gl_sframe data, std::string annotations_column_name,
+                          std::string image_column_name,
+                          std::map<std::string, flexible_type> opts);
+  virtual void perform_training_iteration();
 
   // Utility code
 
@@ -135,6 +136,9 @@ class EXPORT object_detector: public ml_model_base {
   }
 
  private:
+
+  neural_net::float_array_map get_model_params() const;
+
   neural_net::shared_float_array prepare_label_batch(
       std::vector<std::vector<neural_net::image_annotation>> annotations_batch)
       const;
@@ -149,15 +153,16 @@ class EXPORT object_detector: public ml_model_base {
 
   // Primary dependencies for training. These should be nonnull while training
   // is in progress.
+  std::unique_ptr<neural_net::compute_context> training_compute_context_;
   std::unique_ptr<data_iterator> training_data_iterator_;
   std::unique_ptr<neural_net::image_augmenter> training_data_augmenter_;
-  std::unique_ptr<neural_net::cnn_module> training_module_;
+  std::unique_ptr<neural_net::model_backend> training_model_;
 
   // Nonnull while training is in progress, if progress printing is enabled.
   std::unique_ptr<table_printer> training_table_printer_;
 
   // Map from iteration index to the loss future.
-  std::map<size_t, neural_net::deferred_float_array> pending_training_batches_;
+  std::map<size_t, neural_net::shared_float_array> pending_training_batches_;
 };
 
 }  // object_detection

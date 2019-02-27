@@ -6,7 +6,7 @@
 
 #define BOOST_TEST_MODULE test_mps_image_augmentation
 
-#include <unity/toolkits/neural_net/mps_factory.hpp>
+#include <unity/toolkits/neural_net/mps_compute_context.hpp>
 
 #include <tuple>
 
@@ -33,8 +33,8 @@ image_type create_image(
 
   size_t size = height * width * 3;
   std::unique_ptr<uint8_t[]> buffer(new uint8_t[size]);
-  for (int j = 0; j < height; ++j) {
-    for (int i = 0; i < width; ++i) {
+  for (size_t j = 0; j < height; ++j) {
+    for (size_t i = 0; i < width; ++i) {
       uint8_t* pixel = buffer.get() + j * width * 3 + i * 3;
       std::tie(pixel[0], pixel[1], pixel[2]) = rgb_generator(i, j);
     }
@@ -77,9 +77,10 @@ BOOST_AUTO_TEST_CASE(test_resize) {
 
   // Create an augmenter that just resizes to 512 by 512.
   image_augmenter::options opts;
+  opts.batch_size = 1;
   opts.output_width = 512;
   opts.output_height = 512;
-  auto augmenter = create_mps_image_augmenter(opts);
+  auto augmenter = mps_compute_context().create_image_augmenter(opts);
 
   std::vector<labeled_image> batch(1);
 
@@ -137,10 +138,11 @@ BOOST_AUTO_TEST_CASE(test_horizontal_flip) {
 
   // Create an augmenter that just performs horizontal flip.
   image_augmenter::options opts;
+  opts.batch_size = 1;
   opts.output_width = 256;
   opts.output_height = 256;
   opts.horizontal_flip_prob = 0.5;
-  auto augmenter = create_mps_image_augmenter_for_testing(
+  auto augmenter = mps_compute_context().create_image_augmenter_for_testing(
       opts, create_mock_rng(&rng_calls));
 
   std::vector<labeled_image> batch(1);
@@ -208,6 +210,7 @@ BOOST_AUTO_TEST_CASE(test_crop) {
 
   // Create an augmenter that just performs crops.
   image_augmenter::options opts;
+  opts.batch_size = 1;
   opts.output_width = 256;
   opts.output_height = 256;
   opts.crop_prob = 0.5f;
@@ -218,7 +221,7 @@ BOOST_AUTO_TEST_CASE(test_crop) {
   opts.crop_opts.min_object_covered = 0.f;
   opts.crop_opts.max_attempts = 2;
   opts.crop_opts.min_eject_coverage = 0.5f;
-  auto augmenter = create_mps_image_augmenter_for_testing(
+  auto augmenter = mps_compute_context().create_image_augmenter_for_testing(
       opts, create_mock_rng(&rng_calls));
 
   std::vector<labeled_image> batch(1);
@@ -319,6 +322,7 @@ BOOST_AUTO_TEST_CASE(test_pad) {
 
   // Create an augmenter that just performs padding
   image_augmenter::options opts;
+  opts.batch_size = 1;
   opts.output_width = 256;
   opts.output_height = 256;
   opts.pad_prob = 0.5f;
@@ -327,7 +331,7 @@ BOOST_AUTO_TEST_CASE(test_pad) {
   opts.pad_opts.min_area_fraction = 1.f;
   opts.pad_opts.max_area_fraction = 4.f;
   opts.pad_opts.max_attempts = 2;
-  auto augmenter = create_mps_image_augmenter_for_testing(
+  auto augmenter = mps_compute_context().create_image_augmenter_for_testing(
       opts, create_mock_rng(&rng_calls));
 
   std::vector<labeled_image> batch(1);

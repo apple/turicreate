@@ -1,0 +1,1 @@
+math(EXPR var "INVALID")

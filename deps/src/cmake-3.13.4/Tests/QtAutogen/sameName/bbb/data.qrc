@@ -1,0 +1,6 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="bbb/">
+  <file>item.hpp</file>
+  <file>item.cpp</file>
+</qresource>
+</RCC>

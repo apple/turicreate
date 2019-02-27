@@ -20,7 +20,7 @@
 #include <export.hpp>
 
 // Toolkits
-#include <toolkits/supervised_learning/supervised_learning.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
 #include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
 
 // Forward delcare
@@ -176,7 +176,8 @@ class EXPORT xgboost_model : public supervised_learning_model_base {
    */
   std::map<std::string, variant_type> evaluate(
                const ml_data& test_data,
-               const std::string& evaluation_type="") override;
+               const std::string& evaluation_type="",
+               bool with_prediction=false) override;
 
   std::map<std::string, variant_type> evaluate_impl(
                const DMatrixMLData& dmat,

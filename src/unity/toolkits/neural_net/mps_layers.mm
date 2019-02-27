@@ -83,7 +83,7 @@ imageForCommandBuffer:(__nonnull id<MTLCommandBuffer>)cmdBuf
     _weight[i] = 0.f;
   }
 
-  for (int i = 0; i < _bias.size(); ++i) {
+  for (size_t i = 0; i < _bias.size(); ++i) {
     _bias[i] = 0.f;
   }
   return self;

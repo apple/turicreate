@@ -10,6 +10,9 @@
 #include <algorithm>
 #include <util/cityhash_tc.hpp>
 
+// Eigen
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
 
 // SFrame and Flex type
 #include <unity/lib/flex_dict_view.hpp>
@@ -28,6 +31,9 @@
 #include <globals/globals.hpp>
 
 using namespace turi;
+
+typedef Eigen::Matrix<double, Eigen::Dynamic,1>  DenseVector;
+typedef Eigen::SparseVector<double> SparseVector;
 
 struct test_reindexing  {
  public:

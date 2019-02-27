@@ -1,0 +1,43 @@
+.TCEvaluationHeaderCellImages{
+	flex: 2;
+	font-family: Helvetica;
+	font-size: 12px;
+	color: #484856;
+	line-height: 20px;
+	text-align: left;
+}
+
+.TCEvaluationHeaderCellPercent{
+	flex: 1;
+	font-family: Helvetica;
+	font-size: 12px;
+	color: #484856;
+	line-height: 20px;
+	display: flex;
+	cursor: pointer;
+}
+.TCEvaluationHeaderCellAmount{
+	flex: 1;
+	font-family: Helvetica;
+	font-size: 12px;
+	color: #484856;
+	line-height: 20px;
+	display: flex;
+	cursor: pointer;
+}
+.TCEvaluationHeaderCellText{
+	flex: 0.7;
+	font-family: Helvetica;
+	font-size: 12px;
+	color: #484856;
+	line-height: 20px;
+	text-align: left;
+	display: flex;
+	cursor: pointer;
+}
+
+.TCEvaluationHeaderCellDropDown{
+	padding-left: 12px;
+	padding-right: 12px;
+	cursor: pointer;
+}

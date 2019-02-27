@@ -1,0 +1,12 @@
+^matches: Some::;Scope
+results from: string\(REGEX MATCHALL\)
+CMAKE_MATCH_0: -->Scope<--
+CMAKE_MATCH_1: -->Scope<--
+CMAKE_MATCH_2: --><--
+CMAKE_MATCH_COUNT: -->1<--
+replace: \[Some\]\[Scope\]
+results from: string\(REGEX REPLACE\)
+CMAKE_MATCH_0: -->Scope<--
+CMAKE_MATCH_1: -->Scope<--
+CMAKE_MATCH_2: --><--
+CMAKE_MATCH_COUNT: -->1<--$

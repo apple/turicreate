@@ -6,11 +6,24 @@
 #include <unity/lib/visualization/transformation.hpp>
 #include <unity/lib/extensions/model_base.hpp>
 #include <string>
+#include <capi/TuriCreate.h>
+
+#ifdef __APPLE__
+#ifndef TC_BUILD_IOS
+extern "C" {
+#include <CoreGraphics/CoreGraphics.h>
+}
+#endif // TC_BUILD_IOS
+#endif // __APPLE__
 
 namespace turi {
   namespace visualization {
 
     class Plot: public model_base {
+      private:
+        std::string m_vega_spec;
+        double m_size_array;
+        std::shared_ptr<transformation_base> m_transformer;
 
       public:
         Plot(){};
@@ -18,11 +31,12 @@ namespace turi {
                                               m_vega_spec(vega_spec),
                                               m_size_array(size_array),
                                               m_transformer(transformer){}
-        void show(const std::string& path_to_client);
+        void show(const std::string& path_to_client, tc_plot_variation variation = tc_plot_variation_default);
         void materialize();
 
         // vega specification
-        std::string get_spec();
+        std::string get_spec(tc_plot_variation variation=tc_plot_variation_default,
+                             bool include_data=false);
 
         // streaming data aggregation
         double get_percent_complete() const; // out of 1.0
@@ -32,15 +46,19 @@ namespace turi {
         // non-streaming data aggregation: causes full materialization
         std::string get_data();
 
-        // TODO - these hould be private
-        std::string m_vega_spec;
-        double m_size_array;
-        std::shared_ptr<transformation_base> m_transformer;
+#ifdef __APPLE__
+#ifndef TC_BUILD_IOS
+        // Streaming render (based on current computation -
+        // call materialize first to get a final rendering up front).
+        // Returns true if streaming finished, false otherwise.
+        bool render(CGContextRef context, tc_plot_variation variation=tc_plot_variation_default);
+#endif // TC_BUILD_IOS
+#endif // __APPLE__
 
         BEGIN_CLASS_MEMBER_REGISTRATION("_Plot")
-        REGISTER_CLASS_MEMBER_FUNCTION(Plot::show, "path_to_client")
+        REGISTER_CLASS_MEMBER_FUNCTION(Plot::show, "path_to_client", "variation")
         REGISTER_CLASS_MEMBER_FUNCTION(Plot::materialize)
-        REGISTER_CLASS_MEMBER_FUNCTION(Plot::get_spec)
+        REGISTER_CLASS_MEMBER_FUNCTION(Plot::get_spec, "variation", "include_data")
         REGISTER_CLASS_MEMBER_FUNCTION(Plot::get_data)
         END_CLASS_MEMBER_REGISTRATION
     };

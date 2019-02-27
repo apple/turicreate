@@ -1,0 +1,3538 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v4.json", 
+  "config": {
+    "axis": {
+      "labelColor": "#595959", 
+      "labelFont": "HelveticaNeue-Light, Arial", 
+      "labelFontSize": 7, 
+      "labelPadding": 10, 
+      "titleColor": "#595959", 
+      "titleFont": "HelveticaNeue-Light, Arial", 
+      "titleFontSize": 12, 
+      "titleFontWeight": "normal", 
+      "titlePadding": 9
+    }, 
+    "axisY": {
+      "minExtent": 30
+    }, 
+    "style": {
+      "group-title": {
+        "fill": "#595959", 
+        "font": "HelveticaNeue-Light, Arial", 
+        "fontSize": 20, 
+        "fontWeight": "normal"
+      }, 
+      "rect": {
+        "stroke": "rgba(200, 200, 200, 0.5)"
+      }
+    }
+  }, 
+  "data": [
+    {
+      "name": "pts_store"
+    }, 
+    {
+      "name": "source_2", 
+      "progress": 100.0, 
+      "values": [
+        {
+          "a": 0, 
+          "categorical": [
+            {
+              "count": 4208, 
+              "label": "p", 
+              "label_idx": 0, 
+              "percentage": "51.7971%"
+            }, 
+            {
+              "count": 3916, 
+              "label": "c", 
+              "label_idx": 1, 
+              "percentage": "48.2029%"
+            }
+          ], 
+          "num_missing": 0, 
+          "num_row": 8124, 
+          "num_unique": 2, 
+          "numeric": [], 
+          "title": "label", 
+          "type": "str"
+        }, 
+        {
+          "a": 1, 
+          "categorical": [
+            {
+              "count": 3656, 
+              "label": "x", 
+              "label_idx": 0, 
+              "percentage": "45.0025%"
+            }, 
+            {
+              "count": 3152, 
+              "label": "f", 
+              "label_idx": 1, 
+              "percentage": "38.7986%"
+            }, 
+            {
+              "count": 828, 
+              "label": "k", 
+              "label_idx": 2, 
+              "percentage": "10.192%"
+            }, 
+            {
+              "count": 452, 
+              "label": "b", 
+              "label_idx": 3, 
+              "percentage": "5.56376%"
+            }, 
+            {
+              "count": 32, 
+              "label": "s", 
+              "label_idx": 4, 
+              "percentage": "0.393895%"
+            }, 
+            {
+              "count": 4, 
+              "label": "c", 
+              "label_idx": 5, 
+              "percentage": "0.0492368%"
+            }
+          ], 
+          "num_missing": 0, 
+          "num_row": 8124, 
+          "num_unique": 6, 
+          "numeric": [], 
+          "title": "cap-shape", 
+          "type": "str"
+        }, 
+        {
+          "a": 2, 
+          "categorical": [
+            {
+              "count": 3244, 
+              "label": "y", 
+              "label_idx": 0, 
+              "percentage": "39.9311%"
+            }, 
+            {
+              "count": 2556, 
+              "label": "s", 
+              "label_idx": 1, 
+              "percentage": "31.4623%"
+            }, 
+            {
+              "count": 2320, 
+              "label": "f", 
+              "label_idx": 2, 
+              "percentage": "28.5574%"
+            }, 
+            {
+              "count": 4, 
+              "label": "g", 
+              "label_idx": 3, 
+              "percentage": "0.0492368%"
+            }
+          ], 
+          "num_missing": 0, 
+          "num_row": 8124, 
+          "num_unique": 4, 
+          "numeric": [], 
+          "title": "cap-surface", 
+          "type": "str"
+        }, 
+        {
+          "a": 3, 
+          "categorical": [
+            {
+              "count": 2284, 
+              "label": "n", 
+              "label_idx": 0, 
+              "percentage": "28.1142%"
+            }, 
+            {
+              "count": 1840, 
+              "label": "g", 
+              "label_idx": 1, 
+              "percentage": "22.6489%"
+            }, 
+            {
+              "count": 1500, 
+              "label": "e", 
+              "label_idx": 2, 
+              "percentage": "18.4638%"
+            }, 
+            {
+              "count": 1072, 
+              "label": "y", 
+              "label_idx": 3, 
+              "percentage": "13.1955%"
+            }, 
+            {
+              "count": 1040, 
+              "label": "w", 
+              "label_idx": 4, 
+              "percentage": "12.8016%"
+            }, 
+            {
+              "count": 168, 
+              "label": "b", 
+              "label_idx": 5, 
+              "percentage": "2.06795%"
+            }, 
+            {
+              "count": 144, 
+              "label": "p", 
+              "label_idx": 6, 
+              "percentage": "1.77253%"
+            }, 
+            {
+              "count": 44, 
+              "label": "c", 
+              "label_idx": 7, 
+              "percentage": "0.541605%"
+            }, 
+            {
+              "count": 16, 
+              "label": "r", 
+              "label_idx": 8, 
+              "percentage": "0.196947%"
+            }, 
+            {
+              "count": 16, 
+              "label": "u", 
+              "label_idx": 9, 
+              "percentage": "0.196947%"
+            }
+          ], 
+          "num_missing": 0, 
+          "num_row": 8124, 
+          "num_unique": 10, 
+          "numeric": [], 
+          "title": "cap-color", 
+          "type": "str"
+        }, 
+        {
+          "a": 4, 
+          "categorical": [
+            {
+              "count": 4748, 
+              "label": "f", 
+              "label_idx": 0, 
+              "percentage": "58.4441%"
+            }, 
+            {
+              "count": 3376, 
+              "label": "t", 
+              "label_idx": 1, 
+              "percentage": "41.5559%"
+            }
+          ], 
+          "num_missing": 0, 
+          "num_row": 8124, 
+          "num_unique": 2, 
+          "numeric": [], 
+          "title": "bruises?", 
+          "type": "str"
+        }, 
+        {
+          "a": 5, 
+          "categorical": [
+            {
+              "count": 3528, 
+              "label": "n", 
+              "label_idx": 0, 
+              "percentage": "43.4269%"
+            }, 
+            {
+              "count": 2160, 
+              "label": "f", 
+              "label_idx": 1, 
+              "percentage": "26.5879%"
+            }, 
+            {
+              "count": 576, 
+              "label": "s", 
+              "label_idx": 2, 
+              "percentage": "7.0901%"
+            }, 
+            {
+              "count": 576, 
+              "label": "y", 
+              "label_idx": 3, 
+              "percentage": "7.0901%"
+            }, 
+            {
+              "count": 400, 
+              "label": "a", 
+              "label_idx": 4, 
+              "percentage": "4.92368%"
+            }, 
+            {
+              "count": 400, 
+              "label": "l", 
+              "label_idx": 5, 
+              "percentage": "4.92368%"
+            }, 
+            {
+              "count": 256, 
+              "label": "p", 
+              "label_idx": 6, 
+              "percentage": "3.15116%"
+            }, 
+            {
+              "count": 192, 
+              "label": "c", 
+              "label_idx": 7, 
+              "percentage": "2.36337%"
+            }, 
+            {
+              "count": 36, 
+              "label": "m", 
+              "label_idx": 8, 
+              "percentage": "0.443131%"
+            }
+          ], 
+          "num_missing": 0, 
+          "num_row": 8124, 
+          "num_unique": 9, 
+          "numeric": [], 
+          "title": "odor", 
+          "type": "str"
+        }, 
+        {
+          "a": 6, 
+          "categorical": [
+            {
+              "count": 7914, 
+              "label": "f", 
+              "label_idx": 0, 
+              "percentage": "97.4151%"
+            }, 
+            {
+              "count": 210, 
+              "label": "a", 
+              "label_idx": 1, 
+              "percentage": "2.58493%"
+            }
+          ], 
+          "num_missing": 0, 
+          "num_row": 8124, 
+          "num_unique": 2, 
+          "numeric": [], 
+          "title": "gill-attachment", 
+          "type": "str"
+        }, 
+        {
+          "a": 7, 
+          "categorical": [
+            {
+              "count": 6812, 
+              "label": "c", 
+              "label_idx": 0, 
+              "percentage": "83.8503%"
+            }, 
+            {
+              "count": 1312, 
+              "label": "w", 
+              "label_idx": 1, 
+              "percentage": "16.1497%"
+            }
+          ], 
+          "num_missing": 0, 
+          "num_row": 8124, 
+          "num_unique": 2, 
+          "numeric": [], 
+          "title": "gill-spacing", 
+          "type": "str"
+        }, 
+        {
+          "a": 8, 
+          "categorical": [
+            {
+              "count": 5612, 
+              "label": "b", 
+              "label_idx": 0, 
+              "percentage": "69.0793%"
+            }, 
+            {
+              "count": 2512, 
+              "label": "n", 
+              "label_idx": 1, 
+              "percentage": "30.9207%"
+            }
+          ], 
+          "num_missing": 0, 
+          "num_row": 8124, 
+          "num_unique": 2, 
+          "numeric": [], 
+          "title": "gill-size", 
+          "type": "str"
+        }, 
+        {
+          "a": 9, 
+          "categorical": [
+            {
+              "count": 1728, 
+              "label": "b", 
+              "label_idx": 0, 
+              "percentage": "21.2703%"
+            }, 
+            {
+              "count": 1492, 
+              "label": "p", 
+              "label_idx": 1, 
+              "percentage": "18.3653%"
+            }, 
+            {
+              "count": 1202, 
+              "label": "w", 
+              "label_idx": 2, 
+              "percentage": "14.7957%"
+            }, 
+            {
+              "count": 1048, 
+              "label": "n", 
+              "label_idx": 3, 
+              "percentage": "12.9%"
+            }, 
+            {
+              "count": 752, 
+              "label": "g", 
+              "label_idx": 4, 
+              "percentage": "9.25652%"
+            }, 
+            {
+              "count": 732, 
+              "label": "h", 
+              "label_idx": 5, 
+              "percentage": "9.01034%"
+            }, 
+            {
+              "count": 492, 
+              "label": "u", 
+              "label_idx": 6, 
+              "percentage": "6.05613%"
+            }, 
+            {
+              "count": 408, 
+              "label": "k", 
+              "label_idx": 7, 
+              "percentage": "5.02216%"
+            }, 
+            {
+              "count": 96, 
+              "label": "e", 
+              "label_idx": 8, 
+              "percentage": "1.18168%"
+            }, 
+            {
+              "count": 86, 
+              "label": "y", 
+              "label_idx": 9, 
+              "percentage": "1.05859%"
+            }
+          ], 
+          "num_missing": 0, 
+          "num_row": 8124, 
+          "num_unique": 12, 
+          "numeric": [], 
+          "title": "gill-color", 
+          "type": "str"
+        }, 
+        {
+          "a": 10, 
+          "categorical": [
+            {
+              "count": 4608, 
+              "label": "t", 
+              "label_idx": 0, 
+              "percentage": "56.7208%"
+            }, 
+            {
+              "count": 3516, 
+              "label": "e", 
+              "label_idx": 1, 
+              "percentage": "43.2792%"
+            }
+          ], 
+          "num_missing": 0, 
+          "num_row": 8124, 
+          "num_unique": 2, 
+          "numeric": [], 
+          "title": "stalk-shape", 
+          "type": "str"
+        }, 
+        {
+          "a": 11, 
+          "categorical": [
+            {
+              "count": 3776, 
+              "label": "b", 
+              "label_idx": 0, 
+              "percentage": "46.4796%"
+            }, 
+            {
+              "count": 2480, 
+              "label": "?", 
+              "label_idx": 1, 
+              "percentage": "30.5268%"
+            }, 
+            {
+              "count": 1120, 
+              "label": "e", 
+              "label_idx": 2, 
+              "percentage": "13.7863%"
+            }, 
+            {
+              "count": 556, 
+              "label": "c", 
+              "label_idx": 3, 
+              "percentage": "6.84392%"
+            }, 
+            {
+              "count": 192, 
+              "label": "r", 
+              "label_idx": 4, 
+              "percentage": "2.36337%"
+            }
+          ], 
+          "num_missing": 0, 
+          "num_row": 8124, 
+          "num_unique": 5, 
+          "numeric": [], 
+          "title": "stalk-root", 
+          "type": "str"
+        }, 
+        {
+          "a": 12, 
+          "categorical": [
+            {
+              "count": 5176, 
+              "label": "s", 
+              "label_idx": 0, 
+              "percentage": "63.7125%"
+            }, 
+            {
+              "count": 2372, 
+              "label": "k", 
+              "label_idx": 1, 
+              "percentage": "29.1974%"
+            }, 
+            {
+              "count": 552, 
+              "label": "f", 
+              "label_idx": 2, 
+              "percentage": "6.79468%"
+            }, 
+            {
+              "count": 24, 
+              "label": "y", 
+              "label_idx": 3, 
+              "percentage": "0.295421%"
+            }
+          ], 
+          "num_missing": 0, 
+          "num_row": 8124, 
+          "num_unique": 4, 
+          "numeric": [], 
+          "title": "stalk-surface-above-ring", 
+          "type": "str"
+        }, 
+        {
+          "a": 13, 
+          "categorical": [
+            {
+              "count": 4936, 
+              "label": "s", 
+              "label_idx": 0, 
+              "percentage": "60.7582%"
+            }, 
+            {
+              "count": 2304, 
+              "label": "k", 
+              "label_idx": 1, 
+              "percentage": "28.3604%"
+            }, 
+            {
+              "count": 600, 
+              "label": "f", 
+              "label_idx": 2, 
+              "percentage": "7.38552%"
+            }, 
+            {
+              "count": 284, 
+              "label": "y", 
+              "label_idx": 3, 
+              "percentage": "3.49581%"
+            }
+          ], 
+          "num_missing": 0, 
+          "num_row": 8124, 
+          "num_unique": 4, 
+          "numeric": [], 
+          "title": "stalk-surface-below-ring", 
+          "type": "str"
+        }, 
+        {
+          "a": 14, 
+          "categorical": [
+            {
+              "count": 4464, 
+              "label": "w", 
+              "label_idx": 0, 
+              "percentage": "54.9483%"
+            }, 
+            {
+              "count": 1872, 
+              "label": "p", 
+              "label_idx": 1, 
+              "percentage": "23.0428%"
+            }, 
+            {
+              "count": 576, 
+              "label": "g", 
+              "label_idx": 2, 
+              "percentage": "7.0901%"
+            }, 
+            {
+              "count": 448, 
+              "label": "n", 
+              "label_idx": 3, 
+              "percentage": "5.51452%"
+            }, 
+            {
+              "count": 432, 
+              "label": "b", 
+              "label_idx": 4, 
+              "percentage": "5.31758%"
+            }, 
+            {
+              "count": 192, 
+              "label": "o", 
+              "label_idx": 5, 
+              "percentage": "2.36337%"
+            }, 
+            {
+              "count": 96, 
+              "label": "e", 
+              "label_idx": 6, 
+              "percentage": "1.18168%"
+            }, 
+            {
+              "count": 36, 
+              "label": "c", 
+              "label_idx": 7, 
+              "percentage": "0.443131%"
+            }, 
+            {
+              "count": 8, 
+              "label": "y", 
+              "label_idx": 8, 
+              "percentage": "0.0984737%"
+            }
+          ], 
+          "num_missing": 0, 
+          "num_row": 8124, 
+          "num_unique": 9, 
+          "numeric": [], 
+          "title": "stalk-color-above-ring", 
+          "type": "str"
+        }, 
+        {
+          "a": 15, 
+          "categorical": [
+            {
+              "count": 4384, 
+              "label": "w", 
+              "label_idx": 0, 
+              "percentage": "53.9636%"
+            }, 
+            {
+              "count": 1872, 
+              "label": "p", 
+              "label_idx": 1, 
+              "percentage": "23.0428%"
+            }, 
+            {
+              "count": 576, 
+              "label": "g", 
+              "label_idx": 2, 
+              "percentage": "7.0901%"
+            }, 
+            {
+              "count": 512, 
+              "label": "n", 
+              "label_idx": 3, 
+              "percentage": "6.30231%"
+            }, 
+            {
+              "count": 432, 
+              "label": "b", 
+              "label_idx": 4, 
+              "percentage": "5.31758%"
+            }, 
+            {
+              "count": 192, 
+              "label": "o", 
+              "label_idx": 5, 
+              "percentage": "2.36337%"
+            }, 
+            {
+              "count": 96, 
+              "label": "e", 
+              "label_idx": 6, 
+              "percentage": "1.18168%"
+            }, 
+            {
+              "count": 36, 
+              "label": "c", 
+              "label_idx": 7, 
+              "percentage": "0.443131%"
+            }, 
+            {
+              "count": 24, 
+              "label": "y", 
+              "label_idx": 8, 
+              "percentage": "0.295421%"
+            }
+          ], 
+          "num_missing": 0, 
+          "num_row": 8124, 
+          "num_unique": 9, 
+          "numeric": [], 
+          "title": "stalk-color-below-ring", 
+          "type": "str"
+        }, 
+        {
+          "a": 16, 
+          "categorical": [
+            {
+              "count": 7924, 
+              "label": "w", 
+              "label_idx": 0, 
+              "percentage": "97.5382%"
+            }, 
+            {
+              "count": 96, 
+              "label": "n", 
+              "label_idx": 1, 
+              "percentage": "1.18168%"
+            }, 
+            {
+              "count": 96, 
+              "label": "o", 
+              "label_idx": 2, 
+              "percentage": "1.18168%"
+            }, 
+            {
+              "count": 8, 
+              "label": "y", 
+              "label_idx": 3, 
+              "percentage": "0.0984737%"
+            }
+          ], 
+          "num_missing": 0, 
+          "num_row": 8124, 
+          "num_unique": 4, 
+          "numeric": [], 
+          "title": "veil-color", 
+          "type": "str"
+        }, 
+        {
+          "a": 17, 
+          "categorical": [
+            {
+              "count": 7488, 
+              "label": "o", 
+              "label_idx": 0, 
+              "percentage": "92.1713%"
+            }, 
+            {
+              "count": 600, 
+              "label": "t", 
+              "label_idx": 1, 
+              "percentage": "7.38552%"
+            }, 
+            {
+              "count": 36, 
+              "label": "n", 
+              "label_idx": 2, 
+              "percentage": "0.443131%"
+            }
+          ], 
+          "num_missing": 0, 
+          "num_row": 8124, 
+          "num_unique": 3, 
+          "numeric": [], 
+          "title": "ring-number", 
+          "type": "str"
+        }, 
+        {
+          "a": 18, 
+          "categorical": [
+            {
+              "count": 3968, 
+              "label": "p", 
+              "label_idx": 0, 
+              "percentage": "48.8429%"
+            }, 
+            {
+              "count": 2776, 
+              "label": "e", 
+              "label_idx": 1, 
+              "percentage": "34.1704%"
+            }, 
+            {
+              "count": 1296, 
+              "label": "l", 
+              "label_idx": 2, 
+              "percentage": "15.9527%"
+            }, 
+            {
+              "count": 48, 
+              "label": "f", 
+              "label_idx": 3, 
+              "percentage": "0.590842%"
+            }, 
+            {
+              "count": 36, 
+              "label": "n", 
+              "label_idx": 4, 
+              "percentage": "0.443131%"
+            }
+          ], 
+          "num_missing": 0, 
+          "num_row": 8124, 
+          "num_unique": 5, 
+          "numeric": [], 
+          "title": "ring-type", 
+          "type": "str"
+        }, 
+        {
+          "a": 19, 
+          "categorical": [
+            {
+              "count": 2388, 
+              "label": "w", 
+              "label_idx": 0, 
+              "percentage": "29.3944%"
+            }, 
+            {
+              "count": 1968, 
+              "label": "n", 
+              "label_idx": 1, 
+              "percentage": "24.2245%"
+            }, 
+            {
+              "count": 1872, 
+              "label": "k", 
+              "label_idx": 2, 
+              "percentage": "23.0428%"
+            }, 
+            {
+              "count": 1632, 
+              "label": "h", 
+              "label_idx": 3, 
+              "percentage": "20.0886%"
+            }, 
+            {
+              "count": 72, 
+              "label": "r", 
+              "label_idx": 4, 
+              "percentage": "0.886263%"
+            }, 
+            {
+              "count": 48, 
+              "label": "b", 
+              "label_idx": 5, 
+              "percentage": "0.590842%"
+            }, 
+            {
+              "count": 48, 
+              "label": "o", 
+              "label_idx": 6, 
+              "percentage": "0.590842%"
+            }, 
+            {
+              "count": 48, 
+              "label": "u", 
+              "label_idx": 7, 
+              "percentage": "0.590842%"
+            }, 
+            {
+              "count": 48, 
+              "label": "y", 
+              "label_idx": 8, 
+              "percentage": "0.590842%"
+            }
+          ], 
+          "num_missing": 0, 
+          "num_row": 8124, 
+          "num_unique": 9, 
+          "numeric": [], 
+          "title": "spore-print-color", 
+          "type": "str"
+        }, 
+        {
+          "a": 20, 
+          "categorical": [
+            {
+              "count": 4040, 
+              "label": "v", 
+              "label_idx": 0, 
+              "percentage": "49.7292%"
+            }, 
+            {
+              "count": 1712, 
+              "label": "y", 
+              "label_idx": 1, 
+              "percentage": "21.0734%"
+            }, 
+            {
+              "count": 1248, 
+              "label": "s", 
+              "label_idx": 2, 
+              "percentage": "15.3619%"
+            }, 
+            {
+              "count": 400, 
+              "label": "n", 
+              "label_idx": 3, 
+              "percentage": "4.92368%"
+            }, 
+            {
+              "count": 384, 
+              "label": "a", 
+              "label_idx": 4, 
+              "percentage": "4.72674%"
+            }, 
+            {
+              "count": 340, 
+              "label": "c", 
+              "label_idx": 5, 
+              "percentage": "4.18513%"
+            }
+          ], 
+          "num_missing": 0, 
+          "num_row": 8124, 
+          "num_unique": 6, 
+          "numeric": [], 
+          "title": "population", 
+          "type": "str"
+        }, 
+        {
+          "a": 21, 
+          "categorical": [
+            {
+              "count": 3148, 
+              "label": "d", 
+              "label_idx": 0, 
+              "percentage": "38.7494%"
+            }, 
+            {
+              "count": 2148, 
+              "label": "g", 
+              "label_idx": 1, 
+              "percentage": "26.4402%"
+            }, 
+            {
+              "count": 1144, 
+              "label": "p", 
+              "label_idx": 2, 
+              "percentage": "14.0817%"
+            }, 
+            {
+              "count": 832, 
+              "label": "l", 
+              "label_idx": 3, 
+              "percentage": "10.2413%"
+            }, 
+            {
+              "count": 368, 
+              "label": "u", 
+              "label_idx": 4, 
+              "percentage": "4.52979%"
+            }, 
+            {
+              "count": 292, 
+              "label": "m", 
+              "label_idx": 5, 
+              "percentage": "3.59429%"
+            }, 
+            {
+              "count": 192, 
+              "label": "w", 
+              "label_idx": 6, 
+              "percentage": "2.36337%"
+            }
+          ], 
+          "num_missing": 0, 
+          "num_row": 8124, 
+          "num_unique": 7, 
+          "numeric": [], 
+          "title": "habitat", 
+          "type": "str"
+        }, 
+        {
+          "a": 22, 
+          "categorical": [
+            {
+              "count": 8124, 
+              "label": "p", 
+              "label_idx": 0, 
+              "percentage": "100%"
+            }
+          ], 
+          "num_missing": 0, 
+          "num_row": 8124, 
+          "num_unique": 1, 
+          "numeric": [], 
+          "title": "veil-type", 
+          "type": "str"
+        }
+      ]
+    }, 
+    {
+      "name": "data_2", 
+      "source": "source_2", 
+      "transform": [
+        {
+          "as": "c_x_axis_back", 
+          "expr": "20", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_main_background", 
+          "expr": "toNumber(datum[\"a\"])*300+66", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_top_bar", 
+          "expr": "toNumber(datum[\"a\"])*300+43", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_top_title", 
+          "expr": "toNumber(datum[\"a\"])*300+59", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_top_type", 
+          "expr": "toNumber(datum[\"a\"])*300+58", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_rule", 
+          "expr": "toNumber(datum[\"a\"])*300+178", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_num_rows", 
+          "expr": "toNumber(datum[\"a\"])*300+106", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_num_unique", 
+          "expr": "toNumber(datum[\"a\"])*300+130", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_missing", 
+          "expr": "toNumber(datum[\"a\"])*300+154", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_num_rows_val", 
+          "expr": "toNumber(datum[\"a\"])*300+105", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_num_unique_val", 
+          "expr": "toNumber(datum[\"a\"])*300+130", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_missing_val", 
+          "expr": "toNumber(datum[\"a\"])*300+154", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_frequent_items", 
+          "expr": "toNumber(datum[\"a\"])*300+195", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_first_item", 
+          "expr": "toNumber(datum[\"a\"])*300+218", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_second_item", 
+          "expr": "toNumber(datum[\"a\"])*300+235", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_third_item", 
+          "expr": "toNumber(datum[\"a\"])*300+252", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_fourth_item", 
+          "expr": "toNumber(datum[\"a\"])*300+269", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_fifth_item", 
+          "expr": "toNumber(datum[\"a\"])*300+286", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_mean", 
+          "expr": "toNumber(datum[\"a\"])*300+200", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_min", 
+          "expr": "toNumber(datum[\"a\"])*300+220", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_max", 
+          "expr": "toNumber(datum[\"a\"])*300+240", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_median", 
+          "expr": "toNumber(datum[\"a\"])*300+260", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_stdev", 
+          "expr": "toNumber(datum[\"a\"])*300+280", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_mean_val", 
+          "expr": "toNumber(datum[\"a\"])*300+198", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_min_val", 
+          "expr": "toNumber(datum[\"a\"])*300+218", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_max_val", 
+          "expr": "toNumber(datum[\"a\"])*300+238", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_median_val", 
+          "expr": "toNumber(datum[\"a\"])*300+258", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_stdev_val", 
+          "expr": "toNumber(datum[\"a\"])*300+278", 
+          "type": "formula"
+        }, 
+        {
+          "as": "graph_offset", 
+          "expr": "toNumber(datum[\"a\"])*300+106", 
+          "type": "formula"
+        }, 
+        {
+          "as": "graph_offset_categorical", 
+          "expr": "toNumber(datum[\"a\"])*300+132", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_clip_val", 
+          "expr": "(toString(datum[\"type\"]) == \"integer\" || toString(datum[\"type\"]) == \"float\")?false:true", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_width_numeric_val", 
+          "expr": "(toString(datum[\"type\"]) == \"integer\" || toString(datum[\"type\"]) == \"float\")?250:0", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_clip_val_cat", 
+          "expr": "(toString(datum[\"type\"]) == \"str\")?false:true", 
+          "type": "formula"
+        }, 
+        {
+          "as": "c_width_numeric_val_cat", 
+          "expr": "(toString(datum[\"type\"]) == \"str\")?250:0", 
+          "type": "formula"
+        }
+      ]
+    }
+  ], 
+  "height": 6980, 
+  "marks": [
+    {
+      "encode": {
+        "enter": {
+          "clip": {
+            "value": 0
+          }, 
+          "fill": {
+            "value": "#ffffff"
+          }, 
+          "fillOpacity": {
+            "value": 0
+          }, 
+          "height": {
+            "value": 366
+          }, 
+          "stroke": {
+            "value": "#000000"
+          }, 
+          "strokeWidth": {
+            "value": 0
+          }, 
+          "width": {
+            "value": 734
+          }, 
+          "x": {
+            "value": 0
+          }, 
+          "y": {
+            "value": 0
+          }
+        }
+      }, 
+      "marks": [
+        {
+          "axes": [], 
+          "encode": {
+            "enter": {
+              "clip": {
+                "value": 0
+              }, 
+              "fill": {
+                "value": "#ffffff"
+              }, 
+              "fillOpacity": {
+                "value": 0
+              }, 
+              "height": {
+                "value": 366
+              }, 
+              "stroke": {
+                "value": "#000000"
+              }, 
+              "strokeWidth": {
+                "value": 0
+              }, 
+              "width": {
+                "value": 734
+              }, 
+              "x": {
+                "value": 0
+              }, 
+              "y": {
+                "value": 0
+              }
+            }
+          }, 
+          "marks": [
+            {
+              "encode": {
+                "enter": {
+                  "fill": {
+                    "value": "#FEFEFE"
+                  }, 
+                  "fillOpacity": {
+                    "value": 1
+                  }, 
+                  "height": {
+                    "value": 250
+                  }, 
+                  "stroke": {
+                    "value": "#DEDEDE"
+                  }, 
+                  "strokeWidth": {
+                    "value": 0.5
+                  }, 
+                  "width": {
+                    "value": 700
+                  }, 
+                  "x": {
+                    "value": 33
+                  }, 
+                  "y": {
+                    "value": 66
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]"
+                  }, 
+                  "y": {
+                    "field": "c_main_background"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "rect"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "fill": {
+                    "value": "#F5F5F5"
+                  }, 
+                  "fillOpacity": {
+                    "value": 1
+                  }, 
+                  "height": {
+                    "value": 30
+                  }, 
+                  "stroke": {
+                    "value": "#DEDEDE"
+                  }, 
+                  "strokeWidth": {
+                    "value": 0.5
+                  }, 
+                  "width": {
+                    "value": 700
+                  }, 
+                  "x": {
+                    "value": 33
+                  }, 
+                  "y": {
+                    "value": 43
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]"
+                  }, 
+                  "y": {
+                    "field": "c_top_bar"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "rect"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "right"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#595859"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 12
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "normal"
+                  }, 
+                  "text": {
+                    "signal": "''+datum[\"type\"]"
+                  }, 
+                  "x": {
+                    "value": 720
+                  }, 
+                  "y": {
+                    "value": 58
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+687"
+                  }, 
+                  "y": {
+                    "field": "c_top_type"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "left"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#9B9B9B"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 15
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "normal"
+                  }, 
+                  "text": {
+                    "signal": "''+datum[\"title\"]"
+                  }, 
+                  "x": {
+                    "value": 44
+                  }, 
+                  "y": {
+                    "value": 59
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+11"
+                  }, 
+                  "y": {
+                    "field": "c_top_title"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "stroke": {
+                    "value": "#EDEDEB"
+                  }, 
+                  "strokeCap": {
+                    "value": "butt"
+                  }, 
+                  "strokeWidth": {
+                    "value": 1
+                  }, 
+                  "x": {
+                    "value": 500
+                  }, 
+                  "x2": {
+                    "value": 720
+                  }, 
+                  "y": {
+                    "value": 178
+                  }, 
+                  "y2": {
+                    "value": 178
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+467"
+                  }, 
+                  "x2": {
+                    "signal": "datum[\"c_x_axis_back\"]+687"
+                  }, 
+                  "y": {
+                    "field": "c_rule"
+                  }, 
+                  "y2": {
+                    "field": "c_rule"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "rule"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "left"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#4A4A4A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 12
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "normal"
+                  }, 
+                  "text": {
+                    "value": "Num. Rows:"
+                  }, 
+                  "x": {
+                    "value": 500
+                  }, 
+                  "y": {
+                    "value": 106
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+467"
+                  }, 
+                  "y": {
+                    "field": "c_num_rows"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "left"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#4A4A4A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 12
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "normal"
+                  }, 
+                  "text": {
+                    "value": "Num. Unique:"
+                  }, 
+                  "x": {
+                    "value": 500
+                  }, 
+                  "y": {
+                    "value": 130
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+467"
+                  }, 
+                  "y": {
+                    "field": "c_num_unique"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "left"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#4A4A4A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 12
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "normal"
+                  }, 
+                  "text": {
+                    "value": "Missing:"
+                  }, 
+                  "x": {
+                    "value": 500
+                  }, 
+                  "y": {
+                    "value": 154
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+467"
+                  }, 
+                  "y": {
+                    "field": "c_missing"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "right"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#5A5A5A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 12
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "normal"
+                  }, 
+                  "text": {
+                    "signal": "toString(format(datum[\"num_row\"], \",\"))"
+                  }, 
+                  "x": {
+                    "value": 700
+                  }, 
+                  "y": {
+                    "value": 105
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+667"
+                  }, 
+                  "y": {
+                    "field": "c_num_rows_val"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "right"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#5A5A5A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 12
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "normal"
+                  }, 
+                  "text": {
+                    "signal": "toString(format(datum[\"num_unique\"], \",\"))"
+                  }, 
+                  "x": {
+                    "value": 700
+                  }, 
+                  "y": {
+                    "value": 130
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+667"
+                  }, 
+                  "y": {
+                    "field": "c_num_unique_val"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "right"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#5A5A5A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 12
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "normal"
+                  }, 
+                  "text": {
+                    "signal": "toString(format(datum[\"num_missing\"], \",\"))"
+                  }, 
+                  "x": {
+                    "value": 700
+                  }, 
+                  "y": {
+                    "value": 154
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+667"
+                  }, 
+                  "y": {
+                    "field": "c_missing_val"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "left"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "clip": {
+                    "value": true
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#4A4A4A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 11
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "bold"
+                  }, 
+                  "text": {
+                    "signal": "(toString(datum[\"type\"]) == \"str\")? \"Frequent Items\":\"\""
+                  }, 
+                  "x": {
+                    "value": 500
+                  }, 
+                  "y": {
+                    "value": 200
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+467"
+                  }, 
+                  "y": {
+                    "field": "c_frequent_items"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "left"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "clip": {
+                    "value": true
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#4A4A4A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 11
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "normal"
+                  }, 
+                  "text": {
+                    "signal": "((datum[\"categorical\"].length >= 1) && (toString(datum[\"type\"]) == \"str\"))? toString(datum[\"categorical\"][0][\"label\"]):\"\""
+                  }, 
+                  "x": {
+                    "value": 520
+                  }, 
+                  "y": {
+                    "value": 200
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+487"
+                  }, 
+                  "y": {
+                    "field": "c_first_item"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "left"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "clip": {
+                    "value": true
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#4A4A4A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 11
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "normal"
+                  }, 
+                  "text": {
+                    "signal": "((datum[\"categorical\"].length >= 2) && (toString(datum[\"type\"]) == \"str\"))? toString(datum[\"categorical\"][1][\"label\"]):\"\""
+                  }, 
+                  "x": {
+                    "value": 520
+                  }, 
+                  "y": {
+                    "value": 200
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+487"
+                  }, 
+                  "y": {
+                    "field": "c_second_item"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "left"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "clip": {
+                    "value": true
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#4A4A4A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 11
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "normal"
+                  }, 
+                  "text": {
+                    "signal": "((datum[\"categorical\"].length >= 3) && (toString(datum[\"type\"]) == \"str\"))? toString(datum[\"categorical\"][2][\"label\"]):\"\""
+                  }, 
+                  "x": {
+                    "value": 520
+                  }, 
+                  "y": {
+                    "value": 200
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+487"
+                  }, 
+                  "y": {
+                    "field": "c_third_item"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "left"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "clip": {
+                    "value": true
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#4A4A4A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 11
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "normal"
+                  }, 
+                  "text": {
+                    "signal": "((datum[\"categorical\"].length >= 4) && (toString(datum[\"type\"]) == \"str\"))? toString(datum[\"categorical\"][3][\"label\"]):\"\""
+                  }, 
+                  "x": {
+                    "value": 520
+                  }, 
+                  "y": {
+                    "value": 200
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+487"
+                  }, 
+                  "y": {
+                    "field": "c_fourth_item"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "left"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "clip": {
+                    "value": true
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#4A4A4A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 11
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "normal"
+                  }, 
+                  "text": {
+                    "signal": "((datum[\"categorical\"].length >= 5) && (toString(datum[\"type\"]) == \"str\"))? toString(datum[\"categorical\"][4][\"label\"]):\"\""
+                  }, 
+                  "x": {
+                    "value": 520
+                  }, 
+                  "y": {
+                    "value": 200
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+487"
+                  }, 
+                  "y": {
+                    "field": "c_fifth_item"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "right"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "clip": {
+                    "value": true
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#7A7A7A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 11
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "normal"
+                  }, 
+                  "text": {
+                    "signal": "((datum[\"categorical\"].length >= 1) && (toString(datum[\"type\"]) == \"str\"))? toString(datum[\"categorical\"][0][\"count\"]):\"\""
+                  }, 
+                  "x": {
+                    "value": 700
+                  }, 
+                  "y": {
+                    "value": 200
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+667"
+                  }, 
+                  "y": {
+                    "field": "c_first_item"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "right"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "clip": {
+                    "value": true
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#7A7A7A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 10
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "normal"
+                  }, 
+                  "text": {
+                    "signal": "((datum[\"categorical\"].length >= 2) && (toString(datum[\"type\"]) == \"str\"))? toString(datum[\"categorical\"][1][\"count\"]):\"\""
+                  }, 
+                  "x": {
+                    "value": 700
+                  }, 
+                  "y": {
+                    "value": 200
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+667"
+                  }, 
+                  "y": {
+                    "field": "c_second_item"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "right"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "clip": {
+                    "value": true
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#7A7A7A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 10
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "normal"
+                  }, 
+                  "text": {
+                    "signal": "((datum[\"categorical\"].length >= 3) && (toString(datum[\"type\"]) == \"str\"))? toString(datum[\"categorical\"][2][\"count\"]):\"\""
+                  }, 
+                  "x": {
+                    "value": 700
+                  }, 
+                  "y": {
+                    "value": 200
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+667"
+                  }, 
+                  "y": {
+                    "field": "c_third_item"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "right"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "clip": {
+                    "value": true
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#7A7A7A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 10
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "normal"
+                  }, 
+                  "text": {
+                    "signal": "((datum[\"categorical\"].length >= 4) && (toString(datum[\"type\"]) == \"str\"))? toString(datum[\"categorical\"][3][\"count\"]):\"\""
+                  }, 
+                  "x": {
+                    "value": 700
+                  }, 
+                  "y": {
+                    "value": 200
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+667"
+                  }, 
+                  "y": {
+                    "field": "c_fourth_item"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "right"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "clip": {
+                    "value": true
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#7A7A7A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 10
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "normal"
+                  }, 
+                  "text": {
+                    "signal": "((datum[\"categorical\"].length >= 5) && (toString(datum[\"type\"]) == \"str\"))? toString(datum[\"categorical\"][4][\"count\"]):\"\""
+                  }, 
+                  "x": {
+                    "value": 700
+                  }, 
+                  "y": {
+                    "value": 200
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+667"
+                  }, 
+                  "y": {
+                    "field": "c_fifth_item"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "left"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "clip": {
+                    "value": true
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#4A4A4A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 11
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "bold"
+                  }, 
+                  "text": {
+                    "signal": "(toString(datum[\"type\"]) == \"integer\" || toString(datum[\"type\"]) == \"float\")? \"Mean:\":\"\""
+                  }, 
+                  "x": {
+                    "value": 500
+                  }, 
+                  "y": {
+                    "value": 200
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+467"
+                  }, 
+                  "y": {
+                    "field": "c_mean"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "left"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#4A4A4A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 11
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "bold"
+                  }, 
+                  "text": {
+                    "signal": "(toString(datum[\"type\"]) == \"integer\" || toString(datum[\"type\"]) == \"float\")? \"Min:\":\"\""
+                  }, 
+                  "x": {
+                    "value": 500
+                  }, 
+                  "y": {
+                    "value": 220
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+467"
+                  }, 
+                  "y": {
+                    "field": "c_min"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "left"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#4A4A4A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 11
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "bold"
+                  }, 
+                  "text": {
+                    "signal": "(toString(datum[\"type\"]) == \"integer\" || toString(datum[\"type\"]) == \"float\")? \"Max:\":\"\""
+                  }, 
+                  "x": {
+                    "value": 500
+                  }, 
+                  "y": {
+                    "value": 240
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+467"
+                  }, 
+                  "y": {
+                    "field": "c_max"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "left"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#4A4A4A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 11
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "bold"
+                  }, 
+                  "text": {
+                    "signal": "(toString(datum[\"type\"]) == \"integer\" || toString(datum[\"type\"]) == \"float\")? \"Median:\":\"\""
+                  }, 
+                  "x": {
+                    "value": 500
+                  }, 
+                  "y": {
+                    "value": 260
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+467"
+                  }, 
+                  "y": {
+                    "field": "c_median"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "left"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#4A4A4A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 11
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "bold"
+                  }, 
+                  "text": {
+                    "signal": "(toString(datum[\"type\"]) == \"integer\" || toString(datum[\"type\"]) == \"float\")? \"St. Dev:\":\"\""
+                  }, 
+                  "x": {
+                    "value": 500
+                  }, 
+                  "y": {
+                    "value": 280
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+467"
+                  }, 
+                  "y": {
+                    "field": "c_stdev"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "right"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#6A6A6A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 10
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "normal"
+                  }, 
+                  "text": {
+                    "signal": "(toString(datum[\"type\"]) == \"integer\" || toString(datum[\"type\"]) == \"float\")?toString(format(datum[\"mean\"], \",\")):\"\""
+                  }, 
+                  "x": {
+                    "value": 700
+                  }, 
+                  "y": {
+                    "value": 198
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+667"
+                  }, 
+                  "y": {
+                    "field": "c_mean_val"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "right"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#6A6A6A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 10
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "normal"
+                  }, 
+                  "text": {
+                    "signal": "(toString(datum[\"type\"]) == \"integer\" || toString(datum[\"type\"]) == \"float\")?toString(format(datum[\"min\"], \",\")):\"\""
+                  }, 
+                  "x": {
+                    "value": 700
+                  }, 
+                  "y": {
+                    "value": 218
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+667"
+                  }, 
+                  "y": {
+                    "field": "c_min_val"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "right"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#6A6A6A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 10
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "normal"
+                  }, 
+                  "text": {
+                    "signal": "(toString(datum[\"type\"]) == \"integer\" || toString(datum[\"type\"]) == \"float\")?toString(format(datum[\"max\"], \",\")):\"\""
+                  }, 
+                  "x": {
+                    "value": 700
+                  }, 
+                  "y": {
+                    "value": 238
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+667"
+                  }, 
+                  "y": {
+                    "field": "c_max_val"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "right"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#6A6A6A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 10
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "normal"
+                  }, 
+                  "text": {
+                    "signal": "(toString(datum[\"type\"]) == \"integer\" || toString(datum[\"type\"]) == \"float\")?toString(format(datum[\"median\"], \",\")):\"\""
+                  }, 
+                  "x": {
+                    "value": 700
+                  }, 
+                  "y": {
+                    "value": 258
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+667"
+                  }, 
+                  "y": {
+                    "field": "c_median_val"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "encode": {
+                "enter": {
+                  "align": {
+                    "value": "right"
+                  }, 
+                  "angle": {
+                    "value": 0
+                  }, 
+                  "baseline": {
+                    "value": "middle"
+                  }, 
+                  "dx": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "dy": {
+                    "offset": 0, 
+                    "value": 0
+                  }, 
+                  "fill": {
+                    "value": "#6A6A6A"
+                  }, 
+                  "font": {
+                    "value": "AvenirNext-Medium"
+                  }, 
+                  "fontSize": {
+                    "value": 10
+                  }, 
+                  "fontStyle": {
+                    "value": "normal"
+                  }, 
+                  "fontWeight": {
+                    "value": "normal"
+                  }, 
+                  "text": {
+                    "signal": "(toString(datum[\"type\"]) == \"integer\" || toString(datum[\"type\"]) == \"float\")?toString(format(datum[\"stdev\"], \",\")):\"\""
+                  }, 
+                  "x": {
+                    "value": 700
+                  }, 
+                  "y": {
+                    "value": 278
+                  }
+                }, 
+                "update": {
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+667"
+                  }, 
+                  "y": {
+                    "field": "c_stdev_val"
+                  }
+                }
+              }, 
+              "from": {
+                "data": "data_2"
+              }, 
+              "type": "text"
+            }, 
+            {
+              "axes": [
+                {
+                  "labelOverlap": true, 
+                  "orient": "bottom", 
+                  "scale": "x", 
+                  "tickCount": {
+                    "signal": "ceil(width/40)"
+                  }, 
+                  "title": "Values", 
+                  "zindex": 1
+                }, 
+                {
+                  "domain": false, 
+                  "grid": true, 
+                  "gridScale": "y", 
+                  "labels": false, 
+                  "maxExtent": 0, 
+                  "minExtent": 0, 
+                  "orient": "bottom", 
+                  "scale": "x", 
+                  "tickCount": {
+                    "signal": "ceil(width/40)"
+                  }, 
+                  "ticks": false, 
+                  "zindex": 0
+                }, 
+                {
+                  "labelOverlap": true, 
+                  "orient": "left", 
+                  "scale": "y", 
+                  "tickCount": {
+                    "signal": "ceil(height/40)"
+                  }, 
+                  "title": "Count", 
+                  "zindex": 1
+                }, 
+                {
+                  "domain": false, 
+                  "grid": true, 
+                  "gridScale": "x", 
+                  "labels": false, 
+                  "maxExtent": 0, 
+                  "minExtent": 0, 
+                  "orient": "left", 
+                  "scale": "y", 
+                  "tickCount": {
+                    "signal": "ceil(height/40)"
+                  }, 
+                  "ticks": false, 
+                  "zindex": 0
+                }
+              ], 
+              "encode": {
+                "enter": {
+                  "fill": {
+                    "value": "#ffffff"
+                  }, 
+                  "fillOpacity": {
+                    "value": 0
+                  }, 
+                  "height": {
+                    "value": 150
+                  }, 
+                  "stroke": {
+                    "value": "#000000"
+                  }, 
+                  "strokeWidth": {
+                    "value": 0
+                  }, 
+                  "width": {
+                    "value": 250
+                  }, 
+                  "x": {
+                    "value": 120
+                  }, 
+                  "y": {
+                    "field": "graph_offset"
+                  }
+                }, 
+                "update": {
+                  "clip": {
+                    "field": "c_clip_val"
+                  }, 
+                  "width": {
+                    "field": "c_width_numeric_val"
+                  }, 
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+87"
+                  }
+                }
+              }, 
+              "from": {
+                "facet": {
+                  "data": "data_2", 
+                  "field": "numeric", 
+                  "name": "new_data"
+                }
+              }, 
+              "marks": [
+                {
+                  "encode": {
+                    "hover": {
+                      "fill": {
+                        "value": "#7EC2F3"
+                      }
+                    }, 
+                    "update": {
+                      "fill": {
+                        "value": "#108EE9"
+                      }, 
+                      "x": {
+                        "field": "left", 
+                        "scale": "x"
+                      }, 
+                      "x2": {
+                        "field": "right", 
+                        "scale": "x"
+                      }, 
+                      "y": {
+                        "field": "count", 
+                        "scale": "y"
+                      }, 
+                      "y2": {
+                        "scale": "y", 
+                        "value": 0
+                      }
+                    }
+                  }, 
+                  "from": {
+                    "data": "new_data"
+                  }, 
+                  "name": "marks", 
+                  "style": [
+                    "rect"
+                  ], 
+                  "type": "rect"
+                }
+              ], 
+              "scales": [
+                {
+                  "domain": {
+                    "data": "new_data", 
+                    "fields": [
+                      "left", 
+                      "right"
+                    ], 
+                    "sort": true
+                  }, 
+                  "name": "x", 
+                  "nice": true, 
+                  "range": [
+                    0, 
+                    {
+                      "signal": "width"
+                    }
+                  ], 
+                  "type": "linear", 
+                  "zero": true
+                }, 
+                {
+                  "domain": {
+                    "data": "new_data", 
+                    "field": "count"
+                  }, 
+                  "name": "y", 
+                  "nice": true, 
+                  "range": [
+                    {
+                      "signal": "height"
+                    }, 
+                    0
+                  ], 
+                  "type": "linear", 
+                  "zero": true
+                }
+              ], 
+              "signals": [
+                {
+                  "name": "width", 
+                  "update": "250"
+                }, 
+                {
+                  "name": "height", 
+                  "update": "150"
+                }
+              ], 
+              "style": "cell", 
+              "type": "group"
+            }, 
+            {
+              "axes": [
+                {
+                  "labelOverlap": true, 
+                  "orient": "top", 
+                  "scale": "x", 
+                  "tickCount": {
+                    "signal": "ceil(width/40)"
+                  }, 
+                  "title": "Count", 
+                  "zindex": 1
+                }, 
+                {
+                  "domain": false, 
+                  "grid": true, 
+                  "gridScale": "y", 
+                  "labels": false, 
+                  "maxExtent": 0, 
+                  "minExtent": 0, 
+                  "orient": "top", 
+                  "scale": "x", 
+                  "tickCount": {
+                    "signal": "ceil(width/40)"
+                  }, 
+                  "ticks": false, 
+                  "zindex": 0
+                }, 
+                {
+                  "labelOverlap": true, 
+                  "orient": "left", 
+                  "scale": "y", 
+                  "title": "Label", 
+                  "zindex": 1
+                }
+              ], 
+              "encode": {
+                "enter": {
+                  "fill": {
+                    "value": "#ffffff"
+                  }, 
+                  "fillOpacity": {
+                    "value": 0
+                  }, 
+                  "height": {
+                    "value": 150
+                  }, 
+                  "stroke": {
+                    "value": "#000000"
+                  }, 
+                  "strokeWidth": {
+                    "value": 0
+                  }, 
+                  "width": {
+                    "value": 250
+                  }, 
+                  "x": {
+                    "value": 170
+                  }, 
+                  "y": {
+                    "field": "graph_offset_categorical"
+                  }
+                }, 
+                "update": {
+                  "clip": {
+                    "field": "c_clip_val_cat"
+                  }, 
+                  "width": {
+                    "field": "c_width_numeric_val_cat"
+                  }, 
+                  "x": {
+                    "signal": "datum[\"c_x_axis_back\"]+137"
+                  }
+                }
+              }, 
+              "from": {
+                "facet": {
+                  "data": "data_2", 
+                  "field": "categorical", 
+                  "name": "data_5"
+                }
+              }, 
+              "marks": [
+                {
+                  "encode": {
+                    "hover": {
+                      "fill": {
+                        "value": "#7EC2F3"
+                      }
+                    }, 
+                    "update": {
+                      "fill": {
+                        "value": "#108EE9"
+                      }, 
+                      "height": {
+                        "band": true, 
+                        "scale": "y"
+                      }, 
+                      "x": {
+                        "field": "count", 
+                        "scale": "x"
+                      }, 
+                      "x2": {
+                        "scale": "x", 
+                        "value": 0
+                      }, 
+                      "y": {
+                        "field": "label", 
+                        "scale": "y"
+                      }
+                    }
+                  }, 
+                  "from": {
+                    "data": "data_5"
+                  }, 
+                  "name": "marks", 
+                  "style": [
+                    "bar"
+                  ], 
+                  "type": "rect"
+                }
+              ], 
+              "scales": [
+                {
+                  "domain": {
+                    "data": "data_5", 
+                    "field": "count"
+                  }, 
+                  "name": "x", 
+                  "nice": true, 
+                  "range": [
+                    0, 
+                    250
+                  ], 
+                  "type": "linear", 
+                  "zero": true
+                }, 
+                {
+                  "domain": {
+                    "data": "data_5", 
+                    "field": "label", 
+                    "sort": {
+                      "field": "label_idx", 
+                      "op": "mean", 
+                      "order": "descending"
+                    }
+                  }, 
+                  "name": "y", 
+                  "paddingInner": 0.1, 
+                  "paddingOuter": 0.05, 
+                  "range": [
+                    150, 
+                    0
+                  ], 
+                  "type": "band"
+                }
+              ], 
+              "signals": [
+                {
+                  "name": "unit", 
+                  "on": [
+                    {
+                      "events": "mousemove", 
+                      "update": "isTuple(group()) ? group() : unit"
+                    }
+                  ], 
+                  "value": {}
+                }, 
+                {
+                  "name": "pts", 
+                  "update": "data(\"pts_store\").length && {count: data(\"pts_store\")[0].values[0]}"
+                }, 
+                {
+                  "name": "pts_tuple", 
+                  "on": [
+                    {
+                      "events": [
+                        {
+                          "source": "scope", 
+                          "type": "click"
+                        }
+                      ], 
+                      "force": true, 
+                      "update": "datum && item().mark.marktype !== 'group' ? {unit: \"\", encodings: [\"x\"], fields: [\"count\"], values: [datum[\"count\"]]} : null"
+                    }
+                  ], 
+                  "value": {}
+                }, 
+                {
+                  "name": "pts_modify", 
+                  "on": [
+                    {
+                      "events": {
+                        "signal": "pts_tuple"
+                      }, 
+                      "update": "modify(\"pts_store\", pts_tuple, true)"
+                    }
+                  ]
+                }
+              ], 
+              "style": "cell", 
+              "type": "group"
+            }
+          ], 
+          "scales": [], 
+          "type": "group"
+        }
+      ], 
+      "type": "group"
+    }
+  ], 
+  "metadata": {
+    "bubbleOpts": {
+      "fields": [
+        {
+          "field": "left"
+        }, 
+        {
+          "field": "right"
+        }, 
+        {
+          "field": "count"
+        }, 
+        {
+          "field": "label"
+        }
+      ], 
+      "showAllFields": false
+    }
+  }, 
+  "padding": 0, 
+  "width": 800
+}

@@ -1,0 +1,15 @@
+#ifndef SOBJB_HPP
+#define SOBJB_HPP
+
+#include <QObject>
+
+// Object source includes externally generated .moc file
+class SObjB : public QObject
+{
+  Q_OBJECT
+public:
+  SObjB();
+  ~SObjB();
+};
+
+#endif

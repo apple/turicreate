@@ -8,20 +8,12 @@ project(config)
 
 if(APPLE)
 
-  find_library(foundation_config NAMES Foundation REQUIRED)
-  message("Foundation found at ${foundation_config}.")
-
-
-  make_library(platform_config
+  make_library(platform_config OBJECT
     SOURCES
       apple_config.mm
     REQUIRES
-    ${foundation_config}
+      ${FOUNDATION}
     EXTERNAL_VISIBILITY
   )
-
-else()
-
-  make_empty_library(platform_config)
 
 endif()

@@ -6,7 +6,7 @@
 #ifndef TURI_FACTORIZATION_GENERAL_LINEAR_MODEL_SECOND_ORDER_H_
 #define TURI_FACTORIZATION_GENERAL_LINEAR_MODEL_SECOND_ORDER_H_
 
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 #include <cmath>
 #include <vector>
 #include <string>
@@ -21,13 +21,9 @@
 #include <unity/toolkits/factorization/factorization_model.hpp>
 #include <unity/toolkits/factorization/factors_to_sframe.hpp>
 #include <unity/toolkits/recsys/recsys_model_base.hpp>
-#include <util/basic_types.hpp>
 #include <util/fast_top_k.hpp>
 
 namespace turi { namespace factorization {
-
-  static constexpr flex_int DYNAMIC = flex_int(-1); 
-
 
 /**  The model factor mode.  This enum determines the particular mode
  *   that the base class operates in.
@@ -48,26 +44,20 @@ public:
 
   static constexpr model_factor_mode factor_mode = _factor_mode;
   static constexpr flex_int num_factors_if_known = _num_factors_if_known;
-  static constexpr bool num_factors_known = (_num_factors_if_known != DYNAMIC);
 
-  typedef typename std::conditional<num_factors_known, 
-            arma::Row<float>::fixed<static_cast<arma::uword>(_num_factors_if_known)>,
-            arma::Row<float> >::type factor_type;
+  typedef Eigen::Matrix<float, 1,              num_factors_if_known, Eigen::RowMajor> factor_type;
+  typedef Eigen::Matrix<float, Eigen::Dynamic, num_factors_if_known, Eigen::RowMajor> factor_matrix_type;
+  typedef Eigen::Matrix<float, Eigen::Dynamic, 1>                                     vector_type;
 
-  typedef row_major_matrix<float> factor_matrix_type;
-  
-  typedef arma::fvec vector_type;
-  
   ////////////////////////////////////////////////////////////////////////////////
   // Declare flags governing how the model works.
 
-  size_t _num_factors = 0;
-
-  inline size_t num_factors() const GL_HOT_INLINE_FLATTEN {
+  size_t _num_factors           = 0;
+  inline size_t num_factors() const {
     if(_num_factors == 0)
       DASSERT_TRUE(factor_mode == model_factor_mode::pure_linear_model);
 
-    return (num_factors_known) ? _num_factors_if_known : _num_factors;
+    return _num_factors_if_known == Eigen::Dynamic ? _num_factors : _num_factors_if_known;
   }
 
   size_t num_factor_dimensions = 0;
@@ -153,7 +143,7 @@ public:
     enable_linear_features = !nmf_mode;
     enable_intercept_term  = !nmf_mode;
 
-    if(num_factors_known)
+    if(num_factors_if_known != Eigen::Dynamic)
       DASSERT_EQ(num_factors_if_known, _num_factors);
 
     max_row_size = train_data.max_row_size();
@@ -190,7 +180,7 @@ public:
           for(size_t i = start_w_idx; i < end_w_idx; ++i)
             w[i] = (sd > 0) ? random::fast_uniform<double>(-sd/2, sd/2) : 0;
         } else {
-          w.zeros();
+          w.setZero();
         }
 
         // Compute the V part
@@ -268,10 +258,10 @@ public:
 
         factor_matrix_type& XV = buffers[thread_idx].XV;
 
-        DASSERT_GE(size_t(XV.n_rows), x_size);
+        DASSERT_GE(size_t(XV.rows()), x_size);
 
         factor_type& xv_accumulator = buffers[thread_idx].xv_accumulator;
-        xv_accumulator.zeros();
+        xv_accumulator.setZero();
 
         double fx_value = w0;
 
@@ -293,7 +283,7 @@ public:
 
           double xv = value_scale * (x[j].value - value_shift);
 
-          XV.set_row(idx, xv * V.row(global_idx));
+          XV.row(idx) = xv * V.row(global_idx);
           xv_accumulator += XV.row(idx);
 
           fx_value += xv * w[global_idx];
@@ -301,9 +291,8 @@ public:
           ++idx;
         }
 
-        for(size_t j = 0; j < idx; ++j) {
-          fx_value += 0.5*(dot(xv_accumulator, XV.row(j)) - squared_norm(XV.row(j)));
-        }
+        for(size_t j = 0; j < idx; ++j)
+          fx_value += 0.5*(xv_accumulator.dot(XV.row(j)) - XV.row(j).squaredNorm());
 
         return fx_value;
       }
@@ -315,8 +304,8 @@ public:
 
         factor_matrix_type& XV = buffers[thread_idx].XV;
 
-        DASSERT_GE(size_t(XV.n_rows), x_size);
-        DASSERT_EQ(size_t(XV.n_cols), num_factors());
+        DASSERT_GE(size_t(XV.rows()), x_size);
+        DASSERT_EQ(size_t(XV.cols()), num_factors());
 
         ////////////////////////////////////////////////////////////////////////////////
         //
@@ -334,20 +323,18 @@ public:
           // corresponding factors are assumed to be zero and to have no
           // effect on any of the totals below; thus we just skip them.
           if(__unlikely__(v.index >= index_sizes[v.column_index])) {
-            
-            for(size_t i = 0; i < num_factors(); ++i) { 
-              XV(j, i) = 0; 
-            }
-            
+
+            XV.row(j).setZero();
+
           } else {
-          
+
             // Get the global index
             const size_t global_idx = index_offsets[j] + v.index;
 
             // No column scaling on the first two dimensions under MF model.
             DASSERT_EQ(v.value, 1);
 
-            XV.set_row(j, V.row(global_idx));
+            XV.row(j) = V.row(global_idx);
 
             // Add in the contribution
             fx_value += w[global_idx];
@@ -358,7 +345,7 @@ public:
         //
         //  Step 2: Pull in the contribution from the product terms.
 
-        fx_value += dot(XV.row(0), XV.row(1));
+        fx_value += XV.row(0).dot(XV.row(1));
 
         ////////////////////////////////////////////////////////////////////////////////
         // Step 3: Calculate the dimensions past the first two.  These
@@ -458,7 +445,7 @@ public:
           
           auto base_row = V.row(index_offsets[1] + item);
 
-          float it_r = squared_norm(base_row);
+          float it_r = base_row.squaredNorm();
 
           for(auto& p : sim_scores) {
             if(p.first >= index_sizes[1]) {
@@ -468,7 +455,7 @@ public:
             
             size_t idx = index_offsets[1] + p.first;
             auto item_row = V.row(idx);
-            p.second = dot(item_row, base_row) / std::sqrt(it_r * squared_norm(item_row));
+            p.second = item_row.dot(base_row) / std::sqrt(it_r * item_row.squaredNorm());
           }
 
           break;
@@ -740,8 +727,9 @@ public:
       const std::shared_ptr<v2::ml_data_side_features>& known_side_features) const {
 
     static constexpr size_t USER_COLUMN_INDEX = recsys::recsys_model_base::USER_COLUMN_INDEX;
-    static constexpr TURI_ATTRIBUTE_UNUSED_NDEBUG size_t ITEM_COLUMN_INDEX
-      = recsys::recsys_model_base::ITEM_COLUMN_INDEX;
+#ifndef NDEBUG
+    static constexpr size_t ITEM_COLUMN_INDEX = recsys::recsys_model_base::ITEM_COLUMN_INDEX;
+#endif
 
     DASSERT_GE(query_row.size(), 2);
     DASSERT_EQ(query_row[USER_COLUMN_INDEX].column_index, USER_COLUMN_INDEX);
@@ -792,9 +780,9 @@ public:
 
     vector_type& cached_user_item_product = recommend_cache[thread_idx];
 
-    cached_user_item_product =
-        V.tr_rows(items_offset, items_offset + num_items - 1).t() * V.row(user).t()
-        + w.subvec(items_offset, items_offset + num_items - 1);
+    cached_user_item_product.noalias() =
+        V.middleRows(items_offset, num_items) * V.row(user).transpose()
+        + w.segment(items_offset, num_items);
 
     size_t user_global_index = index_offsets[USER_COLUMN_INDEX] + user;
 
@@ -907,8 +895,8 @@ public:
 
     dest.resize(index_sizes[column_index]);
 
-    if(V.n_rows == 0) {
-      dest.zeros();
+    if(V.rows() == 0) {
+      dest.setZero();
       return;
     }
 
@@ -916,12 +904,8 @@ public:
     if(!factor_norms_computed) {
       std::lock_guard<mutex> lg(factor_norm_lock);
 
-      factor_norms.resize(V.n_rows); 
-
       if(!factor_norms_computed) {
-        for(flex_int i = 0; i < truncate_check<int64_t>(V.n_rows); ++i) {
-          factor_norms(i) = arma::norm(V.row(i));
-        }
+        factor_norms.noalias() = V.rowwise().norm();
         factor_norms_computed = true;
       }
     }
@@ -929,8 +913,8 @@ public:
     size_t start_idx = index_offsets[column_index];
     size_t block_size = index_sizes[column_index];
 
-    dest = V.tr_rows(start_idx, start_idx + block_size - 1).t() * V.row(start_idx + ref_index).t();
-    dest /= (arma::norm(V.row(start_idx + ref_index)) * factor_norms.subvec(start_idx, start_idx + block_size - 1));
+    dest.noalias() = V.middleRows(start_idx, block_size) * V.row(start_idx + ref_index).transpose();
+    dest.array() /= (V.row(start_idx + ref_index).norm() * factor_norms.segment(start_idx, block_size).array());
   }
 
 };

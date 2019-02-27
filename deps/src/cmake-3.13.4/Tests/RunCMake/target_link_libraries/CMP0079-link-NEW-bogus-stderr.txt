@@ -1,0 +1,6 @@
+^CMake Error at CMP0079-link-NEW-bogus.cmake:[0-9]+ \(add_executable\):
+  Target "top" links to target "foo::@<0xdeadbeef>" but the target was not
+  found.  Perhaps a find_package\(\) call is missing for an IMPORTED target, or
+  an ALIAS target is missing\?
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

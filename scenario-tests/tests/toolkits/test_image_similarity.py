@@ -240,11 +240,11 @@ class ImageSimilaritySqueezeNetTest(ImageSimilarityTest):
         super(ImageSimilaritySqueezeNetTest, self).setUpClass(model='squeezenet_v1.1',
                                                               input_image_shape=(3, 227, 227))
 
-@unittest.skipIf(_mac_ver() < (10,14), 'VisionFeaturePrint_Screen only supported on macOS 10.14+')
-class ImageSimilarityVisionFeaturePrintScreenTest(ImageSimilarityTest):
+@unittest.skipIf(_mac_ver() < (10,14), 'VisionFeaturePrint_Scene only supported on macOS 10.14+')
+class ImageSimilarityVisionFeaturePrintSceneTest(ImageSimilarityTest):
     @classmethod
     def setUpClass(self):
-        super(ImageSimilarityVisionFeaturePrintScreenTest, self).setUpClass(model='VisionFeaturePrint_Screen',
+        super(ImageSimilarityVisionFeaturePrintSceneTest, self).setUpClass(model='VisionFeaturePrint_Scene',
                                                                             input_image_shape=(3, 299, 299))
 
 @unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')

@@ -23,8 +23,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
             let print_image = NSPrintOperation(view: nsImage, printInfo: print_info)
             print_image.canSpawnSeparateThread = true
-            print_image.printPanel.options.insert(NSPrintPanelOptions.showsOrientation)
-            print_image.printPanel.options.insert(NSPrintPanelOptions.showsScaling)
+            print_image.printPanel.options.insert(NSPrintPanel.Options.showsOrientation)
+            print_image.printPanel.options.insert(NSPrintPanel.Options.showsScaling)
             print_image.run()
         }
     }

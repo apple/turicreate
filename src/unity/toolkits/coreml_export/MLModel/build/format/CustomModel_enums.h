@@ -12,6 +12,7 @@ enum MLCustomModelParamValuevalue: int {
     MLCustomModelParamValuevalue_NOT_SET = 0,
 };
 
+__attribute__((__unused__))
 static const char * MLCustomModelParamValuevalue_Name(MLCustomModelParamValuevalue x) {
     switch (x) {
         case MLCustomModelParamValuevalue_doubleValue:

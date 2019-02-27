@@ -1,3 +1,3 @@
 project(table_printer_test)
 
-make_boost_test(table_printing.cxx REQUIRES table_printer)
+make_boost_test(table_printing.cxx REQUIRES unity_shared_for_testing)

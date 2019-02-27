@@ -1,4 +1,8 @@
-
+/* Copyright © 2017 Apple Inc. All rights reserved.
+ *
+ * Use of this source code is governed by a BSD-3-clause license that can
+ * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ */
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>

@@ -20,14 +20,15 @@
     }
   },
   "width":800,
-  "height":%1%,
-  "padding":0,
+  "height":{{computed_height}},
+  "padding":8,
   "data":[
     {
       "name":"pts_store"
     },
     {
       "name":"source_2"
+      {{pre_filled_data_values}}
     },
     {
       "name":"data_2",

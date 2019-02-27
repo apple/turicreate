@@ -731,6 +731,8 @@ def _get_cuda_gpus():
                                          universal_newlines=True)
     except OSError:
         return []
+    except subprocess.CalledProcessError:
+        return []
 
     gpus = []
     for gpu_line in output.split('\n'):

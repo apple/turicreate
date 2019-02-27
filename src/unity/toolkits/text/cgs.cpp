@@ -22,7 +22,7 @@
 #include <logger/assertions.hpp>
 #include <table_printer/table_printer.hpp>
 #include <timer/timer.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 #include <parallel/atomic.hpp>
 
 namespace turi {
@@ -134,7 +134,7 @@ void cgs_topic_model::init_options(const std::map<std::string,
 std::shared_ptr<sarray<std::vector<size_t> > >
 cgs_topic_model::forward_sample(const v2::ml_data& d,
                                 count_vector_type& topic_counts,
-                                count_matrix_type& topic_doc_counts) {
+                                count_matrix_type& doc_topic_counts) {
 
   // Initialize latent variable assignments
   std::shared_ptr<sarray<std::vector<size_t> > > assignments(new sarray<std::vector<size_t>>);
@@ -176,8 +176,8 @@ cgs_topic_model::forward_sample(const v2::ml_data& d,
 
           // Compute unnormalized topic probabilities for this word
           for (size_t k = 0; k < num_topics; ++k) {
-            gamma_vec[k] = (topic_doc_counts(k, doc_id) + alpha) *
-              (topic_word_counts(k, word_id) + beta) /
+            gamma_vec[k] = (doc_topic_counts(doc_id, k) + alpha) *
+              (word_topic_counts(word_id, k) + beta) /
               (topic_counts(0, k) + vocab_size * beta);
           }
 
@@ -191,10 +191,10 @@ cgs_topic_model::forward_sample(const v2::ml_data& d,
           doc_assignments.push_back(topic);
 
           // Increment counts
-          __sync_add_and_fetch(&topic_word_counts(topic, word_id), freq);
+          __sync_add_and_fetch(&word_topic_counts(word_id, topic), freq);
           __sync_add_and_fetch(&topic_counts(0, topic), freq);
 
-          topic_doc_counts(topic, doc_id) += freq;
+          doc_topic_counts(doc_id, topic) += freq;
         }
       } // end words in document
       *assignments_out = doc_assignments;
@@ -209,7 +209,7 @@ cgs_topic_model::forward_sample(const v2::ml_data& d,
 std::map<std::string, size_t> cgs_topic_model::sample_counts(
     const v2::ml_data& d,
     count_vector_type& topic_counts,
-    count_matrix_type& topic_doc_counts,
+    count_matrix_type& doc_topic_counts,
     std::shared_ptr<sarray<std::vector<size_t> > >& assignments) {
 
   atomic<size_t> token_count = 0;
@@ -225,8 +225,8 @@ std::map<std::string, size_t> cgs_topic_model::sample_counts(
 
   in_parallel([&](size_t thread_idx, size_t num_threads) GL_GCC_ONLY(GL_HOT_FLATTEN) {
 
-    arma::vec gamma_base_vec(num_topics);
-    arma::vec gamma_vec(num_topics);
+    Eigen::VectorXd gamma_base_vec(num_topics);
+    Eigen::VectorXd gamma_vec(num_topics);
     std::vector<size_t> doc_assignments;
 
     std::vector<v2::ml_data_entry> x;
@@ -247,11 +247,11 @@ std::map<std::string, size_t> cgs_topic_model::sample_counts(
 
       // Compute the base probability of the gamma vector.
       gamma_base_vec =
-          ((arma::conv_to<arma::dvec>::from(topic_doc_counts.col(doc_id).t()) + alpha) /
-           (arma::conv_to<arma::dvec>::from(topic_counts) + vocab_size * beta));
+          ((doc_topic_counts.row(doc_id).cast<double>().array() + alpha) /
+           (topic_counts.cast<double>().array() + vocab_size * beta));
 
       auto gamma_base = [&](size_t doc_id, size_t topic, double freq) GL_GCC_ONLY(GL_HOT_INLINE_FLATTEN) {
-        return ((topic_doc_counts(topic, doc_id) + freq + alpha)
+        return ((doc_topic_counts(doc_id, topic) + freq + alpha)
                 / (topic_counts(topic) + freq + vocab_size * beta));
       };
 
@@ -274,31 +274,31 @@ std::map<std::string, size_t> cgs_topic_model::sample_counts(
 
           // Get current topic assignment for this word
           size_t topic = doc_assignments[j];
-          __sync_add_and_fetch(&topic_word_counts(topic, word_id), -freq);
+          __sync_add_and_fetch(&word_topic_counts(word_id, topic), -freq);
 
           gamma_base_vec[topic] = gamma_base(doc_id, topic, -freq);
 
-          gamma_vec = arma::conv_to<arma::dvec>::from(topic_word_counts.col(word_id)) + beta;
-          gamma_vec %= gamma_base_vec;
+          gamma_vec = word_topic_counts.row(word_id).cast<double>().array() + beta;
+          gamma_vec.array() *= gamma_base_vec.array();
 
           // Sample topic for this token
           size_t old_topic = topic;
-          topic = random::multinomial(gamma_vec, arma::sum(gamma_vec));
+          topic = random::multinomial(gamma_vec, gamma_vec.sum());
 
           if (topic != old_topic) {
           // Remove counts due to current tokens
             __sync_add_and_fetch(&topic_counts(0, old_topic), -freq);
-            topic_doc_counts(old_topic, doc_id) -= freq;
+            doc_topic_counts(doc_id, old_topic) -= freq;
 
             ++num_different;
             doc_assignments[j] = topic;
 
             // Increment counts
             __sync_add_and_fetch(&topic_counts(0, topic), freq);
-            topic_doc_counts(topic, doc_id) += freq;
+            doc_topic_counts(doc_id, topic) += freq;
           }
 
-          __sync_add_and_fetch(&topic_word_counts(topic, word_id), freq);
+          __sync_add_and_fetch(&word_topic_counts(word_id, topic), freq);
 
           gamma_base_vec[topic] = gamma_base(doc_id, topic, freq);
 
@@ -306,8 +306,8 @@ std::map<std::string, size_t> cgs_topic_model::sample_counts(
           // Check that we have not over decremented the other counts
           for (size_t k = 0; k < num_topics; ++k) {
             DASSERT_TRUE(topic_counts(0, k) >= 0);
-            DASSERT_TRUE(topic_word_counts(k, word_id) >= 0);
-            DASSERT_TRUE(topic_doc_counts(k, doc_id) >= 0);
+            DASSERT_TRUE(word_topic_counts(word_id, k) >= 0);
+            DASSERT_TRUE(doc_topic_counts(doc_id, k) >= 0);
           }
 #endif
 
@@ -355,8 +355,8 @@ void cgs_topic_model::train(std::shared_ptr<sarray<flexible_type>> dataset, bool
 
   /**
    * Initializes the model using the current metadata.
-   * This sets the internal vocab_size and ensures topic_word_counts
-   * has at vocab_size number of rows. If topic_word_counts already exists
+   * This sets the internal vocab_size and ensures word_topic_counts
+   * has at vocab_size number of rows. If word_topic_counts already exists
    * this function pads it with more rows until it has reached the right
    * size.
    */
@@ -366,16 +366,15 @@ void cgs_topic_model::train(std::shared_ptr<sarray<flexible_type>> dataset, bool
 
   if (!is_initialized) {
 
-    // Create a topic_word_counts matrix of all zeros.
-    topic_word_counts.zeros(num_topics, vocab_size);
+    // Create a word_topic_counts matrix of all zeros.
+    word_topic_counts = Eigen::MatrixXi::Zero(vocab_size, num_topics);
 
   } else {
 
-    // Copy over old topic_wordcounts matrix to the top of a new one.
-    count_matrix_type tmp;
-    tmp.zeros(num_topics, vocab_size);
-    tmp.head_cols(topic_word_counts.n_cols) = topic_word_counts;
-    topic_word_counts = tmp;
+    // Copy over old word_topic_counts matrix to the top of a new one.
+    Eigen::MatrixXi tmp = Eigen::MatrixXi::Zero(vocab_size, num_topics);
+    tmp.topRows(word_topic_counts.rows()) = word_topic_counts;
+    word_topic_counts = tmp;
 
   }
 
@@ -394,17 +393,17 @@ void cgs_topic_model::train(std::shared_ptr<sarray<flexible_type>> dataset, bool
   // Step 1.
   // Initialize count matrices by "forward sampling". We simply sample each latent
   // topic assignment, z, using the current counts. Note that the elements of
-  // topic_word_counts may be nonzero if the user has initialized the model
+  // word_topic_counts may be nonzero if the user has initialized the model
   // from another set of topics.
 
   // Initialize temporary variables
   count_vector_type topic_counts(num_topics);
-  topic_counts.zeros();
+  topic_counts.setZero();
 
-  count_matrix_type topic_doc_counts(num_topics, d.num_rows());
-  topic_doc_counts.zeros();
+  count_matrix_type doc_topic_counts(d.num_rows(), num_topics);
+  doc_topic_counts.setZero();
 
-  auto assignments = forward_sample(d, topic_counts, topic_doc_counts);
+  auto assignments = forward_sample(d, topic_counts, doc_topic_counts);
 
   // Step 2. Gibbs sampling
   // -------------------------------------------------------------------------
@@ -436,7 +435,7 @@ void cgs_topic_model::train(std::shared_ptr<sarray<flexible_type>> dataset, bool
 
     // Reset old assignments before the next iteration
     ti.start();
-    auto info = sample_counts(d, topic_counts, topic_doc_counts, assignments);
+    auto info = sample_counts(d, topic_counts, doc_topic_counts, assignments);
     double tokens_per_second = info["token_count"] / ti.current_time();
 
     if ((print_interval > 0) &&
@@ -447,10 +446,10 @@ void cgs_topic_model::train(std::shared_ptr<sarray<flexible_type>> dataset, bool
       double perp = 0.0;
       if (validation_train != nullptr && validation_test != nullptr) {
         validation_timer.start();
-        count_matrix_type pred_topic_doc_counts = predict_counts(validation_train, num_burnin);
+        count_matrix_type pred_doc_topic_counts = predict_counts(validation_train, num_burnin);
         perp = perplexity(validation_test,
-                          pred_topic_doc_counts,
-                          topic_word_counts);
+                          pred_doc_topic_counts,
+                          word_topic_counts);
         validation_time += validation_timer.current_time();
         add_or_update_state({{"validation_perplexity", perp}});
       }
@@ -521,12 +520,8 @@ void cgs_topic_model::save_impl(turi::oarchive& oarc) const {
   // Member variables
 
   oarc << metadata
-       << options;
-
-  // we have to save topic_word_counts manually here unfortunately
-  // if we want to preserve compatibility
-  oarc << (size_t)topic_word_counts.n_cols << (size_t)topic_word_counts.n_rows;
-  turi::serialize(oarc, topic_word_counts.memptr(), topic_word_counts.n_elem*sizeof(int));
+       << options
+       << word_topic_counts;
 }
 
 /**
@@ -554,12 +549,14 @@ void cgs_topic_model::load_version(turi::iarchive& iarc, size_t version) {
   iarc >> metadata
        >> options;
 
-  // we have to save topic_word_counts manually here unfortunately
-  // if we want to preserve compatibility
-  size_t ncols, nrows;
-  iarc >> ncols >> nrows;
-  topic_word_counts.resize(nrows, ncols);
-  turi::deserialize(iarc, topic_word_counts.memptr(), topic_word_counts.n_elem*sizeof(int));
+  if(version == 0) {
+    Eigen::MatrixXi _word_topic_counts;
+    iarc >> _word_topic_counts;
+    word_topic_counts = _word_topic_counts;
+  } else {
+    iarc >> word_topic_counts;
+  }
+
 
 }
 }

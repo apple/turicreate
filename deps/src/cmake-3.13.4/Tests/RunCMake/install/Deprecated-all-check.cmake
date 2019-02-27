@@ -1,0 +1,1 @@
+check_installed([[^bin;bin/myexe(\.exe)?;scripts1;scripts1/script;scripts1/script\.bat;scripts2;scripts2/script;scripts2/script\.bat;scripts3;scripts3/script;scripts3/script\.bat;src;src/empty\.c;src/obj1\.c;src/obj\2.c$]])

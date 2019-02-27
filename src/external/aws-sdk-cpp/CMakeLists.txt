@@ -1,7 +1,7 @@
 project(aws-sdk-cpp)
 
-
 make_library(aws-sdk-cpp
+  OBJECT
   SOURCES
     aws-cpp-sdk-core/source/AmazonSerializableWebServiceRequest.cpp
     aws-cpp-sdk-core/source/AmazonStreamingWebServiceRequest.cpp
@@ -248,14 +248,10 @@ make_library(aws-sdk-cpp
     aws-cpp-sdk-s3/source/S3Errors.cpp
   REQUIRES
     curl openssl uuid
-  COMPILE_FLAGS_EXTRA_CLANG
-    -Wno-delete-non-virtual-dtor
-  )
+)
+target_optional_compile_flag(aws-sdk-cpp "-Wno-delete-non-virtual-dtor")
+target_optional_compile_flag(aws-sdk-cpp "-Wno-return-std-move")
 
-target_include_directories(aws-sdk-cpp SYSTEM
-  PUBLIC aws-cpp-sdk-core/include
-  PUBLIC aws-cpp-sdk-s3/include
-  )
 target_compile_definitions(aws-sdk-cpp PRIVATE -DENABLE_CURL_CLIENT)
 target_compile_definitions(aws-sdk-cpp PRIVATE -DENABLE_OPENSSL_ENCRYPTION)
 target_compile_definitions(aws-sdk-cpp PRIVATE -DJSON_USE_EXCEPTION=0)

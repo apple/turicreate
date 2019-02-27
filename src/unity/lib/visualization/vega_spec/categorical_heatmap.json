@@ -1,10 +1,10 @@
 {
   "$schema": "https://vega.github.io/schema/vega/v4.json",
-  "autosize": "fit",
+  "autosize": {"type": "fit", "resize": false, "contains": "padding"},
   "axes": [
     {
       "scale": "x",
-      "title": %2%,
+      "title": "{{xlabel}}",
       "tickCount": {
         "signal": "min(ceil(width/40), 60)"
       },
@@ -29,7 +29,7 @@
     },
     {
       "scale": "y",
-      "title": %3%,
+      "title": "{{ylabel}}",
       "tickCount": {
         "signal": "min(ceil(height/40), 40)"
       },
@@ -52,53 +52,7 @@
       "fill": "color"
     }
   ],
-  "title": {
-    "text": %1%,
-    "frame": "group",
-    "fontSize": 16,
-    "anchor": "middle",
-    "offset": 4
-  },
-  "config": {
-    "range": {
-      "heatmap": {
-        "scheme": "greenblue"
-      }
-    },
-    "style": {
-      "cell": {
-        "stroke": "transparent"
-      },
-      "group-title": {
-        "fontWeight": "normal",
-        "font": "HelveticaNeue, Arial",
-        "fontSize": 29,
-        "fill": "rgba(0,0,0,0.65)"
-      }
-    },
-    "axis": {
-      "titlePadding": 30,
-      "labelPadding": 10,
-      "labelFont": "HelveticaNeue, Arial",
-      "labelFontSize": 12,
-      "labelColor": "rgba(0,0,0,0.65)",
-      "titleFont": "HelveticaNeue-Medium, Arial",
-      "titleFontSize": 15,
-      "titleColor": "rgba(0,0,0,0.65)",
-      "titleFontWeight": "normal"
-    },
-    "axisY": {
-      "minExtent": 30
-    },
-    "legend": {
-      "labelFont": "HelveticaNeue, Arial",
-      "labelColor": "rgba(0,0,0,0.65)",
-      "titleFont": "HelveticaNeue, Arial",
-      "cornerRadius": 30,
-      "gradientWidth": 600,
-      "titleColor": "rgba(0,0,0,0.65)"
-    }
-  },
+  "title": {{title}},
   "scales": [
     {
       "range": [
@@ -144,9 +98,9 @@
       "nice": false
     }
   ],
-  "height": 550,
-  "padding": 0,
-  "width": 720,
+  "height": {{height}},
+  "padding": 8,
+  "width": {{width}},
   "marks": [
     {
       "encode": {
@@ -183,14 +137,9 @@
   ],
   "data": [
     {
-      "name": "source_2",
-      "values": [
-        {
-          "x": 100000000,
-          "y": "loading_data_from_tc",
-          "count": 0
-        }
-      ]
+      "name": "source_2"
+      {{pre_filled_data_values}}
     }
-  ]
+  ],
+  {{config}}
 }

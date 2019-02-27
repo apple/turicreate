@@ -1,0 +1,77 @@
+.TCEvaluationCellsText{
+	line-height: 42px;
+	height: 42px;
+	flex: 0.7;
+	text-align: left;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-family: Helvetica;
+	font-size: 14px;
+	color: #484856;
+}
+
+.TCEvaluationCellsTextCont{
+	overflow: hidden;
+	text-overflow: ellipsis;
+	line-height: 42px;
+}
+
+.TCEvaluationCellsPercent{
+	position: relative;
+	line-height: 42px;
+	height: 42px;
+	flex: 1;
+	display: flex;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.TCEvaluationCellsAmount{
+	line-height: 42px;
+	height: 42px;
+	flex: 1;
+	display: flex;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.TCEvaluationCellsImages{
+	line-height: 42px;
+	height: 42px;
+	flex: 2;
+	text-align: left;
+	display: flex;
+	overflow: scroll;
+}
+
+.TCEvaluationCellsImagesContainer{
+	display: flex;
+	min-width: max-content;
+	overflow-y:scroll;
+}
+
+.TCEvaluationCellsPercentShaded{
+	text-align: right;
+	background: #3B99FC;
+	height:100%;
+}
+
+.TCEvaluationCellsAmountShaded{
+	text-align: right;
+	background: #A4A9AD;
+	height:100%;
+}
+
+.TCEvaluationCellsPercentShadedText{
+	padding-right: 10px;
+	padding-left: 10px;
+	font-family: Helvetica;
+	font-size: 12px;
+	line-height: 42px;
+}
+
+.TCEvaluationCellsPercentShadedWarning{
+	position: absolute;
+	right: 10px;
+	top: 3px;
+}

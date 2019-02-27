@@ -13,6 +13,7 @@ enum MLOneHotEncoderCategoryType: int {
     MLOneHotEncoderCategoryType_NOT_SET = 0,
 };
 
+__attribute__((__unused__))
 static const char * MLOneHotEncoderCategoryType_Name(MLOneHotEncoderCategoryType x) {
     switch (x) {
         case MLOneHotEncoderCategoryType_stringCategories:

@@ -1,0 +1,1 @@
+^WARNING: Target "notall" has EXCLUDE_FROM_ALL set and will not be built by default but an install rule has been provided for it\.  CMake does not define behavior for this case\.$

@@ -1,0 +1,4 @@
+^CMake Error at JOIN-NoVariable.cmake:1 \(list\):
+  list sub-command JOIN requires three arguments \(2 found\).
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

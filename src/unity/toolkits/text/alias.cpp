@@ -23,7 +23,7 @@
 #include <logger/assertions.hpp>
 #include <table_printer/table_printer.hpp>
 #include <timer/timer.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 #include <parallel/atomic.hpp>
 
 namespace turi {
@@ -189,7 +189,7 @@ alias_topic_model::forward_sample(v2::ml_data d) {
             // Compute unnormalized topic probabilities for this word
             for (size_t k = 0; k < num_topics; ++k) {
               gamma_vec[k] = (doc_topic_counts.get(doc_id, k) + alpha) *
-                  (topic_word_counts(k, word_id) + beta) /
+                  (word_topic_counts(word_id, k) + beta) /
                   (topic_counts[k] + vocab_size * beta);
             }
 
@@ -203,7 +203,7 @@ alias_topic_model::forward_sample(v2::ml_data d) {
             doc_assignments.push_back(topic);
 
             // Increment counts
-            __sync_add_and_fetch(&topic_word_counts(topic, word_id), 1);
+            __sync_add_and_fetch(&word_topic_counts(word_id, topic), 1);
             __sync_add_and_fetch(&topic_counts[topic], 1);
 
             doc_topic_counts.increment(doc_id, topic, 1);
@@ -278,18 +278,18 @@ void alias_topic_model::sample_block(const v2::ml_data& d,
           size_t topic = doc_assignments[doc_id][total_words_seen + ix];
 
           // Remove counts due to current tokens
-          topic_word_counts(topic, word_id) -= 1;
+          word_topic_counts(word_id, topic) -= 1;
           topic_counts[topic] -= 1;
           doc_topic_counts.increment(doc_id, topic, -1);
 
           // TODO: This hack should not be required.
-          if (topic_word_counts(topic, word_id) < 0)
-            topic_word_counts(topic, word_id) = 0;
+          if (word_topic_counts(word_id, topic) < 0)
+            word_topic_counts(word_id, topic) = 0;
 
           // Check that we have not over decremented the other counts
           for (size_t k = 0; k < num_topics; ++k) {
             DASSERT_TRUE(topic_counts[k] >= 0);
-            DASSERT_TRUE(topic_word_counts(k, word_id) >= 0);
+            DASSERT_TRUE(word_topic_counts(word_id, k) >= 0);
             DASSERT_TRUE(doc_topic_counts.get(doc_id, k) >= 0);
           }
 
@@ -302,7 +302,7 @@ void alias_topic_model::sample_block(const v2::ml_data& d,
           DASSERT_TRUE(new_topic >= 0 && new_topic < num_topics);
 
           // Increment counts
-          topic_word_counts(new_topic, word_id) += 1;
+          word_topic_counts(word_id, new_topic) += 1;
           topic_counts[new_topic] += 1;
           doc_topic_counts.increment(doc_id, new_topic, 1);
 
@@ -398,8 +398,8 @@ void alias_topic_model::train(std::shared_ptr<sarray<flexible_type>> dataset, bo
 
   /**
    * Initializes the model using the current metadata.
-   * This sets the internal vocab_size and ensures topic_word_counts
-   * has at vocab_size number of rows. If topic_word_counts already exists
+   * This sets the internal vocab_size and ensures word_topic_counts
+   * has at vocab_size number of rows. If word_topic_counts already exists
    * this function pads it with more rows until it has reached the right
    * size.
    */
@@ -409,17 +409,17 @@ void alias_topic_model::train(std::shared_ptr<sarray<flexible_type>> dataset, bo
 
   if (!is_initialized) {
 
-    // Create a topic_word_counts matrix of all zeros.
-    topic_word_counts.resize(num_topics, vocab_size);
-    topic_word_counts.zeros();
+    // Create a word_topic_counts matrix of all zeros.
+    word_topic_counts.resize(vocab_size, num_topics);
+    word_topic_counts.setZero();
 
   } else {
 
-    // Copy over old topic_wordcounts matrix to the top of a new one.
-    count_matrix_type tmp;
-    tmp.zeros(num_topics, vocab_size);
-    tmp.head_cols(topic_word_counts.n_cols) = topic_word_counts;
-    topic_word_counts = tmp;
+    // Copy over old word_topic_counts matrix to the top of a new one.
+    count_matrix_type tmp(vocab_size, num_topics);
+    tmp.setZero();
+    tmp.topRows(word_topic_counts.rows()) = word_topic_counts;
+    word_topic_counts = std::move(tmp);
   }
 
   is_initialized = true;
@@ -437,9 +437,9 @@ void alias_topic_model::train(std::shared_ptr<sarray<flexible_type>> dataset, bo
 
   // Initialize variables
   topic_counts.resize(num_topics);
-  topic_counts.zeros();
-  q = arma::zeros(vocab_size, num_topics);
-  Q = arma::zeros(1, vocab_size);
+  topic_counts.setZero();
+  q = Eigen::MatrixXd::Zero(vocab_size, num_topics);
+  Q = Eigen::MatrixXd::Zero(1, vocab_size);
   word_samplers = std::vector<random::alias_sampler>(vocab_size);
   word_samples = std::vector<std::vector<size_t>>(vocab_size);
 
@@ -497,7 +497,7 @@ void alias_topic_model::train(std::shared_ptr<sarray<flexible_type>> dataset, bo
         count_matrix_type pred_doc_topic_counts = predict_counts(validation_train, num_burnin);
         perp = perplexity(validation_test,
                           pred_doc_topic_counts,
-                          topic_word_counts);
+                          word_topic_counts);
         validation_time = validation_timer.current_time();
         add_or_update_state({{"validation_perplexity", perp}});
       }
@@ -551,8 +551,8 @@ size_t alias_topic_model::sample_topic(size_t d, size_t w, size_t s,
     size_t topic = kv.first;
     size_t count = kv.second;
     double p = count *
-        (topic_word_counts(topic, w) + beta) /
-        (topic_counts(topic) + num_topics * beta);
+        (word_topic_counts(w, topic) + beta) /
+        (topic_counts(0, topic) + num_topics * beta);
     pd[topic] = p;
   }
 
@@ -601,8 +601,8 @@ size_t alias_topic_model::sample_topic(size_t d, size_t w, size_t s,
   double pdwt = pd[t];
   double pi = (doc_topic_counts.get(d, t) + alpha) /
               (doc_topic_counts.get(d, s) + alpha) *
-              (topic_word_counts(t, w) + beta) /
-              (topic_word_counts(s, w) + beta) *
+              (word_topic_counts(w, t) + beta) /
+              (word_topic_counts(w, s) + beta) *
               (topic_counts(0, s) + beta * num_topics) /
               (topic_counts(0, t) + beta * num_topics) *
               (Pdw * pdws + Q(0, w) * q(w, s)) /
@@ -640,12 +640,8 @@ void alias_topic_model::save_impl(turi::oarchive& oarc) const {
 
   // Member variables
   oarc << metadata
-       << options;
-
-  // we have to save topic_word_counts manually here unfortunately
-  // if we want to preserve compatibility
-  oarc << (size_t)topic_word_counts.n_cols << (size_t)topic_word_counts.n_rows;
-  turi::serialize(oarc, topic_word_counts.memptr(), topic_word_counts.n_elem*sizeof(int));
+       << options
+       << word_topic_counts;
 
 }
 
@@ -675,12 +671,14 @@ void alias_topic_model::load_version(turi::iarchive& iarc, size_t version) {
   iarc >> metadata
        >> options;
 
-  // we have to save topic_word_counts manually here unfortunately
-  // if we want to preserve compatibility
-  size_t ncols, nrows;
-  iarc >> ncols >> nrows;
-  topic_word_counts.resize(nrows, ncols);
-  turi::deserialize(iarc, topic_word_counts.memptr(), topic_word_counts.n_elem*sizeof(int));
+  if(version == 0) {
+    Eigen::MatrixXi _word_topic_counts;
+    iarc >> _word_topic_counts;
+    word_topic_counts = _word_topic_counts;
+  } else {
+    iarc >> word_topic_counts;
+  }
+
 }
 
 /**
@@ -691,8 +689,8 @@ void alias_topic_model::cache_word_pmf_and_samples(size_t w) {
   double Q_w = 0.0;
   for (size_t t = 0; t < num_topics; ++t) {
     q(w, t) =  alpha *
-               (topic_word_counts(t, w) + beta) /
-               (topic_counts(t) + num_topics * beta);
+               (word_topic_counts(w, t) + beta) /
+               (topic_counts(0, t) + num_topics * beta);
     Q_w += q(w, t);
   }
 

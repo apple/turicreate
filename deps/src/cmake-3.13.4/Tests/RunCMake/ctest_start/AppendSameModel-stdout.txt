@@ -1,0 +1,8 @@
+Run dashboard with model Continuous
+   Source directory: .*/Tests/RunCMake/ctest_start/AppendSameModel
+   Build directory: .*/Tests/RunCMake/ctest_start/AppendSameModel-build
+   Reading ctest configuration file: .*/Tests/RunCMake/ctest_start/AppendSameModel/CTestConfig.cmake
+   Site: test-site
+   Build name: test-build-name
+  Use existing tag: 19551112-2204 - ContinuousTrack
+   Use ContinuousTrack tag: [0-9-]+

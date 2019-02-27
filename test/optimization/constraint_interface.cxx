@@ -46,8 +46,8 @@ struct constraint_interface_test  {
       double up_dbl = 1;
       DenseVector lb(variables);
       DenseVector ub(variables);
-      lb.zeros();
-      ub.ones():
+      lb.setZeros();
+      ub.setOnes():
       srand(1);
       init_point    << 1 << -1 << 2 << -2 << 3 << -3 << 4 << -4 << 5 << -5;
       solution_orthant << 1 <<  0 << 2 <<  0 << 3 <<  0 << 4 <<  0 << 5 <<  0;
@@ -72,12 +72,12 @@ struct constraint_interface_test  {
     void test_non_negative(){
       std::shared_ptr<non_negative_orthant> non_negative;
       non_negative.reset(new non_negative_orthant(variables));
-      TS_ASSERT(arma::approx_equal(solution_orthant, non_negative_orthant.project(init_point),
+      TS_ASSERT(solution_orthant.isApprox(non_negative_orthant.project(init_point),
             1e-10));
       TS_ASSERT_FALSE(non_negative_orthant.is_satisfied(init_point));
 
       DenseVector test_point(variables);
-      test_point.zeros();
+      test_point.setZeros();
       TS_ASSERT_TRUE(non_negative_orthant.is_satisfied(test_point));
 
     }
@@ -87,22 +87,22 @@ struct constraint_interface_test  {
       // Vector init
       std::shared_ptr<box_constraints> box;
       box.reset(new box_constraints(lb, ub));
-      TS_ASSERT(arma::approx_equal(solution_box, box.project(init_point),
+      TS_ASSERT(solution_box.isApprox(box.project(init_point),
             1e-10));
       TS_ASSERT_FALSE(box.is_satisfied(init_point));
       DenseVector test_point(variables);
-      test_point.zeros();
+      test_point.setZeros();
       TS_ASSERT_TRUE(box.is_satisfied(test_point));
       box.reset();
 
       // Double init
       std::shared_ptr<box_constraints> box;
       box.reset(new box_constraints(lb_dbl, ub_dbl, variables));
-      TS_ASSERT(arma::approx_equal(solution_box, box.project(init_point),
+      TS_ASSERT(solution_box.isApprox(box.project(init_point),
             1e-10));
       TS_ASSERT_FALSE(box.is_satisfied(init_point));
       DenseVector test_point(variables);
-      test_point.zeros();
+      test_point.setZeros();
       TS_ASSERT_TRUE(box.is_satisfied(test_point));
 
 

@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/TextsPlain">
+        <file>resPlain/input.txt</file>
+        <file alias="Added">resPlain/inputAdded.txt</file>
+    </qresource>
+</RCC>
