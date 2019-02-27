@@ -1,0 +1,1 @@
+.*Warning: cppcheck reported diagnostics.*error.*warning.*style.*performance.*information.*

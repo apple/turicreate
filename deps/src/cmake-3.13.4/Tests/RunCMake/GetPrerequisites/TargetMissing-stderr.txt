@@ -1,0 +1,3 @@
+^warning: target 'does_not_exist' is not absolute\.\.\.
+warning: target 'does_not_exist' does not exist\.\.\.
+result_var='value;before;call'$

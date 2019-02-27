@@ -1,0 +1,9 @@
+^CMake Error at TARGET_GENEX_EVAL-recursion1.cmake:7 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<TARGET_GENEX_EVAL:recursion,\$<TARGET_PROPERTY:CUSTOM_PROPERTY>>
+
+  Self reference on target "recursion".
+
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

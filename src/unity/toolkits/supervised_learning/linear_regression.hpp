@@ -11,7 +11,7 @@
 
 
 // Toolkits
-#include <toolkits/supervised_learning/supervised_learning.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
 #include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
 
 // Optimization Interface
@@ -44,8 +44,8 @@ class EXPORT linear_regression: public supervised_learning_model_base {
   public:
   
   static constexpr size_t LINEAR_REGRESSION_MODEL_VERSION = 4;
-  arma::vec  coefs;                 /**< Coefs */
-  arma::vec  std_err;
+  Eigen::Matrix<double, Eigen::Dynamic,1>  coefs;                 /**< Coefs */
+  Eigen::Matrix<double, Eigen::Dynamic,1>  std_err;
 
   /**
    * Destructor. Make sure bad things don't happen

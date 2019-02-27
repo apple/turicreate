@@ -497,7 +497,7 @@ sframe recsys_model_base::_create_similar_sframe(
 
       std::vector<flexible_type> data;
 
-      arma::fvec similarities;
+      Eigen::Matrix<float, Eigen::Dynamic, 1> similarities;
       typedef std::pair<size_t, double> item_score_pair;
       std::vector<item_score_pair> score_list(metadata->index_size(column_index));
 

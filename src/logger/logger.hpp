@@ -50,6 +50,7 @@
 #include <logger/fail_method.hpp>
 #include <logger/backtrace.hpp>
 #include <logger/error.hpp>
+#include <cppipc/server/cancel_ops.hpp>
 #include <util/code_optimization.hpp> 
 #include <process/process_util.hpp>
 
@@ -323,22 +324,26 @@
 
 #endif
 
+void write_annotated_stack_trace_if_configured(std::ostream&);
+
 #define log_and_throw(message)                                      \
   do {                                                              \
-    auto throw_error = [&]() GL_COLD_NOINLINE_ERROR {  \
+    auto throw_error = [&]() GL_COLD_NOINLINE_ERROR {               \
+      write_annotated_stack_trace_if_configured(std::cerr);         \
       logstream(LOG_ERROR) << (message) << std::endl;               \
       throw(std::string(message));                                  \
     };                                                              \
     throw_error();                                                  \
   } while(0)                                                 
 
-#define std_log_and_throw(key_type, message)          \
-  do {                                                \
-    auto throw_error = [&]() GL_COLD_NOINLINE_ERROR { \
-      logstream(LOG_ERROR) << (message) << std::endl; \
-      throw(key_type(message));                       \
-    };                                                \
-    throw_error();                                    \
+#define std_log_and_throw(key_type, message)                        \
+  do {                                                              \
+    auto throw_error = [&]() GL_COLD_NOINLINE_ERROR {               \
+      write_annotated_stack_trace_if_configured(std::cerr);         \
+      logstream(LOG_ERROR) << (message) << std::endl;               \
+      throw(key_type(message));                                     \
+    };                                                              \
+    throw_error();                                                  \
   } while (0)
 
 #ifdef COMPILER_HAS_IOS_BASE_FAILURE_WITH_ERROR_CODE
@@ -549,6 +554,7 @@ class file_logger{
         stream_flush();
         if(streamloglevel == LOG_FATAL) {
           __print_back_trace();
+          write_annotated_stack_trace_if_configured(std::cerr);
           TURI_LOGGER_FAIL_METHOD("LOG_FATAL encountered");
         }
       }
@@ -652,6 +658,7 @@ struct log_dispatch<true> {
     va_end(argp);
     if(loglevel == LOG_FATAL) {
       __print_back_trace();
+      write_annotated_stack_trace_if_configured(std::cerr);
       TURI_LOGGER_FAIL_METHOD("LOG_FATAL encountered");
     }
   }
@@ -678,6 +685,12 @@ struct log_stream_dispatch {};
 template <>
 struct log_stream_dispatch<true> {
   inline static file_logger& exec(int lineloglevel,const char* file,const char* function, int line, bool do_start = true) {
+    // First see if there is an interupt waiting.  This is a convenient place that a lot of people call.
+    if(cppipc::must_cancel()) {
+      log_and_throw("Canceled by user.");
+    }
+
+
     return global_logger().start_stream(lineloglevel, file, function, line, do_start);
   }
 };
@@ -685,6 +698,12 @@ struct log_stream_dispatch<true> {
 template <>
 struct log_stream_dispatch<false> {
   inline static null_stream exec(int lineloglevel,const char* file,const char* function, int line, bool do_start = true) {
+    
+    // First see if there is an interupt waiting.  This is a convenient place that a lot of people call.
+    if(cppipc::must_cancel()) {
+      log_and_throw("Canceled by user.");
+    }
+
     return null_stream();
   }
 };

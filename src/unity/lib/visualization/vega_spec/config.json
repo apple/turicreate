@@ -1,0 +1,52 @@
+"config": {
+    "axis": {
+        "gridColor": {{gridColor}},
+        "labelFont": {{labelFont}},
+        "labelFontSize": {{labelFontSize}},
+        "labelPadding": {{labelPadding}},
+        "labelColor": {{labelColor}},
+        "tickColor": {{tickColor}},
+        "titleFont": {{titleFont}},
+        "titleFontWeight": {{axisTitleFontWeight}},
+        "titlePadding": {{axisTitlePadding}},
+        "titleFontSize": {{axisTitleFontSize}},
+        "titleColor": {{titleColor}}
+    },
+    "axisY": {
+        "minExtent": 30
+    },
+    "legend": {
+        "labelFont": {{labelFont}},
+        "labelColor": {{labelColor}},
+        "titleFont": {{titleFont}},
+        "cornerRadius": 30,
+        "gradientLength": 608,
+        "titleColor": {{titleColor}}
+    },
+    "range": {
+        "heatmap": {
+            "scheme": "greenblue"
+        }
+    },
+    "style": {
+        "rect": {
+            "stroke": "rgba(200, 200, 200, 0.5)"
+        },
+        "cell": {
+            "stroke": "transparent"
+        },
+        "group-title": {
+            "fontSize": 29,
+            "font": "HelveticaNeue, Arial",
+            "fontWeight": "normal",
+            "fill": "rgba(0,0,0,0.65)"
+        }
+    },
+    "title": {
+        "color": {{titleColor}},
+        "font": {{titleFont}},
+        "fontSize": {{titleFontSize}},
+        "fontWeight": {{titleFontWeight}},
+        "offset": {{titleOffset}}
+    }
+}

@@ -1,0 +1,7 @@
+^CMake Error: The glob expression
+.* at GLOB-error-CONFIGURE_DEPENDS-modified\.cmake:[0-9]+ \(file\)
+was already present in the glob cache but the directory
+contents have changed during the configuration run.
+Matching glob expressions:
+  CONTENT_LIST_1 at GLOB-error-CONFIGURE_DEPENDS-modified\.cmake:[0-9]+ \(file\)
+  CONTENT_LIST_2 at GLOB-error-CONFIGURE_DEPENDS-modified\.cmake:[0-9]+ \(file\)$

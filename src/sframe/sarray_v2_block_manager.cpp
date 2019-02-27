@@ -198,7 +198,19 @@ bool block_manager::read_typed_block(block_address addr,
 /**************************************************************************/
 std::shared_ptr<general_ifstream> block_manager::get_new_file_handle(std::string s) {
   std::lock_guard<turi::mutex> guard(m_file_handles_lock);
+  if (m_file_handle_pool.size() >= SFRAME_FILE_HANDLE_POOL_SIZE) {
+    // reap invalidated weak_ptrs
+    std::deque<std::weak_ptr<general_ifstream> > new_m_file_handle_pool;
+    std::copy_if(m_file_handle_pool.begin(), m_file_handle_pool.end(),
+                 std::back_inserter(new_m_file_handle_pool),
+                 [](const std::weak_ptr<general_ifstream>& wp)->bool {
+                   return !wp.expired();
+                 });
+    m_file_handle_pool = std::move(new_m_file_handle_pool);
+  }
+
   while(m_file_handle_pool.size() >= SFRAME_FILE_HANDLE_POOL_SIZE) {
+    // reap m_file_handle_pool
     // we have exceeded the pool size. release the oldest handle
     m_file_handle_pool.pop_front();
   }

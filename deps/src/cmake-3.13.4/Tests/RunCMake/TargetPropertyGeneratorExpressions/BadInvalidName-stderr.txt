@@ -1,0 +1,50 @@
+^(CMake Error at BadInvalidName1/CMakeLists.txt:2 \(include_directories\):
+  Error evaluating generator expression:
+
+    \$<TARGET_PROPERTY:Invali/dTarget,INCLUDE_DIRECTORIES>
+
+  Target name not supported.
++)+(CMake Error at BadInvalidName2/CMakeLists.txt:2 \(include_directories\):
+  Error evaluating generator expression:
+
+    \$<TARGET_PROPERTY:Invali/dTarget,Invali/dProperty>
+
+  Target name and property name not supported.
++)+(CMake Error at BadInvalidName3/CMakeLists.txt:2 \(include_directories\):
+  Error evaluating generator expression:
+
+    \$<TARGET_PROPERTY:Invali/dProperty>
+
+  Property name not supported.
++)+(CMake Error at BadInvalidName4/CMakeLists.txt:2 \(include_directories\):
+  Error evaluating generator expression:
+
+    \$<TARGET_PROPERTY:BadInvalidName4,Invali/dProperty>
+
+  Property name not supported.
++)+(CMake Error at BadInvalidName5/CMakeLists.txt:2 \(include_directories\):
+  Error evaluating generator expression:
+
+    \$<TARGET_PROPERTY:,>
+
+  \$<TARGET_PROPERTY:tgt,prop> expression requires a non-empty target name and
+  property name.
++)+(CMake Error at BadInvalidName6/CMakeLists.txt:2 \(include_directories\):
+  Error evaluating generator expression:
+
+    \$<TARGET_PROPERTY:,ValidProperty>
+
+  \$<TARGET_PROPERTY:tgt,prop> expression requires a non-empty target name.
++)+(CMake Error at BadInvalidName7/CMakeLists.txt:2 \(include_directories\):
+  Error evaluating generator expression:
+
+    \$<TARGET_PROPERTY:BadInvalidName7,>
+
+  \$<TARGET_PROPERTY:...> expression requires a non-empty property name.
++)+(CMake Error at BadInvalidName8/CMakeLists.txt:2 \(include_directories\):
+  Error evaluating generator expression:
+
+    \$<TARGET_PROPERTY:>
+
+  \$<TARGET_PROPERTY:...> expression requires a non-empty property name.
+*)+$

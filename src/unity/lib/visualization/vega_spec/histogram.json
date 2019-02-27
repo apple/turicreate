@@ -1,18 +1,26 @@
 {
   "$schema": "https://vega.github.io/schema/vega/v4.json",
   "description": "A simple bar chart with embedded data.",
-  "autosize": "pad",
-  "width": 720,
-  "height": 550,
-  "padding": 5,
-  "title": {
-    "text": %1%,
-    "offset": 30
-  },
+  "autosize": {"type": "fit", "resize": false, "contains": "padding"},
+  "width": {{width}},
+  "height": {{height}},
+  "padding": 8,
+  "title": {{title}},
   "style": "cell",
+  "signals": [
+    {
+      "name": "nullGap",
+      "update": "data('nulls').length > 0 ? 10 : 0"
+    },
+    {
+      "name": "barStep",
+      "update": "nullGap == 0 ? 0 : (width/40)"
+    }
+  ],
   "data": [
     {
       "name": "source_2"
+      {{pre_filled_data_values}}
     },
     {
       "name": "data_0",
@@ -36,6 +44,21 @@
         {
           "type": "filter",
           "expr": "datum[\"left\"] !== null && !isNaN(datum[\"left\"]) && datum[\"count\"] !== null && !isNaN(datum[\"count\"])"
+        }
+      ]
+    },
+    {
+      "source": "source_2",
+      "name": "nulls",
+      "transform": [
+        {
+          "expr": "toNumber(datum[\"count\"])",
+          "as": "count",
+          "type": "formula"
+        },
+        {
+          "expr": "datum[\"missing\"] === true && datum[\"count\"] !== null && !isNaN(datum[\"count\"])",
+          "type": "filter"
         }
       ]
     }
@@ -78,9 +101,41 @@
           }
         }
       }
+    },
+    {
+      "type": "rect",
+      "from": {"data": "nulls"},
+      "style": [
+        "rect"
+      ],
+      "encode": {
+        "update": {
+          "x": {"scale": "xscale-null", "value": null, "offset": 1},
+          "x2": {"scale": "xscale-null", "band": 1},
+          "y": {"scale": "y", "field": "count"},
+          "y2": {"scale": "y", "value": 0},
+          "fill": {"value": "#108EE9"}
+        },
+        "hover": {
+          "fill": {"value": "#7EC2F3"}
+        }
+      }
     }
   ],
   "scales": [
+    {
+      "domain": [
+        null
+      ],
+      "range": [
+        0,
+        {
+          "signal": "barStep"
+        }
+      ],
+      "type": "band",
+      "name": "xscale-null"
+    },
     {
       "name": "x",
       "type": "linear",
@@ -93,7 +148,9 @@
         "sort": true
       },
       "range": [
-        0,
+        {
+          "signal": "barStep + nullGap"
+        },
         {
           "signal": "width"
         }
@@ -105,8 +162,10 @@
       "name": "y",
       "type": "linear",
       "domain": {
-        "data": "data_0",
-        "field": "count"
+        "fields": [
+          {"data": "data_0", "field": "count"},
+          {"data": "nulls", "field": "count"}
+        ]
       },
       "range": [
         {
@@ -120,7 +179,7 @@
   ],
   "axes": [
     {
-      "title": %2%,
+      "title": "{{xlabel}}",
       "scale": "x",
       "labelOverlap": true,
       "orient": "bottom",
@@ -145,7 +204,7 @@
       "gridScale": "y"
     },
     {
-      "title": %3%,
+      "title": "{{ylabel}}",
       "scale": "y",
       "labelOverlap": true,
       "orient": "left",
@@ -168,33 +227,15 @@
       "ticks": false,
       "zindex": 0,
       "gridScale": "x"
-    }
-  ],
-  "config": {
-    "axis": {
-      "labelFont": "HelveticaNeue, Arial",
-      "labelFontSize": 12,
-      "labelPadding": 10,
-      "labelColor": "rgba(0,0,0,0.65)",
-      "titleFont": "HelveticaNeue-Medium, Arial",
-      "titleFontWeight": "normal",
-      "titlePadding": 30,
-      "titleFontSize": 15,
-      "titleColor": "rgba(0,0,0,0.65)"
     },
-    "axisY": {
-      "minExtent": 30
-    },
-    "style": {
-      "rect": {
-        "stroke": "rgba(200, 200, 200, 0.5)"
-      },
-      "group-title": {
-        "fontSize": 29,
-        "font": "HelveticaNeue, Arial",
-        "fontWeight": "normal",
-        "fill": "rgba(0,0,0,0.65)"
+    {
+      "orient": "bottom",
+      "scale": "xscale-null",
+      "encode": {
+        "ticks": {"update": {"opacity": {"signal": "nullGap > 0 ? 1.0 : 0.0"}}},
+        "labels": {"update": {"text": {"signal": "nullGap > 0 ? 'null' : ''"}}}
       }
     }
-  }
+  ],
+  {{config}}
 }

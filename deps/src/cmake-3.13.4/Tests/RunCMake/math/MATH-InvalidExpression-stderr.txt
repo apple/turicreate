@@ -1,0 +1,5 @@
+^CMake Error at MATH-InvalidExpression.cmake:1 \(math\):
+  math cannot parse the expression: "INVALID": syntax error, unexpected \$end,
+  expecting exp_PLUS or exp_MINUS or exp_OPENPARENT or exp_NUMBER \(7\).
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

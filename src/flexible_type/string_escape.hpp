@@ -15,11 +15,24 @@ void unescape_string(std::string& cal, bool use_escape_char, char escape_char,
                      char quote_char, bool double_quote);
 
 /**
+ * Unescapes a string inplace
+ */
+void unescape_string(std::string& cal, char escape_char,
+                     char quote_char, bool double_quote);
+
+/**
  * Unescapes a string inplace, returning the new length
  */
 size_t unescape_string(char* cal, 
                        size_t length, bool use_escape_char, char escape_char, 
                        char quote_char, bool double_quote);
+/**
+ * Unescapes a string inplace, returning the new length
+ */
+size_t unescape_string(char* cal,
+                       size_t length, char escape_char,
+                       char quote_char, bool double_quote);
+
 /**
  * Escapes a string from val into output.
  * The length of the output string is in returned in output_len.

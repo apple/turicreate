@@ -69,6 +69,21 @@ class Pipe {
         fflush(__stdoutp)
     }
     
+    public func writePipeEval(start: Int, length: Int, row_type: String, mat_type: String, cells: String){
+        print("{\"method\":\"get_rows_eval\", \"start\":" + String(start) + ", \"length\": " + String(length) + ", \"row_type\": \"" + row_type + "\", \"mat_type\": \"" + mat_type + "\", \"cells\": " + cells + " }");
+        fflush(__stdoutp)
+    }
+    
+    public func writeIncorrect(label: String){
+        print("{\"method\":\"get_incorrects\", \"label\":\""+label+"\"}");
+        fflush(__stdoutp)
+    }
+    
+    public func writeCorrect(){
+        print("{\"method\":\"get_corrects\"}");
+        fflush(__stdoutp)
+    }
+    
     public func writeAccordion(method: String, column_name: String, index_val: String){
         print("{'method':'get_accordion','column': '" + column_name + "', 'index': " + index_val + "}");
         fflush(__stdoutp)
@@ -85,6 +100,10 @@ class Pipe {
             
             if let vega_spec = json["vega_spec"] as? [String: Any] {
                 self.graph_data.set_vega(vega_spec: vega_spec)
+            }
+            
+            if let evaluation_spec = json["evaluation_spec"] as? [String: Any] {
+                self.graph_data.set_evaluation(evaluation_spec: evaluation_spec)
             }
             
             if let data_spec = json["data_spec"] as? [String: Any] {

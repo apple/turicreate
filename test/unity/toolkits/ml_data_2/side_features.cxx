@@ -42,7 +42,7 @@ void test_consistency(const v2::ml_data& data,
   v2::ml_data::SparseVector xs, xs_alt;
   v2::ml_data::DenseVector xd, xd_alt;
   std::vector<v2::ml_data_entry_global_index> x_gi, x_gi_alt;
-  arma::mat xdr, xdr_alt;
+  Eigen::MatrixXd xdr, xdr_alt;
 
   xd.resize(data.metadata()->num_dimensions());
   xd_alt.resize(data.metadata()->num_dimensions());
@@ -50,9 +50,9 @@ void test_consistency(const v2::ml_data& data,
   xs_alt.resize(data.metadata()->num_dimensions());
 
   xdr.resize(3, data.metadata()->num_dimensions());
-  xdr.zeros();
+  xdr.setZero();
   xdr_alt.resize(3, data.metadata()->num_dimensions());
-  xdr_alt.zeros();
+  xdr_alt.setZero();
 
   size_t idx = 0;
   for(auto it = data.get_iterator(); !it.done(); ++it, ++idx) {
@@ -74,22 +74,22 @@ void test_consistency(const v2::ml_data& data,
           break;
         }
         case 1: {
-          it.fill(xs);
+          it.fill_observation(xs);
 
           it.get_reference().fill(xs_alt);
-          ASSERT_TRUE( arma::all(xs_alt.to_dense() == xs.to_dense()) );
+          ASSERT_TRUE(xs_alt.toDense() == xs.toDense());
 
           joined_row = data.translate_row_to_original(xs);
           break;
         }
         case 2: {
-          it.fill_row_expr(xd);
+          it.fill_observation(xd);
 
-          it.get_reference().fill_row_expr(xd_alt);
-          ASSERT_TRUE(arma::all(xd_alt == xd));
+          it.get_reference().fill(xd_alt);
+          ASSERT_TRUE(xd_alt == xd);
 
           joined_row = data.translate_row_to_original(xd);
-          // std::cerr << "xd = " << xd.t() << std::endl;
+          // std::cerr << "xd = " << xd.transpose() << std::endl;
           break;
         }
         case 3: {
@@ -99,7 +99,7 @@ void test_consistency(const v2::ml_data& data,
           ASSERT_TRUE(x_gi == x_gi_alt);
 
           joined_row = data.translate_row_to_original(x_gi);
-          // std::cerr << "xd = " << xd.t() << std::endl;
+          // std::cerr << "xd = " << xd.transpose() << std::endl;
           break;
         }
         case 4: {
@@ -130,12 +130,12 @@ void test_consistency(const v2::ml_data& data,
         }
 
         case 6: {
-          it.fill_row_expr(xdr.row(1));
+          it.fill_eigen_row(xdr.row(1));
 
-          it.get_reference().fill_row_expr(xdr_alt.row(1));
-          ASSERT_TRUE(arma::all(arma::all(xdr == xdr_alt)));
+          it.get_reference().fill_eigen_row(xdr_alt.row(1));
+          ASSERT_TRUE(xdr == xdr_alt);
 
-          xd = xdr.row(1).t();
+          xd = xdr.row(1);
 
           joined_row = data.translate_row_to_original(xd);
           break;
@@ -565,13 +565,13 @@ void test_consistency(const v2::sframe_and_side_info& info) {
   std::vector<v2::ml_data_entry> x;
   v2::ml_data::DenseVector xd;
   v2::ml_data::SparseVector xs;
-  arma::mat xdr;
+  Eigen::MatrixXd xdr;
 
   xd.resize(data.metadata()->num_dimensions());
   xs.resize(data.metadata()->num_dimensions());
 
   xdr.resize(3, data.metadata()->num_dimensions());
-  xdr.zeros();
+  xdr.setZero();
 
   for(auto it = data.get_iterator(); !it.done(); ++it) {
 
@@ -588,20 +588,20 @@ void test_consistency(const v2::sframe_and_side_info& info) {
           break;
         }
         case 1: {
-          it.fill(xs);
+          it.fill_observation(xs);
           joined_row = data.translate_row_to_original(xs);
           break;
         }
         case 2: {
-          it.fill_row_expr(xd);
+          it.fill_observation(xd);
           joined_row = data.translate_row_to_original(xd);
-          // std::cerr << "xd = " << xd.t() << std::endl;
+          // std::cerr << "xd = " << xd.transpose() << std::endl;
           break;
         }
         case 3: {
-          it.fill_row_expr(xdr.row(1));
+          it.fill_eigen_row(xdr.row(1));
 
-          xd = xdr.row(1).t();
+          xd = xdr.row(1);
 
           joined_row = data.translate_row_to_original(xd);
           break;

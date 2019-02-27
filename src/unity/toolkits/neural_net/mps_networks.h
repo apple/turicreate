@@ -178,7 +178,7 @@ struct ODNetwork : public MPSNetwork {
     // int wo = iparam[5];
     int co = iparam[6];
     std::vector<int> filter = {3, 16, 32, 64, 128, 256, 512, 1024, 1024};
-    for (int i = 0; i < filter.size() - 1; ++i) {
+    for (int i = 0; size_t(i) < filter.size() - 1; ++i) {
       int idx = i + 1;
       std::string num = std::to_string(i);
       layers.push_back(new ConvLayer(

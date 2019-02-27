@@ -220,7 +220,6 @@ class sframe_reader : public siterable<sframe_iterator> {
   /// Deleted Assignment operator
   sframe_reader& operator=(const sframe_reader& other) = delete;
 
-
   /**
    * Attempts to construct an sframe_iterator which reads 
    * If the index file cannot be opened, an exception is thrown.

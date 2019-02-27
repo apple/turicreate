@@ -25,7 +25,7 @@
 #include <unity/lib/extensions/ml_model.hpp>
 
 // External
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 #include <export.hpp>
 namespace turi {
 
@@ -60,8 +60,8 @@ class EXPORT topic_model : public ml_model_base{
 
  public:
 
-  typedef arma::Mat<int32_t> count_matrix_type;
-  typedef arma::Row<int32_t> count_vector_type;
+  typedef Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> count_matrix_type;
+  typedef Eigen::Matrix<int, 1, Eigen::Dynamic, Eigen::RowMajor> count_vector_type;
 
   static constexpr size_t TOPIC_MODEL_VERSION = 1;
 
@@ -80,7 +80,7 @@ class EXPORT topic_model : public ml_model_base{
   std::shared_ptr<v2::ml_metadata> metadata;
 
   // Statistics
-  count_matrix_type topic_word_counts;      /* < Total count for each word. */
+  count_matrix_type word_topic_counts;      /* < Total count for each word. */
 
   // State
   bool is_initialized;        /* < Flag for whether model is ready. */
@@ -216,11 +216,11 @@ class EXPORT topic_model : public ml_model_base{
    * Make predictions on the given data set.
    *
    * This method closely resembles the sampler in the collapsed Gibbs
-   * sampler solver found in cgs.hpp. Here, however, the topic_word_counts
+   * sampler solver found in cgs.hpp. Here, however, the word_topic_counts
    * matrix is held fixed. For each document, num_burnin iterations are
    * performed where in each iteration we sample the topic_assignments.
    * The returned predictions are probabilities, and are computed by
-   * smoothing the topic_doc_counts matrix that arising from sampling.
+   * smoothing the doc_topic_counts matrix that arising from sampling.
    *
    */
   std::shared_ptr<sarray<flexible_type>>
@@ -260,8 +260,8 @@ class EXPORT topic_model : public ml_model_base{
    *
    */
   double perplexity(std::shared_ptr<sarray<flexible_type>> documents,
-                    const count_matrix_type& topic_doc_counts,
-                    const count_matrix_type& topic_word_counts);
+                    const count_matrix_type& doc_topic_counts,
+                    const count_matrix_type& word_topic_counts);
 
   void init_validation(std::shared_ptr<sarray<flexible_type> > validation_train,
 std::shared_ptr<sarray<flexible_type> > validation_test);

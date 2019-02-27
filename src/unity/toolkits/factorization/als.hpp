@@ -6,7 +6,7 @@
 #ifndef TURI_ALS_H_
 #define TURI_ALS_H_
 
-#include <numerics/armadillo.hpp>
+#include <Eigen/Cholesky>
 // ML-Data & options manager
 #include <unity/toolkits/ml_data_2/ml_data.hpp>
 #include <unity/lib/extensions/option_manager.hpp>
@@ -26,9 +26,11 @@ namespace als {
 
 // Typedefs
 typedef factorization::factorization_model_impl 
-   <factorization::model_factor_mode::matrix_factorization, factorization::DYNAMIC> model_type;
-typedef row_major_matrix<float> DenseMatrix;
-typedef arma::fvec DenseVector;
+   <factorization::model_factor_mode::matrix_factorization, Eigen::Dynamic>
+                                                                  model_type;
+typedef Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic,
+                                              Eigen::RowMajor> DenseMatrix;
+typedef Eigen::Matrix<float, Eigen::Dynamic, 1> DenseVector;
 
 
 /**
@@ -149,7 +151,7 @@ inline std::shared_ptr<factorization::factorization_model> als(
                                user_mapping, item_mapping);
 
   // Global variables needed
-  // auto eye = arma::diagmat(arma::ones<arma::fvec>(num_factors)); 
+  DenseMatrix eye = DenseMatrix::Identity(num_factors, num_factors);
   double rmse, best_rmse = 1e20;
 
   // Setup the table printer
@@ -163,7 +165,7 @@ inline std::shared_ptr<factorization::factorization_model> als(
   
   // Init the model
   model->reset_state(seed, init_rand_sigma);
-  model->w.zeros();
+  model->w.setZero();
   
   double reset_fraction = 1;
   double reset_fraction_reduction_rate = 1e-2;
@@ -181,8 +183,8 @@ inline std::shared_ptr<factorization::factorization_model> als(
     std::vector<v2::ml_data_entry> x;
     size_t user_id, item_id = 0;
     double rating = 0;
-    A = lambda * arma::diagmat(arma::ones<arma::fvec>(num_factors));
-    b.zeros();
+    A = lambda * eye;
+    b.setZero();
     for(auto it = 
         training_data_by_user.get_block_iterator(thread_idx, num_threads); 
                                                                 !it.done();) {
@@ -192,25 +194,18 @@ inline std::shared_ptr<factorization::factorization_model> als(
       item_id = num_users + x[1].index;
       rating = it.target_value() - model->w0;
 
-#ifndef NDEBUG
-      {
-        arma::fmat Ad = model->V.row(item_id).t() * model->V.row(item_id);
-        DASSERT_EQ(Ad.n_rows, A.n_rows); 
-        DASSERT_EQ(Ad.n_cols, A.n_cols); 
-      }
-#endif
-      A += (model->V.row(item_id).t() * model->V.row(item_id));
-      b += rating * model->V.row(item_id).t();
+      A += model->V.row(item_id).transpose() * model->V.row(item_id);
+      b += rating * model->V.row(item_id);
       ++it;
 
       // Solve the system
       if(it.is_start_of_new_block() || it.done()){
-        model->V.set_row(user_id, solve_ldlt(A.t(), b).t());
+        model->V.row(user_id) = (A.ldlt().solve(b)).transpose();
         if (it.done()) break;
 
         // Reset for the next user
-        A = lambda * arma::diagmat(arma::ones<arma::fvec>(num_factors)); 
-        b.zeros();
+        A = lambda * eye;
+        b.setZero();
       }
     }});
   
@@ -223,8 +218,8 @@ inline std::shared_ptr<factorization::factorization_model> als(
     std::vector<v2::ml_data_entry> x;
     size_t user_id, item_id = 0;
     double rating = 0.0;
-    A = lambda * arma::diagmat(arma::ones<arma::fvec>(num_factors)); 
-    b.zeros();
+    A = lambda * eye;
+    b.setZero();
     
     for(auto it = 
         training_data_by_item.get_block_iterator(thread_idx, num_threads); 
@@ -236,19 +231,19 @@ inline std::shared_ptr<factorization::factorization_model> als(
       item_id = num_users + item_mapping[x[0].index];
       rating = it.target_value() - model->w0;
 
-      A += (model->V.row(user_id).t() * model->V.row(user_id));
-      b += rating * model->V.row(user_id).t(); 
+      A += model->V.row(user_id).transpose() * model->V.row(user_id);
+      b += rating * model->V.row(user_id);
       ++it;
 
       // Solve the system
       if(it.is_start_of_new_block() || it.done()){
-
-      model->V.set_row(item_id, solve_ldlt(A.t(), b).t());
+        model->V.row(item_id) =
+          (A.selfadjointView<Eigen::Upper>().ldlt().solve(b)).transpose();
         if (it.done()) break;
 
         // Reset for the next item
-        A = lambda * arma::diagmat(arma::ones<arma::fvec>(num_factors)); 
-        b.zeros();
+        A = lambda * eye;
+        b.setZero();
       }
     }});
 
@@ -268,7 +263,8 @@ inline std::shared_ptr<factorization::factorization_model> als(
       logprogress_stream << "Resetting model." << std::endl;
       reset_fraction *= reset_fraction_reduction_rate;
       model->reset_state(rand(), reset_fraction);
-      model->w.zeros();
+      model->w.setZero();
+
       continue;
     }
   }
@@ -359,6 +355,7 @@ inline std::shared_ptr<factorization::factorization_model> implicit_als(
 
 
   // Global variables needed
+  DenseMatrix eye = DenseMatrix::Identity(num_factors, num_factors);
   double rmse, best_rmse = 1e20;
   std::vector<double>rmse_per_thread
           (turi::thread_pool::get_instance().size(), 0.0);
@@ -374,7 +371,7 @@ inline std::shared_ptr<factorization::factorization_model> implicit_als(
 
   // Init the model
   model->reset_state(seed, init_rand_sigma);
-  model->w.zeros();
+  model->w.setZero();
   model->w0 = 0;
 
   // Two random constants used in the ials paper [1]
@@ -391,12 +388,8 @@ inline std::shared_ptr<factorization::factorization_model> implicit_als(
 
     // Calcuate the common base matrix to use. 
     DenseMatrix A_cached(num_factors, num_factors);
-    // EIGEN VERSION:
-    // A_cached.triangularView<armadillo>() = lambda * eye +
-    //      model->V.bottomRows(num_items).t() * model->V.bottomRows(num_items);
-    
-    A_cached = lambda * arma::diagmat(arma::ones<arma::fvec>(num_factors)) +
-          model->V.tr_tail_rows(num_items) * model->V.tr_tail_rows(num_items).t();
+    A_cached.triangularView<Eigen::Upper>() = lambda * eye +
+          model->V.bottomRows(num_items).transpose() * model->V.bottomRows(num_items);
     
     // Step 1: User step
     // ------------------------------------------------------------------------
@@ -407,9 +400,9 @@ inline std::shared_ptr<factorization::factorization_model> implicit_als(
     std::vector<v2::ml_data_entry> x;
     double scaling = 0.0;
     size_t user_id, item_id = 0;
-    A = A_cached;
+    A.triangularView<Eigen::Upper>() = A_cached;
     
-    b.zeros();
+    b.setZero();
     
     for(auto it = 
         training_data_by_user.get_block_iterator(thread_idx, num_threads); 
@@ -422,26 +415,20 @@ inline std::shared_ptr<factorization::factorization_model> implicit_als(
       } else {
         scaling = alpha * it.target_value();
       }
-#ifndef NDEBUG
-      {
-        arma::fmat Ad = scaling * model->V.row(item_id).t() * model->V.row(item_id);
-        DASSERT_EQ(Ad.n_cols, A.n_cols); 
-        DASSERT_EQ(Ad.n_rows, A.n_rows);
-      } 
-#endif 
-
-      A += scaling * model->V.row(item_id).t() * model->V.row(item_id);
-      b += (1 + scaling) * model->V.row(item_id).t(); 
+      A.triangularView<Eigen::Upper>() += scaling *
+                    model->V.row(item_id).transpose() * model->V.row(item_id);
+      b += (1 + scaling) * model->V.row(item_id);
       ++it;
 
       // Update user factor 
       if(it.is_start_of_new_block() || it.done()){
-        model->V.set_row(user_id, solve_ldlt(A.t(), b).t());
+        model->V.row(user_id) =
+            (A.selfadjointView<Eigen::Upper>().ldlt().solve(b)).transpose();
         if (it.done()) break;
 
         // Reset for the next user
-        A = A_cached;
-        b.zeros();
+        A.triangularView<Eigen::Upper>() = A_cached;
+        b.setZero();
       }
     }});
   
@@ -456,17 +443,10 @@ inline std::shared_ptr<factorization::factorization_model> implicit_als(
     std::vector<v2::ml_data_entry> x;
     size_t user_id, item_id = 0;
     double scaling = 0.0;
-    // EIGEN VERSION
-    // A_cached.triangularView<armadillo>() = lambda * eye +
-    //       model->V.topRows(num_users).t() * model->V.topRows(num_users);
-    
-    A_cached = lambda * arma::diagmat(arma::ones<arma::fvec>(num_factors)) +
-          model->V.tr_head_rows(num_users) * model->V.tr_head_rows(num_users).t();
-
-    // EIGEN VERSION
-    // A.triangularView() = A_cached;
-    A = A_cached;
-    b.zeros();
+    A_cached.triangularView<Eigen::Upper>() = lambda * eye +
+          model->V.topRows(num_users).transpose() * model->V.topRows(num_users);
+    A.triangularView<Eigen::Upper>() = A_cached;
+    b.setZero();
     
     for(auto it = 
         training_data_by_item.get_block_iterator(thread_idx, num_threads); 
@@ -480,26 +460,20 @@ inline std::shared_ptr<factorization::factorization_model> implicit_als(
       } else {
         scaling = alpha * std::max(it.target_value(), 0.0);
       }
-
-      // EIGEN VERSION
-      // A.triangularView<armadillo>() += scaling *
-      //              model->V.row(user_id).t() * model->V.row(user_id);
-
-      A += scaling * model->V.row(user_id).t() * model->V.row(user_id);
-
-      b += (1 + scaling) * model->V.row(user_id).t(); 
+      A.triangularView<Eigen::Upper>() += scaling *
+                    model->V.row(user_id).transpose() * model->V.row(user_id);
+      b += (1 + scaling) * model->V.row(user_id);
       ++it;
 
       // Solve the system
       if(it.is_start_of_new_block() || it.done()){
-        model->V.set_row(item_id, solve_ldlt(A.t(), b).t());
+        model->V.row(item_id) =
+          (A.selfadjointView<Eigen::Upper>().ldlt().solve(b)).transpose();
         if (it.done()) break;
 
         // Reset for the next item
-        // EIGEN VERSION
-        // A.triangularView<armadillo>() = A_cached;
-        A = A_cached;
-        b.zeros();
+        A.triangularView<Eigen::Upper>() = A_cached;
+        b.setZero();
       }
     }});
 
@@ -519,7 +493,7 @@ inline std::shared_ptr<factorization::factorization_model> implicit_als(
       logprogress_stream << "Resetting model." << std::endl;
       reset_fraction *= reset_fraction_reduction_rate;
       model->reset_state(rand(), reset_fraction);
-      model->w.zeros();
+      model->w.setZero();
       model->w0 = 0;
       continue;
     }

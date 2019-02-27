@@ -116,7 +116,7 @@ class SupervisedLearningModel(Model):
                 dataset, missing_value_action, output_type)
 
     def evaluate(self, dataset, metric="auto",
-                 missing_value_action='auto', options={}, **kwargs):
+                 missing_value_action='auto', with_predictions=False, options={}, **kwargs):
         """
         Evaluate the model by making predictions of target values and comparing
         these to actual values.
@@ -155,9 +155,9 @@ class SupervisedLearningModel(Model):
 
         _raise_error_if_not_sframe(dataset, "dataset")
         results = self.__proxy__.evaluate(
-            dataset, missing_value_action, metric);
+            dataset, missing_value_action, metric, with_predictions=with_predictions);
         return results
-
+        
     def _training_stats(self):
         """
         Return a dictionary containing statistics collected during model

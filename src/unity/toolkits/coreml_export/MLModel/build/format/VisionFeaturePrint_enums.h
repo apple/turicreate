@@ -7,6 +7,7 @@ enum MLVisionFeaturePrintVisionFeaturePrintType: int {
     MLVisionFeaturePrintVisionFeaturePrintType_NOT_SET = 0,
 };
 
+__attribute__((__unused__))
 static const char * MLVisionFeaturePrintVisionFeaturePrintType_Name(MLVisionFeaturePrintVisionFeaturePrintType x) {
     switch (x) {
         case MLVisionFeaturePrintVisionFeaturePrintType_scene:

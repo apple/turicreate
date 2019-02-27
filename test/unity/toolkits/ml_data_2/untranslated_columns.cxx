@@ -10,7 +10,9 @@
 #include <algorithm>
 #include <util/cityhash_tc.hpp>
 
-#include <numerics/armadillo.hpp>
+// Eigen
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
 
 // SFrame and Flex type
 #include <unity/lib/flex_dict_view.hpp>
@@ -177,7 +179,7 @@ struct test_untranslated_coulmns  {
 
         std::vector<v2::ml_data_entry> x;
         v2::ml_data::DenseVector xd;
-        arma::mat xdr;
+        Eigen::MatrixXd xdr;
         v2::ml_data::SparseVector xs;
 
         std::vector<flexible_type> untranslated_row;
@@ -221,7 +223,7 @@ struct test_untranslated_coulmns  {
         xs.resize(sliced_data.metadata()->num_dimensions());
 
         xdr.resize(3, sliced_data.metadata()->num_dimensions());
-        xdr.zeros();
+        xdr.setZero();
 
         ASSERT_EQ(sliced_data.size(), row_end - row_start);
 
@@ -250,13 +252,13 @@ struct test_untranslated_coulmns  {
                   break;
                 }
                 case 1: {
-                  it.fill_row_expr(xd);
+                  it.fill_observation(xd);
                   row_x_buffer = data.translate_row_to_original(xd);
-                  // std::cerr << "xd = " << xd.t() << std::endl;
+                  // std::cerr << "xd = " << xd.transpose() << std::endl;
                   break;
                 }
                 case 2: {
-                  it.fill_row_expr(xs);
+                  it.fill_observation(xs);
                   row_x_buffer = data.translate_row_to_original(xs);
                   break;
                 }

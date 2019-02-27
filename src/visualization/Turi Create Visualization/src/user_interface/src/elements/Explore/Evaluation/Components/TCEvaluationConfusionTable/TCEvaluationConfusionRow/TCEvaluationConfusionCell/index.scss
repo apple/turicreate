@@ -1,0 +1,19 @@
+.TCEvaluationConfusionCell{
+	flex: 1;
+}
+
+.TCEvaluationConfusionCellText{
+	font-family: Helvetica;
+	font-size: 14px;
+	color: #484856;
+	flex: 0.7;
+}
+
+.TCEvaluationConfusionCellImage{
+	line-height: 42px;
+	height: 42px;
+	flex: 2;
+	text-align: left;
+	display: flex;
+	overflow: scroll;
+}

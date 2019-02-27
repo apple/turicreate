@@ -1,0 +1,1 @@
+-- genexlib: \$<1:.*Tests/RunCMake/TargetSources/RelativePathInSubdirGenEx/subdir_empty_1.cpp>;\$<1:.*Tests/RunCMake/TargetSources/RelativePathInSubdirGenEx/../empty_1.cpp>;\$<1:empty_2.cpp>

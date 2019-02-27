@@ -1,0 +1,7 @@
+I used these commands to generate the right inputs:
+
+# Regenerate the lexer
+flex -R  -o cmCommandArgumentLexer.cxx --header-file=cmCommandArgumentLexer.h cmCommandArgumentLexer.in.l
+
+yacc -P -p cmCommandArgument_yy -o cmCommandArgumentParser.cxx -d  cmCommandArgumentParser.y
+mv y.tab.h cmCommandArgumentParserTokens.h

@@ -1,9 +1,9 @@
 project(perf)
 
-make_library(perf
+make_library(perf OBJECT
   SOURCES
-  tracepoint.cpp
+    tracepoint.cpp
   REQUIRES
-  logger 
-    EXTERNAL_VISIBILITY
+    logger
+  EXTERNAL_VISIBILITY
 )

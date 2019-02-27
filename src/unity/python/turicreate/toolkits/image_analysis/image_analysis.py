@@ -51,8 +51,8 @@ def load_images(url, format='auto', with_path=True, recursive=True, ignore_failu
     --------
 
     >>> url ='https://static.turi.com/datasets/images/nested'
-    >>> image_sarray = turicreate.image_analysis.load_images(url, "auto", with_path=False,
-    ...                                                    recursive=True)
+    >>> image_sframe = turicreate.image_analysis.load_images(url, "auto", with_path=False,
+    ...                                                       recursive=True)
     """
     from ... import extensions as _extensions
     from ...util import _make_internal_url

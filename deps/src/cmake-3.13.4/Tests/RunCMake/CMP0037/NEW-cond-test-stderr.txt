@@ -1,0 +1,4 @@
+^CMake Error at NEW-cond-test.cmake:3 \(add_custom_target\):
+  The target name "test" is reserved when CTest testing is enabled.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

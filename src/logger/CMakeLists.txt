@@ -6,7 +6,7 @@ project(Turi)
 #/*                                                                        */
 #/**************************************************************************/
 
-make_library(logger
+make_library(logger OBJECT
   SOURCES
     error.cpp
     logger.cpp
@@ -17,5 +17,7 @@ make_library(logger
     boost
     timer
     parallel
-    EXTERNAL_VISIBILITY
-  )
+    stack_trace
+    cppipc
+  EXTERNAL_VISIBILITY
+)

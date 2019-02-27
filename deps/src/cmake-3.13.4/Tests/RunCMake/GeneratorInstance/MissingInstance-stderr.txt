@@ -1,0 +1,8 @@
+CMake Error at CMakeLists.txt:[0-9]+ \(project\):
+  Generator
+
+    .*
+
+  could not find specified instance of .*:
+
+    .*/Tests/RunCMake/GeneratorInstance/instance_does_not_exist$

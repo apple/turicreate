@@ -4,62 +4,53 @@ project(TuriCreate)
 # references everything correctly.
 set(__CAPI_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "")
 
-set(_turi_capi_source_files
-  "${__CAPI_SOURCE_DIR}/impl/capi_error_handling.cpp"
-  "${__CAPI_SOURCE_DIR}/impl/capi_flexible_type.cpp"
-  "${__CAPI_SOURCE_DIR}/impl/capi_datetime.cpp"
-  "${__CAPI_SOURCE_DIR}/impl/capi_flex_dict.cpp"
-  "${__CAPI_SOURCE_DIR}/impl/capi_flex_list.cpp"
-  "${__CAPI_SOURCE_DIR}/impl/capi_flex_image.cpp"
-  "${__CAPI_SOURCE_DIR}/impl/capi_ndarray.cpp"
-  "${__CAPI_SOURCE_DIR}/impl/capi_functions.cpp"
-  "${__CAPI_SOURCE_DIR}/impl/capi_sarray.cpp"
-  "${__CAPI_SOURCE_DIR}/impl/capi_parameters.cpp"
-  "${__CAPI_SOURCE_DIR}/impl/capi_sframe.cpp"
-  "${__CAPI_SOURCE_DIR}/impl/capi_models.cpp"
-  "${__CAPI_SOURCE_DIR}/impl/capi_functions.cpp"
-  "${__CAPI_SOURCE_DIR}/impl/capi_initialization.cpp"
-  "${__CAPI_SOURCE_DIR}/impl/capi_variant.cpp"
-  "${__CAPI_SOURCE_DIR}/impl/capi_operators.cpp"
-  "${__CAPI_SOURCE_DIR}/impl/capi_flex_enum_list.cpp"
-  "${__CAPI_SOURCE_DIR}/impl/capi_wrapper_structs.cpp"
-  "${__CAPI_SOURCE_DIR}/impl/capi_memory_management.cpp"
-  "${__CAPI_SOURCE_DIR}/impl/capi_visualization.cpp"
+set(_capi_requires
+  eigen
+  unity
+  unity_core
 )
 
-# This needs to be an object type library to avoid multiple compilations.
-add_library(_capi_objects OBJECT
-  ${_turi_capi_source_files}
-)
+if(APPLE AND NOT TC_BUILD_IOS)
+   set(_capi_requires ${_capi_requires} vega_renderer)
+ endif()
 
-set(_capi_requires unity unity_core numerics)
-add_dependencies(_capi_objects ${_capi_requires})
-
-make_library(capi 
+make_library(capi OBJECT
   SOURCES
-    "$<TARGET_OBJECTS:_capi_objects>"
+    "impl/capi_error_handling.cpp"
+    "impl/capi_flexible_type.cpp"
+    "impl/capi_datetime.cpp"
+    "impl/capi_flex_dict.cpp"
+    "impl/capi_flex_list.cpp"
+    "impl/capi_flex_image.cpp"
+    "impl/capi_ndarray.cpp"
+    "impl/capi_functions.cpp"
+    "impl/capi_sarray.cpp"
+    "impl/capi_parameters.cpp"
+    "impl/capi_sframe.cpp"
+    "impl/capi_models.cpp"
+    "impl/capi_functions.cpp"
+    "impl/capi_initialization.cpp"
+    "impl/capi_variant.cpp"
+    "impl/capi_operators.cpp"
+    "impl/capi_flex_enum_list.cpp"
+    "impl/capi_wrapper_structs.cpp"
+    "impl/capi_memory_management.cpp"
+    "impl/capi_visualization.cpp"
   REQUIRES
-  ${_capi_requires})
-    
-# Create a static version of the library that also bundles in the server initializer
-make_library(TuriCreate_static
-  SOURCES
-    default_server_initializer.cpp
-  REQUIRES
-    capi
+    ${_capi_requires}
 )
 
 # A macro that allows building a custom C-API library.
-# 
-#  The main variable here is the initializer source file and whether or not to 
-#  build it as a framework. 
 #
-#  To build it with a custom server initialization function, which allows for 
-#  specifying which models are availalable for calling through the C-API, call 
+#  The main variable here is the initializer source file and whether or not to
+#  build it as a framework.
+#
+#  To build it with a custom server initialization function, which allows for
+#  specifying which models are availalable for calling through the C-API, call
 #
 #  make_capi_library(MyTuriExecutor INITIALIZER_SOURCE_FILE my_turi_model_init.cpp REQUIRES unity)
 #
-#  See default_server_initializer.cpp as a template for this. 
+#  See default_server_initializer.cpp as a template for this.
 #
 macro(make_capi_library NAME)
 
@@ -83,10 +74,11 @@ macro(make_capi_library NAME)
     make_library(${NAME}
       SOURCES
         ${__capi_INITIALIZER_SOURCE_FILE}
-        $<TARGET_OBJECTS:_capi_objects>
+        ${_TC_COMMON_OBJECTS}
        REQUIRES
-       ${EXTRA_REQUIRES}
-       ${__capi_REQUIRES}
+        ${EXTRA_REQUIRES}
+        ${__capi_REQUIRES}
+        ${_TC_COMMON_REQUIREMENTS}
       SHARED_ALL_DEFINED
       SHARED
       EXPORT_LINUX_MAP_FILE "${__CAPI_SOURCE_DIR}/framework/tc_capi_exports_linux.ver"
@@ -123,13 +115,13 @@ macro(make_capi_library NAME)
   else()
     #build out as a regular library
         make_library(${NAME}
-      SOURCES 
+      SOURCES
             ${__capi_INITIALIZER_SOURCE_FILE}
-            $<TARGET_OBJECTS:_capi_objects>
+            ${_TC_COMMON_OBJECTS}
        REQUIRES
             ${EXTRA_REQUIRES}
             ${__capi_REQUIRES}
-            ${_capi_requires}
+            ${_TC_COMMON_REQUIREMENTS}
       SHARED_ALL_DEFINED
       SHARED
       EXPORT_LINUX_MAP_FILE "${__CAPI_SOURCE_DIR}/framework/tc_capi_exports_linux.ver"

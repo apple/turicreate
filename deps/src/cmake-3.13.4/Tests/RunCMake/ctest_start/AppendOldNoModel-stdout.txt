@@ -1,0 +1,6 @@
+Run dashboard with to-be-determined model
+   Source directory: .*/Tests/RunCMake/ctest_start/AppendOldNoModel
+   Build directory: .*/Tests/RunCMake/ctest_start/AppendOldNoModel-build
+   Reading ctest configuration file: .*/Tests/RunCMake/ctest_start/AppendOldNoModel/CTestConfig.cmake
+   Site: test-site
+   Build name: test-build-name

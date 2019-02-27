@@ -1,0 +1,32 @@
+.TCEvaluationMetricsTitle{
+	font-family: Helvetica;
+	font-size: 15px;
+	color: #6D727C;
+	line-height: 35px;
+}
+
+.TCEvaluationMetricsInfoIcon{
+	padding-left: 5px;
+}
+
+.TCEvaluationMetricsTitleContainer{
+	display: flex;
+	cursor: pointer;
+	height: min-content;
+}
+
+.TCEvaluationMetricsValueContainer{
+	font-family: Helvetica;
+	font-size: 20px;
+	color: #23232B;
+	line-height: 30px;
+}
+
+.TCEvaluationMetricsTooltipContainer{
+	position: relative;
+	opacity: 0.0;
+}
+
+.TCEvaluationMetricsTitleContainer:hover .TCEvaluationMetricsTooltipContainer {
+	opacity: 1.0;
+}
