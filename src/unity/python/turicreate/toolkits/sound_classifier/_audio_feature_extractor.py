@@ -3,7 +3,7 @@ from mxnet.gluon import nn, utils
 
 from .._internal_utils import _mac_ver
 from .. import _mxnet_utils
-from .._pre_trained_models import _get_model_cache_dir
+from .._pre_trained_models import VGGish
 
 
 VGGish_instance = None
@@ -76,11 +76,12 @@ class VGGishFeatureExtractor(object):
         return net
 
     def __init__(self):
-        # TODO: Download the model if it is not in the cache.
+        vggish_model_file = VGGish()
+
         if _mac_ver() < (10, 13):
             # Use MXNet
+            model_path = vggish_model_file.get_model_path(format='mxnet')
             self.vggish_model = VGGishFeatureExtractor._build_net()
-            model_path = _get_model_cache_dir() + '/LNVGGEmbeddingExtractor8'
             net_params = self.vggish_model.collect_params()
             self.ctx = _mxnet_utils.get_mxnet_context()
             net_params.initialize(mx.init.Xavier(), ctx=self.ctx)    # TODO: verify on Linux that we don't need this line.
@@ -88,7 +89,7 @@ class VGGishFeatureExtractor(object):
         else:
             # Use Core ML
             from coremltools.models import MLModel
-            model_path = _get_model_cache_dir() + '/LNVGGEmbeddingExtractor8.mlmodel'
+            model_path = vggish_model_file.get_model_path(format='coreml')
             self.vggish_model = MLModel(model_path)
 
     def extract_features(self, preprocessed_data):
