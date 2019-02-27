@@ -79,6 +79,7 @@ import turicreate.toolkits.object_detector as object_detector
 import turicreate.toolkits.style_transfer as style_transfer
 import turicreate.toolkits.sound_classifier.sound_classifier as sound_classifier
 import turicreate.toolkits.activity_classifier as activity_classifier
+import turicreate.toolkits.drawing_recognition as drawing_recognition
 
 from turicreate.toolkits.image_analysis.image_analysis import load_images
 from turicreate.toolkits.audio_analysis.audio_analysis import load_audio

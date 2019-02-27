@@ -1138,6 +1138,7 @@ set(_TC_COMMON_OBJECTS
   "$<TARGET_OBJECTS:table_printer>"
   "$<TARGET_OBJECTS:timer>"
   "$<TARGET_OBJECTS:unity>"
+  "$<TARGET_OBJECTS:unity_drawing_recognition>"
   "$<TARGET_OBJECTS:unity_activity_classification>"
   "$<TARGET_OBJECTS:unity_core>"
   "$<TARGET_OBJECTS:unity_coreml_model_export>"
