@@ -4,10 +4,12 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <algorithm>
+#include <iterator>
 #include <limits.h>
 #include <math.h>
 #include <logger/assertions.hpp>
 #include <image/image_type.hpp>
+#include <util/sys_util.hpp>
 #ifdef __APPLE__
 #include <CoreGraphics/CoreGraphics.h>
 #endif // __APPLE__
@@ -85,37 +87,31 @@ namespace {
 
 } // namespace
 
-template<typename T>
-std::vector<T> slice(std::vector<T> const &v, int m, int n) {
-    auto first = v.cbegin() + m;
-    auto last = v.cbegin() + n;
-    std::vector<T> vec(first, last);
-    return vec;
-}
-
 /* Ramer Douglas Peucker Algorithm:
  * https://en.wikipedia.org/wiki/Ramer–Douglas–Peucker_algorithm
  */
-flex_list ramer_douglas_peucker(flex_list stroke, float epsilon) {
+flex_list ramer_douglas_peucker(flex_list &stroke, 
+    flex_list::iterator begin, 
+    flex_list::iterator end, 
+    float epsilon) {
     float dmax = 0;
-    int index = 0;
     flex_list compressed_stroke;
-    int num_points = stroke.size();
-    const flex_dict &first_point = stroke[0].get<flex_dict>();
-    const flex_dict &last_point = stroke[num_points-1].get<flex_dict>();
+    const flex_dict &first_point = (*begin).get<flex_dict>();
+    const flex_dict &last_point = (*(end-1)).get<flex_dict>();
     Line L(first_point, last_point);
-    for (int i = 0; i < num_points; i++) {
-        float d = L.distance_to_point(stroke[i].get<flex_dict>());
+    flex_list::iterator index_iterator;
+    for (auto it = begin; it != end; it++) {
+        float d = L.distance_to_point((*it).get<flex_dict>());
         if (d > dmax) {
-            index = i;
+            index_iterator = it;
             dmax = d;
         }
     }
     if (dmax > epsilon) {
-        flex_list first_slice = slice(stroke, 0, index);
-        flex_list last_slice = slice(stroke, index, num_points);
-        compressed_stroke = ramer_douglas_peucker(first_slice, epsilon);
-        flex_list rec_results_2 = ramer_douglas_peucker(last_slice, epsilon);
+        compressed_stroke = ramer_douglas_peucker(stroke, 
+            begin, index_iterator, epsilon);
+        flex_list rec_results_2 = ramer_douglas_peucker(stroke, 
+            index_iterator, end, epsilon);
         compressed_stroke.insert(compressed_stroke.end(), 
             rec_results_2.begin(), rec_results_2.end());
     } else {
@@ -173,7 +169,12 @@ flex_list simplify_drawing(flex_list raw_drawing) {
             new_stroke.push_back(new_point);
         }
         // Apply RDP Line Algorithm
-        simplified_drawing.push_back(ramer_douglas_peucker(new_stroke, 2.0));
+        flex_list answer = ramer_douglas_peucker(
+            new_stroke, 
+            new_stroke.begin(),
+            new_stroke.end(),
+            2.0);
+        simplified_drawing.push_back(answer);
     }
     return simplified_drawing;
 }
