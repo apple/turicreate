@@ -169,12 +169,11 @@ flex_list simplify_drawing(flex_list raw_drawing) {
             new_stroke.push_back(new_point);
         }
         // Apply RDP Line Algorithm
-        flex_list answer = ramer_douglas_peucker(
+        simplified_drawing.push_back(ramer_douglas_peucker(
             new_stroke, 
             new_stroke.begin(),
             new_stroke.end(),
-            2.0);
-        simplified_drawing.push_back(answer);
+            2.0));
     }
     return simplified_drawing;
 }
