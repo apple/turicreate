@@ -47,12 +47,12 @@ EXPORT int TCMPSDeleteFloatArrayMapIterator(
 EXPORT int TCMPSCreateCNNModule(MPSHandle *handle);
 EXPORT int TCMPSDeleteCNNModule(MPSHandle handle);
 
-EXPORT int TCMPSInit(MPSHandle handle, int network_id, int n, int c_in, int h_in, int w_in,
-                int c_out, int h_out, int w_out, int updater_id,
-                char **config_names, void **config_arrays,
-                int64_t *config_sizes, int config_len);
+EXPORT int TCMPSInit(MPSHandle handle, int network_id, int n, int c_in,
+                     int h_in, int w_in, int c_out, int h_out, int w_out,
+                     int updater_id, char **config_names, void **config_arrays,
+                     int config_len);
 
-EXPORT int TCMPSLoad(MPSHandle handle, char **names, void **arrs, int64_t *sz, int len);
+EXPORT int TCMPSLoad(MPSHandle handle, char **names, void **arrs, int len);
 
 EXPORT int TCMPSExport(MPSHandle handle,
                        TCMPSFloatArrayMapIteratorRef* float_array_map_out);
