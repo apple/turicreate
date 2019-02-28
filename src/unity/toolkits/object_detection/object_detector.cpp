@@ -319,23 +319,23 @@ variant_map_type object_detector::evaluate(
     gl_sframe data, std::string metric,
     std::map<std::string, flexible_type> opts) {
 
-  // TODO: Support user-configurable metric and options.
   std::vector<std::string> metrics;
   static constexpr char AP[] = "average_precision";
   static constexpr char MAP[] = "mean_average_precision";
   static constexpr char AP50[] = "average_precision_50";
   static constexpr char MAP50[] = "mean_average_precision_50";
   std::vector<std::string> all_metrics = {AP,MAP,AP50,MAP50};
-  if (std::find(all_metrics.begin(), all_metrics.end(), metric) != all_metrics.end() ){
+  if (std::find(all_metrics.begin(), all_metrics.end(), metric) != all_metrics.end()) {
     metrics = {metric};
-    }
-  else if (metric=="auto"){
-    metrics={AP50,MAP50};}
-  else if(metric=="all"){
-    metrics={AP,AP50,MAP,MAP50};
-    }
-  else{
-    log_and_throw("Metric "+ metric + " not supported");
+  }
+  else if (metric == "auto") {
+    metrics = {AP50,MAP50};
+  }
+  else if (metric == "all") {
+    metrics = {AP,AP50,MAP,MAP50};
+  }
+  else {
+    log_and_throw("Metric " + metric + " not supported");
   }
   
   
@@ -474,8 +474,6 @@ variant_map_type object_detector::evaluate(
   }
 
   // Store the requested summary statistics.
-  // TODO: Respect the `metric` argument instead of supplying all metrics. Even
-  // though almost all the cost of computing these metrics is shared?
   auto create_dict = [&class_labels](const std::vector<float>& v) {
     variant_map_type class_map;
     for (size_t i = 0; i < class_labels.size(); ++i) {
@@ -488,17 +486,17 @@ variant_map_type object_detector::evaluate(
   };
   variant_map_type result_map;
   
-  if (std::find(metrics.begin(), metrics.end(), AP) != metrics.end() ){
-    result_map["average_precision"] = create_dict(average_precision);
+  if (std::find(metrics.begin(), metrics.end(), AP) != metrics.end()) {
+    result_map[AP] = create_dict(average_precision);
   }
-  if (std::find(metrics.begin(), metrics.end(), AP50) != metrics.end() ){
-    result_map["average_precision_50"] = create_dict(average_precision_50);
+  if (std::find(metrics.begin(), metrics.end(), AP50) != metrics.end()) {
+    result_map[AP50] = create_dict(average_precision_50);
   }
-  if (std::find(metrics.begin(), metrics.end(), MAP50) != metrics.end()){
-    result_map["mean_average_precision_50"] = compute_mean(average_precision_50);
+  if (std::find(metrics.begin(), metrics.end(), MAP50) != metrics.end()) {
+    result_map[MAP50] = compute_mean(average_precision_50);
   }
-  if (std::find(metrics.begin(), metrics.end(), MAP) != metrics.end()){
-    result_map["mean_average_precision"] = compute_mean(average_precision);
+  if (std::find(metrics.begin(), metrics.end(), MAP) != metrics.end()) {
+    result_map[MAP] = compute_mean(average_precision);
   }
   
   return result_map;
