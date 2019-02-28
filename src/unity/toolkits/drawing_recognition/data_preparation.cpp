@@ -21,8 +21,8 @@ namespace drawing_recognition {
 
 static constexpr int INTERMEDIATE_BITMAP_WIDTH = 256;
 static constexpr int INTERMEDIATE_BITMAP_HEIGHT = 256;
-static constexpr int FINAL_BITMAP_WIDTH = 28;
-static constexpr int FINAL_BITMAP_HEIGHT = 28;
+static constexpr size_t FINAL_BITMAP_WIDTH = 28;
+static constexpr size_t FINAL_BITMAP_HEIGHT = 28;
 static constexpr float STROKE_WIDTH = 20.0;
 
 namespace {
@@ -32,15 +32,43 @@ namespace {
         float x;
         float y;
     public:
-        Point(const flex_dict &point_dict) {
+        Point(const flex_dict &point_dict, 
+            int drawing_number = 0, 
+            int stroke_index = 0, 
+            int point_in_stroke_index = 0) {
+            bool found_x = false;
+            bool found_y = false;
             for (auto key_value_pair: point_dict) {
                 const flex_string &key = key_value_pair.first.get<flex_string>();
                 const flex_float &value = key_value_pair.second.get<flex_float>();
                 if (key == "x") {
+                    found_x = true;
                     x = value;
-                } else {
+                } else if (key == "y") {
+                    found_y = true;
                     y = value;
+                } else {
+                    // some other unnecessary keys are also present, 
+                    // but we only need x and y so we will ignore the 
+                    // other keys
                 }
+            }
+
+            auto error_message = [drawing_number, \
+                point_in_stroke_index, \
+                stroke_index](std::string x_or_y) {
+                return ("In the drawing in row " + std::to_string(drawing_number) + 
+                    " the point at index " + std::to_string(point_in_stroke_index)+ 
+                    " in the " + std::to_string(stroke_index) + 
+                    "th stroke does not contain a " + x_or_y + 
+                    " coordinate. Please make sure the dictionary " + 
+                    " representing a point has both \"x\" and \"y\" keys.");
+            };
+
+            if (!found_x) {
+                log_and_throw(error_message("x"));
+            } else if (!found_y) {
+                log_and_throw(error_message("y"));
             }
         }
 
@@ -121,7 +149,7 @@ flex_list ramer_douglas_peucker(flex_list &stroke,
     return compressed_stroke;
 }
 
-flex_list simplify_drawing(flex_list raw_drawing) {
+flex_list simplify_drawing(flex_list raw_drawing, int row_number) {
     size_t num_strokes = raw_drawing.size();
     size_t min_x = std::numeric_limits<size_t>::max();
     size_t max_x = 0;
@@ -133,7 +161,7 @@ flex_list simplify_drawing(flex_list raw_drawing) {
         const flex_list &stroke = raw_drawing[i].get<flex_list>();
         for (size_t j = 0; j < stroke.size(); j++) {
             const flex_dict &point = stroke[j].get<flex_dict>();
-            Point P(point);
+            Point P(point, row_number, i, j);
             float x = P.get_x();
             float y = P.get_y();
             min_x = std::min((size_t)x, min_x);
@@ -362,8 +390,9 @@ flex_image rasterize(flex_list simplified_drawing) {
 }
 
 flex_image convert_stroke_based_drawing_to_bitmap(
-    flex_list stroke_based_drawing) {
-    flex_list normalized_drawing = simplify_drawing(stroke_based_drawing);
+    flex_list stroke_based_drawing, int row_number) {
+    flex_list normalized_drawing = simplify_drawing(
+        stroke_based_drawing, row_number);
     flex_image bitmap = rasterize(normalized_drawing);
     return bitmap;
 }
@@ -372,10 +401,15 @@ gl_sframe _drawing_recognition_prepare_data(const gl_sframe &data,
                                             const std::string &feature) {
     DASSERT_TRUE(data.contains_column(feature));
     
-    gl_sarray bitmaps = data[feature].apply([](const flexible_type &strokes) {
+    gl_sframe selected_sframe = data.select_columns({feature});
+    selected_sframe = selected_sframe.add_row_number();
+    gl_sarray bitmaps = selected_sframe.apply([](
+        const sframe_rows::row& sframe_row) {
+        const flexible_type &strokes = sframe_row[0];
+        int row_number = sframe_row[1];
         flex_list current_stroke_based_drawing = strokes.to<flex_list>();
         flex_image current_bitmap = convert_stroke_based_drawing_to_bitmap(
-            current_stroke_based_drawing);
+            current_stroke_based_drawing, row_number);
         return current_bitmap;
     }, flex_type_enum::IMAGE);
 
