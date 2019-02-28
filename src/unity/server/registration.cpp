@@ -19,6 +19,7 @@
 
 #include <unity/toolkits/activity_classification/class_registrations.hpp>
 #include <unity/toolkits/object_detection/class_registrations.hpp>
+#include <unity/toolkits/drawing_recognition/class_registrations.hpp>
 
 #include <unity/toolkits/evaluation/metrics.hpp>
 #include <unity/toolkits/evaluation/unity_evaluation.hpp>
@@ -80,6 +81,7 @@ void register_functions(toolkit_function_registry& registry) {
   registry.register_toolkit_function(turi::ml_model_sdk::get_toolkit_function_registration());
   registry.register_toolkit_function(turi::pattern_mining::get_toolkit_function_registration());
   registry.register_toolkit_function(turi::activity_classification::get_toolkit_function_registration());
+  registry.register_toolkit_function(turi::drawing_recognition::get_toolkit_function_registration());
   registry.register_toolkit_function(turi::util::get_toolkit_function_registration());
 }
 

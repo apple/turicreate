@@ -65,10 +65,10 @@ def convert_reshape(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         An mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -81,6 +81,9 @@ def convert_reshape(net, node, module, builder):
     name = node['name']
     param = _get_attr(node)
     target_shape = literal_eval(param['shape'])
+    if target_shape == (0, -1):
+        convert_flatten(net, node, module, builder)
+        return
 
     if any(item <= 0 for item in target_shape):
         raise NotImplementedError('Special dimensional values less than or equal to 0 are not supported yet.'
@@ -99,10 +102,10 @@ def convert_transpose(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -124,10 +127,10 @@ def convert_flatten(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -141,40 +144,15 @@ def convert_flatten(net, node, module, builder):
     mode = 0 # CHANNEL_FIRST
     builder.add_flatten(name, mode, input_name, output_name)
 
-
-def convert_softmax(net, node, module, builder):
-    """Convert a softmax layer from mxnet to coreml.
-
-    Parameters
-    ----------
-    network: net
-        A mxnet network object.
-
-    layer: node
-        Node to convert.
-
-    module: module
-        An module for MXNet
-
-    builder: NeuralNetworkBuilder
-        A neural network builder object.
-    """
-    input_name, output_name = _get_input_output_name(net, node)
-    name = node['name']
-    builder.add_softmax(name=name,
-                        input_name=input_name,
-                        output_name=output_name)
-
-
 def convert_activation(net, node, module, builder):
     """Convert an activation layer from mxnet to coreml.
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -219,10 +197,10 @@ def make_convert_elementwise(mode):
 
         Parameters
         ----------
-        network: net
+        net: network
             A mxnet network object.
 
-        layer: node
+        node: layer
             Node to convert.
 
         module: module
@@ -248,10 +226,10 @@ def convert_elementwise_mul_scalar(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -279,10 +257,10 @@ def convert_elementwise_div_scalar(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -310,10 +288,10 @@ def convert_dense(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -352,10 +330,10 @@ def convert_convolution(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -446,10 +424,10 @@ def convert_pooling(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -525,10 +503,10 @@ def convert_batchnorm(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -575,10 +553,10 @@ def convert_concat(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -600,10 +578,10 @@ def convert_deconvolution(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -686,10 +664,10 @@ def convert_upsample(net, node, module, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     module: module
@@ -746,11 +724,27 @@ def convert_slice_axis(net, node, module, builder):
 
 
 def convert_softmax(net, node, module, builder):
+    """Convert a softmax layer from mxnet to coreml.
+
+    Parameters
+    ----------
+    net: network
+        A mxnet network object.
+
+    node: layer
+        Node to convert.
+
+    module: module
+        An module for MXNet
+
+    builder: NeuralNetworkBuilder
+        A neural network builder object.
+    """
     input_name, output_name = _get_input_output_name(net, node)
     name = node['name']
     param = _get_attr(node)
 
-    if 'axis' in param:
+    if param is not None and 'axis' in param:
         axis = literal_eval(param['axis'])
         assert axis == 1, "Only softmax with axis 1 is supported"
 
@@ -797,10 +791,10 @@ def convert_embedding(net, node, model, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     model: model
@@ -843,10 +837,10 @@ def convert_elementwise_add(net, node, model, builder):
 
         Parameters
         ----------
-        network: net
+        net: network
         A mxnet network object.
 
-        layer: node
+        node: layer
         Node to convert.
 
         model: model
@@ -865,10 +859,10 @@ def convert_scalar_add(net, node, model, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     model: model
@@ -892,10 +886,10 @@ def convert_scalar_multiply(net, node, model, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     model: model
@@ -917,10 +911,10 @@ def convert_scalar_divide(net, node, model, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     model: model
@@ -942,10 +936,10 @@ def convert_instancenorm(net, node, model, builder):
 
     Parameters
     ----------
-    network: net
+    net: network
         A mxnet network object.
 
-    layer: node
+    node: layer
         Node to convert.
 
     model: model
