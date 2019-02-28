@@ -51,7 +51,7 @@ WORKDIR /src
 RUN tar xvf openssl-1.1.0j.tar.gz
 WORKDIR /src/openssl-1.1.0j
 RUN ./config --prefix=/usr/local
-RUN make -j4
+RUN make -j4 --quiet
 RUN make install
 RUN ldconfig
 
@@ -61,7 +61,7 @@ WORKDIR /src
 RUN tar xvf Python-2.7.15.tgz
 WORKDIR /src/Python-2.7.15
 RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enable-loadable-sqlite-extensions
-RUN make -j4
+RUN make -j4 --quiet
 RUN make install
 RUN ldconfig
 
@@ -71,7 +71,7 @@ WORKDIR /src
 RUN tar xvf Python-3.5.6.tgz
 WORKDIR /src/Python-3.5.6
 RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enable-loadable-sqlite-extensions
-RUN make -j4
+RUN make -j4 --quiet
 RUN make install
 RUN ldconfig
 
@@ -81,7 +81,7 @@ WORKDIR /src
 RUN tar xvf Python-3.6.8.tgz
 WORKDIR /src/Python-3.6.8
 RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enable-loadable-sqlite-extensions
-RUN make -j4
+RUN make -j4 --quiet
 RUN make install
 RUN ldconfig
 
