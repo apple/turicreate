@@ -58,6 +58,18 @@ public:
       const float_array_map& config, const float_array_map& weights) = 0;
 
   /**
+   * Creates an activity classification network.
+   *
+   * \todo Define an activity_classifier_config struct to encapsulate these
+   *       parameters in a more self-documenting and typesafe way.
+   * \todo Initialize the network directly from a model_spec, in lieu of passing
+   *       weights as a float_array_map.
+   */
+  virtual std::unique_ptr<model_backend> create_activity_classifier(
+      int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
+      const float_array_map& config, const float_array_map& weights) = 0;
+
+  /**
    * Creates an image augmenter.
    */
   virtual std::unique_ptr<image_augmenter> create_image_augmenter(

@@ -129,7 +129,8 @@ BOOST_AUTO_TEST_CASE(test_add_convolution) {
       w[i] = static_cast<float>(i);
     }
   };
-  nn_spec.add_convolution("test_name", "test_input", 16, 8, 5, weight_init_fn);
+  nn_spec.add_convolution("test_name", "test_input", 16, 8, 5, 5, 1, 1,
+                          model_spec::padding_type::SAME, weight_init_fn);
 
   // Verify the resulting NeuralNetworkLayer value.
   TS_ASSERT_EQUALS(nn_spec.get_coreml_spec().layers_size(), 1);

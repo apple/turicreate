@@ -48,6 +48,7 @@ make_library(unity_neural_net OBJECT
     float_array.cpp
     image_augmentation.cpp
     model_spec.cpp
+    weight_init.cpp
   REQUIRES
     image_type
     logger
