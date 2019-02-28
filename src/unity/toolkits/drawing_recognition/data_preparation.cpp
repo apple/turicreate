@@ -23,9 +23,11 @@ namespace drawing_recognition {
 
 namespace {
 
-    struct Point {
+    class Point {
+    private:
         float x;
         float y;
+    public:
         Point(const flex_dict &point_dict) {
             for (auto key_value_pair: point_dict) {
                 const flex_string &key = key_value_pair.first.get<flex_string>();
@@ -37,41 +39,49 @@ namespace {
                 }
             }
         }
+
+        float get_x() {
+            return x;
+        }
+
+        float get_y() {
+            return y;
+        }
     };
 
-    struct Line {
+    class Line {
+    private:
         // ax + by + c = 0
         float a;
         float b;
         float c;
+    public:
+        Line(const flex_dict &p1, const flex_dict &p2) {
+            Point P1(p1);
+            Point P2(p2);
+            float start_x = P1.get_x();
+            float start_y = P1.get_y();
+            float end_x = P2.get_x();
+            float end_y = P2.get_y();
+            if (start_x == end_x) {
+                a = std::numeric_limits<float>::max();
+            } else {
+                a = ((float)(end_y - start_y))/((float)(end_x - start_x));
+            }
+            b = -1;
+            c = start_y - a * start_x;
+        }
+
+        float distance_to_point(const flex_dict &point) {
+            Point P(point);
+            float x = P.get_x();
+            float y = P.get_y();
+            float distance = (float)(fabs(a*x+b*y+c))/sqrt(a*a+b*b);
+            return distance;
+        }
     };
 
 } // namespace
-
-float line_to_point_distance(Line *L, const flex_dict &point) {
-    Point P(point);
-    int x = (int)(P.x);
-    int y = (int)(P.y);
-    float a = L->a; float b = L->b; float c = L->c;
-    float distance = (float)(fabs(a*x+b*y+c))/sqrt(a*a+b*b);
-    return (int)distance;
-}
-
-void initialize_line(Line *L, const flex_dict &p1, const flex_dict &p2) {
-    Point P1(p1);
-    Point P2(p2);
-    float start_x = P1.x;
-    float start_y = P1.y;
-    float end_x = P2.x;
-    float end_y = P2.y;
-    if (start_x == end_x) {
-        L->a = std::numeric_limits<float>::max();
-    } else {
-        L->a = ((float)(end_y - start_y))/((float)(end_x - start_x));
-    }
-    L->b = -1;
-    L->c = start_y - L->a * start_x;
-}
 
 template<typename T>
 std::vector<T> slice(std::vector<T> const &v, int m, int n) {
@@ -89,12 +99,11 @@ flex_list ramer_douglas_peucker(flex_list stroke, float epsilon) {
     int index = 0;
     flex_list compressed_stroke;
     int num_points = stroke.size();
-    Line L;
     const flex_dict &first_point = stroke[0].get<flex_dict>();
     const flex_dict &last_point = stroke[num_points-1].get<flex_dict>();
-    initialize_line(&L, first_point, last_point);
+    Line L(first_point, last_point);
     for (int i = 0; i < num_points; i++) {
-        float d = line_to_point_distance(&L, stroke[i].get<flex_dict>());
+        float d = L.distance_to_point(stroke[i].get<flex_dict>());
         if (d > dmax) {
             index = i;
             dmax = d;
@@ -127,8 +136,8 @@ flex_list simplify_drawing(flex_list raw_drawing) {
         for (size_t j = 0; j < stroke.size(); j++) {
             const flex_dict &point = stroke[j].get<flex_dict>();
             Point P(point);
-            float x = P.x;
-            float y = P.y;
+            float x = P.get_x();
+            float y = P.get_y();
             min_x = std::min((size_t)x, min_x);
             max_x = std::max((size_t)x, max_x);
             min_y = std::min((size_t)y, min_y);
@@ -148,13 +157,13 @@ flex_list simplify_drawing(flex_list raw_drawing) {
                 // vertical straight line
                 new_x = (float)min_x;
             } else {
-                new_x = ((P.x - min_x) * 255.0) / (max_x - min_x);
+                new_x = ((P.get_x() - min_x) * 255.0) / (max_x - min_x);
             }
             if (max_y == min_y) {
                 // horizontal straight line
                 new_y = (float)min_y;
             } else {
-                new_y = ((P.y - min_y) * 255.0) / (max_y - min_y);
+                new_y = ((P.get_y() - min_y) * 255.0) / (max_y - min_y);
             }
             flex_dict new_point;
             new_point.push_back(std::make_pair("x", new_x));
@@ -171,41 +180,39 @@ bool in_bounds(int x, int y, int dim) {
     return (x >= 0 && x < dim && y >= 0 && y < dim);
 }
 
+void paint_point(flex_nd_vec &bitmap, int x, int y, int pad) {
+    size_t dimension = bitmap.shape()[1];
+    for (int dx = -pad; dx < pad; dx++) {
+        for (int dy = -pad; dy < pad; dy++) {
+            if (in_bounds(x+dx, y+dy, dimension)) {
+                bitmap[(y+dy) * dimension + (x+dx)] = 1.0;
+            }
+        }
+    }
+}
+
 flex_nd_vec paint_stroke(
     flex_nd_vec bitmap, Point start, Point end, float stroke_width) {
-    if (start.x > end.x) {
+    if (start.get_x() > end.get_x()) {
         std::swap(start, end);
     }
-    float slope = (end.y - start.y)/(end.x - start.x);
-    int x1 = (int)(start.x);
-    int y1 = (int)(start.y);
-    int x2 = (int)(end.x);
-    int y2 = (int)(end.y);
+    float slope = (end.get_y() - start.get_y())/(end.get_x() - start.get_x());
+    int x1 = (int)(start.get_x());
+    int y1 = (int)(start.get_y());
+    int x2 = (int)(end.get_x());
+    int y2 = (int)(end.get_y());
     int pad = (int)(stroke_width/2);
-    size_t dimension = bitmap.shape()[1];
     if (x1 == x2) {
         // just paint the y axis
         int min_y = std::min(y1, y2);
         int max_y = std::max(y1, y2);
         for (int y = min_y; y < max_y; y++) {
-            for (int dx = -pad; dx < pad; dx++) {
-                for (int dy = -pad; dy < pad; dy++) {
-                    if (in_bounds(x1+dx, y+dy, dimension)) {
-                        bitmap[(y+dy)*dimension + (x1+dx)] = 1.0;
-                    }
-                }
-            }
+            paint_point(bitmap, x1, y, pad);
         }
     } else {
         for (int x = x1; x < x2; x++) {
             int y = (int)(slope * (x - x1) + y1);
-            for (int dx = -pad; dx < pad; dx++) {
-                for (int dy = -pad; dy < pad; dy++) {
-                    if (in_bounds(x+dx, y+dy, dimension)) {
-                        bitmap[(y+dy) * dimension + (x+dx)] = 1.0;
-                    }
-                }
-            }
+            paint_point(bitmap, x, y, pad);
         }
     }
     return bitmap;
@@ -223,16 +230,19 @@ flex_image blur_bitmap(flex_nd_vec bitmap, int ksize) {
                 || row >= dimension-pad 
                 || col < pad 
                 || col >= dimension-pad) {
-                blurred_bitmap[index] = (int)(255*bitmap[index]);
+                blurred_bitmap[index] = std::min(255.0, 255 * bitmap[index]);
                 continue;
             }
             double sum_for_blur = 0.0;
+            int num_values_in_sum = 0;
             for (int dr = -pad; dr <= pad; dr++) {
                 for (int dc = -pad; dc <= pad; dc++) {
                     sum_for_blur += bitmap[(row+dr) * dimension + (col+dc)];
+                    num_values_in_sum += 1;
                 }
             }
-            blurred_bitmap[index] = (int)(255*sum_for_blur/(ksize*ksize));
+            blurred_bitmap[index] = std::min(255.0, 
+                255 * sum_for_blur / num_values_in_sum);
         }
     }
     uint8_t image_data[dimension * dimension];
@@ -240,18 +250,22 @@ flex_image blur_bitmap(flex_nd_vec bitmap, int ksize) {
         image_data[idx] = ((uint8_t)(blurred_bitmap[idx]));
     }
     return flex_image((const char *)image_data,
-        dimension, dimension, 1, dimension*dimension, 1, 2);
+        dimension,                  // height
+        dimension,                  // width
+        1,                          // channels
+        dimension*dimension,        // image_data_size
+        IMAGE_TYPE_CURRENT_VERSION, // version
+        2);                         // format
+        // last argument is turi::Format::RAW_ARRAY, which has a value of 2
 }
 
-flex_image rasterize(flex_list simplified_drawing) {
-    flex_image final_bitmap; // 1 x 28 x 28
+flex_image rasterize_on_mac(flex_list simplified_drawing, 
+    size_t INTERMEDIATE_BITMAP_WIDTH, 
+    size_t INTERMEDIATE_BITMAP_HEIGHT, 
+    size_t FINAL_BITMAP_WIDTH, 
+    size_t FINAL_BITMAP_HEIGHT, 
+    size_t STROKE_WIDTH) {
     size_t num_strokes = simplified_drawing.size();
-    size_t INTERMEDIATE_BITMAP_WIDTH = 256;
-    size_t INTERMEDIATE_BITMAP_HEIGHT = 256;
-    size_t FINAL_BITMAP_WIDTH = 28;
-    size_t FINAL_BITMAP_HEIGHT = 28;
-    float STROKE_WIDTH = 20.0;
-#ifdef __APPLE__
     int MAC_OS_STRIDE = 64;
     CGColorSpaceRef grayscale = CGColorSpaceCreateDeviceGray();
     CGContextRef intermediate_bitmap_context = CGBitmapContextCreate(
@@ -269,12 +283,12 @@ flex_image rasterize(flex_list simplified_drawing) {
         // iOS/macOS checking here to figure out whether we need to 
         // subtract 256 or not........
         CGPathMoveToPoint(path, &transform, 
-            P.x, ((float)(INTERMEDIATE_BITMAP_WIDTH))-P.y);
+            P.get_x(), ((float)(INTERMEDIATE_BITMAP_WIDTH))-P.get_y());
         for (size_t j = 1; j < num_points_in_stroke; j++) {
             const flex_dict &point_dict = stroke[j].get<flex_dict>();
             Point P(point_dict);
             CGPathAddLineToPoint(path, &transform, 
-                P.x, ((float)(INTERMEDIATE_BITMAP_WIDTH))-P.y);
+                P.get_x(), ((float)(INTERMEDIATE_BITMAP_WIDTH))-P.get_y());
         }
     }
     CGContextSetLineWidth(intermediate_bitmap_context, STROKE_WIDTH);
@@ -299,7 +313,7 @@ flex_image rasterize(flex_list simplified_drawing) {
     for (size_t row = 0; row < FINAL_BITMAP_WIDTH; row++) {
         for (size_t col = 0; col < FINAL_BITMAP_HEIGHT; col++) {
             // check platform here
-            real_data[row*FINAL_BITMAP_WIDTH+col] = (uint8_t)(
+            real_data[row * FINAL_BITMAP_WIDTH + col] = (uint8_t)(
                 data_ptr[row * MAC_OS_STRIDE + col]);
         }
     }
@@ -309,9 +323,31 @@ flex_image rasterize(flex_list simplified_drawing) {
     CGContextRelease(final_bitmap_context);
     CGContextRelease(intermediate_bitmap_context);
     CGColorSpaceRelease(grayscale);
-    return flex_image((const char *)real_data, 
-        FINAL_BITMAP_WIDTH, FINAL_BITMAP_HEIGHT, 1, 
-        FINAL_BITMAP_WIDTH * FINAL_BITMAP_HEIGHT, 1, 2);
+    return flex_image((const char *)real_data,      // image_data
+        FINAL_BITMAP_HEIGHT,                        // height
+        FINAL_BITMAP_WIDTH,                         // width
+        1,                                          // channels
+        FINAL_BITMAP_WIDTH * FINAL_BITMAP_HEIGHT,   // image_data_size
+        IMAGE_TYPE_CURRENT_VERSION,                 // version
+        2);                                         // format
+        // last argument is turi::Format::RAW_ARRAY, which has a value of 2
+}
+
+flex_image rasterize(flex_list simplified_drawing) {
+    flex_image final_bitmap; // 1 x 28 x 28
+    size_t num_strokes = simplified_drawing.size();
+    size_t INTERMEDIATE_BITMAP_WIDTH = 256;
+    size_t INTERMEDIATE_BITMAP_HEIGHT = 256;
+    size_t FINAL_BITMAP_WIDTH = 28;
+    size_t FINAL_BITMAP_HEIGHT = 28;
+    float STROKE_WIDTH = 20.0;
+#ifdef __APPLE__
+    return rasterize_on_mac(simplified_drawing, 
+        INTERMEDIATE_BITMAP_WIDTH, 
+        INTERMEDIATE_BITMAP_HEIGHT, 
+        FINAL_BITMAP_WIDTH, 
+        FINAL_BITMAP_HEIGHT, 
+        STROKE_WIDTH);
 #endif // __APPLE__
     std::vector<size_t> intermediate_bitmap_shape {1, (size_t)INTERMEDIATE_BITMAP_WIDTH, (size_t)INTERMEDIATE_BITMAP_HEIGHT};
     flex_nd_vec intermediate_bitmap(intermediate_bitmap_shape, 0.0);
