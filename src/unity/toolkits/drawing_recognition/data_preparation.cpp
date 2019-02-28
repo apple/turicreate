@@ -3,6 +3,7 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+#include <algorithm>
 #include <time.h>
 #include <limits.h>
 #include <math.h>
@@ -19,28 +20,27 @@
 namespace turi {
 namespace drawing_recognition {
 
-#define MIN(a,b) (((a)<(b))?(a):(b))
-#define MAX(a,b) (((a)>(b))?(a):(b))
+namespace {
 
-struct Point {
-    float x;
-    float y;
-};
+    struct Point {
+        float x;
+        float y;
+    };
 
-struct Line {
-    // ax + by + c = 0
-    float slope;
-    float a;
-    float b;
-    float c;
-};
+    struct Line {
+        // ax + by + c = 0
+        float a;
+        float b;
+        float c;
+    };
+
+} // namespace
 
 void make_point(Point *P, const flex_dict &point_dict) {
-    flex_string x ("x");
     for (auto key_value_pair: point_dict) {
         const flex_string &key = key_value_pair.first.get<flex_string>();
         const flex_float &value = key_value_pair.second.get<flex_float>();
-        if (key.compare(x) == 0) {
+        if (key == "x") {
             P->x = value;
         } else {
             P->y = value;
@@ -64,14 +64,13 @@ void initialize_line(Line *L, const flex_dict &p1, const flex_dict &p2) {
     float start_y = P1.y;
     float end_x = P2.x;
     float end_y = P2.y;
-    if (start_x == start_y) {
-        L->slope = INT_MAX;
+    if (start_x == end_x) {
+        L->a = INT_MAX;
     } else {
-        L->slope = ((float)(end_y - start_y))/((float)(end_x - start_x));
+        L->a = ((float)(end_y - start_y))/((float)(end_x - start_x));
     }
-    L->a = L->slope;
     L->b = -1;
-    L->c = start_y - L->slope * start_x;
+    L->c = start_y - L->a * start_x;
 }
 
 template<typename T>
@@ -198,8 +197,8 @@ flex_nd_vec paint_stroke(
     size_t dimension = bitmap.shape()[1];
     if (x1 == x2) {
         // just paint the y axis
-        int min_y = MIN(y1, y2);
-        int max_y = MAX(y1, y2);
+        int min_y = std::min(y1, y2);
+        int max_y = std::max(y1, y2);
         for (int y = min_y; y < max_y; y++) {
             for (int dx = -pad; dx < pad; dx++) {
                 for (int dy = -pad; dy < pad; dy++) {
