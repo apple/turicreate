@@ -114,6 +114,8 @@ class CoreMLExportTest(unittest.TestCase):
     # Regression 
 
     def test_linear_regression(self):
+        if _mac_ver() < (10, 14):
+            pytest.xfail("See https://github.com/apple/turicreate/issues/1332")
         for code_string in ["b"*40, "nnnn", "v", "d", "A", "bnsCvAd"]:
             train, test = self.generate_data("regression", 100, code_string)
             model = tc.linear_regression.create(train, "target", validation_set = None)
