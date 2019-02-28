@@ -331,7 +331,7 @@ variant_map_type object_detector::evaluate(
   else if (metric == "auto") {
     metrics = {AP50,MAP50};
   }
-  else if (metric == "all") {
+  else if (metric == "all" || metric == "report") {
     metrics = all_metrics;
   }
   else {
