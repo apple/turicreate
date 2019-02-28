@@ -332,7 +332,7 @@ variant_map_type object_detector::evaluate(
     metrics = {AP50,MAP50};
   }
   else if (metric == "all") {
-    metrics = {AP,AP50,MAP,MAP50};
+    metrics = all_metrics;
   }
   else {
     log_and_throw("Metric " + metric + " not supported");
