@@ -105,21 +105,25 @@ void AnnotationBase::_addIndexColumn() {
 }
 
 void AnnotationBase::_checkDataSet() {
-
   size_t image_column_index = m_data->column_index(m_data_columns.at(0));
   flex_type_enum image_column_dtype = m_data->dtype().at(image_column_index);
 
-  DASSERT_EQ(image_column_dtype, flex_type_enum::IMAGE);
+  if (image_column_dtype != flex_type_enum::IMAGE) {
+    std_log_and_throw(
+        std::invalid_argument,
+        "Image column \"" + m_data_columns.at(0) + "\" not of image type.");
+  }
 
   size_t annotation_column_index = m_data->column_index(m_annotation_column);
   flex_type_enum annotation_column_dtype =
       m_data->dtype().at(annotation_column_index);
 
-  DASSERT_TRUE(annotation_column_dtype == flex_type_enum::STRING ||
-               annotation_column_dtype == flex_type_enum::INTEGER);
-
-#pragma unused(image_column_index, image_column_dtype)
-#pragma unused(annotation_column_index, annotation_column_dtype)
+  if (!(annotation_column_dtype == flex_type_enum::STRING ||
+        annotation_column_dtype == flex_type_enum::INTEGER)) {
+    std_log_and_throw(std::invalid_argument,
+                      "Annotation column \"" + m_data_columns.at(0) +
+                          "\" not of string or integer type.");
+  }
 }
 
 void AnnotationBase::_reshapeIndicies(size_t &start, size_t &end) {

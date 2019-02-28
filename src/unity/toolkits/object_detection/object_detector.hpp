@@ -48,9 +48,7 @@ class EXPORT object_detector: public ml_model_base {
 
   BEGIN_CLASS_MEMBER_REGISTRATION("object_detector")
 
-  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::list_fields);
-  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
-      "get_value", object_detector::get_value_from_state, "field");
+  IMPORT_BASE_CLASS_REGISTRATION(ml_model_base);
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::train, "data",
                                  "annotations_column_name",

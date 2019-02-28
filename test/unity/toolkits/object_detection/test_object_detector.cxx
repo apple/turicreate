@@ -194,6 +194,14 @@ public:
                          weights);
   }
 
+  std::unique_ptr<model_backend> create_activity_classifier(
+      int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
+      const float_array_map& config,
+      const float_array_map& weights) override
+  {
+    return nullptr;
+  }
+
   mutable std::deque<create_augmenter_call> create_augmenter_calls_;
   mutable std::deque<create_object_detector_call> create_object_detector_calls_;
 };
@@ -407,7 +415,8 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
     TS_ASSERT_EQUALS(model_path, test_mlmodel_path);
 
     std::unique_ptr<model_spec> nn_spec(new model_spec);
-    nn_spec->add_convolution("test_layer", "test_input", 16, 16, 3,
+    nn_spec->add_convolution("test_layer", "test_input", 16, 16, 3, 3, 1, 1,
+                             model_spec::padding_type::SAME,
                              /* weight_init_fn */ [](float*w , float* w_end) {
                                for (int i = 0; i < w_end - w; ++i) {
                                  w[i] = static_cast<float>(i);

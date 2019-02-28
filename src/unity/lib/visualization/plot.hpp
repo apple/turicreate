@@ -52,6 +52,9 @@ namespace turi {
         // call materialize first to get a final rendering up front).
         // Returns true if streaming finished, false otherwise.
         bool render(CGContextRef context, tc_plot_variation variation=tc_plot_variation_default);
+
+        // Low-level rendering path - takes a Vega spec as input.
+        static void render(const std::string& vega_spec, CGContextRef context);
 #endif // TC_BUILD_IOS
 #endif // __APPLE__
 
