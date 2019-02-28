@@ -220,7 +220,7 @@ class DrawingRecognition(_CustomModel):
                                 builder=None, verbose=verbose,
                                 preprocessor_args={'image_input_names':[self.feature]})
 
-        DESIRED_OUTPUT_NAME = self.target + "probabilities"
+        DESIRED_OUTPUT_NAME = self.target + "Probabilities"
         spec = coreml_model._spec
         class_label_output_index = 0 if spec.description.output[0].name == "classLabel" else 1
         probabilities_output_index = 1-class_label_output_index
