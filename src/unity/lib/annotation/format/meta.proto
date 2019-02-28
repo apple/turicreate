@@ -45,6 +45,16 @@ message ObjectDetectionMeta {
 message MetaData {
   int64 num_examples = 1;
 
+  enum AnnotationType {
+    ACTIVITY_CLASSIFICATION = 0;
+    AUDIO_CLASSIFICATION = 1;
+    DRAWING_CLASSIFICATION = 2;
+    IMAGE_CLASSIFICATION = 3;
+    OBJECT_DETECTION = 4;
+  }
+
+  AnnotationType type = 2;
+
   oneof Type {
     ActivityClassificationMeta activity_classification = 100;
     AudioClassificationMeta audio_classification = 101;

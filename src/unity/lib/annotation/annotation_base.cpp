@@ -36,6 +36,17 @@ void AnnotationBase::annotate(const std::string &path_to_client) {
             .c_str();
 
   while (aw.good()) {
+    std::string input;
+    aw >> input;
+
+    if (input.empty()) {
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      continue;
+    }
+
+    // parse proto message
+    
+    
     break;
   }
 }

@@ -214,6 +214,8 @@ annotate_spec::MetaData ImageClassification::metaData() {
   annotate_spec::ImageClassificationMeta image_classification_meta =
       meta_data.image_classification();
 
+  meta_data.set_type(annotate_spec::MetaData_AnnotationType::MetaData_AnnotationType_IMAGE_CLASSIFICATION);
+
   meta_data.set_num_examples(m_data->size());
 
   std::shared_ptr<unity_sarray> data_sarray =

@@ -6,6 +6,12 @@ import TcSummary from './elements/Plot/Summary/index.js';
 import TcTable from './elements/Explore/Table/index.js';
 import TCEvaluation from './elements/Explore/Evaluation/index.js';
 
+import messageFormat from './format/message';
+
+import { load, Root } from 'protobufjs';
+
+import TCAnnotate from './elements/Annotate';
+
 var command_down = 0;
 var body_zoom = 100;
 
@@ -53,6 +59,7 @@ function resetDisplay(){
     document.getElementById('loading_container').style.display = "block";
     document.getElementById('table_vis').style.display = 'none';
     document.getElementById('vega_vis').style.display = 'none';
+    document.getElementById('annotate_viz').style.display = 'none';
     component_rendered = null;
     spec_type = null;
 }
@@ -73,9 +80,6 @@ window.setSpec = function setSpec(value) {
         case "summary":
             spec_type = SpecType.summary;
             break;
-        case "annotate":
-            spec_type = SpecType.annotate;
-            break;
         case "evaluate":
             document.getElementById("loading_container").style.display = "none";
             document.getElementById('evaluation_vis').style.display = 'block';
@@ -89,9 +93,21 @@ window.setSpec = function setSpec(value) {
 }
 
 window.setProtoMessage = function setProtoMessage(value){
-    // TODO: figure out how to deserialize
-    // call proper element.
-    console.log(value);
+    
+    document.getElementById("loading_container").style.display = "none";
+    document.getElementById('annotate_viz').style.display = 'block';
+    
+    var root = Root.fromJSON(messageFormat);
+    
+    const ParcelMessage = root.lookupType("TuriCreate.Annotation.Specification.Parcel");
+    const buffer = Uint8Array.from(atob(value), c => c.charCodeAt(0));
+    var decoded = ParcelMessage.decode(buffer);
+    
+    if(decoded.hasOwnProperty('metadata')){
+        component_rendered = ReactDOM.render(<TCAnnotate />, document.getElementById('annotate_viz'));
+        spec_type = SpecType.annotate;
+        //document.getElementById('annotate_viz').textContent = JSON.stringify(decoded);
+    }
 }
 
 window.updateData = function updateData(data) {
