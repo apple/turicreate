@@ -4,14 +4,10 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <algorithm>
-#include <time.h>
 #include <limits.h>
 #include <math.h>
-#include <iomanip>
 #include <logger/assertions.hpp>
 #include <image/image_type.hpp>
-#include <random/random.hpp>
-#include <util/sys_util.hpp>
 #ifdef __APPLE__
 #include <CoreGraphics/CoreGraphics.h>
 #endif // __APPLE__
@@ -20,6 +16,12 @@
 
 namespace turi {
 namespace drawing_recognition {
+
+static constexpr int INTERMEDIATE_BITMAP_WIDTH = 256;
+static constexpr int INTERMEDIATE_BITMAP_HEIGHT = 256;
+static constexpr int FINAL_BITMAP_WIDTH = 28;
+static constexpr int FINAL_BITMAP_HEIGHT = 28;
+static constexpr float STROKE_WIDTH = 20.0;
 
 namespace {
 
@@ -77,7 +79,7 @@ namespace {
             float x = P.get_x();
             float y = P.get_y();
             float distance = (float)(fabs(a*x+b*y+c))/sqrt(a*a+b*b);
-            return distance;
+            return floorf(distance);
         }
     };
 
@@ -86,7 +88,7 @@ namespace {
 template<typename T>
 std::vector<T> slice(std::vector<T> const &v, int m, int n) {
     auto first = v.cbegin() + m;
-    auto last = v.cbegin() + n + 1;
+    auto last = v.cbegin() + n;
     std::vector<T> vec(first, last);
     return vec;
 }
@@ -110,8 +112,8 @@ flex_list ramer_douglas_peucker(flex_list stroke, float epsilon) {
         }
     }
     if (dmax > epsilon) {
-        flex_list first_slice = slice(stroke, 0, index-1);
-        flex_list last_slice = slice(stroke, index, num_points-1);
+        flex_list first_slice = slice(stroke, 0, index);
+        flex_list last_slice = slice(stroke, index, num_points);
         compressed_stroke = ramer_douglas_peucker(first_slice, epsilon);
         flex_list rec_results_2 = ramer_douglas_peucker(last_slice, epsilon);
         compressed_stroke.insert(compressed_stroke.end(), 
@@ -259,12 +261,7 @@ flex_image blur_bitmap(flex_nd_vec bitmap, int ksize) {
         // last argument is turi::Format::RAW_ARRAY, which has a value of 2
 }
 
-flex_image rasterize_on_mac(flex_list simplified_drawing, 
-    size_t INTERMEDIATE_BITMAP_WIDTH, 
-    size_t INTERMEDIATE_BITMAP_HEIGHT, 
-    size_t FINAL_BITMAP_WIDTH, 
-    size_t FINAL_BITMAP_HEIGHT, 
-    size_t STROKE_WIDTH) {
+flex_image rasterize_on_mac(flex_list simplified_drawing) {
     size_t num_strokes = simplified_drawing.size();
     int MAC_OS_STRIDE = 64;
     CGColorSpaceRef grayscale = CGColorSpaceCreateDeviceGray();
@@ -336,18 +333,8 @@ flex_image rasterize_on_mac(flex_list simplified_drawing,
 flex_image rasterize(flex_list simplified_drawing) {
     flex_image final_bitmap; // 1 x 28 x 28
     size_t num_strokes = simplified_drawing.size();
-    size_t INTERMEDIATE_BITMAP_WIDTH = 256;
-    size_t INTERMEDIATE_BITMAP_HEIGHT = 256;
-    size_t FINAL_BITMAP_WIDTH = 28;
-    size_t FINAL_BITMAP_HEIGHT = 28;
-    float STROKE_WIDTH = 20.0;
 #ifdef __APPLE__
-    return rasterize_on_mac(simplified_drawing, 
-        INTERMEDIATE_BITMAP_WIDTH, 
-        INTERMEDIATE_BITMAP_HEIGHT, 
-        FINAL_BITMAP_WIDTH, 
-        FINAL_BITMAP_HEIGHT, 
-        STROKE_WIDTH);
+    return rasterize_on_mac(simplified_drawing);
 #endif // __APPLE__
     std::vector<size_t> intermediate_bitmap_shape {1, (size_t)INTERMEDIATE_BITMAP_WIDTH, (size_t)INTERMEDIATE_BITMAP_HEIGHT};
     flex_nd_vec intermediate_bitmap(intermediate_bitmap_shape, 0.0);
@@ -382,10 +369,8 @@ flex_image convert_stroke_based_drawing_to_bitmap(
 }
 
 gl_sframe _drawing_recognition_prepare_data(const gl_sframe &data,
-                                            const std::string &feature,
-                                            const std::string &target) {
+                                            const std::string &feature) {
     DASSERT_TRUE(data.contains_column(feature));
-    DASSERT_TRUE(data.contains_column(target));
     
     gl_sarray bitmaps = data[feature].apply([](const flexible_type &strokes) {
         flex_list current_stroke_based_drawing = strokes.to<flex_list>();

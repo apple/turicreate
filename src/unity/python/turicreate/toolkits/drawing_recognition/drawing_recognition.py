@@ -45,13 +45,8 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap",
     _raise_error_if_not_drawing_classifier_input_sframe(input_dataset, feature)
 
     is_stroke_input = (input_dataset[feature].dtype != _tc.Image)
-
-    if is_stroke_input:
-        # This only works on macOS right now
-        dataset = _extensions._drawing_recognition_prepare_data(
-            input_dataset, feature, target)
-    else:
-        dataset = input_dataset
+    dataset = _extensions._drawing_recognition_prepare_data(
+        input_dataset, feature) if is_stroke_input else input_dataset
 
     column_names = ['Iteration', 'Loss', 'Elapsed Time']
     num_columns = len(column_names)
