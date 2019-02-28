@@ -133,7 +133,7 @@ static inline float hzToMel(float freq) {
                                      numBins:(NSUInteger)numBins;
 
 -(void)apply:(const float*)powerSpectrum
-      output:(float *)out;
+      output:(double*)out;
 
 @end
 
@@ -231,9 +231,8 @@ static inline float hzToMel(float freq) {
   free(_filterBanks);
 }
 
--(void)apply:(const float *)powerSpectrum
-      output:(float *)out {
-
+-(void)apply:(const float*)powerSpectrum
+      output:(double*)out {
   float res;
   for(size_t i = 0; i < _numMelBands; i++) {
     vDSP_dotpr(powerSpectrum, 1, _filterBanks[i], 1, &res, spectrumSize);
@@ -252,6 +251,7 @@ static inline float hzToMel(float freq) {
 - (nullable instancetype)initWithModelDescription:(MLModelDescription *)modelDescription
                               parameterDictionary:(NSDictionary<NSString *, id> *)parameters
                                             error:(NSError **)error {
+
   self = [super init];
   if (!self) return nil;
 
@@ -290,8 +290,8 @@ static inline float hzToMel(float freq) {
     setErrorMsg("Output must an MLMultiArray", error);
     return nil;
   }
-  if(outputDesc.multiArrayConstraint.dataType != MLMultiArrayDataTypeFloat32) {
-    setErrorMsg("Output array must have type float", error);
+  if(outputDesc.multiArrayConstraint.dataType != MLMultiArrayDataTypeDouble) {
+    setErrorMsg("Output array must have type double", error);
     return nil;
   }
 
@@ -334,15 +334,16 @@ static inline float hzToMel(float freq) {
 
   // Create output
   int numFrames = 1 + floor((inputLength - windowLength) / hopLength);
-  const MLMultiArray* output = [[MLMultiArray alloc] initWithShape:@[@(numFrames), @(numBands)]
-                                                    dataType:MLMultiArrayDataTypeFloat32
+  const MLMultiArray* output = [[MLMultiArray alloc] initWithShape:@[@(1), @(numFrames), @(numBands)]
+                                                    dataType:MLMultiArrayDataTypeDouble
                                                        error:error];
-  if (*error) {
+  if(output == nil) {
+    setErrorMsg("Can not create MLMultiArray output", error);
     return nil;
   }
-  float* outputPtr = (float *) output.dataPointer;
-  const size_t stride = output.strides[0].intValue;
-  NSAssert(output.strides[1].intValue == 1, @"Inner stride is not one.");
+  double* outputPtr = (double*) output.dataPointer;
+  const size_t stride = output.strides[1].intValue;
+  NSAssert(output.strides[2].intValue == 1, @"Inner stride is not one.");
 
   // Process input
   float curFrame[windowLength];
@@ -362,7 +363,8 @@ static inline float hzToMel(float freq) {
   id<MLFeatureProvider> result = [[MLDictionaryFeatureProvider alloc]
                                    initWithDictionary:@{self.outputFeatureName: output}
                                                 error:error];
-  if(*error) {
+  if(result == nil) {
+    setErrorMsg("Can not set output", error);
     return nil;
   }
   return result;

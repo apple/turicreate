@@ -216,3 +216,25 @@ STYLE_TRANSFER_BASE_MODELS = {
     'resnet-16': StyleTransferTransformer,
     'Vgg16': Vgg16
 }
+
+
+class VGGish():
+    def __init__(self):
+        self.name = 'LNVGGEmbeddingExtractor8'
+        self.source_md5 = {'coreml': '369650c600c39480973395f88431a1f8',
+                           'mxnet': '13c040de982a51e4664705564be8ae8b'
+        }
+
+    def get_model_path(self, format):
+        assert(format in ('coreml', 'mxnet'))
+
+        if(format == 'coreml'):
+            filename = self.name + '.mlmodel'
+        url = _urlparse.urljoin(MODELS_URL_ROOT, filename)
+
+        checksum = self.source_md5[format]
+        model_path = _download_and_checksum_files(
+            [(url, checksum)], _get_model_cache_dir()
+            )[0]
+
+        return model_path
