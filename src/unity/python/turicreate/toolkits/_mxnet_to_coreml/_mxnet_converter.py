@@ -189,7 +189,7 @@ def convert(model, input_shape, class_labels=None, mode=None,
         shape_dict[op] = shapes[1][idx]
     for idx, op in enumerate(aux_names):
         shape_dict[op] = shapes[2][idx]
-
+    
     # Get the inputs and outputs
     output_dims = shapes[1]
     if mode is None:
