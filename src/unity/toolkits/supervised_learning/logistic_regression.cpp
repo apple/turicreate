@@ -416,6 +416,9 @@ flexible_type logistic_regression::predict_single_example(
       // Probability (doesn't get used from the python side)
       // Probability vector gets used (doesn't get used from the python side)
       case prediction_type_enum::PROBABILITY:
+      {
+        log_and_throw("Use probability vector in case of multi-class classification");
+      }
       case prediction_type_enum::PROBABILITY_VECTOR:
       {
 
