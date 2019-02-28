@@ -8,6 +8,7 @@
 
 #include <export.hpp>
 #include <unity/lib/gl_sframe.hpp>
+#include <unity/lib/image_util.hpp>
 
 namespace turi {
 namespace drawing_recognition {
