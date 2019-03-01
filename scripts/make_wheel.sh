@@ -273,7 +273,7 @@ package_wheel() {
   cd ${WORKSPACE}/${build_type}/src/unity/python
   dist_type="bdist_wheel"
 
-  VERSION_NUMBER=`${PYTHON_EXECUTABLE} -c "from turicreate import version_info; print(version_info.version)"`
+  VERSION_NUMBER=`${PYTHON_EXECUTABLE} -c "from turicreate.version_info import version; print(version)"`
   ${PYTHON_EXECUTABLE} setup.py ${dist_type} # This produced an wheel starting with turicreate-${VERSION_NUMBER} under dist/
 
   cd ${WORKSPACE}
