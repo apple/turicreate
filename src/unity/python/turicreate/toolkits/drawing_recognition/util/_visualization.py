@@ -12,7 +12,7 @@ def draw_strokes(stroke_based_drawings):
             + "turicreate.SArray")
     is_stroke_input = (stroke_based_drawings.dtype != _tc.Image)
     if is_stroke_input:
-        sf = tc.SFrame({"drawings": stroke_based_drawings})
+        sf = _tc.SFrame({"drawings": stroke_based_drawings})
         sf_with_drawings = _extensions._drawing_recognition_prepare_data(
             sf, "drawings")
         return sf_with_drawings["drawings"]
