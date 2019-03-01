@@ -6,18 +6,18 @@
 #ifndef TURI_ACTIVITY_REGISTRATION_H_
 #define TURI_ACTIVITY_REGISTRATION_H_
 
-//#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/lib/toolkit_function_macros.hpp>
+#include <vector>
+
+#include <unity/lib/toolkit_class_specification.hpp>
+#include <unity/lib/toolkit_function_specification.hpp>
 
 namespace turi {
-namespace sdk_model {
 namespace activity_classification {
 
-//std::vector<turi::toolkit_class_specification> get_toolkit_class_registration();
 std::vector<toolkit_function_specification> get_toolkit_function_registration();
+std::vector<toolkit_class_specification> get_toolkit_class_registration();
 
-}// activity_classification
-}// sdk_model
-}// turicreate
+}  // activity_classification
+}  // turi
 
 #endif

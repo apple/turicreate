@@ -12,10 +12,14 @@ namespace turi {
   namespace visualization {
     bool Plot::render(CGContextRef context, tc_plot_variation variation) {
       std::string spec_with_data = this->get_spec(variation, true /* include_data */);
-      NSString *spec = [NSString stringWithUTF8String:spec_with_data.c_str()];
+      Plot::render(spec_with_data, context);
+      return this->finished_streaming();
+    }
+
+    void Plot::render(const std::string& vega_spec, CGContextRef context) {
+      NSString *spec = [NSString stringWithUTF8String:vega_spec.c_str()];
       VegaRenderer *renderer = [[VegaRenderer alloc] initWithSpec:spec];
       CGContextDrawLayerAtPoint(context, CGPointMake(0, 0), renderer.CGLayer);
-      return this->finished_streaming();
     }
   }
 }

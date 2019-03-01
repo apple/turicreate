@@ -93,7 +93,7 @@ typedef struct tc_plot_struct tc_plot;
 /*                                                                            */
 /******************************************************************************/
 
-/** Initializing the framework. 
+/** Initializing the framework.
  *
  *  Call these before calling any non-setup function.
  *
@@ -889,10 +889,11 @@ tc_flexible_type* tc_plot_get_vega_spec(const tc_plot* plot,
                                         tc_error** error);
 
 // computes the next batch of results, and returns a flex string of JSON data
-tc_flexible_type* tc_plot_get_next_data(const tc_plot* plot, const tc_parameters *params, tc_error** error); 
+tc_flexible_type* tc_plot_get_next_data(const tc_plot* plot, const tc_parameters *params, tc_error** error);
 
 #ifdef __APPLE__
 #ifndef TC_BUILD_IOS
+
 // pre-computes the final plot and renders it into a CoreGraphics context
 void tc_plot_render_final_into_context(const tc_plot* plot,
                                        tc_plot_variation variation,
@@ -907,6 +908,13 @@ bool tc_plot_render_next_into_context(const tc_plot* plot,
                                       CGContextRef context,
                                       const tc_parameters *params,
                                       tc_error** error);
+
+// renders a raw (JSON string) Vega spec into a CoreGraphics context
+void tc_plot_render_vega_spec_into_context(const char * vega_spec,
+                                           CGContextRef context,
+                                           const tc_parameters *params,
+                                           tc_error** error);
+
 #endif // TC_BUILD_IOS
 #endif // __APPLE__
 

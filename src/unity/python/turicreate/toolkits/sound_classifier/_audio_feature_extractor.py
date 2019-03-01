@@ -1,9 +1,10 @@
+from coremltools.models import MLModel
 import mxnet as mx
 from mxnet.gluon import nn, utils
 
 from .._internal_utils import _mac_ver
 from .. import _mxnet_utils
-from .._pre_trained_models import _get_model_cache_dir
+from .._pre_trained_models import VGGish
 
 
 VGGish_instance = None
@@ -76,19 +77,18 @@ class VGGishFeatureExtractor(object):
         return net
 
     def __init__(self):
-        # TODO: Download the model if it is not in the cache.
+        vggish_model_file = VGGish()
+
         if _mac_ver() < (10, 13):
             # Use MXNet
+            model_path = vggish_model_file.get_model_path(format='mxnet')
             self.vggish_model = VGGishFeatureExtractor._build_net()
-            model_path = _get_model_cache_dir() + '/LNVGGEmbeddingExtractor8'
             net_params = self.vggish_model.collect_params()
             self.ctx = _mxnet_utils.get_mxnet_context()
-            net_params.initialize(mx.init.Xavier(), ctx=self.ctx)    # TODO: verify on Linux that we don't need this line.
             net_params.load(model_path, ctx=self.ctx)
         else:
             # Use Core ML
-            from coremltools.models import MLModel
-            model_path = _get_model_cache_dir() + '/LNVGGEmbeddingExtractor8.mlmodel'
+            model_path = vggish_model_file.get_model_path(format='coreml')
             self.vggish_model = MLModel(model_path)
 
     def extract_features(self, preprocessed_data):
@@ -106,7 +106,11 @@ class VGGishFeatureExtractor(object):
         if _mac_ver() < (10, 13):
             # Use MXNet
             preprocessed_data = mx.nd.array(preprocessed_data)
-            batches = utils.split_and_load(preprocessed_data, ctx_list=self.ctx, even_split=False)
+
+            ctx_list = self.ctx
+            if len(preprocessed_data) < len(ctx_list):
+                ctx_list = ctx_list[:len(preprocessed_data)]
+            batches = utils.split_and_load(preprocessed_data, ctx_list=ctx_list, even_split=False)
 
             deep_features = []
             for cur_batch in batches:
@@ -132,5 +136,6 @@ class VGGishFeatureExtractor(object):
         if _mac_ver() >= (10, 13):
             return self.vggish_model.get_spec()
         else:
-            # TODO: make this work on Linux
-            assert(False)
+            vggish_model_file = VGGish()
+            coreml_model_path = vggish_model_file.get_model_path(format='coreml')
+            return MLModel(coreml_model_path).get_spec()
