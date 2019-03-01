@@ -1132,9 +1132,9 @@ results = model.evaluate(test_data)</code></pre>
 <h5 id="additional-features"><a name="additional-features" class="plugin-anchor" href="#additional-features"><i class="fa fa-link" aria-hidden="true"></i></a>Additional Features</h5><p>We will now go over some more advanced options with the linear regression
 module. This includes regularization, evaluation options, model interpretation,
 and missing value handling.  Note that <strong>logistic regression and support vector
-machines (SVM)</strong> conform to <strong>almost</strong> all of the API discussed below.</p><h6 id="accessing-attributes-of-the-model"><a name="accessing-attributes-of-the-model" class="plugin-anchor" href="#accessing-attributes-of-the-model"><i class="fa fa-link" aria-hidden="true"></i></a><a name="linregr-model-access"></a> Accessing attributes of the model</h6><p>The attributes of all Turi Create models, which include training statistics, model
+machines (SVM)</strong> conform to <strong>almost</strong> all of the API discussed below.</p><h6 id="accessing-attributes-of-the-model"><a name="accessing-attributes-of-the-model" class="plugin-anchor" href="#accessing-attributes-of-the-model"><i class="fa fa-link" aria-hidden="true"></i></a><a name="accessing-attributes-of-the-model"></a>Accessing attributes of the model</h6><p>The attributes of all Turi Create models, which include training statistics, model
 hyper-parameters, and model results can be accessed in the same way as python
-dictionaries.</p><h6 id="interpreting-results"><a name="interpreting-results" class="plugin-anchor" href="#interpreting-results"><i class="fa fa-link" aria-hidden="true"></i></a><a name="linregr-interpreting-results"></a> Interpreting results</h6><p>Linear regression can provide valuable insight about the relationships between
+dictionaries.</p><h6 id="interpreting-results"><a name="interpreting-results" class="plugin-anchor" href="#interpreting-results"><i class="fa fa-link" aria-hidden="true"></i></a><a name="interpreting-results"></a>Interpreting results</h6><p>Linear regression can provide valuable insight about the relationships between
 the target and feature columns in your data, revealing why your model returns
 the predictions that it does. The <strong>coefficients</strong> (<script type="math/tex; ">\theta</script>) are what the
 training procedure learns. Each model coefficient describes the expected change
@@ -1161,7 +1161,7 @@ print(coefs)</code></pre>
 <p>Note that the <strong>index</strong> column in the coefficients is only applicable for
 categorical features, lists, and dictionaries. In the SFrame above, there is an
 extra column for <code>standard errors</code> on the estimated coefficients (see section
-below for a more detailed explanation).</p><h6 id="standard-errors"><a name="standard-errors" class="plugin-anchor" href="#standard-errors"><i class="fa fa-link" aria-hidden="true"></i></a><a name="linregr-stderr"></a> Standard-errors</h6><p>The standard error is the empirical standard deviation on the estimated
+below for a more detailed explanation).</p><h6 id="standard-errors"><a name="standard-errors" class="plugin-anchor" href="#standard-errors"><i class="fa fa-link" aria-hidden="true"></i></a><a name="standard-errors"></a> Standard-errors</h6><p>The standard error is the empirical standard deviation on the estimated
 coefficient. For example, a coefficient of 1 with a standard error of 0.5
 implies a standard deviation of 0.5 on the estimated values of the
 coefficients. Standard errors capture the <code>confidence</code> we have in the
@@ -1170,7 +1170,7 @@ more confidence in the value of the coefficients returned by th model.</p><p>Sta
 when the default <code>auto</code> solver option chooses the newton method and if the
 number of examples in the training data is more than the number of
 coefficients. If standard errors cannot be estimated, a column of <code>None</code> values
-are returned.</p><h6 id="categorical-features"><a name="categorical-features" class="plugin-anchor" href="#categorical-features"><i class="fa fa-link" aria-hidden="true"></i></a><a name="linregr-categorical-features"></a> Categorical features</h6><p>Categorical variables are features that can take one of a limited, and usually
+are returned.</p><h6 id="categorical-features"><a name="categorical-features" class="plugin-anchor" href="#categorical-features"><i class="fa fa-link" aria-hidden="true"></i></a><a name="categorical-features"></a>Categorical features</h6><p>Categorical variables are features that can take one of a limited, and usually
 fixed, number of possible values. Each category is referred to as a level. As an
 example, consider the variable <strong>city</strong> that a given restaurant is in. This
 dataset has about 60 unique strings for the <strong>city</strong> (the number of unique
@@ -1232,7 +1232,7 @@ Number of coefficients      : 64
 Note: Only the head of the SFrame is printed.
 You can use print_rows(num_rows=m, num_columns=n) to print more rows and columns.
 </code></pre>
-<h6 id="sparse-features"><a name="sparse-features" class="plugin-anchor" href="#sparse-features"><i class="fa fa-link" aria-hidden="true"></i></a><a name="linregr-sparse-features"></a> Sparse features</h6><p>Sparsity is one of the most important things to consider when working with
+<h6 id="sparse-features"><a name="sparse-features" class="plugin-anchor" href="#sparse-features"><i class="fa fa-link" aria-hidden="true"></i></a><a name="sparse-features"></a> Sparse features</h6><p>Sparsity is one of the most important things to consider when working with
 a lot of data. Sparse features are encoded using a dictionary where the keys
 represent the feature names and the values are the feature values.
 A coefficient is added for each key in the union of the set of keys for all
@@ -1293,7 +1293,7 @@ Number of coefficients      : 512
 [512 rows x 3 columns]
 Note: Only the head of the SFrame is printed.
 You can use print_rows(num_rows=m, num_columns=n) to print more rows and columns.</code></pre>
-<h6 id="list-features"><a name="list-features" class="plugin-anchor" href="#list-features"><i class="fa fa-link" aria-hidden="true"></i></a><a name="linregr-list-features"></a> List features</h6><p>Turi Create can also handle list of numerical values as features without
+<h6 id="-list-features"><a name="-list-features" class="plugin-anchor" href="#-list-features"><i class="fa fa-link" aria-hidden="true"></i></a><a name="list-features"> </a> List features</h6><p>Turi Create can also handle list of numerical values as features without
 preprocessing. The following illustration shows that the numeric-list feature
 is equivalent to adding several columns for each individual feature. This is
 especially useful for image data where the number of features generated are
@@ -1347,7 +1347,7 @@ Number of coefficients      : 8
 |       votes_list      |   2   |   0.201216924886  |
 +-----------------------+-------+-------------------+
 [8 rows x 3 columns]</code></pre>
-<h6 id="feature-rescaling"><a name="feature-rescaling" class="plugin-anchor" href="#feature-rescaling"><i class="fa fa-link" aria-hidden="true"></i></a><a name="linregr-feature-rescaling"></a> Feature rescaling</h6><p>Feature rescaling is the process of scaling individual features to be of the
+<h6 id="gfeature-rescalin"><a name="gfeature-rescalin" class="plugin-anchor" href="#gfeature-rescalin"><i class="fa fa-link" aria-hidden="true"></i></a><a name="feature-rescaling"> g</a>Feature rescalin</h6><p>Feature rescaling is the process of scaling individual features to be of the
 same scale. This process is particularly useful when features vary widely in
 their ranges. It is well known that <strong>feature rescaling can make an enormous
 impact on accuracy</strong>. By default, Turi Create rescales all the features to
@@ -1362,7 +1362,7 @@ original scale of the problem</strong>.</p><pre><code class="lang-python">model 
                                                 <span class="hljs-string">&apos;user_review_count&apos;</span>,
                                                 <span class="hljs-string">&apos;business_review_count&apos;</span>],
                                     feature_rescaling = <span class="hljs-keyword">False</span>)</code></pre>
-<h6 id="choosing-the-solver"><a name="choosing-the-solver" class="plugin-anchor" href="#choosing-the-solver"><i class="fa fa-link" aria-hidden="true"></i></a><a name="linregr-solver"></a> Choosing the solver</h6><p>The optimization used to create the model is automatically picked based on the input data from a carefully engineered collection
+<h6 id="choosing-the-solver"><a name="choosing-the-solver" class="plugin-anchor" href="#choosing-the-solver"><i class="fa fa-link" aria-hidden="true"></i></a><a name="choosing-the-solver"> </a>Choosing the solver</h6><p>The optimization used to create the model is automatically picked based on the input data from a carefully engineered collection
 of methods. The newton
 method works best for datasets with plenty of examples and few features (long
 datasets). Limited memory BFGS (<code>lbfgs</code>) is a robust solver for wide datasets
@@ -1466,7 +1466,7 @@ new_data = tc.SFrame({<span class="hljs-string">&apos;business_avg_stars&apos;</
                        <span class="hljs-string">&apos;categories_dict&apos;</span>: [{<span class="hljs-string">&apos;Pizza&apos;</span>: <span class="hljs-number">1</span>}]
                       })
 prediction = model.predict(new_data)</code></pre>
-<h6 id="regularizing-models-lasso-ridge-and-elastic-net-regression"><a name="regularizing-models-lasso-ridge-and-elastic-net-regression" class="plugin-anchor" href="#regularizing-models-lasso-ridge-and-elastic-net-regression"><i class="fa fa-link" aria-hidden="true"></i></a><a name="linregr-regularizer"></a> Regularizing Models (Lasso, Ridge, and Elastic Net regression)</h6><p>Regularization is the process of using problem structure to solve ill-posed
+<h6 id="regularizing-models-lasso-ridge-and-elastic-net-regression"><a name="regularizing-models-lasso-ridge-and-elastic-net-regression" class="plugin-anchor" href="#regularizing-models-lasso-ridge-and-elastic-net-regression"><i class="fa fa-link" aria-hidden="true"></i></a><a name="regularizing-models"></a> Regularizing Models (Lasso, Ridge, and Elastic Net regression)</h6><p>Regularization is the process of using problem structure to solve ill-posed
 problems or to prevent overfitting. The structure is imposed by adding a penalty
 term to the objective function. The linear regression module supports L1 and L2
 regularization, which are added to the loss function.</p><p>As discussed above, the composite objective being optimized for is the
@@ -1547,7 +1547,7 @@ model = tc.linear_regression.create(train_data, target=<span class="hljs-string"
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Linear Regression","level":"1.4.5.3","depth":3,"next":{"title":"Random Forest Regression","level":"1.4.5.4","depth":3,"path":"supervised-learning/random_forest_regression.md","ref":"supervised-learning/random_forest_regression.md","articles":[]},"previous":{"title":"Decision Tree Regression","level":"1.4.5.2","depth":3,"path":"supervised-learning/decision_tree_regression.md","ref":"supervised-learning/decision_tree_regression.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"supervised-learning/linear-regression.md","mtime":"2019-02-06T19:58:58.487Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2019-02-06T20:01:33.010Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Linear Regression","level":"1.4.5.3","depth":3,"next":{"title":"Random Forest Regression","level":"1.4.5.4","depth":3,"path":"supervised-learning/random_forest_regression.md","ref":"supervised-learning/random_forest_regression.md","articles":[]},"previous":{"title":"Decision Tree Regression","level":"1.4.5.2","depth":3,"path":"supervised-learning/decision_tree_regression.md","ref":"supervised-learning/decision_tree_regression.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"supervised-learning/linear-regression.md","mtime":"2019-03-01T21:21:57.044Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2019-03-01T21:23:12.592Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
