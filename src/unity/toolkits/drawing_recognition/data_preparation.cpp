@@ -10,137 +10,144 @@
 #include <logger/assertions.hpp>
 #include <image/image_type.hpp>
 #include <util/sys_util.hpp>
+#ifdef __APPLE__
+#include <CoreGraphics/CoreGraphics.h>
+#endif // __APPLE__
 
 #include "data_preparation.hpp"
 
 namespace turi {
 namespace drawing_recognition {
 
-static constexpr int INTERMEDIATE_BITMAP_WIDTH = 256;
-static constexpr int INTERMEDIATE_BITMAP_HEIGHT = 256;
+static constexpr size_t INTERMEDIATE_BITMAP_WIDTH = 256;
+static constexpr size_t INTERMEDIATE_BITMAP_HEIGHT = 256;
 static constexpr size_t FINAL_BITMAP_WIDTH = 28;
 static constexpr size_t FINAL_BITMAP_HEIGHT = 28;
-static constexpr float STROKE_WIDTH = 20.0;
+static constexpr float STROKE_WIDTH = 20.0f;
 
 namespace {
 
-    class Point {
-    private:
-        float x;
-        float y;
-    public:
-        Point(float x_provided, float y_provided) {
-            x = x_provided;
-            y = y_provided;
-        }
+class Point {
+public:
+    Point(float x_provided, float y_provided) {
+        m_x = x_provided;
+        m_y = y_provided;
+    }
 
-        Point(const flex_dict &point_dict, 
-            int drawing_number = 0, 
-            int stroke_index = 0, 
-            int point_in_stroke_index = 0) {
-            bool found_x = false;
-            bool found_y = false;
-            for (auto key_value_pair: point_dict) {
-                const flex_string &key = key_value_pair.first.get<flex_string>();
-                const flex_float &value = key_value_pair.second.get<flex_float>();
-                if (key == "x") {
-                    found_x = true;
-                    x = value;
-                } else if (key == "y") {
-                    found_y = true;
-                    y = value;
-                } else {
-                    // some other unnecessary keys are also present, 
-                    // but we only need x and y so we will ignore the 
-                    // other keys
-                }
-            }
-
-            auto error_message = [drawing_number, \
-                point_in_stroke_index, \
-                stroke_index](std::string x_or_y) {
-                return ("In the drawing in row " + std::to_string(drawing_number) + 
-                    " the point at index " + std::to_string(point_in_stroke_index)+ 
-                    " in the " + std::to_string(stroke_index) + 
-                    "th stroke does not contain a " + x_or_y + 
-                    " coordinate. Please make sure the dictionary " + 
-                    " representing a point has both \"x\" and \"y\" keys.");
-            };
-
-            if (!found_x) {
-                log_and_throw(error_message("x"));
-            } else if (!found_y) {
-                log_and_throw(error_message("y"));
-            }
-        }
-
-        float get_x() {
-            return x;
-        }
-
-        float get_y() {
-            return y;
-        }
-    };
-
-    class Line {
-    private:
-        // ax + by + c = 0
-        float a;
-        float b;
-        float c;
-    public:
-        Line(const flex_dict &p1, const flex_dict &p2) {
-            Point P1(p1);
-            Point P2(p2);
-            float start_x = P1.get_x();
-            float start_y = P1.get_y();
-            float end_x = P2.get_x();
-            float end_y = P2.get_y();
-            if (start_x == end_x) {
-                a = std::numeric_limits<float>::max();
+    Point(const flex_dict &point_dict, 
+        int drawing_number = 0, 
+        int stroke_index = 0, 
+        int point_in_stroke_index = 0) {
+        bool found_x = false;
+        bool found_y = false;
+        for (const auto& key_value_pair: point_dict) {
+            const flex_string &key = key_value_pair.first.get<flex_string>();
+            const flex_float &value = key_value_pair.second.get<flex_float>();
+            if (key == "x") {
+                found_x = true;
+                m_x = value;
+            } else if (key == "y") {
+                found_y = true;
+                m_y = value;
             } else {
-                a = ((float)(end_y - start_y))/((float)(end_x - start_x));
+                // some other unnecessary keys are also present, 
+                // but we only need x and y so we will ignore the 
+                // other keys
             }
-            b = -1;
-            c = start_y - a * start_x;
         }
 
-        float distance_to_point(const flex_dict &point) {
-            Point P(point);
-            float x = P.get_x();
-            float y = P.get_y();
-            float distance = (float)(fabs(a*x+b*y+c))/sqrt(a*a+b*b);
-            return floorf(distance);
+        auto error_message = [drawing_number,
+            point_in_stroke_index,
+            stroke_index](const char *x_or_y) {
+            return ("In the drawing in row " + std::to_string(drawing_number) + 
+                " the point at index " + std::to_string(point_in_stroke_index)+ 
+                " in the " + std::to_string(stroke_index) + 
+                "th stroke does not contain a " + x_or_y + 
+                " coordinate. Please make sure the dictionary " + 
+                " representing a point has both \"x\" and \"y\" keys.");
+        };
+
+        if (!found_x) {
+            log_and_throw(error_message("x"));
+        } else if (!found_y) {
+            log_and_throw(error_message("y"));
         }
-    };
+    }
+
+    float get_x() {
+        return m_x;
+    }
+
+    float get_y() {
+        return m_y;
+    }
+private:
+    float m_x;
+    float m_y;
+};
+
+class Line {
+public:
+    Line(const flex_dict &p1, const flex_dict &p2) {
+        Point P1(p1);
+        Point P2(p2);
+        float start_x = P1.get_x();
+        float start_y = P1.get_y();
+        float end_x = P2.get_x();
+        float end_y = P2.get_y();
+        if (start_x == end_x) {
+            m_a = std::numeric_limits<float>::max();
+        } else {
+            m_a = (end_y - start_y)/(end_x - start_x);
+        }
+        m_b = -1;
+        m_c = start_y - m_a * start_x;
+    }
+
+    float distance_to_point(const flex_dict &point) {
+        Point P(point);
+        float x = P.get_x();
+        float y = P.get_y();
+        float distance = (fabs(m_a * x + m_b * y + m_c))/sqrtf(
+            m_a * m_a + m_b * m_b);
+        return floorf(distance);
+    }
+private:
+    // ax + by + c = 0
+    float m_a;
+    float m_b;
+    float m_c;
+};
 
 } // namespace
 
 /* Ramer Douglas Peucker Algorithm:
  * https://en.wikipedia.org/wiki/Ramer–Douglas–Peucker_algorithm
  */
-flex_list ramer_douglas_peucker(flex_list &stroke, 
+flex_list ramer_douglas_peucker(
     flex_list::iterator begin, 
     flex_list::iterator end, 
     float epsilon) {
     float dmax = 0;
     flex_list compressed_stroke;
-    const flex_dict &first_point = (*begin).get<flex_dict>();
-    const flex_dict &last_point = (*(end-1)).get<flex_dict>();
+    if (begin == end) {
+        return compressed_stroke;
+    }
+    const flex_dict &first_point = begin->get<flex_dict>();
+    const flex_dict &last_point = (end-1)->get<flex_dict>();
     Line L(first_point, last_point);
     flex_list::iterator index_iterator;
     for (auto it = begin; it != end; it++) {
-        float d = L.distance_to_point((*it).get<flex_dict>());
+        float d = L.distance_to_point(it->get<flex_dict>());
         if (d > dmax) {
             index_iterator = it;
             dmax = d;
         }
     }
     if (dmax > epsilon) {
-        compressed_stroke = ramer_douglas_peucker(stroke, 
+        compressed_stroke = ramer_douglas_peucker(
             begin, index_iterator, epsilon);
-        flex_list rec_results_2 = ramer_douglas_peucker(stroke, 
+        flex_list rec_results_2 = ramer_douglas_peucker(
             index_iterator, end, epsilon);
         compressed_stroke.insert(compressed_stroke.end(), 
             rec_results_2.begin(), rec_results_2.end());
@@ -153,10 +160,10 @@ flex_list ramer_douglas_peucker(flex_list &stroke,
 
 flex_list simplify_drawing(flex_list raw_drawing, int row_number) {
     size_t num_strokes = raw_drawing.size();
-    size_t min_x = std::numeric_limits<size_t>::max();
-    size_t max_x = 0;
-    size_t min_y = std::numeric_limits<size_t>::max();
-    size_t max_y = 0;
+    float min_x = std::numeric_limits<float>::max();
+    float max_x = 0;
+    float min_y = std::numeric_limits<float>::max();
+    float max_y = 0;
     flex_list simplified_drawing;
     // Compute bounds of the drawing
     for (size_t i = 0; i < num_strokes; i++) {
@@ -166,10 +173,10 @@ flex_list simplify_drawing(flex_list raw_drawing, int row_number) {
             Point P(point, row_number, i, j);
             float x = P.get_x();
             float y = P.get_y();
-            min_x = std::min((size_t)x, min_x);
-            max_x = std::max((size_t)x, max_x);
-            min_y = std::min((size_t)y, min_y);
-            max_y = std::max((size_t)y, max_y);
+            min_x = std::min(x, min_x);
+            max_x = std::max(x, max_x);
+            min_y = std::min(y, min_y);
+            max_y = std::max(y, max_y);
         }
     }
     // Align the drawing to top-left corner and scale to [0,255]
@@ -183,13 +190,13 @@ flex_list simplify_drawing(flex_list raw_drawing, int row_number) {
             Point P(point);
             if (max_x == min_x) {
                 // vertical straight line
-                new_x = (float)min_x;
+                new_x = min_x;
             } else {
                 new_x = ((P.get_x() - min_x) * 255.0) / (max_x - min_x);
             }
             if (max_y == min_y) {
                 // horizontal straight line
-                new_y = (float)min_y;
+                new_y = min_y;
             } else {
                 new_y = ((P.get_y() - min_y) * 255.0) / (max_y - min_y);
             }
@@ -199,11 +206,12 @@ flex_list simplify_drawing(flex_list raw_drawing, int row_number) {
             new_stroke.push_back(new_point);
         }
         // Apply RDP Line Algorithm
-        simplified_drawing.push_back(ramer_douglas_peucker(
-            new_stroke, 
-            new_stroke.begin(),
-            new_stroke.end(),
-            2.0));
+        if (stroke.size() > 0) {
+            simplified_drawing.push_back(ramer_douglas_peucker( 
+                new_stroke.begin(),
+                new_stroke.end(),
+                2.0));
+        }
     }
     return simplified_drawing;
 }
@@ -298,7 +306,6 @@ flex_image blur_bitmap(flex_nd_vec bitmap, int ksize) {
 }
 
 #ifdef __APPLE__
-#include <CoreGraphics/CoreGraphics.h>
 flex_image rasterize_on_mac(flex_list simplified_drawing) {
     size_t num_strokes = simplified_drawing.size();
     int MAC_OS_STRIDE = 64;
@@ -375,7 +382,7 @@ flex_image rasterize(flex_list simplified_drawing) {
 #ifdef __APPLE__
     return rasterize_on_mac(simplified_drawing);
 #endif // __APPLE__
-    std::vector<size_t> intermediate_bitmap_shape {1, (size_t)INTERMEDIATE_BITMAP_WIDTH, (size_t)INTERMEDIATE_BITMAP_HEIGHT};
+    std::vector<size_t> intermediate_bitmap_shape {1, INTERMEDIATE_BITMAP_WIDTH, INTERMEDIATE_BITMAP_HEIGHT};
     flex_nd_vec intermediate_bitmap(intermediate_bitmap_shape, 0.0);
     for (size_t i = 0; i < num_strokes; i++) {
         const flex_list &stroke = simplified_drawing[i].get<flex_list>();
