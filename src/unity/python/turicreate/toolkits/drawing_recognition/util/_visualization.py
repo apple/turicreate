@@ -4,7 +4,6 @@
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 import turicreate as _tc
-import numpy as _np
 from turicreate import extensions as _extensions
 
 def draw_strokes(stroke_based_drawings):
