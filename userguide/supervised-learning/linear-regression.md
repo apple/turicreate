@@ -94,7 +94,7 @@ The attributes of all Turi Create models, which include training statistics, mod
 hyper-parameters, and model results can be accessed in the same way as python
 dictionaries.
 
-###### <a name="interpreting-results">Interpreting results</a> 
+###### <a name="interpreting-results"></a>Interpreting results 
 
 Linear regression can provide valuable insight about the relationships between
 the target and feature columns in your data, revealing why your model returns
@@ -136,7 +136,7 @@ categorical features, lists, and dictionaries. In the SFrame above, there is an
 extra column for `standard errors` on the estimated coefficients (see section
 below for a more detailed explanation).
 
-###### <a name="standard-errors"> Standard-errors</a>
+###### <a name="standard-errors"></a> Standard-errors
 
 The standard error is the empirical standard deviation on the estimated
 coefficient. For example, a coefficient of 1 with a standard error of 0.5
@@ -152,7 +152,7 @@ coefficients. If standard errors cannot be estimated, a column of `None` values
 are returned.
 
 
-######  <a name="categorical-features">Categorical features</a> 
+######  <a name="categorical-features"></a>Categorical features 
 
 Categorical variables are features that can take one of a limited, and usually
 fixed, number of possible values. Each category is referred to as a level. As an
@@ -238,7 +238,7 @@ You can use print_rows(num_rows=m, num_columns=n) to print more rows and columns
 ```
 
 
-######  <a name="sparse-features"> Sparse features</a>
+######  <a name="sparse-features"></a> Sparse features
 
 Sparsity is one of the most important things to consider when working with
 a lot of data. Sparse features are encoded using a dictionary where the keys
@@ -324,7 +324,7 @@ Note: Only the head of the SFrame is printed.
 You can use print_rows(num_rows=m, num_columns=n) to print more rows and columns.
 ```
 
-######  <a name="list-features"> List features</a>
+######  <a name="list-features"> </a> List features
 
 Turi Create can also handle list of numerical values as features without
 preprocessing. The following illustration shows that the numeric-list feature
@@ -398,7 +398,7 @@ Number of coefficients      : 8
 [8 rows x 3 columns]
 ```
 
-######  <a name="feature-rescaling"> Feature rescaling</a>
+######  <a name="feature-rescaling"> </a>Feature rescaling
 
 Feature rescaling is the process of scaling individual features to be of the
 same scale. This process is particularly useful when features vary widely in
@@ -422,7 +422,7 @@ model = tc.linear_regression.create(train_data, target='stars',
 ```
 
 
-######  <a name="choosing-the-solver"> Choosing the solver</a>
+######  <a name="choosing-the-solver"> </a>Choosing the solver
 
 The optimization used to create the model is automatically picked based on the input data from a carefully engineered collection
 of methods. The newton
@@ -556,7 +556,7 @@ new_data = tc.SFrame({'business_avg_stars': [30.0],
 prediction = model.predict(new_data)
 ```
 
-######  <a name="regularizing-models"> Regularizing Models (Lasso, Ridge, and Elastic Net regression)</a>
+######  <a name="regularizing-models"></a> Regularizing Models (Lasso, Ridge, and Elastic Net regression)
 
 Regularization is the process of using problem structure to solve ill-posed
 problems or to prevent overfitting. The structure is imposed by adding a penalty

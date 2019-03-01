@@ -82,7 +82,7 @@ results = model.evaluate(test_data)
 
 Refer to the chapter on linear regression for the following features:
 
-* [Accessing attributes of the model](linear-regression.md#accessing-attributes-of-the-model-access)
+* [Accessing attributes of the model](linear-regression.md#accessing-attributes-of-the-model)
 * [Interpreting results](linear-regression.md#interpreting-results)
 * [Using categorical features](linear-regression.md#categorical-features)
 * [Sparse features](linear-regression.md#sparse-features)
