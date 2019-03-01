@@ -154,7 +154,7 @@ pred_margin = model.predict(test_data, output_type = "margin")        # Margins
 ```
 
 
-######  <a name="logregr-evaluation"> Evaluating Results</a>
+######  <a name="evaluating-results"> Evaluating Results</a>
 
 We can also evaluate our predictions by comparing them to known ratings. The
 results are evaluated using two metrics:
@@ -217,7 +217,7 @@ false_negatives = test_data[false_negative_filter]
 false_positives = test_data[false_positive_filter]
 ```
 
-######  <a name="logregr-imbalanced-data"> Working with imbalanced data</a>
+######  <a name="working-with-imbalanced-data"> Working with imbalanced data</a>
 
 Many difficult **real-world** problems have imbalanced data, where at least one
 class is under-represented. Turi Create models can handle the imbalanced data by
@@ -238,7 +238,7 @@ model = tc.logistic_classifier.create(train_data, target='label',
                                       class_weights = 'auto')
 ```
 
-#####  <a name="logregr-multiclass">Multiclass Classification</a> 
+#####  <a name="multiclass-classification">Multiclass Classification</a> 
 
 Multiclass classification is the problem of classifying instances into one of
 many (i.e more than two) possible instances. As an example, binary
