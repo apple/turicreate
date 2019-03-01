@@ -173,8 +173,8 @@ flex_list rasterize(flex_list simplified_drawing) {
     int MAC_OS_STRIDE = 64;
     int INTERMEDIATE_BITMAP_WIDTH = 256;
     int INTERMEDIATE_BITMAP_HEIGHT = 256;
-    int FINAL_BITMAP_WIDTH = 28;
-    int FINAL_BITMAP_HEIGHT = 28;
+    size_t FINAL_BITMAP_WIDTH = 28;
+    size_t FINAL_BITMAP_HEIGHT = 28;
     float STROKE_WIDTH = 20.0;
     size_t num_strokes = simplified_drawing.size();
     flex_list final_bitmap; // 1 x 28 x 28
