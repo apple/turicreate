@@ -10,9 +10,6 @@
 #include <logger/assertions.hpp>
 #include <image/image_type.hpp>
 #include <util/sys_util.hpp>
-#ifdef __APPLE__
-#include <CoreGraphics/CoreGraphics.h>
-#endif // __APPLE__
 
 #include "data_preparation.hpp"
 
@@ -32,6 +29,11 @@ namespace {
         float x;
         float y;
     public:
+        Point(float x_provided, float y_provided) {
+            x = x_provided;
+            y = y_provided;
+        }
+
         Point(const flex_dict &point_dict, 
             int drawing_number = 0, 
             int stroke_index = 0, 
@@ -223,25 +225,31 @@ void paint_point(flex_nd_vec &bitmap, int x, int y, int pad) {
 
 flex_nd_vec paint_stroke(
     flex_nd_vec bitmap, Point start, Point end, float stroke_width) {
-    if (start.get_x() > end.get_x()) {
+    bool along_x;
+    float slope;
+    if (floorf(end.get_x()) == floorf(start.get_x())) {
+        slope = std::numeric_limits<float>::max();
+    } else {
+        slope = (end.get_y() - start.get_y())/(end.get_x() - start.get_x());
+    }
+    int pad = (int)(stroke_width/2);
+    along_x = (fabs(slope) < 1);
+    if ((along_x && (start.get_x() > end.get_x())) 
+        || (!along_x && (start.get_y() > end.get_y()))) {
         std::swap(start, end);
     }
-    float slope = (end.get_y() - start.get_y())/(end.get_x() - start.get_x());
     int x1 = (int)(start.get_x());
     int y1 = (int)(start.get_y());
     int x2 = (int)(end.get_x());
     int y2 = (int)(end.get_y());
-    int pad = (int)(stroke_width/2);
-    if (x1 == x2) {
-        // just paint the y axis
-        int min_y = std::min(y1, y2);
-        int max_y = std::max(y1, y2);
-        for (int y = min_y; y < max_y; y++) {
-            paint_point(bitmap, x1, y, pad);
+    if (along_x) {
+        for (int x = x1; x <= x2; x++) {
+            int y = (int)(slope * (x - x1) + y1);
+            paint_point(bitmap, x, y, pad);
         }
     } else {
-        for (int x = x1; x < x2; x++) {
-            int y = (int)(slope * (x - x1) + y1);
+        for (int y = y1; y <= y2; y++) {
+            int x = (int)(x1 + ((y - y1) / slope));
             paint_point(bitmap, x, y, pad);
         }
     }
@@ -289,6 +297,8 @@ flex_image blur_bitmap(flex_nd_vec bitmap, int ksize) {
         // last argument is turi::Format::RAW_ARRAY, which has a value of 2
 }
 
+#ifdef __APPLE__
+#include <CoreGraphics/CoreGraphics.h>
 flex_image rasterize_on_mac(flex_list simplified_drawing) {
     size_t num_strokes = simplified_drawing.size();
     int MAC_OS_STRIDE = 64;
@@ -357,6 +367,7 @@ flex_image rasterize_on_mac(flex_list simplified_drawing) {
         2);                                         // format
         // last argument is turi::Format::RAW_ARRAY, which has a value of 2
 }
+#endif // __APPLE__
 
 flex_image rasterize(flex_list simplified_drawing) {
     flex_image final_bitmap; // 1 x 28 x 28
