@@ -11,7 +11,6 @@ from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits import evaluation as _evaluation
 import turicreate.toolkits._internal_utils as _tkutl
-from ._sframe_loader import SFrameRecognitionIter as _SFrameRecognitionIter
 from .. import _mxnet_utils
 from turicreate import extensions as _extensions
 
@@ -39,6 +38,7 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap",
     import mxnet as _mx
     from mxnet import autograd as _autograd
     from ._model_architecture import Model as _Model
+    from ._sframe_loader import SFrameRecognitionIter as _SFrameRecognitionIter
     
     start_time = _time.time()
 
@@ -240,6 +240,7 @@ class DrawingRecognition(_CustomModel):
         """
 
         import mxnet as _mx
+        from ._sframe_loader import SFrameRecognitionIter as _SFrameRecognitionIter
 
         is_stroke_input = (input_dataset[self.feature].dtype != _tc.Image)
 
