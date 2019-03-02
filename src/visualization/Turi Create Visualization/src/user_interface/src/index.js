@@ -104,7 +104,7 @@ window.setProtoMessage = function setProtoMessage(value){
     var decoded = ParcelMessage.decode(buffer);
     
     if(decoded.hasOwnProperty('metadata')){
-        component_rendered = ReactDOM.render(<TCAnnotate />, document.getElementById('annotate_viz'));
+        component_rendered = ReactDOM.render(<TCAnnotate total={1000}/>, document.getElementById('annotate_viz'));
         spec_type = SpecType.annotate;
     }
 }

@@ -21,8 +21,35 @@
 		FC9066011F425B4800AE3881 /* AppData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC9066001F425B4800AE3881 /* AppData.swift */; };
 		FCB8DFE3206F1756001A7089 /* index.css in Resources */ = {isa = PBXBuildFile; fileRef = FCB8DFE2206F1756001A7089 /* index.css */; };
 		FCBFA19221EC6AB5002B48B3 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FCBFA19121EC6AB5002B48B3 /* index.js */; };
-		FCE2E1D8222A0D3B00A58EF0 /* index.scss in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1D6222A0D3B00A58EF0 /* index.scss */; };
 		FCE2E1D9222A0D3B00A58EF0 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1D7222A0D3B00A58EF0 /* index.js */; };
+		FCE2E204222A264300A58EF0 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1DC222A264200A58EF0 /* index.js */; };
+		FCE2E205222A264300A58EF0 /* index.module.scss in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1DD222A264200A58EF0 /* index.module.scss */; };
+		FCE2E206222A264300A58EF0 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1DE222A264200A58EF0 /* index.js */; };
+		FCE2E207222A264300A58EF0 /* index.module.scss in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1DF222A264200A58EF0 /* index.module.scss */; };
+		FCE2E208222A264300A58EF0 /* swap.svg in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1E1222A264200A58EF0 /* swap.svg */; };
+		FCE2E209222A264300A58EF0 /* utils.scss in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1E2222A264200A58EF0 /* utils.scss */; };
+		FCE2E20A222A264300A58EF0 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1E4222A264300A58EF0 /* index.js */; };
+		FCE2E20B222A264300A58EF0 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1E6222A264300A58EF0 /* index.js */; };
+		FCE2E20C222A264300A58EF0 /* index.module.scss in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1E7222A264300A58EF0 /* index.module.scss */; };
+		FCE2E20D222A264300A58EF0 /* index.module.scss in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1E8222A264300A58EF0 /* index.module.scss */; };
+		FCE2E20E222A264300A58EF0 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1EB222A264300A58EF0 /* index.js */; };
+		FCE2E20F222A264300A58EF0 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1ED222A264300A58EF0 /* index.js */; };
+		FCE2E210222A264300A58EF0 /* index.module.scss in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1EE222A264300A58EF0 /* index.module.scss */; };
+		FCE2E211222A264300A58EF0 /* index.module.scss in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1EF222A264300A58EF0 /* index.module.scss */; };
+		FCE2E212222A264300A58EF0 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1F0222A264300A58EF0 /* index.js */; };
+		FCE2E213222A264300A58EF0 /* index.module.scss in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1F1222A264300A58EF0 /* index.module.scss */; };
+		FCE2E214222A264300A58EF0 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1F3222A264300A58EF0 /* index.js */; };
+		FCE2E215222A264300A58EF0 /* index.module.scss in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1F4222A264300A58EF0 /* index.module.scss */; };
+		FCE2E216222A264300A58EF0 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1F6222A264300A58EF0 /* index.js */; };
+		FCE2E217222A264300A58EF0 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1F8222A264300A58EF0 /* index.js */; };
+		FCE2E218222A264300A58EF0 /* index.module.scss in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1F9222A264300A58EF0 /* index.module.scss */; };
+		FCE2E219222A264300A58EF0 /* index.module.scss in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1FA222A264300A58EF0 /* index.module.scss */; };
+		FCE2E21A222A264300A58EF0 /* right_arrow.svg in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1FC222A264300A58EF0 /* right_arrow.svg */; };
+		FCE2E21B222A264300A58EF0 /* left_arrow.svg in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1FD222A264300A58EF0 /* left_arrow.svg */; };
+		FCE2E21C222A264300A58EF0 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1FF222A264300A58EF0 /* index.js */; };
+		FCE2E21D222A264300A58EF0 /* index.module.scss in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E200222A264300A58EF0 /* index.module.scss */; };
+		FCE2E21E222A264300A58EF0 /* error.svg in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E202222A264300A58EF0 /* error.svg */; };
+		FCE2E21F222A264300A58EF0 /* index.module.scss in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E203222A264300A58EF0 /* index.module.scss */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,8 +91,35 @@
 		FCB8DFE4206F187D001A7089 /* index.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
 		FCBFA19121EC6AB5002B48B3 /* index.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
 		FCBFA19321EC6AC5002B48B3 /* index.scss */ = {isa = PBXFileReference; lastKnownFileType = text; path = index.scss; sourceTree = "<group>"; };
-		FCE2E1D6222A0D3B00A58EF0 /* index.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.scss; sourceTree = "<group>"; };
 		FCE2E1D7222A0D3B00A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCE2E1DC222A264200A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCE2E1DD222A264200A58EF0 /* index.module.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.module.scss; sourceTree = "<group>"; };
+		FCE2E1DE222A264200A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCE2E1DF222A264200A58EF0 /* index.module.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.module.scss; sourceTree = "<group>"; };
+		FCE2E1E1222A264200A58EF0 /* swap.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = swap.svg; sourceTree = "<group>"; };
+		FCE2E1E2222A264200A58EF0 /* utils.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = utils.scss; sourceTree = "<group>"; };
+		FCE2E1E4222A264300A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCE2E1E6222A264300A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCE2E1E7222A264300A58EF0 /* index.module.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.module.scss; sourceTree = "<group>"; };
+		FCE2E1E8222A264300A58EF0 /* index.module.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.module.scss; sourceTree = "<group>"; };
+		FCE2E1EB222A264300A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCE2E1ED222A264300A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCE2E1EE222A264300A58EF0 /* index.module.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.module.scss; sourceTree = "<group>"; };
+		FCE2E1EF222A264300A58EF0 /* index.module.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.module.scss; sourceTree = "<group>"; };
+		FCE2E1F0222A264300A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCE2E1F1222A264300A58EF0 /* index.module.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.module.scss; sourceTree = "<group>"; };
+		FCE2E1F3222A264300A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCE2E1F4222A264300A58EF0 /* index.module.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.module.scss; sourceTree = "<group>"; };
+		FCE2E1F6222A264300A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCE2E1F8222A264300A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCE2E1F9222A264300A58EF0 /* index.module.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.module.scss; sourceTree = "<group>"; };
+		FCE2E1FA222A264300A58EF0 /* index.module.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.module.scss; sourceTree = "<group>"; };
+		FCE2E1FC222A264300A58EF0 /* right_arrow.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = right_arrow.svg; sourceTree = "<group>"; };
+		FCE2E1FD222A264300A58EF0 /* left_arrow.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = left_arrow.svg; sourceTree = "<group>"; };
+		FCE2E1FF222A264300A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCE2E200222A264300A58EF0 /* index.module.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.module.scss; sourceTree = "<group>"; };
+		FCE2E202222A264300A58EF0 /* error.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = error.svg; sourceTree = "<group>"; };
+		FCE2E203222A264300A58EF0 /* index.module.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.module.scss; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -279,10 +333,149 @@
 		FCE2E1D5222A0D3B00A58EF0 /* Annotate */ = {
 			isa = PBXGroup;
 			children = (
-				FCE2E1D6222A0D3B00A58EF0 /* index.scss */,
+				FCE2E1FE222A264300A58EF0 /* ErrorBar */,
+				FCE2E203222A264300A58EF0 /* index.module.scss */,
+				FCE2E1E3222A264300A58EF0 /* InfiniteScroll */,
+				FCE2E1E9222A264300A58EF0 /* LabelContainer */,
+				FCE2E1F2222A264300A58EF0 /* LabelModal */,
+				FCE2E1F5222A264300A58EF0 /* SingleImage */,
+				FCE2E1DA222A264200A58EF0 /* StatusBar */,
+				FCE2E1E2222A264200A58EF0 /* utils.scss */,
 				FCE2E1D7222A0D3B00A58EF0 /* index.js */,
 			);
 			path = Annotate;
+			sourceTree = "<group>";
+		};
+		FCE2E1DA222A264200A58EF0 /* StatusBar */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1DB222A264200A58EF0 /* ToggleButton */,
+				FCE2E1DE222A264200A58EF0 /* index.js */,
+				FCE2E1DF222A264200A58EF0 /* index.module.scss */,
+				FCE2E1E0222A264200A58EF0 /* assets */,
+			);
+			path = StatusBar;
+			sourceTree = "<group>";
+		};
+		FCE2E1DB222A264200A58EF0 /* ToggleButton */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1DC222A264200A58EF0 /* index.js */,
+				FCE2E1DD222A264200A58EF0 /* index.module.scss */,
+			);
+			path = ToggleButton;
+			sourceTree = "<group>";
+		};
+		FCE2E1E0222A264200A58EF0 /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1E1222A264200A58EF0 /* swap.svg */,
+			);
+			path = assets;
+			sourceTree = "<group>";
+		};
+		FCE2E1E3222A264300A58EF0 /* InfiniteScroll */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1E4222A264300A58EF0 /* index.js */,
+				FCE2E1E5222A264300A58EF0 /* ImageContainer */,
+				FCE2E1E8222A264300A58EF0 /* index.module.scss */,
+			);
+			path = InfiniteScroll;
+			sourceTree = "<group>";
+		};
+		FCE2E1E5222A264300A58EF0 /* ImageContainer */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1E6222A264300A58EF0 /* index.js */,
+				FCE2E1E7222A264300A58EF0 /* index.module.scss */,
+			);
+			path = ImageContainer;
+			sourceTree = "<group>";
+		};
+		FCE2E1E9222A264300A58EF0 /* LabelContainer */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1EA222A264300A58EF0 /* Labels */,
+				FCE2E1F0222A264300A58EF0 /* index.js */,
+				FCE2E1F1222A264300A58EF0 /* index.module.scss */,
+			);
+			path = LabelContainer;
+			sourceTree = "<group>";
+		};
+		FCE2E1EA222A264300A58EF0 /* Labels */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1EB222A264300A58EF0 /* index.js */,
+				FCE2E1EC222A264300A58EF0 /* ProgressBar */,
+				FCE2E1EF222A264300A58EF0 /* index.module.scss */,
+			);
+			path = Labels;
+			sourceTree = "<group>";
+		};
+		FCE2E1EC222A264300A58EF0 /* ProgressBar */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1ED222A264300A58EF0 /* index.js */,
+				FCE2E1EE222A264300A58EF0 /* index.module.scss */,
+			);
+			path = ProgressBar;
+			sourceTree = "<group>";
+		};
+		FCE2E1F2222A264300A58EF0 /* LabelModal */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1F3222A264300A58EF0 /* index.js */,
+				FCE2E1F4222A264300A58EF0 /* index.module.scss */,
+			);
+			path = LabelModal;
+			sourceTree = "<group>";
+		};
+		FCE2E1F5222A264300A58EF0 /* SingleImage */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1F6222A264300A58EF0 /* index.js */,
+				FCE2E1F7222A264300A58EF0 /* ImageLabeler */,
+				FCE2E1FA222A264300A58EF0 /* index.module.scss */,
+				FCE2E1FB222A264300A58EF0 /* assets */,
+			);
+			path = SingleImage;
+			sourceTree = "<group>";
+		};
+		FCE2E1F7222A264300A58EF0 /* ImageLabeler */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1F8222A264300A58EF0 /* index.js */,
+				FCE2E1F9222A264300A58EF0 /* index.module.scss */,
+			);
+			path = ImageLabeler;
+			sourceTree = "<group>";
+		};
+		FCE2E1FB222A264300A58EF0 /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1FC222A264300A58EF0 /* right_arrow.svg */,
+				FCE2E1FD222A264300A58EF0 /* left_arrow.svg */,
+			);
+			path = assets;
+			sourceTree = "<group>";
+		};
+		FCE2E1FE222A264300A58EF0 /* ErrorBar */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1FF222A264300A58EF0 /* index.js */,
+				FCE2E200222A264300A58EF0 /* index.module.scss */,
+				FCE2E201222A264300A58EF0 /* assets */,
+			);
+			path = ErrorBar;
+			sourceTree = "<group>";
+		};
+		FCE2E201222A264300A58EF0 /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E202222A264300A58EF0 /* error.svg */,
+			);
+			path = assets;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -345,13 +538,40 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FCE2E1D8222A0D3B00A58EF0 /* index.scss in Resources */,
+				FCE2E217222A264300A58EF0 /* index.js in Resources */,
+				FCE2E20B222A264300A58EF0 /* index.js in Resources */,
+				FCE2E208222A264300A58EF0 /* swap.svg in Resources */,
+				FCE2E21B222A264300A58EF0 /* left_arrow.svg in Resources */,
+				FCE2E214222A264300A58EF0 /* index.js in Resources */,
+				FCE2E21A222A264300A58EF0 /* right_arrow.svg in Resources */,
+				FCE2E210222A264300A58EF0 /* index.module.scss in Resources */,
 				FCBFA19221EC6AB5002B48B3 /* index.js in Resources */,
 				FCB8DFE3206F1756001A7089 /* index.css in Resources */,
+				FCE2E211222A264300A58EF0 /* index.module.scss in Resources */,
+				FCE2E21C222A264300A58EF0 /* index.js in Resources */,
+				FCE2E204222A264300A58EF0 /* index.js in Resources */,
+				FCE2E21F222A264300A58EF0 /* index.module.scss in Resources */,
 				FC76C48621F139A0008F52E5 /* Components in Resources */,
+				FCE2E20C222A264300A58EF0 /* index.module.scss in Resources */,
+				FCE2E206222A264300A58EF0 /* index.js in Resources */,
+				FCE2E20E222A264300A58EF0 /* index.js in Resources */,
+				FCE2E215222A264300A58EF0 /* index.module.scss in Resources */,
+				FCE2E21D222A264300A58EF0 /* index.module.scss in Resources */,
+				FCE2E20D222A264300A58EF0 /* index.module.scss in Resources */,
+				FCE2E20F222A264300A58EF0 /* index.js in Resources */,
+				FCE2E209222A264300A58EF0 /* utils.scss in Resources */,
 				FCE2E1D9222A0D3B00A58EF0 /* index.js in Resources */,
+				FCE2E219222A264300A58EF0 /* index.module.scss in Resources */,
+				FCE2E207222A264300A58EF0 /* index.module.scss in Resources */,
+				FCE2E212222A264300A58EF0 /* index.js in Resources */,
+				FCE2E205222A264300A58EF0 /* index.module.scss in Resources */,
+				FCE2E20A222A264300A58EF0 /* index.js in Resources */,
+				FCE2E213222A264300A58EF0 /* index.module.scss in Resources */,
 				9226E7C81F366F2E00C33A64 /* Assets.xcassets in Resources */,
 				9226E7CB1F366F2E00C33A64 /* Main.storyboard in Resources */,
+				FCE2E216222A264300A58EF0 /* index.js in Resources */,
+				FCE2E218222A264300A58EF0 /* index.module.scss in Resources */,
+				FCE2E21E222A264300A58EF0 /* error.svg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

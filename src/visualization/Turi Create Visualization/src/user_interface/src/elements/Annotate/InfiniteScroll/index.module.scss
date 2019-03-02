@@ -1,0 +1,16 @@
+@import "../utils.scss";
+
+.InfiniteScroll {
+    @include calculateSize;
+    overflow-y: scroll;
+    text-align: left;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #FF0000;
+}
