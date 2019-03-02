@@ -15,6 +15,7 @@ make_library(supervised_learning OBJECT
     random_forest.cpp
     decision_tree.cpp
     xgboost_error.cpp
+    xgboost_extension.cpp
     automatic_model_creation.cpp
     classifier_evaluations.cpp
     class_registrations.cpp

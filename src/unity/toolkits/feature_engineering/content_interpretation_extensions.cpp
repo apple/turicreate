@@ -17,8 +17,11 @@ EXPORT flex_string _infer_content_interpretation(gl_sarray data) {
   return infer_content_interpretation(data);
 }
 
-
-BEGIN_FUNCTION_REGISTRATION
-REGISTER_FUNCTION(_content_interpretation_valid, "data", "interpretation");
-REGISTER_FUNCTION(_infer_content_interpretation, "data");
-END_FUNCTION_REGISTRATION
+namespace turi {
+  namespace content_interpretation_extensions {
+    BEGIN_FUNCTION_REGISTRATION
+    REGISTER_FUNCTION(_content_interpretation_valid, "data", "interpretation");
+    REGISTER_FUNCTION(_infer_content_interpretation, "data");
+    END_FUNCTION_REGISTRATION
+  }
+}

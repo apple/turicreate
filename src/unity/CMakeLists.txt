@@ -1,6 +1,6 @@
 project(unity)
 
-subdirs(extensions
+subdirs(
   lib
   toolkits)
 
@@ -23,14 +23,6 @@ make_library(unity OBJECT
     eigen
     ${additional_unity_requirements} 
 )
-
-# Pull in all the libraries in the extensions directory.
-get_property(EXTENSIONS_LIST DIRECTORY "extensions" PROPERTY EXTENSIONS_LIST)
-
-foreach(loop_var ${EXTENSIONS_LIST})
-  message(STATUS "unity depending on extension ${loop_var}")
-  add_dependencies(unity ${loop_var})
-endforeach()
 
 set(unity_shared_deps
   "$<TARGET_OBJECTS:pylambda_worker>"

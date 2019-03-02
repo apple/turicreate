@@ -33,7 +33,7 @@ make_library(unity_core OBJECT
     gl_sarray.cpp
     gl_sframe.cpp
     image_util.cpp
-    ../extensions/additional_sframe_utilities.cpp
+    additional_sframe_utilities.cpp
     unity_sarray_builder.cpp
     unity_sframe_builder.cpp
     visualization/columnwise_summary.cpp

@@ -56,9 +56,12 @@ std::vector<std::string> _xgboost_dump_model(
   }
 }
 
-
-BEGIN_FUNCTION_REGISTRATION
-REGISTER_FUNCTION(_xgboost_feature_importance, "model");
-REGISTER_FUNCTION(_xgboost_dump_model, "model", "with_stats", "format");
-REGISTER_FUNCTION(_xgboost_get_tree, "model", "tree_id");
-END_FUNCTION_REGISTRATION
+namespace turi {
+  namespace xgboost_extension {
+    BEGIN_FUNCTION_REGISTRATION
+    REGISTER_FUNCTION(_xgboost_feature_importance, "model");
+    REGISTER_FUNCTION(_xgboost_dump_model, "model", "with_stats", "format");
+    REGISTER_FUNCTION(_xgboost_get_tree, "model", "tree_id");
+    END_FUNCTION_REGISTRATION
+  }
+}

@@ -186,8 +186,11 @@ void image_load_to_numpy(const image_type& img, size_t outptr_addr,
                        {img.m_height, img.m_width, img.m_channels}, true);
 }
 
-
-BEGIN_FUNCTION_REGISTRATION
-REGISTER_FUNCTION(sframe_load_to_numpy, "input", "outptr_addr", "outstrides", "outshape", "begin", "end");
-REGISTER_FUNCTION(image_load_to_numpy, "img", "outptr_addr", "outstrides");
-END_FUNCTION_REGISTRATION
+namespace turi {
+  namespace additional_sframe_utilities {
+    BEGIN_FUNCTION_REGISTRATION
+    REGISTER_FUNCTION(sframe_load_to_numpy, "input", "outptr_addr", "outstrides", "outshape", "begin", "end");
+    REGISTER_FUNCTION(image_load_to_numpy, "img", "outptr_addr", "outstrides");
+    END_FUNCTION_REGISTRATION
+  }
+}

@@ -2,6 +2,7 @@ project(unity_toolkits)
 
 make_library(unity_coreml_model_export OBJECT
   SOURCES
+    coreml_extension.cpp
     mldata_exporter.cpp
     xgboost_exporter.cpp
     linear_models_exporter.cpp

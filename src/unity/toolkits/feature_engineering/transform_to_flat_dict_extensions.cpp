@@ -34,11 +34,15 @@ EXPORT gl_sarray _to_sarray_of_flat_dictionaries(gl_sarray input,
                                         image_policy, datetime_policy);
 }
 
-BEGIN_FUNCTION_REGISTRATION
-REGISTER_FUNCTION(_to_flat_dict, "input", "seperator", "none_tag",
-                  "image_value_policy", "datetime_value_policy");
+namespace turi {
+  namespace transform_to_flat_dict_extensions {
+    BEGIN_FUNCTION_REGISTRATION
+    REGISTER_FUNCTION(_to_flat_dict, "input", "seperator", "none_tag",
+                      "image_value_policy", "datetime_value_policy");
 
-REGISTER_FUNCTION(_to_sarray_of_flat_dictionaries, "data", "seperator", "none_tag",
-                  "image_value_policy", "datetime_value_policy");
+    REGISTER_FUNCTION(_to_sarray_of_flat_dictionaries, "data", "seperator", "none_tag",
+                      "image_value_policy", "datetime_value_policy");
 
-END_FUNCTION_REGISTRATION
+    END_FUNCTION_REGISTRATION
+  }
+}

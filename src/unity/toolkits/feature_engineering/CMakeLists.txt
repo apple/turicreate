@@ -5,6 +5,7 @@ make_library(unity_feature_engineering OBJECT
     class_registrations.cpp
     dict_transform_utils.cpp
     transform_to_flat_dictionary.cpp
+    transform_to_flat_dict_extensions.cpp
     one_hot_encoder.cpp
     feature_binner.cpp
     sample_transformer.cpp
@@ -23,6 +24,7 @@ make_library(unity_feature_engineering OBJECT
     count_featurizer.cpp
     word_trimmer.cpp
     content_interpretation.cpp
+    content_interpretation_extensions.cpp
   REQUIRES
     unity_core
     unity_clustering

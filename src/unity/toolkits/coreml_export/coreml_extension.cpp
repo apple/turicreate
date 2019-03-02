@@ -103,11 +103,15 @@ void _linear_regression_export_as_model_asset(std::shared_ptr<supervised_learnin
   export_linear_regression_as_model_asset(filename, metadata, coefs, context);
 }
 
-BEGIN_FUNCTION_REGISTRATION
-REGISTER_FUNCTION(_xgboost_export_as_model_asset,
-    "model", "filename", "context");
-REGISTER_FUNCTION(_linear_svm_export_as_model_asset, "model", "filename", "context");
-REGISTER_FUNCTION(_logistic_classifier_export_as_model_asset,
-    "model", "filename", "context");
-REGISTER_FUNCTION(_linear_regression_export_as_model_asset, "model", "filename", "context");
-END_FUNCTION_REGISTRATION
+namespace turi {
+  namespace coreml_extension {
+    BEGIN_FUNCTION_REGISTRATION
+    REGISTER_FUNCTION(_xgboost_export_as_model_asset,
+        "model", "filename", "context");
+    REGISTER_FUNCTION(_linear_svm_export_as_model_asset, "model", "filename", "context");
+    REGISTER_FUNCTION(_logistic_classifier_export_as_model_asset,
+        "model", "filename", "context");
+    REGISTER_FUNCTION(_linear_regression_export_as_model_asset, "model", "filename", "context");
+    END_FUNCTION_REGISTRATION
+  }
+}
