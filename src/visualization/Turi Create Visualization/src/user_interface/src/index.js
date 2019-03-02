@@ -106,7 +106,6 @@ window.setProtoMessage = function setProtoMessage(value){
     if(decoded.hasOwnProperty('metadata')){
         component_rendered = ReactDOM.render(<TCAnnotate />, document.getElementById('annotate_viz'));
         spec_type = SpecType.annotate;
-        //document.getElementById('annotate_viz').textContent = JSON.stringify(decoded);
     }
 }
 
@@ -118,9 +117,6 @@ window.updateData = function updateData(data) {
         case SpecType.evaluate:
             document.getElementById("loading_container").style.display = "none";
             component_rendered.updateData(data);
-            break;
-        case SpecType.annotate:
-            console.log("annotate");
             break;
         default:
             console.log("default");
