@@ -278,6 +278,23 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
         }
     }
     
+    public func send_proto(protobuf: String) {
+        DispatchQueue.main.async {
+            if(self.loaded){
+                let updateJS = String(format: "setProtoMessage(\"%@\");", protobuf);
+                self.view.evaluateJavaScript(updateJS, completionHandler: { (value, err) in
+                    if err != nil {
+                        // if we got here, we got a JS error
+                        log(err.debugDescription)
+                        assert(false)
+                    }
+                });
+            }else{
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: { self.send_proto(protobuf: protobuf) })
+            }
+        }
+    }
+    
     public func save_data() {
         
         // open save panel

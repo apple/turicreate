@@ -1,7 +1,7 @@
-#include "image_classification.hpp"
-#include <functional>
-
 #include <unity/lib/gl_sarray.hpp>
+
+#include <functional>
+#include <unity/lib/annotation/image_classification.hpp>
 
 namespace turi {
 namespace annotate {
@@ -134,7 +134,8 @@ void ImageClassification::_addAnnotationToSFrame(size_t index,
                                                  std::string label) {
   /* Assert that the column type is indeed of type flex_enum::STRING */
   size_t annotation_column_index = m_data->column_index(m_annotation_column);
-  DASSERT_EQ(m_data->dtype().at(annotation_column_index), flex_type_enum::STRING);
+  DASSERT_EQ(m_data->dtype().at(annotation_column_index),
+             flex_type_enum::STRING);
 
   std::shared_ptr<unity_sarray> data_sarray =
       std::static_pointer_cast<unity_sarray>(
@@ -172,7 +173,8 @@ void ImageClassification::_addAnnotationToSFrame(size_t index,
 void ImageClassification::_addAnnotationToSFrame(size_t index, int label) {
   /* Assert that the column type is indeed of type flex_enum::INTEGER */
   size_t annotation_column_index = m_data->column_index(m_annotation_column);
-  DASSERT_EQ(m_data->dtype().at(annotation_column_index), flex_type_enum::INTEGER);
+  DASSERT_EQ(m_data->dtype().at(annotation_column_index),
+             flex_type_enum::INTEGER);
 
   std::shared_ptr<unity_sarray> data_sarray =
       std::static_pointer_cast<unity_sarray>(
@@ -211,6 +213,8 @@ annotate_spec::MetaData ImageClassification::metaData() {
   annotate_spec::MetaData meta_data;
   annotate_spec::ImageClassificationMeta image_classification_meta =
       meta_data.image_classification();
+
+  meta_data.set_type(annotate_spec::MetaData_AnnotationType::MetaData_AnnotationType_IMAGE_CLASSIFICATION);
 
   meta_data.set_num_examples(m_data->size());
 
@@ -271,6 +275,14 @@ ImageClassification::_filterAnnotationSFrame(size_t &start, size_t &end) {
 
   return std::static_pointer_cast<unity_sarray>(
       data_sarray->copy_range(start, 1, end));
+}
+
+std::shared_ptr<ImageClassification> create_image_classification_annotation(
+    const std::shared_ptr<unity_sframe> &data,
+    const std::vector<std::string> &data_columns,
+    const std::string &annotation_column) {
+  return std::make_shared<ImageClassification>(data, data_columns,
+                                               annotation_column);
 }
 
 } // namespace annotate

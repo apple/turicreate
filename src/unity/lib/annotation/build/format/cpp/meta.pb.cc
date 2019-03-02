@@ -128,6 +128,29 @@ struct StaticDescriptorInitializer {
 
 }  // namespace protobuf_meta_2eproto
 
+bool MetaData_AnnotationType_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+      return true;
+    default:
+      return false;
+  }
+}
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const MetaData_AnnotationType MetaData::ACTIVITY_CLASSIFICATION;
+const MetaData_AnnotationType MetaData::AUDIO_CLASSIFICATION;
+const MetaData_AnnotationType MetaData::DRAWING_CLASSIFICATION;
+const MetaData_AnnotationType MetaData::IMAGE_CLASSIFICATION;
+const MetaData_AnnotationType MetaData::OBJECT_DETECTION;
+const MetaData_AnnotationType MetaData::AnnotationType_MIN;
+const MetaData_AnnotationType MetaData::AnnotationType_MAX;
+const int MetaData::AnnotationType_ARRAYSIZE;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 // ===================================================================
 
@@ -2431,6 +2454,7 @@ ObjectDetectionMeta::LabelCase ObjectDetectionMeta::Label_case() const {
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int MetaData::kNumExamplesFieldNumber;
+const int MetaData::kTypeFieldNumber;
 const int MetaData::kActivityClassificationFieldNumber;
 const int MetaData::kAudioClassificationFieldNumber;
 const int MetaData::kDrawingClassificationFieldNumber;
@@ -2451,7 +2475,9 @@ MetaData::MetaData(const MetaData& from)
       _internal_metadata_(NULL),
       _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  num_examples_ = from.num_examples_;
+  ::memcpy(&num_examples_, &from.num_examples_,
+    reinterpret_cast<char*>(&type_) -
+    reinterpret_cast<char*>(&num_examples_) + sizeof(type_));
   clear_has_Type();
   switch (from.Type_case()) {
     case kActivityClassification: {
@@ -2482,7 +2508,8 @@ MetaData::MetaData(const MetaData& from)
 }
 
 void MetaData::SharedCtor() {
-  num_examples_ = GOOGLE_LONGLONG(0);
+  ::memset(&num_examples_, 0, reinterpret_cast<char*>(&type_) -
+    reinterpret_cast<char*>(&num_examples_) + sizeof(type_));
   clear_has_Type();
   _cached_size_ = 0;
 }
@@ -2549,7 +2576,8 @@ void MetaData::clear_Type() {
 
 void MetaData::Clear() {
 // @@protoc_insertion_point(message_clear_start:TuriCreate.Annotation.Specification.MetaData)
-  num_examples_ = GOOGLE_LONGLONG(0);
+  ::memset(&num_examples_, 0, reinterpret_cast<char*>(&type_) -
+    reinterpret_cast<char*>(&num_examples_) + sizeof(type_));
   clear_Type();
 }
 
@@ -2571,6 +2599,21 @@ bool MetaData::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
                  input, &num_examples_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .TuriCreate.Annotation.Specification.MetaData.AnnotationType type = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(16u)) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          set_type(static_cast< ::TuriCreate::Annotation::Specification::MetaData_AnnotationType >(value));
         } else {
           goto handle_unusual;
         }
@@ -2669,6 +2712,12 @@ void MetaData::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt64(1, this->num_examples(), output);
   }
 
+  // .TuriCreate.Annotation.Specification.MetaData.AnnotationType type = 2;
+  if (this->type() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      2, this->type(), output);
+  }
+
   // .TuriCreate.Annotation.Specification.ActivityClassificationMeta activity_classification = 100;
   if (has_activity_classification()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
@@ -2711,6 +2760,12 @@ size_t MetaData::ByteSizeLong() const {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::Int64Size(
         this->num_examples());
+  }
+
+  // .TuriCreate.Annotation.Specification.MetaData.AnnotationType type = 2;
+  if (this->type() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
   }
 
   switch (Type_case()) {
@@ -2775,6 +2830,9 @@ void MetaData::MergeFrom(const MetaData& from) {
   if (from.num_examples() != 0) {
     set_num_examples(from.num_examples());
   }
+  if (from.type() != 0) {
+    set_type(from.type());
+  }
   switch (from.Type_case()) {
     case kActivityClassification: {
       mutable_activity_classification()->::TuriCreate::Annotation::Specification::ActivityClassificationMeta::MergeFrom(from.activity_classification());
@@ -2819,6 +2877,7 @@ void MetaData::Swap(MetaData* other) {
 }
 void MetaData::InternalSwap(MetaData* other) {
   std::swap(num_examples_, other->num_examples_);
+  std::swap(type_, other->type_);
   std::swap(Type_, other->Type_);
   std::swap(_oneof_case_[0], other->_oneof_case_[0]);
   std::swap(_cached_size_, other->_cached_size_);
@@ -2843,6 +2902,20 @@ void MetaData::set_num_examples(::google::protobuf::int64 value) {
   
   num_examples_ = value;
   // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.MetaData.num_examples)
+}
+
+// .TuriCreate.Annotation.Specification.MetaData.AnnotationType type = 2;
+void MetaData::clear_type() {
+  type_ = 0;
+}
+::TuriCreate::Annotation::Specification::MetaData_AnnotationType MetaData::type() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.MetaData.type)
+  return static_cast< ::TuriCreate::Annotation::Specification::MetaData_AnnotationType >(type_);
+}
+void MetaData::set_type(::TuriCreate::Annotation::Specification::MetaData_AnnotationType value) {
+  
+  type_ = value;
+  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.MetaData.type)
 }
 
 // .TuriCreate.Annotation.Specification.ActivityClassificationMeta activity_classification = 100;

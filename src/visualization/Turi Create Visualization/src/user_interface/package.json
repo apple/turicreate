@@ -10,6 +10,7 @@
     "d3": "^5.0.0",
     "element-resize-event": "^2.0.9",
     "node-sass": "4.11.0",
+    "protobufjs": "^6.8.8",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-json-pretty": "^1.7.5",

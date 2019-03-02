@@ -28,6 +28,7 @@
 #include <google/protobuf/message_lite.h>
 #include <google/protobuf/repeated_field.h>  // IWYU pragma: export
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
+#include <google/protobuf/generated_enum_util.h>
 // @@protoc_insertion_point(includes)
 namespace TuriCreate {
 namespace Annotation {
@@ -77,6 +78,20 @@ struct TableStruct {
 void AddDescriptors();
 void InitDefaults();
 }  // namespace protobuf_meta_2eproto
+
+enum MetaData_AnnotationType {
+  MetaData_AnnotationType_ACTIVITY_CLASSIFICATION = 0,
+  MetaData_AnnotationType_AUDIO_CLASSIFICATION = 1,
+  MetaData_AnnotationType_DRAWING_CLASSIFICATION = 2,
+  MetaData_AnnotationType_IMAGE_CLASSIFICATION = 3,
+  MetaData_AnnotationType_OBJECT_DETECTION = 4,
+  MetaData_AnnotationType_MetaData_AnnotationType_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
+  MetaData_AnnotationType_MetaData_AnnotationType_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
+};
+bool MetaData_AnnotationType_IsValid(int value);
+const MetaData_AnnotationType MetaData_AnnotationType_AnnotationType_MIN = MetaData_AnnotationType_ACTIVITY_CLASSIFICATION;
+const MetaData_AnnotationType MetaData_AnnotationType_AnnotationType_MAX = MetaData_AnnotationType_OBJECT_DETECTION;
+const int MetaData_AnnotationType_AnnotationType_ARRAYSIZE = MetaData_AnnotationType_AnnotationType_MAX + 1;
 
 // ===================================================================
 
@@ -873,6 +888,27 @@ class MetaData : public ::google::protobuf::MessageLite /* @@protoc_insertion_po
 
   // nested types ----------------------------------------------------
 
+  typedef MetaData_AnnotationType AnnotationType;
+  static const AnnotationType ACTIVITY_CLASSIFICATION =
+    MetaData_AnnotationType_ACTIVITY_CLASSIFICATION;
+  static const AnnotationType AUDIO_CLASSIFICATION =
+    MetaData_AnnotationType_AUDIO_CLASSIFICATION;
+  static const AnnotationType DRAWING_CLASSIFICATION =
+    MetaData_AnnotationType_DRAWING_CLASSIFICATION;
+  static const AnnotationType IMAGE_CLASSIFICATION =
+    MetaData_AnnotationType_IMAGE_CLASSIFICATION;
+  static const AnnotationType OBJECT_DETECTION =
+    MetaData_AnnotationType_OBJECT_DETECTION;
+  static inline bool AnnotationType_IsValid(int value) {
+    return MetaData_AnnotationType_IsValid(value);
+  }
+  static const AnnotationType AnnotationType_MIN =
+    MetaData_AnnotationType_AnnotationType_MIN;
+  static const AnnotationType AnnotationType_MAX =
+    MetaData_AnnotationType_AnnotationType_MAX;
+  static const int AnnotationType_ARRAYSIZE =
+    MetaData_AnnotationType_AnnotationType_ARRAYSIZE;
+
   // accessors -------------------------------------------------------
 
   // int64 num_examples = 1;
@@ -880,6 +916,12 @@ class MetaData : public ::google::protobuf::MessageLite /* @@protoc_insertion_po
   static const int kNumExamplesFieldNumber = 1;
   ::google::protobuf::int64 num_examples() const;
   void set_num_examples(::google::protobuf::int64 value);
+
+  // .TuriCreate.Annotation.Specification.MetaData.AnnotationType type = 2;
+  void clear_type();
+  static const int kTypeFieldNumber = 2;
+  ::TuriCreate::Annotation::Specification::MetaData_AnnotationType type() const;
+  void set_type(::TuriCreate::Annotation::Specification::MetaData_AnnotationType value);
 
   // .TuriCreate.Annotation.Specification.ActivityClassificationMeta activity_classification = 100;
   bool has_activity_classification() const;
@@ -941,6 +983,7 @@ class MetaData : public ::google::protobuf::MessageLite /* @@protoc_insertion_po
 
   ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
   ::google::protobuf::int64 num_examples_;
+  int type_;
   union TypeUnion {
     TypeUnion() {}
     ::TuriCreate::Annotation::Specification::ActivityClassificationMeta* activity_classification_;
@@ -1628,6 +1671,20 @@ inline void MetaData::set_num_examples(::google::protobuf::int64 value) {
   // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.MetaData.num_examples)
 }
 
+// .TuriCreate.Annotation.Specification.MetaData.AnnotationType type = 2;
+inline void MetaData::clear_type() {
+  type_ = 0;
+}
+inline ::TuriCreate::Annotation::Specification::MetaData_AnnotationType MetaData::type() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.MetaData.type)
+  return static_cast< ::TuriCreate::Annotation::Specification::MetaData_AnnotationType >(type_);
+}
+inline void MetaData::set_type(::TuriCreate::Annotation::Specification::MetaData_AnnotationType value) {
+  
+  type_ = value;
+  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.MetaData.type)
+}
+
 // .TuriCreate.Annotation.Specification.ActivityClassificationMeta activity_classification = 100;
 inline bool MetaData::has_activity_classification() const {
   return Type_case() == kActivityClassification;
@@ -1899,6 +1956,16 @@ inline MetaData::TypeCase MetaData::Type_case() const {
 }  // namespace Specification
 }  // namespace Annotation
 }  // namespace TuriCreate
+
+#ifndef SWIG
+namespace google {
+namespace protobuf {
+
+template <> struct is_proto_enum< ::TuriCreate::Annotation::Specification::MetaData_AnnotationType> : ::google::protobuf::internal::true_type {};
+
+}  // namespace protobuf
+}  // namespace google
+#endif  // SWIG
 
 // @@protoc_insertion_point(global_scope)
 

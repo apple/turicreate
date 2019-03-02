@@ -7,5 +7,6 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 from .drawing_recognition import create, DrawingRecognition
+from . import util
 
-__all__ = ['create', 'DrawingRecognition']
+__all__ = ['create', 'DrawingRecognition', 'util']
