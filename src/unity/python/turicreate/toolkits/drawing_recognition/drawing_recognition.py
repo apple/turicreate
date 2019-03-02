@@ -7,6 +7,7 @@
 import turicreate as _tc
 import numpy as _np
 import time as _time
+import os as _os
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits import evaluation as _evaluation
@@ -14,6 +15,8 @@ import turicreate.toolkits._internal_utils as _tkutl
 from ._sframe_loader import SFrameRecognitionIter as _SFrameRecognitionIter
 from .. import _mxnet_utils
 from turicreate import extensions as _extensions
+import six as _six
+from tempfile import mkstemp as _mkstemp
 
 BITMAP_WIDTH = 28
 BITMAP_HEIGHT = 28
@@ -30,8 +33,8 @@ def _raise_error_if_not_drawing_classifier_input_sframe(dataset, feature):
             + " where each stroke is a list of points and" 
             + " each point is stored as a dictionary")
 
-def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap", 
-           target="label", model=None, classes=None, batch_size=256, 
+def create(input_dataset, num_epochs=100, feature="bitmap", 
+           target="label", use_pretrained_model=False, classes=None, batch_size=256, 
            max_iterations=0, verbose=True, **kwargs):
     """
     Create a :class:`DrawingRecognition` model.
@@ -103,10 +106,21 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap",
                  epochs=num_epochs,
                  iterations=None)
 
-    model = _Model(num_classes = len(classes))
-    softmax_cross_entropy = _mx.gluon.loss.SoftmaxCrossEntropyLoss()
-    
     ctx = _mxnet_utils.get_mxnet_context(max_devices=batch_size)
+    model = _Model(num_classes = len(classes))
+    model_params = model.collect_params()
+    model_params.initialize(_mx.init.Xavier(), ctx=ctx)
+    if use_pretrained_model:
+        pretrained_model_url = _os.environ["PRETRAINED_MODEL_URL"]
+        temp_filename = _mkstemp()[1]
+        _six.moves.urllib.request.urlretrieve(pretrained_model_url,
+            temp_filename)
+        model.load_params(
+            temp_filename,
+            ctx=ctx,
+            allow_missing=True)
+        _os.unlink(temp_filename)
+    softmax_cross_entropy = _mx.gluon.loss.SoftmaxCrossEntropyLoss()
 
     model_params = model.collect_params()
     model_params.initialize(_mx.init.Xavier(), ctx=ctx)
