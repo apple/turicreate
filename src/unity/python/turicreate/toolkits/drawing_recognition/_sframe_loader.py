@@ -56,8 +56,8 @@ class _SFrameDataSource:
         drawing_feature = row[self.feature_column]
         is_stroke_input = (type(drawing_feature) != _tc.Image)
         if is_stroke_input:
-            pixels_01 = drawing_feature
-        else:    
+            pixels_01 = drawing_feature.pixel_data.reshape(1, 28, 28) / 255.
+        else:
             image = _tc.image_analysis.resize(drawing_feature, 28, 28, 1)
             pixels_01 = image.pixel_data.reshape(1, 28, 28) / 255.
         
@@ -70,6 +70,7 @@ class _SFrameDataSource:
 
     def reset(self):
         self.cur_sample = 0
+
 
 class SFrameRecognitionIter(_mx.io.DataIter):
     def __init__(self,

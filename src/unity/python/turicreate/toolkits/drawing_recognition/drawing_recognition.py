@@ -45,13 +45,8 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap",
     _raise_error_if_not_drawing_classifier_input_sframe(input_dataset, feature)
 
     is_stroke_input = (input_dataset[feature].dtype != _tc.Image)
-
-    if is_stroke_input:
-        # This only works on macOS right now
-        dataset = _extensions._drawing_recognition_prepare_data(
-            input_dataset, feature, target)
-    else:
-        dataset = input_dataset
+    dataset = _extensions._drawing_recognition_prepare_data(
+        input_dataset, feature) if is_stroke_input else input_dataset
 
     column_names = ['Iteration', 'Loss', 'Elapsed Time']
     num_columns = len(column_names)
@@ -175,7 +170,6 @@ class DrawingRecognition(_CustomModel):
     @classmethod
     def _load_version(cls, state, version):
         _tkutl._model_version_check(version, 1)
-
         from ._model_architecture import Model as _Model
         net = _Model(num_classes = len(state['classes']), prefix = 'model0_')
         ctx = _mxnet_utils.get_mxnet_context(max_devices=state['batch_size'])
@@ -221,7 +215,7 @@ class DrawingRecognition(_CustomModel):
                                 builder=None, verbose=verbose,
                                 preprocessor_args={'image_input_names':[self.feature]})
 
-        DESIRED_OUTPUT_NAME = self.target + "probabilities"
+        DESIRED_OUTPUT_NAME = self.target + "Probabilities"
         spec = coreml_model._spec
         class_label_output_index = 0 if spec.description.output[0].name == "classLabel" else 1
         probabilities_output_index = 1-class_label_output_index
@@ -431,4 +425,3 @@ class DrawingRecognition(_CustomModel):
         """
         predicted = self._predict_with_probabilities(dataset)
         return predicted[self.target]
-
