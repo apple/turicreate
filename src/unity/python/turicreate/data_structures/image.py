@@ -193,8 +193,6 @@ class Image(object):
         res = {"Height" :str(self._height), "Width":str(self._width), "Channels: " :str(self._channels)}
         return (data,res)
 
-        # ip_img = display.Image(data=data, format='png', embed=True)
-        # display.display(ip_img)
 
 
     def _to_pil_image(self):
