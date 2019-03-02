@@ -184,6 +184,19 @@ class Image(object):
         ret = ret + "Channels: " + str(self._channels) + "\n"
         return ret
 
+    def _repr_png_(self):
+        img = self._to_pil_image()
+        from io import BytesIO
+        b = BytesIO()
+        img.save(b, format='png')
+        data = b.getvalue()
+        res = {"Height" :str(self._height), "Width":str(self._width), "Channels: " :str(self._channels)}
+        return (data,res)
+
+        # ip_img = display.Image(data=data, format='png', embed=True)
+        # display.display(ip_img)
+
+
     def _to_pil_image(self):
         from PIL import Image as _PIL_Image
         return _PIL_Image.fromarray(self.pixel_data)
