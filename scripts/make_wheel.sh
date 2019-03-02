@@ -105,6 +105,9 @@ if [[ -n "${USE_DOCKER}" ]]; then
 
   # set up arguments to make_wheel.sh within docker
   make_wheel_args="--build_number=$BUILD_NUMBER --num_procs=$NUM_PROCS --skip_smoke_test --skip_test"
+  if [[ -n $SKIP_BUILD ]]; then
+    make_wheel_args="$make_wheel_args --skip_build"
+  fi
   if [[ -n $SKIP_CPP_TEST ]]; then
     make_wheel_args="$make_wheel_args --skip_cpp_test"
   fi
@@ -115,13 +118,24 @@ if [[ -n "${USE_DOCKER}" ]]; then
     make_wheel_args="$make_wheel_args --debug"
   fi
 
-  # Run the make_wheel.sh script inside Docker
+  # Run the make_wheel.sh script inside Docker to build
   docker run --rm \
     --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
     -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
     turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} \
     /build/scripts/make_wheel.sh \
     $make_wheel_args
+
+  # Run the tests inside Docker (14.04) if desired
+  # 10.04 is not capable of passing turicreate unit tests currently
+  if [[ -n $SKIP_TEST ]]; then
+    docker run --rm \
+      --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
+      -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
+      turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} \
+      /build/scripts/make_wheel.sh \
+      --skip_build --skip_cpp_test --skip_smoke_test --skip_doc
+  fi
 
   exit 0
 fi
