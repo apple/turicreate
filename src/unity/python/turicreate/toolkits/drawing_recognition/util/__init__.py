@@ -6,7 +6,6 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-from .drawing_recognition import create, DrawingRecognition
-from . import util
+from ._visualization import draw_strokes
 
-__all__ = ['create', 'DrawingRecognition', 'util']
+__all__ = ['draw_strokes']
