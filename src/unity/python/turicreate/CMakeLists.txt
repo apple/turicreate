@@ -13,12 +13,6 @@ endif()
 
 set(INSTALLATION_BINARY_FILES)
 set(INSTALLATION_EXTENSIONS)
-# add the propretary extensions
-get_property(EXTENSIONS_LIST DIRECTORY "../../extensions" PROPERTY EXTENSIONS_LIST)
-foreach(loop_var ${EXTENSIONS_LIST})
-  message(STATUS "Copying Extension to turicreate python directory ${loop_var}")
-  list(APPEND INSTALLATION_EXTENSIONS ${loop_var})
-endforeach()
 
 make_library(unity_shared
   SOURCES
