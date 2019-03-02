@@ -21,6 +21,8 @@
 		FC9066011F425B4800AE3881 /* AppData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC9066001F425B4800AE3881 /* AppData.swift */; };
 		FCB8DFE3206F1756001A7089 /* index.css in Resources */ = {isa = PBXBuildFile; fileRef = FCB8DFE2206F1756001A7089 /* index.css */; };
 		FCBFA19221EC6AB5002B48B3 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FCBFA19121EC6AB5002B48B3 /* index.js */; };
+		FCE2E1D8222A0D3B00A58EF0 /* index.scss in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1D6222A0D3B00A58EF0 /* index.scss */; };
+		FCE2E1D9222A0D3B00A58EF0 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1D7222A0D3B00A58EF0 /* index.js */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -62,6 +64,8 @@
 		FCB8DFE4206F187D001A7089 /* index.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
 		FCBFA19121EC6AB5002B48B3 /* index.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
 		FCBFA19321EC6AC5002B48B3 /* index.scss */ = {isa = PBXFileReference; lastKnownFileType = text; path = index.scss; sourceTree = "<group>"; };
+		FCE2E1D6222A0D3B00A58EF0 /* index.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.scss; sourceTree = "<group>"; };
+		FCE2E1D7222A0D3B00A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -160,6 +164,7 @@
 		FC3E34D6206EF42200B6B69A /* elements */ = {
 			isa = PBXGroup;
 			children = (
+				FCE2E1D5222A0D3B00A58EF0 /* Annotate */,
 				FC3E34D8206EF45700B6B69A /* Plot */,
 				FC3E34D7206EF43F00B6B69A /* Explore */,
 			);
@@ -271,6 +276,15 @@
 			path = Evaluation;
 			sourceTree = "<group>";
 		};
+		FCE2E1D5222A0D3B00A58EF0 /* Annotate */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1D6222A0D3B00A58EF0 /* index.scss */,
+				FCE2E1D7222A0D3B00A58EF0 /* index.js */,
+			);
+			path = Annotate;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -331,9 +345,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FCE2E1D8222A0D3B00A58EF0 /* index.scss in Resources */,
 				FCBFA19221EC6AB5002B48B3 /* index.js in Resources */,
 				FCB8DFE3206F1756001A7089 /* index.css in Resources */,
 				FC76C48621F139A0008F52E5 /* Components in Resources */,
+				FCE2E1D9222A0D3B00A58EF0 /* index.js in Resources */,
 				9226E7C81F366F2E00C33A64 /* Assets.xcassets in Resources */,
 				9226E7CB1F366F2E00C33A64 /* Main.storyboard in Resources */,
 			);

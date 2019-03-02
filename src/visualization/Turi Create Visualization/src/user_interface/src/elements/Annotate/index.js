@@ -5,7 +5,7 @@ class TCAnnotate extends Component {
   render() {
     return (
       <div>
-        Daayum
+        Placeholder
       </div>
     );
   }

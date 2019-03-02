@@ -11,6 +11,7 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 
 from ...visualization import _get_client_app_path
+import turicreate.toolkits._internal_utils as _tkutl
 
 import turicreate as __tc
 
@@ -21,12 +22,12 @@ def _warning_annotations():
                      to a variable all annotations are going to be lost.
                      To recover the last annotated SFrame call:
 
-        `tc.image_classifier._recover_annotation()`
+        `tc.image_classifier.recover_annotation()`
 
         """
     )
 
-def annotate(data, image_column = 'image', annotation_column = 'annotations'):
+def annotate(data, image_column=None, annotation_column='annotations'):
     """
         Annotate your images loaded in either an SFrame or SArray Format
 
@@ -76,7 +77,7 @@ def annotate(data, image_column = 'image', annotation_column = 'annotations'):
 
         >> import turicreate as tc
         >> images = tc.image_analysis.load_images("path/to/images")
-        >> images
+        >> print(images)
 
             Columns:
 
@@ -97,7 +98,7 @@ def annotate(data, image_column = 'image', annotation_column = 'annotations'):
             [4 rows x 2 columns]
 
         >> images = tc.image_classifier.annotate(images)
-        >> images
+        >> print(images)
 
             Columns:
                 path    str
@@ -119,6 +120,8 @@ def annotate(data, image_column = 'image', annotation_column = 'annotations'):
 
 
     """
+
+    image_column = _tkutl._find_only_image_column(data) 
 
     # Check Value of Column Variables
     if image_column == None:
@@ -155,7 +158,6 @@ def annotate(data, image_column = 'image', annotation_column = 'annotations'):
 
     _warning_annotations()
 
-    # TODO: Register proxy for constructor
     annotation_window = __tc.extensions.create_image_classification_annotation(
                             data,
                             [image_column],
@@ -165,7 +167,7 @@ def annotate(data, image_column = 'image', annotation_column = 'annotations'):
     
     return annotation_window.returnAnnotations()
 
-def _recover_annotation():
+def recover_annotation():
     """
         Recover the last annotated SFrame.
         
@@ -181,8 +183,8 @@ def _recover_annotation():
         Examples
         --------
         
-        >> annotations = tc.image_classifier._recover_annotation()
-        >> annotations
+        >> annotations = tc.image_classifier.recover_annotation()
+        >> print(annotations)
 
         Columns:
             images  Image
