@@ -14,8 +14,6 @@ from turicreate.toolkits import evaluation as _evaluation
 import turicreate.toolkits._internal_utils as _tkutl
 from .. import _mxnet_utils
 from turicreate import extensions as _extensions
-import six as _six
-from tempfile import mkstemp as _mkstemp
 from .. import _pre_trained_models
 
 BITMAP_WIDTH = 28
