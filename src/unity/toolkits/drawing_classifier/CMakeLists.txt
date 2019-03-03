@@ -1,6 +1,6 @@
 project(unity_toolkits)
 
-make_library(unity_drawing_recognition OBJECT
+make_library(unity_drawing_classifier OBJECT
 SOURCES
     data_preparation.cpp
     class_registrations.cpp

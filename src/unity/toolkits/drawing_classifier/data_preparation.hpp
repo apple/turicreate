@@ -11,7 +11,7 @@
 #include <unity/lib/image_util.hpp>
 
 namespace turi {
-namespace drawing_recognition {
+namespace drawing_classifier {
 
 /**
  *  This function is responsible for converting stroke-based drawing data
@@ -29,8 +29,8 @@ namespace drawing_recognition {
  * \return: SFrame with the stroke-based drawings converted to bitmaps, which
  *			are represented as grayscale tc.Image of size 28x28.
  */
-EXPORT gl_sframe _drawing_recognition_prepare_data(const gl_sframe &data,
-                                                   const std::string &feature);
+EXPORT gl_sframe _drawing_classifier_prepare_data(const gl_sframe &data,
+												  const std::string &feature);
 
 
 }

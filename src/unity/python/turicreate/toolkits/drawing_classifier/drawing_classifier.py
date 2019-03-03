@@ -33,19 +33,19 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap",
            target="label", model=None, classes=None, batch_size=256, 
            max_iterations=0, verbose=True, **kwargs):
     """
-    Create a :class:`DrawingRecognition` model.
+    Create a :class:`DrawingClassifier` model.
     """
     import mxnet as _mx
     from mxnet import autograd as _autograd
     from ._model_architecture import Model as _Model
-    from ._sframe_loader import SFrameRecognitionIter as _SFrameRecognitionIter
+    from ._sframe_loader import SFrameClassifierIter as _SFrameClassifierIter
     
     start_time = _time.time()
 
     _raise_error_if_not_drawing_classifier_input_sframe(input_dataset, feature)
 
     is_stroke_input = (input_dataset[feature].dtype != _tc.Image)
-    dataset = _extensions._drawing_recognition_prepare_data(
+    dataset = _extensions._drawing_classifier_prepare_data(
         input_dataset, feature) if is_stroke_input else input_dataset
 
     column_names = ['Iteration', 'Loss', 'Elapsed Time']
@@ -89,7 +89,7 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap",
                 time=elapsed_time , width=column_width-1))
             progress['last_time'] = cur_time
 
-    loader = _SFrameRecognitionIter(dataset, batch_size,
+    loader = _SFrameClassifierIter(dataset, batch_size,
                  feature_column=feature,
                  target_column=target,
                  class_to_index=class_to_index,
@@ -146,9 +146,9 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap",
         'feature': feature,
         'num_examples': len(input_dataset)
     }
-    return DrawingRecognition(state)
+    return DrawingClassifier(state)
 
-class DrawingRecognition(_CustomModel):
+class DrawingClassifier(_CustomModel):
 
     def __init__(self, state):
         self.__proxy__ = _PythonProxy(state)
@@ -156,7 +156,7 @@ class DrawingRecognition(_CustomModel):
 
     @classmethod
     def _native_name(cls):
-        return "drawing_recognition"
+        return "drawing_classifier"
 
     def _get_native_state(self):
         state = self.__proxy__.get_state()
@@ -178,7 +178,7 @@ class DrawingRecognition(_CustomModel):
             net_params, state['_model'], ctx=ctx 
             )
         state['_model'] = net
-        return DrawingRecognition(state)
+        return DrawingClassifier(state)
 
     def export_coreml(self, filename, verbose=False):
         import mxnet as _mx
@@ -240,19 +240,19 @@ class DrawingRecognition(_CustomModel):
         """
 
         import mxnet as _mx
-        from ._sframe_loader import SFrameRecognitionIter as _SFrameRecognitionIter
+        from ._sframe_loader import SFrameClassifierIter as _SFrameClassifierIter
 
         is_stroke_input = (input_dataset[self.feature].dtype != _tc.Image)
 
         if is_stroke_input:
             # @TODO: Make it work for Linux
             # @TODO: Make it work if labels are not passed in.
-            dataset = _extensions._drawing_recognition_prepare_data(
+            dataset = _extensions._drawing_classifier_prepare_data(
                 input_dataset, self.feature, self.target)
         else:
             dataset = input_dataset
 
-        loader = _SFrameRecognitionIter(dataset, self.batch_size,
+        loader = _SFrameClassifierIter(dataset, self.batch_size,
                     class_to_index=self._class_to_index,
                     feature_column=self.feature,
                     target_column=self.target,
