@@ -7,7 +7,6 @@
 import turicreate as _tc
 import numpy as _np
 import time as _time
-import os as _os
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits import evaluation as _evaluation
