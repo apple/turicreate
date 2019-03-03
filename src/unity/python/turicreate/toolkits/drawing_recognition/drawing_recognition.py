@@ -16,6 +16,7 @@ from .. import _mxnet_utils
 from turicreate import extensions as _extensions
 import six as _six
 from tempfile import mkstemp as _mkstemp
+from .. import _pre_trained_models
 
 BITMAP_WIDTH = 28
 BITMAP_HEIGHT = 28
@@ -107,11 +108,11 @@ def create(input_dataset, num_epochs=100, feature="bitmap",
     model_params.initialize(_mx.init.Xavier(), ctx=ctx)
 
     if pretrained_model_url is not None:
-        temp_filename = _mkstemp()[1]
-        _six.moves.urllib.request.urlretrieve(pretrained_model_url,
-            temp_filename)
-        model.load_params(temp_filename, ctx=ctx, allow_missing=True)
-        _os.unlink(temp_filename)
+        pretrained_model = _pre_trained_models.DrawingClassifierPreTrainedModel(pretrained_model_url)
+        pretrained_model_params_path = pretrained_model.get_model_path()
+        model.load_params(pretrained_model_params_path, 
+            ctx=ctx, 
+            allow_missing=True)
     softmax_cross_entropy = _mx.gluon.loss.SoftmaxCrossEntropyLoss()
     model.hybridize()
     trainer = _mx.gluon.Trainer(model.collect_params(), 'adam')
