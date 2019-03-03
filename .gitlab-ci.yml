@@ -255,6 +255,7 @@ test_python_linux_python27:
     - build_wheel_linux_python27
   script:
     - apk add bash
+    - docker load -i .docker_images/image-14.04.gz
     # runs only Python unit tests
     - bash scripts/make_wheel.sh --skip_cpp_test --skip_build --skip_doc --docker-python2.7
   artifacts:
@@ -278,6 +279,7 @@ test_python_linux_python35:
   script:
     - apk add bash
     # runs only Python unit tests
+    - docker load -i .docker_images/image-14.04.gz
     - bash scripts/make_wheel.sh --skip_cpp_test --skip_build --skip_doc --docker-python3.5
   artifacts:
     when: always
@@ -301,6 +303,7 @@ test_python_linux_python36:
     - apk add bash
     # runs only Python unit tests
     # TODO get python 3.6 working on a test image
+    #- docker load -i .docker_images/image-16.04.gz
     #- bash scripts/make_wheel.sh --skip_cpp_test --skip_build --skip_doc --docker-python3.6
   artifacts:
     when: always

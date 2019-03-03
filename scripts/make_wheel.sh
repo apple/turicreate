@@ -129,6 +129,12 @@ if [[ -n "${USE_DOCKER}" ]]; then
   # Run the tests inside Docker (14.04) if desired
   # 10.04 is not capable of passing turicreate unit tests currently
   if [[ -n $SKIP_TEST ]]; then
+    # create the test image
+    # (this should ideally be a no-op if the image exists and is current)
+    (docker image ls turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) || \
+    docker build -f $SCRIPT_DIR/Dockerfile-Ubuntu-14.04 -t turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} .
+
+    # run the tests
     docker run --rm \
       --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
       -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
