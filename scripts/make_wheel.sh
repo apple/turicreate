@@ -134,6 +134,9 @@ if [[ -n "${USE_DOCKER}" ]]; then
     (docker image ls turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) || \
     docker build -f $SCRIPT_DIR/Dockerfile-Ubuntu-14.04 -t turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} .
 
+    # delete Python env used for building (will get recreated; may be incompatible otherwise)
+    rm -rf deps/env
+
     # run the tests
     docker run --rm \
       --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
