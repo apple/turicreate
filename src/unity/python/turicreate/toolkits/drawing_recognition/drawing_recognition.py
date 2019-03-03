@@ -31,9 +31,9 @@ def _raise_error_if_not_drawing_classifier_input_sframe(dataset, feature):
             + " where each stroke is a list of points and" 
             + " each point is stored as a dictionary")
 
-def create(input_dataset, num_epochs=100, feature="bitmap", 
-           target="label", pretrained_model_url=None, classes=None, batch_size=256, 
-           max_iterations=0, verbose=True, **kwargs):
+def create(input_dataset, feature="bitmap", target="label", 
+            pretrained_model_url=None, classes=None, batch_size=256, 
+            num_epochs=100, max_iterations=0, verbose=True, **kwargs):
     """
     Create a :class:`DrawingRecognition` model.
     """
@@ -43,6 +43,11 @@ def create(input_dataset, num_epochs=100, feature="bitmap",
     from ._sframe_loader import SFrameRecognitionIter as _SFrameRecognitionIter
     
     start_time = _time.time()
+
+    if max_iterations == 0:
+        max_iterations = num_epochs * len(input_dataset) / batch_size
+    else:
+        num_epochs = max_iterations * batch_size / len(input_dataset)
 
     _raise_error_if_not_drawing_classifier_input_sframe(input_dataset, feature)
 
