@@ -72,7 +72,7 @@ class _SFrameDataSource:
         self.cur_sample = 0
 
 
-class SFrameRecognitionIter(_mx.io.DataIter):
+class SFrameClassifierIter(_mx.io.DataIter):
     def __init__(self,
                  sframe,
                  batch_size,

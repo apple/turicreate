@@ -9,11 +9,11 @@
 #include <unity/lib/toolkit_function_macros.hpp>
 
 namespace turi {
-namespace drawing_recognition {
+namespace drawing_classifier {
 
 BEGIN_FUNCTION_REGISTRATION
-REGISTER_FUNCTION(_drawing_recognition_prepare_data, "data", "feature")
+REGISTER_FUNCTION(_drawing_classifier_prepare_data, "data", "feature")
 END_FUNCTION_REGISTRATION
 
-}// drawing_recognition
+}// drawing_classifier
 }// turi

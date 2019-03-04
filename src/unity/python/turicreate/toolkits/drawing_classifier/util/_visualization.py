@@ -44,7 +44,7 @@ def draw_strokes(stroke_based_drawings):
         single_input = True
         stroke_based_drawings = _tc.SArray([stroke_based_drawings])
     sf = _tc.SFrame({"drawings": stroke_based_drawings})
-    sf_with_drawings = _extensions._drawing_recognition_prepare_data(
+    sf_with_drawings = _extensions._drawing_classifier_prepare_data(
         sf, "drawings")
     if single_input:
         return sf_with_drawings["drawings"][0]
