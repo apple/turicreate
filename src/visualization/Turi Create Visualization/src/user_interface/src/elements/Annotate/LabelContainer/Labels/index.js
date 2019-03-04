@@ -26,7 +26,8 @@ class Label extends Component {
 	            <span>{this.props.num_annotated}/{this.props.num_expected}</span>
 	          </div>
 	        </div>
-	        <div className={styles.LabelApplyButton}>
+	        <div className={styles.LabelApplyButton}
+	        	 onClick={this.props.onClick.bind(this)}>
 	          <span>
 	            Apply
 	          </span>

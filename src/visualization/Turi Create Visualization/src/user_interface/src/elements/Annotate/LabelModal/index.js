@@ -14,6 +14,7 @@ class LabelModal extends Component {
       return '\xa0';
     }
   }
+  
   render() {
     return (
       <div>

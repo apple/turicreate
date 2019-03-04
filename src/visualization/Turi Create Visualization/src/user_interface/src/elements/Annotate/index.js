@@ -30,23 +30,7 @@ class Annotate extends Component {
       LabelModalValue: "",
       /* TODO: Labels will be Populated from MetaData */
       imageData:{},
-      labels:[
-        {
-          name: "dog",
-          num_annotated: 0,
-          num_expected: DEFAULT_NUM_EXPECTED
-        },
-        {
-          name: "melons",
-          num_annotated: 0,
-          num_expected: DEFAULT_NUM_EXPECTED
-        },
-        {
-          name: "cats",
-          num_annotated: 0,
-          num_expected: DEFAULT_NUM_EXPECTED
-        },
-      ]
+      labels:[]
     }
   }
 
@@ -184,6 +168,26 @@ class Annotate extends Component {
     });
   }
 
+  setAnnotation = (rowIndex, labels) => {
+    const root = Root.fromJSON(messageFormat);
+    const ParcelMessage = root.lookupType("TuriCreate.Annotation.Specification.ClientRequest");
+    const payload = {"annotations": {"annotation":[{"labels": [{"stringLabel": labels}], "rowIndex": [rowIndex]}]}};
+    const err = ParcelMessage.verify(payload);
+    
+    if (err)
+      throw Error(err);
+
+    const message = ParcelMessage.create(payload);
+    const buffer = ParcelMessage.encode(message).finish();
+    const encoded = btoa(String.fromCharCode.apply(null, buffer));
+
+    if (window.navigator.platform == 'MacIntel') {
+      window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'writeProtoBuf', message: encoded});
+    } else {
+      window.postMessageToNativeClient(encoded);
+    }
+  }
+
   renderMainContent = () => {
     if(this.state.infiniteScroll) {
       return (
@@ -242,6 +246,9 @@ class Annotate extends Component {
         </div>
         <div className={style.leftBar}>
         <LabelContainer labels={this.state.labels}
+                        incrementalCurrentIndex={this.state.incrementalCurrentIndex}
+                        infiniteScroll={this.state.infiniteScroll}
+                        setAnnotation={this.setAnnotation.bind(this)}
                         openLabelModal={this.openLabelModal.bind(this)}
                         closeLabelModal={this.closeLabelModal.bind(this)}/>
         </div>

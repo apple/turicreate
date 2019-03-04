@@ -9,6 +9,12 @@ class LabelContainer extends Component {
     
   }
 
+  setAnnotation = (name) => {
+    if(!this.props.infiniteScroll){
+      this.props.setAnnotation(this.props.incrementalCurrentIndex, name);
+    }
+  }
+
   render() {
     return (
       <div className={styles.LabelContainer}>
@@ -19,9 +25,10 @@ class LabelContainer extends Component {
       		{
             this.props.labels.map((x) => 
               <Labels active={false}
-                    name={x.name}
-                    num_annotated={x.num_annotated}
-                    num_expected={x.num_expected}/>
+                      name={x.name}
+                      onClick={this.setAnnotation.bind(this, x.name)}
+                      num_annotated={x.num_annotated}
+                      num_expected={x.num_expected}/>
             )
           }
       	</div>

@@ -237,9 +237,8 @@ std::string AnnotationBase::__parse_proto_and_respond(std::string &input) {
       break;
     }
   } else if (request.has_annotations()) {
-    std::cout << "Has Annotations" << std::endl;
+    this->setAnnotations(request.annotations());
   }
-
   return "";
 }
 
