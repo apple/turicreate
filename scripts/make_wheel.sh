@@ -126,6 +126,14 @@ if [[ -n "${USE_DOCKER}" ]]; then
     /build/scripts/make_wheel.sh \
     $make_wheel_args
 
+  # Delete env to force re-creation of virtualenv if we are running tests next
+  # (to prevent reuse of 10.04 virtualenv on 14.04)
+  docker run --rm \
+    --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
+    -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
+    turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} \
+    rm -rf /build/deps/env
+
   # Run the tests inside Docker (14.04) if desired
   # 10.04 is not capable of passing turicreate unit tests currently
   if [[ -n $SKIP_TEST ]]; then
@@ -144,6 +152,14 @@ if [[ -n "${USE_DOCKER}" ]]; then
       turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} \
       /build/scripts/make_wheel.sh \
       --skip_build --skip_cpp_test --skip_smoke_test --skip_doc
+
+    # Delete env to force re-creation of virtualenv if we are running tests next
+    # (to prevent reuse of 14.04 virtualenv on 10.04)
+    docker run --rm \
+      --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
+      -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
+      turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} \
+      rm -rf /build/deps/env
   fi
 
   exit 0
