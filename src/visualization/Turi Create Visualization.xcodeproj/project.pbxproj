@@ -17,12 +17,9 @@
 		FC245BF31F4F7FFB009F54C6 /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC245BF21F4F7FFB009F54C6 /* JSON.swift */; };
 		FC245BF51F4F8110009F54C6 /* Pipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC245BF41F4F8110009F54C6 /* Pipe.swift */; };
 		FC5F0B3C1F5F3A3E0001BCEE /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC5F0B3B1F5F3A3E0001BCEE /* Error.swift */; };
-		FC76C48621F139A0008F52E5 /* Components in Resources */ = {isa = PBXBuildFile; fileRef = FC76C48521F139A0008F52E5 /* Components */; };
 		FC9066011F425B4800AE3881 /* AppData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC9066001F425B4800AE3881 /* AppData.swift */; };
-		FCB8DFE3206F1756001A7089 /* index.css in Resources */ = {isa = PBXBuildFile; fileRef = FCB8DFE2206F1756001A7089 /* index.css */; };
-		FCBFA19221EC6AB5002B48B3 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FCBFA19121EC6AB5002B48B3 /* index.js */; };
-		FCE2E1D8222A0D3B00A58EF0 /* index.scss in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1D6222A0D3B00A58EF0 /* index.scss */; };
-		FCE2E1D9222A0D3B00A58EF0 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1D7222A0D3B00A58EF0 /* index.js */; };
+		FCE2E218222A264300A58EF0 /* index.module.scss in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E1F9222A264300A58EF0 /* index.module.scss */; };
+		FCE2E221222CBCE600A58EF0 /* build in Resources */ = {isa = PBXBuildFile; fileRef = FCE2E220222CBCE600A58EF0 /* build */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,8 +61,36 @@
 		FCB8DFE4206F187D001A7089 /* index.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
 		FCBFA19121EC6AB5002B48B3 /* index.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
 		FCBFA19321EC6AC5002B48B3 /* index.scss */ = {isa = PBXFileReference; lastKnownFileType = text; path = index.scss; sourceTree = "<group>"; };
-		FCE2E1D6222A0D3B00A58EF0 /* index.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.scss; sourceTree = "<group>"; };
 		FCE2E1D7222A0D3B00A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCE2E1DC222A264200A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCE2E1DD222A264200A58EF0 /* index.module.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.module.scss; sourceTree = "<group>"; };
+		FCE2E1DE222A264200A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCE2E1DF222A264200A58EF0 /* index.module.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.module.scss; sourceTree = "<group>"; };
+		FCE2E1E1222A264200A58EF0 /* swap.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = swap.svg; sourceTree = "<group>"; };
+		FCE2E1E2222A264200A58EF0 /* utils.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = utils.scss; sourceTree = "<group>"; };
+		FCE2E1E4222A264300A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCE2E1E6222A264300A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCE2E1E7222A264300A58EF0 /* index.module.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.module.scss; sourceTree = "<group>"; };
+		FCE2E1E8222A264300A58EF0 /* index.module.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.module.scss; sourceTree = "<group>"; };
+		FCE2E1EB222A264300A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCE2E1ED222A264300A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCE2E1EE222A264300A58EF0 /* index.module.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.module.scss; sourceTree = "<group>"; };
+		FCE2E1EF222A264300A58EF0 /* index.module.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.module.scss; sourceTree = "<group>"; };
+		FCE2E1F0222A264300A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCE2E1F1222A264300A58EF0 /* index.module.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.module.scss; sourceTree = "<group>"; };
+		FCE2E1F3222A264300A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCE2E1F4222A264300A58EF0 /* index.module.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.module.scss; sourceTree = "<group>"; };
+		FCE2E1F6222A264300A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCE2E1F8222A264300A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCE2E1F9222A264300A58EF0 /* index.module.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.module.scss; sourceTree = "<group>"; };
+		FCE2E1FA222A264300A58EF0 /* index.module.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.module.scss; sourceTree = "<group>"; };
+		FCE2E1FC222A264300A58EF0 /* right_arrow.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = right_arrow.svg; sourceTree = "<group>"; };
+		FCE2E1FD222A264300A58EF0 /* left_arrow.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = left_arrow.svg; sourceTree = "<group>"; };
+		FCE2E1FF222A264300A58EF0 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FCE2E200222A264300A58EF0 /* index.module.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.module.scss; sourceTree = "<group>"; };
+		FCE2E202222A264300A58EF0 /* error.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = error.svg; sourceTree = "<group>"; };
+		FCE2E203222A264300A58EF0 /* index.module.scss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.module.scss; sourceTree = "<group>"; };
+		FCE2E220222CBCE600A58EF0 /* build */ = {isa = PBXFileReference; lastKnownFileType = folder; path = build; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,6 +160,7 @@
 		FC1A87821FB1464D00A67DAD /* user_interface */ = {
 			isa = PBXGroup;
 			children = (
+				FCE2E220222CBCE600A58EF0 /* build */,
 				FCB8DFDF206EF93A001A7089 /* public */,
 				FC3E34CF206EF04F00B6B69A /* src */,
 				FC3E34CC206EEF3100B6B69A /* package.json */,
@@ -279,10 +305,149 @@
 		FCE2E1D5222A0D3B00A58EF0 /* Annotate */ = {
 			isa = PBXGroup;
 			children = (
-				FCE2E1D6222A0D3B00A58EF0 /* index.scss */,
+				FCE2E1FE222A264300A58EF0 /* ErrorBar */,
+				FCE2E203222A264300A58EF0 /* index.module.scss */,
+				FCE2E1E3222A264300A58EF0 /* InfiniteScroll */,
+				FCE2E1E9222A264300A58EF0 /* LabelContainer */,
+				FCE2E1F2222A264300A58EF0 /* LabelModal */,
+				FCE2E1F5222A264300A58EF0 /* SingleImage */,
+				FCE2E1DA222A264200A58EF0 /* StatusBar */,
+				FCE2E1E2222A264200A58EF0 /* utils.scss */,
 				FCE2E1D7222A0D3B00A58EF0 /* index.js */,
 			);
 			path = Annotate;
+			sourceTree = "<group>";
+		};
+		FCE2E1DA222A264200A58EF0 /* StatusBar */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1DB222A264200A58EF0 /* ToggleButton */,
+				FCE2E1DE222A264200A58EF0 /* index.js */,
+				FCE2E1DF222A264200A58EF0 /* index.module.scss */,
+				FCE2E1E0222A264200A58EF0 /* assets */,
+			);
+			path = StatusBar;
+			sourceTree = "<group>";
+		};
+		FCE2E1DB222A264200A58EF0 /* ToggleButton */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1DC222A264200A58EF0 /* index.js */,
+				FCE2E1DD222A264200A58EF0 /* index.module.scss */,
+			);
+			path = ToggleButton;
+			sourceTree = "<group>";
+		};
+		FCE2E1E0222A264200A58EF0 /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1E1222A264200A58EF0 /* swap.svg */,
+			);
+			path = assets;
+			sourceTree = "<group>";
+		};
+		FCE2E1E3222A264300A58EF0 /* InfiniteScroll */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1E4222A264300A58EF0 /* index.js */,
+				FCE2E1E5222A264300A58EF0 /* ImageContainer */,
+				FCE2E1E8222A264300A58EF0 /* index.module.scss */,
+			);
+			path = InfiniteScroll;
+			sourceTree = "<group>";
+		};
+		FCE2E1E5222A264300A58EF0 /* ImageContainer */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1E6222A264300A58EF0 /* index.js */,
+				FCE2E1E7222A264300A58EF0 /* index.module.scss */,
+			);
+			path = ImageContainer;
+			sourceTree = "<group>";
+		};
+		FCE2E1E9222A264300A58EF0 /* LabelContainer */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1EA222A264300A58EF0 /* Labels */,
+				FCE2E1F0222A264300A58EF0 /* index.js */,
+				FCE2E1F1222A264300A58EF0 /* index.module.scss */,
+			);
+			path = LabelContainer;
+			sourceTree = "<group>";
+		};
+		FCE2E1EA222A264300A58EF0 /* Labels */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1EB222A264300A58EF0 /* index.js */,
+				FCE2E1EC222A264300A58EF0 /* ProgressBar */,
+				FCE2E1EF222A264300A58EF0 /* index.module.scss */,
+			);
+			path = Labels;
+			sourceTree = "<group>";
+		};
+		FCE2E1EC222A264300A58EF0 /* ProgressBar */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1ED222A264300A58EF0 /* index.js */,
+				FCE2E1EE222A264300A58EF0 /* index.module.scss */,
+			);
+			path = ProgressBar;
+			sourceTree = "<group>";
+		};
+		FCE2E1F2222A264300A58EF0 /* LabelModal */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1F3222A264300A58EF0 /* index.js */,
+				FCE2E1F4222A264300A58EF0 /* index.module.scss */,
+			);
+			path = LabelModal;
+			sourceTree = "<group>";
+		};
+		FCE2E1F5222A264300A58EF0 /* SingleImage */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1F6222A264300A58EF0 /* index.js */,
+				FCE2E1F7222A264300A58EF0 /* ImageLabeler */,
+				FCE2E1FA222A264300A58EF0 /* index.module.scss */,
+				FCE2E1FB222A264300A58EF0 /* assets */,
+			);
+			path = SingleImage;
+			sourceTree = "<group>";
+		};
+		FCE2E1F7222A264300A58EF0 /* ImageLabeler */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1F8222A264300A58EF0 /* index.js */,
+				FCE2E1F9222A264300A58EF0 /* index.module.scss */,
+			);
+			path = ImageLabeler;
+			sourceTree = "<group>";
+		};
+		FCE2E1FB222A264300A58EF0 /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1FC222A264300A58EF0 /* right_arrow.svg */,
+				FCE2E1FD222A264300A58EF0 /* left_arrow.svg */,
+			);
+			path = assets;
+			sourceTree = "<group>";
+		};
+		FCE2E1FE222A264300A58EF0 /* ErrorBar */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E1FF222A264300A58EF0 /* index.js */,
+				FCE2E200222A264300A58EF0 /* index.module.scss */,
+				FCE2E201222A264300A58EF0 /* assets */,
+			);
+			path = ErrorBar;
+			sourceTree = "<group>";
+		};
+		FCE2E201222A264300A58EF0 /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				FCE2E202222A264300A58EF0 /* error.svg */,
+			);
+			path = assets;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -345,13 +510,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FCE2E1D8222A0D3B00A58EF0 /* index.scss in Resources */,
-				FCBFA19221EC6AB5002B48B3 /* index.js in Resources */,
-				FCB8DFE3206F1756001A7089 /* index.css in Resources */,
-				FC76C48621F139A0008F52E5 /* Components in Resources */,
-				FCE2E1D9222A0D3B00A58EF0 /* index.js in Resources */,
 				9226E7C81F366F2E00C33A64 /* Assets.xcassets in Resources */,
 				9226E7CB1F366F2E00C33A64 /* Main.storyboard in Resources */,
+				FCE2E218222A264300A58EF0 /* index.module.scss in Resources */,
+				FCE2E221222CBCE600A58EF0 /* build in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -28,6 +28,7 @@
 #include <google/protobuf/message_lite.h>
 #include <google/protobuf/repeated_field.h>  // IWYU pragma: export
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
+#include <google/protobuf/generated_enum_util.h>
 // @@protoc_insertion_point(includes)
 namespace TuriCreate {
 namespace Annotation {
@@ -35,6 +36,9 @@ namespace Specification {
 class Data;
 class DataDefaultTypeInternal;
 extern DataDefaultTypeInternal _Data_default_instance_;
+class DataGetter;
+class DataGetterDefaultTypeInternal;
+extern DataGetterDefaultTypeInternal _DataGetter_default_instance_;
 class Datum;
 class DatumDefaultTypeInternal;
 extern DatumDefaultTypeInternal _Datum_default_instance_;
@@ -65,6 +69,30 @@ struct TableStruct {
 void AddDescriptors();
 void InitDefaults();
 }  // namespace protobuf_data_2eproto
+
+enum ImageDatum_Format {
+  ImageDatum_Format_JPG = 0,
+  ImageDatum_Format_PNG = 1,
+  ImageDatum_Format_RAW_ARRAY = 2,
+  ImageDatum_Format_UNDEFINED = 3,
+  ImageDatum_Format_ImageDatum_Format_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
+  ImageDatum_Format_ImageDatum_Format_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
+};
+bool ImageDatum_Format_IsValid(int value);
+const ImageDatum_Format ImageDatum_Format_Format_MIN = ImageDatum_Format_JPG;
+const ImageDatum_Format ImageDatum_Format_Format_MAX = ImageDatum_Format_UNDEFINED;
+const int ImageDatum_Format_Format_ARRAYSIZE = ImageDatum_Format_Format_MAX + 1;
+
+enum DataGetter_GetterType {
+  DataGetter_GetterType_DATA = 0,
+  DataGetter_GetterType_ANNOTATIONS = 1,
+  DataGetter_GetterType_DataGetter_GetterType_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
+  DataGetter_GetterType_DataGetter_GetterType_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
+};
+bool DataGetter_GetterType_IsValid(int value);
+const DataGetter_GetterType DataGetter_GetterType_GetterType_MIN = DataGetter_GetterType_DATA;
+const DataGetter_GetterType DataGetter_GetterType_GetterType_MAX = DataGetter_GetterType_ANNOTATIONS;
+const int DataGetter_GetterType_GetterType_ARRAYSIZE = DataGetter_GetterType_GetterType_MAX + 1;
 
 // ===================================================================
 
@@ -128,9 +156,28 @@ class ImageDatum : public ::google::protobuf::MessageLite /* @@protoc_insertion_
 
   // nested types ----------------------------------------------------
 
+  typedef ImageDatum_Format Format;
+  static const Format JPG =
+    ImageDatum_Format_JPG;
+  static const Format PNG =
+    ImageDatum_Format_PNG;
+  static const Format RAW_ARRAY =
+    ImageDatum_Format_RAW_ARRAY;
+  static const Format UNDEFINED =
+    ImageDatum_Format_UNDEFINED;
+  static inline bool Format_IsValid(int value) {
+    return ImageDatum_Format_IsValid(value);
+  }
+  static const Format Format_MIN =
+    ImageDatum_Format_Format_MIN;
+  static const Format Format_MAX =
+    ImageDatum_Format_Format_MAX;
+  static const int Format_ARRAYSIZE =
+    ImageDatum_Format_Format_ARRAYSIZE;
+
   // accessors -------------------------------------------------------
 
-  // bytes imgData = 10;
+  // string imgData = 10;
   void clear_imgdata();
   static const int kImgDataFieldNumber = 10;
   const ::std::string& imgdata() const;
@@ -139,7 +186,7 @@ class ImageDatum : public ::google::protobuf::MessageLite /* @@protoc_insertion_
   void set_imgdata(::std::string&& value);
   #endif
   void set_imgdata(const char* value);
-  void set_imgdata(const void* value, size_t size);
+  void set_imgdata(const char* value, size_t size);
   ::std::string* mutable_imgdata();
   ::std::string* release_imgdata();
   void set_allocated_imgdata(::std::string* imgdata);
@@ -162,6 +209,12 @@ class ImageDatum : public ::google::protobuf::MessageLite /* @@protoc_insertion_
   ::google::protobuf::int32 channels() const;
   void set_channels(::google::protobuf::int32 value);
 
+  // .TuriCreate.Annotation.Specification.ImageDatum.Format type = 4;
+  void clear_type();
+  static const int kTypeFieldNumber = 4;
+  ::TuriCreate::Annotation::Specification::ImageDatum_Format type() const;
+  void set_type(::TuriCreate::Annotation::Specification::ImageDatum_Format value);
+
   // @@protoc_insertion_point(class_scope:TuriCreate.Annotation.Specification.ImageDatum)
  private:
 
@@ -170,6 +223,7 @@ class ImageDatum : public ::google::protobuf::MessageLite /* @@protoc_insertion_
   ::google::protobuf::int32 width_;
   ::google::protobuf::int32 height_;
   ::google::protobuf::int32 channels_;
+  int type_;
   mutable int _cached_size_;
   friend struct protobuf_data_2eproto::TableStruct;
 };
@@ -365,6 +419,113 @@ class Datum : public ::google::protobuf::MessageLite /* @@protoc_insertion_point
 };
 // -------------------------------------------------------------------
 
+class DataGetter : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.DataGetter) */ {
+ public:
+  DataGetter();
+  virtual ~DataGetter();
+
+  DataGetter(const DataGetter& from);
+
+  inline DataGetter& operator=(const DataGetter& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const DataGetter& default_instance();
+
+  static inline const DataGetter* internal_default_instance() {
+    return reinterpret_cast<const DataGetter*>(
+               &_DataGetter_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    3;
+
+  void Swap(DataGetter* other);
+
+  // implements Message ----------------------------------------------
+
+  inline DataGetter* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  DataGetter* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
+  void CopyFrom(const DataGetter& from);
+  void MergeFrom(const DataGetter& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(DataGetter* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  typedef DataGetter_GetterType GetterType;
+  static const GetterType DATA =
+    DataGetter_GetterType_DATA;
+  static const GetterType ANNOTATIONS =
+    DataGetter_GetterType_ANNOTATIONS;
+  static inline bool GetterType_IsValid(int value) {
+    return DataGetter_GetterType_IsValid(value);
+  }
+  static const GetterType GetterType_MIN =
+    DataGetter_GetterType_GetterType_MIN;
+  static const GetterType GetterType_MAX =
+    DataGetter_GetterType_GetterType_MAX;
+  static const int GetterType_ARRAYSIZE =
+    DataGetter_GetterType_GetterType_ARRAYSIZE;
+
+  // accessors -------------------------------------------------------
+
+  // .TuriCreate.Annotation.Specification.DataGetter.GetterType type = 1;
+  void clear_type();
+  static const int kTypeFieldNumber = 1;
+  ::TuriCreate::Annotation::Specification::DataGetter_GetterType type() const;
+  void set_type(::TuriCreate::Annotation::Specification::DataGetter_GetterType value);
+
+  // int32 start = 2;
+  void clear_start();
+  static const int kStartFieldNumber = 2;
+  ::google::protobuf::int32 start() const;
+  void set_start(::google::protobuf::int32 value);
+
+  // int32 end = 3;
+  void clear_end();
+  static const int kEndFieldNumber = 3;
+  ::google::protobuf::int32 end() const;
+  void set_end(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:TuriCreate.Annotation.Specification.DataGetter)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
+  int type_;
+  ::google::protobuf::int32 start_;
+  ::google::protobuf::int32 end_;
+  mutable int _cached_size_;
+  friend struct protobuf_data_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
 class Data : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.Data) */ {
  public:
   Data();
@@ -384,7 +545,7 @@ class Data : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(
                &_Data_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    3;
+    4;
 
   void Swap(Data* other);
 
@@ -497,7 +658,21 @@ inline void ImageDatum::set_channels(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.ImageDatum.channels)
 }
 
-// bytes imgData = 10;
+// .TuriCreate.Annotation.Specification.ImageDatum.Format type = 4;
+inline void ImageDatum::clear_type() {
+  type_ = 0;
+}
+inline ::TuriCreate::Annotation::Specification::ImageDatum_Format ImageDatum::type() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.ImageDatum.type)
+  return static_cast< ::TuriCreate::Annotation::Specification::ImageDatum_Format >(type_);
+}
+inline void ImageDatum::set_type(::TuriCreate::Annotation::Specification::ImageDatum_Format value) {
+  
+  type_ = value;
+  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.ImageDatum.type)
+}
+
+// string imgData = 10;
 inline void ImageDatum::clear_imgdata() {
   imgdata_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -524,7 +699,7 @@ inline void ImageDatum::set_imgdata(const char* value) {
   imgdata_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:TuriCreate.Annotation.Specification.ImageDatum.imgData)
 }
-inline void ImageDatum::set_imgdata(const void* value, size_t size) {
+inline void ImageDatum::set_imgdata(const char* value, size_t size) {
   
   imgdata_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
@@ -687,6 +862,52 @@ Datum::text() const {
 
 // -------------------------------------------------------------------
 
+// DataGetter
+
+// .TuriCreate.Annotation.Specification.DataGetter.GetterType type = 1;
+inline void DataGetter::clear_type() {
+  type_ = 0;
+}
+inline ::TuriCreate::Annotation::Specification::DataGetter_GetterType DataGetter::type() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.DataGetter.type)
+  return static_cast< ::TuriCreate::Annotation::Specification::DataGetter_GetterType >(type_);
+}
+inline void DataGetter::set_type(::TuriCreate::Annotation::Specification::DataGetter_GetterType value) {
+  
+  type_ = value;
+  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.DataGetter.type)
+}
+
+// int32 start = 2;
+inline void DataGetter::clear_start() {
+  start_ = 0;
+}
+inline ::google::protobuf::int32 DataGetter::start() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.DataGetter.start)
+  return start_;
+}
+inline void DataGetter::set_start(::google::protobuf::int32 value) {
+  
+  start_ = value;
+  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.DataGetter.start)
+}
+
+// int32 end = 3;
+inline void DataGetter::clear_end() {
+  end_ = 0;
+}
+inline ::google::protobuf::int32 DataGetter::end() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.DataGetter.end)
+  return end_;
+}
+inline void DataGetter::set_end(::google::protobuf::int32 value) {
+  
+  end_ = value;
+  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.DataGetter.end)
+}
+
+// -------------------------------------------------------------------
+
 // Data
 
 // repeated .TuriCreate.Annotation.Specification.Datum data = 1;
@@ -726,6 +947,8 @@ Data::data() const {
 
 // -------------------------------------------------------------------
 
+// -------------------------------------------------------------------
+
 
 // @@protoc_insertion_point(namespace_scope)
 
@@ -733,6 +956,17 @@ Data::data() const {
 }  // namespace Specification
 }  // namespace Annotation
 }  // namespace TuriCreate
+
+#ifndef SWIG
+namespace google {
+namespace protobuf {
+
+template <> struct is_proto_enum< ::TuriCreate::Annotation::Specification::ImageDatum_Format> : ::google::protobuf::internal::true_type {};
+template <> struct is_proto_enum< ::TuriCreate::Annotation::Specification::DataGetter_GetterType> : ::google::protobuf::internal::true_type {};
+
+}  // namespace protobuf
+}  // namespace google
+#endif  // SWIG
 
 // @@protoc_insertion_point(global_scope)
 

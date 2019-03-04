@@ -53,9 +53,15 @@ extern AudioClassificationLabelDefaultTypeInternal _AudioClassificationLabel_def
 class AudioClassificationMeta;
 class AudioClassificationMetaDefaultTypeInternal;
 extern AudioClassificationMetaDefaultTypeInternal _AudioClassificationMeta_default_instance_;
+class ClientRequest;
+class ClientRequestDefaultTypeInternal;
+extern ClientRequestDefaultTypeInternal _ClientRequest_default_instance_;
 class Data;
 class DataDefaultTypeInternal;
 extern DataDefaultTypeInternal _Data_default_instance_;
+class DataGetter;
+class DataGetterDefaultTypeInternal;
+extern DataGetterDefaultTypeInternal _DataGetter_default_instance_;
 class Datum;
 class DatumDefaultTypeInternal;
 extern DatumDefaultTypeInternal _Datum_default_instance_;
@@ -241,6 +247,115 @@ class Parcel : public ::google::protobuf::MessageLite /* @@protoc_insertion_poin
 
   friend struct protobuf_message_2eproto::TableStruct;
 };
+// -------------------------------------------------------------------
+
+class ClientRequest : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:TuriCreate.Annotation.Specification.ClientRequest) */ {
+ public:
+  ClientRequest();
+  virtual ~ClientRequest();
+
+  ClientRequest(const ClientRequest& from);
+
+  inline ClientRequest& operator=(const ClientRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ClientRequest& default_instance();
+
+  enum TypeCase {
+    kGetter = 1,
+    kAnnotations = 2,
+    TYPE_NOT_SET = 0,
+  };
+
+  static inline const ClientRequest* internal_default_instance() {
+    return reinterpret_cast<const ClientRequest*>(
+               &_ClientRequest_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    1;
+
+  void Swap(ClientRequest* other);
+
+  // implements Message ----------------------------------------------
+
+  inline ClientRequest* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  ClientRequest* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
+  void CopyFrom(const ClientRequest& from);
+  void MergeFrom(const ClientRequest& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(ClientRequest* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // .TuriCreate.Annotation.Specification.DataGetter getter = 1;
+  bool has_getter() const;
+  void clear_getter();
+  static const int kGetterFieldNumber = 1;
+  const ::TuriCreate::Annotation::Specification::DataGetter& getter() const;
+  ::TuriCreate::Annotation::Specification::DataGetter* mutable_getter();
+  ::TuriCreate::Annotation::Specification::DataGetter* release_getter();
+  void set_allocated_getter(::TuriCreate::Annotation::Specification::DataGetter* getter);
+
+  // .TuriCreate.Annotation.Specification.Annotations annotations = 2;
+  bool has_annotations() const;
+  void clear_annotations();
+  static const int kAnnotationsFieldNumber = 2;
+  const ::TuriCreate::Annotation::Specification::Annotations& annotations() const;
+  ::TuriCreate::Annotation::Specification::Annotations* mutable_annotations();
+  ::TuriCreate::Annotation::Specification::Annotations* release_annotations();
+  void set_allocated_annotations(::TuriCreate::Annotation::Specification::Annotations* annotations);
+
+  TypeCase Type_case() const;
+  // @@protoc_insertion_point(class_scope:TuriCreate.Annotation.Specification.ClientRequest)
+ private:
+  void set_has_getter();
+  void set_has_annotations();
+
+  inline bool has_Type() const;
+  void clear_Type();
+  inline void clear_has_Type();
+
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
+  union TypeUnion {
+    TypeUnion() {}
+    ::TuriCreate::Annotation::Specification::DataGetter* getter_;
+    ::TuriCreate::Annotation::Specification::Annotations* annotations_;
+  } Type_;
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _oneof_case_[1];
+
+  friend struct protobuf_message_2eproto::TableStruct;
+};
 // ===================================================================
 
 
@@ -402,7 +517,118 @@ inline void Parcel::clear_has_Message() {
 inline Parcel::MessageCase Parcel::Message_case() const {
   return Parcel::MessageCase(_oneof_case_[0]);
 }
+// -------------------------------------------------------------------
+
+// ClientRequest
+
+// .TuriCreate.Annotation.Specification.DataGetter getter = 1;
+inline bool ClientRequest::has_getter() const {
+  return Type_case() == kGetter;
+}
+inline void ClientRequest::set_has_getter() {
+  _oneof_case_[0] = kGetter;
+}
+inline void ClientRequest::clear_getter() {
+  if (has_getter()) {
+    delete Type_.getter_;
+    clear_has_Type();
+  }
+}
+inline  const ::TuriCreate::Annotation::Specification::DataGetter& ClientRequest::getter() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.ClientRequest.getter)
+  return has_getter()
+      ? *Type_.getter_
+      : ::TuriCreate::Annotation::Specification::DataGetter::default_instance();
+}
+inline ::TuriCreate::Annotation::Specification::DataGetter* ClientRequest::mutable_getter() {
+  if (!has_getter()) {
+    clear_Type();
+    set_has_getter();
+    Type_.getter_ = new ::TuriCreate::Annotation::Specification::DataGetter;
+  }
+  // @@protoc_insertion_point(field_mutable:TuriCreate.Annotation.Specification.ClientRequest.getter)
+  return Type_.getter_;
+}
+inline ::TuriCreate::Annotation::Specification::DataGetter* ClientRequest::release_getter() {
+  // @@protoc_insertion_point(field_release:TuriCreate.Annotation.Specification.ClientRequest.getter)
+  if (has_getter()) {
+    clear_has_Type();
+    ::TuriCreate::Annotation::Specification::DataGetter* temp = Type_.getter_;
+    Type_.getter_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void ClientRequest::set_allocated_getter(::TuriCreate::Annotation::Specification::DataGetter* getter) {
+  clear_Type();
+  if (getter) {
+    set_has_getter();
+    Type_.getter_ = getter;
+  }
+  // @@protoc_insertion_point(field_set_allocated:TuriCreate.Annotation.Specification.ClientRequest.getter)
+}
+
+// .TuriCreate.Annotation.Specification.Annotations annotations = 2;
+inline bool ClientRequest::has_annotations() const {
+  return Type_case() == kAnnotations;
+}
+inline void ClientRequest::set_has_annotations() {
+  _oneof_case_[0] = kAnnotations;
+}
+inline void ClientRequest::clear_annotations() {
+  if (has_annotations()) {
+    delete Type_.annotations_;
+    clear_has_Type();
+  }
+}
+inline  const ::TuriCreate::Annotation::Specification::Annotations& ClientRequest::annotations() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.ClientRequest.annotations)
+  return has_annotations()
+      ? *Type_.annotations_
+      : ::TuriCreate::Annotation::Specification::Annotations::default_instance();
+}
+inline ::TuriCreate::Annotation::Specification::Annotations* ClientRequest::mutable_annotations() {
+  if (!has_annotations()) {
+    clear_Type();
+    set_has_annotations();
+    Type_.annotations_ = new ::TuriCreate::Annotation::Specification::Annotations;
+  }
+  // @@protoc_insertion_point(field_mutable:TuriCreate.Annotation.Specification.ClientRequest.annotations)
+  return Type_.annotations_;
+}
+inline ::TuriCreate::Annotation::Specification::Annotations* ClientRequest::release_annotations() {
+  // @@protoc_insertion_point(field_release:TuriCreate.Annotation.Specification.ClientRequest.annotations)
+  if (has_annotations()) {
+    clear_has_Type();
+    ::TuriCreate::Annotation::Specification::Annotations* temp = Type_.annotations_;
+    Type_.annotations_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void ClientRequest::set_allocated_annotations(::TuriCreate::Annotation::Specification::Annotations* annotations) {
+  clear_Type();
+  if (annotations) {
+    set_has_annotations();
+    Type_.annotations_ = annotations;
+  }
+  // @@protoc_insertion_point(field_set_allocated:TuriCreate.Annotation.Specification.ClientRequest.annotations)
+}
+
+inline bool ClientRequest::has_Type() const {
+  return Type_case() != TYPE_NOT_SET;
+}
+inline void ClientRequest::clear_has_Type() {
+  _oneof_case_[0] = TYPE_NOT_SET;
+}
+inline ClientRequest::TypeCase ClientRequest::Type_case() const {
+  return ClientRequest::TypeCase(_oneof_case_[0]);
+}
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
 
 // @@protoc_insertion_point(namespace_scope)
 
