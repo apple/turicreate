@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="28px" height="48px" viewBox="0 0 28 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
+    <title>Group 4</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard-Copy-3" transform="translate(-235.000000, -368.000000)" fill="#4A4A4A" fill-rule="nonzero">
+            <g id="Group-4" transform="translate(249.000000, 392.000000) scale(-1, 1) translate(-249.000000, -392.000000) translate(233.000000, 366.000000)">
+                <path d="M2,12 L30,12 C32.209139,12 34,13.790861 34,16 L34,16 C34,18.209139 32.209139,20 30,20 L2,20 C-0.209138999,20 -2,18.209139 -2,16 L-2,16 C-2,13.790861 -0.209138999,12 2,12 Z" id="Rectangle-40" transform="translate(16.000000, 16.000000) rotate(45.000000) translate(-16.000000, -16.000000) "></path>
+                <path d="M2,32 L30,32 C32.209139,32 34,33.790861 34,36 L34,36 C34,38.209139 32.209139,40 30,40 L2,40 C-0.209138999,40 -2,38.209139 -2,36 L-2,36 C-2,33.790861 -0.209138999,32 2,32 Z" id="Rectangle-40" transform="translate(16.000000, 36.000000) scale(1, -1) rotate(45.000000) translate(-16.000000, -36.000000) "></path>
+            </g>
+        </g>
+    </g>
+</svg>

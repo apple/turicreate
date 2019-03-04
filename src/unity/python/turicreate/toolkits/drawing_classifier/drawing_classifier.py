@@ -13,6 +13,7 @@ from turicreate.toolkits import evaluation as _evaluation
 import turicreate.toolkits._internal_utils as _tkutl
 from .. import _mxnet_utils
 from turicreate import extensions as _extensions
+from .. import _pre_trained_models
 
 BITMAP_WIDTH = 28
 BITMAP_HEIGHT = 28
@@ -29,9 +30,9 @@ def _raise_error_if_not_drawing_classifier_input_sframe(dataset, feature):
             + " where each stroke is a list of points and" 
             + " each point is stored as a dictionary")
 
-def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap", 
-           target="label", model=None, classes=None, batch_size=256, 
-           max_iterations=0, verbose=True, **kwargs):
+def create(input_dataset, feature="bitmap", target="label", 
+            pretrained_model_url=None, classes=None, batch_size=256, 
+            num_epochs=100, max_iterations=0, verbose=True, **kwargs):
     """
     Create a :class:`DrawingClassifier` model.
     """
@@ -41,6 +42,11 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap",
     from ._sframe_loader import SFrameClassifierIter as _SFrameClassifierIter
     
     start_time = _time.time()
+
+    if max_iterations == 0:
+        max_iterations = num_epochs * len(input_dataset) / batch_size
+    else:
+        num_epochs = max_iterations * batch_size / len(input_dataset)
 
     _raise_error_if_not_drawing_classifier_input_sframe(input_dataset, feature)
 
@@ -98,13 +104,18 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap",
                  epochs=num_epochs,
                  iterations=None)
 
-    model = _Model(num_classes = len(classes))
-    softmax_cross_entropy = _mx.gluon.loss.SoftmaxCrossEntropyLoss()
-    
     ctx = _mxnet_utils.get_mxnet_context(max_devices=batch_size)
-
+    model = _Model(num_classes = len(classes))
     model_params = model.collect_params()
     model_params.initialize(_mx.init.Xavier(), ctx=ctx)
+
+    if pretrained_model_url is not None:
+        pretrained_model = _pre_trained_models.DrawingClassifierPreTrainedModel(pretrained_model_url)
+        pretrained_model_params_path = pretrained_model.get_model_path()
+        model.load_params(pretrained_model_params_path, 
+            ctx=ctx, 
+            allow_missing=True)
+    softmax_cross_entropy = _mx.gluon.loss.SoftmaxCrossEntropyLoss()
     model.hybridize()
     trainer = _mx.gluon.Trainer(model.collect_params(), 'adam')
 
