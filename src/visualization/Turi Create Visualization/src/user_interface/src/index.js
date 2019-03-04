@@ -103,9 +103,18 @@ window.setProtoMessage = function setProtoMessage(value){
     const buffer = Uint8Array.from(atob(value), c => c.charCodeAt(0));
     var decoded = ParcelMessage.decode(buffer);
     
-    if(decoded.hasOwnProperty('metadata')){
-        component_rendered = ReactDOM.render(<TCAnnotate total={1000}/>, document.getElementById('annotate_viz'));
+    if (decoded.hasOwnProperty('metadata')) {
+        component_rendered = ReactDOM.render(<TCAnnotate total={decoded.metadata.numExamples}/>, document.getElementById('annotate_viz'));
         spec_type = SpecType.annotate;
+    } else if(decoded.hasOwnProperty('data')) {
+        for (var i = 0; i < decoded["data"]["data"].length; i++) {
+            const row_index = decoded["data"]["data"][i]["rowIndex"];
+            const type = decoded["data"]["data"][i]["images"][0]["type"];
+            const data = decoded["data"]["data"][i]["images"][0]["imgData"];
+            const image = "data:image/" + type + ";base64," + data;
+
+            component_rendered.setImageData(row_index, image);
+        }
     }
 }
 

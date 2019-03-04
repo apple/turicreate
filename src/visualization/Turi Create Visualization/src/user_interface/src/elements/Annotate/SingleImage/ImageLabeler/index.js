@@ -2,8 +2,20 @@ import React, { Component } from 'react';
 import style from './index.module.scss';
 
 class ImageLabeler extends Component {
+
+
   render() {
-    return (
+
+    if (this.props.src) {
+      return(
+        <div className={style.ImageLabeler}>
+          <div className={style.Image}>
+            <img src={this.props.src}/>
+          </div>
+        </div>
+      );
+    } else {
+      return (
       <div className={style.ImageLabeler}>
         <div className={style.Image}>
             <div className={style.ImageLoadingHolder}>
@@ -12,11 +24,12 @@ class ImageLabeler extends Component {
                 <div className={style.bounce3}></div>
             </div>
         </div>
-        {/* Img */}
-        {/* Img Label Position */}
-        {/* Img Label Hashing Color */}
       </div>
     );
+    }
+
+
+    
   }
 }
 

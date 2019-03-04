@@ -115,6 +115,8 @@ private:
   template <typename T, typename = typename std::enable_if<std::is_base_of<
                             ::google::protobuf::MessageLite, T>::value>::type>
   std::string __serialize_proto(T message);
+
+  std::string __parse_proto_and_respond(std::string& input);
 };
 
 } // namespace annotate

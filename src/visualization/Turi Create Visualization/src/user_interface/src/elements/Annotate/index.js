@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import style from './index.module.scss';
 
+import { Root } from 'protobufjs';
+import messageFormat from '../../format/message';
+
 import InfiniteScroll from './InfiniteScroll';
 import StatusBar from './StatusBar';
 import SingleImage from './SingleImage';
@@ -9,6 +12,7 @@ import LabelModal from './LabelModal';
 import ErrorBar from './ErrorBar';
 
 const DEFAULT_NUM_EXPECTED = 10;
+const CACHE_SIZE = 1000;
 
 /* TODO: Indicator to Show how many Images were Annotated */
 /* TODO: Render Labels on Images */
@@ -25,6 +29,7 @@ class Annotate extends Component {
       incrementalCurrentIndex: 0,
       LabelModalValue: "",
       /* TODO: Labels will be Populated from MetaData */
+      imageData:{},
       labels:[
         {
           name: "dog",
@@ -43,6 +48,67 @@ class Annotate extends Component {
         },
       ]
     }
+  }
+
+  componentDidMount() {
+    
+  }
+
+  cleanCache = (start, end) => {
+    if (Object.keys(this.state.imageData).length > CACHE_SIZE) {
+      var sorted_keys = Object.keys(this.state.imageData).sort();
+      var lower_bound = sorted_keys[0];
+      var upper_bound = sorted_keys[sorted_keys.length - 1];
+
+      var intermediate_check = parseInt(((end - start)/2), 10);
+      if((Math.abs(intermediate_check - lower_bound)) > (Math.abs(intermediate_check - upper_bound))){
+        var delete_keys = sorted_keys.slice(lower_bound, (lower_bound + (end - start)));
+        const imgData = this.state.imageData;
+        for(var x = 0; x < delete_keys.length; x++){
+          delete imgData[delete_keys[x]];
+        }
+        this.setState({
+          imageData: imgData
+        });
+      }else{
+        var delete_keys = sorted_keys.slice((upper_bound - (end - start)), upper_bound);
+        const imgData = this.state.imageData;
+        for(var x = 0; x < delete_keys.length; x++){
+          delete imgData[delete_keys[x]];
+        }
+        this.setState({
+          imageData: imgData
+        });
+      }
+    }
+  }
+
+  getData = (start, end) => {
+    this.cleanCache(start, end);
+    const root = Root.fromJSON(messageFormat);
+    const ParcelMessage = root.lookupType("TuriCreate.Annotation.Specification.ClientRequest");
+    const payload = {"getter": {"type": 0, "start": start, "end": end}};
+    const err = ParcelMessage.verify(payload);
+    if (err)
+      throw Error(err);
+    
+    const message = ParcelMessage.create(payload);
+    const buffer = ParcelMessage.encode(message).finish();
+    const encoded = btoa(String.fromCharCode.apply(null, buffer));
+
+    if (window.navigator.platform == 'MacIntel') {
+      window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'writeProtoBuf', message: encoded});
+    } else {
+      window.postMessageToNativeClient(encoded);
+    }
+  }
+
+  setImageData = (key, value) => {
+    var previousImageData = this.state.imageData;
+    previousImageData[key] = value;
+    this.setState({
+      imageData: previousImageData
+    });
   }
 
   clearError = () => {
@@ -124,11 +190,17 @@ class Annotate extends Component {
         <InfiniteScroll numElements={this.props.total}
                         hideAnnotated={this.state.hideAnnotated}
                         incrementalCurrentIndex={this.state.incrementalCurrentIndex}
-                        updateIncrementalCurrentIndex={this.updateIncrementalCurrentIndex.bind(this)} />
+                        updateIncrementalCurrentIndex={this.updateIncrementalCurrentIndex.bind(this)}
+                        imageData={this.state.imageData}
+                        getData={this.getData.bind(this)} />
       );
     } else {
       return (
-        <SingleImage/>
+        <SingleImage src={this.state.imageData[this.state.incrementalCurrentIndex]}
+                     getData={this.getData.bind(this)}
+                     numElements={this.props.total}
+                     incrementalCurrentIndex={this.state.incrementalCurrentIndex}
+                     updateIncrementalCurrentIndex={this.updateIncrementalCurrentIndex.bind(this)}/>
       );
     }
   }

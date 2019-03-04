@@ -64,6 +64,11 @@ class Pipe {
         }
     }
     
+    public func writeProtoBuf(message: String){
+        print(message);
+        fflush(__stdoutp)
+    }
+    
     public func writePipe(method: String, start: Int, end: Int){
         print("{'method':'get_rows','start':" + String(start) + ", 'end': " + String(end) + "}");
         fflush(__stdoutp)

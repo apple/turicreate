@@ -10,7 +10,7 @@ class ImageContainer extends Component {
   render() {
 		if (this.props.src) {
 			return(
-				<div className={style.ImageContainer}>
+				<div className={`${style.ImageContainer} ${style.realImage}`}>
 					<img src={this.props.src}/>
 				</div>
 			);
