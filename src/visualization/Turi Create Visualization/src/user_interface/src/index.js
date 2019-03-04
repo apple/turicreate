@@ -106,6 +106,7 @@ window.setProtoMessage = function setProtoMessage(value){
     if (decoded.hasOwnProperty('metadata')) {
         component_rendered = ReactDOM.render(<TCAnnotate total={decoded.metadata.numExamples}/>, document.getElementById('annotate_viz'));
         spec_type = SpecType.annotate;
+        console.log(decoded);
     } else if(decoded.hasOwnProperty('data')) {
         for (var i = 0; i < decoded["data"]["data"].length; i++) {
             const row_index = decoded["data"]["data"][i]["rowIndex"];

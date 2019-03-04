@@ -30,7 +30,7 @@ add_custom_command(TARGET annotationProtobuf
                                           ${DATA_PROTO}
                                           ${MESSAGE_PROTO}
                                           ${META_PROTO}
-  BYPRODUCTS ${TC_ANNOTATIONS_PROTO_FILES} ${TC_ANNOTATIONS_PROTO_HEADERS}
+  #BYPRODUCTS ${TC_ANNOTATIONS_PROTO_FILES} ${TC_ANNOTATIONS_PROTO_HEADERS}
 )
 
 set(TC_ANNOTATIONS_SOURCE_FILES
