@@ -13,6 +13,7 @@ from turicreate.toolkits import evaluation as _evaluation
 import turicreate.toolkits._internal_utils as _tkutl
 from .. import _mxnet_utils
 from turicreate import extensions as _extensions
+from .. import _pre_trained_models
 
 BITMAP_WIDTH = 28
 BITMAP_HEIGHT = 28
@@ -29,9 +30,9 @@ def _raise_error_if_not_drawing_classifier_input_sframe(dataset, feature):
             + " where each stroke is a list of points and" 
             + " each point is stored as a dictionary")
 
-def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap", 
-           target="label", model=None, classes=None, batch_size=256, 
-           max_iterations=0, verbose=True, **kwargs):
+def create(input_dataset, feature="bitmap", target="label", 
+            pretrained_model_url=None, classes=None, batch_size=256, 
+            num_epochs=100, max_iterations=0, verbose=True, **kwargs):
     """
     Create a :class:`DrawingRecognition` model.
     """
@@ -42,16 +43,16 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap",
     
     start_time = _time.time()
 
+    if max_iterations == 0:
+        max_iterations = num_epochs * len(input_dataset) / batch_size
+    else:
+        num_epochs = max_iterations * batch_size / len(input_dataset)
+
     _raise_error_if_not_drawing_classifier_input_sframe(input_dataset, feature)
 
     is_stroke_input = (input_dataset[feature].dtype != _tc.Image)
-
-    if is_stroke_input:
-        # This only works on macOS right now
-        dataset = _extensions._drawing_recognition_prepare_data(
-            input_dataset, feature, target)
-    else:
-        dataset = input_dataset
+    dataset = _extensions._drawing_recognition_prepare_data(
+        input_dataset, feature) if is_stroke_input else input_dataset
 
     column_names = ['Iteration', 'Loss', 'Elapsed Time']
     num_columns = len(column_names)
@@ -103,13 +104,18 @@ def create(input_dataset, annotations=None, num_epochs=100, feature="bitmap",
                  epochs=num_epochs,
                  iterations=None)
 
-    model = _Model(num_classes = len(classes))
-    softmax_cross_entropy = _mx.gluon.loss.SoftmaxCrossEntropyLoss()
-    
     ctx = _mxnet_utils.get_mxnet_context(max_devices=batch_size)
-
+    model = _Model(num_classes = len(classes))
     model_params = model.collect_params()
     model_params.initialize(_mx.init.Xavier(), ctx=ctx)
+
+    if pretrained_model_url is not None:
+        pretrained_model = _pre_trained_models.DrawingClassifierPreTrainedModel(pretrained_model_url)
+        pretrained_model_params_path = pretrained_model.get_model_path()
+        model.load_params(pretrained_model_params_path, 
+            ctx=ctx, 
+            allow_missing=True)
+    softmax_cross_entropy = _mx.gluon.loss.SoftmaxCrossEntropyLoss()
     model.hybridize()
     trainer = _mx.gluon.Trainer(model.collect_params(), 'adam')
 
@@ -175,7 +181,6 @@ class DrawingRecognition(_CustomModel):
     @classmethod
     def _load_version(cls, state, version):
         _tkutl._model_version_check(version, 1)
-
         from ._model_architecture import Model as _Model
         net = _Model(num_classes = len(state['classes']), prefix = 'model0_')
         ctx = _mxnet_utils.get_mxnet_context(max_devices=state['batch_size'])
@@ -221,7 +226,7 @@ class DrawingRecognition(_CustomModel):
                                 builder=None, verbose=verbose,
                                 preprocessor_args={'image_input_names':[self.feature]})
 
-        DESIRED_OUTPUT_NAME = self.target + "probabilities"
+        DESIRED_OUTPUT_NAME = self.target + "Probabilities"
         spec = coreml_model._spec
         class_label_output_index = 0 if spec.description.output[0].name == "classLabel" else 1
         probabilities_output_index = 1-class_label_output_index
@@ -431,4 +436,3 @@ class DrawingRecognition(_CustomModel):
         """
         predicted = self._predict_with_probabilities(dataset)
         return predicted[self.target]
-

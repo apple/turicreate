@@ -8,6 +8,7 @@ message ImageDatum {
   int32 height = 2;
   int32 channels = 3;
 
+
   enum Format {
     JPG = 0;
     PNG = 1;

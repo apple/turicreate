@@ -104,7 +104,6 @@ window.setProtoMessage = function setProtoMessage(value){
     var decoded = ParcelMessage.decode(buffer);
     
     if (decoded.hasOwnProperty('metadata')) {
-        console.log(decoded);
         component_rendered = ReactDOM.render(<TCAnnotate total={decoded.metadata.numExamples}/>, document.getElementById('annotate_viz'));
         spec_type = SpecType.annotate;
     } else if(decoded.hasOwnProperty('data')) {
