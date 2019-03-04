@@ -11,6 +11,7 @@ from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits import evaluation as _evaluation
 import turicreate.toolkits._internal_utils as _tkutl
+from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from .. import _mxnet_utils
 from turicreate import extensions as _extensions
 from .. import _pre_trained_models
@@ -18,17 +19,23 @@ from .. import _pre_trained_models
 BITMAP_WIDTH = 28
 BITMAP_HEIGHT = 28
 
-def _raise_error_if_not_drawing_classifier_input_sframe(dataset, feature):
+def _raise_error_if_not_drawing_classifier_input_sframe(dataset, feature, target):
     from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
     _raise_error_if_not_sframe(dataset)
     if feature not in dataset.column_names():
         raise _ToolkitError("Feature column '%s' does not exist" % feature)
+    if target not in dataset.column_names():
+        raise _ToolkitError("Target column '%s' does not exist" % target)
     if (dataset[feature].dtype != _tc.Image 
         and dataset[feature].dtype != list):
         raise _ToolkitError("Feature column must contain images" 
             + " or stroke-based drawings encoded as lists of strokes" 
             + " where each stroke is a list of points and" 
             + " each point is stored as a dictionary")
+    if dataset[target].dtype != int or dataset[target].dtype != str:
+        raise _ToolkitError("Target column must contain strings" 
+            + " or integers to represent labels for drawings.")
+
 
 def create(input_dataset, feature="bitmap", target="label", 
             pretrained_model_url=None, classes=None, batch_size=256, 
@@ -48,7 +55,8 @@ def create(input_dataset, feature="bitmap", target="label",
     else:
         num_epochs = max_iterations * batch_size / len(input_dataset)
 
-    _raise_error_if_not_drawing_classifier_input_sframe(input_dataset, feature)
+    _raise_error_if_not_drawing_classifier_input_sframe(input_dataset, 
+        feature, target)
 
     is_stroke_input = (input_dataset[feature].dtype != _tc.Image)
     dataset = _extensions._drawing_classifier_prepare_data(

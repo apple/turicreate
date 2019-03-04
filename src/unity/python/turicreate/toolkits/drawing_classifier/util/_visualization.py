@@ -5,6 +5,7 @@
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 import turicreate as _tc
 from turicreate import extensions as _extensions
+from turicreate.toolkits._main import ToolkitError as _ToolkitError
 
 def draw_strokes(stroke_based_drawings):
     """
