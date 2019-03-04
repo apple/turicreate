@@ -264,6 +264,7 @@ package_wheel() {
   else
       NEW_WHEEL_PATH=${WHEEL_PATH/-py2-/-cp27-}
   fi
+  NEW_WHEEL_PATH=${NEW_WHEEL_PATH/linux/manylinux1}
   if [[ ! ${WHEEL_PATH} == ${NEW_WHEEL_PATH} ]]; then
       mv ${WHEEL_PATH} ${NEW_WHEEL_PATH}
       WHEEL_PATH=${NEW_WHEEL_PATH}
