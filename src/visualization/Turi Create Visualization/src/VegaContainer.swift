@@ -206,6 +206,13 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
             self.pipe!.writeAccordion(method: "get_accordian", column_name: column_name, index_val: index_num)
             
             break
+        case "writeProtoBuf":
+            guard let proto_message = messageBody["message"] as? String else {
+                assert(false, "no message in protobuf")
+                return
+            }
+            
+            self.pipe!.writeProtoBuf(message: proto_message);
         default:
             assert(false)
             break

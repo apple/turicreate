@@ -7,6 +7,8 @@
 #include <unity/lib/annotation/utils.hpp>
 
 #include <boost/archive/iterators/base64_from_binary.hpp>
+#include <boost/archive/iterators/binary_from_base64.hpp>
+#include <boost/archive/iterators/remove_whitespace.hpp>
 #include <boost/archive/iterators/transform_width.hpp>
 
 #include <sstream>
@@ -44,10 +46,11 @@ void AnnotationBase::annotate(const std::string &path_to_client) {
       continue;
     }
 
-    // parse proto message
-    
-    
-    break;
+    std::string response = this->__parse_proto_and_respond(input).c_str();
+
+    if (!response.empty()) {
+      aw << response;
+    }
   }
 }
 
@@ -128,9 +131,9 @@ void AnnotationBase::_checkDataSet() {
   flex_type_enum image_column_dtype = m_data->dtype().at(image_column_index);
 
   if (image_column_dtype != flex_type_enum::IMAGE) {
-    std_log_and_throw(
-        std::invalid_argument,
-        "Image column \"" + m_data_columns.at(0) + "\" not of image type.");
+    std_log_and_throw(std::invalid_argument, "Image column \"" +
+                                                 m_data_columns.at(0) +
+                                                 "\" not of image type.");
   }
 
   size_t annotation_column_index = m_data->column_index(m_annotation_column);
@@ -203,6 +206,40 @@ std::string AnnotationBase::__serialize_proto(T message) {
   ss << "\"}\n";
 
   return ss.str();
+}
+
+std::string AnnotationBase::__parse_proto_and_respond(std::string &input) {
+  std::string result(boost::archive::iterators::transform_width<
+                         boost::archive::iterators::binary_from_base64<
+                             boost::archive::iterators::remove_whitespace<
+                                 std::string::const_iterator>>,
+                         8, 6>(input.begin()),
+                     boost::archive::iterators::transform_width<
+                         boost::archive::iterators::binary_from_base64<
+                             boost::archive::iterators::remove_whitespace<
+                                 std::string::const_iterator>>,
+                         8, 6>(input.end()));
+
+  annotate_spec::ClientRequest request;
+  request.ParseFromString(result);
+
+  if (request.has_getter()) {
+    annotate_spec::DataGetter data_getter = request.getter();
+    switch (data_getter.type()) {
+    case annotate_spec::DataGetter_GetterType::DataGetter_GetterType_DATA:
+      return this->__serialize_proto<annotate_spec::Data>(
+          this->getItems(data_getter.start(), data_getter.end()));
+    case annotate_spec::DataGetter_GetterType::
+        DataGetter_GetterType_ANNOTATIONS:
+      return this->__serialize_proto<annotate_spec::Annotations>(
+          this->getAnnotations(data_getter.start(), data_getter.end()));
+    default:
+      break;
+    }
+  } else if (request.has_annotations()) {
+    this->setAnnotations(request.annotations());
+  }
+  return "";
 }
 
 } // namespace annotate
