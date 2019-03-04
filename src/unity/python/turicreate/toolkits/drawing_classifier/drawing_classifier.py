@@ -26,8 +26,7 @@ def _raise_error_if_not_drawing_classifier_input_sframe(dataset, feature, target
         raise _ToolkitError("Feature column '%s' does not exist" % feature)
     if target not in dataset.column_names():
         raise _ToolkitError("Target column '%s' does not exist" % target)
-    if (dataset[feature].dtype != _tc.Image 
-        and dataset[feature].dtype != list):
+    if (dataset[feature].dtype != _tc.Image and dataset[feature].dtype != list):
         raise _ToolkitError("Feature column must contain images" 
             + " or stroke-based drawings encoded as lists of strokes" 
             + " where each stroke is a list of points and" 
@@ -35,7 +34,8 @@ def _raise_error_if_not_drawing_classifier_input_sframe(dataset, feature, target
     if dataset[target].dtype != int or dataset[target].dtype != str:
         raise _ToolkitError("Target column must contain strings" 
             + " or integers to represent labels for drawings.")
-
+    if len(dataset) == 0:
+        raise _ToolkitError("Input Dataset is empty!")
 
 def create(input_dataset, feature="bitmap", target="label", 
             pretrained_model_url=None, classes=None, batch_size=256, 
