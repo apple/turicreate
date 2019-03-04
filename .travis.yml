@@ -118,7 +118,7 @@ jobs:
           --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated
           -e "VIRTUALENV=virtualenv --python=python${PYTHON_VERSION}"
           turicreate/build-image-12.04:${TC_BUILD_IMAGE_VERSION}
-          scripts/test_python.sh release python${PYTHON_VERSION}
+          scripts/test_wheel.sh release python${PYTHON_VERSION}
 
     - stage: test
       env: PYTHON_VERSION=3.5
@@ -134,4 +134,4 @@ jobs:
           --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated
           -e "VIRTUALENV=virtualenv --python=python${PYTHON_VERSION}"
           turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION}
-          scripts/test_python.sh release python${PYTHON_VERSION}
+          scripts/test_wheel.sh release python${PYTHON_VERSION}

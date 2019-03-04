@@ -104,6 +104,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
    docker build -f $SCRIPT_DIR/Dockerfile-Ubuntu-10.04 -t turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} .
 
   # set up arguments to make_wheel.sh within docker
+  test_type="release"
   make_wheel_args="--build_number=$BUILD_NUMBER --num_procs=$NUM_PROCS --skip_smoke_test --skip_test"
   if [[ -n $SKIP_BUILD ]]; then
     make_wheel_args="$make_wheel_args --skip_build"
@@ -116,6 +117,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
   fi
   if [[ "$build_type" == "debug" ]]; then
     make_wheel_args="$make_wheel_args --debug"
+    test_type="debug"
   fi
 
   # Run the make_wheel.sh script inside Docker to build
@@ -136,22 +138,18 @@ if [[ -n "${USE_DOCKER}" ]]; then
 
   # Run the tests inside Docker (14.04) if desired
   # 10.04 is not capable of passing turicreate unit tests currently
-  if [[ -n $SKIP_TEST ]]; then
+  if [[ -z $SKIP_TEST ]]; then
     # create the test image
     # (this should ideally be a no-op if the image exists and is current)
     (docker image ls turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) || \
     docker build -f $SCRIPT_DIR/Dockerfile-Ubuntu-14.04 -t turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} .
-
-    # delete Python env used for building (will get recreated; may be incompatible otherwise)
-    rm -rf deps/env
 
     # run the tests
     docker run --rm \
       --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
       -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
       turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} \
-      /build/scripts/make_wheel.sh \
-      --skip_build --skip_cpp_test --skip_smoke_test --skip_doc
+      /build/scripts/test_wheel.sh ${test_type}
 
     # Delete env to force re-creation of virtualenv if we are running tests next
     # (to prevent reuse of 14.04 virtualenv on 10.04)
