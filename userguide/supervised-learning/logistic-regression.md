@@ -80,14 +80,14 @@ results = model.evaluate(test_data)
 
 Refer to the chapter on linear regression for the following features:
 
-* [Accessing attributes of the model](linear-regression.md#linregr-model-access)
-* [Interpreting results](linear-regression.md#linregr-interpreting-results)
-* [Using categorical features](linear-regression.md#linregr-categorical-features)
-* [Sparse features](linear-regression.md#linregr-sparse-features)
-* [List features](linear-regression.md#linregr-list-features)
-* [Feature rescaling](linear-regression.md#linregr-feature-rescaling)
-* [Choosing the solver](linear-regression.md#linregr-solver)
-* [Regularizing models](linear-regression.md#linregr-regularizer)
+* [Accessing attributes of the model](linear-regression.md#accessing-attributes-of-the-model)
+* [Interpreting results](linear-regression.md#interpreting-results)
+* [Using categorical features](linear-regression.md#categorical-features)
+* [Sparse features](linear-regression.md#sparse-features)
+* [List features](linear-regression.md#list-features)
+* [Feature rescaling](linear-regression.md#feature-rescaling)
+* [Choosing the solver](linear-regression.md#choosing-the-solver)
+* [Regularizing models](linear-regression.md#regularizing-models)
 
 We will now discuss some advanced features that are **specific to logistic
 regression**.
@@ -154,7 +154,7 @@ pred_margin = model.predict(test_data, output_type = "margin")        # Margins
 ```
 
 
-######  <a name="logregr-evaluation"></a> Evaluating Results
+######  <a name="evaluating-results"> </a> Evaluating Results
 
 We can also evaluate our predictions by comparing them to known ratings. The
 results are evaluated using two metrics:
@@ -217,7 +217,7 @@ false_negatives = test_data[false_negative_filter]
 false_positives = test_data[false_positive_filter]
 ```
 
-######  <a name="logregr-imbalanced-data"></a> Working with imbalanced data
+######  <a name="working-with-imbalanced-data"> </a> Working with imbalanced data
 
 Many difficult **real-world** problems have imbalanced data, where at least one
 class is under-represented. Turi Create models can handle the imbalanced data by
@@ -238,7 +238,7 @@ model = tc.logistic_classifier.create(train_data, target='label',
                                       class_weights = 'auto')
 ```
 
-#####  <a name="logregr-multiclass"></a> Multiclass Classification
+#####  <a name="multiclass-classification"> </a> Multiclass Classification
 
 Multiclass classification is the problem of classifying instances into one of
 many (i.e more than two) possible instances. As an example, binary

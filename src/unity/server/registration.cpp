@@ -15,11 +15,12 @@
 
 #include <unity/lib/extensions/ml_model.hpp>
 
+#include <unity/lib/annotation/class_registrations.hpp>
 #include <unity/lib/visualization/show.hpp>
 
 #include <unity/toolkits/activity_classification/class_registrations.hpp>
 #include <unity/toolkits/object_detection/class_registrations.hpp>
-#include <unity/toolkits/drawing_recognition/class_registrations.hpp>
+#include <unity/toolkits/drawing_classifier/class_registrations.hpp>
 
 #include <unity/toolkits/evaluation/metrics.hpp>
 #include <unity/toolkits/evaluation/unity_evaluation.hpp>
@@ -59,6 +60,8 @@ void register_functions(toolkit_function_registry& registry) {
   registry.register_toolkit_function(image_util::get_toolkit_function_registration());
   registry.register_toolkit_function(visualization::get_toolkit_function_registration());
 
+  registry.register_toolkit_function(turi::annotate::get_toolkit_function_registration());
+
   // Register proprietary toolkits
   registry.register_toolkit_function(turi::kmeans::get_toolkit_function_registration(), "_kmeans");
 
@@ -81,7 +84,7 @@ void register_functions(toolkit_function_registry& registry) {
   registry.register_toolkit_function(turi::ml_model_sdk::get_toolkit_function_registration());
   registry.register_toolkit_function(turi::pattern_mining::get_toolkit_function_registration());
   registry.register_toolkit_function(turi::activity_classification::get_toolkit_function_registration());
-  registry.register_toolkit_function(turi::drawing_recognition::get_toolkit_function_registration());
+  registry.register_toolkit_function(turi::drawing_classifier::get_toolkit_function_registration());
   registry.register_toolkit_function(turi::util::get_toolkit_function_registration());
 }
 
@@ -139,6 +142,9 @@ void register_models(toolkit_class_registry& registry) {
 
   // Various prototypes
   registry.register_toolkit_class(turi::prototype::get_toolkit_class_registration());
+
+  // Annotate Registration
+  registry.register_toolkit_class(turi::annotate::get_toolkit_class_registration());
 
 }
 

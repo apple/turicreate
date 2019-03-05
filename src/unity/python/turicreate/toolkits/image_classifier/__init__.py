@@ -10,3 +10,4 @@ from __future__ import print_function as _
 from __future__ import division as _
 
 from .image_classifier import *
+from ._annotate import annotate, recover_annotation

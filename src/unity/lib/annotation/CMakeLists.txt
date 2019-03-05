@@ -3,11 +3,13 @@ project(unity)
 set(TC_ANNOTATIONS_PROTO_FILES
   build/format/cpp/annotate.pb.cc
   build/format/cpp/data.pb.cc
+  build/format/cpp/message.pb.cc
   build/format/cpp/meta.pb.cc
 )
 
 set(TC_ANNOTATIONS_SOURCE_FILES
   annotation_base.cpp
+  class_registrations.cpp
   image_classification.cpp
 )
 
