@@ -282,8 +282,15 @@ void ConvLayer::Load(const float_array_map& weights) {
   std::string bias_key = name + "_bias";
 
     if (weights.count(weight_key) > 0){
+
         LogStdString("Loading weight: " + weight_key);
-        [weight loadWeight: const_cast<float*>(weights.at(weight_key).data())];
+
+        // Transpose the weights from NCHW to NHWC.
+        const shared_float_array& w_NCHW = weights.at(weight_key);
+        std::unique_ptr<float[]> w_NHWC(new float[w_NCHW.size()]);
+        convert_chw_to_hwc(w_NCHW, w_NHWC.get(), w_NHWC.get() + w_NCHW.size());
+
+        [weight loadWeight:w_NHWC.get()];
 
     }
     if (weights.count(bias_key) > 0){
@@ -308,11 +315,18 @@ float_array_map ConvLayer::Export() const {
     
   if (weight.load)
   {
+      // Transpose the weights from NHWC to NCHW.
       std::string weight_key = name + "_weight";
-      std::string bias_key = name + "_bias";
-      table[weight_key] = shared_float_array::copy(
-          reinterpret_cast<float*>([weight weights]), {c_out, k_h, k_w, c_in});
+      size_t size = k_h * k_w * c_in * c_out;
+      std::vector<float> weights(size);
+      size_t mps_shape[] = { c_out, k_h, k_w, c_in };
+      const float* mps_weights = reinterpret_cast<float*>([weight weights]);
+      convert_hwc_to_chw(external_float_array(mps_weights, size, mps_shape, 4),
+                         weights.data(), weights.data() + size);
+      table[weight_key] = shared_float_array::wrap(std::move(weights),
+                                                   {c_out, c_in, k_h, k_w});
 
+      std::string bias_key = name + "_bias";
       size_t bias_size = [weight bias_size];
       table[bias_key] = shared_float_array::copy(
           reinterpret_cast<float*>([weight biasTerms]), {bias_size});

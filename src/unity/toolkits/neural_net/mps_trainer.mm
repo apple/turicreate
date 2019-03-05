@@ -116,14 +116,14 @@ int TCMPSDeleteFloatArrayMapIterator(TCMPSFloatArrayMapIteratorRef iter) {
   API_END();
 }
 
-int TCMPSInit(MPSHandle handle, int network_id, int n, int c_in, int h_in, int w_in,
-         int c_out, int h_out, int w_out,  int updater_id,
-         char **config_names, void **config_arrays,
-         int64_t *config_sizes, int config_len) {
+int TCMPSInit(MPSHandle handle, int network_id, int n, int c_in, int h_in,
+              int w_in, int c_out, int h_out, int w_out,  int updater_id,
+              char **config_names, void **config_arrays, int config_len)
+{
   API_BEGIN();
 
   float_array_map config =
-      make_array_map(config_names, config_arrays, config_sizes, config_len);
+      make_array_map(config_names, config_arrays, config_len);
 
   mps_cnn_module *obj = reinterpret_cast<mps_cnn_module*>(handle);
   obj->init(network_id, n, c_in, h_in, w_in, c_out, h_out, w_out, updater_id,
@@ -132,10 +132,10 @@ int TCMPSInit(MPSHandle handle, int network_id, int n, int c_in, int h_in, int w
   API_END();
 }
 
-int TCMPSLoad(MPSHandle handle, char **names, void **arrs, int64_t *sz, int len) {
+int TCMPSLoad(MPSHandle handle, char **names, void **arrs, int len) {
   API_BEGIN();
 
-  float_array_map weights = make_array_map(names, arrs, sz, len);
+  float_array_map weights = make_array_map(names, arrs, len);
 
   mps_cnn_module *obj = reinterpret_cast<mps_cnn_module*>(handle);
   obj->load(weights);
