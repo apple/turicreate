@@ -15,9 +15,7 @@ class SingleImage extends Component {
     if (this.props.incrementalCurrentIndex > 0) {
       this.props.updateIncrementalCurrentIndex(this.props.incrementalCurrentIndex - 1);
       this.props.getData((this.props.incrementalCurrentIndex - 2), this.props.incrementalCurrentIndex);
-    } else {
-      // update error
-      console.log("Update Error")
+      this.props.getAnnotations((this.props.incrementalCurrentIndex - 2), this.props.incrementalCurrentIndex);
     }
   }
 
@@ -25,9 +23,7 @@ class SingleImage extends Component {
     if (this.props.incrementalCurrentIndex < (this.props.numElements - 1)) {
       this.props.updateIncrementalCurrentIndex(this.props.incrementalCurrentIndex + 1);
       this.props.getData(this.props.incrementalCurrentIndex, (this.props.incrementalCurrentIndex + 2));
-    } else {
-      // update error
-      console.log("More Error")
+      this.props.getAnnotations(this.props.incrementalCurrentIndex, (this.props.incrementalCurrentIndex + 2));
     }
   }
 

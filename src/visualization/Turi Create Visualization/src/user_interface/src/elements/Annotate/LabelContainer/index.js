@@ -15,6 +15,10 @@ class LabelContainer extends Component {
     }
   }
 
+  checkActive = (name) => {
+    return this.props.annotationData[this.props.incrementalCurrentIndex] == name;
+  }
+
   render() {
     return (
       <div className={styles.LabelContainer}>
@@ -24,7 +28,7 @@ class LabelContainer extends Component {
       	<div className={styles.LabelButtonContainer}>
       		{
             this.props.labels.map((x) => 
-              <Labels active={false}
+              <Labels active={this.checkActive(x.name)}
                       name={x.name}
                       onClick={this.setAnnotation.bind(this, x.name)}
                       num_annotated={x.num_annotated}

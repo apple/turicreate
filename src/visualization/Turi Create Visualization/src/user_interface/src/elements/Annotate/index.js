@@ -29,8 +29,8 @@ class Annotate extends Component {
       labelCreationError: null,
       incrementalCurrentIndex: 0,
       LabelModalValue: "",
-      /* TODO: Labels will be Populated from MetaData */
-      imageData:{},
+      imageData: {},
+      annotationData: {},
       labels:[],
       type:null
     }
@@ -99,9 +99,18 @@ class Annotate extends Component {
 
   getData = (start, end) => {
     this.cleanCache(start, end);
+    this.getAnnotations(start, end);
+    this.getHelper(start, end, 0);
+  }
+
+  getAnnotations = (start, end) => {
+    this.getHelper(start, end, 1);
+  }
+
+  getHelper = (start, end, type) => {
     const root = Root.fromJSON(messageFormat);
     const ParcelMessage = root.lookupType("TuriCreate.Annotation.Specification.ClientRequest");
-    const payload = {"getter": {"type": 0, "start": start, "end": end}};
+    const payload = {"getter": {"type": type, "start": start, "end": end}};
     const err = ParcelMessage.verify(payload);
     if (err)
       throw Error(err);
@@ -115,6 +124,20 @@ class Annotate extends Component {
     } else {
       window.postMessageToNativeClient(encoded);
     }
+  }
+
+  setAnnotationData = (key, value) => {
+    var previousAnnotationData = this.state.annotationData;
+
+    if (this.state.type == LabelType.STRING) {
+      previousAnnotationData[key] = value.stringLabel;
+    } else if(this.state.type == LabelType.INTEGER) {
+      previousAnnotationData[key] = value.intLabel;
+    }
+
+    this.setState({
+      annotationData: previousAnnotationData
+    });
   }
 
   setImageData = (key, value) => {
@@ -199,6 +222,13 @@ class Annotate extends Component {
   }
 
   setAnnotation = (rowIndex, labels) => {
+    var previousAnnotationData = this.state.annotationData;
+    previousAnnotationData[rowIndex] = labels;
+
+    this.setState({
+      annotationData: previousAnnotationData
+    });
+
     const root = Root.fromJSON(messageFormat);
     const ParcelMessage = root.lookupType("TuriCreate.Annotation.Specification.ClientRequest");
     
@@ -234,12 +264,14 @@ class Annotate extends Component {
                         incrementalCurrentIndex={this.state.incrementalCurrentIndex}
                         updateIncrementalCurrentIndex={this.updateIncrementalCurrentIndex.bind(this)}
                         imageData={this.state.imageData}
-                        getData={this.getData.bind(this)} />
+                        getData={this.getData.bind(this)}
+                        getAnnotations={this.getAnnotations.bind(this)} />
       );
     } else {
       return (
         <SingleImage src={this.state.imageData[this.state.incrementalCurrentIndex]}
                      getData={this.getData.bind(this)}
+                     getAnnotations={this.getAnnotations.bind(this)}
                      numElements={this.props.metadata.numExamples}
                      incrementalCurrentIndex={this.state.incrementalCurrentIndex}
                      updateIncrementalCurrentIndex={this.updateIncrementalCurrentIndex.bind(this)}/>
@@ -288,7 +320,8 @@ class Annotate extends Component {
                         infiniteScroll={this.state.infiniteScroll}
                         setAnnotation={this.setAnnotation.bind(this)}
                         openLabelModal={this.openLabelModal.bind(this)}
-                        closeLabelModal={this.closeLabelModal.bind(this)}/>
+                        closeLabelModal={this.closeLabelModal.bind(this)}
+                        annotationData={this.state.annotationData}/>
         </div>
       </div>
     );

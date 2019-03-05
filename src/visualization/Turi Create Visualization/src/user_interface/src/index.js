@@ -114,6 +114,12 @@ window.setProtoMessage = function setProtoMessage(value){
             const image = "data:image/" + type + ";base64," + data;
             component_rendered.setImageData(row_index, image);
         }
+    } else if(decoded.hasOwnProperty('annotations')) {
+        for (var i = 0; i < decoded["annotations"]["annotation"].length; i++) {
+            const row_index = decoded["annotations"]["annotation"][i]["rowIndex"][0];
+            const annotation = decoded["annotations"]["annotation"][i]["labels"][0];
+            component_rendered.setAnnotationData(row_index, annotation);
+        }
     }
 }
 
