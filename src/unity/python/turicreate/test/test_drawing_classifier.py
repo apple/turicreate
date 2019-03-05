@@ -186,13 +186,23 @@ class DrawingClassifierTest(unittest.TestCase):
                     assert (metric in evaluation)
                     assert (individual_run_results[metric] == evaluation[metric])
 
-
     def test_evaluate_with_unsupported_metric(self):
         for index in range(len(self.trains)):
             model = self.models[index]
             sf = self.trains[index]
             with self.assertRaises(_ToolkitError):
                 model.evaluate(sf, metric="unsupported")
+
+    def test_save_and_load(self):
+        for index in range(len(self.models)):
+            old_model, data = self.models[index], self.trains[index]
+            with test_util.TempDirectory() as filename:
+                old_model.save(filename)
+                new_model = _tc.load_model(filename)
+                old_preds = old_model.predict(data)
+                new_preds = new_model.predict(data)
+                assert (new_preds.dtype == old_preds.dtype 
+                    and (new_preds == old_preds).all())
 
     @unittest.skipIf(_sys.platform == "darwin", "test_export_coreml_with_predict(...) covers this functionality and more")
     def test_export_coreml(self):
@@ -243,18 +253,6 @@ class DrawingClassifierTest(unittest.TestCase):
             and single_bitmap.channels == 1 
             and single_bitmap.width == 28 
             and single_bitmap.height == 28)
-
-    @pytest.mark.xfail(raises = AssertionError)
-    def test_save_and_load(self):
-        for index in range(len(self.models)):
-            old_model, data = self.models[index], self.trains[index]
-            with test_util.TempDirectory() as filename:
-                old_model.save(filename)
-                new_model = _tc.load_model(filename)
-                old_preds = old_model.predict(data)
-                new_preds = new_model.predict(data)
-                assert (new_preds.dtype == old_preds.dtype 
-                    and (new_preds == old_preds).all())
 
     def test_repr(self):
         for model in self.models:

@@ -119,7 +119,8 @@ def create(input_dataset, feature="bitmap", target="label",
     model_params.initialize(_mx.init.Xavier(), ctx=ctx)
 
     if pretrained_model_url is not None:
-        pretrained_model = _pre_trained_models.DrawingClassifierPreTrainedModel(pretrained_model_url)
+        pretrained_model = _pre_trained_models.DrawingClassifierPreTrainedModel(
+            pretrained_model_url)
         pretrained_model_params_path = pretrained_model.get_model_path()
         model.load_params(pretrained_model_params_path, 
             ctx=ctx, 
@@ -152,8 +153,15 @@ def create(input_dataset, feature="bitmap", target="label",
     training_time = _time.time() - start_time
     if verbose:
         print(hr)   # progress table footer
+
+    if type(classes[0]) is int:
+        class_type = "int"
+    else:
+        class_type = "str"
+
     state = {
         '_model': model,
+        '_class_type': class_type,
         '_class_to_index': class_to_index,
         'num_classes': len(classes),
         'classes': classes,
@@ -170,9 +178,10 @@ def create(input_dataset, feature="bitmap", target="label",
 
 class DrawingClassifier(_CustomModel):
 
+    _PYTHON_DRAWING_CLASSIFIER_VERSION = 0
+    
     def __init__(self, state):
         self.__proxy__ = _PythonProxy(state)
-        
 
     @classmethod
     def _native_name(cls):
@@ -185,11 +194,12 @@ class DrawingClassifier(_CustomModel):
         return state
 
     def _get_version(self):
-        return 1
+        return self._PYTHON_DRAWING_CLASSIFIER_VERSION
 
     @classmethod
     def _load_version(cls, state, version):
-        _tkutl._model_version_check(version, 1)
+        _tkutl._model_version_check(version, 
+            cls._PYTHON_DRAWING_CLASSIFIER_VERSION)
         from ._model_architecture import Model as _Model
         net = _Model(num_classes = len(state['classes']), prefix = 'drawing_')
         ctx = _mxnet_utils.get_mxnet_context(max_devices=state['batch_size'])
@@ -198,6 +208,8 @@ class DrawingClassifier(_CustomModel):
             net_params, state['_model'], ctx=ctx 
             )
         state['_model'] = net
+        if state['_class_type'] == "int":
+            state['classes'] = list(map(int, state['classes']))
         return DrawingClassifier(state)
 
     def export_coreml(self, filename, verbose=False):
