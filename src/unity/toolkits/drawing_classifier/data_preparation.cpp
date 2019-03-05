@@ -42,7 +42,21 @@ public:
         bool found_y = false;
         for (const auto& key_value_pair: point_dict) {
             const flex_string &key = key_value_pair.first.get<flex_string>();
-            const flex_float &value = key_value_pair.second.get<flex_float>();
+            flex_float value;
+            if (key_value_pair.second.get_type() == flex_type_enum::INTEGER) {
+                value = key_value_pair.second.to<flex_float>();
+            } else if (key_value_pair.second.get_type() == flex_type_enum::FLOAT) {
+                value = key_value_pair.second.get<flex_float>();
+            } else {
+                log_and_throw("In the drawing in row " + 
+                    std::to_string(drawing_number) + " the point at index " 
+                    + std::to_string(point_in_stroke_index) + " in the " 
+                    + std::to_string(stroke_index) + "th stroke" 
+                    + " does not have an appropriate type for the " + key 
+                    + " coordinate. Please make sure both the \"x\" and \"y\""
+                    + " coordinates are either integers or" 
+                    + " floating point numbers.");
+            }
             if (key == "x") {
                 found_x = true;
                 m_x = value;
@@ -416,7 +430,7 @@ flex_image convert_stroke_based_drawing_to_bitmap(
 }
 
 gl_sframe _drawing_classifier_prepare_data(const gl_sframe &data,
-                                            const std::string &feature) {
+                                           const std::string &feature) {
     DASSERT_TRUE(data.contains_column(feature));
     
     gl_sframe selected_sframe = data.select_columns({feature});

@@ -94,6 +94,7 @@ class SFrameClassifierIter(_mx.io.DataIter):
         self.input_shape = input_shape
         self.class_to_index = class_to_index
         self.cur_iteration = 0
+        self.load_labels = load_labels
         self.num_epochs = epochs
         self.num_iterations = iterations
 
@@ -161,19 +162,24 @@ class SFrameClassifierIter(_mx.io.DataIter):
                     pad = self.batch_size - b
                     for p in range(pad):
                         images.append(_mx.nd.zeros(images[0].shape))
-                        labels.append(0)
+                        if self.load_labels:
+                            labels.append(0)
                     break
 
             raw_image, label, cur_sample = row
-
+            # label will be None if self.load_labels is False
+            
             image = _mx.nd.array(raw_image)
             images.append(image)
-            labels.append(self.class_to_index[label])
+            if self.load_labels:
+                labels.append(self.class_to_index[label])
             
         b_images = _mx.nd.stack(*images)
-        b_labels = _mx.nd.array(labels, dtype='int32')
-
-        batch = _mx.io.DataBatch([b_images], [b_labels], pad=pad)
+        if self.load_labels:
+            b_labels = _mx.nd.array(labels, dtype='int32')
+            batch = _mx.io.DataBatch([b_images], [b_labels], pad=pad)
+        else:
+            batch = _mx.io.DataBatch([b_images], pad=pad)
         batch.iteration = self.cur_iteration
         self.cur_iteration += 1
         return batch
