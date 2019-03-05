@@ -113,7 +113,7 @@ def create(input_dataset, feature="bitmap", target="label",
                  iterations=None)
 
     ctx = _mxnet_utils.get_mxnet_context(max_devices=batch_size)
-    model = _Model(num_classes = len(classes))
+    model = _Model(num_classes = len(classes), prefix="drawing_")
     model_params = model.collect_params()
     model_params.initialize(_mx.init.Xavier(), ctx=ctx)
 
@@ -190,7 +190,7 @@ class DrawingClassifier(_CustomModel):
     def _load_version(cls, state, version):
         _tkutl._model_version_check(version, 1)
         from ._model_architecture import Model as _Model
-        net = _Model(num_classes = len(state['classes']), prefix = 'model0_')
+        net = _Model(num_classes = len(state['classes']), prefix = 'drawing_')
         ctx = _mxnet_utils.get_mxnet_context(max_devices=state['batch_size'])
         net_params = net.collect_params()
         _mxnet_utils.load_net_params_from_state(
@@ -403,6 +403,10 @@ class DrawingClassifier(_CustomModel):
             >>> results = model.evaluate(data)
             >>> print results['accuracy']
         """
+
+        if self.target not in dataset.column_names():
+            raise _ToolkitError("Dataset provided to evaluate does not have " 
+                + "ground truth in the " + self.target + " column.")
 
         predicted = self._predict_with_probabilities(dataset)
 
