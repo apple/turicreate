@@ -236,8 +236,6 @@ void ImageClassification::_addAnnotationToSFrame(size_t index, int label) {
 
 annotate_spec::MetaData ImageClassification::metaData() {
   annotate_spec::MetaData meta_data;
-  annotate_spec::ImageClassificationMeta image_classification_meta =
-      meta_data.image_classification();
 
   meta_data.set_type(annotate_spec::MetaData_AnnotationType::
                          MetaData_AnnotationType_IMAGE_CLASSIFICATION);
@@ -274,21 +272,21 @@ annotate_spec::MetaData ImageClassification::metaData() {
 
   DASSERT_TRUE(label_vector.size() == count_vector.size());
 
+  annotate_spec::ImageClassificationMeta* image_classification_meta =
+      meta_data.mutable_image_classification();
+
   for (size_t x = 0; x < label_vector.size(); x++) {
 
     if (array_type == flex_type_enum::STRING) {
       annotate_spec::MetaLabel *labels_meta =
-          image_classification_meta.add_label();
-      std::cout << label_vector.at(x).to<std::string>() << std::endl;
+          image_classification_meta->add_label();
       labels_meta->set_stringlabel(label_vector.at(x).to<std::string>());
       labels_meta->set_elementcount(count_vector.at(x));
     }
 
     if (array_type == flex_type_enum::INTEGER) {
       annotate_spec::MetaLabel *labels_meta =
-          image_classification_meta.add_label();
-      std::cout << label_vector.at(x) << std::endl;
-      std::cout << count_vector.at(x) << std::endl;
+          image_classification_meta->add_label();
       labels_meta->set_intlabel(label_vector.at(x));
       labels_meta->set_elementcount(count_vector.at(x));
     }

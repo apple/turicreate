@@ -17,6 +17,7 @@ class SingleImage extends Component {
       this.props.getData((this.props.incrementalCurrentIndex - 2), this.props.incrementalCurrentIndex);
     } else {
       // update error
+      console.log("Update Error")
     }
   }
 
@@ -26,6 +27,7 @@ class SingleImage extends Component {
       this.props.getData(this.props.incrementalCurrentIndex, (this.props.incrementalCurrentIndex + 2));
     } else {
       // update error
+      console.log("More Error")
     }
   }
 

@@ -10,6 +10,7 @@ import SingleImage from './SingleImage';
 import LabelContainer from './LabelContainer';
 import LabelModal from './LabelModal';
 import ErrorBar from './ErrorBar';
+import { LabelType } from './utils';
 
 const DEFAULT_NUM_EXPECTED = 10;
 const CACHE_SIZE = 1000;
@@ -30,12 +31,41 @@ class Annotate extends Component {
       LabelModalValue: "",
       /* TODO: Labels will be Populated from MetaData */
       imageData:{},
-      labels:[]
+      labels:[],
+      type:null
     }
   }
 
   componentDidMount() {
+    var labeltype;
+    var propLabels = this.props.metadata.imageClassification.label;
+
+    if (propLabels.length > 0) {
+      if(Object.keys(propLabels[0]).includes("stringLabel")){
+        labeltype = LabelType.STRING;
+      }else{
+        labeltype = LabelType.INTEGER;
+      }
+    } else {
+      labeltype = LabelType.STRING;
+    }
+
+    if (labeltype == LabelType.STRING) {
+      propLabels = propLabels.filter(label => label.stringLabel != "");
+    }
     
+    const labels = propLabels.map((x) => {
+      return {
+        name: (labeltype == LabelType.INTEGER)?x.intLabel:x.stringLabel,
+        num_annotated: x.elementCount,
+        num_expected: DEFAULT_NUM_EXPECTED
+      }
+    });
+
+    this.setState({
+      labels: labels,
+      type: labeltype
+    });
   }
 
   cleanCache = (start, end) => {
@@ -171,7 +201,15 @@ class Annotate extends Component {
   setAnnotation = (rowIndex, labels) => {
     const root = Root.fromJSON(messageFormat);
     const ParcelMessage = root.lookupType("TuriCreate.Annotation.Specification.ClientRequest");
-    const payload = {"annotations": {"annotation":[{"labels": [{"stringLabel": labels}], "rowIndex": [rowIndex]}]}};
+    
+    var payload;
+
+    if (this.state.type == LabelType.STRING) {
+      payload = {"annotations": {"annotation":[{"labels": [{"stringLabel": labels}], "rowIndex": [rowIndex]}]}};
+    } else {
+      payload = {"annotations": {"annotation":[{"labels": [{"intLabel": labels}], "rowIndex": [rowIndex]}]}};
+    }
+
     const err = ParcelMessage.verify(payload);
     
     if (err)
@@ -191,7 +229,7 @@ class Annotate extends Component {
   renderMainContent = () => {
     if(this.state.infiniteScroll) {
       return (
-        <InfiniteScroll numElements={this.props.total}
+        <InfiniteScroll numElements={this.props.metadata.numExamples}
                         hideAnnotated={this.state.hideAnnotated}
                         incrementalCurrentIndex={this.state.incrementalCurrentIndex}
                         updateIncrementalCurrentIndex={this.updateIncrementalCurrentIndex.bind(this)}
@@ -202,7 +240,7 @@ class Annotate extends Component {
       return (
         <SingleImage src={this.state.imageData[this.state.incrementalCurrentIndex]}
                      getData={this.getData.bind(this)}
-                     numElements={this.props.total}
+                     numElements={this.props.metadata.numExamples}
                      incrementalCurrentIndex={this.state.incrementalCurrentIndex}
                      updateIncrementalCurrentIndex={this.updateIncrementalCurrentIndex.bind(this)}/>
       );
