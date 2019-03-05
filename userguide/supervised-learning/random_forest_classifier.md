@@ -40,9 +40,9 @@ of using the random forest classifier model.
 
 Refer to the earlier chapters for the following features:
 
-* [Using categorical features](linear-regression.md#linregr-categorical-features)
-* [Sparse features](linear-regression.md#linregr-sparse-features)
-* [List features](linear-regression.md#linregr-list-features)
-* [Evaluating Results](logistic-regression.md#logregr-evaluation)
-* [Multiclass Classification](logistic-regression.md#logregr-multiclass)
-* [Working with imbalanced data](logistic-regression.md#logregr-imbalaced-data)
+* [Using categorical features](linear-regression.md#categorical-features)
+* [Sparse features](linear-regression.md#sparse-features)
+* [List features](linear-regression.md#list-features)
+* [Evaluating Results](logistic-regression.md#evaluating-results)
+* [Multiclass Classification](logistic-regression.md#multiclass-classification)
+* [Working with imbalanced data](logistic-regression.md#working-with-imbalaced-data)
