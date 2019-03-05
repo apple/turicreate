@@ -7,8 +7,8 @@
 #include <unity/toolkits/coreml_export/linear_models_exporter.hpp>
 #include <unity/toolkits/coreml_export/mldata_exporter.hpp>
 #include <unity/toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
-#include <unity/toolkits/coreml_export/MLModel/src/transforms/LinearModel.hpp>
-#include <unity/toolkits/coreml_export/MLModel/src/transforms/LogisticModel.hpp>
+#include <mlmodel/src/transforms/LinearModel.hpp>
+#include <mlmodel/src/transforms/LogisticModel.hpp>
 
 using turi::coreml::MLModelWrapper;
 
