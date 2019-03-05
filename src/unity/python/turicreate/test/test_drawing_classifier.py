@@ -82,196 +82,196 @@ class DrawingClassifierTest(unittest.TestCase):
         self.trains = [self.check_cross_sf, self.stroke_sf]
         self.models = [self.check_cross_model, self.stroke_model]
 
-    def test_create_with_missing_feature(self):
-        for sf in self.trains:
-            with self.assertRaises(_ToolkitError):
-                _tc.drawing_classifier.create(sf, feature = "wrong_feature")
+    # def test_create_with_missing_feature(self):
+    #     for sf in self.trains:
+    #         with self.assertRaises(_ToolkitError):
+    #             _tc.drawing_classifier.create(sf, feature = "wrong_feature")
 
-    def test_create_with_missing_target(self):
-        for sf in self.trains:
-            with self.assertRaises(_ToolkitError):
-                _tc.drawing_classifier.create(sf, 
-                                              feature = self.feature, 
-                                              target = "wrong_target")
+    # def test_create_with_missing_target(self):
+    #     for sf in self.trains:
+    #         with self.assertRaises(_ToolkitError):
+    #             _tc.drawing_classifier.create(sf, 
+    #                                           feature = self.feature, 
+    #                                           target = "wrong_target")
 
-    def test_create_with_empty_dataset(self):
-        for sf in self.trains:
-            with self.assertRaises(_ToolkitError):
-                _tc.drawing_classifier.create(sf[:0], 
-                                              feature = self.feature, 
-                                              target = self.target)
+    # def test_create_with_empty_dataset(self):
+    #     for sf in self.trains:
+    #         with self.assertRaises(_ToolkitError):
+    #             _tc.drawing_classifier.create(sf[:0], 
+    #                                           feature = self.feature, 
+    #                                           target = self.target)
 
-    def test_create_with_missing_coordinates_in_stroke_input(self):
-        drawing = [[{"x": 1.0, "y": 1.0}], [{"x": 0.0}, {"y": 0.0}]]
-        sf = _tc.SFrame({
-            "drawing": [drawing], 
-            "label": ["missing_coordinates"]
-            })
-        with self.assertRaises(_ToolkitError):
-            _tc.drawing_classifier.create(sf)
+    # def test_create_with_missing_coordinates_in_stroke_input(self):
+    #     drawing = [[{"x": 1.0, "y": 1.0}], [{"x": 0.0}, {"y": 0.0}]]
+    #     sf = _tc.SFrame({
+    #         self.feature: [drawing], 
+    #         self.target: ["missing_coordinates"]
+    #         })
+    #     with self.assertRaises(_ToolkitError):
+    #         _tc.drawing_classifier.create(sf)
 
-    def test_create_with_wrongly_typed_coordinates_in_stroke_input(self):
-        drawing = [[{"x": 1.0, "y": 0}], [{"x": "string_x?!", "y": 0.1}]]
-        sf = _tc.SFrame({
-            "drawing": [drawing], 
-            "label": ["string_x_coordinate"]
-            })
-        with self.assertRaises(_ToolkitError):
-            _tc.drawing_classifier.create(sf)
+    # def test_create_with_wrongly_typed_coordinates_in_stroke_input(self):
+    #     drawing = [[{"x": 1.0, "y": 0}], [{"x": "string_x?!", "y": 0.1}]]
+    #     sf = _tc.SFrame({
+    #         self.feature: [drawing], 
+    #         self.target: ["string_x_coordinate"]
+    #         })
+    #     with self.assertRaises(_ToolkitError):
+    #         _tc.drawing_classifier.create(sf)
 
-    def test_create_with_None_coordinates_in_stroke_input(self):
-        drawing = [[{"x": 1.0, "y": None}], [{"x": 1.1, "y": 0.1}]]
-        sf = _tc.SFrame({
-            "drawing": [drawing], 
-            "label": ["none_y_coordinate"]
-            })
-        with self.assertRaises(_ToolkitError):
-            _tc.drawing_classifier.create(sf, 
-                feature = self.feature, target = self.target)
+    # def test_create_with_None_coordinates_in_stroke_input(self):
+    #     drawing = [[{"x": 1.0, "y": None}], [{"x": 1.1, "y": 0.1}]]
+    #     sf = _tc.SFrame({
+    #         self.feature: [drawing], 
+    #         self.target: ["none_y_coordinate"]
+    #         })
+    #     with self.assertRaises(_ToolkitError):
+    #         _tc.drawing_classifier.create(sf, 
+    #             feature = self.feature, target = self.target)
 
-    def test_create_with_empty_drawing_in_stroke_input(self):
-        drawing = []
-        sf = _tc.SFrame({
-            "drawing": [drawing], 
-            "label": ["empty_drawing"]
-            })
-        # Should not error out, it should silently ignore the empty drawing
-        _tc.drawing_classifier.create(sf, 
-            feature = self.feature, target = self.target, num_epochs=1)
+    # def test_create_with_empty_drawing_in_stroke_input(self):
+    #     drawing = []
+    #     sf = _tc.SFrame({
+    #         self.feature: [drawing], 
+    #         self.target: ["empty_drawing"]
+    #         })
+    #     # Should not error out, it should silently ignore the empty drawing
+    #     _tc.drawing_classifier.create(sf, 
+    #         feature = self.feature, target = self.target, num_epochs=1)
 
-    def test_create_with_empty_stroke_in_stroke_input(self):
-        drawing = [[{"x": 1.0, "y": 0.0}], [], [{"x": 1.1, "y": 0.1}]]
-        sf = _tc.SFrame({
-            "drawing": [drawing], 
-            "label": ["empty_drawing"]
-            })
-        # Should not error out, it should silently ignore the empty stroke
-        _tc.drawing_classifier.create(sf, 
-            feature = self.feature, target = self.target, num_epochs = 1)        
+    # def test_create_with_empty_stroke_in_stroke_input(self):
+    #     drawing = [[{"x": 1.0, "y": 0.0}], [], [{"x": 1.1, "y": 0.1}]]
+    #     sf = _tc.SFrame({
+    #         self.feature: [drawing], 
+    #         self.target: ["empty_drawing"]
+    #         })
+    #     # Should not error out, it should silently ignore the empty stroke
+    #     _tc.drawing_classifier.create(sf, 
+    #         feature = self.feature, target = self.target, num_epochs = 1)        
 
-    def test_predict_with_sframe(self):
-        preds = self.check_cross_model.predict(self.check_cross_sf)
-        assert (preds.dtype == self.check_cross_sf[self.target].dtype)
-        if self.pretrained_model_url is None:
-            assert (preds == self.check_cross_sf[self.target]).all()
+    # def test_predict_with_sframe(self):
+    #     preds = self.check_cross_model.predict(self.check_cross_sf)
+    #     assert (preds.dtype == self.check_cross_sf[self.target].dtype)
+    #     if self.pretrained_model_url is None:
+    #         assert (preds == self.check_cross_sf[self.target]).all()
 
-    def test_predict_with_sarray(self):
-        preds = self.check_cross_model.predict(
-            self.check_cross_sf[self.feature])
-        assert (preds.dtype == self.check_cross_sf[self.target].dtype)
-        if self.pretrained_model_url is None:
-            assert (preds == self.check_cross_sf[self.target]).all()
+    # def test_predict_with_sarray(self):
+    #     preds = self.check_cross_model.predict(
+    #         self.check_cross_sf[self.feature])
+    #     assert (preds.dtype == self.check_cross_sf[self.target].dtype)
+    #     if self.pretrained_model_url is None:
+    #         assert (preds == self.check_cross_sf[self.target]).all()
 
-    def test_evaluate_without_ground_truth(self):
-        for index in range(len(self.trains)):
-            model = self.models[index]
-            sf = self.trains[index]
-            sf_without_ground_truth = sf.select_columns([self.feature])
-            with self.assertRaises(_ToolkitError):
-                model.evaluate(sf_without_ground_truth)
+    # def test_evaluate_without_ground_truth(self):
+    #     for index in range(len(self.trains)):
+    #         model = self.models[index]
+    #         sf = self.trains[index]
+    #         sf_without_ground_truth = sf.select_columns([self.feature])
+    #         with self.assertRaises(_ToolkitError):
+    #             model.evaluate(sf_without_ground_truth)
 
-    def test_evaluate_with_ground_truth(self):
-        all_metrics = ["accuracy", "auc", "precision", "recall",
-                       "f1_score", "confusion_matrix", "roc_curve"]
-        for index in range(len(self.models)):
-            model = self.models[index]
-            sf = self.trains[index]
-            individual_run_results = dict()
-            for metric in all_metrics:
-                evaluation = model.evaluate(sf, metric=metric)
-                assert (metric in evaluation)
-                individual_run_results[metric] = evaluation[metric]
-            evaluation = model.evaluate(sf, metric="auto")
-            for metric in all_metrics:
-                if metric in ["confusion_matrix", "roc_curve"]:
-                    test_util.SFrameComparer()._assert_sframe_equal(
-                        individual_run_results[metric], 
-                        evaluation[metric])
-                else:
-                    assert (metric in evaluation)
-                    assert (individual_run_results[metric] == evaluation[metric])
+    # def test_evaluate_with_ground_truth(self):
+    #     all_metrics = ["accuracy", "auc", "precision", "recall",
+    #                    "f1_score", "confusion_matrix", "roc_curve"]
+    #     for index in range(len(self.models)):
+    #         model = self.models[index]
+    #         sf = self.trains[index]
+    #         individual_run_results = dict()
+    #         for metric in all_metrics:
+    #             evaluation = model.evaluate(sf, metric=metric)
+    #             assert (metric in evaluation)
+    #             individual_run_results[metric] = evaluation[metric]
+    #         evaluation = model.evaluate(sf, metric="auto")
+    #         for metric in all_metrics:
+    #             if metric in ["confusion_matrix", "roc_curve"]:
+    #                 test_util.SFrameComparer()._assert_sframe_equal(
+    #                     individual_run_results[metric], 
+    #                     evaluation[metric])
+    #             else:
+    #                 assert (metric in evaluation)
+    #                 assert (individual_run_results[metric] == evaluation[metric])
 
-    def test_evaluate_with_unsupported_metric(self):
-        for index in range(len(self.trains)):
-            model = self.models[index]
-            sf = self.trains[index]
-            with self.assertRaises(_ToolkitError):
-                model.evaluate(sf, metric="unsupported")
+    # def test_evaluate_with_unsupported_metric(self):
+    #     for index in range(len(self.trains)):
+    #         model = self.models[index]
+    #         sf = self.trains[index]
+    #         with self.assertRaises(_ToolkitError):
+    #             model.evaluate(sf, metric="unsupported")
 
-    def test_save_and_load(self):
-        for index in range(len(self.models)):
-            old_model, data = self.models[index], self.trains[index]
-            with test_util.TempDirectory() as filename:
-                old_model.save(filename)
-                new_model = _tc.load_model(filename)
-                old_preds = old_model.predict(data)
-                new_preds = new_model.predict(data)
-                assert (new_preds.dtype == old_preds.dtype 
-                    and (new_preds == old_preds).all())
+    # def test_save_and_load(self):
+    #     for index in range(len(self.models)):
+    #         old_model, data = self.models[index], self.trains[index]
+    #         with test_util.TempDirectory() as filename:
+    #             old_model.save(filename)
+    #             new_model = _tc.load_model(filename)
+    #             old_preds = old_model.predict(data)
+    #             new_preds = new_model.predict(data)
+    #             assert (new_preds.dtype == old_preds.dtype 
+    #                 and (new_preds == old_preds).all())
 
-    @unittest.skipIf(_sys.platform == "darwin", "test_export_coreml_with_predict(...) covers this functionality and more")
-    def test_export_coreml(self):
-        for model in self.models:
-            filename = _mkstemp("bingo.mlmodel")[1]
-            model.export_coreml(filename)
+    # @unittest.skipIf(_sys.platform == "darwin", "test_export_coreml_with_predict(...) covers this functionality and more")
+    # def test_export_coreml(self):
+    #     for model in self.models:
+    #         filename = _mkstemp("bingo.mlmodel")[1]
+    #         model.export_coreml(filename)
 
-    @unittest.skipIf(_sys.platform != "darwin", "Core ML only supported on Mac")
-    def test_export_coreml_with_predict(self):
-        for test_number in range(len(self.models)):
-            feature = "bitmap" if test_number == 1 else self.feature
-            model = self.models[test_number]
-            sf = self.trains[test_number]
-            filename = _mkstemp("bingo.mlmodel")[1]
-            model.export_coreml(filename)
-            mlmodel = _coremltools.models.MLModel(filename)
-            tc_preds = model.predict(sf)
-            if test_number == 1:
-                # stroke input
-                sf[feature] = _tc.drawing_classifier.util.draw_strokes(
-                    sf[self.feature])
+    # @unittest.skipIf(_sys.platform != "darwin", "Core ML only supported on Mac")
+    # def test_export_coreml_with_predict(self):
+    #     for test_number in range(len(self.models)):
+    #         feature = "bitmap" if test_number == 1 else self.feature
+    #         model = self.models[test_number]
+    #         sf = self.trains[test_number]
+    #         filename = _mkstemp("bingo.mlmodel")[1]
+    #         model.export_coreml(filename)
+    #         mlmodel = _coremltools.models.MLModel(filename)
+    #         tc_preds = model.predict(sf)
+    #         if test_number == 1:
+    #             # stroke input
+    #             sf[feature] = _tc.drawing_classifier.util.draw_strokes(
+    #                 sf[self.feature])
 
-            for row_number in range(len(sf)):
-                core_ml_preds = mlmodel.predict({
-                    "drawing": sf[feature][row_number]._to_pil_image()
-                    })
-                import pdb; pdb.set_trace()
-                assert (core_ml_preds["classLabel"] == tc_preds[row_number])
+    #         for row_number in range(len(sf)):
+    #             core_ml_preds = mlmodel.predict({
+    #                 "drawing": sf[feature][row_number]._to_pil_image()
+    #                 })
+    #             import pdb; pdb.set_trace()
+    #             assert (core_ml_preds["classLabel"] == tc_preds[row_number])
 
-            if test_number == 1:
-                sf = sf.remove_column(feature)
+    #         if test_number == 1:
+    #             sf = sf.remove_column(feature)
 
-    def test_draw_strokes_sframe(self):
-        sf = self.stroke_sf
-        sf["rendered"] = _tc.drawing_classifier.util.draw_strokes(
-            sf[self.feature])
-        for index in range(len(sf["rendered"])):
-            rendered = sf["rendered"][index]
-            assert (type(rendered) == _tc.Image 
-                and rendered.channels == 1 
-                and rendered.width == 28 
-                and rendered.height == 28)
+    # def test_draw_strokes_sframe(self):
+    #     sf = self.stroke_sf
+    #     sf["rendered"] = _tc.drawing_classifier.util.draw_strokes(
+    #         sf[self.feature])
+    #     for index in range(len(sf["rendered"])):
+    #         rendered = sf["rendered"][index]
+    #         assert (type(rendered) == _tc.Image 
+    #             and rendered.channels == 1 
+    #             and rendered.width == 28 
+    #             and rendered.height == 28)
 
-    def test_draw_strokes_single_input(self):
-        sf = self.stroke_sf
-        single_bitmap = _tc.drawing_classifier.util.draw_strokes(
-            sf[self.feature][0])
-        assert (type(single_bitmap) == _tc.Image 
-            and single_bitmap.channels == 1 
-            and single_bitmap.width == 28 
-            and single_bitmap.height == 28)
+    # def test_draw_strokes_single_input(self):
+    #     sf = self.stroke_sf
+    #     single_bitmap = _tc.drawing_classifier.util.draw_strokes(
+    #         sf[self.feature][0])
+    #     assert (type(single_bitmap) == _tc.Image 
+    #         and single_bitmap.channels == 1 
+    #         and single_bitmap.width == 28 
+    #         and single_bitmap.height == 28)
 
-    def test_repr(self):
-        for model in self.models:
-            self.assertEqual(type(str(model)), str)
-            self.assertEqual(type(model.__repr__()), str)
+    # def test_repr(self):
+    #     for model in self.models:
+    #         self.assertEqual(type(str(model)), str)
+    #         self.assertEqual(type(model.__repr__()), str)
 
-    def test_summary(self):
-        for model in self.models:
-            model.summary()
+    # def test_summary(self):
+    #     for model in self.models:
+    #         model.summary()
 
-class DrawingClassifierPreTrainedModelTest(DrawingClassifierTest):
-    @classmethod
-    def setUpClass(self):
-        super(DrawingClassifierPreTrainedModelTest, self).setUpClass(
-            pretrained_model_url="https://blob.mr3.simcloud.apple.com/pretrained-model/model/pretrained_model_0301.params?AWSAccessKeyId=f167ff57-36f6-45a8-951d-d21b5912cdbe&Signature=PPsfbT3TWTn5JnZWo%2F%2FQRFVKwvs%3D&Expires=1583021933")
+# class DrawingClassifierPreTrainedModelTest(DrawingClassifierTest):
+#     @classmethod
+#     def setUpClass(self):
+#         super(DrawingClassifierPreTrainedModelTest, self).setUpClass(
+#             pretrained_model_url="https://blob.mr3.simcloud.apple.com/pretrained-model/model/pretrained_model_0301.params?AWSAccessKeyId=f167ff57-36f6-45a8-951d-d21b5912cdbe&Signature=PPsfbT3TWTn5JnZWo%2F%2FQRFVKwvs%3D&Expires=1583021933")
 
