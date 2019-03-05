@@ -66,16 +66,19 @@ class DrawingClassifierTest(unittest.TestCase):
         self.target = "label"
         self.check_cross_sf = _build_bitmap_data()
         self.stroke_sf = _build_stroke_data()
+        self.pretrained_model_url = pretrained_model_url
         self.check_cross_model = _tc.drawing_classifier.create(
             self.check_cross_sf, 
             feature = self.feature, 
             target = self.target, 
-            num_epochs = 10)
+            num_epochs = 10,
+            pretrained_model_url = pretrained_model_url)
         self.stroke_model = _tc.drawing_classifier.create(
             self.stroke_sf, 
             feature = self.feature, 
             target = self.target, 
-            num_epochs = 1)
+            num_epochs = 1,
+            pretrained_model_url = pretrained_model_url)
         self.trains = [self.check_cross_sf, self.stroke_sf]
         self.models = [self.check_cross_model, self.stroke_model]
 
@@ -149,13 +152,15 @@ class DrawingClassifierTest(unittest.TestCase):
     def test_predict_with_sframe(self):
         preds = self.check_cross_model.predict(self.check_cross_sf)
         assert (preds.dtype == self.check_cross_sf[self.target].dtype)
-        assert (preds == self.check_cross_sf[self.target]).all()
+        if self.pretrained_model_url is None:
+            assert (preds == self.check_cross_sf[self.target]).all()
 
     def test_predict_with_sarray(self):
         preds = self.check_cross_model.predict(
             self.check_cross_sf[self.feature])
         assert (preds.dtype == self.check_cross_sf[self.target].dtype)
-        assert (preds == self.check_cross_sf[self.target]).all()
+        if self.pretrained_model_url is None:
+            assert (preds == self.check_cross_sf[self.target]).all()
 
     def test_evaluate_without_ground_truth(self):
         for index in range(len(self.trains)):
@@ -229,6 +234,7 @@ class DrawingClassifierTest(unittest.TestCase):
                 core_ml_preds = mlmodel.predict({
                     "drawing": sf[feature][row_number]._to_pil_image()
                     })
+                import pdb; pdb.set_trace()
                 assert (core_ml_preds["classLabel"] == tc_preds[row_number])
 
             if test_number == 1:
@@ -262,4 +268,10 @@ class DrawingClassifierTest(unittest.TestCase):
     def test_summary(self):
         for model in self.models:
             model.summary()
+
+class DrawingClassifierPreTrainedModelTest(DrawingClassifierTest):
+    @classmethod
+    def setUpClass(self):
+        super(DrawingClassifierPreTrainedModelTest, self).setUpClass(
+            pretrained_model_url="https://blob.mr3.simcloud.apple.com/pretrained-model/model/pretrained_model_0301.params?AWSAccessKeyId=f167ff57-36f6-45a8-951d-d21b5912cdbe&Signature=PPsfbT3TWTn5JnZWo%2F%2FQRFVKwvs%3D&Expires=1583021933")
 
