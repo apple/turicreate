@@ -10,6 +10,7 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 import turicreate as _turicreate
+from turicreate.toolkits._main import ToolkitError
 import turicreate.toolkits._supervised_learning as _sl
 from turicreate.toolkits._supervised_learning import Classifier as _Classifier
 from turicreate.toolkits._internal_utils import _toolkit_repr_print, \
@@ -621,10 +622,11 @@ class LogisticClassifier(_Classifier):
         >>> class_predictions = model.predict(data, output_type='class')
 
         """
-
-        return super(_Classifier, self).predict(dataset,
-                                                output_type=output_type,
-                                                missing_value_action=missing_value_action)
+        if self.num_classes >2 and output_type=='probability':
+            raise ToolkitError("Not for multiclass")
+        return super(_Classifier, self).predict(dataset,output_type=output_type,missing_value_action=missing_value_action)
+        
+            
 
     def classify(self, dataset, missing_value_action='auto'):
         """
