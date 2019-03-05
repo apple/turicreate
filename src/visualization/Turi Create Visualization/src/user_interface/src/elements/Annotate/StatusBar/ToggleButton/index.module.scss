@@ -1,0 +1,69 @@
+.ToggleButton{
+    display: inline-block;
+    width: 22px;
+    height: 10px;
+    background: #CCCCCC;
+    border-radius: 9px;
+    padding:2px;
+    cursor: pointer;
+    -webkit-animation-name: turnOffBackground;
+      -webkit-animation-duration: 0.2s;
+      animation-duration: 0.2s;
+      margin-right: 5px;
+}
+
+.ToggleButtonOn{
+    display: inline-block;
+    width: 22px;
+    height: 10px;
+    background: #393E56;
+    border-radius: 9px;
+    padding:2px;
+    cursor: pointer;
+    -webkit-animation-name: turnOnBackground;
+      -webkit-animation-duration: 0.2s;
+      animation-duration: 0.2s;
+      margin-right: 5px;
+}
+
+.ToggleButtonNib{
+    width: 10px;
+    height: 10px;
+    border-radius: 9px;
+    background: #FFFFFF;
+    cursor:pointer;
+    -webkit-animation-name: turnOffNib;
+      -webkit-animation-duration: 0.2s;
+      animation-duration: 0.2s;
+}
+
+.Toggled{
+    width: 10px;
+    height: 10px;
+    border-radius: 9px;
+    background: #FFFFFF;
+    margin-left: 12px;
+    -webkit-animation-name: turnOnNib;
+      -webkit-animation-duration: 0.2s;
+      animation-duration: 0.2s;
+}
+
+@-webkit-keyframes turnOnNib {
+  0%   {margin-left: 0px;}
+  100% {margin-left: 12px;}
+}
+
+@-webkit-keyframes turnOffNib {
+  0%   {margin-left: 12px;}
+  100% {margin-left: 0px;}
+}
+
+@-webkit-keyframes turnOnBackground {
+  0%   {background: #CCCCCC;}
+  100% {background: #393E56;}
+}
+
+@-webkit-keyframes turnOffBackground {
+  0%   {background: #393E56;}
+  100% {background: #CCCCCC;}
+} 

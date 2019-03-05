@@ -23,6 +23,8 @@ class TextDatumDefaultTypeInternal : public ::google::protobuf::internal::Explic
 } _TextDatum_default_instance_;
 class DatumDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<Datum> {
 } _Datum_default_instance_;
+class DataGetterDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<DataGetter> {
+} _DataGetter_default_instance_;
 class DataDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<Data> {
 } _Data_default_instance_;
 
@@ -43,6 +45,7 @@ PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTable const
   { NULL, NULL, 0, -1, -1, false },
   { NULL, NULL, 0, -1, -1, false },
   { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
 };
 
 
@@ -50,6 +53,7 @@ void TableStruct::Shutdown() {
   _ImageDatum_default_instance_.Shutdown();
   _TextDatum_default_instance_.Shutdown();
   _Datum_default_instance_.Shutdown();
+  _DataGetter_default_instance_.Shutdown();
   _Data_default_instance_.Shutdown();
 }
 
@@ -60,6 +64,7 @@ void TableStruct::InitDefaultsImpl() {
   _ImageDatum_default_instance_.DefaultConstruct();
   _TextDatum_default_instance_.DefaultConstruct();
   _Datum_default_instance_.DefaultConstruct();
+  _DataGetter_default_instance_.DefaultConstruct();
   _Data_default_instance_.DefaultConstruct();
 }
 
@@ -87,6 +92,44 @@ struct StaticDescriptorInitializer {
 
 }  // namespace protobuf_data_2eproto
 
+bool ImageDatum_Format_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+      return true;
+    default:
+      return false;
+  }
+}
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const ImageDatum_Format ImageDatum::JPG;
+const ImageDatum_Format ImageDatum::PNG;
+const ImageDatum_Format ImageDatum::RAW_ARRAY;
+const ImageDatum_Format ImageDatum::UNDEFINED;
+const ImageDatum_Format ImageDatum::Format_MIN;
+const ImageDatum_Format ImageDatum::Format_MAX;
+const int ImageDatum::Format_ARRAYSIZE;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+bool DataGetter_GetterType_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+      return true;
+    default:
+      return false;
+  }
+}
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const DataGetter_GetterType DataGetter::DATA;
+const DataGetter_GetterType DataGetter::ANNOTATIONS;
+const DataGetter_GetterType DataGetter::GetterType_MIN;
+const DataGetter_GetterType DataGetter::GetterType_MAX;
+const int DataGetter::GetterType_ARRAYSIZE;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 // ===================================================================
 
@@ -94,6 +137,7 @@ struct StaticDescriptorInitializer {
 const int ImageDatum::kWidthFieldNumber;
 const int ImageDatum::kHeightFieldNumber;
 const int ImageDatum::kChannelsFieldNumber;
+const int ImageDatum::kTypeFieldNumber;
 const int ImageDatum::kImgDataFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
@@ -115,15 +159,15 @@ ImageDatum::ImageDatum(const ImageDatum& from)
     imgdata_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.imgdata_);
   }
   ::memcpy(&width_, &from.width_,
-    reinterpret_cast<char*>(&channels_) -
-    reinterpret_cast<char*>(&width_) + sizeof(channels_));
+    reinterpret_cast<char*>(&type_) -
+    reinterpret_cast<char*>(&width_) + sizeof(type_));
   // @@protoc_insertion_point(copy_constructor:TuriCreate.Annotation.Specification.ImageDatum)
 }
 
 void ImageDatum::SharedCtor() {
   imgdata_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  ::memset(&width_, 0, reinterpret_cast<char*>(&channels_) -
-    reinterpret_cast<char*>(&width_) + sizeof(channels_));
+  ::memset(&width_, 0, reinterpret_cast<char*>(&type_) -
+    reinterpret_cast<char*>(&width_) + sizeof(type_));
   _cached_size_ = 0;
 }
 
@@ -157,8 +201,8 @@ ImageDatum* ImageDatum::New(::google::protobuf::Arena* arena) const {
 void ImageDatum::Clear() {
 // @@protoc_insertion_point(message_clear_start:TuriCreate.Annotation.Specification.ImageDatum)
   imgdata_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  ::memset(&width_, 0, reinterpret_cast<char*>(&channels_) -
-    reinterpret_cast<char*>(&width_) + sizeof(channels_));
+  ::memset(&width_, 0, reinterpret_cast<char*>(&type_) -
+    reinterpret_cast<char*>(&width_) + sizeof(type_));
 }
 
 bool ImageDatum::MergePartialFromCodedStream(
@@ -213,12 +257,31 @@ bool ImageDatum::MergePartialFromCodedStream(
         break;
       }
 
-      // bytes imgData = 10;
+      // .TuriCreate.Annotation.Specification.ImageDatum.Format type = 4;
+      case 4: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(32u)) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          set_type(static_cast< ::TuriCreate::Annotation::Specification::ImageDatum_Format >(value));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // string imgData = 10;
       case 10: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(82u)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_imgdata()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->imgdata().data(), this->imgdata().length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "TuriCreate.Annotation.Specification.ImageDatum.imgData"));
         } else {
           goto handle_unusual;
         }
@@ -267,9 +330,19 @@ void ImageDatum::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(3, this->channels(), output);
   }
 
-  // bytes imgData = 10;
+  // .TuriCreate.Annotation.Specification.ImageDatum.Format type = 4;
+  if (this->type() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      4, this->type(), output);
+  }
+
+  // string imgData = 10;
   if (this->imgdata().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteBytesMaybeAliased(
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->imgdata().data(), this->imgdata().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "TuriCreate.Annotation.Specification.ImageDatum.imgData");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       10, this->imgdata(), output);
   }
 
@@ -280,10 +353,10 @@ size_t ImageDatum::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:TuriCreate.Annotation.Specification.ImageDatum)
   size_t total_size = 0;
 
-  // bytes imgData = 10;
+  // string imgData = 10;
   if (this->imgdata().size() > 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::BytesSize(
+      ::google::protobuf::internal::WireFormatLite::StringSize(
         this->imgdata());
   }
 
@@ -306,6 +379,12 @@ size_t ImageDatum::ByteSizeLong() const {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::Int32Size(
         this->channels());
+  }
+
+  // .TuriCreate.Annotation.Specification.ImageDatum.Format type = 4;
+  if (this->type() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -340,6 +419,9 @@ void ImageDatum::MergeFrom(const ImageDatum& from) {
   if (from.channels() != 0) {
     set_channels(from.channels());
   }
+  if (from.type() != 0) {
+    set_type(from.type());
+  }
 }
 
 void ImageDatum::CopyFrom(const ImageDatum& from) {
@@ -362,6 +444,7 @@ void ImageDatum::InternalSwap(ImageDatum* other) {
   std::swap(width_, other->width_);
   std::swap(height_, other->height_);
   std::swap(channels_, other->channels_);
+  std::swap(type_, other->type_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -414,7 +497,21 @@ void ImageDatum::set_channels(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.ImageDatum.channels)
 }
 
-// bytes imgData = 10;
+// .TuriCreate.Annotation.Specification.ImageDatum.Format type = 4;
+void ImageDatum::clear_type() {
+  type_ = 0;
+}
+::TuriCreate::Annotation::Specification::ImageDatum_Format ImageDatum::type() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.ImageDatum.type)
+  return static_cast< ::TuriCreate::Annotation::Specification::ImageDatum_Format >(type_);
+}
+void ImageDatum::set_type(::TuriCreate::Annotation::Specification::ImageDatum_Format value) {
+  
+  type_ = value;
+  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.ImageDatum.type)
+}
+
+// string imgData = 10;
 void ImageDatum::clear_imgdata() {
   imgdata_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -441,7 +538,7 @@ void ImageDatum::set_imgdata(const char* value) {
   imgdata_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:TuriCreate.Annotation.Specification.ImageDatum.imgData)
 }
-void ImageDatum::set_imgdata(const void* value, size_t size) {
+void ImageDatum::set_imgdata(const char* value, size_t size) {
   
   imgdata_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
@@ -1036,6 +1133,297 @@ const ::google::protobuf::RepeatedPtrField< ::TuriCreate::Annotation::Specificat
 Datum::text() const {
   // @@protoc_insertion_point(field_list:TuriCreate.Annotation.Specification.Datum.text)
   return text_;
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int DataGetter::kTypeFieldNumber;
+const int DataGetter::kStartFieldNumber;
+const int DataGetter::kEndFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+DataGetter::DataGetter()
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_data_2eproto::InitDefaults();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:TuriCreate.Annotation.Specification.DataGetter)
+}
+DataGetter::DataGetter(const DataGetter& from)
+  : ::google::protobuf::MessageLite(),
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::memcpy(&type_, &from.type_,
+    reinterpret_cast<char*>(&end_) -
+    reinterpret_cast<char*>(&type_) + sizeof(end_));
+  // @@protoc_insertion_point(copy_constructor:TuriCreate.Annotation.Specification.DataGetter)
+}
+
+void DataGetter::SharedCtor() {
+  ::memset(&type_, 0, reinterpret_cast<char*>(&end_) -
+    reinterpret_cast<char*>(&type_) + sizeof(end_));
+  _cached_size_ = 0;
+}
+
+DataGetter::~DataGetter() {
+  // @@protoc_insertion_point(destructor:TuriCreate.Annotation.Specification.DataGetter)
+  SharedDtor();
+}
+
+void DataGetter::SharedDtor() {
+}
+
+void DataGetter::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const DataGetter& DataGetter::default_instance() {
+  protobuf_data_2eproto::InitDefaults();
+  return *internal_default_instance();
+}
+
+DataGetter* DataGetter::New(::google::protobuf::Arena* arena) const {
+  DataGetter* n = new DataGetter;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void DataGetter::Clear() {
+// @@protoc_insertion_point(message_clear_start:TuriCreate.Annotation.Specification.DataGetter)
+  ::memset(&type_, 0, reinterpret_cast<char*>(&end_) -
+    reinterpret_cast<char*>(&type_) + sizeof(end_));
+}
+
+bool DataGetter::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:TuriCreate.Annotation.Specification.DataGetter)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // .TuriCreate.Annotation.Specification.DataGetter.GetterType type = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(8u)) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          set_type(static_cast< ::TuriCreate::Annotation::Specification::DataGetter_GetterType >(value));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // int32 start = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(16u)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &start_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // int32 end = 3;
+      case 3: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(24u)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &end_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:TuriCreate.Annotation.Specification.DataGetter)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:TuriCreate.Annotation.Specification.DataGetter)
+  return false;
+#undef DO_
+}
+
+void DataGetter::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:TuriCreate.Annotation.Specification.DataGetter)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .TuriCreate.Annotation.Specification.DataGetter.GetterType type = 1;
+  if (this->type() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      1, this->type(), output);
+  }
+
+  // int32 start = 2;
+  if (this->start() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->start(), output);
+  }
+
+  // int32 end = 3;
+  if (this->end() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(3, this->end(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:TuriCreate.Annotation.Specification.DataGetter)
+}
+
+size_t DataGetter::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:TuriCreate.Annotation.Specification.DataGetter)
+  size_t total_size = 0;
+
+  // .TuriCreate.Annotation.Specification.DataGetter.GetterType type = 1;
+  if (this->type() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
+  }
+
+  // int32 start = 2;
+  if (this->start() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
+        this->start());
+  }
+
+  // int32 end = 3;
+  if (this->end() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
+        this->end());
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void DataGetter::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const DataGetter*>(&from));
+}
+
+void DataGetter::MergeFrom(const DataGetter& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:TuriCreate.Annotation.Specification.DataGetter)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.type() != 0) {
+    set_type(from.type());
+  }
+  if (from.start() != 0) {
+    set_start(from.start());
+  }
+  if (from.end() != 0) {
+    set_end(from.end());
+  }
+}
+
+void DataGetter::CopyFrom(const DataGetter& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:TuriCreate.Annotation.Specification.DataGetter)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool DataGetter::IsInitialized() const {
+  return true;
+}
+
+void DataGetter::Swap(DataGetter* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void DataGetter::InternalSwap(DataGetter* other) {
+  std::swap(type_, other->type_);
+  std::swap(start_, other->start_);
+  std::swap(end_, other->end_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::std::string DataGetter::GetTypeName() const {
+  return "TuriCreate.Annotation.Specification.DataGetter";
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// DataGetter
+
+// .TuriCreate.Annotation.Specification.DataGetter.GetterType type = 1;
+void DataGetter::clear_type() {
+  type_ = 0;
+}
+::TuriCreate::Annotation::Specification::DataGetter_GetterType DataGetter::type() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.DataGetter.type)
+  return static_cast< ::TuriCreate::Annotation::Specification::DataGetter_GetterType >(type_);
+}
+void DataGetter::set_type(::TuriCreate::Annotation::Specification::DataGetter_GetterType value) {
+  
+  type_ = value;
+  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.DataGetter.type)
+}
+
+// int32 start = 2;
+void DataGetter::clear_start() {
+  start_ = 0;
+}
+::google::protobuf::int32 DataGetter::start() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.DataGetter.start)
+  return start_;
+}
+void DataGetter::set_start(::google::protobuf::int32 value) {
+  
+  start_ = value;
+  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.DataGetter.start)
+}
+
+// int32 end = 3;
+void DataGetter::clear_end() {
+  end_ = 0;
+}
+::google::protobuf::int32 DataGetter::end() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.DataGetter.end)
+  return end_;
+}
+void DataGetter::set_end(::google::protobuf::int32 value) {
+  
+  end_ = value;
+  // @@protoc_insertion_point(field_set:TuriCreate.Annotation.Specification.DataGetter.end)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS

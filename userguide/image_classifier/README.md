@@ -77,6 +77,6 @@ Refer to the following chapters for:
 
 In addition, the following chapters contain more information on how to use classifiers:
 
-* [Accessing attributes of the model](../supervised-learning/linear-regression.md#linregr-model-access)
-* [Evaluating Results](../supervised-learning/logistic-regression.md#logregr-evaluation)
-* [Multiclass Classification](../supervised-learning/logistic-regression.md#logregr-multiclass)
+* [Accessing attributes of the model](../supervised-learning/linear-regression.md#accessing-attributes-of-the-model)
+* [Evaluating Results](../supervised-learning/logistic-regression.md#evaluating-results)
+* [Multiclass Classification](../supervised-learning/logistic-regression.md#multiclass-classification)

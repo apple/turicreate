@@ -64,6 +64,11 @@ class Pipe {
         }
     }
     
+    public func writeProtoBuf(message: String){
+        print(message);
+        fflush(__stdoutp)
+    }
+    
     public func writePipe(method: String, start: Int, end: Int){
         print("{'method':'get_rows','start':" + String(start) + ", 'end': " + String(end) + "}");
         fflush(__stdoutp)
@@ -116,6 +121,10 @@ class Pipe {
             
             if let accordion_spec = json["accordion_spec"] as? [String: Any] {
                 self.graph_data.add_accordion(accordion_spec: accordion_spec)
+            }
+            
+            if let proto_spec = json["protobuf"] as? String {
+                self.graph_data.send_proto(protobuf: proto_spec)
             }
 
         } catch let error as NSError {

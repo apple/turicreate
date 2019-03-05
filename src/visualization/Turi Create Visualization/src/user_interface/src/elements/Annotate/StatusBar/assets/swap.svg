@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="14px" viewBox="0 0 16 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
+    <title>icons/action/clone</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M7.01976332,4.15826538 L7.01976332,13.4243884 L16.2858864,13.4243884 L16.2858864,4.15826538 L7.01976332,4.15826538 Z M13.821622,14.5826538 L13.821622,17 L2.96583448,17 L2.96583448,7.05392884 L5.86149794,7.05392884 L5.86149794,3 L17.4441518,3 L17.4441518,14.5826538 L13.821622,14.5826538 Z M12.6633567,14.5826538 L5.86149794,14.5826538 L5.86149794,8.21219422 L4.12409986,8.21219422 L4.12409986,15.8417346 L12.6633567,15.8417346 L12.6633567,14.5826538 Z" id="path-1"></path>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard-Copy-2" transform="translate(-617.000000, -87.000000)">
+            <g id="Group-6" transform="translate(31.000000, 64.000000)">
+                <g id="Group-7" transform="translate(0.000000, 16.000000)">
+                    <g id="icons/action/clone" transform="translate(584.000000, 4.000000)">
+                        <mask id="mask-2" fill="white">
+                            <use xlink:href="#path-1"></use>
+                        </mask>
+                        <use id="Combined-Shape" fill="#979797" fill-rule="nonzero" xlink:href="#path-1"></use>
+                        <g id="color/black" mask="url(#mask-2)" fill="#484856" fill-rule="evenodd">
+                            <rect id="Rectangle-Copy-15" x="0" y="0" width="22" height="22" rx="4"></rect>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
