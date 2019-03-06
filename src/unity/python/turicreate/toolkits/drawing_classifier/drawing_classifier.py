@@ -154,7 +154,7 @@ def create(input_dataset, feature="bitmap", target="label",
     if verbose:
         print(hr)   # progress table footer
 
-    if type(classes[0]) is int:
+    if isinstance(classes[0], int):
         class_type = "int"
     else:
         class_type = "str"
@@ -178,7 +178,7 @@ def create(input_dataset, feature="bitmap", target="label",
 
 class DrawingClassifier(_CustomModel):
 
-    _PYTHON_DRAWING_CLASSIFIER_VERSION = 0
+    _PYTHON_DRAWING_CLASSIFIER_VERSION = 1
     
     def __init__(self, state):
         self.__proxy__ = _PythonProxy(state)
@@ -461,7 +461,7 @@ class DrawingClassifier(_CustomModel):
         """ 
         Docfix coming soon
         """
-        if type(data) == _tc.SArray:
+        if isinstance(data, _tc.SArray):
             predicted = self._predict_with_probabilities(_tc.SFrame({
                 self.feature: data
                 })

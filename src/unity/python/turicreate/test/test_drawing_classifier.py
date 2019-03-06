@@ -27,7 +27,11 @@ def _build_bitmap_data():
         _os.path.dirname(_os.path.realpath(__file__)), "drawings")
     sf = _tc.image_analysis.load_images(drawings_dir, with_path=True)
     sf = sf.rename({"image": "drawing", "path": "label"})
-    sf["label"] = sf["label"].apply(lambda path: path[-10:-5])
+    sf["label"] = sf["label"].apply(
+        lambda filepath: _os.path.splitext(
+                            _os.path.basename(filepath)
+                            )[0][:-1] 
+        )
     return sf
 
 def _build_stroke_data():

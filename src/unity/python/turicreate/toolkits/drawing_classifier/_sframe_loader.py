@@ -54,7 +54,7 @@ class _SFrameDataSource:
         row = self.sframe[row_index]
 
         drawing_feature = row[self.feature_column]
-        is_stroke_input = (type(drawing_feature) != _tc.Image)
+        is_stroke_input = (not isinstance(drawing_feature, _tc.Image))
         if is_stroke_input:
             pixels_01 = drawing_feature.pixel_data.reshape(1, 28, 28) / 255.
         else:
