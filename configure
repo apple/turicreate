@@ -270,11 +270,11 @@ if [[ ! $mlmodel_dir == "" ]]; then
 
   if [[ -d $mlmodel_dir ]]; then
     # Normalize the directory
-    mlmodel_dir_=$(echo $mlmodel_dir | sed -E 's|(mlmodel)*/*$||')/mlmodel
+    mlmodel_dir_=$(echo $mlmodel_dir | sed -E 's|(mlmodel)*/*$||')
 
-    if [[ -d "$mlmodel_dir_" ]]; then
-      CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_COREMLTOOLS_MLMODEL_DIR=\"$mlmodel_dir_\""
-      echo "Using $mlmodel_dir for coremltools/mlmodel source."
+    if [[ -d "${mlmodel_dir_}/mlmodel" ]]; then
+      CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_COREMLTOOLS_DIR=\"$mlmodel_dir_\""
+      echo "Using $mlmodel_dir for coremltools source."
     else
       echo "ERROR: $mlmodel_dir does not appear to be a valid coremltools directory."
       exit 1

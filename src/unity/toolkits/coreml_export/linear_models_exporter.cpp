@@ -186,10 +186,10 @@ std::shared_ptr<MLModelWrapper> export_logistic_model_as_model_asset(
   std::vector<std::vector<double>> weights;
   size_t num_classes = metadata->target_index_size();
   size_t variables_per_class = one_hot_coefs.size() / (num_classes - 1);
-  for(int i = 0; i < num_classes - 1; i++) {
-    int starting_index = i * variables_per_class;
+  for(size_t i = 0; i < num_classes - 1; i++) {
+    size_t starting_index = i * variables_per_class;
     weights.push_back(std::vector<double>());
-    for(int j = 0; j < variables_per_class - 1; j++) {
+    for(size_t j = 0; j < variables_per_class - 1; j++) {
       weights[i].push_back(one_hot_coefs[starting_index + j]);
     }
     double cur_offset = one_hot_coefs[starting_index + variables_per_class - 1];

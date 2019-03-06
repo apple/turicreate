@@ -219,7 +219,7 @@ std::shared_ptr<MLModelWrapper> export_xgboost_model(
 
         size_t feature_index = 0;
 
-        size_t n = sscanf(feature_name.c_str(), "{%zd}\0", &feature_index);
+        size_t n = sscanf(feature_name.c_str(), "{%zd}", &feature_index);
         ASSERT_EQ(n, 1);
 
         tree_ensemble->setupBranchNode(
