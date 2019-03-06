@@ -132,25 +132,25 @@ class DrawingClassifierTest(unittest.TestCase):
     #         _tc.drawing_classifier.create(sf, 
     #             feature = self.feature, target = self.target)
 
-    def test_create_with_empty_drawing_in_stroke_input(self):
-        drawing = []
-        sf = _tc.SFrame({
-            self.feature: [drawing], 
-            self.target: ["empty_drawing"]
-            })
-        # Should not error out, it should silently ignore the empty drawing
-        _tc.drawing_classifier.create(sf, 
-            feature = self.feature, target = self.target, num_epochs=1)
+    # def test_create_with_empty_drawing_in_stroke_input(self):
+    #     drawing = []
+    #     sf = _tc.SFrame({
+    #         self.feature: [drawing], 
+    #         self.target: ["empty_drawing"]
+    #         })
+    #     # Should not error out, it should silently ignore the empty drawing
+    #     _tc.drawing_classifier.create(sf, 
+    #         feature = self.feature, target = self.target, num_epochs=1)
 
-    def test_create_with_empty_stroke_in_stroke_input(self):
-        drawing = [[{"x": 1.0, "y": 0.0}], [], [{"x": 1.1, "y": 0.1}]]
-        sf = _tc.SFrame({
-            self.feature: [drawing], 
-            self.target: ["empty_drawing"]
-            })
-        # Should not error out, it should silently ignore the empty stroke
-        _tc.drawing_classifier.create(sf, 
-            feature = self.feature, target = self.target, num_epochs = 1)        
+    # def test_create_with_empty_stroke_in_stroke_input(self):
+    #     drawing = [[{"x": 1.0, "y": 0.0}], [], [{"x": 1.1, "y": 0.1}]]
+    #     sf = _tc.SFrame({
+    #         self.feature: [drawing], 
+    #         self.target: ["empty_drawing"]
+    #         })
+    #     # Should not error out, it should silently ignore the empty stroke
+    #     _tc.drawing_classifier.create(sf, 
+    #         feature = self.feature, target = self.target, num_epochs = 1)        
 
     def test_predict_with_sframe(self):
         for index in range(len(self.models)):
