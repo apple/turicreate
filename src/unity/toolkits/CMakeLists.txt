@@ -2,7 +2,7 @@ project(unity_toolkits)
 
 subdirs(ml_model
         activity_classification
-        drawing_recognition
+        drawing_classifier
         coreml_export
         sparse_similarity
         factorization

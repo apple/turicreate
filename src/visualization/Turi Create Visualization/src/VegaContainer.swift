@@ -206,6 +206,13 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
             self.pipe!.writeAccordion(method: "get_accordian", column_name: column_name, index_val: index_num)
             
             break
+        case "writeProtoBuf":
+            guard let proto_message = messageBody["message"] as? String else {
+                assert(false, "no message in protobuf")
+                return
+            }
+            
+            self.pipe!.writeProtoBuf(message: proto_message);
         default:
             assert(false)
             break
@@ -275,6 +282,23 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
                     assert(false)
                 }
             });
+        }
+    }
+    
+    public func send_proto(protobuf: String) {
+        DispatchQueue.main.async {
+            if(self.loaded){
+                let updateJS = String(format: "setProtoMessage(\"%@\");", protobuf);
+                self.view.evaluateJavaScript(updateJS, completionHandler: { (value, err) in
+                    if err != nil {
+                        // if we got here, we got a JS error
+                        log(err.debugDescription)
+                        assert(false)
+                    }
+                });
+            }else{
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: { self.send_proto(protobuf: protobuf) })
+            }
         }
     }
     

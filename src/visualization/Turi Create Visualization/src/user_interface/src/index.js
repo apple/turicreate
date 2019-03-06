@@ -6,6 +6,12 @@ import TcSummary from './elements/Plot/Summary/index.js';
 import TcTable from './elements/Explore/Table/index.js';
 import TCEvaluation from './elements/Explore/Evaluation/index.js';
 
+import messageFormat from './format/message';
+
+import { load, Root } from 'protobufjs';
+
+import TCAnnotate from './elements/Annotate';
+
 var command_down = 0;
 var body_zoom = 100;
 
@@ -53,6 +59,7 @@ function resetDisplay(){
     document.getElementById('loading_container').style.display = "block";
     document.getElementById('table_vis').style.display = 'none';
     document.getElementById('vega_vis').style.display = 'none';
+    document.getElementById('annotate_viz').style.display = 'none';
     component_rendered = null;
     spec_type = null;
 }
@@ -73,9 +80,6 @@ window.setSpec = function setSpec(value) {
         case "summary":
             spec_type = SpecType.summary;
             break;
-        case "annotate":
-            spec_type = SpecType.annotate;
-            break;
         case "evaluate":
             document.getElementById("loading_container").style.display = "none";
             document.getElementById('evaluation_vis').style.display = 'block';
@@ -88,6 +92,37 @@ window.setSpec = function setSpec(value) {
     }
 }
 
+window.setProtoMessage = function setProtoMessage(value){
+    
+    document.getElementById("loading_container").style.display = "none";
+    document.getElementById('annotate_viz').style.display = 'block';
+    
+    var root = Root.fromJSON(messageFormat);
+    
+    const ParcelMessage = root.lookupType("TuriCreate.Annotation.Specification.Parcel");
+    const buffer = Uint8Array.from(atob(value), c => c.charCodeAt(0));
+    var decoded = ParcelMessage.decode(buffer);
+    
+    if (decoded.hasOwnProperty('metadata')) {
+        component_rendered = ReactDOM.render(<TCAnnotate metadata={decoded.metadata}/>, document.getElementById('annotate_viz'));
+        spec_type = SpecType.annotate;
+    } else if(decoded.hasOwnProperty('data')) {
+        for (var i = 0; i < decoded["data"]["data"].length; i++) {
+            const row_index = decoded["data"]["data"][i]["rowIndex"];
+            const type = decoded["data"]["data"][i]["images"][0]["type"];
+            const data = decoded["data"]["data"][i]["images"][0]["imgData"];
+            const image = "data:image/" + type + ";base64," + data;
+            component_rendered.setImageData(row_index, image);
+        }
+    } else if(decoded.hasOwnProperty('annotations')) {
+        for (var i = 0; i < decoded["annotations"]["annotation"].length; i++) {
+            const row_index = decoded["annotations"]["annotation"][i]["rowIndex"][0];
+            const annotation = decoded["annotations"]["annotation"][i]["labels"][0];
+            component_rendered.setAnnotationData(row_index, annotation);
+        }
+    }
+}
+
 window.updateData = function updateData(data) {
     switch(spec_type){
         case SpecType.table:
@@ -96,9 +131,6 @@ window.updateData = function updateData(data) {
         case SpecType.evaluate:
             document.getElementById("loading_container").style.display = "none";
             component_rendered.updateData(data);
-            break;
-        case SpecType.annotate:
-            console.log("annotate");
             break;
         default:
             console.log("default");

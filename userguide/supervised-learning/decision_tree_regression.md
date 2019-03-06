@@ -53,7 +53,7 @@ linear model, which is better suited for such scenarios.
 
 Refer to other chapters in this section for the following features:
 
-* [Using categorical features](linear-regression.md#linregr-categorical-features)
-* [Sparse features](linear-regression.md#linregr-sparse-features)
-* [List features](linear-regression.md#linregr-list-features)
-* [Evaluating Results](logistic-regression.md#logregr-evaluation)
+* [Using categorical features](linear-regression.md#categorical-features)
+* [Sparse features](linear-regression.md#sparse-features)
+* [List features](linear-regression.md#list-features)
+* [Evaluating Results](logistic-regression.md#evaluating-results)

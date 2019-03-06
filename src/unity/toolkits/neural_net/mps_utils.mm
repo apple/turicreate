@@ -233,19 +233,7 @@ void fill_image_batch(const float_array& blob, MPSImageBatch *batch) {
   }
 }
 
-float_array_map make_array_map(char **names, void **arrays,
-                               int64_t *sizes, int len) {
-  float_array_map ret;
-  for (int i = 0; i < len; ++i) {
-    std::string name = names[i];
-    const float* array = reinterpret_cast<const float*>(arrays[i]);
-    const size_t size = static_cast<size_t>(sizes[i]);
-    ret[name] = shared_float_array::copy(array, {size});
-  }
-  return ret;
-}
-
-// This version assumes that each void* is actually a float_array*. This casting
+// Assumes that each void* is actually a float_array*. This casting
 // from plain C should go away once we remove the original Python frontend.
 float_array_map make_array_map(char **names, void **arrays, int len) {
   float_array_map ret;

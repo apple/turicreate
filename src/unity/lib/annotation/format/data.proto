@@ -8,10 +8,16 @@ message ImageDatum {
   int32 height = 2;
   int32 channels = 3;
 
-  /* TODO: MISSING IMAGE TYPE. IF WE DON'T HAVE THIS THEN THE BYTE DATA IS
-   * POINTLESS */
 
-  bytes imgData = 10;
+  enum Format {
+    JPG = 0;
+    PNG = 1;
+    RAW_ARRAY = 2;
+    UNDEFINED = 3;
+  };
+
+  Format type = 4;
+  string imgData = 10; // base64 encoded
 }
 
 message TextDatum { string text = 1; }
@@ -21,6 +27,18 @@ message Datum {
 
   repeated ImageDatum images = 10;
   repeated TextDatum text = 20;
+}
+
+message DataGetter {
+  enum GetterType {
+    DATA = 0;
+    ANNOTATIONS = 1;
+  }
+
+  GetterType type = 1;
+
+  int32 start = 2;
+  int32 end = 3;
 }
 
 message Data { repeated Datum data = 1; }
