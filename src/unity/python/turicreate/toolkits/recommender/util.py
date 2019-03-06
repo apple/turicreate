@@ -1266,8 +1266,6 @@ class _Recommender(_Model):
                 users[user_id] = user_column.astype(user_type)
 
         # Cast user specified in exclude to the appropriate type if necessary.
-        # for i in range(exclude.num_columns()):
-        #     if exclude.column_names()[i]==user_id:
         if user_id in exclude.column_names():
             if exclude[user_id].dtype!=user_type:
                 exclude[user_id] = exclude[user_id].astype(user_type)
