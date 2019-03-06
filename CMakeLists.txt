@@ -1119,6 +1119,7 @@ set(_TC_COMMON_OBJECTS
   "$<TARGET_OBJECTS:protobuf>"
   "$<TARGET_OBJECTS:uuid>"
   "$<TARGET_OBJECTS:xgboost>"
+  "$<TARGET_OBJECTS:coremltools_mlmodel>"
 
   # Then our own source code
   "$<TARGET_OBJECTS:annotation>"
