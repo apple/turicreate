@@ -10,6 +10,7 @@
 #include <unity/lib/extensions/ml_model.hpp>
 #include <unity/lib/gl_sframe.hpp>
 #include <unity/toolkits/activity_classification/ac_data_iterator.hpp>
+#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
 #include <unity/toolkits/neural_net/compute_context.hpp>
 #include <unity/toolkits/neural_net/model_backend.hpp>
 #include <unity/toolkits/neural_net/model_spec.hpp>
@@ -31,6 +32,8 @@ class EXPORT activity_classifier: public ml_model_base {
              std::string session_id_column_name,
              variant_type validation_data,
              std::map<std::string, flexible_type> opts);
+  std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
+      std::string filename);
 
   // TODO: Remainder of public interface: export, evaluate, predict, save/load
 
@@ -87,6 +90,9 @@ class EXPORT activity_classifier: public ml_model_base {
       "    Number of sequence chunks used per training step. Must be greater than\n"
       "    the number of GPUs in use. The default is 32.\n"
   );
+
+  REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::export_to_coreml,
+                                 "filename");
 
   END_CLASS_MEMBER_REGISTRATION
 

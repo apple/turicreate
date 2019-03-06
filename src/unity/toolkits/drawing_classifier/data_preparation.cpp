@@ -82,8 +82,8 @@ public:
         return m_y;
     }
 private:
-    float m_x;
-    float m_y;
+    float m_x = 0.0f;
+    float m_y = 0.0f;
 };
 
 class Line {
