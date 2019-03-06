@@ -8,6 +8,11 @@
 #include <boost/archive/iterators/remove_whitespace.hpp>
 #include <boost/archive/iterators/transform_width.hpp>
 
+#include <boost/range/combine.hpp>
+
+#include <sframe/groupby_aggregate.hpp>
+#include <sframe/groupby_aggregate_operators.hpp>
+
 #include <unity/lib/image_util.hpp>
 
 namespace turi {
@@ -231,8 +236,6 @@ void ImageClassification::_addAnnotationToSFrame(size_t index, int label) {
 
 annotate_spec::MetaData ImageClassification::metaData() {
   annotate_spec::MetaData meta_data;
-  annotate_spec::ImageClassificationMeta image_classification_meta =
-      meta_data.image_classification();
 
   meta_data.set_type(annotate_spec::MetaData_AnnotationType::
                          MetaData_AnnotationType_IMAGE_CLASSIFICATION);
@@ -247,22 +250,45 @@ annotate_spec::MetaData ImageClassification::metaData() {
   std::shared_ptr<unity_sarray> unity_sa =
       std::shared_ptr<unity_sarray>(in.unique());
 
-  flex_type_enum array_type = unity_sa->dtype();
+  std::shared_ptr<unity_sframe> count_sf =
+      std::static_pointer_cast<unity_sframe>(m_data->groupby_aggregate(
+          {m_annotation_column}, {{}}, {"__count"}, {"__builtin__count__"}));
+
+  std::shared_ptr<unity_sarray> label_sa =
+      std::static_pointer_cast<unity_sarray>(
+          count_sf->select_column(m_annotation_column));
+
+  std::shared_ptr<unity_sarray> count_sa =
+      std::static_pointer_cast<unity_sarray>(
+          count_sf->select_column("__count"));
+
+  flex_type_enum array_type = label_sa->dtype();
 
   DASSERT_TRUE(array_type == flex_type_enum::STRING ||
                array_type == flex_type_enum::INTEGER);
 
-  if (array_type == flex_type_enum::STRING) {
-    annotate_spec::MetaString strings = image_classification_meta.strings();
-    for (auto const &value : unity_sa->to_vector()) {
-      strings.add_labels(value.to<std::string>());
-    }
-  }
+  auto label_vector = label_sa->to_vector();
+  auto count_vector = count_sa->to_vector();
 
-  if (array_type == flex_type_enum::INTEGER) {
-    annotate_spec::MetaInteger integers = image_classification_meta.integers();
-    for (auto const &value : unity_sa->to_vector()) {
-      integers.add_labels(value);
+  DASSERT_TRUE(label_vector.size() == count_vector.size());
+
+  annotate_spec::ImageClassificationMeta* image_classification_meta =
+      meta_data.mutable_image_classification();
+
+  for (size_t x = 0; x < label_vector.size(); x++) {
+
+    if (array_type == flex_type_enum::STRING) {
+      annotate_spec::MetaLabel *labels_meta =
+          image_classification_meta->add_label();
+      labels_meta->set_stringlabel(label_vector.at(x).to<std::string>());
+      labels_meta->set_elementcount(count_vector.at(x));
+    }
+
+    if (array_type == flex_type_enum::INTEGER) {
+      annotate_spec::MetaLabel *labels_meta =
+          image_classification_meta->add_label();
+      labels_meta->set_intlabel(label_vector.at(x));
+      labels_meta->set_elementcount(count_vector.at(x));
     }
   }
 
