@@ -76,12 +76,12 @@ class DrawingClassifierTest(unittest.TestCase):
             target = self.target, 
             num_epochs = 10,
             pretrained_model_url = pretrained_model_url)
-        self.stroke_model = _tc.drawing_classifier.create(
-            self.stroke_sf, 
-            feature = self.feature, 
-            target = self.target, 
-            num_epochs = 1,
-            pretrained_model_url = pretrained_model_url)
+        # self.stroke_model = _tc.drawing_classifier.create(
+        #     self.stroke_sf, 
+        #     feature = self.feature, 
+        #     target = self.target, 
+        #     num_epochs = 1,
+        #     pretrained_model_url = pretrained_model_url)
         # self.trains = [self.check_cross_sf, self.stroke_sf]
         # self.models = [self.check_cross_model, self.stroke_model]
 
@@ -279,7 +279,7 @@ class DrawingClassifierTest(unittest.TestCase):
     def test_summary(self):
         # for model in self.models:
         self.check_cross_model.summary()
-        self.stroke_model.summary()
+        # self.stroke_model.summary()
 
 # class DrawingClassifierPreTrainedModelTest(DrawingClassifierTest):
 #     @classmethod
