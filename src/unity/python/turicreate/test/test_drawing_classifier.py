@@ -153,17 +153,22 @@ class DrawingClassifierTest(unittest.TestCase):
             feature = self.feature, target = self.target, num_epochs = 1)        
 
     def test_predict_with_sframe(self):
-        preds = self.check_cross_model.predict(self.check_cross_sf)
-        assert (preds.dtype == self.check_cross_sf[self.target].dtype)
-        if self.pretrained_model_url is None:
-            assert (preds == self.check_cross_sf[self.target]).all()
+        for index in range(len(self.models)):
+            model = self.models[index]
+            sf = self.trains[index]
+            preds = model.predict(sf)
+            assert (preds.dtype == sf[self.target].dtype)
+            if self.pretrained_model_url is None and index == 0:
+                assert (preds == sf[self.target]).all()
 
     def test_predict_with_sarray(self):
-        preds = self.check_cross_model.predict(
-            self.check_cross_sf[self.feature])
-        assert (preds.dtype == self.check_cross_sf[self.target].dtype)
-        if self.pretrained_model_url is None:
-            assert (preds == self.check_cross_sf[self.target]).all()
+        for index in range(len(self.models)):
+            model = self.models[index]
+            sf = self.trains[index]
+            preds = model.predict(sf[self.feature])
+            assert (preds.dtype == sf[self.target].dtype)
+            if self.pretrained_model_url is None and index == 0:
+                assert (preds == sf[self.target]).all()
 
     def test_evaluate_without_ground_truth(self):
         for index in range(len(self.trains)):
