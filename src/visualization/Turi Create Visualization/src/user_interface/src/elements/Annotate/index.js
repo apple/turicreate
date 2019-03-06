@@ -246,8 +246,12 @@ class Annotate extends Component {
         }
       }
     }
-    
-    previousAnnotationData[rowIndex] = labels;
+
+    if (this.state.type == LabelType.STRING) {
+      previousAnnotationData[rowIndex] = labels;
+    } else if(this.state.type == LabelType.INTEGER) {
+      previousAnnotationData[rowIndex] = parseInt(labels, 10);
+    }
 
     this.setState({
       annotationData: previousAnnotationData,
@@ -290,7 +294,9 @@ class Annotate extends Component {
                         updateIncrementalCurrentIndex={this.updateIncrementalCurrentIndex.bind(this)}
                         toggleInfiniteScroll={this.toggleInfiniteScroll.bind(this)}
                         imageData={this.state.imageData}
+                        annotationData={this.state.annotationData}
                         getData={this.getData.bind(this)}
+                        type={this.state.type}
                         getAnnotations={this.getAnnotations.bind(this)} />
       );
     } else {
