@@ -223,10 +223,35 @@ class Annotate extends Component {
 
   setAnnotation = (rowIndex, labels) => {
     var previousAnnotationData = this.state.annotationData;
+    var previousLabelData = this.state.labels;
+
+    var previousLabel = previousAnnotationData[rowIndex];
+
+    if(previousLabel == labels){
+      return;
+    }
+
+    if(previousLabel != null){
+      for (var x = 0; x < previousLabelData.length; x++) {
+        if(this.state.labels[x].name == previousLabel) {
+          var tempLabel = previousLabelData[x];
+          tempLabel.num_annotated -= 1;
+          previousLabelData[x] = tempLabel;
+        }
+
+        if(this.state.labels[x].name == labels){
+          var tempLabel = previousLabelData[x];
+          tempLabel.num_annotated += 1;
+          previousLabelData[x] = tempLabel;
+        }
+      }
+    }
+    
     previousAnnotationData[rowIndex] = labels;
 
     this.setState({
-      annotationData: previousAnnotationData
+      annotationData: previousAnnotationData,
+      labels:previousLabelData
     });
 
     const root = Root.fromJSON(messageFormat);
