@@ -34,33 +34,33 @@ def _build_bitmap_data():
         )
     return sf
 
-def _build_stroke_data():
-    num_rows_in_sframe = 10
-    drawings, labels = [], []
-    random = _np.random.RandomState(100)
-    def _generate_random_point(point = None):
-        if point is not None:
-            dx = random.choice([-1, 0, 1])
-            dy = random.choice([-1, 0, 1])
-            next_x, next_y = point["x"] + dx, point["y"] + dy
-        else:
-            next_x, next_y = random.randint(1000), random.randint(1000)
-        return {"x": next_x, "y": next_y}
+# def _build_stroke_data():
+#     num_rows_in_sframe = 10
+#     drawings, labels = [], []
+#     random = _np.random.RandomState(100)
+#     def _generate_random_point(point = None):
+#         if point is not None:
+#             dx = random.choice([-1, 0, 1])
+#             dy = random.choice([-1, 0, 1])
+#             next_x, next_y = point["x"] + dx, point["y"] + dy
+#         else:
+#             next_x, next_y = random.randint(1000), random.randint(1000)
+#         return {"x": next_x, "y": next_y}
 
-    for label in range(num_rows_in_sframe):
-        num_strokes = random.randint(10)
-        drawing = []
-        for stroke_id in range(num_strokes):
-            drawing.append([])
-            num_points = random.randint(500)
-            last_point = None
-            for point_id in range(num_points):
-                last_point = _generate_random_point(last_point)
-                drawing[-1].append(last_point)
-        drawings.append(drawing)
-        labels.append(label)
+#     for label in range(num_rows_in_sframe):
+#         num_strokes = random.randint(10)
+#         drawing = []
+#         for stroke_id in range(num_strokes):
+#             drawing.append([])
+#             num_points = random.randint(500)
+#             last_point = None
+#             for point_id in range(num_points):
+#                 last_point = _generate_random_point(last_point)
+#                 drawing[-1].append(last_point)
+#         drawings.append(drawing)
+#         labels.append(label)
 
-    return _tc.SFrame({"drawing": drawings, "label": labels})
+#     return _tc.SFrame({"drawing": drawings, "label": labels})
 
 class DrawingClassifierTest(unittest.TestCase):
     @classmethod
@@ -68,7 +68,7 @@ class DrawingClassifierTest(unittest.TestCase):
         self.feature = "drawing"
         self.target = "label"
         self.check_cross_sf = _build_bitmap_data()
-        self.stroke_sf = _build_stroke_data()
+        # self.stroke_sf = _build_stroke_data()
         self.pretrained_model_url = pretrained_model_url
         self.check_cross_model = _tc.drawing_classifier.create(
             self.check_cross_sf, 
@@ -76,14 +76,14 @@ class DrawingClassifierTest(unittest.TestCase):
             target = self.target, 
             num_epochs = 10,
             pretrained_model_url = pretrained_model_url)
-        self.stroke_model = _tc.drawing_classifier.create(
-            self.stroke_sf, 
-            feature = self.feature, 
-            target = self.target, 
-            num_epochs = 1,
-            pretrained_model_url = pretrained_model_url)
-        self.trains = [self.check_cross_sf, self.stroke_sf]
-        self.models = [self.check_cross_model, self.stroke_model]
+        # self.stroke_model = _tc.drawing_classifier.create(
+        #     self.stroke_sf, 
+        #     feature = self.feature, 
+        #     target = self.target, 
+        #     num_epochs = 1,
+        #     pretrained_model_url = pretrained_model_url)
+        # self.trains = [self.check_cross_sf, self.stroke_sf]
+        # self.models = [self.check_cross_model, self.stroke_model]
 
     # def test_create_with_missing_feature(self):
     #     for sf in self.trains:
@@ -277,8 +277,8 @@ class DrawingClassifierTest(unittest.TestCase):
     #         self.assertEqual(type(model.__repr__()), str)
 
     def test_summary(self):
-        for model in self.models:
-            model.summary()
+        # for model in self.models:
+        self.check_cross_model.summary()
 
 # class DrawingClassifierPreTrainedModelTest(DrawingClassifierTest):
 #     @classmethod
