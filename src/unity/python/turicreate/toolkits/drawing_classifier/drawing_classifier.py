@@ -154,11 +154,8 @@ def create(input_dataset, feature="bitmap", target="label",
     if verbose:
         print(hr)   # progress table footer
 
-    if isinstance(classes[0], int):
-        class_type = "int"
-    else:
-        class_type = "str"
-
+    class_type = "int" if isinstance(classes[0], int) else "str"
+    
     state = {
         '_model': model,
         '_class_type': class_type,
