@@ -81,7 +81,7 @@ def ac_weights_mps_to_mxnet(mps_weights, lstm_h_size):
     mxnet_weights = {}
     for key in mps_weights:
         if key == 'conv_weight':
-            mxnet_weights[key] = _mx.nd.array(_np.squeeze(mps_to_mxnet(mps_weights[key])))
+            mxnet_weights[key] = _mx.nd.array(_np.squeeze(mps_weights[key]))
         elif "running" in key:
             w = _mx.nd.array(_np.squeeze(mps_weights[key]))
             new_key = key.replace("running", "moving")
@@ -115,7 +115,7 @@ def ac_weights_mxnet_to_mps(arg_params, aux_params, lstm_h_size):
             mps_weights[new_key] = w
         elif key.startswith('conv') and key.endswith('weight'):
             w = mxnet_weights[key].asnumpy()
-            mps_weights[key] = mxnet_to_mps(w[..., _np.newaxis, :])
+            mps_weights[key] = w[..., _np.newaxis, :]
         elif key.startswith('dense') and key.endswith('weight'):
             mps_weights[key] = w[:, _np.newaxis, _np.newaxis]
         else:
@@ -124,24 +124,6 @@ def ac_weights_mxnet_to_mps(arg_params, aux_params, lstm_h_size):
     return mps_weights
 
 def _prepare_network_parameters(arg_dict):
-    items = []
-    for name, arr in arg_dict.items():
-        arr = _np.asarray(arr, dtype=_np.float32)
-        if not arr.flags.c_contiguous:
-            arr = arr.copy()
-        assert arr.flags.c_contiguous, "Input weights must be row-major"
-        items.append((name, arr.astype(_np.float32)))
-
-    name = (_ctypes.c_char_p * len(items))()
-    arr = (_ctypes.c_void_p * len(items))()
-    sz = (_ctypes.c_int64 * len(items))()
-    for i in range(len(items)):
-        name[i] = _ctypes.c_char_p(items[i][0].encode())
-        sz[i] = _ctypes.c_int64(items[i][1].size)
-        arr[i] = _ctypes.c_void_p(items[i][1].ctypes.data)
-    return items, name, arr, sz
-
-def _prepare_graph_network_parameters(arg_dict):
     items = []
     for name, arr in arg_dict.items():
         arr = _np.asarray(arr, dtype=_np.float32)
@@ -453,8 +435,8 @@ class MpsGraphAPI(object):
         self._mode = int(config.get('mode', MpsGraphMode.TrainReturnGrad))
         self._is_train = self._mode in {MpsGraphMode.TrainReturnGrad, MpsGraphMode.Train}
 
-        config_items, config_name, config_arr = _prepare_graph_network_parameters(config)
-        weights_items, weights_name, weights_arr = _prepare_graph_network_parameters(weights)
+        config_items, config_name, config_arr = _prepare_network_parameters(config)
+        weights_items, weights_name, weights_arr = _prepare_network_parameters(weights)
         self._LIB.TCMPSInitGraph(
             self.handle,
             self.network_id,
@@ -605,7 +587,7 @@ class MpsLowLevelAPI(object):
         self._LIB.TCMPSDeleteCNNModule(self.handle)
 
     def init(self, n, c_in, h_in, w_in, c_out, h_out, w_out, updater=1, config={}):
-        config_items, config_name, config_arr, config_sz = _prepare_network_parameters(config)
+        config_items, config_name, config_arr = _prepare_network_parameters(config)
         self._LIB.TCMPSInit(
             self.handle,
             self.network_id,
@@ -617,7 +599,7 @@ class MpsLowLevelAPI(object):
             _ctypes.c_int32(h_out),
             _ctypes.c_int32(w_out),
             _ctypes.c_int32(updater),
-            config_name, config_arr, config_sz, _ctypes.c_int32(len(config_items)),
+            config_name, config_arr, _ctypes.c_int32(len(config_items)),
         )
         sz = n * c_out * h_out * w_out
         self._buf = (_ctypes.c_float * sz)()
@@ -628,8 +610,8 @@ class MpsLowLevelAPI(object):
         self._oshape = (n, h_out, w_out, c_out)
 
     def load(self, weights):
-        weights_items, weights_name, weights_arr, weights_sz = _prepare_network_parameters(weights)
-        self._LIB.TCMPSLoad(self.handle, weights_name, weights_arr, weights_sz, _ctypes.c_int32(len(weights_items)))
+        weights_items, weights_name, weights_arr = _prepare_network_parameters(weights)
+        self._LIB.TCMPSLoad(self.handle, weights_name, weights_arr, _ctypes.c_int32(len(weights_items)))
 
     def export(self):
         iter_handle = _ctypes.c_void_p()

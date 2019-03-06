@@ -8,7 +8,7 @@
 
 #include <logger/assertions.hpp>
 #include <unity/toolkits/coreml_export/mlmodel_include.hpp>
-
+#include <util/string_util.hpp>
 
 using CoreML::Specification::ArrayFeatureType;
 using CoreML::Specification::FeatureDescription;
@@ -26,6 +26,58 @@ constexpr char CONFIDENCE_STR[] = "Boxes × Class confidence (see user-defined m
 constexpr char COORDINATES_STR[] = "Boxes × [x, y, width, height] (relative to image size)";
 constexpr char IOU_THRESHOLD_STR[] = "(optional) IOU Threshold override (default: 0.45)";
 constexpr char CONFIDENCE_THRESHOLD_STR[] = "(optional) Confidence Threshold override (default: 0.25)";
+
+std::string get_activity_classifier_features_short_description(
+    size_t prediction_window, const flex_list& feature_names)
+{
+  return "Window × ["
+      + join(std::vector<std::string>(feature_names.begin(),
+                                      feature_names.end()), ", ")
+      + "]";
+}
+
+void set_string_feature(FeatureDescription* feature_desc, std::string name,
+                        std::string short_description)
+{
+  feature_desc->set_name(std::move(name));
+  feature_desc->set_shortdescription(std::move(short_description));
+  feature_desc->mutable_type()->mutable_stringtype();
+}
+
+void set_array_feature(FeatureDescription* feature_desc, std::string name,
+                       std::string short_description,
+                       const std::vector<size_t>& shape)
+{
+  // Set string values.
+  feature_desc->set_name(std::move(name));
+  feature_desc->set_shortdescription(std::move(short_description));
+
+  // Set shape.
+  ArrayFeatureType* array =
+      feature_desc->mutable_type()->mutable_multiarraytype();
+  for (size_t s : shape) {
+    array->add_shape(s);
+  }
+
+  // Set data type.
+  array->set_datatype(ArrayFeatureType::DOUBLE);
+}
+
+void set_dictionary_string_feature(FeatureDescription* feature_desc,
+                                   std::string name,
+                                   std::string short_description)
+{
+  feature_desc->set_name(std::move(name));
+  feature_desc->set_shortdescription(std::move(short_description));
+  feature_desc
+    ->mutable_type()
+    ->mutable_dictionarytype()
+    ->mutable_stringkeytype();
+}
+
+void set_feature_optional(FeatureDescription* feature_desc) {
+  feature_desc->mutable_type()->set_isoptional(true);
+}
 
 void set_predictions_feature(FeatureDescription* feature_desc, std::string feature_name, 
     size_t num_predictions, size_t num_classes, bool include_shape, bool use_flexible_shape,
@@ -225,6 +277,70 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
   pipeline_wrapper->add_metadata({{ "user_defined", std::move(user_defined_metadata)}});
 
   return pipeline_wrapper;
+}
+
+std::shared_ptr<MLModelWrapper> export_activity_classifier_model(
+    const neural_net::model_spec& nn_spec, size_t prediction_window,
+    const flex_list& features, size_t lstm_hidden_layer_size,
+    const flex_list& class_labels, const flex_string& target)
+{
+  CoreML::Specification::Model model;
+  model.set_specificationversion(1);
+
+  // Write the model description.
+  ModelDescription* model_desc = model.mutable_description();
+
+  // Write the primary input features.
+  set_array_feature(model_desc->add_input(), "features",
+                    get_activity_classifier_features_short_description(
+                        prediction_window, features),
+                    { 1, prediction_window, features.size() });
+
+  // Write the primary output features.
+  set_dictionary_string_feature(model_desc->add_output(),
+                                target + "Probability",
+                                "Activity prediction probabilities");
+  set_string_feature(model_desc->add_output(), target,
+                     "Class label of top prediction");
+
+  // Write the (optional) LSTM input and output features.
+  FeatureDescription* feature_desc = model_desc->add_input();
+  set_array_feature(feature_desc, "hiddenIn", "LSTM hidden state input",
+                    { lstm_hidden_layer_size });
+  set_feature_optional(feature_desc);
+  feature_desc = model_desc->add_input();
+  set_array_feature(feature_desc, "cellIn", "LSTM cell state input",
+                    { lstm_hidden_layer_size });
+  set_feature_optional(feature_desc);
+  set_array_feature(model_desc->add_output(), "hiddenOut",
+                    "LSTM hidden state output", { lstm_hidden_layer_size });
+  set_array_feature(model_desc->add_output(), "cellOut",
+                    "LSTM cell state output", { lstm_hidden_layer_size });
+
+  // Specify the prediction output names.
+  model_desc->set_predictedfeaturename(target);
+  model_desc->set_predictedprobabilitiesname(target + "Probability");
+
+  // Write the neural network.
+  CoreML::Specification::NeuralNetworkClassifier* nn_classifier =
+      model.mutable_neuralnetworkclassifier();
+
+  // Copy the layers and preprocessing from the provided spec.
+  nn_classifier->mutable_layers()->CopyFrom(nn_spec.get_coreml_spec().layers());
+  if (nn_spec.get_coreml_spec().preprocessing_size() > 0) {
+    nn_classifier->mutable_preprocessing()->CopyFrom(
+        nn_spec.get_coreml_spec().preprocessing());
+  }
+
+  // Add the classifier fields: class labels and probability output name.
+  for (const auto& class_label : class_labels) {
+    nn_classifier->mutable_stringclasslabels()->add_vector(
+        class_label.to<flex_string>());
+  }
+  nn_classifier->set_labelprobabilitylayername(target + "Probability");
+
+  return std::make_shared<MLModelWrapper>(
+      std::make_shared<CoreML::Model>(model));
 }
 
 }  // namespace turi

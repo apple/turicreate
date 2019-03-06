@@ -17,7 +17,7 @@
 #include "data_preparation.hpp"
 
 namespace turi {
-namespace drawing_recognition {
+namespace drawing_classifier {
 
 static constexpr size_t INTERMEDIATE_BITMAP_WIDTH = 256;
 static constexpr size_t INTERMEDIATE_BITMAP_HEIGHT = 256;
@@ -82,8 +82,8 @@ public:
         return m_y;
     }
 private:
-    float m_x;
-    float m_y;
+    float m_x = 0.0f;
+    float m_y = 0.0f;
 };
 
 class Line {
@@ -415,7 +415,7 @@ flex_image convert_stroke_based_drawing_to_bitmap(
     return bitmap;
 }
 
-gl_sframe _drawing_recognition_prepare_data(const gl_sframe &data,
+gl_sframe _drawing_classifier_prepare_data(const gl_sframe &data,
                                             const std::string &feature) {
     DASSERT_TRUE(data.contains_column(feature));
     
@@ -438,5 +438,5 @@ gl_sframe _drawing_recognition_prepare_data(const gl_sframe &data,
     return converted_sframe;
 }
 
-} //drawing_recognition
+} //drawing_classifier
 } //turi

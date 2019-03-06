@@ -9,7 +9,7 @@
 #include <unity/lib/toolkit_function_macros.hpp>
 
 namespace turi {
-namespace drawing_recognition {
+namespace drawing_classifier {
 
 std::vector<toolkit_function_specification> get_toolkit_function_registration();
 

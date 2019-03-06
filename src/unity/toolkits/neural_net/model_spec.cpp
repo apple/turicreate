@@ -139,7 +139,7 @@ void wrap_network_params(const std::string& name,
   const size_t c = inner_product.inputchannels();
 
   shared_float_array weights = weight_params_float_array::create_view(
-      {n, c}, inner_product.weights());
+      {n, c, 1, 1}, inner_product.weights());
   params_out->emplace(name + "_weight", std::move(weights));
 
   if (inner_product.has_bias()) {
