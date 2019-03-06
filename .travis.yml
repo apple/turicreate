@@ -115,7 +115,7 @@ jobs:
         - rm src/unity/python/turicreate/test/test_style_transfer.py src/unity/python/turicreate/test/test_object_detector.py
         # TODO move this into test_wheel.sh (same command line args as make_wheel)
         - docker run --rm
-          --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated
+          --mount type=bind,source=$HOME,target=/build,consistency=delegated
           -e "VIRTUALENV=virtualenv --python=python${PYTHON_VERSION}"
           turicreate/build-image-12.04:${TC_BUILD_IMAGE_VERSION}
           scripts/test_wheel.sh release python${PYTHON_VERSION}
@@ -131,7 +131,7 @@ jobs:
         - rm src/unity/python/turicreate/test/test_style_transfer.py src/unity/python/turicreate/test/test_object_detector.py
         # TODO move this into test_wheel.sh (same command line args as make_wheel)
         - docker run --rm
-          --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated
+          --mount type=bind,source=$HOME,target=/build,consistency=delegated
           -e "VIRTUALENV=virtualenv --python=python${PYTHON_VERSION}"
           turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION}
           scripts/test_wheel.sh release python${PYTHON_VERSION}
