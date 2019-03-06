@@ -12,6 +12,7 @@ make_library(unity_core OBJECT
     extensions/ml_model.cpp
     extensions/option_manager.cpp
     extensions/option_info.cpp
+    extensions/date_range.cpp
     variant_converter.cpp
     variant.cpp
     unity_global.cpp
