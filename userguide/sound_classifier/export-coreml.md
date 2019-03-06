@@ -89,8 +89,8 @@ while ((windowNumber+1) * windowSize) <= (wav_file.length - Int64(windowSize)) {
 ```
 
 Once all window predictions are saved, to generate the overall
-prediction, calculate the mean accross all prediciton windows:
-```
+prediction, calculate the mean across all prediction windows:
+```swift
 // Average model results from each chunk
 var prob_sums = Dictionary<String, Double>()
 for r in results {

@@ -1,29 +1,31 @@
 # How Does this Work?
 
-Training and making predctions, for a sound classifier model, is a three
-stage process. The first stage does signal preprocessing. In
-the second step we use a pretrained neural network to extract deep
-features. Finally in the last step, we use a custom neural network.
+Training and making predictions for a sound classifier model is a three
+stage process:
+1 - Signal preprocessing
+2 - A pretrained neural network is used to extract deep features
+3 - A custom neural network is used to make the predictions
+Details below about each stage.
 
 ## Signal Preprocessing Pipeline Stage
-Several audio transformation happen during this stage. For someone without
+Several audio transformations happen during this stage. For someone without
 sound domain knowledge, this is probably the most complicated part.
 Nothing about this stage is updated based on the input data (i.e. nothing
 is learned in this stage).
 
-At a high level the preprocessing pipeline does the following:
+At a high level, the preprocessing pipeline does the following:
 * The raw pulse code modulation data from the wav file is converted to
 floats on a [-1.0, +1.0] scale.
-* The data is resampled to only 16,000 sample per second.
-* The data is broken up in to several overlapping windows.
+* The data is resampled to only 16,000 samples per second.
+* The data is broken up into several overlapping windows.
 * A [Hamming Window](https://en.wikipedia.org/wiki/Window_function#Hann_and_Hamming_windows) is applied to each windows.
 * The [Power Spectrum](https://en.wikipedia.org/wiki/Spectral_density#Power_spectral_density) is calculated, using a [Fast Fourier Transformation](https://en.wikipedia.org/wiki/Fourier_transform).
 * Frequencies above and below certain thresholds are dropped.
-* Mel Frequency Filter Banks are applied.
-* Finally the log is taken of all values.
+* [Mel Frequency](https://en.wikipedia.org/wiki/Mel_scale) [Filter Banks](https://en.wikipedia.org/wiki/Filter_bank) are applied.
+* Finally the natural logarithm is taken of all values.
 
 The preprocessing pipeline takes 975ms worth of audio as input (exact
-input lenght depends on sample rate) and produce an array of shape
+input length depends on sample rate) and produces an array of shape
 (96, 64).
 
 ## VGGish Feature Extraction Stage
@@ -44,9 +46,9 @@ quantized, to reduce its size.
 ## Custom Neural Network Stage
 This is the only stage which is updated based on the input data.
 During training of a sound classifier this model is trained using
-the features from VGGish and the input labels. During prediction a
+the features from VGGish and the input labels. During prediction,
 only a forward pass is done using this network. This custom neural
-network is a simple three layer neural netowrk. The first two
+network is a simple three layer neural network. The first two
 layers are dense layers, with 100 units each. These layers use [RELU activation](https://en.wikipedia.org/wiki/Rectifier_(neural_networks)).
-The final layers is a softmax. The number of units in this layer is
+The final layer is a softmax. The number of units in this layer is
 equal to the number of labels.

@@ -14,7 +14,7 @@ audio per example.
 **Please note:** the ESC-10 dataset is part of a larger [ESC-50 dataset](https://github.com/karoldvl/ESC-50)
 dataset. In order to use the ESC-10, you will need to download the
 [ESC-50 dataset](https://github.com/karoldvl/ESC-50). These two datasets have different licenses.
-Depending on your use case you may be able to the larger ESC-50
+Depending on your use case you may be able to use the larger ESC-50
 dataset, see their [license section](https://github.com/karoldvl/ESC-50#license) for details.
 
 #### Introductory Example
