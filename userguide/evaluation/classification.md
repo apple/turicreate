@@ -70,8 +70,8 @@ print(tc.evaluation.accuracy(y, yhat, average = None))
 ```
 ```no-highlight
 0.5
-0.666666666667
-{'dog': 0.75, 'foosa': 0.75, 'cat': 0.5}
+0.6666666666666666
+{'foosa': None, 'dog': 0.5, 'cat': 0.5}
 ```
 
 In general, when there are different numbers of examples per class, the average
