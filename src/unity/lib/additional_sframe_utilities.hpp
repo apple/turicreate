@@ -7,12 +7,16 @@
 #define TURI_UNITY_EXTENSIONS_ADDITIONAL_SFRAME_UTILITIES_HPP
 #include <unity/lib/gl_sarray.hpp>
 
-void sframe_load_to_numpy(turi::gl_sframe input, size_t outptr_addr,
-                     std::vector<size_t> outstrides,
-                     std::vector<size_t> field_length,
-                     size_t begin, size_t end);
+namespace turi {
+  namespace additional_sframe_utilities {
+    void sframe_load_to_numpy(turi::gl_sframe input, size_t outptr_addr,
+                        std::vector<size_t> outstrides,
+                        std::vector<size_t> field_length,
+                        size_t begin, size_t end);
 
-void image_load_to_numpy(const turi::image_type& img, size_t outptr_addr,
-                         const std::vector<size_t>& outstrides);
+    void image_load_to_numpy(const turi::image_type& img, size_t outptr_addr,
+                            const std::vector<size_t>& outstrides);
+  }
+}
 
 #endif
