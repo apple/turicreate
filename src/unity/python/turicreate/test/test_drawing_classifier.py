@@ -24,8 +24,7 @@ def _build_bitmap_data():
     Build an SFrame from 10 saved drawings.
     '''
     drawings_dir = _os.path.join(
-        _os.path.dirname(_os.path.realpath(__file__)), 
-        "images", "drawings")
+        _os.path.dirname(_os.path.realpath(__file__)), "drawings")
     sf = _tc.image_analysis.load_images(drawings_dir, with_path=True)
     sf = sf.rename({"image": "drawing", "path": "label"})
     sf["label"] = sf["label"].apply(lambda path: path[-10:-5])
