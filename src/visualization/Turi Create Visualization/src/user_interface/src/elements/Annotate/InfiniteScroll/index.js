@@ -123,6 +123,8 @@ class InfiniteScroll extends Component {
     for(var x = this.state.startValue; x < endValue; x++ ){
       boxes.push(<ImageContainer key={`images_${x}`}
                                  src={this.props.imageData[x]}
+                                 toggleInfiniteScroll={this.props.toggleInfiniteScroll.bind(this)}
+                                 updateIncrementalCurrentIndex={this.props.updateIncrementalCurrentIndex.bind(this)}
                                  value={x}/>)
     }
     return boxes;

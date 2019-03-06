@@ -5,12 +5,18 @@ import { isRegExp } from 'util';
 class ImageContainer extends Component {
   constructor(props) {
     super(props);
-  }
+	}
+	
+	image_click = () =>{
+		this.props.toggleInfiniteScroll();
+		this.props.updateIncrementalCurrentIndex(this.props.value);
+	}
 
   render() {
 		if (this.props.src) {
 			return(
-				<div className={`${style.ImageContainer} ${style.realImage}`}>
+				<div className={`${style.ImageContainer} ${style.realImage}`}
+						 onClick={this.image_click.bind(this)}>
 					<img src={this.props.src}/>
 				</div>
 			);

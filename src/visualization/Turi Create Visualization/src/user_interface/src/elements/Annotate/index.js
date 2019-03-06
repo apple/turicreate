@@ -263,6 +263,7 @@ class Annotate extends Component {
                         hideAnnotated={this.state.hideAnnotated}
                         incrementalCurrentIndex={this.state.incrementalCurrentIndex}
                         updateIncrementalCurrentIndex={this.updateIncrementalCurrentIndex.bind(this)}
+                        toggleInfiniteScroll={this.toggleInfiniteScroll.bind(this)}
                         imageData={this.state.imageData}
                         getData={this.getData.bind(this)}
                         getAnnotations={this.getAnnotations.bind(this)} />
