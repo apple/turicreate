@@ -1,0 +1,151 @@
+language: cpp
+sudo: false
+matrix:
+  include:
+  - os: linux
+    env: PYTHON=2.7 CPP=11 GCC=4.8
+    addons:
+      apt:
+        sources: [ubuntu-toolchain-r-test, kubuntu-backports]
+        packages: [g++-4.8, cmake]
+  - os: linux
+    env: PYTHON=3.5 CPP=11 GCC=4.8
+    addons:
+      apt:
+        sources: [ubuntu-toolchain-r-test, kubuntu-backports, deadsnakes]
+        packages: [g++-4.8, cmake, python3.5-dev]
+  - sudo: true
+    services: docker
+    env: PYTHON=2.7 CPP=14 GCC=6
+  - sudo: true
+    services: docker
+    env: PYTHON=3.5 CPP=14 GCC=6 DEBUG=1
+  - sudo: true
+    services: docker
+    env: PYTHON=3.5 CPP=17 GCC=7
+  - os: osx
+    osx_image: xcode7.3
+    env: PYTHON=2.7 CPP=14 CLANG
+  - os: osx
+    osx_image: xcode7.3
+    env: PYTHON=3.6 CPP=14 CLANG
+  # Test a PyPy 2.7 nightly build
+  - os: linux
+    env: PYPY=1 PYTHON=2.7 CPP=11 GCC=4.8
+    addons:
+      apt:
+        sources: [ubuntu-toolchain-r-test, kubuntu-backports]
+        packages: [g++-4.8, cmake]
+  - sudo: true
+    services: docker
+    env: ARCH=i386 PYTHON=3.5 CPP=14 GCC=6
+  # A barebones build makes sure everything still works without optional deps (numpy/scipy/eigen)
+  # and also tests the automatic discovery functions in CMake (Python version, C++ standard).
+  - os: linux
+    env: BAREBONES
+    addons:
+      apt:
+        sources: [ubuntu-toolchain-r-test, kubuntu-backports]
+        packages: [g++-4.8, cmake]
+    install: pip install pytest
+  # Documentation build:
+  - os: linux
+    language: docs
+    env: DOCS STYLE LINT
+    install:
+    - pip install --upgrade sphinx sphinx_rtd_theme flake8 pep8-naming
+    - |
+      curl -fsSL ftp://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.12.linux.bin.tar.gz | tar xz
+      export PATH="$PWD/doxygen-1.8.12/bin:$PATH"
+      pip install https://github.com/michaeljones/breathe/archive/master.zip
+    script:
+    - make -C docs html SPHINX_OPTIONS=-W
+    - tools/check-style.sh
+    - flake8
+  allow_failures:
+    - env: PYTHON=3.5 CPP=17 GCC=7
+cache:
+  directories:
+  - $HOME/.cache/pip
+  - $HOME/Library/Caches/pip
+before_install:
+- |
+  # Configure build variables
+  if [ "$TRAVIS_OS_NAME" = "linux" ]; then
+    if [ -z "$GCC" ]; then export GCC=4.8; fi
+    export CXX=g++-$GCC CC=gcc-$GCC;
+    if [ "$GCC" = "6" ]; then export DOCKER=${ARCH:+$ARCH/}debian:testing
+    elif [ "$GCC" = "7" ]; then export DOCKER=debian:experimental APT_GET_EXTRA="-t experimental"
+    fi
+  elif [ "$TRAVIS_OS_NAME" = "osx" ]; then
+    export CXX=clang++ CC=clang;
+  fi
+  if [ -n "$CPP" ]; then export CPP=-std=c++$CPP; fi
+  if [ "${PYTHON:0:1}" = "3" ]; then export PY=3; fi
+  if [ -n "$PYPY" ]; then
+    curl http://buildbot.pypy.org/nightly/trunk/pypy-c-jit-latest-linux64.tar.bz2 | tar -xj
+    export PYPY_BINARY=$(echo `pwd`/pypy-c-jit*/bin/pypy)
+    export CMAKE_EXTRA_ARGS="-DPYTHON_EXECUTABLE:FILEPATH=$PYPY_BINARY"
+  fi
+  if [ -n "$DEBUG" ]; then export CMAKE_EXTRA_ARGS="-DCMAKE_BUILD_TYPE=Debug"; fi
+- |
+  # Initialize environment
+  if [ -n "$PYPY" ]; then
+    $PYPY_BINARY -m ensurepip
+    $PYPY_BINARY -m pip install pytest
+  fi
+  if [ -n "$DOCKER" ]; then
+    docker pull $DOCKER
+    # Disable LTO with gcc until gcc 79296 is fixed:
+    export CMAKE_EXTRA_ARGS="${CMAKE_EXTRA_ARGS} -DPYBIND11_LTO_CXX_FLAGS="
+    export containerid=$(docker run --detach --tty \
+      --volume="$PWD":/pybind11 --workdir=/pybind11 \
+      --env="CXXFLAGS=$CXXFLAGS" \
+      --env="CC=$CC" --env="CXX=$CXX" --env="DEBIAN_FRONTEND=$DEBIAN_FRONTEND" \
+      --env=GCC_COLORS=\  \
+      $DOCKER)
+    docker exec --tty "$containerid" sh -c 'for s in 0 15; do sleep $s; apt-get update && apt-get -qy dist-upgrade && break; done'
+    export SCRIPT_RUN_PREFIX="docker exec --tty $containerid"
+    # gcc-7 currently generates warnings; some are upstream bugs, so just turn off -Werror for now
+    if [ "$GCC" = "7" ]; then WERROR=off; fi
+  else
+    if [ "$TRAVIS_OS_NAME" = "linux" ]; then
+      pip install --user --upgrade pip virtualenv
+      virtualenv -p python$PYTHON venv
+    elif [ "$TRAVIS_OS_NAME" = "osx" ]; then
+      if [ "$PY" = "3" ]; then
+        brew update; brew install python$PY;
+      else
+        curl -fsSL -O https://bootstrap.pypa.io/get-pip.py
+        sudo -H python get-pip.py
+      fi
+      pip$PY install --user --upgrade pip virtualenv
+      python$PY -m virtualenv venv
+    fi
+    source venv/bin/activate
+  fi
+install:
+- |
+  # Install dependencies
+  if [ -n "$DOCKER" ]; then
+    docker exec --tty "$containerid" sh -c "for s in 0 15; do sleep \$s; \
+      apt-get -qy --no-install-recommends $APT_GET_EXTRA install \
+        python$PY-dev python$PY-pytest python$PY-scipy \
+        libeigen3-dev cmake make g++-$GCC && break; done"
+  else
+    pip install numpy scipy pytest
+
+    wget -q -O eigen.tar.gz https://bitbucket.org/eigen/eigen/get/3.3.0.tar.gz
+    tar xzf eigen.tar.gz
+    export CMAKE_EXTRA_ARGS="${CMAKE_EXTRA_ARGS} -DCMAKE_INCLUDE_PATH=$PWD/eigen-eigen-26667be4f70b"
+  fi
+script:
+- $SCRIPT_RUN_PREFIX cmake ${CMAKE_EXTRA_ARGS}
+    -DPYBIND11_PYTHON_VERSION=$PYTHON
+    -DPYBIND11_CPP_STANDARD=$CPP
+    -DPYBIND11_WERROR=${WERROR:-ON}
+- $SCRIPT_RUN_PREFIX make pytest -j 2
+- $SCRIPT_RUN_PREFIX make test_cmake_build
+after_failure: cat tests/test_cmake_build/*.log
+after_script:
+- if [ -n "$DOCKER" ]; then docker stop "$containerid"; docker rm "$containerid"; fi
