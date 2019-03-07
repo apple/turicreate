@@ -224,7 +224,6 @@ class Annotate extends Component {
   setAnnotation = (rowIndex, labels) => {
     var previousAnnotationData = this.state.annotationData;
     var previousLabelData = this.state.labels;
-
     var previousLabel = previousAnnotationData[rowIndex];
 
     if(previousLabel == labels){
@@ -253,10 +252,6 @@ class Annotate extends Component {
       previousAnnotationData[rowIndex] = parseInt(labels, 10);
     }
 
-    this.setState({
-      annotationData: previousAnnotationData,
-      labels:previousLabelData
-    });
 
     const root = Root.fromJSON(messageFormat);
     const ParcelMessage = root.lookupType("TuriCreate.Annotation.Specification.ClientRequest");
@@ -266,7 +261,7 @@ class Annotate extends Component {
     if (this.state.type == LabelType.STRING) {
       payload = {"annotations": {"annotation":[{"labels": [{"stringLabel": labels}], "rowIndex": [rowIndex]}]}};
     } else {
-      payload = {"annotations": {"annotation":[{"labels": [{"intLabel": labels}], "rowIndex": [rowIndex]}]}};
+      payload = {"annotations": {"annotation":[{"labels": [{"intLabel": parseInt(labels, 10)}], "rowIndex": [rowIndex]}]}};
     }
 
     const err = ParcelMessage.verify(payload);
@@ -283,6 +278,11 @@ class Annotate extends Component {
     } else {
       window.postMessageToNativeClient(encoded);
     }
+
+    this.setState({
+      annotationData: previousAnnotationData,
+      labels:previousLabelData
+    });
   }
 
   renderMainContent = () => {
