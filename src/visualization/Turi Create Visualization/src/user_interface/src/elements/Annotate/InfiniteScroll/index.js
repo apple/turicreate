@@ -27,6 +27,7 @@ class InfiniteScroll extends Component {
     const tempEndVal = scaling.numX * (scaling.numY + 2 * CELL_PADDING) + this.state.startValue;
     const endVal = (tempEndVal > this.props.numElements)?this.props.numElements:tempEndVal;
     this.props.getData(this.state.startValue, endVal);
+    this.props.getAnnotations(this.state.startValue, endVal);
     window.addEventListener("resize", this.updateDimensions.bind(this));
   }
 
@@ -69,6 +70,7 @@ class InfiniteScroll extends Component {
             const tempEndVal = scaling.numX * (scaling.numY + 2 * CELL_PADDING) + this.state.startValue;
             const endVal = (tempEndVal > this.props.numElements)?this.props.numElements:tempEndVal;
             this.props.getData(this.state.startValue, endVal);
+            this.props.getAnnotations(this.state.startValue, endVal);
             // look into this work around
             this.currentComponent.current.scrollBy(0, -scrollOffset);
             // change this into a property rather than a state
@@ -90,6 +92,7 @@ class InfiniteScroll extends Component {
             const tempEndVal = scaling.numX * (scaling.numY + 2 * CELL_PADDING) + this.state.startValue;
             const endVal = (tempEndVal > this.props.numElements)?this.props.numElements:tempEndVal;
             this.props.getData(this.state.startValue, endVal);
+            this.props.getAnnotations(this.state.startValue, endVal);
             this.setState({
               enableScroll: true
             })
@@ -120,6 +123,10 @@ class InfiniteScroll extends Component {
     for(var x = this.state.startValue; x < endValue; x++ ){
       boxes.push(<ImageContainer key={`images_${x}`}
                                  src={this.props.imageData[x]}
+                                 annotation={this.props.annotationData[x]}
+                                 toggleInfiniteScroll={this.props.toggleInfiniteScroll.bind(this)}
+                                 updateIncrementalCurrentIndex={this.props.updateIncrementalCurrentIndex.bind(this)}
+                                 type={this.props.type}
                                  value={x}/>)
     }
     return boxes;

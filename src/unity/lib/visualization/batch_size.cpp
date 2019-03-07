@@ -18,7 +18,13 @@ size_t batch_size(const gl_sarray& x, const gl_sarray& y) {
 }
 
 size_t batch_size(const gl_sframe& sf) {
-  return 5000000 / sf.column_names().size();
+  size_t num_columns = sf.column_names().size();
+  if (num_columns == 0) {
+    // avoid divide-by-zero below
+    num_columns = 1;
+  }
+
+  return 5000000 / num_columns;
 }
 
 }} // turi::visualization
