@@ -129,7 +129,7 @@ static inline T bit_mask(uint64_t n_bits, _ENABLE_IF_UINT(T)) {
   shift_t _n = shift_t(n_bits);
   shift_t _n_mask = ~shift_t(bitsizeof(T) - 1);
 
-  return UNLIKELY(_n & _n_mask) ? ~T(0) : (T(1) << _n) - 1;
+  return UNLIKELY(_n & _n_mask) ? ~T(-1) : (T(1) << _n) - 1;
 }
 
 /**
