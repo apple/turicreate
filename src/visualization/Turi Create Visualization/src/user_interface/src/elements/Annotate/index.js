@@ -223,10 +223,39 @@ class Annotate extends Component {
 
   setAnnotation = (rowIndex, labels) => {
     var previousAnnotationData = this.state.annotationData;
-    previousAnnotationData[rowIndex] = labels;
+    var previousLabelData = this.state.labels;
+
+    var previousLabel = previousAnnotationData[rowIndex];
+
+    if(previousLabel == labels){
+      return;
+    }
+
+    if(previousLabel != null){
+      for (var x = 0; x < previousLabelData.length; x++) {
+        if(this.state.labels[x].name == previousLabel) {
+          var tempLabel = previousLabelData[x];
+          tempLabel.num_annotated -= 1;
+          previousLabelData[x] = tempLabel;
+        }
+
+        if(this.state.labels[x].name == labels){
+          var tempLabel = previousLabelData[x];
+          tempLabel.num_annotated += 1;
+          previousLabelData[x] = tempLabel;
+        }
+      }
+    }
+
+    if (this.state.type == LabelType.STRING) {
+      previousAnnotationData[rowIndex] = labels;
+    } else if(this.state.type == LabelType.INTEGER) {
+      previousAnnotationData[rowIndex] = parseInt(labels, 10);
+    }
 
     this.setState({
-      annotationData: previousAnnotationData
+      annotationData: previousAnnotationData,
+      labels:previousLabelData
     });
 
     const root = Root.fromJSON(messageFormat);
@@ -263,8 +292,11 @@ class Annotate extends Component {
                         hideAnnotated={this.state.hideAnnotated}
                         incrementalCurrentIndex={this.state.incrementalCurrentIndex}
                         updateIncrementalCurrentIndex={this.updateIncrementalCurrentIndex.bind(this)}
+                        toggleInfiniteScroll={this.toggleInfiniteScroll.bind(this)}
                         imageData={this.state.imageData}
+                        annotationData={this.state.annotationData}
                         getData={this.getData.bind(this)}
+                        type={this.state.type}
                         getAnnotations={this.getAnnotations.bind(this)} />
       );
     } else {

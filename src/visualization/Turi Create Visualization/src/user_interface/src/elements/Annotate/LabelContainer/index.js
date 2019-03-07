@@ -30,6 +30,7 @@ class LabelContainer extends Component {
             this.props.labels.map((x) => 
               <Labels active={this.checkActive(x.name)}
                       name={x.name}
+                      infiniteScroll={this.props.infiniteScroll}
                       onClick={this.setAnnotation.bind(this, x.name)}
                       num_annotated={x.num_annotated}
                       num_expected={x.num_expected}/>
