@@ -621,10 +621,12 @@ class LogisticClassifier(_Classifier):
         >>> class_predictions = model.predict(data, output_type='class')
 
         """
-
+        
         return super(_Classifier, self).predict(dataset,
                                                 output_type=output_type,
                                                 missing_value_action=missing_value_action)
+        
+            
 
     def classify(self, dataset, missing_value_action='auto'):
         """
