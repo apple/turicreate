@@ -22,16 +22,21 @@ square and triangle. Go to [Data Preparation](data-preparation.md) to create the
 In this example, the goal is to 
 **predict if the drawing is a square or a triangle**. 
 Go to [Data Preparation](data-preparation.md) to find out how to get 
-`square_triangle.sframe`).
+`bitmap_square_triangle.sframe` or `stroke_square_triangle.sframe`).
 
 ```python
 import turicreate as tc
 
-# Load the data
-data =  tc.SFrame('square_triangle.sframe')
+# Try any one of the following
+SFRAME_PATH = "sframes/bitmap_square_triangle.sframe"
+SFRAME_PATH = "sframes/stroke_square_triangle.sframe"
 
-# Make a train-test split
-train_data, test_data = data.random_split(0.8)
+# Load the data
+data =  tc.SFrame(SFRAME_PATH)
+
+# Make a small train-test split since our toolkit is not very data-hungry 
+# for 2 classes
+train_data, test_data = data.random_split(0.4)
 
 # Create a model
 model = tc.drawing_classifier.create(train_data)
@@ -41,12 +46,13 @@ predictions = model.predict(test_data)
 
 # Evaluate the model and save the results into a dictionary
 metrics = model.evaluate(test_data)
+print(metrics["accuracy"])
 
 # Save the model for later use in Turi Create
-model.save('square_triangle.model')
+model.save("square_triangle.model")
 
 # Export for use in Core ML
-model.export_coreml('MySquareTriangleClassifier.mlmodel')
+model.export_coreml("MySquareTriangleClassifier.mlmodel")
 ```
 
 #### Advanced Usage

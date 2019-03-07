@@ -1,14 +1,14 @@
 # Quick, Draw! Data Preparation
 
 In this section, we will show you how to download a publicly available dataset
-and load it into an SFrame. This will allow you to try out the Drawing Classification
-toolkit for yourself. To get this dataset into the format expected by our
-toolkit, we will rely on many useful SFrame functions.
+and load it into an SFrame. This will allow you to try out the Drawing Classifier
+toolkit for yourself. We will get this dataset into the format expected by our
+toolkit.
 
-*Note: Please make sure that you have Turi Create 4.3 or above for these steps*
+*Note: Please make sure that you have Turi Create 5.4 or above for these steps*
 
 The dataset that we will use is 
-[Quick, Draw!](https://quickdraw.withgoogle.com/data)[^1]. Our goal is to
+[Quick, Draw!](https://quickdraw.withgoogle.com/data)[<sup>1</sup>]. Our goal is to
 make a drawing classifier for squares and triangles. 
 
 First, we will download all the data points in the "Quick, Draw!" dataset for
@@ -22,6 +22,7 @@ $ mkdir -p ~/Downloads/quickdraw
 $ cd ~/Downloads/quickdraw
 $ mkdir -p bitmaps
 $ mkdir -p strokes
+$ mkdir -p sframes
 $ cd bitmaps
 $ curl https://storage.googleapis.com/quickdraw_dataset/full/numpy_bitmap/square.npy > square.npy # around 93 MB
 $ curl https://storage.googleapis.com/quickdraw_dataset/full/numpy_bitmap/triangle.npy > triangle.npy # around 92 MB
@@ -40,13 +41,21 @@ Now, you should have the following file structure:
     strokes/
         square.ndjson
         triangle.ndjson
+    sframes/
+
 ```
+
+Next, for both bitmap and stroke-based drawing input formats, 
+we will sample 100 examples from each of the classes and turn it into an SFrame.
+For a small number of classes, we need very few training examples per class. 
+In fact, in the [example](README.md) that trains a model on these datasets,
+we do a small train/test split (0.4) thereby training on a small number of 
+examples but testing on a larger number of examples.
 
 #### Using Bitmap Data
 
-Now, we will sample 50 examples from each of the classes and turn it into an
-SFrame.
-Here is a snippet to accomplish that:
+Here is a snippet to sample 100 examples per class into an SFrame for bitmap 
+data as the input format:
 
 ```python
 import turicreate as tc
@@ -60,14 +69,14 @@ quickdraw_dir = '~/Downloads/quickdraw'
 bitmaps_dir = os.path.join(quickdraw_dir, 'bitmaps')
 sframes_dir = os.path.join(quickdraw_dir, 'sframes')
 npy_ext = '.npy'
-num_examples_per_class = 50
+num_examples_per_class = 100
 classes = ["square", "triangle"]
 num_classes = len(classes)
 
 def build_bitmap_sframe():
     bitmaps_list, labels_list = [], []
     for class_name in classes:
-        class_data = np.load(os.path.join(quickdraw_dir, class_name + npy_ext))
+        class_data = np.load(os.path.join(bitmaps_dir, class_name + npy_ext))
         random_state.shuffle(class_data)
         class_data_selected = class_data[:num_examples_per_class]
         class_data_selected = class_data_selected.reshape(
@@ -82,8 +91,10 @@ def build_bitmap_sframe():
                               _image_data_size = np_pixel_data.size)
             bitmaps_list.append(bitmap)
             labels_list.append(class_name)
-    sf = tc.SFrame({"bitmap": bitmaps_list, "label": labels_list})
+    sf = tc.SFrame({"drawing": bitmaps_list, "label": labels_list})
     sf.save(os.path.join(sframes_dir, "bitmap_square_triangle.sframe"))
+
+build_bitmap_sframe()
 ```
 
 #### Using Stroke-Based Drawing Data
@@ -133,11 +144,11 @@ quickdraw_dir = '~/Downloads/quickdraw'
 strokes_dir = os.path.join(quickdraw_dir, 'strokes')
 sframes_dir = os.path.join(quickdraw_dir, 'sframes')
 ndjson_ext = '.ndjson'
-num_examples_per_class = 50
+num_examples_per_class = 100
 classes = ["square", "triangle"]
 num_classes = len(classes)
 
-def build_stroke_sframe():
+def build_strokes_sframe():
     drawings_list, labels_list = [], []
     for class_name in classes:
         with open(os.path.join(strokes_dir, class_name+ndjson_ext)) as fin:
@@ -161,13 +172,23 @@ def build_stroke_sframe():
         labels_list.extend([class_name] * num_examples_per_class)
     sf = tc.SFrame({"drawing": drawings_list, "label": labels_list})
     sf.save(os.path.join(sframes_dir, "stroke_square_triangle.sframe"))
+
+build_strokes_sframe()
 ```
 
-When stroke-based drawing data is given as input to 
-`turicreate.drawing_classifier.create`, the toolkit performs preprocessing to 
-convert the stroke-based drawings to bitmaps that the Neural Network behind 
-the scenes can consume. 
+When stroke-based drawing data is given as input to the Drawing Classifier 
+Toolkit either at train or inference time, the toolkit converts the 
+stroke-based drawings into bitmaps as part of preprocessing so the 
+Neural Network can consume them. See [How it works!](how-it-works.md) for
+more information about the preprocessing done under the hood.
 
+To visualize what your stroke-based drawings look like when rendered as a 
+bitmap, you can run the following utility function:
+```python
+sf = build_stroke_sframe()
+sf["rendered_drawings"] = tc.drawing_classifier.util.draw_strokes(sf["drawing"])
+sf.explore()
+```
 
 
 ## References
@@ -175,4 +196,4 @@ the scenes can consume.
 The [Quick, Draw!](https://quickdraw.withgoogle.com/data) dataset is described
 further in:
 
-[^1]: [Exploring and Visualizing an Open Global Dataset](https://ai.googleblog.com/2017/08/exploring-and-visualizing-open-global.html)
+[<sup>1</sup>]: [Exploring and Visualizing an Open Global Dataset](https://ai.googleblog.com/2017/08/exploring-and-visualizing-open-global.html)
