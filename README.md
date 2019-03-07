@@ -27,6 +27,7 @@ With Turi Create, you can accomplish many common ML tasks:
 |:------------------------:|:--------------------------------:|
 | [Recommender](https://apple.github.io/turicreate/docs/userguide/recommender/)             | Personalize choices for users    |
 | [Image Classification](https://apple.github.io/turicreate/docs/userguide/image_classifier/)    | Label images                     |
+| [Drawing Classification](https://apple.github.io/turicreate/docs/userguide/drawing_classifier)  | Recognize Pencil/Touch Drawings and Gestures                     |
 | [Object Detection](https://apple.github.io/turicreate/docs/userguide/object_detection/)        | Recognize objects within images  |
 | [Style Transfer](https://apple.github.io/turicreate/docs/userguide/style_transfer/)        | Stylize images |
 | [Activity Classification](https://apple.github.io/turicreate/docs/userguide/activity_classifier/) | Detect an activity using sensors |
