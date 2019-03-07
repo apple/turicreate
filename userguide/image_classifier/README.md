@@ -50,7 +50,7 @@ model = tc.image_classifier.create(train_data, target='label')
 # Save predictions to an SArray
 predictions = model.predict(test_data)
 
-# Evaluate the model and save the results into a dictionary
+# Evaluate the model and print the results
 metrics = model.evaluate(test_data)
 print(metrics['accuracy'])
 

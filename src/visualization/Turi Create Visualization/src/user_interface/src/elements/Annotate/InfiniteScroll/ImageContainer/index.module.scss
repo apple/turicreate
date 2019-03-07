@@ -8,6 +8,7 @@ $imgMargin:17;
 }
 
 .ImageContainer {
+  position: relative;
   width: $imgSize + px;
   height: $imgSize + px;
   margin: $imgMargin + px;
@@ -20,9 +21,25 @@ $imgMargin:17;
 
 .realImage{
   background: #333333;
+  cursor: pointer;
 }
 
-.ImageContainer > div {
+.ImageLabel{
+  position: absolute;
+  bottom:0px;
+  left: 0px;
+  padding: 10px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  background: #E0E6EE;
+  font-family: Helvetica;
+  font-size: 12px;
+  color: #484856;
+  line-height: 18px;
+  border-radius: 0px 4px 0px 0px;
+}
+
+.bouncer {
   width: 5px;
   height: 5px;
   margin: 5px;

@@ -28,6 +28,7 @@ message Label {
     int64 intLabel = 1;
     string stringLabel = 2;
   }
+
   oneof labelType {
     ActivityClassificationLabel activityClassificationLabel = 100;
     AudioClassificationLabel audioClassificationLabel = 200;

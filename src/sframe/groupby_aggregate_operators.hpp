@@ -546,7 +546,7 @@ class count: public group_aggregate_value {
   bool support_type(flex_type_enum type) const {
     return true;
   }
-
+  
   /// The input type
   flex_type_enum set_input_types(const std::vector<flex_type_enum>& types) {
     DASSERT_TRUE(types.size() == 0);
