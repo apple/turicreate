@@ -29,6 +29,12 @@ def _raise_error_if_not_drawing_classifier_input_sframe(dataset, feature):
             + " or stroke-based drawings encoded as lists of strokes" 
             + " where each stroke is a list of points and" 
             + " each point is stored as a dictionary")
+    if dataset[target].dtype != int and dataset[target].dtype != str:
+        raise _ToolkitError("Target column contains " + str(dataset[target].dtype)
+            + " but it must contain strings or integers to represent" 
+            + " labels for drawings.")
+    if len(dataset) == 0:
+        raise _ToolkitError("Input Dataset is empty!")
 
 def create(input_dataset, feature="bitmap", target="label", 
             pretrained_model_url=None, classes=None, batch_size=256, 
@@ -256,10 +262,9 @@ class DrawingClassifier(_CustomModel):
         is_stroke_input = (input_dataset[self.feature].dtype != _tc.Image)
 
         if is_stroke_input:
-            # @TODO: Make it work for Linux
             # @TODO: Make it work if labels are not passed in.
             dataset = _extensions._drawing_classifier_prepare_data(
-                input_dataset, self.feature, self.target)
+                input_dataset, self.feature)
         else:
             dataset = input_dataset
 
@@ -267,7 +272,7 @@ class DrawingClassifier(_CustomModel):
                     class_to_index=self._class_to_index,
                     feature_column=self.feature,
                     target_column=self.target,
-                    load_labels=True,
+                    load_labels=False,
                     shuffle=False,
                     epochs=1,
                     iterations=None)
@@ -430,9 +435,15 @@ class DrawingClassifier(_CustomModel):
         
         return ret
 
-    def predict(self, dataset):
+    def predict(self, data):
         """ 
         Docfix coming soon
         """
-        predicted = self._predict_with_probabilities(dataset)
+        if type(data) == _tc.SArray:
+            predicted = self._predict_with_probabilities(_tc.SFrame({
+                self.feature: data
+                })
+            )
+        else:
+            predicted = self._predict_with_probabilities(data)
         return predicted[self.target]
