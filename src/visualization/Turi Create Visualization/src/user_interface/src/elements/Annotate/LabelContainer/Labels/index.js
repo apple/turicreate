@@ -27,7 +27,7 @@ class Label extends Component {
 	          </div>
 	        </div>
 	        <div className={styles.LabelApplyButton}
-	        	 onClick={this.props.onClick.bind(this)}>
+	        	 	 onClick={this.props.onClick.bind(this)}>
 	          <span>
 	            Apply
 	          </span>
