@@ -37,7 +37,7 @@ def _raise_error_if_not_drawing_classifier_input_sframe(
     if len(dataset) == 0:
         raise _ToolkitError("Input Dataset is empty!")
 
-def create(input_dataset, feature="bitmap", target="label", 
+def create(input_dataset, feature="drawing", target="label", 
             pretrained_model_url=None, classes=None, batch_size=256, 
             num_epochs=100, max_iterations=0, verbose=True, **kwargs):
     """
