@@ -76,7 +76,7 @@ in the example provided above (run using
 
 ![Example Rendered Stroke Data](images/rendered_toy_strokes.png)
 
-## Warm Start
+### Warm Start
 
 To boost the accuracy of the models Turi Create users train, and to help those 
 models converge faster, we provide the option of loading in a pretrained model

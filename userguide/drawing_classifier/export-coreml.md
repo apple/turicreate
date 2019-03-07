@@ -109,7 +109,9 @@ class Drawing {
 Once your stroke-based drawing is a member of the above Drawing class, call the 
 `rasterize` function on it to build a 28x28 grayscale bitmap. 
 The Core ML model can then run inference on this bitmap via the Vision framework
-as described above. The code snippet containing `rasterize` and its helper, 
+as described above under "Using Bitmap Input". 
+
+The code snippet containing `rasterize` and its helper, 
 `normalize` are provided below.
 
 ```swift

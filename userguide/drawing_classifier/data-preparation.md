@@ -8,7 +8,7 @@ toolkit.
 *Note: Please make sure that you have Turi Create 5.4 or above for these steps*
 
 The dataset that we will use is 
-[Quick, Draw!](https://quickdraw.withgoogle.com/data)[<sup>1</sup>]. Our goal is to
+[Quick, Draw!](https://quickdraw.withgoogle.com/data)<sup>1</sup>. Our goal is to
 make a drawing classifier for squares and triangles. 
 
 First, we will download all the data points in the "Quick, Draw!" dataset for
@@ -186,14 +186,17 @@ To visualize what your stroke-based drawings look like when rendered as a
 bitmap, you can run the following utility function:
 ```python
 sf = build_stroke_sframe()
-sf["rendered_drawings"] = tc.drawing_classifier.util.draw_strokes(sf["drawing"])
+sf["rendered"] = tc.drawing_classifier.util.draw_strokes(sf["drawing"])
 sf.explore()
 ```
 
+This is what the rendered drawings would look like:
+
+![Rendered Drawings](images/rendered_drawings.png)
 
 ## References
 
 The [Quick, Draw!](https://quickdraw.withgoogle.com/data) dataset is described
 further in:
 
-[<sup>1</sup>]: [Exploring and Visualizing an Open Global Dataset](https://ai.googleblog.com/2017/08/exploring-and-visualizing-open-global.html)
+<sup>1</sup>: [Exploring and Visualizing an Open Global Dataset](https://ai.googleblog.com/2017/08/exploring-and-visualizing-open-global.html)
