@@ -29,6 +29,7 @@ for m in [
           'dbscan',
           'degree_counting',
           'distances',
+          'drawing_classifier',
           'evaluation',
           'extensions',
           'graph_coloring',

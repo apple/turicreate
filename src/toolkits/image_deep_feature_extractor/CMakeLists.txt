@@ -21,7 +21,7 @@ if(HAS_CORE_ML)
     REQUIRES
       fileio
       objc
-      unity_coreml_model_export
+      coremltools_mlmodel
       ${CORE_ML}
       ${FOUNDATION}
       ${CORE_VIDEO}

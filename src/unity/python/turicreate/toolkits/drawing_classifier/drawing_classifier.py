@@ -18,7 +18,8 @@ from .. import _pre_trained_models
 BITMAP_WIDTH = 28
 BITMAP_HEIGHT = 28
 
-def _raise_error_if_not_drawing_classifier_input_sframe(dataset, feature):
+def _raise_error_if_not_drawing_classifier_input_sframe(
+    dataset, feature, target):
     from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
     _raise_error_if_not_sframe(dataset)
     if feature not in dataset.column_names():
@@ -29,8 +30,14 @@ def _raise_error_if_not_drawing_classifier_input_sframe(dataset, feature):
             + " or stroke-based drawings encoded as lists of strokes" 
             + " where each stroke is a list of points and" 
             + " each point is stored as a dictionary")
+    if dataset[target].dtype != int and dataset[target].dtype != str:
+        raise _ToolkitError("Target column contains " + str(dataset[target].dtype)
+            + " but it must contain strings or integers to represent" 
+            + " labels for drawings.")
+    if len(dataset) == 0:
+        raise _ToolkitError("Input Dataset is empty!")
 
-def create(input_dataset, feature="bitmap", target="label", 
+def create(input_dataset, feature="drawing", target="label", 
             pretrained_model_url=None, classes=None, batch_size=256, 
             num_epochs=100, max_iterations=0, verbose=True, **kwargs):
     """
@@ -48,7 +55,8 @@ def create(input_dataset, feature="bitmap", target="label",
     else:
         num_epochs = max_iterations * batch_size / len(input_dataset)
 
-    _raise_error_if_not_drawing_classifier_input_sframe(input_dataset, feature)
+    _raise_error_if_not_drawing_classifier_input_sframe(
+        input_dataset, feature, target)
 
     is_stroke_input = (input_dataset[feature].dtype != _tc.Image)
     dataset = _extensions._drawing_classifier_prepare_data(
@@ -105,7 +113,7 @@ def create(input_dataset, feature="bitmap", target="label",
                  iterations=None)
 
     ctx = _mxnet_utils.get_mxnet_context(max_devices=batch_size)
-    model = _Model(num_classes = len(classes))
+    model = _Model(num_classes = len(classes), prefix="drawing_")
     model_params = model.collect_params()
     model_params.initialize(_mx.init.Xavier(), ctx=ctx)
 
@@ -182,7 +190,7 @@ class DrawingClassifier(_CustomModel):
     def _load_version(cls, state, version):
         _tkutl._model_version_check(version, 1)
         from ._model_architecture import Model as _Model
-        net = _Model(num_classes = len(state['classes']), prefix = 'model0_')
+        net = _Model(num_classes = len(state['classes']), prefix = 'drawing_')
         ctx = _mxnet_utils.get_mxnet_context(max_devices=state['batch_size'])
         net_params = net.collect_params()
         _mxnet_utils.load_net_params_from_state(
@@ -220,11 +228,14 @@ class DrawingClassifier(_CustomModel):
             new_aux_params[k] = net_params[k].data(net_params[k].list_ctx()[0])
         mod.set_params(new_arg_params, new_aux_params)
 
-        coreml_model = _mxnet_converter.convert(mod, mode='classifier',
-                                class_labels=self.classes,
-                                input_shape=[(self.feature, image_shape)],
-                                builder=None, verbose=verbose,
-                                preprocessor_args={'image_input_names':[self.feature]})
+        coreml_model = _mxnet_converter.convert(mod, mode = 'classifier',
+                                class_labels = self.classes,
+                                input_shape = [(self.feature, image_shape)],
+                                builder = None, verbose=verbose,
+                                preprocessor_args = {
+                                    'image_input_names': [self.feature],
+                                    'image_scale': 1.0/255
+                                })
 
         DESIRED_OUTPUT_NAME = self.target + "Probabilities"
         spec = coreml_model._spec
@@ -256,10 +267,9 @@ class DrawingClassifier(_CustomModel):
         is_stroke_input = (input_dataset[self.feature].dtype != _tc.Image)
 
         if is_stroke_input:
-            # @TODO: Make it work for Linux
             # @TODO: Make it work if labels are not passed in.
             dataset = _extensions._drawing_classifier_prepare_data(
-                input_dataset, self.feature, self.target)
+                input_dataset, self.feature)
         else:
             dataset = input_dataset
 
@@ -267,7 +277,7 @@ class DrawingClassifier(_CustomModel):
                     class_to_index=self._class_to_index,
                     feature_column=self.feature,
                     target_column=self.target,
-                    load_labels=True,
+                    load_labels=False,
                     shuffle=False,
                     epochs=1,
                     iterations=None)
@@ -397,6 +407,10 @@ class DrawingClassifier(_CustomModel):
             >>> print results['accuracy']
         """
 
+        if self.target not in dataset.column_names():
+            raise _ToolkitError("Dataset provided to evaluate does not have " 
+                + "ground truth in the " + self.target + " column.")
+
         predicted = self._predict_with_probabilities(dataset)
 
         target = _tc.SFrame({self.target: _tc.SArray(dataset[self.target])}) # fix this
@@ -430,9 +444,15 @@ class DrawingClassifier(_CustomModel):
         
         return ret
 
-    def predict(self, dataset):
+    def predict(self, data):
         """ 
         Docfix coming soon
         """
-        predicted = self._predict_with_probabilities(dataset)
+        if type(data) == _tc.SArray:
+            predicted = self._predict_with_probabilities(_tc.SFrame({
+                self.feature: data
+                })
+            )
+        else:
+            predicted = self._predict_with_probabilities(data)
         return predicted[self.target]
