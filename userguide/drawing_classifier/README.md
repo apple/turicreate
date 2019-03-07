@@ -58,7 +58,7 @@ model.export_coreml("MySquareTriangleClassifier.mlmodel")
 #### Advanced Usage
 
 Refer to the following chapters for:
-* Diving into the [Technical details](how-it-works.md) on how the drawing classifier works.
+* Diving into the [Technical details](how-it-works.md) of how the drawing classifier works.
 * Understanding the [Datasets](data-preparation.md) and preparing them for training.
-* [Exporting to Core ML](export-coreml.md) and deploy the model on device.
+* [Exporting to Core ML](export-coreml.md) and deploying the model on device.
 * [Advanced](advanced-usage.md) usage options including using pre-trained models.
