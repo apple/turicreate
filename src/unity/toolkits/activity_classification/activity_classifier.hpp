@@ -32,6 +32,7 @@ class EXPORT activity_classifier: public ml_model_base {
              std::string session_id_column_name,
              variant_type validation_data,
              std::map<std::string, flexible_type> opts);
+  gl_sarray predict(gl_sframe data, std::string output_type);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
       std::string filename);
 
@@ -91,6 +92,29 @@ class EXPORT activity_classifier: public ml_model_base {
       "    the number of GPUs in use. The default is 32.\n"
   );
 
+  REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::predict, "data",
+                                 "output_type");
+  register_defaults("predict",
+                    {{"output_type", std::string("")}});
+  REGISTER_CLASS_MEMBER_DOCSTRING(
+      activity_classifier::predict,
+      "----------\n"
+      "data : SFrame\n"
+      "    Dataset of new observations. Must include columns with the same\n"
+      "    names as the features used for model training, but does not require\n"
+      "    a target column. Additional columns are ignored.\n"
+      "output_type : {'class', 'probability_vector'}, optional\n"
+      "    Form of each prediction which is one of:\n"
+      "    - 'probability_vector': Prediction probability associated with each\n"
+      "      class as a vector. The probability of the first class (sorted\n"
+      "      alphanumerically by name of the class in the training set) is in\n"
+      "      position 0 of the vector, the second in position 1 and so on.\n"
+      "    - 'class': Class prediction. This returns the class with maximum\n"
+      "      probability.\n"
+  );
+  // TODO: Support output_frequency as another argument? Provide a separate
+  // predict_per_window?
+
   REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::export_to_coreml,
                                  "filename");
 
@@ -119,6 +143,14 @@ class EXPORT activity_classifier: public ml_model_base {
                           variant_type validation_data,
                           std::map<std::string, flexible_type> opts);
   virtual void perform_training_iteration();
+
+  // Returns an SFrame where each row corresponds to one prediction, and
+  // containing three columns: "session_id" indicating the session ID shared by
+  // the samples in the prediction window, "preds" containing the class
+  // probability vector for the prediction window, and "num_samples" indicating
+  // the number of corresponding rows from the original SFrame (at most the
+  // prediction window size).
+  virtual gl_sframe perform_inference(data_iterator* data) const;
 
   // Utility code
 
