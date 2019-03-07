@@ -1,7 +1,11 @@
 # Drawing Classification
 
-Given a drawing, the drawing classifier assigns the drawing to one of a
-pre-determined number of labels. 
+The Drawing Classifier is a toolkit focused on solving the task of classifying 
+input from the Apple Pencil and/or mouse/touch input. This is the first effort 
+towards bridging the gap between the Apple Pencil 2 and Core ML, which will 
+further empower App Developers to build intelligent apps. 
+Given a drawing, the drawing classifier aims to classify the drawing 
+as one of a pre-determined number of classes/labels. 
 
 #### Loading Data
 

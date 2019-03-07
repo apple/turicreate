@@ -7,7 +7,7 @@ high-level concepts about data, frequently through models that have
 multiple layers of non-linear transformations.  Let's take a moment to
 analyze that last sentence. **Learning high-level concepts about data**
 means that deep learning models take data, for instance raw pixel values
-of an image, and learns abstract ideas like 'is animal' or 'is cat'
+of an image, and learn abstract ideas like 'is animal' or 'is cat'
 about that data.  OK, easy enough, but what does having 'multiple layers
 of non-linear transformations' mean.  Conceptually, all this means is
 that you have a composition of simple non-linear functions, forming a
