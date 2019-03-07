@@ -15,11 +15,15 @@ The Core ML Model should look like the following:
 Drag and drop `MySquareTriangleClassifier.mlmodel` into your Xcode project and
 add it to your app by ticking the appropriate Target Membership check box.
 
-##### Prediction
+### Inference
 
-Making a prediction is easy!
+Making a prediction at inference time on device is easy! In this section, we go
+over your workflow depending on what input you may have in your app at inference
+time.
 
-* At inference time, if you have access to a bitmap and/or image that represents
+#### Using Bitmap Input
+
+At inference time, if you have access to a bitmap and/or image that represents
 the drawing you want to classify, you can use the Vision framework to consume
 the exported Core ML model. Note that the image you provide to the Vision API
 must be a Grayscale Image. 
@@ -32,7 +36,9 @@ let request = VNCoreMLRequest(model: model, completionHandler: { [weak self] req
 })
 ```
 
-* On the other hand, if you have access to raw stroke-based drawing data at 
+#### Using Stroke-Based Drawing Input
+
+On the other hand, if you have access to raw stroke-based drawing data at 
 inference time, you will first have to convert it to a Grayscale Bitmap and then
 use the Vision framework so the Core ML model can consume images at inference 
 time.
