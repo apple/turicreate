@@ -16,6 +16,7 @@ namespace turi {
 
 
 // Returns the hexadecimal represenation of float in little endian
+__attribute__((unused)) // Unused in debug mode
 static std::string float_to_hexadecimal(float value) {
   unsigned char* p = (unsigned char*)(&value);
   char ret[9];
