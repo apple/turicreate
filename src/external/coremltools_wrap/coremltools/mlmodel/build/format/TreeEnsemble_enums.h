@@ -1,7 +1,5 @@
 #ifndef __TREEENSEMBLE_ENUMS_H
 #define __TREEENSEMBLE_ENUMS_H
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-function"
 enum MLTreeEnsemblePostEvaluationTransform: int {
     MLTreeEnsemblePostEvaluationTransformNoTransform = 0,
     MLTreeEnsemblePostEvaluationTransformClassification_SoftMax = 1,
@@ -37,5 +35,4 @@ static const char * MLTreeEnsembleClassifierClassLabels_Name(MLTreeEnsembleClass
     }
 }
 
-#pragma clang diagnostic pop
 #endif

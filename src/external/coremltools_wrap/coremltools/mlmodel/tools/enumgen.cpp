@@ -69,6 +69,7 @@ static void handleMessage(const Descriptor& message, std::ostream& ret) {
         ret << "};" << std::endl << std::endl;
 
         // generate a name function (reverse lookup)
+        ret << "__attribute__((__unused__))" << std::endl;
         ret << "static const char * " << enumName.str() << "_Name(" << enumName.str() << " x) {" << std::endl;
         ret << INDENT << "switch (x) {" << std::endl;
         for (size_t j=0; j<oneofType->field_count(); j++) {
@@ -97,8 +98,6 @@ static std::string makeContents(const FileDescriptor& in) {
   std::string guard = makeGuard(in.name());
   ret << "#ifndef " << guard << std::endl;
   ret << "#define " << guard << std::endl;
-  ret << "#pragma clang diagnostic push" << std::endl;
-  ret << "#pragma clang diagnostic ignored \"-Wunused-function\"" << std::endl;
 
   handleContainer(in, ret);
   for (size_t i=0; i<in.message_type_count(); i++) {
@@ -106,7 +105,6 @@ static std::string makeContents(const FileDescriptor& in) {
     handleMessage(*message, ret);
   }
 
-  ret << "#pragma clang diagnostic pop" << std::endl;
   ret << "#endif" << std::endl;
 
   return ret.str();

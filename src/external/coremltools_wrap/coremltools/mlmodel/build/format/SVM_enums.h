@@ -1,7 +1,5 @@
 #ifndef __SVM_ENUMS_H
 #define __SVM_ENUMS_H
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-function"
 enum MLKernelkernel: int {
     MLKernelkernel_linearKernel = 1,
     MLKernelkernel_rbfKernel = 2,
@@ -80,5 +78,4 @@ static const char * MLSupportVectorClassifierClassLabels_Name(MLSupportVectorCla
     }
 }
 
-#pragma clang diagnostic pop
 #endif

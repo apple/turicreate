@@ -1,7 +1,5 @@
 #ifndef __NEURALNETWORK_ENUMS_H
 #define __NEURALNETWORK_ENUMS_H
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-function"
 enum MLNeuralNetworkPreprocessingpreprocessor: int {
     MLNeuralNetworkPreprocessingpreprocessor_scaler = 10,
     MLNeuralNetworkPreprocessingpreprocessor_meanImage = 11,
@@ -406,5 +404,4 @@ static const char * MLNeuralNetworkClassifierClassLabels_Name(MLNeuralNetworkCla
     }
 }
 
-#pragma clang diagnostic pop
 #endif

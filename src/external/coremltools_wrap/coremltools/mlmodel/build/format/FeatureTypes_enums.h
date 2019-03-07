@@ -1,7 +1,5 @@
 #ifndef __FEATURETYPES_ENUMS_H
 #define __FEATURETYPES_ENUMS_H
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-function"
 enum MLColorSpace: int {
     MLColorSpaceINVALID_COLOR_SPACE = 0,
     MLColorSpaceGRAYSCALE = 10,
@@ -121,5 +119,4 @@ static const char * MLFeatureTypeType_Name(MLFeatureTypeType x) {
     }
 }
 
-#pragma clang diagnostic pop
 #endif

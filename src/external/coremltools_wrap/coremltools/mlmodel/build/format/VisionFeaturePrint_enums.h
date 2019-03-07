@@ -1,7 +1,5 @@
 #ifndef __VISIONFEATUREPRINT_ENUMS_H
 #define __VISIONFEATUREPRINT_ENUMS_H
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-function"
 enum MLVisionFeaturePrintVisionFeaturePrintType: int {
     MLVisionFeaturePrintVisionFeaturePrintType_scene = 20,
     MLVisionFeaturePrintVisionFeaturePrintType_NOT_SET = 0,
@@ -22,5 +20,4 @@ enum MLSceneVersion: int {
     MLSceneVersionSCENE_VERSION_1 = 1,
 };
 
-#pragma clang diagnostic pop
 #endif

@@ -1,0 +1,100 @@
+#cy {
+    width: 60%;
+    height: 80%;
+    position: absolute;
+    float: left;
+    top: 100px;
+    left: 0px;
+    overflow: hidden;
+    padding: 10px;
+    box-shadow: inset 0 0 10px #000000;
+}
+
+#label-switch {
+    position: absolute;
+    right: 10px;
+    top: 100px;
+    border: 1px solid silver;
+    border-radius: 10px;
+    box-shadow: 2px 2px 2px #888888;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    font-family: 'Helvetica Neue';
+    font-weight: bold;
+    padding: 10px;
+    background-color: ghostwhite;
+    color: #111111;
+    cursor: pointer;
+}
+
+#label-switch:hover {
+    background-color: black;
+    color: whitesmoke;
+}
+
+#reset-state {
+    position: absolute;
+    right: 10px;
+    top: 150px;
+    border: 1px solid silver;
+    border-radius: 10px;
+    box-shadow: 2px 2px 2px #888888;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    font-family: 'Helvetica Neue';
+    font-weight: bold;
+    padding: 10px;
+    background-color: ghostwhite;
+    color: #111111;
+    cursor: pointer;
+}
+
+#reset-state:hover {
+    background-color: black;
+    color: whitesmoke;
+}
+
+#title {
+    font-family: 'Roboto Slab', serif;
+    text-align: center;
+    font-weight: bold;
+    font-size: 250%;
+}
+
+#node-info-title {
+    display: block;
+    float: right;
+    width: 30%;
+    height: 100%;
+    padding: 50px;
+    border: 1px solid silver;
+    background-color: white;
+    font-weight: bold;
+    font-family: 'Roboto Slab', serif;
+    text-align: center;
+    margin-top: 170px;
+    font-size: 200%;
+    box-shadow: 10px 10px 10px #888888;
+
+}
+
+.subtitle {
+    font-family: 'Roboto Slab', serif;
+    font-weight: bold;
+    font-size: 150%;
+}
+
+#node-info {
+    font-family: 'Roboto Slab', serif;
+    font-weight: normal;
+    font-size: 60%;
+}
+
+
+body {
+    background-color: #FEFEFE;
+}
