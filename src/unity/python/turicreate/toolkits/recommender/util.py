@@ -1260,9 +1260,14 @@ class _Recommender(_Model):
                 assert new_observation_data.num_rows() != 0
                 original_user_type = user_column.dtype
                 users[user_id] = user_column.astype(str)
+                user_type=str
 
             elif user_column.dtype != user_type:
                 users[user_id] = user_column.astype(user_type)
+
+        # Cast user specified in exclude to the appropriate type if necessary.
+        if user_id in exclude.column_names() and exclude[user_id].dtype!=user_type:
+                exclude[user_id] = exclude[user_id].astype(user_type)
 
         try:
             diversity = float(diversity)

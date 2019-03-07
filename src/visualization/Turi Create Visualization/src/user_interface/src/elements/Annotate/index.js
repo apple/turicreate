@@ -224,7 +224,6 @@ class Annotate extends Component {
   setAnnotation = (rowIndex, labels) => {
     var previousAnnotationData = this.state.annotationData;
     var previousLabelData = this.state.labels;
-
     var previousLabel = previousAnnotationData[rowIndex];
 
     if(previousLabel == labels){
@@ -252,6 +251,7 @@ class Annotate extends Component {
     } else if(this.state.type == LabelType.INTEGER) {
       previousAnnotationData[rowIndex] = parseInt(labels, 10);
     }
+
 
     const root = Root.fromJSON(messageFormat);
     const ParcelMessage = root.lookupType("TuriCreate.Annotation.Specification.ClientRequest");
