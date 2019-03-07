@@ -228,11 +228,14 @@ class DrawingClassifier(_CustomModel):
             new_aux_params[k] = net_params[k].data(net_params[k].list_ctx()[0])
         mod.set_params(new_arg_params, new_aux_params)
 
-        coreml_model = _mxnet_converter.convert(mod, mode='classifier',
-                                class_labels=self.classes,
-                                input_shape=[(self.feature, image_shape)],
-                                builder=None, verbose=verbose,
-                                preprocessor_args={'image_input_names':[self.feature]})
+        coreml_model = _mxnet_converter.convert(mod, mode = 'classifier',
+                                class_labels = self.classes,
+                                input_shape = [(self.feature, image_shape)],
+                                builder = None, verbose=verbose,
+                                preprocessor_args = {
+                                    'image_input_names': [self.feature],
+                                    'image_scale': 1.0/255
+                                })
 
         DESIRED_OUTPUT_NAME = self.target + "Probabilities"
         spec = coreml_model._spec
