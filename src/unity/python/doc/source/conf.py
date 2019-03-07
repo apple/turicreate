@@ -54,6 +54,7 @@ for m in [
           'regression',
           'shortest_path',
           'text_classifier',
+          'sound_classifier',
           'svm_classifier',
           'style_transfer',
           'text_analytics',
