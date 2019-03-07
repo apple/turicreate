@@ -122,14 +122,11 @@ static inline void flip_bit(T& x, unsigned int bit, _ENABLE_IF_UINT(T))
  * \param n_bits Index of the bit to flip.
  */
 template <typename T>
-static inline T bit_mask(uint64_t n_bits, _ENABLE_IF_UINT(T)) {
+static inline T bit_mask(unsigned int n_bits, _ENABLE_IF_UINT(T)) {
 
-  typedef uint_fast16_t shift_t; 
+  static constexpr unsigned int _n_mask = ~static_cast<unsigned int>(bitsizeof(T) - 1);
 
-  shift_t _n = shift_t(n_bits);
-  shift_t _n_mask = ~shift_t(bitsizeof(T) - 1);
-
-  return UNLIKELY(_n & _n_mask) ? ~T(-1) : (T(1) << _n) - 1;
+  return UNLIKELY(n_bits & _n_mask) ? T(-1) : (T(1) << n_bits) - 1;
 }
 
 /**
