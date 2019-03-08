@@ -11,7 +11,7 @@ class Label extends Component {
 	    styles.Label
 		]
 
-	  if(this.props.active &&  !this.props.infiniteScroll){
+	  if(this.props.active){
 	    classes.push(styles.LabelSelected);
 	  }
 
