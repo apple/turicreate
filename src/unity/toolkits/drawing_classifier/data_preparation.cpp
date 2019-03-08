@@ -432,22 +432,17 @@ flex_image convert_stroke_based_drawing_to_bitmap(
 gl_sframe _drawing_classifier_prepare_data(const gl_sframe &data,
                                            const std::string &feature) {
     DASSERT_TRUE(data.contains_column(feature));
-    
-    gl_sframe selected_sframe = data.select_columns({feature});
-    selected_sframe = selected_sframe.add_row_number();
-    gl_sarray bitmaps = selected_sframe.apply([](
-        const sframe_rows::row& sframe_row) {
-        const flexible_type &strokes = sframe_row[0];
-        int row_number = sframe_row[1];
-        flex_list current_stroke_based_drawing = strokes.to<flex_list>();
-        flex_image current_bitmap = convert_stroke_based_drawing_to_bitmap(
-            current_stroke_based_drawing, row_number);
-        return current_bitmap;
-    }, flex_type_enum::IMAGE);
 
+    for (int row_number = 0; row_number < (int)data.size(); row_number++) {
+        const flexible_type &strokes = data[feature][row_number];
+        flex_list current_stroke_based_drawing = strokes.to<flex_list>();
+        bitmaps.push_back(
+            convert_stroke_based_drawing_to_bitmap(
+                current_stroke_based_drawing, row_number));
+    }
+    gl_sarray bitmaps_sarray(bitmaps);
     gl_sframe converted_sframe = gl_sframe(data);
-    converted_sframe.replace_add_column(bitmaps, feature);
-    
+    converted_sframe[feature] = bitmaps_sarray;
     converted_sframe.materialize();
     return converted_sframe;
 }
