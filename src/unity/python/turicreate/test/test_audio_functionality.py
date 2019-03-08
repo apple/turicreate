@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright © 2017 Apple Inc. All rights reserved.
+# Copyright © 2019 Apple Inc. All rights reserved.
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
@@ -24,7 +24,6 @@ from scipy.io import wavfile
 import turicreate as tc
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sarray
 from turicreate.toolkits._main import ToolkitError
-from turicreate.toolkits.sound_classifier import mel_features
 
 
 class ReadAudioTest(unittest.TestCase):
@@ -146,7 +145,6 @@ def _generate_binary_test_data():
     return data
 
 
-@unittest.skip('VGGish not currently available')     # TODO: Remove this
 class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
 
     @classmethod
@@ -219,31 +217,35 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
 
     @unittest.skipIf(platform != 'darwin', 'Can not test predictions.')
     def test_mac_export_coreml(self):
+        import resampy
+
         with TempDirectory() as temp_dir:
             file_name = temp_dir + '/model.mlmodel'
             self.model.export_coreml(file_name)
             core_ml_model = coremltools.models.MLModel(file_name)
 
         for cur_audio in self.data['audio']:
-            cur_sample_rate = cur_audio['sample_rate']
-            first_sec_audio = cur_audio['data'][:cur_sample_rate]
-            x = [{'data': first_sec_audio, 'sample_rate': cur_sample_rate}]
-            preprocessed_audio, _ = self.model._feature_extractor.preprocess_data(x, [None])
+            resampled_data = resampy.resample(cur_audio['data'], cur_audio['sample_rate'], 16000)
+            first_audio_frame = resampled_data[:15600]
 
-            tc_prob_vector = self.model.predict(tc.SArray(x), output_type='probability_vector')[0]
+            tc_x = {'data': first_audio_frame, 'sample_rate': 16000}
+            tc_prob_vector = self.model.predict(tc_x, output_type='probability_vector')[0]
 
-            coreml_y = core_ml_model.predict({'preprocessed_audio': preprocessed_audio[0]})
-            prob_column_name = self.model.target + 'Probability'
-            core_ml_prob_vector = [coreml_y[prob_column_name][cur_label] for cur_label in self.model.classes]
+            coreml_x = np.float32(first_audio_frame / 32768.0)  # Convert to [-1.0, +1.0]
+            coreml_y = core_ml_model.predict({'audio': coreml_x})
 
-            self.assertEqual(len(core_ml_prob_vector), len(tc_prob_vector))
-            for a, b in zip(core_ml_prob_vector, tc_prob_vector):
-                self.assertAlmostEquals(a, b, delta=0.001)
+            core_ml_prob_output_name = self.model.target + 'Probability'
+            for i, cur_class in enumerate(self.model.classes):
+                self.assertAlmostEquals(tc_prob_vector[i],
+                                        coreml_y[core_ml_prob_output_name][cur_class],
+                                        delta=0.001)
 
     @unittest.skipIf(platform == 'darwin', 'Already testing in more comprehensive way.')
     def test_linux_export_core_ml(self):
-        # TODO: just test that calling `export_coreml(...)` produces a .mlmodel file
-        pass
+        with TempDirectory() as temp_dir:
+            file_name = temp_dir + '/model.mlmodel'
+            self.model.export_coreml(file_name)
+            core_ml_model = coremltools.models.MLModel(file_name)
 
     def test_evaluate(self):
         evaluation = self.model.evaluate(self.data)
@@ -302,3 +304,43 @@ class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabel
 
         self.is_binary_classification = False
         self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio')
+
+
+@unittest.skipIf(platform != 'darwin', 'Can not test something which uses Core ML.')
+class CoreMlCustomModelPreprocessingTest(unittest.TestCase):
+    sample_rate = 16000
+    frame_length = int(.975 * sample_rate)
+
+    def test_case(self):
+        from turicreate.toolkits.sound_classifier import vggish_input
+
+        model = coremltools.proto.Model_pb2.Model()
+        model.customModel.className = 'TCSoundClassifierPreprocessing'
+        model.specificationVersion = 3
+
+        # Input - float array with shape (frame_length)
+        x = model.description.input.add()
+        x.name = 'x'
+        x.type.multiArrayType.dataType = FeatureTypes_pb2.ArrayFeatureType.ArrayDataType.Value('FLOAT32')
+        x.type.multiArrayType.shape.append(self.frame_length)
+
+        # Output - double array with shape (1, 96, 64)
+        y = model.description.output.add()
+        y.name = 'y'
+        y.type.multiArrayType.dataType = FeatureTypes_pb2.ArrayFeatureType.ArrayDataType.Value('DOUBLE')
+        y.type.multiArrayType.shape.append(1)
+        y.type.multiArrayType.shape.append(96)
+        y.type.multiArrayType.shape.append(64)
+
+        with TempDirectory() as temp_dir:
+            model = coremltools.models.MLModel(model)
+            model_path = temp_dir + '/test.mlmodel'
+            model.save(model_path)
+            model = coremltools.models.MLModel(model_path)
+
+        input_data = np.arange(self.frame_length) * 0.00001
+        y1 = vggish_input.waveform_to_examples(input_data, self.sample_rate)[0]
+        y2 = model.predict({'x': np.float32(input_data)})['y']
+
+        self.assertEqual(y2.shape, (1,96,64))
+        self.assertTrue(np.isclose(y1, y2, atol=1e-04).all())

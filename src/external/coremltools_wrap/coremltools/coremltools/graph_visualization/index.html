@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>CoreML Graph Vizualization</title>
+    <script src='assets/cytoscape.min.js'></script>
+    <script src='assets/jquery-3.2.1.min.js'></script>
+    <script src="assets/dagre.min.js"></script>
+    <script src="assets/cytoscape-dagre.js"></script>
+    <script src='app.js'></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div id='title'>CoreML Graph Visualization</div>
+    <div id='node-info-title'>
+    Node Information
+    <div id='node-info' align="left"></div>
+   </div>
+    <div id='label-switch'>
+        <div id="toggle" class="button">Shapes On/Off</div>
+    </div>
+    <div id='reset-state'>
+        <div id="reset" class="button">Reset Graph</div>
+    </div>
+    <div id='cy'></div>
+</body>
+</html>

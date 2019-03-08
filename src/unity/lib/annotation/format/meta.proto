@@ -3,47 +3,37 @@ option optimize_for = LITE_RUNTIME;
 
 package TuriCreate.Annotation.Specification;
 
-message MetaString { repeated string labels = 1; }
-
-message MetaInteger { repeated int64 labels = 1; }
-
-message ActivityClassificationMeta {
+message MetaLabel {
   oneof Label {
-    MetaString strings = 1;
-    MetaInteger integers = 2;
+    string stringLabel = 1;
+    int64 intLabel = 2;
   }
+
+  int64 elementCount = 3;
 }
 
-message AudioClassificationMeta {
-  oneof Label {
-    MetaString strings = 1;
-    MetaInteger integers = 2;
-  }
-}
+message ActivityClassificationMeta { repeated MetaLabel label = 1; }
 
-message DrawingClassificationMeta {
-  oneof Label {
-    MetaString strings = 1;
-    MetaInteger integers = 2;
-  }
-}
+message AudioClassificationMeta { repeated MetaLabel label = 1; }
 
-message ImageClassificationMeta {
-  oneof Label {
-    MetaString strings = 1;
-    MetaInteger integers = 2;
-  }
-}
+message DrawingClassificationMeta { repeated MetaLabel label = 1; }
 
-message ObjectDetectionMeta {
-  oneof Label {
-    MetaString strings = 1;
-    MetaInteger integers = 2;
-  }
-}
+message ImageClassificationMeta { repeated MetaLabel label = 1; }
+
+message ObjectDetectionMeta { repeated MetaLabel label = 1; }
 
 message MetaData {
   int64 num_examples = 1;
+
+  enum AnnotationType {
+    ACTIVITY_CLASSIFICATION = 0;
+    AUDIO_CLASSIFICATION = 1;
+    DRAWING_CLASSIFICATION = 2;
+    IMAGE_CLASSIFICATION = 3;
+    OBJECT_DETECTION = 4;
+  }
+
+  AnnotationType type = 2;
 
   oneof Type {
     ActivityClassificationMeta activity_classification = 100;

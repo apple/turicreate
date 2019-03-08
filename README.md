@@ -1,8 +1,10 @@
 Quick Links: [Installation](#supported-platforms) | [Documentation](#documentation) | [WWDC 2018 Talk](https://developer.apple.com/videos/play/wwdc2018/712/)
 
-[![Build Status](https://travis-ci.com/apple/turicreate.svg?branch=master)](https://travis-ci.com/apple/turicreate)
+[![Build Status](https://travis-ci.com/apple/turicreate.svg?branch=master)](#)
+[![PyPI Release](https://img.shields.io/pypi/v/turicreate.svg)](#)
+[![Python Versions](https://img.shields.io/pypi/pyversions/turicreate.svg)](#)
 
-<img align="right" src="https://docs-assets.developer.apple.com/turicreate/turi-dog.svg" alt="Turi Create" width="100">
+[<img align="right" src="https://docs-assets.developer.apple.com/turicreate/turi-dog.svg" alt="Turi Create" width="100">](#)
 
 # Turi Create 
 
@@ -25,6 +27,8 @@ With Turi Create, you can accomplish many common ML tasks:
 |:------------------------:|:--------------------------------:|
 | [Recommender](https://apple.github.io/turicreate/docs/userguide/recommender/)             | Personalize choices for users    |
 | [Image Classification](https://apple.github.io/turicreate/docs/userguide/image_classifier/)    | Label images                     |
+| [Drawing Classification](https://apple.github.io/turicreate/docs/userguide/drawing_classifier)  | Recognize Pencil/Touch Drawings and Gestures                     |
+| [Sound Classification](https://apple.github.io/turicreate/docs/userguide/sound_classifier)  | Classify sounds                     |
 | [Object Detection](https://apple.github.io/turicreate/docs/userguide/object_detection/)        | Recognize objects within images  |
 | [Style Transfer](https://apple.github.io/turicreate/docs/userguide/style_transfer/)        | Stylize images |
 | [Activity Classification](https://apple.github.io/turicreate/docs/userguide/activity_classifier/) | Detect an activity using sensors |

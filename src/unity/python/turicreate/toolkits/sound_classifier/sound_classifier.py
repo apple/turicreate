@@ -11,7 +11,6 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 
 import numpy as _np
-import time as _time
 
 from .. import _mxnet_utils
 
@@ -24,7 +23,7 @@ from turicreate.toolkits._model import PythonProxy as _PythonProxy
 
 def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size=64):
     '''
-    Create a :class:`SoundClassifier` model.
+    Creates a :class:`SoundClassifier` model.
 
     Parameters
     ----------
@@ -56,6 +55,7 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
     '''
     from ._audio_feature_extractor import _get_feature_extractor
     import mxnet as _mx
+    import time as _time
 
     start_time = _time.time()
 
@@ -168,6 +168,11 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
 
 
 class SoundClassifier(_CustomModel):
+    """
+    A trained model that is ready to use for sound classification or to export to CoreML.
+
+    This model should not be constructed directly.
+    """
     _PYTHON_SOUND_CLASSIFIER_VERSION = 1
 
     @staticmethod
@@ -428,6 +433,7 @@ class SoundClassifier(_CustomModel):
         >>> model.export_coreml('./myModel.mlmodel')
         """
         import coremltools
+        from coremltools.proto.FeatureTypes_pb2 import ArrayFeatureType
 
         prob_name = self.target + 'Probability'
 
@@ -441,11 +447,12 @@ class SoundClassifier(_CustomModel):
                                            [(prob_name, Dictionary(String))],
                                            'classifier')
 
+            ctx = _mxnet_utils.get_mxnet_context()[0]
             input_name, output_name = input_name, 0
             for i, cur_layer in enumerate(self._custom_classifier):
-                W = cur_layer.weight.data().asnumpy()
+                W = cur_layer.weight.data(ctx).asnumpy()
                 nC, nB = W.shape
-                Wb = cur_layer.bias.data().asnumpy()
+                Wb = cur_layer.bias.data(ctx).asnumpy()
 
                 builder.add_inner_product(name="inner_product_"+str(i),
                                           W=W,
@@ -473,15 +480,14 @@ class SoundClassifier(_CustomModel):
 
 
         top_level_spec = coremltools.proto.Model_pb2.Model()
-        top_level_spec.specificationVersion = 1
-
-        feature_extractor_spec = self._feature_extractor.get_spec()
+        top_level_spec.specificationVersion = 3
 
         # Set input
         desc = top_level_spec.description
         input = desc.input.add()
-        input.name = 'preprocessed_' + self.feature
-        input.type.CopyFrom(feature_extractor_spec.description.input[0].type)
+        input.name = self.feature
+        input.type.multiArrayType.dataType = ArrayFeatureType.ArrayDataType.Value('FLOAT32')
+        input.type.multiArrayType.shape.append(15600)
 
         # Set outputs
         prob_output = desc.output.add()
@@ -498,19 +504,38 @@ class SoundClassifier(_CustomModel):
             prob_output.type.dictionaryType.stringKeyType.MergeFromString(b'')
             label_output.type.stringType.MergeFromString(b'')
 
-        # Add the feature extractor, updating its input name
-        pipeline = top_level_spec.pipelineClassifier.pipeline
-        pipeline.models.add().CopyFrom(feature_extractor_spec)
-        pipeline.models[0].description.input[0].name = input.name
-        pipeline.models[0].neuralNetwork.layers[0].input[0] = input.name
 
-        # Add the custom model
+        pipeline = top_level_spec.pipelineClassifier.pipeline
+
+        # Add the preprocessing model
+        preprocessing_model = pipeline.models.add()
+        preprocessing_model.customModel.className = 'TCSoundClassifierPreprocessing'
+        preprocessing_model.specificationVersion = 3
+        preprocessing_input = preprocessing_model.description.input.add()
+        preprocessing_input.CopyFrom(input)
+
+        preprocessed_output = preprocessing_model.description.output.add()
+        preprocessed_output.name = 'preprocessed_data'
+        preprocessed_output.type.multiArrayType.dataType = ArrayFeatureType.ArrayDataType.Value('DOUBLE')
+        preprocessed_output.type.multiArrayType.shape.append(1)
+        preprocessed_output.type.multiArrayType.shape.append(96)
+        preprocessed_output.type.multiArrayType.shape.append(64)
+
+        # Add the feature extractor, updating its input name
+        feature_extractor_spec = self._feature_extractor.get_spec()
+        pipeline.models.add().CopyFrom(feature_extractor_spec)
+        pipeline.models[-1].description.input[0].name = preprocessed_output.name
+        pipeline.models[-1].neuralNetwork.layers[0].input[0] = preprocessed_output.name
+
+        # Add the custom neural network
         pipeline.models.add().CopyFrom(get_custom_model_spec())
 
+        # Set key type for the probability dictionary
+        prob_output_type = pipeline.models[-1].description.output[0].type.dictionaryType
         if type(self.classes[0]) == int:
-            top_level_spec.pipelineClassifier.pipeline.models[1].description.output[0].type.dictionaryType.int64KeyType.MergeFromString(b'')
-        else:
-            top_level_spec.pipelineClassifier.pipeline.models[1].description.output[0].type.dictionaryType.stringKeyType.MergeFromString(b'')
+            prob_output_type.int64KeyType.MergeFromString(b'')
+        else:    # String labels
+            prob_output_type.stringKeyType.MergeFromString(b'')
 
         mlmodel = coremltools.models.MLModel(top_level_spec)
         mlmodel.save(filename)
@@ -587,8 +612,10 @@ class SoundClassifier(_CustomModel):
             batch_size = len(deep_features)
 
         y = []
-        ctx = _mxnet_utils.get_mxnet_context()
         for batch in _mx.io.NDArrayIter(deep_features, batch_size=batch_size):
+            ctx = _mxnet_utils.get_mxnet_context()
+            if(len(batch.data[0]) < len(ctx)):
+                ctx = ctx[:len(batch.data[0])]
             batch_data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
             if batch.pad != 0:
                 batch_data[0] = batch_data[0][:-batch.pad]    # prevent batches looping back

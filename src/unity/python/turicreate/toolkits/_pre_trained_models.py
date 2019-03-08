@@ -216,3 +216,45 @@ STYLE_TRANSFER_BASE_MODELS = {
     'resnet-16': StyleTransferTransformer,
     'Vgg16': Vgg16
 }
+
+
+class VGGish():
+    def __init__(self):
+        self.name = 'VGGishFeatureEmbedding-v1'
+        self.source_md5 = {
+            'coreml': 'e8ae7d8cbcabb988b6ed6c0bf3f45571',
+            'mxnet': '13c040de982a51e4664705564be8ae8b'
+        }
+
+    def get_model_path(self, format):
+        assert(format in ('coreml', 'mxnet'))
+
+        if(format == 'coreml'):
+            filename = self.name + '.mlmodel'
+        else:
+            filename = self.name + '.params'
+        url = _urlparse.urljoin(MODELS_URL_ROOT, filename)
+
+        checksum = self.source_md5[format]
+        model_path = _download_and_checksum_files(
+            [(url, checksum)], _get_model_cache_dir()
+            )[0]
+
+        return model_path
+
+
+class DrawingClassifierPreTrainedModel(object):
+    def __init__(self, model_url = None):
+        filename = "drawing_model_v1.params"
+        self.source_url = (_urlparse.urljoin(MODELS_URL_ROOT, filename) 
+            if model_url is None 
+            else model_url)
+        self.source_md5 = "71ba78e48a852f35fb22999650f0a655"
+
+    def get_model_path(self):
+        model_path = _download_and_checksum_files(
+            [(self.source_url, self.source_md5)], _get_model_cache_dir()
+            )[0]
+        return model_path
+
+

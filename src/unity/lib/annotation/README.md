@@ -35,7 +35,7 @@ https://github.com/protocolbuffers/protobuf/releases/tag/v3.3.0
 When you've installed the package, regenerate these protobuf files use the command below in the current directory.
 
 ```bash
-protoc --proto_path="./format" --cpp_out="./build/format/cpp" "./format/annotate.proto" "./format/data.proto" "./format/meta.proto"
+	make annotationProtobuf
 ```
 
 After you've regenerated the protobuf files you can now continue with the CMake build of TuriCreate.

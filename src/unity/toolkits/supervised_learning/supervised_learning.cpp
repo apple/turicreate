@@ -519,6 +519,9 @@ gl_sarray supervised_learning_model_base::fast_predict(
   } else if (output_type == "probability_vector"){
     ret_type = flex_type_enum::VECTOR;
   } else {
+    if (output_type == "probability" && variant_get_value<size_t>(state.at("num_classes")) > 2) {
+      log_and_throw("Output type 'probability' is only supported for binary classification. For multi-class classification, use predict_topk() instead.");
+    }
     ret_type = flex_type_enum::FLOAT;
   }
   gl_sarray_writer writer(ret_type, 1 /* 1 segment */);

@@ -334,6 +334,56 @@ class capi_test_visualization {
             TS_ASSERT_EQUALS(tc_plot_finished_streaming(actual_obj, nullptr, &error), true);
             CAPI_CHECK_ERROR(error);
         }
+
+#ifdef __APPLE__
+#ifndef TC_BUILD_IOS
+
+        static CGContextRef create_cgcontext(double width, double height) {
+            CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+            CGContextRef ctx = CGBitmapContextCreate(NULL, // Let CG allocate it for us
+                                                    width,
+                                                    height,
+                                                    8,
+                                                    0,
+                                                    colorSpace,
+                                                    kCGImageAlphaNoneSkipLast); // RGBA
+            // draw a white background
+            CGContextSaveGState(ctx);
+            CGContextFillRect(ctx, CGRectMake(0, 0, width, height));
+            CGContextRestoreGState(ctx);
+            CGColorSpaceRelease(colorSpace);
+            return ctx;
+        }
+
+        void test_rendering() {
+            // numeric histogram (int)
+            tc_error *error = nullptr;
+            tc_plot *plot_obj = tc_plot_create_1d(m_sa_int, "foo", "bar", "baz", nullptr, &error);
+            CAPI_CHECK_ERROR(error);
+            tc_flexible_type *actual_spec_ft = tc_plot_get_vega_spec(plot_obj, tc_plot_variation_default, nullptr, &error);
+            CAPI_CHECK_ERROR(error);
+            const char *actual_spec_data = tc_ft_string_data(actual_spec_ft, &error);
+            CAPI_CHECK_ERROR(error);
+            size_t actual_spec_length = tc_ft_string_length(actual_spec_ft, &error);
+            CAPI_CHECK_ERROR(error);
+            std::string actual_spec(actual_spec_data, actual_spec_length);
+
+            CGContextRef ctx = create_cgcontext(800, 600); // some random size - should be larger than the plot
+
+            // render plot onto it and check for errors
+            tc_plot_render_final_into_context(plot_obj, tc_plot_variation_default, ctx, nullptr, &error);
+            CAPI_CHECK_ERROR(error);
+            CGContextRelease(ctx);
+
+            // render spec onto it and check for errors
+            ctx = create_cgcontext(800, 600); // some random size - should be larger than the plot
+            tc_plot_render_vega_spec_into_context(actual_spec.c_str(), ctx, nullptr, &error);
+            CAPI_CHECK_ERROR(error);
+            CGContextRelease(ctx);
+        }
+#endif // TC_BUILD_IOS
+#endif // __APPLE__
+
 };
 
 BOOST_FIXTURE_TEST_SUITE(_capi_test_visualization, capi_test_visualization)
@@ -346,4 +396,11 @@ BOOST_AUTO_TEST_CASE(test_2d_plots) {
 BOOST_AUTO_TEST_CASE(test_sframe_summary_plot) {
   capi_test_visualization::test_sframe_summary_plot();
 }
+#ifdef __APPLE__
+#ifndef TC_BUILD_IOS
+BOOST_AUTO_TEST_CASE(test_rendering) {
+  capi_test_visualization::test_rendering();
+}
+#endif // TC_BUILD_IOS
+#endif // __APPLE__
 BOOST_AUTO_TEST_SUITE_END()

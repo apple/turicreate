@@ -1,8 +1,17 @@
 #include <unity/lib/visualization/process_wrapper.hpp>
 #include <unity/lib/visualization/thread.hpp>
 
-#include <unity/lib/annotation/annotation_base.hpp>
 #include <logger/assertions.hpp>
+
+#include <unity/lib/annotation/annotation_base.hpp>
+#include <unity/lib/annotation/utils.hpp>
+
+#include <boost/archive/iterators/base64_from_binary.hpp>
+#include <boost/archive/iterators/binary_from_base64.hpp>
+#include <boost/archive/iterators/remove_whitespace.hpp>
+#include <boost/archive/iterators/transform_width.hpp>
+
+#include <sstream>
 
 namespace turi {
 namespace annotate {
@@ -24,11 +33,24 @@ AnnotationBase::AnnotationBase(const std::shared_ptr<unity_sframe> &data,
 
 void AnnotationBase::annotate(const std::string &path_to_client) {
   visualization::process_wrapper aw(path_to_client);
-  /* TODO: Easier to Implement when working on the Front End. Hold off
-   * implementation until front end PR. Will be more clear what to implement
-   * there */
+
+  aw << this->__serialize_proto<annotate_spec::MetaData>(this->metaData())
+            .c_str();
+
   while (aw.good()) {
-    break;
+    std::string input;
+    aw >> input;
+
+    if (input.empty()) {
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      continue;
+    }
+
+    std::string response = this->__parse_proto_and_respond(input).c_str();
+
+    if (!response.empty()) {
+      aw << response;
+    }
   }
 }
 
@@ -105,17 +127,25 @@ void AnnotationBase::_addIndexColumn() {
 }
 
 void AnnotationBase::_checkDataSet() {
-  #ifndef NDEBUG
   size_t image_column_index = m_data->column_index(m_data_columns.at(0));
   flex_type_enum image_column_dtype = m_data->dtype().at(image_column_index);
-  DASSERT_EQ(image_column_dtype, flex_type_enum::IMAGE);
+
+  if (image_column_dtype != flex_type_enum::IMAGE) {
+    std_log_and_throw(std::invalid_argument, "Image column \"" +
+                                                 m_data_columns.at(0) +
+                                                 "\" not of image type.");
+  }
 
   size_t annotation_column_index = m_data->column_index(m_annotation_column);
   flex_type_enum annotation_column_dtype =
       m_data->dtype().at(annotation_column_index);
-  DASSERT_TRUE(annotation_column_dtype == flex_type_enum::STRING ||
-               annotation_column_dtype == flex_type_enum::INTEGER);
-  #endif
+
+  if (!(annotation_column_dtype == flex_type_enum::STRING ||
+        annotation_column_dtype == flex_type_enum::INTEGER)) {
+    std_log_and_throw(std::invalid_argument,
+                      "Annotation column \"" + m_data_columns.at(0) +
+                          "\" not of string or integer type.");
+  }
 }
 
 void AnnotationBase::_reshapeIndicies(size_t &start, size_t &end) {
@@ -146,6 +176,70 @@ void AnnotationBase::_reshapeIndicies(size_t &start, size_t &end) {
   if (end >= data_size) {
     end = data_size - 1;
   }
+}
+
+template <typename T, typename>
+std::string AnnotationBase::__serialize_proto(T message) {
+  std::stringstream ss;
+  ss << "{\"protobuf\": \"";
+
+  annotate_spec::Parcel parcel;
+
+  populate_parcel<T>(parcel, message);
+
+  std::string proto_intermediary;
+  parcel.SerializeToString(&proto_intermediary);
+  const char *parcel_data = proto_intermediary.c_str();
+
+  size_t parcel_size = parcel.ByteSizeLong();
+
+  std::copy(
+      boost::archive::iterators::base64_from_binary<
+          boost::archive::iterators::transform_width<const unsigned char *, 6,
+                                                     8>>(parcel_data),
+      boost::archive::iterators::base64_from_binary<
+          boost::archive::iterators::transform_width<const unsigned char *, 6,
+                                                     8>>(parcel_data +
+                                                         parcel_size),
+      std::ostream_iterator<char>(ss));
+
+  ss << "\"}\n";
+
+  return ss.str();
+}
+
+std::string AnnotationBase::__parse_proto_and_respond(std::string &input) {
+  std::string result(boost::archive::iterators::transform_width<
+                         boost::archive::iterators::binary_from_base64<
+                             boost::archive::iterators::remove_whitespace<
+                                 std::string::const_iterator>>,
+                         8, 6>(input.begin()),
+                     boost::archive::iterators::transform_width<
+                         boost::archive::iterators::binary_from_base64<
+                             boost::archive::iterators::remove_whitespace<
+                                 std::string::const_iterator>>,
+                         8, 6>(input.end()));
+
+  annotate_spec::ClientRequest request;
+  request.ParseFromString(result);
+
+  if (request.has_getter()) {
+    annotate_spec::DataGetter data_getter = request.getter();
+    switch (data_getter.type()) {
+    case annotate_spec::DataGetter_GetterType::DataGetter_GetterType_DATA:
+      return this->__serialize_proto<annotate_spec::Data>(
+          this->getItems(data_getter.start(), data_getter.end()));
+    case annotate_spec::DataGetter_GetterType::
+        DataGetter_GetterType_ANNOTATIONS:
+      return this->__serialize_proto<annotate_spec::Annotations>(
+          this->getAnnotations(data_getter.start(), data_getter.end()));
+    default:
+      break;
+    }
+  } else if (request.has_annotations()) {
+    this->setAnnotations(request.annotations());
+  }
+  return "";
 }
 
 } // namespace annotate

@@ -306,10 +306,23 @@ message(WARNING "OpenMP Libraries were not found")
 
 #**************************************************************************/
 #*                                                                        */
-#*             Adapt Compiler and Linker Flags to the system              */
+#*                      coremltools                                       */
 #*                                                                        */
 #**************************************************************************/
 
+if(NOT TC_COREMLTOOLS_DIR)
+  set(TC_COREMLTOOLS_DIR ${CMAKE_SOURCE_DIR}/src/external/coremltools_wrap/coremltools/)
+endif()
+
+message("Using ${TC_COREMLTOOLS_DIR} for coremltools directory.")
+include_directories(${TC_COREMLTOOLS_DIR}/)
+
+
+#**************************************************************************/
+#*                                                                        */
+#*             Adapt Compiler and Linker Flags to the system              */
+#*                                                                        */
+#**************************************************************************/
 
 if (CLANG)
 
@@ -1127,6 +1140,7 @@ set(_TC_COMMON_OBJECTS
   "$<TARGET_OBJECTS:protobuf>"
   "$<TARGET_OBJECTS:uuid>"
   "$<TARGET_OBJECTS:xgboost>"
+  "$<TARGET_OBJECTS:coremltools_mlmodel>"
 
   # Then our own source code
   "$<TARGET_OBJECTS:annotation>"
@@ -1159,6 +1173,7 @@ set(_TC_COMMON_OBJECTS
   "$<TARGET_OBJECTS:table_printer>"
   "$<TARGET_OBJECTS:timer>"
   "$<TARGET_OBJECTS:unity>"
+  "$<TARGET_OBJECTS:unity_drawing_classifier>"
   "$<TARGET_OBJECTS:unity_activity_classification>"
   "$<TARGET_OBJECTS:unity_core>"
   "$<TARGET_OBJECTS:unity_coreml_model_export>"
