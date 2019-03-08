@@ -9,11 +9,15 @@
 #include <functional>
 #include <numeric>
 
+#include <unity/toolkits/coreml_export/neural_net_models_exporter.hpp>
+#include <util/string_util.hpp>
+
 namespace turi {
 namespace activity_classification {
 
 namespace {
 
+using coreml::MLModelWrapper;
 using neural_net::compute_context;
 using neural_net::float_array_map;
 using neural_net::model_spec;
@@ -111,6 +115,45 @@ void activity_classifier::train(gl_sframe data, std::string target_column_name,
   // Sync trained weights to our local storage of the NN weights.
   float_array_map trained_weights = training_model_->export_weights();
   nn_spec_->update_params(trained_weights);
+}
+
+std::shared_ptr<MLModelWrapper> activity_classifier::export_to_coreml(
+    std::string filename)
+{
+  std::shared_ptr<MLModelWrapper> model_wrapper =
+      export_activity_classifier_model(
+          *nn_spec_,
+          read_state<flex_int>("prediction_window"),
+          read_state<flex_list>("features"),
+          LSTM_HIDDEN_SIZE,
+          read_state<flex_list>("classes"),
+          read_state<flex_string>("target"));
+
+  // Add "user-defined" metadata.
+  // TODO: Should we also be adding the non-user-defined keys, such as
+  // "turicreate_version" and "shortDescription", or is that up to the frontend?
+  const flex_list& features_list = read_state<flex_list>("features");
+  const flex_string features_string =
+      join(std::vector<std::string>(features_list.begin(),
+                                    features_list.end()    ), ",");
+  flex_dict user_defined_metadata = {
+      {"features", features_string},
+      {"max_iterations", read_state<flex_int>("max_iterations")},
+      {"prediction_window", read_state<flex_int>("prediction_window")},
+      {"session_id", read_state<flex_string>("session_id")},
+      {"target", read_state<flex_string>("target")},
+      {"type", "activity_classifier"},
+      {"version", 2},
+  };
+  model_wrapper->add_metadata({
+      {"user_defined", std::move(user_defined_metadata)}
+  });
+
+  if (!filename.empty()) {
+    model_wrapper->save(filename);
+  }
+
+  return model_wrapper;
 }
 
 std::unique_ptr<data_iterator> activity_classifier::create_iterator(
@@ -235,6 +278,8 @@ void activity_classifier::init_train(
 
   // Set additional model fields.
   add_or_update_state({
+      { "classes", training_data_iterator_->class_labels() },
+      { "features", training_data_iterator_->feature_names() },
       { "num_classes", training_data_iterator_->class_labels().size() },
       { "num_features", training_data_iterator_->feature_names().size() },
       { "session_id", session_id_column_name },

@@ -310,8 +310,7 @@ def create(dataset, target, feature=None, model = 'resnet-50',
 
 class ImageClassifier(_CustomModel):
     """
-    An trained model that is ready to use for classification, exported to
-    CoreML, or for feature extraction.
+    A trained model that is ready to use for classification or export to CoreML.
 
     This model should not be constructed directly.
     """

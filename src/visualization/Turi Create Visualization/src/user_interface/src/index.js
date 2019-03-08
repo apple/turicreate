@@ -104,7 +104,7 @@ window.setProtoMessage = function setProtoMessage(value){
     var decoded = ParcelMessage.decode(buffer);
     
     if (decoded.hasOwnProperty('metadata')) {
-        component_rendered = ReactDOM.render(<TCAnnotate total={decoded.metadata.numExamples}/>, document.getElementById('annotate_viz'));
+        component_rendered = ReactDOM.render(<TCAnnotate metadata={decoded.metadata}/>, document.getElementById('annotate_viz'));
         spec_type = SpecType.annotate;
     } else if(decoded.hasOwnProperty('data')) {
         for (var i = 0; i < decoded["data"]["data"].length; i++) {
@@ -112,8 +112,13 @@ window.setProtoMessage = function setProtoMessage(value){
             const type = decoded["data"]["data"][i]["images"][0]["type"];
             const data = decoded["data"]["data"][i]["images"][0]["imgData"];
             const image = "data:image/" + type + ";base64," + data;
-
             component_rendered.setImageData(row_index, image);
+        }
+    } else if(decoded.hasOwnProperty('annotations')) {
+        for (var i = 0; i < decoded["annotations"]["annotation"].length; i++) {
+            const row_index = decoded["annotations"]["annotation"][i]["rowIndex"][0];
+            const annotation = decoded["annotations"]["annotation"][i]["labels"][0];
+            component_rendered.setAnnotationData(row_index, annotation);
         }
     }
 }

@@ -23,7 +23,7 @@ from turicreate.toolkits._model import PythonProxy as _PythonProxy
 
 def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size=64):
     '''
-    Create a :class:`SoundClassifier` model.
+    Creates a :class:`SoundClassifier` model.
 
     Parameters
     ----------
@@ -168,6 +168,11 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
 
 
 class SoundClassifier(_CustomModel):
+    """
+    A trained model that is ready to use for sound classification or to export to CoreML.
+
+    This model should not be constructed directly.
+    """
     _PYTHON_SOUND_CLASSIFIER_VERSION = 1
 
     @staticmethod

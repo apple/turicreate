@@ -82,16 +82,16 @@ results = model.evaluate(test_data)
 
 Refer to the chapter on linear regression for the following features:
 
-* [Accessing attributes of the model](linear-regression.md#linregr-model-access)
-* [Interpreting results](linear-regression.md#linregr-interpreting-results)
-* [Using categorical features](linear-regression.md#linregr-categorical-features)
-* [Sparse features](linear-regression.md#linregr-sparse-features)
-* [List features](linear-regression.md#linregr-list-features)
-* [Feature rescaling](linear-regression.md#linregr-feature-rescaling)
-* [Chosing the solver](linear-regression.md#linregr-solver)
-* [Regularizing models](linear-regression.md#linregr-regularizer)
-* [Evaluating Results](logistic-regression.md#logregr-evaluation)
-* [Working with imbalanced data](logistic-regression.md#logregr-imbalaced-data)
+* [Accessing attributes of the model](linear-regression.md#accessing-attributes-of-the-model)
+* [Interpreting results](linear-regression.md#interpreting-results)
+* [Using categorical features](linear-regression.md#categorical-features)
+* [Sparse features](linear-regression.md#sparse-features)
+* [List features](linear-regression.md#list-features)
+* [Feature rescaling](linear-regression.md#feature-rescaling)
+* [Chosing the solver](linear-regression.md#choosing-the-solver)
+* [Regularizing models](linear-regression.md#regularizing-models)
+* [Evaluating Results](logistic-regression.md#evaluating-results)
+* [Working with imbalanced data](logistic-regression.md#working-with-imbalaced-data)
 
 We will now discuss some advanced features that are **specific to SVM**.
 

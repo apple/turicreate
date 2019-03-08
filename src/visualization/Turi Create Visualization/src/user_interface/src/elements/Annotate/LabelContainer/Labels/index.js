@@ -9,12 +9,12 @@ class Label extends Component {
 	
 	  var classes = [
 	    styles.Label
-	  ]
-	
-	  if(this.props.active){
+		]
+
+	  if(this.props.active &&  !this.props.infiniteScroll){
 	    classes.push(styles.LabelSelected);
 	  }
-	
+
 	  return (
 	    <div className={classes.join(" ")}>
 	      <div className={styles.LabelSpacer}>
@@ -27,7 +27,7 @@ class Label extends Component {
 	          </div>
 	        </div>
 	        <div className={styles.LabelApplyButton}
-	        	 onClick={this.props.onClick.bind(this)}>
+	        	 	 onClick={this.props.onClick.bind(this)}>
 	          <span>
 	            Apply
 	          </span>

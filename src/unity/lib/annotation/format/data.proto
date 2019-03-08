@@ -8,7 +8,8 @@ message ImageDatum {
   int32 height = 2;
   int32 channels = 3;
 
-  enum Format { 
+
+  enum Format {
     JPG = 0;
     PNG = 1;
     RAW_ARRAY = 2;
@@ -35,7 +36,7 @@ message DataGetter {
   }
 
   GetterType type = 1;
-  
+
   int32 start = 2;
   int32 end = 3;
 }

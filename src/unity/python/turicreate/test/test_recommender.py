@@ -1098,6 +1098,13 @@ class RecommendTest(RecommenderTestBase):
                             exclude=exclude, exclude_known=False)
             assert r is not None
 
+    def test_exclude(self):
+        
+        exclude = tc.SFrame({'user_id': ["2", "3"], 'item_id': [2, 3]})
+        m = tc.ranking_factorization_recommender.create(self.sf, target='rating')
+        r = m.recommend(users=None, exclude=exclude, exclude_known=False)
+        assert r.num_rows() == 14
+
     def test_side_data_used(self):
 
         # Test whether or not recommendations change when not using the explicit

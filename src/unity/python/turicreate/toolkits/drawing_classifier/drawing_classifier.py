@@ -19,7 +19,8 @@ from .. import _pre_trained_models
 BITMAP_WIDTH = 28
 BITMAP_HEIGHT = 28
 
-def _raise_error_if_not_drawing_classifier_input_sframe(dataset, feature, target):
+def _raise_error_if_not_drawing_classifier_input_sframe(
+    dataset, feature, target):
     from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
     _raise_error_if_not_sframe(dataset)
     if feature not in dataset.column_names():
@@ -38,7 +39,7 @@ def _raise_error_if_not_drawing_classifier_input_sframe(dataset, feature, target
     if len(dataset) == 0:
         raise _ToolkitError("Input Dataset is empty!")
 
-def create(input_dataset, feature="bitmap", target="label", 
+def create(input_dataset, feature="drawing", target="label", 
             pretrained_model_url=None, classes=None, batch_size=256, 
             num_epochs=100, max_iterations=0, verbose=True, **kwargs):
     """
@@ -56,8 +57,8 @@ def create(input_dataset, feature="bitmap", target="label",
     else:
         num_epochs = max_iterations * batch_size / len(input_dataset)
 
-    _raise_error_if_not_drawing_classifier_input_sframe(input_dataset, 
-        feature, target)
+    _raise_error_if_not_drawing_classifier_input_sframe(
+        input_dataset, feature, target)
 
     is_stroke_input = (input_dataset[feature].dtype != _tc.Image)
     dataset = _extensions._drawing_classifier_prepare_data(

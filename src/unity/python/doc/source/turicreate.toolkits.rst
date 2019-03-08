@@ -15,6 +15,8 @@ Applications
 
     turicreate.toolkits.activity_classifier
     turicreate.toolkits.image_classifier
+    turicreate.toolkits.drawing_classifier
+    turicreate.toolkits.sound_classifier
     turicreate.toolkits.image_similarity
     turicreate.toolkits.object_detector
     turicreate.toolkits.recommender

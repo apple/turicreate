@@ -10,6 +10,7 @@ import SingleImage from './SingleImage';
 import LabelContainer from './LabelContainer';
 import LabelModal from './LabelModal';
 import ErrorBar from './ErrorBar';
+import { LabelType } from './utils';
 
 const DEFAULT_NUM_EXPECTED = 10;
 const CACHE_SIZE = 1000;
@@ -28,14 +29,43 @@ class Annotate extends Component {
       labelCreationError: null,
       incrementalCurrentIndex: 0,
       LabelModalValue: "",
-      /* TODO: Labels will be Populated from MetaData */
-      imageData:{},
-      labels:[]
+      imageData: {},
+      annotationData: {},
+      labels:[],
+      type:null
     }
   }
 
   componentDidMount() {
+    var labeltype;
+    var propLabels = this.props.metadata.imageClassification.label;
+
+    if (propLabels.length > 0) {
+      if(Object.keys(propLabels[0]).includes("stringLabel")){
+        labeltype = LabelType.STRING;
+      }else{
+        labeltype = LabelType.INTEGER;
+      }
+    } else {
+      labeltype = LabelType.STRING;
+    }
+
+    if (labeltype == LabelType.STRING) {
+      propLabels = propLabels.filter(label => label.stringLabel != "");
+    }
     
+    const labels = propLabels.map((x) => {
+      return {
+        name: (labeltype == LabelType.INTEGER)?x.intLabel:x.stringLabel,
+        num_annotated: x.elementCount,
+        num_expected: DEFAULT_NUM_EXPECTED
+      }
+    });
+
+    this.setState({
+      labels: labels,
+      type: labeltype
+    });
   }
 
   cleanCache = (start, end) => {
@@ -69,9 +99,18 @@ class Annotate extends Component {
 
   getData = (start, end) => {
     this.cleanCache(start, end);
+    this.getAnnotations(start, end);
+    this.getHelper(start, end, 0);
+  }
+
+  getAnnotations = (start, end) => {
+    this.getHelper(start, end, 1);
+  }
+
+  getHelper = (start, end, type) => {
     const root = Root.fromJSON(messageFormat);
     const ParcelMessage = root.lookupType("TuriCreate.Annotation.Specification.ClientRequest");
-    const payload = {"getter": {"type": 0, "start": start, "end": end}};
+    const payload = {"getter": {"type": type, "start": start, "end": end}};
     const err = ParcelMessage.verify(payload);
     if (err)
       throw Error(err);
@@ -85,6 +124,20 @@ class Annotate extends Component {
     } else {
       window.postMessageToNativeClient(encoded);
     }
+  }
+
+  setAnnotationData = (key, value) => {
+    var previousAnnotationData = this.state.annotationData;
+
+    if (this.state.type == LabelType.STRING) {
+      previousAnnotationData[key] = value.stringLabel;
+    } else if(this.state.type == LabelType.INTEGER) {
+      previousAnnotationData[key] = value.intLabel;
+    }
+
+    this.setState({
+      annotationData: previousAnnotationData
+    });
   }
 
   setImageData = (key, value) => {
@@ -169,9 +222,48 @@ class Annotate extends Component {
   }
 
   setAnnotation = (rowIndex, labels) => {
+    var previousAnnotationData = this.state.annotationData;
+    var previousLabelData = this.state.labels;
+    var previousLabel = previousAnnotationData[rowIndex];
+
+    if(previousLabel == labels){
+      return;
+    }
+
+    if(previousLabel != null){
+      for (var x = 0; x < previousLabelData.length; x++) {
+        if(this.state.labels[x].name == previousLabel) {
+          var tempLabel = previousLabelData[x];
+          tempLabel.num_annotated -= 1;
+          previousLabelData[x] = tempLabel;
+        }
+
+        if(this.state.labels[x].name == labels){
+          var tempLabel = previousLabelData[x];
+          tempLabel.num_annotated += 1;
+          previousLabelData[x] = tempLabel;
+        }
+      }
+    }
+
+    if (this.state.type == LabelType.STRING) {
+      previousAnnotationData[rowIndex] = labels;
+    } else if(this.state.type == LabelType.INTEGER) {
+      previousAnnotationData[rowIndex] = parseInt(labels, 10);
+    }
+
+
     const root = Root.fromJSON(messageFormat);
     const ParcelMessage = root.lookupType("TuriCreate.Annotation.Specification.ClientRequest");
-    const payload = {"annotations": {"annotation":[{"labels": [{"stringLabel": labels}], "rowIndex": [rowIndex]}]}};
+    
+    var payload;
+
+    if (this.state.type == LabelType.STRING) {
+      payload = {"annotations": {"annotation":[{"labels": [{"stringLabel": labels}], "rowIndex": [rowIndex]}]}};
+    } else {
+      payload = {"annotations": {"annotation":[{"labels": [{"intLabel": parseInt(labels, 10)}], "rowIndex": [rowIndex]}]}};
+    }
+
     const err = ParcelMessage.verify(payload);
     
     if (err)
@@ -186,23 +278,33 @@ class Annotate extends Component {
     } else {
       window.postMessageToNativeClient(encoded);
     }
+
+    this.setState({
+      annotationData: previousAnnotationData,
+      labels:previousLabelData
+    });
   }
 
   renderMainContent = () => {
     if(this.state.infiniteScroll) {
       return (
-        <InfiniteScroll numElements={this.props.total}
+        <InfiniteScroll numElements={this.props.metadata.numExamples}
                         hideAnnotated={this.state.hideAnnotated}
                         incrementalCurrentIndex={this.state.incrementalCurrentIndex}
                         updateIncrementalCurrentIndex={this.updateIncrementalCurrentIndex.bind(this)}
+                        toggleInfiniteScroll={this.toggleInfiniteScroll.bind(this)}
                         imageData={this.state.imageData}
-                        getData={this.getData.bind(this)} />
+                        annotationData={this.state.annotationData}
+                        getData={this.getData.bind(this)}
+                        type={this.state.type}
+                        getAnnotations={this.getAnnotations.bind(this)} />
       );
     } else {
       return (
         <SingleImage src={this.state.imageData[this.state.incrementalCurrentIndex]}
                      getData={this.getData.bind(this)}
-                     numElements={this.props.total}
+                     getAnnotations={this.getAnnotations.bind(this)}
+                     numElements={this.props.metadata.numExamples}
                      incrementalCurrentIndex={this.state.incrementalCurrentIndex}
                      updateIncrementalCurrentIndex={this.updateIncrementalCurrentIndex.bind(this)}/>
       );
@@ -250,7 +352,8 @@ class Annotate extends Component {
                         infiniteScroll={this.state.infiniteScroll}
                         setAnnotation={this.setAnnotation.bind(this)}
                         openLabelModal={this.openLabelModal.bind(this)}
-                        closeLabelModal={this.closeLabelModal.bind(this)}/>
+                        closeLabelModal={this.closeLabelModal.bind(this)}
+                        annotationData={this.state.annotationData}/>
         </div>
       </div>
     );

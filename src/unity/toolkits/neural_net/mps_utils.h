@@ -83,9 +83,6 @@ void convert_chw_to_hwc(const float_array& image, float* out_first,
 void convert_hwc_to_chw(const float_array& image, float* out_first,
                         float* out_last);
 
-float_array_map make_array_map(char **names, void **arrays,
-                               int64_t *sizes, int len);
-
 // This version assumes that each void* is actually a float_array*. This casting
 // from plain C should go away once we remove the original Python frontend.
 float_array_map make_array_map(char **names, void **arrays, int len);
