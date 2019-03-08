@@ -158,8 +158,7 @@ class DrawingClassifierTest(unittest.TestCase):
             sf = self.trains[index]
             preds = model.predict(sf)
             assert (preds.dtype == sf[self.target].dtype)
-            if self.pretrained_model_url is None and index == 0:
-                assert (preds == sf[self.target]).all()
+            assert (len(preds) == len(sf))
 
     def test_predict_with_sarray(self):
         for index in range(len(self.models)):
@@ -167,8 +166,7 @@ class DrawingClassifierTest(unittest.TestCase):
             sf = self.trains[index]
             preds = model.predict(sf[self.feature])
             assert (preds.dtype == sf[self.target].dtype)
-            if self.pretrained_model_url is None and index == 0:
-                assert (preds == sf[self.target]).all()
+            assert (len(preds) == len(sf))
 
     def test_evaluate_without_ground_truth(self):
         for index in range(len(self.trains)):
