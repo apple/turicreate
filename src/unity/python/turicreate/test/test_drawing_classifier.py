@@ -226,7 +226,7 @@ class DrawingClassifierTest(unittest.TestCase):
     @unittest.skipIf(_sys.platform != "darwin", "Core ML only supported on Mac")
     def test_export_coreml_with_predict(self):
         for test_number in range(len(self.models)):
-            feature = "bitmap" if test_number == 1 else self.feature
+            feature = self.feature
             model = self.models[test_number]
             sf = self.trains[test_number]
             if self.pretrained_model_url:
