@@ -433,6 +433,7 @@ gl_sframe _drawing_classifier_prepare_data(const gl_sframe &data,
                                            const std::string &feature) {
     DASSERT_TRUE(data.contains_column(feature));
 
+    std::vector<flexible_type> bitmaps;
     for (int row_number = 0; row_number < (int)data.size(); row_number++) {
         const flexible_type &strokes = data[feature][row_number];
         flex_list current_stroke_based_drawing = strokes.to<flex_list>();
