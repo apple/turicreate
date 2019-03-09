@@ -126,13 +126,12 @@
     },
     {
       "scale": "y",
-      "labelOverlap": true,
+      "labelOverlap": false,
       "orient": "left",
       "tickCount": {
         "signal": "min(ceil(height/40), 40)"
       },
-      "title": "{{ylabel}}",
-      "zindex": 1
+      "title": "{{ylabel}}"
     }
   ],
   "legends": [
