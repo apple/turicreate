@@ -13,6 +13,7 @@
 #include <logger/assertions.hpp>
 #include <logger/logger.hpp>
 #include <unity/toolkits/coreml_export/neural_net_models_exporter.hpp>
+#include <unity/toolkits/evaluation/metrics.hpp>
 #include <util/string_util.hpp>
 
 namespace turi {
@@ -56,6 +57,11 @@ float_array_map get_inference_config(size_t prediction_window) {
   float_array_map config = get_training_config(prediction_window);
   config["mode"] = shared_float_array::wrap(1.f);  // kLowLevelModeInference
   return config;
+}
+
+std::vector<std::string> get_supported_metrics() {
+  return {"accuracy", "auc", "precision", "recall", "f1_score", "log_loss",
+          "confusion_matrix", "roc_curve"};
 }
 
 }  // namespace
@@ -178,6 +184,39 @@ gl_sarray activity_classifier::predict(gl_sframe data,
 
   return result;
 }
+
+variant_map_type activity_classifier::evaluate(gl_sframe data,
+                                               std::string metric)
+{
+  // Validate metric and determine list of metrics to compute.
+  std::vector<std::string> metrics = get_supported_metrics();
+  if (metric != "auto") {
+    // If the caller didn't request "auto", then adjust the list of metrics.
+    if (metric == "report") {
+      // Add the per-class report to the standard list of metrics.
+      metrics.push_back("report_by_class");
+    } else {
+      // Just compute the requested metric, if valid.
+      if (std::find(metrics.begin(), metrics.end(), metric) == metrics.end()) {
+        log_and_throw("Unsupported metric " + metric);
+      } else {
+        metrics = {metric};
+      }
+    }
+  }
+
+  // Perform prediction.
+  gl_sarray predictions = predict(data, "probability_vector");
+
+  // Compute the requested metrics.
+  std::string target_column_name = read_state<flex_string>("target");
+  gl_sframe eval_inputs({ {"target", data[target_column_name]},
+                          {"probs",  predictions}               });
+  return evaluation::compute_classifier_metrics_from_probability_vectors(
+      std::move(metrics), eval_inputs, "target", "probs",
+      read_state<flex_list>("classes"));
+}
+
 
 std::shared_ptr<MLModelWrapper> activity_classifier::export_to_coreml(
     std::string filename)

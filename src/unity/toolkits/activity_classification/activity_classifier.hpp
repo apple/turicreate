@@ -33,6 +33,7 @@ class EXPORT activity_classifier: public ml_model_base {
              variant_type validation_data,
              std::map<std::string, flexible_type> opts);
   gl_sarray predict(gl_sframe data, std::string output_type);
+  variant_map_type evaluate(gl_sframe data, std::string metric);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
       std::string filename);
 
@@ -115,6 +116,30 @@ class EXPORT activity_classifier: public ml_model_base {
   // TODO: Support output_frequency as another argument? Provide a separate
   // predict_per_window?
 
+  REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::evaluate, "data",
+                                 "metric");
+  register_defaults("evaluate", {{"metric", std::string("auto")}});
+  REGISTER_CLASS_MEMBER_DOCSTRING(
+      activity_classifier::evaluate,
+      "----------\n"
+      "data : SFrame\n"
+      "    Dataset of new observations. Must include columns with the same\n"
+      "    names as the features used for model training, but does not require\n"
+      "    a target column. Additional columns are ignored.\n"
+      "metric : str, optional\n"
+      "    Name of the evaluation metric.  Possible values are:\n"
+      "    - 'auto'             : Returns all available metrics\n"
+      "    - 'accuracy'         : Classification accuracy (micro average)\n"
+      "    - 'auc'              : Area under the ROC curve (macro average)\n"
+      "    - 'precision'        : Precision score (macro average)\n"
+      "    - 'recall'           : Recall score (macro average)\n"
+      "    - 'f1_score'         : F1 score (macro average)\n"
+      "    - 'log_loss'         : Log loss\n"
+      "    - 'confusion_matrix' : An SFrame with counts of possible\n"
+      "                           prediction/true label combinations.\n"
+      "    - 'roc_curve'        : An SFrame containing information needed for an\n"
+      "                           ROC curve\n"
+  );
   REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::export_to_coreml,
                                  "filename");
 
