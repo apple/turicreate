@@ -298,7 +298,7 @@ flexible_type heatmap_result::emit() const {
       flex_dict value;
       size_t count = row[j];
       double yScale = static_cast<double>(j) / static_cast<double>(row_size);
-      double y1 = yScale * yWidth;
+      double y1 = (yScale * yWidth) + extrema.y.get_min();
       double y2 = y1 + yBinWidth;
       value.push_back(std::make_pair("x_left", x1));
       value.push_back(std::make_pair("x_right", x2));
