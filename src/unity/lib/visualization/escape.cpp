@@ -1,6 +1,6 @@
+#include <unity/lib/visualization/escape.hpp>
 
-
-#include "escape.hpp"
+#include <flexible_type/string_escape.hpp>
 
 namespace turi {
 namespace visualization {
@@ -223,5 +223,38 @@ std::string escapeForTable( const flexible_type& value,
 
     return ss.str();
 }
+
+std::string escape_string(const std::string& str, bool include_quotes) {
+  std::string ret;
+  size_t ret_len;
+  ::turi::escape_string(str, '\\', true /* use_escape_char */, '\"', include_quotes /* use_quote_char */, false /* double_quote */, ret, ret_len);
+
+  // ::turi::escape_string may yield an std::string padded with null terminators, and ret_len represents the true length.
+  // truncate to the ret_len length.
+  ret.resize(ret_len);
+  DASSERT_EQ(ret.size(), strlen(ret.c_str()));
+
+  return ret;
 }
+
+std::string replace_all(std::string str, const std::string& from, const std::string& to) {
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+    }
+    return str;
 }
+
+std::string extra_label_escape(const std::string& str, bool include_quotes){
+  std::string escaped_string = escape_string(str, include_quotes /* include_quotes */);
+  escaped_string = replace_all(escaped_string, std::string("\\n"), std::string("\\\\n"));
+  escaped_string = replace_all(escaped_string, std::string("\\t"), std::string("\\\\t"));
+  escaped_string = replace_all(escaped_string, std::string("\\b"), std::string("\\\\b"));
+  escaped_string = replace_all(escaped_string, std::string("\\r"), std::string("\\\\r"));
+
+  return escaped_string;
+}
+
+} // visualization
+} // turi
