@@ -97,3 +97,4 @@ node_modules/
 
 # CCache within Docker
 /.docker_ccache/
+/.docker_images/
