@@ -105,14 +105,8 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
 
     if verbose:
         # Setup progress table
-        column_names = ['Epoch', 'Accuracy (%)', 'Elapsed Time (seconds)']
-        num_columns = len(column_names)
-        column_width = max(map(lambda x: len(x), column_names)) + 2
-        hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
-        # Print progress table header
-        print(hr)
-        print(('| {:<{width}}' * num_columns + '|').format(*column_names, width=column_width-1))
-        print(hr)
+        table_printner = _tc.util._ProgressTablePrinter(['epoch', 'accuracy', 'time'],
+                                                        ['Epoch', 'Accuracy (%)', 'Elapsed Time (seconds)'])
 
     metric = _mx.metric.Accuracy()
     softmax_cross_entropy_loss = _mx.gluon.loss.SoftmaxCrossEntropyLoss()
@@ -139,13 +133,9 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
             # batch size of data to normalize the gradient by 1/batch_size.
             trainer.step(batch.data[0].shape[0])
 
-        metric_name, accuracy = metric.get()
+        _, accuracy = metric.get()
         if verbose:
-            # Print progress row
-            print("| {epoch:<{width}}| {accuracy:<{width}.3f}| {time:<{width}.1f}|".format(
-                epoch=i, accuracy=accuracy, time=_time.time()-start_time,
-                width=column_width-1))
-            print(hr)
+            table_printner.print_row(epoch=i, accuracy=accuracy, time=_time.time()-start_time)
 
         train_data.reset()
         metric.reset()
