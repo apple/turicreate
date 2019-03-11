@@ -11,7 +11,12 @@ The minimum requirements are:
 
 ### Ubuntu >= 17.10
 
-Follow the instructions for Ubuntu >= 16.04, but also install `libgconf-2-4`. This was previously included in desktop Ubuntu distributions but now needs to be installed separately starting with 17.10.
+Follow the instructions for Ubuntu >= 16.04, but also install the following dependencies. These was previously included in desktop Ubuntu distributions but now needs to be installed separately starting with 17.10.
+
+```shell
+sudo apt-get install libgconf-2-4
+sudo apt-get install libatlas3-base
+```
 
 ### Ubuntu >= 16.04
 On recent versions of Ubuntu, we just need a few dependencies
