@@ -602,6 +602,8 @@ class DrawingClassifier(_CustomModel):
             a drawing and contains a single value corresponding to the
             predicted label. Each prediction will have type integer or string
             depending on the type of the classes the model was trained on.
+            If `data` is a single drawing, the return value will be a single
+            prediction.
 
         See Also
         --------
@@ -620,13 +622,21 @@ class DrawingClassifier(_CustomModel):
             Rows: 10
             [3, 4, 3, 3, 4, 5, 8, 8, 8, 4]
         """
-        if type(data) == _tc.SArray:
+        if isinstance(data, _tc.SArray):
             predicted = self._predict_with_probabilities(
                 _tc.SFrame({
                     self.feature: data
                 }),
                 verbose
             )
-        else:
+        elif isinstance(data, _tc.SFrame):
             predicted = self._predict_with_probabilities(data, verbose)
+        else:
+            # single input
+            predicted = self._predict_with_probabilities(
+                _tc.SFrame({
+                    self.feature: [data]
+                }),
+                verbose
+            )
         return predicted[self.target]
