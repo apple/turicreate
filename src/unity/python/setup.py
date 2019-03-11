@@ -150,6 +150,7 @@ if __name__ == '__main__':
                     'Turi Create Visualization.app/Contents/Resources/build/static/*',
                     'Turi Create Visualization.app/Contents/Resources/build/static/css/*',
                     'Turi Create Visualization.app/Contents/Resources/build/static/js/*',
+                    'Turi Create Visualization.app/Contents/Resources/build/static/media/*',
                     'Turi Create Visualization.app/Contents/Frameworks/*',
 
                      # Linux visualization
