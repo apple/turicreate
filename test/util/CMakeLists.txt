@@ -16,3 +16,5 @@ make_boost_test(fast_power_test.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(cityhash_tc.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(2d_sparse_parallel_array.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(lru_test.cxx) 
+make_boost_test(bitops.cxx) 
+

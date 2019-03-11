@@ -172,6 +172,7 @@ std::unique_ptr<model_spec> activity_classifier::init_model() const
 {
   std::unique_ptr<model_spec> result(new model_spec);
 
+  flex_string target = read_state<flex_string>("target");
   size_t num_classes = read_state<flex_int>("num_classes");
   size_t num_features = read_state<flex_int>("num_features");
   size_t prediction_window = read_state<flex_int>("prediction_window");
@@ -222,7 +223,7 @@ std::unique_ptr<model_spec> activity_classifier::init_model() const
       /* weight_init_fn */      xavier_weight_initializer(
           FULLY_CONNECTED_HIDDEN_SIZE, num_classes),
       /* bias_init_fn */        zero_weight_initializer());
-  result->add_softmax("activityProbability", "dense1");
+  result->add_softmax(target + "Probability", "dense1");
 
   return result;
 }
