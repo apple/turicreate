@@ -39,7 +39,7 @@ def _raise_error_if_not_drawing_classifier_input_sframe(
 
 def create(input_dataset, feature="drawing", target="label", 
             pretrained_model_url=None, classes=None, batch_size=256, 
-            num_epochs=100, max_iterations=0, verbose=True, **kwargs):
+            max_iterations=0, verbose=True, **kwargs):
     """
     Create a :class:`DrawingClassifier` model.
     """
@@ -51,9 +51,13 @@ def create(input_dataset, feature="drawing", target="label",
     start_time = _time.time()
 
     if max_iterations == 0:
-        max_iterations = num_epochs * len(input_dataset) / batch_size
+        # @TODO: Be able to automatically choose number of epochs based on 
+        # data size
+        num_epochs = 100
+        num_iterations = num_epochs * len(input_dataset) / batch_size
     else:
         num_epochs = max_iterations * batch_size / len(input_dataset)
+        num_iterations = max_iterations
 
     _raise_error_if_not_drawing_classifier_input_sframe(
         input_dataset, feature, target)
@@ -94,7 +98,7 @@ def create(input_dataset, feature="drawing", target="label",
             print(hr)
 
         if verbose and (cur_time > progress['last_time'] + 10 or
-                        iteration_base1 == max_iterations):
+                        iteration_base1 == num_iterations):
             # Print progress table row
             elapsed_time = cur_time - start_time
             print(
@@ -160,7 +164,7 @@ def create(input_dataset, feature="drawing", target="label",
         'batch_size': batch_size,
         'training_loss': cur_loss,
         'training_time': training_time,
-        'max_iterations': max_iterations,
+        'num_iterations': num_iterations,
         'target': target,
         'feature': feature,
         'num_examples': len(input_dataset)
@@ -353,7 +357,7 @@ class DrawingClassifier(_CustomModel):
         ]
         training_fields = [
             ('Training Time', 'training_time'),
-            ('Training Iterations', 'max_iterations'),
+            ('Training Iterations', 'num_iterations'),
             ('Number of Examples', 'num_examples'),
             ('Batch Size', 'batch_size'),
             ('Final Loss (specific to model)', 'training_loss'),
