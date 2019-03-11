@@ -155,11 +155,8 @@ def create(input_dataset, feature="drawing", target="label",
     if verbose:
         print(hr)   # progress table footer
 
-    class_type = "int" if isinstance(classes[0], int) else "str"
-    
     state = {
         '_model': model,
-        '_class_type': class_type,
         '_class_to_index': class_to_index,
         'num_classes': len(classes),
         'classes': classes,
@@ -206,7 +203,7 @@ class DrawingClassifier(_CustomModel):
             net_params, state['_model'], ctx=ctx 
             )
         state['_model'] = net
-        if state['_class_type'] == "int":
+        if len(state['classes']) > 0 and isinstance(state['classes'][0], float):
             state['classes'] = list(map(int, state['classes']))
         return DrawingClassifier(state)
 
