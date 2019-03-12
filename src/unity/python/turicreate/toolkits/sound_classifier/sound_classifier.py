@@ -31,7 +31,7 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
         Input data. The column named by the 'feature' parameter will be
         extracted for modeling.
 
-    target : string, or int
+    target : string or int
         Name of the column containing the target variable. The values in this
         column must be of string or integer type.
 
@@ -81,19 +81,19 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
     encoded_target = dataset[target].apply(lambda x: class_label_to_id[x])
 
     if verbose:
-        print("Preprocessing audio data")
-    preprocessed_data, labels = feature_extractor.preprocess_data(dataset[feature], encoded_target)
+        print("\nPreprocessing audio data -")
+    preprocessed_data, labels = feature_extractor.preprocess_data(dataset[feature], encoded_target, verbose=verbose)
 
     if verbose:
-        print("Extracting deep features")
-    deep_features = feature_extractor.extract_features(preprocessed_data)
+        print("\nExtracting deep features -")
+    deep_features = feature_extractor.extract_features(preprocessed_data, verbose=verbose)
     del preprocessed_data
 
     if batch_size > len(deep_features):
         batch_size = len(deep_features)
 
     if verbose:
-        print("Training a custom neural network")
+        print("\nTraining a custom neural network -")
     train_data = _mx.io.NDArrayIter(deep_features, label=labels,
                                     batch_size=batch_size, shuffle=True)
 
