@@ -16,6 +16,7 @@
 #include <unity/toolkits/util/indexed_sframe_tools.hpp>
 #include <unity/toolkits/evaluation/evaluation_constants.hpp>
 #include <unity/toolkits/evaluation/metrics.hpp>
+#include <unity/toolkits/supervised_learning/classifier_evaluations.hpp>
 
 #include <map>
 #include <algorithm>
@@ -117,6 +118,124 @@ variant_type _supervised_streaming_evaluator(
     current_row += MBSIZE;
   }
   return evaluator->get_metric();
+}
+
+variant_map_type compute_classifier_metrics_from_probability_vectors(
+    std::vector<std::string> metrics, gl_sframe input,
+    std::string target_column_name, std::string prediction_probs_column_name,
+    flex_list class_labels)
+{
+  variant_map_type result;
+
+  // Configure an SFrame `data` such that column 0 is the target, column 1 is
+  // the probability vector, and column 2 is the most likely class label.
+  gl_sframe data =
+      input.select_columns({target_column_name, prediction_probs_column_name});
+  auto max_prob_label = [&class_labels](const flexible_type& ft) {
+    const flex_vec& prob_vec = ft.get<flex_vec>();
+    auto max_it = std::max_element(prob_vec.begin(), prob_vec.end());
+    return class_labels[max_it - prob_vec.begin()];
+  };
+  data.add_column(data[prediction_probs_column_name].apply(
+      max_prob_label, class_labels.front().get_type()));
+
+  // Handle "confusion_matrix" separately.
+  // TODO: Unify with the logic in supervised_learning_model_base::api_evaluate,
+  // and with the "confusion_matrix" evaluator returned by get_evaluator_metric.
+  auto new_metrics_end = std::remove(metrics.begin(), metrics.end(),
+                                     "confusion_matrix");
+  if (new_metrics_end != metrics.end()) {
+    // Don't expose get_evaluator_metric() to "report_by_class".
+    metrics.erase(new_metrics_end, metrics.end());
+
+    // Borrow the implementation from the supervised_learning toolkit.
+    // Use the column names consistent with that toolkit's api_evaluate.
+    result["confusion_matrix"] = supervised::confusion_matrix(
+        gl_sframe({ {"class",           data[target_column_name]         },
+                    {"predicted_class", data[data.column_names().back()] }  }),
+        "class", "predicted_class");
+  }
+
+  // Handle "report_by_class" separately.
+  // TODO: Implement "report_by_class" using the standard evaluation framework.
+  new_metrics_end = std::remove(metrics.begin(), metrics.end(),
+                                "report_by_class");
+  if (new_metrics_end != metrics.end()) {
+    // Don't expose get_evaluator_metric() to "report_by_class".
+    metrics.erase(new_metrics_end, metrics.end());
+
+    // Borrow the implementation from the supervised_learning toolkit.
+    result["report_by_class"] = supervised::classifier_report_by_class(
+        data, target_column_name, data.column_names().back());
+  }
+
+  // Construct the class-to-index map.
+  std::unordered_map<flexible_type, size_t> class_to_index;
+  for (size_t i = 0; i < class_labels.size(); ++i) {
+    class_to_index[class_labels[i]] = i;
+  }
+
+  // Initialize the evaluators.
+  using evaluator_shared_ptr = std::shared_ptr<supervised_evaluation_interface>;
+  std::map<std::string, variant_type> opts =
+      { {"index_map",     to_variant(class_to_index)},
+        {"binary", class_labels.size() <= 2}           };
+  std::map<std::string, evaluator_shared_ptr> evaluators;
+  for (const std::string& metric : metrics) {
+    // Apply the default options and tweaks to metric implementations defined
+    // by the Python API.
+    // TODO: Should the metric implementations themselves (or
+    // get_evaluator_metric) define the defaults?
+    std::string metric_impl = metric;
+    if (metric == "accuracy") {
+      opts["average"] = "micro";
+      metric_impl = "flexible_accuracy";
+    } else if (metric == "auc") {
+      opts["average"] = "macro";
+    } else if (metric == "f1_score") {
+      opts["average"] = "macro";
+      opts["beta"] = 1.0;
+      metric_impl = "fbeta_score";
+    } else if (metric == "log_loss") {
+      if (class_labels.size() > 2) {
+        metric_impl = "multiclass_logloss";
+      } else {
+        metric_impl = "binary_logloss";
+      }
+    } else if (metric == "precision") {
+      opts["average"] = "macro";
+    } else if (metric == "recall") {
+      opts["average"] = "macro";
+    } else if (metric == "roc_curve") {
+      opts["average"] = "default";
+    }
+    evaluators[metric] = get_evaluator_metric(metric_impl, opts);
+  }
+
+  // Traverse the predictions and labels in parallel.
+  auto callback = [&evaluators](size_t thread_idx,
+                                const std::shared_ptr<sframe_rows>& rows) {
+    for (const auto& row : *rows) {
+      for (const auto& metric_and_evaluator : evaluators) {
+        const evaluator_shared_ptr& evaluator = metric_and_evaluator.second;
+
+        // Feed the probability vector (index 1) or the maximum-probability
+        // label (index 2) into the evaluator.
+        size_t pred_col_idx = evaluator->is_prob_evaluator() ? 1 : 2;
+        evaluator->register_example(row[0], row[pred_col_idx], thread_idx);
+      }
+    }
+    return false;  // Never stop before all rows have been tallied.
+  };
+  data.materialize_to_callback(callback);
+
+  // Finalize each metric.
+  for (const auto& metric_and_evaluator : evaluators) {
+    result[metric_and_evaluator.first] =
+        metric_and_evaluator.second->get_metric();
+  }
+
+  return result;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
