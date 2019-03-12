@@ -352,6 +352,10 @@ class DrawingClassifier(_CustomModel):
         filename : string
             The path of the file where we want to save the Core ML model.
 
+        verbose : bool optional
+            If True, prints export progress.
+
+
         Examples
         --------
         >>> model.export_coreml('drawing_classifier.mlmodel')
@@ -503,7 +507,7 @@ class DrawingClassifier(_CustomModel):
         names as the feature and target columns used for model training.
         Additional columns are ignored.
         
-        metric : str, optional
+        metric : str optional
         Name of the evaluation metric. Possible values are:
         
         - 'auto'             : Returns all available metrics.
@@ -516,6 +520,9 @@ class DrawingClassifier(_CustomModel):
                                prediction/true label combinations.
         - 'roc_curve'        : An SFrame containing information needed for an
                                ROC curve
+        
+        verbose : bool optional
+        If True, prints prediction progress.
 
         Returns
         -------
@@ -592,7 +599,7 @@ class DrawingClassifier(_CustomModel):
             in which case it is a bitmap-based drawing input,
             or of type list, in which case it is a stroke-based drawing input.
 
-        verbose : bool
+        verbose : bool optional
             If True, prints prediction progress.
 
         Returns
