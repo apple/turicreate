@@ -105,7 +105,7 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
 
     if verbose:
         # Setup progress table
-        table_printner = _tc.util._ProgressTablePrinter(['epoch', 'accuracy', 'time'],
+        table_printer = _tc.util._ProgressTablePrinter(['epoch', 'accuracy', 'time'],
                                                         ['Epoch', 'Accuracy (%)', 'Elapsed Time (seconds)'])
 
     metric = _mx.metric.Accuracy()
@@ -135,7 +135,7 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
 
         _, accuracy = metric.get()
         if verbose:
-            table_printner.print_row(epoch=i, accuracy=accuracy, time=_time.time()-start_time)
+            table_printer.print_row(epoch=i, accuracy=accuracy, time=_time.time()-start_time)
 
         train_data.reset()
         metric.reset()
