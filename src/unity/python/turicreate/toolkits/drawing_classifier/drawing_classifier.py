@@ -68,7 +68,7 @@ def create(input_dataset, target, feature=None,
         indicates the column in `dataset` named "drawing" should be used as the
         feature.
         The feature column can contain both bitmap-based drawings as well as
-        stroke-based drawings. Image-based drawing input can be a grayscale
+        stroke-based drawings. Bitmap-based drawing input can be a grayscale
         tc.Image of any size.
         Stroke-based drawing input must be in the following format:
         Every drawing must be represented by a list of strokes, where each
