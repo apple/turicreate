@@ -2,6 +2,10 @@
 set -x
 set -e
 
+SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+WORKSPACE=${SCRIPT_DIR}/..
+cd ${WORKSPACE}
+
 # command line arguments
 if [[ -z $1 ]]; then
   echo "build type must be specified. "
