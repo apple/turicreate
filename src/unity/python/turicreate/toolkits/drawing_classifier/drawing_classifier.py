@@ -39,7 +39,7 @@ def _raise_error_if_not_drawing_classifier_input_sframe(
 
 def create(input_dataset, feature="drawing", target="label", 
             pretrained_model_url=None, classes=None, batch_size=256, 
-            max_iterations=0, verbose=True, **kwargs):
+            max_iterations=100, verbose=True, **kwargs):
     """
     Create a :class:`DrawingClassifier` model.
     """
@@ -50,10 +50,8 @@ def create(input_dataset, feature="drawing", target="label",
     
     start_time = _time.time()
 
-    if max_iterations == 0:
-        # @TODO: Be able to automatically choose number of epochs based on 
-        # data size
-        max_iterations = 100
+    # @TODO: Should be able to automatically choose number of iterations
+    # based on data size: Tracked in Github Issue #1576
 
     _raise_error_if_not_drawing_classifier_input_sframe(
         input_dataset, feature, target)
