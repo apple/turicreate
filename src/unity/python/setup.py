@@ -175,6 +175,8 @@ if __name__ == '__main__':
         long_description=long_description,
         classifiers=classifiers,
         install_requires=[
+            "numba == 0.42.0",
+            "llvmlite == 0.27.0",
             "decorator >= 4.0.9",
             "prettytable == 0.7.2",
             "requests >= 2.9.1",
