@@ -203,6 +203,9 @@ class DrawingClassifier(_CustomModel):
             net_params, state['_model'], ctx=ctx 
             )
         state['_model'] = net
+        # For a model trained on integer classes, when saved and loaded back,
+        # the classes are loaded as floats. The following if statement casts
+        # the loaded "float" classes back to int.
         if len(state['classes']) > 0 and isinstance(state['classes'][0], float):
             state['classes'] = list(map(int, state['classes']))
         return DrawingClassifier(state)
