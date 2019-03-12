@@ -56,12 +56,7 @@ def create(input_dataset, target, feature=None,
 
     target : string
         Name of the column containing the target variable. The values in this
-        column must be of string or integer type. String target variables are
-        automatically mapped to integers in the order in which they are 
-        provided.
-        For example, a target variable with 'square' and 'triangle' as possible
-        values is mapped to 0 and 1 respectively. Use `model.classes` to 
-        retrieve the order in which the classes are mapped.
+        column must be of string or integer type.
 
     feature : string optional
         Name of the column containing the input drawings. 'None' (the default)
@@ -82,7 +77,7 @@ def create(input_dataset, target, feature=None,
         training.
 
     batch_size: int optional
-        The number of images per training iteration. If not set, a default
+        The number of images per training step. If not set, a default
         value of 256 will be used. If you are getting memory errors,
         try decreasing this value. If you have a powerful computer, increasing
         this value may improve performance.
