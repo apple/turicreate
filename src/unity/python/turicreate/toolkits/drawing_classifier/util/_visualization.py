@@ -20,7 +20,7 @@ def draw_strokes(stroke_based_drawings):
         of points, and each point is represented as a dictionary
         with two keys, "x" and "y". A single stroke-based drawing
         is also supported, in which case, the type of the input
-        would be list
+        would be list.
         
     Returns
     -------
