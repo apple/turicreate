@@ -474,9 +474,7 @@ gl_sframe activity_classifier::perform_inference(data_iterator* data) const {
   size_t num_classes = read_state<size_t>("num_classes");
 
   // Allocate a buffer into which to write the class probabilities.
-  flexible_type preds(flex_type_enum::VECTOR);
-  flex_vec& preds_vector = preds.mutable_get<flex_vec>();
-  preds_vector.resize(num_classes);
+  flex_vec preds(num_classes);
 
   // Initialize the NN backend.
   std::unique_ptr<compute_context> ctx = create_compute_context();
@@ -515,7 +513,7 @@ gl_sframe activity_classifier::perform_inference(data_iterator* data) const {
       size_t cumulative_samples = 0;
       while (cumulative_samples < info.num_samples) {
         // Copy the probability vector for this prediction.
-        std::copy(output_ptr, output_ptr + num_classes, preds_vector.begin());
+        std::copy(output_ptr, output_ptr + num_classes, preds.begin());
         output_ptr += num_classes;
 
         // Compute how many samples this prediction applies to.
