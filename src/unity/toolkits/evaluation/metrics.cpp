@@ -139,10 +139,27 @@ variant_map_type compute_classifier_metrics_from_probability_vectors(
   data.add_column(data[prediction_probs_column_name].apply(
       max_prob_label, class_labels.front().get_type()));
 
+  // Handle "confusion_matrix" separately.
+  // TODO: Unify with the logic in supervised_learning_model_base::api_evaluate,
+  // and with the "confusion_matrix" evaluator returned by get_evaluator_metric.
+  auto new_metrics_end = std::remove(metrics.begin(), metrics.end(),
+                                     "confusion_matrix");
+  if (new_metrics_end != metrics.end()) {
+    // Don't expose get_evaluator_metric() to "report_by_class".
+    metrics.erase(new_metrics_end, metrics.end());
+
+    // Borrow the implementation from the supervised_learning toolkit.
+    // Use the column names consistent with that toolkit's api_evaluate.
+    result["confusion_matrix"] = supervised::confusion_matrix(
+        gl_sframe({ {"class",           data[target_column_name]         },
+                    {"predicted_class", data[data.column_names().back()] }  }),
+        "class", "predicted_class");
+  }
+
   // Handle "report_by_class" separately.
   // TODO: Implement "report_by_class" using the standard evaluation framework.
-  auto new_metrics_end = std::remove(metrics.begin(), metrics.end(),
-                                     "report_by_class");
+  new_metrics_end = std::remove(metrics.begin(), metrics.end(),
+                                "report_by_class");
   if (new_metrics_end != metrics.end()) {
     // Don't expose get_evaluator_metric() to "report_by_class".
     metrics.erase(new_metrics_end, metrics.end());
@@ -175,10 +192,6 @@ variant_map_type compute_classifier_metrics_from_probability_vectors(
       metric_impl = "flexible_accuracy";
     } else if (metric == "auc") {
       opts["average"] = "macro";
-    } else if (metric == "confusion_matrix") {
-      // TODO: Investigate why computing the map ourselves doesn't work as
-      // expected.
-      metric_impl = "confusion_matrix_no_map";
     } else if (metric == "f1_score") {
       opts["average"] = "macro";
       opts["beta"] = 1.0;
