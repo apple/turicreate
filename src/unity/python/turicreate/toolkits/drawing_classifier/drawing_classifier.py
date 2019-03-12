@@ -54,7 +54,7 @@ def create(input_dataset, feature="drawing", target="label",
         Input data. The columns named by the ``feature`` and ``target``
         parameters will be extracted for training the drawing classifier.
 
-    feature : string
+    feature : string optional
         Name of the column containing the input drawings. 'None' (the default)
         indicates the column in `dataset` named "drawing" should be used as the
         feature.
@@ -68,7 +68,7 @@ def create(input_dataset, feature="drawing", target="label",
         Each point must be a dictionary with two keys, "x" and "y", and their
         respective values must be numerical, i.e. either integer or float.
 
-    target : string
+    target : string optional
         Name of the column containing the target. 'None' (the default)
         indicates the column in `dataset` named "label" should be used as the
         feature. The target column must be integer or string.
@@ -81,15 +81,15 @@ def create(input_dataset, feature="drawing", target="label",
         List of integers/strings containing the names of the classes of objects.
         Inferred from the data if not provided.
 
-    batch_size: int
+    batch_size: int optional
         The number of images per training iteration. If not set, a default
         value of 256 will be used.
 
-    max_iterations : int
-        The number of training iterations. If 0, then it will be automatically
-        be determined based on the amount of data you provide.
+    max_iterations : int optional
+        The maximum number of allowed passes through the data. More passes over
+        the data can result in a more accurately trained model. 
 
-    verbose : bool, optional
+    verbose : bool optional
         If True, print progress updates and model details.
 
     Returns
