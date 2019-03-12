@@ -102,16 +102,84 @@ def _find_only_column_of_type(sframe, target_type, type_name, col_name):
         raise ToolkitError('No %s column in "dataset".' % type_name)
     return image_column_name
 
-
 def _find_only_image_column(sframe):
     """
-    Finds the only column in `sframe` with a type of turicreate.Image. If there are zero or
-    more than one image columns, an exception will be raised.
+    Finds the only column in `sframe` with a type of turicreate.Image. 
+    If there are zero or more than one image columns, an exception will 
+    be raised.
     """
     from turicreate import Image
     return _find_only_column_of_type(sframe, target_type=Image,
                                      type_name='image', col_name='feature')
 
+def _find_only_drawing_column(sframe):
+    """
+    Finds the only column that can be interpreted as a drawing feature column.
+    A drawing column can be a stroke-based drawing column (with dtype list)
+    or a bitmap-based drawing column (with dtype turicreate.Image)
+    
+    If there are zero or more than one drawing columns, an exception will be
+    raised.
+    """
+    from turicreate import Image
+    bitmap_success, stroke_success = False, False
+    bitmap_error, stroke_error = None, None
+    feature = None
+    try:
+        feature = _find_only_column_of_type(sframe, 
+            target_type=Image, type_name='drawing', col_name='feature')
+        bitmap_success = True
+    except ToolkitError as err_from_bitmap_search:
+        bitmap_error = err_from_bitmap_search
+    
+    try:
+        feature = _find_only_column_of_type(sframe, 
+            target_type=list, type_name='drawing', col_name='feature')
+        stroke_success = True
+    except ToolkitError as err_from_stroke_search:
+        stroke_error = err_from_stroke_search
+
+    if bitmap_success ^ stroke_success:
+        # success! 
+        # found exactly one of bitmap-based drawing column and
+        # stroke-based drawing column.
+        return feature
+    elif bitmap_success and stroke_success:
+        raise ToolkitError("No 'feature' column specified. " 
+            + "Found one column with type " 
+            + "turicreate.Image (for bitmap-based drawing input) " 
+            + "and one with type list (for stroke-based drawing input) " 
+            + "in 'dataset'. Can not infer correct 'feature' column.")
+    else:
+        assert not bitmap_success and not stroke_success
+        more_than_one_image_columns = "more than one" in bitmap_error
+        more_than_one_stroke_columns = "more than one" in stroke_error
+        if more_than_one_image_columns and more_than_one_stroke_columns:
+            raise ToolkitError("No 'feature' column specified. " 
+                + "Found more than one column both with type " 
+                + "turicreate.Image (for bitmap-based drawing input) " 
+                + "and with type list (for stroke-based drawing input) " 
+                + "in 'dataset'. Can not infer correct 'feature' column.")
+        elif more_than_one_image_columns and not more_than_one_stroke_columns:
+            raise ToolkitError("No 'feature' column specified. " 
+                + "Found more than one column with type " 
+                + "turicreate.Image (for bitmap-based drawing input) and " 
+                + "no column with type list " 
+                + "(for stroke-based drawing input) " 
+                + "in 'dataset'. Can not infer correct 'feature' column.")
+        elif not more_than_one_image_columns and more_than_one_stroke_columns:
+            raise ToolkitError("No 'feature' column specified. " 
+                + "Found more than one column with type " 
+                + "list (for stroke-based drawing input) and " 
+                + "no column with type turicreate.Image " 
+                + "(for bitmap-based drawing input) " 
+                + "in 'dataset'. Can not infer correct 'feature' column.")
+        else:
+            raise ToolkitError("No 'feature' column specified. " 
+                + "Could neither find a column with type turicreate.Image " 
+                + "(for bitmap-based drawing input) nor with " 
+                + "type list (for stroke-based drawing input) " 
+                + "in 'dataset'. Can not infer correct 'feature' column.")
 
 def _SGraphFromJsonTree(json_str):
     """

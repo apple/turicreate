@@ -42,9 +42,9 @@ def _raise_error_if_not_drawing_classifier_input_sframe(
     if len(dataset) == 0:
         raise _ToolkitError("Input Dataset is empty!")
 
-def create(input_dataset, feature="drawing", target="label", 
-            pretrained_model_url=None, classes=None, batch_size=256, 
-            num_epochs=100, max_iterations=0, verbose=True, **kwargs):
+def create(input_dataset, target, feature=None, 
+            pretrained_model_url=None, batch_size=256, 
+            num_epochs=100, max_iterations=0, verbose=True):
     """
     Create a :class:`DrawingClassifier` model.
 
@@ -53,6 +53,15 @@ def create(input_dataset, feature="drawing", target="label",
     dataset : SFrame
         Input data. The columns named by the ``feature`` and ``target``
         parameters will be extracted for training the drawing classifier.
+
+    target : string
+        Name of the column containing the target variable. The values in this
+        column must be of string or integer type. String target variables are
+        automatically mapped to integers in the order in which they are 
+        provided.
+        For example, a target variable with 'square' and 'triangle' as possible
+        values is mapped to 0 and 1 respectively. Use `model.classes` to 
+        retrieve the order in which the classes are mapped.
 
     feature : string optional
         Name of the column containing the input drawings. 'None' (the default)
@@ -68,22 +77,15 @@ def create(input_dataset, feature="drawing", target="label",
         Each point must be a dictionary with two keys, "x" and "y", and their
         respective values must be numerical, i.e. either integer or float.
 
-    target : string optional
-        Name of the column containing the target. 'None' (the default)
-        indicates the column in `dataset` named "label" should be used as the
-        feature. The target column must be integer or string.
-
     pretrained_model_url : string optional
         A URL to the pretrained model that must be used for a warm start before
         training.
 
-    classes : list optional
-        List of integers/strings containing the names of the classes of objects.
-        Inferred from the data if not provided.
-
     batch_size: int optional
         The number of images per training iteration. If not set, a default
-        value of 256 will be used.
+        value of 256 will be used. If you are getting memory errors,
+        try decreasing this value. If you have a powerful computer, increasing
+        this value may improve performance.
 
     max_iterations : int optional
         The maximum number of allowed passes through the data. More passes over
@@ -124,6 +126,10 @@ def create(input_dataset, feature="drawing", target="label",
     else:
         num_epochs = max_iterations * batch_size / len(input_dataset)
 
+    # automatically infer feature column
+    if feature is None:
+        feature = _tkutl._find_only_drawing_column(input_dataset)
+
     _raise_error_if_not_drawing_classifier_input_sframe(
         input_dataset, feature, target)
 
@@ -139,8 +145,7 @@ def create(input_dataset, feature="drawing", target="label",
     progress = {'smoothed_loss': None, 'last_time': 0}
     iteration = 0
 
-    if classes is None:
-        classes = dataset[target].unique()
+    classes = dataset[target].unique()
     classes = sorted(classes)
     class_to_index = {name: index for index, name in enumerate(classes)}
 
@@ -223,7 +228,6 @@ def create(input_dataset, feature="drawing", target="label",
     state = {
         '_model': model,
         '_class_to_index': class_to_index,
-        'name': 'Drawing Classifier'
         'num_classes': len(classes),
         'classes': classes,
         'input_image_shape': (1, BITMAP_WIDTH, BITMAP_HEIGHT),
@@ -287,8 +291,8 @@ class DrawingClassifier(_CustomModel):
 
     def __repr__(self):
         """
-        Print a string description of the model when the model name is entered
-        in the terminal.
+        Returns a string description of the model when the model name is 
+        entered in the terminal.
         """
 
         width = 40
@@ -315,21 +319,22 @@ class DrawingClassifier(_CustomModel):
               The order matches that of the 'sections' object.
         """
         model_fields = [
-            ('Model Type', 'name'),
-            ('Number of classes', 'num_classes')
+            ('Number of classes', 'num_classes'),
+            ('Feature column', 'feature'),
+            ('Target column', 'target')
         ]
         training_fields = [
             ('Training Time', 'training_time'),
             ('Training Iterations', 'max_iterations'),
             ('Number of Examples', 'num_examples'),
             ('Batch Size', 'batch_size'),
-            ('Final Loss (specific to model)', 'training_loss'),
+            ('Final Loss (specific to model)', 'training_loss')
         ]
 
         section_titles = ['Schema', 'Training summary']
         return([model_fields, training_fields], section_titles)
 
-    def export_coreml(self, filename, verbose = False):
+    def export_coreml(self, filename, verbose=False):
         """
         Save the model in Core ML format. The Core ML model takes a grayscale 
         image of fixed size as input and produces two outputs: 
@@ -388,11 +393,11 @@ class DrawingClassifier(_CustomModel):
             new_aux_params[k] = net_params[k].data(net_params[k].list_ctx()[0])
         mod.set_params(new_arg_params, new_aux_params)
 
-        coreml_model = _mxnet_converter.convert(mod, mode = 'classifier',
-                                class_labels = self.classes,
-                                input_shape = [(self.feature, image_shape)],
-                                builder = None, verbose=verbose,
-                                preprocessor_args = {
+        coreml_model = _mxnet_converter.convert(mod, mode='classifier',
+                                class_labels=self.classes,
+                                input_shape=[(self.feature, image_shape)],
+                                builder=None, verbose=verbose,
+                                preprocessor_args={
                                     'image_input_names': [self.feature],
                                     'image_scale': 1.0/255
                                 })
@@ -438,13 +443,13 @@ class DrawingClassifier(_CustomModel):
                 input_dataset, self.feature) if is_stroke_input else input_dataset
     
         loader = _SFrameClassifierIter(dataset, self.batch_size,
-                    class_to_index = self._class_to_index,
-                    feature_column = self.feature,
-                    target_column = self.target,
-                    load_labels = False,
-                    shuffle = False,
-                    epochs = 1,
-                    iterations = None)
+                    class_to_index=self._class_to_index,
+                    feature_column=self.feature,
+                    target_column=self.target,
+                    load_labels=False,
+                    shuffle=False,
+                    epochs=1,
+                    iterations=None)
 
         dataset_size = len(dataset)
         ctx = _mxnet_utils.get_mxnet_context()
@@ -591,7 +596,7 @@ class DrawingClassifier(_CustomModel):
         Parameters
         ----------
         data : SFrame | SArray | tc.Image | list
-            The images on which to perform drawing classification.
+            The image(s) on which to perform drawing classification.
             If dataset is an SFrame, it must have a column with the same name
             as the feature column during training. Additional columns are
             ignored.

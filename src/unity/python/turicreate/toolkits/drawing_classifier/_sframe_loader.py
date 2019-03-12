@@ -19,7 +19,7 @@ _TMP_COL_RANDOM_ORDER = '_random_order'
 # (example, label, index) tuple.
 class _SFrameDataSource:
     def __init__(self, sframe, feature_column, target_column,
-                 load_labels = True, shuffle = True, samples = None):
+                 load_labels=True, shuffle=True, samples=None):
         self.target_column = target_column
         self.feature_column = feature_column
         self.load_labels = load_labels
