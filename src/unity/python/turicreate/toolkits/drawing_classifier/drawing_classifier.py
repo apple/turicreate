@@ -53,11 +53,7 @@ def create(input_dataset, feature="drawing", target="label",
     if max_iterations == 0:
         # @TODO: Be able to automatically choose number of epochs based on 
         # data size
-        num_epochs = 100
-        num_iterations = num_epochs * len(input_dataset) / batch_size
-    else:
-        num_epochs = max_iterations * batch_size / len(input_dataset)
-        num_iterations = max_iterations
+        max_iterations = 100
 
     _raise_error_if_not_drawing_classifier_input_sframe(
         input_dataset, feature, target)
@@ -98,7 +94,7 @@ def create(input_dataset, feature="drawing", target="label",
             print(hr)
 
         if verbose and (cur_time > progress['last_time'] + 10 or
-                        iteration_base1 == num_iterations):
+                        iteration_base1 == max_iterations):
             # Print progress table row
             elapsed_time = cur_time - start_time
             print(
@@ -113,7 +109,7 @@ def create(input_dataset, feature="drawing", target="label",
                  class_to_index=class_to_index,
                  load_labels=True,
                  shuffle=True,
-                 epochs=num_epochs,
+                 epochs=max_iterations,
                  iterations=None)
 
     ctx = _mxnet_utils.get_mxnet_context(max_devices=batch_size)
@@ -164,7 +160,7 @@ def create(input_dataset, feature="drawing", target="label",
         'batch_size': batch_size,
         'training_loss': cur_loss,
         'training_time': training_time,
-        'num_iterations': num_iterations,
+        'max_iterations': max_iterations,
         'target': target,
         'feature': feature,
         'num_examples': len(input_dataset)
@@ -176,7 +172,6 @@ class DrawingClassifier(_CustomModel):
     def __init__(self, state):
         self.__proxy__ = _PythonProxy(state)
         
-
     @classmethod
     def _native_name(cls):
         return "drawing_classifier"
@@ -357,7 +352,7 @@ class DrawingClassifier(_CustomModel):
         ]
         training_fields = [
             ('Training Time', 'training_time'),
-            ('Training Iterations', 'num_iterations'),
+            ('Training Iterations', 'max_iterations'),
             ('Number of Examples', 'num_examples'),
             ('Batch Size', 'batch_size'),
             ('Final Loss (specific to model)', 'training_loss'),
