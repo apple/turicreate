@@ -183,6 +183,7 @@ if __name__ == '__main__':
             "pillow >= 3.3.0",
             "pandas >= 0.19.0",
             "scipy >= 0.14.0",
+            "six >= 1.10.0",
             "resampy == 0.2.1",
             "numpy"
         ],
