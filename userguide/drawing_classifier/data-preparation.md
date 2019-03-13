@@ -18,8 +18,8 @@ both as bitmaps and as stroke-based drawings.
 Open a new terminal window and run the following commands:
 
 ```
-$ mkdir -p ~/Downloads/quickdraw
-$ cd ~/Downloads/quickdraw
+$ mkdir -p /Users/$(whoami)/Downloads/quickdraw
+$ cd /Users/$(whoami)/Downloads/quickdraw
 $ mkdir -p bitmaps
 $ mkdir -p strokes
 $ mkdir -p sframes
@@ -34,7 +34,7 @@ $ curl https://storage.googleapis.com/quickdraw_dataset/full/raw/triangle.ndjson
 Now, you should have the following file structure:
 
 ```
-~/Downloads/quickdraw/
+/Users/$(whoami)/Downloads/quickdraw/
     bitmaps/
         square.npy
         triangle.npy
@@ -65,7 +65,7 @@ import os
 random_state = np.random.RandomState(100)
 
 # Change if applicable
-quickdraw_dir = '~/Downloads/quickdraw'
+quickdraw_dir = '/Users/username/Downloads/quickdraw'
 bitmaps_dir = os.path.join(quickdraw_dir, 'bitmaps')
 sframes_dir = os.path.join(quickdraw_dir, 'sframes')
 npy_ext = '.npy'
@@ -193,6 +193,22 @@ sf.explore()
 This is what the rendered drawings would look like:
 
 ![Rendered Drawings](images/rendered_drawings.png)
+
+After building the two SFrames, your directory structure should look like the
+following:
+```
+/Users/$(whoami)/Downloads/quickdraw/
+    bitmaps/
+        square.npy
+        triangle.npy
+    strokes/
+        square.ndjson
+        triangle.ndjson
+    sframes/
+        bitmap_square_triangle.sframe
+        stroke_square_triangle.sframe
+```
+
 
 ## References
 
