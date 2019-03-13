@@ -36,6 +36,7 @@ set(TC_ANNOTATIONS_SOURCE_FILES
   annotation_base.cpp
   class_registrations.cpp
   image_classification.cpp
+  utils.cpp
 )
 
 make_library(annotation OBJECT

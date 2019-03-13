@@ -6,6 +6,10 @@
 #include "build/format/cpp/message.pb.h"
 #include "build/format/cpp/meta.pb.h"
 
+#include <boost/regex.hpp>
+
+namespace annotate_spec = TuriCreate::Annotation::Specification;
+
 namespace turi {
 namespace annotate {
 
@@ -27,6 +31,9 @@ typename std::enable_if<std::is_same<T, annotate_spec::MetaData>::value>::type
 populate_parcel(annotate_spec::Parcel &parcel, T message) {
   parcel.mutable_metadata()->CopyFrom(message);
 }
+
+bool isInteger(std::string s);
+
 
 } // namespace annotate
 } // namespace turi
