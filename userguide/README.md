@@ -89,3 +89,7 @@ With Core ML, you can integrate machine learning models into your macOS,
 iOS, watchOS, and tvOS app. Many models created  in Turi Create can be
 exported for use in Core ML.
 
+<script type="text/javascript" src="../turi/js/jquery/jquery-2.1.3.min.js"></script>
+<script type="text/javascript" src="../turi/js/d3/d3.min.js"></script>
+<script type="text/javascript" src="../supervised-learning/images/random-utils.js"></script>
+<script type="text/javascript" src="../supervised-learning/images/plotting-utils.js"></script>
