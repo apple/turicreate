@@ -6,9 +6,13 @@
 #ifndef TURI_EVALUATION_H_
 #define TURI_EVALUATION_H_
 
+#include <string>
+#include <vector>
+
 #include <sframe/sarray.hpp>
 #include <sframe/sframe.hpp>
 #include <unity/lib/gl_sarray.hpp>
+#include <unity/lib/gl_sframe.hpp>
 #include <unity/toolkits/evaluation/evaluation_constants.hpp>
 #include <unity/toolkits/evaluation/evaluation_interface-inl.hpp>
 
@@ -31,6 +35,40 @@ variant_type _supervised_streaming_evaluator(
                            std::string metric,
                            std::map<std::string, flexible_type> kwargs =
                                   std::map<std::string, flexible_type>());
+
+/**
+ * Convenience API for computing several classifier metrics simultaneously.
+ *
+ * This function assumes that the class labels are available and that the
+ * default options for each metric suffice. It should be more efficient than
+ * multiple calls to _supervised_streaming_evaluator, insofar as this function
+ * computes the metrics in parallel and uses multiple threads.
+ *
+ * \param metrics The list of metrics to compute. Valid metrics include those
+ *                supported by `get_evaluator_metric`, as well as
+ *                "report_by_class".
+ * \param input SFrame containing the ground-truth labels and the predicted
+ *              class probabilities.
+ * \param target_column_name The name of the column in `input` containing the
+ *                           ground-truth labels.
+ * \param prediction_probs_column_name The name of the column in `input`
+ *                                     containing the predicted class
+ *                                     probabilities.
+ * \param class_labels The class labels used when training the model being
+ *                     evaluated. Every prediction probability vector must have
+ *                     the same length as this list.
+ * \return A map from metric name to the output from the corresponding
+ *         evaluation metric.
+ *
+ * \todo Factor out the logic shared with
+ *       `supervised_learning_model_base::evaluate`. Compared to that version,
+ *       this one requires that all the predictions have been written to an
+ *       SArray.
+ */
+variant_map_type compute_classifier_metrics_from_probability_vectors(
+    std::vector<std::string> metrics, gl_sframe input,
+    std::string target_column_name, std::string prediction_probs_column_name,
+    flex_list class_labels);
 
 /**
  * Computes the precision and recall for each user.
