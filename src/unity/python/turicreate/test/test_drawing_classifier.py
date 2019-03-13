@@ -77,38 +77,36 @@ class DrawingClassifierTest(unittest.TestCase):
         self.stroke_sf = _build_stroke_data()
         self.pretrained_model_url = pretrained_model_url
         self.check_cross_model = _tc.drawing_classifier.create(
-            self.check_cross_sf, 
-            feature = self.feature, 
-            target = self.target, 
-            num_epochs = 10,
-            pretrained_model_url = pretrained_model_url)
+            self.check_cross_sf,
+            self.target,
+            feature=self.feature,
+            max_iterations=10,
+            pretrained_model_url=pretrained_model_url)
         self.stroke_model = _tc.drawing_classifier.create(
-            self.stroke_sf, 
-            feature = self.feature, 
-            target = self.target, 
-            num_epochs = 1,
-            pretrained_model_url = pretrained_model_url)
+            self.stroke_sf,
+            self.target,
+            feature=self.feature,
+            max_iterations=1,
+            pretrained_model_url=pretrained_model_url)
         self.trains = [self.check_cross_sf, self.stroke_sf]
         self.models = [self.check_cross_model, self.stroke_model]
 
     def test_create_with_missing_feature(self):
         for sf in self.trains:
             with self.assertRaises(_ToolkitError):
-                _tc.drawing_classifier.create(sf, feature = "wrong_feature")
+                _tc.drawing_classifier.create(sf, self.target, 
+                    feature="wrong_feature")
 
     def test_create_with_missing_target(self):
         for sf in self.trains:
             with self.assertRaises(_ToolkitError):
-                _tc.drawing_classifier.create(sf, 
-                                              feature = self.feature, 
-                                              target = "wrong_target")
+                _tc.drawing_classifier.create(sf, "wrong_target")
 
     def test_create_with_empty_dataset(self):
         for sf in self.trains:
             with self.assertRaises(_ToolkitError):
-                _tc.drawing_classifier.create(sf[:0], 
-                                              feature = self.feature, 
-                                              target = self.target)
+                _tc.drawing_classifier.create(sf[:0], self.target,
+                                              feature=self.feature)
 
     def test_create_with_missing_coordinates_in_stroke_input(self):
         drawing = [[{"x": 1.0, "y": 1.0}], [{"x": 0.0}, {"y": 0.0}]]
@@ -117,7 +115,7 @@ class DrawingClassifierTest(unittest.TestCase):
             self.target: ["missing_coordinates"]
             })
         with self.assertRaises(_ToolkitError):
-            _tc.drawing_classifier.create(sf)
+            _tc.drawing_classifier.create(sf, self.target)
 
     def test_create_with_wrongly_typed_coordinates_in_stroke_input(self):
         drawing = [[{"x": 1.0, "y": 0}], [{"x": "string_x?!", "y": 0.1}]]
@@ -126,7 +124,7 @@ class DrawingClassifierTest(unittest.TestCase):
             self.target: ["string_x_coordinate"]
             })
         with self.assertRaises(_ToolkitError):
-            _tc.drawing_classifier.create(sf)
+            _tc.drawing_classifier.create(sf, self.target)
 
     def test_create_with_None_coordinates_in_stroke_input(self):
         drawing = [[{"x": 1.0, "y": None}], [{"x": 1.1, "y": 0.1}]]
@@ -135,8 +133,7 @@ class DrawingClassifierTest(unittest.TestCase):
             self.target: ["none_y_coordinate"]
             })
         with self.assertRaises(_ToolkitError):
-            _tc.drawing_classifier.create(sf, 
-                feature = self.feature, target = self.target)
+            _tc.drawing_classifier.create(sf, self.target, feature=self.feature)
 
     def test_create_with_empty_drawing_in_stroke_input(self):
         drawing = []
@@ -145,8 +142,8 @@ class DrawingClassifierTest(unittest.TestCase):
             self.target: ["empty_drawing"]
             })
         # Should not error out, it should silently ignore the empty drawing
-        _tc.drawing_classifier.create(sf, 
-            feature = self.feature, target = self.target, num_epochs=1)
+        _tc.drawing_classifier.create(sf, self.target, feature=self.feature, 
+            max_iterations=1)
 
     def test_create_with_empty_stroke_in_stroke_input(self):
         drawing = [[{"x": 1.0, "y": 0.0}], [], [{"x": 1.1, "y": 0.1}]]
@@ -155,8 +152,8 @@ class DrawingClassifierTest(unittest.TestCase):
             self.target: ["empty_drawing"]
             })
         # Should not error out, it should silently ignore the empty stroke
-        _tc.drawing_classifier.create(sf, 
-            feature = self.feature, target = self.target, num_epochs = 1)        
+        _tc.drawing_classifier.create(sf, self.target, feature=self.feature, 
+            max_iterations=1)
 
     def test_predict_with_sframe(self):
         for index in range(len(self.models)):
