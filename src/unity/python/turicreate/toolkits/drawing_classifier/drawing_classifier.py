@@ -45,7 +45,7 @@ def _raise_error_if_not_drawing_classifier_input_sframe(
 
 def create(input_dataset, target, feature=None, validation_set='auto',
             pretrained_model_url=None, batch_size=256, 
-            num_epochs=100, max_iterations=0, seed=None, verbose=True):
+            num_epochs=100, max_iterations=0, verbose=True):
     """
     Create a :class:`DrawingClassifier` model.
 
@@ -167,7 +167,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
                 print ( "PROGRESS: Creating a validation set from 5 percent of training data. This may take a while.\n"
                         "          You can set ``validation_set=None`` to disable validation tracking.\n")
             dataset, validation_dataset = dataset.random_split(
-                TRAIN_VALIDATION_SPLIT, seed=seed)
+                TRAIN_VALIDATION_SPLIT)
         else:
             validation_dataset = _tc.SFrame()
     elif validation_set is None:
@@ -211,6 +211,27 @@ def create(input_dataset, target, feature=None, validation_set='auto',
 
     train_accuracy = _mx.metric.Accuracy()
     validation_accuracy = _mx.metric.Accuracy()
+    
+    def compute_validation_accuracy(validation_accuracy):
+        validation_loader = _SFrameClassifierIter(validation_dataset, batch_size,
+            feature_column=feature,
+            target_column=target,
+            class_to_index=class_to_index,
+            load_labels=True,
+            shuffle=True,
+            iterations=1)
+        for validation_batch in validation_loader:
+            validation_batch_data = _mx.gluon.utils.split_and_load(
+                validation_batch.data[0], ctx_list=ctx, batch_axis=0)
+            validation_batch_label = _mx.gluon.utils.split_and_load(
+                validation_batch.label[0], ctx_list=ctx, batch_axis=0)
+            validation_outputs = []
+            for x, y in zip(validation_batch_data, validation_batch_label):
+                z = model(x)
+                validation_outputs.append(z)
+            validation_accuracy.update(
+                validation_batch_label, validation_outputs)
+
     for train_batch in train_loader:
         train_batch_data = _mx.gluon.utils.split_and_load(
             train_batch.data[0], ctx_list=ctx, batch_axis=0)
@@ -231,16 +252,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
             train_accuracy.update(train_batch_label, train_outputs)
 
         # Compute validation accuracy
-        for validation_batch in validation_loader:
-            validation_batch_data = _mx.gluon.utils.split_and_load(
-                validation_batch.data[0], ctx_list=ctx, batch_axis=0)
-            validation_batch_label = _mx.gluon.utils.split_and_load(
-                validation_batch.label[0], ctx_list=ctx, batch_axis=0)
-            validation_outputs = []
-            for x, y in zip(validation_batch_data, validation_batch_label):
-                z = model(x)
-                validation_outputs.append(z)
-            validation_accuracy.update(validation_batch_label, validation_outputs)
+        compute_validation_accuracy(validation_accuracy)
 
         # Make one step of parameter update. Trainer needs to know the
         # batch size of data to normalize the gradient by 1/batch_size.
