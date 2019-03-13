@@ -65,7 +65,7 @@ import os
 random_state = np.random.RandomState(100)
 
 # Change if applicable
-quickdraw_dir = '/Users/username/Downloads/quickdraw'
+quickdraw_dir = '/Users/$(whoami)/Downloads/quickdraw'
 bitmaps_dir = os.path.join(quickdraw_dir, 'bitmaps')
 sframes_dir = os.path.join(quickdraw_dir, 'sframes')
 npy_ext = '.npy'
