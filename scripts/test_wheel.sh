@@ -6,25 +6,13 @@ SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 WORKSPACE=${SCRIPT_DIR}/..
 cd ${WORKSPACE}
 
-# command line arguments
-if [[ -z $1 ]]; then
-  echo "build type must be specified. "
-  echo "Usage: $0 [debug | release]"
-  exit 1
-fi
-
-BUILD_TYPE=$1
 date
-(test -d $BUILD_TYPE) || ./configure --install-python-toolchain
+(test -d deps/env) || ./scripts/install_python_toolchain.sh
 date
 source deps/env/bin/activate
 date
 pip install target/turicreate-*.whl
 date
-
-cd $BUILD_TYPE/src/unity/python
-make python_source
-cd ../../../..
 
 PYTHON="$PWD/deps/env/bin/python"
 PYTHON_MAJOR_VERSION=$(${PYTHON} -c 'import sys; print(sys.version_info.major)')

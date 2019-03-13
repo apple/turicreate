@@ -319,7 +319,7 @@ test_python_mac_python27_10_13:
     - build_wheel_mac_10_14_python27
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
-    - bash scripts/test_wheel.sh release python2.7
+    - bash scripts/test_wheel.sh
   artifacts:
     when: always
     expire_in: 2 weeks
@@ -334,7 +334,7 @@ test_python_mac_python27_10_14:
     - build_wheel_mac_10_14_python27
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
-    - bash scripts/test_wheel.sh release python2.7
+    - bash scripts/test_wheel.sh
   artifacts:
     when: always
     expire_in: 2 weeks
@@ -349,7 +349,7 @@ test_python_mac_python35_10_14:
     - build_wheel_mac_10_14_python35
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.5/bin/virtualenv"
-    - bash scripts/test_wheel.sh release python3.5
+    - bash scripts/test_wheel.sh
   artifacts:
     when: always
     expire_in: 2 weeks
@@ -364,7 +364,7 @@ test_python_mac_python36_10_14:
     - build_wheel_mac_10_14_python36
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.6/bin/virtualenv"
-    - bash scripts/test_wheel.sh release python3.6
+    - bash scripts/test_wheel.sh
   artifacts:
     when: always
     expire_in: 2 weeks
