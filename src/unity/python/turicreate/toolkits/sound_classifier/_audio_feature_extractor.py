@@ -88,7 +88,7 @@ class VGGishFeatureExtractor(object):
     def __init__(self):
         vggish_model_file = VGGish()
 
-        if _mac_ver() < (10, 13):
+        if _mac_ver() < (10, 14):
             # Use MXNet
             model_path = vggish_model_file.get_model_path(format='mxnet')
             self.vggish_model = VGGishFeatureExtractor._build_net()
@@ -114,7 +114,7 @@ class VGGishFeatureExtractor(object):
 
         last_progress_update = _time.time()
 
-        if _mac_ver() < (10, 13):
+        if _mac_ver() < (10, 14):
             # Use MXNet
             preprocessed_data = mx.nd.array(preprocessed_data)
 
@@ -154,7 +154,7 @@ class VGGishFeatureExtractor(object):
         """
         Return the Core ML spec
         """
-        if _mac_ver() >= (10, 13):
+        if _mac_ver() >= (10, 14):
             return self.vggish_model.get_spec()
         else:
             vggish_model_file = VGGish()
