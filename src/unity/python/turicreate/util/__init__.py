@@ -12,7 +12,6 @@ import logging.config
 import time as _time
 import tempfile as _tempfile
 import os as _os
-
 import urllib as _urllib
 import re as _re
 from zipfile import ZipFile as _ZipFile
@@ -32,6 +31,7 @@ from .type_checks import _raise_error_if_not_function
 from .type_checks import _raise_error_if_not_of_type
 from .type_checks import _is_non_string_iterable
 from .type_checks import _is_string
+from .progress_table_printer import ProgressTablePrinter as _ProgressTablePrinter
 
 try:
     import configparser as _ConfigParser
