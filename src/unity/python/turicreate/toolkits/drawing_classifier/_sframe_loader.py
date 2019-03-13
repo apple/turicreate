@@ -16,7 +16,7 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 _TMP_COL_RANDOM_ORDER = '_random_order'
 
 # Encapsulates an SFrame, iterating over each row and returning an
-# (image, label, index) tuple.
+# (example, label, index) tuple.
 class _SFrameDataSource:
     def __init__(self, sframe, feature_column, target_column,
                  load_labels=True, shuffle=True, samples=None):
@@ -46,26 +46,28 @@ class _SFrameDataSource:
         # If we're about to begin a new epoch, shuffle the SFrame if requested.
         row_index = self.cur_sample % len(self.sframe)
         if row_index == 0 and self.cur_sample > 0 and self.shuffle:
-            self.sframe[_TMP_COL_RANDOM_ORDER] = _np.random.uniform(size=len(self.sframe))
+            self.sframe[_TMP_COL_RANDOM_ORDER] = _np.random.uniform(
+                size = len(self.sframe))
             self.sframe = self.sframe.sort(_TMP_COL_RANDOM_ORDER)
         self.cur_sample += 1
 
         # Copy the image data for this row into a NumPy array.
         row = self.sframe[row_index]
 
+        bitmap_width, bitmap_height = 28, 28
         drawing_feature = row[self.feature_column]
-        is_stroke_input = (type(drawing_feature) != _tc.Image)
+        is_stroke_input = (not isinstance(drawing_feature, _tc.Image))
         if is_stroke_input:
-            pixels_01 = drawing_feature.pixel_data.reshape(1, 28, 28) / 255.
+            pixels_01 = drawing_feature.pixel_data.reshape(
+                1, bitmap_width, bitmap_height) / 255.
         else:
-            image = _tc.image_analysis.resize(drawing_feature, 28, 28, 1)
-            pixels_01 = image.pixel_data.reshape(1, 28, 28) / 255.
+            image = _tc.image_analysis.resize(
+                drawing_feature, bitmap_width, bitmap_height, 1)
+            pixels_01 = image.pixel_data.reshape(
+                1, bitmap_width, bitmap_height) / 255.
         
-        if self.load_labels:
-            label = row[self.target_column]
-        else:
-            label = None
-
+        label = row[self.target_column] if self.load_labels else None
+        
         return pixels_01, label, row_index
 
     def reset(self):
@@ -78,8 +80,8 @@ class SFrameClassifierIter(_mx.io.DataIter):
                  batch_size,
                  class_to_index,
                  input_shape = [28,28],
-                 feature_column='bitmap',
-                 target_column='label',
+                 feature_column="drawing",
+                 target_column="label",
                  load_labels=True,
                  shuffle=True,
                  epochs=None,
@@ -107,11 +109,12 @@ class SFrameClassifierIter(_mx.io.DataIter):
         samples = min(sample_limits) if len(sample_limits) > 0 else None
         self.data_source = _SFrameDataSource(
             sframe, feature_column, target_column,
-            load_labels=load_labels, shuffle=shuffle, samples=samples)
+            load_labels = load_labels, shuffle = shuffle, samples = samples)
 
         self._provide_data = [
             _mx.io.DataDesc(name=feature_column,
-                            shape=(batch_size, 1, 28, 28),
+                            shape=(batch_size, 1, 
+                                self.input_shape[0], self.input_shape[1]),
                             layout='NCHW')
         ]
 
