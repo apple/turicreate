@@ -17,6 +17,7 @@ from .. import _pre_trained_models
 
 BITMAP_WIDTH = 28
 BITMAP_HEIGHT = 28
+TRAIN_VALIDATION_SPLIT = .95
 
 def _raise_error_if_not_drawing_classifier_input_sframe(
     dataset, feature, target):
@@ -42,9 +43,13 @@ def _raise_error_if_not_drawing_classifier_input_sframe(
     if len(dataset) == 0:
         raise _ToolkitError("Input Dataset is empty!")
 
-def create(input_dataset, target, feature=None, 
+def print_validation_track_notification():
+    print ("PROGRESS: Creating a validation set from 5 percent of training data. This may take a while.\n"
+           "          You can set ``validation_set=None`` to disable validation tracking.\n")
+
+def create(input_dataset, target, feature=None, validation_set='auto',
             pretrained_model_url=None, batch_size=256, 
-            num_epochs=100, max_iterations=0, verbose=True):
+            num_epochs=100, max_iterations=0, seed=None, verbose=True):
     """
     Create a :class:`DrawingClassifier` model.
 
@@ -71,6 +76,14 @@ def create(input_dataset, target, feature=None,
         on the canvas.
         Each point must be a dictionary with two keys, "x" and "y", and their
         respective values must be numerical, i.e. either integer or float.
+
+    validation_set : SFrame optional
+        A dataset for monitoring the model's generalization performance.
+        The format of this SFrame must be the same as the training set.
+        By default this argument is set to 'auto' and a validation set is
+        automatically sampled and used for progress printing. If
+        validation_set is set to None, then no additional metrics
+        are computed. The default value is 'auto'.
 
     pretrained_model_url : string optional
         A URL to the pretrained model that must be used for a warm start before
@@ -109,6 +122,7 @@ def create(input_dataset, target, feature=None,
         >>> data['predictions'] = model.predict(data)
 
     """
+    
     import mxnet as _mx
     from mxnet import autograd as _autograd
     from ._model_architecture import Model as _Model
@@ -132,7 +146,7 @@ def create(input_dataset, target, feature=None,
     dataset = _extensions._drawing_classifier_prepare_data(
         input_dataset, feature) if is_stroke_input else input_dataset
 
-    column_names = ['Iteration', 'Loss', 'Elapsed Time']
+    column_names = ['Training Step', 'Loss', 'Validation Accuracy', 'Elapsed Time']
     num_columns = len(column_names)
     column_width = max(map(lambda x: len(x), column_names)) + 2
     hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
@@ -144,7 +158,27 @@ def create(input_dataset, target, feature=None,
     classes = sorted(classes)
     class_to_index = {name: index for index, name in enumerate(classes)}
 
-    def update_progress(cur_loss, iteration):
+    if isinstance(validation_set, _tc.SFrame):
+        _raise_error_if_not_drawing_classifier_input_sframe(
+            validation_set, feature, target)
+        is_validation_stroke_input = (validation_set[feature].dtype != _tc.Image)
+        validation_dataset = _extensions._drawing_classifier_prepare_data(
+            validation_set, feature) if is_stroke_input else validation_set
+    elif isinstance(validation_set, str):
+        assert (validation_set == 'auto')
+        if dataset.num_rows() >= 100:
+            if verbose:
+                print_validation_track_notification()
+            dataset, validation_dataset = dataset.random_split(
+                TRAIN_VALIDATION_SPLIT, seed=seed)
+        else:
+            validation_dataset = _tc.SFrame()
+    elif validation_set is None:
+        validation_dataset = _tc.SFrame()
+    else:
+        raise TypeError("Unrecognized value for 'validation_set'.")
+
+    def update_progress(cur_loss, metric, iteration):
         iteration_base1 = iteration + 1
         if progress['smoothed_loss'] is None:
             progress['smoothed_loss'] = cur_loss
@@ -167,18 +201,27 @@ def create(input_dataset, target, feature=None,
             # Print progress table row
             elapsed_time = cur_time - start_time
             print(
-                "| {cur_iter:<{width}}| {loss:<{width}.3f}| {time:<{width}.1f}|".format(
+                "| {cur_iter:<{width}}| {loss:<{width}.3f}| {validation_accuracy:<{width}.3f}| {time:<{width}.1f}|".format(
                 cur_iter=iteration_base1, loss=progress['smoothed_loss'],
+                validation_accuracy=metric.get()[1],
                 time=elapsed_time , width=column_width-1))
             progress['last_time'] = cur_time
 
-    loader = _SFrameClassifierIter(dataset, batch_size,
+    train_loader = _SFrameClassifierIter(dataset, batch_size,
                  feature_column=feature,
                  target_column=target,
                  class_to_index=class_to_index,
                  load_labels=True,
                  shuffle=True,
                  epochs=num_epochs,
+                 iterations=None)
+    validation_loader = _SFrameClassifierIter(validation_dataset, batch_size,
+                 feature_column=feature,
+                 target_column=target,
+                 class_to_index=class_to_index,
+                 load_labels=True,
+                 shuffle=True,
+                 epochs=1,
                  iterations=None)
 
     ctx = _mxnet_utils.get_mxnet_context(max_devices=batch_size)
@@ -196,26 +239,42 @@ def create(input_dataset, target, feature=None,
     model.hybridize()
     trainer = _mx.gluon.Trainer(model.collect_params(), 'adam')
 
-    train_loss = 0.
-    for batch in loader:
-        data = _mx.gluon.utils.split_and_load(batch.data[0], 
-            ctx_list=ctx, batch_axis=0)[0]
-        label = _mx.nd.array(
-            _mx.gluon.utils.split_and_load(batch.label[0], 
-                ctx_list=ctx, batch_axis=0)[0]
-            )
+    metric = _mx.metric.Accuracy()
+    for train_batch in train_loader:
+        train_batch_data = _mx.gluon.utils.split_and_load(
+            train_batch.data[0], ctx_list=ctx, batch_axis=0)
+        train_batch_label = _mx.gluon.utils.split_and_load(
+                train_batch.label[0], ctx_list=ctx, batch_axis=0)
 
+        # Inside training scope
         with _autograd.record():
-            output = model(data)
-            loss = softmax_cross_entropy(output, label)
-        loss.backward()
-        # update parameters
-        trainer.step(1)
+            for x, y in zip(train_batch_data, train_batch_label):
+                z = model(x)
+                # Computes softmax cross entropy loss.
+                loss = softmax_cross_entropy(z, y)
+                # Backpropagate the error for one iteration.
+                loss.backward()
+
+        for validation_batch in validation_loader:
+            validation_batch_data = _mx.gluon.utils.split_and_load(
+                validation_batch.data[0], ctx_list=ctx, batch_axis=0)
+            validation_batch_label = _mx.gluon.utils.split_and_load(
+                validation_batch.label[0], ctx_list=ctx, batch_axis=0)
+            outputs = []
+            for x, y in zip(validation_batch_data, validation_batch_label):
+                z = model(x)
+                outputs.append(z)
+            # Updates internal evaluation
+            metric.update(validation_batch_label, outputs)
+
+        # Make one step of parameter update. Trainer needs to know the
+        # batch size of data to normalize the gradient by 1/batch_size.
+        trainer.step(train_batch.data[0].shape[0])
         # calculate training metrics
         cur_loss = loss.mean().asscalar()
         
-        update_progress(cur_loss, batch.iteration)
-        iteration = batch.iteration
+        update_progress(cur_loss, metric, train_batch.iteration)
+        iteration = train_batch.iteration
 
     training_time = _time.time() - start_time
     if verbose:
