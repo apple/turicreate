@@ -142,12 +142,6 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     dataset = _extensions._drawing_classifier_prepare_data(
         input_dataset, feature) if is_stroke_input else input_dataset
 
-    column_names = ['Training Step', 'Loss', 'Train Accuracy', 'Validation Accuracy', 'Elapsed Time']
-    num_columns = len(column_names)
-    column_width = max(map(lambda x: len(x), column_names)) + 2
-    hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
-
-    progress = {'smoothed_loss': None, 'last_time': 0}
     iteration = 0
 
     classes = dataset[target].unique()
@@ -190,9 +184,14 @@ def create(input_dataset, target, feature=None, validation_set='auto',
                  shuffle=True,
                  iterations=1)
     if verbose and iteration == 0:
+        baseline_column_names = ['iteration', 'train_loss', 'train_accuracy', 'time']
+        baseline_column_titles = ['Iteration', 'Training Loss', 'Training Accuracy', 'Elapsed Time (seconds)']
+        column_names = (baseline_column_names if validation_set is None else 
+            baseline_column_names[:-1] + ['validation_accuracy'] + baseline_column_names[-1:])
+        column_titles = (baseline_column_titles if validation_set is None else 
+            baseline_column_titles[:-1] + ['Validation Accuracy'] + baseline_column_titles[-1:])
         table_printer = _tc.util._ProgressTablePrinter(
-            ['iteration', 'train_loss', 'train_accuracy', 'validation_accuracy', 'time'],
-            ['Iteration', 'Training Loss', 'Training Accuracy', 'Validation Accuracy', 'Elapsed Time (seconds)'])
+            column_names, column_titles)
 
     ctx = _mxnet_utils.get_mxnet_context(max_devices=batch_size)
     model = _Model(num_classes = len(classes), prefix="drawing_")
@@ -251,7 +250,6 @@ def create(input_dataset, target, feature=None, validation_set='auto',
             # Compute training accuracy
             train_accuracy.update(train_batch_label, train_outputs)
 
-        # Compute validation accuracy
         compute_validation_accuracy(validation_accuracy)
 
         # Make one step of parameter update. Trainer needs to know the
@@ -263,11 +261,13 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         
         if verbose and train_batch.iteration > iteration:
             iteration = train_batch.iteration
-            table_printer.print_row(iteration=iteration,
-                                    train_loss=float(train_loss),
-                                    train_accuracy=train_accuracy.get()[1],
-                                    validation_accuracy=validation_accuracy.get()[1],
-                                    time=train_time)
+            kwargs = {  "iteration": iteration,
+                        "train_loss": float(train_loss),
+                        "train_accuracy": train_accuracy.get()[1],
+                        "time": train_time}
+            if validation_set is not None:
+                kwargs["validation_accuracy"] = validation_accuracy.get()[1]
+            table_printer.print_row(**kwargs)
 
     state = {
         '_model': model,
@@ -277,7 +277,10 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         'input_image_shape': (1, BITMAP_WIDTH, BITMAP_HEIGHT),
         'batch_size': batch_size,
         'training_loss': train_loss,
+        'training_accuracy': train_accuracy.get()[1],
         'training_time': train_time,
+        'validation_accuracy': validation_accuracy.get()[1], 
+        # nan if validation_set=None
         'max_iterations': max_iterations,
         'target': target,
         'feature': feature,
@@ -370,6 +373,9 @@ class DrawingClassifier(_CustomModel):
         training_fields = [
             ('Training Time', 'training_time'),
             ('Training Iterations', 'max_iterations'),
+            ('Training Accuracy', 'training_accuracy'),
+            ('Validation Accuracy', 'validation_accuracy'),
+            ('Training Time', 'training_time'),
             ('Number of Examples', 'num_examples'),
             ('Batch Size', 'batch_size'),
             ('Final Loss (specific to model)', 'training_loss')
