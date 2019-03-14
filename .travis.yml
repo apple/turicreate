@@ -18,7 +18,6 @@ env:
   global:
     - CI=false
     - OMP_NUM_THREADS=4
-    - TC_BUILD_IMAGE_VERSION=1.0.1
 
 jobs:
   include:
@@ -26,43 +25,20 @@ jobs:
       name: create_images_python2.7
       env: PYTHON_VERSION=2.7
       before_script:
-        - mkdir -p $HOME/.docker_images
-        - (test -f $HOME/.docker_images/image-10.04.gz && docker load -i $HOME/.docker_images/image-10.04.gz) || true
-        - (test -f $HOME/.docker_images/image-12.04.gz && docker load -i $HOME/.docker_images/image-12.04.gz) || true
-        - (test -f $HOME/.docker_images/image-14.04.gz && docker load -i $HOME/.docker_images/image-14.04.gz) || true
       script:
         # clear target out of the cache, in case it's there from a previous build
         - rm -rf target
         # build each, if needed (skip if version is already in the cache)
-        - (docker image ls turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) ||
-           docker build -f scripts/Dockerfile-Ubuntu-10.04 -t turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} .
-        - (docker image ls turicreate/build-image-12.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) ||
-           docker build -f scripts/Dockerfile-Ubuntu-12.04 -t turicreate/build-image-12.04:${TC_BUILD_IMAGE_VERSION} .
-        - (docker image ls turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) ||
-           docker build -f scripts/Dockerfile-Ubuntu-14.04 -t turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} .
-      before_cache:
-        - docker save turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} | gzip -c > $HOME/.docker_images/image-10.04.gz
-        - docker save turicreate/build-image-12.04:${TC_BUILD_IMAGE_VERSION} | gzip -c > $HOME/.docker_images/image-12.04.gz
-        - docker save turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} | gzip -c > $HOME/.docker_images/image-14.04.gz
+        - ./scripts/create_docker_images.sh --persist_to_repo_dir
 
     - stage: create_images
       name: create_images_python3.5
       env: PYTHON_VERSION=3.5
-      before_script:
-        - mkdir -p $HOME/.docker_images
-        - (test -f $HOME/.docker_images/image-10.04.gz && docker load -i $HOME/.docker_images/image-10.04.gz) || true
-        - (test -f $HOME/.docker_images/image-14.04.gz && docker load -i $HOME/.docker_images/image-14.04.gz) || true
       script:
         # clear target out of the cache, in case it's there from a previous build
         - rm -rf target
         # build each, if needed (skip if version is already in the cache)
-        - (docker image ls turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) ||
-           docker build -f scripts/Dockerfile-Ubuntu-10.04 -t turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} .
-        - (docker image ls turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) ||
-           docker build -f scripts/Dockerfile-Ubuntu-14.04 -t turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} .
-      before_cache:
-        - docker save turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} | gzip -c > $HOME/.docker_images/image-10.04.gz
-        - docker save turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} | gzip -c > $HOME/.docker_images/image-14.04.gz
+        - ./scripts/create_docker_images.sh --persist_to_repo_dir
 
     - stage: build
       name: build_10.04_python2.7

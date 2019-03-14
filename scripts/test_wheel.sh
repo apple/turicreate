@@ -2,6 +2,9 @@
 set -x
 set -e
 
+# The build image version that will be used for testing
+TC_BUILD_IMAGE_VERSION=1.0.2
+
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 WORKSPACE=${SCRIPT_DIR}/..
 cd ${WORKSPACE}

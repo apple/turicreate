@@ -2,7 +2,7 @@
 
 set -e
 
-TC_BUILD_IMAGE_VERSION=1.0.1
+TC_BUILD_IMAGE_VERSION=1.0.2
 
 # Force LD_LIBRARY_PATH to look up from deps
 # Otherwise, binaries run during compilation will prefer system libraries,
@@ -98,10 +98,9 @@ fi
 # If we are going to run in Docker,
 # send this command into Docker and bail out of here when done.
 if [[ -n "${USE_DOCKER}" ]]; then
-  # create the build image
+  # create the build and test images
   # (this should ideally be a no-op if the image exists and is current)
-  (docker image ls turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) || \
-   docker build -f $SCRIPT_DIR/Dockerfile-Ubuntu-10.04 -t turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} .
+  $WORKSPACE/scripts/create_docker_images.sh
 
   # set up arguments to make_wheel.sh within docker
   make_wheel_args="--build_number=$BUILD_NUMBER --num_procs=$NUM_PROCS --skip_smoke_test --skip_test"
@@ -137,11 +136,6 @@ if [[ -n "${USE_DOCKER}" ]]; then
   # Run the tests inside Docker (14.04) if desired
   # 10.04 is not capable of passing turicreate unit tests currently
   if [[ -z $SKIP_TEST ]]; then
-    # create the test image
-    # (this should ideally be a no-op if the image exists and is current)
-    (docker image ls turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) || \
-    docker build -f $SCRIPT_DIR/Dockerfile-Ubuntu-14.04 -t turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} .
-
     # run the tests
     docker run --rm \
       --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
