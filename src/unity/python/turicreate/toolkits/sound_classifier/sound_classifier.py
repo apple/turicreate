@@ -154,7 +154,6 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
         for batch in train_data:
             data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
             label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
-            outputs = []
 
             # Inside training scope
             with _mx.autograd.record():
@@ -164,12 +163,17 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
                     loss = softmax_cross_entropy_loss(z, y)
                     # Backpropagate the error for one iteration.
                     loss.backward()
-                    outputs.append(z)
-            # Updates internal evaluation
-            train_metric.update(label, outputs)
             # Make one step of parameter update. Trainer needs to know the
             # batch size of data to normalize the gradient by 1/batch_size.
             trainer.step(batch.data[0].shape[0])
+        train_data.reset()
+
+        # Calculate training metric
+        for batch in train_data:
+            data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            outputs = [custom_NN(x) for x in data]
+            train_metric.update(label, outputs)
         train_data.reset()
 
         # Calculate validataion metric
