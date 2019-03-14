@@ -358,16 +358,14 @@ simple_data_iterator::preprocessed_data simple_data_iterator::preprocess_data(
       data, feature_column_names, params.session_id_column_name,
       static_cast<int>(params.prediction_window),
       static_cast<int>(params.predictions_in_chunk), params.target_column_name,
-      /* verbose */ true);
+      /* verbose */ has_target);
 
   preprocessed_data result;
   result.chunks = variant_get_value<gl_sframe>(result_map.at("converted_data"));
   result.num_sessions =
       variant_get_value<size_t>(result_map.at("num_of_sessions"));
+  result.session_id_type = data[params.session_id_column_name].dtype();
   result.has_target = has_target;
-  result.features_column_index = result.chunks.column_index("features");
-  result.labels_column_index = result.chunks.column_index("target");
-  result.weights_column_index = result.chunks.column_index("weights");
   result.feature_names = flex_list(feature_column_names.begin(),
                                    feature_column_names.end());
   result.class_labels = std::move(class_labels);
@@ -379,7 +377,8 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
     num_samples_per_prediction_(params.prediction_window),
     num_predictions_per_chunk_(params.predictions_in_chunk),
     range_iterator_(data_.chunks.range_iterator()),
-    next_row_(range_iterator_.begin())
+    next_row_(range_iterator_.begin()),
+    end_of_rows_(range_iterator_.end())
 {}
 
 const flex_list& simple_data_iterator::feature_names() const {
@@ -390,6 +389,14 @@ const flex_list& simple_data_iterator::class_labels() const {
   return data_.class_labels;
 }
 
+flex_type_enum simple_data_iterator::session_id_type() const {
+  return data_.session_id_type;
+}
+
+bool simple_data_iterator::has_next_batch() const {
+  return next_row_ != end_of_rows_;
+}
+
 data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
   size_t num_samples_per_chunk =
@@ -397,6 +404,17 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
   size_t num_features = data_.feature_names.size();
   size_t features_stride = num_samples_per_chunk * num_features;
   size_t features_size = batch_size * features_stride;
+
+  // Identify column indices for future reference.
+  size_t features_column_index = data_.chunks.column_index("features");
+  size_t chunk_len_column_index = data_.chunks.column_index("chunk_len");
+  size_t session_id_column_index = data_.chunks.column_index("session_id");
+  size_t labels_column_index = 0;
+  size_t weights_column_index = 0;
+  if (data_.has_target) {
+    labels_column_index = data_.chunks.column_index("target");
+    weights_column_index = data_.chunks.column_index("weights");
+  }
 
   // Allocate buffers for the resulting batch data.
   std::vector<float> features(features_size, 0.f);
@@ -410,17 +428,17 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
   // Iterate through SFrame rows until filling the batch or reaching the end of
   // the data.
-  size_t batch_idx = 0;
   float* features_out = features.data();
   float* labels_out = labels.data();
   float* weights_out = weights.data();
-  while (batch_idx < batch_size && next_row_ != range_iterator_.end()) {
+  std::vector<batch::chunk_info> batch_info;
+  batch_info.reserve(batch_size);
+  while (batch_info.size() < batch_size && next_row_ != end_of_rows_) {
 
     const sframe_rows::row& row = *next_row_;
 
     // Copy the feature values (converting from double to float).
-    const flex_vec& feature_vec =
-        row[data_.features_column_index].get<flex_vec>();
+    const flex_vec& feature_vec = row[features_column_index].get<flex_vec>();
     ASSERT_EQ(feature_vec.size(), features_stride);
     features_out = std::copy(feature_vec.begin(), feature_vec.end(),
                              features_out);
@@ -428,16 +446,17 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     if (data_.has_target) {
 
       // Also copy the labels and weights.
-      const flex_vec& target_vec =
-          row[data_.labels_column_index].get<flex_vec>();
-      const flex_vec& weight_vec =
-          row[data_.weights_column_index].get<flex_vec>();
+      const flex_vec& target_vec = row[labels_column_index].get<flex_vec>();
+      const flex_vec& weight_vec = row[weights_column_index].get<flex_vec>();
       labels_out = std::copy(target_vec.begin(), target_vec.end(), labels_out);
       weights_out = std::copy(weight_vec.begin(), weight_vec.end(),
                               weights_out);
     }
 
-    ++batch_idx;
+    batch_info.emplace_back();
+    batch_info.back().session_id = row[session_id_column_index];
+    batch_info.back().num_samples = row[chunk_len_column_index];
+
     ++next_row_;
   }
 
@@ -452,7 +471,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     result.weights = shared_float_array::wrap(
         std::move(weights), { batch_size, 1, num_predictions_per_chunk_, 1 });
   }
-  result.size = batch_idx;
+  result.batch_info = std::move(batch_info);
 
   return result;
 }
@@ -461,6 +480,10 @@ void simple_data_iterator::reset() {
 
   range_iterator_ = data_.chunks.range_iterator();
   next_row_ = range_iterator_.begin();
+  end_of_rows_ = range_iterator_.end();
+
+  // TODO: If gl_sframe_range::end() were a const method, we wouldn't need to
+  // store end_of_rows_ separately.
 }
 
 }  //activity_classification

@@ -65,6 +65,16 @@ public:
   /** Defines the output of a data_iterator. */
   struct batch {
 
+    /** Defines the metadata associated with each chunk. */
+    struct chunk_info {
+
+      /** The session ID from which the chunk was segmented. */
+      flexible_type session_id;
+
+      /** Number of samples (rows from the raw SFrame) comprising the chunk. */
+      size_t num_samples;
+    };
+
     /**
      * An array with shape: (requested_batch_size, 
      * 1, prediction_window * predictions_in_chunk, num_feature_columns)
@@ -92,14 +102,26 @@ public:
      */
     neural_net::shared_float_array weights;
 
-    /** The number of actual (non-padded) rows in the batch. */
-    size_t size = 0;
+    /**
+     * Metadata for each valid (non-padded) row in the batch.
+     *
+     * The size of this vector is at most requested_batch_size. The info at
+     * index `i` describes the array at `features[i]`.
+     */
+    std::vector<chunk_info> batch_info;
   };
 
   virtual ~data_iterator();
 
   virtual const flex_list& feature_names() const = 0;
   virtual const flex_list& class_labels() const = 0;
+  virtual flex_type_enum session_id_type() const = 0;
+
+  /**
+   * Returns true if and only if the next call to `next_batch` will return a
+   * batch with size greater than 0.
+   */
+  virtual bool has_next_batch() const = 0;
 
   /**
    * Returns a batch containing float arrays with the indicated batch size.
@@ -129,6 +151,8 @@ public:
 
   const flex_list& feature_names() const override;
   const flex_list& class_labels() const override;
+  flex_type_enum session_id_type() const override;
+  bool has_next_batch() const override;
   batch next_batch(size_t batch_size) override;
   void reset() override;
 
@@ -137,10 +161,8 @@ private:
   struct preprocessed_data {
     gl_sframe chunks;
     size_t num_sessions = 0;
+    flex_type_enum session_id_type = flex_type_enum::UNDEFINED;
     bool has_target = false;
-    size_t features_column_index = 0;
-    size_t labels_column_index = 0;
-    size_t weights_column_index = 0;
     flex_list feature_names;
     flex_list class_labels;
   };
@@ -153,6 +175,7 @@ private:
 
   gl_sframe_range range_iterator_;
   gl_sframe_range::iterator next_row_;
+  gl_sframe_range::iterator end_of_rows_;
 };
 
 /**
