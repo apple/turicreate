@@ -110,9 +110,6 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
     deep_features = feature_extractor.extract_features(preprocessed_data, verbose=verbose)
     del preprocessed_data
 
-    if batch_size > len(deep_features):
-        batch_size = len(deep_features)
-
     if validation_set is not None:
         if verbose:
             print("Preparing validataion set")
@@ -121,13 +118,17 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
                                                                                               validation_encoded_target,
                                                                                               verbose=verbose)
         validataion_deep_features = feature_extractor.extract_features(preprocessed_validataion_data, verbose=verbose)
-        validation_data = _mx.io.NDArrayIter(validataion_deep_features, label=validataion_labels, batch_size=batch_size)
+        validation_batch_size = min(len(validataion_deep_features), batch_size)
+        validation_data = _mx.io.NDArrayIter(validataion_deep_features, label=validataion_labels,
+                                             batch_size=validation_batch_size)
     else:
         validation_data = []
 
     if verbose:
         print("\nTraining a custom neural network -")
-    train_data = _mx.io.NDArrayIter(deep_features, label=labels, batch_size=batch_size, shuffle=True)
+
+    training_batch_size = min(len(deep_features), batch_size)
+    train_data = _mx.io.NDArrayIter(deep_features, label=labels, batch_size=training_batch_size, shuffle=True)
 
     custom_NN = SoundClassifier._build_custom_neural_network(feature_extractor.output_length, num_labels)
     ctx = _mxnet_utils.get_mxnet_context()
