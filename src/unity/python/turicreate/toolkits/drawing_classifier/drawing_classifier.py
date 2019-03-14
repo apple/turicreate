@@ -212,13 +212,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     validation_accuracy = _mx.metric.Accuracy()
     
     def compute_validation_accuracy(validation_accuracy):
-        validation_loader = _SFrameClassifierIter(validation_dataset, batch_size,
-            feature_column=feature,
-            target_column=target,
-            class_to_index=class_to_index,
-            load_labels=True,
-            shuffle=True,
-            iterations=1)
+        validation_loader.reset()
         for validation_batch in validation_loader:
             validation_batch_data = _mx.gluon.utils.split_and_load(
                 validation_batch.data[0], ctx_list=ctx, batch_axis=0)
@@ -250,8 +244,6 @@ def create(input_dataset, target, feature=None, validation_set='auto',
             # Compute training accuracy
             train_accuracy.update(train_batch_label, train_outputs)
 
-        compute_validation_accuracy(validation_accuracy)
-
         # Make one step of parameter update. Trainer needs to know the
         # batch size of data to normalize the gradient by 1/batch_size.
         trainer.step(train_batch.data[0].shape[0])
@@ -266,6 +258,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
                         "train_accuracy": train_accuracy.get()[1],
                         "time": train_time}
             if validation_set is not None:
+                compute_validation_accuracy(validation_accuracy)
                 kwargs["validation_accuracy"] = validation_accuracy.get()[1]
             table_printer.print_row(**kwargs)
 
