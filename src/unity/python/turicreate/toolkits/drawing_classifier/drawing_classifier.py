@@ -176,6 +176,13 @@ def create(input_dataset, target, feature=None, validation_set='auto',
                  load_labels=True,
                  shuffle=True,
                  iterations=num_epochs)
+    train_loader_to_compute_accuracy = _SFrameClassifierIter(dataset, batch_size,
+                 feature_column=feature,
+                 target_column=target,
+                 class_to_index=class_to_index,
+                 load_labels=True,
+                 shuffle=True,
+                 iterations=1)
     validation_loader = _SFrameClassifierIter(validation_dataset, batch_size,
                  feature_column=feature,
                  target_column=target,
@@ -225,12 +232,25 @@ def create(input_dataset, target, feature=None, validation_set='auto',
             validation_accuracy.update(
                 validation_batch_label, validation_outputs)
 
+    def compute_train_accuracy(train_accuracy):
+        train_loader_to_compute_accuracy.reset()
+        for train_batch in train_loader_to_compute_accuracy:
+            train_batch_data = _mx.gluon.utils.split_and_load(
+                train_batch.data[0], ctx_list=ctx, batch_axis=0)
+            train_batch_label = _mx.gluon.utils.split_and_load(
+                train_batch.label[0], ctx_list=ctx, batch_axis=0)
+            train_outputs = []
+            for x, y in zip(train_batch_data, train_batch_label):
+                z = model(x)
+                train_outputs.append(z)
+            # Compute training accuracy
+            train_accuracy.update(train_batch_label, train_outputs)
+
     for train_batch in train_loader:
         train_batch_data = _mx.gluon.utils.split_and_load(
             train_batch.data[0], ctx_list=ctx, batch_axis=0)
         train_batch_label = _mx.gluon.utils.split_and_load(
                 train_batch.label[0], ctx_list=ctx, batch_axis=0)
-        train_outputs = []
 
         # Inside training scope
         with _autograd.record():
@@ -240,9 +260,6 @@ def create(input_dataset, target, feature=None, validation_set='auto',
                 loss = softmax_cross_entropy(z, y)
                 # Backpropagate the error for one iteration.
                 loss.backward()
-                train_outputs.append(z)
-            # Compute training accuracy
-            train_accuracy.update(train_batch_label, train_outputs)
 
         # Make one step of parameter update. Trainer needs to know the
         # batch size of data to normalize the gradient by 1/batch_size.
@@ -250,17 +267,24 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         # calculate training metrics
         train_loss = loss.mean().asscalar()
         train_time = _time.time() - start_time
-        
-        if verbose and train_batch.iteration > iteration:
-            iteration = train_batch.iteration
-            kwargs = {  "iteration": iteration,
-                        "train_loss": float(train_loss),
-                        "train_accuracy": train_accuracy.get()[1],
-                        "time": train_time}
+
+        if train_batch.iteration > iteration:
+            # Compute training accuracy
+            compute_train_accuracy(train_accuracy)
+            # Compute validation accuracy
             if validation_set is not None:
                 compute_validation_accuracy(validation_accuracy)
-                kwargs["validation_accuracy"] = validation_accuracy.get()[1]
-            table_printer.print_row(**kwargs)
+            iteration = train_batch.iteration
+            if verbose:
+                kwargs = {  "iteration": iteration,
+                            "train_loss": float(train_loss),
+                            "train_accuracy": train_accuracy.get()[1],
+                            "time": train_time}
+                if validation_set is not None:
+                    kwargs["validation_accuracy"] = validation_accuracy.get()[1]
+                table_printer.print_row(**kwargs)
+
+
 
     state = {
         '_model': model,
