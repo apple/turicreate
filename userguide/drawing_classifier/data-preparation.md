@@ -18,11 +18,11 @@ both as bitmaps and as stroke-based drawings.
 Open a new terminal window, go to your working directory and run the following commands:
 
 ```
-$ mkdir -p quickdraw
+$ mkdir quickdraw
 $ cd quickdraw
-$ mkdir -p bitmaps
-$ mkdir -p strokes
-$ mkdir -p sframes
+$ mkdir bitmaps
+$ mkdir strokes
+$ mkdir sframes
 $ cd bitmaps
 $ curl https://storage.googleapis.com/quickdraw_dataset/full/numpy_bitmap/square.npy > square.npy # around 93 MB
 $ curl https://storage.googleapis.com/quickdraw_dataset/full/numpy_bitmap/triangle.npy > triangle.npy # around 92 MB
