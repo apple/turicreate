@@ -173,7 +173,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
                  class_to_index=class_to_index,
                  load_labels=True,
                  shuffle=True,
-                 iterations=num_epochs)
+                 iterations=max_iterations)
     train_loader_to_compute_accuracy = _SFrameClassifierIter(dataset, batch_size,
                  feature_column=feature,
                  target_column=target,
@@ -189,12 +189,11 @@ def create(input_dataset, target, feature=None, validation_set='auto',
                  shuffle=True,
                  iterations=1)
     if verbose and iteration == 0:
-        baseline_column_names = ['iteration', 'train_loss', 'train_accuracy', 'time']
-        baseline_column_titles = ['Iteration', 'Training Loss', 'Training Accuracy', 'Elapsed Time (seconds)']
-        column_names = (baseline_column_names if validation_set is None else 
-            baseline_column_names[:-1] + ['validation_accuracy'] + baseline_column_names[-1:])
-        column_titles = (baseline_column_titles if validation_set is None else 
-            baseline_column_titles[:-1] + ['Validation Accuracy'] + baseline_column_titles[-1:])
+        column_names = ['iteration', 'train_loss', 'train_accuracy', 'time']
+        column_titles = ['Iteration', 'Training Loss', 'Training Accuracy', 'Elapsed Time (seconds)']
+        if validation_set is not None:
+            column_names.insert(3, 'validation_accuracy')
+            column_titles.insert(3, 'Validation Accuracy')
         table_printer = _tc.util._ProgressTablePrinter(
             column_names, column_titles)
 
@@ -215,43 +214,39 @@ def create(input_dataset, target, feature=None, validation_set='auto',
 
     train_accuracy = _mx.metric.Accuracy()
     validation_accuracy = _mx.metric.Accuracy()
-    
-    def compute_validation_accuracy(validation_accuracy):
-        validation_loader.reset()
-        for validation_batch in validation_loader:
-            validation_batch_data = _mx.gluon.utils.split_and_load(
-                validation_batch.data[0], ctx_list=ctx, batch_axis=0)
-            validation_batch_label = _mx.gluon.utils.split_and_load(
-                validation_batch.label[0], ctx_list=ctx, batch_axis=0)
-            validation_outputs = []
-            for x, y in zip(validation_batch_data, validation_batch_label):
-                z = model(x)
-                validation_outputs.append(z)
-            validation_accuracy.update(
-                validation_batch_label, validation_outputs)
 
-    def compute_train_accuracy(train_accuracy):
-        train_loader_to_compute_accuracy.reset()
-        for train_batch in train_loader_to_compute_accuracy:
-            train_batch_data = _mx.gluon.utils.split_and_load(
-                train_batch.data[0], ctx_list=ctx, batch_axis=0)
-            train_batch_label = _mx.gluon.utils.split_and_load(
-                train_batch.label[0], ctx_list=ctx, batch_axis=0)
-            train_outputs = []
-            for x, y in zip(train_batch_data, train_batch_label):
+    def get_data_and_label_from_batch(batch):
+        if batch.pad is not None:
+            size = batch_size - batch.pad
+            batch_data  = (
+                [_mx.nd.slice_axis(batch.data[0], axis=0, begin=0, end=size)] 
+                + [None] * (len(ctx)-1)
+                )
+            batch_label = (
+                [_mx.nd.slice_axis(batch.label[0], axis=0, begin=0, end=size)] 
+                + [None] * (len(ctx)-1)
+                )
+        else:
+            batch_data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0)
+            batch_label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0)
+        return batch_data, batch_label
+
+    def compute_accuracy(accuracy_metric, batch_loader):
+        batch_loader.reset()
+        accuracy_metric.reset()
+        for batch in batch_loader:
+            batch_data, batch_label = get_data_and_label_from_batch(batch)
+            outputs = []
+            for x, y in zip(batch_data, batch_label):
+                if x is None or y is None: continue
                 z = model(x)
-                train_outputs.append(z)
-            # Compute training accuracy
-            train_accuracy.update(train_batch_label, train_outputs)
+                outputs.append(z)
+            accuracy_metric.update(batch_label, outputs)
 
     for train_batch in train_loader:
-        train_batch_data = _mx.gluon.utils.split_and_load(
-            train_batch.data[0], ctx_list=ctx, batch_axis=0)
-        train_batch_label = _mx.gluon.utils.split_and_load(
-                train_batch.label[0], ctx_list=ctx, batch_axis=0)
-
-        # Inside training scope
+        train_batch_data, train_batch_label = get_data_and_label_from_batch(train_batch)
         with _autograd.record():
+            # Inside training scope
             for x, y in zip(train_batch_data, train_batch_label):
                 z = model(x)
                 # Computes softmax cross entropy loss.
@@ -268,10 +263,10 @@ def create(input_dataset, target, feature=None, validation_set='auto',
 
         if train_batch.iteration > iteration:
             # Compute training accuracy
-            compute_train_accuracy(train_accuracy)
+            compute_accuracy(train_accuracy, train_loader_to_compute_accuracy)
             # Compute validation accuracy
             if validation_set is not None:
-                compute_validation_accuracy(validation_accuracy)
+                compute_accuracy(validation_accuracy, validation_loader)
             iteration = train_batch.iteration
             if verbose:
                 kwargs = {  "iteration": iteration,
@@ -281,8 +276,6 @@ def create(input_dataset, target, feature=None, validation_set='auto',
                 if validation_set is not None:
                     kwargs["validation_accuracy"] = validation_accuracy.get()[1]
                 table_printer.print_row(**kwargs)
-
-
 
     state = {
         '_model': model,
