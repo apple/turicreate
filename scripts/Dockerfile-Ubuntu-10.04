@@ -27,20 +27,18 @@ RUN apt-get update
 RUN apt-get -y install python-software-properties
 RUN add-apt-repository ppa:ubuntu-toolchain-r/test
 RUN add-apt-repository ppa:git-core/ppa
-
-# Upgrade all possible packages
+RUN add-apt-repository ppa:h-rayflood/llvm
 RUN apt-get update
-RUN apt-get -y upgrade
 
 # Install dependencies
-RUN apt-get -y install vim-common gcc-4.8 g++-4.8 libgif-dev libx11-dev ccache make zlib1g-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev perl-modules patch rsync git
+RUN apt-get -y install vim-common gcc-4.8 g++-4.8 libgif-dev libx11-dev ccache make zlib1g-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev perl-modules patch rsync git llvm-3.2
 RUN ln -s /usr/bin/gcc-4.8 /usr/bin/gcc
 RUN ln -s /usr/bin/g++-4.8 /usr/bin/g++
 
 # Install cmake from binary release
 ADD https://cmake.org/files/v3.13/cmake-3.13.4-Linux-x86_64.tar.gz /opt/cmake-3.13.4-Linux-x86_64.tar.gz
 WORKDIR /opt
-RUN tar xvf cmake-3.13.4-Linux-x86_64.tar.gz
+RUN tar xf cmake-3.13.4-Linux-x86_64.tar.gz
 ENV PATH="/opt/cmake-3.13.4-Linux-x86_64/bin:${PATH}"
 
 # Install OpenSSL from source
@@ -48,7 +46,7 @@ ENV PATH="/opt/cmake-3.13.4-Linux-x86_64/bin:${PATH}"
 # (so even get-pip.py doesn't work!)
 ADD https://www.openssl.org/source/openssl-1.1.0j.tar.gz /src/openssl-1.1.0j.tar.gz
 WORKDIR /src
-RUN tar xvf openssl-1.1.0j.tar.gz
+RUN tar xf openssl-1.1.0j.tar.gz
 WORKDIR /src/openssl-1.1.0j
 RUN ./config --prefix=/usr/local
 RUN make -j4 --quiet
@@ -58,7 +56,7 @@ RUN ldconfig
 # Install Python 2.7 from source
 ADD http://www.python.org/ftp/python/2.7.15/Python-2.7.15.tgz /src/Python-2.7.15.tgz
 WORKDIR /src
-RUN tar xvf Python-2.7.15.tgz
+RUN tar xf Python-2.7.15.tgz
 WORKDIR /src/Python-2.7.15
 RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enable-loadable-sqlite-extensions
 RUN make -j4 --quiet
@@ -68,7 +66,7 @@ RUN ldconfig
 # Install Python 3.5 from source
 ADD https://www.python.org/ftp/python/3.5.6/Python-3.5.6.tgz /src/Python-3.5.6.tgz
 WORKDIR /src
-RUN tar xvf Python-3.5.6.tgz
+RUN tar xf Python-3.5.6.tgz
 WORKDIR /src/Python-3.5.6
 RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enable-loadable-sqlite-extensions
 RUN make -j4 --quiet
@@ -78,7 +76,7 @@ RUN ldconfig
 # Install Python 3.6 from source
 ADD https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tgz /src/Python-3.6.8.tgz
 WORKDIR /src
-RUN tar xvf Python-3.6.8.tgz
+RUN tar xf Python-3.6.8.tgz
 WORKDIR /src/Python-3.6.8
 RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enable-loadable-sqlite-extensions
 RUN make -j4 --quiet
