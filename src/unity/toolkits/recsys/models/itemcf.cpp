@@ -883,8 +883,17 @@ void recsys_itemcf::export_to_coreml(const std::string& filename) {
 
   // Swap out the user data, as this doesn't need to get exported with the model.
   auto metadata_bk = this->metadata;
+  auto trained_user_items_bk = this->trained_user_items; 
+
   { 
-    scoped_finally metadata_guard([&](){ this->metadata = metadata_bk; });
+    scoped_finally metadata_guard([&](){ 
+        this->metadata = metadata_bk; 
+        this->trained_user_items = trained_user_items_bk;
+        });
+  
+    this->trained_user_items.reset(new sarray<std::vector<std::pair<size_t, double> > > );
+    this->trained_user_items->open_for_write();
+    this->trained_user_items->close();
 
     this->metadata = this->metadata->select_columns(
         {this->metadata->column_name(0), this->metadata->column_name(1)},
