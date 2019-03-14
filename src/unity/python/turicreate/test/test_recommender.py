@@ -2562,8 +2562,7 @@ class ItemSimilarityCoreMLExportTest(unittest.TestCase):
         Xr = X.copy()
         X2 = X.copy()
 
-        for i in range(199):
-            print(i)
+        for i in range(19):
             X2["X1-s"] = X["X1-s"].apply(lambda s: s + ("-%d" % i))
             X2.materialize()
             Xr = Xr.append(X2)
@@ -2573,7 +2572,7 @@ class ItemSimilarityCoreMLExportTest(unittest.TestCase):
         m2 = tc.recommender.item_similarity_recommender.create(Xr, user_id="X1-s", item_id="X2-s")
 
         self.assertEqual(m1.num_users, 10)
-        self.assertEqual(m2.num_users, 200*10)
+        self.assertEqual(m2.num_users, 20*10)
         
         
         temp_file_path_1 = _mkstemp()[1]
