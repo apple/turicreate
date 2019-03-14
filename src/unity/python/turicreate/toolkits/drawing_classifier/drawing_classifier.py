@@ -44,7 +44,7 @@ def _raise_error_if_not_drawing_classifier_input_sframe(
 
 def create(input_dataset, target, feature=None, 
             pretrained_model_url=None, batch_size=256, 
-            num_epochs=100, max_iterations=0, verbose=True):
+            max_iterations=100, verbose=True):
     """
     Create a :class:`DrawingClassifier` model.
 
@@ -116,10 +116,8 @@ def create(input_dataset, target, feature=None,
     
     start_time = _time.time()
 
-    if max_iterations == 0:
-        max_iterations = num_epochs * len(input_dataset) / batch_size
-    else:
-        num_epochs = max_iterations * batch_size / len(input_dataset)
+    # @TODO: Should be able to automatically choose number of iterations
+    # based on data size: Tracked in Github Issue #1576
 
     # automatically infer feature column
     if feature is None:
@@ -178,7 +176,7 @@ def create(input_dataset, target, feature=None,
                  class_to_index=class_to_index,
                  load_labels=True,
                  shuffle=True,
-                 epochs=num_epochs,
+                 epochs=max_iterations,
                  iterations=None)
 
     ctx = _mxnet_utils.get_mxnet_context(max_devices=batch_size)
@@ -246,7 +244,6 @@ class DrawingClassifier(_CustomModel):
     def __init__(self, state):
         self.__proxy__ = _PythonProxy(state)
         
-
     @classmethod
     def _native_name(cls):
         return "drawing_classifier"
