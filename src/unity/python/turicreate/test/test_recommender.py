@@ -96,7 +96,7 @@ class RecommenderTestBase(unittest.TestCase):
 
             # compare them
             self.assertEqual(predictions_tc_dict, _coreml_to_tc(predictions_coreml))
-            os.unlink(temp_file_path)
+        os.unlink(temp_file_path)
 
     def _get_trained_model(self, model_name, data,
                         user_id='user',
@@ -2559,6 +2559,40 @@ class TestContentRecommender(RecommenderTestBase):
                            "data_2" : [0,1,0,0] })
         tc.item_content_recommender.create(temp_sframe,'my_item_id')
 
+class ItemSimilarityCoreMLExportTest(unittest.TestCase):
+
+    def test_export_model_size(self):
+        # Test that the users are completely dropped.
+
+        X = tc.util.generate_random_sframe(100, "ss")
+
+        Xr = X.copy()
+        X2 = X.copy()
+
+        for i in range(19):
+            X2["X1-s"] = X["X1-s"].apply(lambda s: s + ("-%d" % i))
+            X2.materialize()
+            Xr = Xr.append(X2)
+
+        # Train two recommenders, one with 20x the number of users.
+        m1 = tc.recommender.item_similarity_recommender.create(X, user_id="X1-s", item_id="X2-s")
+        m2 = tc.recommender.item_similarity_recommender.create(Xr, user_id="X1-s", item_id="X2-s")
+
+        self.assertEqual(m1.num_users, 10)
+        self.assertEqual(m2.num_users, 20*10)
+        
+        
+        temp_file_path_1 = _mkstemp()[1]
+        temp_file_path_2 = _mkstemp()[1]
+
+        m1.export_coreml(temp_file_path_1)
+        m2.export_coreml(temp_file_path_2)
+
+        s1 = os.path.getsize(temp_file_path_1)
+        s2 = os.path.getsize(temp_file_path_2)
+
+        # Make sure that the differences in size is less than 10%
+        self.assertLessEqual(abs(s2 - s1) / s1, 0.1)
 
 
 if __name__ == "__main__":
