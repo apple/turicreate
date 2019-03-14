@@ -245,7 +245,7 @@ class VGGish():
 
 class DrawingClassifierPreTrainedModel(object):
     def __init__(self, model_url = None):
-        filename = "drawing_model_v1.params"
+        filename = "drawing_classifier_pre_trained_model_245_classes_v0.params"
         self.source_url = (_urlparse.urljoin(MODELS_URL_ROOT, filename) 
             if model_url is None 
             else model_url)
