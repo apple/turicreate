@@ -4,13 +4,11 @@ project(TuriExternalDependencies)
 
 # If this variable is specified, then we pull the coremltools
 #from that repo to compile in.It should just work here.
-
-file(GLOB _mlmodel_files
+file(GLOB_RECURSE _mlmodel_files
   RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
   CONFIGURE_DEPENDS
-  ${TC_COREMLTOOLS_DIR}/mlmodel/build/format/*.cc
-  ${TC_COREMLTOOLS_DIR}/mlmodel/src/*.cpp
-  ${TC_COREMLTOOLS_DIR}/mlmodel/src/transforms/*.cpp)
+  ${TC_COREMLTOOLS_DIR}/mlmodel/build/*.cc
+  ${TC_COREMLTOOLS_DIR}/mlmodel/src/*.cpp)
 
 make_library(coremltools_mlmodel
   OBJECT
