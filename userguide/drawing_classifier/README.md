@@ -20,9 +20,10 @@ The feature in the input SFrame to the Drawing Classifier can have the following
 two formats:
 
 1. Bitmap-based drawings (`dtype=turicreate.Image`): Each bitmap-based drawing
-must be represented as a grayscale image of any size. The network takes in 
-grayscale images of size 28x28 so images of any other size will automatically
-be resized by the toolkit.
+must be represented as an image of any size. The network takes in 
+grayscale images of size 28x28. Images of any other colorspace will
+automatically be converted to grayscale and images of any other size will 
+automatically be resized, by the toolkit.
 
 2. Stroke-based drawings (`dtype=list`): Each stroke-based drawing must be 
 represented as a list of strokes, where each stroke must 
