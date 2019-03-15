@@ -121,9 +121,12 @@ def annotate(data, image_column=None, annotation_column='annotations'):
 
     """
 
-    image_column = _tkutl._find_only_image_column(data) 
+    
 
     # Check Value of Column Variables
+    if image_column == None:
+        image_column = _tkutl._find_only_image_column(data) 
+
     if image_column == None:
         raise ValueError("'image_column' cannot be 'None'")
 
