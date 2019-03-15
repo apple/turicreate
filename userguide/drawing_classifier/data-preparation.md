@@ -15,14 +15,14 @@ First, we will download all the data points in the "Quick, Draw!" dataset for
 the "square" and "triangle" classes -- around 120,000 examples each, 
 both as bitmaps and as stroke-based drawings.
 
-Open a new terminal window and run the following commands:
+Open a new terminal window, go to your working directory and run the following commands:
 
 ```
-$ mkdir -p ~/Downloads/quickdraw
-$ cd ~/Downloads/quickdraw
-$ mkdir -p bitmaps
-$ mkdir -p strokes
-$ mkdir -p sframes
+$ mkdir quickdraw
+$ cd quickdraw
+$ mkdir bitmaps
+$ mkdir strokes
+$ mkdir sframes
 $ cd bitmaps
 $ curl https://storage.googleapis.com/quickdraw_dataset/full/numpy_bitmap/square.npy > square.npy # around 93 MB
 $ curl https://storage.googleapis.com/quickdraw_dataset/full/numpy_bitmap/triangle.npy > triangle.npy # around 92 MB
@@ -34,7 +34,7 @@ $ curl https://storage.googleapis.com/quickdraw_dataset/full/raw/triangle.ndjson
 Now, you should have the following file structure:
 
 ```
-~/Downloads/quickdraw/
+quickdraw/
     bitmaps/
         square.npy
         triangle.npy
@@ -65,7 +65,7 @@ import os
 random_state = np.random.RandomState(100)
 
 # Change if applicable
-quickdraw_dir = '~/Downloads/quickdraw'
+quickdraw_dir = 'quickdraw'
 bitmaps_dir = os.path.join(quickdraw_dir, 'bitmaps')
 sframes_dir = os.path.join(quickdraw_dir, 'sframes')
 npy_ext = '.npy'
@@ -140,7 +140,7 @@ import json
 random_state = np.random.RandomState(100)
 
 # Change if applicable
-quickdraw_dir = '~/Downloads/quickdraw'
+quickdraw_dir = 'quickdraw'
 strokes_dir = os.path.join(quickdraw_dir, 'strokes')
 sframes_dir = os.path.join(quickdraw_dir, 'sframes')
 ndjson_ext = '.ndjson'
@@ -193,6 +193,22 @@ sf.explore()
 This is what the rendered drawings would look like:
 
 ![Rendered Drawings](images/rendered_drawings.png)
+
+After building the two SFrames, your directory structure should look like the
+following:
+```
+quickdraw/
+    bitmaps/
+        square.npy
+        triangle.npy
+    strokes/
+        square.ndjson
+        triangle.ndjson
+    sframes/
+        bitmap_square_triangle.sframe
+        stroke_square_triangle.sframe
+```
+
 
 ## References
 
