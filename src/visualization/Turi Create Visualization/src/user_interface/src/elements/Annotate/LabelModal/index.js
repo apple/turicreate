@@ -4,6 +4,11 @@ import style from './index.module.scss';
 class LabelModal extends Component {
   constructor(props) {
     super(props);
+    this.labelInput = React.createRef();
+  }
+
+  componentDidMount = () => {
+    this.labelInput.focus();
   }
 
   renderError = () => {
@@ -36,7 +41,8 @@ class LabelModal extends Component {
             <input type="text"
                    className={style.modalInput}
                    placeholder="Annotation Label"
-                   onChange={this.props.handleEventLabelModalValue.bind(this)}/>
+                   onChange={this.props.handleEventLabelModalValue.bind(this)}
+                   ref={(input) => { this.labelInput = input; }}/>
           </div>
           <div className={style.buttonContainer}>
             <button className={style.createButton}

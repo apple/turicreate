@@ -23,7 +23,7 @@ class Label extends Component {
 	            <span title={this.props.name}>{this.props.name}</span>
 	          </div>
 	          <div className={styles.LabelAnnotatedAmount}>
-	            <span>{this.props.num_annotated}/{this.props.num_expected}</span>
+	            <span>{this.props.num_annotated}</span>
 	          </div>
 	        </div>
 	        <div className={styles.LabelApplyButton}
