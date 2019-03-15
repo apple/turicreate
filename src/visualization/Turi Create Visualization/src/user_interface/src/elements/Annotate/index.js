@@ -31,6 +31,7 @@ class Annotate extends Component {
       LabelModalValue: "",
       imageData: {},
       annotationData: {},
+      infiniteSelected:{},
       labels:[],
       type:null
     }
@@ -140,9 +141,9 @@ class Annotate extends Component {
     });
   }
 
-  setImageData = (key, value) => {
+  setImageData = (key, value, width, height) => {
     var previousImageData = this.state.imageData;
-    previousImageData[key] = value;
+    previousImageData[key] = {src:value, width:width, height:height};
     this.setState({
       imageData: previousImageData
     });
@@ -182,6 +183,26 @@ class Annotate extends Component {
     });
   }
 
+  addToSelected = (index) => {
+    var infiniteSelected = this.state.infiniteSelected;
+
+    if (infiniteSelected[parseInt(index, 10)]!= null) {
+      delete infiniteSelected[parseInt(index, 10)];
+    } else {
+      infiniteSelected[parseInt(index, 10)] = true;
+    }
+    
+    this.setState({
+      infiniteSelected: infiniteSelected
+    });
+  }
+
+  removeSelected = () => {
+    this.setState({
+      infiniteSelected:{}
+    })
+  }
+
   createLabel = (label) => {
     const notDuplicateLabel = this.state.labels.map(l => (l.name != label))
                                             .reduce((acc, b) => (acc && b), true);
@@ -219,6 +240,13 @@ class Annotate extends Component {
     this.setState({
       hideAnnotated: !this.state.hideAnnotated
     });
+  }
+
+  setAnnotationMass = (name) => {
+    const selectedValue = Object.keys(this.state.infiniteSelected);
+    for (var i = 0; i < selectedValue.length; i++) {
+      this.setAnnotation(parseInt(selectedValue[i], 10), name);
+    }
   }
 
   setAnnotation = (rowIndex, labels) => {
@@ -293,10 +321,13 @@ class Annotate extends Component {
                         incrementalCurrentIndex={this.state.incrementalCurrentIndex}
                         updateIncrementalCurrentIndex={this.updateIncrementalCurrentIndex.bind(this)}
                         toggleInfiniteScroll={this.toggleInfiniteScroll.bind(this)}
+                        infiniteSelected={this.state.infiniteSelected}
                         imageData={this.state.imageData}
                         annotationData={this.state.annotationData}
                         getData={this.getData.bind(this)}
                         type={this.state.type}
+                        addToSelected={this.addToSelected.bind(this)}
+                        removeSelected={this.removeSelected.bind(this)}
                         getAnnotations={this.getAnnotations.bind(this)} />
       );
     } else {
@@ -337,10 +368,10 @@ class Annotate extends Component {
         {this.renderError()}
         <div>
             {/* Add Annotated to Protobuf Message */}
-            <StatusBar annotated={12}
-                       total={this.props.total}
+            <StatusBar total={this.props.metadata.numExamples}
                        infiniteScroll={this.state.infiniteScroll}
                        toggleInfiniteScroll={this.toggleInfiniteScroll.bind(this)}
+                       removeSelected={this.removeSelected.bind(this)}
                        hideAnnotated={this.state.hideAnnotated}
                        toggleHideAnnotated={this.toggleHideAnnotated.bind(this)}/>
 
@@ -350,7 +381,9 @@ class Annotate extends Component {
         <LabelContainer labels={this.state.labels}
                         incrementalCurrentIndex={this.state.incrementalCurrentIndex}
                         infiniteScroll={this.state.infiniteScroll}
+                        infiniteSelected={this.state.infiniteSelected}
                         setAnnotation={this.setAnnotation.bind(this)}
+                        setAnnotationMass={this.setAnnotationMass.bind(this)}
                         openLabelModal={this.openLabelModal.bind(this)}
                         closeLabelModal={this.closeLabelModal.bind(this)}
                         annotationData={this.state.annotationData}/>
