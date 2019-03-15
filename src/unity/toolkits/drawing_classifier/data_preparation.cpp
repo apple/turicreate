@@ -147,6 +147,7 @@ flex_list ramer_douglas_peucker(
     if (begin == end) {
         return compressed_stroke;
     }
+    DASSERT_NE(begin, end);
     const flex_dict &first_point = begin->get<flex_dict>();
     const flex_dict &last_point = (end-1)->get<flex_dict>();
     Line L(first_point, last_point);
@@ -239,6 +240,13 @@ void paint_point(flex_nd_vec &bitmap, int x, int y, int pad) {
     for (int dx = -pad; dx < pad; dx++) {
         for (int dy = -pad; dy < pad; dy++) {
             if (in_bounds(x+dx, y+dy, dimension)) {
+                DASSERT_GE((y+dy) * dimension + (x+dx), 0);
+                DASSERT_LE((y+dy) * dimension + (x+dx), bitmap.num_elem());
+                std::vector<size_t> indices = {0,y+dy,x+dx};
+                DASSERT_EQ(
+                    bitmap[(y+dy) * dimension + (x+dx)],
+                    bitmap.at(bitmap.fast_index(indices))
+                    )
                 bitmap[(y+dy) * dimension + (x+dx)] = 1.0;
             }
         }
@@ -252,6 +260,7 @@ flex_nd_vec paint_stroke(
     if (floorf(end.get_x()) == floorf(start.get_x())) {
         slope = std::numeric_limits<float>::max();
     } else {
+        DASSERT_NE(end.get_x() - start.get_x(), 0);
         slope = (end.get_y() - start.get_y())/(end.get_x() - start.get_x());
     }
     int pad = (int)(stroke_width/2);
@@ -260,6 +269,8 @@ flex_nd_vec paint_stroke(
         || (!along_x && (start.get_y() > end.get_y()))) {
         std::swap(start, end);
     }
+    DASSERT_LE(start.get_x(), end.get_x());
+    DASSERT_LE(start.get_y(), end.get_y());
     int x1 = (int)(start.get_x());
     int y1 = (int)(start.get_y());
     int x2 = (int)(end.get_x());
@@ -283,6 +294,7 @@ flex_image blur_bitmap(flex_nd_vec &bitmap, int ksize) {
     flex_nd_vec blurred_bitmap(bitmap_shape, 0.0);
     DASSERT_EQ(blurred_bitmap.num_elem(), bitmap.num_elem());
     int dimension = bitmap_shape[1];
+    DASSERT_EQ(dimension, INTERMEDIATE_BITMAP_WIDTH);
     int pad = ksize/2;
     DASSERT_LT(pad, dimension);
     for (int row = 0; row < dimension; row++) {
@@ -313,6 +325,11 @@ flex_image blur_bitmap(flex_nd_vec &bitmap, int ksize) {
                     DASSERT_LE(col + dc, dimension);
                     DASSERT_GE((row+dr) * dimension + (col+dc), 0);
                     DASSERT_LE((row+dr) * dimension + (col+dc), bitmap.num_elem());
+                    std::vector<size_t> indices = {0,row+dr,col+dc};
+                    DASSERT_EQ(
+                        bitmap[(row+dr) * dimension + (col+dc)],
+                        bitmap.at(bitmap.fast_index(indices))
+                        )
                     sum_for_blur += bitmap[(row+dr) * dimension + (col+dc)];
                     num_values_in_sum += 1;
                 }
@@ -450,14 +467,14 @@ flex_image convert_stroke_based_drawing_to_bitmap(
     return bitmap;
 }
 
-static std::map<std::string,size_t> generate_column_index_map(
-    const std::vector<std::string>& column_names) {
-    std::map<std::string,size_t> index_map;
-    for (size_t k=0; k < column_names.size(); ++k) {
-        index_map[column_names[k]] = k;
-    }
-    return  index_map;
-}
+// static std::map<std::string,size_t> generate_column_index_map(
+//     const std::vector<std::string>& column_names) {
+//     std::map<std::string,size_t> index_map;
+//     for (size_t k=0; k < column_names.size(); ++k) {
+//         index_map[column_names[k]] = k;
+//     }
+//     return index_map;
+// }
 
 gl_sframe _drawing_classifier_prepare_data(const gl_sframe &data,
                                            const std::string &feature) {
