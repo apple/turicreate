@@ -84,8 +84,8 @@ class SFrameClassifierIter(_mx.io.DataIter):
                  target_column="label",
                  load_labels=True,
                  shuffle=True,
-                 epochs=None,
-                 iterations=None):
+                 iterations=None,
+                 training_steps=None):
 
         # Some checks (these errors are not well-reported by the threads)
         # @TODO: this check must be activated in some shape or form
@@ -93,19 +93,20 @@ class SFrameClassifierIter(_mx.io.DataIter):
         #     raise ValueError('Feature column must be of type Image')
 
         self.batch_size = batch_size
+        self.dataset_size = len(sframe)
         self.input_shape = input_shape
         self.class_to_index = class_to_index
-        self.cur_iteration = 0
+        self.cur_step = 0
         self.load_labels = load_labels
-        self.num_epochs = epochs
         self.num_iterations = iterations
+        self.num_steps = training_steps
 
         # Compute the number of times we'll read a row from the SFrame.
         sample_limits = []
+        if training_steps is not None:
+            sample_limits.append(training_steps * batch_size)
         if iterations is not None:
-            sample_limits.append(iterations * batch_size)
-        if epochs is not None:
-            sample_limits.append(epochs * len(sframe))
+            sample_limits.append(iterations * len(sframe))
         samples = min(sample_limits) if len(sample_limits) > 0 else None
         self.data_source = _SFrameDataSource(
             sframe, feature_column, target_column,
@@ -129,7 +130,7 @@ class SFrameClassifierIter(_mx.io.DataIter):
 
     def reset(self):
         self.data_source.reset()
-        self.cur_iteration = 0
+        self.cur_step = 0
 
     def __next__(self):
         return self._next()
@@ -149,7 +150,7 @@ class SFrameClassifierIter(_mx.io.DataIter):
         images = []
         labels = []
         classes = []
-        if self.cur_iteration == self.num_iterations:
+        if self.cur_step == self.num_steps:
             raise StopIteration
 
         pad = None
@@ -183,6 +184,7 @@ class SFrameClassifierIter(_mx.io.DataIter):
             batch = _mx.io.DataBatch([b_images], [b_labels], pad=pad)
         else:
             batch = _mx.io.DataBatch([b_images], pad=pad)
-        batch.iteration = self.cur_iteration
-        self.cur_iteration += 1
+        batch.training_step = self.cur_step
+        batch.iteration = int(batch.training_step * self.batch_size / self.dataset_size)
+        self.cur_step += 1
         return batch
