@@ -20,8 +20,6 @@ class StatusBar extends Component {
             <img src={swap}
                  className={style.SwapButton}
                  onClick={this.swapInfiniteScroll.bind(this)}/>
-            <ToggleButton hideAnnotated={this.props.hideAnnotated}
-                          toggleHideAnnotated={this.props.toggleHideAnnotated.bind(this)}/>
             <div className={style.SwapButtonHelperText}>
                 Hide Annotated image
             </div>

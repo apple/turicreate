@@ -29,7 +29,7 @@ class Label extends Component {
 	        <div className={styles.LabelApplyButton}
 	        	 	 onClick={this.props.onClick.bind(this)}>
 	          <span>
-	            Apply
+	            {(!this.props.active)?"Apply":""}
 	          </span>
 	        </div>
 	        <div>
