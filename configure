@@ -54,9 +54,6 @@ function print_help {
   echo
   echo "  --virtualenv VIRTUALENV_EXE       Path to virtualenv executable (otherwise looks in \$PATH)."
   echo
-  echo "  --coremltools                     If given, compile in the mlmodel code in the coremltools in this path"
-  echo "                                    instead of the builtin version."
-  echo 
   echo "  --yes                             Defaults to yes on a prompt"
   echo
   echo "  -D var=value                      Specify CFLAGS definitions to be passed on to cmake."
@@ -130,7 +127,6 @@ with_extra_opt_flags=1
 with_stack_display=0
 release_opt_for_size=0
 debug_opt_for_size=0
-mlmodel_dir=""
 
 llvm_path=""
 
@@ -173,8 +169,6 @@ while [ $# -gt 0 ]
 
     --with-remotefs)        with_remotefs=1;;
     --no-remotefs)          with_remotefs=0;;
-
-    --coremltools)          mlmodel_dir="$2"; shift;;
 
     --yes)                  default_yes=1;;
 
@@ -263,24 +257,6 @@ else
   CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_ENABLE_REMOTEFS=0 -DTC_NO_CURL=1"
 fi
 
-
-if [[ ! $mlmodel_dir == "" ]]; then
-  # Remove the trailing slashes.
-  mlmodel_dir=$(echo $mlmodel_dir | sed 's|/+$||')
-
-  if [[ -d $mlmodel_dir ]]; then
-    # Normalize the directory
-    mlmodel_dir_=$(echo $mlmodel_dir | sed -E 's|(mlmodel)*/*$||')
-
-    if [[ -d "${mlmodel_dir_}/mlmodel" ]]; then
-      CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_COREMLTOOLS_DIR=\"$mlmodel_dir_\""
-      echo "Using $mlmodel_dir for coremltools source."
-    else
-      echo "ERROR: $mlmodel_dir does not appear to be a valid coremltools directory."
-      exit 1
-    fi
-  fi
-fi
 
 ##################################################################3
 # setup compilers and includes

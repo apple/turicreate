@@ -1,3 +1,5 @@
+import time as _time
+
 from coremltools.models import MLModel
 import mxnet as mx
 from mxnet.gluon import nn, utils
@@ -32,7 +34,7 @@ class VGGishFeatureExtractor(object):
     output_length = 12288
 
     @staticmethod
-    def preprocess_data(audio_data, labels):
+    def preprocess_data(audio_data, labels, verbose=True):
         '''
         Preprocess each example, breaking it up into frames.
 
@@ -40,6 +42,8 @@ class VGGishFeatureExtractor(object):
         '''
         from .vggish_input import waveform_to_examples
         import numpy as np
+
+        last_progress_update = _time.time()
 
         # Can't run as a ".apply(...)" due to numba.jit decorator issue:
         # https://github.com/apple/turicreate/issues/1216
@@ -51,6 +55,11 @@ class VGGishFeatureExtractor(object):
             for j in data:
                 preprocessed_data.append([j])
                 output_labels.append(labels[i])
+
+            # If `verbose` is set, print an progress update about every 20s
+            if verbose and _time.time() - last_progress_update >= 20:
+                print("Preprocessed {} of {} examples".format(i, len(audio_data)))
+                last_progress_update = _time.time()
 
         return np.asarray(preprocessed_data), np.asarray(output_labels)
 
@@ -79,7 +88,7 @@ class VGGishFeatureExtractor(object):
     def __init__(self):
         vggish_model_file = VGGish()
 
-        if _mac_ver() < (10, 13):
+        if _mac_ver() < (10, 14):
             # Use MXNet
             model_path = vggish_model_file.get_model_path(format='mxnet')
             self.vggish_model = VGGishFeatureExtractor._build_net()
@@ -91,7 +100,7 @@ class VGGishFeatureExtractor(object):
             model_path = vggish_model_file.get_model_path(format='coreml')
             self.vggish_model = MLModel(model_path)
 
-    def extract_features(self, preprocessed_data):
+    def extract_features(self, preprocessed_data, verbose=True):
         """
         Parameters
         ----------
@@ -103,7 +112,9 @@ class VGGishFeatureExtractor(object):
         """
         import numpy as np
 
-        if _mac_ver() < (10, 13):
+        last_progress_update = _time.time()
+
+        if _mac_ver() < (10, 14):
             # Use MXNet
             preprocessed_data = mx.nd.array(preprocessed_data)
 
@@ -113,10 +124,15 @@ class VGGishFeatureExtractor(object):
             batches = utils.split_and_load(preprocessed_data, ctx_list=ctx_list, even_split=False)
 
             deep_features = []
-            for cur_batch in batches:
+            for i, cur_batch in enumerate(batches):
                 y = self.vggish_model.forward(cur_batch).asnumpy()
                 for i in y:
                     deep_features.append(i)
+
+                # If `verbose` is set, print an progress update about every 20s
+                if verbose and _time.time() - last_progress_update >= 20:
+                    print("Extracted {} of {} batches".format(i, len(audio_data)))
+                    last_progress_update = _time.time()
 
         else:
             # Use Core ML
@@ -127,13 +143,18 @@ class VGGishFeatureExtractor(object):
                     y = self.vggish_model.predict(x)
                     deep_features.append(y['output1'])
 
+                # If `verbose` is set, print an progress update about every 20s
+                if verbose and _time.time() - last_progress_update >= 20:
+                    print("Extracted {} of {}".format(i, len(preprocessed_data)))
+                    last_progress_update = _time.time()
+
         return np.asarray(deep_features)
 
     def get_spec(self):
         """
         Return the Core ML spec
         """
-        if _mac_ver() >= (10, 13):
+        if _mac_ver() >= (10, 14):
             return self.vggish_model.get_spec()
         else:
             vggish_model_file = VGGish()
