@@ -31,7 +31,7 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
         Input data. The column named by the 'feature' parameter will be
         extracted for modeling.
 
-    target : string, or int
+    target : string or int
         Name of the column containing the target variable. The values in this
         column must be of string or integer type.
 
@@ -81,19 +81,19 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
     encoded_target = dataset[target].apply(lambda x: class_label_to_id[x])
 
     if verbose:
-        print("Preprocessing audio data")
-    preprocessed_data, labels = feature_extractor.preprocess_data(dataset[feature], encoded_target)
+        print("\nPreprocessing audio data -")
+    preprocessed_data, labels = feature_extractor.preprocess_data(dataset[feature], encoded_target, verbose=verbose)
 
     if verbose:
-        print("Extracting deep features")
-    deep_features = feature_extractor.extract_features(preprocessed_data)
+        print("\nExtracting deep features -")
+    deep_features = feature_extractor.extract_features(preprocessed_data, verbose=verbose)
     del preprocessed_data
 
     if batch_size > len(deep_features):
         batch_size = len(deep_features)
 
     if verbose:
-        print("Training a custom neural network")
+        print("\nTraining a custom neural network -")
     train_data = _mx.io.NDArrayIter(deep_features, label=labels,
                                     batch_size=batch_size, shuffle=True)
 
@@ -105,14 +105,8 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
 
     if verbose:
         # Setup progress table
-        column_names = ['Epoch', 'Accuracy (%)', 'Elapsed Time (seconds)']
-        num_columns = len(column_names)
-        column_width = max(map(lambda x: len(x), column_names)) + 2
-        hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
-        # Print progress table header
-        print(hr)
-        print(('| {:<{width}}' * num_columns + '|').format(*column_names, width=column_width-1))
-        print(hr)
+        table_printer = _tc.util._ProgressTablePrinter(['epoch', 'accuracy', 'time'],
+                                                        ['Epoch', 'Accuracy (%)', 'Elapsed Time (seconds)'])
 
     metric = _mx.metric.Accuracy()
     softmax_cross_entropy_loss = _mx.gluon.loss.SoftmaxCrossEntropyLoss()
@@ -139,13 +133,9 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
             # batch size of data to normalize the gradient by 1/batch_size.
             trainer.step(batch.data[0].shape[0])
 
-        metric_name, accuracy = metric.get()
+        _, accuracy = metric.get()
         if verbose:
-            # Print progress row
-            print("| {epoch:<{width}}| {accuracy:<{width}.3f}| {time:<{width}.1f}|".format(
-                epoch=i, accuracy=accuracy, time=_time.time()-start_time,
-                width=column_width-1))
-            print(hr)
+            table_printer.print_row(epoch=i, accuracy=accuracy, time=_time.time()-start_time)
 
         train_data.reset()
         metric.reset()
