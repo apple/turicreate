@@ -11,6 +11,7 @@ from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits import evaluation as _evaluation
 import turicreate.toolkits._internal_utils as _tkutl
+from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from .. import _mxnet_utils
 from turicreate import extensions as _extensions
 from .. import _pre_trained_models
@@ -30,8 +31,9 @@ def _raise_error_if_not_drawing_classifier_input_sframe(
     _raise_error_if_not_sframe(dataset)
     if feature not in dataset.column_names():
         raise _ToolkitError("Feature column '%s' does not exist" % feature)
-    if (dataset[feature].dtype != _tc.Image 
-        and dataset[feature].dtype != list):
+    if target not in dataset.column_names():
+        raise _ToolkitError("Target column '%s' does not exist" % target)
+    if (dataset[feature].dtype != _tc.Image and dataset[feature].dtype != list):
         raise _ToolkitError("Feature column must contain images" 
             + " or stroke-based drawings encoded as lists of strokes" 
             + " where each stroke is a list of points and" 
@@ -203,7 +205,8 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     model_params.initialize(_mx.init.Xavier(), ctx=ctx)
 
     if pretrained_model_url is not None:
-        pretrained_model = _pre_trained_models.DrawingClassifierPreTrainedModel(pretrained_model_url)
+        pretrained_model = _pre_trained_models.DrawingClassifierPreTrainedModel(
+            pretrained_model_url)
         pretrained_model_params_path = pretrained_model.get_model_path()
         model.load_params(pretrained_model_params_path, 
             ctx=ctx, 
@@ -303,9 +306,11 @@ class DrawingClassifier(_CustomModel):
 
     This model should not be constructed directly.
     """
+
+    _PYTHON_DRAWING_CLASSIFIER_VERSION = 1
     def __init__(self, state):
         self.__proxy__ = _PythonProxy(state)
-        
+
     @classmethod
     def _native_name(cls):
         return "drawing_classifier"
@@ -317,11 +322,12 @@ class DrawingClassifier(_CustomModel):
         return state
 
     def _get_version(self):
-        return 1
+        return self._PYTHON_DRAWING_CLASSIFIER_VERSION
 
     @classmethod
     def _load_version(cls, state, version):
-        _tkutl._model_version_check(version, 1)
+        _tkutl._model_version_check(version, 
+            cls._PYTHON_DRAWING_CLASSIFIER_VERSION)
         from ._model_architecture import Model as _Model
         net = _Model(num_classes = len(state['classes']), prefix = 'drawing_')
         ctx = _mxnet_utils.get_mxnet_context(max_devices=state['batch_size'])
@@ -330,6 +336,11 @@ class DrawingClassifier(_CustomModel):
             net_params, state['_model'], ctx=ctx 
             )
         state['_model'] = net
+        # For a model trained on integer classes, when saved and loaded back,
+        # the classes are loaded as floats. The following if statement casts
+        # the loaded "float" classes back to int.
+        if len(state['classes']) > 0 and isinstance(state['classes'][0], float):
+            state['classes'] = list(map(int, state['classes']))
         return DrawingClassifier(state)
 
     def __str__(self):

@@ -429,25 +429,33 @@ flex_image convert_stroke_based_drawing_to_bitmap(
     return bitmap;
 }
 
+static std::map<std::string,size_t> generate_column_index_map(
+    const std::vector<std::string>& column_names) {
+    std::map<std::string,size_t> index_map;
+    for (size_t k=0; k < column_names.size(); ++k) {
+        index_map[column_names[k]] = k;
+    }
+    return  index_map;
+}
+
 gl_sframe _drawing_classifier_prepare_data(const gl_sframe &data,
                                            const std::string &feature) {
     DASSERT_TRUE(data.contains_column(feature));
-    
-    gl_sframe selected_sframe = data.select_columns({feature});
-    selected_sframe = selected_sframe.add_row_number();
-    gl_sarray bitmaps = selected_sframe.apply([](
-        const sframe_rows::row& sframe_row) {
-        const flexible_type &strokes = sframe_row[0];
-        int row_number = sframe_row[1];
-        flex_list current_stroke_based_drawing = strokes.to<flex_list>();
-        flex_image current_bitmap = convert_stroke_based_drawing_to_bitmap(
-            current_stroke_based_drawing, row_number);
-        return current_bitmap;
-    }, flex_type_enum::IMAGE);
 
+    std::vector<flexible_type> bitmaps;
+    auto column_index_map = generate_column_index_map(data.column_names());
+    int row_number = 0;
+    for (const auto& row: data.range_iterator()) {
+        const flexible_type &strokes = row[column_index_map[feature]];
+        flex_list current_stroke_based_drawing = strokes.to<flex_list>();
+        bitmaps.push_back(convert_stroke_based_drawing_to_bitmap(
+            current_stroke_based_drawing, row_number)
+        );
+        row_number++;
+    }
+    gl_sarray bitmaps_sarray(bitmaps);
     gl_sframe converted_sframe = gl_sframe(data);
-    converted_sframe.replace_add_column(bitmaps, feature);
-    
+    converted_sframe[feature] = bitmaps_sarray;
     converted_sframe.materialize();
     return converted_sframe;
 }
