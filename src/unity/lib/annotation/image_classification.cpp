@@ -273,14 +273,11 @@ void ImageClassification::cast_annotations() {
       std::static_pointer_cast<unity_sarray>(
           m_data->select_column(m_annotation_column));
 
-    std::cout << m_data->dtype() << std::endl;
-
     std::shared_ptr<unity_sarray_base> integer_annotations =
         data_sarray->astype(flex_type_enum::INTEGER, true);
 
     m_data->remove_column(annotation_column_index);
     m_data->add_column(integer_annotations, m_annotation_column);
-    std::cout << m_data->dtype() << std::endl;
   }
 }
 
