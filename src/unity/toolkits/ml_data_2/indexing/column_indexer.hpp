@@ -31,11 +31,6 @@ class column_indexer {
    */
   column_indexer() {}
 
-  /**
-   * Copy constructor: Don't want to risk making copies of this.
-   */
-  column_indexer(const column_indexer&) = delete;
-
   /** Initialize the index mapping and setup.  There are certain
    *  internal parallel things that need to be set up before
    *  map_value_to_index works.  Call this before looping over
@@ -139,6 +134,10 @@ class column_indexer {
    */
   virtual void load_version(turi::iarchive& iarc, size_t version) = 0;
 
+  /** Create a copy with the index cleared.
+   */
+  virtual std::shared_ptr<column_indexer> create_cleared_copy() const = 0; 
+
   /**  The factory method for loading and instantiating the proper class
    */
   static std::shared_ptr<column_indexer> factory_create(
@@ -151,7 +150,8 @@ class column_indexer {
   /** Set data directly.
    *
    */
-  virtual void set_data(const std::map<std::string, variant_type>& params) {}
+  virtual void set_values(std::vector<flexible_type>&& values) = 0;
+  virtual std::vector<flexible_type> reset_and_return_values() = 0;
 
  public:
 

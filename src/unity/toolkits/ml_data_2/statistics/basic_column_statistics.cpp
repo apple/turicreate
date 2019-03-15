@@ -630,6 +630,18 @@ void basic_column_statistics::load_version(turi::iarchive& iarc, size_t version)
 
 }
 
+/** Create a copy with the index cleared.
+ */
+std::shared_ptr<column_statistics> basic_column_statistics::create_cleared_copy() const {
+ auto ret = std::make_shared<basic_column_statistics>(*this);
+
+ ret->counts.clear();
+ ret->statistics.clear();
+
+ return ret; 
+}
+
+
 /** One way to set the statistics.  Used by the serialization converters.
  *
  *  "counts" -- std::vector<size_t>.  Counts.
@@ -674,6 +686,4 @@ void basic_column_statistics::set_data(const std::map<std::string, variant_type>
     total_row_count = variant_get_value<size_t>(params.at("total_row_count"));
   }
 }
-
-
 }}}
