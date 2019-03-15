@@ -231,7 +231,8 @@ void ml_metadata::load(turi::iarchive& iarc) {
  *  subsetted columns.
  */
 std::shared_ptr<ml_metadata> ml_metadata::select_columns(
-    const std::vector<std::string>& new_columns, bool include_target) const {
+    const std::vector<std::string>& new_columns, bool include_target,
+    const std::vector<std::string>& clr_columns) const {
 
   if(std::set<std::string>(new_columns.begin(), new_columns.end()).size() != new_columns.size()) {
     ASSERT_MSG(false, "Duplicates in the column selection not allowed.");
@@ -239,6 +240,10 @@ std::shared_ptr<ml_metadata> ml_metadata::select_columns(
 
   ////////////////////////////////////////////////////////////////////////////////
   // Step 1.  Deal with the columns.
+
+  // See which columns have to be cleared on copy.
+  std::set<std::string> clear_set(clr_columns.begin(), clr_columns.end()); 
+
 
   // Go through and copy over all the individual column_metadata pointers.
   auto m = std::make_shared<ml_metadata>();
@@ -260,7 +265,12 @@ std::shared_ptr<ml_metadata> ml_metadata::select_columns(
     if(column_idx == size_t(-1))
       ASSERT_MSG(false, (std::string("Column ") + new_columns[i] + " not found.").c_str());
 
-    m->columns[i] = columns[column_idx];
+    if(clear_set.count(c)) { 
+      m->columns[i] = columns[column_idx]->create_cleared_copy(); 
+      clear_set.erase(c);
+    } else { 
+       m->columns[i] = columns[column_idx];
+    }
   }
 
   ////////////////////////////////////////////////////////////////////////////////

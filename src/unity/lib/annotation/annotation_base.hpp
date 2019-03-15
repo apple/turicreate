@@ -20,7 +20,7 @@
 #include "build/format/cpp/message.pb.h"
 #include "build/format/cpp/meta.pb.h"
 
-namespace annotate_spec = TuriCreate::Annotation::Specification;
+#include <unity/lib/annotation/utils.hpp>
 
 namespace turi {
 namespace annotate {
@@ -75,6 +75,8 @@ public:
 
   virtual bool
   setAnnotations(const annotate_spec::Annotations &annotations) = 0;
+
+  virtual void cast_annotations() = 0;
 
   BEGIN_BASE_CLASS_MEMBER_REGISTRATION()
 

@@ -31,7 +31,7 @@ class ProgressTablePrinter(object):
         meta_string = '|'
         for key in self.column_names:
             float_specifier = ''
-            if type(kwargs[key]) == float:
+            if isinstance(kwargs[key], float):
                 float_specifier = '.3f'
             meta_string += " {%s:<{width}%s}|" % (key, float_specifier)
         kwargs['width'] = self.column_width - 1

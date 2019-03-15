@@ -6,16 +6,20 @@ import ToggleButton from './ToggleButton/index';
 import swap from './assets/swap.svg';
 
 class StatusBar extends Component {
+  swapInfiniteScroll = () => {
+    this.props.toggleInfiniteScroll(this);
+    this.props.removeSelected();
+  }
   render(){
     return (
       <div className={style.StatusBar}>
         <div className={style.StatusBarMetrics}>
-            Total: {this.props.total} | Annotated: {this.props.annotated}
+            Total: {this.props.total}
         </div>
         <div>
             <img src={swap}
                  className={style.SwapButton}
-                 onClick={this.props.toggleInfiniteScroll.bind(this)}/>
+                 onClick={this.swapInfiniteScroll.bind(this)}/>
             <ToggleButton hideAnnotated={this.props.hideAnnotated}
                           toggleHideAnnotated={this.props.toggleHideAnnotated.bind(this)}/>
             <div className={style.SwapButtonHelperText}>

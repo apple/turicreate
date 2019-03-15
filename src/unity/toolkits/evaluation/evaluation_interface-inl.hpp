@@ -1388,8 +1388,10 @@ class flexible_accuracy : public precision_recall_base {
 
     // Multi-class vs binary classification.
     std::unordered_map<flexible_type, double> accuracy_scores;
+    std::unordered_map<flexible_type, flexible_type> precision_scores;
     for (const auto& l: labels) {
       accuracy_scores[l] = double(tp[l] + tn[l])/(tp[l] + fp[l] + tn[l] + fn[l]);
+      precision_scores[l] = compute_precision_score(tp[l], fp[l]);
     }
 
     // For binary classification, return the scores for the final label.
@@ -1430,7 +1432,7 @@ class flexible_accuracy : public precision_recall_base {
       // All scores.
       case average_type_enum::NONE:
       {
-        return to_variant(accuracy_scores);
+        return to_variant(precision_scores);
       }
 
       default: {

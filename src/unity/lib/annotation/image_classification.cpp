@@ -15,6 +15,8 @@
 
 #include <unity/lib/image_util.hpp>
 
+#include "utils.hpp"
+
 namespace turi {
 namespace annotate {
 
@@ -232,6 +234,51 @@ void ImageClassification::_addAnnotationToSFrame(size_t index, int label) {
   DASSERT_EQ(place_holder->size(), m_data->size());
 
   m_data->add_column(place_holder, m_annotation_column);
+}
+
+void ImageClassification::cast_annotations() {
+  size_t annotation_column_index = m_data->column_index(m_annotation_column);
+  if(m_data->dtype().at(annotation_column_index) == flex_type_enum::INTEGER) {
+    return;
+  }
+
+  std::shared_ptr<unity_sframe> copy_data =
+      std::static_pointer_cast<unity_sframe>(
+          m_data->copy_range(0, 1, m_data->size()));
+
+  std::vector<std::string> annotation_column_name = {m_annotation_column};
+  std::list<std::shared_ptr<unity_sframe_base>> dropped_missing =
+      copy_data->drop_missing_values(annotation_column_name, false, false);
+
+  std::shared_ptr<unity_sframe> filtered_sframe =
+      std::static_pointer_cast<unity_sframe>(dropped_missing.front());
+
+  std::shared_ptr<unity_sarray> data_sarray =
+      std::static_pointer_cast<unity_sarray>(
+          filtered_sframe->select_column(m_annotation_column));
+
+  std::vector<flexible_type> flex_data = data_sarray->to_vector();
+
+  bool castable = true;
+  for (size_t i = 0; i < flex_data.size(); i++) {
+    std::string label_value = flex_data.at(i).get<flex_string>();
+    if(!isInteger(label_value)){
+      castable = false;
+      break;
+    }
+  }
+
+  if(castable){
+    std::shared_ptr<unity_sarray> data_sarray =
+      std::static_pointer_cast<unity_sarray>(
+          m_data->select_column(m_annotation_column));
+
+    std::shared_ptr<unity_sarray_base> integer_annotations =
+        data_sarray->astype(flex_type_enum::INTEGER, true);
+
+    m_data->remove_column(annotation_column_index);
+    m_data->add_column(integer_annotations, m_annotation_column);
+  }
 }
 
 annotate_spec::MetaData ImageClassification::metaData() {

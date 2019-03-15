@@ -966,6 +966,8 @@ class MetricsTest(unittest.TestCase):
         self.assertAlmostEqual(skl_score, str_score)
 
         # Act [Average = None]
+        prec_score = precision_score(list(targets), list(predictions),
+            average = None)
         score = turicreate.toolkits.evaluation.accuracy(targets,
                                             predictions,
                                             average = None)
@@ -979,12 +981,12 @@ class MetricsTest(unittest.TestCase):
 
         # Note: Explicitly not putting it into a for loop for ease of
         # debugging when the tests fail.
-        self.assertAlmostEqual(cls_skl_score[0], score[0])
-        self.assertAlmostEqual(cls_skl_score[0], str_score['0'])
-        self.assertAlmostEqual(cls_skl_score[1], score[1])
-        self.assertAlmostEqual(cls_skl_score[1], str_score['1'])
-        self.assertAlmostEqual(cls_skl_score[2], score[2])
-        self.assertAlmostEqual(cls_skl_score[2], str_score['2'])
+        self.assertAlmostEqual(prec_score[0], score[0])
+        self.assertAlmostEqual(prec_score[0], str_score['0'])
+        self.assertAlmostEqual(prec_score[1], score[1])
+        self.assertAlmostEqual(prec_score[1], str_score['1'])
+        self.assertAlmostEqual(prec_score[2], score[2])
+        self.assertAlmostEqual(prec_score[2], str_score['2'])
 
     def test_missing_values(self):
         # Arrange
