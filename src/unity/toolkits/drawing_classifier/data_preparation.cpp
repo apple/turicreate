@@ -471,14 +471,14 @@ flex_image convert_stroke_based_drawing_to_bitmap(
     return bitmap;
 }
 
-// static std::map<std::string,size_t> generate_column_index_map(
-//     const std::vector<std::string>& column_names) {
-//     std::map<std::string,size_t> index_map;
-//     for (size_t k=0; k < column_names.size(); ++k) {
-//         index_map[column_names[k]] = k;
-//     }
-//     return index_map;
-// }
+static std::map<std::string,size_t> generate_column_index_map(
+    const std::vector<std::string>& column_names) {
+    std::map<std::string,size_t> index_map;
+    for (size_t k=0; k < column_names.size(); ++k) {
+        index_map[column_names[k]] = k;
+    }
+    return index_map;
+}
 
 gl_sframe _drawing_classifier_prepare_data(const gl_sframe &data,
                                            const std::string &feature) {
