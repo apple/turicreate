@@ -241,7 +241,7 @@ void paint_point(flex_nd_vec &bitmap, int x, int y, int pad) {
         for (int dy = -pad; dy < pad; dy++) {
             if (in_bounds(x+dx, y+dy, dimension)) {
                 DASSERT_GE((y+dy) * dimension + (x+dx), 0);
-                DASSERT_LE((y+dy) * dimension + (x+dx), bitmap.num_elem());
+                DASSERT_LT((y+dy) * dimension + (x+dx), bitmap.num_elem());
                 std::vector<size_t> indices = {0,(size_t)(y+dy),(size_t)(x+dx)};
                 DASSERT_EQ(
                     bitmap[(y+dy) * dimension + (x+dx)],
@@ -278,11 +278,15 @@ flex_nd_vec paint_stroke(
     if (along_x) {
         for (int x = x1; x <= x2; x++) {
             int y = (int)(slope * (x - x1) + y1);
+            DASSERT_LE(y1, y);
+            DASSERT_LE(y, y2);
             paint_point(bitmap, x, y, pad);
         }
     } else {
         for (int y = y1; y <= y2; y++) {
             int x = (int)(x1 + ((y - y1) / slope));
+            DASSERT_LE(x1, x);
+            DASSERT_LE(x, x2);
             paint_point(bitmap, x, y, pad);
         }
     }
@@ -301,7 +305,7 @@ flex_image blur_bitmap(flex_nd_vec &bitmap, int ksize) {
         for (int col = 0; col < dimension; col++) {
             int index = row * dimension + col;
             DASSERT_GE(index, 0);
-            DASSERT_LE(index, blurred_bitmap.num_elem());
+            DASSERT_LT(index, blurred_bitmap.num_elem());
             if (row < pad 
                 || row >= dimension-pad 
                 || col < pad 
@@ -324,7 +328,7 @@ flex_image blur_bitmap(flex_nd_vec &bitmap, int ksize) {
                     DASSERT_GE(col + dc, 0);
                     DASSERT_LE(col + dc, dimension);
                     DASSERT_GE((row+dr) * dimension + (col+dc), 0);
-                    DASSERT_LE((row+dr) * dimension + (col+dc), bitmap.num_elem());
+                    DASSERT_LT((row+dr) * dimension + (col+dc), bitmap.num_elem());
                     std::vector<size_t> indices = {0,(size_t)(row+dr),(size_t)(col+dc)};
                     DASSERT_EQ(
                         bitmap[(row+dr) * dimension + (col+dc)],
@@ -480,40 +484,22 @@ gl_sframe _drawing_classifier_prepare_data(const gl_sframe &data,
                                            const std::string &feature) {
     DASSERT_TRUE(data.contains_column(feature));
 
-    gl_sframe selected_sframe = data.select_columns({feature});
-    selected_sframe = selected_sframe.add_row_number();
-    gl_sarray bitmaps_sarray = selected_sframe.apply([](
-        const sframe_rows::row& sframe_row) {
-        const flexible_type &strokes = sframe_row[0];
-        int row_number = sframe_row[1];
+    std::vector<flexible_type> bitmaps;
+    auto column_index_map = generate_column_index_map(data.column_names());
+    int row_number = 0;
+    for (const auto& row: data.range_iterator()) {
+        const flexible_type &strokes = row[column_index_map[feature]];
         flex_list current_stroke_based_drawing = strokes.to<flex_list>();
-        flex_image current_bitmap = convert_stroke_based_drawing_to_bitmap(
-            current_stroke_based_drawing, row_number);
-        return current_bitmap;
-    }, flex_type_enum::IMAGE);
-
+        bitmaps.push_back(convert_stroke_based_drawing_to_bitmap(
+            current_stroke_based_drawing, row_number)
+        );
+        row_number++;
+    }
+    gl_sarray bitmaps_sarray(bitmaps);
     gl_sframe converted_sframe = gl_sframe(data);
-    converted_sframe.replace_add_column(bitmaps_sarray, feature);
-        
+    converted_sframe[feature] = bitmaps_sarray;
     converted_sframe.materialize();
     return converted_sframe;
-
-    // std::vector<flexible_type> bitmaps;
-    // auto column_index_map = generate_column_index_map(data.column_names());
-    // int row_number = 0;
-    // for (const auto& row: data.range_iterator()) {
-    //     const flexible_type &strokes = row[column_index_map[feature]];
-    //     flex_list current_stroke_based_drawing = strokes.to<flex_list>();
-    //     bitmaps.push_back(convert_stroke_based_drawing_to_bitmap(
-    //         current_stroke_based_drawing, row_number)
-    //     );
-    //     row_number++;
-    // }
-    // gl_sarray bitmaps_sarray(bitmaps);
-    // gl_sframe converted_sframe = gl_sframe(data);
-    // converted_sframe[feature] = bitmaps_sarray;
-    // converted_sframe.materialize();
-    // return converted_sframe;
 }
 
 } //drawing_classifier
