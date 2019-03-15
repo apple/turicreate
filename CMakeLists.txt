@@ -298,6 +298,15 @@ add_definitions(-DEIGEN_MPL2_ONLY)
 #**************************************************************************/
 #*                                                                        */
 #*                      Force Disable OpenMP                              */
+
+if(NOT TC_COREMLTOOLS_DIR) 
+  set(TC_COREMLTOOLS_DIR ${CMAKE_SOURCE_DIR}/src/external/coremltools_wrap/coremltools/)
+else()
+  message("Using mlmodel interface in source directory ${TC_COREMLTOOLS_DIR}/mlmodel.")
+endif()
+
+include_directories(${TC_COREMLTOOLS_DIR})
+
 #*                                                                        */
 #**************************************************************************/
 add_library(openmp INTERFACE)

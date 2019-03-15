@@ -6,10 +6,14 @@
 
 #include <unity/toolkits/activity_classification/activity_classifier.hpp>
 
+#include <algorithm>
 #include <functional>
 #include <numeric>
 
+#include <logger/assertions.hpp>
+#include <logger/logger.hpp>
 #include <unity/toolkits/coreml_export/neural_net_models_exporter.hpp>
+#include <unity/toolkits/evaluation/metrics.hpp>
 #include <util/string_util.hpp>
 
 namespace turi {
@@ -20,6 +24,7 @@ namespace {
 using coreml::MLModelWrapper;
 using neural_net::compute_context;
 using neural_net::float_array_map;
+using neural_net::model_backend;
 using neural_net::model_spec;
 using neural_net::lstm_weight_initializers;
 using neural_net::shared_float_array;
@@ -47,6 +52,16 @@ float_array_map get_training_config(size_t prediction_window) {
     { "ac_seq_len", shared_float_array::wrap(NUM_PREDICTIONS_PER_CHUNK) },
     { "mode", shared_float_array::wrap(0.f) },  // kLowLevelModeTrain
   };
+}
+float_array_map get_inference_config(size_t prediction_window) {
+  float_array_map config = get_training_config(prediction_window);
+  config["mode"] = shared_float_array::wrap(1.f);  // kLowLevelModeInference
+  return config;
+}
+
+std::vector<std::string> get_supported_metrics() {
+  return {"accuracy", "auc", "precision", "recall", "f1_score", "log_loss",
+          "confusion_matrix", "roc_curve"};
 }
 
 }  // namespace
@@ -116,6 +131,92 @@ void activity_classifier::train(gl_sframe data, std::string target_column_name,
   float_array_map trained_weights = training_model_->export_weights();
   nn_spec_->update_params(trained_weights);
 }
+
+gl_sarray activity_classifier::predict(gl_sframe data,
+                                       std::string output_type)
+{
+  if (output_type.empty()) {
+    output_type = "class";
+  }
+  if (output_type != "class" && output_type != "probability_vector") {
+    log_and_throw(output_type + " is not a valid option for output_type.  Expected one of: probability_vector, class");
+  }
+
+  // Bind the data to a data iterator.
+  flex_list features = read_state<flex_list>("features");
+  data_iterator::parameters data_params;
+  data_params.data = data;
+  data_params.session_id_column_name = read_state<flex_string>("session_id");
+  data_params.feature_column_names =
+      std::vector<std::string>(features.begin(), features.end());
+  data_params.prediction_window = read_state<flex_int>("prediction_window");
+  data_params.predictions_in_chunk = NUM_PREDICTIONS_PER_CHUNK;
+  std::unique_ptr<data_iterator> data_it = create_iterator(data_params);
+
+  // Accumulate the class probabilities for each prediction window.
+  gl_sframe raw_preds_per_window = perform_inference(data_it.get());
+
+  // Assume output_frequency is "per_row". Duplicate each probability vector a
+  // number of times equal to the number of samples for that prediction.
+  // TODO: Also support "per_window".
+  size_t preds_column_index = raw_preds_per_window.column_index("preds");
+  size_t num_samples_column_index =
+      raw_preds_per_window.column_index("num_samples");
+  auto copy_per_row = [=](const sframe_rows::row& row) {
+    return flex_list(row[num_samples_column_index], row[preds_column_index]);
+  };
+  gl_sarray duplicated_preds_per_window =
+      raw_preds_per_window.apply(copy_per_row, flex_type_enum::LIST);
+  gl_sframe preds_per_row =
+      gl_sframe({{"temp", duplicated_preds_per_window}}).stack("temp", "preds");
+
+  gl_sarray result = preds_per_row["preds"];
+
+  if (output_type == "class") {
+    flex_list class_labels = read_state<flex_list>("classes");
+    auto max_prob_label = [=](const flexible_type& ft) {
+      const flex_vec& prob_vec = ft.get<flex_vec>();
+      auto max_it = std::max_element(prob_vec.begin(), prob_vec.end());
+      return class_labels[max_it - prob_vec.begin()];
+    };
+    result = result.apply(max_prob_label, class_labels.front().get_type());
+  }
+
+  return result;
+}
+
+variant_map_type activity_classifier::evaluate(gl_sframe data,
+                                               std::string metric)
+{
+  // Validate metric and determine list of metrics to compute.
+  std::vector<std::string> metrics = get_supported_metrics();
+  if (metric != "auto") {
+    // If the caller didn't request "auto", then adjust the list of metrics.
+    if (metric == "report") {
+      // Add the per-class report to the standard list of metrics.
+      metrics.push_back("report_by_class");
+    } else {
+      // Just compute the requested metric, if valid.
+      if (std::find(metrics.begin(), metrics.end(), metric) == metrics.end()) {
+        log_and_throw("Unsupported metric " + metric);
+      } else {
+        metrics = {metric};
+      }
+    }
+  }
+
+  // Perform prediction.
+  gl_sarray predictions = predict(data, "probability_vector");
+
+  // Compute the requested metrics.
+  std::string target_column_name = read_state<flex_string>("target");
+  gl_sframe eval_inputs({ {"target", data[target_column_name]},
+                          {"probs",  predictions}               });
+  return evaluation::compute_classifier_metrics_from_probability_vectors(
+      std::move(metrics), eval_inputs, "target", "probs",
+      read_state<flex_list>("classes"));
+}
+
 
 std::shared_ptr<MLModelWrapper> activity_classifier::export_to_coreml(
     std::string filename)
@@ -323,12 +424,13 @@ void activity_classifier::perform_training_iteration() {
 
   float cumulative_batch_loss = 0.f;
   size_t num_batches = 0;
-  data_iterator::batch batch;
-  do {
 
-    batch = training_data_iterator_->next_batch(batch_size);
+  while (training_data_iterator_->has_next_batch()) {
+    data_iterator::batch batch =
+        training_data_iterator_->next_batch(batch_size);
 
     // Submit the batch to the neural net model.
+    // TODO: Implement double buffering.
     std::map<std::string, shared_float_array> results = training_model_->train(
         { { "input",   batch.features },
           { "labels",  batch.labels   },
@@ -338,15 +440,16 @@ void activity_classifier::perform_training_iteration() {
     float batch_loss = std::accumulate(loss_batch.data(),
                                        loss_batch.data() + loss_batch.size(),
                                        0.f, std::plus<float>());
-    cumulative_batch_loss += batch_loss / batch.size;
+    cumulative_batch_loss += batch_loss / batch.batch_info.size();
 
     ++num_batches;
-
-  } while (batch.size == batch_size);
+  }
 
   float average_batch_loss = cumulative_batch_loss / num_batches;
 
   // Report progress if we have an active table printer.
+  // TODO: Report accuracy.
+  // TODO: Report validation metrics.
   if (training_table_printer_) {
     training_table_printer_->print_progress_row(
         iteration_idx, iteration_idx + 1, average_batch_loss, progress_time());
@@ -358,6 +461,75 @@ void activity_classifier::perform_training_iteration() {
   });
 
   training_data_iterator_->reset();
+}
+
+gl_sframe activity_classifier::perform_inference(data_iterator* data) const {
+  // Open a new SFrame for writing.
+  gl_sframe_writer writer({ "session_id", "preds", "num_samples" },
+                          { data->session_id_type(),
+                            flex_type_enum::VECTOR,
+                            flex_type_enum::INTEGER  },
+                          /* num_segments */ 1);
+
+  size_t prediction_window = read_state<size_t>("prediction_window");
+  size_t num_classes = read_state<size_t>("num_classes");
+
+  // Allocate a buffer into which to write the class probabilities.
+  flex_vec preds(num_classes);
+
+  // Initialize the NN backend.
+  std::unique_ptr<compute_context> ctx = create_compute_context();
+  std::unique_ptr<model_backend> backend = ctx->create_activity_classifier(
+      /* n */     read_state<flex_int>("batch_size"),
+      /* c_in */  read_state<flex_int>("num_features"),
+      /* h_in */  1,
+      /* w_in */  NUM_PREDICTIONS_PER_CHUNK * prediction_window,
+      /* c_out */ num_classes,
+      /* h_out */ 1,
+      /* w_out */ NUM_PREDICTIONS_PER_CHUNK,
+      get_inference_config(prediction_window),
+      nn_spec_->export_params_view());
+
+  while (data->has_next_batch()) {
+    // Obtain the next batch of inputs.
+    data_iterator::batch inputs =
+        data->next_batch(read_state<flex_int>("batch_size"));
+
+    // Send the inputs to the model.
+    // TODO: Implement double buffering.
+    std::map<std::string, shared_float_array> results =
+        backend->predict({ { "input", inputs.features } });
+
+    // Copy the (float) outputs to our (double) buffer and add to the SArray.
+    const shared_float_array& output = results.at("output");
+    for (size_t i = 0; i < inputs.batch_info.size(); ++i) {
+      shared_float_array output_chunk = output[i];
+      data_iterator::batch::chunk_info info = inputs.batch_info[i];
+
+      // Interpret the NN output as a sequence of NUM_PREDICTIONS_PER_CHUNK
+      // probability vectors.
+      ASSERT_EQ(output_chunk.size(), NUM_PREDICTIONS_PER_CHUNK * num_classes);
+
+      const float* output_ptr = output_chunk.data();
+      size_t cumulative_samples = 0;
+      while (cumulative_samples < info.num_samples) {
+        // Copy the probability vector for this prediction.
+        std::copy(output_ptr, output_ptr + num_classes, preds.begin());
+        output_ptr += num_classes;
+
+        // Compute how many samples this prediction applies to.
+        size_t num_samples = std::min(prediction_window,
+                                      info.num_samples - cumulative_samples);
+        cumulative_samples += prediction_window;
+
+        // Add a row to the output SFrame.
+        writer.write({ info.session_id, preds, num_samples },
+                     /* segment_id */ 0);
+      }
+    }
+  }
+
+  return writer.close();
 }
 
 }  // namespace activity_classification
