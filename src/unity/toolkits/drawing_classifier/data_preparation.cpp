@@ -147,7 +147,7 @@ flex_list ramer_douglas_peucker(
     if (begin == end) {
         return compressed_stroke;
     }
-    DASSERT_NE(begin, end);
+    DASSERT_TRUE(begin != end);
     const flex_dict &first_point = begin->get<flex_dict>();
     const flex_dict &last_point = (end-1)->get<flex_dict>();
     Line L(first_point, last_point);
@@ -242,11 +242,11 @@ void paint_point(flex_nd_vec &bitmap, int x, int y, int pad) {
             if (in_bounds(x+dx, y+dy, dimension)) {
                 DASSERT_GE((y+dy) * dimension + (x+dx), 0);
                 DASSERT_LE((y+dy) * dimension + (x+dx), bitmap.num_elem());
-                std::vector<size_t> indices = {0,y+dy,x+dx};
+                std::vector<size_t> indices = {0,(size_t)(y+dy),(size_t)(x+dx)};
                 DASSERT_EQ(
                     bitmap[(y+dy) * dimension + (x+dx)],
                     bitmap.at(bitmap.fast_index(indices))
-                    )
+                    );
                 bitmap[(y+dy) * dimension + (x+dx)] = 1.0;
             }
         }
@@ -325,11 +325,11 @@ flex_image blur_bitmap(flex_nd_vec &bitmap, int ksize) {
                     DASSERT_LE(col + dc, dimension);
                     DASSERT_GE((row+dr) * dimension + (col+dc), 0);
                     DASSERT_LE((row+dr) * dimension + (col+dc), bitmap.num_elem());
-                    std::vector<size_t> indices = {0,row+dr,col+dc};
+                    std::vector<size_t> indices = {0,(size_t)(row+dr),(size_t)(col+dc)};
                     DASSERT_EQ(
                         bitmap[(row+dr) * dimension + (col+dc)],
                         bitmap.at(bitmap.fast_index(indices))
-                        )
+                        );
                     sum_for_blur += bitmap[(row+dr) * dimension + (col+dc)];
                     num_values_in_sum += 1;
                 }
