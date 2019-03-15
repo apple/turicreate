@@ -54,7 +54,7 @@ example_drawing = [
 
 #### Introductory Example
 
-In this example, the goal is to 
+In this example, our goal is to 
 **predict if the drawing is a square or a triangle**. 
 Go to [Data Preparation](data-preparation.md) to find out how to get 
 `bitmap_square_triangle.sframe` or `stroke_square_triangle.sframe`).
