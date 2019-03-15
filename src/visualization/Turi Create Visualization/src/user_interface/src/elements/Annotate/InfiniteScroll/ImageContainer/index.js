@@ -36,9 +36,9 @@ class ImageContainer extends Component {
 
 	resizeImage(width, height) {
 		if((width/height) > 1){
-			return {"width": "auto", "height": 90, "top": 0, "left": parseInt((-1*(((width/height)*90)-90)/2), 10)};
+			return {"width": "auto", "height": style.imgSize, "top": 0, "left": parseInt((-1*(((width/height)*style.imgSize)-style.imgSize)/2), 10)};
 		} else {
-			return {"width": 90, "height": "auto", "top": parseInt((-1*(((height/width)*90)-90)/2), 10), "left": 0};
+			return {"width": style.imgSize, "height": "auto", "top": parseInt((-1*(((height/width)*style.imgSize)-style.imgSize)/2), 10), "left": 0};
 		}
 	}
 
