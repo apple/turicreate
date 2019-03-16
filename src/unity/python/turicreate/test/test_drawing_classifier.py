@@ -70,7 +70,7 @@ def _build_stroke_data():
 
 class DrawingClassifierTest(unittest.TestCase):
     @classmethod
-    def setUpClass(self, pretrained_model_url = None):
+    def setUpClass(self, pretrained_model_url='auto'):
         self.feature = "drawing"
         self.target = "label"
         self.check_cross_sf = _build_bitmap_data()
@@ -281,9 +281,9 @@ class DrawingClassifierTest(unittest.TestCase):
         for model in self.models:
             model.summary()
 
-# class DrawingClassifierPreTrainedModelTest(DrawingClassifierTest):
-#     @classmethod
-#     def setUpClass(self):
-#         super(DrawingClassifierPreTrainedModelTest, self).setUpClass(
-#             pretrained_model_url=None)
+class DrawingClassifierFromScratchTest(DrawingClassifierTest):
+    @classmethod
+    def setUpClass(self):
+        super(DrawingClassifierFromScratchTest, self).setUpClass(
+            pretrained_model_url=None)
 
