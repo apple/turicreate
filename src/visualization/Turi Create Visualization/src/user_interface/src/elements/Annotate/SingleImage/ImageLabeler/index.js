@@ -20,6 +20,10 @@ class ImageLabeler extends Component {
     window.removeEventListener("resize", this.updateDimensions.bind(this));
   }
 
+  handleImageLoaded = () => {
+    this.updateDimensions();
+  }
+
   updateDimensions = () => {
     const $this = this;
     window.requestAnimationFrame(function() {
@@ -52,6 +56,7 @@ class ImageLabeler extends Component {
                ref={this.currentComponent}>
             <img src={this.props.src.src}
                  className={style.ImageSrc}
+                 onLoad={this.handleImageLoaded.bind(this)}
                  style={this.resizeImage(this.props.src.width, this.props.src.height)}/>
           </div>
         </div>
