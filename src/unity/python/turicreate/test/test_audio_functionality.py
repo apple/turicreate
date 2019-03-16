@@ -286,7 +286,7 @@ class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
         self.data['labels'] = self.data['labels'].apply(lambda x: 0 if x == 'white noise' else 1)
         self.is_binary_classification = True
 
-        self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio')
+        self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio', validation_set=None)
 
 
 class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabels):
@@ -303,7 +303,7 @@ class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabel
         self.data = _generate_binary_test_data().append(constant_noise)
 
         self.is_binary_classification = False
-        self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio')
+        self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio', validation_set=self.data)
 
 
 @unittest.skipIf(_mac_ver() < (10,14), 'Custom models only supported on macOS 10.14+')
