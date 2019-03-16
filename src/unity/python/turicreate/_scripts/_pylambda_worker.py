@@ -48,6 +48,17 @@ def setup_environment(info_log_function = None, error_log_function = None):
     for i, p in enumerate(sys.path):
         _write_log("  sys.path[%d] = %s. " % (i, sys.path[i]))
 
+    #######################################
+    # Write some specific local environment variables to try to keep everything 
+    # run in a lambda worker to single thread mode.
+
+    os.environ["OMP_NUM_THREADS"] = "1"
+    os.environ["OPENBLAS_NUM_THREADS"] = "1"
+    os.environ["MKL_NUM_THREADS"] = "1"
+    os.environ["MKL_DOMAIN_NUM_THREADS"] = "1"
+    os.environ["NUMBA_NUM_THREADS"] = "1"
+
+
     ########################################
     # Now, import thnigs
 
