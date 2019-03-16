@@ -46,7 +46,7 @@ def _raise_error_if_not_drawing_classifier_input_sframe(
         raise _ToolkitError("Input Dataset is empty!")
 
 def create(input_dataset, target, feature=None, validation_set='auto',
-            pretrained_model_url=None, batch_size=256, 
+            pretrained_model_url='auto', batch_size=256, 
             max_iterations=100, verbose=True):
     """
     Create a :class:`DrawingClassifier` model.
@@ -85,7 +85,9 @@ def create(input_dataset, target, feature=None, validation_set='auto',
 
     pretrained_model_url : string optional
         A URL to the pretrained model that must be used for a warm start before
-        training.
+        training. By default, we load the pretrained model we trained and uploaded
+        on https://docs-assets.developer.apple.com/turicreate/models/
+        If you wish to train from scratch, please set this parameter to None. 
 
     batch_size: int optional
         The number of images per training step. If not set, a default
