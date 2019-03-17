@@ -37,10 +37,10 @@ done
 
 # Load images from repo directory if possible
 if [[ -n $PERSIST_TO_REPO_DIR ]]; then
-  mkdir -p $HOME/.docker_images
-  (test -f $HOME/.docker_images/image-10.04.gz && docker load -i $HOME/.docker_images/image-10.04.gz) || true
-  (test -f $HOME/.docker_images/image-12.04.gz && docker load -i $HOME/.docker_images/image-12.04.gz) || true
-  (test -f $HOME/.docker_images/image-14.04.gz && docker load -i $HOME/.docker_images/image-14.04.gz) || true
+  mkdir -p .docker_images
+  (test -f .docker_images/image-10.04.gz && docker load -i .docker_images/image-10.04.gz) || true
+  (test -f .docker_images/image-12.04.gz && docker load -i .docker_images/image-12.04.gz) || true
+  (test -f .docker_images/image-14.04.gz && docker load -i .docker_images/image-14.04.gz) || true
 fi
 
 (docker image ls turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} | grep turicreate/build-image) || \
