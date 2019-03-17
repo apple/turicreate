@@ -371,6 +371,7 @@ scenario_tests_linux_python27:
   dependencies:
     - build_wheel_linux_python27
   script:
+    - apk add bash
     - cd scenario-tests
     - ./run_scenario_tests.sh ../target/turicreate-*.whl
 
@@ -387,6 +388,7 @@ scenario_tests_linux_python35:
   dependencies:
     - build_wheel_linux_python35
   script:
+    - apk add bash
     - cd scenario-tests
     - ./run_scenario_tests.sh ../target/turicreate-*.whl
 
@@ -403,6 +405,7 @@ scenario_tests_linux_python36:
   dependencies:
     - build_wheel_linux_python36
   script:
+    - apk add bash
     - cd scenario-tests
     - ./run_scenario_tests.sh ../target/turicreate-*.whl
 
