@@ -19,10 +19,11 @@ create_images:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
   script:
+    - apk add bash
     # clear target out of the cache, in case it's there from a previous build
     - rm -rf target
     # build each, if needed (skips if version is already in the cache)
-    - ./scripts/create_docker_images.sh --persist_to_repo_dir
+    - bash scripts/create_docker_images.sh --persist_to_repo_dir
   artifacts:
     expire_in: 2 weeks
     paths:
