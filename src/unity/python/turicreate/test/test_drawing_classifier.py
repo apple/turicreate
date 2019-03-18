@@ -230,7 +230,7 @@ class DrawingClassifierTest(unittest.TestCase):
             feature = self.feature
             model = self.models[test_number]
             sf = self.trains[test_number]
-            if self.pretrained_model_url:
+            if self.warm_start:
                 prefix = "pretrained" + str(test_number)
             else:
                 prefix = "scratch" + str(test_number)
