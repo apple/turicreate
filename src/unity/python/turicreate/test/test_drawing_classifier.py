@@ -184,6 +184,23 @@ class DrawingClassifierTest(unittest.TestCase):
                     assert (preds.dtype == _array)
                 assert (len(preds) == len(sf))
 
+    def test_predict_topk(self):
+        k=2
+        for index in range(len(self.models)):
+            model = self.models[index]
+            sf = self.trains[index]
+            for output_type in ["rank", "probability"]:
+                preds = model.predict_topk(sf, k=k, output_type=output_type)
+                assert ("id" in preds.column_names())
+                assert ("class" in preds.column_names())
+                if output_type == "rank":
+                    assert (preds["rank"].dtype == int)
+                    assert (sorted(preds["rank"].unique()) == [0,1])
+                else:
+                    assert (output_type == "probability")
+                    assert (preds["probability"].dtype == float)
+                assert (len(preds) == k*len(sf))
+
     def test_evaluate_without_ground_truth(self):
         for index in range(len(self.trains)):
             model = self.models[index]
