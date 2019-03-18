@@ -188,7 +188,7 @@ test_cpp_linux:
     - build_wheel_linux_python27
   script:
     - apk add bash
-    - (test -d debug && test -d release) || ./configure
+    - apk add python2.7
     - cd release/test
     - make -j8
     - export LD_LIBRARY_PATH=`pwd`/deps/local/lib:`pwd`/deps/local/lib64:$LD_LIBRARY_PATH
