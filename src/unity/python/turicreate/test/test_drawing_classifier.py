@@ -70,24 +70,24 @@ def _build_stroke_data():
 
 class DrawingClassifierTest(unittest.TestCase):
     @classmethod
-    def setUpClass(self, pretrained_model_url='auto'):
+    def setUpClass(self, warm_start='auto'):
         self.feature = "drawing"
         self.target = "label"
         self.check_cross_sf = _build_bitmap_data()
         self.stroke_sf = _build_stroke_data()
-        self.pretrained_model_url = pretrained_model_url
+        self.warm_start = warm_start
         self.check_cross_model = _tc.drawing_classifier.create(
             self.check_cross_sf,
             self.target,
             feature=self.feature,
             max_iterations=10,
-            pretrained_model_url=pretrained_model_url)
+            warm_start=warm_start)
         self.stroke_model = _tc.drawing_classifier.create(
             self.stroke_sf,
             self.target,
             feature=self.feature,
             max_iterations=1,
-            pretrained_model_url=pretrained_model_url)
+            warm_start=warm_start)
         self.trains = [self.check_cross_sf, self.stroke_sf]
         self.models = [self.check_cross_model, self.stroke_model]
 
@@ -285,5 +285,5 @@ class DrawingClassifierFromScratchTest(DrawingClassifierTest):
     @classmethod
     def setUpClass(self):
         super(DrawingClassifierFromScratchTest, self).setUpClass(
-            pretrained_model_url=None)
+            warm_start=None)
 

@@ -46,7 +46,7 @@ def _raise_error_if_not_drawing_classifier_input_sframe(
         raise _ToolkitError("Input Dataset is empty!")
 
 def create(input_dataset, target, feature=None, validation_set='auto',
-            pretrained_model_url='auto', batch_size=256, 
+            warm_start='auto', batch_size=256, 
             max_iterations=100, verbose=True):
     """
     Create a :class:`DrawingClassifier` model.
@@ -83,11 +83,14 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         validation_set is set to None, then no additional metrics
         are computed. The default value is 'auto'.
 
-    pretrained_model_url : string optional
-        A URL to the pretrained model that must be used for a warm start before
-        training. By default, we load the pretrained model we trained and uploaded
-        on https://docs-assets.developer.apple.com/turicreate/models/
-        If you wish to train from scratch, please set this parameter to None. 
+    warm_start : string optional
+        A string to denote which pretrained model to use. Set to "auto"
+        by default which uses a model trained on 245 of the 345 classes in the
+        Quick, Draw! dataset. Here is a list of all the pretrained models that
+        can be passed in as this argument:
+        "auto": Uses quickdraw_245
+        "quickdraw_245": Uses a model trained on 245 of the 345 classes in the
+                         Quick, Draw! dataset.
 
     batch_size: int optional
         The number of images per training step. If not set, a default
@@ -206,9 +209,9 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     model_params = model.collect_params()
     model_params.initialize(_mx.init.Xavier(), ctx=ctx)
 
-    if pretrained_model_url is not None:
+    if warm_start is not None:
         pretrained_model = _pre_trained_models.DrawingClassifierPreTrainedModel(
-            pretrained_model_url)
+            warm_start)
         pretrained_model_params_path = pretrained_model.get_model_path()
         model.load_params(pretrained_model_params_path, 
             ctx=ctx, 
