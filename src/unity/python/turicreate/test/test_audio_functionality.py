@@ -273,6 +273,7 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
             self.assertIn(column, topk_predictions.column_names())
 
         topk_predictions = self.model.predict_topk(self.data, k=1, output_type='rank')
+        print(topk_predictions)
         self.assertEqual(len(topk_predictions), len(self.data) * 1)
         self.assertEqual(3, len(topk_predictions.column_names()))
         for column in ['id', 'class', 'rank']:

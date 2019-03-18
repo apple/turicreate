@@ -126,12 +126,12 @@ class VGGishFeatureExtractor(object):
             deep_features = []
             for i, cur_batch in enumerate(batches):
                 y = self.vggish_model.forward(cur_batch).asnumpy()
-                for i in y:
-                    deep_features.append(i)
+                for j in y:
+                    deep_features.append(j)
 
                 # If `verbose` is set, print an progress update about every 20s
                 if verbose and _time.time() - last_progress_update >= 20:
-                    print("Extracted {} of {} batches".format(i, len(audio_data)))
+                    print("Extracted {} of {} batches".format(i, len(batches)))
                     last_progress_update = _time.time()
 
         else:
