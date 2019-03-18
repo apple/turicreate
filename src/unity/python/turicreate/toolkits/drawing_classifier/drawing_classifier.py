@@ -166,11 +166,11 @@ def create(input_dataset, target, feature=None, validation_set='auto',
                 dataset, validation_dataset = dataset.random_split(
                     TRAIN_VALIDATION_SPLIT)
             else:
+                validation_set = None
                 validation_dataset = _tc.SFrame()
         else:
             raise _ToolkitError("Unrecognized value for 'validation_set'. "
                 + validation_set_corrective_string)
-
     elif validation_set is None:
         validation_dataset = _tc.SFrame()
     else:
