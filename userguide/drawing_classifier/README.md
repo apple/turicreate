@@ -71,7 +71,7 @@ data =  tc.SFrame(SFRAME_PATH)
 
 # Make a small train-test split since our toolkit is not very data-hungry 
 # for 2 classes
-train_data, test_data = data.random_split(0.4)
+train_data, test_data = data.random_split(0.7)
 
 # Create a model
 model = tc.drawing_classifier.create(train_data)
