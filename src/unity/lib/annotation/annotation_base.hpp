@@ -66,6 +66,11 @@ public:
 
   std::shared_ptr<annotation_global> get_annotation_registry();
 
+  virtual void calculateSimilarItems() = 0;
+
+  virtual annotate_spec::Data getSimilarItems(annotate_spec::Datum &item,
+                                              size_t num = 10) = 0;
+
   virtual annotate_spec::MetaData metaData() = 0;
 
   virtual annotate_spec::Data getItems(size_t start, size_t end) = 0;
@@ -119,7 +124,6 @@ private:
   std::string __serialize_proto(T message);
 
   std::string __parse_proto_and_respond(std::string &input);
-
 };
 
 } // namespace annotate

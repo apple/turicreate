@@ -34,7 +34,6 @@ populate_parcel(annotate_spec::Parcel &parcel, T message) {
 
 bool isInteger(std::string s);
 
-
 } // namespace annotate
 } // namespace turi
 

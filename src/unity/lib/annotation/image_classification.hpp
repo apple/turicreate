@@ -20,6 +20,11 @@ public:
 
   ~ImageClassification(){};
 
+  void calculateSimilarItems() override;
+
+  annotate_spec::Data getSimilarItems(annotate_spec::Datum &item,
+                                      size_t num) override;
+
   annotate_spec::MetaData metaData() override;
 
   annotate_spec::Data getItems(size_t start, size_t end) override;
