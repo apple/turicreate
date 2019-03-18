@@ -253,7 +253,7 @@ class DrawingClassifierPreTrainedModel(object):
             if warm_start == 'auto'
             else warm_start
             )
-        # Think about how to bypass the md5 checksum if the user wants to
+        # @TODO: Think about how to bypass the md5 checksum if the user wants to
         # provide their own pretrained model.
         self.source_md5 = "71ba78e48a852f35fb22999650f0a655"
 
