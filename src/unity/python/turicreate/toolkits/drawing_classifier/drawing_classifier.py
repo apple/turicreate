@@ -489,7 +489,7 @@ class DrawingClassifier(_CustomModel):
         _save_spec(spec, filename)
 
 
-    def _predict_with_probabilities(self, input_dataset, verbose = True):
+    def _predict_with_probabilities(self, input_dataset, verbose=True):
         """
         Predict with probabilities. The core prediction part that both 
         `evaluate` and `predict` share.
@@ -567,7 +567,7 @@ class DrawingClassifier(_CustomModel):
         return (_tc.SFrame({self.target: _tc.SArray(all_predicted),
             'probability': _tc.SArray(all_probabilities)}))
 
-    def evaluate(self, dataset, metric = 'auto', verbose = True):
+    def evaluate(self, dataset, metric='auto', verbose=True):
         """
         Evaluate the model by making predictions of target values and comparing
         these to actual values.
@@ -656,7 +656,7 @@ class DrawingClassifier(_CustomModel):
         
         return ret
 
-    def predict(self, data, verbose = True):
+    def predict(self, data, output_type='class', verbose=True):
         """
         Predict on an SFrame or SArray of drawings, or on a single drawing.
 
@@ -670,6 +670,16 @@ class DrawingClassifier(_CustomModel):
             If the data is a single drawing, it can be either of type tc.Image,
             in which case it is a bitmap-based drawing input,
             or of type list, in which case it is a stroke-based drawing input.
+
+        output_type : {'probability', 'class', 'probability_vector'} optional
+            Form of the predictions which are one of:
+            - 'class': Class prediction. For multi-class classification, this
+              returns the class with maximum probability.
+            - 'probability': Prediction probability associated with the True
+              class (not applicable for multi-class classification)
+            - 'probability_vector': Prediction probability associated with each
+              class as a vector. Label ordering is dictated by the ``classes``
+              member variable.
 
         verbose : bool optional
             If True, prints prediction progress.
@@ -701,6 +711,9 @@ class DrawingClassifier(_CustomModel):
             Rows: 10
             [3, 4, 3, 3, 4, 5, 8, 8, 8, 4]
         """
+        output_type = output_type.lower()
+        if output_type not in ["probability", "class", "probability_vector"]:
+            return _ToolkitError("Unrecognized value for output_type.")
         if isinstance(data, _tc.SArray):
             predicted = self._predict_with_probabilities(
                 _tc.SFrame({
@@ -718,4 +731,15 @@ class DrawingClassifier(_CustomModel):
                 }),
                 verbose
             )
-        return predicted[self.target]
+        if output_type == "class":
+            return predicted[self.target]
+        elif output_type == "probability":
+            probability_list = []
+            for row in predicted:
+                probability_list.append(
+                    row["probability"][self._class_to_index[row[self.target]]]
+                    )
+            return _tc.SArray(probability_list)
+        else:
+            assert (output_type == "probability_vector")
+            return predicted["probability"]
