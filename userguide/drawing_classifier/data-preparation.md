@@ -208,11 +208,3 @@ quickdraw/
         bitmap_square_triangle.sframe
         stroke_square_triangle.sframe
 ```
-
-
-## References
-
-The [Quick, Draw!](https://quickdraw.withgoogle.com/data) dataset is described
-further in:
-
-<sup>1</sup>: [Exploring and Visualizing an Open Global Dataset](https://ai.googleblog.com/2017/08/exploring-and-visualizing-open-global.html)
