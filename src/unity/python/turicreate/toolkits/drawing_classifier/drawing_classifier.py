@@ -149,7 +149,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     class_to_index = {name: index for index, name in enumerate(classes)}
 
     validation_set_corrective_string = ("'validation_set' parameter must be "
-        + "an SFrame or must be set to 'auto' for the toolkit to " 
+        + "an SFrame, or None, or must be set to 'auto' for the toolkit to " 
         + "automatically create a validation set.")
     if isinstance(validation_set, _tc.SFrame):
         _raise_error_if_not_drawing_classifier_input_sframe(
