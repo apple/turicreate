@@ -242,13 +242,19 @@ class VGGish():
 
         return model_path
 
-
 class DrawingClassifierPreTrainedModel(object):
-    def __init__(self, model_url = None):
-        filename = "drawing_classifier_pre_trained_model_245_classes_v0.params"
-        self.source_url = (_urlparse.urljoin(MODELS_URL_ROOT, filename) 
-            if model_url is None 
-            else model_url)
+    def __init__(self, warm_start="auto"):
+        self.model_to_filename = {
+            "quickdraw_245_v0": "drawing_classifier_pre_trained_model_245_classes_v0.params"
+        }
+        self.warm_start = "quickdraw_245_v0" if warm_start == "auto" else warm_start
+        self.source_url = (_urlparse.urljoin(
+            MODELS_URL_ROOT, self.model_to_filename[self.warm_start])
+            if warm_start == 'auto'
+            else warm_start
+            )
+        # @TODO: Think about how to bypass the md5 checksum if the user wants to
+        # provide their own pretrained model.
         self.source_md5 = "71ba78e48a852f35fb22999650f0a655"
 
     def get_model_path(self):
