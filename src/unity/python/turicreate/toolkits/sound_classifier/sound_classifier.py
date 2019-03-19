@@ -21,7 +21,8 @@ from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 
 
-def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size=64):
+def create(dataset, target, feature, max_iterations=10, verbose=True,
+           validation_set='auto', batch_size=64):
     '''
     Creates a :class:`SoundClassifier` model.
 
@@ -31,7 +32,7 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
         Input data. The column named by the 'feature' parameter will be
         extracted for modeling.
 
-    target : string, or int
+    target : string or int
         Name of the column containing the target variable. The values in this
         column must be of string or integer type.
 
@@ -48,6 +49,13 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
 
     verbose : bool, optional
         If True, prints progress updates and model details.
+
+    validation_set : SFrame, optional
+        A dataset for monitoring the model's generalization performance. The
+        format of this SFrame must be the same as the training dataset. By
+        default, a validation set is automatically sampled. If `validation_set`
+        is set to None, no validataion is used. You can also pass a validation
+        set you have constructed yourself.
 
     batch_size : int, optional
         If you are getting memory errors, try decreasing this value. If you
@@ -68,6 +76,11 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
         raise _ToolkitError("'%s' column is not audio data." % feature)
     if target not in dataset.column_names():
         raise _ToolkitError("Target column '%s' does not exist" % target)
+    if not (isinstance(validation_set, _tc.SFrame) or validation_set == 'auto' or validation_set is None):
+        raise TypeError("Unrecognized value for 'validation_set'")
+    if isinstance(validation_set, _tc.SFrame):
+        if feature not in validation_set.column_names() or target not in validation_set.column_names():
+            raise ValueError("The 'validation_set' SFrame must be in the same format as the 'dataset'")
     if batch_size < 1:
         raise ValueError('\'batch_size\' must be greater than or equal to 1')
 
@@ -75,27 +88,47 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
     num_labels = len(classes)
     feature_extractor_name = 'VGGish'
     feature_extractor = _get_feature_extractor(feature_extractor_name)
-
-    # encode target column
     class_label_to_id = {l: i for i, l in enumerate(classes)}
+
+    # create the validation set
+    if not isinstance(validation_set, _tc.SFrame) and validation_set == 'auto':
+        if len(dataset) >= 100:
+            print ( "Creating a validation set from 5 percent of training data. This may take a while.\n"
+                    "\tYou can set ``validation_set=None`` to disable validation tracking.")
+            dataset, validation_set = dataset.random_split(0.95)
+        else:
+            validation_set = None
+
     encoded_target = dataset[target].apply(lambda x: class_label_to_id[x])
 
     if verbose:
-        print("Preprocessing audio data")
-    preprocessed_data, labels = feature_extractor.preprocess_data(dataset[feature], encoded_target)
+        print("\nPreprocessing audio data -")
+    preprocessed_data, labels = feature_extractor.preprocess_data(dataset[feature], encoded_target, verbose=verbose)
 
     if verbose:
-        print("Extracting deep features")
-    deep_features = feature_extractor.extract_features(preprocessed_data)
+        print("\nExtracting deep features -")
+    deep_features = feature_extractor.extract_features(preprocessed_data, verbose=verbose)
     del preprocessed_data
 
-    if batch_size > len(deep_features):
-        batch_size = len(deep_features)
+    if validation_set is not None:
+        if verbose:
+            print("Preparing validataion set")
+        validation_encoded_target = validation_set[target].apply(lambda x: class_label_to_id[x])
+        preprocessed_validataion_data, validataion_labels = feature_extractor.preprocess_data(validation_set[feature],
+                                                                                              validation_encoded_target,
+                                                                                              verbose=verbose)
+        validataion_deep_features = feature_extractor.extract_features(preprocessed_validataion_data, verbose=verbose)
+        validation_batch_size = min(len(validataion_deep_features), batch_size)
+        validation_data = _mx.io.NDArrayIter(validataion_deep_features, label=validataion_labels,
+                                             batch_size=validation_batch_size)
+    else:
+        validation_data = []
 
     if verbose:
-        print("Training a custom neural network")
-    train_data = _mx.io.NDArrayIter(deep_features, label=labels,
-                                    batch_size=batch_size, shuffle=True)
+        print("\nTraining a custom neural network -")
+
+    training_batch_size = min(len(deep_features), batch_size)
+    train_data = _mx.io.NDArrayIter(deep_features, label=labels, batch_size=training_batch_size, shuffle=True)
 
     custom_NN = SoundClassifier._build_custom_neural_network(feature_extractor.output_length, num_labels)
     ctx = _mxnet_utils.get_mxnet_context()
@@ -105,16 +138,16 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
 
     if verbose:
         # Setup progress table
-        column_names = ['Epoch', 'Accuracy (%)', 'Elapsed Time (seconds)']
-        num_columns = len(column_names)
-        column_width = max(map(lambda x: len(x), column_names)) + 2
-        hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
-        # Print progress table header
-        print(hr)
-        print(('| {:<{width}}' * num_columns + '|').format(*column_names, width=column_width-1))
-        print(hr)
+        row_ids = ['epoch', 'train_accuracy', 'time']
+        row_display_names = ['Epoch', 'Training Accuracy (%)', 'Elapsed Time (seconds)']
+        if validation_data:
+            row_ids.insert(2, 'validation_accuracy')
+            row_display_names.insert(2, 'Validation Accuracy (%)')
+        table_printer = _tc.util._ProgressTablePrinter(row_ids, row_display_names)
 
-    metric = _mx.metric.Accuracy()
+    train_metric = _mx.metric.Accuracy()
+    if validation_data:
+        validation_metric = _mx.metric.Accuracy()
     softmax_cross_entropy_loss = _mx.gluon.loss.SoftmaxCrossEntropyLoss()
     for i in range(max_iterations):
         # TODO: early stopping
@@ -122,7 +155,6 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
         for batch in train_data:
             data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
             label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
-            outputs = []
 
             # Inside training scope
             with _mx.autograd.record():
@@ -132,23 +164,39 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
                     loss = softmax_cross_entropy_loss(z, y)
                     # Backpropagate the error for one iteration.
                     loss.backward()
-                    outputs.append(z)
-            # Updates internal evaluation
-            metric.update(label, outputs)
             # Make one step of parameter update. Trainer needs to know the
             # batch size of data to normalize the gradient by 1/batch_size.
             trainer.step(batch.data[0].shape[0])
-
-        metric_name, accuracy = metric.get()
-        if verbose:
-            # Print progress row
-            print("| {epoch:<{width}}| {accuracy:<{width}.3f}| {time:<{width}.1f}|".format(
-                epoch=i, accuracy=accuracy, time=_time.time()-start_time,
-                width=column_width-1))
-            print(hr)
-
         train_data.reset()
-        metric.reset()
+
+        # Calculate training metric
+        for batch in train_data:
+            data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            outputs = [custom_NN(x) for x in data]
+            train_metric.update(label, outputs)
+        train_data.reset()
+
+        # Calculate validataion metric
+        for batch in validation_data:
+            data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            outputs = [custom_NN(x) for x in data]
+            validation_metric.update(label, outputs)
+
+        # Get metrics, print progress table
+        _, train_accuracy = train_metric.get()
+        train_metric.reset()
+        printed_row_values = {'epoch': i, 'train_accuracy': train_accuracy}
+        if validation_data:
+            _, validataion_accuracy = validation_metric.get()
+            printed_row_values['validation_accuracy'] = validataion_accuracy
+            validation_metric.reset()
+            validation_data.reset()
+        if verbose:
+            printed_row_values['time'] = _time.time()-start_time
+            table_printer.print_row(**printed_row_values)
+
 
     state = {
         '_class_label_to_id': class_label_to_id,
@@ -161,8 +209,9 @@ def create(dataset, target, feature, max_iterations=10, verbose=True, batch_size
         'num_classes': num_labels,
         'num_examples': len(dataset),
         'target': target,
-        'training_accuracy': accuracy,
+        'training_accuracy': train_accuracy,
         'training_time': _time.time() - start_time,
+        'validation_accuracy': validataion_accuracy if validation_data else None,
     }
     return SoundClassifier(state)
 
@@ -711,8 +760,8 @@ class SoundClassifier(_CustomModel):
         else:
             assert(output_type == 'rank')
             results = prob_vector.apply(lambda p: [
-                {'class': id_to_label[i], 'rank': i}
-                for i in reversed(_np.argsort(p)[-k:])]
+                {'class': id_to_label[i], 'rank': rank}
+                for rank, i in enumerate(reversed(_np.argsort(p)[-k:]))]
             )
 
         results = _tc.SFrame({'X': results})

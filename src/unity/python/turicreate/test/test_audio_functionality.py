@@ -13,7 +13,6 @@ from .util import TempDirectory
 
 import math
 from os import mkdir
-from sys import platform
 import unittest
 
 import coremltools
@@ -24,6 +23,7 @@ from scipy.io import wavfile
 import turicreate as tc
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sarray
 from turicreate.toolkits._main import ToolkitError
+from turicreate.toolkits._internal_utils import _mac_ver
 
 
 class ReadAudioTest(unittest.TestCase):
@@ -215,8 +215,8 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         for a, b in zip(old_model_probs, new_model_probs):
             self.assertItemsEqual(a, b)
 
-    @unittest.skipIf(platform != 'darwin', 'Can not test predictions.')
-    def test_mac_export_coreml(self):
+    @unittest.skipIf(_mac_ver() < (10,14), 'Custom models only supported on macOS 10.14+')
+    def test_export_coreml_with_prediction(self):
         import resampy
 
         with TempDirectory() as temp_dir:
@@ -240,8 +240,8 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
                                         coreml_y[core_ml_prob_output_name][cur_class],
                                         delta=0.001)
 
-    @unittest.skipIf(platform == 'darwin', 'Already testing in more comprehensive way.')
-    def test_linux_export_core_ml(self):
+    @unittest.skipIf(_mac_ver() >= (10,14), 'Already testing export to Core ML with predictions')
+    def test_export_core_ml_no_prediction(self):
         with TempDirectory() as temp_dir:
             file_name = temp_dir + '/model.mlmodel'
             self.model.export_coreml(file_name)
@@ -277,6 +277,9 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         self.assertEqual(3, len(topk_predictions.column_names()))
         for column in ['id', 'class', 'rank']:
             self.assertIn(column, topk_predictions.column_names())
+        unique_ranks = topk_predictions['rank'].unique()
+        self.assertTrue(len(unique_ranks) == 1)
+        self.assertTrue(unique_ranks[0] == 0)
 
 
 class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
@@ -286,7 +289,7 @@ class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
         self.data['labels'] = self.data['labels'].apply(lambda x: 0 if x == 'white noise' else 1)
         self.is_binary_classification = True
 
-        self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio')
+        self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio', validation_set=None)
 
 
 class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabels):
@@ -303,10 +306,10 @@ class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabel
         self.data = _generate_binary_test_data().append(constant_noise)
 
         self.is_binary_classification = False
-        self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio')
+        self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio', validation_set=self.data)
 
 
-@unittest.skipIf(platform != 'darwin', 'Can not test something which uses Core ML.')
+@unittest.skipIf(_mac_ver() < (10,14), 'Custom models only supported on macOS 10.14+')
 class CoreMlCustomModelPreprocessingTest(unittest.TestCase):
     sample_rate = 16000
     frame_length = int(.975 * sample_rate)

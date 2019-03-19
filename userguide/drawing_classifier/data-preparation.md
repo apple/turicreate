@@ -1,40 +1,35 @@
 # Quick, Draw! Data Preparation
 
-In this section, we will show you how to download a publicly available dataset
-and load it into an SFrame. This will allow you to try out the Drawing Classifier
-toolkit for yourself. We will get this dataset into the format expected by our
-toolkit.
-
-*Note: Please make sure that you have Turi Create 5.4 or above for these steps*
-
-The dataset that we will use is 
-[Quick, Draw!](https://quickdraw.withgoogle.com/data)<sup>1</sup>. Our goal is to
+In this section, we will setup a subset of [Quick, Draw!](https://quickdraw.withgoogle.com/data)<sup>1</sup>. Our goal is to
 make a drawing classifier for squares and triangles. 
 
-First, we will download all the data points in the "Quick, Draw!" dataset for
-the "square" and "triangle" classes -- around 120,000 examples each, 
-both as bitmaps and as stroke-based drawings.
+*Note: Requires Turi Create 5.4 or above*
 
-Open a new terminal window and run the following commands:
+We start by dowloading a few examples of "square" and "triangle" shapes -- around 120,000 examples each, both as bitmaps and as stroke-based drawings. The following script (run from your terminal) should get you started.
 
 ```
-$ mkdir -p ~/Downloads/quickdraw
-$ cd ~/Downloads/quickdraw
-$ mkdir -p bitmaps
-$ mkdir -p strokes
-$ mkdir -p sframes
-$ cd bitmaps
-$ curl https://storage.googleapis.com/quickdraw_dataset/full/numpy_bitmap/square.npy > square.npy # around 93 MB
-$ curl https://storage.googleapis.com/quickdraw_dataset/full/numpy_bitmap/triangle.npy > triangle.npy # around 92 MB
-$ cd ../strokes
-$ curl https://storage.googleapis.com/quickdraw_dataset/full/raw/square.ndjson > square.ndjson # around 242 MB
-$ curl https://storage.googleapis.com/quickdraw_dataset/full/raw/triangle.ndjson > triangle.ndjson # around 194 MB
+# Make directories with the data
+mkdir quickdraw
+cd quickdraw
+mkdir bitmaps strokes sframes
+
+cd bitmaps
+
+# Bitmap data (around 90 MB each)
+curl https://storage.googleapis.com/quickdraw_dataset/full/numpy_bitmap/square.npy > square.npy 
+curl https://storage.googleapis.com/quickdraw_dataset/full/numpy_bitmap/triangle.npy > triangle.npy
+
+cd ../strokes
+
+# Stroke data (around 200 MB each)
+curl https://storage.googleapis.com/quickdraw_dataset/full/raw/square.ndjson > square.ndjson
+curl https://storage.googleapis.com/quickdraw_dataset/full/raw/triangle.ndjson > triangle.ndjson
 ```
 
-Now, you should have the following file structure:
+After running the above script, you should have a directory structure like this:
 
 ```
-~/Downloads/quickdraw/
+quickdraw/
     bitmaps/
         square.npy
         triangle.npy
@@ -45,17 +40,11 @@ Now, you should have the following file structure:
 
 ```
 
-Next, for both bitmap and stroke-based drawing input formats, 
-we will sample 100 examples from each of the classes and turn it into an SFrame.
-For a small number of classes, we need very few training examples per class. 
-In fact, in the [example](README.md) that trains a model on these datasets,
-we do a small train/test split (0.4) thereby training on a small number of 
-examples but testing on a larger number of examples.
+For both bitmap and stroke-based drawing input formats, we will sample 100 examples from each of the classes and turn it into an SFrame. 
 
 #### Using Bitmap Data
 
-Here is a snippet to sample 100 examples per class into an SFrame for bitmap 
-data as the input format:
+Here is a snippet to sample 100 examples per class into an SFrame for bitmap data as the input format:
 
 ```python
 import turicreate as tc
@@ -65,7 +54,7 @@ import os
 random_state = np.random.RandomState(100)
 
 # Change if applicable
-quickdraw_dir = '~/Downloads/quickdraw'
+quickdraw_dir = 'quickdraw'
 bitmaps_dir = os.path.join(quickdraw_dir, 'bitmaps')
 sframes_dir = os.path.join(quickdraw_dir, 'sframes')
 npy_ext = '.npy'
@@ -95,6 +84,23 @@ def build_bitmap_sframe():
     sf.save(os.path.join(sframes_dir, "bitmap_square_triangle.sframe"))
 
 build_bitmap_sframe()
+```
+
+![Rendered Drawings](images/rendered_drawings.png)
+
+After building the two SFrames, your directory structure should look like the
+following:
+```
+quickdraw/
+    bitmaps/
+        square.npy
+        triangle.npy
+    strokes/
+        square.ndjson
+        triangle.ndjson
+    sframes/
+        bitmap_square_triangle.sframe
+        stroke_square_triangle.sframe
 ```
 
 #### Using Stroke-Based Drawing Data
@@ -140,7 +146,7 @@ import json
 random_state = np.random.RandomState(100)
 
 # Change if applicable
-quickdraw_dir = '~/Downloads/quickdraw'
+quickdraw_dir = 'quickdraw'
 strokes_dir = os.path.join(quickdraw_dir, 'strokes')
 sframes_dir = os.path.join(quickdraw_dir, 'sframes')
 ndjson_ext = '.ndjson'
@@ -190,13 +196,3 @@ sf["rendered"] = tc.drawing_classifier.util.draw_strokes(sf["drawing"])
 sf.explore()
 ```
 
-This is what the rendered drawings would look like:
-
-![Rendered Drawings](images/rendered_drawings.png)
-
-## References
-
-The [Quick, Draw!](https://quickdraw.withgoogle.com/data) dataset is described
-further in:
-
-<sup>1</sup>: [Exploring and Visualizing an Open Global Dataset](https://ai.googleblog.com/2017/08/exploring-and-visualizing-open-global.html)

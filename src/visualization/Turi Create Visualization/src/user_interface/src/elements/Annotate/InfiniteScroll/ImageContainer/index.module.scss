@@ -14,14 +14,24 @@ $imgMargin:17;
   margin: $imgMargin + px;
   display: inline-block;
   line-height: $imgSize + px;
+  overflow: hidden;
   text-align: center;
   color: #FFF;
   box-shadow: 0 0 10px 0 rgba(#000, 0.1);
 }
 
+.selected{
+  box-shadow:0px 0px 0px 5px #007AFF inset;
+}
+
 .realImage{
-  background: #333333;
+  background:rgba(0, 0, 0, 0);
   cursor: pointer;
+}
+
+.ImageContainerSource{
+  position: absolute;
+  z-index: -1;
 }
 
 .ImageLabel{

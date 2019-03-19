@@ -4,7 +4,6 @@
 #include <logger/assertions.hpp>
 
 #include <unity/lib/annotation/annotation_base.hpp>
-#include <unity/lib/annotation/utils.hpp>
 
 #include <boost/archive/iterators/base64_from_binary.hpp>
 #include <boost/archive/iterators/binary_from_base64.hpp>
@@ -56,6 +55,8 @@ void AnnotationBase::annotate(const std::string &path_to_client) {
 
 std::shared_ptr<unity_sframe>
 AnnotationBase::returnAnnotations(bool drop_null) {
+  this->cast_annotations();
+
   std::shared_ptr<unity_sframe> copy_data =
       std::static_pointer_cast<unity_sframe>(
           m_data->copy_range(0, 1, m_data->size()));

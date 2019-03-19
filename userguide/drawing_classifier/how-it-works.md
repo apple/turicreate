@@ -1,24 +1,11 @@
 # How it works
 
-At its heart, the Drawing Classifier toolkit is a very simple 
-Convolutional Neural Network that takes in a 28x28 grayscale bitmap as input.
-This network consists of three Convolutions with ReLU 
-activations followed by Max Poolings, with two fully connected layers in the 
-end. 
+The Drawing Classifier toolkit is a CNN (convolutional neural network) that operates on a 28x28 grayscale bitmap as input. The network consists of three convolutions (with ReLU activations) followed by max-pooling, with two fully connected layers in the 
+end.  
 
-When a grayscale bitmap is provided as the feature in the SFrame to the toolkit
-during training or during inference, the toolkit will take care of resizing 
-bitmaps from the size they were to 28x28.
+The toolkit operates on (1) grayscale bitmap of any size (resizing is handled automatically) or (2) stroke-based darwing data which is converted to bit-map using a series of built in feature transformations. 
 
-When stroke-based drawing data is provided as the feature in the SFrame 
-to the toolkit during training or during inference, the stroke-based 
-drawing data must adhere to the following format:
-
-Each drawing must be represented as a list of strokes, where each stroke must 
-be represented as a list of points in the order that they were drawn. 
-Each point must be represented as a dictionary with exactly two keys, 
-"x" and "y", the values of which must be numerical, i.e. integer or float.
-Here is an example of a drawing with two strokes that have five points each:
+The stroke-based drawing data must adhere to the following format: Each drawing is a list of strokes, where each stroke is a list of points in sequence in which they were drawn. Each point is a dictionary with two keys, "x" and "y" with numerical values representing the intensity of the stroke. Here is an example of a drawing with two strokes that have five points each:
 
 ```python
 example_drawing = [
@@ -39,11 +26,7 @@ example_drawing = [
 ]
 ```
 
-When stroke-based drawing data is given as input to 
-`turicreate.drawing_classifier.create`, the toolkit performs preprocessing to 
-convert the stroke-based drawings to bitmaps that the Neural Network behind 
-the scenes can consume. This data transformation can be visualized through 
-the `turicreate.drawing_classifier.util.draw_strokes(...)` Python API as well. 
+When stroke-based drawing data is given as input to `turicreate.drawing_classifier.create`, a series of pre-processing steps are applied to convert the stroke-based drawings to bitmaps which is then consumed by the neural network. This data transformation can be visualized through the `turicreate.drawing_classifier.util.draw_strokes(...)` Python API as well. 
 
 The data preprocessing to convert stroke-based drawings into 28x28 bitmaps 
 is three-fold:
@@ -70,17 +53,10 @@ down into three steps:
     3. Finally, we resize the blurred intermediate bitmap down to a final bitmap
     size of 28x28, which the Neural Network can consume.
 
-As an example, here is what the processed bitmap looks like for the stroke data
-in the example provided above (run using 
-`turicreate.drawing_classifier.util.draw_strokes(example_drawing).show()`):
-
-![Example Rendered Stroke Data](images/rendered_toy_strokes.png)
+The function `turicreate.drawing_classifier.util.draw_strokes(example_drawing).show()` helps visualize the strokes.
 
 ### Warm Start
 
 To boost the accuracy of the models Turi Create users train, and to help those 
 models converge faster, we provide the option of loading in a pretrained model
-for a warm start. We have published this pre-trained model 
-[here](https://docs-assets.developer.apple.com/turicreate/). 
-We trained this published model on 1,000 examples each of the first 245 of the
-345 classes in the Quick, Draw! dataset.
+for a warm start.

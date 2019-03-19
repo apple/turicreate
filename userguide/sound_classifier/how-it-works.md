@@ -16,6 +16,7 @@ is learned in this stage).
 At a high level, the preprocessing pipeline does the following:
 * The raw pulse code modulation data from the wav file is converted to
 floats on a [-1.0, +1.0] scale.
+* If there are two channels, the elements are averaged to produce one channel.
 * The data is resampled to only 16,000 samples per second.
 * The data is broken up into several overlapping windows.
 * A [Hamming Window](https://en.wikipedia.org/wiki/Window_function#Hann_and_Hamming_windows) is applied to each windows.

@@ -118,11 +118,14 @@ class InfiniteScroll extends Component {
     const scaling = this.numRenderedbox();
     const tempEndVal = scaling.numX * (scaling.numY + 2 * CELL_PADDING) + this.state.startValue;
     const endValue = (tempEndVal > this.props.numElements)?this.props.numElements:tempEndVal;
-    
+    const selectedBoxes = Object.keys(this.props.infiniteSelected);
     // TODO: filter annotation  array use `x` as index into the array
     for(var x = this.state.startValue; x < endValue; x++ ){
       boxes.push(<ImageContainer key={`images_${x}`}
+                                 selected={selectedBoxes.includes(x.toString())}
                                  src={this.props.imageData[x]}
+                                 addToSelected={this.props.addToSelected.bind(this)}
+                                 removeSelected={this.props.removeSelected.bind(this)}
                                  annotation={this.props.annotationData[x]}
                                  toggleInfiniteScroll={this.props.toggleInfiniteScroll.bind(this)}
                                  updateIncrementalCurrentIndex={this.props.updateIncrementalCurrentIndex.bind(this)}
@@ -132,11 +135,20 @@ class InfiniteScroll extends Component {
     return boxes;
   }
 
+  onBackClick = (e) => {
+    if (e.shiftKey) {
+      
+    }else{
+      this.props.removeSelected();
+    }
+  }
+
   render() {
     return (
-      <div className={style.InfiniteScroll}
+      <div className={`${style.InfiniteScroll} ${style.noselect}`}
            ref={this.currentComponent}
-           onScroll={this.handleScroll}>
+           onScroll={this.handleScroll}
+           onClick={this.onBackClick.bind(this)}>
         {this.renderBoxes()}
       </div>
     );

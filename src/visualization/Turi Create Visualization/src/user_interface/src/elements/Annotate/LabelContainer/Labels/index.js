@@ -11,7 +11,7 @@ class Label extends Component {
 	    styles.Label
 		]
 
-	  if(this.props.active &&  !this.props.infiniteScroll){
+	  if(this.props.active){
 	    classes.push(styles.LabelSelected);
 	  }
 
@@ -23,13 +23,13 @@ class Label extends Component {
 	            <span title={this.props.name}>{this.props.name}</span>
 	          </div>
 	          <div className={styles.LabelAnnotatedAmount}>
-	            <span>{this.props.num_annotated}/{this.props.num_expected}</span>
+	            <span>{this.props.num_annotated}</span>
 	          </div>
 	        </div>
 	        <div className={styles.LabelApplyButton}
 	        	 	 onClick={this.props.onClick.bind(this)}>
 	          <span>
-	            Apply
+	            {(!this.props.active)?"Apply":""}
 	          </span>
 	        </div>
 	        <div>

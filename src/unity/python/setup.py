@@ -13,7 +13,7 @@ from setuptools.dist import Distribution
 from setuptools.command.install import install
 
 PACKAGE_NAME="turicreate"
-VERSION='5.3.1'#{{VERSION_STRING}}
+VERSION='5.4'#{{VERSION_STRING}}
 
 # Prevent distutils from thinking we are a pure python package
 class BinaryDistribution(Distribution):
@@ -150,6 +150,7 @@ if __name__ == '__main__':
                     'Turi Create Visualization.app/Contents/Resources/build/static/*',
                     'Turi Create Visualization.app/Contents/Resources/build/static/css/*',
                     'Turi Create Visualization.app/Contents/Resources/build/static/js/*',
+                    'Turi Create Visualization.app/Contents/Resources/build/static/media/*',
                     'Turi Create Visualization.app/Contents/Frameworks/*',
 
                      # Linux visualization
