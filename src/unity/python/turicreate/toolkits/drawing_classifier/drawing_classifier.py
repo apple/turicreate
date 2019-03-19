@@ -88,7 +88,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         training.
 
     batch_size: int optional
-        The number of images per training step. If not set, a default
+        The number of drawings per training step. If not set, a default
         value of 256 will be used. If you are getting memory errors,
         try decreasing this value. If you have a powerful computer, increasing
         this value may improve performance.
@@ -404,7 +404,7 @@ class DrawingClassifier(_CustomModel):
     def export_coreml(self, filename, verbose=False):
         """
         Save the model in Core ML format. The Core ML model takes a grayscale 
-        image of fixed size as input and produces two outputs: 
+        drawing of fixed size as input and produces two outputs: 
         `classLabel` and `labelProbabilities`.
 
         The first one, `classLabel` is an integer or string (depending on the
@@ -668,7 +668,7 @@ class DrawingClassifier(_CustomModel):
         Parameters
         ----------
         dataset : SFrame | SArray | turicreate.Image | list
-            Images to be classified.
+            Drawings to be classified.
             If dataset is an SFrame, it must include columns with the same
             names as the features used for model training, but does not require
             a target column. Additional columns are ignored.
@@ -812,7 +812,6 @@ class DrawingClassifier(_CustomModel):
             Rows: 10
             [3, 4, 3, 3, 4, 5, 8, 8, 8, 4]
         """
-        output_type = output_type.lower()
         _tkutl._check_categorical_option_type("output_type", output_type, 
             ["probability", "class", "probability_vector"])
         if isinstance(data, _tc.SArray):
