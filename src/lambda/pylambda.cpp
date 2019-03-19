@@ -17,6 +17,15 @@ namespace turi { namespace lambda {
 void* eval_thread_state;
 pylambda_evaluation_functions evaluation_functions;
 
+static void ensure_thread_state_consistent() { 
+  static bool thread_state_swapped = false; 
+
+  if(!thread_state_swapped) { 
+    evaluation_functions.PyThreadState_Swap(eval_thread_state);
+    thread_state_swapped = true;
+  }
+}
+
 /** This is called through ctypes to set up the evaluation function interface.
  */
 void EXPORT set_pylambda_evaluation_functions(pylambda_evaluation_functions* eval_function_struct) {
@@ -29,7 +38,7 @@ void EXPORT set_pylambda_evaluation_functions(pylambda_evaluation_functions* eva
  */
 size_t make_lambda(const std::string& pylambda_str) {
   DASSERT_TRUE(evaluation_functions.init_lambda != NULL);
-  
+
   size_t lambda_id = evaluation_functions.init_lambda(pylambda_str);
   python::check_for_python_exception();
   
@@ -67,10 +76,7 @@ void pylambda_evaluator::release_lambda(size_t lambda_id) {
 }
 
 flexible_type pylambda_evaluator::eval(size_t lambda_id, const flexible_type& arg) {
-
-  void* this_state = evaluation_functions.PyThreadState_Swap(eval_thread_state);
-
-  scoped_finally sg([&]() { eval_thread_state = evaluation_functions.PyThreadState_Swap(this_state); });
+  ensure_thread_state_consistent();
 
   flexible_type ret;
 
@@ -97,9 +103,7 @@ std::vector<flexible_type> pylambda_evaluator::bulk_eval(
     bool skip_undefined,
     int seed) {
   
-  void* this_state = evaluation_functions.PyThreadState_Swap(eval_thread_state);
-
-  scoped_finally sg([&]() { eval_thread_state = evaluation_functions.PyThreadState_Swap(this_state); });
+  ensure_thread_state_consistent();
 
   evaluation_functions.set_random_seed(seed);
 
@@ -124,9 +128,7 @@ std::vector<flexible_type> pylambda_evaluator::bulk_eval_rows(
     bool skip_undefined,
     int seed) {
   
-  void* this_state = evaluation_functions.PyThreadState_Swap(eval_thread_state);
-
-  scoped_finally sg([&]() { eval_thread_state = evaluation_functions.PyThreadState_Swap(this_state); });
+  ensure_thread_state_consistent();
 
   evaluation_functions.set_random_seed(seed);
 
@@ -154,9 +156,7 @@ std::vector<flexible_type> pylambda_evaluator::bulk_eval_dict(
     bool skip_undefined,
     int seed) {
   
-  void* this_state = evaluation_functions.PyThreadState_Swap(eval_thread_state);
-
-  scoped_finally sg([&]() { eval_thread_state = evaluation_functions.PyThreadState_Swap(this_state); });
+  ensure_thread_state_consistent();
 
   evaluation_functions.set_random_seed(seed);
 
@@ -182,9 +182,7 @@ std::vector<flexible_type> pylambda_evaluator::bulk_eval_dict_rows(
     bool skip_undefined,
     int seed) {
   
-  void* this_state = evaluation_functions.PyThreadState_Swap(eval_thread_state);
-
-  scoped_finally sg([&]() { eval_thread_state = evaluation_functions.PyThreadState_Swap(this_state); });
+  ensure_thread_state_consistent();
 
   evaluation_functions.set_random_seed(seed);
 
