@@ -138,6 +138,15 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     _raise_error_if_not_drawing_classifier_input_sframe(
         input_dataset, feature, target)
 
+    if batch_size is not None and not isinstance(batch_size, int):
+        raise TypeError("'batch_size' must be an integer >= 1")
+    if batch_size is not None and batch_size < 1:
+        raise ValueError("'batch_size' must be >= 1")
+    if max_iterations is not None and not isinstance(max_iterations, int):
+        raise TypeError("'max_iterations' must be an integer >= 1")
+    if max_iterations is not None and max_iterations < 1:
+        raise ValueError("'max_iterations' must be >= 1")
+
     is_stroke_input = (input_dataset[feature].dtype != _tc.Image)
     dataset = _extensions._drawing_classifier_prepare_data(
         input_dataset, feature) if is_stroke_input else input_dataset
