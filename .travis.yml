@@ -89,12 +89,7 @@ jobs:
         # Remove style transfer unit test due to out-of-memory error.
         # Remove some additional tests temporarily to get under the two-hour timeout.
         - rm src/unity/python/turicreate/test/test_style_transfer.py src/unity/python/turicreate/test/test_object_detector.py
-        # TODO move this into test_wheel.sh (same command line args as make_wheel)
-        - docker run --rm
-          --mount type=bind,source=$(pwd),target=/build,consistency=delegated
-          -e "VIRTUALENV=virtualenv --python=python${PYTHON_VERSION}"
-          turicreate/build-image-12.04:${TC_BUILD_IMAGE_VERSION}
-          /build/scripts/test_wheel.sh
+        - /build/scripts/test_wheel.sh --docker-python2.7
 
     - stage: test
       env: PYTHON_VERSION=3.5
@@ -105,9 +100,4 @@ jobs:
         # Remove style transfer unit test due to out-of-memory error.
         # Remove some additional tests temporarily to get under the two-hour timeout.
         - rm src/unity/python/turicreate/test/test_style_transfer.py src/unity/python/turicreate/test/test_object_detector.py
-        # TODO move this into test_wheel.sh (same command line args as make_wheel)
-        - docker run --rm
-          --mount type=bind,source=$(pwd),target=/build,consistency=delegated
-          -e "VIRTUALENV=virtualenv --python=python${PYTHON_VERSION}"
-          turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION}
-          /build/scripts/test_wheel.sh
+        - /build/scripts/test_wheel.sh --docker-python3.5

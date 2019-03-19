@@ -2,6 +2,7 @@
 
 set -e
 
+# The build image version that will be used for building
 TC_BUILD_IMAGE_VERSION=1.0.2
 
 # Force LD_LIBRARY_PATH to look up from deps
@@ -137,11 +138,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
   # 10.04 is not capable of passing turicreate unit tests currently
   if [[ -z $SKIP_TEST ]]; then
     # run the tests
-    docker run --rm \
-      --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
-      -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
-      turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} \
-      /build/scripts/test_wheel.sh
+    /build/scripts/test_wheel.sh --docker-python${DOCKER_PYTHON}
 
     # Delete env to force re-creation of virtualenv if we are running tests next
     # (to prevent reuse of 14.04 virtualenv on 10.04)
