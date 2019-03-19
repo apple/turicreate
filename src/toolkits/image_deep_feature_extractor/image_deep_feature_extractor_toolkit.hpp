@@ -26,6 +26,7 @@ public:
   void init_options(const std::map<std::string, flexible_type>& options) override;
 
   gl_sarray extract_features(gl_sframe data, const std::string& column_name, bool verbose, size_t batch_size) const;
+  gl_sarray sarray_extract_features(gl_sarray data, bool verbose, size_t batch_size) const;
 
   inline size_t get_version() const override { return -1; }
 
@@ -41,7 +42,8 @@ public:
 
   REGISTER_CLASS_MEMBER_FUNCTION(image_deep_feature_extractor_toolkit::init_options, "options");
     
-  REGISTER_CLASS_MEMBER_FUNCTION(image_deep_feature_extractor_toolkit::extract_features, "data",  "column_name", "verbose", "batch_size");
+  REGISTER_CLASS_MEMBER_FUNCTION(image_deep_feature_extractor_toolkit::extract_features, "data", "column_name", "verbose", "batch_size");
+  REGISTER_CLASS_MEMBER_FUNCTION(image_deep_feature_extractor_toolkit::sarray_extract_features, "data", "verbose", "batch_size");
 
   END_CLASS_MEMBER_REGISTRATION
 

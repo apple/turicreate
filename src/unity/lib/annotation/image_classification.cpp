@@ -238,7 +238,7 @@ void ImageClassification::_addAnnotationToSFrame(size_t index, int label) {
 
 void ImageClassification::cast_annotations() {
   size_t annotation_column_index = m_data->column_index(m_annotation_column);
-  if(m_data->dtype().at(annotation_column_index) == flex_type_enum::INTEGER) {
+  if (m_data->dtype().at(annotation_column_index) == flex_type_enum::INTEGER) {
     return;
   }
 
@@ -262,16 +262,16 @@ void ImageClassification::cast_annotations() {
   bool castable = true;
   for (size_t i = 0; i < flex_data.size(); i++) {
     std::string label_value = flex_data.at(i).get<flex_string>();
-    if(!isInteger(label_value)){
+    if (!isInteger(label_value)) {
       castable = false;
       break;
     }
   }
 
-  if(castable){
+  if (castable) {
     std::shared_ptr<unity_sarray> data_sarray =
-      std::static_pointer_cast<unity_sarray>(
-          m_data->select_column(m_annotation_column));
+        std::static_pointer_cast<unity_sarray>(
+            m_data->select_column(m_annotation_column));
 
     std::shared_ptr<unity_sarray_base> integer_annotations =
         data_sarray->astype(flex_type_enum::INTEGER, true);
@@ -319,7 +319,7 @@ annotate_spec::MetaData ImageClassification::metaData() {
 
   DASSERT_TRUE(label_vector.size() == count_vector.size());
 
-  annotate_spec::ImageClassificationMeta* image_classification_meta =
+  annotate_spec::ImageClassificationMeta *image_classification_meta =
       meta_data.mutable_image_classification();
 
   for (size_t x = 0; x < label_vector.size(); x++) {
