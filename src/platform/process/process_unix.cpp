@@ -282,8 +282,7 @@ bool process::kill(bool async) {
 bool process::exists() {
   if(!m_launched)
     log_and_throw("No process launched!");
-  int status;
-  auto wp_ret = waitpid(m_pid, &status, WNOHANG);
+  auto wp_ret = ::kill(m_pid, 0);
   if(wp_ret == -1) {
     logstream(LOG_WARNING) << "Failed while checking for existence of process "
       << m_pid << ": " << strerror(errno) << std::endl;
