@@ -89,7 +89,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         Quick, Draw! dataset. Here is a list of all the pretrained models that
         can be passed in as this argument:
         "auto": Uses quickdraw_245
-        "quickdraw_245": Uses a model trained on 245 of the 345 classes in the
+        "quickdraw_245_v0": Uses a model trained on 245 of the 345 classes in the
                          Quick, Draw! dataset.
 
     batch_size: int optional
