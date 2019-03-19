@@ -64,9 +64,12 @@ build_wheel_linux_python27:
     - apk add bash
     - docker load -i .docker_images/image-10.04.gz
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python2.7 --skip_doc
+    - cd release/test
+    - make -j4
   artifacts:
     expire_in: 2 weeks
     paths:
+      - release/test/
       - target/
 
 build_wheel_linux_python35:
