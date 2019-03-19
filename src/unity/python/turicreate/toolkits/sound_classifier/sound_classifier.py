@@ -760,8 +760,8 @@ class SoundClassifier(_CustomModel):
         else:
             assert(output_type == 'rank')
             results = prob_vector.apply(lambda p: [
-                {'class': id_to_label[i], 'rank': i}
-                for i in reversed(_np.argsort(p)[-k:])]
+                {'class': id_to_label[i], 'rank': rank}
+                for rank, i in enumerate(reversed(_np.argsort(p)[-k:]))]
             )
 
         results = _tc.SFrame({'X': results})

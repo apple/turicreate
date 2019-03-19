@@ -277,6 +277,9 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         self.assertEqual(3, len(topk_predictions.column_names()))
         for column in ['id', 'class', 'rank']:
             self.assertIn(column, topk_predictions.column_names())
+        unique_ranks = topk_predictions['rank'].unique()
+        self.assertTrue(len(unique_ranks) == 1)
+        self.assertTrue(unique_ranks[0] == 0)
 
 
 class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
