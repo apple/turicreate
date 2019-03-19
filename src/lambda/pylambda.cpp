@@ -10,15 +10,18 @@
 #include <fileio/fs_utils.hpp>
 #include <util/cityhash_tc.hpp>
 #include <shmipc/shmipc.hpp>
+#include <util/try_finally.hpp>
 
 namespace turi { namespace lambda {
 
+void* eval_thread_state;
 pylambda_evaluation_functions evaluation_functions;
 
 /** This is called through ctypes to set up the evaluation function interface.
  */
 void EXPORT set_pylambda_evaluation_functions(pylambda_evaluation_functions* eval_function_struct) {
   evaluation_functions = *eval_function_struct;
+  eval_thread_state = evaluation_functions.PyThreadState_Get();
 }
 
 /**  Creates the current lambda interface.
@@ -65,6 +68,10 @@ void pylambda_evaluator::release_lambda(size_t lambda_id) {
 
 flexible_type pylambda_evaluator::eval(size_t lambda_id, const flexible_type& arg) {
 
+  void* this_state = evaluation_functions.PyThreadState_Swap(eval_thread_state);
+
+  scoped_finally sg([&]() { eval_thread_state = evaluation_functions.PyThreadState_Swap(this_state); });
+
   flexible_type ret;
 
   lambda_call_data lcd;
@@ -89,6 +96,10 @@ std::vector<flexible_type> pylambda_evaluator::bulk_eval(
     const std::vector<flexible_type>& args,
     bool skip_undefined,
     int seed) {
+  
+  void* this_state = evaluation_functions.PyThreadState_Swap(eval_thread_state);
+
+  scoped_finally sg([&]() { eval_thread_state = evaluation_functions.PyThreadState_Swap(this_state); });
 
   evaluation_functions.set_random_seed(seed);
 
@@ -112,6 +123,10 @@ std::vector<flexible_type> pylambda_evaluator::bulk_eval_rows(
     const sframe_rows& rows,
     bool skip_undefined,
     int seed) {
+  
+  void* this_state = evaluation_functions.PyThreadState_Swap(eval_thread_state);
+
+  scoped_finally sg([&]() { eval_thread_state = evaluation_functions.PyThreadState_Swap(this_state); });
 
   evaluation_functions.set_random_seed(seed);
 
@@ -138,6 +153,10 @@ std::vector<flexible_type> pylambda_evaluator::bulk_eval_dict(
     const std::vector<std::vector<flexible_type>>& values,
     bool skip_undefined,
     int seed) {
+  
+  void* this_state = evaluation_functions.PyThreadState_Swap(eval_thread_state);
+
+  scoped_finally sg([&]() { eval_thread_state = evaluation_functions.PyThreadState_Swap(this_state); });
 
   evaluation_functions.set_random_seed(seed);
 
@@ -162,6 +181,10 @@ std::vector<flexible_type> pylambda_evaluator::bulk_eval_dict_rows(
     const sframe_rows& rows,
     bool skip_undefined,
     int seed) {
+  
+  void* this_state = evaluation_functions.PyThreadState_Swap(eval_thread_state);
+
+  scoped_finally sg([&]() { eval_thread_state = evaluation_functions.PyThreadState_Swap(this_state); });
 
   evaluation_functions.set_random_seed(seed);
 

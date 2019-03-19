@@ -77,6 +77,7 @@ struct lambda_graph_triple_apply_data {
   size_t srcid_column, dstid_column;
 };
 
+typedef void __PyThreadState;
 
 struct pylambda_evaluation_functions {
   void (*set_random_seed)(size_t seed);
@@ -86,6 +87,8 @@ struct pylambda_evaluation_functions {
   void (*eval_lambda_by_dict)(size_t, lambda_call_by_dict_data*);
   void (*eval_lambda_by_sframe_rows)(size_t, lambda_call_by_sframe_rows_data*);
   void (*eval_graph_triple_apply)(size_t, lambda_graph_triple_apply_data*);  
+  __PyThreadState* (*PyThreadState_Swap)(__PyThreadState*);
+  __PyThreadState* (*PyThreadState_Get)(void);
 };
 
 /** This is called through the cython functions to set up the

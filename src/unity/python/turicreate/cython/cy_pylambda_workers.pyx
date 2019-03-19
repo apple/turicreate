@@ -41,6 +41,11 @@ cdef extern from "<sframe/sframe_rows.hpp>" namespace "turi":
         size_t num_columns()
         size_t num_rows()
 
+cdef extern from "Python.h":
+    ctypedef void PyThreadState
+    PyThreadState* PyThreadState_Get()
+    PyThreadState* PyThreadState_Swap(PyThreadState*)
+
 
 cdef extern from "<lambda/pylambda.hpp>" namespace "turi::lambda":
 
@@ -93,6 +98,8 @@ cdef extern from "<lambda/pylambda.hpp>" namespace "turi::lambda":
         void (*eval_lambda_by_dict)(size_t, lambda_call_by_dict_data*)
         void (*eval_lambda_by_sframe_rows)(size_t, lambda_call_by_sframe_rows_data*)
         void (*eval_graph_triple_apply)(size_t, lambda_graph_triple_apply_data*)
+        void* (*PyThreadState_Swap)(void*);
+        void* (*PyThreadState_Get)();
 
     # The function to call to set everything up.
     void set_pylambda_evaluation_functions(pylambda_evaluation_functions* eval_function_struct)
@@ -464,6 +471,18 @@ cdef void _eval_graph_triple_apply(size_t lmfunc_id, lambda_graph_triple_apply_d
         register_exception(e)
 
 eval_functions.eval_graph_triple_apply = _eval_graph_triple_apply
+
+########################################
+# Python Thread State manitenance
+
+cdef void* _PyThreadState_Get() with gil:
+    return <void*>PyThreadState_Get()
+
+cdef void* _PyThreadState_Swap(void* state) with gil:
+    return <void*>PyThreadState_Swap(<PyThreadState*>state)
+
+eval_functions.PyThreadState_Get = _PyThreadState_Get
+eval_functions.PyThreadState_Swap = _PyThreadState_Swap
 
 # Finally, set pylambda evaluation functions in the 
 set_pylambda_evaluation_functions(&eval_functions)
