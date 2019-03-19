@@ -245,9 +245,9 @@ class VGGish():
 class DrawingClassifierPreTrainedModel(object):
     def __init__(self, warm_start="auto"):
         self.model_to_filename = {
-            "quickdraw_245": "drawing_classifier_pre_trained_model_245_classes_v0.params"
+            "quickdraw_245_v0": "drawing_classifier_pre_trained_model_245_classes_v0.params"
         }
-        self.warm_start = "quickdraw_245" if warm_start == "auto" else warm_start
+        self.warm_start = "quickdraw_245_v0" if warm_start == "auto" else warm_start
         self.source_url = (_urlparse.urljoin(
             MODELS_URL_ROOT, self.model_to_filename[self.warm_start])
             if warm_start == 'auto'
