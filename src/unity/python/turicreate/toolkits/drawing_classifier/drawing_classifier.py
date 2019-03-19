@@ -213,8 +213,6 @@ def create(input_dataset, target, feature=None, validation_set='auto',
             column_names, column_titles)
 
     ctx = _mxnet_utils.get_mxnet_context(max_devices=batch_size)
-    for context in ctx:
-        input_dataset.copyto(context)
     model = _Model(num_classes = len(classes), prefix="drawing_")
     model_params = model.collect_params()
     model_params.initialize(_mx.init.Xavier(), ctx=ctx)
