@@ -213,6 +213,8 @@ def create(input_dataset, target, feature=None, validation_set='auto',
             column_names, column_titles)
 
     ctx = _mxnet_utils.get_mxnet_context(max_devices=batch_size)
+    for context in ctx:
+        input_dataset.copyto(context)
     model = _Model(num_classes = len(classes), prefix="drawing_")
     model_params = model.collect_params()
     model_params.initialize(_mx.init.Xavier(), ctx=ctx)
@@ -234,14 +236,11 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     def get_data_and_label_from_batch(batch):
         if batch.pad is not None:
             size = batch_size - batch.pad
-            batch_data  = (
-                [_mx.nd.slice_axis(batch.data[0], axis=0, begin=0, end=size)] 
-                + [None] * (len(ctx)-1)
-                )
-            batch_label = (
-                [_mx.nd.slice_axis(batch.label[0], axis=0, begin=0, end=size)] 
-                + [None] * (len(ctx)-1)
-                )
+            sliced_data  = _mx.nd.slice_axis(batch.data[0], axis=0, begin=0, end=size)
+            sliced_label = _mx.nd.slice_axis(batch.label[0], axis=0, begin=0, end=size)
+            ctx0 = ctx[:sliced_data.shape[0]] if sliced_data.shape[0] < len(ctx) else ctx
+            batch_data = _mx.gluon.utils.split_and_load(sliced_data, ctx_list=ctx0, even_split=False)
+            batch_label = _mx.gluon.utils.split_and_load(sliced_label, ctx_list=ctx0, even_split=False)
         else:
             batch_data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0)
             batch_label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0)
@@ -551,32 +550,30 @@ class DrawingClassifier(_CustomModel):
                 batch_data = batch.data[0]
                 size = batch_size
 
-            if batch_data.shape[0] < len(ctx):
-                ctx0 = ctx[:batch_data.shape[0]]
-            else:
-                ctx0 = ctx
-
-            z = self._model(batch_data).asnumpy()
-            predicted = z.argmax(axis=1)
+            ctx0 = ctx[:batch_data.shape[0]] if batch_data.shape[0] < len(ctx) else ctx
+            split_data = _mx.gluon.utils.split_and_load(batch_data, ctx_list=ctx0, even_split=False)
             classes = self.classes
-            
-            predicted_sa = _tc.SArray(predicted).apply(lambda x: classes[x])
-            
-            all_predicted[index : index + len(predicted_sa)] = predicted_sa
-            all_probabilities[index : index + z.shape[0]] = z
-            index += z.shape[0]
-            if index == dataset_size - 1:
-                done = True
 
-            cur_time = _time.time()
-            # Do not print process if only a few samples are predicted
-            if verbose and (dataset_size >= 5 
-                and cur_time > last_time + 10 or done):
-                print('Predicting {cur_n:{width}d}/{max_n:{width}d}'.format(
-                    cur_n = index,
-                    max_n = dataset_size,
-                    width = len(str(dataset_size))))
-                last_time = cur_time
+            for data in split_data:
+                z = self._model(data).asnumpy()
+                predicted = z.argmax(axis=1)
+                predicted_sa = _tc.SArray(predicted).apply(lambda x: classes[x])
+
+                all_predicted[index : index + len(predicted_sa)] = predicted_sa
+                all_probabilities[index : index + z.shape[0]] = z
+                index += z.shape[0]
+                if index == dataset_size - 1:
+                    done = True
+
+                cur_time = _time.time()
+                # Do not print process if only a few samples are predicted
+                if verbose and (dataset_size >= 5
+                    and cur_time > last_time + 10 or done):
+                    print('Predicting {cur_n:{width}d}/{max_n:{width}d}'.format(
+                        cur_n = index + 1,
+                        max_n = dataset_size,
+                        width = len(str(dataset_size))))
+                    last_time = cur_time
         
         return (_tc.SFrame({self.target: _tc.SArray(all_predicted),
             'probability': _tc.SArray(all_probabilities)}))
