@@ -158,7 +158,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         validation_dataset = _extensions._drawing_classifier_prepare_data(
             validation_set, feature) if is_validation_stroke_input else validation_set
     elif isinstance(validation_set, str):
-        if validation_set.lower() == 'auto':
+        if validation_set == 'auto':
             if dataset.num_rows() >= 100:
                 if verbose:
                     print ( "PROGRESS: Creating a validation set from 5 percent of training data. This may take a while.\n"
