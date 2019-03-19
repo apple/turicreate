@@ -9,6 +9,17 @@ import hashlib
 import argparse
 import subprocess
 
+# The build image version that will be used for testing
+TC_BUILD_IMAGE_VERSION=1.0.2
+SCRIPT_DIR=os.path.dirname(__file__)
+WORKSPACE=os.path.join(SCRIPT_DIR, '..')
+
+def run_in_docker(cmd):
+    subprocess.check_call(['docker', 'run', '--rm',
+        '--mount', 'type=bind,source=' + WORKSPACE + ',target=/build,consistency=delegated',
+        'turicreate/build-image-12.04:' + str(TC_BUILD_IMAGE_VERSION),
+        cmd])
+
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(
     description='Run cxxtests (optionally caching those that have not been modified).')
@@ -30,6 +41,8 @@ if __name__ == '__main__':
       help='Number of processes to use for ctest command.')
   parser.add_argument('--dry-run', action='store_true',
       help='If present, the ctest command is printed rather than run.')
+  parser.add_argument('--docker', action='store_true',
+      help='Run the C++ tests inside of Docker on Ubuntu 12.04.')
 
   args = parser.parse_args()
 
@@ -120,6 +133,19 @@ if __name__ == '__main__':
   if args.dry_run:
     print('Dry run requested! Proposed ctest command:', ' '.join(cmd))
     exit()
+
+  if args.docker:
+    print('Docker run requested! Proceeding to run inside Docker.')
+
+    # make tests if needed
+    run_in_docker("./configure --no-python")
+    run_in_docker('"cd release/test && make -j4"')
+
+    # run tests
+    run_in_docker(cmd)
+
+    # exit if successful (if failed, it will have thrown above)
+    sys.exit(0)
 
   exit_code = 0
 
