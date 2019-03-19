@@ -719,16 +719,15 @@ class DrawingClassifier(_CustomModel):
         """
         _tkutl._check_categorical_option_type("output_type", output_type, 
             ["probability", "rank"])
-        int_type_error_string = (lambda var_name: ("'{var_name}' must be " 
-            + "an integer >= 1").format(var_name=var_name))
-        non_neg_range_error_string = (lambda var_name: ("'{var_name}' must be " 
-            + ">= 1").format(var_name=var_name))
-        if not isinstance(k, int): raise TypeError(int_type_error_string("k"))
-        if k <= 0: raise ValueError(non_neg_range_error_string("k"))
+        
+        if not isinstance(k, int): 
+            raise TypeError("'k' must be an integer >= 1")
+        if k <= 0: 
+            raise ValueError("'k' must be >= 1")
         if batch_size is not None and not isinstance(batch_size, int):
-            raise TypeError(int_type_error_string("batch_size"))
+            raise TypeError("'batch_size' must be an integer >= 1")
         if batch_size is not None and batch_size < 1:
-            raise ValueError(non_neg_range_error_string("batch_size"))
+            raise ValueError("'batch_size' must be >= 1")
 
         prob_vector = self.predict(
             dataset, output_type='probability_vector', batch_size=batch_size)
@@ -736,20 +735,15 @@ class DrawingClassifier(_CustomModel):
         classes = self.classes
         if output_type == 'probability':
             results = prob_vector.apply(lambda p: [
-                            {'class': classes[i], 'probability': p[i]}
-                            for i in reversed(_np.argsort(p)[-k:])]
-                        )
+                        {'class': classes[i], 'probability': p[i]}
+                        for i in reversed(_np.argsort(p)[-k:])]
+                      )
         else:
             assert(output_type == 'rank')
-            def convert_probability_vector_to_ranks(p):
-                rank, ranks_list = 0, []
-                for index in reversed(_np.argsort(p)[-k:]):
-                    ranks_list.append({
-                        'class': classes[index], 'rank': rank
-                        })
-                    rank = (rank + 1) % k
-                return ranks_list
-            results = prob_vector.apply(convert_probability_vector_to_ranks)
+            results = prob_vector.apply(lambda p: [
+                        {'class': classes[index], 'rank': rank}
+                        for rank, index in enumerate(reversed(_np.argsort(p)[-k:]))]
+                      )
 
         results = _tc.SFrame({'X': results})
         results = results.add_row_number()
