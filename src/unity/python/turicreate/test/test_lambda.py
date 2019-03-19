@@ -76,3 +76,20 @@ class LambdaTests(unittest.TestCase):
             return x
         self.assertRaises(RuntimeError, lambda: glconnect.get_unity().parallel_eval_lambda(lambda x: bad_fun(x), ls))
         glconnect.get_unity().parallel_eval_lambda(lambda x: good_fun(x), ls)
+
+    def test_numba(self):
+
+        from numba import jit
+        import numpy as np
+        import turicreate as tc
+
+        @jit
+        def _sum(x):
+            return x[0, 0]
+
+        print("BORK")
+        tc.SArray([np.random.normal(size=(2,2))]*1000).apply(_sum)
+        print("BORK2")
+
+         
+
