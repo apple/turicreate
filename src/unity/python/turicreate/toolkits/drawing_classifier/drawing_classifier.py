@@ -153,6 +153,9 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     classes = sorted(classes)
     class_to_index = {name: index for index, name in enumerate(classes)}
 
+    validation_set_corrective_string = ("'validation_set' parameter must be "
+        + "an SFrame, or None, or must be set to 'auto' for the toolkit to " 
+        + "automatically create a validation set.")
     if isinstance(validation_set, _tc.SFrame):
         _raise_error_if_not_drawing_classifier_input_sframe(
             validation_set, feature, target)
@@ -160,19 +163,24 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         validation_dataset = _extensions._drawing_classifier_prepare_data(
             validation_set, feature) if is_validation_stroke_input else validation_set
     elif isinstance(validation_set, str):
-        assert (validation_set == 'auto')
-        if dataset.num_rows() >= 100:
-            if verbose:
-                print ( "PROGRESS: Creating a validation set from 5 percent of training data. This may take a while.\n"
-                        "          You can set ``validation_set=None`` to disable validation tracking.\n")
-            dataset, validation_dataset = dataset.random_split(
-                TRAIN_VALIDATION_SPLIT)
+        if validation_set == 'auto':
+            if dataset.num_rows() >= 100:
+                if verbose:
+                    print ( "PROGRESS: Creating a validation set from 5 percent of training data. This may take a while.\n"
+                            "          You can set ``validation_set=None`` to disable validation tracking.\n")
+                dataset, validation_dataset = dataset.random_split(
+                    TRAIN_VALIDATION_SPLIT)
+            else:
+                validation_set = None
+                validation_dataset = _tc.SFrame()
         else:
-            validation_dataset = _tc.SFrame()
+            raise _ToolkitError("Unrecognized value for 'validation_set'. "
+                + validation_set_corrective_string)
     elif validation_set is None:
         validation_dataset = _tc.SFrame()
     else:
-        raise TypeError("Unrecognized type for 'validation_set'.")
+        raise TypeError("Unrecognized type for 'validation_set'."
+            + validation_set_corrective_string)
 
     train_loader = _SFrameClassifierIter(dataset, batch_size,
                  feature_column=feature,

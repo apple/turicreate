@@ -263,4 +263,3 @@ class DrawingClassifierPreTrainedModel(object):
             )[0]
         return model_path
 
-
