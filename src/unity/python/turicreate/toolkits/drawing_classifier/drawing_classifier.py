@@ -536,12 +536,12 @@ class DrawingClassifier(_CustomModel):
         last_time = 0
         done = False
 
-        from turicreate import SArrayBuilder as _SArrayBuilder
-        from array import array as _array
+        from turicreate import SArrayBuilder
+        from array import array
 
         classes = self.classes
-        all_predicted_builder = _SArrayBuilder(dtype=type(classes[0]))
-        all_probabilities_builder = _SArrayBuilder(dtype=_array)
+        all_predicted_builder = SArrayBuilder(dtype=type(classes[0]))
+        all_probabilities_builder = SArrayBuilder(dtype=array)
 
         for batch in loader:
             if batch.pad is not None:
