@@ -189,7 +189,7 @@ test_cpp_linux:
   script:
     - apk add bash
     - apk add python2
-    - python ../../scripts/run_cpp_tests.py -j 1 --docker
+    - python scripts/run_cpp_tests.py -j 1 --docker
 
 test_cpp_mac_10_13:
   tags:
