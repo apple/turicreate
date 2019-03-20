@@ -531,14 +531,17 @@ class DrawingClassifier(_CustomModel):
 
         dataset_size = len(dataset)
         ctx = _mxnet_utils.get_mxnet_context()
-        
-        # all_predicted = ['']*dataset_size
-        # all_probabilities = _np.zeros((dataset_size, len(self.classes)), 
-        #     dtype=float)
 
         index = 0
         last_time = 0
         done = False
+
+        from turicreate import SArrayBuilder as _SArrayBuilder
+        from array import array as _array
+
+        all_predicted_builder = _SArrayBuilder(dtype=type(classes[0]))
+        all_probabilities_builder = _SArrayBuilder(dtype=_array)
+
         for batch in loader:
             if batch.pad is not None:
                 size = batch_size - batch.pad
@@ -552,11 +555,6 @@ class DrawingClassifier(_CustomModel):
             split_data = _mx.gluon.utils.split_and_load(batch_data, ctx_list=ctx[:num_devices], even_split=False)
             classes = self.classes
 
-            from turicreate import SArrayBuilder as _SArrayBuilder
-            from array import array as _array
-
-            all_predicted_builder = _SArrayBuilder(dtype=type(classes[0]))
-            all_probabilities_builder = _SArrayBuilder(dtype=_array)
             for data in split_data:
                 z = self._model(data).asnumpy()
                 predicted = list(map(lambda x: classes[x], z.argmax(axis=1)))
