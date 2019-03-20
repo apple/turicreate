@@ -539,6 +539,7 @@ class DrawingClassifier(_CustomModel):
         from turicreate import SArrayBuilder as _SArrayBuilder
         from array import array as _array
 
+        classes = self.classes
         all_predicted_builder = _SArrayBuilder(dtype=type(classes[0]))
         all_probabilities_builder = _SArrayBuilder(dtype=_array)
 
@@ -553,7 +554,6 @@ class DrawingClassifier(_CustomModel):
 
             num_devices = min(batch_data.shape[0], len(ctx))
             split_data = _mx.gluon.utils.split_and_load(batch_data, ctx_list=ctx[:num_devices], even_split=False)
-            classes = self.classes
 
             for data in split_data:
                 z = self._model(data).asnumpy()
