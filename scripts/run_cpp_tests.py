@@ -46,6 +46,20 @@ if __name__ == '__main__':
 
   args = parser.parse_args()
 
+  if args.docker:
+    print('Docker run requested! Proceeding to run inside Docker.')
+
+    # make tests if needed
+    run_in_docker("./configure --no-python")
+    run_in_docker('"pushd release/test && make -j4 && popd"')
+
+    # run tests
+    # TODO pass through other arguments
+    run_in_docker("python scripts/run_cpp_tests.py")
+
+    # exit if successful (if failed, it will have thrown above)
+    sys.exit(0)
+
   expensive_tests = [
     'boosted_trees_classifier_tests.cxxtest',
     'worker_pool_test.cxxtest',
@@ -133,19 +147,6 @@ if __name__ == '__main__':
   if args.dry_run:
     print('Dry run requested! Proposed ctest command:', ' '.join(cmd))
     exit()
-
-  if args.docker:
-    print('Docker run requested! Proceeding to run inside Docker.')
-
-    # make tests if needed
-    run_in_docker("./configure --no-python")
-    run_in_docker('"cd release/test && make -j4"')
-
-    # run tests
-    run_in_docker(cmd)
-
-    # exit if successful (if failed, it will have thrown above)
-    sys.exit(0)
 
   exit_code = 0
 
