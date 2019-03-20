@@ -125,8 +125,6 @@ $(document).ready(function(){initNavTree('classturi_1_1v2_1_1ml__data__internal_
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a5e3ce2c64eb2c339224c8045c5b366f6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#a5e3ce2c64eb2c339224c8045c5b366f6">column_unique_indexer</a> ()</td></tr>
 <tr class="separator:a5e3ce2c64eb2c339224c8045c5b366f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1026ab64029d26057a2393a12cdfbc95"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#a1026ab64029d26057a2393a12cdfbc95">column_unique_indexer</a> (const <a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html">column_unique_indexer</a> &amp;)=delete</td></tr>
-<tr class="separator:a1026ab64029d26057a2393a12cdfbc95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae5bcffa83373781587eddd6142487654"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#ae5bcffa83373781587eddd6142487654">initialize</a> ()</td></tr>
 <tr class="separator:ae5bcffa83373781587eddd6142487654"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa101d5ff08195fb482be6bc47eac27b3"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#aa101d5ff08195fb482be6bc47eac27b3">map_value_to_index</a> (size_t thread_idx, const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;feature) GL_HOT</td></tr>
@@ -151,8 +149,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a596817c69a7c17bc897e5618fde8ba32"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad81116c4b07517ba378189da1e2eea1e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#ad81116c4b07517ba378189da1e2eea1e">load_version</a> (<a class="el" href="classturi_1_1iarchive.html">turi::iarchive</a> &amp;iarc, size_t version)</td></tr>
 <tr class="separator:ad81116c4b07517ba378189da1e2eea1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4c4a1d520d4201fef7c5fa4ff6f42a7c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#a4c4a1d520d4201fef7c5fa4ff6f42a7c">set_data</a> (const std::map&lt; std::string, <a class="el" href="namespaceturi.html#a133f01ff63e13b5b78b761e5c78e0c25">variant_type</a> &gt; &amp;params)</td></tr>
-<tr class="separator:a4c4a1d520d4201fef7c5fa4ff6f42a7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd6d44177c3b3b04205c8217537dd5c0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#abd6d44177c3b3b04205c8217537dd5c0">set_values</a> (std::vector&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;&amp;<a class="el" href="group__set__and__map.html#gaa4a5ba603bdef39e4c11f7d8692741c7">values</a>)</td></tr>
+<tr class="separator:abd6d44177c3b3b04205c8217537dd5c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad12559ceb9311c2bb943041d0b3df22e"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html">column_indexer</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#ad12559ceb9311c2bb943041d0b3df22e">create_cleared_copy</a> () const </td></tr>
+<tr class="separator:ad12559ceb9311c2bb943041d0b3df22e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -191,7 +191,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a1026ab64029d26057a2393a12cdfbc95"></a>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ad12559ceb9311c2bb943041d0b3df22e"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -199,24 +200,24 @@ Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">turi::v2::ml_data_internal::column_unique_indexer::column_unique_indexer </td>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html">column_indexer</a>&gt; turi::v2::ml_data_internal::column_unique_indexer::create_cleared_copy </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html">column_unique_indexer</a> &amp;&#160;</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Copy constructor: Don't want to risk making copies of this. </p>
+<p>Create a copy with the index cleared. </p>
+
+<p>Implements <a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#aba2cd1d25311a7ff1068a5d4665d202a">turi::v2::ml_data_internal::column_indexer</a>.</p>
 
 </div>
 </div>
-<h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a9c607ea273868ab8b71f861147d1596e"></a>
 <div class="memitem">
 <div class="memproto">
@@ -383,7 +384,7 @@ Public Attributes</h2></td></tr>
 
 <p>Implements <a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#a0efea12a154832f104646fb73cb7ef97">turi::v2::ml_data_internal::column_indexer</a>.</p>
 
-<p>Definition at line <a class="el" href="column__unique__indexer_8hpp_source.html#l00145">145</a> of file <a class="el" href="column__unique__indexer_8hpp_source.html">column_unique_indexer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="column__unique__indexer_8hpp_source.html#l00138">138</a> of file <a class="el" href="column__unique__indexer_8hpp_source.html">column_unique_indexer.hpp</a>.</p>
 
 </div>
 </div>
@@ -604,7 +605,7 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a4c4a1d520d4201fef7c5fa4ff6f42a7c"></a>
+<a class="anchor" id="abd6d44177c3b3b04205c8217537dd5c0"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -612,22 +613,22 @@ Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void turi::v2::ml_data_internal::column_indexer::set_data </td>
+          <td class="memname">void turi::v2::ml_data_internal::column_unique_indexer::set_values </td>
           <td>(</td>
-          <td class="paramtype">const std::map&lt; std::string, <a class="el" href="namespaceturi.html#a133f01ff63e13b5b78b761e5c78e0c25">variant_type</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>params</em></td><td>)</td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;&amp;&#160;</td>
+          <td class="paramname"><em>values</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span><span class="mlabel">inherited</span></span>  </td>
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 <p>Set data directly. </p>
 
-<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html#l00154">154</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html">column_indexer.hpp</a>.</p>
+<p>Implements <a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#a2424308c9caaa0b522d2775943ed8ca1">turi::v2::ml_data_internal::column_indexer</a>.</p>
 
 </div>
 </div>

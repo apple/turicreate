@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('classturi_1_1nanosockets_1_1subscribe_
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="nanosockets_2subscribe__socket_8hpp_source.html">nanosockets/subscribe_socket.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="subscribe__socket_8hpp_source.html">nanosockets/subscribe_socket.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -138,7 +138,7 @@ Public Member Functions</h2></td></tr>
 <div class="textblock"><p>Constructs a subscribe socket.</p>
 <p>The subscribe socket binds to at least one endpoint bound by a publish socket (<a class="el" href="classturi_1_1nanosockets_1_1publish__socket.html">publish_socket</a>). Everything the publish socket publishes will be received by the callback. You can register interest in prefix matches of the message.</p>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> callback(<span class="keyword">const</span> std::string&amp; message) {</div><div class="line">  std::cout &lt;&lt; message;</div><div class="line">}</div><div class="line"><a class="code" href="classturi_1_1nanosockets_1_1subscribe__socket.html#ab7b8ad9c6d3d09284e780b887a9db428">subscribe_socket</a> subsock(callback);</div><div class="line">subsock.connect(<span class="stringliteral">&quot;ipc:///tmp/publish&quot;</span>);</div><div class="line">subsock.subscribe(<span class="stringliteral">&quot;ABC&quot;</span>); <span class="comment">// only received messages beginning with ABC</span></div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="nanosockets_2subscribe__socket_8hpp_source.html#l00037">37</a> of file <a class="el" href="nanosockets_2subscribe__socket_8hpp_source.html">subscribe_socket.hpp</a>.</p>
+<p>Definition at line <a class="el" href="subscribe__socket_8hpp_source.html#l00037">37</a> of file <a class="el" href="subscribe__socket_8hpp_source.html">subscribe_socket.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="ab7b8ad9c6d3d09284e780b887a9db428"></a>
 <div class="memitem">
@@ -249,7 +249,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>nanosockets/<a class="el" href="nanosockets_2subscribe__socket_8hpp_source.html">subscribe_socket.hpp</a></li>
+<li>nanosockets/<a class="el" href="subscribe__socket_8hpp_source.html">subscribe_socket.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

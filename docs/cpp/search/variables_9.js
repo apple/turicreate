@@ -9,5 +9,6 @@ var searchData=
   ['is_5fdense',['is_dense',['../classturi_1_1supervised_1_1linear__regression__opt__interface.html#aa292e1a527661cce4ac807f1d6ca9aeb',1,'turi::supervised::linear_regression_opt_interface::is_dense()'],['../classturi_1_1supervised_1_1logistic__regression__opt__interface.html#ae96ddf881abe1adc37066fff93c7a519',1,'turi::supervised::logistic_regression_opt_interface::is_dense()']]],
   ['iter_5frow_5findex_5fend',['iter_row_index_end',['../classturi_1_1v2_1_1ml__data__iterator__base.html#a746fd033c9f542a40c5dffd7f08bd9c9',1,'turi::v2::ml_data_iterator_base']]],
   ['iter_5frow_5findex_5fstart',['iter_row_index_start',['../classturi_1_1v2_1_1ml__data__iterator__base.html#a2c29d49193483b0e1b4da730b0f5e992',1,'turi::v2::ml_data_iterator_base']]],
+  ['iteration',['iteration',['../group__LBFGS.html#gafb35c599eb5189710aefe09941f01a4c',1,'turi::optimization::solver_status']]],
   ['iters',['iters',['../structturi_1_1optimization_1_1__solver__return.html#a7018293e5df9b84f6cdb6ed5977db2c8',1,'turi::optimization::_solver_return']]]
 ];

@@ -125,17 +125,14 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad9d148ea58632bb9c6f79adf4f0b5fd2"><td class="memTemplParams" colspan="2">template&lt;typename Entry &gt; </td></tr>
 <tr class="memitem:ad9d148ea58632bb9c6f79adf4f0b5fd2"><td class="memTemplItemLeft" align="right" valign="top">GL_HOT_INLINE void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classturi_1_1ml__data__row__reference.html#ad9d148ea58632bb9c6f79adf4f0b5fd2">fill</a> (std::vector&lt; Entry &gt; &amp;x) const </td></tr>
 <tr class="separator:ad9d148ea58632bb9c6f79adf4f0b5fd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afed93bb6ad03637116c0dcff6619ee3f"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:afed93bb6ad03637116c0dcff6619ee3f"><td class="memTemplItemLeft" align="right" valign="top">GL_HOT_INLINE_FLATTEN void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classturi_1_1ml__data__row__reference.html#afed93bb6ad03637116c0dcff6619ee3f">fill</a> (arma::Col&lt; T &gt; &amp;x) const </td></tr>
-<tr class="separator:afed93bb6ad03637116c0dcff6619ee3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8960a97df6d0c5935d08309608e2bc46"><td class="memTemplParams" colspan="2">template&lt;typename ArmaExpr &gt; </td></tr>
-<tr class="memitem:a8960a97df6d0c5935d08309608e2bc46"><td class="memTemplItemLeft" align="right" valign="top">GL_HOT_INLINE_FLATTEN void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classturi_1_1ml__data__row__reference.html#a8960a97df6d0c5935d08309608e2bc46">fill_arma</a> (ArmaExpr &amp;&amp;x) const </td></tr>
-<tr class="separator:a8960a97df6d0c5935d08309608e2bc46"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a57c4874ea2aa540e2cbb535f7746fcec"><td class="memTemplParams" colspan="2">template&lt;typename T , typename Index &gt; </td></tr>
-<tr class="memitem:a57c4874ea2aa540e2cbb535f7746fcec"><td class="memTemplItemLeft" align="right" valign="top">GL_HOT_INLINE_FLATTEN void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classturi_1_1ml__data__row__reference.html#a57c4874ea2aa540e2cbb535f7746fcec">fill</a> (sparse_vector&lt; T, Index &gt; &amp;x) const </td></tr>
-<tr class="separator:a57c4874ea2aa540e2cbb535f7746fcec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afab45ac21be04c99a87de8d9bd9cbf24"><td class="memTemplParams" colspan="2">template&lt;typename EigenXpr &gt; </td></tr>
+<tr class="memitem:afab45ac21be04c99a87de8d9bd9cbf24"><td class="memTemplItemLeft" align="right" valign="top">GL_HOT_INLINE_FLATTEN void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classturi_1_1ml__data__row__reference.html#afab45ac21be04c99a87de8d9bd9cbf24">fill</a> (EigenXpr &amp;&amp;x, typename std::enable_if&lt; std::is_convertible&lt; EigenXpr, DenseVector &gt;::value &gt;::type *=0) const </td></tr>
+<tr class="separator:afab45ac21be04c99a87de8d9bd9cbf24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00494b080cb5c1802f7f9a8f0261db84"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1ml__data__row__reference.html#a00494b080cb5c1802f7f9a8f0261db84">fill_untranslated_values</a> (std::vector&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;x) const </td></tr>
 <tr class="separator:a00494b080cb5c1802f7f9a8f0261db84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51a1f4c386768e125db6ca477474a42e"><td class="memTemplParams" colspan="2">template&lt;typename EigenXpr &gt; </td></tr>
+<tr class="memitem:a51a1f4c386768e125db6ca477474a42e"><td class="memTemplItemLeft" align="right" valign="top">GL_HOT_INLINE_FLATTEN void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classturi_1_1ml__data__row__reference.html#a51a1f4c386768e125db6ca477474a42e">fill_eigen</a> (EigenXpr &amp;&amp;x) const </td></tr>
+<tr class="separator:a51a1f4c386768e125db6ca477474a42e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc78856c82012f2c61e37011817b90e4"><td class="memTemplParams" colspan="2">template&lt;typename ElementWriteFunction , typename ColumnEndFunction &gt; </td></tr>
 <tr class="memitem:acc78856c82012f2c61e37011817b90e4"><td class="memTemplItemLeft" align="right" valign="top">GL_HOT_INLINE_FLATTEN void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classturi_1_1ml__data__row__reference.html#acc78856c82012f2c61e37011817b90e4">unpack</a> (ElementWriteFunction &amp;&amp;ewf, ColumnEndFunction &amp;&amp;cef) const </td></tr>
 <tr class="separator:acc78856c82012f2c61e37011817b90e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -206,15 +203,15 @@ template&lt;typename Entry &gt; </div>
 <p>std::vector&lt;ml_data_entry&gt; x;</p>
 <p>row_ref.fill(x); double y = row_ref.target_value(); ... </p>
 
-<p>Definition at line <a class="el" href="ml__data_2row__reference_8hpp_source.html#l00300">300</a> of file <a class="el" href="ml__data_2row__reference_8hpp_source.html">row_reference.hpp</a>.</p>
+<p>Definition at line <a class="el" href="ml__data_2row__reference_8hpp_source.html#l00259">259</a> of file <a class="el" href="ml__data_2row__reference_8hpp_source.html">row_reference.hpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="afed93bb6ad03637116c0dcff6619ee3f"></a>
+<a class="anchor" id="afab45ac21be04c99a87de8d9bd9cbf24"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;typename EigenXpr &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -222,9 +219,19 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="memname">GL_HOT_INLINE_FLATTEN void turi::ml_data_row_reference::fill </td>
           <td>(</td>
-          <td class="paramtype">arma::Col&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>x</em></td><td>)</td>
-          <td> const</td>
+          <td class="paramtype">EigenXpr &amp;&amp;&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">typename std::enable_if&lt; std::is_convertible&lt; EigenXpr, DenseVector &gt;::value &gt;::type *&#160;</td>
+          <td class="paramname"> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
         </tr>
       </table>
   </td>
@@ -233,9 +240,9 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Fill a 1-dimensionaal Armadillo container in the current location in the iteration.</p>
+<p>Fill a row of an Eigen expression in the current location in the iteration.</p>
 <p>Example:</p>
-<p>arma::mat X;</p>
+<p>Eigen::MatrixXd X;</p>
 <p>...</p>
 <p>it.fill(X.row(row_idx)); </p><hr/>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -249,19 +256,19 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a57c4874ea2aa540e2cbb535f7746fcec"></a>
+<a class="anchor" id="a51a1f4c386768e125db6ca477474a42e"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T , typename Index &gt; </div>
+template&lt;typename EigenXpr &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">GL_HOT_INLINE_FLATTEN void turi::ml_data_row_reference::fill </td>
+          <td class="memname">GL_HOT_INLINE_FLATTEN void turi::ml_data_row_reference::fill_eigen </td>
           <td>(</td>
-          <td class="paramtype">sparse_vector&lt; T, Index &gt; &amp;&#160;</td>
+          <td class="paramtype">EigenXpr &amp;&amp;&#160;</td>
           <td class="paramname"><em>x</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -272,48 +279,9 @@ template&lt;typename T , typename Index &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Fill a sparse_vector container in the current location in the iteration.</p>
-<p>Example:</p>
-<p>sparse_vector&lt;double&gt; x;</p>
-<p>...</p>
-<p>it.fill(x); </p><hr/>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">x</td><td>An eigen row expression. </td></tr>
-  </table>
-  </dd>
-</dl>
+<p>The explicit version to fill an eigen expression. </p>
 
-<p>Definition at line <a class="el" href="ml__data_2row__reference_8hpp_source.html#l00361">361</a> of file <a class="el" href="ml__data_2row__reference_8hpp_source.html">row_reference.hpp</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a8960a97df6d0c5935d08309608e2bc46"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename ArmaExpr &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">GL_HOT_INLINE_FLATTEN void turi::ml_data_row_reference::fill_arma </td>
-          <td>(</td>
-          <td class="paramtype">ArmaExpr &amp;&amp;&#160;</td>
-          <td class="paramname"><em>x</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>The explicit version to fill an armadillo expression; allows use of template temporaries. </p>
-
-<p>Definition at line <a class="el" href="ml__data_2row__reference_8hpp_source.html#l00328">328</a> of file <a class="el" href="ml__data_2row__reference_8hpp_source.html">row_reference.hpp</a>.</p>
+<p>Definition at line <a class="el" href="ml__data_2row__reference_8hpp_source.html#l00287">287</a> of file <a class="el" href="ml__data_2row__reference_8hpp_source.html">row_reference.hpp</a>.</p>
 
 </div>
 </div>
@@ -399,7 +367,7 @@ template&lt;typename ArmaExpr &gt; </div>
 </div><div class="memdoc">
 <p>Returns a pointer to the metadata class that describes the data that this row reference refers to. </p>
 
-<p>Definition at line <a class="el" href="ml__data_2row__reference_8hpp_source.html#l00263">263</a> of file <a class="el" href="ml__data_2row__reference_8hpp_source.html">row_reference.hpp</a>.</p>
+<p>Definition at line <a class="el" href="ml__data_2row__reference_8hpp_source.html#l00222">222</a> of file <a class="el" href="ml__data_2row__reference_8hpp_source.html">row_reference.hpp</a>.</p>
 
 </div>
 </div>
@@ -425,7 +393,7 @@ template&lt;typename ArmaExpr &gt; </div>
 </div><div class="memdoc">
 <p>Returns the current categorical target index, if present, or 0 if not present. </p>
 
-<p>Definition at line <a class="el" href="ml__data_2row__reference_8hpp_source.html#l00256">256</a> of file <a class="el" href="ml__data_2row__reference_8hpp_source.html">row_reference.hpp</a>.</p>
+<p>Definition at line <a class="el" href="ml__data_2row__reference_8hpp_source.html#l00215">215</a> of file <a class="el" href="ml__data_2row__reference_8hpp_source.html">row_reference.hpp</a>.</p>
 
 </div>
 </div>
@@ -451,7 +419,7 @@ template&lt;typename ArmaExpr &gt; </div>
 </div><div class="memdoc">
 <p>Returns the current target value, if present, or 1 if not present. If the target column is supposed to be a categorical value, then use <a class="el" href="classturi_1_1ml__data__row__reference.html#ae2c8ceaa0c22b20e9e7404d84eca57f5">target_index()</a>. </p>
 
-<p>Definition at line <a class="el" href="ml__data_2row__reference_8hpp_source.html#l00249">249</a> of file <a class="el" href="ml__data_2row__reference_8hpp_source.html">row_reference.hpp</a>.</p>
+<p>Definition at line <a class="el" href="ml__data_2row__reference_8hpp_source.html#l00208">208</a> of file <a class="el" href="ml__data_2row__reference_8hpp_source.html">row_reference.hpp</a>.</p>
 
 </div>
 </div>
@@ -493,7 +461,7 @@ template&lt;typename ElementWriteFunction , typename ColumnEndFunction &gt; </di
 <p>auto unpack_function = [&amp;](ml_column_mode mode, size_t column_index, size_t feature_index, double value, size_t index_size, size_t index_offset) { ... };</p>
 <p>// Called after every column is done unpacking. auto column_end_function = [&amp;](ml_column_mode mode, size_t column_index, size_t index_size) { ... }; </p>
 
-<p>Definition at line <a class="el" href="ml__data_2row__reference_8hpp_source.html#l00230">230</a> of file <a class="el" href="ml__data_2row__reference_8hpp_source.html">row_reference.hpp</a>.</p>
+<p>Definition at line <a class="el" href="ml__data_2row__reference_8hpp_source.html#l00189">189</a> of file <a class="el" href="ml__data_2row__reference_8hpp_source.html">row_reference.hpp</a>.</p>
 
 </div>
 </div>

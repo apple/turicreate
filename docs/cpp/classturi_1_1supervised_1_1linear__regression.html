@@ -232,8 +232,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ab9aa2af3ccad97df27dada7c795a10a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac3f1e140dce279466a427f0bb8de3cc7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classturi_1_1gl__sframe.html">gl_sframe</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1supervised_1_1supervised__learning__model__base.html#ac3f1e140dce279466a427f0bb8de3cc7">api_classify</a> (<a class="el" href="classturi_1_1gl__sframe.html">gl_sframe</a> data, std::string missing_value_action, std::string output_type)</td></tr>
 <tr class="separator:ac3f1e140dce279466a427f0bb8de3cc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a404cd92cb9550aed86f15b0054f731d6"><td class="memItemLeft" align="right" valign="top">variant_map_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1supervised_1_1supervised__learning__model__base.html#a404cd92cb9550aed86f15b0054f731d6">api_evaluate</a> (<a class="el" href="classturi_1_1gl__sframe.html">gl_sframe</a> data, std::string missing_value_action, std::string metric, bool with_prediction=false)</td></tr>
-<tr class="separator:a404cd92cb9550aed86f15b0054f731d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87cf90dc23bfef47d583bc954ade29ef"><td class="memItemLeft" align="right" valign="top">variant_map_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1supervised_1_1supervised__learning__model__base.html#a87cf90dc23bfef47d583bc954ade29ef">api_evaluate</a> (<a class="el" href="classturi_1_1gl__sframe.html">gl_sframe</a> data, std::string missing_value_action, std::string metric, <a class="el" href="classturi_1_1gl__sarray.html">gl_sarray</a> predictions=<a class="el" href="classturi_1_1gl__sarray.html">gl_sarray</a>(), bool with_prediction=false)</td></tr>
+<tr class="separator:a87cf90dc23bfef47d583bc954ade29ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a69f61933bd5f61a8b3408d88f8e241d9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classturi_1_1gl__sarray.html">gl_sarray</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1supervised_1_1supervised__learning__model__base.html#a69f61933bd5f61a8b3408d88f8e241d9">api_extract_features</a> (<a class="el" href="classturi_1_1gl__sframe.html">gl_sframe</a> data, std::string missing_value_action)</td></tr>
 <tr class="separator:a69f61933bd5f61a8b3408d88f8e241d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad90fc6c00808d3f8808d8c1186b00530"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1ml__model__base.html#ad90fc6c00808d3f8808d8c1186b00530">list_fields</a> ()</td></tr>
@@ -283,8 +283,8 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ac92df1840540edd18bd0bd1c349983fb"><td class="memItemLeft" align="right" valign="top">arma::vec&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1supervised_1_1linear__regression.html#ac92df1840540edd18bd0bd1c349983fb">coefs</a></td></tr>
-<tr class="separator:ac92df1840540edd18bd0bd1c349983fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1282d9fd5ccba21e36d02324455807a"><td class="memItemLeft" align="right" valign="top">Eigen::Matrix&lt; double, Eigen::Dynamic, 1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1supervised_1_1linear__regression.html#aa1282d9fd5ccba21e36d02324455807a">coefs</a></td></tr>
+<tr class="separator:aa1282d9fd5ccba21e36d02324455807a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -399,7 +399,7 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a404cd92cb9550aed86f15b0054f731d6"></a>
+<a class="anchor" id="a87cf90dc23bfef47d583bc954ade29ef"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -423,6 +423,12 @@ Protected Attributes</h2></td></tr>
           <td></td>
           <td class="paramtype">std::string&#160;</td>
           <td class="paramname"><em>metric</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classturi_1_1gl__sarray.html">gl_sarray</a>&#160;</td>
+          <td class="paramname"><em>predictions</em> = <code><a class="el" href="classturi_1_1gl__sarray.html">gl_sarray</a>()</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -735,7 +741,7 @@ Protected Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>Same as classify(ml_data), but takes SFrame as input. </p>
 
-<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00360">360</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
+<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00361">361</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
 
 </div>
 </div>
@@ -1000,7 +1006,7 @@ Protected Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>Same as evaluate(ml_data), but take SFrame as input. </p>
 
-<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00277">277</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
+<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00278">278</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
 
 </div>
 </div>
@@ -1065,7 +1071,7 @@ Protected Attributes</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#ac01a4939b9d23923210b9670493e0f75">turi::supervised::xgboost::xgboost_model</a>.</p>
 
-<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00308">308</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
+<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00309">309</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
 
 </div>
 </div>
@@ -1220,7 +1226,7 @@ Protected Attributes</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classturi_1_1supervised_1_1logistic__regression.html#aa82f6e4f9dbd41a921decb1eb52f1bc3">turi::supervised::logistic_regression</a>, and <a class="el" href="classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#a0acb943ddd4688a4480bc495ce085683">turi::supervised::xgboost::xgboost_model</a>.</p>
 
-<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00387">387</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
+<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00388">388</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
 
 </div>
 </div>
@@ -1451,7 +1457,7 @@ Protected Attributes</h2></td></tr>
 <p>Get <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a>.</p>
 <dl class="section return"><dt>Returns</dt><dd>Get the <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a>. </dd></dl>
 
-<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00563">563</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
+<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00564">564</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
 
 </div>
 </div>
@@ -1868,7 +1874,7 @@ Protected Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns true if the model is a classifier. </p>
 
-<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00575">575</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
+<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00576">576</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
 
 </div>
 </div>
@@ -2282,7 +2288,7 @@ Protected Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>Same as predict(ml_data), but takes SFrame as input. </p>
 
-<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00298">298</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
+<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00299">299</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
 
 </div>
 </div>
@@ -2418,7 +2424,7 @@ Protected Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Prediction for a single example. </dd></dl>
 
-<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00225">225</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
+<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00226">226</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
 
 </div>
 </div>
@@ -2473,7 +2479,7 @@ Protected Attributes</h2></td></tr>
 <dd>
 Default throws error, model supporting this method should override this function. </dd></dl>
 
-<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00325">325</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
+<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00326">326</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
 
 </div>
 </div>
@@ -2846,7 +2852,7 @@ Default throws error, model supporting this method should override this function
 
 <p>Reimplemented in <a class="el" href="classturi_1_1supervised_1_1xgboost_1_1boosted__trees__classifier.html#a79578b2e7f5516c61420f2a5fe2c6f03">turi::supervised::xgboost::boosted_trees_classifier</a>, <a class="el" href="classturi_1_1supervised_1_1xgboost_1_1random__forest__classifier.html#a9efc5543fd469615d140ae3b66ef50d0">turi::supervised::xgboost::random_forest_classifier</a>, <a class="el" href="classturi_1_1supervised_1_1logistic__regression.html#a107691f29a1d4750fe7972dc5d43d009">turi::supervised::logistic_regression</a>, and <a class="el" href="classturi_1_1supervised_1_1linear__svm.html#aa72e5c8bc3c48f4e6be6851c07a867d5">turi::supervised::linear_svm</a>.</p>
 
-<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00461">461</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
+<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00462">462</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
 
 </div>
 </div>
@@ -2874,7 +2880,7 @@ Default throws error, model supporting this method should override this function
 
 <p>Reimplemented in <a class="el" href="classturi_1_1supervised_1_1xgboost_1_1boosted__trees__classifier.html#a752c966414d1b206052995ff9f37ea1d">turi::supervised::xgboost::boosted_trees_classifier</a>, <a class="el" href="classturi_1_1supervised_1_1xgboost_1_1random__forest__classifier.html#a044afb3c4a1ad57e6ccf365195a054a0">turi::supervised::xgboost::random_forest_classifier</a>, <a class="el" href="classturi_1_1supervised_1_1logistic__regression.html#aad3267aa990a7f1ddd617603414fb4c2">turi::supervised::logistic_regression</a>, and <a class="el" href="classturi_1_1supervised_1_1linear__svm.html#a4cdfb6eeb2ca078d6758ba0ce172c90f">turi::supervised::linear_svm</a>.</p>
 
-<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00468">468</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
+<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00469">469</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
 
 </div>
 </div>
@@ -2901,7 +2907,7 @@ Default throws error, model supporting this method should override this function
 </div><div class="memdoc">
 <p>Set the evaluation metric. Set to RMSE by default. </p>
 
-<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00438">438</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
+<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00439">439</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
 
 </div>
 </div>
@@ -2928,7 +2934,7 @@ Default throws error, model supporting this method should override this function
 </div><div class="memdoc">
 <p>Set the Extra Warnings output. These warnings include telling the user about low-variance features, etc... </p>
 
-<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00454">454</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
+<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00455">455</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
 
 </div>
 </div>
@@ -3023,7 +3029,7 @@ Default throws error, model supporting this method should override this function
 </div><div class="memdoc">
 <p>Set the evaluation metric. Set to RMSE by default. </p>
 
-<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00446">446</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
+<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00447">447</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
 
 </div>
 </div>
@@ -3051,7 +3057,7 @@ Default throws error, model supporting this method should override this function
 
 <p>Reimplemented in <a class="el" href="classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#a3c65730f2bd2a33bf265607b570a7972">turi::supervised::xgboost::xgboost_model</a>.</p>
 
-<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00627">627</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
+<p>Definition at line <a class="el" href="supervised__learning_8hpp_source.html#l00628">628</a> of file <a class="el" href="supervised__learning_8hpp_source.html">supervised_learning.hpp</a>.</p>
 
 </div>
 </div>
@@ -3109,12 +3115,12 @@ Default throws error, model supporting this method should override this function
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="ac92df1840540edd18bd0bd1c349983fb"></a>
+<a class="anchor" id="aa1282d9fd5ccba21e36d02324455807a"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">arma::vec turi::supervised::linear_regression::coefs</td>
+          <td class="memname">Eigen::Matrix&lt;double, Eigen::Dynamic,1&gt; turi::supervised::linear_regression::coefs</td>
         </tr>
       </table>
 </div><div class="memdoc">

@@ -7,5 +7,6 @@ var group__utils =
     [ "compute_residual", "group__utils.html#gac621bd1371172b23cda4b857c55ab347", null ],
     [ "log_solver_summary_stats", "group__utils.html#gae617d06c0114c419e4da202318021dff", null ],
     [ "set_default_solver_options", "group__utils.html#gac5fa67144505d0c24830c92538d15c7c", null ],
-    [ "translate_solver_status", "group__utils.html#ga3603596dcf10c08d9d6f96e4948f2614", null ]
+    [ "translate_solver_status", "group__utils.html#ga3603596dcf10c08d9d6f96e4948f2614", null ],
+    [ "vector_add", "group__utils.html#ga6d4dfc7f1876c9b1576b12632a1ea7e9", null ]
 ];

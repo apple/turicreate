@@ -3,7 +3,7 @@ var classturi_1_1supervised_1_1linear__svm =
     [ "~linear_svm", "classturi_1_1supervised_1_1linear__svm.html#a1b797bd6ac30d715ae2ce39bf270979f", null ],
     [ "add_or_update_state", "classturi_1_1supervised_1_1linear__svm.html#a63c2606fad4b957034b579fa65108add", null ],
     [ "api_classify", "classturi_1_1supervised_1_1linear__svm.html#ac3f1e140dce279466a427f0bb8de3cc7", null ],
-    [ "api_evaluate", "classturi_1_1supervised_1_1linear__svm.html#a404cd92cb9550aed86f15b0054f731d6", null ],
+    [ "api_evaluate", "classturi_1_1supervised_1_1linear__svm.html#a87cf90dc23bfef47d583bc954ade29ef", null ],
     [ "api_extract_features", "classturi_1_1supervised_1_1linear__svm.html#a69f61933bd5f61a8b3408d88f8e241d9", null ],
     [ "api_predict", "classturi_1_1supervised_1_1linear__svm.html#ae4109a382d58db2a05703286788d7d55", null ],
     [ "api_predict_topk", "classturi_1_1supervised_1_1linear__svm.html#ab9aa2af3ccad97df27dada7c795a10a6", null ],
@@ -83,6 +83,6 @@ var classturi_1_1supervised_1_1linear__svm =
     [ "support_missing_value", "classturi_1_1supervised_1_1linear__svm.html#ad5a7f6b1379539d33fa6963c917c7578", null ],
     [ "train", "classturi_1_1supervised_1_1linear__svm.html#a75168d9fc879a7577e8c2c8b0f9f3fdc", null ],
     [ "uid", "classturi_1_1supervised_1_1linear__svm.html#a66e833929a097ce52e44585ed2d91ffd", null ],
-    [ "coefs", "classturi_1_1supervised_1_1linear__svm.html#acda8cd069f59ea73006a0aaa695d5246", null ],
+    [ "coefs", "classturi_1_1supervised_1_1linear__svm.html#ab969afb84740914c6ef9ed8497c2da1f", null ],
     [ "state", "classturi_1_1supervised_1_1linear__svm.html#a6f247683fa7362282797f5aebc780d70", null ]
 ];

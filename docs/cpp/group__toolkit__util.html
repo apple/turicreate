@@ -152,8 +152,8 @@ Functions</h2></td></tr>
 <tr class="separator:gad7af2202890a2d4f51041e7969eb20fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga54025cc8bf2e793927c0202ebcb68ed3"><td class="memItemLeft" align="right" valign="top">std::pair&lt; sframe, sframe &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__toolkit__util.html#ga54025cc8bf2e793927c0202ebcb68ed3">turi::split_sframe_on_index</a> (const sframe &amp;src, std::function&lt; bool(size_t)&gt; switch_function)</td></tr>
 <tr class="separator:ga54025cc8bf2e793927c0202ebcb68ed3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga242130f9aa4367801c0851a62ce08974"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; sarray&lt; flexible_type &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__toolkit__util.html#ga242130f9aa4367801c0851a62ce08974">turi::matrix_to_sarray</a> (const arma::mat &amp;m)</td></tr>
-<tr class="separator:ga242130f9aa4367801c0851a62ce08974"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf55b6675b70fe0932c3c6dff099edab3"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; sarray&lt; flexible_type &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__toolkit__util.html#gaf55b6675b70fe0932c3c6dff099edab3">turi::matrix_to_sarray</a> (const Eigen::MatrixXd &amp;m)</td></tr>
+<tr class="separator:gaf55b6675b70fe0932c3c6dff099edab3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga18a4682bfe16de1db8594e334d57e7ab"><td class="memTemplParams" colspan="2">template&lt;typename GenFunction &gt; </td></tr>
 <tr class="memitem:ga18a4682bfe16de1db8594e334d57e7ab"><td class="memTemplItemLeft" align="right" valign="top">sframe&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__toolkit__util.html#ga18a4682bfe16de1db8594e334d57e7ab">turi::sframe_from_ranged_generator</a> (const std::vector&lt; std::string &gt; &amp;column_names, const std::vector&lt; flex_type_enum &gt; &amp;column_types, size_t num_rows, GenFunction &amp;&amp;generator_function)</td></tr>
 <tr class="separator:ga18a4682bfe16de1db8594e334d57e7ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -535,14 +535,14 @@ template&lt;typename InputIterator1 , typename InputIterator2 , typename Compari
 
 </div>
 </div>
-<a class="anchor" id="ga242130f9aa4367801c0851a62ce08974"></a>
+<a class="anchor" id="gaf55b6675b70fe0932c3c6dff099edab3"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">std::shared_ptr&lt;sarray&lt;flexible_type&gt; &gt; turi::matrix_to_sarray </td>
           <td>(</td>
-          <td class="paramtype">const arma::mat &amp;&#160;</td>
+          <td class="paramtype">const Eigen::MatrixXd &amp;&#160;</td>
           <td class="paramname"><em>m</em></td><td>)</td>
           <td></td>
         </tr>

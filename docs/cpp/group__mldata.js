@@ -123,9 +123,8 @@ var group__mldata =
     ] ],
     [ "ml_data_row_reference", "classturi_1_1ml__data__row__reference.html", [
       [ "fill", "classturi_1_1ml__data__row__reference.html#ad9d148ea58632bb9c6f79adf4f0b5fd2", null ],
-      [ "fill", "classturi_1_1ml__data__row__reference.html#afed93bb6ad03637116c0dcff6619ee3f", null ],
-      [ "fill", "classturi_1_1ml__data__row__reference.html#a57c4874ea2aa540e2cbb535f7746fcec", null ],
-      [ "fill_arma", "classturi_1_1ml__data__row__reference.html#a8960a97df6d0c5935d08309608e2bc46", null ],
+      [ "fill", "classturi_1_1ml__data__row__reference.html#afab45ac21be04c99a87de8d9bd9cbf24", null ],
+      [ "fill_eigen", "classturi_1_1ml__data__row__reference.html#a51a1f4c386768e125db6ca477474a42e", null ],
       [ "fill_untranslated_values", "classturi_1_1ml__data__row__reference.html#a00494b080cb5c1802f7f9a8f0261db84", null ],
       [ "from_row", "classturi_1_1ml__data__row__reference.html#a72a5162c414ac4ad0755f2d7adb6268b", null ],
       [ "metadata", "classturi_1_1ml__data__row__reference.html#acc988ad81e623cdaa11ccf5f75cb5bb8", null ],

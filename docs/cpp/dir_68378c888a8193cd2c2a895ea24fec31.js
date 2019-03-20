@@ -3,6 +3,7 @@ var dir_68378c888a8193cd2c2a895ea24fec31 =
     [ "activity_classification", "dir_6eddd9b703be73b45dbb08394e9951e8.html", "dir_6eddd9b703be73b45dbb08394e9951e8" ],
     [ "clustering", "dir_5cffc07ed2914fd6632521b610f97b5e.html", "dir_5cffc07ed2914fd6632521b610f97b5e" ],
     [ "coreml_export", "dir_f51e09091a2d7d041e82850278216445.html", "dir_f51e09091a2d7d041e82850278216445" ],
+    [ "drawing_classifier", "dir_294110e8208a0a67c35442c0df9258f1.html", "dir_294110e8208a0a67c35442c0df9258f1" ],
     [ "evaluation", "dir_33f6eb27246bec7268a6eaef4a6c0f75.html", "dir_33f6eb27246bec7268a6eaef4a6c0f75" ],
     [ "factorization", "dir_72dd0765396338a6a241aacabcb5b5c9.html", "dir_72dd0765396338a6a241aacabcb5b5c9" ],
     [ "feature_engineering", "dir_8e0b285f61621c54d2671e74d572f2d8.html", "dir_8e0b285f61621c54d2671e74d572f2d8" ],

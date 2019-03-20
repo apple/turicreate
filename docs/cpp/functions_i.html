@@ -246,9 +246,9 @@ $(document).ready(function(){initNavTree('functions_i.html','');});
 , <a class="el" href="classturi_1_1evaluation_1_1supervised__evaluation__interface.html#aa779275864ac9dce5b4832dfa50d70d5">turi::evaluation::supervised_evaluation_interface</a>
 , <a class="el" href="structturi_1_1groupby__aggregate__impl_1_1groupby__element.html#a950da2ed3bfb95fcfd41d3628fd2ad3d">turi::groupby_aggregate_impl::groupby_element</a>
 , <a class="el" href="classturi_1_1groupby__operators_1_1quantile.html#a4fa65ba07b07dd882565f55f5a9f79f7">turi::groupby_operators::quantile</a>
-, <a class="el" href="classturi_1_1pagefile.html#acd0f3905e2dccbf554bf82642512ff23">turi::pagefile</a>
 , <a class="el" href="classturi_1_1query__eval_1_1execution__node.html#a96ce1048c49ee7afe052f6f169afcc7b">turi::query_eval::execution_node</a>
 , <a class="el" href="classturi_1_1sarray__reader.html#a5c22734644ac63ebd1567d5edb4d62a2">turi::sarray_reader&lt; T &gt;</a>
+, <a class="el" href="classturi_1_1sarray__reader__buffer.html#af56a50726e52be0eea40d2bffaa7792e">turi::sarray_reader_buffer&lt; T &gt;</a>
 , <a class="el" href="classturi_1_1sframe__reader.html#aba4de823399753f13e581d5ee2ef84a6">turi::sframe_reader</a>
 , <a class="el" href="classturi_1_1sketches_1_1quantile__sketch.html#a17968d6d02bec92a05a31556d5c53aa8">turi::sketches::quantile_sketch&lt; T, Comparator &gt;</a>
 , <a class="el" href="classturi_1_1sketches_1_1streaming__quantile__sketch.html#ab78cb0331e650f2e800300c61edcbf16">turi::sketches::streaming_quantile_sketch&lt; T, Comparator &gt;</a>
@@ -328,27 +328,17 @@ $(document).ready(function(){initNavTree('functions_i.html','');});
 : <a class="el" href="structturi_1_1query__eval_1_1node__info.html#a9f413ddae8f0786ebb3cc72397a2401c">turi::query_eval::node_info</a>
 , <a class="el" href="structturi_1_1query__eval_1_1planner__node.html#a07fb41b9ade382cad3c43d0b7589e34e">turi::query_eval::planner_node</a>
 </li>
-<li>inputSchema()
-: <a class="el" href="classCoreML_1_1Model.html#aaa24147a55ea4952bb6157190ebc5726">CoreML::Model</a>
-</li>
 <li>insert()
 : <a class="el" href="classturi_1_1hopscotch__table.html#a1208cc01db24f3d57f46dc477b3486bf">turi::hopscotch_table&lt; T, Hash, KeyEqual &gt;</a>
 , <a class="el" href="structturi_1_1lru__cache.html#a5b952b4c80e3452f69786625f2d21e61">turi::lru_cache&lt; Key, Value &gt;</a>
 , <a class="el" href="classturi_1_1small__set.html#afe98321530bb5103fd22f4e47127f700">turi::small_set&lt; MAX_DIM, T, Less &gt;</a>
 , <a class="el" href="classturi_1_1value__container__mapper.html#a4a2c227f705d2edda53ebbdf1f67881b">turi::value_container_mapper&lt; Value, ValueContainer &gt;</a>
-, <a class="el" href="classturi_1_1zookeeper__util_1_1key__value.html#acd7114adf6d32afed845708eacb48974">turi::zookeeper_util::key_value</a>
-</li>
-<li>insert_back()
-: <a class="el" href="classlibfault_1_1zmq__msg__vector.html#ab4a047d62859b6ba0de9afe6e044b062">libfault::zmq_msg_vector</a>
 </li>
 <li>insert_cumulative()
 : <a class="el" href="classturi_1_1mutable__queue.html#a3fc056faaba8d419e9c0ab49797407ce">turi::mutable_queue&lt; T, Priority &gt;</a>
 </li>
 <li>insert_do_not_overwrite()
 : <a class="el" href="classturi_1_1hopscotch__table.html#ac360c635e591df0c880bd83a30471778">turi::hopscotch_table&lt; T, Hash, KeyEqual &gt;</a>
-</li>
-<li>insert_front()
-: <a class="el" href="classlibfault_1_1zmq__msg__vector.html#a6a65fb693ce3428424692f1e81ae367d">libfault::zmq_msg_vector</a>
 </li>
 <li>insert_max()
 : <a class="el" href="classturi_1_1mutable__queue.html#af46b53ef52176a1e3994211b33d5d9d3">turi::mutable_queue&lt; T, Priority &gt;</a>
@@ -396,7 +386,7 @@ $(document).ready(function(){initNavTree('functions_i.html','');});
 </li>
 <li>inverse_transform()
 : <a class="el" href="classturi_1_1l2__rescaling.html#a9d2ac703ec62027652ddb021d6672c0f">turi::l2_rescaling</a>
-, <a class="el" href="classturi_1_1standardization__interface.html#aa200a1001ee50bf1a200f7d3cbd9d94c">turi::standardization_interface</a>
+, <a class="el" href="classturi_1_1standardization__interface.html#a860e0cacb2756556f43655e725ebddd1">turi::standardization_interface</a>
 , <a class="el" href="classturi_1_1supervised_1_1l2__rescaling.html#a23541e6b25f45c18b07320fa9eba355b">turi::supervised::l2_rescaling</a>
 , <a class="el" href="classturi_1_1supervised_1_1standardization__interface.html#a5b9406fecf2c20cc155e1d5053de6f55">turi::supervised::standardization_interface</a>
 </li>
@@ -450,7 +440,7 @@ $(document).ready(function(){initNavTree('functions_i.html','');});
 : <a class="el" href="classturi_1_1vector__index__mapper.html#a9edff8f5c32f2aca9022ba7f66e4de7b">turi::vector_index_mapper</a>
 </li>
 <li>is_indexed()
-: <a class="el" href="classturi_1_1ml__metadata.html#add1adbfccaf781f78c83ec4d1f3bb396">turi::ml_metadata</a>
+: <a class="el" href="classturi_1_1ml__metadata.html#a0660bc5c33cf2af97dcfaefb55ad97d4">turi::ml_metadata</a>
 </li>
 <li>is_itemset_redundant()
 : <a class="el" href="classturi_1_1pattern__mining_1_1fp__results__tree.html#aa49afc289078c8e55541cbb9421848e2">turi::pattern_mining::fp_results_tree</a>
@@ -520,7 +510,7 @@ $(document).ready(function(){initNavTree('functions_i.html','');});
 </li>
 <li>is_untranslated_column()
 : <a class="el" href="structturi_1_1ml__data__internal_1_1column__metadata.html#ab15fb0d7df78b9c3c15b92162a3c7cb8">turi::ml_data_internal::column_metadata</a>
-, <a class="el" href="classturi_1_1ml__metadata.html#acd910235c84fd4748da32c09505ea553">turi::ml_metadata</a>
+, <a class="el" href="classturi_1_1ml__metadata.html#a52a4404a37faffc29f3f43e1ae8b02a9">turi::ml_metadata</a>
 , <a class="el" href="structturi_1_1v2_1_1ml__data__internal_1_1column__metadata.html#a46172b2b150fc1dc677298bcab59f163">turi::v2::ml_data_internal::column_metadata</a>
 </li>
 <li>is_valid()
@@ -541,6 +531,9 @@ $(document).ready(function(){initNavTree('functions_i.html','');});
 </li>
 <li>iter_row_index_start
 : <a class="el" href="classturi_1_1v2_1_1ml__data__iterator__base.html#a2c29d49193483b0e1b4da730b0f5e992">turi::v2::ml_data_iterator_base</a>
+</li>
+<li>iteration
+: <a class="el" href="group__LBFGS.html#gafb35c599eb5189710aefe09941f01a4c">turi::optimization::solver_status</a>
 </li>
 <li>iterator
 : <a class="el" href="classturi_1_1sarray.html#a21e9ded658a76c3268e9673caf725458">turi::sarray&lt; T &gt;</a>

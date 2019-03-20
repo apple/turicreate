@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.unpack &mdash; Turi Create API 5.3 documentation</title>
+  <title>turicreate.SFrame.unpack &mdash; Turi Create API 5.4 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.3 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +123,7 @@
 <h1>turicreate.SFrame.unpack<a class="headerlink" href="#turicreate-sframe-unpack" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SFrame.unpack">
-<code class="descclassname">SFrame.</code><code class="descname">unpack</code><span class="sig-paren">(</span><em>column_name</em>, <em>column_name_prefix=None</em>, <em>column_types=None</em>, <em>na_value=None</em>, <em>limit=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.unpack" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SFrame.</code><code class="descname">unpack</code><span class="sig-paren">(</span><em>column_name=None</em>, <em>column_name_prefix=None</em>, <em>column_types=None</em>, <em>na_value=None</em>, <em>limit=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.unpack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Expand one column of this SFrame to multiple columns with each value in
 a separate column. Returns a new SFrame with the unpacked column
 replaced with a list of new columns.  The column must be of
@@ -136,8 +136,11 @@ other, refer to the SArray version of
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>column_name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Name of the unpacked column</p>
+<dt><strong>column_name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the unpacked column, if provided. If not provided
+and only one column is present then the column is unpacked. 
+In case of multiple columns, name must be provided to know 
+which column to be unpacked.</p>
 </dd>
 <dt><strong>column_name_prefix</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
 <dd><p class="first last">If provided, unpacked column names would start with the given
@@ -253,6 +256,17 @@ the given column replaced with a collection of unpacked columns.</p>
 <span class="go">[3 rows x 4 columns]</span>
 </pre></div>
 </div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">([{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;c&#39;</span><span class="p">:</span><span class="mi">3</span><span class="p">},{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span><span class="s1">&#39;c&#39;</span><span class="p">:</span><span class="mi">6</span><span class="p">}])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">unpack</span><span class="p">()</span>
+<span class="go">+---+---+---+</span>
+<span class="go">| a | b | c |</span>
+<span class="go">+---+---+---+</span>
+<span class="go">| 1 | 2 | 3 |</span>
+<span class="go">| 4 | 5 | 6 |</span>
+<span class="go">+---+---+---+</span>
+<span class="go">[2 rows x 3 columns]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
@@ -266,7 +280,7 @@ the given column replaced with a collection of unpacked columns.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Feb 06, 2019.
+      Last updated on Mar 20, 2019.
     </p>
   </div>
 </footer>
@@ -284,7 +298,7 @@ the given column replaced with a collection of unpacked columns.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.3',
+            VERSION:'5.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

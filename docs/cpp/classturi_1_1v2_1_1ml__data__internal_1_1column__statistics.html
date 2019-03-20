@@ -122,8 +122,6 @@ $(document).ready(function(){initNavTree('classturi_1_1v2_1_1ml__data__internal_
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a4aee96bebdbd663926808a043f9cc8bc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__statistics.html#a4aee96bebdbd663926808a043f9cc8bc">column_statistics</a> (const <a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__statistics.html">column_statistics</a> &amp;)=delete</td></tr>
-<tr class="separator:a4aee96bebdbd663926808a043f9cc8bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab95a47a879a066ea2857d3fef872e658"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__statistics.html#ab95a47a879a066ea2857d3fef872e658">is_equal</a> (const <a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__statistics.html">column_statistics</a> *other) const  =0</td></tr>
 <tr class="separator:ab95a47a879a066ea2857d3fef872e658"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae49b6e5770c45c652744112b956e6da"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__statistics.html#aae49b6e5770c45c652744112b956e6da">operator==</a> (const <a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__statistics.html">column_statistics</a> &amp;other) const </td></tr>
@@ -158,6 +156,8 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="separator:a4e6e44b8d77dc5b191249349b20de2ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7f7ad9189d19f4ac18fda979fad76b9b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__statistics.html#a7f7ad9189d19f4ac18fda979fad76b9b">set_data</a> (const std::map&lt; std::string, <a class="el" href="namespaceturi.html#a133f01ff63e13b5b78b761e5c78e0c25">variant_type</a> &gt; &amp;params)</td></tr>
 <tr class="separator:a7f7ad9189d19f4ac18fda979fad76b9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafc89b8e5be2b3dfab93ff2045ee84a6"><td class="memItemLeft" align="right" valign="top">virtual std::shared_ptr&lt; <a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__statistics.html">column_statistics</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__statistics.html#aafc89b8e5be2b3dfab93ff2045ee84a6">create_cleared_copy</a> () const  =0</td></tr>
+<tr class="separator:aafc89b8e5be2b3dfab93ff2045ee84a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -168,8 +168,8 @@ Static Public Member Functions</h2></td></tr>
 <div class="textblock"><p>Uses the factory model for saving and loading. </p>
 
 <p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2statistics_2column__statistics_8hpp_source.html#l00019">19</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2statistics_2column__statistics_8hpp_source.html">column_statistics.hpp</a>.</p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a4aee96bebdbd663926808a043f9cc8bc"></a>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="aafc89b8e5be2b3dfab93ff2045ee84a6"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -177,24 +177,22 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">turi::v2::ml_data_internal::column_statistics::column_statistics </td>
+          <td class="memname">virtual std::shared_ptr&lt;<a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__statistics.html">column_statistics</a>&gt; turi::v2::ml_data_internal::column_statistics::create_cleared_copy </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__statistics.html">column_statistics</a> &amp;&#160;</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Copy constructor: Don't want to risk making copies of this. </p>
+<p>Create a copy with the index cleared. </p>
 
 </div>
 </div>
-<h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a1b94a370a5308a5eeb490f24f892cf57"></a>
 <div class="memitem">
 <div class="memproto">
@@ -354,7 +352,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1basic__column__statistics.html#a945f6d867f8425d87965e890c23937a8">turi::v2::ml_data_internal::basic_column_statistics</a>.</p>
 
-<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2statistics_2column__statistics_8hpp_source.html#l00054">54</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2statistics_2column__statistics_8hpp_source.html">column_statistics.hpp</a>.</p>
+<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2statistics_2column__statistics_8hpp_source.html#l00049">49</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2statistics_2column__statistics_8hpp_source.html">column_statistics.hpp</a>.</p>
 
 </div>
 </div>
@@ -440,7 +438,7 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>One way to set the statistics. Used by the serialization converters. </p>
 
-<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2statistics_2column__statistics_8hpp_source.html#l00127">127</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2statistics_2column__statistics_8hpp_source.html">column_statistics.hpp</a>.</p>
+<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2statistics_2column__statistics_8hpp_source.html#l00122">122</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2statistics_2column__statistics_8hpp_source.html">column_statistics.hpp</a>.</p>
 
 </div>
 </div>

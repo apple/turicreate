@@ -1,7 +1,7 @@
 var classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer =
 [
     [ "column_unique_indexer", "classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#a5e3ce2c64eb2c339224c8045c5b366f6", null ],
-    [ "column_unique_indexer", "classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#a1026ab64029d26057a2393a12cdfbc95", null ],
+    [ "create_cleared_copy", "classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#ad12559ceb9311c2bb943041d0b3df22e", null ],
     [ "extract_key_types", "classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#a9c607ea273868ab8b71f861147d1596e", null ],
     [ "factory_create", "classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#a784992944a2f0999f430ec40094e2be7", null ],
     [ "finalize", "classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#ae75982b17d3b807dc13d5634a8b1764a", null ],
@@ -15,7 +15,7 @@ var classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer =
     [ "map_value_to_index", "classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#aa101d5ff08195fb482be6bc47eac27b3", null ],
     [ "register_real_value", "classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#aed94e06d2f6a39d210d0efa559e4ede9", null ],
     [ "save_impl", "classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#a596817c69a7c17bc897e5618fde8ba32", null ],
-    [ "set_data", "classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#a4c4a1d520d4201fef7c5fa4ff6f42a7c", null ],
+    [ "set_values", "classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#abd6d44177c3b3b04205c8217537dd5c0", null ],
     [ "column_name", "classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#a1cbee7049d3bd8bc7f033d520738a200", null ],
     [ "mode", "classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#ab105157e1f09fefb37abc9cb9b629f6a", null ],
     [ "options", "classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#aa68f86710cf4833e5b3ade4a3717c30a", null ],

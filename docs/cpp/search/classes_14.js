@@ -18,6 +18,5 @@ var searchData=
   ['topk_5findexer',['topk_indexer',['../classturi_1_1topk__indexer.html',1,'turi']]],
   ['trace_5fcount',['trace_count',['../structturi_1_1trace__count.html',1,'turi']]],
   ['transformer_5fbase',['transformer_base',['../classturi_1_1sdk__model_1_1feature__engineering_1_1transformer__base.html',1,'turi::sdk_model::feature_engineering']]],
-  ['treeensembleclassifier',['TreeEnsembleClassifier',['../classCoreML_1_1TreeEnsembleClassifier.html',1,'CoreML']]],
   ['type_5fto_5fenum',['type_to_enum',['../structturi_1_1type__to__enum.html',1,'turi']]]
 ];

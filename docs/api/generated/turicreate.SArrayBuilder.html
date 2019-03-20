@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SArrayBuilder &mdash; Turi Create API 5.3 documentation</title>
+  <title>turicreate.SArrayBuilder &mdash; Turi Create API 5.4 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.3 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
         <link rel="up" title="Data" href="../turicreate.data_structures.html"/>
         <link rel="next" title="turicreate.SFrameBuilder" href="turicreate.SFrameBuilder.html"/>
         <link rel="prev" title="turicreate.Edge" href="turicreate.Edge.html"/> 
@@ -136,16 +136,15 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dtype</strong> <span class="classifier-delimiter">:</span> <span class="classifier">type</span></dt>
+<dd><p class="first last">The type of the elements in the SArray.</p>
+</dd>
 <dt><strong>num_segments</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
 <dd><p class="first last">Number of segments that can be written in parallel.</p>
 </dd>
 <dt><strong>history_size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
 <dd><p class="first last">The number of elements to be cached as history. Caches the last
 <cite>history_size</cite> elements added with <cite>append</cite> or <cite>append_multiple</cite>.</p>
-</dd>
-<dt><strong>dtype</strong> <span class="classifier-delimiter">:</span> <span class="classifier">type, optional</span></dt>
-<dd><p class="first last">The type the resulting SArray will be. If None, the resulting SArray
-will take on the type of the first non-None value it receives.</p>
 </dd>
 </dl>
 </td>
@@ -162,13 +161,13 @@ will take on the type of the first non-None value it receives.</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">SArrayBuilder</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sb</span> <span class="o">=</span> <span class="n">SArrayBuilder</span><span class="p">()</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sb</span> <span class="o">=</span> <span class="n">SArrayBuilder</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sb</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sb</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sb</span><span class="o">.</span><span class="n">append_multiple</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -223,7 +222,7 @@ will take on the type of the first non-None value it receives.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Feb 06, 2019.
+      Last updated on Mar 20, 2019.
     </p>
   </div>
 </footer>
@@ -241,7 +240,7 @@ will take on the type of the first non-None value it receives.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.3',
+            VERSION:'5.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

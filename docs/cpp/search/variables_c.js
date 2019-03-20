@@ -27,7 +27,5 @@ var searchData=
   ['min_5fsegment_5flength',['MIN_SEGMENT_LENGTH',['../group__sframe__main.html#gaafbbdb0b7e14990e3abf78a1b0ae97bb',1,'turi']]],
   ['ml_5fdata_5f',['ml_data_',['../classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#ad0c33935135c211cb55739441703c676',1,'turi::supervised::xgboost::xgboost_model']]],
   ['mode',['mode',['../classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#ab105157e1f09fefb37abc9cb9b629f6a',1,'turi::v2::ml_data_internal::column_indexer']]],
-  ['model_5finterface',['model_interface',['../classturi_1_1sgd_1_1sgd__solver__base.html#af5c1a0876cc4df122882fdda90d5402d',1,'turi::sgd::sgd_solver_base']]],
-  ['msg',['msg',['../structlibfault_1_1query__object__message.html#a7f76eb3a51a913d4c0f39e99d42314a3',1,'libfault::query_object_message::msg()'],['../structlibfault_1_1query__object__reply.html#ad350905c730ce65be7fca83d1dc3320f',1,'libfault::query_object_reply::msg()']]],
-  ['msglen',['msglen',['../structlibfault_1_1query__object__message.html#ac7e6442bd1c62b4e751e90f9e88519ae',1,'libfault::query_object_message::msglen()'],['../structlibfault_1_1query__object__reply.html#a08c0ef38ed7f1743bef16b80f226091e',1,'libfault::query_object_reply::msglen()']]]
+  ['model_5finterface',['model_interface',['../classturi_1_1sgd_1_1sgd__solver__base.html#af5c1a0876cc4df122882fdda90d5402d',1,'turi::sgd::sgd_solver_base']]]
 ];

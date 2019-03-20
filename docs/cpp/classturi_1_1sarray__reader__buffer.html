@@ -125,6 +125,10 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1sarray__reader__buffer.html#acf864d8682a8647776c851889e4f4a9d">sarray_reader_buffer</a> (std::shared_ptr&lt; typename <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; T &gt;::<a class="el" href="classturi_1_1sarray__reader.html">reader_type</a> &gt; reader, size_t row_start, size_t row_end, size_t buffer_size=<a class="el" href="group__sframe__main.html#ga147c13dd9ac3f4bb564fcacaea1a62be">DEFAULT_SARRAY_READER_BUFFER_SIZE</a>)</td></tr>
 <tr class="memdesc:acf864d8682a8647776c851889e4f4a9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from sarray reader with begin and end row. <br /></td></tr>
 <tr class="separator:acf864d8682a8647776c851889e4f4a9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af56a50726e52be0eea40d2bffaa7792e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1sarray__reader__buffer.html#af56a50726e52be0eea40d2bffaa7792e">init</a> (std::shared_ptr&lt; typename <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; T &gt;::<a class="el" href="classturi_1_1sarray__reader.html">reader_type</a> &gt; &amp;reader, size_t row_start, size_t row_end, size_t internal_buffer_size=<a class="el" href="group__sframe__main.html#ga147c13dd9ac3f4bb564fcacaea1a62be">DEFAULT_SARRAY_READER_BUFFER_SIZE</a>)</td></tr>
+<tr class="separator:af56a50726e52be0eea40d2bffaa7792e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79587be11051f5a7e48ba9c4f147aa45"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1sarray__reader__buffer.html#a79587be11051f5a7e48ba9c4f147aa45">init</a> (typename <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; T &gt;::<a class="el" href="classturi_1_1sarray__reader.html">reader_type</a> *reader_weak, size_t row_start, size_t row_end, size_t internal_buffer_size=<a class="el" href="group__sframe__main.html#ga147c13dd9ac3f4bb564fcacaea1a62be">DEFAULT_SARRAY_READER_BUFFER_SIZE</a>)</td></tr>
+<tr class="separator:a79587be11051f5a7e48ba9c4f147aa45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaba3ffefdd48a3de34aae904c2ce91ff3"><td class="memItemLeft" align="right" valign="top">value_type &amp;&amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sframe__main.html#gaba3ffefdd48a3de34aae904c2ce91ff3">next</a> ()</td></tr>
 <tr class="memdesc:gaba3ffefdd48a3de34aae904c2ce91ff3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the next element in the reader.  <a href="group__sframe__main.html#gaba3ffefdd48a3de34aae904c2ce91ff3">More...</a><br /></td></tr>
 <tr class="separator:gaba3ffefdd48a3de34aae904c2ce91ff3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -167,7 +171,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Resets the buffer to the initial starting conditions. Reading from the buffer again will start from row_start. </p>
 
-<p>Definition at line <a class="el" href="sarray__reader__buffer_8hpp_source.html#l00146">146</a> of file <a class="el" href="sarray__reader__buffer_8hpp_source.html">sarray_reader_buffer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray__reader__buffer_8hpp_source.html#l00174">174</a> of file <a class="el" href="sarray__reader__buffer_8hpp_source.html">sarray_reader_buffer.hpp</a>.</p>
 
 </div>
 </div>
@@ -189,7 +193,109 @@ template&lt;typename T &gt; </div>
 <p>Return true if the reader has more element. </p>
 <p>Return true if the chunk has remaining element. </p>
 
-<p>Definition at line <a class="el" href="sarray__reader__buffer_8hpp_source.html#l00132">132</a> of file <a class="el" href="sarray__reader__buffer_8hpp_source.html">sarray_reader_buffer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray__reader__buffer_8hpp_source.html#l00160">160</a> of file <a class="el" href="sarray__reader__buffer_8hpp_source.html">sarray_reader_buffer.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af56a50726e52be0eea40d2bffaa7792e"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classturi_1_1sarray__reader__buffer.html">turi::sarray_reader_buffer</a>&lt; T &gt;::init </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; typename <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; T &gt;::<a class="el" href="classturi_1_1sarray__reader.html">reader_type</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>reader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>row_start</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>row_end</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>internal_buffer_size</em> = <code><a class="el" href="group__sframe__main.html#ga147c13dd9ac3f4bb564fcacaea1a62be">DEFAULT_SARRAY_READER_BUFFER_SIZE</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Construction of a reader_buffer where the reader_buffer owns a reference to the underlying reader. </p>
+
+<p>Definition at line <a class="el" href="sarray__reader__buffer_8hpp_source.html#l00064">64</a> of file <a class="el" href="sarray__reader__buffer_8hpp_source.html">sarray_reader_buffer.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a79587be11051f5a7e48ba9c4f147aa45"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classturi_1_1sarray__reader__buffer.html">turi::sarray_reader_buffer</a>&lt; T &gt;::init </td>
+          <td>(</td>
+          <td class="paramtype">typename <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; T &gt;::<a class="el" href="classturi_1_1sarray__reader.html">reader_type</a> *&#160;</td>
+          <td class="paramname"><em>reader_weak</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>row_start</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>row_end</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>internal_buffer_size</em> = <code><a class="el" href="group__sframe__main.html#ga147c13dd9ac3f4bb564fcacaea1a62be">DEFAULT_SARRAY_READER_BUFFER_SIZE</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Construction of a reader_buffer where the reader_buffer DOES NOT own a reference to the underlying reader. </p><dl class="section note"><dt>Note</dt><dd>This is quite unsafe to use since its not even a weak_ptr but a raw pointer. The user has to be careful to ensure that the <a class="el" href="classturi_1_1sarray__reader.html">sarray_reader</a>'s lifespan exceeds that of the reader_buffer. This is provided only to support a circular case where the <a class="el" href="classturi_1_1sarray__reader.html">sarray_reader</a> itself uses <a class="el" href="classturi_1_1sarray__reader__buffer.html">sarray_reader_buffer</a> for buffering. </dd></dl>
+
+<p>Definition at line <a class="el" href="sarray__reader__buffer_8hpp_source.html#l00087">87</a> of file <a class="el" href="sarray__reader__buffer_8hpp_source.html">sarray_reader_buffer.hpp</a>.</p>
 
 </div>
 </div>

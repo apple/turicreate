@@ -102,33 +102,100 @@ $(document).ready(function(){initNavTree('group__LBFGS.html','');});
 
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a>  </div>
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">LBFGS<div class="ingroups"><a class="el" href="group__group__optimization.html">Convex Optimization</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1optimization_1_1lbfgs__solver.html">turi::optimization::lbfgs_solver</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga58e324ec072533c3368d271e8b48cd76"><td class="memTemplParams" colspan="2">template&lt;typename Vector  = DenseVector&gt; </td></tr>
-<tr class="memitem:ga58e324ec072533c3368d271e8b48cd76"><td class="memTemplItemLeft" align="right" valign="top">solver_return&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__LBFGS.html#ga58e324ec072533c3368d271e8b48cd76">turi::optimization::lbfgs</a> (first_order_opt_interface &amp;model, const DenseVector &amp;init_point, std::map&lt; std::string, flexible_type &gt; &amp;opts, const std::shared_ptr&lt; smooth_regularizer_interface &gt; reg=NULL)</td></tr>
-<tr class="separator:ga58e324ec072533c3368d271e8b48cd76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga234cdff32c8f775af79754d471b53972"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__LBFGS.html#ga234cdff32c8f775af79754d471b53972">turi::optimization::lbfgs_solver::lbfgs_solver</a> (std::shared_ptr&lt; first_order_opt_interface &gt; _model)</td></tr>
+<tr class="separator:ga234cdff32c8f775af79754d471b53972"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga42e88e7aa978f2ee59df85bfb4112103"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__LBFGS.html#ga42e88e7aa978f2ee59df85bfb4112103">turi::optimization::lbfgs_solver::setup</a> (const DenseVector &amp;init_point, const std::map&lt; std::string, flexible_type &gt; &amp;opts, const std::shared_ptr&lt; smooth_regularizer_interface &gt; &amp;reg=nullptr)</td></tr>
+<tr class="separator:ga42e88e7aa978f2ee59df85bfb4112103"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga12b83003991c12ab40515979cf6e70ec"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__LBFGS.html#ga12b83003991c12ab40515979cf6e70ec">turi::optimization::lbfgs_solver::next_iteration</a> ()</td></tr>
+<tr class="separator:ga12b83003991c12ab40515979cf6e70ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga999aa8a1033bbda460afff654c69550a"><td class="memItemLeft" align="right" valign="top">const solver_status &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__LBFGS.html#ga999aa8a1033bbda460afff654c69550a">turi::optimization::lbfgs_solver::status</a> () const </td></tr>
+<tr class="separator:ga999aa8a1033bbda460afff654c69550a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga77e84deef5813dd71ef9e4dc4106a3b6"><td class="memItemLeft" align="right" valign="top">solver_status&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__LBFGS.html#ga77e84deef5813dd71ef9e4dc4106a3b6">turi::optimization::lbfgs</a> (std::shared_ptr&lt; first_order_opt_interface &gt; model, const DenseVector &amp;init_point, const std::map&lt; std::string, flexible_type &gt; &amp;opts, const std::shared_ptr&lt; smooth_regularizer_interface &gt; &amp;reg=nullptr)</td></tr>
+<tr class="separator:ga77e84deef5813dd71ef9e4dc4106a3b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:gafb35c599eb5189710aefe09941f01a4c"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__LBFGS.html#gafb35c599eb5189710aefe09941f01a4c">turi::optimization::solver_status::iteration</a> = 0</td></tr>
+<tr class="separator:gafb35c599eb5189710aefe09941f01a4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3f8ffff2045bb56606a1717c12120354"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__LBFGS.html#ga3f8ffff2045bb56606a1717c12120354">turi::optimization::solver_status::solver_time</a> = 0</td></tr>
+<tr class="separator:ga3f8ffff2045bb56606a1717c12120354"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga98fb8e2f6bffd3338abfdd3a35352025"><td class="memItemLeft" align="right" valign="top">DenseVector&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__LBFGS.html#ga98fb8e2f6bffd3338abfdd3a35352025">turi::optimization::solver_status::solution</a></td></tr>
+<tr class="separator:ga98fb8e2f6bffd3338abfdd3a35352025"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga590e232613ad177c9a3a05e4d4adf231"><td class="memItemLeft" align="right" valign="top">DenseVector&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__LBFGS.html#ga590e232613ad177c9a3a05e4d4adf231">turi::optimization::solver_status::gradient</a></td></tr>
+<tr class="separator:ga590e232613ad177c9a3a05e4d4adf231"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5db45c025d69d7e17ebf75dd6b0c6bc9"><td class="memItemLeft" align="right" valign="top">DenseMatrix&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__LBFGS.html#ga5db45c025d69d7e17ebf75dd6b0c6bc9">turi::optimization::solver_status::hessian</a></td></tr>
+<tr class="separator:ga5db45c025d69d7e17ebf75dd6b0c6bc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1fb3b4dde18e0d3c2eca418e5d1d68b1"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__LBFGS.html#ga1fb3b4dde18e0d3c2eca418e5d1d68b1">turi::optimization::solver_status::residual</a> = NAN</td></tr>
+<tr class="separator:ga1fb3b4dde18e0d3c2eca418e5d1d68b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga758648f2e9684fb59d8c5bf2ada9b82e"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__LBFGS.html#ga758648f2e9684fb59d8c5bf2ada9b82e">turi::optimization::solver_status::function_value</a> = NAN</td></tr>
+<tr class="separator:ga758648f2e9684fb59d8c5bf2ada9b82e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab1cb2e1c9b2dffda8d20d0f059431930"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__LBFGS.html#gab1cb2e1c9b2dffda8d20d0f059431930">turi::optimization::solver_status::num_function_evaluations</a> = 0</td></tr>
+<tr class="separator:gab1cb2e1c9b2dffda8d20d0f059431930"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaef52ee2eb8fe4f1a4995122aedac356d"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__LBFGS.html#gaef52ee2eb8fe4f1a4995122aedac356d">turi::optimization::solver_status::num_gradient_evaluations</a> = 0</td></tr>
+<tr class="separator:gaef52ee2eb8fe4f1a4995122aedac356d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga78601acb18969ba32ff4d2a656226c13"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__LBFGS.html#ga78601acb18969ba32ff4d2a656226c13">turi::optimization::solver_status::step_size</a> = 0</td></tr>
+<tr class="separator:ga78601acb18969ba32ff4d2a656226c13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga44df0921d9969a2c9108b0b3e3278b51"><td class="memItemLeft" align="right" valign="top">OPTIMIZATION_STATUS&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__LBFGS.html#ga44df0921d9969a2c9108b0b3e3278b51">turi::optimization::solver_status::status</a> = OPTIMIZATION_STATUS::OPT_UNSET</td></tr>
+<tr class="separator:ga44df0921d9969a2c9108b0b3e3278b51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="ga58e324ec072533c3368d271e8b48cd76"></a>
+<a class="anchor" id="ga234cdff32c8f775af79754d471b53972"></a>
 <div class="memitem">
 <div class="memproto">
-<div class="memtemplate">
-template&lt;typename Vector  = DenseVector&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">solver_return turi::optimization::lbfgs </td>
+          <td class="memname">turi::optimization::lbfgs_solver::lbfgs_solver </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classturi_1_1optimization_1_1first__order__opt__interface.html">first_order_opt_interface</a> &amp;&#160;</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classturi_1_1optimization_1_1first__order__opt__interface.html">first_order_opt_interface</a> &gt;&#160;</td>
+          <td class="paramname"><em>_model</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Construct the solver around a specific model interface.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">model</td><td>Model with first order optimization interface. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="lbfgs_8hpp_source.html#l00100">100</a> of file <a class="el" href="lbfgs_8hpp_source.html">lbfgs.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga77e84deef5813dd71ef9e4dc4106a3b6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">solver_status turi::optimization::lbfgs </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classturi_1_1optimization_1_1first__order__opt__interface.html">first_order_opt_interface</a> &gt;&#160;</td>
           <td class="paramname"><em>model</em>, </td>
         </tr>
         <tr>
@@ -140,19 +207,106 @@ template&lt;typename Vector  = DenseVector&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>opts</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::shared_ptr&lt; <a class="el" href="classturi_1_1optimization_1_1smooth__regularizer__interface.html">smooth_regularizer_interface</a> &gt;&#160;</td>
-          <td class="paramname"><em>reg</em> = <code>NULL</code>&#160;</td>
+          <td class="paramtype">const std::shared_ptr&lt; <a class="el" href="classturi_1_1optimization_1_1smooth__regularizer__interface.html">smooth_regularizer_interface</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>reg</em> = <code>nullptr</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
           <td>)</td>
           <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Solves lbgfgs problem end-to-end.</p>
+<p>This class wraps the above iterative solver in a convenience function, iterating the solution until completion.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model</td><td>The implementation of <a class="el" href="classturi_1_1optimization_1_1first__order__opt__interface.html">first_order_opt_interface</a> used in the optimization.</td></tr>
+    <tr><td class="paramname">init_point</td><td>The initial point at which the optimization starts.</td></tr>
+    <tr><td class="paramname">opts</td><td>The options. Uses all the options given to setup() in the <a class="el" href="classturi_1_1optimization_1_1lbfgs__solver.html">lbfgs_solver</a> class, plus "max_iterations" to terminate the optimization after a given number of iterations.</td></tr>
+    <tr><td class="paramname">reg</td><td>Optional regularization interface. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ga12b83003991c12ab40515979cf6e70ec"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool turi::optimization::lbfgs_solver::next_iteration </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Perform the next update of the solution.</p>
+<p>Call this method repeatedly to perform the optimization. Each iteration updates the solution point with one step. </p>
+
+</div>
+</div>
+<a class="anchor" id="ga42e88e7aa978f2ee59df85bfb4112103"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::optimization::lbfgs_solver::setup </td>
+          <td>(</td>
+          <td class="paramtype">const DenseVector &amp;&#160;</td>
+          <td class="paramname"><em>init_point</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>opts</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::shared_ptr&lt; <a class="el" href="classturi_1_1optimization_1_1smooth__regularizer__interface.html">smooth_regularizer_interface</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>reg</em> = <code>nullptr</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets up (or resets) the solver.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">init_point</td><td>Starting point for the solver. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">opts</td><td>Solver options. Options are "lbfgs_memory_level" and "convergence_threshold". If not given, defaults are taken from the table in <a class="el" href="optimization__interface_8hpp_source.html">optimization_interface.hpp</a>.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">reg</td><td>Shared ptr to an interface to a smooth regularizer. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ga999aa8a1033bbda460afff654c69550a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const solver_status&amp; turi::optimization::lbfgs_solver::status </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
   </td>
@@ -161,32 +315,176 @@ template&lt;typename Vector  = DenseVector&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Solve a first_order_optimization_iterface model with an LBFGS implementation.</p>
-<p>The implementation is based on Algorithm 7.4 (pg 178) of [1].</p>
-<p>This subroutine solves an unconstrained minimization problem using the limited memory BFGS method. The routine is especially effective on problems involving a large number of variables. In a typical iteration of this method an approximation Hk to the inverse of the Hessian is obtained by applying M BFGS updates to a diagonal matrix Hk0, using information from the previous M steps. The user specifies the number M, which determines the amount of storage required by the routine. The user may also provide the diagonal matrices Hk0 if not satisfied with the default choice. The algorithm is described in [2].</p>
-<p>The user is required to calculate the function value and its gradient.</p>
-<p>The steplength is determined at each iteration by means of the line search routine MCVSRCH, which is a slight modification of the routine CSRCH written by More' and Thuente.</p>
-<p>References:</p>
-<p>(1) Wright S.J and J. Nocedal. Numerical optimization. Vol. 2. New York: Springer, 1999.</p>
-<p>(2) "On the limited memory BFGS method for large scale optimization", by D. Liu and J. Nocedal, Mathematical Programming B 45 (1989) 503-528.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">model</td><td>Model with first order optimization interface. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">init_point</td><td>Starting point for the solver. </td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">opts</td><td>Solver options. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">reg</td><td>Shared ptr to an interface to a smooth regularizer. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>stats Solver return stats. </dd></dl>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Vector</td><td>Sparse or dense gradient representation. </td></tr>
-  </table>
-  </dd>
-</dl>
+<p>The status after a given iteration.</p>
+<p>The best solution so far is given by <a class="el" href="group__LBFGS.html#ga999aa8a1033bbda460afff654c69550a">status()</a>.solution. </p>
 
-<p>Definition at line <a class="el" href="lbfgs-inl_8hpp_source.html#l00080">80</a> of file <a class="el" href="lbfgs-inl_8hpp_source.html">lbfgs-inl.hpp</a>.</p>
+<p>Definition at line <a class="el" href="lbfgs_8hpp_source.html#l00129">129</a> of file <a class="el" href="lbfgs_8hpp_source.html">lbfgs.hpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a class="anchor" id="ga758648f2e9684fb59d8c5bf2ada9b82e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double turi::optimization::solver_status::function_value = NAN</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Function value </p>
+
+<p>Definition at line <a class="el" href="lbfgs_8hpp_source.html#l00036">36</a> of file <a class="el" href="lbfgs_8hpp_source.html">lbfgs.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga590e232613ad177c9a3a05e4d4adf231"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">DenseVector turi::optimization::solver_status::gradient</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Current gradient </p>
+
+<p>Definition at line <a class="el" href="lbfgs_8hpp_source.html#l00033">33</a> of file <a class="el" href="lbfgs_8hpp_source.html">lbfgs.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga5db45c025d69d7e17ebf75dd6b0c6bc9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">DenseMatrix turi::optimization::solver_status::hessian</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Current hessian </p>
+
+<p>Definition at line <a class="el" href="lbfgs_8hpp_source.html#l00034">34</a> of file <a class="el" href="lbfgs_8hpp_source.html">lbfgs.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="gafb35c599eb5189710aefe09941f01a4c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t turi::optimization::solver_status::iteration = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Iterations taken </p>
+
+<p>Definition at line <a class="el" href="lbfgs_8hpp_source.html#l00030">30</a> of file <a class="el" href="lbfgs_8hpp_source.html">lbfgs.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="gab1cb2e1c9b2dffda8d20d0f059431930"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t turi::optimization::solver_status::num_function_evaluations = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Function evals </p>
+
+<p>Definition at line <a class="el" href="lbfgs_8hpp_source.html#l00037">37</a> of file <a class="el" href="lbfgs_8hpp_source.html">lbfgs.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="gaef52ee2eb8fe4f1a4995122aedac356d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t turi::optimization::solver_status::num_gradient_evaluations = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gradient evals </p>
+
+<p>Definition at line <a class="el" href="lbfgs_8hpp_source.html#l00038">38</a> of file <a class="el" href="lbfgs_8hpp_source.html">lbfgs.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga1fb3b4dde18e0d3c2eca418e5d1d68b1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double turi::optimization::solver_status::residual = NAN</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Residual norm </p>
+
+<p>Definition at line <a class="el" href="lbfgs_8hpp_source.html#l00035">35</a> of file <a class="el" href="lbfgs_8hpp_source.html">lbfgs.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga98fb8e2f6bffd3338abfdd3a35352025"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">DenseVector turi::optimization::solver_status::solution</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Current Solution </p>
+
+<p>Definition at line <a class="el" href="lbfgs_8hpp_source.html#l00032">32</a> of file <a class="el" href="lbfgs_8hpp_source.html">lbfgs.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga3f8ffff2045bb56606a1717c12120354"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double turi::optimization::solver_status::solver_time = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Wall clock time (s) </p>
+
+<p>Definition at line <a class="el" href="lbfgs_8hpp_source.html#l00031">31</a> of file <a class="el" href="lbfgs_8hpp_source.html">lbfgs.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga44df0921d9969a2c9108b0b3e3278b51"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">OPTIMIZATION_STATUS turi::optimization::solver_status::status = OPTIMIZATION_STATUS::OPT_UNSET</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Status </p>
+
+<p>Definition at line <a class="el" href="lbfgs_8hpp_source.html#l00041">41</a> of file <a class="el" href="lbfgs_8hpp_source.html">lbfgs.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga78601acb18969ba32ff4d2a656226c13"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double turi::optimization::solver_status::step_size = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Current step size </p>
+
+<p>Definition at line <a class="el" href="lbfgs_8hpp_source.html#l00039">39</a> of file <a class="el" href="lbfgs_8hpp_source.html">lbfgs.hpp</a>.</p>
 
 </div>
 </div>

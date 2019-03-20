@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['validate',['validate',['../classCoreML_1_1Model.html#a0bcadd958faacdb802df8ef18f097b50',1,'CoreML::Model::validate()'],['../classturi_1_1pattern__mining_1_1fp__growth.html#a287a2131a80ec29cff6e05145b4f94d0',1,'turi::pattern_mining::fp_growth::validate()']]],
+  ['validate',['validate',['../classturi_1_1pattern__mining_1_1fp__growth.html#a287a2131a80ec29cff6e05145b4f94d0',1,'turi::pattern_mining::fp_growth']]],
   ['value',['value',['../classturi_1_1parallel__sframe__iterator.html#a19f7c04ce2bc835b71d42d8b60754833',1,'turi::parallel_sframe_iterator::value(size_t sframe_idx, size_t column_idx) const '],['../classturi_1_1parallel__sframe__iterator.html#a0d6c1b46cc41ad6d310bb02326b73068',1,'turi::parallel_sframe_iterator::value(size_t idx) const '],['../classturi_1_1option__manager.html#ad25cb3293b691d788698fce180d41f65',1,'turi::option_manager::value()']]],
   ['value_5flength',['value_length',['../classturi_1_1block__cache.html#a17defe9c7a680d37ee72e3e6eba3207c',1,'turi::block_cache']]],
   ['values',['values',['../classturi_1_1flex__dict__view.html#a6ab3835692a599a893046eb38e28a9ad',1,'turi::flex_dict_view::values()'],['../classturi_1_1mutable__queue.html#a5be4697cde9724086500e0b6c43c953e',1,'turi::mutable_queue::values()'],['../group__set__and__map.html#gaa4a5ba603bdef39e4c11f7d8692741c7',1,'turi::values(const std::map&lt; Key, T &gt; &amp;map)'],['../group__set__and__map.html#ga1a53927dac9074547de03decf58eb40f',1,'turi::values(const std::map&lt; Key, T &gt; &amp;m, const std::set&lt; Key &gt; &amp;keys)'],['../group__set__and__map.html#ga1e027c432c0d1a7cac066ffb79b84dab',1,'turi::values(const std::map&lt; Key, T &gt; &amp;m, const std::vector&lt; Key &gt; &amp;keys)']]],
@@ -14,6 +14,7 @@ var searchData=
   ['variant_5fget_5fvalue',['variant_get_value',['../namespaceturi.html#a895255301986d2f7bc3aa81a460e0f14',1,'turi']]],
   ['variant_5fset_5fvalue',['variant_set_value',['../namespaceturi.html#a95f64942a3fd22be6c4823c5107a2bde',1,'turi']]],
   ['varmap_5fto_5fflexmap',['varmap_to_flexmap',['../namespaceturi.html#a12e181638a581021583e9fb60c0c7a29',1,'turi']]],
+  ['vector_5fadd',['vector_add',['../group__utils.html#ga6d4dfc7f1876c9b1576b12632a1ea7e9',1,'turi::optimization']]],
   ['vector_5foperator',['vector_operator',['../classturi_1_1unity__sarray.html#aac1b615d9f4c421285aa6e020b47487d',1,'turi::unity_sarray']]],
   ['vector_5fparse',['vector_parse',['../classturi_1_1flexible__type__parser.html#ac6ef1c5b07bf8f6e0dd83e07661adac5',1,'turi::flexible_type_parser']]],
   ['vector_5fslice',['vector_slice',['../classturi_1_1unity__sarray.html#a944c504c4b113563a9f7d019f9398136',1,'turi::unity_sarray']]],

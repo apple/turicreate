@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['back',['back',['../classlibfault_1_1zmq__msg__vector.html#a3da5d3a1fe0951282125a581cb39463f',1,'libfault::zmq_msg_vector']]],
   ['backtracking',['backtracking',['../group__line__search.html#ga37da8a26c6f355aed361728fa35a2c20',1,'turi::optimization']]],
   ['bad',['bad',['../classturi_1_1fileio__impl_1_1cache__stream__sink.html#aa30f1ef6f2841776172dbf01a8ed4e75',1,'turi::fileio_impl::cache_stream_sink::bad()'],['../classturi_1_1general__ofstream.html#a96f0a08388476b9cffcd52d86b388155',1,'turi::general_ofstream::bad()'],['../classturi_1_1fileio__impl_1_1general__fstream__sink.html#a6d6d1a82e909e1ae0e9fd6be292ea4cc',1,'turi::fileio_impl::general_fstream_sink::bad()']]],
   ['batch_5ftriple_5fapply_5fmock',['batch_triple_apply_mock',['../namespaceturi_1_1sgraph__compute.html#a75274a38f53175c6ab797ca6e9a227ef',1,'turi::sgraph_compute']]],
@@ -11,7 +10,7 @@ var searchData=
   ['bernoulli',['bernoulli',['../group__random.html#gaf63e8ae32c99428d0d09355d0a4d746d',1,'turi::random']]],
   ['binary_5ftransform',['binary_transform',['../group__eager__algorithms.html#ga3e52ecf89923b7a8dd68db7840576e69',1,'turi']]],
   ['bind',['bind',['../classturi_1_1shmipc_1_1server.html#af0ec42582be1fc3bb3ae59a9df1ab008',1,'turi::shmipc::server']]],
-  ['bit_5fmask',['bit_mask',['../namespaceturi.html#a267c987e1f72765acc845977abfba156',1,'turi::bit_mask(size_t n_bits, _ENABLE_IF_UINT(T))'],['../namespaceturi.html#a4523487693a307060894e1e82db47654',1,'turi::bit_mask(size_t index_begin, unsigned int index_end, _ENABLE_IF_UINT(T))']]],
+  ['bit_5fmask',['bit_mask',['../namespaceturi.html#a1e2c6175e32dbeb0927d5fcfe3903943',1,'turi::bit_mask(unsigned int n_bits, _ENABLE_IF_UINT(T))'],['../namespaceturi.html#a4523487693a307060894e1e82db47654',1,'turi::bit_mask(size_t index_begin, unsigned int index_end, _ENABLE_IF_UINT(T))']]],
   ['bit_5foff',['bit_off',['../namespaceturi.html#a57edf3dc1770310d695a5044dfefa445',1,'turi']]],
   ['bit_5fon',['bit_on',['../namespaceturi.html#a825e793e44ba6ffa40e49e617620aee3',1,'turi']]],
   ['bitwise_5flog2_5fceil',['bitwise_log2_ceil',['../namespaceturi.html#a36b861f6c79684a64017182939866328',1,'turi']]],

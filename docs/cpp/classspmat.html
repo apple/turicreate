@@ -133,15 +133,13 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a17fea48102316a11b9d9c47d9eb51b34"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32ee58c7b6fb97888b3b73eea740a8f4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classspmat.html#a32ee58c7b6fb97888b3b73eea740a8f4">increment</a> (const size_t &amp;a, const size_t &amp;b, const size_t &amp;v)</td></tr>
 <tr class="separator:a32ee58c7b6fb97888b3b73eea740a8f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa4b54b7cc9b9e10a16c06df10879724b"><td class="memItemLeft" align="right" valign="top">arma::Mat&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classspmat.html#aa4b54b7cc9b9e10a16c06df10879724b">as_matrix</a> ()</td></tr>
-<tr class="separator:aa4b54b7cc9b9e10a16c06df10879724b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5551936b94229e747f629ea482e01e9c"><td class="memItemLeft" align="right" valign="top">arma::Mat&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classspmat.html#a5551936b94229e747f629ea482e01e9c">as_matrix_transpose</a> ()</td></tr>
-<tr class="separator:a5551936b94229e747f629ea482e01e9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66544fba6ab01eab81a00aea4a742453"><td class="memItemLeft" align="right" valign="top">Eigen::MatrixXi&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classspmat.html#a66544fba6ab01eab81a00aea4a742453">as_matrix</a> ()</td></tr>
+<tr class="separator:a66544fba6ab01eab81a00aea4a742453"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A simple utility class for representing sparse matrices of counts. It exposes getting particular elements, incrementing elements by a value, and removing zero elements from the internal data structure. It is row-based, so only exposes get_row and num_rows. </p>
 
-<p>Definition at line <a class="el" href="spmat_8hpp_source.html#l00020">20</a> of file <a class="el" href="spmat_8hpp_source.html">spmat.hpp</a>.</p>
+<p>Definition at line <a class="el" href="spmat_8hpp_source.html#l00022">22</a> of file <a class="el" href="spmat_8hpp_source.html">spmat.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a1d242b11c999e781b1dc8f736c26dc38"></a>
 <div class="memitem">
@@ -166,12 +164,12 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Create a sparse matrix with a fixed number of rows. </p>
 
-<p>Definition at line <a class="el" href="spmat_8hpp_source.html#l00026">26</a> of file <a class="el" href="spmat_8hpp_source.html">spmat.hpp</a>.</p>
+<p>Definition at line <a class="el" href="spmat_8hpp_source.html#l00028">28</a> of file <a class="el" href="spmat_8hpp_source.html">spmat.hpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="aa4b54b7cc9b9e10a16c06df10879724b"></a>
+<a class="anchor" id="a66544fba6ab01eab81a00aea4a742453"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -179,7 +177,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">arma::Mat&lt;int&gt; spmat::as_matrix </td>
+          <td class="memname">Eigen::MatrixXi spmat::as_matrix </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -191,35 +189,9 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Convert to Arma matrix. </p>
+<p>Convert to Eigen matrix. </p>
 
-<p>Definition at line <a class="el" href="spmat_8hpp_source.html#l00082">82</a> of file <a class="el" href="spmat_8hpp_source.html">spmat.hpp</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a5551936b94229e747f629ea482e01e9c"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">arma::Mat&lt;int&gt; spmat::as_matrix_transpose </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Convert to Arma matrix. </p>
-
-<p>Definition at line <a class="el" href="spmat_8hpp_source.html#l00107">107</a> of file <a class="el" href="spmat_8hpp_source.html">spmat.hpp</a>.</p>
+<p>Definition at line <a class="el" href="spmat_8hpp_source.html#l00084">84</a> of file <a class="el" href="spmat_8hpp_source.html">spmat.hpp</a>.</p>
 
 </div>
 </div>
@@ -256,7 +228,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Get the count at element(i,j). </p>
 
-<p>Definition at line <a class="el" href="spmat_8hpp_source.html#l00040">40</a> of file <a class="el" href="spmat_8hpp_source.html">spmat.hpp</a>.</p>
+<p>Definition at line <a class="el" href="spmat_8hpp_source.html#l00042">42</a> of file <a class="el" href="spmat_8hpp_source.html">spmat.hpp</a>.</p>
 
 </div>
 </div>
@@ -283,7 +255,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Get a vector of nonzero elements in a single row. </p>
 
-<p>Definition at line <a class="el" href="spmat_8hpp_source.html#l00033">33</a> of file <a class="el" href="spmat_8hpp_source.html">spmat.hpp</a>.</p>
+<p>Definition at line <a class="el" href="spmat_8hpp_source.html#l00035">35</a> of file <a class="el" href="spmat_8hpp_source.html">spmat.hpp</a>.</p>
 
 </div>
 </div>
@@ -326,7 +298,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Increment the element (a, b) by v. </p>
 
-<p>Definition at line <a class="el" href="spmat_8hpp_source.html#l00070">70</a> of file <a class="el" href="spmat_8hpp_source.html">spmat.hpp</a>.</p>
+<p>Definition at line <a class="el" href="spmat_8hpp_source.html#l00072">72</a> of file <a class="el" href="spmat_8hpp_source.html">spmat.hpp</a>.</p>
 
 </div>
 </div>
@@ -352,7 +324,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Get the number of rows. </p>
 
-<p>Definition at line <a class="el" href="spmat_8hpp_source.html#l00051">51</a> of file <a class="el" href="spmat_8hpp_source.html">spmat.hpp</a>.</p>
+<p>Definition at line <a class="el" href="spmat_8hpp_source.html#l00053">53</a> of file <a class="el" href="spmat_8hpp_source.html">spmat.hpp</a>.</p>
 
 </div>
 </div>
@@ -379,7 +351,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Delete zeros in a single row </p>
 
-<p>Definition at line <a class="el" href="spmat_8hpp_source.html#l00056">56</a> of file <a class="el" href="spmat_8hpp_source.html">spmat.hpp</a>.</p>
+<p>Definition at line <a class="el" href="spmat_8hpp_source.html#l00058">58</a> of file <a class="el" href="spmat_8hpp_source.html">spmat.hpp</a>.</p>
 
 </div>
 </div>

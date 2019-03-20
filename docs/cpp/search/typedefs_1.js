@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['callback_5ftype',['callback_type',['../classlibfault_1_1async__reply__socket.html#a303e21e8535416cb62f21938d12b401c',1,'libfault::async_reply_socket::callback_type()'],['../classlibfault_1_1reply__socket.html#ab7d872156d787733732f6053fb885ab5',1,'libfault::reply_socket::callback_type()'],['../classturi_1_1nanosockets_1_1async__reply__socket.html#a0f5e4b7c77aed325815dc506de1b2fa8',1,'turi::nanosockets::async_reply_socket::callback_type()']]],
+  ['callback_5ftype',['callback_type',['../classturi_1_1nanosockets_1_1async__reply__socket.html#a0f5e4b7c77aed325815dc506de1b2fa8',1,'turi::nanosockets::async_reply_socket']]],
   ['charstream',['charstream',['../group__util.html#gac1bc4e23409359261abdb23d0b87ec30',1,'turi']]],
   ['column_5faddress',['column_address',['../namespaceturi_1_1v2__block__impl.html#a94d78bcd851eb06af0bf8129da9b5c3b',1,'turi::v2_block_impl']]],
   ['column_5fmode_5fmap',['column_mode_map',['../classturi_1_1ml__data.html#a094512e66230c908e93f9cb28b71da24',1,'turi::ml_data']]],

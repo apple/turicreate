@@ -1,0 +1,232 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.sound_classifier.SoundClassifier &mdash; Turi Create API 5.4 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="up" title="sound_classifier" href="../turicreate.toolkits.sound_classifier.html"/>
+        <link rel="next" title="image_similarity" href="../turicreate.toolkits.image_similarity.html"/>
+        <link rel="prev" title="turicreate.sound_classifier.create" href="turicreate.sound_classifier.create.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.sound_classifier.html"><code class="docutils literal"><span class="pre">sound_classifier</span></code></a> &raquo;</li>
+      
+    <li>turicreate.sound_classifier.SoundClassifier</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-sound-classifier-soundclassifier">
+<h1>turicreate.sound_classifier.SoundClassifier<a class="headerlink" href="#turicreate-sound-classifier-soundclassifier" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="turicreate.sound_classifier.SoundClassifier">
+<em class="property">class </em><code class="descclassname">turicreate.sound_classifier.</code><code class="descname">SoundClassifier</code><span class="sig-paren">(</span><em>state</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.sound_classifier.SoundClassifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>A trained model that is ready to use for sound classification or to export to CoreML.</p>
+<p>This model should not be constructed directly.</p>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.sound_classifier.SoundClassifier.classify.html#turicreate.sound_classifier.SoundClassifier.classify" title="turicreate.sound_classifier.SoundClassifier.classify"><code class="xref py py-obj docutils literal"><span class="pre">SoundClassifier.classify</span></code></a>(dataset[,&nbsp;batch_size])</td>
+<td>Return the classification for each examples in the <code class="docutils literal"><span class="pre">dataset</span></code>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.sound_classifier.SoundClassifier.evaluate.html#turicreate.sound_classifier.SoundClassifier.evaluate" title="turicreate.sound_classifier.SoundClassifier.evaluate"><code class="xref py py-obj docutils literal"><span class="pre">SoundClassifier.evaluate</span></code></a>(dataset[,&nbsp;metric,&nbsp;...])</td>
+<td>Evaluate the model by making predictions of target values and comparing these to actual values.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.sound_classifier.SoundClassifier.export_coreml.html#turicreate.sound_classifier.SoundClassifier.export_coreml" title="turicreate.sound_classifier.SoundClassifier.export_coreml"><code class="xref py py-obj docutils literal"><span class="pre">SoundClassifier.export_coreml</span></code></a>(filename)</td>
+<td>Save the model in Core ML format.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.sound_classifier.SoundClassifier.name.html#turicreate.sound_classifier.SoundClassifier.name" title="turicreate.sound_classifier.SoundClassifier.name"><code class="xref py py-obj docutils literal"><span class="pre">SoundClassifier.name</span></code></a>()</td>
+<td>Returns the name of the model.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.sound_classifier.SoundClassifier.predict.html#turicreate.sound_classifier.SoundClassifier.predict" title="turicreate.sound_classifier.SoundClassifier.predict"><code class="xref py py-obj docutils literal"><span class="pre">SoundClassifier.predict</span></code></a>(dataset[,&nbsp;...])</td>
+<td>Return predictions for <code class="docutils literal"><span class="pre">dataset</span></code>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.sound_classifier.SoundClassifier.predict_topk.html#turicreate.sound_classifier.SoundClassifier.predict_topk" title="turicreate.sound_classifier.SoundClassifier.predict_topk"><code class="xref py py-obj docutils literal"><span class="pre">SoundClassifier.predict_topk</span></code></a>(dataset[,&nbsp;...])</td>
+<td>Return top-k predictions for the <code class="docutils literal"><span class="pre">dataset</span></code>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.sound_classifier.SoundClassifier.save.html#turicreate.sound_classifier.SoundClassifier.save" title="turicreate.sound_classifier.SoundClassifier.save"><code class="xref py py-obj docutils literal"><span class="pre">SoundClassifier.save</span></code></a>(location)</td>
+<td>Save the model.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.sound_classifier.SoundClassifier.summary.html#turicreate.sound_classifier.SoundClassifier.summary" title="turicreate.sound_classifier.SoundClassifier.summary"><code class="xref py py-obj docutils literal"><span class="pre">SoundClassifier.summary</span></code></a>([output])</td>
+<td>Print a summary of the model.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../turicreate.toolkits.image_similarity.html" class="btn btn-neutral float-right" title="image_similarity">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.sound_classifier.create.html" class="btn btn-neutral" title="turicreate.sound_classifier.create"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Mar 20, 2019.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'5.4',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

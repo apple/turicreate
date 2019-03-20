@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['opt_5fin_5fprogress',['OPT_IN_PROGRESS',['../group__optimization__config.html#gga4e4d767a8f716615589c682d5103da63a4e285bed7503e26195d1a723fdbfa3ea',1,'turi::optimization']]],
   ['opt_5finterrupted',['OPT_INTERRUPTED',['../group__optimization__config.html#gga4e4d767a8f716615589c682d5103da63aa7480e90efbb51381fc268bc3bc8b65f',1,'turi::optimization']]],
   ['opt_5fiteration_5flimit',['OPT_ITERATION_LIMIT',['../group__optimization__config.html#gga4e4d767a8f716615589c682d5103da63aa6377b3246038a65b7acea17523ec166',1,'turi::optimization']]],
   ['opt_5floaded',['OPT_LOADED',['../group__optimization__config.html#gga4e4d767a8f716615589c682d5103da63ae63190f631bfcb3b3f64e255c5ba44fc',1,'turi::optimization']]],

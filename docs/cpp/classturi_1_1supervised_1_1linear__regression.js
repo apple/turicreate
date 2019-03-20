@@ -3,7 +3,7 @@ var classturi_1_1supervised_1_1linear__regression =
     [ "~linear_regression", "classturi_1_1supervised_1_1linear__regression.html#aa7a37d1b06c3eaba2272b9ced92d05af", null ],
     [ "add_or_update_state", "classturi_1_1supervised_1_1linear__regression.html#a63c2606fad4b957034b579fa65108add", null ],
     [ "api_classify", "classturi_1_1supervised_1_1linear__regression.html#ac3f1e140dce279466a427f0bb8de3cc7", null ],
-    [ "api_evaluate", "classturi_1_1supervised_1_1linear__regression.html#a404cd92cb9550aed86f15b0054f731d6", null ],
+    [ "api_evaluate", "classturi_1_1supervised_1_1linear__regression.html#a87cf90dc23bfef47d583bc954ade29ef", null ],
     [ "api_extract_features", "classturi_1_1supervised_1_1linear__regression.html#a69f61933bd5f61a8b3408d88f8e241d9", null ],
     [ "api_predict", "classturi_1_1supervised_1_1linear__regression.html#ae4109a382d58db2a05703286788d7d55", null ],
     [ "api_predict_topk", "classturi_1_1supervised_1_1linear__regression.html#ab9aa2af3ccad97df27dada7c795a10a6", null ],
@@ -83,6 +83,6 @@ var classturi_1_1supervised_1_1linear__regression =
     [ "support_missing_value", "classturi_1_1supervised_1_1linear__regression.html#ad5a7f6b1379539d33fa6963c917c7578", null ],
     [ "train", "classturi_1_1supervised_1_1linear__regression.html#a8d8610739a1daa0e58048850d4d40dff", null ],
     [ "uid", "classturi_1_1supervised_1_1linear__regression.html#a66e833929a097ce52e44585ed2d91ffd", null ],
-    [ "coefs", "classturi_1_1supervised_1_1linear__regression.html#ac92df1840540edd18bd0bd1c349983fb", null ],
+    [ "coefs", "classturi_1_1supervised_1_1linear__regression.html#aa1282d9fd5ccba21e36d02324455807a", null ],
     [ "state", "classturi_1_1supervised_1_1linear__regression.html#a6f247683fa7362282797f5aebc780d70", null ]
 ];

@@ -1,6 +1,14 @@
 var namespaceturi =
 [
+    [ "activity_classification", null, [
+      [ "data_iterator", "classturi_1_1activity__classification_1_1data__iterator.html", "classturi_1_1activity__classification_1_1data__iterator" ],
+      [ "simple_data_iterator", "classturi_1_1activity__classification_1_1simple__data__iterator.html", "classturi_1_1activity__classification_1_1simple__data__iterator" ]
+    ] ],
     [ "aggregate", "namespaceturi_1_1aggregate.html", "namespaceturi_1_1aggregate" ],
+    [ "annotate", null, [
+      [ "annotation_global", "structturi_1_1annotate_1_1annotation__global.html", "structturi_1_1annotate_1_1annotation__global" ],
+      [ "AnnotationBase", "classturi_1_1annotate_1_1AnnotationBase.html", "classturi_1_1annotate_1_1AnnotationBase" ]
+    ] ],
     [ "dir_archive_impl", null, [
       [ "archive_index_information", "structturi_1_1dir__archive__impl_1_1archive__index__information.html", null ]
     ] ],
@@ -149,12 +157,13 @@ var namespaceturi =
       [ "squared_euclidean", "structturi_1_1nearest__neighbors_1_1squared__euclidean.html", null ]
     ] ],
     [ "neural_net", null, [
-      [ "cnn_module", "classturi_1_1neural__net_1_1cnn__module.html", "classturi_1_1neural__net_1_1cnn__module" ],
       [ "compute_context", "classturi_1_1neural__net_1_1compute__context.html", "classturi_1_1neural__net_1_1compute__context" ],
       [ "image_annotation", "structturi_1_1neural__net_1_1image__annotation.html", null ],
       [ "image_augmenter", "classturi_1_1neural__net_1_1image__augmenter.html", "classturi_1_1neural__net_1_1image__augmenter" ],
       [ "image_box", "structturi_1_1neural__net_1_1image__box.html", null ],
       [ "labeled_image", "structturi_1_1neural__net_1_1labeled__image.html", null ],
+      [ "lstm_weight_initializers", "structturi_1_1neural__net_1_1lstm__weight__initializers.html", null ],
+      [ "model_backend", "classturi_1_1neural__net_1_1model__backend.html", "classturi_1_1neural__net_1_1model__backend" ],
       [ "model_spec", "classturi_1_1neural__net_1_1model__spec.html", "classturi_1_1neural__net_1_1model__spec" ],
       [ "mps_compute_context", "classturi_1_1neural__net_1_1mps__compute__context.html", "classturi_1_1neural__net_1_1mps__compute__context" ],
       [ "resize_only_image_augmenter", "classturi_1_1neural__net_1_1resize__only__image__augmenter.html", "classturi_1_1neural__net_1_1resize__only__image__augmenter" ]
@@ -173,10 +182,12 @@ var namespaceturi =
       [ "first_order_opt_interface", "classturi_1_1optimization_1_1first__order__opt__interface.html", "classturi_1_1optimization_1_1first__order__opt__interface" ],
       [ "l1_norm", "classturi_1_1optimization_1_1l1__norm.html", "classturi_1_1optimization_1_1l1__norm" ],
       [ "l2_norm", "classturi_1_1optimization_1_1l2__norm.html", "classturi_1_1optimization_1_1l2__norm" ],
+      [ "lbfgs_solver", "classturi_1_1optimization_1_1lbfgs__solver.html", "classturi_1_1optimization_1_1lbfgs__solver" ],
       [ "non_negative_orthant", "classturi_1_1optimization_1_1non__negative__orthant.html", "classturi_1_1optimization_1_1non__negative__orthant" ],
       [ "regularizer_interface", "classturi_1_1optimization_1_1regularizer__interface.html", "classturi_1_1optimization_1_1regularizer__interface" ],
       [ "second_order_opt_interface", "classturi_1_1optimization_1_1second__order__opt__interface.html", "classturi_1_1optimization_1_1second__order__opt__interface" ],
-      [ "smooth_regularizer_interface", "classturi_1_1optimization_1_1smooth__regularizer__interface.html", "classturi_1_1optimization_1_1smooth__regularizer__interface" ]
+      [ "smooth_regularizer_interface", "classturi_1_1optimization_1_1smooth__regularizer__interface.html", "classturi_1_1optimization_1_1smooth__regularizer__interface" ],
+      [ "solver_status", "structturi_1_1optimization_1_1solver__status.html", "structturi_1_1optimization_1_1solver__status" ]
     ] ],
     [ "option_handling", null, [
       [ "option_info", "structturi_1_1option__handling_1_1option__info.html", "structturi_1_1option__handling_1_1option__info" ]
@@ -286,7 +297,6 @@ var namespaceturi =
     [ "turi_impl", null, [
       [ "atomic_impl< T, true >", "classturi_1_1turi__impl_1_1atomic__impl_3_01T_00_01true_01_4.html", "classturi_1_1turi__impl_1_1atomic__impl_3_01T_00_01true_01_4" ]
     ] ],
-    [ "user_pagefault", "namespaceturi_1_1user__pagefault.html", "namespaceturi_1_1user__pagefault" ],
     [ "v2", null, [
       [ "ml_data_internal", null, [
         [ "basic_column_statistics", "classturi_1_1v2_1_1ml__data__internal_1_1basic__column__statistics.html", "classturi_1_1v2_1_1ml__data__internal_1_1basic__column__statistics" ],
@@ -319,9 +329,6 @@ var namespaceturi =
       [ "vc_hashkey< T, typename std::enable_if< std::is_integral< T >::value >::type >", "classturi_1_1vc__internal_1_1vc__hashkey_3_01T_00_01typename_01std_1_1enable__if_3_01std_1_1is__1122fbd8d4742a489f00e6f44fb16bae.html", null ],
       [ "vc_hashkey_and_value", "classturi_1_1vc__internal_1_1vc__hashkey__and__value.html", null ],
       [ "vc_hashkey_and_value<  T, typename std::enable_if< vc_hashkey< T >::holds_value()>::type >", "classturi_1_1vc__internal_1_1vc__hashkey__and__value_3_01_01T_00_01typename_01std_1_1enable__if_0e1d0be8cb0082fef3c8e0a9af66dcd6.html", null ]
-    ] ],
-    [ "zookeeper_util", null, [
-      [ "key_value", "classturi_1_1zookeeper__util_1_1key__value.html", "classturi_1_1zookeeper__util_1_1key__value" ]
     ] ],
     [ "all_flexible_type_convertible", "structturi_1_1all__flexible__type__convertible.html", null ],
     [ "any", "classturi_1_1any.html", "classturi_1_1any" ],
@@ -422,7 +429,6 @@ var namespaceturi =
     [ "option_manager", "classturi_1_1option__manager.html", "classturi_1_1option__manager" ],
     [ "padded_integer", "structturi_1_1padded__integer.html", null ],
     [ "padded_simple_spinlock", "classturi_1_1padded__simple__spinlock.html", "classturi_1_1padded__simple__spinlock" ],
-    [ "pagefile", "classturi_1_1pagefile.html", "classturi_1_1pagefile" ],
     [ "parallel_sframe_iterator", "classturi_1_1parallel__sframe__iterator.html", "classturi_1_1parallel__sframe__iterator" ],
     [ "parallel_sframe_iterator_initializer", "classturi_1_1parallel__sframe__iterator__initializer.html", "classturi_1_1parallel__sframe__iterator__initializer" ],
     [ "parallel_task_queue", "classturi_1_1parallel__task__queue.html", "classturi_1_1parallel__task__queue" ],

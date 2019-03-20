@@ -2,6 +2,7 @@ var structturi_1_1v2_1_1ml__data__internal_1_1column__metadata =
 [
     [ "check_fixed_column_size", "structturi_1_1v2_1_1ml__data__internal_1_1column__metadata.html#a08c21cb4039f7ba5248210dd0ddf5568", null ],
     [ "column_size", "structturi_1_1v2_1_1ml__data__internal_1_1column__metadata.html#af01a6b9d22c9a39da36e67cf563cfc06", null ],
+    [ "create_cleared_copy", "structturi_1_1v2_1_1ml__data__internal_1_1column__metadata.html#ad3aac93ef77bb5efc15529e002ff5fd9", null ],
     [ "global_index_offset", "structturi_1_1v2_1_1ml__data__internal_1_1column__metadata.html#ae31f8a54f7642c78e87043153bb142cc", null ],
     [ "index_size", "structturi_1_1v2_1_1ml__data__internal_1_1column__metadata.html#a9cbdb5181984d28651bd72090a1117cc", null ],
     [ "is_untranslated_column", "structturi_1_1v2_1_1ml__data__internal_1_1column__metadata.html#a46172b2b150fc1dc677298bcab59f163", null ],

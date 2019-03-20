@@ -15,7 +15,6 @@ var files =
     [ "logger", "dir_e546037d539dab48998ac54ab76cb525.html", "dir_e546037d539dab48998ac54ab76cb525" ],
     [ "ml_data", "dir_31ec1a3c9cfc45951af5af25cf2ef8ee.html", "dir_31ec1a3c9cfc45951af5af25cf2ef8ee" ],
     [ "nanosockets", "dir_113f071959c1e5e8be21c5ab6a312d2c.html", "dir_113f071959c1e5e8be21c5ab6a312d2c" ],
-    [ "numerics", "dir_40617c18ece8d47898b3425d74601b1f.html", "dir_40617c18ece8d47898b3425d74601b1f" ],
     [ "optimization", "dir_c08f73a4d66ba0417946990fd98fd29f.html", "dir_c08f73a4d66ba0417946990fd98fd29f" ],
     [ "platform", "dir_c5a52a81292cf9a5167198f4f346d6d9.html", "dir_c5a52a81292cf9a5167198f4f346d6d9" ],
     [ "random", "dir_a4fd7f16abbe32b73833244217643c8c.html", "dir_a4fd7f16abbe32b73833244217643c8c" ],

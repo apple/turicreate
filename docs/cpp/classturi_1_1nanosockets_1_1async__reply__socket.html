@@ -118,7 +118,7 @@ $(document).ready(function(){initNavTree('classturi_1_1nanosockets_1_1async__rep
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="nanosockets_2async__reply__socket_8hpp_source.html">nanosockets/async_reply_socket.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="async__reply__socket_8hpp_source.html">nanosockets/async_reply_socket.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
@@ -141,7 +141,7 @@ Public Member Functions</h2></td></tr>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> echo(zmq_msg_vector&amp; recv, zmq_msg_vector&amp; reply) {</div><div class="line">  reply = recv;</div><div class="line">}</div><div class="line"><a class="code" href="classturi_1_1nanosockets_1_1async__reply__socket.html#a9927760039f7621386344b243b8995bf">async_reply_socket</a> sock(echo, 4, <span class="stringliteral">&quot;ipc:///tmp/echo_service&quot;</span>)</div><div class="line">sock.start_polling();</div></div><!-- fragment --><p>All messaging is done via zmq_msg_vector which is internally, an array of nn_msg_t objects. Message boundaries are preserved across the wire; i.e. if a request of 4 messages is sent, we will receive exactly a zmq_msg_vector of 4 messages.</p>
 <p>Also, </p><dl class="section see"><dt>See also</dt><dd><a class="el" href="classturi_1_1nanosockets_1_1async__request__socket.html">async_request_socket</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="nanosockets_2async__reply__socket_8hpp_source.html#l00052">52</a> of file <a class="el" href="nanosockets_2async__reply__socket_8hpp_source.html">async_reply_socket.hpp</a>.</p>
+<p>Definition at line <a class="el" href="async__reply__socket_8hpp_source.html#l00052">52</a> of file <a class="el" href="async__reply__socket_8hpp_source.html">async_reply_socket.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a class="anchor" id="a0f5e4b7c77aed325815dc506de1b2fa8"></a>
 <div class="memitem">
@@ -154,7 +154,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns true if there are contents to reply. Returns false otherwise. If the reply socket is connected to a request socket, this must always return true. </p><dl class="section note"><dt>Note</dt><dd>There is no provided way to figure out if a reply is necessary. This must be managed on a higher protocol layer. </dd></dl>
 
-<p>Definition at line <a class="el" href="nanosockets_2async__reply__socket_8hpp_source.html#l00064">64</a> of file <a class="el" href="nanosockets_2async__reply__socket_8hpp_source.html">async_reply_socket.hpp</a>.</p>
+<p>Definition at line <a class="el" href="async__reply__socket_8hpp_source.html#l00064">64</a> of file <a class="el" href="async__reply__socket_8hpp_source.html">async_reply_socket.hpp</a>.</p>
 
 </div>
 </div>
@@ -233,7 +233,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>nanosockets/<a class="el" href="nanosockets_2async__reply__socket_8hpp_source.html">async_reply_socket.hpp</a></li>
+<li>nanosockets/<a class="el" href="async__reply__socket_8hpp_source.html">async_reply_socket.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

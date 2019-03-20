@@ -141,6 +141,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a0e9d67e924ff85198cefe34aba739b55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89370cdbc19755217b4d80b41886e41a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1v2_1_1ml__data__internal_1_1column__metadata.html#a89370cdbc19755217b4d80b41886e41a">load</a> (<a class="el" href="classturi_1_1iarchive.html">turi::iarchive</a> &amp;iarc)</td></tr>
 <tr class="separator:a89370cdbc19755217b4d80b41886e41a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3aac93ef77bb5efc15529e002ff5fd9"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="structturi_1_1v2_1_1ml__data__internal_1_1column__metadata.html">column_metadata</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1v2_1_1ml__data__internal_1_1column__metadata.html#ad3aac93ef77bb5efc15529e002ff5fd9">create_cleared_copy</a> () const </td></tr>
+<tr class="separator:ad3aac93ef77bb5efc15529e002ff5fd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The metadata information for a single column. This is meant to be used internally to <a class="el" href="classturi_1_1ml__data.html">ml_data</a>; there is no reason that the structures outside of <a class="el" href="classturi_1_1ml__data.html">ml_data</a> need to access this; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> should be used instead.</p>
@@ -171,7 +173,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>During loading, we need to verify that the columns indeed have the correct column sizes. </p>
 
-<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2data__storage_2internal__metadata_8hpp_source.html#l00193">193</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2data__storage_2internal__metadata_8hpp_source.html">internal_metadata.hpp</a>.</p>
+<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2data__storage_2internal__metadata_8hpp_source.html#l00199">199</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2data__storage_2internal__metadata_8hpp_source.html">internal_metadata.hpp</a>.</p>
 
 </div>
 </div>
@@ -198,6 +200,22 @@ Public Member Functions</h2></td></tr>
 <p>Returns the current size of the column. </p>
 
 <p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2data__storage_2internal__metadata_8hpp_source.html#l00127">127</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2data__storage_2internal__metadata_8hpp_source.html">internal_metadata.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad3aac93ef77bb5efc15529e002ff5fd9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="structturi_1_1v2_1_1ml__data__internal_1_1column__metadata.html">column_metadata</a>&gt; turi::v2::ml_data_internal::column_metadata::create_cleared_copy </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Create a version of the metadata with all the indexing and statistics cleared. </p>
 
 </div>
 </div>

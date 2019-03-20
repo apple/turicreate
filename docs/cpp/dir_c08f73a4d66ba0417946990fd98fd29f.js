@@ -4,7 +4,7 @@ var dir_c08f73a4d66ba0417946990fd98fd29f =
     [ "constraint_interface.hpp", "constraint__interface_8hpp_source.html", null ],
     [ "constraints-inl.hpp", "constraints-inl_8hpp_source.html", null ],
     [ "gradient_descent-inl.hpp", "gradient__descent-inl_8hpp_source.html", null ],
-    [ "lbfgs-inl.hpp", "lbfgs-inl_8hpp_source.html", null ],
+    [ "lbfgs.hpp", "lbfgs_8hpp_source.html", null ],
     [ "line_search-inl.hpp", "line__search-inl_8hpp_source.html", null ],
     [ "newton_method-inl.hpp", "newton__method-inl_8hpp_source.html", null ],
     [ "optimization_interface.hpp", "optimization__interface_8hpp_source.html", null ],

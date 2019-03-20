@@ -112,15 +112,17 @@ $(document).ready(function(){initNavTree('group__line__search.html','');});
 Functions</h2></td></tr>
 <tr class="memitem:ga82e27ad98c7a6958f194dd7f3a16e738"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__line__search.html#ga82e27ad98c7a6958f194dd7f3a16e738">turi::optimization::cstep</a> (double &amp;stx, double &amp;fx, double &amp;dx, double &amp;sty, double &amp;fy, double &amp;dy, double &amp;stp, double &amp;fp, double &amp;dp, bool &amp;brackt, double stpmin, double stpmax)</td></tr>
 <tr class="separator:ga82e27ad98c7a6958f194dd7f3a16e738"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga8698281a65cfb0fed6b6f31f31a4048d"><td class="memTemplParams" colspan="2">template&lt;typename Vector &gt; </td></tr>
-<tr class="memitem:ga8698281a65cfb0fed6b6f31f31a4048d"><td class="memTemplItemLeft" align="right" valign="top">ls_return&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__line__search.html#ga8698281a65cfb0fed6b6f31f31a4048d">turi::optimization::more_thuente</a> (first_order_opt_interface &amp;model, double init_step, double init_func_value, DenseVector point, Vector gradient, DenseVector direction, const std::shared_ptr&lt; smooth_regularizer_interface &gt; reg=NULL)</td></tr>
-<tr class="separator:ga8698281a65cfb0fed6b6f31f31a4048d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga064108b834678ae86d321f07913332a4"><td class="memTemplParams" colspan="2">template&lt;typename Vector &gt; </td></tr>
+<tr class="memitem:ga064108b834678ae86d321f07913332a4"><td class="memTemplItemLeft" align="right" valign="top">ls_return&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__line__search.html#ga064108b834678ae86d321f07913332a4">turi::optimization::more_thuente</a> (first_order_opt_interface &amp;model, double init_step, double init_func_value, DenseVector point, Vector gradient, DenseVector direction, double function_scaling=1.0, const std::shared_ptr&lt; smooth_regularizer_interface &gt; reg=NULL, size_t max_function_evaluations=LS_MAX_ITER)</td></tr>
+<tr class="separator:ga064108b834678ae86d321f07913332a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga389a7193cee26f6801f0378b3acdefb5"><td class="memTemplParams" colspan="2">template&lt;typename Vector &gt; </td></tr>
 <tr class="memitem:ga389a7193cee26f6801f0378b3acdefb5"><td class="memTemplItemLeft" align="right" valign="top">ls_return&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__line__search.html#ga389a7193cee26f6801f0378b3acdefb5">turi::optimization::armijo_backtracking</a> (first_order_opt_interface &amp;model, double init_step, double init_func_value, DenseVector point, Vector gradient, DenseVector direction)</td></tr>
 <tr class="separator:ga389a7193cee26f6801f0378b3acdefb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga37da8a26c6f355aed361728fa35a2c20"><td class="memTemplParams" colspan="2">template&lt;typename Vector &gt; </td></tr>
 <tr class="memitem:ga37da8a26c6f355aed361728fa35a2c20"><td class="memTemplItemLeft" align="right" valign="top">ls_return&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__line__search.html#ga37da8a26c6f355aed361728fa35a2c20">turi::optimization::backtracking</a> (first_order_opt_interface &amp;model, double init_step, double init_func_value, DenseVector point, Vector gradient, DenseVector direction, const std::shared_ptr&lt; regularizer_interface &gt; reg=NULL)</td></tr>
 <tr class="separator:ga37da8a26c6f355aed361728fa35a2c20"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga11cf280b1eb34451171ffa5f92637631"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__line__search.html#ga11cf280b1eb34451171ffa5f92637631">turi::optimization::gradient_bracketed_linesearch</a> (double dist, double f1, double f2, double g1, double g2)</td></tr>
+<tr class="separator:ga11cf280b1eb34451171ffa5f92637631"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <h2 class="groupheader">Function Documentation</h2>
@@ -198,7 +200,7 @@ template&lt;typename Vector &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>stats Line searnorm ch return object </dd></dl>
 
-<p>Definition at line <a class="el" href="line__search-inl_8hpp_source.html#l00611">611</a> of file <a class="el" href="line__search-inl_8hpp_source.html">line_search-inl.hpp</a>.</p>
+<p>Definition at line <a class="el" href="line__search-inl_8hpp_source.html#l00615">615</a> of file <a class="el" href="line__search-inl_8hpp_source.html">line_search-inl.hpp</a>.</p>
 
 </div>
 </div>
@@ -283,7 +285,7 @@ template&lt;typename Vector &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>stats Line searnorm ch return object </dd></dl>
 
-<p>Definition at line <a class="el" href="line__search-inl_8hpp_source.html#l00677">677</a> of file <a class="el" href="line__search-inl_8hpp_source.html">line_search-inl.hpp</a>.</p>
+<p>Definition at line <a class="el" href="line__search-inl_8hpp_source.html#l00681">681</a> of file <a class="el" href="line__search-inl_8hpp_source.html">line_search-inl.hpp</a>.</p>
 
 </div>
 </div>
@@ -406,7 +408,74 @@ template&lt;typename Vector &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="ga8698281a65cfb0fed6b6f31f31a4048d"></a>
+<a class="anchor" id="ga11cf280b1eb34451171ffa5f92637631"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double turi::optimization::gradient_bracketed_linesearch </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>dist</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>f1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>f2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>g1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>g2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>This function estimates a minumum point between two function values with known gradients.</p>
+<p>The minimum value must lie between the two function values, f1 and f2, and the gradients must indicate the minimum lies between the two values and that the function is convex.</p>
+<p>Under these situations, a third degree polynomial / cubic spline can be fit to the two function points, and this is gauranteed to have a single minimum between f1 and f2. This is what this function returns.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">dist</td><td>The distance between the points f1 and f2. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">f1</td><td>The value of the function at the left point. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">f2</td><td>The value of the function at the right point. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">g1</td><td>The derivative of the function at the left point. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">g2</td><td>The derivative of the function at the right point. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="line__search-inl_8hpp_source.html#l00744">744</a> of file <a class="el" href="line__search-inl_8hpp_source.html">line_search-inl.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga064108b834678ae86d321f07913332a4"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -454,8 +523,20 @@ template&lt;typename Vector &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>function_scaling</em> = <code>1.0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">const std::shared_ptr&lt; <a class="el" href="classturi_1_1optimization_1_1smooth__regularizer__interface.html">smooth_regularizer_interface</a> &gt;&#160;</td>
-          <td class="paramname"><em>reg</em> = <code>NULL</code>&#160;</td>
+          <td class="paramname"><em>reg</em> = <code>NULL</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>max_function_evaluations</em> = <code>LS_MAX_ITER</code>&#160;</td>
         </tr>
         <tr>
           <td></td>

@@ -5,7 +5,7 @@ var classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression =
     [ "_set_storage_mode", "classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#a907714092363034cd03eac43ae2770f5", null ],
     [ "add_or_update_state", "classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#a63c2606fad4b957034b579fa65108add", null ],
     [ "api_classify", "classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ac3f1e140dce279466a427f0bb8de3cc7", null ],
-    [ "api_evaluate", "classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#a404cd92cb9550aed86f15b0054f731d6", null ],
+    [ "api_evaluate", "classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#a87cf90dc23bfef47d583bc954ade29ef", null ],
     [ "api_extract_features", "classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#a69f61933bd5f61a8b3408d88f8e241d9", null ],
     [ "api_predict", "classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ae4109a382d58db2a05703286788d7d55", null ],
     [ "api_predict_topk", "classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ab9aa2af3ccad97df27dada7c795a10a6", null ],

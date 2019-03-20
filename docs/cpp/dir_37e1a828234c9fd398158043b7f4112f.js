@@ -16,6 +16,7 @@ var dir_37e1a828234c9fd398158043b7f4112f =
     [ "serializable_pod.hpp", "serializable__pod_8hpp_source.html", null ],
     [ "serialization_includes.hpp", "serialization__includes_8hpp_source.html", null ],
     [ "serialize.hpp", "serialize_8hpp_source.html", null ],
+    [ "serialize_eigen.hpp", "serialize__eigen_8hpp_source.html", null ],
     [ "serialize_to_from_string.hpp", "serialize__to__from__string_8hpp_source.html", null ],
     [ "set.hpp", "set_8hpp_source.html", null ],
     [ "unordered_map.hpp", "unordered__map_8hpp_source.html", null ],

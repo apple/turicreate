@@ -1,7 +1,7 @@
 var classturi_1_1v2_1_1ml__data__internal_1_1column__indexer =
 [
     [ "column_indexer", "classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#a4fcd0b7ff13071d576e55a6919bef90b", null ],
-    [ "column_indexer", "classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#adab2b93c94da6923f00c935dc7af66bc", null ],
+    [ "create_cleared_copy", "classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#aba2cd1d25311a7ff1068a5d4665d202a", null ],
     [ "extract_key_types", "classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#ae2104c559508bbbf2abe9ff410bdbc13", null ],
     [ "factory_create", "classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#a784992944a2f0999f430ec40094e2be7", null ],
     [ "finalize", "classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#a201eaf556d1b53627ec8d389ff9e6125", null ],
@@ -14,7 +14,7 @@ var classturi_1_1v2_1_1ml__data__internal_1_1column__indexer =
     [ "map_index_to_value", "classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#ae5e08a92e5eac7d87d0e3c5958fd5cbb", null ],
     [ "map_value_to_index", "classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#a68163a592a2b42c87a6188c42184967d", null ],
     [ "save_impl", "classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#a0d4aab7c8d565c00da3cf6c2453a630a", null ],
-    [ "set_data", "classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#a4c4a1d520d4201fef7c5fa4ff6f42a7c", null ],
+    [ "set_values", "classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#a2424308c9caaa0b522d2775943ed8ca1", null ],
     [ "column_name", "classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#a1cbee7049d3bd8bc7f033d520738a200", null ],
     [ "mode", "classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#ab105157e1f09fefb37abc9cb9b629f6a", null ],
     [ "options", "classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#aa68f86710cf4833e5b3ade4a3717c30a", null ],

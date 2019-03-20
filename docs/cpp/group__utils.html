@@ -126,6 +126,9 @@ Functions</h2></td></tr>
 <tr class="separator:ga3603596dcf10c08d9d6f96e4948f2614"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae617d06c0114c419e4da202318021dff"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__utils.html#gae617d06c0114c419e4da202318021dff">turi::optimization::log_solver_summary_stats</a> (const solver_return &amp;stats, bool simple_mode=false)</td></tr>
 <tr class="separator:gae617d06c0114c419e4da202318021dff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6d4dfc7f1876c9b1576b12632a1ea7e9"><td class="memTemplParams" colspan="2">template&lt;typename L , typename R &gt; </td></tr>
+<tr class="memitem:ga6d4dfc7f1876c9b1576b12632a1ea7e9"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__utils.html#ga6d4dfc7f1876c9b1576b12632a1ea7e9">turi::optimization::vector_add</a> (L &amp;left, const R &amp;right)</td></tr>
+<tr class="separator:ga6d4dfc7f1876c9b1576b12632a1ea7e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <h2 class="groupheader">Function Documentation</h2>
@@ -445,6 +448,43 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>String with a meaningful interpretation of the solver status. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga6d4dfc7f1876c9b1576b12632a1ea7e9"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename L , typename R &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::optimization::vector_add </td>
+          <td>(</td>
+          <td class="paramtype">L &amp;&#160;</td>
+          <td class="paramname"><em>left</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const R &amp;&#160;</td>
+          <td class="paramname"><em>right</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Performs left = left + right across sparse and dense vectors.</p>
+<dl class="section note"><dt>Note</dt><dd>Although Eigen is an amazing library. This operation is horribly inefficient when Left is a dense vector and Right is a sparse vector.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">left</td><td>Vector </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">right</td><td>Rector </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

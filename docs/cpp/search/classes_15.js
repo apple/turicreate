@@ -13,6 +13,5 @@ var searchData=
   ['unity_5fsgraph_5fbase',['unity_sgraph_base',['../classturi_1_1unity__sgraph__base.html',1,'turi']]],
   ['unity_5fsketch',['unity_sketch',['../classturi_1_1unity__sketch.html',1,'turi']]],
   ['unsupported_5fserialize',['unsupported_serialize',['../structturi_1_1unsupported__serialize.html',1,'turi']]],
-  ['unused_5fvalue_5ftype',['unused_value_type',['../structturi_1_1sparse__sim_1_1unused__value__type.html',1,'turi::sparse_sim']]],
-  ['userpf_5fpage_5fset',['userpf_page_set',['../structturi_1_1user__pagefault_1_1userpf__page__set.html',1,'turi::user_pagefault']]]
+  ['unused_5fvalue_5ftype',['unused_value_type',['../structturi_1_1sparse__sim_1_1unused__value__type.html',1,'turi::sparse_sim']]]
 ];

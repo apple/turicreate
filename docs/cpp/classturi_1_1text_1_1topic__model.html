@@ -153,8 +153,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ad439b35e46275ae3de44da56a177c210"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32fceec800f58112c3763bb3d6a6037e"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1text_1_1topic__model.html#a32fceec800f58112c3763bb3d6a6037e">get_vocabulary</a> ()</td></tr>
 <tr class="separator:a32fceec800f58112c3763bb3d6a6037e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac67f0c4532a9cb1bec956b655955ae86"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1text_1_1topic__model.html#ac67f0c4532a9cb1bec956b655955ae86">perplexity</a> (std::shared_ptr&lt; <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt;&gt; documents, const count_matrix_type &amp;topic_doc_counts, const count_matrix_type &amp;topic_word_counts)</td></tr>
-<tr class="separator:ac67f0c4532a9cb1bec956b655955ae86"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23e517ee83c8ec7e724979a67065e3c7"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1text_1_1topic__model.html#a23e517ee83c8ec7e724979a67065e3c7">perplexity</a> (std::shared_ptr&lt; <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt;&gt; documents, const count_matrix_type &amp;doc_topic_counts, const count_matrix_type &amp;word_topic_counts)</td></tr>
+<tr class="separator:a23e517ee83c8ec7e724979a67065e3c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a737b0565bd8bf063a54892cb7697f086"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespaceturi.html#a133f01ff63e13b5b78b761e5c78e0c25">variant_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1ml__model__base.html#a737b0565bd8bf063a54892cb7697f086">get_value_from_state</a> (std::string key)</td></tr>
 <tr class="separator:a737b0565bd8bf063a54892cb7697f086"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8fce99d090f47ad838d88f38052437c0"><td class="memItemLeft" align="right" valign="top">const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1ml__model__base.html#a8fce99d090f47ad838d88f38052437c0">get_current_options</a> () const </td></tr>
@@ -873,7 +873,7 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ac67f0c4532a9cb1bec956b655955ae86"></a>
+<a class="anchor" id="a23e517ee83c8ec7e724979a67065e3c7"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -887,13 +887,13 @@ Protected Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const count_matrix_type &amp;&#160;</td>
-          <td class="paramname"><em>topic_doc_counts</em>, </td>
+          <td class="paramname"><em>doc_topic_counts</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const count_matrix_type &amp;&#160;</td>
-          <td class="paramname"><em>topic_word_counts</em>&#160;</td>
+          <td class="paramname"><em>word_topic_counts</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -957,7 +957,7 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Make predictions on the given data set.</p>
-<p>This method closely resembles the sampler in the collapsed Gibbs sampler solver found in <a class="el" href="cgs_8hpp_source.html">cgs.hpp</a>. Here, however, the topic_word_counts matrix is held fixed. For each document, num_burnin iterations are performed where in each iteration we sample the topic_assignments. The returned predictions are probabilities, and are computed by smoothing the topic_doc_counts matrix that arising from sampling. </p>
+<p>This method closely resembles the sampler in the collapsed Gibbs sampler solver found in <a class="el" href="cgs_8hpp_source.html">cgs.hpp</a>. Here, however, the word_topic_counts matrix is held fixed. For each document, num_burnin iterations are performed where in each iteration we sample the topic_assignments. The returned predictions are probabilities, and are computed by smoothing the doc_topic_counts matrix that arising from sampling. </p>
 
 </div>
 </div>

@@ -46,8 +46,7 @@ var group__toolkit__util =
     ] ],
     [ "spmat", "classspmat.html", [
       [ "spmat", "classspmat.html#a1d242b11c999e781b1dc8f736c26dc38", null ],
-      [ "as_matrix", "classspmat.html#aa4b54b7cc9b9e10a16c06df10879724b", null ],
-      [ "as_matrix_transpose", "classspmat.html#a5551936b94229e747f629ea482e01e9c", null ],
+      [ "as_matrix", "classspmat.html#a66544fba6ab01eab81a00aea4a742453", null ],
       [ "get", "classspmat.html#ab45f3317f194214c403847cfd37dfecc", null ],
       [ "get_row", "classspmat.html#a87262006a59570176df65b93ab0d56e1", null ],
       [ "increment", "classspmat.html#a32ee58c7b6fb97888b3b73eea740a8f4", null ],
@@ -61,7 +60,7 @@ var group__toolkit__util =
     [ "count_intersection", "group__toolkit__util.html#ga89d7dc2175a0f5f56d4b297c3b1a0009", null ],
     [ "get_unique_values", "group__toolkit__util.html#gaa230f5663cb3d54930f7b834176edddd", null ],
     [ "make_unique", "group__toolkit__util.html#ga5be1372202e9256374e877793887e8af", null ],
-    [ "matrix_to_sarray", "group__toolkit__util.html#ga242130f9aa4367801c0851a62ce08974", null ],
+    [ "matrix_to_sarray", "group__toolkit__util.html#gaf55b6675b70fe0932c3c6dff099edab3", null ],
     [ "mean_average_precision", "group__toolkit__util.html#gad7af2202890a2d4f51041e7969eb20fa", null ],
     [ "precision", "group__toolkit__util.html#ga04ae38a59ff7dcec0e63c342ae6c718c", null ],
     [ "precision_and_recall", "group__toolkit__util.html#gabec5ab8ec0d8c4c856e9688fd56ce042", null ],

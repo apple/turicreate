@@ -53,7 +53,8 @@ var group__optimization__config =
       [ "OPT_INTERRUPTED", "group__optimization__config.html#gga4e4d767a8f716615589c682d5103da63aa7480e90efbb51381fc268bc3bc8b65f", null ],
       [ "OPT_NUMERIC_ERROR", "group__optimization__config.html#gga4e4d767a8f716615589c682d5103da63ad5f51cd3fbca976370dec3083a9cc475", null ],
       [ "OPT_NUMERIC_OVERFLOW", "group__optimization__config.html#gga4e4d767a8f716615589c682d5103da63a05a20a387662092e40c6c9f245603c85", null ],
-      [ "OPT_LS_FAILURE", "group__optimization__config.html#gga4e4d767a8f716615589c682d5103da63a475d2a6c0d0a6da8238ceee70c6ca0ba", null ]
+      [ "OPT_LS_FAILURE", "group__optimization__config.html#gga4e4d767a8f716615589c682d5103da63a475d2a6c0d0a6da8238ceee70c6ca0ba", null ],
+      [ "OPT_IN_PROGRESS", "group__optimization__config.html#gga4e4d767a8f716615589c682d5103da63a4e285bed7503e26195d1a723fdbfa3ea", null ]
     ] ],
     [ "default_solver_option_types", "group__optimization__config.html#gaf08d51867bed181a30977395492f430d", null ],
     [ "default_solver_options", "group__optimization__config.html#ga77155fd32fdfdb0088a19e747ab17fb1", null ],

@@ -1,6 +1,6 @@
 var classturi_1_1v2_1_1ml__data__internal_1_1column__statistics =
 [
-    [ "column_statistics", "classturi_1_1v2_1_1ml__data__internal_1_1column__statistics.html#a4aee96bebdbd663926808a043f9cc8bc", null ],
+    [ "create_cleared_copy", "classturi_1_1v2_1_1ml__data__internal_1_1column__statistics.html#aafc89b8e5be2b3dfab93ff2045ee84a6", null ],
     [ "factory_create", "classturi_1_1v2_1_1ml__data__internal_1_1column__statistics.html#a1b94a370a5308a5eeb490f24f892cf57", null ],
     [ "finalize", "classturi_1_1v2_1_1ml__data__internal_1_1column__statistics.html#adb77ff28fbd0b8cc1423058454ab9db5", null ],
     [ "get_version", "classturi_1_1v2_1_1ml__data__internal_1_1column__statistics.html#ab870caabdfeb6347dd64fc5f3a465367", null ],

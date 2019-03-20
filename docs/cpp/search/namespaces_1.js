@@ -15,7 +15,6 @@ var searchData=
   ['sgraph_5fcompute',['sgraph_compute',['../namespaceturi_1_1sgraph__compute.html',1,'turi']]],
   ['so_5futil',['so_util',['../namespaceturi_1_1so__util.html',1,'turi']]],
   ['turi',['turi',['../namespaceturi.html',1,'']]],
-  ['user_5fpagefault',['user_pagefault',['../namespaceturi_1_1user__pagefault.html',1,'turi']]],
   ['v2_5fblock_5fimpl',['v2_block_impl',['../namespaceturi_1_1v2__block__impl.html',1,'turi']]],
   ['vector_5freserved_5fflags',['VECTOR_RESERVED_FLAGS',['../namespaceturi_1_1v2__block__impl_1_1VECTOR__RESERVED__FLAGS.html',1,'turi::v2_block_impl']]]
 ];

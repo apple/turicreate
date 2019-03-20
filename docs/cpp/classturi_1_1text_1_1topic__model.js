@@ -24,7 +24,7 @@ var classturi_1_1text_1_1topic__model =
     [ "load_version", "classturi_1_1text_1_1topic__model.html#a1c308247f2913b036372d77e99d49454", null ],
     [ "name", "classturi_1_1text_1_1topic__model.html#a64ee1de348f3fa3f1991120809c9bbe2", null ],
     [ "perform_registration", "classturi_1_1text_1_1topic__model.html#aaeec48760b29bdc3ee50560c6aa989fc", null ],
-    [ "perplexity", "classturi_1_1text_1_1topic__model.html#ac67f0c4532a9cb1bec956b655955ae86", null ],
+    [ "perplexity", "classturi_1_1text_1_1topic__model.html#a23e517ee83c8ec7e724979a67065e3c7", null ],
     [ "predict_counts", "classturi_1_1text_1_1topic__model.html#af50d0e9969f98a0e2f30849ce8bfec1e", null ],
     [ "predict_gibbs", "classturi_1_1text_1_1topic__model.html#a1087c49975675009d1d5bbcd25e9d7a9", null ],
     [ "register_defaults", "classturi_1_1text_1_1topic__model.html#a5cf40c6ddfcc9a6880e3fbc12887e674", null ],

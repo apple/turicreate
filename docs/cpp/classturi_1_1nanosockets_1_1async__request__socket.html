@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('classturi_1_1nanosockets_1_1async__req
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="nanosockets_2async__request__socket_8hpp_source.html">nanosockets/async_request_socket.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="async__request__socket_8hpp_source.html">nanosockets/async_request_socket.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -136,7 +136,7 @@ Public Member Functions</h2></td></tr>
 <div class="fragment"><div class="line"><a class="code" href="classturi_1_1nanosockets_1_1async__request__socket.html#a72aadc577fd2d1a9fdde631e1e53dcdf">async_request_socket</a> sock(<span class="stringliteral">&quot;ipc:///tmp/echo_service&quot;</span>)</div><div class="line">zmq_msg_vector ret;</div><div class="line"><span class="keywordtype">int</span> ret = sock.<a class="code" href="classturi_1_1nanosockets_1_1async__request__socket.html#a60e652ae7ce48368a5ee9b8587566558">request_master</a>(msg, ret, 10); <span class="comment">// 10 second timeout</span></div></div><!-- fragment --><p>This object is multi-threaded. Calls can be made from multiple threads simultaneously and will be queued accordingly.</p>
 <p>All messaging is done via zmq_msg_vector which is internally, an array of nn_msg_t objects. Message boundaries are preserved across the wire; i.e. if a request of 4 messages is sent, we will receive exactly a zmq_msg_vector of 4 messages. </p>
 
-<p>Definition at line <a class="el" href="nanosockets_2async__request__socket_8hpp_source.html#l00045">45</a> of file <a class="el" href="nanosockets_2async__request__socket_8hpp_source.html">async_request_socket.hpp</a>.</p>
+<p>Definition at line <a class="el" href="async__request__socket_8hpp_source.html#l00045">45</a> of file <a class="el" href="async__request__socket_8hpp_source.html">async_request_socket.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a72aadc577fd2d1a9fdde631e1e53dcdf"></a>
 <div class="memitem">
@@ -248,7 +248,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>nanosockets/<a class="el" href="nanosockets_2async__request__socket_8hpp_source.html">async_request_socket.hpp</a></li>
+<li>nanosockets/<a class="el" href="async__request__socket_8hpp_source.html">async_request_socket.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

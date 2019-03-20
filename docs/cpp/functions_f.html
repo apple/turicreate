@@ -213,6 +213,9 @@ $(document).ready(function(){initNavTree('functions_f.html','');});
 <li>fbeta_score()
 : <a class="el" href="classturi_1_1evaluation_1_1fbeta__score.html#afe27ec6ffac050db6fe79e62649dc42e">turi::evaluation::fbeta_score</a>
 </li>
+<li>feature_column_names
+: <a class="el" href="structturi_1_1activity__classification_1_1data__iterator_1_1parameters.html#a38e7152c605e20a13731cf616a4af714">turi::activity_classification::data_iterator::parameters</a>
+</li>
 <li>feature_index
 : <a class="el" href="structturi_1_1ml__data__full__entry.html#a5b6914dccecf79dcd9d15d54fc97e838">turi::ml_data_full_entry</a>
 , <a class="el" href="structturi_1_1v2_1_1ml__data__full__entry.html#af8eab4e176bce75cc97e8311a25d82d1">turi::v2::ml_data_full_entry</a>
@@ -229,7 +232,8 @@ $(document).ready(function(){initNavTree('functions_f.html','');});
 , <a class="el" href="classturi_1_1supervised_1_1logistic__regression__opt__interface.html#ab02ee1ebae3af30889d187437f3a4377">turi::supervised::logistic_regression_opt_interface</a>
 </li>
 <li>features
-: <a class="el" href="classturi_1_1supervised_1_1linear__regression__opt__interface.html#a86fa7ac6867b5088b0260cfd532beb01">turi::supervised::linear_regression_opt_interface</a>
+: <a class="el" href="structturi_1_1activity__classification_1_1data__iterator_1_1batch.html#a781b234796b1efe853a85c9dcc2c691c">turi::activity_classification::data_iterator::batch</a>
+, <a class="el" href="classturi_1_1supervised_1_1linear__regression__opt__interface.html#a86fa7ac6867b5088b0260cfd532beb01">turi::supervised::linear_regression_opt_interface</a>
 , <a class="el" href="classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#afb23a8e249461b2e579dbed1176b7010">turi::supervised::linear_svm_scaled_logistic_opt_interface</a>
 </li>
 <li>fetch_edge_data_field()
@@ -276,25 +280,21 @@ $(document).ready(function(){initNavTree('functions_f.html','');});
 , <a class="el" href="classturi_1_1fixed__dense__bitset.html#a6d0b10b42d78b9a1ef65ddb73399d301">turi::fixed_dense_bitset&lt; len &gt;</a>
 , <a class="el" href="classturi_1_1ml__data.html#a5d10aedde64688599c748fdf63c06340">turi::ml_data</a>
 , <a class="el" href="classturi_1_1ml__data__row__reference.html#ad9d148ea58632bb9c6f79adf4f0b5fd2">turi::ml_data_row_reference</a>
-, <a class="el" href="classturi_1_1parallel__sframe__iterator.html#a36def84639c8be5bb2b332d649a4fc4d">turi::parallel_sframe_iterator</a>
-, <a class="el" href="classturi_1_1v2_1_1ml__data__iterator__base.html#aed091b38c18aca1763eb846455d0444d">turi::v2::ml_data_iterator_base</a>
+, <a class="el" href="classturi_1_1parallel__sframe__iterator.html#a338f0012cf9f8c5be87d0dc374489a50">turi::parallel_sframe_iterator</a>
 , <a class="el" href="classturi_1_1v2_1_1ml__data__row__reference.html#ac4895a10465bd4bf482f5d2f9603e473">turi::v2::ml_data_row_reference</a>
 </li>
-<li>fill_arma()
-: <a class="el" href="classturi_1_1ml__data__row__reference.html#a8960a97df6d0c5935d08309608e2bc46">turi::ml_data_row_reference</a>
+<li>fill_eigen()
+: <a class="el" href="classturi_1_1ml__data__row__reference.html#a51a1f4c386768e125db6ca477474a42e">turi::ml_data_row_reference</a>
 </li>
-<li>fill_callback
-: <a class="el" href="structturi_1_1user__pagefault_1_1userpf__page__set.html#aaa07455c46258ea8d679a2598959e876">turi::user_pagefault::userpf_page_set</a>
+<li>fill_eigen_row()
+: <a class="el" href="classturi_1_1v2_1_1ml__data__iterator__base.html#af9edfa3131b0047cd70e930b59a27c3c">turi::v2::ml_data_iterator_base</a>
+, <a class="el" href="classturi_1_1v2_1_1ml__data__row__reference.html#a897812769eb959922acd09d32f77aa87">turi::v2::ml_data_row_reference</a>
 </li>
 <li>fill_missing_values()
 : <a class="el" href="classturi_1_1unity__sarray.html#a6f13d761b2443f904c8438a280047e95">turi::unity_sarray</a>
 </li>
 <li>fill_observation()
 : <a class="el" href="classturi_1_1v2_1_1ml__data__iterator__base.html#ab2d3dc3fda95e6c16a38dd99346e492e">turi::v2::ml_data_iterator_base</a>
-</li>
-<li>fill_row_expr()
-: <a class="el" href="classturi_1_1v2_1_1ml__data__iterator__base.html#ad47eaf33ba7b510eb453bc8034675991">turi::v2::ml_data_iterator_base</a>
-, <a class="el" href="classturi_1_1v2_1_1ml__data__row__reference.html#a6181aa6fca15dd681bddb7315e115e8a">turi::v2::ml_data_row_reference</a>
 </li>
 <li>fill_untranslated_values()
 : <a class="el" href="classturi_1_1ml__data__row__reference.html#a00494b080cb5c1802f7f9a8f0261db84">turi::ml_data_row_reference</a>
@@ -379,7 +379,7 @@ $(document).ready(function(){initNavTree('functions_f.html','');});
 : <a class="el" href="classturi_1_1evaluation_1_1flexible__accuracy.html#ad2d2c483310397cb4430a4041f216a19">turi::evaluation::flexible_accuracy</a>
 </li>
 <li>flexible_type()
-: <a class="el" href="classturi_1_1flexible__type.html#aa9993462e293cbc5f2704f7ca0e11ddc">turi::flexible_type</a>
+: <a class="el" href="classturi_1_1flexible__type.html#a348e5802b07129488147b0f0c1d9645e">turi::flexible_type</a>
 </li>
 <li>flush()
 : <a class="el" href="classturi_1_1buffered__writer.html#a9ecbc0d52b0c2d934737952e56f471b7">turi::buffered_writer&lt; ValueType, OutIterator &gt;</a>
@@ -424,15 +424,15 @@ $(document).ready(function(){initNavTree('functions_f.html','');});
 <li>from_sequence()
 : <a class="el" href="classturi_1_1gl__sarray.html#a902f16b58fbdde7e6125f4ed63189095">turi::gl_sarray</a>
 </li>
-<li>front()
-: <a class="el" href="classlibfault_1_1zmq__msg__vector.html#abfc8f2885957f2d3968816fad0ee35f0">libfault::zmq_msg_vector</a>
-</li>
 <li>func_evals
 : <a class="el" href="structturi_1_1optimization_1_1__ls__return.html#a62689862e41d648077654227f1e4c29e">turi::optimization::_ls_return</a>
 , <a class="el" href="structturi_1_1optimization_1_1__solver__return.html#a7be16b1fe707d988a8740648f89f0df7">turi::optimization::_solver_return</a>
 </li>
 <li>func_value
 : <a class="el" href="structturi_1_1optimization_1_1__solver__return.html#a42be6076991b8526834277bad6d9c484">turi::optimization::_solver_return</a>
+</li>
+<li>function_value
+: <a class="el" href="group__LBFGS.html#ga758648f2e9684fb59d8c5bf2ada9b82e">turi::optimization::solver_status</a>
 </li>
 </ul>
 </div><!-- contents -->
