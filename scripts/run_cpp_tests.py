@@ -10,14 +10,14 @@ import argparse
 import subprocess
 
 # The build image version that will be used for testing
-TC_BUILD_IMAGE_VERSION=1.0.2
+TC_BUILD_IMAGE_VERSION="1.0.2"
 SCRIPT_DIR=os.path.dirname(__file__)
 WORKSPACE=os.path.join(SCRIPT_DIR, '..')
 
 def run_in_docker(cmd):
     subprocess.check_call(['docker', 'run', '--rm',
         '--mount', 'type=bind,source=' + WORKSPACE + ',target=/build,consistency=delegated',
-        'turicreate/build-image-12.04:' + str(TC_BUILD_IMAGE_VERSION),
+        'turicreate/build-image-12.04:' + TC_BUILD_IMAGE_VERSION,
         cmd])
 
 if __name__ == '__main__':
