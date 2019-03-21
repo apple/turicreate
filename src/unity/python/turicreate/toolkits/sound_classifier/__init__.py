@@ -9,4 +9,4 @@ from __future__ import absolute_import as _
 from __future__ import print_function as _
 from __future__ import division as _
 
-from .sound_classifier import *
+from .sound_classifier import create, get_deep_features, SoundClassifier
