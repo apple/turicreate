@@ -636,8 +636,8 @@ class DrawingClassifier(_CustomModel):
         """
 
         if self.target not in dataset.column_names():
-            raise _ToolkitError("Dataset provided to evaluate does not have " 
-                + "ground truth in the " + self.target + " column.")
+            raise _ToolkitError("Must provide ground truth column, '" 
+                + self.target + "' in the evaluation dataset.")
 
         predicted = self._predict_with_probabilities(dataset, batch_size, verbose)
 
