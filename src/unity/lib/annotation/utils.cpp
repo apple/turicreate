@@ -25,7 +25,8 @@ featurize_images(std::shared_ptr<unity_sarray> images) {
 
   std::map<std::string, flexible_type> options = {
       {"model_name", "squeezenet_v1.1"},
-      {"download_path", ""} // TODO: URL path to the mlmodel of squeeze-net
+      {"download_path",
+       "./"} // TODO: figure out the cache directory in TuriCreate
   };
 
   gl_sarray gl_images = gl_sarray(images);
@@ -37,11 +38,53 @@ featurize_images(std::shared_ptr<unity_sarray> images) {
   return std::shared_ptr<unity_sarray>(gl_features);
 }
 
-std::vector<size_t> similar_items(std::shared_ptr<unity_sarray> distances, size_t index, size_t k) {
+double vectors_distance(const std::vector<double> &a,
+                        const std::vector<double> &b) {
+  std::vector<double> auxiliary;
+  std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(auxiliary),
+                 [](double element1, double element2) {
+                   return pow((element1 - element2), 2);
+                 });
+  auxiliary.shrink_to_fit();
+  return std::sqrt(std::accumulate(auxiliary.begin(), auxiliary.end(), 0.0));
+}
+
+/**
+ * Note: very inefficient way of calculating the distances.
+ */
+std::vector<flexible_type>
+similar_items(std::shared_ptr<unity_sarray> distances, size_t index, size_t k) {
+
   DASSERT_EQ(distances->dtype(), flex_type_enum::VECTOR);
-  // TODO: calculate eigen distance
-  // TODO: return top k lowest distances calculated
-  return {1, 2, 3, 4};
+  flex_vec target_vector = distances->to_vector().at(index).get<flex_vec>();
+  
+  gl_sarray gl_distances = gl_sarray(distances);
+  gl_sarray calculated_distances = gl_distances.apply(
+      [&](const flexible_type &a) {
+        return flexible_type(
+            vectors_distance(target_vector, a.get<flex_vec>()));
+      },
+      flex_type_enum::FLOAT);
+
+  std::vector<flexible_type> indicies;
+
+  for (size_t x = 0; x < distances->size(); x++) {
+    indicies.push_back(x);
+  }
+  
+  gl_sarray gl_index = gl_sarray(indicies, flex_type_enum::INTEGER);
+
+  std::map<std::string, gl_sarray> mapFeatureArray;
+  mapFeatureArray.insert(std::make_pair("features", calculated_distances));
+  mapFeatureArray.insert(std::make_pair("idx", gl_index));
+
+  gl_sframe sortableSFrame = gl_sframe(mapFeatureArray);
+  gl_sframe sortedFrame = sortableSFrame.sort("features", true);
+  
+  gl_sarray gl_sorted = sortedFrame["idx"];
+  gl_sarray head_gl_sorted = gl_sorted.head(k);
+  
+  return std::shared_ptr<unity_sarray>(head_gl_sorted)->to_vector();
 }
 
 } // namespace annotate

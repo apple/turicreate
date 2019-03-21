@@ -35,11 +35,15 @@ populate_parcel(annotate_spec::Parcel &parcel, T message) {
   parcel.mutable_metadata()->CopyFrom(message);
 }
 
+double vectors_distance(const std::vector<double> &a,
+                        const std::vector<double> &b);
+
 bool isInteger(std::string s);
 
 std::shared_ptr<unity_sarray>
 featurize_images(std::shared_ptr<unity_sarray> images);
-std::vector<size_t> similar_items(std::shared_ptr<unity_sarray> distances, size_t index, size_t k);
+std::vector<flexible_type>
+similar_items(std::shared_ptr<unity_sarray> distances, size_t index, size_t k);
 
 } // namespace annotate
 } // namespace turi
