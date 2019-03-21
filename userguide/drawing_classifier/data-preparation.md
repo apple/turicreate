@@ -86,8 +86,6 @@ def build_bitmap_sframe():
 build_bitmap_sframe()
 ```
 
-![Rendered Drawings](images/rendered_drawings.png)
-
 After building the two SFrames, your directory structure should look like the
 following:
 ```
@@ -196,3 +194,4 @@ sf["rendered"] = tc.drawing_classifier.util.draw_strokes(sf["drawing"])
 sf.explore()
 ```
 
+![Rendered Drawings](images/rendered_drawings.png)
