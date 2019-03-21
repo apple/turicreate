@@ -449,7 +449,7 @@ mlmodel_image_feature_extractor::extract_features(gl_sarray data, bool verbose, 
 #ifdef HAS_CORE_ML_BATCH_INFERENCE
     // Even when compiled with a new enough SDK, guard against older deployment
     // targets at runtime.
-    if (@available(macOS 10.14, *)) {
+    if (@available(macOS 10.14, iOS 12.0,  *)) {
       // Invoke CoreML using the batch inference API for better performance.
       MLArrayBatchProvider *image_batch = [[MLArrayBatchProvider alloc] initWithFeatureProviderArray: inputs];
       MLPredictionOptions* options = [[MLPredictionOptions alloc] init];
