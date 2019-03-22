@@ -12,7 +12,6 @@ from __future__ import absolute_import as _
 
 import numpy as _np
 
-import mxnet as _mx
 from .. import _mxnet_utils
 
 from ._audio_feature_extractor import _get_feature_extractor
@@ -119,9 +118,10 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
         If you are getting memory errors, try decreasing this value. If you
         have a powerful computer, increasing this value may improve performance.
     '''
-    import time as _time
+    import time as time
+    import mxnet as mx
 
-    start_time = _time.time()
+    start_time = time.time()
 
     # check parameters
     if len(dataset) == 0:
@@ -180,7 +180,7 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
         validation_data = validation_data.stack('deep features', new_column_name='deep features')
 
         validation_batch_size = min(len(validation_data), batch_size)
-        validation_data = _mx.io.NDArrayIter(validation_data['deep features'].to_numpy(),
+        validation_data = mx.io.NDArrayIter(validation_data['deep features'].to_numpy(),
                                              label=validation_data['labels'].to_numpy(),
                                              batch_size=validation_batch_size)
     else:
@@ -190,15 +190,15 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
         print("\nTraining a custom neural network -")
 
     training_batch_size = min(len(train_data), batch_size)
-    train_data = _mx.io.NDArrayIter(train_data['deep features'].to_numpy(),
+    train_data = mx.io.NDArrayIter(train_data['deep features'].to_numpy(),
                                     label=train_data['labels'].to_numpy(),
                                     batch_size=training_batch_size, shuffle=True)
 
     custom_NN = SoundClassifier._build_custom_neural_network(feature_extractor.output_length, num_labels)
     ctx = _mxnet_utils.get_mxnet_context()
-    custom_NN.initialize(_mx.init.Xavier(), ctx=ctx)
+    custom_NN.initialize(mx.init.Xavier(), ctx=ctx)
 
-    trainer = _mx.gluon.Trainer(custom_NN.collect_params(), 'nag', {'learning_rate': 0.01, 'momentum': 0.9})
+    trainer = mx.gluon.Trainer(custom_NN.collect_params(), 'nag', {'learning_rate': 0.01, 'momentum': 0.9})
 
     if verbose:
         # Setup progress table
@@ -209,19 +209,19 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
             row_display_names.insert(2, 'Validation Accuracy (%)')
         table_printer = _tc.util._ProgressTablePrinter(row_ids, row_display_names)
 
-    train_metric = _mx.metric.Accuracy()
+    train_metric = mx.metric.Accuracy()
     if validation_data:
-        validation_metric = _mx.metric.Accuracy()
-    softmax_cross_entropy_loss = _mx.gluon.loss.SoftmaxCrossEntropyLoss()
+        validation_metric = mx.metric.Accuracy()
+    softmax_cross_entropy_loss = mx.gluon.loss.SoftmaxCrossEntropyLoss()
     for i in range(max_iterations):
         # TODO: early stopping
 
         for batch in train_data:
-            data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
-            label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            label = mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
 
             # Inside training scope
-            with _mx.autograd.record():
+            with mx.autograd.record():
                 for x, y in zip(data, label):
                     z = custom_NN(x)
                     # Computes softmax cross entropy loss.
@@ -235,16 +235,16 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
 
         # Calculate training metric
         for batch in train_data:
-            data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
-            label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            label = mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
             outputs = [custom_NN(x) for x in data]
             train_metric.update(label, outputs)
         train_data.reset()
 
         # Calculate validataion metric
         for batch in validation_data:
-            data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
-            label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            label = mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
             outputs = [custom_NN(x) for x in data]
             validation_metric.update(label, outputs)
 
@@ -258,7 +258,7 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
             validation_metric.reset()
             validation_data.reset()
         if verbose:
-            printed_row_values['time'] = _time.time()-start_time
+            printed_row_values['time'] = time.time()-start_time
             table_printer.print_row(**printed_row_values)
 
 
@@ -274,7 +274,7 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
         'num_examples': len(dataset),
         'target': target,
         'training_accuracy': train_accuracy,
-        'training_time': _time.time() - start_time,
+        'training_time': time.time() - start_time,
         'validation_accuracy': validataion_accuracy if validation_data else None,
     }
     return SoundClassifier(state)
@@ -704,6 +704,8 @@ class SoundClassifier(_CustomModel):
         >>> class_predictions = model.predict(data, output_type='class')
 
         """
+        import mxnet as mx
+
         if not isinstance(dataset, (_tc.SFrame, _tc.SArray, dict)):
             raise TypeError('\'dataset\' parameter must be either an SFrame, SArray or dictionary')
 
@@ -739,16 +741,16 @@ class SoundClassifier(_CustomModel):
             batch_size = len(deep_features)
 
         y = []
-        for batch in _mx.io.NDArrayIter(deep_features['deep features'].to_numpy(), batch_size=batch_size):
+        for batch in mx.io.NDArrayIter(deep_features['deep features'].to_numpy(), batch_size=batch_size):
             ctx = _mxnet_utils.get_mxnet_context()
             if(len(batch.data[0]) < len(ctx)):
                 ctx = ctx[:len(batch.data[0])]
-            batch_data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            batch_data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
             if batch.pad != 0:
                 batch_data[0] = batch_data[0][:-batch.pad]    # prevent batches looping back
             for x in batch_data:
                 forward_output = self._custom_classifier.forward(x)
-                y += _mx.nd.softmax(forward_output).asnumpy().tolist()
+                y += mx.nd.softmax(forward_output).asnumpy().tolist()
 
         # Combine predictions from multiple frames
         sf = _tc.SFrame({'predictions': y, 'id': deep_features['id']})
