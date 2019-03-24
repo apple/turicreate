@@ -4,7 +4,7 @@
 #### Reusing Deep Features
 Often it is necessary to train more than one instance of a model on the same data. For example this is required by both [K-Folds Cross Validataion](https://en.wikipedia.org/wiki/Cross-validation_(statistics)) and [Hyperparameter Tuning](https://en.wikipedia.org/wiki/Hyperparameter_optimization).
 
-Much of the work accross differnt training run can be reused. Sound Classification is done using a [three stage process](how-it-works.md). The first two of these stages (signal preprocessing and VGGish feature extraction) will be identical and can be reused.
+Much of the work accross different training runs can be reused. Sound Classification is done using a [three stage process](how-it-works.md). The first two of these stages (signal preprocessing and VGGish feature extraction) will be identical and can be reused.
 
 The code below use the ESC-10 dataset from the [Introductory Example](./README.md#introductory-example) to do K-Folds Cross Validataion. In this example reusing the deep feature allow us to perform 5-fold cross validation more than twice as fast.
 ```python

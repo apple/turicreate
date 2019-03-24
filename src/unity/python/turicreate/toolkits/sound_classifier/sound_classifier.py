@@ -14,7 +14,6 @@ import numpy as _np
 
 from .. import _mxnet_utils
 
-from ._audio_feature_extractor import _get_feature_extractor
 import turicreate as _tc
 import turicreate.toolkits._internal_utils as _tk_utils
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
@@ -66,6 +65,8 @@ def get_deep_features(audio_data, verbose=True):
     >>> model = tc.sound_classifier.create(train, 'label', 'deep_features')
     >>> predictions = model.predict(test)
     '''
+    from ._audio_feature_extractor import _get_feature_extractor
+
     if not _is_audio_data_sarray(audio_data):
         raise TypeError("Input must be audio data")
 
@@ -95,7 +96,7 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
         contain audio data or deep audio features.
         Audio data is represented as dicts with key 'data' and 'sample_rate',
         see `turicreate.load_audio(...)`.
-        Deep audio features are represent as a list of numpy arrays, each of
+        Deep audio features are represented as a list of numpy arrays, each of
         size 12288, see `turicreate.sound_classifier.get_deep_features(...)`.
 
     max_iterations : int, optional
@@ -118,8 +119,10 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
         If you are getting memory errors, try decreasing this value. If you
         have a powerful computer, increasing this value may improve performance.
     '''
-    import time as time
+    import time
     import mxnet as mx
+
+    from ._audio_feature_extractor import _get_feature_extractor
 
     start_time = time.time()
 
@@ -332,6 +335,8 @@ class SoundClassifier(_CustomModel):
         """
         A function to load a previously saved SoundClassifier instance.
         """
+        from ._audio_feature_extractor import _get_feature_extractor
+
         state['_feature_extractor'] = _get_feature_extractor(state['feature_extractor_name'])
 
         # Load the custom nerual network
