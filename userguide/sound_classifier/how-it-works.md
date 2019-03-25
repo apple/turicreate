@@ -40,7 +40,7 @@ This network contains 17 layers in total.
 This network is kept static during model training. We have removed the
 last three layers of the original VGGish model. We use the widest
 layer, from the original network, as our input data for the final
-stage. This modified VGGish model ouputs a double vector of length
+stage. This modified VGGish model outputs a double vector of length
 12,288. On non-Linux systems, the model has also been eight bit
 quantized, to reduce its size.
 
