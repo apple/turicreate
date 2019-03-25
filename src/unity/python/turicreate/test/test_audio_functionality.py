@@ -387,7 +387,7 @@ class ReuseDeepFeatures(unittest.TestCase):
         predictions_from_audio = model.predict(original_audio_data, output_type='probability_vector')
         predictions_from_deep_features = model.predict(deep_features, output_type='probability_vector')
         for a, b in zip(predictions_from_audio, predictions_from_deep_features):
-            self.assertEqual(a, b)
+            self.assertAlmostEqual(a, b)
 
         # Test classify
         predictions_from_audio = model.classify(original_audio_data)
