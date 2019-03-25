@@ -21,6 +21,61 @@ from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 
 
+def _is_deep_feature_sarray(sa):
+    if not isinstance(sa, _tc.SArray):
+        return False
+    if sa.dtype != list:
+        return False
+    if not isinstance(sa[0][0], _np.ndarray):
+        return False
+    if sa[0][0].dtype != _np.float64:
+        return False
+    if len(sa[0][0]) != 12288:
+        return False
+    return True
+
+def _is_audio_data_sarray(sa):
+    if not isinstance(sa, _tc.SArray):
+        return False
+    if sa.dtype != dict:
+        return False
+    if set(sa[0].keys()) != {'sample_rate', 'data'}:
+        return False
+    return True
+
+def get_deep_features(audio_data, verbose=True):
+    '''
+    Calculates the deep features used by the Sound Classifier.
+
+    Internally the Sound Classifier calculates deep features for both model
+    creation and predictions. If the same data will be used multiple times,
+    calculating the deep features just once will result in a significant speed
+    up.
+
+    Parameters
+    ----------
+    audio_data : SArray
+        Audio data is represented as dicts with key 'data' and 'sample_rate',
+        see `turicreate.load_audio(...)`.
+
+    Examples
+    --------
+    >>> my_audio_data['deep_features'] = get_deep_features(my_audio_data['audio'])
+    >>> train, test = my_audio_data.random_split(.8)
+    >>> model = tc.sound_classifier.create(train, 'label', 'deep_features')
+    >>> predictions = model.predict(test)
+    '''
+    from ._audio_feature_extractor import _get_feature_extractor
+
+    if not _is_audio_data_sarray(audio_data):
+        raise TypeError("Input must be audio data")
+
+    feature_extractor_name = 'VGGish'
+    feature_extractor = _get_feature_extractor(feature_extractor_name)
+
+    return feature_extractor.get_deep_features(audio_data, verbose=verbose)
+
+
 def create(dataset, target, feature, max_iterations=10, verbose=True,
            validation_set='auto', batch_size=64):
     '''
@@ -38,8 +93,11 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
 
     feature : string, optional
         Name of the column containing the feature column. This column must
-        contain audio data (represented as dicts with key 'data' and
-        'sample_rate').
+        contain audio data or deep audio features.
+        Audio data is represented as dicts with key 'data' and 'sample_rate',
+        see `turicreate.load_audio(...)`.
+        Deep audio features are represented as a list of numpy arrays, each of
+        size 12288, see `turicreate.sound_classifier.get_deep_features(...)`.
 
     max_iterations : int, optional
         The maximum number of allowed passes through the data. More passes over
@@ -61,18 +119,19 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
         If you are getting memory errors, try decreasing this value. If you
         have a powerful computer, increasing this value may improve performance.
     '''
-    from ._audio_feature_extractor import _get_feature_extractor
-    import mxnet as _mx
-    import time as _time
+    import time
+    import mxnet as mx
 
-    start_time = _time.time()
+    from ._audio_feature_extractor import _get_feature_extractor
+
+    start_time = time.time()
 
     # check parameters
     if len(dataset) == 0:
         raise _ToolkitError('Unable to train on empty dataset')
     if feature not in dataset.column_names():
         raise _ToolkitError("Audio feature column '%s' does not exist" % feature)
-    if (dataset[feature].dtype != dict) or (set(dataset[feature][0].keys()) != {'sample_rate', 'data'}):
+    if not _is_deep_feature_sarray(dataset[feature]) and not _is_audio_data_sarray(dataset[feature]):
         raise _ToolkitError("'%s' column is not audio data." % feature)
     if target not in dataset.column_names():
         raise _ToolkitError("Target column '%s' does not exist" % target)
@@ -94,32 +153,38 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
     if not isinstance(validation_set, _tc.SFrame) and validation_set == 'auto':
         if len(dataset) >= 100:
             print ( "Creating a validation set from 5 percent of training data. This may take a while.\n"
-                    "\tYou can set ``validation_set=None`` to disable validation tracking.")
+                    "\tYou can set ``validation_set=None`` to disable validation tracking.\n")
             dataset, validation_set = dataset.random_split(0.95)
         else:
             validation_set = None
 
     encoded_target = dataset[target].apply(lambda x: class_label_to_id[x])
 
-    if verbose:
-        print("\nPreprocessing audio data -")
-    preprocessed_data, labels = feature_extractor.preprocess_data(dataset[feature], encoded_target, verbose=verbose)
+    if _is_deep_feature_sarray(dataset[feature]):
+        train_deep_features = dataset[feature]
+    else:
+        # do the preprocess and VGGish feature extraction
+        train_deep_features = get_deep_features(dataset[feature], verbose=verbose)
 
-    if verbose:
-        print("\nExtracting deep features -")
-    deep_features = feature_extractor.extract_features(preprocessed_data, verbose=verbose)
-    del preprocessed_data
+    train_data = _tc.SFrame({'deep features': train_deep_features, 'labels': encoded_target})
+    train_data = train_data.stack('deep features', new_column_name='deep features')
 
     if validation_set is not None:
         if verbose:
             print("Preparing validataion set")
         validation_encoded_target = validation_set[target].apply(lambda x: class_label_to_id[x])
-        preprocessed_validataion_data, validataion_labels = feature_extractor.preprocess_data(validation_set[feature],
-                                                                                              validation_encoded_target,
-                                                                                              verbose=verbose)
-        validataion_deep_features = feature_extractor.extract_features(preprocessed_validataion_data, verbose=verbose)
-        validation_batch_size = min(len(validataion_deep_features), batch_size)
-        validation_data = _mx.io.NDArrayIter(validataion_deep_features, label=validataion_labels,
+
+        if _is_deep_feature_sarray(validation_set[feature]):
+            validation_deep_features = validation_set[feature]
+        else:
+            validation_deep_features = get_deep_features(validation_set[feature], verbose=verbose)
+
+        validation_data = _tc.SFrame({'deep features': validation_deep_features, 'labels': validation_encoded_target})
+        validation_data = validation_data.stack('deep features', new_column_name='deep features')
+
+        validation_batch_size = min(len(validation_data), batch_size)
+        validation_data = mx.io.NDArrayIter(validation_data['deep features'].to_numpy(),
+                                             label=validation_data['labels'].to_numpy(),
                                              batch_size=validation_batch_size)
     else:
         validation_data = []
@@ -127,14 +192,16 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
     if verbose:
         print("\nTraining a custom neural network -")
 
-    training_batch_size = min(len(deep_features), batch_size)
-    train_data = _mx.io.NDArrayIter(deep_features, label=labels, batch_size=training_batch_size, shuffle=True)
+    training_batch_size = min(len(train_data), batch_size)
+    train_data = mx.io.NDArrayIter(train_data['deep features'].to_numpy(),
+                                    label=train_data['labels'].to_numpy(),
+                                    batch_size=training_batch_size, shuffle=True)
 
     custom_NN = SoundClassifier._build_custom_neural_network(feature_extractor.output_length, num_labels)
     ctx = _mxnet_utils.get_mxnet_context()
-    custom_NN.initialize(_mx.init.Xavier(), ctx=ctx)
+    custom_NN.initialize(mx.init.Xavier(), ctx=ctx)
 
-    trainer = _mx.gluon.Trainer(custom_NN.collect_params(), 'nag', {'learning_rate': 0.01, 'momentum': 0.9})
+    trainer = mx.gluon.Trainer(custom_NN.collect_params(), 'nag', {'learning_rate': 0.01, 'momentum': 0.9})
 
     if verbose:
         # Setup progress table
@@ -145,19 +212,19 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
             row_display_names.insert(2, 'Validation Accuracy (%)')
         table_printer = _tc.util._ProgressTablePrinter(row_ids, row_display_names)
 
-    train_metric = _mx.metric.Accuracy()
+    train_metric = mx.metric.Accuracy()
     if validation_data:
-        validation_metric = _mx.metric.Accuracy()
-    softmax_cross_entropy_loss = _mx.gluon.loss.SoftmaxCrossEntropyLoss()
+        validation_metric = mx.metric.Accuracy()
+    softmax_cross_entropy_loss = mx.gluon.loss.SoftmaxCrossEntropyLoss()
     for i in range(max_iterations):
         # TODO: early stopping
 
         for batch in train_data:
-            data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
-            label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            label = mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
 
             # Inside training scope
-            with _mx.autograd.record():
+            with mx.autograd.record():
                 for x, y in zip(data, label):
                     z = custom_NN(x)
                     # Computes softmax cross entropy loss.
@@ -171,16 +238,16 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
 
         # Calculate training metric
         for batch in train_data:
-            data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
-            label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            label = mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
             outputs = [custom_NN(x) for x in data]
             train_metric.update(label, outputs)
         train_data.reset()
 
         # Calculate validataion metric
         for batch in validation_data:
-            data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
-            label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            label = mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
             outputs = [custom_NN(x) for x in data]
             validation_metric.update(label, outputs)
 
@@ -194,7 +261,7 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
             validation_metric.reset()
             validation_data.reset()
         if verbose:
-            printed_row_values['time'] = _time.time()-start_time
+            printed_row_values['time'] = time.time()-start_time
             table_printer.print_row(**printed_row_values)
 
 
@@ -205,12 +272,12 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
         '_id_to_class_label': {v: k for k, v in class_label_to_id.items()},
         'classes': classes,
         'feature': feature,
-        'feature_extractor_name': feature_extractor_name,
+        'feature_extractor_name': feature_extractor.name,
         'num_classes': num_labels,
         'num_examples': len(dataset),
         'target': target,
         'training_accuracy': train_accuracy,
-        'training_time': _time.time() - start_time,
+        'training_time': time.time() - start_time,
         'validation_accuracy': validataion_accuracy if validation_data else None,
     }
     return SoundClassifier(state)
@@ -221,6 +288,10 @@ class SoundClassifier(_CustomModel):
     A trained model that is ready to use for sound classification or to export to CoreML.
 
     This model should not be constructed directly.
+
+    See Also
+    ----------
+    create
     """
     _PYTHON_SOUND_CLASSIFIER_VERSION = 1
 
@@ -262,8 +333,7 @@ class SoundClassifier(_CustomModel):
     @classmethod
     def _load_version(cls, state, version):
         """
-        A function to load a previously saved SoundClassifier
-        instance.
+        A function to load a previously saved SoundClassifier instance.
         """
         from ._audio_feature_extractor import _get_feature_extractor
 
@@ -335,16 +405,21 @@ class SoundClassifier(_CustomModel):
         section_titles = ['Schema', 'Training Summary']
         return([model_fields, training_fields], section_titles)
 
-    def classify(self, dataset, batch_size=64):
+    def classify(self, dataset, verbose=True, batch_size=64):
         """
         Return the classification for each examples in the ``dataset``.
         The output SFrame contains predicted class labels and its probability.
 
         Parameters
         ----------
-        dataset : SFrame
-            Dataset to classify, must include columns with the same names as
-            data used for model training. Additional columns are ignored.
+        dataset : SFrame | SArray | dict
+            The audio data to be classified.
+            If dataset is an SFrame, it must have a column with the same name as
+            the feature used for model training, but does not require a target
+            column. Additional columns are ignored.
+
+        verbose : bool, optional
+            If True, prints progress updates and model details.
 
         batch_size : int, optional
             If you are getting memory errors, try decreasing this value. If you
@@ -363,13 +438,8 @@ class SoundClassifier(_CustomModel):
         ----------
         >>> classes = model.classify(data)
         """
-        # check parameters
-        if not isinstance(dataset, _tc.SFrame):
-            raise TypeError('\'dataset\' parameter must be an SFrame')
-        if batch_size < 1:
-            raise ValueError('\'batch_size\' must be greater than or equal to 1')
-
-        prob_vector = self.predict(dataset, output_type='probability_vector', batch_size=batch_size)
+        prob_vector = self.predict(dataset, output_type='probability_vector',
+                                   verbose=verbose, batch_size=batch_size)
         id_to_label = self._id_to_class_label
 
         return _tc.SFrame({
@@ -377,7 +447,7 @@ class SoundClassifier(_CustomModel):
             'probability': prob_vector.apply(_np.max)
         })
 
-    def evaluate(self, dataset, metric='auto', batch_size=64):
+    def evaluate(self, dataset, metric='auto', verbose=True, batch_size=64):
         """
         Evaluate the model by making predictions of target values and comparing
         these to actual values.
@@ -403,6 +473,9 @@ class SoundClassifier(_CustomModel):
                                    prediction/true label combinations.
             - 'roc_curve'        : An SFrame containing information needed for an
                                    ROC curve
+
+        verbose : bool, optional
+            If True, prints progress updates and model details.
 
         batch_size : int, optional
             If you are getting memory errors, try decreasing this value. If you
@@ -431,8 +504,6 @@ class SoundClassifier(_CustomModel):
         # parameter checking
         if not isinstance(dataset, _tc.SFrame):
             raise TypeError('\'dataset\' parameter must be an SFrame')
-        if(batch_size < 1):
-            raise ValueError('\'batch_size\' must be greater than or equal to 1')
 
         avail_metrics = ['accuracy', 'auc', 'precision', 'recall',
                          'f1_score', 'log_loss', 'confusion_matrix', 'roc_curve']
@@ -445,9 +516,11 @@ class SoundClassifier(_CustomModel):
             metrics = [metric]
 
         if any([m in metrics for m in ('roc_curve', 'log_loss', 'auc')]):
-            probs = self.predict(dataset, output_type='probability_vector', batch_size=batch_size)
+            probs = self.predict(dataset, output_type='probability_vector',
+                                 verbose=verbose, batch_size=batch_size)
         if any([m in metrics for m in ('accuracy', 'precision', 'recall', 'f1_score', 'confusion_matrix')]):
-            classes = self.predict(dataset, output_type='class', batch_size=batch_size)
+            classes = self.predict(dataset, output_type='class',
+                                   verbose=verbose, batch_size=batch_size)
 
         ret = {}
         if 'accuracy' in metrics:
@@ -589,7 +662,7 @@ class SoundClassifier(_CustomModel):
         mlmodel = coremltools.models.MLModel(top_level_spec)
         mlmodel.save(filename)
 
-    def predict(self, dataset, output_type='class', batch_size=64):
+    def predict(self, dataset, output_type='class', verbose=True, batch_size=64):
         """
         Return predictions for ``dataset``. Predictions can be generated
         as class labels or probabilities.
@@ -613,6 +686,9 @@ class SoundClassifier(_CustomModel):
               class as a vector. Label ordering is dictated by the ``classes``
               member variable.
 
+        verbose : bool, optional
+            If True, prints progress updates and model details.
+
         batch_size : int, optional
             If you are getting memory errors, try decreasing this value. If you
             have a powerful computer, increasing this value may improve performance.
@@ -633,16 +709,20 @@ class SoundClassifier(_CustomModel):
         >>> class_predictions = model.predict(data, output_type='class')
 
         """
-        import mxnet as _mx
+        import mxnet as mx
 
         if not isinstance(dataset, (_tc.SFrame, _tc.SArray, dict)):
             raise TypeError('\'dataset\' parameter must be either an SFrame, SArray or dictionary')
+
         if isinstance(dataset, dict):
             if(set(dataset.keys()) != {'sample_rate', 'data'}):
                 raise ValueError('\'dataset\' parameter is a dictionary but does not appear to be audio data.')
             dataset = _tc.SArray([dataset])
         elif isinstance(dataset, _tc.SFrame):
             dataset = dataset[self.feature]
+
+        if not _is_deep_feature_sarray(dataset) and not _is_audio_data_sarray(dataset):
+            raise ValueError('\'dataset\' must be either audio data or audio deep features.')
 
         if output_type not in ('probability', 'probability_vector', 'class'):
             raise ValueError('\'dataset\' parameter must be either an SFrame, SArray or dictionary')
@@ -653,27 +733,32 @@ class SoundClassifier(_CustomModel):
         if(batch_size < 1):
             raise ValueError("'batch_size' must be greater than or equal to 1")
 
-        preprocessed_data, example_id = self._feature_extractor.preprocess_data(dataset, range(len(dataset)))
-        deep_features = self._feature_extractor.extract_features(preprocessed_data)
-        del preprocessed_data
-
+        if _is_deep_feature_sarray(dataset):
+            deep_features = dataset
+        else:
+            deep_features = get_deep_features(dataset, verbose=verbose)
+        
+        deep_features = _tc.SFrame({'deep features': deep_features})
+        deep_features = deep_features.add_row_number()
+        deep_features = deep_features.stack('deep features', new_column_name='deep features')
+        
         if batch_size > len(deep_features):
             batch_size = len(deep_features)
 
         y = []
-        for batch in _mx.io.NDArrayIter(deep_features, batch_size=batch_size):
+        for batch in mx.io.NDArrayIter(deep_features['deep features'].to_numpy(), batch_size=batch_size):
             ctx = _mxnet_utils.get_mxnet_context()
             if(len(batch.data[0]) < len(ctx)):
                 ctx = ctx[:len(batch.data[0])]
-            batch_data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            batch_data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
             if batch.pad != 0:
                 batch_data[0] = batch_data[0][:-batch.pad]    # prevent batches looping back
             for x in batch_data:
                 forward_output = self._custom_classifier.forward(x)
-                y += _mx.nd.softmax(forward_output).asnumpy().tolist()
+                y += mx.nd.softmax(forward_output).asnumpy().tolist()
 
         # Combine predictions from multiple frames
-        sf = _tc.SFrame({'predictions': y, 'id': example_id})
+        sf = _tc.SFrame({'predictions': y, 'id': deep_features['id']})
         probabilities_sum = sf.groupby('id', {'prob_sum': _tc.aggregate.SUM('predictions')})
 
         if output_type == 'class':
@@ -688,7 +773,7 @@ class SoundClassifier(_CustomModel):
             probabilities_sum = probabilities_sum.sort('id')
             return probabilities_sum.apply(lambda row: [i / row['Count'] for i in row['prob_sum']])
 
-    def predict_topk(self, dataset, output_type='probability', k=3, batch_size=64):
+    def predict_topk(self, dataset, output_type='probability', k=3, verbose=True, batch_size=64):
         """
         Return top-k predictions for the ``dataset``.
         Predictions are returned as an SFrame with three columns: `id`,
@@ -697,9 +782,11 @@ class SoundClassifier(_CustomModel):
 
         Parameters
         ----------
-        dataset : SFrame
-            Dataset to classify. Must include columns with the same
-            names as the features. Additional columns are ignored.
+        dataset : SFrame | SArray | dict
+            The audio data to be classified.
+            If dataset is an SFrame, it must have a column with the same name as
+            the feature used for model training, but does not require a target
+            column. Additional columns are ignored.
 
         output_type : {'probability', 'rank'}, optional
             Choose the return type of the prediction:
@@ -708,6 +795,9 @@ class SoundClassifier(_CustomModel):
 
         k : int, optional
             Number of classes to return for each input example.
+
+        verbose : bool, optional
+            If True, prints progress updates and model details.
 
         batch_size : int, optional
             If you are getting memory errors, try decreasing this value. If you
@@ -742,14 +832,8 @@ class SoundClassifier(_CustomModel):
         | ...  |  ...  |        ...        |
         +------+-------+-------------------+
         """
-        # parameter checking
-        if not isinstance(dataset, _tc.SFrame):
-            raise TypeError('\'dataset\' parameter must be an SFrame')
-        _tk_utils._check_categorical_option_type('output_type', output_type, ['probability', 'rank'])
-        if(batch_size < 1):
-            raise ValueError('\'batch_size\' must be greater than or equal to 1')
-
-        prob_vector = self.predict(dataset, output_type='probability_vector', batch_size=64)
+        prob_vector = self.predict(dataset, output_type='probability_vector',
+                                   verbose=verbose, batch_size=64)
         id_to_label = self._id_to_class_label
 
         if output_type == 'probability':
