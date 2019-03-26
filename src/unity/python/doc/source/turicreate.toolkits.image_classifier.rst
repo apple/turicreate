@@ -15,3 +15,4 @@ image classifier
 
   image_classifier.create
   image_classifier.ImageClassifier
+  image_classifier.annotate
