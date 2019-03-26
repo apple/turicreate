@@ -38,7 +38,7 @@ let model = my_sound_classifier()
 
 The input to this model is an `MLMultiArray` of length 15,600 this is
 975ms of data at a sample rate of 16K per second (.975 * 16,000 = 15,600).
-The input must also only be one channel (i.e. mono not stero). It is
+The input must also only be one channel (i.e. mono not stereo). It is
 important that the input to the model be 15,600 elements of one channel
 data at a 16k sample rate.
 
