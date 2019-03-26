@@ -158,7 +158,7 @@ void build_vision_feature_print_scene_spec(const std::string& model_path) {
 
 }
 
-API_AVAILABLE(macos(10.13))
+API_AVAILABLE(macos(10.13),ios(11.0))
 static MLModel *create_model(const std::string& download_path,
 			     const std::string& model_name) {
 
@@ -315,17 +315,17 @@ CVPixelBufferRef create_pixel_buffer_from_flex_image(const flex_image image) {
 }  // namespace
 
 struct mlmodel_image_feature_extractor::impl {
-  API_AVAILABLE(macos(10.13))
+  API_AVAILABLE(macos(10.13),ios(11.0))
   ~impl() {
     [model release];
   }
 
   std::string name;
-  API_AVAILABLE(macos(10.13)) MLModel *model = nil;
+  API_AVAILABLE(macos(10.13),ios(11.0)) MLModel *model = nil;
   CoreML::Specification::Model spec;
 };
 
-API_AVAILABLE(macos(10.13))
+API_AVAILABLE(macos(10.13),ios(11.0))
 mlmodel_image_feature_extractor::mlmodel_image_feature_extractor(
     const std::string& model_name, const std::string& download_path)
   : m_impl(new impl) {
@@ -355,7 +355,7 @@ mlmodel_image_feature_extractor::coreml_spec() const {
   return m_impl->spec;
 }
 
-API_AVAILABLE(macos(10.13))
+API_AVAILABLE(macos(10.13),ios(11.0))
 gl_sarray
 mlmodel_image_feature_extractor::extract_features(gl_sarray data, bool verbose, size_t kBatchSize) const {
   ASSERT_EQ((int)data.dtype(), (int)flex_type_enum::IMAGE);

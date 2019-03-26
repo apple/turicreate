@@ -8,7 +8,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-API_AVAILABLE(macos(10.13))
+API_AVAILABLE(macos(10.13),ios(11.0))
 @interface TCSoundClassifierPreprocessing : NSObject<MLCustomModel>
 
 @property(readonly, nullable) NSString* inputFeatureName;

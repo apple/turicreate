@@ -46,7 +46,7 @@ static bool handleError(tc_error* error_ptr, NSError** error) {
 }
 
 - (nullable MLFeatureValue *)featureValueForName:(nonnull NSString *)featureName
-  API_AVAILABLE(macos(10.13)) {
+  API_AVAILABLE(macos(10.13),ios(11.0)) {
     tc_sarray *item_ids_array;
     tc_sarray *scores_array;
     tc_sarray *ranks_array;
