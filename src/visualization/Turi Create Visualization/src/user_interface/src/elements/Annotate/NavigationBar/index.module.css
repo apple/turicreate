@@ -17,8 +17,11 @@
 }
 
 .jumpToImageContainer{
-    position: relative;
-    float: right;
+    position: fixed;
+    left: 10px;
+    bottom: 10px;
+
+
 }
 
 
@@ -31,5 +34,6 @@
     line-height: 14.4px;
     padding-top: 14px;
     padding-bottom: 14px;
+
 }
 
