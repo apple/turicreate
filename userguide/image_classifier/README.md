@@ -30,6 +30,43 @@ data.save('cats-dogs.sframe')
 data.explore()
 ```
 
+#### Annotating Data
+
+If you only have images without corresponding annotations, you can 
+use the annoation utility built into the image_classifier. An example
+of it's usage is shown below with the **PetImages** subfolder above.
+
+```python
+import turicreate as tc
+
+# Load images (Note: you can ignore 'Not a JPEG file' errors)
+data = tc.image_analysis.load_images('PetImages', with_path=True)
+
+# Use the Annotation GUI to annotate your data.
+annotated_data = tc.image_classifier.annotate(data)
+
+```
+
+If you forget to assign the output of your annotation to a variable, 
+we've included a method to help you recover those annotations. The code
+for that is shown below:
+
+```python
+
+import turicreate as tc
+
+# Load images (Note: you can ignore 'Not a JPEG file' errors)
+data = tc.image_analysis.load_images('PetImages', with_path=True)
+
+# If you forget to assign the output to a variable
+tc.image_classifier.annotate(data)
+
+# recover your annotation with this method
+annotated_data = tc.image_classifier.recover_annotation()
+```
+
+The annotation utility supports label types of `string` and `integer`.
+
 #### Introductory Example
 
 The task is to **predict if a picture is a cat or a dog**.  Let’s
