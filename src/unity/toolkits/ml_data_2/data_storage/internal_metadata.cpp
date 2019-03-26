@@ -199,6 +199,15 @@ void column_metadata::load(turi::iarchive& iarc) {
 
   iarc >> indexer >> statistics;
 }
+  
+std::shared_ptr<column_metadata> column_metadata::create_cleared_copy() const { 
+  auto ret = std::make_shared<column_metadata>(*this);
+
+  ret->indexer = indexer->create_cleared_copy();
+  ret->statistics = statistics->create_cleared_copy();
+
+  return ret; 
+}
 
 /**  Set up the row metadata, along
  *

@@ -28,6 +28,8 @@ public:
 
   bool setAnnotations(const annotate_spec::Annotations &annotations) override;
 
+  void cast_annotations() override;
+
   BEGIN_CLASS_MEMBER_REGISTRATION("ImageClassification");
   IMPORT_BASE_CLASS_REGISTRATION(AnnotationBase);
   END_CLASS_MEMBER_REGISTRATION

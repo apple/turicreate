@@ -144,6 +144,11 @@ class basic_column_statistics : public column_statistics {
    */
   bool is_equal(const column_statistics* other_ptr) const;
 
+  /** Create a copy with the index cleared.
+   */
+   std::shared_ptr<column_statistics> create_cleared_copy() const;
+
+
  private:
 
   ////////////////////////////////////////////////////////////////////////////////

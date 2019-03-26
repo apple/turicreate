@@ -25,6 +25,7 @@ This is the User Guide for Turi Create
          * [How it works](drawing_classifier/how-it-works.md)
          * [Data Preparation](drawing_classifier/data-preparation.md)
          * [Deployment to Core ML](drawing_classifier/export-coreml.md)
+         * [Advanced Usage](drawing_classifier/advanced-usage.md)
     * [Sound Classification](sound_classifier/README.md)
         * [How it works](sound_classifier/how-it-works.md)
         * [Deployment to Core ML](sound_classifier/export-coreml.md)

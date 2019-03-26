@@ -12,11 +12,23 @@ class LabelContainer extends Component {
   setAnnotation = (name) => {
     if(!this.props.infiniteScroll){
       this.props.setAnnotation(this.props.incrementalCurrentIndex, name);
+    }else{
+      this.props.setAnnotationMass(name);
     }
   }
 
   checkActive = (name) => {
-    return this.props.annotationData[this.props.incrementalCurrentIndex] == name;
+    if (!this.props.infiniteScroll) {
+      return this.props.annotationData[this.props.incrementalCurrentIndex] == name;
+    } else {
+      var selected_objects = Object.keys(this.props.infiniteSelected);
+      for (var x = 0; x < selected_objects.length; x++) {
+        if (this.props.annotationData[selected_objects[x]] == name) {
+          return true;
+        }
+      }
+      return false;
+    }
   }
 
   render() {
@@ -30,7 +42,6 @@ class LabelContainer extends Component {
             this.props.labels.map((x) => 
               <Labels active={this.checkActive(x.name)}
                       name={x.name}
-                      infiniteScroll={this.props.infiniteScroll}
                       onClick={this.setAnnotation.bind(this, x.name)}
                       num_annotated={x.num_annotated}
                       num_expected={x.num_expected}/>

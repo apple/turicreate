@@ -14,6 +14,7 @@ import numpy as _np
 from tempfile import mkstemp as _mkstemp
 import coremltools as _coremltools
 from copy import copy as _copy
+from array import array as _array
 import sys as _sys
 from . import util as test_util
 import unittest
@@ -70,24 +71,24 @@ def _build_stroke_data():
 
 class DrawingClassifierTest(unittest.TestCase):
     @classmethod
-    def setUpClass(self, pretrained_model_url = None):
+    def setUpClass(self, warm_start='auto'):
         self.feature = "drawing"
         self.target = "label"
         self.check_cross_sf = _build_bitmap_data()
         self.stroke_sf = _build_stroke_data()
-        self.pretrained_model_url = pretrained_model_url
+        self.warm_start = warm_start
         self.check_cross_model = _tc.drawing_classifier.create(
             self.check_cross_sf,
             self.target,
             feature=self.feature,
             max_iterations=10,
-            pretrained_model_url=pretrained_model_url)
+            warm_start=warm_start)
         self.stroke_model = _tc.drawing_classifier.create(
             self.stroke_sf,
             self.target,
             feature=self.feature,
             max_iterations=1,
-            pretrained_model_url=pretrained_model_url)
+            warm_start=warm_start)
         self.trains = [self.check_cross_sf, self.stroke_sf]
         self.models = [self.check_cross_model, self.stroke_model]
 
@@ -159,17 +160,46 @@ class DrawingClassifierTest(unittest.TestCase):
         for index in range(len(self.models)):
             model = self.models[index]
             sf = self.trains[index]
-            preds = model.predict(sf)
-            assert (preds.dtype == sf[self.target].dtype)
-            assert (len(preds) == len(sf))
+            for output_type in ["class", "probability", "probability_vector"]:
+                preds = model.predict(sf, output_type=output_type)
+                if output_type == "class":
+                    assert (preds.dtype == sf[self.target].dtype)
+                elif output_type == "probability":
+                    assert (preds.dtype == float)
+                else:
+                    assert (preds.dtype == _array)
+                assert (len(preds) == len(sf))
 
     def test_predict_with_sarray(self):
         for index in range(len(self.models)):
             model = self.models[index]
             sf = self.trains[index]
-            preds = model.predict(sf[self.feature])
-            assert (preds.dtype == sf[self.target].dtype)
-            assert (len(preds) == len(sf))
+            for output_type in ["class", "probability", "probability_vector"]:
+                preds = model.predict(sf[self.feature], output_type=output_type)
+                if output_type == "class":
+                    assert (preds.dtype == sf[self.target].dtype)
+                elif output_type == "probability":
+                    assert (preds.dtype == float)
+                else:
+                    assert (preds.dtype == _array)
+                assert (len(preds) == len(sf))
+
+    def test_predict_topk(self):
+        k=2
+        for index in range(len(self.models)):
+            model = self.models[index]
+            sf = self.trains[index]
+            for output_type in ["rank", "probability"]:
+                preds = model.predict_topk(sf, k=k, output_type=output_type)
+                assert ("id" in preds.column_names())
+                assert ("class" in preds.column_names())
+                if output_type == "rank":
+                    assert (preds["rank"].dtype == int)
+                    assert (sorted(preds["rank"].unique()) == [0,1])
+                else:
+                    assert (output_type == "probability")
+                    assert (preds["probability"].dtype == float)
+                assert (len(preds) == k*len(sf))
 
     def test_evaluate_without_ground_truth(self):
         for index in range(len(self.trains)):
@@ -230,7 +260,7 @@ class DrawingClassifierTest(unittest.TestCase):
             feature = self.feature
             model = self.models[test_number]
             sf = self.trains[test_number]
-            if self.pretrained_model_url:
+            if self.warm_start:
                 prefix = "pretrained" + str(test_number)
             else:
                 prefix = "scratch" + str(test_number)
@@ -281,9 +311,9 @@ class DrawingClassifierTest(unittest.TestCase):
         for model in self.models:
             model.summary()
 
-# class DrawingClassifierPreTrainedModelTest(DrawingClassifierTest):
-#     @classmethod
-#     def setUpClass(self):
-#         super(DrawingClassifierPreTrainedModelTest, self).setUpClass(
-#             pretrained_model_url=None)
+class DrawingClassifierFromScratchTest(DrawingClassifierTest):
+    @classmethod
+    def setUpClass(self):
+        super(DrawingClassifierFromScratchTest, self).setUpClass(
+            warm_start=None)
 
