@@ -750,12 +750,17 @@ class SoundClassifier(_CustomModel):
             ctx = _mxnet_utils.get_mxnet_context()
             if(len(batch.data[0]) < len(ctx)):
                 ctx = ctx[:len(batch.data[0])]
-            batch_data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
+
+            batch_data = batch.data[0]
             if batch.pad != 0:
-                batch_data[0] = batch_data[0][:-batch.pad]    # prevent batches looping back
+                batch_data = batch_data[:-batch.pad]    # prevent batches looping back
+
+            batch_data = mx.gluon.utils.split_and_load(batch_data, ctx_list=ctx, batch_axis=0, even_split=False)
+
             for x in batch_data:
                 forward_output = self._custom_classifier.forward(x)
                 y += mx.nd.softmax(forward_output).asnumpy().tolist()
+        assert(len(y) == len(deep_features))
 
         # Combine predictions from multiple frames
         sf = _tc.SFrame({'predictions': y, 'id': deep_features['id']})
