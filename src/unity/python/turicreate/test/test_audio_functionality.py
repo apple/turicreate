@@ -393,7 +393,7 @@ class ReuseDeepFeatures(unittest.TestCase):
         predictions_from_audio = model.classify(original_audio_data)
         predictions_from_deep_features = model.classify(deep_features)
         for a, b in zip(predictions_from_audio, predictions_from_deep_features):
-            self.assertEqual(a, b)
+            self.assertAlmostEqual(a, b)
 
         # Test predict_topk
         predictions_from_audio = model.predict_topk(original_audio_data, k=2)
