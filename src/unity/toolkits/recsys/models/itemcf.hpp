@@ -177,7 +177,7 @@ public:
   void internal_save(turi::oarchive& oarc) const override;
   void internal_load(turi::iarchive& iarc, size_t version) override;
 
- private:
+ protected:
 
   /**  The primary tool for the item similarity modeling part.
    */
@@ -218,7 +218,7 @@ public:
     return sframe();
   }
 
-  virtual void export_to_coreml(const std::string& filename) override;
+  virtual std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(const std::string& filename) override;
   
  private:
   

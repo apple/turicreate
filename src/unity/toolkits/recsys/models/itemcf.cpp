@@ -794,7 +794,7 @@ sframe recsys_itemcf::get_similar_items(
   #pragma clang diagnostic ignored "-Wswitch"
 #endif
 
-void recsys_itemcf::export_to_coreml(const std::string& filename) {
+std::shared_ptr<coreml::MLModelWrapper> recsys_itemcf::export_to_coreml(const std::string& filename) {
 
   std::shared_ptr<CoreML::Model> coreml_model = std::make_shared<CoreML::Model>(
       std::string("Item Similarity Recommender Model exported from Turi Create ") + __UNITY_VERSION__);
@@ -913,6 +913,8 @@ void recsys_itemcf::export_to_coreml(const std::string& filename) {
       log_and_throw(r.message());
     }
   }
+
+  return std::make_shared<coreml::MLModelWrapper>(coreml_model);
 
 }
 
