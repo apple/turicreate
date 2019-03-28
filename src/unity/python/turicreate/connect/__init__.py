@@ -11,4 +11,3 @@ connection to the turicreate backend server.
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-__UNITY_GLOBAL_PROXY__ = None
