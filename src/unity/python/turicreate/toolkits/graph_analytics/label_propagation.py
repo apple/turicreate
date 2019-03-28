@@ -247,7 +247,7 @@ def create(graph, label_field,
     --------
     LabelPropagationModel
     """
-    from turicreate.cython.cy_server import QuietProgress
+    from turicreate._cython.cy_server import QuietProgress
 
     _raise_error_if_not_of_type(label_field, str)
     _raise_error_if_not_of_type(weight_field, str)

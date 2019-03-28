@@ -126,7 +126,7 @@ def create(item_data, item_id,
       [2 rows x 3 columns]
 
     """
-    from turicreate.cython.cy_server import QuietProgress
+    from turicreate._cython.cy_server import QuietProgress
 
     # item_data is correct type
     if not isinstance(item_data, _SFrame) or item_data.num_rows() == 0:

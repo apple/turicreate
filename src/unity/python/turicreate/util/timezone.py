@@ -9,4 +9,4 @@ from __future__ import absolute_import as _
 from datetime import tzinfo
 from datetime import timedelta
 
-from ..cython.cy_flexible_type import GMT
+from .._cython.cy_flexible_type import GMT

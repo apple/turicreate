@@ -184,7 +184,7 @@ def create(observation_data,
     learning and stochastic optimization." The Journal of Machine Learning Research 12 (2011).
 
     """
-    from turicreate.cython.cy_server import QuietProgress
+    from turicreate._cython.cy_server import QuietProgress
 
     opts = {}
     model_proxy = _turicreate.extensions.factorization_recommender()

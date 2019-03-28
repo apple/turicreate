@@ -938,11 +938,11 @@ class CloudPickler(Pickler):
         self.dispatch[Model] = self.__class__.save_unsupported
 
         ## Make sure the underlying cython objects are not picklable ##
-        self.dispatch[tc.cython.cy_sarray.UnitySArrayProxy] = self.__class__.save_unsupported
-        self.dispatch[tc.cython.cy_sframe.UnitySFrameProxy] = self.__class__.save_unsupported
-        self.dispatch[tc.cython.cy_sketch.UnitySketchProxy] = self.__class__.save_unsupported
-        self.dispatch[tc.cython.cy_graph.UnityGraphProxy] = self.__class__.save_unsupported
-        self.dispatch[tc.cython.cy_model.UnityModel] = self.__class__.save_unsupported
+        self.dispatch[tc._cython.cy_sarray.UnitySArrayProxy] = self.__class__.save_unsupported
+        self.dispatch[tc._cython.cy_sframe.UnitySFrameProxy] = self.__class__.save_unsupported
+        self.dispatch[tc._cython.cy_sketch.UnitySketchProxy] = self.__class__.save_unsupported
+        self.dispatch[tc._cython.cy_graph.UnityGraphProxy] = self.__class__.save_unsupported
+        self.dispatch[tc._cython.cy_model.UnityModel] = self.__class__.save_unsupported
 
     """Special functions for Add-on libraries"""
     def inject_addons(self):

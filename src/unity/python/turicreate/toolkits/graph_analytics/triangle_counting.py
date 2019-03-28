@@ -122,7 +122,7 @@ def create(graph, verbose=True):
     --------
     TriangleCountingModel
     """
-    from turicreate.cython.cy_server import QuietProgress
+    from turicreate._cython.cy_server import QuietProgress
 
     if not isinstance(graph, _SGraph):
         raise TypeError('graph input must be a SGraph object.')

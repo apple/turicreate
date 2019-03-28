@@ -210,7 +210,7 @@ def create(observation_data,
     ItemSimilarityRecommender
 
     """
-    from turicreate.cython.cy_server import QuietProgress
+    from turicreate._cython.cy_server import QuietProgress
     
     opts = {}
     model_proxy = _turicreate.extensions.item_similarity()

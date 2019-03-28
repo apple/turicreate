@@ -170,7 +170,7 @@ if __name__ == "__main__":
     # Load in the cython lambda workers.  On import, this will resolve
     # the proper symbols.
     
-    from turicreate.cython.cy_pylambda_workers import run_pylambda_worker
+    from turicreate._cython.cy_pylambda_workers import run_pylambda_worker
     
     main_dir = get_main_dir()
 

@@ -14,9 +14,9 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 from .._connect import main as glconnect
-from ..cython.cy_flexible_type import infer_type_of_list
-from ..cython.context import debug_trace as cython_context
-from ..cython.cy_sframe import UnitySFrameProxy
+from .._cython.cy_flexible_type import infer_type_of_list
+from .._cython.context import debug_trace as cython_context
+from .._cython.cy_sframe import UnitySFrameProxy
 from ..util import _is_non_string_iterable, _make_internal_url
 from ..util import infer_dbapi2_types
 from ..util import get_module_from_object, pytype_to_printf

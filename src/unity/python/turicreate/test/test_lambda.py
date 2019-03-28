@@ -11,7 +11,7 @@ import time
 import unittest
 import logging
 from .._connect import main as glconnect
-from ..cython import cy_test_utils
+from .._cython import cy_test_utils
 import os
 
 

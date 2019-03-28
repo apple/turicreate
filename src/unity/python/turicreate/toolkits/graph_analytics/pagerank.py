@@ -174,7 +174,7 @@ def create(graph, reset_probability=0.15,
     --------
     PagerankModel
     """
-    from turicreate.cython.cy_server import QuietProgress
+    from turicreate._cython.cy_server import QuietProgress
 
     if not isinstance(graph, _SGraph):
         raise TypeError('graph input must be a SGraph object.')

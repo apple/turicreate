@@ -20,7 +20,7 @@ import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits._private_utils import _validate_row_label
 from turicreate.toolkits._private_utils import _summarize_accessible_fields
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
-from turicreate.cython.cy_server import QuietProgress as _QuietProgress
+from turicreate._cython.cy_server import QuietProgress as _QuietProgress
 
 def _validate_dataset(dataset):
     """

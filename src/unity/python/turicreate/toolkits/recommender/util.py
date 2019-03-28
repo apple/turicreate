@@ -851,7 +851,7 @@ class _Recommender(_Model):
         if not hasattr(self, "_data_schema"):
             response = self.__proxy__.get_data_schema()
 
-            self._data_schema = {k : _turicreate.cython.cy_flexible_type.pytype_from_type_name(v)
+            self._data_schema = {k : _turicreate._cython.cy_flexible_type.pytype_from_type_name(v)
                                  for k, v in response["schema"].items()}
 
         return self._data_schema
@@ -1164,7 +1164,7 @@ class _Recommender(_Model):
         predict
         evaluate
         """
-        from turicreate.cython.cy_server import QuietProgress
+        from turicreate._cython.cy_server import QuietProgress
 
         assert type(k) == int
 

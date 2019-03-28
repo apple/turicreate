@@ -17,7 +17,7 @@ from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
 from turicreate.toolkits._internal_utils import _SGraphFromJsonTree
 from turicreate.toolkits._internal_utils import _validate_data
 from turicreate.toolkits._main import ToolkitError
-from turicreate.cython.cy_server import QuietProgress
+from turicreate._cython.cy_server import QuietProgress
 
 class SupervisedLearningModel(Model):
     """
