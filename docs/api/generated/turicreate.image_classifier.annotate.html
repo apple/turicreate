@@ -1,0 +1,286 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.image_classifier.annotate &mdash; Turi Create API 5.4 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="up" title="image_classifier" href="../turicreate.toolkits.image_classifier.html"/>
+        <link rel="next" title="drawing_classifier" href="../turicreate.toolkits.drawing_classifier.html"/>
+        <link rel="prev" title="turicreate.image_classifier.ImageClassifier" href="turicreate.image_classifier.ImageClassifier.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.image_classifier.html"><code class="docutils literal"><span class="pre">image_classifier</span></code></a> &raquo;</li>
+      
+    <li>turicreate.image_classifier.annotate</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-image-classifier-annotate">
+<h1>turicreate.image_classifier.annotate<a class="headerlink" href="#turicreate-image-classifier-annotate" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.image_classifier.annotate">
+<code class="descclassname">turicreate.image_classifier.</code><code class="descname">annotate</code><span class="sig-paren">(</span><em>data</em>, <em>image_column=None</em>, <em>annotation_column='annotations'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.image_classifier.annotate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Annotate your images loaded in either an SFrame or SArray Format</p>
+<p>The annotate util is a GUI assisted application used to create labels in
+SArray Image data. Specifying a column, with dtype Image, in an SFrame
+works as well since SFrames are composed of multiple SArrays.</p>
+<p>When the GUI is terminated an SFrame is returned with the representative,
+images and annotations.</p>
+<p>The returned SFrame includes the newly created annotations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray | SFrame</span></dt>
+<dd><p class="first last">The data containing the images. If the data type is &#8216;SArray&#8217;
+the &#8216;image_column&#8217;, and &#8216;annotation_column&#8217; variables are used to construct
+a new &#8216;SFrame&#8217; containing the &#8216;SArray&#8217; data for annotation.
+If the data type is &#8216;SFrame&#8217; the &#8216;image_column&#8217;, and &#8216;annotation_column&#8217;
+variables are used to annotate the images.</p>
+</dd>
+<dt><strong>image_column: string, optional</strong></dt>
+<dd><p class="first last">If the data type is SFrame and the &#8216;image_column&#8217; parameter is specified
+then the column name is used as the image column used in the annotation. If
+the data type is &#8216;SFrame&#8217; and the &#8216;image_column&#8217; variable is left empty. A
+default column value of &#8216;image&#8217; is used in the annotation. If the data type is
+&#8216;SArray&#8217;, the &#8216;image_column&#8217; is used to construct the &#8216;SFrame&#8217; data for
+the annotation</p>
+</dd>
+<dt><strong>annotation_column</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first last">If the data type is SFrame and the &#8216;annotation_column&#8217; parameter is specified
+then the column name is used as the annotation column used in the annotation. If
+the data type is &#8216;SFrame&#8217; and the &#8216;annotation_column&#8217; variable is left empty. A
+default column value of &#8216;annotation&#8217; is used in the annotation. If the data type is
+&#8216;SArray&#8217;, the &#8216;annotation_column&#8217; is used to construct the &#8216;SFrame&#8217; data for
+the annotation</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">A new SFrame that contains the newly annotated data.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<p>&gt;&gt; import turicreate as tc
+&gt;&gt; images = tc.image_analysis.load_images(&#8220;path/to/images&#8221;)
+&gt;&gt; print(images)</p>
+<blockquote>
+<div><p>Columns:</p>
+<blockquote>
+<div>path    str
+image   Image</div></blockquote>
+<p>Rows: 4</p>
+<p>Data:
++&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8211;+
+|          path          |          image           |
++&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8211;+
+| /Users/username/Doc... | Height: 1712 Width: 1952 |
+| /Users/username/Doc... | Height: 1386 Width: 1000 |
+| /Users/username/Doc... |  Height: 536 Width: 858  |
+| /Users/username/Doc... | Height: 1512 Width: 2680 |
++&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8211;+
+[4 rows x 2 columns]</p>
+</div></blockquote>
+<p>&gt;&gt; images = tc.image_classifier.annotate(images)
+&gt;&gt; print(images)</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Columns:</dt>
+<dd>path    str
+image   Image
+annotation  str</dd>
+</dl>
+<p>Rows: 4</p>
+<p>Data:
++&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8211;+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;-+
+|          path          |          image           |    annotation     |
++&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8211;+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;-+
+| /Users/username/Doc... | Height: 1712 Width: 1952 |        dog        |
+| /Users/username/Doc... | Height: 1386 Width: 1000 |        dog        |
+| /Users/username/Doc... |  Height: 536 Width: 858  |        cat        |
+| /Users/username/Doc... | Height: 1512 Width: 2680 |       mouse       |
++&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8211;+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;-+
+[4 rows x 3 columns]</p>
+</div></blockquote>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../turicreate.toolkits.drawing_classifier.html" class="btn btn-neutral float-right" title="drawing_classifier">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.image_classifier.ImageClassifier.html" class="btn btn-neutral" title="turicreate.image_classifier.ImageClassifier"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Mar 27, 2019.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'5.4',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
