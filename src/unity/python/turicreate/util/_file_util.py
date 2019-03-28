@@ -19,7 +19,6 @@ import tempfile
 import subprocess
 import re
 from subprocess import PIPE
-from .type_checks import _is_string
 from . import _get_s3_endpoint, _get_aws_credentials
 
 __logger__ = logging.getLogger(__name__)
