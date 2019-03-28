@@ -308,6 +308,31 @@ void column_unique_indexer::load_version(turi::iarchive& iarc, size_t version) {
   _column_size = variant_get_value<size_t>(data["column_size"]);
 }
 
+/** Returns a lambda function that can be used as a lambda function for indexing
+ *  a column.
+ *
+ *  Does not add any new index values.
+ */
+std::function<flexible_type(const flexible_type&)> column_unique_indexer::deindexing_lambda() const {
+  return [this](const flexible_type& v) -> flexible_type {
+    DASSERT_EQ(v.get_type(), flex_type_enum::INTEGER);
+    return flexible_type(this->map_index_to_value(v.get<flex_int>()));
+  };
+}
+
+/** Returns a lambda function that can be used as a lambda function for indexing
+ *  a column.
+ *
+ *  Does not add any new index values.
+ */
+std::function<flexible_type(const flexible_type&)> column_unique_indexer::indexing_lambda() const {
+  return [this](const flexible_type& v) -> flexible_type {
+    return flexible_type(flex_int(this->immutable_map_value_to_index(v)));
+  };
+}
+
+
+
 // Reset and return all the values in the index.
 std::vector<flexible_type> column_unique_indexer::reset_and_return_values() {
   // Clear out the hash indexing.

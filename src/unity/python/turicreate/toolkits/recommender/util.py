@@ -1559,7 +1559,7 @@ class _Recommender(_Model):
                               verbose=verbose,
                               **kwargs)
 
-        precision_recall_by_user = _turicreate.recommender.util.precision_recall_by_user(dataset, recs, cutoffs)
+        precision_recall_by_user = self.__proxy__.precision_recall_by_user(dataset, recs, cutoffs)
 
         ret = {'precision_recall_by_user': precision_recall_by_user}
 
