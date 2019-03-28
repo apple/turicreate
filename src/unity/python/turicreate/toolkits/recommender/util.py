@@ -16,7 +16,6 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._model import Model as _Model
 from turicreate.toolkits._internal_utils import _toolkit_repr_print, \
                                         _precomputed_field
-from turicreate.cython.cy_server import QuietProgress
 import turicreate.aggregate as _Aggregate
 from turicreate.data_structures.sarray import SArray as _SArray
 from turicreate.data_structures.sframe import SFrame as _SFrame
@@ -1165,6 +1164,7 @@ class _Recommender(_Model):
         predict
         evaluate
         """
+        from turicreate.cython.cy_server import QuietProgress
 
         assert type(k) == int
 
