@@ -9,7 +9,6 @@ Efficiently compute the approximate statistics over an SArray.
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-from .. import connect as _mt
 from ..cython.cy_sketch import UnitySketchProxy
 from ..cython.context import debug_trace as cython_context
 from .sarray import SArray

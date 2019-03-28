@@ -13,7 +13,7 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 
 import turicreate as _tc
-import turicreate.connect.main as glconnect
+import turicreate._connect.main as glconnect
 from turicreate.data_structures.sframe import SFrame as _SFrame
 import turicreate.extensions as _extensions
 from turicreate.extensions import _wrap_function_return

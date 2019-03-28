@@ -87,7 +87,7 @@ from turicreate.toolkits.audio_analysis.audio_analysis import load_audio
 from turicreate.toolkits import evaluation
 
 # internal util
-from turicreate.connect.main import launch as _launch
+from turicreate._connect.main import launch as _launch
 
 ## bring load functions to the top level
 from turicreate.data_structures.sframe import load_sframe
@@ -111,7 +111,7 @@ class _extensions_wrapper(object):
         return getattr(self._wrapped, name)
     except:
         pass
-    turicreate.connect.main.get_unity()
+    turicreate._connect.main.get_unity()
     return getattr(self._wrapped, name)
 
 import sys as _sys

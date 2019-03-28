@@ -20,7 +20,7 @@ import tempfile
 import unittest
 import pandas
 
-from ..connect import main as glconnect
+from .._connect import main as glconnect
 from .. import _sys_util
 from .. import util
 from .. import SGraph, SFrame, load_sgraph, load_model, load_sframe

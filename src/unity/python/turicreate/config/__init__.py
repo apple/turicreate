@@ -19,7 +19,7 @@ _client_log_file = _os.path.join(_tempfile.gettempdir(),
                                 '_client_%d_%d.log' % (_time.time(), _os.getpid()))
 
 def _get_log_location():
-    from ..connect import main as _glconnect
+    from .._connect import main as _glconnect
     server = _glconnect.get_server()
     if hasattr(server, 'unity_log'):
         return server.unity_log
@@ -155,7 +155,7 @@ def get_environment_config():
     -------
     Returns a dictionary of {key:value,..}
     """
-    from ..connect import main as _glconnect
+    from .._connect import main as _glconnect
     unity = _glconnect.get_unity()
     return unity.list_globals(False)
 
@@ -165,7 +165,7 @@ def set_log_level(level):
     Lower log levels log more.
     if level is 8, nothing is logged. If level is 0, everything is logged.
     """
-    from ..connect import main as _glconnect
+    from .._connect import main as _glconnect
     unity = _glconnect.get_unity()
     return unity.set_log_level(level)
 
@@ -184,7 +184,7 @@ def get_runtime_config():
     --------
     set_runtime_config
     """
-    from ..connect import main as _glconnect
+    from .._connect import main as _glconnect
     unity = _glconnect.get_unity()
     return unity.list_globals(True)
 
@@ -299,7 +299,7 @@ def set_runtime_config(name, value):
       limit may improve performance (You may also need to increase the system
       file handle limit with "ulimit -n").  Defaults to 128.
     """
-    from ..connect import main as _glconnect
+    from .._connect import main as _glconnect
     unity = _glconnect.get_unity()
     ret = unity.set_global(name, value)
     if ret != "":

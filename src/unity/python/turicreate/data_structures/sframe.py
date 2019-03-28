@@ -13,7 +13,7 @@ and is stored column wise.
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-from ..connect import main as glconnect
+from .._connect import main as glconnect
 from ..cython.cy_flexible_type import infer_type_of_list
 from ..cython.context import debug_trace as cython_context
 from ..cython.cy_sframe import UnitySFrameProxy

@@ -35,7 +35,7 @@ NoneType = type(None)
 current_file_dir = os.path.dirname(os.path.realpath(__file__))
 
 def from_lambda(v):
-    from ..connect import main as glconnect
+    from .._connect import main as glconnect
     u = glconnect.get_unity()
     return u.eval_lambda(lambda x: x, v)
 

@@ -23,7 +23,7 @@ from __future__ import absolute_import as _
 
 import sys as _sys
 from . import SArray as _SArray, SFrame as _SFrame, SGraph as _SGraph
-from .connect.main import get_unity as _get_unity
+from ._connect.main import get_unity as _get_unity
 from .util import _make_internal_url
 from .cython.cy_sframe import UnitySFrameProxy as _UnitySFrameProxy
 from .cython.cy_sarray import UnitySArrayProxy as _UnitySArrayProxy

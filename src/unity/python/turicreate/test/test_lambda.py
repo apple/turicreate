@@ -10,8 +10,7 @@ import multiprocessing
 import time
 import unittest
 import logging
-import array
-from ..connect import main as glconnect
+from .._connect import main as glconnect
 from ..cython import cy_test_utils
 import os
 

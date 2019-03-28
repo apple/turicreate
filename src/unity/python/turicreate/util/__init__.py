@@ -307,7 +307,7 @@ def get_turicreate_object_type(url):
     Given url where a Turi Create object is persisted, return the Turi
     Create object type: 'model', 'graph', 'sframe', or 'sarray'
     '''
-    from ..connect import main as _glconnect
+    from .._connect import main as _glconnect
     ret = _glconnect.get_unity().get_turicreate_object_type(_make_internal_url(url))
 
     # to be consistent, we use sgraph instead of graph here
@@ -428,7 +428,7 @@ def _get_temp_file_location():
     >>> turicreate.config.set_runtime_config('TURI_CACHE_FILE_LOCATIONS', ...)
 
     '''
-    from ..connect import main as _glconnect
+    from .._connect import main as _glconnect
     unity = _glconnect.get_unity()
     cache_dir = _convert_slashes(unity.get_current_cache_file_location())
     if not _os.path.exists(cache_dir):
