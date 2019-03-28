@@ -11,15 +11,8 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 import os
-import sys
-import time
 import logging
 import shutil
-import tempfile
-import subprocess
-import re
-from subprocess import PIPE
-from . import _get_s3_endpoint, _get_aws_credentials
 
 __logger__ = logging.getLogger(__name__)
 

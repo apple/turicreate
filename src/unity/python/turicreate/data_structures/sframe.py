@@ -19,7 +19,7 @@ from .._cython.context import debug_trace as cython_context
 from .._cython.cy_sframe import UnitySFrameProxy
 from ..util import _is_non_string_iterable, _make_internal_url
 from ..util import _infer_dbapi2_types
-from ..util import _get_module_from_object, pytype_to_printf
+from ..util import _get_module_from_object, _pytype_to_printf
 from ..visualization import _get_client_app_path
 from .sarray import SArray, _create_sequential_sarray
 from .. import aggregate
@@ -1880,15 +1880,15 @@ class SFrame(object):
         col_info = list(zip(self.column_names(), self.column_types()))
 
         if not use_python_type_specifiers:
-            pytype_to_printf = lambda x: 's'
+            _pytype_to_printf = lambda x: 's'
 
         # DBAPI2 standard allows for five different ways to specify parameters
         sql_param = {
             'qmark'   : lambda name,col_num,col_type: '?',
             'numeric' : lambda name,col_num,col_type:':'+str(col_num+1),
             'named'   : lambda name,col_num,col_type:':'+str(name),
-            'format'  : lambda name,col_num,col_type:'%'+pytype_to_printf(col_type),
-            'pyformat': lambda name,col_num,col_type:'%('+str(name)+')'+pytype_to_printf(col_type),
+            'format'  : lambda name,col_num,col_type:'%'+_pytype_to_printf(col_type),
+            'pyformat': lambda name,col_num,col_type:'%('+str(name)+')'+_pytype_to_printf(col_type),
             }
 
         get_sql_param = sql_param[mod_info['paramstyle']]
