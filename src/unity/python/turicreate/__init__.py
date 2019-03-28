@@ -93,7 +93,6 @@ from turicreate.connect.main import launch as _launch
 from turicreate.data_structures.sframe import load_sframe
 from turicreate.data_structures.sarray import load_sarray
 from turicreate.toolkits._model import load_model
-from .cython import cy_pylambda_workers
 
 ################### Extension Importing ########################
 import turicreate.extensions
