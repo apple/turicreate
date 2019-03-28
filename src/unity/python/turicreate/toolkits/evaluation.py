@@ -37,7 +37,7 @@ def _check_prob_and_prob_vector(predictions):
     """
     Check that the predictionsa are either probabilities of prob-vectors.
     """
-    from ..deps import numpy
+    from .._deps import numpy
 
     ptype = predictions.dtype
     import array

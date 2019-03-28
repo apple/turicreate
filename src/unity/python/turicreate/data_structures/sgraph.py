@@ -20,8 +20,8 @@ from .gframe import GFrame, VERTEX_GFRAME, EDGE_GFRAME
 from ..cython.cy_graph import UnityGraphProxy
 from ..cython.context import debug_trace as cython_context
 from ..util import _is_non_string_iterable, _make_internal_url
-from ..deps import pandas as pd
-from ..deps import HAS_PANDAS
+from .._deps import pandas as pd
+from .._deps import HAS_PANDAS
 
 import inspect
 import copy

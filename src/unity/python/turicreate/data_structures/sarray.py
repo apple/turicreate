@@ -23,8 +23,8 @@ from ..util import _is_non_string_iterable, _make_internal_url
 from ..visualization import Plot, LABEL_DEFAULT
 from .image import Image as _Image
 from .. import aggregate as _aggregate
-from ..deps import numpy, HAS_NUMPY
-from ..deps import pandas, HAS_PANDAS
+from .._deps import numpy, HAS_NUMPY
+from .._deps import pandas, HAS_PANDAS
 
 import time
 import sys

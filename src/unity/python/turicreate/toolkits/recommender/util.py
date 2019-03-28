@@ -19,7 +19,7 @@ from turicreate.toolkits._internal_utils import _toolkit_repr_print, \
 import turicreate.aggregate as _Aggregate
 from turicreate.data_structures.sarray import SArray as _SArray
 from turicreate.data_structures.sframe import SFrame as _SFrame
-from turicreate.deps import numpy as _numpy, HAS_NUMPY as _HAS_NUMPY
+from turicreate._deps import numpy as _numpy, HAS_NUMPY as _HAS_NUMPY
 
 def _create(observation_data,
            user_id='user_id', item_id='item_id', target=None,
