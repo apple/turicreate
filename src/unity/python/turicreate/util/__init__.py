@@ -6,9 +6,7 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-# 1st set up logging
-import logging
-import logging.config
+
 import time as _time
 import tempfile as _tempfile
 import os as _os

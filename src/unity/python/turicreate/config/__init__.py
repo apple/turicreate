@@ -10,7 +10,6 @@ import sys as _sys
 import tempfile as _tempfile
 import os as _os
 import time as _time
-import logging as _logging
 import re as _re
 
 # Return the root package name
@@ -38,6 +37,9 @@ def init_logger():
 
     This does not affect the root logging config.
     """
+    import logging as _logging
+    import logging.config
+
     # Package level logger
     _logging.config.dictConfig({
         'version': 1,
