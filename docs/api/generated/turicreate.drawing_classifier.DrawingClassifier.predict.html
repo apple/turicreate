@@ -139,13 +139,11 @@ If the data is a single drawing, it can be either of type tc.Image,
 in which case it is a bitmap-based drawing input,
 or of type list, in which case it is a stroke-based drawing input.</p>
 </dd>
-<dt><strong>output_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;probability&#8217;, &#8216;class&#8217;, &#8216;probability_vector&#8217;} optional</span></dt>
-<dd><p class="first">Form of the predictions which are one of:
-- &#8216;class&#8217;: Class prediction. For multi-class classification, this</p>
-<blockquote>
-<div><p>returns the class with maximum probability.</p>
-</div></blockquote>
+<dt><strong>output_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;probability&#8217;, &#8216;class&#8217;, &#8216;probability_vector&#8217;}, optional</span></dt>
+<dd><p class="first">Form of the predictions which are one of:</p>
 <ul class="last simple">
+<li>&#8216;class&#8217;: Class prediction. For multi-class classification, this
+returns the class with maximum probability.</li>
 <li>&#8216;probability&#8217;: Prediction probability associated with the True
 class (not applicable for multi-class classification)</li>
 <li>&#8216;probability_vector&#8217;: Prediction probability associated with each
@@ -158,7 +156,7 @@ member variable.</li>
 have a powerful computer, increasing this value may improve
 performance.</p>
 </dd>
-<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool optional</span></dt>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
 <dd><p class="first last">If True, prints prediction progress.</p>
 </dd>
 </dl>
@@ -206,7 +204,7 @@ prediction.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 20, 2019.
+      Last updated on Mar 27, 2019.
     </p>
   </div>
 </footer>

@@ -123,7 +123,7 @@
 <h1>turicreate.sound_classifier.SoundClassifier.predict<a class="headerlink" href="#turicreate-sound-classifier-soundclassifier-predict" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.sound_classifier.SoundClassifier.predict">
-<code class="descclassname">SoundClassifier.</code><code class="descname">predict</code><span class="sig-paren">(</span><em>dataset</em>, <em>output_type='class'</em>, <em>batch_size=64</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.sound_classifier.SoundClassifier.predict" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SoundClassifier.</code><code class="descname">predict</code><span class="sig-paren">(</span><em>dataset</em>, <em>output_type='class'</em>, <em>verbose=True</em>, <em>batch_size=64</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.sound_classifier.SoundClassifier.predict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return predictions for <code class="docutils literal"><span class="pre">dataset</span></code>. Predictions can be generated
 as class labels or probabilities.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -148,6 +148,9 @@ class (not applicable for multi-class classification)</li>
 class as a vector. Label ordering is dictated by the <code class="docutils literal"><span class="pre">classes</span></code>
 member variable.</li>
 </ul>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If True, prints progress updates and model details.</p>
 </dd>
 <dt><strong>batch_size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
 <dd><p class="first last">If you are getting memory errors, try decreasing this value. If you
@@ -188,7 +191,7 @@ have a powerful computer, increasing this value may improve performance.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 20, 2019.
+      Last updated on Mar 27, 2019.
     </p>
   </div>
 </footer>

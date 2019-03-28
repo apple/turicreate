@@ -123,7 +123,7 @@
 <h1>turicreate.sound_classifier.SoundClassifier.evaluate<a class="headerlink" href="#turicreate-sound-classifier-soundclassifier-evaluate" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.sound_classifier.SoundClassifier.evaluate">
-<code class="descclassname">SoundClassifier.</code><code class="descname">evaluate</code><span class="sig-paren">(</span><em>dataset</em>, <em>metric='auto'</em>, <em>batch_size=64</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.sound_classifier.SoundClassifier.evaluate" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SoundClassifier.</code><code class="descname">evaluate</code><span class="sig-paren">(</span><em>dataset</em>, <em>metric='auto'</em>, <em>verbose=True</em>, <em>batch_size=64</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.sound_classifier.SoundClassifier.evaluate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate the model by making predictions of target values and comparing
 these to actual values.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -157,6 +157,9 @@ are ignored.</p>
 </dl>
 </li>
 </ul>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If True, prints progress updates and model details.</p>
 </dd>
 <dt><strong>batch_size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
 <dd><p class="first last">If you are getting memory errors, try decreasing this value. If you
@@ -198,7 +201,7 @@ score.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 20, 2019.
+      Last updated on Mar 27, 2019.
     </p>
   </div>
 </footer>

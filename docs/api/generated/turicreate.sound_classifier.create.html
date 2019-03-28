@@ -147,8 +147,11 @@ column must be of string or integer type.</p>
 </dd>
 <dt><strong>feature</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
 <dd><p class="first last">Name of the column containing the feature column. This column must
-contain audio data (represented as dicts with key &#8216;data&#8217; and
-&#8216;sample_rate&#8217;).</p>
+contain audio data or deep audio features.
+Audio data is represented as dicts with key &#8216;data&#8217; and &#8216;sample_rate&#8217;,
+see <cite>turicreate.load_audio(...)</cite>.
+Deep audio features are represented as a list of numpy arrays, each of
+size 12288, see <cite>turicreate.sound_classifier.get_deep_features(...)</cite>.</p>
 </dd>
 <dt><strong>max_iterations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
 <dd><p class="first last">The maximum number of allowed passes through the data. More passes over
@@ -197,7 +200,7 @@ have a powerful computer, increasing this value may improve performance.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 20, 2019.
+      Last updated on Mar 27, 2019.
     </p>
   </div>
 </footer>
