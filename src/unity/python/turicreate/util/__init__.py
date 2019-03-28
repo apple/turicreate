@@ -22,9 +22,9 @@ import sys as _sys
 import subprocess as _subprocess
 
 from ..config import get_client_log_location as _get_client_log_location
-from .sframe_generation import generate_random_sframe
-from .sframe_generation import generate_random_regression_sframe
-from .sframe_generation import generate_random_classification_sframe
+from ._sframe_generation import generate_random_sframe
+from ._sframe_generation import generate_random_regression_sframe
+from ._sframe_generation import generate_random_classification_sframe
 from ._type_checks import _raise_error_if_not_of_type
 from ._type_checks import _is_non_string_iterable
 from .progress_table_printer import ProgressTablePrinter as _ProgressTablePrinter
