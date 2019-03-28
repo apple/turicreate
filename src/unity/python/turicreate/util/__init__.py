@@ -124,7 +124,7 @@ def _make_internal_url(url):
         raise ValueError('Invalid url: %s' % url)
 
     from .. import _sys_util
-    from . import file_util
+    from . import _file_util
 
     # Convert Windows paths to Unix-style slashes
     url = _convert_slashes(url)
@@ -622,7 +622,7 @@ def subprocess_exe(exe, args, setup=None, teardown=None,
     """
     import logging
     import os
-    from . import file_util
+    from . import _file_util
     ret = {'success': True,
            'return_code': None,
            'stdout': None,

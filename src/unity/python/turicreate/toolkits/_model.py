@@ -20,7 +20,7 @@ from turicreate.extensions import _wrap_function_return
 from turicreate.toolkits._internal_utils import _toolkit_serialize_summary_struct
 from turicreate.util import _make_internal_url
 from turicreate.toolkits._main import ToolkitError
-import turicreate.util.file_util as file_util
+import turicreate.util._file_util as file_util
 import os
 from copy import copy as _copy
 import six as _six
