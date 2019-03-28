@@ -173,9 +173,10 @@ std::vector<flexible_type> translate_row_to_original(
 
         flexible_type key = m_idx->map_index_to_value(v.index);
 
-        flex_dict& dv = ret[c_idx].mutable_get<flex_dict>();
+        flex_dict dv = ret[c_idx].get_and_reset<flex_dict>();
         dv.push_back(std::make_pair(key, flexible_type(v.value)));
         std::sort(dv.begin(), dv.end());
+        ret[c_idx] = std::move(dv);
 
         break;
       }
@@ -195,11 +196,12 @@ std::vector<flexible_type> translate_row_to_original(
       }
 
       case ml_column_mode::CATEGORICAL_VECTOR: {
-        ret[c_idx].mutable_get<flex_list>().push_back(m_idx->map_index_to_value(v.index));
+        flex_list vl = ret[c_idx].get_and_reset<flex_list>();
+        vl.push_back(m_idx->map_index_to_value(v.index));
+        
+        std::sort(vl.begin(), vl.end());
 
-        std::sort(ret[c_idx].mutable_get<flex_list>().begin(),
-                  ret[c_idx].mutable_get<flex_list>().end());
-
+        ret[c_idx] = std::move(vl);
         break;
       }
 

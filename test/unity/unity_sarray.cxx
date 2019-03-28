@@ -108,14 +108,24 @@ struct unity_sarray_test {
        case flex_type_enum::STRING:
          flex_val = std::to_string(val);
          break;
-       case flex_type_enum::VECTOR:
-         flex_val.mutable_get<flex_vec>().push_back(val);
+       case flex_type_enum::VECTOR: {
+           flex_vec v = flex_val.get_and_reset<flex_vec>();
+           v.push_back(val);
+           flex_val = std::move(v);
+         }                                    
          break;
-       case flex_type_enum::DICT:
-         flex_val.mutable_get<flex_dict>().push_back({0, val});
+       case flex_type_enum::DICT: {
+           flex_dict d = flex_val.get_and_reset<flex_dict>();
+           d.push_back({0, val});
+           flex_val = std::move(d);
+         }
          break;
        case flex_type_enum::LIST:
-         flex_val.mutable_get<flex_list>().push_back(val);
+         {
+           flex_list l = flex_val.get_and_reset<flex_list>();
+           l.push_back(val);
+           flex_val = std::move(l);
+         }
          break;
        default:
          throw ("Unknown flexible_type");

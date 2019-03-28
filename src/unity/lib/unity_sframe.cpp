@@ -718,10 +718,12 @@ std::shared_ptr<unity_sframe_base> unity_sframe::flat_map(
       if (result.get_type() == flex_type_enum::UNDEFINED) {
         continue;
       } else if (result.get_type() == flex_type_enum::LIST) {
-        flex_list& out_rows = result.mutable_get<flex_list>();
+
+        flex_list out_rows = result.get_and_reset<flex_list>();
         for (auto& out_row: out_rows) {
           *output_iter++ = std::move(out_row);
         }
+        result = std::move(out_rows);
       } else if (result.get_type() == flex_type_enum::VECTOR) {
         if (result.get<flex_vec>().size() > 0) {
           std::string message = "Cannot convert " + std::string(result) +

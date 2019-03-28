@@ -195,12 +195,12 @@ flex_list simplify_drawing(flex_list raw_drawing, int row_number) {
     }
     // Align the drawing to top-left corner and scale to [0,255]
     for (size_t i = 0; i < num_strokes; i++) {
-        flex_list &stroke = raw_drawing[i].mutable_get<flex_list>();
+        const flex_list& stroke = raw_drawing[i].get<flex_list>();
         flex_list new_stroke;
         for (size_t j = 0; j < stroke.size(); j++) {
             float new_x;
             float new_y;
-            flex_dict &point = stroke[j].mutable_get<flex_dict>();
+            const flex_dict& point = stroke[j].get<flex_dict>();
             Point P(point);
             if (max_x == min_x) {
                 // vertical straight line

@@ -330,18 +330,22 @@ bool csv_line_tokenizer::parse_as(char** buf, size_t len,
      // takes care of the left trim
      {
        bool is_quoted = false;
+       flex_string out_s; 
+
        while(len > 0 && std::isspace((*buf)[len - 1])) len--;
        if (len >= 2 && (*buf)[0] == quote_char && (*buf)[len - 1] == quote_char) {
-         out.mutable_get<flex_string>() = std::string((*buf)+1, len-2);
+         out_s = flex_string((*buf)+1, len-2);
          is_quoted = true;
        } else {
-         out.mutable_get<flex_string>() = std::string(*buf, len);
+         out_s = flex_string(*buf, len);
        }
        parse_success = true;
        if (is_quoted) {
-         unescape_string(out.mutable_get<flex_string>(), use_escape_char, escape_char, 
+
+         unescape_string(out_s, use_escape_char, escape_char, 
                          quote_char, double_quote);
        }
+       out = std::move(out_s);
        break;
      }
    case flex_type_enum::DICT:

@@ -268,12 +268,13 @@ get_binary_operator(flex_type_enum left, flex_type_enum right, std::string op) {
     } else if (right == flex_type_enum::ND_VECTOR) {
      return [](const flexible_type& l, const flexible_type& r)->flexible_type{ 
        flexible_type ret = r;
-       flex_nd_vec& v = ret.mutable_get<flex_nd_vec>();
+       flex_nd_vec v = ret.get_and_reset<flex_nd_vec>();
        v.ensure_unique();
        double dl = l.to<double>();
        for (auto & i: v.elements()) {
          i = dl / i;
        }
+       ret = std::move(v);
        return ret;
      };
     } else {

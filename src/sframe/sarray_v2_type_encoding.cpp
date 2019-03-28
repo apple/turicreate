@@ -50,7 +50,7 @@ void decode_number(iarchive& iarc,
   for (size_t i = 0;i < ret.size(); ++i) {
     if (ret[i].get_type() != flex_type_enum::UNDEFINED) {
       if (bufstart < buflen) {
-        ret[i].reinterpret_mutable_get<flex_int>() = buf[bufstart];
+        ret[i]._unsafe_set_payload(buf[bufstart]);
         ++bufstart;
         --num_values_to_read;
       } else {
@@ -63,7 +63,7 @@ void decode_number(iarchive& iarc,
 //         }
 //         logstream(LOG_INFO) << std::endl;
         bufstart = 0;
-        ret[i].reinterpret_mutable_get<flex_int>() = buf[bufstart];
+        ret[i]._unsafe_set_payload(buf[bufstart]);
         ++bufstart;
         --num_values_to_read;
       }
@@ -157,7 +157,7 @@ void decode_double_legacy(iarchive& iarc,
   for (size_t i = 0;i < ret.size(); ++i) {
     if (ret[i].get_type() != flex_type_enum::UNDEFINED) {
       if (bufstart < buflen) {
-        ret[i].reinterpret_mutable_get<flex_int>() = buf[bufstart];
+        ret[i]._unsafe_set_payload(buf[bufstart]);
         ++bufstart;
         --num_values_to_read;
       } else {
@@ -169,7 +169,7 @@ void decode_double_legacy(iarchive& iarc,
           buf[j] = (buf[j] >> 1) | (buf[j] << 63);
         }
         bufstart = 0;
-        ret[i].reinterpret_mutable_get<flex_int>() = buf[bufstart];
+        ret[i]._unsafe_set_payload(buf[bufstart]);
         ++bufstart;
         --num_values_to_read;
       }
@@ -236,7 +236,7 @@ static void encode_string(block_info& info,
     if (data[i].get_type() != flex_type_enum::UNDEFINED) {
       auto iter = unique_values.find(data[i].get<std::string>());
       if (iter != unique_values.end()) {
-        idx_values[idxctr++].mutable_get<flex_int>() = iter->second;
+        idx_values[idxctr++] = flex_int(iter->second);
       } else {
         // if we have too many unique values, fail.
         if (unique_values.size() >= 64) {
@@ -246,7 +246,7 @@ static void encode_string(block_info& info,
         size_t newidx = unique_values.size();
         unique_values[data[i].get<std::string>()] = newidx;
         str_values.push_back(data[i].get<std::string>());
-        idx_values[idxctr++].mutable_get<flex_int>() = newidx;
+        idx_values[idxctr++] = flex_int(newidx);
       }
     }
   }
@@ -265,7 +265,7 @@ static void encode_string(block_info& info,
     idxctr = 0;
     for (auto& f: data) {
       if (f.get_type() != flex_type_enum::UNDEFINED) {
-        idx_values[idxctr++].mutable_get<flex_int>() = f.get<std::string>().length();
+        idx_values[idxctr++] = flex_int(f.get<std::string>().length());
       }
     }
     idx_values.resize(idxctr);

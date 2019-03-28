@@ -791,29 +791,31 @@ inline flex_type_enum flex_type_enum_from_name(const std::string& name) {
  */
 template <typename T>
 struct has_direct_conversion_to_flexible_type {
+  typedef typename std::decay<T>::type _T;
+
   static constexpr bool value =
-      !std::is_same<T, flexible_type>::value && (
-      std::is_integral<T>::value ||
-      std::is_floating_point<T>::value ||
-      std::is_convertible<T, flex_string>::value ||
-      std::is_convertible<T, flex_list>::value ||
-      std::is_convertible<T, flex_vec>::value ||
-      std::is_convertible<T, flex_nd_vec>::value ||
-      std::is_convertible<T, flex_dict>::value ||
-      std::is_convertible<T, flex_date_time>::value ||
-      std::is_convertible<T, flex_image>::value ||
-      std::is_same<T, flex_undefined>::value);
+      !std::is_same<_T, flexible_type>::value && (
+      std::is_integral<_T>::value ||
+      std::is_floating_point<_T>::value ||
+      std::is_convertible<_T, flex_string>::value ||
+      std::is_convertible<_T, flex_list>::value ||
+      std::is_convertible<_T, flex_vec>::value ||
+      std::is_convertible<_T, flex_nd_vec>::value ||
+      std::is_convertible<_T, flex_dict>::value ||
+      std::is_convertible<_T, flex_date_time>::value ||
+      std::is_convertible<_T, flex_image>::value ||
+      std::is_same<_T, flex_undefined>::value);
 
   static constexpr flex_type_enum desired_type =
-      std::is_integral<T>::value ? flex_type_enum::INTEGER :
-      std::is_floating_point<T>::value ? flex_type_enum::FLOAT :
-      std::is_convertible<T, flex_string>::value ? flex_type_enum::STRING :
-      std::is_convertible<T, flex_list>::value ? flex_type_enum::LIST :
-      std::is_convertible<T, flex_vec>::value ? flex_type_enum::VECTOR :
-      std::is_convertible<T, flex_nd_vec>::value ? flex_type_enum::ND_VECTOR :
-      std::is_convertible<T, flex_dict>::value ? flex_type_enum::DICT :
-      std::is_convertible<T, flex_date_time>::value ? flex_type_enum::DATETIME :
-      std::is_convertible<T, flex_image>::value ? flex_type_enum::IMAGE :
+      std::is_integral<_T>::value ? flex_type_enum::INTEGER :
+      std::is_floating_point<_T>::value ? flex_type_enum::FLOAT :
+      std::is_convertible<_T, flex_string>::value ? flex_type_enum::STRING :
+      std::is_convertible<_T, flex_list>::value ? flex_type_enum::LIST :
+      std::is_convertible<_T, flex_vec>::value ? flex_type_enum::VECTOR :
+      std::is_convertible<_T, flex_nd_vec>::value ? flex_type_enum::ND_VECTOR :
+      std::is_convertible<_T, flex_dict>::value ? flex_type_enum::DICT :
+      std::is_convertible<_T, flex_date_time>::value ? flex_type_enum::DATETIME :
+      std::is_convertible<_T, flex_image>::value ? flex_type_enum::IMAGE :
       flex_type_enum::UNDEFINED;
 };
 

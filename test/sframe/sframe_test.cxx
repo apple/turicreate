@@ -1716,7 +1716,7 @@ struct sframe_test  {
      TS_ASSERT_EQUALS(sa.size(), values.size());
      // now check for reversibility by reading it back
      for(auto& v: values) {
-       v.mutable_get<flex_nd_vec>() = v.get<flex_nd_vec>().compact();
+       v = v.get<flex_nd_vec>().compact();
      }
      sframe_rows rows;
      sa.get_reader()->read_rows(0, sa.size(), rows);

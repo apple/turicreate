@@ -66,13 +66,9 @@ cdef extern from "<flexible_type/flexible_type.hpp>" namespace "turi":
         const flex_float& get_double "get<turi::flex_float>"()
         const flex_string& get_string "get<turi::flex_string>"()
         const flex_vec& get_vec "get<turi::flex_vec>"()
-        flex_vec& get_vec_m "mutable_get<turi::flex_vec>"()
         const flex_nd_vec& get_nd_vec "get<turi::flex_nd_vec>"()
-        flex_nd_vec& get_nd_vec_m "mutable_get<turi::flex_nd_vec>"()
         const flex_list& get_list "get<turi::flex_list>"()
-        flex_list& get_list_m "mutable_get<turi::flex_list>"()
         const flex_dict& get_dict "get<turi::flex_dict>"()
-        flex_dict& get_dict_m "mutable_get<turi::flex_dict>"()
         const flex_image& get_img "get<turi::flex_image>"()
 
         flex_float as_double "to<turi::flex_float>"()

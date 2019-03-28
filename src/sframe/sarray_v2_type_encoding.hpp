@@ -182,13 +182,12 @@ static void decode_double_stream_legacy(size_t num_elements,
                                  Fn callback) {
   uint64_t buf[MAX_INTEGERS_PER_BLOCK];
   while(num_elements > 0) {
-    size_t buflen = std::min<size_t>(num_elements, MAX_INTEGERS_PER_BLOCK);
+    uint64_t buflen = std::min<size_t>(num_elements, MAX_INTEGERS_PER_BLOCK);
     frame_of_reference_decode_128(iarc, buflen, buf);
-    for (size_t i = 0;i < buflen; ++i) {
-      size_t intval = (buf[i] >> 1) | (buf[i] << 63);
+    for (uint64_t i = 0;i < buflen; ++i) {
+      uint64_t intval = (buf[i] >> 1) | (buf[i] << 63);
       // make a double flexible_type
-      flexible_type ret(0.0);
-      ret.reinterpret_mutable_get<flex_int>() = intval;
+      flexible_type ret(*reinterpret_cast<const flex_float*>(&intval) );
       callback(ret);
     }
     num_elements -= buflen;
@@ -251,12 +250,12 @@ static void decode_string_stream(size_t num_elements,
   } else {
     // get all the lengths
     decode_number(iarc, idx_values, 0);
-    flexible_type ret(flex_type_enum::STRING);
+    flex_string ret_s; 
     for (size_t i = 0;i < num_elements; ++i) {
       size_t str_len = idx_values[i].get<flex_int>();
-      ret.mutable_get<std::string>().resize(str_len);
-      iarc.read(&(ret.mutable_get<std::string>()[0]), str_len);
-      callback(ret);
+      ret_s.resize(str_len);
+      iarc.read(&(ret_s[0]), str_len);
+      callback(flexible_type(std::move(ret_s)));
     }
   }
 }
@@ -295,18 +294,18 @@ static void decode_vector_stream(size_t num_elements,
 
   size_t length_ctr = 0;
   size_t value_ctr = 0;
-  flexible_type ret(flex_type_enum::VECTOR);
+  flex_vec ret_v; 
   for (size_t i = 0 ;i < num_elements; ++i) {
-    flex_vec& output_vec = ret.mutable_get<flex_vec>();
+    
     // resize this to the appropriate length
-    output_vec.resize(lengths[length_ctr].get<flex_int>());
+    ret_v.resize(lengths[length_ctr].get<flex_int>());
     ++length_ctr;
     // fill in the value
-    for(size_t j = 0; j < output_vec.size(); ++j) {
-      output_vec[j] = values[value_ctr].reinterpret_get<flex_float>();
+    for(size_t j = 0; j < ret_v.size(); ++j) {
+      ret_v[j] = values[value_ctr].reinterpret_get<flex_float>();
       ++value_ctr;
     }
-    callback(ret);
+    callback(flexible_type(std::move(ret_v)));
   }
 }
 

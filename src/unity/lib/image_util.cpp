@@ -37,10 +37,10 @@ namespace image_util{
         [&failure, &reference_size, &failure_size]
         (const flexible_type& in, std::pair<bool, flexible_type>& sum)->bool {
           if (in.get_type() != flex_type_enum::UNDEFINED) {
-            flexible_type tmp_img = in;
-            image_util_detail::decode_image_impl(tmp_img.mutable_get<flex_image>());
+            flex_image img = in.get<flex_image>(); 
+            image_util_detail::decode_image_impl(img);
             flexible_type f(flex_type_enum::VECTOR);
-            f.soft_assign(tmp_img);
+            f.soft_assign(img);
             if (sum.first == false) {
               // initial val
               sum.first = true;
@@ -354,9 +354,9 @@ flexible_type decode_image(const flexible_type& image) {
   if (image.get<flex_image>().is_decoded()) {
     return image;
   }
-  flexible_type ret = image;
-  flex_image& img = ret.mutable_get<flex_image>();
+  flex_image img = image.get<flex_image>();
   turi::decode_image_inplace(img);
+  flexible_type ret = std::move(img);
   return ret;
 };
 
@@ -367,9 +367,9 @@ flexible_type encode_image(const flexible_type& image) {
   if (!image.get<flex_image>().is_decoded()) {
     return image;
   }
-  flexible_type ret = image;
-  flex_image& img = ret.mutable_get<flex_image>();
+  flex_image img = image.get<flex_image>();
   turi::encode_image_inplace(img);
+  flexible_type ret = std::move(img);
   return ret;
 };
 

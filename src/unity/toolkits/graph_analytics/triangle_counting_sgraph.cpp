@@ -36,7 +36,7 @@ typedef sgraph::edge_direction edge_direction;
  * and keep all values in the flex_vec unique.
  */
 void set_insert(flexible_type& set, const flexible_type& value) {
-  flex_vec& vec = set.mutable_get<flex_vec>();
+  flex_vec vec = set.get_and_reset<flex_vec>();
   bool is_unique = true;
   for (auto& v : vec) {
     if ((size_t)v == (size_t)(value)) {
@@ -47,6 +47,7 @@ void set_insert(flexible_type& set, const flexible_type& value) {
   if (is_unique) {
     vec.push_back((double)(value));
   }
+  set = std::move(vec);
 }
 
 /**
@@ -145,9 +146,10 @@ void make_undirect_graph(sgraph& g) {
       NEIGHBOR_ID_COLUMN,
       flex_type_enum::VECTOR,
       [&](flexible_type& x) {
-        flex_vec& vec = x.mutable_get<flex_vec>();
+        flex_vec vec = x.get_and_reset<flex_vec>();
         std::sort(vec.begin(), vec.end());
-        return vec;
+        x = std::move(vec); 
+        return x.get<flex_vec>();
       });
   g.replace_vertex_field(ret, NEIGHBOR_ID_COLUMN);
 
@@ -230,9 +232,10 @@ size_t compute_triangle_count(sgraph& g) {
       NEIGHBOR_ID_COLUMN,
       flex_type_enum::VECTOR,
       [&](flexible_type& x) {
-        flex_vec& vec = x.mutable_get<flex_vec>();
+        flex_vec vec = x.get_and_reset<flex_vec>();
         std::sort(vec.begin(), vec.end());
-        return vec;
+        x = std::move(vec);
+        return x.get<flex_vec>();
       });
   g.replace_vertex_field(ret, NEIGHBOR_ID_COLUMN);
 

@@ -23,7 +23,7 @@ const std::string COLOR_COLUMN = "color_id";
  * and keep all values in the flex_vec unique.
  */
 void set_insert(flexible_type& set, const flexible_type& value) {
-  flex_vec& vec = set.mutable_get<flex_vec>();
+  flex_vec vec = set.get_and_reset<flex_vec>();
   bool is_unique = true;
   for (auto& v : vec) {
     if (v == (double)(value)) {
@@ -34,6 +34,7 @@ void set_insert(flexible_type& set, const flexible_type& value) {
   if (is_unique) {
     vec.push_back((double)(value));
   }
+  set = std::move(vec); 
 }
 
 /**
@@ -133,12 +134,13 @@ size_t compute_coloring(sgraph& g) {
         ret,          // second argument in lambda is from here.
         flex_type_enum::FLOAT,
         [&](const flexible_type& x, flexible_type& y) { 
-          flex_vec& vec = y.mutable_get<flex_vec>();
+          flex_vec vec = y.get_and_reset<flex_vec>();
           std::sort(vec.begin(), vec.end());
           int new_color = find_min_value_not_in_set(vec);
           if (new_color != (int)(x)) {
             ++num_changed;
           }
+          y = std::move(vec);
           return new_color;
         });
 

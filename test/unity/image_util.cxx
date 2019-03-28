@@ -127,7 +127,7 @@ BOOST_AUTO_TEST_CASE(test_encode_decode) {
     {
       // encode decode should be lossless
       flexible_type encoded = encode_image(image_wrapped);
-      image_type& encoded_image = encoded.mutable_get<flex_image>();
+      const image_type& encoded_image = encoded.get<flex_image>();
       TS_ASSERT(!encoded_image.is_decoded());
 
       flexible_type decoded = decode_image(encoded);
