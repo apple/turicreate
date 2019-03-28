@@ -88,7 +88,6 @@ from turicreate.toolkits import evaluation
 
 # internal util
 from turicreate.connect.main import launch as _launch
-import turicreate.connect.main as glconnect
 
 ## bring load functions to the top level
 from turicreate.data_structures.sframe import load_sframe
