@@ -7,7 +7,7 @@
 This module contains the interface for turicreate server, and the
 implementation of a local turicreate server.
 """
-from ..util.config import DEFAULT_CONFIG as default_local_conf
+from ..util._config import DEFAULT_CONFIG as default_local_conf
 from .. import _sys_util
 
 import logging
