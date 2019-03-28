@@ -128,7 +128,7 @@ def _make_internal_url(url):
     url = _convert_slashes(url)
 
     # Try to split the url into (protocol, path).
-    protocol = file_util.get_protocol(url)
+    protocol = _file_util.get_protocol(url)
     is_local = False
     if protocol in ['http', 'https']:
         pass
@@ -528,11 +528,11 @@ def _pickle_to_temp_location_or_memory(obj):
         return filename
 
 
-def get_module_from_object(obj):
+def _get_module_from_object(obj):
     mod_str = obj.__class__.__module__.split('.')[0]
     return _sys.modules[mod_str]
 
-def infer_dbapi2_types(cursor, mod_info):
+def _infer_dbapi2_types(cursor, mod_info):
     desc = cursor.description
     result_set_types = [i[1] for i in desc]
     dbapi2_to_python = [ # a type code can match more than one, so ordered by
@@ -688,8 +688,8 @@ def subprocess_exe(exe, args, setup=None, teardown=None,
                         file_log_stdout = out_log_prefix + '.stdout'
                         file_log_stderr = out_log_prefix + '.stderr'
                         # copy to target log path
-                        file_util.copy_from_local(local_log_stdout.name, file_log_stdout)
-                        file_util.copy_from_local(local_log_stderr.name, file_log_stderr)
+                        _file_util.copy_from_local(local_log_stdout.name, file_log_stdout)
+                        _file_util.copy_from_local(local_log_stderr.name, file_log_stderr)
                         ret['stdout'] = file_log_stdout
                         ret['stderr'] = file_log_stderr
                     else:

@@ -18,8 +18,8 @@ from .._cython.cy_flexible_type import infer_type_of_list
 from .._cython.context import debug_trace as cython_context
 from .._cython.cy_sframe import UnitySFrameProxy
 from ..util import _is_non_string_iterable, _make_internal_url
-from ..util import infer_dbapi2_types
-from ..util import get_module_from_object, pytype_to_printf
+from ..util import _infer_dbapi2_types
+from ..util import _get_module_from_object, pytype_to_printf
 from ..visualization import _get_client_app_path
 from .sarray import SArray, _create_sequential_sarray
 from .. import aggregate
@@ -100,7 +100,7 @@ def _get_global_dbapi_info(dbapi_module, conn):
     "the 'dbapi_module' argument to either from_sql or to_sql."
 
     if dbapi_module is None:
-        dbapi_module = get_module_from_object(conn)
+        dbapi_module = _get_module_from_object(conn)
         module_given = False
     else:
         module_given = True
@@ -1801,7 +1801,7 @@ class SFrame(object):
         if not all(result_types):
             missing_val_cols = [i for i,v in enumerate(result_types) if v is None]
             cols_to_force_cast.update(missing_val_cols)
-            inferred_types = infer_dbapi2_types(c, mod_info)
+            inferred_types = _infer_dbapi2_types(c, mod_info)
             cnt = 0
             for i in result_types:
                 if i is None:
