@@ -33,7 +33,6 @@ from .cy_cpp_utils cimport str_to_cpp, cpp_to_str, from_vector_of_strings, disab
 from cython.operator cimport dereference as deref
 from cython.operator cimport preincrement as inc
 import inspect
-from ..util import cloudpickle
 import pickle
 
 

@@ -10,7 +10,7 @@ import turicreate as tc
 import unittest
 from pickle import PicklingError
 import pickle
-import turicreate.util.cloudpickle as cloudpickle
+import turicreate.util._cloudpickle as cloudpickle
 
 
 class CloudPickleTest(unittest.TestCase):
