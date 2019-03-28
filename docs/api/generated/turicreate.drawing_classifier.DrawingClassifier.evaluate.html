@@ -132,51 +132,43 @@ these to actual values.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
-<dd></dd>
-<dt><strong>Dataset of new observations. Must include columns with the same</strong></dt>
-<dd></dd>
-<dt><strong>names as the feature and target columns used for model training.</strong></dt>
-<dd></dd>
-<dt><strong>Additional columns are ignored.</strong></dt>
-<dd></dd>
-<dt><strong>metric</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str optional</span></dt>
-<dd></dd>
-<dt><strong>Name of the evaluation metric. Possible values are:</strong></dt>
-<dd></dd>
-<dt><strong>- &#8216;auto&#8217;</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Returns all available metrics.</span></dt>
-<dd></dd>
-<dt><strong>- &#8216;accuracy&#8217;</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Classification accuracy (micro average).</span></dt>
-<dd></dd>
-<dt><strong>- &#8216;auc&#8217;</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Area under the ROC curve (macro average)</span></dt>
-<dd></dd>
-<dt><strong>- &#8216;precision&#8217;</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Precision score (macro average)</span></dt>
-<dd></dd>
-<dt><strong>- &#8216;recall&#8217;</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Recall score (macro average)</span></dt>
-<dd></dd>
-<dt><strong>- &#8216;f1_score&#8217;</strong> <span class="classifier-delimiter">:</span> <span class="classifier">F1 score (macro average)</span></dt>
-<dd></dd>
-<dt><strong>- &#8216;confusion_matrix&#8217;</strong> <span class="classifier-delimiter">:</span> <span class="classifier">An SFrame with counts of possible</span></dt>
-<dd><p class="first last">prediction/true label combinations.</p>
+<dd><p class="first last">Dataset of new observations. Must include columns with the same
+names as the feature and target columns used for model training.
+Additional columns are ignored.</p>
 </dd>
-<dt><strong>- &#8216;roc_curve&#8217;</strong> <span class="classifier-delimiter">:</span> <span class="classifier">An SFrame containing information needed for an</span></dt>
-<dd><p class="first last">ROC curve</p>
+<dt><strong>metric</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first">Name of the evaluation metric. Possible values are:</p>
+<ul class="last simple">
+<li>&#8216;auto&#8217;             : Returns all available metrics.</li>
+<li>&#8216;accuracy&#8217;         : Classification accuracy (micro average).</li>
+<li>&#8216;auc&#8217;              : Area under the ROC curve (macro average)</li>
+<li>&#8216;precision&#8217;        : Precision score (macro average)</li>
+<li>&#8216;recall&#8217;           : Recall score (macro average)</li>
+<li>&#8216;f1_score&#8217;         : F1 score (macro average)</li>
+<li><dl class="first docutils">
+<dt>&#8216;confusion_matrix&#8217; <span class="classifier-delimiter">:</span> <span class="classifier">An SFrame with counts of possible </span></dt>
+<dd>prediction/true label combinations.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>&#8216;roc_curve&#8217; <span class="classifier-delimiter">:</span> <span class="classifier">An SFrame containing information needed for an</span></dt>
+<dd>ROC curve</dd>
+</dl>
+</li>
+</ul>
 </dd>
-<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool optional</span></dt>
-<dd></dd>
-<dt><strong>If True, prints prediction progress.</strong></dt>
-<dd></dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If True, prints prediction progress.</p>
+</dd>
 </dl>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
-<dd></dd>
-<dt><strong>Dictionary of evaluation results where the key is the name of the</strong></dt>
-<dd></dd>
-<dt><strong>evaluation metric (e.g. `accuracy`) and the value is the evaluation</strong></dt>
-<dd></dd>
-<dt><strong>score.</strong></dt>
-<dd></dd>
+<dd><p class="first last">Dictionary of evaluation results where the key is the name of the
+evaluation metric (e.g. <cite>accuracy</cite>) and the value is the evaluation
+score.</p>
+</dd>
 </dl>
 </td>
 </tr>
@@ -187,9 +179,6 @@ these to actual values.</p>
 <p class="last"><a class="reference internal" href="turicreate.drawing_classifier.create.html#turicreate.drawing_classifier.create" title="turicreate.drawing_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a>, <a class="reference internal" href="turicreate.drawing_classifier.DrawingClassifier.predict.html#turicreate.drawing_classifier.DrawingClassifier.predict" title="turicreate.drawing_classifier.DrawingClassifier.predict"><code class="xref py py-obj docutils literal"><span class="pre">predict</span></code></a></p>
 </div>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
 </pre></div>
@@ -207,7 +196,7 @@ these to actual values.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 20, 2019.
+      Last updated on Mar 27, 2019.
     </p>
   </div>
 </footer>

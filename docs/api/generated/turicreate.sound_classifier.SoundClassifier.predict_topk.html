@@ -123,7 +123,7 @@
 <h1>turicreate.sound_classifier.SoundClassifier.predict_topk<a class="headerlink" href="#turicreate-sound-classifier-soundclassifier-predict-topk" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.sound_classifier.SoundClassifier.predict_topk">
-<code class="descclassname">SoundClassifier.</code><code class="descname">predict_topk</code><span class="sig-paren">(</span><em>dataset</em>, <em>output_type='probability'</em>, <em>k=3</em>, <em>batch_size=64</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.sound_classifier.SoundClassifier.predict_topk" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SoundClassifier.</code><code class="descname">predict_topk</code><span class="sig-paren">(</span><em>dataset</em>, <em>output_type='probability'</em>, <em>k=3</em>, <em>verbose=True</em>, <em>batch_size=64</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.sound_classifier.SoundClassifier.predict_topk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return top-k predictions for the <code class="docutils literal"><span class="pre">dataset</span></code>.
 Predictions are returned as an SFrame with three columns: <cite>id</cite>,
 <cite>class</cite>, and <cite>probability</cite> or <cite>rank</cite> depending on the <code class="docutils literal"><span class="pre">output_type</span></code>
@@ -133,9 +133,11 @@ parameter.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
-<dd><p class="first last">Dataset to classify. Must include columns with the same
-names as the features. Additional columns are ignored.</p>
+<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame | SArray | dict</span></dt>
+<dd><p class="first last">The audio data to be classified.
+If dataset is an SFrame, it must have a column with the same name as
+the feature used for model training, but does not require a target
+column. Additional columns are ignored.</p>
 </dd>
 <dt><strong>output_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;probability&#8217;, &#8216;rank&#8217;}, optional</span></dt>
 <dd><p class="first last">Choose the return type of the prediction:
@@ -144,6 +146,9 @@ names as the features. Additional columns are ignored.</p>
 </dd>
 <dt><strong>k</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
 <dd><p class="first last">Number of classes to return for each input example.</p>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If True, prints progress updates and model details.</p>
 </dd>
 <dt><strong>batch_size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
 <dd><p class="first last">If you are getting memory errors, try decreasing this value. If you
@@ -198,7 +203,7 @@ have a powerful computer, increasing this value may improve performance.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 20, 2019.
+      Last updated on Mar 27, 2019.
     </p>
   </div>
 </footer>
