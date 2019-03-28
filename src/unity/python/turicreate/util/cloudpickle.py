@@ -924,6 +924,8 @@ class CloudPickler(Pickler):
                                    % str(obj))
 
     def inject_unity_proxy(self):
+        from turicreate.toolkits._model import Model
+
         # get the top level module
         tc = __import__(__name__.split('.')[0])
         if not tc:
@@ -933,7 +935,7 @@ class CloudPickler(Pickler):
         self.dispatch[tc.SFrame] = self.__class__.save_unsupported
         self.dispatch[tc.SGraph] = self.__class__.save_unsupported
         self.dispatch[tc.Sketch] = self.__class__.save_unsupported
-        self.dispatch[tc.Model] = self.__class__.save_unsupported
+        self.dispatch[Model] = self.__class__.save_unsupported
 
         ## Make sure the underlying cython objects are not picklable ##
         self.dispatch[tc.cython.cy_sarray.UnitySArrayProxy] = self.__class__.save_unsupported
