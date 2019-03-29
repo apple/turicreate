@@ -216,7 +216,7 @@ def create(observation_data,
         (ICDM 2008), IEEE (2008).
 
     """
-    from turicreate.cython.cy_server import QuietProgress
+    from turicreate._cython.cy_server import QuietProgress
 
     opts = {}
     model_proxy = _turicreate.extensions.ranking_factorization_recommender()
