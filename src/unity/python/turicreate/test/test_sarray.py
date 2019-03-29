@@ -11,7 +11,7 @@ from __future__ import absolute_import as _
 from ..data_structures.sarray import SArray
 from ..data_structures.sframe import SFrame
 from ..data_structures.sarray import load_sarray
-from ..util.timezone import GMT
+from .._cython.cy_flexible_type import GMT
 from . import util
 
 import pandas as pd

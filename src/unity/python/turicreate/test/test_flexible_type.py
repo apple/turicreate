@@ -20,7 +20,7 @@ from .._cython.cy_flexible_type import infer_type_of_list
 from .._cython.cy_flexible_type import _get_inferred_column_type, _all_convertable
 from .._cython.cy_flexible_type import _check_ft_pyobject_hint_path
 from .._cython.cy_flexible_type import pytype_from_type_name
-from ..util.timezone import GMT
+from .._cython.cy_flexible_type import GMT
 import datetime
 from itertools import product
 from copy import copy
