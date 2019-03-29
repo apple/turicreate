@@ -132,12 +132,8 @@ if __name__ == '__main__':
         distclass=BinaryDistribution,
         package_data={
         'turicreate': [
-                     'cython/*.so', 'cython/*.pyd', 'cython/*.dll', 'id',
-                     'toolkits/deeplearning/*.conf',
-                     '*.so', '*.so.1', '*.dylib', 'toolkits/*.dylib',
-                     '*.dll', '*.def',
-                     'deploy/*.jar', '*.exe',
-                     'mxnet/*.ttf',
+                     '_cython/*.so', '_cython/*.pyd',
+                     '*.so', '*.dylib',
 
                      # macOS visualization
                     'Turi Create Visualization.app/Contents/*',
