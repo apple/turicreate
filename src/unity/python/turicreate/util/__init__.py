@@ -8,7 +8,6 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 
 import time as _time
-import tempfile as _tempfile
 import os as _os
 import urllib as _urllib
 import re as _re
@@ -19,9 +18,7 @@ import itertools as _itertools
 import uuid as _uuid
 import datetime as _datetime
 import sys as _sys
-import subprocess as _subprocess
 
-from ..config import get_client_log_location as _get_client_log_location
 from ._sframe_generation import generate_random_sframe
 from ._sframe_generation import generate_random_regression_sframe
 from ._sframe_generation import generate_random_classification_sframe
@@ -152,48 +149,6 @@ def _make_internal_url(url):
     return url
 
 
-def _download_dataset(url_str, extract=True, force=False, output_dir="."):
-    """Download a remote dataset and extract the contents.
-
-    Parameters
-    ----------
-
-    url_str : string
-        The URL to download from
-
-    extract : bool
-        If true, tries to extract compressed file (zip/gz/bz2)
-
-    force : bool
-        If true, forces to retry the download even if the downloaded file already exists.
-
-    output_dir : string
-        The directory to dump the file. Defaults to current directory.
-    """
-    fname = output_dir + "/" + url_str.split("/")[-1]
-    #download the file from the web
-    if not _os.path.isfile(fname) or force:
-        print("Downloading file from:", url_str)
-        _urllib.urlretrieve(url_str, fname)
-        if extract and fname[-3:] == "zip":
-            print("Decompressing zip archive", fname)
-            _ZipFile(fname).extractall(output_dir)
-        elif extract and fname[-6:] == ".tar.gz":
-            print("Decompressing tar.gz archive", fname)
-            _tarfile.TarFile(fname).extractall(output_dir)
-        elif extract and fname[-7:] == ".tar.bz2":
-            print("Decompressing tar.bz2 archive", fname)
-            _tarfile.TarFile(fname).extractall(output_dir)
-        elif extract and fname[-3:] == "bz2":
-            print("Decompressing bz2 archive:", fname)
-            outfile = open(fname.split(".bz2")[0], "w")
-            print("Output file:", outfile)
-            for line in _bz2.BZ2File(fname, "r"):
-                outfile.write(line)
-            outfile.close()
-    else:
-        print("File is already downloaded.")
-
 def is_directory_archive(path):
     """
     Utility function that returns True if the path provided is a directory that has an SFrame or SGraph in it.
@@ -250,15 +205,6 @@ def get_archive_type(path):
         return contents
     except Exception as e:
         raise TypeError('Unable to determine type of archive for path: %s' % path, e)
-
-_GLOB_RE = _re.compile("""[*?]""")
-def _split_path_elements(url):
-    parts = _os.path.split(url)
-    m = _GLOB_RE.search(parts[-1])
-    if m:
-        return (parts[0], parts[1])
-    else:
-        return (url, "")
 
 def crossproduct(d):
     """
