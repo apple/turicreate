@@ -144,8 +144,11 @@ def create(dataset, target, feature, max_iterations=10,
         raise _ToolkitError("'%s' column is not audio data." % feature)
     if target not in dataset.column_names():
         raise _ToolkitError("Target column '%s' does not exist" % target)
-    if not isinstance(custom_layer_sizes, list) or len(custom_layer_sizes) == 0 or not isinstance(custom_layer_sizes[0], int):
-        raise _ToolkitError("'custom_layer_sizes' must be a non-empty list of integers." % target)
+    if not _tc.util._is_non_string_iterable(custom_layer_sizes) or len(custom_layer_sizes) == 0:
+        raise _ToolkitError("'custom_layer_sizes' must be a non-empty list.")
+    for i in custom_layer_sizes:
+        if not isinstance(i, int):
+            raise _ToolkitError("'custom_layer_sizes' must contain only integers.")
     if not (isinstance(validation_set, _tc.SFrame) or validation_set == 'auto' or validation_set is None):
         raise TypeError("Unrecognized value for 'validation_set'")
     if isinstance(validation_set, _tc.SFrame):
@@ -364,7 +367,7 @@ class SoundClassifier(_CustomModel):
         num_inputs = state['_feature_extractor'].output_length
         if 'custom_layer_sizes' in state:
             # These are deserialized as floats
-            custom_layer_sizes = map(int, state['custom_layer_sizes'])
+            custom_layer_sizes = list(map(int, state['custom_layer_sizes']))
         else:
             # Default value, was not part of state for only Turi Create 5.4
             custom_layer_sizes = [100, 100]
