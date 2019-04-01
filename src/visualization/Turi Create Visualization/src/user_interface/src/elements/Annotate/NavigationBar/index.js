@@ -19,20 +19,28 @@ enterPressJumpRow(e) {
     if(e.keyCode == 13){
 
       if(this.state.value != null){
-      var image_number = this.state.value;
+      var image_number = parseInt(this.state.value,10);
       this.setState({value:''});
-        
+      
+      this.getIndex(image_number)
       if (this.props.infiniteScroll)
       	{
-      	this.props.toggleInfiniteScroll(this);
+      	this.props.toggleInfiniteScroll();
         }
-      this.props.updateIncrementalCurrentIndex(image_number-1);
-      this.props.getData(image_number-1, image_number+1);
-      this.props.getAnnotation(image_number-1, image_number+1);
+      console.log(image_number);
+
+      
       }
     }
   }
-};
+
+  getIndex = (index) => {
+    if (index >= 0) {
+      this.props.updateIncrementalCurrentIndex(index);
+      this.props.getData((index-1 ), index + 1);
+      this.props.getAnnotations((index - 1), index + 1);
+    }
+  }
  
 render(){
 	return (
@@ -43,6 +51,6 @@ render(){
 		</div>
 		);
 	}
-}
+};
 
 export default NavigationBar;
