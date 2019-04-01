@@ -7,8 +7,6 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 import turicreate as _tc
-from turicreate.util import _make_internal_url
-import turicreate.connect.main as glconnect
 
 from turicreate.toolkits._internal_utils import _toolkit_repr_print, \
                                                 _precomputed_field, \

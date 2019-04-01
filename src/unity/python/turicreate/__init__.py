@@ -87,14 +87,12 @@ from turicreate.toolkits.audio_analysis.audio_analysis import load_audio
 from turicreate.toolkits import evaluation
 
 # internal util
-from turicreate.connect.main import launch as _launch
-import turicreate.connect.main as glconnect
+from turicreate._connect.main import launch as _launch
 
 ## bring load functions to the top level
 from turicreate.data_structures.sframe import load_sframe
 from turicreate.data_structures.sarray import load_sarray
-from turicreate.toolkits._model import load_model, Model
-from .cython import cy_pylambda_workers
+from turicreate.toolkits._model import load_model
 
 ################### Extension Importing ########################
 import turicreate.extensions
@@ -113,7 +111,7 @@ class _extensions_wrapper(object):
         return getattr(self._wrapped, name)
     except:
         pass
-    turicreate.connect.main.get_unity()
+    turicreate._connect.main.get_unity()
     return getattr(self._wrapped, name)
 
 import sys as _sys

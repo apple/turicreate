@@ -13,7 +13,6 @@ from __future__ import absolute_import as _
 import turicreate as _turicreate
 from turicreate.toolkits.recommender.util import _Recommender
 from turicreate.toolkits._model import _get_default_options_wrapper
-from turicreate.cython.cy_server import QuietProgress
 
 def create(observation_data,
            user_id='user_id', item_id='item_id', target=None,
@@ -211,6 +210,7 @@ def create(observation_data,
     ItemSimilarityRecommender
 
     """
+    from turicreate._cython.cy_server import QuietProgress
     
     opts = {}
     model_proxy = _turicreate.extensions.item_similarity()

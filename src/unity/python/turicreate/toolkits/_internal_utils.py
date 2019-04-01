@@ -17,9 +17,9 @@ from ..data_structures.sframe import SFrame as _SFrame
 from ..data_structures.sgraph import SGraph as _SGraph
 from ..data_structures.sgraph import Vertex as _Vertex
 from ..data_structures.sgraph import Edge as _Edge
-from ..cython.cy_sarray import UnitySArrayProxy
-from ..cython.cy_sframe import UnitySFrameProxy
-from ..cython.cy_graph import UnityGraphProxy
+from .._cython.cy_sarray import UnitySArrayProxy
+from .._cython.cy_sframe import UnitySFrameProxy
+from .._cython.cy_graph import UnityGraphProxy
 from ..toolkits._main import ToolkitError
 
 import json

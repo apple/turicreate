@@ -5,6 +5,7 @@
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 import turicreate as _tc
 from turicreate import extensions as _extensions
+from turicreate.toolkits._main import ToolkitError as _ToolkitError
 
 def draw_strokes(stroke_based_drawings):
     """
@@ -31,18 +32,18 @@ def draw_strokes(stroke_based_drawings):
 
     """
     single_input = False
-    if (type(stroke_based_drawings) != _tc.SArray 
-        and type(stroke_based_drawings) != list):
+    if (not isinstance(stroke_based_drawings, _tc.SArray) 
+        and not isinstance(stroke_based_drawings, list)):
         raise _ToolkitError("Input to draw_strokes must be of type " 
             + "turicreate.SArray or list (for a single stroke-based drawing)")
-    if (type(stroke_based_drawings) == _tc.SArray 
+    if (isinstance(stroke_based_drawings, _tc.SArray) 
         and stroke_based_drawings.dtype != list):
         raise _ToolkitError("SArray input to draw_strokes must have dtype " 
             + "list. Each element in the SArray should be a list of strokes, " 
             + "where each stroke is a list of points, " 
             + "and each point is represented as a dictionary " 
             + "with two keys, \"x\" and \"y\".")
-    if type(stroke_based_drawings) == list:
+    if isinstance(stroke_based_drawings, list):
         single_input = True
         stroke_based_drawings = _tc.SArray([stroke_based_drawings])
     sf = _tc.SFrame({"drawings": stroke_based_drawings})

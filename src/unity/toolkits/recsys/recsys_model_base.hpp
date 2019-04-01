@@ -18,6 +18,8 @@
 #include <unity/toolkits/ml_data_2/ml_data.hpp>
 #include <unity/toolkits/ml_data_2/ml_data_iterators.hpp>
 #include <util/fast_top_k.hpp>
+#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
+
 
 // Interfaces
 #include <unity/lib/extensions/ml_model.hpp>
@@ -334,7 +336,7 @@ public:
 
   std::shared_ptr<unity_sframe_base> get_num_items_per_user_extension_wrapper() const; 
 
-  virtual void export_to_coreml(const std::string& filename);
+  virtual std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(const std::string& filename);
 
   variant_map_type summary();
 

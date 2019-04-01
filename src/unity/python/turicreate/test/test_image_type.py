@@ -16,7 +16,7 @@ from .. import SArray
 from ..toolkits.image_analysis import image_analysis
 from ..toolkits._main import ToolkitError
 
-from ..deps import numpy as _np, HAS_NUMPY
+from .._deps import numpy as _np, HAS_NUMPY
 
 current_file_dir = os.path.dirname(os.path.realpath(__file__))
 

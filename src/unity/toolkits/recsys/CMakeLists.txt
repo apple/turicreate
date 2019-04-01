@@ -21,4 +21,5 @@ make_library(unity_recsys OBJECT
     unity_coreml_model_export
     unity_factorization
     unity_core
+    unity_coreml_model_export 
 )

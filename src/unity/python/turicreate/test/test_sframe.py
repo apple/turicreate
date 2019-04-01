@@ -14,7 +14,7 @@ from .. import _launch, load_sframe, aggregate
 from . import util
 
 import pandas as pd
-from ..util.timezone import GMT
+from .._cython.cy_flexible_type import GMT
 from pandas.util.testing import assert_frame_equal
 import unittest
 import datetime as dt

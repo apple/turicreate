@@ -23,14 +23,14 @@ from __future__ import absolute_import as _
 
 import sys as _sys
 from . import SArray as _SArray, SFrame as _SFrame, SGraph as _SGraph
-from .connect.main import get_unity as _get_unity
+from ._connect.main import get_unity as _get_unity
 from .util import _make_internal_url
-from .cython.cy_sframe import UnitySFrameProxy as _UnitySFrameProxy
-from .cython.cy_sarray import UnitySArrayProxy as _UnitySArrayProxy
-from .cython.cy_graph import UnityGraphProxy as _UnityGraphProxy
-from .cython.cy_model import UnityModel as _UnityModel
+from ._cython.cy_sframe import UnitySFrameProxy as _UnitySFrameProxy
+from ._cython.cy_sarray import UnitySArrayProxy as _UnitySArrayProxy
+from ._cython.cy_graph import UnityGraphProxy as _UnityGraphProxy
+from ._cython.cy_model import UnityModel as _UnityModel
 from .toolkits._main import ToolkitError as _ToolkitError
-from .cython.context import debug_trace as cython_context
+from ._cython.context import debug_trace as cython_context
 from sys import version_info as _version_info
 import types as _types
 if _sys.version_info.major == 2:

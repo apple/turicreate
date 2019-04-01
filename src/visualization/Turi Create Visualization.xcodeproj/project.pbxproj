@@ -13,6 +13,7 @@
 		9226E7C81F366F2E00C33A64 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9226E7C71F366F2E00C33A64 /* Assets.xcassets */; };
 		9226E7CB1F366F2E00C33A64 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9226E7C91F366F2E00C33A64 /* Main.storyboard */; };
 		92D462DB1F6BCB6600101404 /* Debugging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92D462DA1F6BCB6600101404 /* Debugging.swift */; };
+		DEDC3BAD22419BFA00E1DA13 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEDC3BAC22419BFA00E1DA13 /* WebKit.framework */; };
 		FC245BED1F4F541D009F54C6 /* VegaContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC245BEC1F4F541D009F54C6 /* VegaContainer.swift */; };
 		FC245BF31F4F7FFB009F54C6 /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC245BF21F4F7FFB009F54C6 /* JSON.swift */; };
 		FC245BF51F4F8110009F54C6 /* Pipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC245BF41F4F8110009F54C6 /* Pipe.swift */; };
@@ -32,6 +33,7 @@
 		9226E7CC1F366F2E00C33A64 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		92D462DA1F6BCB6600101404 /* Debugging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debugging.swift; sourceTree = "<group>"; };
 		92E526C221EDAC29008D3183 /* dropdown.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dropdown.png; sourceTree = "<group>"; };
+		DEDC3BAC22419BFA00E1DA13 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		FC245BEC1F4F541D009F54C6 /* VegaContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VegaContainer.swift; sourceTree = "<group>"; };
 		FC245BF21F4F7FFB009F54C6 /* JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
 		FC245BF41F4F8110009F54C6 /* Pipe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pipe.swift; sourceTree = "<group>"; };
@@ -98,6 +100,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DEDC3BAD22419BFA00E1DA13 /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,6 +121,7 @@
 				9226E7C21F366F2E00C33A64 /* Turi Create Visualization */,
 				9226E7C11F366F2E00C33A64 /* Products */,
 				921A27A021EDAAE1009A75E2 /* Recovered References */,
+				DEDC3BAB22419BFA00E1DA13 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -138,6 +142,14 @@
 				9226E7CC1F366F2E00C33A64 /* Info.plist */,
 			);
 			path = "Turi Create Visualization";
+			sourceTree = "<group>";
+		};
+		DEDC3BAB22419BFA00E1DA13 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DEDC3BAC22419BFA00E1DA13 /* WebKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		FC1A87811FB1463200A67DAD /* src */ = {
@@ -492,6 +504,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);

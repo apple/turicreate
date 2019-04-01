@@ -10,9 +10,9 @@ import multiprocessing
 import time
 import unittest
 import logging
-import array
-from ..connect import main as glconnect
-from ..cython import cy_test_utils
+from .._connect import main as glconnect
+from .._cython import cy_test_utils
+import os
 
 
 def fib(i):
@@ -61,6 +61,27 @@ class LambdaTests(unittest.TestCase):
         ans = fib(xin)
         for a in ans_list:
             self.assertEqual(a, ans)
+
+    def test_environments(self):
+
+        def test_env(i):
+
+            if i > 500:
+                assert os.environ["OMP_NUM_THREADS"] == "1"
+                assert os.environ["OPENBLAS_NUM_THREADS"] == "1"
+                assert os.environ["MKL_NUM_THREADS"] == "1"
+                assert os.environ["MKL_DOMAIN_NUM_THREADS"] == "1"
+                assert os.environ["NUMBA_NUM_THREADS"] == "1"
+
+            return i
+
+
+        import turicreate as tc
+        x = tc.SArray(range(10000)) 
+        y = x.apply(test_env)
+
+        self.assertTrue( (x == y).all() )
+ 
 
     @unittest.skip("Disabling crash recovery test")
     def test_crash_recovery(self):

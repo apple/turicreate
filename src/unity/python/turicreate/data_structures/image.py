@@ -7,7 +7,7 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-from ..deps import numpy as _np
+from .._deps import numpy as _np
 
 _JPG = "JPG"
 _PNG = "PNG"

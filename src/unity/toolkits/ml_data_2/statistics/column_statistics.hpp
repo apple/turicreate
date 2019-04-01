@@ -25,11 +25,6 @@ public:
   virtual ~column_statistics() = default;
 
   /**
-   * Copy constructor: Don't want to risk making copies of this.
-   */
-  column_statistics(const column_statistics&) = delete;
-
-  /**
    * Equality testing in subclass -- slow!  Use for
    * debugging/testing.  Upcast this to superclass to do full testing.
    */
@@ -125,7 +120,11 @@ public:
   /** One way to set the statistics.  Used by the serialization converters.
    */
   virtual void set_data(const std::map<std::string, variant_type>& params) {} 
-  
+
+  /** Create a copy with the index cleared.
+   */
+  virtual std::shared_ptr<column_statistics> create_cleared_copy() const = 0; 
+   
  private:
 
   /** A snapshot of the options needed for creating the class.

@@ -57,7 +57,7 @@ def load_audio(path, with_path=True, recursive=True, ignore_failure=True, random
     Examples
     --------
     >>> audio_path = "~/Documents/myAudioFiles/"
-    >>> audio_sframe = tc.audio_analysis.load_audio(audio_analysis, recursive=True)
+    >>> audio_sframe = tc.audio_analysis.load_audio(audio_path, recursive=True)
     """
     all_wav_files = []
 
