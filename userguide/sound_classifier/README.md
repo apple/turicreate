@@ -3,11 +3,11 @@
 Given a sound, the goal of the Sound Classifier is to assign it to
 one of a pre-determined number of labels, such as baby crying, siren,
 or dog barking. This Sound Classifier is not intended to be used for
-speech recoginition.
+speech recognition.
 
 #### Loading Data
 
-For example purposees, we will use the ESC-10 dataset. This dataset
+For example purposes, we will use the ESC-10 dataset. This dataset
 contain ten classes. Each class has 40 examples with five seconds of
 audio per example.
 

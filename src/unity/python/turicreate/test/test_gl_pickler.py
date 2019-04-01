@@ -13,7 +13,7 @@ import shutil
 import sys
 
 import pickle
-from turicreate.util import cloudpickle
+from turicreate.util import _cloudpickle
 
 import turicreate as tc
 from turicreate import _gl_pickle as gl_pickle
@@ -167,7 +167,7 @@ class GLPicklingTest(unittest.TestCase):
         ]
         for obj in obj_list:
             file = open(self.filename, 'wb')
-            pickler = cloudpickle.CloudPickler(file)
+            pickler = _cloudpickle.CloudPickler(file)
             pickler.dump(obj)
             file.close()
             unpickler = gl_pickle.GLUnpickler(self.filename)

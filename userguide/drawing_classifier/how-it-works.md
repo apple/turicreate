@@ -3,7 +3,7 @@
 The Drawing Classifier toolkit is a CNN (convolutional neural network) that operates on a 28x28 grayscale bitmap as input. The network consists of three convolutions (with ReLU activations) followed by max-pooling, with two fully connected layers in the 
 end.  
 
-The toolkit operates on (1) grayscale bitmap of any size (resizing is handled automatically) or (2) stroke-based darwing data which is converted to bit-map using a series of built in feature transformations. 
+The toolkit operates on (1) grayscale bitmap of any size (resizing is handled automatically) or (2) stroke-based drawing data which is converted to bit-map using a series of built in feature transformations. 
 
 The stroke-based drawing data must adhere to the following format: Each drawing is a list of strokes, where each stroke is a list of points in sequence in which they were drawn. Each point is a dictionary with two keys, "x" and "y" with numerical values representing the intensity of the stroke. Here is an example of a drawing with two strokes that have five points each:
 

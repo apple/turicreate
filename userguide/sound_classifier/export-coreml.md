@@ -38,7 +38,7 @@ let model = my_sound_classifier()
 
 The input to this model is an `MLMultiArray` of length 15,600 this is
 975ms of data at a sample rate of 16K per second (.975 * 16,000 = 15,600).
-The input must also only be one channel (i.e. mono not stero). It is
+The input must also only be one channel (i.e. mono not stereo). It is
 important that the input to the model be 15,600 elements of one channel
 data at a 16k sample rate.
 
@@ -73,10 +73,10 @@ guard let audioData = try? MLMultiArray(shape:[windowSize as NSNumber], dataType
 }
 
 // Ignore any partial window at the end.
-var windowNumber = 0
 var results = [Dictionary<String, Double>]()
-while ((windowNumber+1) * windowSize) <= (wav_file.length - Int64(windowSize)) {
-   let offset = windowNumber * windowSize
+let windowNumber = wavFile.length / Int64(windowSize)
+for windowIndex in 0..<Int(windowNumber) {
+   let offset = windowIndex * windowSize
    for i in 0...windowSize {
       audioData[i] = NSNumber.init(value: bufferData[0][offset + i])
    }
@@ -85,8 +85,7 @@ while ((windowNumber+1) * windowSize) <= (wav_file.length - Int64(windowSize)) {
    guard let modelOutput = try? model.prediction(input: modelInput) else {
       fatalError("Error calling predict")
    }
-   results.append(modelOutput.categoryProbability)
-   windowNumber += 1
+   results.append(modelOutput.labelProbability)
 }
 ```
 
@@ -111,6 +110,6 @@ for (label, sum) in prob_sums {
 }
 
 let most_probable_label = max_sum_label
-let probability = max_sum / Float(prob_sums.count)
+let probability = max_sum / Float(results.count)
 print("\(most_probable_label) predicted, with probability: \(probability)")
 ```

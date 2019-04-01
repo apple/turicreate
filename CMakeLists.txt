@@ -152,7 +152,7 @@ endif()
 if(APPLE)
   if(TC_BUILD_IOS)
     SET(TC_BASE_SDK iphoneos)
-    SET(COMPILER_FLAGS "${COMPILER_FLAGS} -miphoneos-version-min=12.0 -Wno-c++11-narrowing")
+    SET(COMPILER_FLAGS "${COMPILER_FLAGS} -miphoneos-version-min=10.0 -Wno-c++11-narrowing")
   else()
     SET(TC_BASE_SDK macosx)
 

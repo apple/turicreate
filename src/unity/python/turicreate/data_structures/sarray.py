@@ -14,17 +14,17 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-from ..connect import main as glconnect
-from ..cython.cy_flexible_type import pytype_from_dtype, pytype_from_array_typecode
-from ..cython.cy_flexible_type import infer_type_of_list, infer_type_of_sequence
-from ..cython.cy_sarray import UnitySArrayProxy
-from ..cython.context import debug_trace as cython_context
+from .._connect import main as glconnect
+from .._cython.cy_flexible_type import pytype_from_dtype, pytype_from_array_typecode
+from .._cython.cy_flexible_type import infer_type_of_list, infer_type_of_sequence
+from .._cython.cy_sarray import UnitySArrayProxy
+from .._cython.context import debug_trace as cython_context
 from ..util import _is_non_string_iterable, _make_internal_url
 from ..visualization import Plot, LABEL_DEFAULT
 from .image import Image as _Image
 from .. import aggregate as _aggregate
-from ..deps import numpy, HAS_NUMPY
-from ..deps import pandas, HAS_PANDAS
+from .._deps import numpy, HAS_NUMPY
+from .._deps import pandas, HAS_PANDAS
 
 import time
 import sys

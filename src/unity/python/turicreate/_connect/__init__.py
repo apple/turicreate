@@ -3,11 +3,10 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+# of the BSD license. See the LICENSE file for details.
 '''
-Dummy mocking module for numpy.
-When numpy is not available we will import this module as turicreate.deps.numpy,
-and set HAS_NUMPY to false. All methods that access numpy should check the HAS_NUMPY
-flag, therefore, attributes/class/methods in this module should never be actually used.
+This module defines classes and global functions for creating and managing
+connection to the turicreate backend server.
 '''
 from __future__ import print_function as _
 from __future__ import division as _

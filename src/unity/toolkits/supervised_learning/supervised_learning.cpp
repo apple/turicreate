@@ -1037,6 +1037,8 @@ void supervised_learning_model_base::api_train(
   sframe X = f_data.materialize_to_sframe(); 
     
   sframe y = data.select_columns({target}).materialize_to_sframe();
+    
+  check_target_column_type(this->name(), y);
 
   ml_missing_value_action missing_value_action =
     this->support_missing_value() ? ml_missing_value_action::USE_NAN
@@ -1049,8 +1051,7 @@ void supervised_learning_model_base::api_train(
     valid_X = validation_data.select_columns(f_data.column_names()).materialize_to_sframe();
     
     valid_y = validation_data.select_columns({target}).materialize_to_sframe();
-
-    
+      
     check_target_column_type(this->name(), valid_y);
 
     auto valid_filter_names = f_data.column_names();

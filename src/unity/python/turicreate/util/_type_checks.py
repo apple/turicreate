@@ -38,33 +38,6 @@ def _raise_error_if_not_of_type(arg, expected_type, arg_name=None):
     if not any(map(lambda x: isinstance(arg, x), lst_expected_type)):
         raise TypeError(err_msg)
 
-def _raise_error_if_not_function(arg, arg_name=None):
-    """
-    Check if the input is of expected type.
-
-    Parameters
-    ----------
-    arg            : Input argument.
-
-    arg_name      : The name of the variable in the function being used. No
-                    name is assumed if set to None.
-
-    Examples
-    --------
-    _raise_error_if_not_function(func, 'func')
-
-    """
-    display_name = '%s ' % arg_name if arg_name is not None else ""
-    err_msg = "Argument %smust be a function." % display_name
-    if not hasattr(arg, '__call__'):
-        raise TypeError(err_msg)
-
 def _is_non_string_iterable(obj):
     # In Python 3, str implements '__iter__'.
     return (hasattr(obj, '__iter__') and not isinstance(obj, str))
-
-def _is_string(obj):
-    return (( _sys.version_info.major == 3 and isinstance(obj, str))
-            or (_sys.version_info.major == 2 and isinstance(obj, basestring)))
-
-

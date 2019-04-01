@@ -6,8 +6,8 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-from turicreate.deps import numpy as np, HAS_NUMPY
-from turicreate.deps import pandas as pd, HAS_PANDAS
+from turicreate._deps import numpy as np, HAS_NUMPY
+from turicreate._deps import pandas as pd, HAS_PANDAS
 import unittest
 from . import util
 import os
