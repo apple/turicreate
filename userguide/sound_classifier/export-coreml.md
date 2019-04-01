@@ -78,12 +78,12 @@ let windowNumber = wavFile.length / Int64(windowSize)
 for windowIndex in 0..<Int(windowNumber) {
    let offset = windowIndex * windowSize
    for i in 0...windowSize {
-       audioData[i] = NSNumber.init(value: bufferData[0][offset + i])
+      audioData[i] = NSNumber.init(value: bufferData[0][offset + i])
    }
    let modelInput = modelInput(audio: audioData)
 
    guard let modelOutput = try? model.prediction(input: modelInput) else {
-       fatalError("Error calling predict")
+      fatalError("Error calling predict")
    }
    results.append(modelOutput.labelProbability)
 }
