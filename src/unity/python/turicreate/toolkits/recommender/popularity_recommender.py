@@ -11,7 +11,6 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import turicreate as _turicreate
 from turicreate.toolkits.recommender.util import _Recommender
-from turicreate.cython.cy_server import QuietProgress
 
 def create(observation_data,
            user_id='user_id', item_id='item_id', target=None,
@@ -79,7 +78,8 @@ def create(observation_data,
     --------
     PopularityRecommender
     """
-    
+    from turicreate._cython.cy_server import QuietProgress
+
     opts = {}
     model_proxy = _turicreate.extensions.popularity()
     model_proxy.init_options(opts)

@@ -48,7 +48,7 @@ ADD_CUSTOM_COMMAND(
   TARGET clean_turicreate_binaries
 )
 
-add_subdirectory(cython)
+add_subdirectory(_cython)
 
 set_property(DIRECTORY PROPERTY INSTALLATION_EXTENSIONS "${INSTALLATION_EXTENSIONS}")
 set_property(DIRECTORY PROPERTY INSTALLATION_BINARY_FILES "${INSTALLATION_BINARY_FILES}")

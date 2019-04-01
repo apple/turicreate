@@ -15,7 +15,7 @@ if sys.version_info.major > 2:
     long = int
 import random
 
-from ..cython.cy_variant import _debug_is_flexible_type_encoded
+from .._cython.cy_variant import _debug_is_flexible_type_encoded
 
 
 class VariantCheckTest(unittest.TestCase):

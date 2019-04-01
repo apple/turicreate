@@ -11,16 +11,8 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 import os
-import sys
-import time
 import logging
 import shutil
-import tempfile
-import subprocess
-import re
-from subprocess import PIPE
-from .type_checks import _is_string
-from . import _get_s3_endpoint, _get_aws_credentials
 
 __logger__ = logging.getLogger(__name__)
 
@@ -41,11 +33,6 @@ def get_protocol(path):
         return ''
     return path[0:pos].lower()
 
-def is_path(string):
-    if not isinstance(string, str):
-        return False
-    return is_local_path(string) or is_s3_path(string)
-
 def expand_full_path(path):
     '''Expand a relative path to a full path
 
@@ -55,28 +42,9 @@ def expand_full_path(path):
     '''
     return os.path.abspath(os.path.expanduser(path))
 
-def mkdir(path):
-    if is_local_path(path):
-        os.makedirs(path)
-    else:
-        raise ValueError('Unsupported protocol %s' % path)
-
 def exists(path, aws_credentials = {}):
     if is_local_path(path):
         return os.path.exists(path)
-    else:
-        raise ValueError('Unsupported protocol %s' % path)
-
-def touch(path):
-    if is_local_path(path):
-        with open(path, 'a'):
-            os.utime(path, None)
-    else:
-        raise ValueError('Unsupported protocol %s' % path)
-
-def read(path):
-    if is_local_path(path):
-        return open(path).read()
     else:
         raise ValueError('Unsupported protocol %s' % path)
 

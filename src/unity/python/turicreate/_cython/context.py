@@ -29,7 +29,7 @@ class debug_trace(object):
 
     def _fetch_unity_log(self):
         try:
-            from ..connect.main import get_server
+            from .._connect.main import get_server
             logfile = get_server().unity_log
             logcontent =  "\n======================================="
             logcontent += "\n unity server log location: " + logfile

@@ -14,13 +14,13 @@ import datetime as dt
 from ..data_structures import image
 from .. import SArray
 import os
-from ..cython.cy_flexible_type import _translate_through_flexible_type as _flexible_type
-from ..cython.cy_flexible_type import _translate_through_flex_list as _tr_flex_list
-from ..cython.cy_flexible_type import infer_type_of_list
-from ..cython.cy_flexible_type import _get_inferred_column_type, _all_convertable
-from ..cython.cy_flexible_type import _check_ft_pyobject_hint_path
-from ..cython.cy_flexible_type import pytype_from_type_name
-from ..util.timezone import GMT
+from .._cython.cy_flexible_type import _translate_through_flexible_type as _flexible_type
+from .._cython.cy_flexible_type import _translate_through_flex_list as _tr_flex_list
+from .._cython.cy_flexible_type import infer_type_of_list
+from .._cython.cy_flexible_type import _get_inferred_column_type, _all_convertable
+from .._cython.cy_flexible_type import _check_ft_pyobject_hint_path
+from .._cython.cy_flexible_type import pytype_from_type_name
+from .._cython.cy_flexible_type import GMT
 import datetime
 from itertools import product
 from copy import copy
@@ -35,7 +35,7 @@ NoneType = type(None)
 current_file_dir = os.path.dirname(os.path.realpath(__file__))
 
 def from_lambda(v):
-    from ..connect import main as glconnect
+    from .._connect import main as glconnect
     u = glconnect.get_unity()
     return u.eval_lambda(lambda x: x, v)
 

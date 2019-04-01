@@ -3,7 +3,6 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
-import array
 import turicreate
 import logging
 import multiprocessing
@@ -11,8 +10,8 @@ import sys
 import time
 import unittest
 
-from turicreate.connect import main as glconnect
-from turicreate.cython import cy_test_utils
+from turicreate._connect import main as glconnect
+from turicreate._cython import cy_test_utils
 
 def fib(i):
     if i <= 2:

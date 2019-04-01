@@ -17,7 +17,7 @@ from .cy_sframe cimport create_proxy_wrapper_from_existing_proxy as sframe_proxy
 from .cy_cpp_utils cimport str_to_cpp, cpp_to_str
 from .cy_cpp_utils cimport to_vector_of_strings, from_vector_of_strings
 
-from ..util import cloudpickle
+from ..util import _cloudpickle
 
 GL_VERTEX_ID_COLUMN = "__id" 
 GL_SOURCE_VID_COLUMN = "__src_id" 
@@ -198,7 +198,7 @@ cdef class UnityGraphProxy:
 
     cpdef lambda_triple_apply(self, object fn, _mutated_fields):
         cdef vector[string] mutated_fields = to_vector_of_strings(_mutated_fields)
-        cdef string lambda_str = cloudpickle.dumps(fn) 
+        cdef string lambda_str = _cloudpickle.dumps(fn)
         cdef unity_sgraph_base_ptr newgraph 
         with nogil:
             newgraph = self.thisptr.lambda_triple_apply(lambda_str, mutated_fields)

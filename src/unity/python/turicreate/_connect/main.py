@@ -10,8 +10,8 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-from ..cython.cy_unity import UnityGlobalProxy
-from ..cython.cy_server import EmbeddedServer
+from .._cython.cy_unity import UnityGlobalProxy
+from .._cython.cy_server import EmbeddedServer
 
 import decorator
 import logging
