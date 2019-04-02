@@ -65,32 +65,57 @@ std::vector<std::string> get_supported_metrics() {
           "confusion_matrix", "roc_curve"};
 }
 
-std::tuple<float,size_t> get_accuracy(size_t prediction_window, size_t num_classes, shared_float_array output_chunk, shared_float_array classes_chunk, data_iterator::batch::chunk_info info ){
+std::tuple<float,size_t> get_accuracy_per_sequence(size_t prediction_window, size_t num_classes, 
+  const shared_float_array& output_chunk, const shared_float_array& classes_chunk, data_iterator::batch::chunk_info info) {
       
 
-    const float* output_ptr = output_chunk.data();
-    const float* truth_ptr = classes_chunk.data();
+  const float* output_ptr = output_chunk.data();
+  const float* truth_ptr = classes_chunk.data();
     
-    size_t cumulative_samples = 0;
-    size_t seq_len = 0;
-    float cumulative_seq_accuracy = 0.f;
+  size_t cumulative_samples = 0;
+  size_t seq_len = 0;
+  float cumulative_seq_accuracy = 0.f;
 
 
-      while (cumulative_samples < info.num_samples) {
-        cumulative_samples += prediction_window;
-       
-          if ((std::max_element(output_ptr, output_ptr + num_classes)- output_ptr == *truth_ptr)){
-            cumulative_seq_accuracy += 1.0;
-          };
-        seq_len++;
-        truth_ptr++;
-        output_ptr += num_classes;
+  while (cumulative_samples < info.num_samples) {
 
-      }
+    size_t prediction = std::max_element(output_ptr, output_ptr + num_classes) - output_ptr;
 
-  return std::make_tuple(cumulative_seq_accuracy,seq_len);
+    if (prediction == *truth_ptr) {
+      cumulative_seq_accuracy += 1.0;
+      };
+
+    cumulative_samples += prediction_window;
+    seq_len++;
+    truth_ptr++;
+    output_ptr += num_classes;
+
+  }
+
+  return std::make_tuple(cumulative_seq_accuracy, seq_len);
 
 }
+
+
+float get_accuracy_per_batch(size_t prediction_window, size_t num_classes, 
+  const shared_float_array& output, const data_iterator::batch& batch) {
+
+  float cumulative_per_batch_accuracy = 0.f;
+
+  for (size_t i = 0; i < batch.batch_info.size(); ++i){
+
+    const shared_float_array& output_chunk = output[i];
+    const shared_float_array& classes_chunk = batch.labels[i];
+    data_iterator::batch::chunk_info info = batch.batch_info[i];
+    float cumulative_seq_accuracy = 0.f;
+    size_t seq_len = 0;
+    
+    std::tie (cumulative_seq_accuracy, seq_len) = get_accuracy_per_sequence(prediction_window, num_classes, output_chunk, classes_chunk, info);
+    cumulative_per_batch_accuracy += cumulative_per_batch_accuracy / seq_len;
+  }
+  return cumulative_per_batch_accuracy/batch.batch_info.size();
+}
+
 
 }  // namespace
 
@@ -456,7 +481,6 @@ void activity_classifier::perform_training_iteration() {
   size_t num_batches = 0;
   size_t num_classes = read_state<size_t>("num_classes");
   size_t prediction_window = read_state<size_t>("prediction_window");
-  //flex_vec preds(num_classes);
   
   while (training_data_iterator_->has_next_batch()) {
     data_iterator::batch batch =
@@ -480,26 +504,7 @@ void activity_classifier::perform_training_iteration() {
     
     const shared_float_array& output = results.at("output");
     float cumulative_per_batch_accuracy = 0.f;
-    
-    for (size_t i = 0; i < batch.batch_info.size(); ++i) {
-      
-      shared_float_array output_chunk = output[i];
-
-      // Actual labels 
-      shared_float_array classes_chunk = batch.labels[i];
-      data_iterator::batch::chunk_info info = batch.batch_info[i];
-
-      size_t seq_len = 0;
-      float cumulative_seq_accuracy = 0.f;
-
-      std::tie (cumulative_seq_accuracy, seq_len) = get_accuracy(prediction_window,num_classes, output_chunk, classes_chunk, info);
-
-
-      cumulative_per_batch_accuracy += cumulative_seq_accuracy / seq_len;
-      
-    };
-
-    cumulative_batch_accuracy += cumulative_per_batch_accuracy/ batch.batch_info.size();
+    cumulative_per_batch_accuracy = get_accuracy_per_batch(prediction_window, num_classes, output, batch);
     ++num_batches;
 
   }
