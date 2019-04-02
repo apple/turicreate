@@ -10,6 +10,7 @@ import SingleImage from './SingleImage';
 import LabelContainer from './LabelContainer';
 import LabelModal from './LabelModal';
 import ErrorBar from './ErrorBar';
+import NavigationBar from './NavigationBar';
 import { LabelType } from './utils';
 
 const DEFAULT_NUM_EXPECTED = 10;
@@ -97,6 +98,7 @@ class Annotate extends Component {
       }
     }
   }
+  
 
   getData = (start, end) => {
     this.cleanCache(start, end);
@@ -148,6 +150,7 @@ class Annotate extends Component {
       imageData: previousImageData
     });
   }
+
 
   clearError = () => {
     this.setState({
@@ -376,6 +379,11 @@ class Annotate extends Component {
                        toggleHideAnnotated={this.toggleHideAnnotated.bind(this)}/>
 
             {this.renderMainContent()}
+        <NavigationBar infiniteScroll={this.state.infiniteScroll}
+                       toggleInfiniteScroll={this.toggleInfiniteScroll.bind(this)}
+                       updateIncrementalCurrentIndex={this.updateIncrementalCurrentIndex.bind(this)}
+                       getData={this.getData.bind(this)}
+                       getAnnotations={this.getAnnotations.bind(this)}/>
         </div>
         <div className={style.leftBar}>
         <LabelContainer labels={this.state.labels}
@@ -387,6 +395,7 @@ class Annotate extends Component {
                         openLabelModal={this.openLabelModal.bind(this)}
                         closeLabelModal={this.closeLabelModal.bind(this)}
                         annotationData={this.state.annotationData}/>
+
         </div>
       </div>
     );
