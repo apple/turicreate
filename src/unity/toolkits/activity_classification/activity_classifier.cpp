@@ -73,8 +73,8 @@ std::tuple<float,size_t> get_accuracy_per_sequence(size_t prediction_window, siz
   const float* truth_ptr = classes_chunk.data();
     
   size_t cumulative_samples = 0;
-  size_t seq_len = 0;
-  float cumulative_seq_accuracy = 0.f;
+  size_t num_predictions = 0;
+  size_t num_correct_predictions = 0.f;
 
 
   while (cumulative_samples < info.num_samples) {
@@ -82,17 +82,17 @@ std::tuple<float,size_t> get_accuracy_per_sequence(size_t prediction_window, siz
     size_t prediction = std::max_element(output_ptr, output_ptr + num_classes) - output_ptr;
 
     if (prediction == *truth_ptr) {
-      cumulative_seq_accuracy += 1.0;
+      num_correct_predictions += 1;
       };
 
     cumulative_samples += prediction_window;
-    seq_len++;
+    num_predictions++;
     truth_ptr++;
     output_ptr += num_classes;
 
   }
 
-  return std::make_tuple(cumulative_seq_accuracy, seq_len);
+  return std::make_tuple(num_correct_predictions, num_predictions);
 
 }
 
@@ -107,11 +107,11 @@ float get_accuracy_per_batch(size_t prediction_window, size_t num_classes,
     const shared_float_array& output_chunk = output[i];
     const shared_float_array& classes_chunk = batch.labels[i];
     data_iterator::batch::chunk_info info = batch.batch_info[i];
-    float cumulative_seq_accuracy = 0.f;
-    size_t seq_len = 0;
-    
-    std::tie (cumulative_seq_accuracy, seq_len) = get_accuracy_per_sequence(prediction_window, num_classes, output_chunk, classes_chunk, info);
-    cumulative_per_batch_accuracy += cumulative_per_batch_accuracy / seq_len;
+    size_t num_correct_predictions;
+    size_t num_predictions;
+
+    std::tie (num_correct_predictions, num_predictions) = get_accuracy_per_sequence(prediction_window, num_classes, output_chunk, classes_chunk, info);
+    cumulative_per_batch_accuracy += num_correct_predictions / num_predictions;
   }
   return cumulative_per_batch_accuracy/batch.batch_info.size();
 }
