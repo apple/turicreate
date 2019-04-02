@@ -76,7 +76,8 @@ def get_deep_features(audio_data, verbose=True):
     return feature_extractor.get_deep_features(audio_data, verbose=verbose)
 
 
-def create(dataset, target, feature, max_iterations=10, verbose=True,
+def create(dataset, target, feature, max_iterations=10,
+           custom_layer_sizes=[100, 100], verbose=True,
            validation_set='auto', batch_size=64):
     '''
     Creates a :class:`SoundClassifier` model.
@@ -104,6 +105,14 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
         the data can result in a more accurately trained model. Consider
         increasing this (the default value is 10) if the training accuracy is
         low.
+
+    custom_layer_sizes : list of ints
+        Specifies the architecture of the custom neural network. This neural
+        network is made up of a series of dense layers. This parameter allows
+        you to specify how many layers and the number of units in each layer.
+        The custom neural network will always have one more layer than the
+        length of this list. The last layer is always a soft max with units
+        equal to the number of classes.
 
     verbose : bool, optional
         If True, prints progress updates and model details.
@@ -135,6 +144,11 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
         raise _ToolkitError("'%s' column is not audio data." % feature)
     if target not in dataset.column_names():
         raise _ToolkitError("Target column '%s' does not exist" % target)
+    if not _tc.util._is_non_string_iterable(custom_layer_sizes) or len(custom_layer_sizes) == 0:
+        raise _ToolkitError("'custom_layer_sizes' must be a non-empty list.")
+    for i in custom_layer_sizes:
+        if not isinstance(i, int):
+            raise _ToolkitError("'custom_layer_sizes' must contain only integers.")
     if not (isinstance(validation_set, _tc.SFrame) or validation_set == 'auto' or validation_set is None):
         raise TypeError("Unrecognized value for 'validation_set'")
     if isinstance(validation_set, _tc.SFrame):
@@ -197,7 +211,7 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
                                     label=train_data['labels'].to_numpy(),
                                     batch_size=training_batch_size, shuffle=True)
 
-    custom_NN = SoundClassifier._build_custom_neural_network(feature_extractor.output_length, num_labels)
+    custom_NN = SoundClassifier._build_custom_neural_network(feature_extractor.output_length, num_labels, custom_layer_sizes)
     ctx = _mxnet_utils.get_mxnet_context()
     custom_NN.initialize(mx.init.Xavier(), ctx=ctx)
 
@@ -271,6 +285,7 @@ def create(dataset, target, feature, max_iterations=10, verbose=True,
         '_feature_extractor': feature_extractor,
         '_id_to_class_label': {v: k for k, v in class_label_to_id.items()},
         'classes': classes,
+        'custom_layer_sizes': custom_layer_sizes,
         'feature': feature,
         'feature_extractor_name': feature_extractor.name,
         'num_classes': num_labels,
@@ -296,14 +311,22 @@ class SoundClassifier(_CustomModel):
     _PYTHON_SOUND_CLASSIFIER_VERSION = 1
 
     @staticmethod
-    def _build_custom_neural_network(num_inputs, num_labels):
+    def _build_custom_neural_network(num_inputs, num_labels, layer_sizes):
         from mxnet.gluon import nn
 
         net = nn.Sequential(prefix='custom_')
         with net.name_scope():
-            net.add(nn.Dense(100, in_units=num_inputs, activation='relu', prefix='dense0_'))
-            net.add(nn.Dense(100, activation='relu', prefix='dense1_'))
-            net.add(nn.Dense(num_labels, prefix='dense2_'))
+            for i, cur_layer_size in enumerate(layer_sizes):
+                prefix = "dense%d_" % i
+                if i == 0:
+                    in_units = num_inputs
+                else:
+                    in_units = layer_sizes[i-1]
+
+                net.add(nn.Dense(cur_layer_size, in_units=in_units, activation='relu', prefix=prefix))
+
+            prefix = 'dense%d_' % len(layer_sizes)
+            net.add(nn.Dense(num_labels, prefix=prefix))
         return net
 
     def __init__(self, state):
@@ -342,7 +365,14 @@ class SoundClassifier(_CustomModel):
         # Load the custom nerual network
         num_classes = state['num_classes']
         num_inputs = state['_feature_extractor'].output_length
-        net = SoundClassifier._build_custom_neural_network(num_inputs, num_classes)
+        if 'custom_layer_sizes' in state:
+            # These are deserialized as floats
+            custom_layer_sizes = list(map(int, state['custom_layer_sizes']))
+        else:
+            # Default value, was not part of state for only Turi Create 5.4
+            custom_layer_sizes = [100, 100]
+        state['custom_layer_sizes'] = custom_layer_sizes
+        net = SoundClassifier._build_custom_neural_network(num_inputs, num_classes, custom_layer_sizes)
         net_params = net.collect_params()
         ctx = _mxnet_utils.get_mxnet_context()
         _mxnet_utils.load_net_params_from_state(net_params, state['_custom_classifier'], ctx=ctx)
@@ -395,10 +425,12 @@ class SoundClassifier(_CustomModel):
         model_fields = [
             ('Number of classes', 'num_classes'),
             ('Number of training examples', 'num_examples'),
+            ('Custom layer sizes', 'custom_layer_sizes'),
         ]
         training_fields = [
             ('Number of examples', 'num_examples'),
             ("Training accuracy", 'training_accuracy'),
+            ("Validation accuracy", 'validation_accuracy'),
             ("Training time (sec)", 'training_time'),
         ]
 
