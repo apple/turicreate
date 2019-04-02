@@ -65,8 +65,10 @@ std::vector<std::string> get_supported_metrics() {
           "confusion_matrix", "roc_curve"};
 }
 
+
 size_t count_correct_predictions(size_t num_classes, const shared_float_array& output_chunk, 
     const shared_float_array& label_chunk, size_t num_predictions) {
+
       
   const float* output_ptr = output_chunk.data();
   const float* truth_ptr = label_chunk.data();
@@ -152,18 +154,30 @@ void activity_classifier::train(gl_sframe data, std::string target_column_name,
 {
   // Begin printing progress.
   // TODO: Make progress printing optional.
-  
-  // TODO: Support validation set.
-  training_table_printer_.reset(new table_printer(
+
+  if (variant_is<gl_sframe>(validation_data) ){
+
+    training_table_printer_.reset(new table_printer(
+    { {"Iteration", 12}, {"Train Accuracy", 12}, {"Train Loss", 12}, {"Validation Accuracy", 12}, {"Validation Loss", 12}, {"Elapsed Time", 12} }));
+
+  }
+  // else if (variant_is<flex_string>(validation_data) ){
+  //   if (variant_get_value<flex_string>(validation_data) == "auto"){
+  //     std::cout << "WIP";
+  //   }
+  // }
+  else {
+
+    training_table_printer_.reset(new table_printer(
     { {"Iteration", 12}, {"Train Accuracy", 12}, {"Train Loss", 12}, {"Elapsed Time", 12} }));
-  
-  
-  // Instantiate the training dependencies: data iterator, compute context,
-  // backend NN model.
+  }
+
   init_train(std::move(data), std::move(target_column_name),
              std::move(session_id_column_name), std::move(validation_data),
              std::move(opts));
 
+  // Instantiate the training dependencies: data iterator, compute context,
+  // backend NN model.
   // Perform all the iterations at once.
   flex_int max_iterations = read_state<flex_int>("max_iterations");
   while (read_state<flex_int>("training_iterations") < max_iterations) {
@@ -404,6 +418,19 @@ void activity_classifier::init_train(
   data_params.predictions_in_chunk = NUM_PREDICTIONS_PER_CHUNK;
   training_data_iterator_ = create_iterator(data_params);
 
+  // Bind the validation data to a data iterator.
+  if (variant_is<gl_sframe>(validation_data)) {
+    gl_sframe validation_sf = variant_get_value<gl_sframe>(validation_data);
+    data_iterator::parameters validation_data_params;
+    validation_data_params.data = validation_sf;
+    validation_data_params.target_column_name = target_column_name;
+    validation_data_params.session_id_column_name = session_id_column_name;
+    validation_data_params.feature_column_names = feature_column_names;
+    validation_data_params.prediction_window =
+        read_state<flex_int>("prediction_window");
+    validation_data_params.predictions_in_chunk = NUM_PREDICTIONS_PER_CHUNK;
+    validation_data_iterator_ = create_iterator(validation_data_params);
+  }
   // Instantiate the compute context.
   training_compute_context_ = create_compute_context();
   if (training_compute_context_ == nullptr) {
@@ -507,18 +534,87 @@ void activity_classifier::perform_training_iteration() {
   float average_batch_accuracy = cumulative_batch_accuracy / num_batches;
 
   // Report progress if we have an active table printer.
-  // TODO: Report validation metrics.
-  
-  if (training_table_printer_) {
-    training_table_printer_->print_progress_row(
-        iteration_idx, iteration_idx + 1, average_batch_accuracy, average_batch_loss, progress_time());
+  if (validation_data_iterator_ != nullptr) {
+
+    float cumulative_val_accuracy = 0.f;
+    float cumulative_val_loss = 0.f;
+    size_t val_size = 0;
+
+    validation_data_iterator_->reset();
+
+    while (validation_data_iterator_->has_next_batch()) {
+      data_iterator::batch val =
+          validation_data_iterator_->next_batch(batch_size);
+      std::map<std::string, shared_float_array> results =
+          training_model_->predict({
+              {"input", val.features},
+              {"labels", val.labels},
+              {"weights", val.weights},
+          });
+
+      const shared_float_array &val_output = results.at("output");
+
+      shared_float_array loss = results.at("loss");
+
+      float val_loss = std::accumulate(loss.data(), loss.data() + loss.size(),
+                                       0.f, std::plus<float>());
+
+      cumulative_val_loss += val_loss;
+      float cumulative_per_seq_accuracy = 0.f;
+      for (size_t i = 0; i < val.batch_info.size(); ++i) {
+
+        const shared_float_array &output_chunk = val_output[i];
+        const shared_float_array &label_chunk = val.labels[i];
+        data_iterator::batch::chunk_info info = val.batch_info[i];
+        size_t num_predictions =
+            (info.num_samples + prediction_window - 1) / prediction_window;
+        size_t num_correct_predictions = count_correct_predictions(
+            num_classes, output_chunk, label_chunk, num_predictions);
+
+        cumulative_per_seq_accuracy +=
+            static_cast<float>(num_correct_predictions) / num_predictions;
+      }
+      cumulative_val_accuracy += cumulative_per_seq_accuracy;
+
+      val_size = +val.batch_info.size();
+    }
+
+    float average_val_accuracy = cumulative_val_accuracy / val_size;
+    float average_val_loss = cumulative_val_loss / val_size;
+
+    if (training_table_printer_) {
+
+      training_table_printer_->print_progress_row(
+          iteration_idx, iteration_idx + 1, average_batch_accuracy,
+          average_batch_loss, average_val_accuracy, average_val_loss,
+          progress_time());
+
+      add_or_update_state({
+          {"training_iterations", iteration_idx + 1},
+          {"training_accuracy", average_batch_accuracy},
+          {"training_log_loss", average_batch_loss},
+          {"validation_accuracy", average_val_accuracy},
+          {"validation_log_loss", average_val_loss},
+      });
+    }
+
   }
 
-  add_or_update_state({
-      { "training_iterations", iteration_idx + 1 },
-      { "training_accuracy" , average_batch_accuracy },
-      { "training_log_loss", average_batch_loss },
-  });
+  else {
+
+    if (training_table_printer_) {
+
+      training_table_printer_->print_progress_row(
+          iteration_idx, iteration_idx + 1, average_batch_accuracy,
+          average_batch_loss, progress_time());
+    }
+
+    add_or_update_state({
+        {"training_iterations", iteration_idx + 1},
+        {"training_accuracy", average_batch_accuracy},
+        {"training_log_loss", average_batch_loss},
+    });
+  }
 
   training_data_iterator_->reset();
 }

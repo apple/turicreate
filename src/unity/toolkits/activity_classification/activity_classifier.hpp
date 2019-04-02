@@ -192,6 +192,7 @@ class EXPORT activity_classifier: public ml_model_base {
   // Primary dependencies for training. These should be nonnull while training
   // is in progress.
   std::unique_ptr<data_iterator> training_data_iterator_;
+  std::unique_ptr<data_iterator> validation_data_iterator_;
   std::unique_ptr<neural_net::compute_context> training_compute_context_;
   std::unique_ptr<neural_net::model_backend> training_model_;
 
