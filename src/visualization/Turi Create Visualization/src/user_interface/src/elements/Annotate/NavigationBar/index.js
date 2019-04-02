@@ -27,7 +27,6 @@ enterPressJumpRow(e) {
       	{
       	this.props.toggleInfiniteScroll();
         }
-      console.log(image_number);
 
       
       }
