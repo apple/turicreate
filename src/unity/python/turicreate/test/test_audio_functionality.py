@@ -295,7 +295,11 @@ class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
         self.data = copy(binary_test_data)
         self.data['labels'] = self.data['labels'].apply(lambda x: 0 if x == 'white noise' else 1)
         self.is_binary_classification = True
-        self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio', validation_set=None)
+        layer_sizes = [100]
+        self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio',
+                                                custom_layer_sizes = layer_sizes,
+                                                validation_set=None)
+        assert(self.model.custom_layer_sizes == layer_sizes)
 
 
 class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabels):
@@ -312,7 +316,11 @@ class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabel
         self.data = copy(binary_test_data).append(constant_noise)
 
         self.is_binary_classification = False
-        self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio', validation_set=self.data)
+        layer_sizes = [75, 100, 20]
+        self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio',
+                                                custom_layer_sizes = layer_sizes,
+                                                validation_set=self.data)
+        assert(self.model.custom_layer_sizes == layer_sizes)
 
     def test_validation_set(self):
         self.assertTrue(self.model.validation_accuracy is not None)
@@ -387,7 +395,7 @@ class ReuseDeepFeatures(unittest.TestCase):
         predictions_from_audio = model.predict(original_audio_data, output_type='probability_vector')
         predictions_from_deep_features = model.predict(deep_features, output_type='probability_vector')
         for a, b in zip(predictions_from_audio, predictions_from_deep_features):
-            self.assertAlmostEqual(a, b)
+            self.assertAlmostEqual(list(a), list(b))
 
         # Test classify
         predictions_from_audio = model.classify(original_audio_data)
@@ -399,7 +407,7 @@ class ReuseDeepFeatures(unittest.TestCase):
         predictions_from_audio = model.predict_topk(original_audio_data, k=2)
         predictions_from_deep_features = model.predict_topk(deep_features, k=2)
         for a, b in zip(predictions_from_audio, predictions_from_deep_features):
-            self.assertEqual(a, b)
+            self.assertAlmostEqual(a, b)
 
         # Test evaluate
         predictions_from_audio = model.evaluate(tc.SFrame({'features': original_audio_data,
