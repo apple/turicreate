@@ -65,6 +65,33 @@ std::vector<std::string> get_supported_metrics() {
           "confusion_matrix", "roc_curve"};
 }
 
+std::tuple<float,size_t> get_accuracy(size_t prediction_window, size_t num_classes, shared_float_array output_chunk, shared_float_array classes_chunk, data_iterator::batch::chunk_info info ){
+      
+
+    const float* output_ptr = output_chunk.data();
+    const float* truth_ptr = classes_chunk.data();
+    
+    size_t cumulative_samples = 0;
+    size_t seq_len = 0;
+    float cumulative_seq_accuracy = 0.f;
+
+
+      while (cumulative_samples < info.num_samples) {
+        cumulative_samples += prediction_window;
+       
+          if ((std::max_element(output_ptr, output_ptr + num_classes)- output_ptr == *truth_ptr)){
+            cumulative_seq_accuracy += 1.0;
+          };
+        seq_len++;
+        truth_ptr++;
+        output_ptr += num_classes;
+
+      }
+
+  return std::make_tuple(cumulative_seq_accuracy,seq_len);
+
+}
+
 }  // namespace
 
 void activity_classifier::init_options(
@@ -429,7 +456,7 @@ void activity_classifier::perform_training_iteration() {
   size_t num_batches = 0;
   size_t num_classes = read_state<size_t>("num_classes");
   size_t prediction_window = read_state<size_t>("prediction_window");
-  flex_vec preds(num_classes);
+  //flex_vec preds(num_classes);
   
   while (training_data_iterator_->has_next_batch()) {
     data_iterator::batch batch =
@@ -461,43 +488,24 @@ void activity_classifier::perform_training_iteration() {
       // Actual labels 
       shared_float_array classes_chunk = batch.labels[i];
       data_iterator::batch::chunk_info info = batch.batch_info[i];
-      
 
-      const float* output_ptr = output_chunk.data();
-      const float* truth_ptr = classes_chunk.data();
-      
-      size_t cumulative_samples = 0;
-      size_t seq_len =0;
+      size_t seq_len = 0;
       float cumulative_seq_accuracy = 0.f;
 
+      std::tie (cumulative_seq_accuracy, seq_len) = get_accuracy(prediction_window,num_classes, output_chunk, classes_chunk, info);
 
-      while (cumulative_samples < info.num_samples) {
 
-        // Copy the probability vector to get accuracy.
-        std::copy(output_ptr, output_ptr + num_classes, preds.begin());
-        output_ptr += num_classes;
-        
-        cumulative_samples += prediction_window;
-        seq_len++;
-        truth_ptr ++;
-        if ((std::max_element(preds.begin(), preds.end())-preds.begin() == *truth_ptr ) ){
-          cumulative_seq_accuracy+=1.0;
-
-        };
-
-      }
-
-      cumulative_per_batch_accuracy += cumulative_seq_accuracy/ (seq_len + 1e-5);
+      cumulative_per_batch_accuracy += cumulative_seq_accuracy / seq_len;
       
     };
 
-    cumulative_batch_accuracy += cumulative_per_batch_accuracy/ (batch.batch_info.size() + 1e-5);
+    cumulative_batch_accuracy += cumulative_per_batch_accuracy/ batch.batch_info.size();
     ++num_batches;
 
   }
 
   float average_batch_loss = cumulative_batch_loss / num_batches;
-  float average_batch_accuracy = cumulative_batch_accuracy / num_batches  ;
+  float average_batch_accuracy = cumulative_batch_accuracy / num_batches;
 
   // Report progress if we have an active table printer.
   // TODO: Report validation metrics.
@@ -509,7 +517,7 @@ void activity_classifier::perform_training_iteration() {
 
   add_or_update_state({
       { "training_iterations", iteration_idx + 1 },
-      {"training_accuracy" , average_batch_accuracy},
+      { "training_accuracy" , average_batch_accuracy },
       { "training_log_loss", average_batch_loss },
   });
 
