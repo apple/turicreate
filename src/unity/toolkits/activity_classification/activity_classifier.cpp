@@ -72,14 +72,14 @@ size_t count_correct_predictions(size_t num_classes, const shared_float_array& o
   const float* truth_ptr = label_chunk.data();
     
 
-  size_t num_correct_predictions = 0.f;
+  size_t num_correct_predictions = 0;
   
   for (size_t i = 0; i < num_predictions; i++) {
 
     size_t prediction = std::max_element(output_ptr, output_ptr + num_classes) - output_ptr;
     if (prediction == *truth_ptr) {
       num_correct_predictions += 1;
-      };
+    }
 
     truth_ptr++;
     output_ptr += num_classes;
@@ -92,7 +92,7 @@ size_t count_correct_predictions(size_t num_classes, const shared_float_array& o
 
 
 float get_accuracy_per_batch(size_t prediction_window, size_t num_classes, 
-  const shared_float_array& output, const data_iterator::batch& batch) {
+    const shared_float_array& output, const data_iterator::batch& batch) {
 
   float cumulative_per_batch_accuracy = 0.f;
 
@@ -102,9 +102,7 @@ float get_accuracy_per_batch(size_t prediction_window, size_t num_classes,
     const shared_float_array& label_chunk = batch.labels[i];
     data_iterator::batch::chunk_info info = batch.batch_info[i];
     size_t num_predictions = (info.num_samples + prediction_window - 1) / prediction_window;
-    size_t num_correct_predictions;
-    
-    num_correct_predictions = count_correct_predictions(num_classes, output_chunk, label_chunk, num_predictions);
+    size_t num_correct_predictions = count_correct_predictions(num_classes, output_chunk, label_chunk, num_predictions);
     
     cumulative_per_batch_accuracy += static_cast<float>(num_correct_predictions) / num_predictions;
   }
