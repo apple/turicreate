@@ -499,9 +499,9 @@ void activity_classifier::perform_training_iteration() {
 
     
     const shared_float_array& output = results.at("output");
-    // std::cout << num_batches << '\t' << get_accuracy_per_batch(prediction_window, num_classes, output, batch) << '\t';
+    
     cumulative_batch_accuracy += get_accuracy_per_batch(prediction_window, num_classes, output, batch);
-    // std::cout << cumulative_batch_accuracy << '\n';
+    
     ++num_batches;
 
   }
