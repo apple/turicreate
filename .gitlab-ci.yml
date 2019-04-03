@@ -368,7 +368,7 @@ scenario_tests_linux_python27:
   script:
     - apk add bash
     - cd scenario-tests
-    - ./run_scenario_tests.sh ../target/turicreate-*.whl
+    - ./run_scenario_tests.sh --docker-python2.7 ../target/turicreate-*.whl
 
 scenario_tests_linux_python35:
   tags:
@@ -385,7 +385,7 @@ scenario_tests_linux_python35:
   script:
     - apk add bash
     - cd scenario-tests
-    - ./run_scenario_tests.sh ../target/turicreate-*.whl
+    - ./run_scenario_tests.sh --docker-python3.5 ../target/turicreate-*.whl
 
 scenario_tests_linux_python36:
   tags:
@@ -402,7 +402,7 @@ scenario_tests_linux_python36:
   script:
     - apk add bash
     - cd scenario-tests
-    - ./run_scenario_tests.sh ../target/turicreate-*.whl
+    - ./run_scenario_tests.sh --docker-python3.6 ../target/turicreate-*.whl
 
 scenario_tests_mac_python27_10_13:
   tags:
