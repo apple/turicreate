@@ -65,34 +65,29 @@ std::vector<std::string> get_supported_metrics() {
           "confusion_matrix", "roc_curve"};
 }
 
-std::tuple<float,size_t> get_accuracy_per_sequence(size_t prediction_window, size_t num_classes, 
-  const shared_float_array& output_chunk, const shared_float_array& classes_chunk, data_iterator::batch::chunk_info info) {
+size_t count_correct_predictions(size_t prediction_window, size_t num_classes, const shared_float_array& output_chunk, 
+  const shared_float_array& label_chunk, data_iterator::batch::chunk_info info) {
       
-
   const float* output_ptr = output_chunk.data();
-  const float* truth_ptr = classes_chunk.data();
+  const float* truth_ptr = label_chunk.data();
     
   size_t cumulative_samples = 0;
-  size_t num_predictions = 0;
   size_t num_correct_predictions = 0.f;
-
-
+  
   while (cumulative_samples < info.num_samples) {
 
     size_t prediction = std::max_element(output_ptr, output_ptr + num_classes) - output_ptr;
-
     if (prediction == *truth_ptr) {
       num_correct_predictions += 1;
       };
 
     cumulative_samples += prediction_window;
-    num_predictions++;
     truth_ptr++;
     output_ptr += num_classes;
 
   }
 
-  return std::make_tuple(num_correct_predictions, num_predictions);
+  return num_correct_predictions;
 
 }
 
@@ -107,13 +102,14 @@ float get_accuracy_per_batch(size_t prediction_window, size_t num_classes,
     const shared_float_array& output_chunk = output[i];
     const shared_float_array& classes_chunk = batch.labels[i];
     data_iterator::batch::chunk_info info = batch.batch_info[i];
-    size_t num_correct_predictions;
-    size_t num_predictions;
-
-    std::tie (num_correct_predictions, num_predictions) = get_accuracy_per_sequence(prediction_window, num_classes, output_chunk, classes_chunk, info);
-    cumulative_per_batch_accuracy += num_correct_predictions / num_predictions;
+    size_t num_predictions = (info.num_samples + prediction_window - 1) / prediction_window;
+    float num_correct_predictions;
+    
+    num_correct_predictions = count_correct_predictions(prediction_window, num_classes, output_chunk, classes_chunk, info);
+    
+    cumulative_per_batch_accuracy += static_cast<float>(num_correct_predictions) / num_predictions;
   }
-  return cumulative_per_batch_accuracy/batch.batch_info.size();
+  return cumulative_per_batch_accuracy / batch.batch_info.size();
 }
 
 
@@ -503,8 +499,9 @@ void activity_classifier::perform_training_iteration() {
 
     
     const shared_float_array& output = results.at("output");
-    float cumulative_per_batch_accuracy = 0.f;
-    cumulative_per_batch_accuracy = get_accuracy_per_batch(prediction_window, num_classes, output, batch);
+    // std::cout << num_batches << '\t' << get_accuracy_per_batch(prediction_window, num_classes, output, batch) << '\t';
+    cumulative_batch_accuracy += get_accuracy_per_batch(prediction_window, num_classes, output, batch);
+    // std::cout << cumulative_batch_accuracy << '\n';
     ++num_batches;
 
   }
