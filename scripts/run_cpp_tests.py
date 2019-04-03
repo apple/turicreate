@@ -12,7 +12,7 @@ import subprocess
 # The build image version that will be used for testing
 TC_BUILD_IMAGE_VERSION="1.0.2"
 SCRIPT_DIR=os.path.dirname(__file__)
-WORKSPACE=os.path.join(SCRIPT_DIR, '..')
+WORKSPACE=os.path.abspath(os.path.join(SCRIPT_DIR, '..'))
 
 def run_in_docker(cmd):
     subprocess.check_call(['docker', 'run', '--rm',
