@@ -65,23 +65,22 @@ std::vector<std::string> get_supported_metrics() {
           "confusion_matrix", "roc_curve"};
 }
 
-size_t count_correct_predictions(size_t prediction_window, size_t num_classes, const shared_float_array& output_chunk, 
-  const shared_float_array& label_chunk, data_iterator::batch::chunk_info info) {
+size_t count_correct_predictions(size_t num_classes, const shared_float_array& output_chunk, 
+    const shared_float_array& label_chunk, size_t num_predictions) {
       
   const float* output_ptr = output_chunk.data();
   const float* truth_ptr = label_chunk.data();
     
-  size_t cumulative_samples = 0;
+
   size_t num_correct_predictions = 0.f;
   
-  while (cumulative_samples < info.num_samples) {
+  for (size_t i = 0; i < num_predictions; i++) {
 
     size_t prediction = std::max_element(output_ptr, output_ptr + num_classes) - output_ptr;
     if (prediction == *truth_ptr) {
       num_correct_predictions += 1;
       };
 
-    cumulative_samples += prediction_window;
     truth_ptr++;
     output_ptr += num_classes;
 
@@ -100,12 +99,12 @@ float get_accuracy_per_batch(size_t prediction_window, size_t num_classes,
   for (size_t i = 0; i < batch.batch_info.size(); ++i){
 
     const shared_float_array& output_chunk = output[i];
-    const shared_float_array& classes_chunk = batch.labels[i];
+    const shared_float_array& label_chunk = batch.labels[i];
     data_iterator::batch::chunk_info info = batch.batch_info[i];
     size_t num_predictions = (info.num_samples + prediction_window - 1) / prediction_window;
-    float num_correct_predictions;
+    size_t num_correct_predictions;
     
-    num_correct_predictions = count_correct_predictions(prediction_window, num_classes, output_chunk, classes_chunk, info);
+    num_correct_predictions = count_correct_predictions(num_classes, output_chunk, label_chunk, num_predictions);
     
     cumulative_per_batch_accuracy += static_cast<float>(num_correct_predictions) / num_predictions;
   }
