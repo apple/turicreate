@@ -15,7 +15,7 @@ RUN apt-get -y upgrade
 
 # Install Python 3.6 with apt, as well as
 # turicreate and upstream dependencies
-RUN apt-get -y install python3.6 libgomp1
+RUN apt-get -y install python3.6 python3.6-distutils libgomp1
 
 # Install pip and virtualenv
 ADD https://bootstrap.pypa.io/get-pip.py /src/get-pip.py
