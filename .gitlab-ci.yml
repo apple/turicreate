@@ -185,6 +185,7 @@ test_cpp_linux:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
   dependencies:
+    - create_images
     - build_wheel_linux_python27
   script:
     - apk add bash
@@ -238,7 +239,6 @@ test_python_linux_python27:
     - build_wheel_linux_python27
   script:
     - apk add bash
-    - docker load -i .docker_images/image-12.04.gz
     - bash scripts/test_wheel.sh --docker-python2.7
   artifacts:
     when: always
@@ -261,7 +261,6 @@ test_python_linux_python35:
     - build_wheel_linux_python35
   script:
     - apk add bash
-    - docker load -i .docker_images/image-14.04.gz
     - bash scripts/test_wheel.sh --docker-python3.5
   artifacts:
     when: always
@@ -285,7 +284,6 @@ test_python_linux_python36:
   script:
     - apk add bash
     # TODO get python 3.6 working on a test image
-    - docker load -i .docker_images/image-18.04.gz
     - bash scripts/test_wheel.sh --docker-python3.6
   artifacts:
     when: always
