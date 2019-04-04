@@ -180,8 +180,7 @@ void activity_classifier::train(gl_sframe data, std::string target_column_name,
 }
 
 gl_sarray activity_classifier::predict(gl_sframe data,
-                                       std::string output_type)
-{
+                                       std::string output_type) {
   if (output_type.empty()) {
     output_type = "class";
   }
@@ -206,10 +205,16 @@ gl_sarray activity_classifier::predict(gl_sframe data,
   // Assume output_frequency is "per_row". Duplicate each probability vector a
   // number of times equal to the number of samples for that prediction.
   // TODO: Also support "per_window".
+  //std::cout << data_it.get();
+  
+  // gl_sframe preds_per_window = gl_sframe({{"session_id",data_it.session_id_column_name}});
+  //std::cout << raw_preds_per_window;
+
   size_t preds_column_index = raw_preds_per_window.column_index("preds");
+
   size_t num_samples_column_index =
       raw_preds_per_window.column_index("num_samples");
-  auto copy_per_row = [=](const sframe_rows::row& row) {
+    auto copy_per_row = [=](const sframe_rows::row& row) {
     return flex_list(row[num_samples_column_index], row[preds_column_index]);
   };
   gl_sarray duplicated_preds_per_window =
@@ -218,8 +223,7 @@ gl_sarray activity_classifier::predict(gl_sframe data,
       gl_sframe({{"temp", duplicated_preds_per_window}}).stack("temp", "preds");
 
   gl_sarray result = preds_per_row["preds"];
-
-  if (output_type == "class") {
+    if (output_type == "class") {
     flex_list class_labels = read_state<flex_list>("classes");
     auto max_prob_label = [=](const flexible_type& ft) {
       const flex_vec& prob_vec = ft.get<flex_vec>();
@@ -227,6 +231,51 @@ gl_sarray activity_classifier::predict(gl_sframe data,
       return class_labels[max_it - prob_vec.begin()];
     };
     result = result.apply(max_prob_label, class_labels.front().get_type());
+  }
+  return result;
+}
+
+gl_sframe activity_classifier::predict_per_window(gl_sframe data,
+                                                  std::string output_type) {
+
+  if (output_type.empty()) {
+    output_type = "class";
+  }
+  if (output_type != "class" && output_type != "probability_vector") {
+    log_and_throw(output_type + " is not a valid option for output_type.  "
+                                "Expected one of: probability_vector, class");
+  }
+
+  // Bind the data to a data iterator.
+  flex_list features = read_state<flex_list>("features");
+  data_iterator::parameters data_params;
+  data_params.data = data;
+  data_params.session_id_column_name = read_state<flex_string>("session_id");
+  data_params.feature_column_names =
+      std::vector<std::string>(features.begin(), features.end());
+  data_params.prediction_window = read_state<flex_int>("prediction_window");
+  data_params.predictions_in_chunk = NUM_PREDICTIONS_PER_CHUNK;
+  std::unique_ptr<data_iterator> data_it = create_iterator(data_params);
+
+  // Accumulate the class probabilities for each prediction window.
+  gl_sframe raw_preds_per_window = perform_inference(data_it.get());
+
+  gl_sframe result =
+      gl_sframe({{"session_id", raw_preds_per_window["session_id"]},
+                 {"probability_vector", raw_preds_per_window["preds"]}});
+  result = result.add_row_number("prediction_id");
+
+  if (output_type == "class") {
+    flex_list class_labels = read_state<flex_list>("classes");
+    auto max_prob_label = [=](const flexible_type &ft) {
+      const flex_vec &prob_vec = ft.get<flex_vec>();
+      auto max_it = std::max_element(prob_vec.begin(), prob_vec.end());
+      return class_labels[max_it - prob_vec.begin()];
+    };
+
+    result["probability_vector"] = result["probability_vector"].apply(
+        max_prob_label, class_labels.front().get_type());
+    result.rename({{"probability_vector", "class"}});
   }
 
   return result;
@@ -512,6 +561,7 @@ void activity_classifier::perform_training_iteration() {
   if (training_table_printer_) {
     training_table_printer_->print_progress_row(
         iteration_idx, iteration_idx + 1, average_batch_accuracy, average_batch_loss, progress_time());
+
   }
 
   add_or_update_state({
@@ -523,12 +573,11 @@ void activity_classifier::perform_training_iteration() {
   training_data_iterator_->reset();
 }
 
-gl_sframe activity_classifier::perform_inference(data_iterator* data) const {
+gl_sframe activity_classifier::perform_inference(data_iterator *data) const {
   // Open a new SFrame for writing.
-  gl_sframe_writer writer({ "session_id", "preds", "num_samples" },
-                          { data->session_id_type(),
-                            flex_type_enum::VECTOR,
-                            flex_type_enum::INTEGER  },
+  gl_sframe_writer writer({"session_id", "preds", "num_samples"},
+                          {data->session_id_type(), flex_type_enum::VECTOR,
+                           flex_type_enum::INTEGER},
                           /* num_segments */ 1);
 
   size_t prediction_window = read_state<size_t>("prediction_window");
@@ -581,8 +630,9 @@ gl_sframe activity_classifier::perform_inference(data_iterator* data) const {
         size_t num_samples = std::min(prediction_window,
                                       info.num_samples - cumulative_samples);
         cumulative_samples += prediction_window;
-
+        
         // Add a row to the output SFrame.
+
         writer.write({ info.session_id, preds, num_samples },
                      /* segment_id */ 0);
       }
