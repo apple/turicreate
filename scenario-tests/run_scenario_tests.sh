@@ -3,6 +3,9 @@
 set -e
 set -x
 
+# The build image version that will be used for testing
+TC_BUILD_IMAGE_VERSION=1.0.2
+
 SCENARIO_TESTS_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 WORKSPACE=${SCENARIO_TESTS_DIR}/..
 
@@ -79,7 +82,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
     docker run --rm \
       --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
       -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
-      turicreate/build-image-12.04:${TC_BUILD_IMAGE_VERSION} \
+      turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} \
       /build/scenario-tests/run_scenario_tests.sh $TC_WHEEL_UNDER_TEST
   elif [[ "${DOCKER_PYTHON}" == "3.5" ]]; then
     docker run --rm \
