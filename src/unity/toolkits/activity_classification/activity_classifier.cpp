@@ -16,6 +16,7 @@
 #include <unity/toolkits/evaluation/metrics.hpp>
 #include <util/string_util.hpp>
 
+
 namespace turi {
 namespace activity_classification {
 
@@ -64,6 +65,51 @@ std::vector<std::string> get_supported_metrics() {
           "confusion_matrix", "roc_curve"};
 }
 
+size_t count_correct_predictions(size_t num_classes, const shared_float_array& output_chunk, 
+    const shared_float_array& label_chunk, size_t num_predictions) {
+      
+  const float* output_ptr = output_chunk.data();
+  const float* truth_ptr = label_chunk.data();
+    
+
+  size_t num_correct_predictions = 0;
+  
+  for (size_t i = 0; i < num_predictions; i++) {
+
+    size_t prediction = std::max_element(output_ptr, output_ptr + num_classes) - output_ptr;
+    if (prediction == *truth_ptr) {
+      num_correct_predictions += 1;
+    }
+
+    truth_ptr++;
+    output_ptr += num_classes;
+
+  }
+
+  return num_correct_predictions;
+
+}
+
+
+float get_accuracy_per_batch(size_t prediction_window, size_t num_classes, 
+    const shared_float_array& output, const data_iterator::batch& batch) {
+
+  float cumulative_per_batch_accuracy = 0.f;
+
+  for (size_t i = 0; i < batch.batch_info.size(); ++i){
+
+    const shared_float_array& output_chunk = output[i];
+    const shared_float_array& label_chunk = batch.labels[i];
+    data_iterator::batch::chunk_info info = batch.batch_info[i];
+    size_t num_predictions = (info.num_samples + prediction_window - 1) / prediction_window;
+    size_t num_correct_predictions = count_correct_predictions(num_classes, output_chunk, label_chunk, num_predictions);
+    
+    cumulative_per_batch_accuracy += static_cast<float>(num_correct_predictions) / num_predictions;
+  }
+  return cumulative_per_batch_accuracy / batch.batch_info.size();
+}
+
+
 }  // namespace
 
 void activity_classifier::init_options(
@@ -106,11 +152,12 @@ void activity_classifier::train(gl_sframe data, std::string target_column_name,
 {
   // Begin printing progress.
   // TODO: Make progress printing optional.
-  // TODO: Report accuracy.
+  
   // TODO: Support validation set.
   training_table_printer_.reset(new table_printer(
-      { {"Iteration", 12}, {"Train Loss", 12}, {"Elapsed Time", 12} }));
-
+    { {"Iteration", 12}, {"Train Accuracy", 12}, {"Train Loss", 12}, {"Elapsed Time", 12} }));
+  
+  
   // Instantiate the training dependencies: data iterator, compute context,
   // backend NN model.
   init_train(std::move(data), std::move(target_column_name),
@@ -423,8 +470,11 @@ void activity_classifier::perform_training_iteration() {
   const size_t iteration_idx = read_state<flex_int>("training_iterations");
 
   float cumulative_batch_loss = 0.f;
+  float cumulative_batch_accuracy = 0.f;
   size_t num_batches = 0;
-
+  size_t num_classes = read_state<size_t>("num_classes");
+  size_t prediction_window = read_state<size_t>("prediction_window");
+  
   while (training_data_iterator_->has_next_batch()) {
     data_iterator::batch batch =
         training_data_iterator_->next_batch(batch_size);
@@ -440,23 +490,33 @@ void activity_classifier::perform_training_iteration() {
     float batch_loss = std::accumulate(loss_batch.data(),
                                        loss_batch.data() + loss_batch.size(),
                                        0.f, std::plus<float>());
+
+    
     cumulative_batch_loss += batch_loss / batch.batch_info.size();
 
+    
+    const shared_float_array& output = results.at("output");
+    
+    cumulative_batch_accuracy += get_accuracy_per_batch(prediction_window, num_classes, output, batch);
+    
     ++num_batches;
+
   }
 
   float average_batch_loss = cumulative_batch_loss / num_batches;
+  float average_batch_accuracy = cumulative_batch_accuracy / num_batches;
 
   // Report progress if we have an active table printer.
-  // TODO: Report accuracy.
   // TODO: Report validation metrics.
+  
   if (training_table_printer_) {
     training_table_printer_->print_progress_row(
-        iteration_idx, iteration_idx + 1, average_batch_loss, progress_time());
+        iteration_idx, iteration_idx + 1, average_batch_accuracy, average_batch_loss, progress_time());
   }
 
   add_or_update_state({
       { "training_iterations", iteration_idx + 1 },
+      { "training_accuracy" , average_batch_accuracy },
       { "training_log_loss", average_batch_loss },
   });
 
