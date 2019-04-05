@@ -57,7 +57,6 @@ class TcPlot extends Component {
             }
 
             changeSet = changeSet.insert(newData);
-            $this.vega_container.classList.remove("uninitialized");
             $this.vegaView.change("source_2", changeSet).runAfter(function(viewInstance) {
 
                                                                   });
@@ -92,7 +91,6 @@ class TcPlot extends Component {
                                 .initialize(this.vega_container)
                                 .hover()
                                 .run();
-        this.setState({ initializedVega: true });
         this.vegaLoading = false;
         vegaTooltip.vega(this.vegaView, this.bubbleOpts);
         
@@ -141,7 +139,7 @@ class TcPlot extends Component {
     render() {
         return (
                 <div>
-                <div className={["vega_container", "uninitialized"].join(' ')} ref={(vega_container) => { this.vega_container = vega_container; }}>
+                <div className={["vega_container"].join(' ')} ref={(vega_container) => { this.vega_container = vega_container; }}>
                 </div>
                 <div className={["hidden_cont"].join(' ')} ref={(hidden_container) => { this.hidden_container = hidden_container; }}>
                 </div>

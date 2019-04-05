@@ -25,9 +25,6 @@ namespace turi {
     // Utility for escaping JSON string literals. Not concerned with Vega implications of the contents of those strings.
     std::string make_format_string(unsigned char *raw_format_str_ptr,
                                            size_t raw_format_str_len);
-    std::string escape_string(const std::string& str, bool include_quotes=true);
-    std::string replace_all(std::string str, const std::string& from, const std::string& to);
-    std::string extra_label_escape(const std::string& str, bool include_quotes=true);
     std::string format(const std::string& format_str, const std::unordered_map<std::string, std::string>& format_params);
   }
 }

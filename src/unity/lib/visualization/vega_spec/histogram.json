@@ -9,12 +9,19 @@
   "style": "cell",
   "signals": [
     {
-      "name": "nullGap",
-      "update": "data('nulls').length > 0 ? 10 : 0"
+      "name": "bins",
+      "update": "data(\"bins_data\")[0]"
+    },
+    {
+      "name": "binCount",
+      "update": "(bins.stop - bins.start) / bins.step"
+    },
+    {
+      "name": "nullGap", "value": 10
     },
     {
       "name": "barStep",
-      "update": "nullGap == 0 ? 0 : (width/40)"
+      "update": "(width - nullGap) / (1 + binCount)"
     }
   ],
   "data": [
@@ -23,41 +30,31 @@
       {{pre_filled_data_values}}
     },
     {
-      "name": "data_0",
+      "name": "counts",
       "source": "source_2",
       "transform": [
         {
-          "type": "formula",
-          "expr": "toNumber(datum[\"left\"])",
-          "as": "left"
-        },
-        {
-          "type": "formula",
-          "expr": "toNumber(datum[\"right\"])",
-          "as": "right"
-        },
-        {
-          "type": "formula",
-          "expr": "toNumber(datum[\"count\"])",
-          "as": "count"
-        },
-        {
           "type": "filter",
-          "expr": "datum[\"left\"] !== null && !isNaN(datum[\"left\"]) && datum[\"count\"] !== null && !isNaN(datum[\"count\"])"
+          "expr": "datum[\"missing\"] !== true && datum[\"count\"] != null"
         }
       ]
     },
     {
-      "source": "source_2",
       "name": "nulls",
+      "source": "source_2",
       "transform": [
         {
-          "expr": "toNumber(datum[\"count\"])",
-          "as": "count",
-          "type": "formula"
-        },
+          "expr": "datum[\"missing\"] === true && datum[\"count\"] != null",
+          "type": "filter"
+        }
+      ]
+    },
+    {
+      "name": "bins_data",
+      "source": "source_2",
+      "transform": [
         {
-          "expr": "datum[\"missing\"] === true && datum[\"count\"] !== null && !isNaN(datum[\"count\"])",
+          "expr": "datum[\"start\"] != null && datum[\"stop\"] != null && datum[\"step\"] != null",
           "type": "filter"
         }
       ]
@@ -65,55 +62,30 @@
   ],
   "marks": [
     {
-      "name": "marks",
       "type": "rect",
-      "style": [
-        "rect"
-      ],
-      "from": {
-        "data": "data_0"
-      },
+      "from": {"data": "counts"},
       "encode": {
-        "hover": {
-          "fill": {
-            "value": "#7EC2F3"
-          }
-        },
         "update": {
-          "x": {
-            "scale": "x",
-            "field": "left"
-          },
-          "x2": {
-            "scale": "x",
-            "field": "right"
-          },
-          "y": {
-            "scale": "y",
-            "field": "count"
-          },
-          "y2": {
-            "scale": "y",
-            "value": 0
-          },
-          "fill": {
-            "value": "#108EE9"
-          }
+          "x": {"scale": "xscale", "field": "left", "offset": 1},
+          "x2": {"scale": "xscale", "field": "right"},
+          "y": {"scale": "yscale", "field": "count"},
+          "y2": {"scale": "yscale", "value": 0},
+          "fill": {"value": "#108EE9"}
+        },
+        "hover": {
+          "fill": {"value": "#7EC2F3"}
         }
       }
     },
     {
       "type": "rect",
       "from": {"data": "nulls"},
-      "style": [
-        "rect"
-      ],
       "encode": {
         "update": {
           "x": {"scale": "xscale-null", "value": null, "offset": 1},
           "x2": {"scale": "xscale-null", "band": 1},
-          "y": {"scale": "y", "field": "count"},
-          "y2": {"scale": "y", "value": 0},
+          "y": {"scale": "yscale", "field": "count"},
+          "y2": {"scale": "yscale", "value": 0},
           "fill": {"value": "#108EE9"}
         },
         "hover": {
@@ -124,117 +96,50 @@
   ],
   "scales": [
     {
-      "domain": [
-        null
-      ],
-      "range": [
-        0,
-        {
-          "signal": "barStep"
-        }
-      ],
-      "type": "band",
-      "name": "xscale-null"
-    },
-    {
-      "name": "x",
+      "name": "yscale",
       "type": "linear",
-      "domain": {
-        "data": "data_0",
-        "fields": [
-          "left",
-          "right"
-        ],
-        "sort": true
-      },
-      "range": [
-        {
-          "signal": "barStep + nullGap"
-        },
-        {
-          "signal": "width"
-        }
-      ],
-      "nice": true,
-      "zero": false
-    },
-    {
-      "name": "y",
-      "type": "linear",
+      "range": "height",
+      "round": true, "nice": true,
       "domain": {
         "fields": [
-          {"data": "data_0", "field": "count"},
+          {"data": "counts", "field": "count"},
           {"data": "nulls", "field": "count"}
         ]
-      },
-      "range": [
-        {
-          "signal": "height"
-        },
-        0
-      ],
-      "nice": true,
-      "zero": true
+      }
+    },
+    {
+      "name": "xscale",
+      "type": "linear",
+      "range": [{"signal": "barStep + nullGap"}, {"signal": "width"}],
+      "round": true,
+      "domain": {"signal": "[bins.start, bins.stop]"},
+      "bins": {"signal": "bins"}
+    },
+    {
+      "name": "xscale-null",
+      "type": "band",
+      "range": [0, {"signal": "barStep"}],
+      "round": true,
+      "domain": [null]
     }
   ],
   "axes": [
     {
       "title": "{{xlabel}}",
-      "scale": "x",
-      "labelOverlap": true,
       "orient": "bottom",
-      "tickCount": {
-        "signal": "ceil(width/40)"
-      },
-      "zindex": 1
+      "scale": "xscale",
+      "tickMinStep": 1
     },
     {
-      "scale": "x",
-      "domain": false,
-      "grid": true,
-      "labels": false,
-      "maxExtent": 0,
-      "minExtent": 0,
       "orient": "bottom",
-      "tickCount": {
-        "signal": "ceil(width/40)"
-      },
-      "ticks": false,
-      "zindex": 0,
-      "gridScale": "y"
+      "scale": "xscale-null"
     },
     {
       "title": "{{ylabel}}",
-      "scale": "y",
-      "labelOverlap": true,
       "orient": "left",
-      "tickCount": {
-        "signal": "ceil(height/40)"
-      },
-      "zindex": 1
-    },
-    {
-      "scale": "y",
-      "domain": false,
-      "grid": true,
-      "labels": false,
-      "maxExtent": 0,
-      "minExtent": 0,
-      "orient": "left",
-      "tickCount": {
-        "signal": "ceil(height/40)"
-      },
-      "ticks": false,
-      "zindex": 0,
-      "gridScale": "x"
-    },
-    {
-      "orient": "bottom",
-      "scale": "xscale-null",
-      "encode": {
-        "ticks": {"update": {"opacity": {"signal": "nullGap > 0 ? 1.0 : 0.0"}}},
-        "labels": {"update": {"text": {"signal": "nullGap > 0 ? 'null' : ''"}}}
-      }
+      "scale": "yscale",
+      "tickCount": 5,
+      "offset": 5
     }
   ],
   {{config}}

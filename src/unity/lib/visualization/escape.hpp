@@ -30,10 +30,13 @@ namespace visualization {
 
   std::string escapeForTable( const flexible_type& value,
                               boost::local_time::time_zone_ptr empty_tz,
-                              std::queue<visualization::vega_data::Image>* image_queue = NULL,
+                              std::queue<vega_data::Image>* image_queue = NULL,
                               size_t count = -1,
                               const std::string& columnName = "");
 
+  std::string replace_all(std::string str, const std::string& from, const std::string& to);
+  std::string escape_string(const std::string& str, bool include_quotes=true);
+  std::string extra_label_escape(const std::string& str, bool include_quotes=true);
 }}
 
 

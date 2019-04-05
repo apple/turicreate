@@ -1,5 +1,6 @@
 #include "summary_view.hpp"
 
+#include <unity/lib/visualization/escape.hpp>
 #include <unity/lib/visualization/vega_data.hpp>
 #include <unity/lib/visualization/vega_spec.hpp>
 #include <math.h>
