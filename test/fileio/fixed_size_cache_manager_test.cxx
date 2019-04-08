@@ -33,6 +33,8 @@ struct fixed_size_cache_manager_test {
   void test_new_cache() {
     // Write some data to the existing cache block.
     char dummy[30];
+    std::fill(dummy, dummy + 30, 0);
+
     for (size_t i = 0; i < 10; ++i) {
       auto blk = fixed_size_cache_manager::get_instance().new_cache(make_cache_id(i));
       blk->write_bytes_to_memory_cache(dummy, 30);
