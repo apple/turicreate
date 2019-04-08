@@ -17,6 +17,10 @@ RUN apt-get -y upgrade
 # turicreate and upstream dependencies
 RUN apt-get -y install python3.6 python3.6-distutils libgomp1
 
+# Install build-essential (needed by numpy==1.11.1, which tries to
+# build itself from source on 3.6)
+RUN apt-get -y install build-essential libpython3.6-dev
+
 # Install pip and virtualenv
 ADD https://bootstrap.pypa.io/get-pip.py /src/get-pip.py
 WORKDIR /src
