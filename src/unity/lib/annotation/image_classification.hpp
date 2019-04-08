@@ -22,7 +22,7 @@ public:
 
   void calculateSimilarItems() override;
 
-  annotate_spec::Data getSimilarItems(annotate_spec::Datum &item,
+  annotate_spec::Data getSimilarItems(const annotate_spec::Datum &item,
                                       size_t num) override;
 
   annotate_spec::MetaData metaData() override;

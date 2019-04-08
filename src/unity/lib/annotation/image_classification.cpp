@@ -78,10 +78,12 @@ void ImageClassification::calculateSimilarItems() {
 }
 
 annotate_spec::Data
-ImageClassification::getSimilarItems(annotate_spec::Datum &item, size_t num) {
-  size_t row_index = item.rowindex();
+ImageClassification::getSimilarItems(const annotate_spec::Datum &item, size_t num) {
+  annotate_spec::Data data;
+  //size_t row_index = item.rowindex();
   // TODO: use row index to find other rows that are similar, use num as the k value
   // TODO: put the similar items in annotate_spec::Data format
+  return data;
 }
 
 annotate_spec::Annotations ImageClassification::getAnnotations(size_t start,
@@ -173,7 +175,7 @@ void ImageClassification::_addAnnotationToSFrame(size_t index,
                                                  std::string label) {
   /* Assert that the column type is indeed of type flex_enum::STRING */
   size_t annotation_column_index = m_data->column_index(m_annotation_column);
-  DASSERT_EQ(m_data->dtype().at(annotation_column_index),
+  DASSERT_EQ(m_data->column_type(m_annotation_column),
              flex_type_enum::STRING);
 
   std::shared_ptr<unity_sarray> data_sarray =
@@ -212,7 +214,7 @@ void ImageClassification::_addAnnotationToSFrame(size_t index,
 void ImageClassification::_addAnnotationToSFrame(size_t index, int label) {
   /* Assert that the column type is indeed of type flex_enum::INTEGER */
   size_t annotation_column_index = m_data->column_index(m_annotation_column);
-  DASSERT_EQ(m_data->dtype().at(annotation_column_index),
+  DASSERT_EQ(m_data->column_type(m_annotation_column),
              flex_type_enum::INTEGER);
 
   std::shared_ptr<unity_sarray> data_sarray =
@@ -250,7 +252,8 @@ void ImageClassification::_addAnnotationToSFrame(size_t index, int label) {
 
 void ImageClassification::cast_annotations() {
   size_t annotation_column_index = m_data->column_index(m_annotation_column);
-  if (m_data->dtype().at(annotation_column_index) == flex_type_enum::INTEGER) {
+
+  if (m_data->column_type(m_annotation_column) == flex_type_enum::INTEGER) {
     return;
   }
 

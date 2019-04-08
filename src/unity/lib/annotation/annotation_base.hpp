@@ -68,7 +68,7 @@ public:
 
   virtual void calculateSimilarItems() = 0;
 
-  virtual annotate_spec::Data getSimilarItems(annotate_spec::Datum &item,
+  virtual annotate_spec::Data getSimilarItems(const annotate_spec::Datum &item,
                                               size_t num = 10) = 0;
 
   virtual annotate_spec::MetaData metaData() = 0;
