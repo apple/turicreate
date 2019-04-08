@@ -49,8 +49,11 @@ if __name__ == '__main__':
   if args.docker:
     print('Docker run requested! Proceeding to run inside Docker.')
 
+    # create docker images if needed
+    subprocess.check_call(['bash', os.path.join(WORKSPACE, 'scripts/create_docker_images.sh')])
+
     # make tests if needed
-    run_in_docker("./configure --no-python")
+    run_in_docker("./configure") # TODO use --no-python when it works again
     run_in_docker('"pushd release/test && make -j4 && popd"')
 
     # run tests
