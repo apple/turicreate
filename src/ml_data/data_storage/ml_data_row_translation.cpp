@@ -176,7 +176,7 @@ std::vector<flexible_type> translate_row_to_original(
 
         flexible_type key = m_idx->map_index_to_value(v.index);
 
-        flex_dict dv = ret[c_idx].get<flex_dict>();
+        flex_dict dv = ret[c_idx].get_and_reset<flex_dict>();
         dv.push_back(std::make_pair(key, flexible_type(v.value)));
         std::sort(dv.begin(), dv.end());
         ret[c_idx] = std::move(dv);
@@ -185,7 +185,7 @@ std::vector<flexible_type> translate_row_to_original(
       }
       case ml_column_mode::NUMERIC_VECTOR: {
 
-        flex_vec vv = ret[c_idx].get<flex_vec>();
+        flex_vec vv = ret[c_idx].get_and_reset<flex_vec>();
 
         DASSERT_EQ(vv.size(), metadata->column_size(c_idx));
         DASSERT_LT(v.index, vv.size());
@@ -201,7 +201,7 @@ std::vector<flexible_type> translate_row_to_original(
       }
 
       case ml_column_mode::CATEGORICAL_VECTOR: {
-        flex_list fl = ret[c_idx].get<flex_list>();
+        flex_list fl = ret[c_idx].get_and_reset<flex_list>();
         fl.push_back(m_idx->map_index_to_value(v.index));
 
         std::sort(fl.begin(), fl.end());
@@ -217,7 +217,7 @@ std::vector<flexible_type> translate_row_to_original(
 
       case ml_column_mode::NUMERIC_ND_VECTOR: {
 
-        flex_nd_vec vv = ret[c_idx].get<flex_nd_vec>();
+        flex_nd_vec vv = ret[c_idx].get_and_reset<flex_nd_vec>();
 
         DASSERT_TRUE(vv.is_canonical());
         DASSERT_EQ(vv.num_elem(), metadata->column_size(c_idx));
