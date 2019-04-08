@@ -7,6 +7,7 @@ set -x
 TC_BUILD_IMAGE_VERSION=1.0.2
 
 SCENARIO_TESTS_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+cd $SCENARIO_TESTS_DIR
 WORKSPACE=${SCENARIO_TESTS_DIR}/..
 
 function print_help {
