@@ -208,7 +208,7 @@ gl_sarray activity_classifier::predict(gl_sframe data,
 
   size_t num_samples_column_index =
       raw_preds_per_window.column_index("num_samples");
-    auto copy_per_row = [=](const sframe_rows::row& row) {
+  auto copy_per_row = [=](const sframe_rows::row& row) {
     return flex_list(row[num_samples_column_index], row[preds_column_index]);
   };
   gl_sarray duplicated_preds_per_window =
@@ -217,7 +217,7 @@ gl_sarray activity_classifier::predict(gl_sframe data,
       gl_sframe({{"temp", duplicated_preds_per_window}}).stack("temp", "preds");
 
   gl_sarray result = preds_per_row["preds"];
-    if (output_type == "class") {
+  if (output_type == "class") {
     flex_list class_labels = read_state<flex_list>("classes");
     auto max_prob_label = [=](const flexible_type& ft) {
       const flex_vec& prob_vec = ft.get<flex_vec>();
@@ -624,9 +624,7 @@ gl_sframe activity_classifier::perform_inference(data_iterator *data) const {
         size_t num_samples = std::min(prediction_window,
                                       info.num_samples - cumulative_samples);
         cumulative_samples += prediction_window;
-        
         // Add a row to the output SFrame.
-
         writer.write({ info.session_id, preds, num_samples },
                      /* segment_id */ 0);
       }
