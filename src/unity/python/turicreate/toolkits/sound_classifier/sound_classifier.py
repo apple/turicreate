@@ -10,6 +10,7 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
+import logging as _logging
 import numpy as _np
 
 from .. import _mxnet_utils
@@ -182,6 +183,10 @@ def create(dataset, target, feature, max_iterations=10,
 
     train_data = _tc.SFrame({'deep features': train_deep_features, 'labels': encoded_target})
     train_data = train_data.stack('deep features', new_column_name='deep features')
+    train_data, missing_ids = train_data.dropna_split(columns=['deep features'])
+
+    if len(missing_ids) > 0:
+        _logging.warning("Dropping %d examples which are less than 975ms in length." % len(missing_ids))
 
     if validation_set is not None:
         if verbose:
@@ -195,6 +200,7 @@ def create(dataset, target, feature, max_iterations=10,
 
         validation_data = _tc.SFrame({'deep features': validation_deep_features, 'labels': validation_encoded_target})
         validation_data = validation_data.stack('deep features', new_column_name='deep features')
+        validation_data = validation_data.dropna(columns=['deep features'])
 
         validation_batch_size = min(len(validation_data), batch_size)
         validation_data = mx.io.NDArrayIter(validation_data['deep features'].to_numpy(),
@@ -547,30 +553,48 @@ class SoundClassifier(_CustomModel):
         else:
             metrics = [metric]
 
+        if _is_deep_feature_sarray(dataset[self.feature]):
+            deep_features = dataset[self.feature]
+        else:
+            deep_features = get_deep_features(dataset[self.feature], verbose=verbose)
+        data = _tc.SFrame({'deep features': deep_features})
+        data = data.add_row_number()
+        missing_ids = data.filter_by([[]], 'deep features')['id']
+
+        if len(missing_ids) > 0:
+            data = data.filter_by([[]], 'deep features', exclude=True)
+            # Remove the labels for entries without deep features
+            _logging.warning("Dropping %d examples which are less than 975ms in length." % len(missing_ids))
+            labels = dataset[[self.target]].add_row_number()
+            labels = data.join(labels, how='left')[self.target]
+        else:
+            labels = dataset[self.target]
+        assert(len(labels) == len(data))
+
         if any([m in metrics for m in ('roc_curve', 'log_loss', 'auc')]):
-            probs = self.predict(dataset, output_type='probability_vector',
+            probs = self.predict(data['deep features'], output_type='probability_vector',
                                  verbose=verbose, batch_size=batch_size)
         if any([m in metrics for m in ('accuracy', 'precision', 'recall', 'f1_score', 'confusion_matrix')]):
-            classes = self.predict(dataset, output_type='class',
+            classes = self.predict(data['deep features'], output_type='class',
                                    verbose=verbose, batch_size=batch_size)
 
         ret = {}
         if 'accuracy' in metrics:
-            ret['accuracy'] = evaluation.accuracy(dataset[self.target], classes)
+            ret['accuracy'] = evaluation.accuracy(labels, classes)
         if 'auc' in metrics:
-            ret['auc'] = evaluation.auc(dataset[self.target], probs, index_map=self._class_label_to_id)
+            ret['auc'] = evaluation.auc(labels, probs, index_map=self._class_label_to_id)
         if 'precision' in metrics:
-            ret['precision'] = evaluation.precision(dataset[self.target], classes)
+            ret['precision'] = evaluation.precision(labels, classes)
         if 'recall' in metrics:
-            ret['recall'] = evaluation.recall(dataset[self.target], classes)
+            ret['recall'] = evaluation.recall(labels, classes)
         if 'f1_score' in metrics:
-            ret['f1_score'] = evaluation.f1_score(dataset[self.target], classes)
+            ret['f1_score'] = evaluation.f1_score(labels, classes)
         if 'log_loss' in metrics:
-            ret['log_loss'] = evaluation.log_loss(dataset[self.target], probs, index_map=self._class_label_to_id)
+            ret['log_loss'] = evaluation.log_loss(labels, probs, index_map=self._class_label_to_id)
         if 'confusion_matrix' in metrics:
-            ret['confusion_matrix'] = evaluation.confusion_matrix(dataset[self.target], classes)
+            ret['confusion_matrix'] = evaluation.confusion_matrix(labels, classes)
         if 'roc_curve' in metrics:
-            ret['roc_curve'] = evaluation.roc_curve(dataset[self.target], probs, index_map=self._class_label_to_id)
+            ret['roc_curve'] = evaluation.roc_curve(labels, probs, index_map=self._class_label_to_id)
 
         return ret
 
@@ -773,7 +797,12 @@ class SoundClassifier(_CustomModel):
         deep_features = _tc.SFrame({'deep features': deep_features})
         deep_features = deep_features.add_row_number()
         deep_features = deep_features.stack('deep features', new_column_name='deep features')
-        
+        deep_features, missing_ids = deep_features.dropna_split(columns=['deep features'])
+
+        if len(missing_ids) > 0:
+            _logging.warning("Unable to make predictions for %d examples because they are less than 975ms in length."
+                             % len(missing_ids))
+
         if batch_size > len(deep_features):
             batch_size = len(deep_features)
 
@@ -799,16 +828,24 @@ class SoundClassifier(_CustomModel):
         probabilities_sum = sf.groupby('id', {'prob_sum': _tc.aggregate.SUM('predictions')})
 
         if output_type == 'class':
-            probabilities_sum = probabilities_sum.sort('id')
             predicted_ids = probabilities_sum['prob_sum'].apply(lambda x: _np.argmax(x))
             mappings = self._id_to_class_label
-            return predicted_ids.apply(lambda x: mappings[x])
+            probabilities_sum['results'] = predicted_ids.apply(lambda x: mappings[x])
         else:
             assert output_type in ('probability', 'probability_vector')
             frame_per_example_count = sf.groupby('id', _tc.aggregate.COUNT())
             probabilities_sum = probabilities_sum.join(frame_per_example_count)
-            probabilities_sum = probabilities_sum.sort('id')
-            return probabilities_sum.apply(lambda row: [i / row['Count'] for i in row['prob_sum']])
+            probabilities_sum['results'] = probabilities_sum.apply(lambda row: [i / row['Count'] for i in row['prob_sum']])
+
+        if len(missing_ids) > 0:
+            output_type = probabilities_sum['results'].dtype
+            missing_predictions = _tc.SFrame({'id': missing_ids['id'],
+                                              'results': _tc.SArray([ None ] * len(missing_ids), dtype=output_type)
+                                              })
+            probabilities_sum = probabilities_sum[['id', 'results']].append(missing_predictions)
+
+        probabilities_sum = probabilities_sum.sort('id')
+        return probabilities_sum['results']
 
     def predict_topk(self, dataset, output_type='probability', k=3, verbose=True, batch_size=64):
         """

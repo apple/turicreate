@@ -326,6 +326,56 @@ class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabel
         self.assertTrue(self.model.validation_accuracy is not None)
 
 
+class ClassifierTestWithShortClip(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.data = copy(binary_test_data)
+
+        # Add a half second clip
+        short_clip = binary_test_data[0]
+        half_second_length = int(short_clip['audio']['sample_rate'] / 2.)
+        short_clip['audio']['data'] = short_clip['audio']['data'][:half_second_length]
+        short_clip = tc.SFrame({'audio': [short_clip['audio']], 'labels': [short_clip['labels']]})
+        self.data = self.data.append(short_clip)
+
+    def test_get_deep_features(self):
+        deep_features = tc.sound_classifier.get_deep_features(self.data['audio'])
+        self.assertEqual(len(deep_features), len(self.data))
+        self.assertEqual(deep_features[-1], [])
+
+    def test_model(self):
+        model = tc.sound_classifier.create(self.data, 'labels', feature='audio',
+                                                validation_set=self.data)
+
+        # A prediction for a clip which is too short should be None
+        predictions = model.predict(self.data)
+        self.assertEqual(len(predictions), len(self.data))
+        self.assertEqual(predictions[-1], None)
+        for l in predictions[:-1]:
+            self.assertNotEqual(l, None)
+
+        predictions = model.predict(self.data, output_type='probability_vector')
+        self.assertEqual(predictions[-1], None)
+        for l in predictions[:-1]:
+            self.assertNotEqual(l, None)
+
+        evaluate_results = model.evaluate(self.data)
+        self.assertIsNotNone(evaluate_results)
+
+        classify_results = model.classify(self.data)
+        self.assertEqual(classify_results[-1], {'class': None, 'probability': None})
+        for i in classify_results[:-1]:
+            self.assertNotEqual(i['class'], None)
+            self.assertNotEqual(i['probability'], None)
+
+        topk_results = model.predict_topk(self.data)
+        self.assertEqual(topk_results[-1]['class'], None)
+        self.assertEqual(topk_results[-1]['probability'], None)
+        for r in topk_results[:-1]:
+            self.assertNotEqual(r['class'], None)
+            self.assertNotEqual(r['probability'], None)
+
+
 @unittest.skipIf(_mac_ver() < (10,14), 'Custom models only supported on macOS 10.14+')
 class CoreMlCustomModelPreprocessingTest(unittest.TestCase):
     sample_rate = 16000
