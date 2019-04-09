@@ -65,7 +65,7 @@ tc.image_classifier.annotate(data)
 annotated_data = tc.image_classifier.recover_annotation()
 ```
 
-The annotation utility supports label types of `string` and `integer`.
+The annotation utility supports label types of `str` and `int`.
 
 #### Introductory Example
 
