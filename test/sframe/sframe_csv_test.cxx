@@ -25,6 +25,7 @@ struct csv_test {
   std::vector<std::string> parse_column_subset;
 
   bool perform_subset_test = true;
+  bool failure_expect = false;
 };
 
 csv_test basic(std::string dlm=",", std::string line_ending="\n") {
@@ -523,6 +524,20 @@ csv_test alternate_endline_test() {
 
 
 
+csv_test incorrectly_quoted_1() {
+  csv_test ret;
+  std::stringstream strm;
+  strm << "a, b";
+  strm << "\"a\", \"b\"";
+  strm << "\"a\", \"b";
+  strm << "\"a\", \"b\"";
+  ret.file = strm.str();
+  ret.failure_expect = true;
+  return ret;
+}
+
+
+
 csv_test escape_parsing() {
   csv_test ret;
   std::stringstream strm;
@@ -698,6 +713,7 @@ struct sframe_test  {
      fout << data.file;
      fout.close();
      auto frame = validate_file(data, filename);
+     if (data.failure_expect) return;
 
      if (data.perform_subset_test) {
        // try random column subsets
@@ -772,6 +788,10 @@ struct sframe_test  {
                           data.parse_column_subset,
                           0, // row limit
                           data.skip_rows);
+     if (data.failure_expect) {
+       TS_ASSERT_EQUALS(frame.num_rows(), 0);
+       return frame;
+     }
 
      TS_ASSERT_EQUALS(frame.num_rows(), data.values.size());
      TS_ASSERT_EQUALS(frame.num_columns(), data.types.size());
@@ -905,6 +925,9 @@ struct sframe_test  {
    void test_alternate_line_endings() {
      evaluate(alternate_endline_test());
    }
+   void test_invalid_csv_cases() {
+     evaluate(incorrectly_quoted_1());
+   }
 };
 
 BOOST_FIXTURE_TEST_SUITE(_sframe_test, sframe_test)
@@ -925,5 +948,8 @@ BOOST_AUTO_TEST_CASE(test_json) {
 }
 BOOST_AUTO_TEST_CASE(test_alternate_line_endings) {
   sframe_test::test_alternate_line_endings();
+}
+BOOST_AUTO_TEST_CASE(test_invalid_csv_cases) {
+  sframe_test::test_invalid_csv_cases();
 }
 BOOST_AUTO_TEST_SUITE_END()
