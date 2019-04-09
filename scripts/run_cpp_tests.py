@@ -53,12 +53,12 @@ if __name__ == '__main__':
     subprocess.check_call(['bash', os.path.join(WORKSPACE, 'scripts/create_docker_images.sh')])
 
     # make tests if needed
-    run_in_docker("./configure") # TODO use --no-python when it works again
-    run_in_docker('"pushd release/test && make -j4 && popd"')
+    run_in_docker('"pushd /build && ./configure && popd"') # TODO use --no-python when it works again
+    run_in_docker('"pushd /build/release/test && make -j4 && popd"')
 
     # run tests
     # TODO pass through other arguments
-    run_in_docker("python scripts/run_cpp_tests.py")
+    run_in_docker("python /build/scripts/run_cpp_tests.py")
 
     # exit if successful (if failed, it will have thrown above)
     sys.exit(0)
