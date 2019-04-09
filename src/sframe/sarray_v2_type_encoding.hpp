@@ -186,9 +186,10 @@ static void decode_double_stream_legacy(size_t num_elements,
     frame_of_reference_decode_128(iarc, buflen, buf);
     for (uint64_t i = 0;i < buflen; ++i) {
       uint64_t intval = (buf[i] >> 1) | (buf[i] << 63);
-      // make a double flexible_type
-      flexible_type ret(*reinterpret_cast<const flex_float*>(&intval) );
-      callback(ret);
+      double r = 0;
+      std::memcpy(&r, &intval, 8); 
+
+      callback(flexible_type(r));
     }
     num_elements -= buflen;
   }
