@@ -204,12 +204,6 @@ gl_sarray activity_classifier::predict(gl_sframe data,
 
   // Assume output_frequency is "per_row". Duplicate each probability vector a
   // number of times equal to the number of samples for that prediction.
-  // TODO: Also support "per_window".
-  //std::cout << data_it.get();
-  
-  // gl_sframe preds_per_window = gl_sframe({{"session_id",data_it.session_id_column_name}});
-  //std::cout << raw_preds_per_window;
-
   size_t preds_column_index = raw_preds_per_window.column_index("preds");
 
   size_t num_samples_column_index =
