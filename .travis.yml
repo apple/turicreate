@@ -63,8 +63,6 @@ jobs:
     - stage: build
       name: build_10.04_python3.5
       env: PYTHON_VERSION=3.5
-      before_script:
-        - docker load -i $HOME/.docker_images/image-10.04.gz
       script:
         # We sometimes get `error: No space left on device`
         # The workaround seems to be to force blocking I/O
@@ -81,23 +79,19 @@ jobs:
         - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=3 --debug --skip_cpp_test --skip_test --skip_doc --docker-python${PYTHON_VERSION}
 
     - stage: test
-      name: test_12.04_python2.7
+      name: test_python2.7
       env: PYTHON_VERSION=2.7
-      before_script:
-        - docker load -i $HOME/.docker_images/image-12.04.gz
       script:
         # Remove style transfer unit test due to out-of-memory error.
         # Remove some additional tests temporarily to get under the two-hour timeout.
         - rm src/unity/python/turicreate/test/test_style_transfer.py src/unity/python/turicreate/test/test_object_detector.py
-        - /build/scripts/test_wheel.sh --docker-python2.7
+        - bash scripts/test_wheel.sh --docker-python2.7
 
     - stage: test
       env: PYTHON_VERSION=3.5
-      name: test_14.04_python3.5
-      before_script:
-        - docker load -i $HOME/.docker_images/image-14.04.gz
+      name: test_python3.5
       script:
         # Remove style transfer unit test due to out-of-memory error.
         # Remove some additional tests temporarily to get under the two-hour timeout.
         - rm src/unity/python/turicreate/test/test_style_transfer.py src/unity/python/turicreate/test/test_object_detector.py
-        - /build/scripts/test_wheel.sh --docker-python3.5
+        - bash scripts/test_wheel.sh --docker-python3.5
