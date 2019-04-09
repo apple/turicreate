@@ -161,11 +161,6 @@ void activity_classifier::train(gl_sframe data, std::string target_column_name,
     { {"Iteration", 12}, {"Train Accuracy", 12}, {"Train Loss", 12}, {"Validation Accuracy", 12}, {"Validation Loss", 12}, {"Elapsed Time", 12} }));
 
   }
-  // else if (variant_is<flex_string>(validation_data) ){
-  //   if (variant_get_value<flex_string>(validation_data) == "auto"){
-  //     std::cout << "WIP";
-  //   }
-  // }
   else {
 
     training_table_printer_.reset(new table_printer(
@@ -576,7 +571,7 @@ void activity_classifier::perform_training_iteration() {
       }
       cumulative_val_accuracy += cumulative_per_seq_accuracy;
 
-      val_size = +val.batch_info.size();
+      val_size += val.batch_info.size();
     }
 
     float average_val_accuracy = cumulative_val_accuracy / val_size;
