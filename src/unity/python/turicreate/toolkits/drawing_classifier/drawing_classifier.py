@@ -177,8 +177,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
                 if verbose:
                     print ( "PROGRESS: Creating a validation set from 5 percent of training data. This may take a while.\n"
                             "          You can set ``validation_set=None`` to disable validation tracking.\n")
-                dataset, validation_dataset = dataset.random_split(
-                    TRAIN_VALIDATION_SPLIT)
+                dataset, validation_dataset = dataset.random_split(TRAIN_VALIDATION_SPLIT, exact=True)
             else:
                 validation_set = None
                 validation_dataset = _tc.SFrame()
