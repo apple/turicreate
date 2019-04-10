@@ -317,7 +317,7 @@ def create(dataset, target, model_name, features=None,
         if dataset.num_rows() >= 100:
             if verbose:
                 print_validation_track_notification()
-            dataset, validation_set = dataset.random_split(.95, seed=seed)
+            dataset, validation_set = dataset.random_split(.95, seed=seed, exact=True)
         else:
             validation_set = _turicreate.SFrame()
     elif validation_set is None:
@@ -386,7 +386,7 @@ def create_classification_with_model_selector(dataset, target, model_selector,
             if dataset.num_rows() >= 100:
                 if verbose:
                     print_validation_track_notification()
-                dataset, validation_set = dataset.random_split(.95)
+                dataset, validation_set = dataset.random_split(.95, exact=True)
             else:
                 validation_set = None
         else:

@@ -168,7 +168,7 @@ def create(dataset, target, feature, max_iterations=10,
         if len(dataset) >= 100:
             print ( "Creating a validation set from 5 percent of training data. This may take a while.\n"
                     "\tYou can set ``validation_set=None`` to disable validation tracking.\n")
-            dataset, validation_set = dataset.random_split(0.95)
+            dataset, validation_set = dataset.random_split(0.95, exact=True)
         else:
             validation_set = None
 
