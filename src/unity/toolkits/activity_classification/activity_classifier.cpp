@@ -92,7 +92,6 @@ size_t count_correct_predictions(size_t num_classes, const shared_float_array& o
 
 }
 
-
 float get_accuracy_per_batch(size_t prediction_window, size_t num_classes, 
     const shared_float_array& output, const data_iterator::batch& batch) {
 
@@ -108,7 +107,7 @@ float get_accuracy_per_batch(size_t prediction_window, size_t num_classes,
     
     cumulative_per_batch_accuracy += static_cast<float>(num_correct_predictions) / num_predictions;
   }
-  return cumulative_per_batch_accuracy / batch.batch_info.size();
+  return cumulative_per_batch_accuracy;
 }
 
 
@@ -147,32 +146,55 @@ void activity_classifier::init_options(
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
 }
 
+std::tuple<float, float> activity_classifier::compute_validation_metrics(
+    data_iterator *validation_data_iterator_, size_t prediction_window,
+    size_t num_classes, size_t batch_size) {
+  float cumulative_val_loss = 0.f;
+  size_t val_size = 0;
+  float cumulative_val_accuracy = 0.f;
+  validation_data_iterator_->reset();
+
+  while (validation_data_iterator_->has_next_batch()) {
+    data_iterator::batch val =
+        validation_data_iterator_->next_batch(batch_size);
+    std::map<std::string, shared_float_array> results =
+        training_model_->predict({
+            {"input", val.features},
+            {"labels", val.labels},
+            {"weights", val.weights},
+        });
+
+    const shared_float_array &output = results.at("output");
+    shared_float_array loss = results.at("loss");
+
+    float val_loss = std::accumulate(loss.data(), loss.data() + loss.size(),
+                                     0.f, std::plus<float>());
+
+    cumulative_val_loss += val_loss;
+
+    cumulative_val_accuracy +=
+        get_accuracy_per_batch(prediction_window, num_classes, output, val);
+
+    val_size += val.batch_info.size();
+  }
+
+  float average_val_accuracy = cumulative_val_accuracy / val_size;
+  float average_val_loss = cumulative_val_loss / val_size;
+  return std::make_tuple(average_val_accuracy, average_val_loss);
+}
+
 void activity_classifier::train(gl_sframe data, std::string target_column_name,
                                 std::string session_id_column_name,
                                 variant_type validation_data,
                                 std::map<std::string, flexible_type> opts)
 {
-  // Begin printing progress.
-  // TODO: Make progress printing optional.
 
-  if (variant_is<gl_sframe>(validation_data) ){
-
-    training_table_printer_.reset(new table_printer(
-    { {"Iteration", 12}, {"Train Accuracy", 12}, {"Train Loss", 12}, {"Validation Accuracy", 12}, {"Validation Loss", 12}, {"Elapsed Time", 12} }));
-
-  }
-  else {
-
-    training_table_printer_.reset(new table_printer(
-    { {"Iteration", 12}, {"Train Accuracy", 12}, {"Train Loss", 12}, {"Elapsed Time", 12} }));
-  }
-
+  // Instantiate the training dependencies: data iterator, compute context,
+  // backend NN model.
   init_train(std::move(data), std::move(target_column_name),
              std::move(session_id_column_name), std::move(validation_data),
              std::move(opts));
 
-  // Instantiate the training dependencies: data iterator, compute context,
-  // backend NN model.
   // Perform all the iterations at once.
   flex_int max_iterations = read_state<flex_int>("max_iterations");
   while (read_state<flex_int>("training_iterations") < max_iterations) {
@@ -390,6 +412,24 @@ void activity_classifier::init_train(
     std::string session_id_column_name, variant_type validation_data,
     std::map<std::string, flexible_type> opts)
 {
+
+  // Begin printing progress.
+  // TODO: Make progress printing optional.
+  if (variant_is<gl_sframe>(validation_data)) {
+    training_table_printer_.reset(
+        new table_printer({{"Iteration", 12},
+                           {"Train Accuracy", 12},
+                           {"Train Loss", 12},
+                           {"Validation Accuracy", 12},
+                           {"Validation Loss", 12},
+                           {"Elapsed Time", 12}}));
+  } else {
+    training_table_printer_.reset(new table_printer({{"Iteration", 12},
+                                                     {"Train Accuracy", 12},
+                                                     {"Train Loss", 12},
+                                                     {"Elapsed Time", 12}}));
+  }
+
   // Extract feature names from options.
   std::vector<std::string> feature_column_names;
   auto features_it = opts.find("features");
@@ -518,9 +558,11 @@ void activity_classifier::perform_training_iteration() {
 
     
     const shared_float_array& output = results.at("output");
-    
-    cumulative_batch_accuracy += get_accuracy_per_batch(prediction_window, num_classes, output, batch);
-    
+
+    cumulative_batch_accuracy +=
+        get_accuracy_per_batch(prediction_window, num_classes, output, batch) /
+        batch.batch_info.size();
+
     ++num_batches;
 
   }
@@ -528,54 +570,26 @@ void activity_classifier::perform_training_iteration() {
   float average_batch_loss = cumulative_batch_loss / num_batches;
   float average_batch_accuracy = cumulative_batch_accuracy / num_batches;
 
-  // Report progress if we have an active table printer.
-  if (validation_data_iterator_ != nullptr) {
-
-    float cumulative_val_accuracy = 0.f;
-    float cumulative_val_loss = 0.f;
-    size_t val_size = 0;
-
-    validation_data_iterator_->reset();
-
-    while (validation_data_iterator_->has_next_batch()) {
-      data_iterator::batch val =
-          validation_data_iterator_->next_batch(batch_size);
-      std::map<std::string, shared_float_array> results =
-          training_model_->predict({
-              {"input", val.features},
-              {"labels", val.labels},
-              {"weights", val.weights},
-          });
-
-      const shared_float_array &val_output = results.at("output");
-
-      shared_float_array loss = results.at("loss");
-
-      float val_loss = std::accumulate(loss.data(), loss.data() + loss.size(),
-                                       0.f, std::plus<float>());
-
-      cumulative_val_loss += val_loss;
-      float cumulative_per_seq_accuracy = 0.f;
-      for (size_t i = 0; i < val.batch_info.size(); ++i) {
-
-        const shared_float_array &output_chunk = val_output[i];
-        const shared_float_array &label_chunk = val.labels[i];
-        data_iterator::batch::chunk_info info = val.batch_info[i];
-        size_t num_predictions =
-            (info.num_samples + prediction_window - 1) / prediction_window;
-        size_t num_correct_predictions = count_correct_predictions(
-            num_classes, output_chunk, label_chunk, num_predictions);
-
-        cumulative_per_seq_accuracy +=
-            static_cast<float>(num_correct_predictions) / num_predictions;
-      }
-      cumulative_val_accuracy += cumulative_per_seq_accuracy;
-
-      val_size += val.batch_info.size();
+  if (validation_data_iterator_ == nullptr) {
+    if (training_table_printer_) {
+      training_table_printer_->print_progress_row(
+          iteration_idx, iteration_idx + 1, average_batch_accuracy,
+          average_batch_loss, progress_time());
     }
+  }
 
-    float average_val_accuracy = cumulative_val_accuracy / val_size;
-    float average_val_loss = cumulative_val_loss / val_size;
+  add_or_update_state({
+      {"training_iterations", iteration_idx + 1},
+      {"training_accuracy", average_batch_accuracy},
+      {"training_log_loss", average_batch_loss},
+  });
+
+  if (validation_data_iterator_ != nullptr) {
+    float average_val_accuracy;
+    float average_val_loss;
+    std::tie(average_val_accuracy, average_val_loss) =
+        compute_validation_metrics(validation_data_iterator_.get(),
+                                   prediction_window, num_classes, batch_size);
 
     if (training_table_printer_) {
 
@@ -585,34 +599,14 @@ void activity_classifier::perform_training_iteration() {
           progress_time());
 
       add_or_update_state({
-          {"training_iterations", iteration_idx + 1},
-          {"training_accuracy", average_batch_accuracy},
-          {"training_log_loss", average_batch_loss},
           {"validation_accuracy", average_val_accuracy},
           {"validation_log_loss", average_val_loss},
       });
     }
-
-  }
-
-  else {
-
-    if (training_table_printer_) {
-
-      training_table_printer_->print_progress_row(
-          iteration_idx, iteration_idx + 1, average_batch_accuracy,
-          average_batch_loss, progress_time());
-    }
-
-    add_or_update_state({
-        {"training_iterations", iteration_idx + 1},
-        {"training_accuracy", average_batch_accuracy},
-        {"training_log_loss", average_batch_loss},
-    });
   }
 
   training_data_iterator_->reset();
-}
+  }
 
 gl_sframe activity_classifier::perform_inference(data_iterator* data) const {
   // Open a new SFrame for writing.

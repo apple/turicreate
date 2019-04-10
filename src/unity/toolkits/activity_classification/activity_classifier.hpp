@@ -169,6 +169,11 @@ class EXPORT activity_classifier: public ml_model_base {
                           std::map<std::string, flexible_type> opts);
   virtual void perform_training_iteration();
 
+  virtual std::tuple<float, float>
+  compute_validation_metrics(data_iterator *validation_data_iterator_,
+                             size_t prediction_window, size_t num_classes,
+                             size_t batch_size);
+
   // Returns an SFrame where each row corresponds to one prediction, and
   // containing three columns: "session_id" indicating the session ID shared by
   // the samples in the prediction window, "preds" containing the class
