@@ -147,6 +147,10 @@ class SArrayTest(unittest.TestCase):
         self.__test_equal(SArray(np.matrix(self.vec_data)),
                           self.vec_data, array.array)
 
+        # Test python 3
+        self.__test_equal(SArray(filter(lambda x: True, self.int_data)), self.int_data, int)
+        self.__test_equal(SArray(map(lambda x: x, self.int_data)), self.int_data, int)
+
     def test_list_with_none_creation(self):
         tlist=[[2,3,4],[5,6],[4,5,10,None]]
         g=SArray(tlist)

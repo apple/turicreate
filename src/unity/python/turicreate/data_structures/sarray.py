@@ -398,6 +398,8 @@ class SArray(object):
                       (sys.version_info.major < 3 and isinstance(data, unicode))):
                     # if it is a file, we default to string
                     dtype = str
+                elif sys.version_info.major >= 3 and isinstance(data, (filter, map)):
+                    data = list(data)
                 elif isinstance(data, array.array):
                     dtype = pytype_from_array_typecode(data.typecode)
                 elif isinstance(data, collections.Sequence):
