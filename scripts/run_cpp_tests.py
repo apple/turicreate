@@ -15,10 +15,11 @@ SCRIPT_DIR=os.path.dirname(__file__)
 WORKSPACE=os.path.abspath(os.path.join(SCRIPT_DIR, '..'))
 
 def run_in_docker(cmd):
+    if not(isinstance(cmd, list)):
+      cmd = [cmd]
     subprocess.check_call(['docker', 'run', '--rm',
         '--mount', 'type=bind,source=' + WORKSPACE + ',target=/build,consistency=delegated',
-        'turicreate/build-image-12.04:' + TC_BUILD_IMAGE_VERSION,
-        cmd])
+        'turicreate/build-image-12.04:' + TC_BUILD_IMAGE_VERSION] + cmd)
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(
@@ -53,8 +54,8 @@ if __name__ == '__main__':
     subprocess.check_call(['bash', os.path.join(WORKSPACE, 'scripts/create_docker_images.sh')])
 
     # make tests if needed
-    run_in_docker('bash -c "pushd /build && ./configure && popd"') # TODO use --no-python when it works again
-    run_in_docker('bash -c "pushd /build/release/test && make -j4 && popd"')
+    run_in_docker(['bash', '-c', '"pushd /build && ./configure && popd"']) # TODO use --no-python when it works again
+    run_in_docker(['bash', '-c', '"pushd /build/release/test && make -j4 && popd"'])
 
     # run tests
     # TODO pass through other arguments
