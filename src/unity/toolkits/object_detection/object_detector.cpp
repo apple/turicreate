@@ -279,6 +279,7 @@ void object_detector::load_version(iarchive& iarc, size_t version) {}
 void object_detector::train(gl_sframe data,
                             std::string annotations_column_name,
                             std::string image_column_name,
+                            variant_type validation_data,
                             std::map<std::string, flexible_type> opts) {
 
   // Begin printing progress.
@@ -316,12 +317,26 @@ void object_detector::train(gl_sframe data,
     trained_weights[key] = kv.second;
   }
   nn_spec_->update_params(trained_weights);
+
+  // Compute training and validation metrics.
+  gl_sframe val_data;
+  if (variant_is<gl_sframe>(validation_data)) {
+    val_data = variant_get_value<gl_sframe>(validation_data);
+  }
+  update_model_metrics(data, val_data);
 }
 
 variant_map_type object_detector::evaluate(
     gl_sframe data, std::string metric,
     std::map<std::string, flexible_type> opts) {
+  return perform_evaluation(std::move(data), std::move(metric));
+}
 
+// TODO: Should accept model_backend as an optional argument to avoid
+// instantiating a new backend during training. Or just check to see if an
+// existing backend is available?
+variant_map_type object_detector::perform_evaluation(gl_sframe data,
+                                                     std::string metric) {
   std::vector<std::string> metrics;
   static constexpr char AP[] = "average_precision";
   static constexpr char MAP[] = "mean_average_precision";
@@ -914,6 +929,29 @@ void object_detector::wait_for_training_batches(size_t max_pending) {
           iteration_idx, iteration_idx + 1, loss, progress_time());
     }
   }
+}
+
+void object_detector::update_model_metrics(gl_sframe data,
+                                           gl_sframe validation_data) {
+  std::map<std::string, variant_type> metrics;
+
+  // Compute training metrics.
+  variant_map_type training_metrics = perform_evaluation(data, "all");
+  for (const auto& kv : training_metrics) {
+    metrics["training_" + kv.first] = kv.second;
+  }
+
+  // Compute validation metrics if necessary.
+  if (!validation_data.empty()) {
+    variant_map_type validation_metrics = perform_evaluation(validation_data,
+                                                             "all");
+    for (const auto& kv : training_metrics) {
+      metrics["validation_" + kv.first] = kv.second;
+    }
+  }
+
+  // Add metrics to model state.
+  add_or_update_state(metrics);
 }
 
 }  // object_detection
