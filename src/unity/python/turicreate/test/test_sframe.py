@@ -875,6 +875,14 @@ class SFrameTest(unittest.TestCase):
         for i in range(len(result)):
             self.assertEqual(i, l[i])
 
+        # map input type
+        toy_data = SFrame({'a': range(100)})
+        map_result = map(lambda x: x+1, [1, 30])
+        result = toy_data.filter_by(map_result, 'a')
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result[0]['a'], 2)
+        self.assertEqual(result[1]['a'], 31)
+
 
     def test_sample_split(self):
         sf = SFrame(data=self.__create_test_df(100))
