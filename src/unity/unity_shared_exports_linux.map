@@ -2,6 +2,7 @@ LIBUNITYSHARED_5.5 {
   global:
     extern "C++" {
         cppipc::*;
+        file_logger::*;
         turi::*;
     };
 
