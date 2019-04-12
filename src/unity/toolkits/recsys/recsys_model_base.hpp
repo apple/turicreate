@@ -273,7 +273,7 @@ public:
 
   gl_sframe api_get_item_intersection_info(gl_sframe item_pairs);
 
-  gl_sframe api_precision_recall_stats(gl_sframe indexed_validation_data, gl_sframe recommend_output, const std::vector<size_t>& cutoffs);
+  gl_sframe api_precision_recall_by_user(gl_sframe validation_data, gl_sframe recommend_output, const std::vector<size_t>& cutoffs);
 
   variant_map_type api_get_train_stats();
 
@@ -450,7 +450,7 @@ public:
                                        "filename");
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
-      "precision_recall_stats", recsys_model_base::api_precision_recall_stats,
+      "precision_recall_by_user", recsys_model_base::api_precision_recall_by_user,
       "indexed_validation_data", "recommend_output", "cutoffs");
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_data_schema",

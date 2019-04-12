@@ -1881,13 +1881,35 @@ gl_sframe recsys_model_base::api_recommend(gl_sframe _query, gl_sframe _exclude,
 
 }
 
-gl_sframe recsys_model_base::api_precision_recall_stats(
-    gl_sframe indexed_validation_data, gl_sframe recommend_output,
+gl_sframe recsys_model_base::api_precision_recall_by_user(
+    gl_sframe validation_data, 
+    gl_sframe recommend_output,
     const std::vector<size_t>& cutoffs) {
 
-  return (gl_sframe(precision_recall_stats(
-      indexed_validation_data.materialize_to_sframe(),
-      recommend_output.materialize_to_sframe(), cutoffs)));
+  const std::string& user_col = metadata->column_name(USER_COLUMN_INDEX);
+  const std::string& item_col = metadata->column_name(ITEM_COLUMN_INDEX);
+
+  validation_data[user_col] = validation_data[user_col].apply(
+      metadata->indexer(USER_COLUMN_INDEX)->indexing_lambda(), flex_type_enum::INTEGER);
+  validation_data[item_col] = validation_data[item_col].apply(
+      metadata->indexer(ITEM_COLUMN_INDEX)->indexing_lambda(), flex_type_enum::INTEGER);
+
+  recommend_output[user_col] = recommend_output[user_col].apply(
+      metadata->indexer(USER_COLUMN_INDEX)->indexing_lambda(), flex_type_enum::INTEGER);
+  recommend_output[item_col] = recommend_output[item_col].apply(
+      metadata->indexer(ITEM_COLUMN_INDEX)->indexing_lambda(), flex_type_enum::INTEGER);
+
+  gl_sframe stats = gl_sframe(precision_recall_stats(
+        validation_data.materialize_to_sframe(),
+        recommend_output.materialize_to_sframe(), cutoffs));
+
+  stats[user_col] = stats[user_col].apply(
+     metadata->indexer(USER_COLUMN_INDEX)->deindexing_lambda(), 
+     metadata->column_type(USER_COLUMN_INDEX));
+
+  stats.materialize();
+
+  return stats;
 }
 
 variant_map_type recsys_model_base::api_get_data_schema() {

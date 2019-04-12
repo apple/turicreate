@@ -14,6 +14,7 @@
 #include <serialization/serialization_includes.hpp>
 #include <unity/toolkits/ml_data_2/ml_data_column_modes.hpp>
 #include <unity/lib/variant_deep_serialize.hpp>
+#include <functional>
 
 namespace turi { namespace v2 { namespace ml_data_internal {
 
@@ -134,6 +135,18 @@ class column_indexer {
    */
   virtual void load_version(turi::iarchive& iarc, size_t version) = 0;
 
+  /** Returns a lambda function that can be used as a lambda function for deindexing
+   *  a column.
+   */
+  virtual std::function<flexible_type(const flexible_type&)> deindexing_lambda() const = 0;
+
+  /** Returns a lambda function that can be used as a lambda function for indexing
+   *  a column.
+   *
+   *  Does not add any new index values.
+   */
+  virtual std::function<flexible_type(const flexible_type&)> indexing_lambda() const = 0;
+
   /** Create a copy with the index cleared.
    */
   virtual std::shared_ptr<column_indexer> create_cleared_copy() const = 0; 
@@ -152,6 +165,7 @@ class column_indexer {
    */
   virtual void set_values(std::vector<flexible_type>&& values) = 0;
   virtual std::vector<flexible_type> reset_and_return_values() = 0;
+
 
  public:
 
