@@ -201,7 +201,10 @@ static MLModel *create_model(const std::string& download_path,
       if(turi::fileio::get_protocol(model_info.base_model_url) != "") {
         base_model_path = download_path + "/" + model_name + ".mlmodel";
         logstream(LOG_PROGRESS) << "Downloading base mlmodel" << std::endl;
-        turi::download_url(model_info.base_model_url, base_model_path);
+        const int download_ret = turi::download_url(model_info.base_model_url, base_model_path);
+        if(download_ret != 0) {
+          log_and_throw("Unable to download model.");
+        }
       } else {
         base_model_path = download_path + "/" + model_info.base_model_url;
       }
