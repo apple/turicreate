@@ -25,4 +25,3 @@ pyOpenSSL
 ndg-httpsclient
 pyasn1
 hypothesis==3.76.0
-distro>=1.0.0; sys_platform == 'linux'
