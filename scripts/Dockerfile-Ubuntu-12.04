@@ -14,7 +14,7 @@ RUN apt-get update
 RUN apt-get -y upgrade
 
 # Install Python 2.7 with apt
-RUN apt-get -y install python2.7
+RUN apt-get -y install python2.7 lsb-release
 
 # Install pip and virtualenv
 ADD https://bootstrap.pypa.io/get-pip.py /src/get-pip.py
