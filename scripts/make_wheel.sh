@@ -323,6 +323,10 @@ package_wheel() {
     NEW_WHEEL_PATH=${temp}${platform_tag}".whl"
     mv ${WHEEL_PATH} ${NEW_WHEEL_PATH}
     WHEEL_PATH=${NEW_WHEEL_PATH}
+  else
+    # Don't pick up -manylinux1 wheels, since those may have been created by a later step from a previous build.
+    # Ignore those for now by selecting only -linux wheels.
+    WHEEL_PATH=`ls ${WORKSPACE}/${build_type}/src/unity/python/dist/turicreate-${VERSION_NUMBER}*-linux.whl`
   fi
 
   # Set Python Language Version Number
