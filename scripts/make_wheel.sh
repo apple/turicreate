@@ -190,11 +190,13 @@ build_source() {
   make -j${NUM_PROCS}
 
   # make test
-  if [[ -z $SKIP_CPP_TEST ]]; then
-    cd ${WORKSPACE}/test
-    touch $(find . -name "*.cxx")
-    cd ${WORKSPACE}/${build_type}/test
-    make -j${NUM_PROCS}
+  if [[ -z $SKIP_TEST ]]; then
+    if [[ -z $SKIP_CPP_TEST ]]; then
+      cd ${WORKSPACE}/test
+      touch $(find . -name "*.cxx")
+      cd ${WORKSPACE}/${build_type}/test
+      make -j${NUM_PROCS}
+    fi
   fi
   pop_ld_library_path
 
