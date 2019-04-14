@@ -14,12 +14,11 @@ TC_BUILD_IMAGE_VERSION="1.0.4"
 SCRIPT_DIR=os.path.dirname(__file__)
 WORKSPACE=os.path.abspath(os.path.join(SCRIPT_DIR, '..'))
 
-def run_in_docker(cmd, workdir=None):
+def run_in_docker(cmd, workdir='/build'):
     if not(isinstance(cmd, list)):
       cmd = [cmd]
-    if workdir is not None:
-      cmd = ['-w="%s"' % workdir] + cmd
     subprocess.check_call(['docker', 'run', '--rm',
+        '-w="%s"' % workdir,
         '--mount', 'type=bind,source=' + WORKSPACE + ',target=/build,consistency=delegated',
         'turicreate/build-image-12.04:' + TC_BUILD_IMAGE_VERSION] + cmd)
 
