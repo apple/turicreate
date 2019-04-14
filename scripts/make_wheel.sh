@@ -127,22 +127,30 @@ if [[ -n "${USE_DOCKER}" ]]; then
 
   # Delete env to force re-creation of virtualenv if we are running tests next
   # (to prevent reuse of 10.04 virtualenv on 14.04/18.04)
-  rm -rf $WORKSPACE/deps/env
+  docker run --rm \
+    --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
+    -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
+    turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} \
+    rm -rf /build/deps/env
 
   # Run the tests inside Docker (14.04) if desired
   # 10.04 is not capable of passing turicreate unit tests currently
   if [[ -z $SKIP_TEST ]]; then
     # run the tests
     /build/scripts/test_wheel.sh --docker-python${DOCKER_PYTHON}
-
-    # Delete env to force re-creation of virtualenv if we are running tests next
-    # (to prevent reuse of 14.04/18.04 virtualenv on 10.04)
-    rm -rf $WORKSPACE/deps/env
   fi
 
   if [[ -n $SKIP_DOC ]]; then
     echo "TODO: run the pydoc build in Docker if requested"
   fi
+
+  # Delete env to force re-creation of virtualenv for next build
+  # (to prevent reuse of 14.04/18.04 virtualenv on 10.04)
+  docker run --rm \
+    --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
+    -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
+    turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} \
+    rm -rf /build/deps/env
 
   exit 0
 fi
