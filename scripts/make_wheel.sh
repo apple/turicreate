@@ -141,7 +141,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
   fi
 
   if [[ -n $SKIP_DOC ]]; then
-    # TODO: run the pydoc build in Docker if requested
+    echo "TODO: run the pydoc build in Docker if requested"
   fi
 
   exit 0
