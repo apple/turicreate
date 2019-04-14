@@ -360,8 +360,11 @@ endif()
 # Shared compiler flags used by all builds (debug, profile, release)
 # Allow COMPILER_FLAGS to be used as options from the ./configure without
 # forcing all the other options I want to add to be lost
-set(C_REAL_COMPILER_FLAGS "-Wall ${DEBUG_INFO_FLAGS} ${COMPILER_FLAGS}")
-set(CPP_REAL_COMPILER_FLAGS "-Wall ${DEBUG_INFO_FLAGS} ${CPP11_FLAGS} ${COMPILER_FLAGS}")
+set(C_REAL_COMPILER_FLAGS "-Wall -flto ${DEBUG_INFO_FLAGS} ${COMPILER_FLAGS}")
+set(CPP_REAL_COMPILER_FLAGS "-Wall -flto ${DEBUG_INFO_FLAGS} ${CPP11_FLAGS} ${COMPILER_FLAGS}")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -flto")
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -flto")
+set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -flto")
 
 if (CLANG)
   # clang 9.0.0 and earlier will warn (error with -Werror) on unused -pthread during linking
