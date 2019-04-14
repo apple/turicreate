@@ -107,7 +107,7 @@ build_wheel_linux_python36:
     paths:
       - target/
 
-build_wheel_mac_10_14_python27:
+.build_wheel_mac_10_14_python27:
   tags:
     - macos10.14
   stage: build
@@ -120,7 +120,7 @@ build_wheel_mac_10_14_python27:
     paths:
       - target/
 
-build_wheel_mac_10_14_python35:
+.build_wheel_mac_10_14_python35:
   tags:
     - macos10.14
   stage: build
@@ -133,7 +133,7 @@ build_wheel_mac_10_14_python35:
     paths:
       - target/
 
-build_wheel_mac_10_14_python36:
+.build_wheel_mac_10_14_python36:
   tags:
     - macos10.14
   stage: build
@@ -146,7 +146,7 @@ build_wheel_mac_10_14_python36:
     paths:
       - target/
 
-build_recommender_macos_10_14:
+.build_recommender_macos_10_14:
   tags:
     - macos10.14
   stage: build
@@ -192,7 +192,7 @@ test_cpp_linux:
     - apk add python2
     - python scripts/run_cpp_tests.py -j 1 --docker
 
-test_cpp_mac_10_13:
+.test_cpp_mac_10_13:
   tags:
     - macos10.13
   stage: test
@@ -208,7 +208,7 @@ test_cpp_mac_10_13:
     - export LD_LIBRARY_PATH=`pwd`/src/unity:`pwd`/src/unity/python/turicreate:$LD_LIBRARY_PATH
     - python ../../scripts/run_cpp_tests.py -j 1
 
-test_cpp_mac_10_14:
+.test_cpp_mac_10_14:
   tags:
     - macos10.14
   stage: test
@@ -291,7 +291,7 @@ test_python_linux_python36:
     paths:
       - pytest.*
 
-test_python_mac_python27_10_13:
+.test_python_mac_python27_10_13:
   tags:
     - macos10.13
   stage: test
@@ -306,7 +306,7 @@ test_python_mac_python27_10_13:
     paths:
       - pytest.*
 
-test_python_mac_python27_10_14:
+.test_python_mac_python27_10_14:
   tags:
     - macos10.14
   stage: test
@@ -321,7 +321,7 @@ test_python_mac_python27_10_14:
     paths:
       - pytest.*
 
-test_python_mac_python35_10_14:
+.test_python_mac_python35_10_14:
   tags:
     - macos10.14
   stage: test
@@ -336,7 +336,7 @@ test_python_mac_python35_10_14:
     paths:
       - pytest.*
 
-test_python_mac_python36_10_14:
+.test_python_mac_python36_10_14:
   tags:
     - macos10.14
   stage: test
@@ -402,7 +402,7 @@ scenario_tests_linux_python36:
     - cd scenario-tests
     - ./run_scenario_tests.sh --docker-python3.6 ../target/turicreate-*.whl
 
-scenario_tests_mac_python27_10_13:
+.scenario_tests_mac_python27_10_13:
   tags:
     - macos10.13
   stage: test
@@ -413,7 +413,7 @@ scenario_tests_mac_python27_10_13:
     - cd scenario-tests
     - ./run_scenario_tests.sh ../target/turicreate-*.whl
 
-scenario_tests_mac_python27_10_14:
+.scenario_tests_mac_python27_10_14:
   tags:
     - macos10.14
   stage: test
