@@ -20,9 +20,8 @@ def run_in_docker(cmd, workdir=None):
     if workdir is not None:
       cmd = ['-w="%s"' % workdir] + cmd
     subprocess.check_call(['docker', 'run', '--rm',
-        '--user', '$(id -u):$(id -g)',
         '--mount', 'type=bind,source=' + WORKSPACE + ',target=/build,consistency=delegated',
-        'turicreate/build-image-12.04:' + TC_BUILD_IMAGE_VERSION] + cmd, shell=True)
+        'turicreate/build-image-12.04:' + TC_BUILD_IMAGE_VERSION] + cmd)
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(

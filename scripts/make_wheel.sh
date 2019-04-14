@@ -119,7 +119,6 @@ if [[ -n "${USE_DOCKER}" ]]; then
 
   # Run the make_wheel.sh script inside Docker to build
   docker run --rm \
-    --user $(id -u):$(id -g) \
     --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
     -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
     turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} \
