@@ -104,15 +104,14 @@ if [[ -n "${USE_DOCKER}" ]]; then
   $WORKSPACE/scripts/create_docker_images.sh
 
   # set up arguments to make_wheel.sh within docker
-  make_wheel_args="--build_number=$BUILD_NUMBER --num_procs=$NUM_PROCS --skip_smoke_test --skip_test"
+  # always skip smoke test since it (currently) fails on 10.04
+  # always skip doc gen since it (currently) fails on 10.04
+  make_wheel_args="--build_number=$BUILD_NUMBER --num_procs=$NUM_PROCS --skip_smoke_test --skip_doc --skip_test"
   if [[ -n $SKIP_BUILD ]]; then
     make_wheel_args="$make_wheel_args --skip_build"
   fi
   if [[ -n $SKIP_CPP_TEST ]]; then
     make_wheel_args="$make_wheel_args --skip_cpp_test"
-  fi
-  if [[ -n $SKIP_DOC ]]; then
-    make_wheel_args="$make_wheel_args --skip_doc"
   fi
   if [[ "$build_type" == "debug" ]]; then
     make_wheel_args="$make_wheel_args --debug"
@@ -127,12 +126,8 @@ if [[ -n "${USE_DOCKER}" ]]; then
     $make_wheel_args
 
   # Delete env to force re-creation of virtualenv if we are running tests next
-  # (to prevent reuse of 10.04 virtualenv on 14.04)
-  docker run --rm \
-    --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
-    -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
-    turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} \
-    rm -rf /build/deps/env
+  # (to prevent reuse of 10.04 virtualenv on 14.04/18.04)
+  rm -rf $WORKSPACE/deps/env
 
   # Run the tests inside Docker (14.04) if desired
   # 10.04 is not capable of passing turicreate unit tests currently
@@ -141,12 +136,12 @@ if [[ -n "${USE_DOCKER}" ]]; then
     /build/scripts/test_wheel.sh --docker-python${DOCKER_PYTHON}
 
     # Delete env to force re-creation of virtualenv if we are running tests next
-    # (to prevent reuse of 14.04 virtualenv on 10.04)
-    docker run --rm \
-      --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
-      -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
-      turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} \
-      rm -rf /build/deps/env
+    # (to prevent reuse of 14.04/18.04 virtualenv on 10.04)
+    rm -rf $WORKSPACE/deps/env
+  fi
+
+  if [[ -n $SKIP_DOC ]]; then
+    # TODO: run the pydoc build in Docker if requested
   fi
 
   exit 0
