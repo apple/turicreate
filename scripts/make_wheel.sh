@@ -137,7 +137,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
   # 10.04 is not capable of passing turicreate unit tests currently
   if [[ -z $SKIP_TEST ]]; then
     # run the tests
-    /build/scripts/test_wheel.sh --docker-python${DOCKER_PYTHON}
+    ./scripts/test_wheel.sh --docker-python${DOCKER_PYTHON}
   fi
 
   if [[ -n $SKIP_DOC ]]; then
