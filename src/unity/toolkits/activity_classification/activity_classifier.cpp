@@ -65,11 +65,9 @@ std::vector<std::string> get_supported_metrics() {
           "confusion_matrix", "roc_curve"};
 }
 
-
 size_t count_correct_predictions(size_t num_classes, const shared_float_array& output_chunk, 
     const shared_float_array& label_chunk, size_t num_predictions) {
 
-      
   const float* output_ptr = output_chunk.data();
   const float* truth_ptr = label_chunk.data();
     
@@ -470,6 +468,8 @@ void activity_classifier::init_train(
         read_state<flex_int>("prediction_window");
     validation_data_params.predictions_in_chunk = NUM_PREDICTIONS_PER_CHUNK;
     validation_data_iterator_ = create_iterator(validation_data_params);
+  } else {
+    validation_data_iterator_ = nullptr;
   }
   // Instantiate the compute context.
   training_compute_context_ = create_compute_context();
@@ -597,8 +597,6 @@ void activity_classifier::perform_training_iteration() {
                                    prediction_window, num_classes, batch_size);
 
     if (training_table_printer_) {
-
-      // training_table_printer_->reset();
 
       training_table_printer_->print_progress_row(
           iteration_idx, iteration_idx + 1, average_batch_accuracy,
