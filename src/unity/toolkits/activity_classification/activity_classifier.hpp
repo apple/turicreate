@@ -46,7 +46,7 @@ class EXPORT activity_classifier: public ml_model_base {
   REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::train, "data", "target",
                                  "session_id", "validation_data", "options");
   register_defaults("train",
-                    {{"validation_data", to_variant(gl_sframe())},
+                    {{"validation_data", to_variant(std::string("auto"))},
                      {"options",
                       to_variant(std::map<std::string, flexible_type>())}});
   REGISTER_CLASS_MEMBER_DOCSTRING(
