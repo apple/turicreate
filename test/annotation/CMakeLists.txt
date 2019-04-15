@@ -4,6 +4,7 @@ make_library(annotation_test_utils
   SOURCES
     utils.cpp
   REQUIRES
+    unity_core
     unity_shared_for_testing
 )
 

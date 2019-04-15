@@ -1,5 +1,7 @@
-#define BOOST_TEST_MODULE
+#define BOOST_TEST_MODULE annotation_utility_tests
 #include <unity/lib/annotation/image_classification.hpp>
+
+#include <unity/lib/gl_sarray.hpp>
 
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
@@ -33,16 +35,21 @@ public:
         std::static_pointer_cast<turi::unity_sarray>(
             annotation_sf->select_column(image_column_name));
 
-    std::shared_ptr<turi::unity_sarray> feature_sarray =
-        turi::annotate::featurize_images(image_sarray);
+    std::shared_ptr<turi::gl_sarray> image_gl_sarray =
+        std::make_shared<turi::gl_sarray>(image_sarray);
 
-    TS_ASSERT(image_sarray->dtype() == turi::flex_type_enum::IMAGE);
-    TS_ASSERT(feature_sarray->dtype() == turi::flex_type_enum::VECTOR);
+    turi::gl_sarray feature_sarray =
+        turi::annotate::featurize_images(image_gl_sarray);
+
+    TS_ASSERT(image_gl_sarray->dtype() == turi::flex_type_enum::IMAGE);
+    TS_ASSERT(feature_sarray.dtype() == turi::flex_type_enum::VECTOR);
 
     std::vector<turi::flexible_type> feature_vector =
-        feature_sarray->to_vector();
+        std::shared_ptr<turi::unity_sarray>(feature_sarray)
+            ->to_vector();
 
-    size_t first_vec_size = feature_vector.at(0).get<turi::flex_vec>().size();
+                size_t first_vec_size =
+            feature_vector.at(0).get<turi::flex_vec>().size();
     for (size_t i = 1; i < feature_vector.size(); i++) {
       size_t vec_size = feature_vector.at(i).get<turi::flex_vec>().size();
       TS_ASSERT(first_vec_size == vec_size);
@@ -58,12 +65,16 @@ public:
         annotation_testing::random_sframe(50, image_column_name,
                                           annotation_column_name);
 
+    
     std::shared_ptr<turi::unity_sarray> image_sarray =
         std::static_pointer_cast<turi::unity_sarray>(
             annotation_sf->select_column(image_column_name));
 
-    std::shared_ptr<turi::unity_sarray> feature_sarray =
-        turi::annotate::featurize_images(image_sarray);
+    std::shared_ptr<turi::gl_sarray> image_gl_sarray =
+        std::make_shared<turi::gl_sarray>(image_sarray);
+
+    turi::gl_sarray feature_sarray =
+        turi::annotate::featurize_images(image_gl_sarray);
 
     std::vector<turi::flexible_type> feature_vector =
         turi::annotate::similar_items(feature_sarray, 1, top_k);

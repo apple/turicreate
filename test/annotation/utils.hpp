@@ -10,6 +10,8 @@
 #include <unity/lib/unity_sarray.hpp>
 #include <unity/lib/unity_sframe.hpp>
 
+#include <unity/lib/gl_sarray.hpp>
+
 namespace annotation_testing {
 
 unsigned const MAX_LENGTH_STRING = 60;

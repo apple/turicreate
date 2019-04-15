@@ -262,7 +262,7 @@ void ImageClassification::cast_annotations() {
   bool castable = true;
   for (size_t i = 0; i < flex_data.size(); i++) {
     std::string label_value = flex_data.at(i).get<flex_string>();
-    if (!isInteger(label_value)) {
+    if (!is_integer(label_value)) {
       castable = false;
       break;
     }
