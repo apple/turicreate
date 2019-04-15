@@ -396,14 +396,15 @@ std::unique_ptr<model_spec> activity_classifier::init_model() const
       /* cell_clip_threshold */ LSTM_CELL_CLIP_THRESHOLD,
       /* initializers */  lstm_weight_initializers::create_with_xavier_method(
           NUM_CONV_FILTERS, LSTM_HIDDEN_SIZE));
+  // result->add_reshape("lstm1","lstm", {{0, 1, 3, 2}});
   result->add_inner_product(
-      /* name */                "dense0",
-      /* input */               "lstm",
+      /* name */ "dense0",
+      /* input */ "lstm1",
       /* num_output_channels */ FULLY_CONNECTED_HIDDEN_SIZE,
-      /* num_input_channels */  LSTM_HIDDEN_SIZE,
-      /* weight_init_fn */      xavier_weight_initializer(
-          LSTM_HIDDEN_SIZE, FULLY_CONNECTED_HIDDEN_SIZE),
-      /* bias_init_fn */        zero_weight_initializer());
+      /* num_input_channels */ LSTM_HIDDEN_SIZE,
+      /* weight_init_fn */
+      xavier_weight_initializer(LSTM_HIDDEN_SIZE, FULLY_CONNECTED_HIDDEN_SIZE),
+      /* bias_init_fn */ zero_weight_initializer());
   result->add_batchnorm("bn", "dense0", FULLY_CONNECTED_HIDDEN_SIZE, 0.001f);
   result->add_relu("relu6", "bn");
   result->add_inner_product(
