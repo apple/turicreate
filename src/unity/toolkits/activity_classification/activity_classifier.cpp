@@ -110,7 +110,6 @@ float get_accuracy_per_batch(size_t prediction_window, size_t num_classes,
   return cumulative_per_batch_accuracy;
 }
 
-
 }  // namespace
 
 void activity_classifier::init_options(
@@ -416,13 +415,19 @@ void activity_classifier::init_train(
   // Begin printing progress.
   // TODO: Make progress printing optional.
   if (variant_is<gl_sframe>(validation_data)) {
-    training_table_printer_.reset(
-        new table_printer({{"Iteration", 12},
-                           {"Train Accuracy", 12},
-                           {"Train Loss", 12},
-                           {"Validation Accuracy", 12},
-                           {"Validation Loss", 12},
-                           {"Elapsed Time", 12}}));
+    gl_sframe validation_sf = variant_get_value<gl_sframe>(validation_data);
+    if (!validation_sf.empty()) {
+      training_table_printer_.reset(
+          new table_printer({{"Iteration", 12},
+                             {"Train Accuracy", 12},
+                             {"Train Loss", 12},
+                             {"Validation Accuracy", 12},
+                             {"Validation Loss", 12},
+                             {"Elapsed Time", 12}}));
+    } else {
+      log_and_throw("Input SFrame either has no rows or no columns. A "
+                    "non-empty SFrame is required");
+    }
   } else {
     training_table_printer_.reset(new table_printer({{"Iteration", 12},
                                                      {"Train Accuracy", 12},
@@ -592,6 +597,8 @@ void activity_classifier::perform_training_iteration() {
                                    prediction_window, num_classes, batch_size);
 
     if (training_table_printer_) {
+
+      // training_table_printer_->reset();
 
       training_table_printer_->print_progress_row(
           iteration_idx, iteration_idx + 1, average_batch_accuracy,
