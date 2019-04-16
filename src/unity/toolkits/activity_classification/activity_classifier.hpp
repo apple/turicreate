@@ -47,7 +47,7 @@ class EXPORT activity_classifier: public ml_model_base {
   REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::train, "data", "target",
                                  "session_id", "validation_data", "options");
   register_defaults("train",
-                    {{"validation_data", to_variant(gl_sframe())},
+                    {{"validation_data", to_variant(std::string("auto"))},
                      {"options",
                       to_variant(std::map<std::string, flexible_type>())}});
   REGISTER_CLASS_MEMBER_DOCSTRING(
@@ -190,6 +190,10 @@ class EXPORT activity_classifier: public ml_model_base {
                           std::map<std::string, flexible_type> opts);
   virtual void perform_training_iteration();
 
+  virtual std::tuple<float, float>
+  compute_validation_metrics(size_t prediction_window, size_t num_classes,
+                             size_t batch_size);
+
   // Returns an SFrame where each row corresponds to one prediction, and
   // containing three columns: "session_id" indicating the session ID shared by
   // the samples in the prediction window, "preds" containing the class
@@ -213,6 +217,7 @@ class EXPORT activity_classifier: public ml_model_base {
   // Primary dependencies for training. These should be nonnull while training
   // is in progress.
   std::unique_ptr<data_iterator> training_data_iterator_;
+  std::unique_ptr<data_iterator> validation_data_iterator_;
   std::unique_ptr<neural_net::compute_context> training_compute_context_;
   std::unique_ptr<neural_net::model_backend> training_model_;
 
