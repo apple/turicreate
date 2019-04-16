@@ -110,8 +110,7 @@ class EXPORT object_detector: public ml_model_base {
 
   // Factory for data_iterator
   virtual std::unique_ptr<data_iterator> create_iterator(
-      gl_sframe data, std::string annotations_column_name,
-      std::string image_column_name, bool repeat) const;
+      gl_sframe data, std::vector<std::string> class_labels, bool repeat) const;
 
   // Factory for compute_context
   virtual
