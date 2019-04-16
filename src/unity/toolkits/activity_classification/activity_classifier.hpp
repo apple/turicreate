@@ -170,8 +170,7 @@ class EXPORT activity_classifier: public ml_model_base {
   virtual void perform_training_iteration();
 
   virtual std::tuple<float, float>
-  compute_validation_metrics(data_iterator *validation_data_iterator_,
-                             size_t prediction_window, size_t num_classes,
+  compute_validation_metrics(size_t prediction_window, size_t num_classes,
                              size_t batch_size);
 
   // Returns an SFrame where each row corresponds to one prediction, and

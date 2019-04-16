@@ -90,8 +90,9 @@ size_t count_correct_predictions(size_t num_classes, const shared_float_array& o
 
 }
 
-float get_accuracy_per_batch(size_t prediction_window, size_t num_classes, 
-    const shared_float_array& output, const data_iterator::batch& batch) {
+float cumulative_chunk_accuracy(size_t prediction_window, size_t num_classes,
+                                const shared_float_array &output,
+                                const data_iterator::batch &batch) {
 
   float cumulative_per_batch_accuracy = 0.f;
 
@@ -143,9 +144,10 @@ void activity_classifier::init_options(
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
 }
 
+// Returns the validation accuracy and validation loss respectively as a tuple
 std::tuple<float, float> activity_classifier::compute_validation_metrics(
-    data_iterator *validation_data_iterator_, size_t prediction_window,
-    size_t num_classes, size_t batch_size) {
+    size_t prediction_window, size_t num_classes, size_t batch_size) {
+
   float cumulative_val_loss = 0.f;
   size_t val_size = 0;
   float cumulative_val_accuracy = 0.f;
@@ -162,7 +164,7 @@ std::tuple<float, float> activity_classifier::compute_validation_metrics(
         });
 
     const shared_float_array &output = results.at("output");
-    shared_float_array loss = results.at("loss");
+    const shared_float_array &loss = results.at("loss");
 
     float val_loss = std::accumulate(loss.data(), loss.data() + loss.size(),
                                      0.f, std::plus<float>());
@@ -170,13 +172,14 @@ std::tuple<float, float> activity_classifier::compute_validation_metrics(
     cumulative_val_loss += val_loss;
 
     cumulative_val_accuracy +=
-        get_accuracy_per_batch(prediction_window, num_classes, output, val);
+        cumulative_chunk_accuracy(prediction_window, num_classes, output, val);
 
     val_size += val.batch_info.size();
   }
 
   float average_val_accuracy = cumulative_val_accuracy / val_size;
   float average_val_loss = cumulative_val_loss / val_size;
+
   return std::make_tuple(average_val_accuracy, average_val_loss);
 }
 
@@ -552,7 +555,7 @@ void activity_classifier::perform_training_iteration() {
         { { "input",   batch.features },
           { "labels",  batch.labels   },
           { "weights", batch.weights  }, });
-    shared_float_array loss_batch = results.at("loss");
+    const shared_float_array &loss_batch = results.at("loss");
 
     float batch_loss = std::accumulate(loss_batch.data(),
                                        loss_batch.data() + loss_batch.size(),
@@ -565,7 +568,8 @@ void activity_classifier::perform_training_iteration() {
     const shared_float_array& output = results.at("output");
 
     cumulative_batch_accuracy +=
-        get_accuracy_per_batch(prediction_window, num_classes, output, batch) /
+        cumulative_chunk_accuracy(prediction_window, num_classes, output,
+                                  batch) /
         batch.batch_info.size();
 
     ++num_batches;
@@ -575,40 +579,62 @@ void activity_classifier::perform_training_iteration() {
   float average_batch_loss = cumulative_batch_loss / num_batches;
   float average_batch_accuracy = cumulative_batch_accuracy / num_batches;
 
-  if (validation_data_iterator_ == nullptr) {
-    if (training_table_printer_) {
-      training_table_printer_->print_progress_row(
-          iteration_idx, iteration_idx + 1, average_batch_accuracy,
-          average_batch_loss, progress_time());
-    }
-  }
+  float average_val_accuracy;
+  float average_val_loss;
+  if (validation_data_iterator_) {
 
+    std::tie(average_val_accuracy, average_val_loss) =
+        compute_validation_metrics(prediction_window, num_classes, batch_size);
+  }
   add_or_update_state({
       {"training_iterations", iteration_idx + 1},
       {"training_accuracy", average_batch_accuracy},
       {"training_log_loss", average_batch_loss},
   });
 
-  if (validation_data_iterator_ != nullptr) {
-    float average_val_accuracy;
-    float average_val_loss;
-    std::tie(average_val_accuracy, average_val_loss) =
-        compute_validation_metrics(validation_data_iterator_.get(),
-                                   prediction_window, num_classes, batch_size);
+  if (validation_data_iterator_) {
+    add_or_update_state({
+        {"validation_accuracy", average_val_accuracy},
+        {"validation_log_loss", average_val_loss},
+    });
+  }
 
-    if (training_table_printer_) {
-
+  if (training_table_printer_) {
+    if (validation_data_iterator_) {
       training_table_printer_->print_progress_row(
           iteration_idx, iteration_idx + 1, average_batch_accuracy,
           average_batch_loss, average_val_accuracy, average_val_loss,
           progress_time());
-
-      add_or_update_state({
-          {"validation_accuracy", average_val_accuracy},
-          {"validation_log_loss", average_val_loss},
-      });
+    } else {
+      training_table_printer_->print_progress_row(
+          iteration_idx, iteration_idx + 1, average_batch_accuracy,
+          average_batch_loss, progress_time());
     }
   }
+
+  // if (validation_data_iterator_ == nullptr) {
+  //   if (training_table_printer_) {
+  //     training_table_printer_->print_progress_row(
+  //         iteration_idx, iteration_idx + 1, average_batch_accuracy,
+  //         average_batch_loss, progress_time());
+  //   }
+  // }
+
+  // if (validation_data_iterator_ != nullptr) {
+
+  //   if (training_table_printer_) {
+
+  //     training_table_printer_->print_progress_row(
+  //         iteration_idx, iteration_idx + 1, average_batch_accuracy,
+  //         average_batch_loss, average_val_accuracy, average_val_loss,
+  //         progress_time());
+
+  //     add_or_update_state({
+  //         {"validation_accuracy", average_val_accuracy},
+  //         {"validation_log_loss", average_val_loss},
+  //     });
+  //   }
+  // }
 
   training_data_iterator_->reset();
   }
