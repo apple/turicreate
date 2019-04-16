@@ -254,7 +254,7 @@ class parallel_csv_parser {
 
         // if there is no line terminator, we should pick up the entire file.
         if (line_terminator.empty()) while(fill_buffer(fin));
-        parallel_parse();
+        parallel_parse(!fin.good());
         /**************************************************************************/
         /*                                                                        */
         /*      This handles the end of the buffer which needs to be joined       */
@@ -863,8 +863,12 @@ class parallel_csv_parser {
   /**
    * Performs a parallel parse of the contents of the buffer, adding to
    * parsed_buffer.
+   *
+   * \param eof Flags if this is the last buffer. If it is, we get a little
+   *            more aggressive at making sure we consume everything and
+   *            not leave unparsed stuff.
    */
-  void parallel_parse() {
+  void parallel_parse(bool eof) {
     // take a pointer to the last token that has been succesfully parsed.
     // this will tell me how much buffer I need to shift to the next read.
     // parse buffer in parallel
@@ -872,6 +876,10 @@ class parallel_csv_parser {
     char* last_parsed_token = &(buffer[0]);
 
     find_true_new_line_positions();
+    if (eof && buffer.size() > 0) {
+      // the last newline is *always* of the right parity
+      quote_parity.clear_bit_unsync(buffer.size() - 1);
+    }
 
     for (size_t threadid = 0; threadid < nthreads; ++threadid) {
       read_group.launch(
