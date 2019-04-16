@@ -372,7 +372,8 @@ std::unique_ptr<model_spec> activity_classifier::init_model() const
   result->add_channel_concat(
       "features",
       std::vector<std::string>(features_list.begin(), features_list.end()));
-  result->add_permute("permute", "features", {{0, 3, 1, 2}});
+
+  result->add_permute("permute", "features", {{0, 1, 3, 2}});
   result->add_convolution(
       /* name */                "conv",
       /* input */               "permute",

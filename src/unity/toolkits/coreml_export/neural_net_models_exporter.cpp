@@ -294,13 +294,9 @@ std::shared_ptr<MLModelWrapper> export_activity_classifier_model(
   for (size_t i = 0; i < features.size(); i++) {
     set_array_feature(model_desc->add_input(), features[i],
                       get_activity_classifier_features_short_description(
-                          prediction_window, features),
+                          prediction_window, features[i]),
                       {1, prediction_window, features[i].size()});
   }
-  // set_array_feature(model_desc->add_input(), "features",
-  //                   get_activity_classifier_features_short_description(
-  //                       prediction_window, features),
-  //                   { 1, prediction_window, features.size() });
 
   // Write the primary output features.
   set_dictionary_string_feature(model_desc->add_output(),
