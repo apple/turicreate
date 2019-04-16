@@ -28,6 +28,7 @@ This is the User Guide for Turi Create
          * [Advanced Usage](drawing_classifier/advanced-usage.md)
     * [Sound Classification](sound_classifier/README.md)
         * [How it works](sound_classifier/how-it-works.md)
+        * [Advanced Usage](sound_classifier/advanced-usage.md)
         * [Deployment to Core ML](sound_classifier/export-coreml.md)
     * [Image similarity](image_similarity/README.md)
         * [Deployment to Core ML](image_similarity/export-coreml.md)

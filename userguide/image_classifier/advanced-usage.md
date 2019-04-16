@@ -1,4 +1,4 @@
-# Advanced usage
+# Advanced Usage
 
 In this section, we will cover some more advanced options in the image
 classifier toolkit that let you do more.
