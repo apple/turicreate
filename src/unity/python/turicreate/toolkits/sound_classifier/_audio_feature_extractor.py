@@ -176,6 +176,14 @@ class VGGishFeatureExtractor(object):
 
         output = _tc.SFrame({'deep features': deep_features, 'row id': row_ids})
         output = output.unstack('deep features')
+
+        max_row_id = len(audio_data)
+        missing_ids = set(range(max_row_id)) - set(output['row id'].unique())
+        if len(missing_ids) != 0:
+            empty_rows = _tc.SFrame({'List of deep features': [ [] for _ in range(len(missing_ids)) ],
+                                     'row id': missing_ids})
+            output = output.append(empty_rows)
+
         output = output.sort('row id')
         return output['List of deep features']
     
