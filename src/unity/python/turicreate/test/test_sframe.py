@@ -35,10 +35,6 @@ import mock
 import sqlite3
 from .dbapi2_mock import dbapi2_mock
 
-#######################################################
-# Metrics tracking tests are in test_usage_metrics.py #
-#######################################################
-
 
 class SFrameTest(unittest.TestCase):
     def setUp(self):
