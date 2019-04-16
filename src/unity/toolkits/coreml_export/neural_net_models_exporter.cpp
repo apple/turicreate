@@ -291,10 +291,16 @@ std::shared_ptr<MLModelWrapper> export_activity_classifier_model(
   ModelDescription* model_desc = model.mutable_description();
 
   // Write the primary input features.
-  set_array_feature(model_desc->add_input(), "features",
-                    get_activity_classifier_features_short_description(
-                        prediction_window, features),
-                    { 1, prediction_window, features.size() });
+  for (size_t i = 0; i < features.size(); i++) {
+    set_array_feature(model_desc->add_input(), features[i],
+                      get_activity_classifier_features_short_description(
+                          prediction_window, features),
+                      {1, prediction_window, features[i].size()});
+  }
+  // set_array_feature(model_desc->add_input(), "features",
+  //                   get_activity_classifier_features_short_description(
+  //                       prediction_window, features),
+  //                   { 1, prediction_window, features.size() });
 
   // Write the primary output features.
   set_dictionary_string_feature(model_desc->add_output(),
@@ -307,20 +313,10 @@ std::shared_ptr<MLModelWrapper> export_activity_classifier_model(
   FeatureDescription* feature_desc = model_desc->add_input();
   set_array_feature(feature_desc, "stateIn", "LSTM state input",
                     { lstm_hidden_layer_size*2 });
-  // set_array_feature(feature_desc, "hiddenIn", "LSTM hidden state input",
-  //                   { lstm_hidden_layer_size });
-  // set_feature_optional(feature_desc);
-  // feature_desc = model_desc->add_input();
-  // set_array_feature(feature_desc, "cellIn", "LSTM cell state input",
-  //                   { lstm_hidden_layer_size });
 
   set_feature_optional(feature_desc);
   set_array_feature(model_desc->add_output(), "stateOut",
                     "LSTM state output", { lstm_hidden_layer_size * 2 });
-  // set_array_feature(model_desc->add_output(), "hiddenOut",
-  //                   "LSTM hidden state output", { lstm_hidden_layer_size });
-  // set_array_feature(model_desc->add_output(), "cellOut",
-  //                   "LSTM cell state output", { lstm_hidden_layer_size });
 
   // Specify the prediction output names.
   model_desc->set_predictedfeaturename(target);

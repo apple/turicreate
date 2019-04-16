@@ -367,12 +367,11 @@ std::unique_ptr<model_spec> activity_classifier::init_model() const
   size_t num_classes = read_state<flex_int>("num_classes");
   size_t num_features = read_state<flex_int>("num_features");
   size_t prediction_window = read_state<flex_int>("prediction_window");
-  
+  const flex_list &features_list = read_state<flex_list>("features");
 
-  for (size_t i=0; i<num_features; i++) {
-    
-  }
-
+  result->add_channel_concat(
+      "features",
+      std::vector<std::string>(features_list.begin(), features_list.end()));
   result->add_permute("permute", "features", {{0, 3, 1, 2}});
   result->add_convolution(
       /* name */                "conv",
