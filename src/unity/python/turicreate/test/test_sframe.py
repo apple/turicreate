@@ -288,6 +288,22 @@ class SFrameTest(unittest.TestCase):
             self.assertEqual(t[0], None)
             self.assertEqual(t[1], "3")
 
+    def test_parse_csv_non_multi_line_unmatched_quotation(self):
+        data = [{'type': 'foo', 'text_string': 'foo foo.'},
+                {'type': 'bar', 'text_string': 'bar " bar.'},
+                {'type': 'foo', 'text_string': 'foo".'}]
+
+        with tempfile.NamedTemporaryFile(mode='w', delete=False) as csvfile:
+            with open(csvfile.name, 'w') as f:
+                f.write("type,text_string\n")     # header
+                for l in data:
+                    f.write(l['type'] + ',' + l['text_string'] + '\n')
+
+            sf = SFrame.read_csv(csvfile.name, quote_char=None)
+            self.assertEqual(len(sf), len(data))
+            for i in range(len(sf)):
+                self.assertEqual(sf[i], data[i])
+
     def test_save_load_file_cleanup(self):
         # when some file is in use, file should not be deleted
         with util.TempDirectory() as f:
