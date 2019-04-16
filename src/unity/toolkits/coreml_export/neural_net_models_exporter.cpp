@@ -305,17 +305,22 @@ std::shared_ptr<MLModelWrapper> export_activity_classifier_model(
 
   // Write the (optional) LSTM input and output features.
   FeatureDescription* feature_desc = model_desc->add_input();
-  set_array_feature(feature_desc, "hiddenIn", "LSTM hidden state input",
-                    { lstm_hidden_layer_size });
+  set_array_feature(feature_desc, "stateIn", "LSTM state input",
+                    { lstm_hidden_layer_size*2 });
+  // set_array_feature(feature_desc, "hiddenIn", "LSTM hidden state input",
+  //                   { lstm_hidden_layer_size });
+  // set_feature_optional(feature_desc);
+  // feature_desc = model_desc->add_input();
+  // set_array_feature(feature_desc, "cellIn", "LSTM cell state input",
+  //                   { lstm_hidden_layer_size });
+
   set_feature_optional(feature_desc);
-  feature_desc = model_desc->add_input();
-  set_array_feature(feature_desc, "cellIn", "LSTM cell state input",
-                    { lstm_hidden_layer_size });
-  set_feature_optional(feature_desc);
-  set_array_feature(model_desc->add_output(), "hiddenOut",
-                    "LSTM hidden state output", { lstm_hidden_layer_size });
-  set_array_feature(model_desc->add_output(), "cellOut",
-                    "LSTM cell state output", { lstm_hidden_layer_size });
+  set_array_feature(model_desc->add_output(), "stateOut",
+                    "LSTM state output", { lstm_hidden_layer_size * 2 });
+  // set_array_feature(model_desc->add_output(), "hiddenOut",
+  //                   "LSTM hidden state output", { lstm_hidden_layer_size });
+  // set_array_feature(model_desc->add_output(), "cellOut",
+  //                   "LSTM cell state output", { lstm_hidden_layer_size });
 
   // Specify the prediction output names.
   model_desc->set_predictedfeaturename(target);

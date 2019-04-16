@@ -367,6 +367,11 @@ std::unique_ptr<model_spec> activity_classifier::init_model() const
   size_t num_classes = read_state<flex_int>("num_classes");
   size_t num_features = read_state<flex_int>("num_features");
   size_t prediction_window = read_state<flex_int>("prediction_window");
+  
+
+  for (size_t i=0; i<num_features; i++) {
+    
+  }
 
   result->add_permute("permute", "features", {{0, 3, 1, 2}});
   result->add_convolution(
@@ -384,6 +389,9 @@ std::unique_ptr<model_spec> activity_classifier::init_model() const
           NUM_CONV_FILTERS * prediction_window),
       /* bias_init_fn */        zero_weight_initializer());
   result->add_relu("relu1", "conv");
+
+  result->add_channel_slice("hiddenIn","stateIn",0,200,1);
+  result->add_channel_slice("cellIn","stateIn",200,400,1);
   result->add_lstm(
       /* name */                "lstm",
       /* input */               "relu1",
@@ -396,10 +404,10 @@ std::unique_ptr<model_spec> activity_classifier::init_model() const
       /* cell_clip_threshold */ LSTM_CELL_CLIP_THRESHOLD,
       /* initializers */  lstm_weight_initializers::create_with_xavier_method(
           NUM_CONV_FILTERS, LSTM_HIDDEN_SIZE));
-  // result->add_reshape("lstm1","lstm", {{0, 1, 3, 2}});
+  result->add_channel_concat("stateOut",{"hiddenOut","cellOut"});
   result->add_inner_product(
       /* name */ "dense0",
-      /* input */ "lstm1",
+      /* input */ "lstm",
       /* num_output_channels */ FULLY_CONNECTED_HIDDEN_SIZE,
       /* num_input_channels */ LSTM_HIDDEN_SIZE,
       /* weight_init_fn */
