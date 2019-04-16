@@ -36,7 +36,6 @@ featurize_images(const std::shared_ptr<turi::gl_sarray> &images) {
 
 float vectors_distance(const std::vector<double> &a,
                        const std::vector<double> &b) {
-  std::cout << "hello" << std::endl;
   std::vector<double> auxiliary;
   std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(auxiliary),
                  [](double element1, double element2) {
