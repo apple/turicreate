@@ -220,15 +220,7 @@ gl_sarray activity_classifier::predict(gl_sframe data,
   }
 
   // Bind the data to a data iterator.
-  flex_list features = read_state<flex_list>("features");
-  data_iterator::parameters data_params;
-  data_params.data = data;
-  data_params.session_id_column_name = read_state<flex_string>("session_id");
-  data_params.feature_column_names =
-      std::vector<std::string>(features.begin(), features.end());
-  data_params.prediction_window = read_state<flex_int>("prediction_window");
-  data_params.predictions_in_chunk = NUM_PREDICTIONS_PER_CHUNK;
-  std::unique_ptr<data_iterator> data_it = create_iterator(data_params);
+  std::unique_ptr<data_iterator> data_it = create_iterator(data);
 
   // Accumulate the class probabilities for each prediction window.
   gl_sframe raw_preds_per_window = perform_inference(data_it.get());
@@ -272,15 +264,7 @@ gl_sframe activity_classifier::predict_per_window(gl_sframe data,
   }
 
   // Bind the data to a data iterator.
-  flex_list features = read_state<flex_list>("features");
-  data_iterator::parameters data_params;
-  data_params.data = data;
-  data_params.session_id_column_name = read_state<flex_string>("session_id");
-  data_params.feature_column_names =
-      std::vector<std::string>(features.begin(), features.end());
-  data_params.prediction_window = read_state<flex_int>("prediction_window");
-  data_params.predictions_in_chunk = NUM_PREDICTIONS_PER_CHUNK;
-  std::unique_ptr<data_iterator> data_it = create_iterator(data_params);
+  std::unique_ptr<data_iterator> data_it = create_iterator(data);
 
   // Accumulate the class probabilities for each prediction window.
   gl_sframe raw_preds_per_window = perform_inference(data_it.get());
@@ -379,9 +363,17 @@ std::shared_ptr<MLModelWrapper> activity_classifier::export_to_coreml(
 }
 
 std::unique_ptr<data_iterator> activity_classifier::create_iterator(
-    const data_iterator::parameters& params) const
+    gl_sframe data) const
 {
-  return std::unique_ptr<data_iterator>(new simple_data_iterator(params));
+  flex_list features = read_state<flex_list>("features");
+  data_iterator::parameters data_params;
+  data_params.data = data;
+  data_params.session_id_column_name = read_state<flex_string>("session_id");
+  data_params.feature_column_names =
+      std::vector<std::string>(features.begin(), features.end());
+  data_params.prediction_window = read_state<flex_int>("prediction_window");
+  data_params.predictions_in_chunk = NUM_PREDICTIONS_PER_CHUNK;
+  return std::unique_ptr<data_iterator>(new simple_data_iterator(data_params));
 }
 
 std::unique_ptr<compute_context>
@@ -493,27 +485,12 @@ void activity_classifier::init_train(
   init_options(opts);
 
   // Bind the data to a data iterator.
-  data_iterator::parameters data_params;
-  data_params.data = data;
-  data_params.target_column_name = target_column_name;
-  data_params.session_id_column_name = session_id_column_name;
-  data_params.feature_column_names = feature_column_names;
-  data_params.prediction_window = read_state<flex_int>("prediction_window");
-  data_params.predictions_in_chunk = NUM_PREDICTIONS_PER_CHUNK;
-  training_data_iterator_ = create_iterator(data_params);
+  training_data_iterator_ = create_iterator(data);
 
   // Bind the validation data to a data iterator.
   if (variant_is<gl_sframe>(validation_data)) {
     gl_sframe validation_sf = variant_get_value<gl_sframe>(validation_data);
-    data_iterator::parameters validation_data_params;
-    validation_data_params.data = validation_sf;
-    validation_data_params.target_column_name = target_column_name;
-    validation_data_params.session_id_column_name = session_id_column_name;
-    validation_data_params.feature_column_names = feature_column_names;
-    validation_data_params.prediction_window =
-        read_state<flex_int>("prediction_window");
-    validation_data_params.predictions_in_chunk = NUM_PREDICTIONS_PER_CHUNK;
-    validation_data_iterator_ = create_iterator(validation_data_params);
+    validation_data_iterator_ = create_iterator(validation_sf);
   } else {
     validation_data_iterator_ = nullptr;
   }
