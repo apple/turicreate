@@ -12,7 +12,7 @@ bool is_integer(std::string s) {
   char *p;
   strtol(s.c_str(), &p, 10);
 
-  return (*p == s.data() + s.size());
+  return (*p == 0);
 }
 
 gl_sarray
