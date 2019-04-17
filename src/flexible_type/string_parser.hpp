@@ -41,6 +41,13 @@ struct parser_config {
   std::unordered_set<std::string> na_val;
   std::unordered_set<std::string> true_val;
   std::unordered_set<std::string> false_val;
+
+  /**
+   * If this is set (defaults to false), then
+   * the true/false/na substitutions are only permitted on raw
+   * unparsed strings; that is strings before dequoting, de-escaping, etc.
+   */
+  bool only_raw_string_substitutions = false;
 };
 
 BOOST_SPIRIT_TERMINAL_EX(restricted_string); 
@@ -120,6 +127,7 @@ struct string_parser
   char delimiter_first_char;
   bool delimiter_is_singlechar = false;
   std::unordered_map<std::string, turi::flexible_type> map_vals; // handle na_val, true_val, false_val
+  bool only_raw_string_substitutions = false;
 
   string_parser(){}
   string_parser(parser_config config):config(config) {
@@ -135,6 +143,7 @@ struct string_parser
     for (auto s: config.false_val) {
       map_vals[s] = 0;
     }
+    only_raw_string_substitutions = config.only_raw_string_substitutions;
   }
 
   enum class tokenizer_state {
@@ -169,6 +178,7 @@ struct string_parser
     tokenizer_state state = tokenizer_state::START_FIELD; 
     bool keep_parsing = true;
     char quote_char = 0;
+    const char* raw_field_begin = nullptr;
     // this is set to true for the character immediately after an escape character
     // and false all other times
     bool escape_sequence = false;
@@ -201,6 +211,7 @@ struct string_parser
       ++cur;
       switch(state) {
        case tokenizer_state::START_FIELD:
+         raw_field_begin = cur-1; // -1 because cur has already been incremented
          if (c == '\'' || c == '\"') {
            quote_char = c;
            state = tokenizer_state::IN_QUOTED_FIELD;
@@ -241,6 +252,17 @@ struct string_parser
     }
     if (cur == first) return false;
     else {
+      first = cur;
+      if (only_raw_string_substitutions == true && raw_field_begin != nullptr) {
+        std::string raw_str = std::string(raw_field_begin, cur - raw_field_begin);
+        boost::algorithm::trim_right(raw_str);
+        auto map_val_iter = map_vals.find(raw_str);
+        if (map_val_iter != map_vals.end()) {
+          attr = map_val_iter->second;
+          return true;
+        }
+      }
+
       std::string final_str = std::move(ret.get_string());
       if (!quote_char) boost::algorithm::trim_right(final_str);
       else if (quote_char) {
@@ -249,13 +271,16 @@ struct string_parser
                               config.escape_char,
                               quote_char, config.double_quote);
       }
-      auto map_val_iter = map_vals.find(final_str);
-      if (map_val_iter != map_vals.end()) {
-        attr = map_val_iter->second;
-      } else {
-        attr = std::move(final_str);
+
+      if (only_raw_string_substitutions == false) {
+        auto map_val_iter = map_vals.find(final_str);
+        if (map_val_iter != map_vals.end()) {
+          attr = map_val_iter->second;
+          return true;
+        }
       }
-      first = cur;
+      attr = std::move(final_str);
+      return true;
     }
     return true;
   }

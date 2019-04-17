@@ -884,6 +884,7 @@ class SFrame(object):
                        nrows_to_infer=100,
                        true_values=[],
                        false_values=[],
+                       _only_raw_string_substitutions=False,
                        **kwargs):
         """
         Constructs an SFrame from a CSV file or a path to multiple CSVs, and
@@ -936,6 +937,7 @@ class SFrame(object):
         parsing_config["skip_rows"] =skiprows
         parsing_config["true_values"] = true_values
         parsing_config["false_values"] = false_values
+        parsing_config["only_raw_string_substitutions"] = _only_raw_string_substitutions 
 
         if type(na_values) is str:
           na_values = [na_values]
@@ -969,7 +971,8 @@ class SFrame(object):
                                  skiprows=skiprows,
                                  verbose=verbose,
                                  true_values=true_values,
-                                 false_values=false_values)
+                                 false_values=false_values,
+                                 _only_raw_string_substitutions=_only_raw_string_substitutions)
                 column_type_hints = SFrame._infer_column_types_from_lines(first_rows)
                 typelist = '[' + ','.join(t.__name__ for t in column_type_hints) + ']'
                 if verbose:
@@ -1012,7 +1015,8 @@ class SFrame(object):
                                  skiprows=skiprows,
                                  verbose=verbose,
                                  true_values=true_values,
-                                 false_values=false_values)
+                                 false_values=false_values,
+                                 _only_raw_string_substitutions=_only_raw_string_substitutions)
                 inferred_types = SFrame._infer_column_types_from_lines(first_rows)
                 # make a dict of column_name to type
                 inferred_types = dict(list(zip(first_rows.column_names(), inferred_types)))
@@ -1078,6 +1082,7 @@ class SFrame(object):
                              nrows_to_infer=100,
                              true_values=[],
                              false_values=[],
+                             _only_raw_string_substitutions=False,
                              **kwargs):
         """
         Constructs an SFrame from a CSV file or a path to multiple CSVs, and
@@ -1219,6 +1224,7 @@ class SFrame(object):
                                   nrows_to_infer=nrows_to_infer,
                                   true_values=true_values,
                                   false_values=false_values,
+                                  _only_raw_string_substitutions=_only_raw_string_substitutions,
                                   **kwargs)
     @classmethod
     def read_csv(cls,
@@ -1241,6 +1247,7 @@ class SFrame(object):
                  nrows_to_infer=100,
                  true_values=[],
                  false_values=[],
+                 _only_raw_string_substitutions=False,
                  **kwargs):
         """
         Constructs an SFrame from a CSV file or a path to multiple CSVs.
@@ -1501,6 +1508,7 @@ class SFrame(object):
                                   nrows_to_infer=nrows_to_infer,
                                   true_values=true_values,
                                   false_values=false_values,
+                                  _only_raw_string_substitutions=_only_raw_string_substitutions,
                                   **kwargs)[0]
 
 
@@ -1597,7 +1605,8 @@ class SFrame(object):
             g = SFrame({'X1':g})
             return g.unpack('X1','')
         elif orient == "lines":
-            g = cls.read_csv(url, header=False,na_values=['null'],true_values=['true'],false_values=['false'])
+            g = cls.read_csv(url, header=False,na_values=['null'],true_values=['true'],false_values=['false'], 
+                    _only_raw_string_substitutions=True)
             if g.num_rows() == 0:
                 return SFrame()
             if g.num_columns() != 1:
