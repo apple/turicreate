@@ -4,7 +4,7 @@ set -e
 set -x
 
 # The build image version that will be used for testing
-TC_BUILD_IMAGE_VERSION=1.0.4
+TC_BUILD_IMAGE_VERSION=1.0.5
 
 SCENARIO_TESTS_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 cd $SCENARIO_TESTS_DIR

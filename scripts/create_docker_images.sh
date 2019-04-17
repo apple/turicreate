@@ -9,7 +9,7 @@ set -x
 # Bump the version number to force a rebuild. This is probably necessary
 # whenever the contents of the image change.
 #
-TC_BUILD_IMAGE_VERSION=1.0.4
+TC_BUILD_IMAGE_VERSION=1.0.5
 
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 WORKSPACE=${SCRIPT_DIR}/..

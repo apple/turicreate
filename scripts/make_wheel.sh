@@ -3,7 +3,7 @@
 set -e
 
 # The build image version that will be used for building
-TC_BUILD_IMAGE_VERSION=1.0.4
+TC_BUILD_IMAGE_VERSION=1.0.5
 
 # Force LD_LIBRARY_PATH to look up from deps
 # Otherwise, binaries run during compilation will prefer system libraries,

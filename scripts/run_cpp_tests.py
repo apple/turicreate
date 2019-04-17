@@ -10,7 +10,7 @@ import argparse
 import subprocess
 
 # The build image version that will be used for testing
-TC_BUILD_IMAGE_VERSION="1.0.4"
+TC_BUILD_IMAGE_VERSION="1.0.5"
 SCRIPT_DIR=os.path.dirname(__file__)
 WORKSPACE=os.path.abspath(os.path.join(SCRIPT_DIR, '..'))
 

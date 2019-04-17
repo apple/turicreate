@@ -3,7 +3,7 @@
 set -e
 
 # The build image version that will be used for testing
-TC_BUILD_IMAGE_VERSION=1.0.4
+TC_BUILD_IMAGE_VERSION=1.0.5
 
 unknown_option() {
   echo "Unknown option $1. Exiting."
