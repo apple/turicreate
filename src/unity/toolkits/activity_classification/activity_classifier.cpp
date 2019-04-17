@@ -368,30 +368,28 @@ std::unique_ptr<model_spec> activity_classifier::init_model() const
   size_t num_features = read_state<flex_int>("num_features");
   size_t prediction_window = read_state<flex_int>("prediction_window");
   const flex_list &features_list = read_state<flex_list>("features");
-  
+  std::vector<std::string> reshaped_names = {};
   for (size_t i=0; i<features_list.size(); i++){
     std::cout << features_list[i].size();
-    result->add_reshape("feature_"+std::to_string(i), features_list[i], {{0,NUM_PREDICTIONS_PER_CHUNK}}) ;
-
+    result->add_reshape("reshaped_" + flex_string(features_list[i]),
+                        features_list[i], {{1, 1, 1, prediction_window}});
+    reshaped_names.push_back("reshaped_" + flex_string(features_list[i]));
   }
-  result->add_channel_concat(
-       "features",{"feature_0","feature_1","feature_2","feature_3","feature_4","feature_5"});
-      // std::vector<std::string>(features_list.begin(), features_list.end()));
-  result->add_permute("permute", "features", {{0, 1, 3, 2}});
+  result->add_channel_concat("features", reshaped_names);
   result->add_convolution(
-      /* name */                "conv",
-      /* input */               "permute",
+      /* name */ "conv",
+      /* input */ "features",
       /* num_output_channels */ NUM_CONV_FILTERS,
       /* num_kernel_channels */ num_features,
-      /* kernel_height */       1,
-      /* kernel_width */        prediction_window,
-      /* stride_height */       1,
-      /* stride_width */        prediction_window,
-      /* padding */             padding_type::VALID,
-      /* weight_init_fn */      xavier_weight_initializer(
-          num_features * prediction_window,
-          NUM_CONV_FILTERS * prediction_window),
-      /* bias_init_fn */        zero_weight_initializer());
+      /* kernel_height */ 1,
+      /* kernel_width */ prediction_window,
+      /* stride_height */ 1,
+      /* stride_width */ prediction_window,
+      /* padding */ padding_type::VALID,
+      /* weight_init_fn */
+      xavier_weight_initializer(num_features * prediction_window,
+                                NUM_CONV_FILTERS * prediction_window),
+      /* bias_init_fn */ zero_weight_initializer());
   result->add_relu("relu1", "conv");
 
   result->add_channel_slice("hiddenIn","stateIn",0,LSTM_HIDDEN_SIZE,1);
