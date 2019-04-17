@@ -445,19 +445,22 @@ class ReuseDeepFeatures(unittest.TestCase):
         predictions_from_audio = model.predict(original_audio_data, output_type='probability_vector')
         predictions_from_deep_features = model.predict(deep_features, output_type='probability_vector')
         for a, b in zip(predictions_from_audio, predictions_from_deep_features):
-            self.assertAlmostEqual(list(a), list(b))
+            np.testing.assert_array_almost_equal(a, b, decimal=6)
 
         # Test classify
         predictions_from_audio = model.classify(original_audio_data)
         predictions_from_deep_features = model.classify(deep_features)
         for a, b in zip(predictions_from_audio, predictions_from_deep_features):
-            self.assertAlmostEqual(a, b)
+            self.assertEqual(a['class'], b['class'])
+            np.testing.assert_array_almost_equal(a['probability'], b['probability'], decimal=6)
 
         # Test predict_topk
         predictions_from_audio = model.predict_topk(original_audio_data, k=2)
         predictions_from_deep_features = model.predict_topk(deep_features, k=2)
         for a, b in zip(predictions_from_audio, predictions_from_deep_features):
-            self.assertAlmostEqual(a, b)
+            self.assertEqual(a['id'], b['id'])
+            self.assertEqual(a['class'], b['class'])
+            np.testing.assert_array_almost_equal(a['probability'], b['probability'], decimal=6)
 
         # Test evaluate
         predictions_from_audio = model.evaluate(tc.SFrame({'features': original_audio_data,
