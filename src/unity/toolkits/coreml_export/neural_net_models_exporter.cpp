@@ -291,9 +291,7 @@ std::shared_ptr<MLModelWrapper> export_activity_classifier_model(
   ModelDescription* model_desc = model.mutable_description();
 
   // Write the primary input features.
-  std::vector<std::string> reshaped_names = {};
   for (size_t i = 0; i < features.size(); i++) {
-    reshaped_names.push_back("reshaped_" + flex_string(features[i]));
     set_array_feature(model_desc->add_input(), features[i],
                       get_activity_classifier_features_short_description(
                           prediction_window, features[i]),
