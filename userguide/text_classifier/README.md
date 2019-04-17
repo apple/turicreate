@@ -27,7 +27,7 @@ such as battery life, screen resolution, size, etc.
 
 #### Loading Data
 
-The [Kaggle SMS Spam Collection Dataset](https://www.kaggle.com/uciml/sms-spam-collection-dataset) provides more than five thousand labeled text messages.[<sup>1</sup>](../datasets.md) After downloading and decompressing the dataset, move the `spam.csv` file to your project directory.
+The [SMS Spam Collection Dataset](https://archive.ics.uci.edu/ml/datasets/SMS+Spam+Collection) provides more than five thousand labeled text messages.[<sup>1</sup>](../datasets.md) After downloading and decompressing the dataset, move the `SMSSpamCollection` file to your project directory.
 
 
 #### Introductory Example
@@ -44,15 +44,10 @@ sentiment".
 import turicreate as tc
 
 # Only load the first two columns from csv
-# 60 lines won't be parsed because of the bad formatting which you can ignore
-data = tc.SFrame.read_csv('spam.csv', usecols=['v1', 'v2'], column_type_hints=[str, str])
+data = tc.SFrame.read_csv('SMSSpamCollection', header=False, delimiter='\t', quote_char='\0')
 
 # Rename the columns
-data = data.rename({'v1': 'label', 'v2': 'text'})
-
-# Encode all texts to utf8
-# This is needed for this dataset, might not be necessary for others
-data['text'] = [x.decode('utf8', 'ignore') for x in data['text']]
+data = data.rename({'X1': 'label', 'X2': 'text'})
 
 # Split the data into training and testing
 training_data, test_data = data.random_split(0.8)
