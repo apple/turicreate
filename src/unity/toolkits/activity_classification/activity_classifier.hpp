@@ -172,7 +172,7 @@ class EXPORT activity_classifier: public ml_model_base {
 
   // Factory for data_iterator
   virtual std::unique_ptr<data_iterator> create_iterator(
-      const data_iterator::parameters& params) const;
+      gl_sframe data) const;
 
   // Factory for compute_context
   virtual
