@@ -104,11 +104,11 @@ RUN mv libcxx-8.0.0.src llvm-8.0.0.src/projects/libcxx
 RUN mkdir llvm-8.0.0.build
 WORKDIR /src/llvm-8.0.0.build
 RUN cmake ../llvm-8.0.0.src/ -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_C_COMPILER=gcc-5 -DCMAKE_CXX_COMPILER=g++-5 -DLIBCXX_CXX_ABI=libstdc++
-RUN make -j2
+RUN make -j24
 RUN make install
 
 # Copy cxxabi.h from libstdc++ 4.4 into a path it will be found in
-CMD cp /usr/include/c++/4.4/cxxabi.h /usr/local/include/
+RUN cp /usr/include/c++/4.4/cxxabi.h /usr/local/include/
 
 # Start at repo root (mounted into Docker)
 WORKDIR /build
