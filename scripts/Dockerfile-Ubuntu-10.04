@@ -4,7 +4,7 @@
 # with various Linux distributions.
 # Based on Ubuntu 10.04 for compatibility with older glibc versions.
 # Builds llvm from source using GCC 5.1, then builds with clang and libc++,
-# using libstdc++ ABI from GCC 4.4 (?) for ABI compatibility with older libstdc++ versions.
+# using libstdc++ ABI 4.4 for ABI compatibility with older libstdc++ versions.
 
 FROM ubuntu:10.04
 
@@ -106,6 +106,9 @@ WORKDIR /src/llvm-8.0.0.build
 RUN cmake ../llvm-8.0.0.src/ -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_C_COMPILER=gcc-5 -DCMAKE_CXX_COMPILER=g++-5 -DLIBCXX_CXX_ABI=libstdc++
 RUN make -j2
 RUN make install
+
+# Copy cxxabi.h from libstdc++ 4.4 into a path it will be found in
+CMD cp /usr/include/c++/4.4/cxxabi.h /usr/local/include/
 
 # Start at repo root (mounted into Docker)
 WORKDIR /build

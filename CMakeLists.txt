@@ -360,11 +360,8 @@ endif()
 # Shared compiler flags used by all builds (debug, profile, release)
 # Allow COMPILER_FLAGS to be used as options from the ./configure without
 # forcing all the other options I want to add to be lost
-set(C_REAL_COMPILER_FLAGS "-Wall -flto ${DEBUG_INFO_FLAGS} ${COMPILER_FLAGS}")
-set(CPP_REAL_COMPILER_FLAGS "-Wall -flto ${DEBUG_INFO_FLAGS} ${CPP11_FLAGS} ${COMPILER_FLAGS}")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -flto")
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -flto")
-set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -flto")
+set(C_REAL_COMPILER_FLAGS "-Wall ${DEBUG_INFO_FLAGS} ${COMPILER_FLAGS}")
+set(CPP_REAL_COMPILER_FLAGS "-Wall ${DEBUG_INFO_FLAGS} ${CPP11_FLAGS} ${COMPILER_FLAGS}")
 
 if (CLANG)
   # clang 9.0.0 and earlier will warn (error with -Werror) on unused -pthread during linking
@@ -473,10 +470,16 @@ include(FindInt128)
 Find_Int128_Types()
 
 
-#disable Wno-unused-local-typedefs if available
+#enable Wno-unused-local-typedefs if available
 check_cxx_compiler_flag(-Wno-unused-local-typedefs HAS_WNO_LOCAL_TYPEDEFS)
 if(HAS_WNO_LOCAL_TYPEDEFS)
         set(DISABLE_WARNING_FLAGS "${DISABLE_WARNING_FLAGS} -Wno-unused-local-typedefs")
+endif()
+
+#enable Wno-unused-command-line-argument if available
+check_cxx_compiler_flag(-Wno-unused-command-line-argument HAS_WNO_UNUSED_COMMAND_LINE_ARGUMENT)
+if(HAS_WNO_UNUSED_COMMAND_LINE_ARGUMENT)
+        set(DISABLE_WARNING_FLAGS "${DISABLE_WARNING_FLAGS} -Wno-unused-command-line-argument")
 endif()
 
 #disable gcc-only flags on clang (newer clang with XCode 5.1 errors on these)
