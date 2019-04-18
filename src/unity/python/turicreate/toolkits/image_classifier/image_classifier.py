@@ -727,7 +727,7 @@ class ImageClassifier(_CustomModel):
 
         def hclusterSort(vectors, dist_fn):
             distances = []
-            vecs = vectors[:]
+            vecs = list(vectors)[:]
             for i in range(0, len(vecs)):
                 for j in range(i+1, len(vecs)):
                     distances.append({'from': vecs[i], 'to': vecs[j], 'dist': dist_fn(vecs[i], vecs[j])})
