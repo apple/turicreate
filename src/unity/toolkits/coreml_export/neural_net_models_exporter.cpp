@@ -27,14 +27,6 @@ constexpr char COORDINATES_STR[] = "Boxes × [x, y, width, height] (relative to 
 constexpr char IOU_THRESHOLD_STR[] = "(optional) IOU Threshold override (default: 0.45)";
 constexpr char CONFIDENCE_THRESHOLD_STR[] = "(optional) Confidence Threshold override (default: 0.25)";
 
-std::string get_activity_classifier_features_short_description(
-    size_t prediction_window, const flex_list& feature_names)
-{
-  return "Window × ["
-      + join(std::vector<std::string>(feature_names.begin(),
-                                      feature_names.end()), ", ")
-      + "]";
-}
 
 void set_string_feature(FeatureDescription* feature_desc, std::string name,
                         std::string short_description)
@@ -293,9 +285,8 @@ std::shared_ptr<MLModelWrapper> export_activity_classifier_model(
   // Write the primary input features.
   for (size_t i = 0; i < features.size(); i++) {
     set_array_feature(model_desc->add_input(), features[i],
-                      get_activity_classifier_features_short_description(
-                          prediction_window, features[i]),
-                      {1, 1, prediction_window});
+                      flex_string(features[i]) + " window input",
+                      {prediction_window});
   }
 
   // Write the primary output features.

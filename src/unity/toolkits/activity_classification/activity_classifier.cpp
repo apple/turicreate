@@ -372,10 +372,11 @@ std::unique_ptr<model_spec> activity_classifier::init_model() const
   result->add_channel_concat(
       "features",
       std::vector<std::string>(features_list.begin(), features_list.end()));
-  // reshaped_names);
+  result->add_reshape("reshape", "features",
+                      {{1, num_features, 1, prediction_window}});
   result->add_convolution(
       /* name */ "conv",
-      /* input */ "features",
+      /* input */ "reshape",
       /* num_output_channels */ NUM_CONV_FILTERS,
       /* num_kernel_channels */ num_features,
       /* kernel_height */ 1,
