@@ -10,6 +10,7 @@
 #include <functional>
 #include <numeric>
 
+#include <random/random.hpp>
 #include <logger/assertions.hpp>
 #include <logger/logger.hpp>
 #include <unity/toolkits/coreml_export/neural_net_models_exporter.hpp>
@@ -43,6 +44,7 @@ constexpr size_t LSTM_HIDDEN_SIZE = 200;
 constexpr size_t FULLY_CONNECTED_HIDDEN_SIZE = 128;
 constexpr float LSTM_CELL_CLIP_THRESHOLD = 50000.f;
 
+constexpr size_t MIN_NUM_OF_SESSIONS = 100;
 // These are the fixed values that the Python implementation currently passes
 // into TCMPS.
 // TODO: These should be exposed in a way that facilitates experimentation.
@@ -106,7 +108,32 @@ float cumulative_chunk_accuracy(size_t prediction_window, size_t num_classes,
     
     cumulative_per_batch_accuracy += static_cast<float>(num_correct_predictions) / num_predictions;
   }
+
   return cumulative_per_batch_accuracy;
+}
+
+
+std::tuple<gl_sframe, gl_sframe> random_split_by_session(gl_sframe data, std::string session_id_column_name, float fraction, size_t seed) {
+  if (session_id_column_name not in data.column_names()):
+    log_and_throw('Input dataset must contain a column called %s',session_id_column_name);
+
+
+  auto random_session_pick =[=] (size_t session_id_hash) {
+    random::seed(session_id_hash);
+    return random::fast_uniform(0,1) < fraction;
+  };
+
+  if (!seed) {
+    gl_sarray chosen_filter = data[session_id_column_name].hash(random::time_seed()).apply(random_session_pick);
+  }
+  else {
+    gl_sarray chosen_filter = data[session_id_column_name].hash(seed).apply(random_session_pick);
+  }
+
+  gl_sframe train = data[chosen_filter];
+  gl_sframe val =  data[1-chosen_filter];
+
+  return std::make_tuple(train,val);
 }
 
 }  // namespace
@@ -472,6 +499,23 @@ void activity_classifier::init_train(
       log_and_throw("Input SFrame either has no rows or no columns. A "
                     "non-empty SFrame is required");
     }
+  }
+  else if ((variant_is<flex_string>(validation_data)) && (variant_get_value<flex_string>(validation_data)=="auto")) {
+    //TODO: auto split
+    gl_sarray unique_session = data[session_id_column_name].unique();
+    if (unique_session.size() > MIN_NUM_OF_SESSIONS) {
+      std::cout << "DO AUTOSPLIT";
+      //std::tie(data, validation_data) = random_split_by_session(data, session_id_column_name);
+    }
+    else{
+      std::cout << "The dataset has less than the minimum of 100 sessions required for train-validation split. Continuing without validation set.";
+      training_table_printer_.reset(new table_printer({{"Iteration", 12},
+                                                     {"Train Accuracy", 12},
+                                                     {"Train Loss", 12},
+                                                     {"Elapsed Time", 12}}));
+    }
+
+  
   } else {
     training_table_printer_.reset(new table_printer({{"Iteration", 12},
                                                      {"Train Accuracy", 12},
