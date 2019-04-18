@@ -9,9 +9,7 @@ from __future__ import absolute_import as _
 
 import turicreate as _tc
 from turicreate.data_structures.sgraph import SGraph as _SGraph
-import turicreate.toolkits._main as _main
 from turicreate.toolkits.graph_analytics._model_base import GraphAnalyticsModel as _ModelBase
-from turicreate.cython.cy_server import QuietProgress
 
 class GraphColoringModel(_ModelBase):
     """
@@ -117,6 +115,8 @@ def create(graph, verbose=True):
     --------
     GraphColoringModel
     """
+    from turicreate._cython.cy_server import QuietProgress
+
     if not isinstance(graph, _SGraph):
         raise TypeError('graph input must be a SGraph object.')
 

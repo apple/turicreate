@@ -39,7 +39,8 @@ struct flexible_type_parser_impl: qi::grammar<Iterator, flexible_type(), SpaceTy
                             char escape_char = '\\',
                             const std::unordered_set<std::string>& na_val = {},
                             const std::unordered_set<std::string>& true_val = {},
-                            const std::unordered_set<std::string>& false_val = {}) :
+                            const std::unordered_set<std::string>& false_val = {},
+                            bool only_raw_string_substitutions=false) :
       flexible_type_parser_impl::base_type(root_parser), delimiter(delimiter) {
     using qi::long_long;
     using qi::double_;
@@ -64,7 +65,8 @@ struct flexible_type_parser_impl: qi::grammar<Iterator, flexible_type(), SpaceTy
     recursive_element_string_parser.double_quote = true;
     recursive_element_string_parser.na_val = na_val;
     recursive_element_string_parser.true_val = true_val;
-    recursive_element_string_parser.false_val= false_val;
+    recursive_element_string_parser.false_val = false_val;
+    recursive_element_string_parser.only_raw_string_substitutions = only_raw_string_substitutions;
 
     /*
      * A parser which parses strings, and stops at all unquoted delimiters
@@ -78,6 +80,7 @@ struct flexible_type_parser_impl: qi::grammar<Iterator, flexible_type(), SpaceTy
     dictionary_element_string_parser.na_val = na_val;
     dictionary_element_string_parser.true_val = true_val;
     dictionary_element_string_parser.false_val = false_val;
+    dictionary_element_string_parser.only_raw_string_substitutions = only_raw_string_substitutions;
 
     parser_impl::parser_config root_flex_string;
     // when the delimiter is just one character, using the restrictions is faster.
@@ -90,6 +93,7 @@ struct flexible_type_parser_impl: qi::grammar<Iterator, flexible_type(), SpaceTy
     root_flex_string.na_val = na_val;
     root_flex_string.true_val = true_val;
     root_flex_string.false_val = false_val;
+    root_flex_string.only_raw_string_substitutions = only_raw_string_substitutions;
 
     string = 
         (parser_impl::restricted_string(root_flex_string)[_val = _1]);
@@ -206,11 +210,12 @@ flexible_type_parser::flexible_type_parser(std::string separator,
                                            char escape_char,
                                            const std::unordered_set<std::string>& na_val,
                                            const std::unordered_set<std::string>& true_val,
-                                           const std::unordered_set<std::string>& false_val):
+                                           const std::unordered_set<std::string>& false_val,
+                                           bool only_raw_string_substitutions):
     parser(new flexible_type_parser_impl<const char*, 
-           decltype(space)>(separator, use_escape_char, escape_char, na_val, true_val, false_val)), 
+           decltype(space)>(separator, use_escape_char, escape_char, na_val, true_val, false_val, only_raw_string_substitutions)), 
     non_space_parser(new flexible_type_parser_impl<const char*, 
-                     decltype(qi::eoi)>(separator, use_escape_char, escape_char)), 
+                     decltype(qi::eoi)>(separator, use_escape_char, escape_char, na_val, true_val, false_val, only_raw_string_substitutions)), 
     m_delimiter_has_space(delimiter_has_space(parser->delimiter))
     { }
 

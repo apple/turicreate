@@ -6,26 +6,21 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-import tempfile
+
 import unittest
 import copy
 import numpy as np
 from numpy.testing import assert_allclose
 
-import pandas as pd
-
 import turicreate as tc
 from . import util as test_util
 from turicreate.util import _assert_sframe_equal as assert_sframe_equal
 
-from turicreate.connect.main import get_unity
 from turicreate.toolkits._main import ToolkitError
 
 import sys
 if sys.version_info.major == 3:
     unittest.TestCase.assertItemsEqual = unittest.TestCase.assertCountEqual
-
-import os as _os
 
 
 ### Helper functions ###

@@ -11,7 +11,7 @@ from ..data_structures.sarray_builder import SArrayBuilder
 import unittest
 import array
 import datetime as dt
-from ..util.timezone import GMT
+from .._cython.cy_flexible_type import GMT
 
 class SArrayBuilderTest(unittest.TestCase):
     def __test_equal(self, _sarray, _data, _type):

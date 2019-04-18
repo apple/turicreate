@@ -134,6 +134,13 @@ struct csv_line_tokenizer {
   std::unordered_set<std::string> false_values;
 
   /**
+   * If this is set (defaults to false), then
+   * the true/false/na substitutions are only permitted on raw
+   * unparsed strings; that is strings before dequoting, de-escaping, etc.
+   */
+  bool only_raw_string_substitutions = false;
+
+  /**
    * Constructor. Does nothing but set up internal buffers.
    */
   csv_line_tokenizer();
@@ -286,6 +293,7 @@ struct csv_line_tokenizer {
    * (the buffer itself is used to maintain the recursive parse state)
    */
   bool parse_as(char** buf, size_t len, 
+                const char* raw, size_t rawlen,
                 flexible_type& out, bool recursive_parse=false);
 
   /**
@@ -348,6 +356,13 @@ struct csv_line_tokenizer {
   bool delimiter_is_not_empty = true;
   bool empty_string_in_na_values = false;
   bool is_regular_line_terminator = true;
+
+
+
+  /**
+   * Perform substitutions of true/false/na values
+   */
+  bool check_substitutions(const char* buf, size_t len, flexible_type& out);
 };
 /// \}
 } // namespace turi

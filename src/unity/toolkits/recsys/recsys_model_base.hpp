@@ -18,6 +18,8 @@
 #include <unity/toolkits/ml_data_2/ml_data.hpp>
 #include <unity/toolkits/ml_data_2/ml_data_iterators.hpp>
 #include <util/fast_top_k.hpp>
+#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
+
 
 // Interfaces
 #include <unity/lib/extensions/ml_model.hpp>
@@ -271,7 +273,7 @@ public:
 
   gl_sframe api_get_item_intersection_info(gl_sframe item_pairs);
 
-  gl_sframe api_precision_recall_stats(gl_sframe indexed_validation_data, gl_sframe recommend_output, const std::vector<size_t>& cutoffs);
+  gl_sframe api_precision_recall_by_user(gl_sframe validation_data, gl_sframe recommend_output, const std::vector<size_t>& cutoffs);
 
   variant_map_type api_get_train_stats();
 
@@ -334,7 +336,7 @@ public:
 
   std::shared_ptr<unity_sframe_base> get_num_items_per_user_extension_wrapper() const; 
 
-  virtual void export_to_coreml(const std::string& filename);
+  virtual std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(const std::string& filename);
 
   variant_map_type summary();
 
@@ -448,7 +450,7 @@ public:
                                        "filename");
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
-      "precision_recall_stats", recsys_model_base::api_precision_recall_stats,
+      "precision_recall_by_user", recsys_model_base::api_precision_recall_by_user,
       "indexed_validation_data", "recommend_output", "cutoffs");
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_data_schema",

@@ -6,11 +6,8 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-# 1st set up logging
-import logging
-import logging.config
+
 import time as _time
-import tempfile as _tempfile
 import os as _os
 import urllib as _urllib
 import re as _re
@@ -21,17 +18,13 @@ import itertools as _itertools
 import uuid as _uuid
 import datetime as _datetime
 import sys as _sys
-import subprocess as _subprocess
 
-from ..config import get_client_log_location as _get_client_log_location
-from .sframe_generation import generate_random_sframe
-from .sframe_generation import generate_random_regression_sframe
-from .sframe_generation import generate_random_classification_sframe
-from .type_checks import _raise_error_if_not_function
-from .type_checks import _raise_error_if_not_of_type
-from .type_checks import _is_non_string_iterable
-from .type_checks import _is_string
-from .progress_table_printer import ProgressTablePrinter as _ProgressTablePrinter
+from ._sframe_generation import generate_random_sframe
+from ._sframe_generation import generate_random_regression_sframe
+from ._sframe_generation import generate_random_classification_sframe
+from ._type_checks import _raise_error_if_not_of_type
+from ._type_checks import _is_non_string_iterable
+from ._progress_table_printer import ProgressTablePrinter as _ProgressTablePrinter
 
 try:
     import configparser as _ConfigParser
@@ -126,13 +119,13 @@ def _make_internal_url(url):
         raise ValueError('Invalid url: %s' % url)
 
     from .. import _sys_util
-    from . import file_util
+    from . import _file_util
 
     # Convert Windows paths to Unix-style slashes
     url = _convert_slashes(url)
 
     # Try to split the url into (protocol, path).
-    protocol = file_util.get_protocol(url)
+    protocol = _file_util.get_protocol(url)
     is_local = False
     if protocol in ['http', 'https']:
         pass
@@ -155,48 +148,6 @@ def _make_internal_url(url):
         url = _os.path.abspath(_os.path.expanduser(url))
     return url
 
-
-def _download_dataset(url_str, extract=True, force=False, output_dir="."):
-    """Download a remote dataset and extract the contents.
-
-    Parameters
-    ----------
-
-    url_str : string
-        The URL to download from
-
-    extract : bool
-        If true, tries to extract compressed file (zip/gz/bz2)
-
-    force : bool
-        If true, forces to retry the download even if the downloaded file already exists.
-
-    output_dir : string
-        The directory to dump the file. Defaults to current directory.
-    """
-    fname = output_dir + "/" + url_str.split("/")[-1]
-    #download the file from the web
-    if not _os.path.isfile(fname) or force:
-        print("Downloading file from:", url_str)
-        _urllib.urlretrieve(url_str, fname)
-        if extract and fname[-3:] == "zip":
-            print("Decompressing zip archive", fname)
-            _ZipFile(fname).extractall(output_dir)
-        elif extract and fname[-6:] == ".tar.gz":
-            print("Decompressing tar.gz archive", fname)
-            _tarfile.TarFile(fname).extractall(output_dir)
-        elif extract and fname[-7:] == ".tar.bz2":
-            print("Decompressing tar.bz2 archive", fname)
-            _tarfile.TarFile(fname).extractall(output_dir)
-        elif extract and fname[-3:] == "bz2":
-            print("Decompressing bz2 archive:", fname)
-            outfile = open(fname.split(".bz2")[0], "w")
-            print("Output file:", outfile)
-            for line in _bz2.BZ2File(fname, "r"):
-                outfile.write(line)
-            outfile.close()
-    else:
-        print("File is already downloaded.")
 
 def is_directory_archive(path):
     """
@@ -255,15 +206,6 @@ def get_archive_type(path):
     except Exception as e:
         raise TypeError('Unable to determine type of archive for path: %s' % path, e)
 
-_GLOB_RE = _re.compile("""[*?]""")
-def _split_path_elements(url):
-    parts = _os.path.split(url)
-    m = _GLOB_RE.search(parts[-1])
-    if m:
-        return (parts[0], parts[1])
-    else:
-        return (url, "")
-
 def crossproduct(d):
     """
     Create an SFrame containing the crossproduct of all provided options.
@@ -309,7 +251,7 @@ def get_turicreate_object_type(url):
     Given url where a Turi Create object is persisted, return the Turi
     Create object type: 'model', 'graph', 'sframe', or 'sarray'
     '''
-    from ..connect import main as _glconnect
+    from .._connect import main as _glconnect
     ret = _glconnect.get_unity().get_turicreate_object_type(_make_internal_url(url))
 
     # to be consistent, we use sgraph instead of graph here
@@ -430,7 +372,7 @@ def _get_temp_file_location():
     >>> turicreate.config.set_runtime_config('TURI_CACHE_FILE_LOCATIONS', ...)
 
     '''
-    from ..connect import main as _glconnect
+    from .._connect import main as _glconnect
     unity = _glconnect.get_unity()
     cache_dir = _convert_slashes(unity.get_current_cache_file_location())
     if not _os.path.exists(cache_dir):
@@ -462,50 +404,6 @@ def _make_temp_filename(prefix):
     temp_file_name = '/'.join([temp_location, str(prefix)+str(_uuid.uuid4())])
     return temp_file_name
 
-# datetime utilities
-
-_ZERO = _datetime.timedelta(0)
-
-class _UTC(_datetime.tzinfo):
-    """
-    A UTC datetime.tzinfo class modeled after the pytz library. It includes a
-    __reduce__ method for pickling,
-    """
-    def fromutc(self, dt):
-        if dt.tzinfo is None:
-            return self.localize(dt)
-        return super(_utc.__class__, self).fromutc(dt)
-
-    def utcoffset(self, dt):
-        return _ZERO
-
-    def tzname(self, dt):
-        return "UTC"
-
-    def dst(self, dt):
-        return _ZERO
-
-    def __reduce__(self):
-        return _UTC, ()
-
-    def __repr__(self):
-        return "<UTC>"
-
-    def __str__(self):
-        return "UTC"
-
-_utc = _UTC()
-
-
-def _dt_to_utc_timestamp(t):
-    if t.tzname() == 'UTC':
-        return (t - _datetime.datetime(1970, 1, 1, tzinfo=_utc)).total_seconds()
-    elif not t.tzinfo:
-        return _time.mktime(t.timetuple())
-    else:
-        raise ValueError('Only local time and UTC time is supported')
-
-
 def _pickle_to_temp_location_or_memory(obj):
         '''
         If obj can be serialized directly into memory (via cloudpickle) this
@@ -515,7 +413,7 @@ def _pickle_to_temp_location_or_memory(obj):
         the directory name. This directory will not have lifespan greater than
         that of unity_server.
         '''
-        from . import cloudpickle as cloudpickle
+        from . import _cloudpickle as cloudpickle
         try:
             # try cloudpickle first and see if that works
             lambda_str = cloudpickle.dumps(obj)
@@ -532,11 +430,11 @@ def _pickle_to_temp_location_or_memory(obj):
         return filename
 
 
-def get_module_from_object(obj):
+def _get_module_from_object(obj):
     mod_str = obj.__class__.__module__.split('.')[0]
     return _sys.modules[mod_str]
 
-def infer_dbapi2_types(cursor, mod_info):
+def _infer_dbapi2_types(cursor, mod_info):
     desc = cursor.description
     result_set_types = [i[1] for i in desc]
     dbapi2_to_python = [ # a type code can match more than one, so ordered by
@@ -563,156 +461,13 @@ def infer_dbapi2_types(cursor, mod_info):
 
     return ret_types
 
-def pytype_to_printf(in_type):
+def _pytype_to_printf(in_type):
     if in_type == int:
         return 'd'
     elif in_type == float:
         return 'f'
     else:
         return 's'
-
-def subprocess_exe(exe, args, setup=None, teardown=None,
-                   local_log_prefix=None,
-                   out_log_prefix=None,
-                   environment_variables=None):
-    """
-    Wrapper function to execute an external program.
-    This function is exception safe, and always catches
-    the error.
-
-    Parameters
-    ----------
-    exe : str
-        The command to run
-    args : list[str]
-        Arguments to passed to the command
-    setup : function
-        Setup function to run before executing the command
-    teardown : function
-        Teardown function to run after executing the command
-    local_log_prefix: str
-        The prefix of a local file path to the log file while the program is running:
-        <prefix>_commander.stdout
-        <prefix>_commander.stderr
-        <prefix>_worker0.stdout
-        <prefix>_worker0.stderr
-        If "out_log_prefix" is set, the files will be copied into out_log_prefix
-        when the process terminates.
-    out_log_prefix: str
-        The path prefix to the final saved log file.
-        If set, the logs will be save to the following locations:
-            <prefix>.stdout
-            <prefix>.stderr
-        and the return value will contain paths to the log files.
-        The path can be local or hdfs or s3.
-
-    Returns
-    -------
-    out : dict
-        A dictionary containing the following keys:
-
-        success : bool
-            True if the command succeeded
-        return_code : int
-            The return code of the command
-        stderr : str
-            Path to the stderr log of the process
-        stdout : str
-            Path to the stdout log of the process
-        python_exception : Exception
-            Python exception
-    """
-    import logging
-    import os
-    from . import file_util
-    ret = {'success': True,
-           'return_code': None,
-           'stdout': None,
-           'stderr': None,
-           'python_exception': None,
-           'proc_object' : None}
-    blocking = True
-
-    # Creates local running log file
-    try:
-        if local_log_prefix in [_subprocess.PIPE,
-                                _subprocess.STDOUT]:
-            local_log_stdout = local_log_prefix
-            local_log_stderr = local_log_prefix
-            blocking = False
-            if out_log_prefix is not None:
-                raise ValueError("Cannot pipe output and set an output log!")
-        elif local_log_prefix:
-            local_log_stdout = open(local_log_prefix + '.stdout', 'w')
-            local_log_stderr = open(local_log_prefix + '.stderr', 'w')
-        else:
-            local_log_stdout = _tempfile.NamedTemporaryFile(delete=False)
-            local_log_stderr = _tempfile.NamedTemporaryFile(delete=False)
-    except Exception as e:
-        ret['success'] = False
-        ret['python_exception'] = e
-
-   # Run setup
-    try:
-        if setup is not None:
-            setup()
-    except Exception as e:
-        ret['success'] = False
-        ret['python_exception'] = e
-
-   # Executes the command
-    if ret['success']:
-        try:
-            if environment_variables is not None:
-                environment_variables = os.environ.copy().update(environment_variables)
-            proc = _subprocess.Popen([exe] + args,
-                                    stdout=local_log_stdout,
-                                    stderr=local_log_stderr,
-                                    env=environment_variables)
-            if blocking:
-                proc.communicate()
-                ret['success'] = proc.returncode == 0
-                ret['return_code'] = proc.returncode
-            else:
-                ret['success'] = None
-                ret['stdout'] = proc.stdout
-                ret['stderr'] = proc.stderr
-                ret['proc_object'] = proc
-        except Exception as e:
-            ret['success'] = False
-            ret['python_exception'] = e
-        finally:
-            if blocking:
-                try:
-                    local_log_stdout.close()
-                    local_log_stderr.close()
-                    if out_log_prefix is not None:
-                        # persistent logfiles. When local log closed,
-                        # they will be loaded to the corresponding hdfs or s3 path
-                        file_log_stdout = out_log_prefix + '.stdout'
-                        file_log_stderr = out_log_prefix + '.stderr'
-                        # copy to target log path
-                        file_util.copy_from_local(local_log_stdout.name, file_log_stdout)
-                        file_util.copy_from_local(local_log_stderr.name, file_log_stderr)
-                        ret['stdout'] = file_log_stdout
-                        ret['stderr'] = file_log_stderr
-                    else:
-                        ret['stdout'] = open(local_log_stdout.name).read()
-                        ret['stderr'] = open(local_log_stderr.name).read()
-                except Exception as e:
-                    ret['_save_log_exception'] = e
-                    logging.warn(str(e))
-
-    # Teardown
-    if teardown is not None:
-        try:
-            teardown()
-        except Exception as e:
-            ret['_tear_down_exception'] = e
-            logging.warn(str(e))
-
-    return ret
-
 
 # Automatic GPU detection
 def _get_cuda_gpus():

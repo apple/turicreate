@@ -68,6 +68,7 @@ window.setSpec = function setSpec(value) {
     resetDisplay();
     switch(value.type) {
         case "vega":
+            document.getElementById("loading_container").style.display = "none";
             document.getElementById('vega_vis').style.display = 'block';
             component_rendered = ReactDOM.render(<TcPlot vega_spec={value.data} />, document.getElementById('vega_vis'));
             spec_type = SpecType.vega;

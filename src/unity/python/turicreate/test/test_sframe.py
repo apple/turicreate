@@ -14,7 +14,7 @@ from .. import _launch, load_sframe, aggregate
 from . import util
 
 import pandas as pd
-from ..util.timezone import GMT
+from .._cython.cy_flexible_type import GMT
 from pandas.util.testing import assert_frame_equal
 import unittest
 import datetime as dt
@@ -874,6 +874,14 @@ class SFrameTest(unittest.TestCase):
         l = list(result['a'])
         for i in range(len(result)):
             self.assertEqual(i, l[i])
+
+        # map input type
+        toy_data = SFrame({'a': range(100)})
+        map_result = map(lambda x: x+1, [1, 30])
+        result = toy_data.filter_by(map_result, 'a')
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result[0]['a'], 2)
+        self.assertEqual(result[1]['a'], 31)
 
 
     def test_sample_split(self):

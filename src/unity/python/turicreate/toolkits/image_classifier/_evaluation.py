@@ -9,7 +9,7 @@ Class definition and utilities for the evaluation of the image classification mo
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-from ...visualization import _get_client_app_path
+from ...visualization import _get_client_app_path, _focus_client_app
 
 import subprocess as __subprocess
 from six.moves import _thread
@@ -169,6 +169,9 @@ def _process_value(value, extended_sframe, proc, evaluation):
 def _start_process(process_input, extended_sframe, evaluation):
   proc = __subprocess.Popen(_get_client_app_path(), stdout=__subprocess.PIPE, stdin=__subprocess.PIPE)
   proc.stdin.write(process_input)
+
+  _focus_client_app()
+  
   #https://docs.python.org/2/library/subprocess.html#subprocess.Popen.communicate
   
   while(proc.poll() == None):

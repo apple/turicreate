@@ -13,8 +13,8 @@ from __future__ import absolute_import as _
 import turicreate as _tc
 from turicreate.toolkits._model import CustomModel
 from prettytable import PrettyTable as _PrettyTable
-from turicreate.cython.cy_graph import UnityGraphProxy
-from turicreate.cython.cy_sframe import UnitySFrameProxy
+from turicreate._cython.cy_graph import UnityGraphProxy
+from turicreate._cython.cy_sframe import UnitySFrameProxy
 import turicreate.toolkits._main as _main
 from turicreate.data_structures.sframe import SFrame
 from turicreate.data_structures.sgraph import SGraph

@@ -158,7 +158,7 @@ void build_vision_feature_print_scene_spec(const std::string& model_path) {
 
 }
 
-API_AVAILABLE(macos(10.13))
+API_AVAILABLE(macos(10.13),ios(11.0))
 static MLModel *create_model(const std::string& download_path,
 			     const std::string& model_name) {
 
@@ -201,7 +201,10 @@ static MLModel *create_model(const std::string& download_path,
       if(turi::fileio::get_protocol(model_info.base_model_url) != "") {
         base_model_path = download_path + "/" + model_name + ".mlmodel";
         logstream(LOG_PROGRESS) << "Downloading base mlmodel" << std::endl;
-        turi::download_url(model_info.base_model_url, base_model_path);
+        const int download_ret = turi::download_url(model_info.base_model_url, base_model_path);
+        if(download_ret != 0) {
+          log_and_throw("Unable to download model.");
+        }
       } else {
         base_model_path = download_path + "/" + model_info.base_model_url;
       }
@@ -315,17 +318,17 @@ CVPixelBufferRef create_pixel_buffer_from_flex_image(const flex_image image) {
 }  // namespace
 
 struct mlmodel_image_feature_extractor::impl {
-  API_AVAILABLE(macos(10.13))
+  API_AVAILABLE(macos(10.13),ios(11.0))
   ~impl() {
     [model release];
   }
 
   std::string name;
-  API_AVAILABLE(macos(10.13)) MLModel *model = nil;
+  API_AVAILABLE(macos(10.13),ios(11.0)) MLModel *model = nil;
   CoreML::Specification::Model spec;
 };
 
-API_AVAILABLE(macos(10.13))
+API_AVAILABLE(macos(10.13),ios(11.0))
 mlmodel_image_feature_extractor::mlmodel_image_feature_extractor(
     const std::string& model_name, const std::string& download_path)
   : m_impl(new impl) {
@@ -355,7 +358,7 @@ mlmodel_image_feature_extractor::coreml_spec() const {
   return m_impl->spec;
 }
 
-API_AVAILABLE(macos(10.13))
+API_AVAILABLE(macos(10.13),ios(11.0))
 gl_sarray
 mlmodel_image_feature_extractor::extract_features(gl_sarray data, bool verbose, size_t kBatchSize) const {
   ASSERT_EQ((int)data.dtype(), (int)flex_type_enum::IMAGE);
@@ -449,7 +452,7 @@ mlmodel_image_feature_extractor::extract_features(gl_sarray data, bool verbose, 
 #ifdef HAS_CORE_ML_BATCH_INFERENCE
     // Even when compiled with a new enough SDK, guard against older deployment
     // targets at runtime.
-    if (@available(macOS 10.14, *)) {
+    if (@available(macOS 10.14, iOS 12.0,  *)) {
       // Invoke CoreML using the batch inference API for better performance.
       MLArrayBatchProvider *image_batch = [[MLArrayBatchProvider alloc] initWithFeatureProviderArray: inputs];
       MLPredictionOptions* options = [[MLPredictionOptions alloc] init];

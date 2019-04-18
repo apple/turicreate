@@ -11,6 +11,7 @@ models. The metrics can be broadly categorized as:
 
 The evaluation module supports the following classification metrics:
 - accuracy
+- auc
 - confusion_matrix
 - f1_score
 - fbeta_score
@@ -26,8 +27,8 @@ The evaluation module supports the following regression metrics:
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
+
 import turicreate as _turicreate
-from ..deps import numpy
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sarray,\
                                               _check_categorical_option_type
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
@@ -36,6 +37,8 @@ def _check_prob_and_prob_vector(predictions):
     """
     Check that the predictionsa are either probabilities of prob-vectors.
     """
+    from .._deps import numpy
+
     ptype = predictions.dtype
     import array
     if ptype not in [float, numpy.ndarray, array.array, int]:

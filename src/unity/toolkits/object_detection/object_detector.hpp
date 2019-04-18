@@ -37,7 +37,7 @@ class EXPORT object_detector: public ml_model_base {
   // Interface exposed via Unity server
 
   void train(gl_sframe data, std::string annotations_column_name,
-             std::string image_column_name,
+             std::string image_column_name, variant_type validation_data,
              std::map<std::string, flexible_type> opts);
   variant_map_type evaluate(gl_sframe data, std::string metric,
                             std::map<std::string, flexible_type> opts);
@@ -52,7 +52,12 @@ class EXPORT object_detector: public ml_model_base {
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::train, "data",
                                  "annotations_column_name",
-                                 "image_column_name", "options");
+                                 "image_column_name", "validation_data",
+                                 "options");
+  register_defaults("train",
+                    {{"validation_data", to_variant(gl_sframe())},
+                     {"options",
+                      to_variant(std::map<std::string, flexible_type>())}});
   REGISTER_CLASS_MEMBER_DOCSTRING(
       object_detector::train,
       "\n"
@@ -105,8 +110,7 @@ class EXPORT object_detector: public ml_model_base {
 
   // Factory for data_iterator
   virtual std::unique_ptr<data_iterator> create_iterator(
-      gl_sframe data, std::string annotations_column_name,
-      std::string image_column_name, bool repeat) const;
+      gl_sframe data, std::vector<std::string> class_labels, bool repeat) const;
 
   // Factory for compute_context
   virtual
@@ -125,6 +129,9 @@ class EXPORT object_detector: public ml_model_base {
                           std::string image_column_name,
                           std::map<std::string, flexible_type> opts);
   virtual void perform_training_iteration();
+
+  virtual variant_map_type perform_evaluation(gl_sframe data,
+                                              std::string metric);
 
   // Utility code
 
@@ -145,6 +152,9 @@ class EXPORT object_detector: public ml_model_base {
 
   // Waits until the number of pending patches is at most `max_pending`.
   void wait_for_training_batches(size_t max_pending = 0);
+
+  // Computes and records training/validation metrics.
+  void update_model_metrics(gl_sframe data, gl_sframe validation_data);
 
   // Primary representation for the trained model.
   std::unique_ptr<neural_net::model_spec> nn_spec_;

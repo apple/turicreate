@@ -20,10 +20,11 @@ import tempfile
 import unittest
 import pandas
 
-from ..connect import main as glconnect
+from .._connect import main as glconnect
 from .. import _sys_util
 from .. import util
-from .. import SGraph, Model, SFrame, load_sgraph, load_model, load_sframe
+from .. import SGraph, SFrame, load_sgraph, load_model, load_sframe
+from turicreate.toolkits._model import Model
 from pandas.util.testing import assert_frame_equal
 
 restricted_place = '/root'

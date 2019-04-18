@@ -9,7 +9,7 @@ from __future__ import absolute_import as _
 import os
 import unittest
 import tempfile
-from ..util import file_util as fu
+from ..util import _file_util as fu
 
 class FileUtilTests(unittest.TestCase):
     def setUp(self):

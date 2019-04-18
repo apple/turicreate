@@ -24,7 +24,7 @@ from turicreate.toolkits.distances._util import _convert_distance_names_to_funct
 from turicreate.toolkits.distances._util import _validate_composite_distance
 from turicreate.toolkits.distances._util import _scrub_composite_distance_features
 from turicreate.toolkits.distances._util import _get_composite_distance_features
-from turicreate.cython.cy_server import QuietProgress
+from turicreate._cython.cy_server import QuietProgress
 
 import array
 import copy as _copy

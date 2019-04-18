@@ -14,7 +14,6 @@ from __future__ import absolute_import as _
 import turicreate as _turicreate
 from turicreate import SFrame as _SFrame
 from turicreate.toolkits.recommender.util import _Recommender
-from turicreate.cython.cy_server import QuietProgress
 from array import array as _array
 
 
@@ -127,6 +126,8 @@ def create(item_data, item_id,
       [2 rows x 3 columns]
 
     """
+    from turicreate._cython.cy_server import QuietProgress
+
     # item_data is correct type
     if not isinstance(item_data, _SFrame) or item_data.num_rows() == 0:
         raise TypeError("`item_data` argument must be a non-empty SFrame giving item data to use for similarities.")

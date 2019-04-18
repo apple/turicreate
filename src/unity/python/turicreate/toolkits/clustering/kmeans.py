@@ -20,7 +20,7 @@ import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits._private_utils import _validate_row_label
 from turicreate.toolkits._private_utils import _summarize_accessible_fields
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
-from turicreate.cython.cy_server import QuietProgress
+from turicreate._cython.cy_server import QuietProgress as _QuietProgress
 
 def _validate_dataset(dataset):
     """
@@ -276,7 +276,7 @@ class KmeansModel(_Model):
                 'model_name': self.__name__,
                 'dataset': sf_features}
 
-        with QuietProgress(verbose):
+        with _QuietProgress(verbose):
             result = _tc.extensions._kmeans.predict(opts)
 
         sf_result = result['predictions']
@@ -596,7 +596,7 @@ def create(dataset, num_clusters=None, features=None, label=None,
         opts['batch_size'] = batch_size
 
     ## Create and return the model
-    with QuietProgress(verbose):
+    with _QuietProgress(verbose):
         params = _tc.extensions._kmeans.train(opts)
 
     return KmeansModel(params['model'])

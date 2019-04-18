@@ -33,6 +33,7 @@ class EXPORT activity_classifier: public ml_model_base {
              variant_type validation_data,
              std::map<std::string, flexible_type> opts);
   gl_sarray predict(gl_sframe data, std::string output_type);
+  gl_sframe predict_per_window(gl_sframe data, std::string output_type);
   variant_map_type evaluate(gl_sframe data, std::string metric);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
       std::string filename);
@@ -46,7 +47,7 @@ class EXPORT activity_classifier: public ml_model_base {
   REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::train, "data", "target",
                                  "session_id", "validation_data", "options");
   register_defaults("train",
-                    {{"validation_data", to_variant(gl_sframe())},
+                    {{"validation_data", to_variant(std::string("auto"))},
                      {"options",
                       to_variant(std::map<std::string, flexible_type>())}});
   REGISTER_CLASS_MEMBER_DOCSTRING(
@@ -95,8 +96,7 @@ class EXPORT activity_classifier: public ml_model_base {
 
   REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::predict, "data",
                                  "output_type");
-  register_defaults("predict",
-                    {{"output_type", std::string("")}});
+  register_defaults("predict", {{"output_type", std::string("")}});
   REGISTER_CLASS_MEMBER_DOCSTRING(
       activity_classifier::predict,
       "----------\n"
@@ -113,8 +113,29 @@ class EXPORT activity_classifier: public ml_model_base {
       "    - 'class': Class prediction. This returns the class with maximum\n"
       "      probability.\n"
   );
-  // TODO: Support output_frequency as another argument? Provide a separate
-  // predict_per_window?
+
+  REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::predict_per_window,
+                                 "data", "output_type");
+  register_defaults("predict_per_window", {{"output_type", std::string("")}});
+  REGISTER_CLASS_MEMBER_DOCSTRING(
+      activity_classifier::predict_per_window,
+      "----------\n"
+      "data : SFrame\n"
+      "    Dataset of new observations. Must include columns with the same\n"
+      "    names as the features used for model training, but does not "
+      "require\n"
+      "    a target column. Additional columns are ignored.\n"
+
+      "output_type : {'class', 'probability_vector'}, optional\n"
+      "    Form of each prediction which is one of:\n"
+      "    - 'probability_vector': Prediction probability associated with "
+      "each\n"
+      "      class as a vector. The probability of the first class (sorted\n"
+      "      alphanumerically by name of the class in the training set) is in\n"
+      "      position 0 of the vector, the second in position 1 and so on. \n"
+      "      A probability_vector is given per prediction_window. \n"
+      "    - 'class': Class prediction. This returns the class with maximum\n"
+      "      probability per prediction_window.\n");
 
   REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::evaluate, "data",
                                  "metric");
@@ -169,13 +190,17 @@ class EXPORT activity_classifier: public ml_model_base {
                           std::map<std::string, flexible_type> opts);
   virtual void perform_training_iteration();
 
+  virtual std::tuple<float, float>
+  compute_validation_metrics(size_t prediction_window, size_t num_classes,
+                             size_t batch_size);
+
   // Returns an SFrame where each row corresponds to one prediction, and
   // containing three columns: "session_id" indicating the session ID shared by
   // the samples in the prediction window, "preds" containing the class
   // probability vector for the prediction window, and "num_samples" indicating
   // the number of corresponding rows from the original SFrame (at most the
   // prediction window size).
-  virtual gl_sframe perform_inference(data_iterator* data) const;
+  virtual gl_sframe perform_inference(data_iterator *data) const;
 
   // Utility code
 
@@ -192,6 +217,7 @@ class EXPORT activity_classifier: public ml_model_base {
   // Primary dependencies for training. These should be nonnull while training
   // is in progress.
   std::unique_ptr<data_iterator> training_data_iterator_;
+  std::unique_ptr<data_iterator> validation_data_iterator_;
   std::unique_ptr<neural_net::compute_context> training_compute_context_;
   std::unique_ptr<neural_net::model_backend> training_model_;
 

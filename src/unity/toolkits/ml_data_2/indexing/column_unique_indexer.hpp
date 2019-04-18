@@ -164,6 +164,18 @@ class column_unique_indexer final : public column_indexer {
   /** Create a copy with the index cleared.
    */
   std::shared_ptr<column_indexer> create_cleared_copy() const; 
+
+  /** Returns a lambda function that can be used as a lambda function for deindexing
+   *  a column.
+   */
+  std::function<flexible_type(const flexible_type&)> deindexing_lambda() const;
+
+  /** Returns a lambda function that can be used as a lambda function for indexing
+   *  a column.
+   *
+   *  Does not add any new index values.
+   */
+  std::function<flexible_type(const flexible_type&)> indexing_lambda() const;
   
  private:
 

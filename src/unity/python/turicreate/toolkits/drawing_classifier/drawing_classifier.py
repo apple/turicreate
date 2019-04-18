@@ -143,6 +143,15 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     _raise_error_if_not_drawing_classifier_input_sframe(
         input_dataset, feature, target)
 
+    if batch_size is not None and not isinstance(batch_size, int):
+        raise TypeError("'batch_size' must be an integer >= 1")
+    if batch_size is not None and batch_size < 1:
+        raise ValueError("'batch_size' must be >= 1")
+    if max_iterations is not None and not isinstance(max_iterations, int):
+        raise TypeError("'max_iterations' must be an integer >= 1")
+    if max_iterations is not None and max_iterations < 1:
+        raise ValueError("'max_iterations' must be >= 1")
+
     is_stroke_input = (input_dataset[feature].dtype != _tc.Image)
     dataset = _extensions._drawing_classifier_prepare_data(
         input_dataset, feature) if is_stroke_input else input_dataset
@@ -168,8 +177,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
                 if verbose:
                     print ( "PROGRESS: Creating a validation set from 5 percent of training data. This may take a while.\n"
                             "          You can set ``validation_set=None`` to disable validation tracking.\n")
-                dataset, validation_dataset = dataset.random_split(
-                    TRAIN_VALIDATION_SPLIT)
+                dataset, validation_dataset = dataset.random_split(TRAIN_VALIDATION_SPLIT, exact=True)
             else:
                 validation_set = None
                 validation_dataset = _tc.SFrame()
@@ -234,14 +242,11 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     def get_data_and_label_from_batch(batch):
         if batch.pad is not None:
             size = batch_size - batch.pad
-            batch_data  = (
-                [_mx.nd.slice_axis(batch.data[0], axis=0, begin=0, end=size)] 
-                + [None] * (len(ctx)-1)
-                )
-            batch_label = (
-                [_mx.nd.slice_axis(batch.label[0], axis=0, begin=0, end=size)] 
-                + [None] * (len(ctx)-1)
-                )
+            sliced_data  = _mx.nd.slice_axis(batch.data[0], axis=0, begin=0, end=size)
+            sliced_label = _mx.nd.slice_axis(batch.label[0], axis=0, begin=0, end=size)
+            num_devices = min(sliced_data.shape[0], len(ctx))
+            batch_data = _mx.gluon.utils.split_and_load(sliced_data, ctx_list=ctx[:num_devices], even_split=False)
+            batch_label = _mx.gluon.utils.split_and_load(sliced_label, ctx_list=ctx[:num_devices], even_split=False)
         else:
             batch_data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0)
             batch_label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0)
@@ -534,14 +539,18 @@ class DrawingClassifier(_CustomModel):
 
         dataset_size = len(dataset)
         ctx = _mxnet_utils.get_mxnet_context()
-        
-        all_predicted = ['']*dataset_size
-        all_probabilities = _np.zeros((dataset_size, len(self.classes)), 
-            dtype=float)
 
         index = 0
         last_time = 0
         done = False
+
+        from turicreate import SArrayBuilder
+        from array import array
+
+        classes = self.classes
+        all_predicted_builder = SArrayBuilder(dtype=type(classes[0]))
+        all_probabilities_builder = SArrayBuilder(dtype=array)
+
         for batch in loader:
             if batch.pad is not None:
                 size = batch_size - batch.pad
@@ -551,35 +560,31 @@ class DrawingClassifier(_CustomModel):
                 batch_data = batch.data[0]
                 size = batch_size
 
-            if batch_data.shape[0] < len(ctx):
-                ctx0 = ctx[:batch_data.shape[0]]
-            else:
-                ctx0 = ctx
+            num_devices = min(batch_data.shape[0], len(ctx))
+            split_data = _mx.gluon.utils.split_and_load(batch_data, ctx_list=ctx[:num_devices], even_split=False)
 
-            z = self._model(batch_data).asnumpy()
-            predicted = z.argmax(axis=1)
-            classes = self.classes
-            
-            predicted_sa = _tc.SArray(predicted).apply(lambda x: classes[x])
-            
-            all_predicted[index : index + len(predicted_sa)] = predicted_sa
-            all_probabilities[index : index + z.shape[0]] = z
-            index += z.shape[0]
-            if index == dataset_size - 1:
-                done = True
+            for data in split_data:
+                z = self._model(data).asnumpy()
+                predicted = list(map(lambda x: classes[x], z.argmax(axis=1)))
+                split_length = z.shape[0]
+                all_predicted_builder.append_multiple(predicted)
+                all_probabilities_builder.append_multiple(z.tolist())
+                index += split_length
+                if index == dataset_size - 1:
+                    done = True
 
-            cur_time = _time.time()
-            # Do not print process if only a few samples are predicted
-            if verbose and (dataset_size >= 5 
-                and cur_time > last_time + 10 or done):
-                print('Predicting {cur_n:{width}d}/{max_n:{width}d}'.format(
-                    cur_n = index,
-                    max_n = dataset_size,
-                    width = len(str(dataset_size))))
-                last_time = cur_time
-        
-        return (_tc.SFrame({self.target: _tc.SArray(all_predicted),
-            'probability': _tc.SArray(all_probabilities)}))
+                cur_time = _time.time()
+                # Do not print progress if only a few samples are predicted
+                if verbose and (dataset_size >= 5
+                    and cur_time > last_time + 10 or done):
+                    print('Predicting {cur_n:{width}d}/{max_n:{width}d}'.format(
+                        cur_n = index + 1,
+                        max_n = dataset_size,
+                        width = len(str(dataset_size))))
+                    last_time = cur_time
+
+        return (_tc.SFrame({self.target: all_predicted_builder.close(),
+                            'probability': all_probabilities_builder.close()}))
 
     def evaluate(self, dataset, metric='auto', batch_size=None, verbose=True):
         """
@@ -589,33 +594,33 @@ class DrawingClassifier(_CustomModel):
         Parameters
         ----------
         dataset : SFrame
-        Dataset of new observations. Must include columns with the same
-        names as the feature and target columns used for model training.
-        Additional columns are ignored.
+            Dataset of new observations. Must include columns with the same
+            names as the feature and target columns used for model training.
+            Additional columns are ignored.
         
-        metric : str optional
-        Name of the evaluation metric. Possible values are:
+        metric : str, optional
+            Name of the evaluation metric. Possible values are:
+            
+            - 'auto'             : Returns all available metrics.
+            - 'accuracy'         : Classification accuracy (micro average).
+            - 'auc'              : Area under the ROC curve (macro average)
+            - 'precision'        : Precision score (macro average)
+            - 'recall'           : Recall score (macro average)
+            - 'f1_score'         : F1 score (macro average)
+            - 'confusion_matrix' : An SFrame with counts of possible 
+                                   prediction/true label combinations.
+            - 'roc_curve'        : An SFrame containing information needed for an
+                                   ROC curve
         
-        - 'auto'             : Returns all available metrics.
-        - 'accuracy'         : Classification accuracy (micro average).
-        - 'auc'              : Area under the ROC curve (macro average)
-        - 'precision'        : Precision score (macro average)
-        - 'recall'           : Recall score (macro average)
-        - 'f1_score'         : F1 score (macro average)
-        - 'confusion_matrix' : An SFrame with counts of possible 
-                               prediction/true label combinations.
-        - 'roc_curve'        : An SFrame containing information needed for an
-                               ROC curve
-        
-        verbose : bool optional
-        If True, prints prediction progress.
+        verbose : bool, optional
+            If True, prints prediction progress.
 
         Returns
         -------
         out : dict
-        Dictionary of evaluation results where the key is the name of the
-        evaluation metric (e.g. `accuracy`) and the value is the evaluation
-        score.
+            Dictionary of evaluation results where the key is the name of the
+            evaluation metric (e.g. `accuracy`) and the value is the evaluation
+            score.
         
         See Also
         ----------
@@ -625,13 +630,13 @@ class DrawingClassifier(_CustomModel):
         ----------
         .. sourcecode:: python
         
-        >>> results = model.evaluate(data)
-        >>> print(results['accuracy'])
+          >>> results = model.evaluate(data)
+          >>> print(results['accuracy'])
         """
 
         if self.target not in dataset.column_names():
-            raise _ToolkitError("Dataset provided to evaluate does not have " 
-                + "ground truth in the " + self.target + " column.")
+            raise _ToolkitError("Must provide ground truth column, '" 
+                + self.target + "' in the evaluation dataset.")
 
         predicted = self._predict_with_probabilities(dataset, batch_size, verbose)
 
@@ -688,6 +693,7 @@ class DrawingClassifier(_CustomModel):
 
         output_type : {'probability', 'rank'}, optional
             Choose the return type of the prediction:
+
             - `probability`: Probability associated with each label in the 
                              prediction.
             - `rank`       : Rank associated with each label in the prediction.
@@ -780,8 +786,9 @@ class DrawingClassifier(_CustomModel):
             in which case it is a bitmap-based drawing input,
             or of type list, in which case it is a stroke-based drawing input.
 
-        output_type : {'probability', 'class', 'probability_vector'} optional
+        output_type : {'probability', 'class', 'probability_vector'}, optional
             Form of the predictions which are one of:
+            
             - 'class': Class prediction. For multi-class classification, this
               returns the class with maximum probability.
             - 'probability': Prediction probability associated with the True
@@ -795,7 +802,7 @@ class DrawingClassifier(_CustomModel):
             have a powerful computer, increasing this value may improve
             performance.
 
-        verbose : bool optional
+        verbose : bool, optional
             If True, prints prediction progress.
 
         Returns

@@ -27,7 +27,7 @@ static const int spectrumSize = 257;
 static const float log_offset = 0.01;
 
 
-API_AVAILABLE(macos(10.13))
+API_AVAILABLE(macos(10.13),ios(11.0))
 static void setErrorMsg(const char* errorMsg,  NSError** error) {
     if(error) {
       *error = [NSError errorWithDomain:MLModelErrorDomain

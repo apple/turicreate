@@ -13,7 +13,7 @@ import pandas as pd
 from pandas.util.testing import assert_frame_equal
 
 import turicreate as tc
-from turicreate.connect.main import get_unity
+from turicreate._connect.main import get_unity
 from turicreate.toolkits._main import ToolkitError
 from turicreate.data_structures.sgraph import SGraph
 from turicreate.data_structures.sframe import SFrame
