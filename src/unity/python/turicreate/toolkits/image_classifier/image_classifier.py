@@ -812,6 +812,7 @@ class ImageClassifier(_CustomModel):
         
         extended_test = extended_test.add_row_number('__idx').rename({'label': 'target_label'})
         evaluation_result['test_data'] = extended_test
+        evaluation_result['feature'] = self.feature
 
         return _Evaluation(evaluation_result)
 
