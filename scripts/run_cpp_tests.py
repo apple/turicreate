@@ -18,8 +18,8 @@ def run_in_docker(cmd, workdir='/build'):
     if not(isinstance(cmd, list)):
       cmd = [cmd]
     subprocess.check_call(['docker', 'run', '--rm',
-        '-w="%s"' % workdir,
         '--mount', 'type=bind,source=' + WORKSPACE + ',target=/build,consistency=delegated',
+        '-w=%s' % workdir,
         'turicreate/build-image-12.04:' + TC_BUILD_IMAGE_VERSION] + cmd)
 
 if __name__ == '__main__':
