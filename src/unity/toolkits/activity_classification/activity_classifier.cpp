@@ -44,7 +44,7 @@ constexpr size_t LSTM_HIDDEN_SIZE = 200;
 constexpr size_t FULLY_CONNECTED_HIDDEN_SIZE = 128;
 constexpr float LSTM_CELL_CLIP_THRESHOLD = 50000.f;
 
-constexpr size_t MIN_NUM_OF_SESSIONS = 100;
+constexpr size_t MIN_NUM_OF_SESSIONS = 50;
 // These are the fixed values that the Python implementation currently passes
 // into TCMPS.
 // TODO: These should be exposed in a way that facilitates experimentation.
@@ -72,8 +72,6 @@ size_t count_correct_predictions(size_t num_classes, const shared_float_array& o
 
   const float* output_ptr = output_chunk.data();
   const float* truth_ptr = label_chunk.data();
-    
-
   size_t num_correct_predictions = 0;
   
   for (size_t i = 0; i < num_predictions; i++) {
@@ -82,14 +80,10 @@ size_t count_correct_predictions(size_t num_classes, const shared_float_array& o
     if (prediction == *truth_ptr) {
       num_correct_predictions += 1;
     }
-
     truth_ptr++;
     output_ptr += num_classes;
-
   }
-
   return num_correct_predictions;
-
 }
 
 float cumulative_chunk_accuracy(size_t prediction_window, size_t num_classes,
@@ -115,13 +109,12 @@ float cumulative_chunk_accuracy(size_t prediction_window, size_t num_classes,
 std::tuple<gl_sframe, gl_sframe> random_split_by_session(gl_sframe data, std::string session_id_column_name, float fraction, size_t seed) {
   // if (session_id_column_name not in data.column_names()):
   //   log_and_throw('Input dataset must contain a column called %s',session_id_column_name);
-
-  auto random_session_pick = [fraction](size_t session_id_hash){
-    random::seed(session_id_hash);
+ 
+  auto random_session_pick = [fraction](size_t session_id_hash) {  
     return random::fast_uniform(0,1) < fraction;
   };
+
   gl_sarray chosen_filter = data[session_id_column_name].hash(seed).apply(random_session_pick, flex_type_enum::INTEGER);
-  // }
 
   gl_sframe train = data[chosen_filter];
   gl_sframe val =  data[1-chosen_filter];
@@ -475,12 +468,14 @@ void activity_classifier::init_train(
     std::string session_id_column_name, variant_type validation_data,
     std::map<std::string, flexible_type> opts)
 {
-
+  gl_sframe train_data;
+  gl_sframe val_data;
   // Begin printing progress.
   // TODO: Make progress printing optional.
   if (variant_is<gl_sframe>(validation_data)) {
-    gl_sframe validation_sf = variant_get_value<gl_sframe>(validation_data);
-    if (!validation_sf.empty()) {
+    train_data = data;
+    val_data = variant_get_value<gl_sframe>(validation_data);
+    if (!val_data.empty()) {
       training_table_printer_.reset(
           new table_printer({{"Iteration", 12},
                              {"Train Accuracy", 12},
@@ -497,8 +492,7 @@ void activity_classifier::init_train(
     //TODO: auto split
     gl_sarray unique_session = data[session_id_column_name].unique();
     if (unique_session.size() > MIN_NUM_OF_SESSIONS) {
-      std::cout << "DO AUTOSPLIT";
-      //std::tie(data, validation_data) = random_split_by_session(data, session_id_column_name);
+      std::tie(train_data, val_data) = random_split_by_session(data, session_id_column_name, 0.9, 1);
     }
     else{
       std::cout << "The dataset has less than the minimum of 100 sessions required for train-validation split. Continuing without validation set.";
@@ -510,6 +504,7 @@ void activity_classifier::init_train(
 
   
   } else {
+    train_data = data;
     training_table_printer_.reset(new table_printer({{"Iteration", 12},
                                                      {"Train Accuracy", 12},
                                                      {"Train Loss", 12},
@@ -531,7 +526,7 @@ void activity_classifier::init_train(
 
   // Bind the data to a data iterator.
   data_iterator::parameters data_params;
-  data_params.data = data;
+  data_params.data = train_data;
   data_params.target_column_name = target_column_name;
   data_params.session_id_column_name = session_id_column_name;
   data_params.feature_column_names = feature_column_names;
@@ -541,9 +536,9 @@ void activity_classifier::init_train(
 
   // Bind the validation data to a data iterator.
   if (variant_is<gl_sframe>(validation_data)) {
-    gl_sframe validation_sf = variant_get_value<gl_sframe>(validation_data);
+    //gl_sframe validation_sf = variant_get_value<gl_sframe>(validation_data);
     data_iterator::parameters validation_data_params;
-    validation_data_params.data = validation_sf;
+    validation_data_params.data = val_data;
     validation_data_params.target_column_name = target_column_name;
     validation_data_params.session_id_column_name = session_id_column_name;
     validation_data_params.feature_column_names = feature_column_names;
