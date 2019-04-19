@@ -110,8 +110,8 @@ EXPORT std::string histogram_spec(const flexible_type& _title,
                                      flex_type_enum_to_name(dtype) +
                                      "]";
   flexible_type title = title_or_default(_title, default_title);
-  flexible_type xlabel = label_or_default(_xlabel, "Count");
-  flexible_type ylabel = label_or_default(_ylabel, "Values");
+  flexible_type xlabel = label_or_default(_xlabel, "Values");
+  flexible_type ylabel = label_or_default(_ylabel, "Count");
 
   auto format_string = make_format_string(vega_spec_histogram_json, vega_spec_histogram_json_len);
   return format(format_string, {
@@ -130,8 +130,8 @@ EXPORT std::string categorical_spec(const flexible_type& _title,
                                      "]";
 
   flexible_type title = title_or_default(_title, default_title);
-  flexible_type xlabel = label_or_default(_xlabel, "Values");
-  flexible_type ylabel = label_or_default(_ylabel, "Count");
+  flexible_type xlabel = label_or_default(_xlabel, "Count");
+  flexible_type ylabel = label_or_default(_ylabel, "Values");
 
   auto format_string = make_format_string(vega_spec_categorical_json, vega_spec_categorical_json_len);
   return format(format_string, {
