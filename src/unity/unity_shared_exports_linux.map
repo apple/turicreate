@@ -1,0 +1,18 @@
+LIBUNITYSHARED_5.5 {
+  global:
+    extern "C++" {
+        *global_logger*;
+        *ipc_object_base*;
+        *print_back_trace*;
+        *unity_sarray_builder*;
+        *unity_server_initializer*;
+        *unity_sketch*;
+        *write_annotated_stack_trace_if_configured*;
+        *cppipc::*;
+        *file_logger::*;
+        *turi::*;
+    };
+
+  local:
+    *;
+};

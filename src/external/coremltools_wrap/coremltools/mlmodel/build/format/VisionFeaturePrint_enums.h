@@ -13,6 +13,7 @@ static const char * MLVisionFeaturePrintVisionFeaturePrintType_Name(MLVisionFeat
         case MLVisionFeaturePrintVisionFeaturePrintType_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLSceneVersion: int {

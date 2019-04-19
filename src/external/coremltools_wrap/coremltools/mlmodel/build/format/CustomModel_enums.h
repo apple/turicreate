@@ -28,6 +28,7 @@ static const char * MLCustomModelParamValuevalue_Name(MLCustomModelParamValueval
         case MLCustomModelParamValuevalue_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 #endif

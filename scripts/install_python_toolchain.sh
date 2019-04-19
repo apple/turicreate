@@ -26,11 +26,13 @@ fi
 
 
 function linux_patch_sigfpe_handler {
-if [[ $OSTYPE == linux* ]]; then
-        targfile=deps/local/include/pyfpe.h
-        echo "#undef WANT_SIGFPE_HANDLER" | cat - $targfile > tmp
-        mv -f tmp $targfile
-fi
+  if [[ $OSTYPE == linux* ]]; then
+    targfile=deps/local/include/pyfpe.h
+    if [[ -f $targfile ]]; then
+      echo "#undef WANT_SIGFPE_HANDLER" | cat - $targfile > tmp
+      mv -f tmp $targfile
+    fi
+  fi
 }
 
 $PIP install --upgrade "pip>=8.1"

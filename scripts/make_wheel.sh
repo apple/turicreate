@@ -2,6 +2,9 @@
 
 set -e
 
+# The build image version that will be used for building
+TC_BUILD_IMAGE_VERSION=1.0.4
+
 # Force LD_LIBRARY_PATH to look up from deps
 # Otherwise, binaries run during compilation will prefer system libraries,
 # which might not use the correct glibc version.
@@ -15,6 +18,11 @@ SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 WORKSPACE=${SCRIPT_DIR}/..
 build_type="release"
 #export LD_LIBRARY_PATH=${ROOT_DIR}/deps/local/lib:${ROOT_DIR}/deps/local/lib64:$LD_LIBRARY_PATH
+
+unknown_option() {
+  echo "Unknown option $1. Exiting."
+  exit 1
+}
 
 print_help() {
   echo "Builds the release branch and produce a wheel to the targets directory "
@@ -31,7 +39,15 @@ print_help() {
   echo
   echo "  --skip_doc               Skip the generation of documentation."
   echo
+  echo "  --skip_smoke_test        Skip importing the wheel and running a quick smoke test."
+  echo
   echo "  --debug                  Use debug build instead of release."
+  echo
+  echo "  --docker-python2.7       Use docker to build for Python 2.7 in Ubuntu 10.04 with GCC 4.8."
+  echo
+  echo "  --docker-python3.5       Use docker to build for Python 3.5 in Ubuntu 10.04 with GCC 4.8."
+  echo
+  echo "  --docker-python3.6       Use docker to build for Python 3.6 in Ubuntu 10.04 with GCC 4.8."
   echo
   echo "  --num_procs=n            Specify the number of proceses to run in parallel."
   echo
@@ -47,15 +63,18 @@ print_help() {
 while [ $# -gt 0 ]
   do case $1 in
     --build_number=*)       BUILD_NUMBER=${1##--build_number=} ;;
-    --toolchain=*)          toolchain=${1##--toolchain=} ;;
     --target-dir=*)         TARGET_DIR=${1##--target-dir=} ;;
     --num_procs=*)          NUM_PROCS=${1##--num_procs=} ;;
     --skip_test)            SKIP_TEST=1;;
     --skip_cpp_test)        SKIP_CPP_TEST=1;;
     --skip_build)           SKIP_BUILD=1;;
     --skip_doc)             SKIP_DOC=1;;
+    --skip_smoke_test)      SKIP_SMOKE_TEST=1;;
     --release)              build_type="release";;
     --debug)                build_type="debug";;
+    --docker-python2.7)     USE_DOCKER=1;DOCKER_PYTHON=2.7;;
+    --docker-python3.5)     USE_DOCKER=1;DOCKER_PYTHON=3.5;;
+    --docker-python3.6)     USE_DOCKER=1;DOCKER_PYTHON=3.6;;
     --help)                 print_help ;;
     *) unknown_option $1 ;;
   esac
@@ -75,6 +94,65 @@ fi
 
 if [[ -z "${TARGET_DIR}" ]]; then
   TARGET_DIR=${WORKSPACE}/target
+fi
+
+# If we are going to run in Docker,
+# send this command into Docker and bail out of here when done.
+if [[ -n "${USE_DOCKER}" ]]; then
+  # create the build and test images
+  # (this should ideally be a no-op if the image exists and is current)
+  $WORKSPACE/scripts/create_docker_images.sh
+
+  # set up arguments to make_wheel.sh within docker
+  # always skip smoke test since it (currently) fails on 10.04
+  # always skip doc gen since it (currently) fails on 10.04
+  make_wheel_args="--build_number=$BUILD_NUMBER --num_procs=$NUM_PROCS --skip_smoke_test --skip_doc --skip_test"
+  if [[ -n $SKIP_BUILD ]]; then
+    make_wheel_args="$make_wheel_args --skip_build"
+  fi
+  if [[ -n $SKIP_CPP_TEST ]]; then
+    make_wheel_args="$make_wheel_args --skip_cpp_test"
+  fi
+  if [[ "$build_type" == "debug" ]]; then
+    make_wheel_args="$make_wheel_args --debug"
+  fi
+
+  # Run the make_wheel.sh script inside Docker to build
+  docker run --rm \
+    --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
+    -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
+    turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} \
+    /build/scripts/make_wheel.sh \
+    $make_wheel_args
+
+  # Delete env to force re-creation of virtualenv if we are running tests next
+  # (to prevent reuse of 10.04 virtualenv on 14.04/18.04)
+  docker run --rm \
+    --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
+    -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
+    turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} \
+    rm -rf /build/deps/env
+
+  # Run the tests inside Docker (14.04) if desired
+  # 10.04 is not capable of passing turicreate unit tests currently
+  if [[ -z $SKIP_TEST ]]; then
+    # run the tests
+    ./scripts/test_wheel.sh --docker-python${DOCKER_PYTHON}
+  fi
+
+  if [[ -n $SKIP_DOC ]]; then
+    echo "TODO: run the pydoc build in Docker if requested"
+  fi
+
+  # Delete env to force re-creation of virtualenv for next build
+  # (to prevent reuse of 14.04/18.04 virtualenv on 10.04)
+  docker run --rm \
+    --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
+    -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
+    turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} \
+    rm -rf /build/deps/env
+
+  exit 0
 fi
 
 mkdir -p ${TARGET_DIR}
@@ -99,8 +177,6 @@ pop_ld_library_path() {
 ### Build the source with version number ###
 build_source() {
   echo -e "\n\n\n================= Build Release: VERSION ${BUILD_NUMBER} ================\n\n\n"
-  # cleanup build
-  rm -rf ${WORKSPACE}/${build_type}/src/unity/python
 
   # Configure
   cd ${WORKSPACE}
@@ -117,11 +193,13 @@ build_source() {
   make -j${NUM_PROCS}
 
   # make test
-  if [[ -z $SKIP_CPP_TEST ]]; then
-    cd ${WORKSPACE}/test
-    touch $(find . -name "*.cxx")
-    cd ${WORKSPACE}/${build_type}/test
-    make -j${NUM_PROCS}
+  if [[ -z $SKIP_TEST ]]; then
+    if [[ -z $SKIP_CPP_TEST ]]; then
+      cd ${WORKSPACE}/test
+      touch $(find . -name "*.cxx")
+      cd ${WORKSPACE}/${build_type}/test
+      make -j${NUM_PROCS}
+    fi
   fi
   pop_ld_library_path
 
@@ -198,8 +276,6 @@ package_wheel() {
   fi
   echo -e "\n\n\n================= Packaging Wheel  ================\n\n\n"
   cd ${WORKSPACE}/${build_type}/src/unity/python
-  # cleanup old builds
-  rm -rf dist
 
   # strip binaries
   if [[ ! $OSTYPE == darwin* ]]; then
@@ -226,13 +302,10 @@ package_wheel() {
   fi
 
   cd ${WORKSPACE}/${build_type}/src/unity/python
-  rm -rf build
   dist_type="bdist_wheel"
 
-  VERSION_NUMBER=`${PYTHON_EXECUTABLE} -c "import turicreate; print(turicreate.version_info.version)"`
+  VERSION_NUMBER=`${PYTHON_EXECUTABLE} -c "from turicreate.version_info import version; print(version)"`
   ${PYTHON_EXECUTABLE} setup.py ${dist_type} # This produced an wheel starting with turicreate-${VERSION_NUMBER} under dist/
-
-  rm -f turicreate/util/turicreate_env.py
 
   cd ${WORKSPACE}
 
@@ -253,6 +326,10 @@ package_wheel() {
     NEW_WHEEL_PATH=${temp}${platform_tag}".whl"
     mv ${WHEEL_PATH} ${NEW_WHEEL_PATH}
     WHEEL_PATH=${NEW_WHEEL_PATH}
+  else
+    # Don't pick up -manylinux1 wheels, since those may have been created by a later step from a previous build.
+    # Ignore those for now by selecting only -linux wheels.
+    WHEEL_PATH=`ls ${WORKSPACE}/${build_type}/src/unity/python/dist/turicreate-${VERSION_NUMBER}*-linux*.whl`
   fi
 
   # Set Python Language Version Number
@@ -265,16 +342,19 @@ package_wheel() {
       NEW_WHEEL_PATH=${WHEEL_PATH/-py2-/-cp27-}
   fi
   NEW_WHEEL_PATH=${NEW_WHEEL_PATH/linux/manylinux1}
-  if [[ ! ${WHEEL_PATH} == ${NEW_WHEEL_PATH} ]]; then
-      mv ${WHEEL_PATH} ${NEW_WHEEL_PATH}
+  if [[ ! "${WHEEL_PATH}" == "${NEW_WHEEL_PATH}" ]]; then
+      mv "${WHEEL_PATH}" "${NEW_WHEEL_PATH}"
       WHEEL_PATH=${NEW_WHEEL_PATH}
   fi
 
-  # Install the wheel and do a sanity check
-  unset PYTHONPATH
-  $PIP_EXECUTABLE uninstall turicreate # make sure any existing build is uninstalled first
-  $PIP_EXECUTABLE install ${WHEEL_PATH}
-  $PYTHON_EXECUTABLE -c "import turicreate; turicreate.SArray(range(100)).apply(lambda x: x)"
+  if [[ -z $SKIP_SMOKE_TEST ]]; then
+    # Install the wheel and do a smoke test
+    unset PYTHONPATH
+
+    $PIP_EXECUTABLE uninstall turicreate # make sure any existing build is uninstalled first
+    $PIP_EXECUTABLE install ${WHEEL_PATH}
+    $PYTHON_EXECUTABLE -c "import turicreate; turicreate.SArray(range(100)).apply(lambda x: x)"
+  fi
 
   # Done copy to the target directory
   cp $WHEEL_PATH ${TARGET_DIR}/
@@ -313,7 +393,7 @@ set_git_SHA() {
   if [ $? -ne 0 ]; then
     GIT_SHA = "NA"
   fi
-  
+
   cd ${WORKSPACE}/${build_type}/src/unity/python/
   sed -i -e "s/'.*'#{{GIT_SHA}}/'${GIT_SHA}'#{{GIT_SHA}}/g" turicreate/version_info.py
 }
