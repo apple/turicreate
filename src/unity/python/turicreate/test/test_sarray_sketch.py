@@ -20,9 +20,6 @@ import array
 import time
 import itertools
 
-#######################################################
-# Metrics tracking tests are in test_usage_metrics.py #
-#######################################################
 
 class SArraySketchTest(unittest.TestCase):
 
