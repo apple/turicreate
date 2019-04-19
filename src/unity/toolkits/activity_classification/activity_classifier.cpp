@@ -367,7 +367,7 @@ std::unique_ptr<data_iterator> activity_classifier::create_iterator(
 {
   flex_list features = read_state<flex_list>("features");
   data_iterator::parameters data_params;
-  data_params.data = data;
+  data_params.data = std::move(data);
   data_params.session_id_column_name = read_state<flex_string>("session_id");
   data_params.feature_column_names =
       std::vector<std::string>(features.begin(), features.end());
@@ -485,6 +485,15 @@ void activity_classifier::init_train(
   init_options(opts);
 
   // Bind the data to a data iterator.
+
+  add_or_update_state({
+      {"session_id", session_id_column_name},
+      {"target", target_column_name},
+      {"prediction_window", read_state<flex_int>("prediction_window")},
+      {"predictions_in_chunk", NUM_PREDICTIONS_PER_CHUNK},
+      {"features", read_state<flex_list>("features")},
+  });
+
   training_data_iterator_ = create_iterator(data);
 
   // Bind the validation data to a data iterator.
@@ -517,13 +526,13 @@ void activity_classifier::init_train(
 
   // Set additional model fields.
   add_or_update_state({
-      { "classes", training_data_iterator_->class_labels() },
-      { "features", training_data_iterator_->feature_names() },
-      { "num_classes", training_data_iterator_->class_labels().size() },
-      { "num_features", training_data_iterator_->feature_names().size() },
-      { "session_id", session_id_column_name },
-      { "target", target_column_name },
-      { "training_iterations", 0 },
+      {"classes", training_data_iterator_->class_labels()},
+      {"features", training_data_iterator_->feature_names()},
+      {"num_classes", training_data_iterator_->class_labels().size()},
+      {"num_features", training_data_iterator_->feature_names().size()},
+      // { "session_id", session_id_column_name },
+      // { "target", target_column_name },
+      {"training_iterations", 0},
   });
 
   // Initialize the neural net. Note that this depends on statistics computed by
@@ -633,8 +642,6 @@ void activity_classifier::perform_training_iteration() {
           average_batch_loss, progress_time());
     }
   }
-
-
 
   training_data_iterator_->reset();
   }
