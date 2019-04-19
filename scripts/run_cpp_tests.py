@@ -17,7 +17,7 @@ WORKSPACE=os.path.abspath(os.path.join(SCRIPT_DIR, '..'))
 def run_in_docker(cmd, workdir='/build'):
     if not(isinstance(cmd, list)):
       cmd = [cmd]
-    subprocess.check_call(['docker', 'run', '--rm',
+    subprocess.check_call(['docker', 'run', '--rm', '-m=4g',
         '--mount', 'type=bind,source=' + WORKSPACE + ',target=/build,consistency=delegated',
         '-w=%s' % workdir,
         'turicreate/build-image-10.04:' + TC_BUILD_IMAGE_VERSION] + cmd)

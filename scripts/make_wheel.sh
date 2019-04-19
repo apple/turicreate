@@ -118,7 +118,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
   fi
 
   # Run the make_wheel.sh script inside Docker to build
-  docker run --rm \
+  docker run --rm -m=4g \
     --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
     -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
     turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} \
@@ -127,7 +127,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
 
   # Delete env to force re-creation of virtualenv if we are running tests next
   # (to prevent reuse of 10.04 virtualenv on 14.04/18.04)
-  docker run --rm \
+  docker run --rm -m=4g \
     --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
     -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
     turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} \
@@ -146,7 +146,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
 
   # Delete env to force re-creation of virtualenv for next build
   # (to prevent reuse of 14.04/18.04 virtualenv on 10.04)
-  docker run --rm \
+  docker run --rm -m=4g \
     --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
     -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
     turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} \
