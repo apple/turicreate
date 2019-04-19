@@ -20,7 +20,7 @@ def run_in_docker(cmd, workdir='/build'):
     subprocess.check_call(['docker', 'run', '--rm',
         '--mount', 'type=bind,source=' + WORKSPACE + ',target=/build,consistency=delegated',
         '-w=%s' % workdir,
-        'turicreate/build-image-14.04:' + TC_BUILD_IMAGE_VERSION] + cmd)
+        'turicreate/build-image-10.04:' + TC_BUILD_IMAGE_VERSION] + cmd)
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(
@@ -44,7 +44,7 @@ if __name__ == '__main__':
   parser.add_argument('--dry-run', action='store_true',
       help='If present, the ctest command is printed rather than run.')
   parser.add_argument('--docker', action='store_true',
-      help='Run the C++ tests inside of Docker on Ubuntu 14.04.')
+      help='Run the C++ tests inside of Docker on Ubuntu 10.04.')
 
   args = parser.parse_args()
 
