@@ -1028,6 +1028,9 @@ class gl_sarray {
    * [1,3,6,9]
    * \endcode
    */
+
+ 
+
   gl_sarray sample(double fraction, size_t seed, bool exact=false) const;
 
   /**
@@ -1061,6 +1064,9 @@ class gl_sarray {
    * 
    * \see any
    */
+
+  gl_sarray hash(size_t seed) const;
+  
   bool all() const;
 
   /**

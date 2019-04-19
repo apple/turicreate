@@ -112,23 +112,16 @@ float cumulative_chunk_accuracy(size_t prediction_window, size_t num_classes,
   return cumulative_per_batch_accuracy;
 }
 
-
 std::tuple<gl_sframe, gl_sframe> random_split_by_session(gl_sframe data, std::string session_id_column_name, float fraction, size_t seed) {
-  if (session_id_column_name not in data.column_names()):
-    log_and_throw('Input dataset must contain a column called %s',session_id_column_name);
+  // if (session_id_column_name not in data.column_names()):
+  //   log_and_throw('Input dataset must contain a column called %s',session_id_column_name);
 
-
-  auto random_session_pick =[=] (size_t session_id_hash) {
+  auto random_session_pick = [fraction](size_t session_id_hash){
     random::seed(session_id_hash);
     return random::fast_uniform(0,1) < fraction;
   };
-
-  if (!seed) {
-    gl_sarray chosen_filter = data[session_id_column_name].hash(random::time_seed()).apply(random_session_pick);
-  }
-  else {
-    gl_sarray chosen_filter = data[session_id_column_name].hash(seed).apply(random_session_pick);
-  }
+  gl_sarray chosen_filter = data[session_id_column_name].hash(seed).apply(random_session_pick, flex_type_enum::INTEGER);
+  // }
 
   gl_sframe train = data[chosen_filter];
   gl_sframe val =  data[1-chosen_filter];
