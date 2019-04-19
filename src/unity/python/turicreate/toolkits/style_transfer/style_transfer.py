@@ -132,7 +132,8 @@ def create(style_dataset, content_dataset, style_feature=None,
         'lr': 0.001,
         'content_loss_mult': 1.0,
         'style_loss_mult': [1e-4, 1e-4, 1e-4, 1e-4],  # conv 1-4 layers
-        'finetune_all_params': False,
+        'finetune_all_params': True,
+        'pretrained_weights': False,
         'print_loss_breakdown': False,
         'input_shape': (256, 256),
         'training_content_loader_type': 'stretch',
@@ -176,7 +177,7 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     iterations = 0
     if max_iterations is None:
-        max_iterations = len(style_dataset) * 500 + 2000
+        max_iterations = len(style_dataset) * 10000
         if verbose:
             print('Setting max_iterations to be {}'.format(max_iterations))
 
@@ -199,7 +200,10 @@ def create(style_dataset, content_dataset, style_feature=None,
     transformer_model_path = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS[model]().get_model_path()
     transformer = _Transformer(num_styles, batch_size_each)
     transformer.collect_params().initialize(ctx=ctx)
-    transformer.load_params(transformer_model_path, ctx, allow_missing=True)
+    
+    if params['pretrained_weights']:
+        transformer.load_params(transformer_model_path, ctx, allow_missing=True)
+
     # For some reason, the transformer fails to hybridize for training, so we
     # avoid this until resolved
     # transformer.hybridize()
