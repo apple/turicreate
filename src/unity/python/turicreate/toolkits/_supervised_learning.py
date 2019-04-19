@@ -18,6 +18,7 @@ from turicreate.toolkits._internal_utils import _SGraphFromJsonTree
 from turicreate.toolkits._internal_utils import _validate_data
 from turicreate.toolkits._main import ToolkitError
 from turicreate._cython.cy_server import QuietProgress
+from turicreate.toolkits.evaluation import _Evaluation
 
 class SupervisedLearningModel(Model):
     """
@@ -156,7 +157,9 @@ class SupervisedLearningModel(Model):
         _raise_error_if_not_sframe(dataset, "dataset")
         results = self.__proxy__.evaluate(
             dataset, missing_value_action, metric, with_predictions=with_predictions);
-        return results
+
+        # Unimplemented explore method on the evaluation object
+        return _Evaluation(results)
         
     def _training_stats(self):
         """

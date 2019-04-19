@@ -33,6 +33,19 @@ from turicreate.toolkits._internal_utils import _raise_error_if_not_sarray,\
                                               _check_categorical_option_type
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 
+try:
+    from UserDict import UserDict
+except ImportError:
+    from collections import UserDict
+
+class _Evaluation(dict):
+    def __init__(self, obj = {}):
+        dict.__init__(self)
+        self.data = obj
+        self.update(obj)
+    def explore(self):
+        raise NotImplementedError("Explore is not implemented for this classifier type")
+
 def _check_prob_and_prob_vector(predictions):
     """
     Check that the predictionsa are either probabilities of prob-vectors.

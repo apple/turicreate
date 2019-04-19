@@ -15,6 +15,7 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from .. import _mxnet_utils
 from turicreate import extensions as _extensions
 from .. import _pre_trained_models
+from turicreate.toolkits.evaluation import _Evaluation
 
 BITMAP_WIDTH = 28
 BITMAP_HEIGHT = 28
@@ -673,7 +674,8 @@ class DrawingClassifier(_CustomModel):
                 dataset[self.target], predicted['probability'], 
                 index_map=self._class_to_index)
         
-        return ret
+        # Unimplemented explore method on the evaluation object
+        return _Evaluation(ret)
 
     def predict_topk(self, dataset, output_type="probability", k=3,
         batch_size=None):
