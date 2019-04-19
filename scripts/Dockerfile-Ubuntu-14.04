@@ -15,7 +15,7 @@ RUN apt-get -y upgrade
 
 # Install Python 2.7 and 3.5 with apt, as well as
 # turicreate and upstream dependencies
-RUN apt-get -y install python2.7 python3.5 libgomp1
+RUN apt-get -y install build-essential python2.7 python3.5 libgomp1
 
 # Install pip and virtualenv
 ADD https://bootstrap.pypa.io/get-pip.py /src/get-pip.py
