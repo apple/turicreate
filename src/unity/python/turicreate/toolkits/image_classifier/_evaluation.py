@@ -131,7 +131,7 @@ def __get_incorrects(label, sf, evaluation):
   data = []
   for u in unique_predictions:
     u_filt = filtered_sframe.filter_by([u], "predicted_label")
-    data.append({"label": str(u), "images": list(u_filt["images"].apply(_image_conversion))})
+    data.append({"label": str(u), "images": list(u_filt[evaluation.data['feature']].apply(_image_conversion))})
 
   return {"data_spec": { "incorrects": {"target": label, "data": data }}}
 
@@ -145,7 +145,7 @@ def __get_corrects(sf, evaluation):
   data = []
   for u in unique_predictions:
     u_filt = sf.filter_by([u], "predicted_label")
-    data.append({"target": u, "images": list(u_filt["images"].apply(_image_conversion))})
+    data.append({"target": u, "images": list(u_filt[evaluation.data['feature']].apply(_image_conversion))})
   return {"data_spec": { "correct": data}}
 
 def _process_value(value, extended_sframe, proc, evaluation):
