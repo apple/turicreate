@@ -24,7 +24,6 @@ jobs:
     - stage: create_images
       name: create_images_python2.7
       env: PYTHON_VERSION=2.7
-      before_script:
       script:
         # clear target out of the cache, in case it's there from a previous build
         - rm -rf target
@@ -43,8 +42,6 @@ jobs:
     - stage: build
       name: build_10.04_python2.7
       env: PYTHON_VERSION=2.7
-      before_script:
-        - docker load -i $HOME/.docker_images/image-10.04.gz
       script:
         # We sometimes get `error: No space left on device`
         # The workaround seems to be to force blocking I/O
