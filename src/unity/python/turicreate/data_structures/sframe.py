@@ -1025,7 +1025,7 @@ class SFrame(object):
                     inferred_types[key] = column_type_hints[key]
                 column_type_hints = inferred_types
             except RuntimeError as e:
-                if type(e) == RuntimeError and ("cancel" in e.message or "Cancel" in e.message):
+                if type(e) == RuntimeError and ("cancel" in str(e) or "Cancel" in str(e)):
                     raise e
                 # If the above fails, default back to str for unmatched columns
                 if verbose:
