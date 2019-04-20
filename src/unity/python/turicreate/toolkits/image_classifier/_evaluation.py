@@ -19,12 +19,9 @@ import base64 as _base64
 import sys as _sys
 import math as _math
 
-class Evaluation(dict):
-  def __init__(self, obj = {}):
-    dict.__init__(self)
-    self.data = obj
-    self.update(obj)
+from turicreate.toolkits.evaluation import _Evaluation
 
+class Image_Classifier_Evaluation(_Evaluation):
   def _get_eval_json(self):
     evaluation_dictionary = dict()
 

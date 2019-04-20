@@ -24,7 +24,7 @@ from .._internal_utils import _mac_ver
 from .. import _mxnet_utils
 from .. import _pre_trained_models
 from .. import _image_feature_extractor
-from ._evaluation import Evaluation as _Evaluation
+from ._evaluation import Image_Classifier_Evaluation as _Evaluation
 from turicreate.toolkits._internal_utils import (_raise_error_if_not_sframe,
                                                  _numeric_param_check_range)
 
