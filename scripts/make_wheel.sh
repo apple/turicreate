@@ -118,7 +118,9 @@ if [[ -n "${USE_DOCKER}" ]]; then
   fi
 
   # Run the make_wheel.sh script inside Docker to build
-  docker run --rm -m=4g \
+  # 8 GB seems to be the minimum RAM - at 4, we get out-of-memory
+  # linking libunity_shared.so.
+  docker run --rm -m=8g \
     --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
     -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
     turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} \
