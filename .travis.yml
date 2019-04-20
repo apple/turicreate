@@ -55,7 +55,7 @@ jobs:
         - python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); print(flags&os.O_NONBLOCK);'
 
         # Build the wheel
-        - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=3 --debug --skip_cpp_test --skip_test --skip_doc --docker-python${PYTHON_VERSION}
+        - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=2 --debug --skip_cpp_test --skip_test --skip_doc --docker-python${PYTHON_VERSION}
 
     - stage: build
       name: build_10.04_python3.5
@@ -73,7 +73,7 @@ jobs:
         - python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); print(flags&os.O_NONBLOCK);'
 
         # Build the wheel
-        - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=3 --debug --skip_cpp_test --skip_test --skip_doc --docker-python${PYTHON_VERSION}
+        - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=2 --debug --skip_cpp_test --skip_test --skip_doc --docker-python${PYTHON_VERSION}
 
     - stage: test
       name: test_python2.7
