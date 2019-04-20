@@ -52,13 +52,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
   $WORKSPACE/scripts/create_docker_images.sh
 
   # Run the tests inside Docker
-  if [[ "${DOCKER_PYTHON}" == "2.7" ]]; then
-    docker run --rm -m=4g \
-      --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
-      -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
-      turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} \
-      /build/scripts/test_wheel.sh
-  elif [[ "${DOCKER_PYTHON}" == "3.5" ]]; then
+  if [[ "${DOCKER_PYTHON}" == "2.7" ]] || [[ "${DOCKER_PYTHON}" == "3.5" ]]; then
     docker run --rm -m=4g \
       --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
       -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \

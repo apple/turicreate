@@ -38,7 +38,6 @@ build_wheel_debug_linux_python27:
   image: docker:stable
   stage: build
   variables:
-    CI: 'false'
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
   script:
@@ -146,7 +145,7 @@ build_wheel_mac_10_14_python36:
     paths:
       - target/
 
-build_recommender_macos_10_14:
+build_dylib_macos_10_14:
   tags:
     - macos10.14
   stage: build
@@ -158,9 +157,10 @@ build_recommender_macos_10_14:
   artifacts:
     expire_in: 2 weeks
     paths:
+      - release/src/objc/libAudioPreprocessing.dylib
       - release/src/objc/libRecommender.dylib
 
-build_recommender_ios_12:
+build_dylib_ios_12:
   tags:
     - macos10.14
   stage: build
@@ -172,6 +172,7 @@ build_recommender_ios_12:
   artifacts:
     expire_in: 2 weeks
     paths:
+      - release/src/objc/libAudioPreprocessing.dylib
       - release/src/objc/libRecommender.dylib
 
 test_cpp_linux:
