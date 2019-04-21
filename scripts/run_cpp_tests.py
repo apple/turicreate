@@ -56,11 +56,11 @@ if __name__ == '__main__':
 
     # make tests if needed
     run_in_docker(['bash', 'configure']) # TODO use --no-python when it works again
-    run_in_docker(['make', '-j4'], '/build/release/test')
+    run_in_docker(['make', '-j%d' % args.j], '/build/release/test')
 
     # run tests
     # TODO pass through other arguments
-    run_in_docker(['python', '/build/scripts/run_cpp_tests.py', '-j', '1'], '/build/release/test')
+    run_in_docker(['python', '/build/scripts/run_cpp_tests.py', '-j%d' % args.j], '/build/release/test')
 
     # exit if successful (if failed, it will have thrown above)
     sys.exit(0)
