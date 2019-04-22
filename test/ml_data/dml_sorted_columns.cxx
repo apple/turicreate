@@ -76,11 +76,8 @@ struct test_sorted_columns  {
 
     std::map<std::string, ml_column_mode> mode_overrides;
 
-    if (untranslated_columns.size() > 0) {
-      for(size_t c_idx : untranslated_columns) {
-        mode_overrides[raw_data.column_name(c_idx + (target_column ? 1 : 0))] = ml_column_mode::UNTRANSLATED;
-      }
-    }
+    for(size_t c_idx : untranslated_columns)
+      mode_overrides[raw_data.column_name(c_idx + (target_column ? 1 : 0))] = ml_column_mode::UNTRANSLATED;
 
     for(size_t c_idx = 0; c_idx < raw_data.num_columns(); ++c_idx) {
       if(raw_data.column_type(c_idx) == flex_type_enum::INTEGER ||
@@ -122,83 +119,86 @@ struct test_sorted_columns  {
       }
     }
 
-    std::vector<ml_data_entry> x;
-    std::vector<ml_data_entry_global_index> x_gi;
-    DenseVector xd;
-    Eigen::MatrixXd xdr;
+    in_parallel([&](size_t thread_idx, size_t num_threads) {
 
-    SparseVector xs;
+        std::vector<ml_data_entry> x;
+        std::vector<ml_data_entry_global_index> x_gi;
+        DenseVector xd;
+        Eigen::MatrixXd xdr;
 
-    std::vector<flexible_type> row_x;
+        SparseVector xs;
 
-    xd.resize(data.metadata()->num_dimensions());
-    xs.resize(data.metadata()->num_dimensions());
+        std::vector<flexible_type> row_x;
 
-    xdr.resize(3, data.metadata()->num_dimensions());
-    xdr.setZero();
+        xd.resize(data.metadata()->num_dimensions());
+        xs.resize(data.metadata()->num_dimensions());
 
-    ////////////////////////////////////////////////////////////////////////////////
-    // Run the actual tests
+        xdr.resize(3, data.metadata()->num_dimensions());
+        xdr.setZero();
 
-    for(auto it = data.get_iterator(0, 1); !it.done(); ++it) {
-      size_t it_idx = it.row_index();
+        ////////////////////////////////////////////////////////////////////////////////
+        // Run the actual tests
 
-      for(size_t type_idx : {0, 1, 2, 3, 4} ) {
+        for(auto it = data.get_iterator(thread_idx, num_threads); !it.done(); ++it) {
+          size_t it_idx = it.row_index();
 
-        switch(type_idx) {
-          case 0: {
-            it->fill(x);
+          for(size_t type_idx : {0, 1, 2, 3, 4} ) {
 
-            // std::cerr << "x = " << x << std::endl;
-            row_x = translate_row_to_original(data.metadata(), x);
-            break;
-          }
-          case 1: {
-            it->fill(xd);
+            switch(type_idx) {
+              case 0: {
+                it->fill(x);
 
-            row_x = translate_row_to_original(data.metadata(), xd);
-            // std::cerr << "xd = " << xd.transpose() << std::endl;
-            break;
-          }
-          case 2: {
-            it->fill(xs);
+                // std::cerr << "x = " << x << std::endl;
+                row_x = translate_row_to_original(data.metadata(), x);
+                break;
+              }
+              case 1: {
+                it->fill(xd);
 
-            row_x = translate_row_to_original(data.metadata(), xs);
-            break;
-          }
-          case 3: {
-            it->fill(x_gi);
+                row_x = translate_row_to_original(data.metadata(), xd);
+                // std::cerr << "xd = " << xd.transpose() << std::endl;
+                break;
+              }
+              case 2: {
+                it->fill(xs);
 
-            row_x = translate_row_to_original(data.metadata(), x_gi);
-            break;
-          }
-          case 4: {
-            it->fill(xdr.row(1));
+                row_x = translate_row_to_original(data.metadata(), xs);
+                break;
+              }
+              case 3: {
+                it->fill(x_gi);
 
-            xd = xdr.row(1);
+                row_x = translate_row_to_original(data.metadata(), x_gi);
+                break;
+              }
+              case 4: {
+                it->fill(xdr.row(1));
 
-            row_x = translate_row_to_original(data.metadata(), xd);
-            break;
+                xd = xdr.row(1);
+
+                row_x = translate_row_to_original(data.metadata(), xd);
+                break;
+              }
+            }
+
+            if(target_column && target_type == target_column_type::NUMERICAL) {
+              row_x.insert(row_x.begin(), it->target_value());
+            } else if(target_column && target_type == target_column_type::CATEGORICAL) {
+              row_x.insert(row_x.begin(),
+                           data.metadata()->target_indexer()->map_index_to_value(it->target_index()));
+            }
+
+            ASSERT_EQ(row_x.size(), raw_data.num_columns());
+            ASSERT_EQ(row_x.size(), ref_data.at(it_idx).size());
+
+            for(size_t ri = 0; ri < row_x.size(); ++ri) {  //
+              if(untranslated_columns.count(ri - (target_column ? 1 : 0)) == 0) {
+                ASSERT_TRUE(ml_testing_equals(row_x.at(ri), ref_data.at(it_idx).at(ri)));
+              }
+            }
           }
         }
-
-        if(target_column && target_type == target_column_type::NUMERICAL) {
-          row_x.insert(row_x.begin(), it->target_value());
-        } else if(target_column && target_type == target_column_type::CATEGORICAL) {
-          row_x.insert(row_x.begin(),
-                       data.metadata()->target_indexer()->map_index_to_value(it->target_index()));
-        }
-
-        ASSERT_EQ(row_x.size(), raw_data.num_columns());
-        ASSERT_EQ(row_x.size(), ref_data.at(it_idx).size());
-
-        for(size_t ri = 0; ri < row_x.size(); ++ri) {  //
-          if(untranslated_columns.count(ri - (target_column ? 1 : 0)) == 0) {
-            ASSERT_TRUE(ml_testing_equals(row_x.at(ri), ref_data.at(it_idx).at(ri)));
-          }
-        }
-      }
-    }
+      });
   }
 
   ////////////////////////////////////////////////////////////////////////////////

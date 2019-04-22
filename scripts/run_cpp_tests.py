@@ -14,11 +14,11 @@ TC_BUILD_IMAGE_VERSION="1.0.4"
 SCRIPT_DIR=os.path.dirname(__file__)
 WORKSPACE=os.path.abspath(os.path.join(SCRIPT_DIR, '..'))
 
-def run_in_docker(cmd, workdir=WORKSPACE):
+def run_in_docker(cmd, workdir='/build'):
     if not(isinstance(cmd, list)):
       cmd = [cmd]
     subprocess.check_call(['docker', 'run', '--rm', '-m=4g',
-        '--mount', 'type=bind,source=' + WORKSPACE + ',target=' + WORKSPACE + ',consistency=delegated',
+        '--mount', 'type=bind,source=' + WORKSPACE + ',target=/build,consistency=delegated',
         '-w=%s' % workdir,
         'turicreate/build-image-10.04:' + TC_BUILD_IMAGE_VERSION] + cmd)
 
@@ -56,11 +56,11 @@ if __name__ == '__main__':
 
     # make tests if needed
     run_in_docker(['bash', 'configure']) # TODO use --no-python when it works again
-    run_in_docker(['make', '-j%d' % args.j], os.path.join(WORKSPACE, 'debug/test'))
+    run_in_docker(['make', '-j%d' % args.j], '/build/release/test')
 
     # run tests
     # TODO pass through other arguments
-    run_in_docker(['python', os.path.join(WORKSPACE, 'scripts/run_cpp_tests.py'), '-j1'], os.path.join(WORKSPACE, 'debug/test'))
+    run_in_docker(['python', '/build/scripts/run_cpp_tests.py', '-j%d' % args.j], '/build/release/test')
 
     # exit if successful (if failed, it will have thrown above)
     sys.exit(0)
