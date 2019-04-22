@@ -76,6 +76,7 @@ import turicreate.toolkits.text_classifier as text_classifier
 import turicreate.toolkits.image_classifier as image_classifier
 import turicreate.toolkits.image_similarity as image_similarity
 import turicreate.toolkits.object_detector as object_detector
+import turicreate.toolkits.one_shot_object_detector as one_shot_object_detector
 import turicreate.toolkits.style_transfer as style_transfer
 import turicreate.toolkits.sound_classifier.sound_classifier as sound_classifier
 import turicreate.toolkits.activity_classifier as activity_classifier
