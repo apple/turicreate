@@ -220,7 +220,10 @@ gl_sarray activity_classifier::predict(gl_sframe data,
   }
 
   // Bind the data to a data iterator.
-  std::unique_ptr<data_iterator> data_it = create_iterator(data);
+  flex_list features = read_state<flex_list>("features");
+  std::vector<std::string> feature_column_names = std::vector<std::string>(features.begin(),features.end());
+
+  std::unique_ptr<data_iterator> data_it = create_iterator(data, feature_column_names);
 
   // Accumulate the class probabilities for each prediction window.
   gl_sframe raw_preds_per_window = perform_inference(data_it.get());
@@ -263,8 +266,11 @@ gl_sframe activity_classifier::predict_per_window(gl_sframe data,
                                 "Expected one of: probability_vector, class");
   }
 
+  flex_list features = read_state<flex_list>("features");
+  std::vector<std::string> feature_column_names = std::vector<std::string>(features.begin(),features.end());
+
   // Bind the data to a data iterator.
-  std::unique_ptr<data_iterator> data_it = create_iterator(data);
+  std::unique_ptr<data_iterator> data_it = create_iterator(data, feature_column_names);
 
   // Accumulate the class probabilities for each prediction window.
   gl_sframe raw_preds_per_window = perform_inference(data_it.get());
@@ -363,14 +369,14 @@ std::shared_ptr<MLModelWrapper> activity_classifier::export_to_coreml(
 }
 
 std::unique_ptr<data_iterator> activity_classifier::create_iterator(
-    gl_sframe data) const
+    gl_sframe data, std::vector<std::string> feature_column_names) const
 {
-  flex_list features = read_state<flex_list>("features");
+  //flex_list features = read_state<flex_list>("features");
   data_iterator::parameters data_params;
   data_params.data = std::move(data);
+  data_params.target_column_name = read_state<flex_string>("target");
   data_params.session_id_column_name = read_state<flex_string>("session_id");
-  data_params.feature_column_names =
-      std::vector<std::string>(features.begin(), features.end());
+  data_params.feature_column_names = feature_column_names;
   data_params.prediction_window = read_state<flex_int>("prediction_window");
   data_params.predictions_in_chunk = NUM_PREDICTIONS_PER_CHUNK;
   return std::unique_ptr<data_iterator>(new simple_data_iterator(data_params));
@@ -498,17 +504,15 @@ void activity_classifier::init_train(
   add_or_update_state({
       {"session_id", session_id_column_name},
       {"target", target_column_name},
-      {"prediction_window", read_state<flex_int>("prediction_window")},
-      {"predictions_in_chunk", NUM_PREDICTIONS_PER_CHUNK},
-      {"features", read_state<flex_list>("features")},
+      //{"feature_names", feature_column_names},
   });
 
-  training_data_iterator_ = create_iterator(data);
+  training_data_iterator_ = create_iterator(data, feature_column_names);
 
   // Bind the validation data to a data iterator.
   if (variant_is<gl_sframe>(validation_data)) {
     gl_sframe validation_sf = variant_get_value<gl_sframe>(validation_data);
-    validation_data_iterator_ = create_iterator(validation_sf);
+    validation_data_iterator_ = create_iterator(validation_sf, feature_column_names);
   } else {
     validation_data_iterator_ = nullptr;
   }
