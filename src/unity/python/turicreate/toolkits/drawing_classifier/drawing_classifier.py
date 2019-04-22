@@ -453,7 +453,7 @@ class DrawingClassifier(_CustomModel):
         >>> model.export_coreml('drawing_classifier.mlmodel')
         """
         import mxnet as _mx
-        from .._mxnet_to_coreml import _mxnet_converter
+        from .._mxnet._mxnet_to_coreml import _mxnet_converter
         import coremltools as _coremltools
 
         batch_size = 1

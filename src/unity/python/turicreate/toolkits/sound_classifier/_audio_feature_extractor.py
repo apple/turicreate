@@ -1,13 +1,13 @@
 import time as _time
 
 from coremltools.models import MLModel
-from ...mx import mxnet_wrapper as mx
-from mxnet.gluon import nn, utils
+import mxnet as mx
 import numpy as _np
 import turicreate as _tc
+from mxnet.gluon import nn
 
 from .._internal_utils import _mac_ver
-from .. import _mxnet_utils
+from .._mxnet import _mxnet_utils
 from .._pre_trained_models import VGGish
 
 
@@ -73,6 +73,7 @@ class VGGishFeatureExtractor(object):
 
     @staticmethod
     def _build_net():
+
         net = nn.HybridSequential()
         net.add(nn.Conv2D(channels=64, kernel_size=(3, 3), in_channels=1, padding=(1, 1), prefix='vggish_conv0_'))
         net.add(nn.Activation('relu'))
@@ -122,6 +123,7 @@ class VGGishFeatureExtractor(object):
         progress_header_printed = False
 
         deep_features = _tc.SArrayBuilder(_np.ndarray)
+        from mxnet.gluon import utils
 
         if _mac_ver() < (10, 14):
             # Use MXNet

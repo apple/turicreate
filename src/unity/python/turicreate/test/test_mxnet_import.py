@@ -11,8 +11,16 @@ class MXNetImportTest(unittest.TestCase):
 
     def test_mxnet_import(self):
 
+        # Clear out any mention of mxnet in sys.modules in case it's present 
+        # from previous runs.   
+        keys = [k for k in sys.modules if "mxnet" in k]
+
+        for k in keys:
+            del sys.modules[k]
+
         self.assertTrue("mxnet" not in sys.modules)
 
         import turicreate
 
         self.assertTrue("mxnet" not in sys.modules)
+    

@@ -97,3 +97,26 @@ class LambdaTests(unittest.TestCase):
             return x
         self.assertRaises(RuntimeError, lambda: glconnect.get_unity().parallel_eval_lambda(lambda x: bad_fun(x), ls))
         glconnect.get_unity().parallel_eval_lambda(lambda x: good_fun(x), ls)
+
+
+    def test_expensive_packages_not_imported_in_lambda(self):
+
+        import turicreate as tc
+
+        expensive_packages = ["mxnet", "resampy", "scipy"]
+
+        # we don't want mxnet to be imported in the worker code
+        def lambda_func(x):
+
+            import sys
+
+            if x >= 1000:
+                for p in expensive_packages:
+                     assert p not in sys.modules
+
+            return x + 1
+
+        x = tc.SArray(range(5000)).apply(lambda_func)
+
+        self.assertTrue( (x == tc.SArray(range(1, 5001))).all() )
+
