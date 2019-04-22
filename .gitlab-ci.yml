@@ -191,7 +191,7 @@ test_cpp_linux:
   script:
     - apk add bash
     - apk add python2
-    - python scripts/run_cpp_tests.py -j 1 --docker
+    - python scripts/run_cpp_tests.py -j 2 --docker
 
 test_cpp_mac_10_13:
   tags:
@@ -207,7 +207,7 @@ test_cpp_mac_10_13:
     - export LD_LIBRARY_PATH=`pwd`/deps/local/lib:`pwd`/deps/local/lib64:$LD_LIBRARY_PATH
     - export PATH=`pwd`/deps/local/bin:$PATH
     - export LD_LIBRARY_PATH=`pwd`/src/unity:`pwd`/src/unity/python/turicreate:$LD_LIBRARY_PATH
-    - python ../../scripts/run_cpp_tests.py -j 1
+    - python ../../scripts/run_cpp_tests.py -j 2
 
 test_cpp_mac_10_14:
   tags:
@@ -223,7 +223,7 @@ test_cpp_mac_10_14:
     - export LD_LIBRARY_PATH=`pwd`/deps/local/lib:`pwd`/deps/local/lib64:$LD_LIBRARY_PATH
     - export PATH=`pwd`/deps/local/bin:$PATH
     - export LD_LIBRARY_PATH=`pwd`/src/unity:`pwd`/src/unity/python/turicreate:$LD_LIBRARY_PATH
-    - python ../../scripts/run_cpp_tests.py -j 1
+    - python ../../scripts/run_cpp_tests.py -j 2
 
 test_python_linux_python27:
   tags:
