@@ -110,7 +110,7 @@ class MXFeatureExtractor(ImageFeatureExtractor):
         dataset: SFrame
             SFrame of images
         """
-        from ..mx import SFrameImageIter as _SFrameImageIter
+        from ._mxnet._mx_sframe_iter import SFrameImageIter as _SFrameImageIter
         from six.moves.queue import Queue as _Queue
         from threading import Thread as _Thread
         import turicreate as _tc
