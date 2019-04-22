@@ -81,22 +81,22 @@ if [[ -n "${USE_DOCKER}" ]]; then
   # Run the tests inside Docker
   if [[ "${DOCKER_PYTHON}" == "2.7" ]]; then
     docker run --rm -m=4g \
-      --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
+      --mount type=bind,source=$WORKSPACE,target=$WORKSPACE,consistency=delegated \
       -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
       turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} \
-      /build/scenario-tests/run_scenario_tests.sh $TC_WHEEL_UNDER_TEST
+      $WORKSPACE/scenario-tests/run_scenario_tests.sh $TC_WHEEL_UNDER_TEST
   elif [[ "${DOCKER_PYTHON}" == "3.5" ]]; then
     docker run --rm -m=4g \
-      --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
+      --mount type=bind,source=$WORKSPACE,target=$WORKSPACE,consistency=delegated \
       -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
       turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} \
-      /build/scenario-tests/run_scenario_tests.sh $TC_WHEEL_UNDER_TEST
+      $WORKSPACE/scenario-tests/run_scenario_tests.sh $TC_WHEEL_UNDER_TEST
   elif [[ "${DOCKER_PYTHON}" == "3.6" ]]; then
     docker run --rm -m=4g \
-      --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
+      --mount type=bind,source=$WORKSPACE,target=$WORKSPACE,consistency=delegated \
       -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
       turicreate/build-image-18.04:${TC_BUILD_IMAGE_VERSION} \
-      /build/scenario-tests/run_scenario_tests.sh $TC_WHEEL_UNDER_TEST
+      $WORKSPACE/scenario-tests/run_scenario_tests.sh $TC_WHEEL_UNDER_TEST
   fi
 
   exit 0
