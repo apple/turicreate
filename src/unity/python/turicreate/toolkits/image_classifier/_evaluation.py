@@ -124,6 +124,9 @@ def __get_incorrects(label, sf, evaluation):
   conf_metric = evaluation["confidence_metric_for_threshold"]
   
   sf = sf.filter_by([False], "correct")
+
+  if sf["target_label"].dtype == int:
+    label = int(label)
   
   filtered_sframe = sf.filter_by([label], "target_label")
   unique_predictions = list(filtered_sframe["predicted_label"].unique())
