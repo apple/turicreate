@@ -103,7 +103,7 @@ class LambdaTests(unittest.TestCase):
 
         import turicreate as tc
 
-        expensive_packages = ["mxnet", "resampy", "scipy"]
+        expensive_packages = ["mxnet", "resampy"]
 
         # we don't want mxnet to be imported in the worker code
         def lambda_func(x):
@@ -116,7 +116,7 @@ class LambdaTests(unittest.TestCase):
 
             return x + 1
 
-        x = tc.SArray(range(5000)).apply(lambda_func)
+        x = tc.SArray(range(2000)).apply(lambda_func)
 
-        self.assertTrue( (x == tc.SArray(range(1, 5001))).all() )
+        self.assertTrue( (x == tc.SArray(range(1, 2001))).all() )
 
