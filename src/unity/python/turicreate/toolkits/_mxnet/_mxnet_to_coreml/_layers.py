@@ -809,7 +809,7 @@ def convert_embedding(net, node, model, builder):
     outputs = node['outputs']
     arg_params, aux_params = model.get_params()
     W = arg_params[_get_node_name(net, inputs[1][0])].asnumpy()
-    if not ONE_HOT_ENCODE_HACK: 
+    if not ONE_HOT_ENCODE_HACK:
         nC, nB = W.shape
         W = W.T
         builder.add_embedding(name = name,
@@ -820,7 +820,7 @@ def convert_embedding(net, node, model, builder):
                               has_bias = False,
                               input_name = input_name,
                               output_name = output_name)
-    else: 
+    else:
         W = W.T
         nC, nB = W.shape
         builder.add_inner_product(name = name,
@@ -955,14 +955,14 @@ def convert_instancenorm(net, node, model, builder):
     inputs = node['inputs']
     outputs = node['outputs']
 
-    
+
     data_blob_name = _get_node_name(net, inputs[0][0])
     gamma_blob_name = _get_node_name(net, inputs[1][0])
     beta_blob_name = _get_node_name(net, inputs[2][0])
     channels = _get_node_channels(net, inputs[0][0])
-    
+
     bn_output_name = output_name + '_bn_'
-    
+
     builder.add_batchnorm(
         name = name + '_normalize',
         channels = channels,

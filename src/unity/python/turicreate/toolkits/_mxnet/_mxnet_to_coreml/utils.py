@@ -23,7 +23,6 @@ from __future__ import absolute_import as _
 # specific language governing permissions and limitations
 # under the License.
 
-import mxnet as mx
 
 
 def load_model(model_name, epoch_num, data_shapes, label_shapes, label_names, gpus=''):
@@ -60,6 +59,8 @@ def load_model(model_name, epoch_num, data_shapes, label_shapes, label_names, gp
     -------
     MXNet module
     """
+    import mxnet as mx
+
     sym, arg_params, aux_params = mx.model.load_checkpoint(model_name, epoch_num)
 
     mod = create_module(sym, data_shapes, label_shapes, label_names, gpus)
@@ -104,6 +105,9 @@ def create_module(sym, data_shapes, label_shapes, label_names, gpus=''):
     -------
     MXNet module
     """
+
+    import mxnet as mx
+
     if gpus == '':
         devices = mx.cpu()
     else:
@@ -123,4 +127,3 @@ def create_module(sym, data_shapes, label_shapes, label_names, gpus=''):
         label_shapes=label_shapes
     )
     return mod
-

@@ -13,8 +13,6 @@ from __future__ import absolute_import as _
 import logging as _logging
 import numpy as _np
 
-from .. import _mxnet_utils
-
 import turicreate as _tc
 import turicreate.toolkits._internal_utils as _tk_utils
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
@@ -130,6 +128,7 @@ def create(dataset, target, feature, max_iterations=10,
         have a powerful computer, increasing this value may improve performance.
     '''
     import time
+    from .._mxnet import _mxnet_utils
     import mxnet as mx
 
     from ._audio_feature_extractor import _get_feature_extractor
@@ -350,6 +349,7 @@ class SoundClassifier(_CustomModel):
         Save the model as a dictionary, which can be loaded with the
         :py:func:`~turicreate.load_model` method.
         """
+        from .._mxnet import _mxnet_utils
         state = self.__proxy__.get_state()
 
         del state['_feature_extractor']
@@ -365,6 +365,7 @@ class SoundClassifier(_CustomModel):
         A function to load a previously saved SoundClassifier instance.
         """
         from ._audio_feature_extractor import _get_feature_extractor
+        from .._mxnet import _mxnet_utils
 
         state['_feature_extractor'] = _get_feature_extractor(state['feature_extractor_name'])
 
@@ -612,6 +613,7 @@ class SoundClassifier(_CustomModel):
         """
         import coremltools
         from coremltools.proto.FeatureTypes_pb2 import ArrayFeatureType
+        from .._mxnet import _mxnet_utils
 
         prob_name = self.target + 'Probability'
 
@@ -765,6 +767,7 @@ class SoundClassifier(_CustomModel):
         >>> class_predictions = model.predict(data, output_type='class')
 
         """
+        from .._mxnet import _mxnet_utils
         import mxnet as mx
 
         if not isinstance(dataset, (_tc.SFrame, _tc.SArray, dict)):
