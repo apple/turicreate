@@ -220,9 +220,6 @@ gl_sarray activity_classifier::predict(gl_sframe data,
   }
 
   // Bind the data to a data iterator.
-  // flex_list features = read_state<flex_list>("features");
-  // std::vector<std::string> feature_column_names =
-  // std::vector<std::string>(features.begin(),features.end());
   flex_list class_labels = read_state<flex_list>("classes");
 
   std::unique_ptr<data_iterator> data_it =
@@ -269,9 +266,6 @@ gl_sframe activity_classifier::predict_per_window(gl_sframe data,
                                 "Expected one of: probability_vector, class");
   }
 
-  // flex_list features = read_state<flex_list>("features");
-  // std::vector<std::string> feature_column_names =
-  // std::vector<std::string>(features.begin(),features.end());
   flex_list class_labels = read_state<flex_list>("classes");
   // Bind the data to a data iterator.
   std::unique_ptr<data_iterator> data_it =
