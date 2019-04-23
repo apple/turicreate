@@ -311,6 +311,7 @@ simple_data_iterator::preprocessed_data simple_data_iterator::preprocess_data(
   gl_sframe data = params.data;
   flex_list class_labels = params.class_labels;
   bool has_target = !params.target_column_name.empty();
+  bool is_train = params.is_train;
 
   std::vector<std::string> feature_column_names = params.feature_column_names;
   if (feature_column_names.empty()) {
@@ -358,7 +359,7 @@ simple_data_iterator::preprocessed_data simple_data_iterator::preprocess_data(
       data, feature_column_names, params.session_id_column_name,
       static_cast<int>(params.prediction_window),
       static_cast<int>(params.predictions_in_chunk), params.target_column_name,
-      /* verbose */ has_target);
+      /* verbose */ is_train);
 
   preprocessed_data result;
   result.chunks = variant_get_value<gl_sframe>(result_map.at("converted_data"));
