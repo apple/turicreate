@@ -171,43 +171,42 @@ class EXPORT activity_classifier: public ml_model_base {
   // Override points allowing subclasses to inject dependencies
 
   // Factory for data_iterator
-  virtual std::unique_ptr<data_iterator> create_iterator(
-      gl_sframe data, std::vector<std::string> feature_column_names) const;
+   virtual std::unique_ptr<data_iterator>
+   create_iterator(gl_sframe data, flex_list class_labels, bool is_train) const;
 
-  // Factory for compute_context
-  virtual
-  std::unique_ptr<neural_net::compute_context> create_compute_context() const;
+   // Factory for compute_context
+   virtual std::unique_ptr<neural_net::compute_context>
+   create_compute_context() const;
 
-  // Returns the initial neural network to train
-  virtual std::unique_ptr<neural_net::model_spec> init_model() const;
+   // Returns the initial neural network to train
+   virtual std::unique_ptr<neural_net::model_spec> init_model() const;
 
-  // Support for iterative training.
-  // TODO: Expose via forthcoming C-API checkpointing mechanism?
+   // Support for iterative training.
+   // TODO: Expose via forthcoming C-API checkpointing mechanism?
 
-  virtual void init_train(gl_sframe data, std::string target_column_name,
-                          std::string session_id_column_name,
-                          variant_type validation_data,
-                          std::map<std::string, flexible_type> opts);
-  virtual void perform_training_iteration();
+   virtual void init_train(gl_sframe data, std::string target_column_name,
+                           std::string session_id_column_name,
+                           variant_type validation_data,
+                           std::map<std::string, flexible_type> opts);
+   virtual void perform_training_iteration();
 
-  virtual std::tuple<float, float>
-  compute_validation_metrics(size_t prediction_window, size_t num_classes,
-                             size_t batch_size);
+   virtual std::tuple<float, float>
+   compute_validation_metrics(size_t prediction_window, size_t num_classes,
+                              size_t batch_size);
 
-  // Returns an SFrame where each row corresponds to one prediction, and
-  // containing three columns: "session_id" indicating the session ID shared by
-  // the samples in the prediction window, "preds" containing the class
-  // probability vector for the prediction window, and "num_samples" indicating
-  // the number of corresponding rows from the original SFrame (at most the
-  // prediction window size).
-  virtual gl_sframe perform_inference(data_iterator *data) const;
+   // Returns an SFrame where each row corresponds to one prediction, and
+   // containing three columns: "session_id" indicating the session ID shared by
+   // the samples in the prediction window, "preds" containing the class
+   // probability vector for the prediction window, and "num_samples" indicating
+   // the number of corresponding rows from the original SFrame (at most the
+   // prediction window size).
+   virtual gl_sframe perform_inference(data_iterator *data) const;
 
-  // Utility code
+   // Utility code
 
-  template <typename T>
-  T read_state(const std::string& key) const {
-    return variant_get_value<T>(get_state().at(key));
-  }
+   template <typename T> T read_state(const std::string &key) const {
+     return variant_get_value<T>(get_state().at(key));
+   }
 
  private:
 

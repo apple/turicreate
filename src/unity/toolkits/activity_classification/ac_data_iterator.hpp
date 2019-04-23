@@ -60,6 +60,8 @@ public:
      * an exception will be thrown upon encountering an unexpected label.
      */
     flex_list class_labels;
+
+    bool is_train;
   };
 
   /** Defines the output of a data_iterator. */
