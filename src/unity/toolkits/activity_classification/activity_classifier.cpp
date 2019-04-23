@@ -222,8 +222,7 @@ gl_sarray activity_classifier::predict(gl_sframe data,
   // Bind the data to a data iterator.
   flex_list class_labels = read_state<flex_list>("classes");
 
-  std::unique_ptr<data_iterator> data_it =
-      create_iterator(data, false);
+  std::unique_ptr<data_iterator> data_it = create_iterator(data, false);
 
   // Accumulate the class probabilities for each prediction window.
   gl_sframe raw_preds_per_window = perform_inference(data_it.get());
@@ -268,8 +267,7 @@ gl_sframe activity_classifier::predict_per_window(gl_sframe data,
 
   flex_list class_labels = read_state<flex_list>("classes");
   // Bind the data to a data iterator.
-  std::unique_ptr<data_iterator> data_it =
-      create_iterator(data, false);
+  std::unique_ptr<data_iterator> data_it = create_iterator(data, false);
 
   // Accumulate the class probabilities for each prediction window.
   gl_sframe raw_preds_per_window = perform_inference(data_it.get());
@@ -368,8 +366,7 @@ std::shared_ptr<MLModelWrapper> activity_classifier::export_to_coreml(
 }
 
 std::unique_ptr<data_iterator>
-activity_classifier::create_iterator(gl_sframe data, 
-                                     bool is_train) const {
+activity_classifier::create_iterator(gl_sframe data, bool is_train) const {
 
   data_iterator::parameters data_params;
   data_params.data = std::move(data);
@@ -512,6 +509,7 @@ void activity_classifier::init_train(
                                               feature_column_names.end())}});
 
   // Bind the data to a data iterator.
+
   training_data_iterator_ = create_iterator(data, true);
 
   add_or_update_state({{"classes", training_data_iterator_->class_labels()}});
@@ -519,8 +517,8 @@ void activity_classifier::init_train(
   // Bind the validation data to a data iterator.
   if (variant_is<gl_sframe>(validation_data)) {
     gl_sframe validation_sf = variant_get_value<gl_sframe>(validation_data);
-    validation_data_iterator_ =
-        create_iterator(validation_sf, false);
+    validation_data_iterator_ = create_iterator(validation_sf, false);
+
   } else {
     validation_data_iterator_ = nullptr;
   }

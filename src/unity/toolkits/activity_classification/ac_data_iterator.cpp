@@ -311,7 +311,6 @@ simple_data_iterator::preprocessed_data simple_data_iterator::preprocess_data(
   gl_sframe data = params.data;
   flex_list class_labels = params.class_labels;
   bool has_target = !params.target_column_name.empty();
-  
 
   std::vector<std::string> feature_column_names = params.feature_column_names;
   if (feature_column_names.empty()) {
