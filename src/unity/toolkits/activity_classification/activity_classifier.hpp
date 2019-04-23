@@ -194,7 +194,7 @@ class EXPORT activity_classifier: public ml_model_base {
   compute_validation_metrics(size_t prediction_window, size_t num_classes,
                              size_t batch_size);
 
-  virtual void init_table(bool validation);
+  virtual void init_table_printer(bool has_validation);
 
   // Returns an SFrame where each row corresponds to one prediction, and
   // containing three columns: "session_id" indicating the session ID shared by

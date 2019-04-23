@@ -9,10 +9,9 @@
 #include <algorithm>
 #include <functional>
 #include <numeric>
-
-#include <random/random.hpp>
 #include <logger/assertions.hpp>
 #include <logger/logger.hpp>
+#include <random>
 #include <unity/toolkits/coreml_export/neural_net_models_exporter.hpp>
 #include <unity/toolkits/evaluation/metrics.hpp>
 #include <util/string_util.hpp>
@@ -44,8 +43,6 @@ constexpr size_t LSTM_HIDDEN_SIZE = 200;
 constexpr size_t FULLY_CONNECTED_HIDDEN_SIZE = 128;
 constexpr float LSTM_CELL_CLIP_THRESHOLD = 50000.f;
 
-// Minimum number of sessions needed for auto train-validation split
-constexpr size_t MIN_NUM_OF_SESSIONS = 100;
 
 // These are the fixed values that the Python implementation currently passes
 // into TCMPS.
@@ -112,13 +109,13 @@ float cumulative_chunk_accuracy(size_t prediction_window, size_t num_classes,
 // that one split contains data for a `fraction` of the sessions while the
 // second split contains all data for the rest of the sessions.
 std::tuple<gl_sframe, gl_sframe> random_split_by_session(gl_sframe data, std::string session_id_column_name, float fraction, size_t seed) {
-  if (!(std::find(data.column_names().begin(), data.column_names().end(),
-                  session_id_column_name) != data.column_names().end())) {
+  if (std::find(data.column_names().begin(), data.column_names().end(),
+                  session_id_column_name) == data.column_names().end()) {
     log_and_throw("Input dataset must contain a column called " +
                   session_id_column_name);
   }
 
-  if (fraction < 0 && fraction > 1) {
+  if (fraction < 0.f && fraction > 1.f) {
     log_and_throw("Fraction specified must be between 0 and 1");
   }
   // Create a random binary filter (boolean SArray), using the same probability
@@ -129,8 +126,9 @@ std::tuple<gl_sframe, gl_sframe> random_split_by_session(gl_sframe data, std::st
   // and the global seed above, allowing the train-test split to vary across
   // runs using the same dataset.
   auto random_session_pick = [fraction](size_t session_id_hash) {
-    random::seed(session_id_hash);
-    return random::fast_uniform(0.0, 1.0) < fraction;
+    std::default_random_engine generator(session_id_hash);
+    std::uniform_real_distribution<float> dis(0.f, 1.f);
+    return dis(generator) < fraction;
   };
 
   gl_sarray chosen_filter = data[session_id_column_name].hash(seed).apply(random_session_pick, flex_type_enum::INTEGER);
@@ -214,8 +212,8 @@ std::tuple<float, float> activity_classifier::compute_validation_metrics(
   return std::make_tuple(average_val_accuracy, average_val_loss);
 }
 
-void activity_classifier::init_table(bool validation) {
-  if (validation) {
+void activity_classifier::init_table_printer(bool has_validation) {
+  if (has_validation) {
     training_table_printer_.reset(
         new table_printer({{"Iteration", 12},
                            {"Train Accuracy", 12},
@@ -497,6 +495,39 @@ std::unique_ptr<model_spec> activity_classifier::init_model() const
 
   return result;
 }
+std::tuple<gl_sframe,gl_sframe> activity_classifier::init_data(gl_sframe data, variant_type validation_data, std::string session_id_column_name) {
+  gl_sframe train_data;
+  gl_sframe val_data;
+  if (variant_is<gl_sframe>(validation_data)) {
+    train_data = data;
+    val_data = variant_get_value<gl_sframe>(validation_data);
+    if (!val_data.empty()) {
+    } else {
+      log_and_throw("Input SFrame either has no rows or no columns. A "
+                    "non-empty SFrame is required");
+    }
+  }
+  else if ((variant_is<flex_string>(validation_data)) && (variant_get_value<flex_string>(validation_data)=="auto")) {
+    gl_sarray unique_session = data[session_id_column_name].unique();
+    if (unique_session.size() > 50 && unique_session.size() < 200) {
+      // TODO: Expose seed parameter publicly. 
+      std::tie(train_data, val_data) = random_split_by_session(data, session_id_column_name, 0.9, 1);
+    }
+    else if (unique_session.size() > 200) {
+      std::tie(train_data, val_data) = random_split_by_session(data, session_id_column_name, 0.95, 1);
+    }
+    else {
+      train_data = data;
+      std::cout << "The dataset has less than the minimum of 50 sessions required for train-validation split. "
+                       "Continuing without validation set.\n";
+    }
+
+  } else {
+    train_data = data;
+  }
+  return std::make_tuple(train_data,val_data);
+}
+
 
 void activity_classifier::init_train(
     gl_sframe data, std::string target_column_name,
@@ -507,36 +538,9 @@ void activity_classifier::init_train(
   gl_sframe val_data;
   // Begin printing progress.
   // TODO: Make progress printing optional.
-  if (variant_is<gl_sframe>(validation_data)) {
-    train_data = data;
-    val_data = variant_get_value<gl_sframe>(validation_data);
-    if (!val_data.empty()) {
-      init_table(true);
-    } else {
-      log_and_throw("Input SFrame either has no rows or no columns. A "
-                    "non-empty SFrame is required");
-    }
-  }
-  else if ((variant_is<flex_string>(validation_data)) && (variant_get_value<flex_string>(validation_data)=="auto")) {
-    gl_sarray unique_session = data[session_id_column_name].unique();
-    if (unique_session.size() > MIN_NUM_OF_SESSIONS) {
-      std::tie(train_data, val_data) = random_split_by_session(data, session_id_column_name, 0.9, 1);
-      init_table(true);
-    }
-
-    else {
-      train_data = data;
-      std::cout << "The dataset has less than the minimum of " +
-                       std::to_string(MIN_NUM_OF_SESSIONS) +
-                       " sessions required for train-validation split. "
-                       "Continuing without validation set.\n";
-      init_table(false);
-    }
-
-  } else {
-    train_data = data;
-    init_table(false);
-  }
+  
+  std::tie(train_data, val_data) = init_data(data, validation_data, session_id_column_name);
+  init_table_printer(!(val_data.empty()));
 
   // Extract feature names from options.
   std::vector<std::string> feature_column_names;

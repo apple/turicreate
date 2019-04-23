@@ -1028,10 +1028,28 @@ class gl_sarray {
    * [1,3,6,9]
    * \endcode
    */
-
- 
-
   gl_sarray sample(double fraction, size_t seed, bool exact=false) const;
+
+  /**
+   * Returns an SArray with a hash of each element. seed can be used to change 
+   * the hash function to allow this method to be used for random number generation.
+   * 
+   * \param seed Defaults to 0. Can be changed to different values to get different hash results.
+   *
+   * Example:
+   * \code
+   * sa = gl_sarray::from_sequence(0,10);
+   * std::cout << sa.hash(123)
+   * \endcode
+   * 
+   * Produces output:
+   * \code{.txt}
+   * dtype: int
+   * Rows: 10
+   * [-2176393851141330893, 7600995152976636137, -5571280844667425574, -4385410391720336496, -4446257658862464208, -7571182417602171808, 3644372782970789199, 3084542717492096231, 4758268028978242780, -6520852338875851008]
+   * \endcode
+   */
+  gl_sarray hash(size_t seed) const;
 
   /**
    * Return true if every element of the \ref gl_sarray evaluates to true. For
@@ -1065,7 +1083,7 @@ class gl_sarray {
    * \see any
    */
 
-  gl_sarray hash(size_t seed) const;
+ 
   
   bool all() const;
 
