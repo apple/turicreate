@@ -31,7 +31,7 @@ MatrixXf get_rotation(float theta, float phi, float gamma) {
         std::sin(gamma),  std::cos(gamma), 0, 0,
                       0,                0, 1, 0,
                       0,                0, 0, 1;
-  R = Rx * Ry * Rz;
+  R = (Rx * Ry) * Rz;
   return R;
 }
 
@@ -61,5 +61,5 @@ Matrix3f get_transformation_matrix(
   Matrix4f R   = get_rotation(theta, phi, gamma);
   Matrix4f T   = get_translation(dx, dy, dz);
   MatrixXf A2  = get_3D_to_2D(focal, width, height);
-  return (A2 * T * R * A1);
+  return (A2 * (T * (R * A1)));
 }

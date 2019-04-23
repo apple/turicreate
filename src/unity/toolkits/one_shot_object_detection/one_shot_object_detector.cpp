@@ -100,16 +100,20 @@ public:
     height_ = height;
   }
 
+  double deg_to_rad(double angle) {
+    return angle * M_PI / 180.0;
+  }
+
   double get_theta() {
-    return theta_;
+    return deg_to_rad(theta_);
   }
 
   double get_phi() {
-    return phi_;
+    return deg_to_rad(phi_);
   }
 
   double get_gamma() {
-    return gamma_;
+    return deg_to_rad(gamma_);
   }
 
   int get_dz() {
@@ -150,7 +154,7 @@ public:
     printf("focal = %f\n", focal_);
     std::uniform_int_distribution<int> dz_distribution(focal_/8, focal_);
     dz_generator_.seed(seed+7);
-    dz_ = dz_distribution(dz_generator_);
+    dz_ = focal_; // dz_distribution(dz_generator_);
     printf("dz = %d\n", dz_);
   }
 
@@ -182,14 +186,22 @@ gl_sframe _augment_data(gl_sframe data, gl_sframe backgrounds, long seed) {
   for (int i = 0; i < n; i++) {
     parameter_sampler.sample(seed+i);
 
-    int original_x_0_0 = 1024;
-    int original_y_0_0 = 676;
-    int original_x_0_n = 2*1024;
-    int original_y_0_n = 676;
-    int original_x_n_0 = 1024;
-    int original_y_n_0 = 2*676;
-    int original_x_n_n = 2*1024;
-    int original_y_n_n = 2*676;
+    //                ^
+    //                |
+    //                |
+    //    Image       y
+    //                |
+    //                |
+    // <------ x -----     
+
+    int original_top_left_x = 2*1024 - 1024/2; // - 1024;
+    int original_top_left_y = 676/2; // - 676;
+    int original_top_right_x = 1024 - 1024/2; // - 1024;
+    int original_top_right_y = 676/2; // - 676;
+    int original_bottom_left_x = 2*1024 - 1024/2; // - 1024;
+    int original_bottom_left_y = 2*676 - 676/2; // - 676;
+    int original_bottom_right_x = 1024 - 1024/2; // - 1024;
+    int original_bottom_right_y = 2*676 - 676/2; // - 676;
 
     Matrix3f mat = get_transformation_matrix(2*1024, 2*676,
       parameter_sampler.get_theta(),
@@ -199,29 +211,45 @@ gl_sframe _augment_data(gl_sframe data, gl_sframe backgrounds, long seed) {
       -676/2,
       parameter_sampler.get_dz(),
       parameter_sampler.get_focal());
+    Matrix3f mat2 = get_transformation_matrix(2*1024, 2*676,
+      parameter_sampler.get_theta(),
+      parameter_sampler.get_phi(),
+      parameter_sampler.get_gamma(),
+      0,
+      0,
+      parameter_sampler.get_dz(),
+      parameter_sampler.get_focal());
     Vector3f top_left_corner(3);
-    top_left_corner     << original_x_0_0, original_y_0_0, 1;
+    top_left_corner     << original_top_left_x, original_top_left_y, 1;
     Vector3f top_right_corner(3);
-    top_right_corner    << original_x_0_n, original_y_0_n, 1;
+    top_right_corner    << original_top_right_x, original_top_right_y, 1;
     Vector3f bottom_left_corner(3);
-    bottom_left_corner  << original_x_n_0, original_y_n_0, 1;
+    bottom_left_corner  << original_bottom_left_x, original_bottom_left_y, 1;
     Vector3f bottom_right_corner(3);
-    bottom_right_corner << original_x_n_n, original_y_n_n, 1;
+    bottom_right_corner << original_bottom_right_x, original_bottom_right_y, 1;
     // rgb8_image_t mask(rgb8_image_t::point_t(view(starter_image).dimensions()*2));
     // fill_pixels(view(mask),rgb8_pixel_t(255, 255, 255));
 
-    Vector3f new_top_left_corner = mat * top_left_corner;// * mat;
-    Vector3f new_top_right_corner = mat * top_right_corner;// * mat;
-    Vector3f new_bottom_left_corner = mat * bottom_left_corner;// * mat;
-    Vector3f new_bottom_right_corner = mat * bottom_right_corner;// * mat;
+    Vector3f new_top_left_corner = mat2 * top_left_corner;// * mat;
+    Vector3f new_top_right_corner = mat2 * top_right_corner;// * mat;
+    Vector3f new_bottom_left_corner = mat2 * bottom_left_corner;// * mat;
+    Vector3f new_bottom_right_corner = mat2 * bottom_right_corner;// * mat;
     new_top_left_corner[0] /= new_top_left_corner[2];
     new_top_left_corner[1] /= new_top_left_corner[2];
+    // new_top_left_corner[0] += 1024/2;
+    // new_top_left_corner[1] += 676/2;
     new_top_right_corner[0] /= new_top_right_corner[2];
     new_top_right_corner[1] /= new_top_right_corner[2];
+    // new_top_right_corner[0] += 1024/2;
+    // new_top_right_corner[1] += 676/2;
     new_bottom_left_corner[0] /= new_bottom_left_corner[2];
     new_bottom_left_corner[1] /= new_bottom_left_corner[2];
+    // new_bottom_left_corner[0] += 1024/2;
+    // new_bottom_left_corner[1] += 676/2;
     new_bottom_right_corner[0] /= new_bottom_right_corner[2];
     new_bottom_right_corner[1] /= new_bottom_right_corner[2];
+    // new_bottom_right_corner[0] += 1024/2;
+    // new_bottom_right_corner[1] += 676/2;
     std::cout << "new_top_left_corner" << std::endl;
     std::cout << new_top_left_corner << std::endl;
     std::cout << "new_top_right_corner" << std::endl;
