@@ -515,7 +515,6 @@ void activity_classifier::init_train(
   training_data_iterator_ = create_iterator(data, true);
 
   add_or_update_state({{"classes", training_data_iterator_->class_labels()}});
-  flex_list class_labels = read_state<flex_list>("classes");
 
   // Bind the validation data to a data iterator.
   if (variant_is<gl_sframe>(validation_data)) {
