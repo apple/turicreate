@@ -99,6 +99,7 @@ class LambdaTests(unittest.TestCase):
         glconnect.get_unity().parallel_eval_lambda(lambda x: good_fun(x), ls)
 
 
+    @unittest.skip("Disabling test as previous runs of this can mess up import.  Reenamble when lambda workers can be reliably restarted.")
     def test_expensive_packages_not_imported_in_lambda(self):
 
         import turicreate as tc
