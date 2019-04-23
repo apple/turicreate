@@ -223,7 +223,7 @@ gl_sarray activity_classifier::predict(gl_sframe data,
   flex_list class_labels = read_state<flex_list>("classes");
 
   std::unique_ptr<data_iterator> data_it =
-      create_iterator(data, class_labels, false);
+      create_iterator(data, false);
 
   // Accumulate the class probabilities for each prediction window.
   gl_sframe raw_preds_per_window = perform_inference(data_it.get());
@@ -269,7 +269,7 @@ gl_sframe activity_classifier::predict_per_window(gl_sframe data,
   flex_list class_labels = read_state<flex_list>("classes");
   // Bind the data to a data iterator.
   std::unique_ptr<data_iterator> data_it =
-      create_iterator(data, class_labels, false);
+      create_iterator(data, false);
 
   // Accumulate the class probabilities for each prediction window.
   gl_sframe raw_preds_per_window = perform_inference(data_it.get());
@@ -368,13 +368,17 @@ std::shared_ptr<MLModelWrapper> activity_classifier::export_to_coreml(
 }
 
 std::unique_ptr<data_iterator>
-activity_classifier::create_iterator(gl_sframe data, flex_list class_labels,
+activity_classifier::create_iterator(gl_sframe data, 
                                      bool is_train) const {
 
   data_iterator::parameters data_params;
   data_params.data = std::move(data);
-  data_params.class_labels = class_labels;
-  data_params.is_train = is_train;
+
+  if (!is_train){
+    data_params.class_labels = read_state<flex_list>("classes");
+  }
+  
+  data_params.verbose = is_train;
   data_params.target_column_name = read_state<flex_string>("target");
   data_params.session_id_column_name = read_state<flex_string>("session_id");
   flex_list features = read_state<flex_list>("features");
@@ -508,7 +512,7 @@ void activity_classifier::init_train(
                                               feature_column_names.end())}});
 
   // Bind the data to a data iterator.
-  training_data_iterator_ = create_iterator(data, {}, true);
+  training_data_iterator_ = create_iterator(data, true);
 
   add_or_update_state({{"classes", training_data_iterator_->class_labels()}});
   flex_list class_labels = read_state<flex_list>("classes");
@@ -517,7 +521,7 @@ void activity_classifier::init_train(
   if (variant_is<gl_sframe>(validation_data)) {
     gl_sframe validation_sf = variant_get_value<gl_sframe>(validation_data);
     validation_data_iterator_ =
-        create_iterator(validation_sf, class_labels, false);
+        create_iterator(validation_sf, false);
   } else {
     validation_data_iterator_ = nullptr;
   }

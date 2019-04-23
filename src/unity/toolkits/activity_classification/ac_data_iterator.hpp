@@ -61,7 +61,8 @@ public:
      */
     flex_list class_labels;
 
-    bool is_train;
+    /**  Generates verbose output when set to true. */
+    bool verbose;
   };
 
   /** Defines the output of a data_iterator. */
