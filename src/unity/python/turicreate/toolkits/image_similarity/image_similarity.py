@@ -508,7 +508,7 @@ class ImageSimilarityModel(_CustomModel):
         import numpy as _np
         import coremltools as _cmt
         from coremltools.models import datatypes as _datatypes, neural_network as _neural_network
-        from .._mxnet_to_coreml import _mxnet_converter
+        from .._mxnet._mxnet_to_coreml import _mxnet_converter
         from turicreate.toolkits import _coreml_utils
 
         # Get the reference data from the model
