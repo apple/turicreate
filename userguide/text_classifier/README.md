@@ -53,12 +53,12 @@ data = data.rename({'X1': 'label', 'X2': 'text'})
 training_data, test_data = data.random_split(0.8)
 
 # Create a model using higher max_iterations than default
-model = tc.text_classifier.create(data, 'label', features=['text'], max_iterations=100)
+model = tc.text_classifier.create(training_data, 'label', features=['text'], max_iterations=100)
 
 # Save predictions to an SArray
 predictions = model.predict(test_data)
 
-# Make predictions & evaluation the model
+# Make evaluation the model
 metrics = model.evaluate(test_data)
 print(metrics['accuracy'])
 
