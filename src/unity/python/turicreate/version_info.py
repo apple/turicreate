@@ -11,7 +11,7 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 
 # python egg version
-__version__ = '5.4'#{{VERSION_STRING}}
+__version__ = '5.5'#{{VERSION_STRING}}
 version = __version__
 build_number = '0'#{{BUILD_NUMBER}}
 git_sha = 'NA'#{{GIT_SHA}}
