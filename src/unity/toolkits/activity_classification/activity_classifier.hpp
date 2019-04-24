@@ -181,9 +181,12 @@ class EXPORT activity_classifier: public ml_model_base {
   // Returns the initial neural network to train
   virtual std::unique_ptr<neural_net::model_spec> init_model() const;
 
+  virtual std::tuple<gl_sframe, gl_sframe>
+  init_data(gl_sframe data, variant_type validation_data,
+            std::string session_id_column_name) const;
+
   // Support for iterative training.
   // TODO: Expose via forthcoming C-API checkpointing mechanism?
-
   virtual void init_train(gl_sframe data, std::string target_column_name,
                           std::string session_id_column_name,
                           variant_type validation_data,

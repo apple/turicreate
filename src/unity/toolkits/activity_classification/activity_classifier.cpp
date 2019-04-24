@@ -495,7 +495,10 @@ std::unique_ptr<model_spec> activity_classifier::init_model() const
 
   return result;
 }
-std::tuple<gl_sframe,gl_sframe> activity_classifier::init_data(gl_sframe data, variant_type validation_data, std::string session_id_column_name) {
+
+std::tuple<gl_sframe, gl_sframe>
+activity_classifier::init_data(gl_sframe data, variant_type validation_data,
+                               std::string session_id_column_name) const {
   gl_sframe train_data;
   gl_sframe val_data;
   if (variant_is<gl_sframe>(validation_data)) {
@@ -527,7 +530,6 @@ std::tuple<gl_sframe,gl_sframe> activity_classifier::init_data(gl_sframe data, v
   }
   return std::make_tuple(train_data,val_data);
 }
-
 
 void activity_classifier::init_train(
     gl_sframe data, std::string target_column_name,
