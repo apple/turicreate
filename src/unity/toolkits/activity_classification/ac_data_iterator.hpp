@@ -60,6 +60,9 @@ public:
      * an exception will be thrown upon encountering an unexpected label.
      */
     flex_list class_labels;
+
+    /**  Generates verbose output when set to true. */
+    bool verbose;
   };
 
   /** Defines the output of a data_iterator. */
