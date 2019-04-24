@@ -5,7 +5,6 @@ chardet==3.0.4
 docutils==0.14
 idna==2.6
 imagesize==0.7.1
-Jinja2==2.10
 MarkupSafe==1.0
 numpy==1.14.0
 numpydoc==0.7.0
