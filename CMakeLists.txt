@@ -352,7 +352,7 @@ if (CLANG)
   # (and with warning-as-error, they break the build)
   check_cxx_compiler_flag("-Qunused-arguments" __qunused_arguments)
   if(${__qunused_arguments})
-    set(_cpp11_optional_flags "${_cpp11_optional_flags} -Qunused-arguments")
+    add_compile_options(-Qunused-arguments)
   endif()
   
   # clang on Linux with libstdc++ from GCC 4.8.1 gives errors about class vs. struct hash.
