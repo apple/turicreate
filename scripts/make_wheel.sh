@@ -368,7 +368,7 @@ package_wheel() {
 generate_docs() {
   echo -e "\n\n\n================= Generating Docs ================\n\n\n"
 
-  $PIP_EXECUTABLE install sphinx==1.3.0b1
+  $PIP_EXECUTABLE install sphinx==1.6.5
   $PIP_EXECUTABLE install sphinx-bootstrap-theme
   $PIP_EXECUTABLE install numpydoc
   SPHINXBUILD=${WORKSPACE}/$PYTHON_SCRIPTS/sphinx-build
