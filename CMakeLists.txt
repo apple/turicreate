@@ -342,7 +342,33 @@ if (CLANG)
     set(_cpp11_optional_flags "${_cpp11_optional_flags} -Wno-stdlibcxx-not-found")
   endif()
 
-  set(CPP11_FLAGS "-stdlib=libc++ -Wno-deprecated-register -Wno-enum-compare -Wno-conversion-null -Wno-constant-logical-operand -Wno-parentheses-equality -ftemplate-depth=900 ${_cpp11_optional_flags}")
+  check_cxx_compiler_flag("-Wno-deprecated-register" __no_deprecated_register)
+  if(${__no_deprecated_register})
+    set(_cpp11_optional_flags "${_cpp11_optional_flags} -Wno-deprecated-register")
+  endif()
+
+  # clang on Linux gives unused argument warnings all over the place
+  # they look useful, but let's suppress them for now since there are tons
+  # (and with warning-as-error, they break the build)
+  check_cxx_compiler_flag("-Qunused-arguments" __qunused_arguments)
+  if(${__qunused_arguments})
+    set(_cpp11_optional_flags "${_cpp11_optional_flags} -Qunused-arguments")
+  endif()
+  
+  # clang on Linux with libstdc++ from GCC 4.8.1 gives errors about class vs. struct hash.
+  # apparently it's defined as both in separate places in libstdc++
+  # and GCC 4.8.1 doesn't care, but clang does.
+  # Not sure how to tell whether we're using libstdc++ specifically, so for now,
+  # we'll just avoid this warning-as-error on non-Apple platforms entirely.
+  if(NOT APPLE)
+    check_cxx_compiler_flag("-Wno-mismatched-tags" __no_mismatched_tags)
+    if (${__no_mismatched_tags})
+      set(_cpp11_optional_flags "${_cpp11_optional_flags} -Wno-error=mismatched-tags")
+      set(_cpp11_optional_flags "${_cpp11_optional_flags} -Wno-mismatched-tags")
+    endif()
+  endif()
+
+  set(CPP11_FLAGS "-Wno-enum-compare -Wno-conversion-null -Wno-constant-logical-operand -Wno-parentheses-equality -ftemplate-depth=900 ${_cpp11_optional_flags}")
 
   set(WERROR_FLAGS "-Werror -Wall -Wsign-compare")
 else()
