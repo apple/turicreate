@@ -1056,8 +1056,7 @@ gl_sarray_reference::gl_sarray_reference(gl_sarray_reference&& other)
   : m_sf(other.m_sf), m_column_name(other.m_column_name) { }
 
 gl_sarray_reference& gl_sarray_reference::operator=(gl_sarray_reference&& other) {
-  this->m_sf = other.m_sf;
-  this->m_column_name = other.m_column_name;
+  *this = static_cast<gl_sarray_reference&>(other);
   return *this;
 }
 
