@@ -7,6 +7,8 @@
 #ifndef TURI_ONE_SHOT_OBJECT_DETECTOR_H_
 #define TURI_ONE_SHOT_OBJECT_DETECTOR_H_
 
+// TODO: Clean up imports.
+
 #include <functional>
 #include <map>
 #include <memory>
@@ -32,20 +34,16 @@ class EXPORT one_shot_object_detector: public ml_model_base {
   // Constructor
   one_shot_object_detector();
 
-  // ml_model_base interface
-
-  // void init_options(const std::map<std::string, flexible_type>& opts) override;
-  // size_t get_version() const override;
-  // void save_impl(oarchive& oarc) const override;
-  // void load_version(iarchive& iarc, size_t version) override;
-
   // Interface exposed via Unity server
 
-  void train(gl_sframe data,
-             std::string target_column_name,
-             gl_sframe backgrounds,
-             long seed,
-             std::map<std::string, flexible_type> options);
+  // TODO: augment -> train
+  // TODO: Add a std::map<std::string, flexible_type> options parameter to 
+  // augment when mxnet is plumbed through to C++ and we call in to the Object 
+  // Detector C++ training.
+  gl_sframe augment(gl_sframe data,
+                    std::string target_column_name,
+                    gl_sframe backgrounds,
+                    long seed);
   variant_map_type evaluate(gl_sframe data, 
                             std::string metric,
                             std::map<std::string, flexible_type> options);
@@ -56,8 +54,8 @@ class EXPORT one_shot_object_detector: public ml_model_base {
 
   IMPORT_BASE_CLASS_REGISTRATION(ml_model_base);
 
-  REGISTER_CLASS_MEMBER_FUNCTION(one_shot_object_detector::train, "data",
-                                 "target_column_name", "backgrounds", "seed", "options");
+  REGISTER_CLASS_MEMBER_FUNCTION(one_shot_object_detector::augment, "data",
+                                 "target_column_name", "backgrounds", "seed");
   REGISTER_CLASS_MEMBER_FUNCTION(one_shot_object_detector::evaluate, "data",
                                  "metric", "options");
   register_defaults("evaluate",
@@ -72,9 +70,9 @@ class EXPORT one_shot_object_detector: public ml_model_base {
   END_CLASS_MEMBER_REGISTRATION
 
  private:
-
+  // Obsolete until we actually use the object_detector::train.
+  // Leaving it here anyway unless we decide we should remove it.
   std::unique_ptr<turi::object_detection::object_detector> model_;
-
 
 };
 
