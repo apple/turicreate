@@ -1052,6 +1052,16 @@ const gl_sframe_range::type& gl_sframe_range::iterator::dereference() const {
 /*                                                                        */
 /**************************************************************************/
 
+gl_sarray_reference::gl_sarray_reference(gl_sarray_reference&& other)
+  : m_sf(other.m_sf), m_column_name(other.m_column_name) { }
+
+gl_sarray_reference& gl_sarray_reference::operator=(gl_sarray_reference&& other) {
+  this->m_sf = other.m_sf;
+  this->m_column_name = other.m_column_name;
+  return *this;
+}
+
+
 gl_sarray_reference::gl_sarray_reference(gl_sframe& sf, std::string column_name)
   : m_sf(sf), m_column_name(column_name) { } 
 
@@ -1083,6 +1093,10 @@ std::shared_ptr<unity_sarray> gl_sarray_reference::get_proxy() const {
 /*                    const_gl_sarray_reference                           */
 /*                                                                        */
 /**************************************************************************/
+
+const_gl_sarray_reference::const_gl_sarray_reference(const_gl_sarray_reference&& other)
+  : m_sf(other.m_sf), m_column_name(other.m_column_name) { }
+
 
 const_gl_sarray_reference::const_gl_sarray_reference(const gl_sframe& sf, std::string column_name)
   : m_sf(sf), m_column_name(column_name) { } 
