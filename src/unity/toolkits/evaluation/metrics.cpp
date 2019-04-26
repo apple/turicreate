@@ -16,6 +16,8 @@
 #include <unity/toolkits/util/indexed_sframe_tools.hpp>
 #include <unity/toolkits/evaluation/evaluation_constants.hpp>
 #include <unity/toolkits/evaluation/metrics.hpp>
+#include <unity/toolkits/object_detection/od_data_iterator.hpp>
+#include <unity/toolkits/object_detection/od_evaluation.hpp>
 #include <unity/toolkits/supervised_learning/classifier_evaluations.hpp>
 
 #include <map>
@@ -334,6 +336,50 @@ variant_map_type compute_classifier_metrics(
   return compute_classifier_metrics_from_probability_vectors(
       std::move(metrics), std::move(input), "target", "class_probs",
       std::move(class_labels));
+}
+
+variant_map_type compute_object_detection_metrics(
+    gl_sframe data, std::string annotations_column_name,
+    std::string image_column_name, gl_sarray predictions,
+    std::map<std::string, flexible_type> opts)
+{
+  // Retrieve the list of classes.
+  // Note that "classes" is an "option" to guard against future alternate
+  // options, such as inferring labels from the target column or from dictionary
+  // keys in the prediction column.
+  auto opts_it = opts.find("classes");
+  if (opts_it == opts.end()) {
+    log_and_throw("Cannot compute classifier metrics without class labels.");
+  }
+  flex_list class_labels = opts_it->second;
+
+  // Create a data iterator.
+  object_detection::data_iterator::parameters iter_params;
+  iter_params.data =
+      data.select_columns({annotations_column_name, image_column_name});
+  iter_params.data.add_column(predictions);
+  iter_params.annotations_column_name = annotations_column_name;
+  iter_params.predictions_column_name = iter_params.data.column_names().back();
+  iter_params.image_column_name = image_column_name;
+  iter_params.class_labels = std::vector<std::string>(class_labels.begin(),
+                                                      class_labels.end());
+  iter_params.repeat = false;
+  object_detection::simple_data_iterator iter(iter_params);
+
+  // Create the evaluator.
+  object_detection::average_precision_calculator evaluator(class_labels);
+
+  // Iterate through the labeled data and predictions.
+  std::vector<neural_net::labeled_image> batch = iter.next_batch(32);
+  while (!batch.empty()) {
+    for (const neural_net::labeled_image& instance : batch) {
+      evaluator.add_row(instance.predictions, instance.annotations);
+    }
+
+    batch = iter.next_batch(32);
+  }
+
+  return evaluator.evaluate();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////

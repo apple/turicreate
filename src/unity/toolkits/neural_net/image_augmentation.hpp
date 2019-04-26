@@ -74,6 +74,9 @@ bool operator==(const image_annotation& a, const image_annotation& b);
 struct labeled_image {
   image_type image;
   std::vector<image_annotation> annotations;
+
+  // Used when parsing saved predictions for evaluation.
+  std::vector<image_annotation> predictions;
 };
 
 /**

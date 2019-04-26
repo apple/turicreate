@@ -7,6 +7,7 @@
 #include <unity/toolkits/object_detection/od_evaluation.hpp>
 
 #include <algorithm>
+#include <numeric>
 
 #include <logger/assertions.hpp>
 
@@ -18,6 +19,11 @@ using neural_net::image_box;
 
 namespace {
 
+constexpr char AP[] = "average_precision";
+constexpr char MAP[] = "mean_average_precision";
+constexpr char AP50[] = "average_precision_50";
+constexpr char MAP50[] = "mean_average_precision_50";
+
 float compute_iou(const image_box& a, const image_box& b) {
 
   image_box intersection_box = a;
@@ -27,6 +33,19 @@ float compute_iou(const image_box& a, const image_box& b) {
   float union_area = a.area() + b.area() - intersection_area;
 
   return intersection_area / union_area;
+}
+
+// For computing average precision averaged over IOU thresholds from 50% to 95%,
+// at intervals of 5%, as popularized by COCO.
+std::vector<float> iou_thresholds_for_evaluation() {
+
+  std::vector<float> result;
+
+  for (float x = 50.f; x < 100.f; x += 5.f) {
+    result.push_back(x / 100.f);
+  }
+
+  return result;
 }
 
 // Helper class used to compute the average precision for a particular class.
@@ -167,9 +186,16 @@ std::vector<image_annotation> apply_non_maximum_suppression(
 }
 
 average_precision_calculator::average_precision_calculator(
-    size_t num_classes, std::vector<float> iou_thresholds)
-  : data_(num_classes),
+    flex_list class_labels, std::vector<float> iou_thresholds)
+  : class_labels_(std::move(class_labels)),
+    data_(class_labels_.size()),
     iou_thresholds_(std::move(iou_thresholds))
+{}
+
+average_precision_calculator::average_precision_calculator(
+    flex_list class_labels)
+  : average_precision_calculator(std::move(class_labels),
+                                 iou_thresholds_for_evaluation())
 {}
 
 void average_precision_calculator::add_row(
@@ -214,16 +240,52 @@ void average_precision_calculator::add_row(
   }
 }
 
-std::vector<std::map<float,float>> average_precision_calculator::evaluate() {
+variant_map_type average_precision_calculator::evaluate() {
 
-  std::vector<std::map<float,float>> result;
-  result.reserve(data_.size());
+  std::vector<std::map<float,float>> raw_average_precisions;
+  raw_average_precisions.reserve(data_.size());
 
   for (size_t i = 0; i < data_.size(); ++i) {
-    result.push_back(evaluate_class(i));
+    raw_average_precisions.push_back(evaluate_class(i));
   }
 
-  return result;
+  // Format the raw results into a variant_map_type.
+
+  std::vector<float> average_precision_50(class_labels_.size());
+  std::vector<float> average_precision(class_labels_.size());
+  for (size_t i = 0; i < class_labels_.size(); ++i) {
+
+    // Extract the average precision for this class at IOU threshold 50%.
+    average_precision_50[i] = raw_average_precisions[i].at(0.5f);
+
+    // Compute the average precision for this class averaged over all the IOU
+    // threshold.
+    float sum = 0.f;
+    for (const auto& threshold_and_ap : raw_average_precisions[i]) {
+      sum += threshold_and_ap.second;
+    }
+    average_precision[i] = sum /= raw_average_precisions[i].size();
+  }
+
+  // Store the requested summary statistics.
+  auto create_dict = [this](const std::vector<float>& v) {
+    flex_dict class_dict;
+    class_dict.reserve(class_labels_.size());
+    for (size_t i = 0; i < class_labels_.size(); ++i) {
+      class_dict.emplace_back(class_labels_[i], v[i]);
+    }
+    return class_dict;
+  };
+  auto compute_mean = [](const std::vector<float>& v) {
+    return std::accumulate(v.begin(), v.end(), 0.f) / v.size();
+  };
+  variant_map_type result_map = {
+    {AP, create_dict(average_precision)},
+    {AP50, create_dict(average_precision_50)},
+    {MAP50, compute_mean(average_precision_50)},
+    {MAP, compute_mean(average_precision)},
+  };
+  return result_map;
 }
 
 std::map<float,float> average_precision_calculator::evaluate_class(
