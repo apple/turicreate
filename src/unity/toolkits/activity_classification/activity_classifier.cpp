@@ -205,10 +205,22 @@ void activity_classifier::train(gl_sframe data, std::string target_column_name,
   training_table_printer_->print_footer();
   training_table_printer_.reset();
 
+  gl_sarray predictions = predict(data, "probability_vector");
+  variant_map_type metric = evaluation::compute_classifier_metrics_from_probability_vectors(data, target_column_name, "auto", predictions, {{"classes", read_state<flex_list>("classes")}});
+  add_or_update_state({{"precision", metric["precision"]},
+    {"recall", metric["recall"]},
+    {"confusion_matrix", metric["confusion_matrix"]}
+  })
+
+  std::cout << metric;
   // Sync trained weights to our local storage of the NN weights.
   float_array_map trained_weights = training_model_->export_weights();
   nn_spec_->update_params(trained_weights);
+
+
 }
+
+
 
 gl_sarray activity_classifier::predict(gl_sframe data,
                                        std::string output_type) {
