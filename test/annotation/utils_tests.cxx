@@ -43,14 +43,10 @@ public:
     TS_ASSERT(image_gl_sarray.dtype() == turi::flex_type_enum::IMAGE);
     TS_ASSERT(feature_sarray.dtype() == turi::flex_type_enum::VECTOR);
 
-    std::vector<turi::flexible_type> feature_vector =
-        std::shared_ptr<turi::unity_sarray>(feature_sarray)
-            ->to_vector();
-
-                size_t first_vec_size =
-            feature_vector.at(0).get<turi::flex_vec>().size();
-    for (size_t i = 1; i < feature_vector.size(); i++) {
-      size_t vec_size = feature_vector.at(i).get<turi::flex_vec>().size();
+    size_t first_vec_size = feature_sarray[0].get<turi::flex_vec>().size();
+    
+    for (const auto& i: feature_sarray.range_iterator()) {
+      size_t vec_size = i.get<turi::flex_vec>().size();
       TS_ASSERT(first_vec_size == vec_size);
     }
   }
