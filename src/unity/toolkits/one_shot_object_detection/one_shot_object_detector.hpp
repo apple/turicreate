@@ -32,7 +32,7 @@ class EXPORT one_shot_object_detector: public ml_model_base {
   gl_sframe augment(gl_sframe data,
                     std::string target_column_name,
                     gl_sarray backgrounds,
-                    long seed);
+                    std::map<std::string, flexible_type> options);
   variant_map_type evaluate(gl_sframe data, 
                             std::string metric,
                             std::map<std::string, flexible_type> options);

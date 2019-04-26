@@ -146,9 +146,10 @@ one_shot_object_detector::one_shot_object_detector() {
 
 gl_sframe one_shot_object_detector::augment(gl_sframe data,
                                             std::string target_column_name,
-                                            gl_sframe backgrounds,
-                                            long seed){
-  gl_sframe augmented_data = _augment_data(data, backgrounds, seed);
+                                            gl_sarray backgrounds,
+                                            std::map<std::string, flexible_type> options){
+  
+  gl_sframe augmented_data = _augment_data(data, backgrounds, options["seed"]);
   // TODO: Call object_detector::train from here once we incorporate mxnet into
   // the C++ Object Detector.
   return augmented_data;

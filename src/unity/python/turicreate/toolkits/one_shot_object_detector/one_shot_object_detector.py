@@ -14,7 +14,7 @@ def create(dataset, target, feature=None, batch_size=0, max_iterations=0,
     if seed is None: seed = _random.randint(0, (1<<31)-1)
     # Option arguments to pass in to C++ Object Detector, if we use it:
     # {'mlmodel_path':'darknet.mlmodel', 'max_iterations' : 25}
-    augmented_data = model.augment(dataset, target, _tc.SFrame(), seed)
+    augmented_data = model.augment(dataset, target, _tc.SFrame(), {"seed":seed})
     model = _tc.object_detector.create(augmented_data)
     return OneShotObjectDetector(model)
 
@@ -27,9 +27,6 @@ class OneShotObjectDetector(_CustomModel):
     @classmethod
     def _native_name(cls):
         return "one_shot_object_detector"
-
-    def _get_native_state(self):
-        pass
 
     def _get_version(self):
         return self._PYTHON_ONE_SHOT_OBJECT_DETECTOR_VERSION
@@ -45,4 +42,7 @@ class OneShotObjectDetector(_CustomModel):
         return self.__proxy__.evaluate(dataset, metric)
 
     def export_coreml(self, filename, verbose=False):
+        # TODO: The model exported out of here would look like an 
+        # Object Detector model. We must change the metadata to make it a 
+        # OneShotObjectDetector.
         self.__proxy__.export_to_coreml(filename)
