@@ -31,9 +31,6 @@ import tempfile
 import sys
 import six
 
-#######################################################
-# Metrics tracking tests are in test_usage_metrics.py #
-#######################################################
 
 class SArrayTest(unittest.TestCase):
     def setUp(self):

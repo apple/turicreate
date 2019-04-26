@@ -34,7 +34,7 @@ def _focus_client_app():
             delay .5
             tell application \"Turi Create Visualization\" to activate
             '''
-    focus = __subprocess._Popen(['osascript', '-'], stdout=_PIPE, stdin=_PIPE)
+    focus = _Popen(['osascript', '-'], stdout=_PIPE, stdin=_PIPE)
     focus.communicate(scpt)
 
 def _run_cmdline(command):

@@ -27,14 +27,6 @@ constexpr char COORDINATES_STR[] = "Boxes × [x, y, width, height] (relative to 
 constexpr char IOU_THRESHOLD_STR[] = "(optional) IOU Threshold override (default: 0.45)";
 constexpr char CONFIDENCE_THRESHOLD_STR[] = "(optional) Confidence Threshold override (default: 0.25)";
 
-std::string get_activity_classifier_features_short_description(
-    size_t prediction_window, const flex_list& feature_names)
-{
-  return "Window × ["
-      + join(std::vector<std::string>(feature_names.begin(),
-                                      feature_names.end()), ", ")
-      + "]";
-}
 
 void set_string_feature(FeatureDescription* feature_desc, std::string name,
                         std::string short_description)
@@ -291,31 +283,28 @@ std::shared_ptr<MLModelWrapper> export_activity_classifier_model(
   ModelDescription* model_desc = model.mutable_description();
 
   // Write the primary input features.
-  set_array_feature(model_desc->add_input(), "features",
-                    get_activity_classifier_features_short_description(
-                        prediction_window, features),
-                    { 1, prediction_window, features.size() });
+  for (size_t i = 0; i < features.size(); i++) {
+    set_array_feature(model_desc->add_input(), features[i],
+                      flex_string(features[i]) + " window input",
+                      {prediction_window});
+  }
 
   // Write the primary output features.
   set_dictionary_string_feature(model_desc->add_output(),
                                 target + "Probability",
                                 "Activity prediction probabilities");
+
   set_string_feature(model_desc->add_output(), target,
                      "Class label of top prediction");
 
   // Write the (optional) LSTM input and output features.
   FeatureDescription* feature_desc = model_desc->add_input();
-  set_array_feature(feature_desc, "hiddenIn", "LSTM hidden state input",
-                    { lstm_hidden_layer_size });
+  set_array_feature(feature_desc, "stateIn", "LSTM state input",
+                    { lstm_hidden_layer_size*2 });
+
   set_feature_optional(feature_desc);
-  feature_desc = model_desc->add_input();
-  set_array_feature(feature_desc, "cellIn", "LSTM cell state input",
-                    { lstm_hidden_layer_size });
-  set_feature_optional(feature_desc);
-  set_array_feature(model_desc->add_output(), "hiddenOut",
-                    "LSTM hidden state output", { lstm_hidden_layer_size });
-  set_array_feature(model_desc->add_output(), "cellOut",
-                    "LSTM cell state output", { lstm_hidden_layer_size });
+  set_array_feature(model_desc->add_output(), "stateOut",
+                    "LSTM state output", { lstm_hidden_layer_size * 2 });
 
   // Specify the prediction output names.
   model_desc->set_predictedfeaturename(target);
