@@ -6,6 +6,8 @@
     width: 226px;
     height: 100%;
 
+    overflow-y:scroll;
+
     background: #FFFFFF;
     border: 1px solid #EDEDEB;
     z-index: 0;
@@ -37,4 +39,11 @@
 
 .LabelAddLabel:hover{
     background: #066EE0;
+}
+
+.LabelAddLabelContainer{
+    padding-top: 40px;
+    padding-bottom: 40px;
+    width: 100%;
+    text-align: center;
 }

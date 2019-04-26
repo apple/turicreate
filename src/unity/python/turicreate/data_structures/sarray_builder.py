@@ -10,7 +10,7 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-from ..cython.cy_sarray_builder import UnitySArrayBuilderProxy
+from .._cython.cy_sarray_builder import UnitySArrayBuilderProxy
 from .sarray import SArray
 
 class SArrayBuilder(object):
@@ -21,16 +21,15 @@ class SArrayBuilder(object):
 
     Parameters
     ----------
+    dtype : type
+        The type of the elements in the SArray.
+
     num_segments : int, optional
         Number of segments that can be written in parallel.
 
     history_size : int, optional
         The number of elements to be cached as history. Caches the last
         `history_size` elements added with `append` or `append_multiple`.
-
-    dtype : type, optional
-        The type the resulting SArray will be. If None, the resulting SArray
-        will take on the type of the first non-None value it receives.
         
     Returns
     -------
@@ -40,22 +39,19 @@ class SArrayBuilder(object):
     --------
     >>> from turicreate import SArrayBuilder
 
-    >>> sb = SArrayBuilder()
+    >>> sb = SArrayBuilder(int)
 
     >>> sb.append(1)
 
-    >>> sb.append([2,3])
+    >>> sb.append_multiple([2,3])
 
     >>> sb.close()
     dtype: int
     Rows: 3
     [1, 2, 3]
-
     """
     def __init__(self, dtype, num_segments=1, history_size=10):
         self._builder = UnitySArrayBuilderProxy()
-        if dtype is None:
-            dtype = type(None)
         self._builder.init(num_segments, history_size, dtype)
         self._block_size = 1024
 

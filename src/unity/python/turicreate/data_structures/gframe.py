@@ -7,7 +7,7 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 from .sframe import SFrame
-from ..cython.context import debug_trace as cython_context
+from .._cython.context import debug_trace as cython_context
 from ..util import _is_non_string_iterable
 from .sarray import SArray, _create_sequential_sarray
 import copy

@@ -13,15 +13,15 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-from ..connect import main as glconnect
+from .._connect import main as glconnect
 from .sframe import SFrame
 from .sarray import SArray
 from .gframe import GFrame, VERTEX_GFRAME, EDGE_GFRAME
-from ..cython.cy_graph import UnityGraphProxy
-from ..cython.context import debug_trace as cython_context
+from .._cython.cy_graph import UnityGraphProxy
+from .._cython.context import debug_trace as cython_context
 from ..util import _is_non_string_iterable, _make_internal_url
-from ..deps import pandas as pd
-from ..deps import HAS_PANDAS
+from .._deps import pandas as pd
+from .._deps import HAS_PANDAS
 
 import inspect
 import copy

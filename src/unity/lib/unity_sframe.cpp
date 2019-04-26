@@ -212,9 +212,14 @@ std::map<std::string, std::shared_ptr<unity_sarray_base>> unity_sframe::construc
   if (csv_parsing_config["quote_char"].get_type() == flex_type_enum::STRING) {
     std::string tmp = (flex_string)csv_parsing_config["quote_char"];
     if (tmp.length() > 0) tokenizer.quote_char = tmp[0];
+  } else if (csv_parsing_config["quote_char"].get_type() == flex_type_enum::UNDEFINED) {
+    tokenizer.quote_char = NULL;
   }
   if (csv_parsing_config.count("skip_initial_space")) {
     tokenizer.skip_initial_space = !csv_parsing_config["skip_initial_space"].is_zero();
+  }
+  if (csv_parsing_config.count("only_raw_string_substitutions")) {
+    tokenizer.only_raw_string_substitutions = !csv_parsing_config["only_raw_string_substitutions"].is_zero();
   }
   if (csv_parsing_config["na_values"].get_type() == flex_type_enum::LIST) {
     flex_list rec = csv_parsing_config["na_values"];

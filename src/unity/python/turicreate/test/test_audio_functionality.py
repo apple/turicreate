@@ -11,9 +11,9 @@ from __future__ import absolute_import as _
 
 from .util import TempDirectory
 
+from copy import copy
 import math
 from os import mkdir
-from sys import platform
 import unittest
 
 import coremltools
@@ -24,6 +24,7 @@ from scipy.io import wavfile
 import turicreate as tc
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sarray
 from turicreate.toolkits._main import ToolkitError
+from turicreate.toolkits._internal_utils import _mac_ver
 
 
 class ReadAudioTest(unittest.TestCase):
@@ -145,11 +146,14 @@ def _generate_binary_test_data():
     return data
 
 
+binary_test_data = _generate_binary_test_data()
+
+
 class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        self.data = _generate_binary_test_data()
+        self.data = copy(binary_test_data)
         self.is_binary_classification = True
         self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio')
 
@@ -213,10 +217,10 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         old_model_probs = self.model.predict(self.data['audio'], output_type='probability_vector')
         new_model_probs = new_model.predict(self.data['audio'], output_type='probability_vector')
         for a, b in zip(old_model_probs, new_model_probs):
-            self.assertItemsEqual(a, b)
+            np.testing.assert_array_almost_equal(a, b, decimal=6)
 
-    @unittest.skipIf(platform != 'darwin', 'Can not test predictions.')
-    def test_mac_export_coreml(self):
+    @unittest.skipIf(_mac_ver() < (10,14), 'Custom models only supported on macOS 10.14+')
+    def test_export_coreml_with_prediction(self):
         import resampy
 
         with TempDirectory() as temp_dir:
@@ -240,8 +244,8 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
                                         coreml_y[core_ml_prob_output_name][cur_class],
                                         delta=0.001)
 
-    @unittest.skipIf(platform == 'darwin', 'Already testing in more comprehensive way.')
-    def test_linux_export_core_ml(self):
+    @unittest.skipIf(_mac_ver() >= (10,14), 'Already testing export to Core ML with predictions')
+    def test_export_core_ml_no_prediction(self):
         with TempDirectory() as temp_dir:
             file_name = temp_dir + '/model.mlmodel'
             self.model.export_coreml(file_name)
@@ -277,16 +281,25 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         self.assertEqual(3, len(topk_predictions.column_names()))
         for column in ['id', 'class', 'rank']:
             self.assertIn(column, topk_predictions.column_names())
+        unique_ranks = topk_predictions['rank'].unique()
+        self.assertTrue(len(unique_ranks) == 1)
+        self.assertTrue(unique_ranks[0] == 0)
+
+    def test_validation_set(self):
+        self.assertTrue(self.model.validation_accuracy is None)
 
 
 class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
     @classmethod
     def setUpClass(self):
-        self.data = _generate_binary_test_data()
+        self.data = copy(binary_test_data)
         self.data['labels'] = self.data['labels'].apply(lambda x: 0 if x == 'white noise' else 1)
         self.is_binary_classification = True
-
-        self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio')
+        layer_sizes = [100]
+        self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio',
+                                                custom_layer_sizes = layer_sizes,
+                                                validation_set=None)
+        assert(self.model.custom_layer_sizes == layer_sizes)
 
 
 class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabels):
@@ -300,13 +313,70 @@ class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabel
                           generate_constant_noise(1, 17000)]
         constant_noise = tc.SFrame({'audio': constant_noise,
                                     'labels': ['constant noise'] * len(constant_noise)})
-        self.data = _generate_binary_test_data().append(constant_noise)
+        self.data = copy(binary_test_data).append(constant_noise)
 
         self.is_binary_classification = False
-        self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio')
+        layer_sizes = [75, 100, 20]
+        self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio',
+                                                custom_layer_sizes = layer_sizes,
+                                                validation_set=self.data)
+        assert(self.model.custom_layer_sizes == layer_sizes)
+
+    def test_validation_set(self):
+        self.assertTrue(self.model.validation_accuracy is not None)
 
 
-@unittest.skipIf(platform != 'darwin', 'Can not test something which uses Core ML.')
+class ClassifierTestWithShortClip(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.data = copy(binary_test_data)
+
+        # Add a half second clip
+        short_clip = binary_test_data[0]
+        half_second_length = int(short_clip['audio']['sample_rate'] / 2.)
+        short_clip['audio']['data'] = short_clip['audio']['data'][:half_second_length]
+        short_clip = tc.SFrame({'audio': [short_clip['audio']], 'labels': [short_clip['labels']]})
+        self.data = self.data.append(short_clip)
+
+    def test_get_deep_features(self):
+        deep_features = tc.sound_classifier.get_deep_features(self.data['audio'])
+        self.assertEqual(len(deep_features), len(self.data))
+        self.assertEqual(deep_features[-1], [])
+
+    def test_model(self):
+        model = tc.sound_classifier.create(self.data, 'labels', feature='audio',
+                                                validation_set=self.data)
+
+        # A prediction for a clip which is too short should be None
+        predictions = model.predict(self.data)
+        self.assertEqual(len(predictions), len(self.data))
+        self.assertEqual(predictions[-1], None)
+        for l in predictions[:-1]:
+            self.assertNotEqual(l, None)
+
+        predictions = model.predict(self.data, output_type='probability_vector')
+        self.assertEqual(predictions[-1], None)
+        for l in predictions[:-1]:
+            self.assertNotEqual(l, None)
+
+        evaluate_results = model.evaluate(self.data)
+        self.assertIsNotNone(evaluate_results)
+
+        classify_results = model.classify(self.data)
+        self.assertEqual(classify_results[-1], {'class': None, 'probability': None})
+        for i in classify_results[:-1]:
+            self.assertNotEqual(i['class'], None)
+            self.assertNotEqual(i['probability'], None)
+
+        topk_results = model.predict_topk(self.data)
+        self.assertEqual(topk_results[-1]['class'], None)
+        self.assertEqual(topk_results[-1]['probability'], None)
+        for r in topk_results[:-1]:
+            self.assertNotEqual(r['class'], None)
+            self.assertNotEqual(r['probability'], None)
+
+
+@unittest.skipIf(_mac_ver() < (10,14), 'Custom models only supported on macOS 10.14+')
 class CoreMlCustomModelPreprocessingTest(unittest.TestCase):
     sample_rate = 16000
     frame_length = int(.975 * sample_rate)
@@ -344,3 +414,57 @@ class CoreMlCustomModelPreprocessingTest(unittest.TestCase):
 
         self.assertEqual(y2.shape, (1,96,64))
         self.assertTrue(np.isclose(y1, y2, atol=1e-04).all())
+
+
+class ReuseDeepFeatures(unittest.TestCase):
+    def test_simple_case(self):
+        data = copy(binary_test_data)
+        deep_features = tc.sound_classifier.get_deep_features(data['audio'])
+
+        # Verify deep features in correct format
+        self.assertTrue(isinstance(deep_features, tc.SArray))
+        self.assertEqual(len(data), len(deep_features))
+        self.assertEqual(deep_features.dtype, list)
+        self.assertEqual(len(deep_features[0]), 3)
+        self.assertTrue(isinstance(deep_features[0][0], np.ndarray))
+        self.assertEqual(deep_features[0][0].dtype, np.float64)
+        self.assertEqual(len(deep_features[0][0]), 12288)
+
+        # Test helper methods
+        self.assertTrue(tc.sound_classifier._is_audio_data_sarray(data['audio']))
+        self.assertTrue(tc.sound_classifier._is_deep_feature_sarray(deep_features))
+
+        original_audio_data = data['audio']
+        del data['audio']
+
+        # Create a model using the deep features
+        data['features'] = deep_features
+        model = tc.sound_classifier.create(data, 'labels', feature='features')
+
+        # Test predict
+        predictions_from_audio = model.predict(original_audio_data, output_type='probability_vector')
+        predictions_from_deep_features = model.predict(deep_features, output_type='probability_vector')
+        for a, b in zip(predictions_from_audio, predictions_from_deep_features):
+            np.testing.assert_array_almost_equal(a, b, decimal=6)
+
+        # Test classify
+        predictions_from_audio = model.classify(original_audio_data)
+        predictions_from_deep_features = model.classify(deep_features)
+        for a, b in zip(predictions_from_audio, predictions_from_deep_features):
+            self.assertEqual(a['class'], b['class'])
+            np.testing.assert_array_almost_equal(a['probability'], b['probability'], decimal=6)
+
+        # Test predict_topk
+        predictions_from_audio = model.predict_topk(original_audio_data, k=2)
+        predictions_from_deep_features = model.predict_topk(deep_features, k=2)
+        for a, b in zip(predictions_from_audio, predictions_from_deep_features):
+            self.assertEqual(a['id'], b['id'])
+            self.assertEqual(a['class'], b['class'])
+            np.testing.assert_array_almost_equal(a['probability'], b['probability'], decimal=6)
+
+        # Test evaluate
+        predictions_from_audio = model.evaluate(tc.SFrame({'features': original_audio_data,
+                                                           'labels': data['labels']}))
+        predictions_from_deep_features = model.evaluate(tc.SFrame({'features': deep_features,
+                                                                   'labels': data['labels']}))
+        self.assertEqual(predictions_from_audio['f1_score'], predictions_from_deep_features['f1_score'])

@@ -3,11 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include "vega_spec.hpp"
+#include <unity/lib/visualization/escape.hpp>
+#include <unity/lib/visualization/vega_spec.hpp>
 
 #include <capi/TuriCreate.h>
 #include <logger/assertions.hpp>
-#include <flexible_type/string_escape.hpp>
 
 // generated include files for vega spec JSON
 #include <unity/lib/visualization/vega_spec/boxes_and_whiskers.h>
@@ -23,37 +23,6 @@
 
 namespace turi {
 namespace visualization {
-std::string escape_string(const std::string& str, bool include_quotes) {
-  std::string ret;
-  size_t ret_len;
-  ::turi::escape_string(str, '\\', true /* use_escape_char */, '\"', include_quotes /* use_quote_char */, false /* double_quote */, ret, ret_len);
-
-  // ::turi::escape_string may yield an std::string padded with null terminators, and ret_len represents the true length.
-  // truncate to the ret_len length.
-  ret.resize(ret_len);
-  DASSERT_EQ(ret.size(), strlen(ret.c_str()));
-
-  return ret;
-}
-
-std::string replace_all(std::string str, const std::string& from, const std::string& to) {
-    size_t start_pos = 0;
-    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
-        str.replace(start_pos, from.length(), to);
-        start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
-    }
-    return str;
-}
-
-std::string extra_label_escape(const std::string& str, bool include_quotes){
-  std::string escaped_string = escape_string(str, include_quotes /* include_quotes */);
-  escaped_string = replace_all(escaped_string, std::string("\\n"), std::string("\\\\n"));
-  escaped_string = replace_all(escaped_string, std::string("\\t"), std::string("\\\\t"));
-  escaped_string = replace_all(escaped_string, std::string("\\b"), std::string("\\\\b"));
-  escaped_string = replace_all(escaped_string, std::string("\\r"), std::string("\\\\r"));
-
-  return escaped_string;
-}
 
 /*
  * Prepares a raw JSON format string
@@ -137,12 +106,12 @@ EXPORT std::string histogram_spec(const flexible_type& _title,
                                   const flexible_type& _xlabel,
                                   const flexible_type& _ylabel,
                                   flex_type_enum dtype) {
-  static std::string default_title = std::string("Distribution of Values [") +
+  std::string default_title = std::string("Distribution of Values [") +
                                      flex_type_enum_to_name(dtype) +
                                      "]";
   flexible_type title = title_or_default(_title, default_title);
-  flexible_type xlabel = label_or_default(_xlabel, "Count");
-  flexible_type ylabel = label_or_default(_ylabel, "Values");
+  flexible_type xlabel = label_or_default(_xlabel, "Values");
+  flexible_type ylabel = label_or_default(_ylabel, "Count");
 
   auto format_string = make_format_string(vega_spec_histogram_json, vega_spec_histogram_json_len);
   return format(format_string, {
@@ -156,13 +125,13 @@ EXPORT std::string categorical_spec(const flexible_type& _title,
                                     const flexible_type& _xlabel,
                                     const flexible_type& _ylabel,
                                     flex_type_enum dtype) {
-  static std::string default_title = std::string("Distribution of Values [") +
+  std::string default_title = std::string("Distribution of Values [") +
                                      flex_type_enum_to_name(dtype) +
                                      "]";
 
   flexible_type title = title_or_default(_title, default_title);
-  flexible_type xlabel = label_or_default(_xlabel, "Values");
-  flexible_type ylabel = label_or_default(_ylabel, "Count");
+  flexible_type xlabel = label_or_default(_xlabel, "Count");
+  flexible_type ylabel = label_or_default(_ylabel, "Values");
 
   auto format_string = make_format_string(vega_spec_categorical_json, vega_spec_categorical_json_len);
   return format(format_string, {

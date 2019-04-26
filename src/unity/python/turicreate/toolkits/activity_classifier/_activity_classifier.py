@@ -22,7 +22,6 @@ from turicreate.toolkits import _coreml_utils
 import turicreate.toolkits._feature_engineering._internal_utils as _fe_tkutl
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits import evaluation as _evaluation
-from .. import _mxnet_utils
 
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
@@ -131,6 +130,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     ActivityClassifier, util.random_split_by_session
     """
     _tkutl._raise_error_if_not_sframe(dataset, "dataset")
+    from .._mxnet import _mxnet_utils
     from ._mx_model_architecture import _net_params
     from ._sframe_sequence_iterator import SFrameSequenceIter as _SFrameSequenceIter
     from ._sframe_sequence_iterator import prep_data as _prep_data
@@ -308,6 +308,7 @@ class ActivityClassifier(_CustomModel):
         self.__proxy__ = _PythonProxy(state)
 
     def _get_native_state(self):
+        from .._mxnet import _mxnet_utils
         state = self.__proxy__.get_state()
         state['_pred_model'] = _mxnet_utils.get_mxnet_state(state['_pred_model'])
         return state
@@ -315,6 +316,7 @@ class ActivityClassifier(_CustomModel):
     @classmethod
     def _load_version(cls, state, version):
         from ._mx_model_architecture import _define_model_mxnet
+        from .._mxnet import _mxnet_utils
 
         _tkutl._model_version_check(version, cls._PYTHON_ACTIVITY_CLASSIFIER_VERSION)
 
@@ -585,6 +587,7 @@ class ActivityClassifier(_CustomModel):
         from ._mps_model_architecture import _define_model_mps, _predict_mps
         from .._mps_utils import (use_mps as _use_mps,
                                   ac_weights_mxnet_to_mps as _ac_weights_mxnet_to_mps,)
+        from .._mxnet import _mxnet_utils
 
         prediction_window = self.prediction_window
         chunked_dataset, num_sessions = _prep_data(dataset, self.features, self.session_id, prediction_window,

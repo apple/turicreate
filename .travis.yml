@@ -1,5 +1,4 @@
 dist: trusty
-sudo: required
 cache:
   directories:
     - $HOME/.ccache

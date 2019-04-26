@@ -10,6 +10,7 @@
 #include <cmath>
 #include <type_traits>
 #include <climits>
+#include <util/code_optimization.hpp>
 // #include <bitset>
 // #include <iostream>
 
@@ -121,8 +122,11 @@ static inline void flip_bit(T& x, unsigned int bit, _ENABLE_IF_UINT(T))
  * \param n_bits Index of the bit to flip.
  */
 template <typename T>
-static inline T bit_mask(size_t n_bits, _ENABLE_IF_UINT(T)) {
-  return (T(1) << n_bits) - 1;
+static inline T bit_mask(unsigned int n_bits, _ENABLE_IF_UINT(T)) {
+
+  static constexpr unsigned int _n_mask = ~static_cast<unsigned int>(bitsizeof(T) - 1);
+
+  return UNLIKELY(n_bits & _n_mask) ? T(-1) : (T(1) << n_bits) - 1;
 }
 
 /**

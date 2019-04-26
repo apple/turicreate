@@ -41,13 +41,6 @@ class column_unique_indexer final : public column_indexer {
    */
   column_unique_indexer();
 
-
-  /**
-   * Copy constructor: Don't want to risk making copies of this.
-   */
-  column_unique_indexer(const column_unique_indexer&) = delete;
-
-
   /** Initialize the index mapping and setup.  There are certain
    *  internal parallel things that need to be set up before
    *  map_value_to_index works.  Call this before looping over
@@ -159,6 +152,30 @@ class column_unique_indexer final : public column_indexer {
    *  Load the object.
    */
   void load_version(turi::iarchive& iarc, size_t version);
+
+  /** Set data directly.
+   *
+   */
+  void set_values(std::vector<flexible_type>&& values);
+
+  std::vector<flexible_type> reset_and_return_values();
+  
+  
+  /** Create a copy with the index cleared.
+   */
+  std::shared_ptr<column_indexer> create_cleared_copy() const; 
+
+  /** Returns a lambda function that can be used as a lambda function for deindexing
+   *  a column.
+   */
+  std::function<flexible_type(const flexible_type&)> deindexing_lambda() const;
+
+  /** Returns a lambda function that can be used as a lambda function for indexing
+   *  a column.
+   *
+   *  Does not add any new index values.
+   */
+  std::function<flexible_type(const flexible_type&)> indexing_lambda() const;
   
  private:
 

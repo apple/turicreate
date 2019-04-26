@@ -53,7 +53,7 @@ function print_help {
   echo "  --no-remotefs                     Disable remote file access."
   echo
   echo "  --virtualenv VIRTUALENV_EXE       Path to virtualenv executable (otherwise looks in \$PATH)."
-  echo 
+  echo
   echo "  --yes                             Defaults to yes on a prompt"
   echo
   echo "  -D var=value                      Specify CFLAGS definitions to be passed on to cmake."

@@ -212,14 +212,16 @@ class test_object_detector: public object_detector {
 public:
   using create_iterator_call =
       std::function<std::unique_ptr<data_iterator>(
-          gl_sframe data, std::string annotations_column_name,
-          std::string image_column_name, bool repeat)>;
+          gl_sframe data, std::vector<std::string> class_labels, bool repeat)>;
 
   using create_compute_context_call =
       std::function<std::unique_ptr<compute_context>()>;
 
   using init_model_call = std::function<std::unique_ptr<model_spec>(
       const std::string& pretrained_mlmodel_path)>;
+
+  using perform_evaluation_call =
+      std::function<variant_map_type(gl_sframe data, std::string metric)>;
 
   ~test_object_detector() {
     TS_ASSERT(create_iterator_calls_.empty());
@@ -228,15 +230,14 @@ public:
   }
 
   std::unique_ptr<data_iterator> create_iterator(
-      gl_sframe data, std::string annotations_column_name,
-      std::string image_column_name, bool repeat) const override {
+      gl_sframe data, std::vector<std::string> class_labels,
+      bool repeat) const override {
 
     TS_ASSERT(!create_iterator_calls_.empty());
     create_iterator_call expected_call =
         std::move(create_iterator_calls_.front());
     create_iterator_calls_.pop_front();
-    return expected_call(data, annotations_column_name, image_column_name,
-                         repeat);
+    return expected_call(data, std::move(class_labels), repeat);
   }
 
   std::unique_ptr<compute_context> create_compute_context() const override {
@@ -257,6 +258,15 @@ public:
     return expected_call(pretrained_mlmodel_path);
   }
 
+  variant_map_type perform_evaluation(gl_sframe data,
+                                      std::string metric) override {
+    TS_ASSERT(!perform_evaluation_calls_.empty());
+    perform_evaluation_call expected_call =
+        std::move(perform_evaluation_calls_.front());
+    perform_evaluation_calls_.pop_front();
+    return expected_call(data, metric);
+  }
+
   template <class T>
   T get_field(const std::string& name) {
     return variant_get_value<T>(get_value_from_state(name));
@@ -265,6 +275,7 @@ public:
   mutable std::deque<create_iterator_call> create_iterator_calls_;
   mutable std::deque<create_compute_context_call> create_compute_context_calls_;
   mutable std::deque<init_model_call> init_model_calls_;
+  mutable std::deque<perform_evaluation_call> perform_evaluation_calls_;
 };
 
 BOOST_AUTO_TEST_CASE(test_object_detector_train) {
@@ -388,11 +399,10 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
   // ownership of the mocks created above.
 
   auto create_iterator_impl = [&](gl_sframe data,
-                                  std::string annotations_column_name,
-                                  std::string image_column_name, bool repeat) {
+                                  std::vector<std::string> class_labels,
+                                  bool repeat) {
 
-    TS_ASSERT_EQUALS(annotations_column_name, test_annotations_name);
-    TS_ASSERT_EQUALS(image_column_name, test_image_name);
+    TS_ASSERT(class_labels.empty());  // Should infer class labels from data.
     TS_ASSERT(repeat);
 
     return std::move(mock_iterator);
@@ -457,6 +467,14 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
   auto create_compute_context_impl = [&] { return std::move(mock_context); };
   model.create_compute_context_calls_.push_back(create_compute_context_impl);
 
+  // Training will trigger a call to evaluation, to compute training metrics.
+  auto perform_evaluation_impl = [&](gl_sframe data, std::string metric) {
+    std::map<std::string, variant_type> result;
+    result["mean_average_precision"] = 0.80f;
+    return result;
+  };
+  model.perform_evaluation_calls_.push_back(perform_evaluation_impl);
+
   // Create an arbitrary SFrame with test_num_examples rows, since
   // object_detector uses the number of rows to compute num_examples, which is
   // used as a normalizer.
@@ -464,7 +482,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
 
   // Now, actually invoke object_detector::train. This will trigger all the
   // assertions registered above.
-  model.train(data, test_annotations_name, test_image_name,
+  model.train(data, test_annotations_name, test_image_name, gl_sframe(),
               { { "mlmodel_path",   test_mlmodel_path   },
                 { "batch_size",     test_batch_size     },
                 { "max_iterations", test_max_iterations }, });
@@ -487,6 +505,8 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
                    test_max_iterations);
   TS_ASSERT_EQUALS(model.get_field<flex_int>("training_epochs"),
                    test_max_iterations * test_batch_size / test_num_examples);
+  TS_ASSERT_EQUALS(
+      model.get_field<flex_float>("training_mean_average_precision"), 0.8f);
 
   // Deconstructing `model` here will assert that every expected call to a
   // mocked-out method has been called.

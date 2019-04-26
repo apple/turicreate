@@ -9,10 +9,8 @@ from __future__ import absolute_import as _
 
 import turicreate as _tc
 from turicreate.data_structures.sgraph import SGraph as _SGraph
-import turicreate.toolkits._main as _main
 from turicreate.toolkits.graph_analytics._model_base import GraphAnalyticsModel as _ModelBase
 from turicreate.util import _raise_error_if_not_of_type
-from turicreate.cython.cy_server import QuietProgress
 
 
 class LabelPropagationModel(_ModelBase):
@@ -249,6 +247,8 @@ def create(graph, label_field,
     --------
     LabelPropagationModel
     """
+    from turicreate._cython.cy_server import QuietProgress
+
     _raise_error_if_not_of_type(label_field, str)
     _raise_error_if_not_of_type(weight_field, str)
 

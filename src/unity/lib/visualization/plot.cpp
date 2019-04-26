@@ -22,9 +22,13 @@ namespace turi{
 
       ::turi::visualization::run_thread([self, path_to_client, variation]() {
         process_wrapper ew(path_to_client);
-        ew << "{\"vega_spec\": " << self->get_spec(variation) << "}\n";
 
-        while(ew.good()) {
+        // Include the first batch of data in the initial spec.
+        // Batch size is dependent on specific plot type & data.
+        ew << "{\"vega_spec\": " << self->get_spec(variation, true /* include_data */) << "}\n";
+
+        // If the plot is done rendering, we can skip sending data_spec after vega_spec.
+        while(!self->m_transformer->eof() && ew.good()) {
           vega_data vd;
 
           vd << self->m_transformer->get()->vega_column_data();
@@ -33,10 +37,6 @@ namespace turi{
           double percent_complete = num_rows_processed/self->m_size_array;
 
           ew << "{\"data_spec\": " << vd.get_data_spec(percent_complete) << "}\n";
-
-          if (self->m_transformer->eof()) {
-             break;
-          }
         }
       });
     }

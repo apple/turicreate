@@ -25,12 +25,17 @@ sentiment for each aspect. For example, when studying reviews about
 mobile phones you may be interested in how people feel about aspects
 such as battery life, screen resolution, size, etc.
 
+#### Loading Data
+
+The [SMS Spam Collection Dataset](https://archive.ics.uci.edu/ml/datasets/SMS+Spam+Collection) provides more than five thousand labeled text messages.[<sup>1</sup>](../datasets.md) After downloading and decompressing the dataset, move the `SMSSpamCollection` file to your project directory.
+
+
 #### Introductory Example
 
 Let's now take a look at a simple example of sentiment analysis where
 the task is to predict whether it contains positive or negative
 sentiment.  For instance, the model will predict "positive sentiment"
-for a snippet of text -- whether it is a movie review or a tweet -- when
+for a snippet of text -- whether it is a text message, movie review or a tweet -- when
 it contains words like "awesome" and "fantastic". Likewise, having many
 words with a negative connotation will yield a prediction of "negative
 sentiment".
@@ -38,22 +43,30 @@ sentiment".
 ```python
 import turicreate as tc
 
-# Load data
-data = tc.SFrame('ratings_data.csv')
+# Only load the first two columns from csv
+data = tc.SFrame.read_csv('SMSSpamCollection', header=False, delimiter='\t', quote_char='\0')
 
-# Create a model
-model = tc.text_classifier.create(data, 'rating', features=['text'])
+# Rename the columns
+data = data.rename({'X1': 'label', 'X2': 'text'})
 
-# Make predictions & evaluation the model
-predictions = model.predict(data)
-results = model.evaluate(data)
+# Split the data into training and testing
+training_data, test_data = data.random_split(0.8)
+
+# Create a model using higher max_iterations than default
+model = tc.text_classifier.create(training_data, 'label', features=['text'], max_iterations=100)
+
+# Save predictions to an SArray
+predictions = model.predict(test_data)
+
+# Make evaluation the model
+metrics = model.evaluate(test_data)
+print(metrics['accuracy'])
 
 # Save the model for later use in Turi Create
-model.save('MyTextClassifier.model')
+model.save('MyTextMessageClassifier.model')
 
 # Export for use in Core ML
-model.export_coreml('MySentenceClassifier.mlmodel')
-
+model.export_coreml('MyTextMessageClassifier.mlmodel')
 ```
 
 #### How it works
@@ -84,7 +97,7 @@ classifier = model.classifier
 You can use the trained text classifier in Xcode by exporting it to Core ML. Exporting is done by:
 
 ```python
-model.export_coreml('MySentenceClassifier.mlmodel')
+model.export_coreml('MyTextMessageClassifier.mlmodel')
 ```
 
 Dragging the saved model into Xcode and inspecting it looks like the following:

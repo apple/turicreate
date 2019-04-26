@@ -8,7 +8,7 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import numpy as _np
 import turicreate as _tc
-import mxnet as _mx
+from .._mxnet import mxnet as _mx
 from six.moves.queue import Queue as _Queue
 from threading import Thread as _Thread
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
@@ -16,7 +16,7 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 _TMP_COL_RANDOM_ORDER = '_random_order'
 
 # Encapsulates an SFrame, iterating over each row and returning an
-# (image, label, index) tuple.
+# (example, label, index) tuple.
 class _SFrameDataSource:
     def __init__(self, sframe, feature_column, target_column,
                  load_labels=True, shuffle=True, samples=None):
@@ -46,26 +46,28 @@ class _SFrameDataSource:
         # If we're about to begin a new epoch, shuffle the SFrame if requested.
         row_index = self.cur_sample % len(self.sframe)
         if row_index == 0 and self.cur_sample > 0 and self.shuffle:
-            self.sframe[_TMP_COL_RANDOM_ORDER] = _np.random.uniform(size=len(self.sframe))
+            self.sframe[_TMP_COL_RANDOM_ORDER] = _np.random.uniform(
+                size = len(self.sframe))
             self.sframe = self.sframe.sort(_TMP_COL_RANDOM_ORDER)
         self.cur_sample += 1
 
         # Copy the image data for this row into a NumPy array.
         row = self.sframe[row_index]
 
+        bitmap_width, bitmap_height = 28, 28
         drawing_feature = row[self.feature_column]
-        is_stroke_input = (type(drawing_feature) != _tc.Image)
+        is_stroke_input = (not isinstance(drawing_feature, _tc.Image))
         if is_stroke_input:
-            pixels_01 = drawing_feature.pixel_data.reshape(1, 28, 28) / 255.
+            pixels_01 = drawing_feature.pixel_data.reshape(
+                1, bitmap_width, bitmap_height) / 255.
         else:
-            image = _tc.image_analysis.resize(drawing_feature, 28, 28, 1)
-            pixels_01 = image.pixel_data.reshape(1, 28, 28) / 255.
+            image = _tc.image_analysis.resize(
+                drawing_feature, bitmap_width, bitmap_height, 1)
+            pixels_01 = image.pixel_data.reshape(
+                1, bitmap_width, bitmap_height) / 255.
         
-        if self.load_labels:
-            label = row[self.target_column]
-        else:
-            label = None
-
+        label = row[self.target_column] if self.load_labels else None
+        
         return pixels_01, label, row_index
 
     def reset(self):
@@ -78,12 +80,12 @@ class SFrameClassifierIter(_mx.io.DataIter):
                  batch_size,
                  class_to_index,
                  input_shape = [28,28],
-                 feature_column='bitmap',
-                 target_column='label',
+                 feature_column="drawing",
+                 target_column="label",
                  load_labels=True,
                  shuffle=True,
-                 epochs=None,
-                 iterations=None):
+                 iterations=None,
+                 training_steps=None):
 
         # Some checks (these errors are not well-reported by the threads)
         # @TODO: this check must be activated in some shape or form
@@ -91,26 +93,29 @@ class SFrameClassifierIter(_mx.io.DataIter):
         #     raise ValueError('Feature column must be of type Image')
 
         self.batch_size = batch_size
+        self.dataset_size = len(sframe)
         self.input_shape = input_shape
         self.class_to_index = class_to_index
-        self.cur_iteration = 0
-        self.num_epochs = epochs
+        self.cur_step = 0
+        self.load_labels = load_labels
         self.num_iterations = iterations
+        self.num_steps = training_steps
 
         # Compute the number of times we'll read a row from the SFrame.
         sample_limits = []
+        if training_steps is not None:
+            sample_limits.append(training_steps * batch_size)
         if iterations is not None:
-            sample_limits.append(iterations * batch_size)
-        if epochs is not None:
-            sample_limits.append(epochs * len(sframe))
+            sample_limits.append(iterations * len(sframe))
         samples = min(sample_limits) if len(sample_limits) > 0 else None
         self.data_source = _SFrameDataSource(
             sframe, feature_column, target_column,
-            load_labels=load_labels, shuffle=shuffle, samples=samples)
+            load_labels = load_labels, shuffle = shuffle, samples = samples)
 
         self._provide_data = [
             _mx.io.DataDesc(name=feature_column,
-                            shape=(batch_size, 1, 28, 28),
+                            shape=(batch_size, 1, 
+                                self.input_shape[0], self.input_shape[1]),
                             layout='NCHW')
         ]
 
@@ -125,7 +130,7 @@ class SFrameClassifierIter(_mx.io.DataIter):
 
     def reset(self):
         self.data_source.reset()
-        self.cur_iteration = 0
+        self.cur_step = 0
 
     def __next__(self):
         return self._next()
@@ -145,7 +150,7 @@ class SFrameClassifierIter(_mx.io.DataIter):
         images = []
         labels = []
         classes = []
-        if self.cur_iteration == self.num_iterations:
+        if self.cur_step == self.num_steps:
             raise StopIteration
 
         pad = None
@@ -161,19 +166,25 @@ class SFrameClassifierIter(_mx.io.DataIter):
                     pad = self.batch_size - b
                     for p in range(pad):
                         images.append(_mx.nd.zeros(images[0].shape))
-                        labels.append(0)
+                        if self.load_labels:
+                            labels.append(0)
                     break
 
             raw_image, label, cur_sample = row
-
+            # label will be None if self.load_labels is False
+            
             image = _mx.nd.array(raw_image)
             images.append(image)
-            labels.append(self.class_to_index[label])
+            if self.load_labels:
+                labels.append(self.class_to_index[label])
             
         b_images = _mx.nd.stack(*images)
-        b_labels = _mx.nd.array(labels, dtype='int32')
-
-        batch = _mx.io.DataBatch([b_images], [b_labels], pad=pad)
-        batch.iteration = self.cur_iteration
-        self.cur_iteration += 1
+        if self.load_labels:
+            b_labels = _mx.nd.array(labels, dtype='int32')
+            batch = _mx.io.DataBatch([b_images], [b_labels], pad=pad)
+        else:
+            batch = _mx.io.DataBatch([b_images], pad=pad)
+        batch.training_step = self.cur_step
+        batch.iteration = int(batch.training_step * self.batch_size / self.dataset_size)
+        self.cur_step += 1
         return batch

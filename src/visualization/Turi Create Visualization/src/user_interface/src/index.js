@@ -68,6 +68,7 @@ window.setSpec = function setSpec(value) {
     resetDisplay();
     switch(value.type) {
         case "vega":
+            document.getElementById("loading_container").style.display = "none";
             document.getElementById('vega_vis').style.display = 'block';
             component_rendered = ReactDOM.render(<TcPlot vega_spec={value.data} />, document.getElementById('vega_vis'));
             spec_type = SpecType.vega;
@@ -111,8 +112,13 @@ window.setProtoMessage = function setProtoMessage(value){
             const row_index = decoded["data"]["data"][i]["rowIndex"];
             const type = decoded["data"]["data"][i]["images"][0]["type"];
             const data = decoded["data"]["data"][i]["images"][0]["imgData"];
+            
+            const width = decoded["data"]["data"][i]["images"][0]["width"];
+            const height = decoded["data"]["data"][i]["images"][0]["height"];
+
             const image = "data:image/" + type + ";base64," + data;
-            component_rendered.setImageData(row_index, image);
+
+            component_rendered.setImageData(row_index, image, width, height);
         }
     } else if(decoded.hasOwnProperty('annotations')) {
         for (var i = 0; i < decoded["annotations"]["annotation"].length; i++) {

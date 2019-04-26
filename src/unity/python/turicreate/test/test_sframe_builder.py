@@ -11,7 +11,7 @@ from ..data_structures.sframe import SFrame
 import unittest
 import array
 import datetime as dt
-from ..util.timezone import GMT
+from .._cython.cy_flexible_type import GMT
 from ..util import _assert_sframe_equal
 
 class SFrameBuilderTest(unittest.TestCase):

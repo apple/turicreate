@@ -28,6 +28,7 @@
 #include <unity/toolkits/sparse_similarity/similarities.hpp>
 #include <table_printer/table_printer.hpp>
 #include <unity/toolkits/coreml_export/mlmodel_include.hpp>
+#include <util/try_finally.hpp>
 
 namespace turi { namespace recsys {
 
@@ -793,7 +794,7 @@ sframe recsys_itemcf::get_similar_items(
   #pragma clang diagnostic ignored "-Wswitch"
 #endif
 
-void recsys_itemcf::export_to_coreml(const std::string& filename) {
+std::shared_ptr<coreml::MLModelWrapper> recsys_itemcf::export_to_coreml(const std::string& filename) {
 
   std::shared_ptr<CoreML::Model> coreml_model = std::make_shared<CoreML::Model>(
       std::string("Item Similarity Recommender Model exported from Turi Create ") + __UNITY_VERSION__);
@@ -879,8 +880,31 @@ void recsys_itemcf::export_to_coreml(const std::string& filename) {
   auto bytes_value = CoreML::Specification::CustomModel::CustomModelParamValue();
 
   std::stringstream ss;
-  this->save_model_to_data(ss);
+
+  // Swap out the user data, as this doesn't need to get exported with the model.
+  auto metadata_bk = this->metadata;
+  auto trained_user_items_bk = this->trained_user_items; 
+
+  { 
+    scoped_finally metadata_guard([&](){ 
+        this->metadata = metadata_bk; 
+        this->trained_user_items = trained_user_items_bk;
+        });
+  
+    this->trained_user_items.reset(new sarray<std::vector<std::pair<size_t, double> > > );
+    this->trained_user_items->open_for_write();
+    this->trained_user_items->close();
+
+    this->metadata = this->metadata->select_columns(
+        {this->metadata->column_name(0), this->metadata->column_name(1)},
+        true, 
+        {this->metadata->column_name(USER_COLUMN_INDEX)});
+
+    this->save_model_to_data(ss);
+  }
+
   bytes_value.set_bytesvalue(ss.str());
+
   (*custom_model_parameters)["turi_create_model"] = bytes_value;
 
   if (filename != "") {
@@ -889,6 +913,8 @@ void recsys_itemcf::export_to_coreml(const std::string& filename) {
       log_and_throw(r.message());
     }
   }
+
+  return std::make_shared<coreml::MLModelWrapper>(coreml_model);
 
 }
 

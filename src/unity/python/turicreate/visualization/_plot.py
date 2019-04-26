@@ -29,6 +29,13 @@ def _get_client_app_path():
     if _sys.platform == 'linux2' or _sys.platform == 'linux':
         return _os.path.join(tcviz_dir, 'Turi Create Visualization', 'visualization_client')
 
+def _focus_client_app():
+    scpt = '''
+            delay .5
+            tell application \"Turi Create Visualization\" to activate
+            '''
+    focus = _Popen(['osascript', '-'], stdout=_PIPE, stdin=_PIPE)
+    focus.communicate(scpt)
 
 def _run_cmdline(command):
     # runs a shell command

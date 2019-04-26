@@ -2,7 +2,6 @@ coremltools==2.1.0
 scipy==0.19.1
 numpy==1.11.1
 cython==0.24
-Jinja2==2.8
 argparse==1.2.1
 decorator==4.1.2
 mock==2.0.0

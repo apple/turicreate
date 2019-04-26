@@ -8,21 +8,48 @@ $imgMargin:17;
 }
 
 .ImageContainer {
+  position: relative;
   width: $imgSize + px;
   height: $imgSize + px;
   margin: $imgMargin + px;
   display: inline-block;
   line-height: $imgSize + px;
+  overflow: hidden;
   text-align: center;
   color: #FFF;
   box-shadow: 0 0 10px 0 rgba(#000, 0.1);
 }
 
-.realImage{
-  background: #333333;
+.selected{
+  box-shadow:0px 0px 0px 5px #007AFF inset;
 }
 
-.ImageContainer > div {
+.realImage{
+  background:rgba(0, 0, 0, 0);
+  cursor: pointer;
+}
+
+.ImageContainerSource{
+  position: absolute;
+  z-index: -1;
+}
+
+.ImageLabel{
+  position: absolute;
+  bottom:0px;
+  left: 0px;
+  padding: 10px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  background: #E0E6EE;
+  font-family: Helvetica;
+  font-size: 12px;
+  color: #484856;
+  line-height: 18px;
+  border-radius: 0px 4px 0px 0px;
+}
+
+.bouncer {
   width: 5px;
   height: 5px;
   margin: 5px;

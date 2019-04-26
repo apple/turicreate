@@ -302,11 +302,53 @@ void column_unique_indexer::load_version(turi::iarchive& iarc, size_t version) {
   std::map<std::string, variant_type> data;
   data = variant_get_value<decltype(data)>(data_v);
 
-  values_by_index_lookup
-      = variant_get_value<decltype(values_by_index_lookup)>(
-          data["values_by_index_lookup"]);
+  set_values(variant_get_value<std::vector<flexible_type> >(
+          data["values_by_index_lookup"]));
 
   _column_size = variant_get_value<size_t>(data["column_size"]);
+}
+
+/** Returns a lambda function that can be used as a lambda function for indexing
+ *  a column.
+ *
+ *  Does not add any new index values.
+ */
+std::function<flexible_type(const flexible_type&)> column_unique_indexer::deindexing_lambda() const {
+  return [this](const flexible_type& v) -> flexible_type {
+    DASSERT_EQ(v.get_type(), flex_type_enum::INTEGER);
+    return flexible_type(this->map_index_to_value(v.get<flex_int>()));
+  };
+}
+
+/** Returns a lambda function that can be used as a lambda function for indexing
+ *  a column.
+ *
+ *  Does not add any new index values.
+ */
+std::function<flexible_type(const flexible_type&)> column_unique_indexer::indexing_lambda() const {
+  return [this](const flexible_type& v) -> flexible_type {
+    return flexible_type(flex_int(this->immutable_map_value_to_index(v)));
+  };
+}
+
+
+
+// Reset and return all the values in the index.
+std::vector<flexible_type> column_unique_indexer::reset_and_return_values() {
+  // Clear out the hash indexing.
+  index_by_values_lookup.clear();
+
+  std::vector<flexible_type> ret;
+  ret.swap(values_by_index_lookup);
+
+  return ret;
+}
+
+
+// Set the values from a prior index.
+void column_unique_indexer::set_values(std::vector<flexible_type>&& values) {
+
+  values_by_index_lookup = values;
 
   // Now, we need to rebuild the index.
   if(mode == ml_column_mode::CATEGORICAL
@@ -314,7 +356,9 @@ void column_unique_indexer::load_version(turi::iarchive& iarc, size_t version) {
      || mode == ml_column_mode::DICTIONARY) {
 
     // Set the first level of the index_by_values hash lookup
+    index_by_values_lookup.clear();
     index_by_values_lookup.resize(1 << _column_unique_indexer_first_level_lookup_size_n_bits);
+
 
     // Fill the hash table map with the loaded list of values
     in_parallel([&](size_t thread_idx, size_t num_threads) {
@@ -337,5 +381,12 @@ void column_unique_indexer::load_version(turi::iarchive& iarc, size_t version) {
   }
 }
 
-
+  /** Create a copy with the index cleared.
+   */
+  std::shared_ptr<column_indexer> column_unique_indexer::create_cleared_copy() const {
+    auto ret = std::make_shared<column_unique_indexer>(*this); 
+    ret->set_values({});
+    return ret; 
+  } 
+ 
 }}}

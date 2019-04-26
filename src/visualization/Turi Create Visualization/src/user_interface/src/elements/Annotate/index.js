@@ -10,6 +10,7 @@ import SingleImage from './SingleImage';
 import LabelContainer from './LabelContainer';
 import LabelModal from './LabelModal';
 import ErrorBar from './ErrorBar';
+import NavigationBar from './NavigationBar';
 import { LabelType } from './utils';
 
 const DEFAULT_NUM_EXPECTED = 10;
@@ -31,6 +32,7 @@ class Annotate extends Component {
       LabelModalValue: "",
       imageData: {},
       annotationData: {},
+      infiniteSelected:{},
       labels:[],
       type:null
     }
@@ -96,6 +98,7 @@ class Annotate extends Component {
       }
     }
   }
+  
 
   getData = (start, end) => {
     this.cleanCache(start, end);
@@ -140,13 +143,14 @@ class Annotate extends Component {
     });
   }
 
-  setImageData = (key, value) => {
+  setImageData = (key, value, width, height) => {
     var previousImageData = this.state.imageData;
-    previousImageData[key] = value;
+    previousImageData[key] = {src:value, width:width, height:height};
     this.setState({
       imageData: previousImageData
     });
   }
+
 
   clearError = () => {
     this.setState({
@@ -180,6 +184,26 @@ class Annotate extends Component {
       labelModal: false,
       LabelModalValue: ""
     });
+  }
+
+  addToSelected = (index) => {
+    var infiniteSelected = this.state.infiniteSelected;
+
+    if (infiniteSelected[parseInt(index, 10)]!= null) {
+      delete infiniteSelected[parseInt(index, 10)];
+    } else {
+      infiniteSelected[parseInt(index, 10)] = true;
+    }
+    
+    this.setState({
+      infiniteSelected: infiniteSelected
+    });
+  }
+
+  removeSelected = () => {
+    this.setState({
+      infiniteSelected:{}
+    })
   }
 
   createLabel = (label) => {
@@ -221,13 +245,44 @@ class Annotate extends Component {
     });
   }
 
+  setAnnotationMass = (name) => {
+    const selectedValue = Object.keys(this.state.infiniteSelected);
+    for (var i = 0; i < selectedValue.length; i++) {
+      this.setAnnotation(parseInt(selectedValue[i], 10), name);
+    }
+  }
+
   setAnnotation = (rowIndex, labels) => {
     var previousAnnotationData = this.state.annotationData;
-    previousAnnotationData[rowIndex] = labels;
+    var previousLabelData = this.state.labels;
+    var previousLabel = previousAnnotationData[rowIndex];
 
-    this.setState({
-      annotationData: previousAnnotationData
-    });
+    if(previousLabel == labels){
+      return;
+    }
+
+    if(previousLabel != null){
+      for (var x = 0; x < previousLabelData.length; x++) {
+        if(this.state.labels[x].name == previousLabel) {
+          var tempLabel = previousLabelData[x];
+          tempLabel.num_annotated -= 1;
+          previousLabelData[x] = tempLabel;
+        }
+
+        if(this.state.labels[x].name == labels){
+          var tempLabel = previousLabelData[x];
+          tempLabel.num_annotated += 1;
+          previousLabelData[x] = tempLabel;
+        }
+      }
+    }
+
+    if (this.state.type == LabelType.STRING) {
+      previousAnnotationData[rowIndex] = labels;
+    } else if(this.state.type == LabelType.INTEGER) {
+      previousAnnotationData[rowIndex] = parseInt(labels, 10);
+    }
+
 
     const root = Root.fromJSON(messageFormat);
     const ParcelMessage = root.lookupType("TuriCreate.Annotation.Specification.ClientRequest");
@@ -237,7 +292,7 @@ class Annotate extends Component {
     if (this.state.type == LabelType.STRING) {
       payload = {"annotations": {"annotation":[{"labels": [{"stringLabel": labels}], "rowIndex": [rowIndex]}]}};
     } else {
-      payload = {"annotations": {"annotation":[{"labels": [{"intLabel": labels}], "rowIndex": [rowIndex]}]}};
+      payload = {"annotations": {"annotation":[{"labels": [{"intLabel": parseInt(labels, 10)}], "rowIndex": [rowIndex]}]}};
     }
 
     const err = ParcelMessage.verify(payload);
@@ -254,6 +309,11 @@ class Annotate extends Component {
     } else {
       window.postMessageToNativeClient(encoded);
     }
+
+    this.setState({
+      annotationData: previousAnnotationData,
+      labels:previousLabelData
+    });
   }
 
   renderMainContent = () => {
@@ -263,8 +323,14 @@ class Annotate extends Component {
                         hideAnnotated={this.state.hideAnnotated}
                         incrementalCurrentIndex={this.state.incrementalCurrentIndex}
                         updateIncrementalCurrentIndex={this.updateIncrementalCurrentIndex.bind(this)}
+                        toggleInfiniteScroll={this.toggleInfiniteScroll.bind(this)}
+                        infiniteSelected={this.state.infiniteSelected}
                         imageData={this.state.imageData}
+                        annotationData={this.state.annotationData}
                         getData={this.getData.bind(this)}
+                        type={this.state.type}
+                        addToSelected={this.addToSelected.bind(this)}
+                        removeSelected={this.removeSelected.bind(this)}
                         getAnnotations={this.getAnnotations.bind(this)} />
       );
     } else {
@@ -305,23 +371,31 @@ class Annotate extends Component {
         {this.renderError()}
         <div>
             {/* Add Annotated to Protobuf Message */}
-            <StatusBar annotated={12}
-                       total={this.props.total}
+            <StatusBar total={this.props.metadata.numExamples}
                        infiniteScroll={this.state.infiniteScroll}
                        toggleInfiniteScroll={this.toggleInfiniteScroll.bind(this)}
+                       removeSelected={this.removeSelected.bind(this)}
                        hideAnnotated={this.state.hideAnnotated}
                        toggleHideAnnotated={this.toggleHideAnnotated.bind(this)}/>
 
             {this.renderMainContent()}
+        <NavigationBar infiniteScroll={this.state.infiniteScroll}
+                       toggleInfiniteScroll={this.toggleInfiniteScroll.bind(this)}
+                       updateIncrementalCurrentIndex={this.updateIncrementalCurrentIndex.bind(this)}
+                       getData={this.getData.bind(this)}
+                       getAnnotations={this.getAnnotations.bind(this)}/>
         </div>
         <div className={style.leftBar}>
         <LabelContainer labels={this.state.labels}
                         incrementalCurrentIndex={this.state.incrementalCurrentIndex}
                         infiniteScroll={this.state.infiniteScroll}
+                        infiniteSelected={this.state.infiniteSelected}
                         setAnnotation={this.setAnnotation.bind(this)}
+                        setAnnotationMass={this.setAnnotationMass.bind(this)}
                         openLabelModal={this.openLabelModal.bind(this)}
                         closeLabelModal={this.closeLabelModal.bind(this)}
                         annotationData={this.state.annotationData}/>
+
         </div>
       </div>
     );

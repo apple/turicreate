@@ -10,7 +10,7 @@ from . import util as _util, toolkits as _toolkits, SFrame as _SFrame, SArray as
     SGraph as _SGraph, load_sgraph as _load_graph
 
 from .util import _get_aws_credentials as _util_get_aws_credentials, \
-    cloudpickle as _cloudpickle
+    _cloudpickle
 
 import pickle as _pickle
 import uuid as _uuid
