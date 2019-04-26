@@ -35,14 +35,10 @@ gl_sarray featurize_images(const gl_sarray &images) {
 
 float vectors_distance(const std::vector<double> &a,
                        const std::vector<double> &b) {
-  std::vector<double> auxiliary;
-  std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(auxiliary),
-                 [](double element1, double element2) {
-                   return pow((element1 - element2), 2);
-                 });
-  auxiliary.shrink_to_fit();
-  return ((float)(std::sqrt(
-      std::accumulate(auxiliary.begin(), auxiliary.end(), 0.0))));
+	DASSERT_EQ(a.size(), b.size()); 
+	double acc = 0;
+	for(size_t i = 0; i < a.size(); ++i) { acc += std::pow(a[i] - b[i], 2); }
+	return std::sqrt(acc);
 }
 
 /**
@@ -59,6 +55,7 @@ std::vector<flexible_type> similar_items(const gl_sarray &distances,
             vectors_distance(target_vector, a.get<flex_vec>()));
       },
       flex_type_enum::FLOAT);
+  
   calculated_distances.materialize();
   std::vector<flexible_type> indicies(distances.size());
   std::iota(indicies.begin(), indicies.end(), 0);
