@@ -15,11 +15,11 @@
 
 // Toolkits
 #include <optimization/optimization_interface.hpp>
-#include <toolkits/supervised_learning/xgboost.hpp>
-#include <toolkits/supervised_learning/supervised_learning.hpp>
-#include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
-#include <toolkits/supervised_learning/classifier_evaluations.hpp>
-#include <toolkits/supervised_learning/automatic_model_creation.hpp>
+#include <unity/toolkits/supervised_learning/xgboost.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <unity/toolkits/supervised_learning/classifier_evaluations.hpp>
+#include <unity/toolkits/supervised_learning/automatic_model_creation.hpp>
 
 // ML Data
 #include <ml_data/ml_data_iterator.hpp>
@@ -477,13 +477,13 @@ supervised_learning_model_base::predict(const ml_data& test_data,
       // Dense predict.
       if (this->is_dense()) {
         fill_reference_encoding(*it, x);
-        x(variables - 1) = 1;
+        x.coeffRef(variables - 1) = 1;
         preds = predict_single_example(x, output_type_enum);
 
       // Sparse predict.
       } else {
         fill_reference_encoding(*it, x_sp);
-        x_sp.insert(variables - 1, 1);
+        x_sp.coeffRef(variables - 1) = 1;
         preds = predict_single_example(x_sp, output_type_enum);
       }
 
@@ -519,6 +519,9 @@ gl_sarray supervised_learning_model_base::fast_predict(
   } else if (output_type == "probability_vector"){
     ret_type = flex_type_enum::VECTOR;
   } else {
+    if (output_type == "probability" && variant_get_value<size_t>(state.at("num_classes")) > 2) {
+      log_and_throw("Output type 'probability' is only supported for binary classification. For multi-class classification, use predict_topk() instead.");
+    }
     ret_type = flex_type_enum::FLOAT;
   }
   gl_sarray_writer writer(ret_type, 1 /* 1 segment */);
@@ -536,14 +539,14 @@ gl_sarray supervised_learning_model_base::fast_predict(
       DenseVector dense_vec(variables);
       fill_reference_encoding(ml_data_row_reference::from_row(
                this->ml_mdata, row.get<flex_dict>(), na_enum), dense_vec);
-      dense_vec(variables - 1) = 1;
+      dense_vec.coeffRef(variables - 1) = 1;
       flexible_type pred = predict_single_example(dense_vec, pred_type_enum);
       writer.write(pred, 0);
     } else {
       SparseVector sparse_vec(variables);
       fill_reference_encoding(ml_data_row_reference::from_row(
                this->ml_mdata, row.get<flex_dict>(), na_enum), sparse_vec);
-      sparse_vec.insert(variables - 1, 1);
+      sparse_vec.coeffRef(variables - 1) = 1;
       flexible_type pred = predict_single_example(sparse_vec, pred_type_enum);
       writer.write(pred, 0);
     }
@@ -645,12 +648,12 @@ sframe supervised_learning_model_base::predict_topk(
       // Dense predict.
       if (this->is_dense()) {
         fill_reference_encoding(*it, x);
-        x(variables-1) = 1;
+        x.coeffRef(variables-1) = 1;
 	      preds = predict_single_example(x, output_type_enum);
       // Sparse predict.
       } else {
         fill_reference_encoding(*it, x_sp);
-        x_sp.insert(variables-1, 1);
+        x_sp.coeffRef(variables-1) = 1;
 	      preds = predict_single_example(x_sp, output_type_enum);
       }
 
@@ -695,7 +698,8 @@ sframe supervised_learning_model_base::predict_topk(
  */
 std::map<std::string, variant_type> supervised_learning_model_base::evaluate(
             const ml_data& test_data,
-            const std::string& evaluation_type){
+            const std::string& evaluation_type,
+            bool with_prediction){
 
   // Timers.
   timer t;
@@ -772,12 +776,34 @@ std::map<std::string, variant_type> supervised_learning_model_base::evaluate(
   for(size_t i=0; i < evaluators.size(); i++){
     evaluators[i]->init(n_threads);
   }
+  
+
+  std::shared_ptr<sarray<flexible_type>> prob_vectors = std::make_shared<sarray<flexible_type>>();
+  std::shared_ptr<sarray<flexible_type>> predicted_classes = std::make_shared<sarray<flexible_type>>();
+  
+  if (contains_prob_evaluator) {
+    // Save predictions as probability vectors  
+    prob_vectors->open_for_write(n_threads);
+    prob_vectors->set_type(flex_type_enum::VECTOR);
+
+    predicted_classes->open_for_write(n_threads);
+    predicted_classes->set_type((this->ml_mdata)->target_column_type());
+  }
 
   // Go through evaluators that require the predicted class.
   in_parallel([&](size_t thread_idx, size_t num_threads){
     flexible_type true_value, predicted_value, prob_vector;
     DenseVector x(variables);
     SparseVector x_sp(variables);
+    
+    sarray<flexible_type>::iterator writer_probs;
+    sarray<flexible_type>::iterator writer_classes;
+
+    if (contains_prob_evaluator) {
+      writer_probs = prob_vectors->get_output_iterator(thread_idx);
+      writer_classes = predicted_classes->get_output_iterator(thread_idx);
+    }
+
     for(auto it = test_data.get_iterator(thread_idx, num_threads);
                                                        !it.done(); ++it) {
       // Classifiers.
@@ -786,7 +812,7 @@ std::map<std::string, variant_type> supervised_learning_model_base::evaluate(
         // Dense predict.
         if (is_dense) {
           fill_reference_encoding(*it, x);
-          x(variables-1) = 1;
+          x.coeffRef(variables-1) = 1;
 	        predicted_value = predict_single_example(x,
                                       prediction_type_enum::CLASS_INDEX);
           if (contains_prob_evaluator) {
@@ -796,7 +822,7 @@ std::map<std::string, variant_type> supervised_learning_model_base::evaluate(
         // Sparse predict.
         } else {
           fill_reference_encoding(*it, x_sp);
-          x_sp.insert(variables-1, 1);
+          x_sp.coeffRef(variables-1) = 1;
 	        predicted_value = predict_single_example(x_sp,
                                       prediction_type_enum::CLASS_INDEX);
           if (contains_prob_evaluator) {
@@ -804,6 +830,21 @@ std::map<std::string, variant_type> supervised_learning_model_base::evaluate(
                                  prediction_type_enum::PROBABILITY_VECTOR);
           }
         }
+        
+        if (contains_prob_evaluator) {
+          double max_prob = 0;
+          for(size_t i = 0; i < prob_vector.size(); i++){
+            if (max_prob < prob_vector[i]) {
+              max_prob = prob_vector[i];
+              predicted_value = i;
+            }
+          }
+          *writer_probs = prob_vector;
+          ++writer_probs;
+          *writer_classes = (this->ml_mdata)->target_indexer()->map_index_to_value(predicted_value);
+          ++writer_classes;
+        }
+
         true_value = it->target_index();
       // Regression.
       } else {
@@ -811,13 +852,13 @@ std::map<std::string, variant_type> supervised_learning_model_base::evaluate(
         // Dense predict.
         if (is_dense) {
           fill_reference_encoding(*it, x);
-          x(variables-1) = 1;
+          x.coeffRef(variables-1) = 1;
 	        predicted_value = predict_single_example(x);
 
         // Sparse predict.
         } else {
           fill_reference_encoding(*it, x_sp);
-          x_sp.insert(variables-1, 1);
+          x_sp.coeffRef(variables-1) = 1;
 	        predicted_value = predict_single_example(x_sp);
         }
         true_value = it->target_value();
@@ -841,10 +882,23 @@ std::map<std::string, variant_type> supervised_learning_model_base::evaluate(
     }
   });
 
+  if (contains_prob_evaluator) {
+    prob_vectors->close();
+    predicted_classes->close();
+  }
+
   // Get results
   std::map<std::string, variant_type> results;
   for(size_t i=0; i < evaluators.size(); i++){
       results[evaluator_names[i]] = evaluators[i]->get_metric();
+  }
+
+  
+  if (contains_prob_evaluator && with_prediction) {
+    gl_sframe sf_predictions;
+    sf_predictions.add_column(prob_vectors, "probs");
+    sf_predictions.add_column(predicted_classes, "class");
+    results["predictions"] = sf_predictions;
   }
 
   logstream(LOG_INFO) << "Evaluation done at "
@@ -959,7 +1013,6 @@ void supervised_learning_model_base::api_train(
 
   gl_sframe validation_data;
   std::tie(data, validation_data) = create_validation_data(data, _validation_data);
-  add_or_update_state({{"validation_data", validation_data}});
 
   gl_sframe f_data = data;
   f_data.remove_column(target);
@@ -976,6 +1029,7 @@ void supervised_learning_model_base::api_train(
         log_and_throw("Empty feature set has been specified");
       }
       f_data = f_data.select_columns(ftv);
+
       options.erase(ft_it);
     }
   }
@@ -983,6 +1037,8 @@ void supervised_learning_model_base::api_train(
   sframe X = f_data.materialize_to_sframe(); 
     
   sframe y = data.select_columns({target}).materialize_to_sframe();
+    
+  check_target_column_type(this->name(), y);
 
   ml_missing_value_action missing_value_action =
     this->support_missing_value() ? ml_missing_value_action::USE_NAN
@@ -992,14 +1048,19 @@ void supervised_learning_model_base::api_train(
 
   if(validation_data.num_columns() != 0) {
 
-    gl_sframe f_v_data = validation_data;
-    f_v_data.remove_column(target);
-    valid_X = f_v_data.materialize_to_sframe(); 
+    valid_X = validation_data.select_columns(f_data.column_names()).materialize_to_sframe();
     
     valid_y = validation_data.select_columns({target}).materialize_to_sframe();
-    
+      
     check_target_column_type(this->name(), valid_y);
+
+    auto valid_filter_names = f_data.column_names();
+    valid_filter_names.push_back(target);
+    validation_data = validation_data.select_columns(valid_filter_names);
   }
+
+  // Add it to the state, even if it's empty.  
+  add_or_update_state({{"validation_data", validation_data}});
 
   this->init(X, y, valid_X, valid_y, missing_value_action);
 
@@ -1107,7 +1168,9 @@ gl_sframe supervised_learning_model_base::api_classify(
  *  Evaluate the model
  */
 variant_map_type supervised_learning_model_base::api_evaluate(
-    gl_sframe data, std::string missing_value_action_str, std::string metric) {
+    gl_sframe data, std::string missing_value_action_str, std::string metric,
+    gl_sarray predictions, bool with_prediction) {
+
   auto model = std::dynamic_pointer_cast<supervised_learning_model_base>(
       shared_from_this());
   ml_missing_value_action missing_value_action =
@@ -1129,14 +1192,18 @@ variant_map_type supervised_learning_model_base::api_evaluate(
       gl_sframe out;
 
       out["class"] = data[variant_get_ref<flexible_type>(state.at("target")).get<flex_string>()];
-      out["predicted_class"] = api_predict(data, missing_value_action_str, "class");
+      if(predictions.empty()) {
+        out[pred_column] = api_predict(data, missing_value_action_str, "class");
+      } else {
+        out[pred_column] = predictions;
+      }
 
-      variant_map_type ret = evaluate(m_data, "auto");
+      variant_map_type ret = evaluate(m_data, "auto", with_prediction);
 
       ret["confusion_matrix"] = confusion_matrix(out, target, pred_column);
       ret["report_by_class"] = classifier_report_by_class(out, target, pred_column);
       ret["accuracy"] =
-          double((out["class"] == out["predicted_class"]).sum()) / out.size();
+          double((out["class"] == out[pred_column]).sum()) / out.size();
 
       return ret;
 
@@ -1145,7 +1212,7 @@ variant_map_type supervised_learning_model_base::api_evaluate(
     }
   }
 
-  variant_map_type results = evaluate(m_data, metric);
+  variant_map_type results = evaluate(m_data, metric, with_prediction);
   return results;
 }
 

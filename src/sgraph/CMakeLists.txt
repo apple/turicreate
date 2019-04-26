@@ -1,6 +1,6 @@
 project(sgraph)
 
-make_library(sgraph
+make_library(sgraph OBJECT
   SOURCES
     sgraph.cpp
     sgraph_triple_apply.cpp
@@ -9,5 +9,5 @@ make_library(sgraph
     sgraph_constants.cpp
   REQUIRES
     flexible_type sframe pylambda sparsehash
-    EXTERNAL_VISIBILITY
+  EXTERNAL_VISIBILITY
 )

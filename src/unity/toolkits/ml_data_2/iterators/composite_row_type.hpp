@@ -9,14 +9,14 @@
 #include <vector>
 #include <unity/toolkits/ml_data_2/ml_data_entry.hpp> 
 #include <unity/toolkits/ml_data_2/metadata.hpp> 
-#include <numerics/armadillo.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
 #include <flexible_type/flexible_type.hpp>
 
 namespace turi { namespace v2 {
 
-typedef arma::vec  dense_vector;
-typedef turi::sparse_vector<double, size_t> sparse_vector;
+typedef Eigen::Matrix<double, Eigen::Dynamic,1>  dense_vector;
+typedef Eigen::SparseVector<double> sparse_vector;
 
 class composite_row_specification; 
 

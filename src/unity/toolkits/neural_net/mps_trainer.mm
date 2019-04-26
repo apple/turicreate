@@ -5,29 +5,39 @@
 #include <string>
 #include <unordered_map>
 
+#include <logger/logger.hpp>
 #include <unity/toolkits/neural_net/float_array.hpp>
 
 #import "mps_cnnmodule.h"
+#import "mps_device_manager.h"
 #import "mps_utils.h"
 
-using turi::neural_net::MPSCNNModule;
 using turi::neural_net::external_float_array;
 using turi::neural_net::float_array;
 using turi::neural_net::float_array_map;
 using turi::neural_net::float_array_map_iterator;
 using turi::neural_net::make_array_map;
+using turi::neural_net::mps_cnn_module;
 using turi::neural_net::shared_float_array;
 
 int TCMPSCreateCNNModule(MPSHandle *out) {
+
   API_BEGIN();
-  MPSCNNModule *mps = new MPSCNNModule();
+
+  id <MTLDevice> dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
+  if (!dev) {
+    log_and_throw("No valid Metal device.");
+  }
+
+  mps_cnn_module *mps = new mps_cnn_module(dev);
   *out = (void *)mps;
+
   API_END();
 }
 
 int TCMPSDeleteCNNModule(MPSHandle handle) {
   API_BEGIN();
-  MPSCNNModule *obj = (MPSCNNModule *)handle;
+  mps_cnn_module *obj = reinterpret_cast<mps_cnn_module*>(handle);
   delete obj;
   API_END();
 }
@@ -106,169 +116,103 @@ int TCMPSDeleteFloatArrayMapIterator(TCMPSFloatArrayMapIteratorRef iter) {
   API_END();
 }
 
-int TCMPSForward(MPSHandle handle, TCMPSFloatArrayRef inputs, float *out,
-                 bool is_train) {
-  API_BEGIN();
-  MPSCNNModule *obj = (MPSCNNModule *)handle;
-  float_array* inputs_array = reinterpret_cast<float_array*>(inputs);
-  obj->Forward(*inputs_array, out, is_train);
-  API_END();
-}
-
-int TCMPSBackward(MPSHandle handle, TCMPSFloatArrayRef gradient,
-             float *out) {
-  API_BEGIN();
-  MPSCNNModule *obj = (MPSCNNModule *)handle;
-  float_array* gradient_array = reinterpret_cast<float_array*>(gradient);
-  obj->Backward(*gradient_array, out);
-  API_END();
-}
-
-int TCMPSLoss(MPSHandle handle, TCMPSFloatArrayRef inputs,
-              TCMPSFloatArrayRef labels, TCMPSFloatArrayRef weights,
-              bool loss_image_required, float *out) {
-  API_BEGIN();
-  MPSCNNModule *obj = (MPSCNNModule *)handle;
-  float_array* inputs_array = reinterpret_cast<float_array*>(inputs);
-  float_array* labels_array = reinterpret_cast<float_array*>(labels);
-  float_array* weights_array = reinterpret_cast<float_array*>(weights);
-  obj->Loss(*inputs_array, *labels_array, *weights_array, loss_image_required,
-            out);
-  API_END();
-}
-
-int TCMPSForwardBackward(
-    MPSHandle handle, TCMPSFloatArrayRef inputs, TCMPSFloatArrayRef labels,
-    TCMPSFloatArrayRef weights, bool loss_image_required, float *out) {
-
-  API_BEGIN();
-  MPSCNNModule *obj = (MPSCNNModule *)handle;
-  float_array* inputs_array = reinterpret_cast<float_array*>(inputs);
-  float_array* labels_array = reinterpret_cast<float_array*>(labels);
-  float_array* weights_array = reinterpret_cast<float_array*>(weights);
-  obj->ForwardBackward(*inputs_array, *labels_array, *weights_array,
-                       loss_image_required, out);
-  API_END();
-}
-
-int TCMPSForwardWithLoss(
-    MPSHandle handle, TCMPSFloatArrayRef inputs, TCMPSFloatArrayRef labels,
-    TCMPSFloatArrayRef weights, bool loss_image_required, bool is_train,
-    float *out) {
-
-  API_BEGIN();
-  MPSCNNModule *obj = (MPSCNNModule *)handle;
-  float_array* inputs_array = reinterpret_cast<float_array*>(inputs);
-  float_array* labels_array = reinterpret_cast<float_array*>(labels);
-  float_array* weights_array = reinterpret_cast<float_array*>(weights);
-  obj->Forward(*inputs_array, *labels_array, *weights_array,
-               loss_image_required, is_train, out);
-  API_END();
-}
-
-int TCMPSGetLossImages(MPSHandle handle, float *out) {
-  API_BEGIN();
-  MPSCNNModule *obj = (MPSCNNModule *)handle;
-  obj->GetLossImages(out);
-  API_END();
-}
-
-int TCMPSBeginForwardBatch(
-    MPSHandle handle, int batch_id, TCMPSFloatArrayRef inputs,
-    TCMPSFloatArrayRef labels, TCMPSFloatArrayRef weights,
-    bool loss_image_required, bool is_train) {
-
-  API_BEGIN();
-  MPSCNNModule *obj = reinterpret_cast<MPSCNNModule *>(handle);
-  float_array* inputs_array = reinterpret_cast<float_array*>(inputs);
-  float_array* labels_array = reinterpret_cast<float_array*>(labels);
-  float_array* weights_array = reinterpret_cast<float_array*>(weights);
-  obj->BeginForwardBatch(batch_id, *inputs_array, *labels_array, *weights_array,
-                         loss_image_required, is_train);
-  API_END();
-}
-
-int TCMPSBeginForwardBackwardBatch(
-    MPSHandle handle, int batch_id, TCMPSFloatArrayRef inputs,
-    TCMPSFloatArrayRef labels, TCMPSFloatArrayRef weights,
-    bool loss_image_required) {
-
-  API_BEGIN();
-  MPSCNNModule *obj = reinterpret_cast<MPSCNNModule *>(handle);
-  float_array* inputs_array = reinterpret_cast<float_array*>(inputs);
-  float_array* labels_array = reinterpret_cast<float_array*>(labels);
-  float_array* weights_array = reinterpret_cast<float_array*>(weights);
-  obj->BeginForwardBackwardBatch(batch_id, *inputs_array, *labels_array,
-                                 *weights_array, loss_image_required);
-  API_END();
-}
-
-int TCMPSWaitForBatch(MPSHandle handle, int batch_id, float *forward_out,
-                 float *loss_out) {
-  API_BEGIN();
-  MPSCNNModule *obj = reinterpret_cast<MPSCNNModule *>(handle);
-  obj->WaitForBatch(batch_id, forward_out, loss_out);
-  API_END();
-}
-
-int TCMPSInit(MPSHandle handle, int network_id, int n, int c_in, int h_in, int w_in,
-         int c_out, int h_out, int w_out,  int updater_id,
-         char **config_names, void **config_arrays,
-         int64_t *config_sizes, int config_len) {
+int TCMPSInit(MPSHandle handle, int network_id, int n, int c_in, int h_in,
+              int w_in, int c_out, int h_out, int w_out,  int updater_id,
+              char **config_names, void **config_arrays, int config_len)
+{
   API_BEGIN();
 
   float_array_map config =
-      make_array_map(config_names, config_arrays, config_sizes, config_len);
+      make_array_map(config_names, config_arrays, config_len);
 
-  MPSCNNModule *obj = (MPSCNNModule *)handle;
-  obj->Init(network_id, n, c_in, h_in, w_in, c_out, h_out, w_out, updater_id, config);
+  mps_cnn_module *obj = reinterpret_cast<mps_cnn_module*>(handle);
+  obj->init(network_id, n, c_in, h_in, w_in, c_out, h_out, w_out, updater_id,
+            config);
+
   API_END();
 }
 
-int TCMPSLoad(MPSHandle handle, char **names, void **arrs, int64_t *sz, int len) {
+int TCMPSLoad(MPSHandle handle, char **names, void **arrs, int len) {
   API_BEGIN();
 
-  float_array_map weights = make_array_map(names, arrs, sz, len);
+  float_array_map weights = make_array_map(names, arrs, len);
 
-  MPSCNNModule *obj = (MPSCNNModule *)handle;
-  obj->Load(weights);
-  API_END();
-}
+  mps_cnn_module *obj = reinterpret_cast<mps_cnn_module*>(handle);
+  obj->load(weights);
 
-int TCMPSNumParams(MPSHandle handle, int *num) {
-  API_BEGIN();
-  MPSCNNModule *obj = (MPSCNNModule *)handle;
-  *num = obj->NumParams();
   API_END();
 }
 
 int TCMPSExport(MPSHandle handle,
                 TCMPSFloatArrayMapIteratorRef* float_array_map_out) {
   API_BEGIN();
-  MPSCNNModule *obj = (MPSCNNModule *)handle;
-  auto* float_array_map = new float_array_map_iterator(obj->Export());
+  mps_cnn_module *obj = reinterpret_cast<mps_cnn_module*>(handle);
+  auto* float_array_map = new float_array_map_iterator(obj->export_weights());
   *float_array_map_out =
       reinterpret_cast<TCMPSFloatArrayMapIteratorRef>(float_array_map);
   API_END();
 }
 
-int TCMPSCpuUpdate(MPSHandle handle) {
+int TCMPSPredict(MPSHandle handle, TCMPSFloatArrayRef input,
+                 TCMPSFloatArrayRef labels, TCMPSFloatArrayRef weights,
+                 TCMPSFloatArrayRef* fwd_out, TCMPSFloatArrayRef* loss_out) {
+
   API_BEGIN();
-  MPSCNNModule *obj = (MPSCNNModule *)handle;
-  obj->Update();
+
+  mps_cnn_module *obj = reinterpret_cast<mps_cnn_module*>(handle);
+
+  // This function can be called either on the training model (to compute
+  // validation statistics), or on the prediction model. In the former case, we
+  // expect validation labels and want to compute validation loss.
+  float_array_map inputs;
+  float_array* input_ptr = reinterpret_cast<float_array*>(input);
+  inputs.emplace("input", std::make_shared<external_float_array>(*input_ptr));
+
+  bool loss_image_required = labels != nullptr && weights != nullptr;
+  if (loss_image_required) {
+    float_array* labels_ptr = reinterpret_cast<float_array*>(labels);
+    float_array* weights_ptr = reinterpret_cast<float_array*>(weights);
+    inputs.emplace("labels",
+                   std::make_shared<external_float_array>(*labels_ptr));
+    inputs.emplace("weights",
+                   std::make_shared<external_float_array>(*weights_ptr));
+  }
+
+  // Perform inference.
+  float_array_map outputs = obj->predict(inputs);
+
+  // Extract the desired results.
+  shared_float_array* output = new shared_float_array(outputs.at("output"));
+  *fwd_out = reinterpret_cast<TCMPSFloatArrayRef>(output);
+  if (loss_out != nullptr) {
+    shared_float_array* loss = new shared_float_array(outputs.at("loss"));
+    *loss_out = reinterpret_cast<TCMPSFloatArrayRef>(loss);
+  }
+
   API_END();
 }
 
-int TCMPSUpdate(MPSHandle handle){
-    API_BEGIN();
-    MPSCNNModule *obj = (MPSCNNModule *)handle;
-    obj->GpuUpdate();
-    API_END();
-}
+int TCMPSTrain(MPSHandle handle, TCMPSFloatArrayRef inputs,
+               TCMPSFloatArrayRef labels, TCMPSFloatArrayRef weights,
+               TCMPSFloatArrayRef* fwd_out, TCMPSFloatArrayRef* loss_out) {
 
-int TCMPSSetLearningRate(MPSHandle handle, float new_lr) {
   API_BEGIN();
-  MPSCNNModule *obj = (MPSCNNModule *)handle;
-  obj->SetLearningRate(new_lr);
+  mps_cnn_module *obj = reinterpret_cast<mps_cnn_module*>(handle);
+  float_array* inputs_ptr = reinterpret_cast<float_array*>(inputs);
+  float_array* labels_ptr = reinterpret_cast<float_array*>(labels);
+  float_array* weights_ptr = reinterpret_cast<float_array*>(weights);
+  shared_float_array inputs_array(
+      std::make_shared<external_float_array>(*inputs_ptr));
+  shared_float_array labels_array(
+      std::make_shared<external_float_array>(*labels_ptr));
+  shared_float_array weights_array(
+      std::make_shared<external_float_array>(*weights_ptr));
+  auto outputs = obj->train({ { "input",   inputs_array  },
+                              { "labels",  labels_array  },
+                              { "weights", weights_array }  });
+  shared_float_array* output = new shared_float_array(outputs.at("output"));
+  shared_float_array* loss = new shared_float_array(outputs.at("loss"));
+  *fwd_out = reinterpret_cast<TCMPSFloatArrayRef>(output);
+  *loss_out = reinterpret_cast<TCMPSFloatArrayRef>(loss);
   API_END();
 }

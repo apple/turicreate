@@ -52,7 +52,7 @@ def create(dataset, label = None, feature = None, model = 'resnet-50', verbose =
 
            - "squeezenet_v1.1" : Uses a pretrained squeezenet model.
 
-           - "VisionFeaturePrint_Screen": Uses an OS internal feature extractor.
+           - "VisionFeaturePrint_Scene": Uses an OS internal feature extractor.
                                           Only on available on iOS 12.0+,
                                           macOS 10.14+ and tvOS 12.0+.
 
@@ -105,7 +105,14 @@ def create(dataset, label = None, feature = None, model = 'resnet-50', verbose =
     # Check parameters
     allowed_models = list(_pre_trained_models.MODELS.keys())
     if _mac_ver() >= (10,14):
-        allowed_models.append('VisionFeaturePrint_Screen')
+        allowed_models.append('VisionFeaturePrint_Scene')
+
+        # Also, to make sure existing code doesn't break, replace incorrect name
+        # with the correct name version
+        if model == "VisionFeaturePrint_Screen":
+            print("WARNING: Correct spelling of model name is VisionFeaturePrint_Scene.  VisionFeaturePrint_Screen will be removed in future releases.")
+            model = "VisionFeaturePrint_Scene"
+
     _tkutl._check_categorical_option_type('model', model, allowed_models)
     if len(dataset) == 0:
         raise _ToolkitError('Unable to train on empty dataset')
@@ -137,7 +144,7 @@ def create(dataset, label = None, feature = None, model = 'resnet-50', verbose =
     # set input image shape
     if model in _pre_trained_models.MODELS:
         input_image_shape = _pre_trained_models.MODELS[model].input_image_shape
-    else:    # model == VisionFeaturePrint_Screen
+    else:    # model == VisionFeaturePrint_Scene
         input_image_shape = (3, 299, 299)
 
     # Save the model
@@ -214,8 +221,13 @@ class ImageSimilarityModel(_CustomModel):
         _tkutl._model_version_check(version, cls._PYTHON_IMAGE_SIMILARITY_VERSION)
         from turicreate.toolkits.nearest_neighbors import NearestNeighborsModel
         state['similarity_model'] = NearestNeighborsModel(state['similarity_model'])
-        if state['model'] == "VisionFeaturePrint_Screen" and _mac_ver() < (10,14):
-            raise ToolkitError("Can not load model on this operating system. This model uses VisionFeaturePrint_Screen, "
+
+        # Correct models saved with a previous typo
+        if state['model'] == "VisionFeaturePrint_Screen":
+            state['model'] = "VisionFeaturePrint_Scene"
+
+        if state['model'] == "VisionFeaturePrint_Scene" and _mac_ver() < (10,14):
+            raise ToolkitError("Can not load model on this operating system. This model uses VisionFeaturePrint_Scene, "
                                "which is only supported on macOS 10.14 and higher.")
         state['feature_extractor'] = _image_feature_extractor._create_feature_extractor(state['model'])
         state['input_image_shape'] = tuple([int(i) for i in state['input_image_shape']])
@@ -496,7 +508,7 @@ class ImageSimilarityModel(_CustomModel):
         import numpy as _np
         import coremltools as _cmt
         from coremltools.models import datatypes as _datatypes, neural_network as _neural_network
-        from .._mxnet_to_coreml import _mxnet_converter
+        from .._mxnet._mxnet_to_coreml import _mxnet_converter
         from turicreate.toolkits import _coreml_utils
 
         # Get the reference data from the model
@@ -507,7 +519,7 @@ class ImageSimilarityModel(_CustomModel):
         output_name = 'distance'
         output_features = [(output_name, _datatypes.Array(num_examples))]
 
-        if self.model != 'VisionFeaturePrint_Screen':
+        if self.model != 'VisionFeaturePrint_Scene':
             # Convert the MxNet model to Core ML
             ptModel = _pre_trained_models.MODELS[self.model]()
             feature_extractor = _image_feature_extractor.MXFeatureExtractor(ptModel)
@@ -533,7 +545,7 @@ class ImageSimilarityModel(_CustomModel):
                                      builder=builder, verbose=False)
             feature_layer = feature_extractor.feature_layer
 
-        else:     # self.model == VisionFeaturePrint_Screen
+        else:     # self.model == VisionFeaturePrint_Scene
             # Create a pipleline that contains a VisionFeaturePrint followed by a
             # neural network.
             BGR_VALUE = _cmt.proto.FeatureTypes_pb2.ImageFeatureType.ColorSpace.Value('BGR')
@@ -567,7 +579,7 @@ class ImageSimilarityModel(_CustomModel):
             input.type.imageType.height = 299
             input.type.imageType.colorSpace = BGR_VALUE
 
-            feature_layer = 'VisionFeaturePrint_Screen_output'
+            feature_layer = 'VisionFeaturePrint_Scene_output'
             output = scene_print.description.output.add()
             output.name = feature_layer
             output.type.multiArrayType.dataType = DOUBLE_ARRAY_VALUE
@@ -607,7 +619,7 @@ class ImageSimilarityModel(_CustomModel):
         builder.add_unary('sqrt', mode='sqrt', input_name='relu', output_name=output_name)
 
         # Finalize model
-        if self.model != 'VisionFeaturePrint_Screen':
+        if self.model != 'VisionFeaturePrint_Scene':
             _mxnet_converter._set_input_output_layers(builder, [input_name], [output_name])
             builder.set_input([input_name], [self.input_image_shape])
             builder.set_output([output_name], [(num_examples,)])

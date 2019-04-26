@@ -1,0 +1,4 @@
+CMake Error in CMakeLists.txt:
+  Target "iface" contains relative path in its INTERFACE_SOURCES:
+
+    "empty_1.cpp"

@@ -100,7 +100,9 @@ class ImageClassifierTest(unittest.TestCase):
            'max_iterations': lambda x: x == self.max_iterations,
            'num_features': lambda x: x == self.lm_model.num_features,
            'num_examples': lambda x: x == self.lm_model.num_examples,
-           'model': lambda x: x == self.pre_trained_model,
+           'model': lambda x: (x == self.pre_trained_model 
+               or (self.pre_trained_model == "VisionFeaturePrint_Screen" 
+                   and x == "VisionFeaturePrint_Scene")),
            'num_classes': lambda x: x == self.lm_model.num_classes,
         }
         self.fields_ans = self.get_ans.keys()
@@ -249,11 +251,20 @@ class ImageClassifierSqueezeNetTest(ImageClassifierTest):
                                                               tol=0.005, num_examples = 200)
 
 # TODO: if on skip OS, test negative case
-@unittest.skipIf(_mac_ver() < (10,14), 'VisionFeaturePrint_Screen only supported on macOS 10.14+')
-class VisionFeaturePrintScreenTest(ImageClassifierTest):
+@unittest.skipIf(_mac_ver() < (10,14), 'VisionFeaturePrint_Scene only supported on macOS 10.14+')
+class VisionFeaturePrintSceneTest(ImageClassifierTest):
     @classmethod
     def setUpClass(self):
-        super(VisionFeaturePrintScreenTest, self).setUpClass(model='VisionFeaturePrint_Screen',
+        super(VisionFeaturePrintSceneTest, self).setUpClass(model='VisionFeaturePrint_Scene',
+                                                              input_image_shape=(3, 299, 299),
+                                                              tol=0.005, num_examples = 100,
+                                                              label_type = str)
+
+@unittest.skipIf(_mac_ver() < (10,14), 'VisionFeaturePrint_Scene only supported on macOS 10.14+')
+class VisionFeaturePrintSceneTest_BadName(ImageClassifierTest):
+    @classmethod
+    def setUpClass(self):
+        super(VisionFeaturePrintSceneTest_BadName, self).setUpClass(model='VisionFeaturePrint_Screen',
                                                               input_image_shape=(3, 299, 299),
                                                               tol=0.005, num_examples = 100,
                                                               label_type = str)

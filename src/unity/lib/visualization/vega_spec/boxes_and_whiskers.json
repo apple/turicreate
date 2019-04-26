@@ -1,6 +1,7 @@
 {
   "$schema": "https://vega.github.io/schema/vega/v4.json",
-  "autosize": {"type": "fit", "resize": true, "contains": "padding"},
+  "autosize": {"type": "fit", "resize": false, "contains": "padding"},
+  "padding": 8,
   "metadata": {
     "bubbleOpts": {
       "showAllFields": false,
@@ -26,10 +27,8 @@
       ]
     }
   },
-  "title": {
-    "text": "{{title}}"
-  },
-  "height": 550,
+  "title": {{title}},
+  "height": {{height}},
   "style": "cell",
   "data": [
     {
@@ -39,7 +38,8 @@
           "type": "collect",
           "sort": {"field": "median"}
         }
-      ] 
+      ]
+      {{pre_filled_data_values}}
     }
   ],
   "signals": [

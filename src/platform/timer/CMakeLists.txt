@@ -6,7 +6,7 @@ project(random)
 #/*                                                                        */
 #/**************************************************************************/
 
-make_library(timer
+make_library(timer OBJECT
   SOURCES
     timer.cpp
   REQUIRES

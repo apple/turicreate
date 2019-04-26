@@ -1,0 +1,71 @@
+$transition-speed: 0.3s;
+
+.TCEvaluationFooter{
+	width: 100%;
+	position: fixed;
+	bottom: 0px;
+	background: #FFFFFF;
+	box-shadow: 0 0 20px 0 #D4D7D9;
+	overflow: scroll;
+	max-height: 75px;
+	min-height:0%;
+	transition:min-height $transition-speed ease-out;
+	height:auto;
+}
+
+.TCEvaluationErrorsPill{
+	display:inline-block;
+	background: #E36373;
+	padding: 0px;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-right: 10px;
+	border-radius: 20px;
+	font-family: Helvetica;
+	font-size: 12px;
+	color: #FFFFFF;
+	text-align: center;
+}
+
+.TCEvaluationFooterContainer{
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	cursor: pointer;
+}
+
+.TCEvaluationFooterText{
+	font-family: Helvetica;
+	font-size: 21px;
+	color: #484856;
+	line-height: 22px;
+	padding:31px;
+	display: flex;
+}
+
+.TCEvaluationFooterLabelIcon{
+	border: 1px solid #C1C4C6;
+	border-radius: 3px;
+	font-family: Helvetica;
+	font-size: 12px;
+	color: #6D727C;
+	line-height: 16px;
+	padding:3px;
+	padding-left: 8px;
+	padding-right: 8px;
+	margin-left: 10px;
+}
+
+.TCEvaluationFooterCarret{
+	padding:30px;
+	cursor: pointer;
+}
+
+.TCEvaluationFooterCarret:hover{
+	opacity: 0.5
+}
+
+.TCEvaluationFooterCarretImage{
+	transition-duration: $transition-speed;
+	transition-property: transform;
+}

@@ -13,7 +13,7 @@
 #include <unity/toolkits/recsys/recsys_model_base.hpp>
 #include <generics/symmetric_2d_array.hpp>
 
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 #include <limits>
 
 namespace turi {
@@ -177,7 +177,7 @@ public:
   void internal_save(turi::oarchive& oarc) const override;
   void internal_load(turi::iarchive& iarc, size_t version) override;
 
- private:
+ protected:
 
   /**  The primary tool for the item similarity modeling part.
    */
@@ -218,7 +218,7 @@ public:
     return sframe();
   }
 
-  virtual void export_to_coreml(const std::string& filename) override;
+  virtual std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(const std::string& filename) override;
   
  private:
   

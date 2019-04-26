@@ -14,7 +14,7 @@ from .. import _launch, load_sframe, aggregate
 from . import util
 
 import pandas as pd
-from ..util.timezone import GMT
+from .._cython.cy_flexible_type import GMT
 from pandas.util.testing import assert_frame_equal
 import unittest
 import datetime as dt
@@ -34,10 +34,6 @@ import sys
 import mock
 import sqlite3
 from .dbapi2_mock import dbapi2_mock
-
-#######################################################
-# Metrics tracking tests are in test_usage_metrics.py #
-#######################################################
 
 
 class SFrameTest(unittest.TestCase):
@@ -287,6 +283,22 @@ class SFrameTest(unittest.TestCase):
             t = list(sf['c'])
             self.assertEqual(t[0], None)
             self.assertEqual(t[1], "3")
+
+    def test_parse_csv_non_multi_line_unmatched_quotation(self):
+        data = [{'type': 'foo', 'text_string': 'foo foo.'},
+                {'type': 'bar', 'text_string': 'bar " bar.'},
+                {'type': 'foo', 'text_string': 'foo".'}]
+
+        with tempfile.NamedTemporaryFile(mode='w', delete=False) as csvfile:
+            with open(csvfile.name, 'w') as f:
+                f.write("type,text_string\n")     # header
+                for l in data:
+                    f.write(l['type'] + ',' + l['text_string'] + '\n')
+
+            sf = SFrame.read_csv(csvfile.name, quote_char=None)
+            self.assertEqual(len(sf), len(data))
+            for i in range(len(sf)):
+                self.assertEqual(sf[i], data[i])
 
     def test_save_load_file_cleanup(self):
         # when some file is in use, file should not be deleted
@@ -874,6 +886,14 @@ class SFrameTest(unittest.TestCase):
         l = list(result['a'])
         for i in range(len(result)):
             self.assertEqual(i, l[i])
+
+        # map input type
+        toy_data = SFrame({'a': range(100)})
+        map_result = map(lambda x: x+1, [1, 30])
+        result = toy_data.filter_by(map_result, 'a')
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result[0]['a'], 2)
+        self.assertEqual(result[1]['a'], 31)
 
 
     def test_sample_split(self):
@@ -2135,6 +2155,14 @@ class SFrameTest(unittest.TestCase):
         sf = sf.unpack('a', column_name_prefix = '')
         self.assertEqual(sf['a'].dtype, list)
 
+        sf = SFrame({'a':[{'a':["haha", "hoho"]}, {'a':array.array('d', [1,2,3])}]})
+        sf = sf.unpack()
+        self.assertEqual(sf['a'].dtype, list)
+
+        sf = SFrame({'a':[{'a':["haha", "hoho"]}, {'a':None}]})
+        sf = sf.unpack('a', column_name_prefix = '')
+        self.assertEqual(sf['a'].dtype, list)
+
         sf = SFrame({'a':[{'a':["haha", "hoho"]}, {'a':None}]})
         sf = sf.unpack('a', column_name_prefix = '')
         self.assertEqual(sf['a'].dtype, list)
@@ -2291,12 +2319,34 @@ class SFrameTest(unittest.TestCase):
         assert_frame_equal(result.to_dataframe(), e.to_dataframe())
 
     def test_unpack_dict(self):
+
+        sf = SFrame([{'a':1,'b':2,'c':3},{'a':4,'b':5,'c':6}])
+        expected_sf = SFrame()
+        expected_sf["a"] = [1,4]
+        expected_sf["b"] = [2,5]
+        expected_sf["c"] = [3,6]
+        unpacked_sf = sf.unpack()
+        assert_frame_equal(unpacked_sf.to_dataframe(), expected_sf.to_dataframe())
+
+        expected_sf = SFrame()
+        expected_sf["xx.a"] = [1,4]
+        expected_sf["xx.b"] = [2,5]
+        expected_sf["xx.c"] = [3,6]
+        unpacked_sf = sf.unpack(column_name_prefix='xx')
+        assert_frame_equal(unpacked_sf.to_dataframe(), expected_sf.to_dataframe())
+
+        packed_sf = SFrame({"X1":{'a':1,'b':2,'c':3},"X2":{'a':4,'b':5,'c':6}})
+
+        with self.assertRaises(RuntimeError):
+            packed_sf.unpack()
+
         sf = SFrame()
 
         sf["user_id"] = [1,2,3,4,5,6,7]
         sf["is_restaurant"] =  [1,   1,0,0,   1, None, None]
         sf["is_retail"] =      [None,1,1,None,1, None, None]
         sf["is_electronics"] = ["yes",   "no","yes",None,"no", None, None]
+
 
         packed_sf = SFrame()
         packed_sf['user_id'] = sf['user_id']
@@ -2322,7 +2372,8 @@ class SFrameTest(unittest.TestCase):
         expected_sf = SFrame()
         expected_sf["is_retail"] = sf["is_retail"]
         unpacked_sf = packed_sf['category'].unpack(limit=["is_retail"], column_types=[int], column_name_prefix=None)
-        assert_frame_equal(unpacked_sf.to_dataframe(), expected_sf.to_dataframe())
+        assert_frame_equal(unpacked_sf.to_dataframe(), expected_sf.to_dataframe()) 
+
 
         # unpack all
         unpacked_sf = packed_sf['category'].unpack(column_name_prefix=None, column_types=[int, int, str], limit=["is_restaurant", "is_retail", "is_electronics"])

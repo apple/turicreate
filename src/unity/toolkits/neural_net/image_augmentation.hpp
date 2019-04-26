@@ -29,10 +29,11 @@ struct image_box {
     : x(x), y(y), width(width), height(height)
   {}
 
+  bool empty() const { return width <= 0.f || height <= 0.f; }
+
   // Computes the area if the width and height are positive, otherwise returns 0
   float area() const {
-    if (width < 0.f || height < 0.f) return 0.f;
-    return width * height;
+    return empty() ? 0.f : (width * height);
   }
 
   // Divides each coordinate and length by the appropriate normalizer.
@@ -42,6 +43,10 @@ struct image_box {
   // intersection exists, then the result will have area() of 0.f (and may have
   // negative width or height).
   void clip(image_box clip_box = image_box(0.f, 0.f, 1.f, 1.f));
+
+  // Grows this instance (minimally) so that its area contains the (non-empty)
+  // area of the other image_box.
+  void extend(const image_box& other);
 
   float x = 0.f;
   float y = 0.f;
@@ -156,6 +161,9 @@ public:
    */
   struct options {
 
+    /** The N dimension of the resulting float array. */
+    size_t batch_size = 0;
+
     /** The W dimension of the resulting float array. */
     size_t output_width = 0;
 
@@ -219,7 +227,7 @@ public:
 
     /**
      * The transformed annotations for each augmented image. This vector's size
-     * should equal the size of the N dimension in the image_batch above, and
+     * should equal the size of the source batch that generated the result, and
      * each inner vector should have the same length as the corresponding input
      * image's annotations vector. */
     std::vector<std::vector<image_annotation>> annotations_batch;
@@ -232,6 +240,9 @@ public:
 
   /**
    * Performs augmentation on a batch of images (and their annotations).
+   *
+   * If the source batch is smaller than the batch size specified in the
+   * options, then the result is padded with zeroes as needed.
    */
   virtual result prepare_images(std::vector<labeled_image> source_batch) = 0;
 };

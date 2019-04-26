@@ -6,7 +6,6 @@
 #ifndef __TC_VEGA_DATA
 #define __TC_VEGA_DATA
 
-#include "histogram.hpp"
 #include "transformation.hpp"
 
 namespace turi {

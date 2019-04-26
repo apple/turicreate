@@ -70,9 +70,15 @@ namespace turi {
         std::shared_ptr<unity_sarray_base> sarr = sf->select_column(col);
         switch (sarr->dtype()) {
           case flex_type_enum::INTEGER:
+          {
+            std::shared_ptr<histogram<flex_int>> hist = std::make_shared<histogram<flex_int>>();
+            hist->init(sarr, sf_batch_size);
+            column_transformers.push_back(hist);
+            break;
+          }
           case flex_type_enum::FLOAT:
           {
-            std::shared_ptr<histogram> hist = std::make_shared<histogram>();
+            std::shared_ptr<histogram<flex_float>> hist = std::make_shared<histogram<flex_float>>();
             hist->init(sarr, sf_batch_size);
             column_transformers.push_back(hist);
             break;

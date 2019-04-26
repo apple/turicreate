@@ -4,6 +4,13 @@ import ReactDOM from 'react-dom';
 import TcPlot from './elements/Plot/Chart/index.js';
 import TcSummary from './elements/Plot/Summary/index.js';
 import TcTable from './elements/Explore/Table/index.js';
+import TCEvaluation from './elements/Explore/Evaluation/index.js';
+
+import messageFormat from './format/message';
+
+import { load, Root } from 'protobufjs';
+
+import TCAnnotate from './elements/Annotate';
 
 var command_down = 0;
 var body_zoom = 100;
@@ -41,7 +48,7 @@ document.onkeyup = function(e) {
     }
 };
 
-var SpecType = Object.freeze({"table":1, "vega":2, "summary":3, "annotate": 4})
+var SpecType = Object.freeze({"table":1, "vega":2, "summary":3, "annotate": 4, "evaluate": 5})
 window.flex_type_enum = Object.freeze({"integer":0, "float":1, "string":2, "vector": 3, "list": 4, "dict": 5, "datetime": 6, "undefined": 7, "image": 8, "nd_vector": 9});
 
 var component_rendered = null;
@@ -52,6 +59,7 @@ function resetDisplay(){
     document.getElementById('loading_container').style.display = "block";
     document.getElementById('table_vis').style.display = 'none';
     document.getElementById('vega_vis').style.display = 'none';
+    document.getElementById('annotate_viz').style.display = 'none';
     component_rendered = null;
     spec_type = null;
 }
@@ -60,6 +68,7 @@ window.setSpec = function setSpec(value) {
     resetDisplay();
     switch(value.type) {
         case "vega":
+            document.getElementById("loading_container").style.display = "none";
             document.getElementById('vega_vis').style.display = 'block';
             component_rendered = ReactDOM.render(<TcPlot vega_spec={value.data} />, document.getElementById('vega_vis'));
             spec_type = SpecType.vega;
@@ -72,11 +81,51 @@ window.setSpec = function setSpec(value) {
         case "summary":
             spec_type = SpecType.summary;
             break;
-        case "annotate":
-            spec_type = SpecType.annotate;
+        case "evaluate":
+            document.getElementById("loading_container").style.display = "none";
+            document.getElementById('evaluation_vis').style.display = 'block';
+            component_rendered = ReactDOM.render(<TCEvaluation spec={value.data} />, document.getElementById('evaluation_vis'));
+            spec_type = SpecType.evaluate;
             break;
+            
         default:
             break;
+    }
+}
+
+window.setProtoMessage = function setProtoMessage(value){
+    
+    document.getElementById("loading_container").style.display = "none";
+    document.getElementById('annotate_viz').style.display = 'block';
+    
+    var root = Root.fromJSON(messageFormat);
+    
+    const ParcelMessage = root.lookupType("TuriCreate.Annotation.Specification.Parcel");
+    const buffer = Uint8Array.from(atob(value), c => c.charCodeAt(0));
+    var decoded = ParcelMessage.decode(buffer);
+    
+    if (decoded.hasOwnProperty('metadata')) {
+        component_rendered = ReactDOM.render(<TCAnnotate metadata={decoded.metadata}/>, document.getElementById('annotate_viz'));
+        spec_type = SpecType.annotate;
+    } else if(decoded.hasOwnProperty('data')) {
+        for (var i = 0; i < decoded["data"]["data"].length; i++) {
+            const row_index = decoded["data"]["data"][i]["rowIndex"];
+            const type = decoded["data"]["data"][i]["images"][0]["type"];
+            const data = decoded["data"]["data"][i]["images"][0]["imgData"];
+            
+            const width = decoded["data"]["data"][i]["images"][0]["width"];
+            const height = decoded["data"]["data"][i]["images"][0]["height"];
+
+            const image = "data:image/" + type + ";base64," + data;
+
+            component_rendered.setImageData(row_index, image, width, height);
+        }
+    } else if(decoded.hasOwnProperty('annotations')) {
+        for (var i = 0; i < decoded["annotations"]["annotation"].length; i++) {
+            const row_index = decoded["annotations"]["annotation"][i]["rowIndex"][0];
+            const annotation = decoded["annotations"]["annotation"][i]["labels"][0];
+            component_rendered.setAnnotationData(row_index, annotation);
+        }
     }
 }
 
@@ -85,11 +134,9 @@ window.updateData = function updateData(data) {
         case SpecType.table:
         case SpecType.summary:
         case SpecType.vega:
+        case SpecType.evaluate:
             document.getElementById("loading_container").style.display = "none";
             component_rendered.updateData(data);
-            break;
-        case SpecType.annotate:
-            console.log("annotate");
             break;
         default:
             console.log("default");
@@ -157,7 +204,7 @@ window.handleInput = function(data){
 
   if(json_obj["vega_spec"] != null) {
     var input_data = {};
-    input_data["data"] = json_obj["vega_spec"];json_obj["data_spec"]
+    input_data["data"] = json_obj["vega_spec"];
     input_data["type"] = "vega";
 
     window.setSpec(input_data);

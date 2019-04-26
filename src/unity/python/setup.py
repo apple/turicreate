@@ -13,7 +13,7 @@ from setuptools.dist import Distribution
 from setuptools.command.install import install
 
 PACKAGE_NAME="turicreate"
-VERSION='5.2.1'#{{VERSION_STRING}}
+VERSION='5.5'#{{VERSION_STRING}}
 
 # Prevent distutils from thinking we are a pure python package
 class BinaryDistribution(Distribution):
@@ -131,44 +131,42 @@ if __name__ == '__main__':
         cmdclass=dict(install=InstallEngine),
         distclass=BinaryDistribution,
         package_data={
-        'turicreate': [
-                     'cython/*.so', 'cython/*.pyd', 'cython/*.dll', 'id',
-                     'toolkits/deeplearning/*.conf',
-                     '*.so', '*.so.*', '*.dylib', 'toolkits/*.dylib',
-                     '*.dll', '*.def',
-                     'deploy/*.jar', '*.exe',
-                     'mxnet/*.ttf',
+            'turicreate': [
+                '_cython/*.so', '_cython/*.pyd',
+                '*.so', '*.so.*', '*.dylib',
 
-                     # macOS visualization
-                    'Turi Create Visualization.app/Contents/*',
-                    'Turi Create Visualization.app/Contents/_CodeSignature/*',
-                    'Turi Create Visualization.app/Contents/MacOS/*',
-                    'Turi Create Visualization.app/Contents/Resources/*',
-                    'Turi Create Visualization.app/Contents/Resources/Base.lproj/*',
-                    'Turi Create Visualization.app/Contents/Resources/Base.lproj/Main.storyboardc/*',
-                    'Turi Create Visualization.app/Contents/Resources/build/*',
-                    'Turi Create Visualization.app/Contents/Resources/build/static/*',
-                    'Turi Create Visualization.app/Contents/Resources/build/static/css/*',
-                    'Turi Create Visualization.app/Contents/Resources/build/static/js/*',
-                    'Turi Create Visualization.app/Contents/Frameworks/*',
+                # macOS visualization
+                'Turi Create Visualization.app/Contents/*',
+                'Turi Create Visualization.app/Contents/_CodeSignature/*',
+                'Turi Create Visualization.app/Contents/MacOS/*',
+                'Turi Create Visualization.app/Contents/Resources/*',
+                'Turi Create Visualization.app/Contents/Resources/Base.lproj/*',
+                'Turi Create Visualization.app/Contents/Resources/Base.lproj/Main.storyboardc/*',
+                'Turi Create Visualization.app/Contents/Resources/build/*',
+                'Turi Create Visualization.app/Contents/Resources/build/static/*',
+                'Turi Create Visualization.app/Contents/Resources/build/static/css/*',
+                'Turi Create Visualization.app/Contents/Resources/build/static/js/*',
+                'Turi Create Visualization.app/Contents/Resources/build/static/media/*',
+                'Turi Create Visualization.app/Contents/Frameworks/*',
 
-                     # Linux visualization
-        		     'Turi Create Visualization/*.*',
-                     'Turi Create Visualization/visualization_client',
-                     'Turi Create Visualization/swiftshader/*',
-                     'Turi Create Visualization/locales/*',
-                     'Turi Create Visualization/html/*.*',
-                     'Turi Create Visualization/html/static/js/*',
-                     'Turi Create Visualization/html/static/css/*',
+                # Linux visualization
+                'Turi Create Visualization/*.*',
+                'Turi Create Visualization/visualization_client',
+                'Turi Create Visualization/swiftshader/*',
+                'Turi Create Visualization/locales/*',
+                'Turi Create Visualization/html/*.*',
+                'Turi Create Visualization/html/static/js/*',
+                'Turi Create Visualization/html/static/css/*',
 
-                     # Plot.save dependencies
-                     'visualization/vega_3.2.1.js',
-                     'visualization/vg2png',
-                     'visualization/vg2svg'
-                     ]},
+                # Plot.save dependencies
+                'visualization/vega_3.2.1.js',
+                'visualization/vg2png',
+                'visualization/vg2svg'
+            ]
+        },
         packages=find_packages(
-            exclude=["*.tests", "*.tests.*", "tests.*", "tests", "*.test", "*.test.*", "test.*", "test",
-                     "*.demo", "*.demo.*", "demo.*", "demo", "*.demo", "*.demo.*", "demo.*", "demo"]),
+            exclude=["test"]
+        ),
         url='https://github.com/apple/turicreate',
         license='LICENSE.txt',
         description='Turi Create simplifies the development of custom machine learning models.',
@@ -179,9 +177,12 @@ if __name__ == '__main__':
             "prettytable == 0.7.2",
             "requests >= 2.9.1",
             "mxnet >= 1.1.0, < 1.2.0",
-            "coremltools == 2.0b1",
+            "coremltools==2.1.0",
             "pillow >= 3.3.0",
             "pandas >= 0.19.0",
+            "scipy >= 0.14.0",
+            "six >= 1.10.0",
+            "resampy == 0.2.1",
             "numpy"
         ],
     )

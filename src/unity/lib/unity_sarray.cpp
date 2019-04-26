@@ -220,7 +220,11 @@ void unity_sarray::construct_from_json_record_files(std::string url) {
   sarray_ptr->set_type(flex_type_enum::DICT);
   auto output = sarray_ptr->get_output_iterator(0);
 
-  flexible_type_parser parser(",", true, '\\', {"null"}, {"true"}, {"false"});
+  flexible_type_parser parser(",", true, '\\', 
+                              {"null"},  // na values
+                              {"true"},  // true values
+                              {"false"}, // false values
+                              true); // only_raw_string_substitutions
   std::vector<char> buffer;
 
 
@@ -279,7 +283,7 @@ void unity_sarray::construct_from_json_record_files(std::string url) {
             }
 
             logstream(LOG_PROGRESS)
-                << "Successfully parsed an SArray of " << num_elems_parsed
+                << "Successfully parsed " << num_elems_parsed
                 << " elements from the JSON file " << sanitize_url(p.first);
 
             if (has_non_dict_elements) {

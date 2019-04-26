@@ -1,3 +1,8 @@
+/* Copyright © 2017 Apple Inc. All rights reserved.
+ *
+ * Use of this source code is governed by a BSD-3-clause license that can
+ * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ */
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
@@ -10,8 +15,8 @@
 #include <map>
 
 // Eigen
-#include <numerics/armadillo.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
 
 // SFrame and Flex type
 #include <unity/lib/flex_dict_view.hpp>
@@ -27,12 +32,13 @@
 #include <sframe/testing_utils.hpp>
 #include <util/testing_utils.hpp>
 
+
+typedef Eigen::Matrix<double,Eigen::Dynamic,1>  DenseVector;
+typedef Eigen::SparseVector<double> SparseVector;
+
 using namespace turi;
 using namespace turi::recsys;
 using namespace turi::v2;
-
-typedef arma::mat DenseVector;
-typedef turi::sparse_vector<double, size_t> SparseVector;
 
 struct user_item_lists  {
  public:

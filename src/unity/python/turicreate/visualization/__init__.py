@@ -42,4 +42,4 @@ from .show import box_plot
 from .show import columnwise_summary
 from .show import histogram
 from .show import item_frequency
-from ._plot import Plot, set_target, _get_client_app_path, LABEL_DEFAULT
+from ._plot import Plot, set_target, _get_client_app_path, _focus_client_app, LABEL_DEFAULT

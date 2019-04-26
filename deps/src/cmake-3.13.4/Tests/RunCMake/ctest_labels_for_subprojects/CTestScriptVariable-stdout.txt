@@ -1,0 +1,10 @@
+17% tests passed, 5 tests failed out of 6
++
+Subproject Time Summary:
+MyExperimentalFeature += +[0-9.]+ sec\*proc \(5 tests\)
+MyProductionCode += +[0-9.]+ sec\*proc \(1 test\)
++
+Label Time Summary:
+NotASubproject += +[0-9.]+ sec\*proc \(6 tests\)
++
+Total Test time \(real\) = +[0-9.]+ sec

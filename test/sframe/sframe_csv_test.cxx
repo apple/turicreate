@@ -25,6 +25,7 @@ struct csv_test {
   std::vector<std::string> parse_column_subset;
 
   bool perform_subset_test = true;
+  bool failure_expect = false;
 };
 
 csv_test basic(std::string dlm=",", std::string line_ending="\n") {
@@ -356,6 +357,96 @@ csv_test test_na_values2() {
   return ret;
 }
 
+
+csv_test test_true_values() {
+  csv_test ret;
+  std::stringstream strm;
+  strm << "k,v\n"
+       << "a,1\n"
+       << "b,1\n"
+       << "c,-8\n"
+       << "d,3\n";
+
+  ret.file = strm.str();
+  ret.tokenizer.delimiter = ",";
+  ret.tokenizer.true_values = {"-8"};
+
+  ret.values.push_back({"a", 1});
+  ret.values.push_back({"b", 1});
+  ret.values.push_back({"c", 1});
+  ret.values.push_back({"d", 3});
+
+  ret.types = {{"k", flex_type_enum::STRING},
+               {"v", flex_type_enum::INTEGER}};
+  return ret;
+}
+
+
+csv_test test_false_values() {
+  csv_test ret;
+  std::stringstream strm;
+  strm << "k,v\n"
+       << "a,1\n"
+       << "b,1\n"
+       << "c,-8\n"
+       << "d,3\n";
+
+  ret.file = strm.str();
+  ret.tokenizer.delimiter = ",";
+  ret.tokenizer.false_values = {"-8"};
+
+  ret.values.push_back({"a", 1});
+  ret.values.push_back({"b", 1});
+  ret.values.push_back({"c", 0});
+  ret.values.push_back({"d", 3});
+
+  ret.types = {{"k", flex_type_enum::STRING},
+               {"v", flex_type_enum::INTEGER}};
+  return ret;
+}
+
+csv_test test_substitutions_raw_string_matches1() {
+  csv_test ret;
+  std::stringstream strm;
+  strm << "k,v\n"
+       << "\"true\",true\n"
+       << "\"false\",false\n";
+
+  ret.file = strm.str();
+  ret.tokenizer.delimiter = ",";
+  ret.tokenizer.true_values = {"true"};
+  ret.tokenizer.false_values = {"false"};
+  ret.tokenizer.only_raw_string_substitutions = true;
+
+  ret.values.push_back({"true", 1});
+  ret.values.push_back({"false", 0});
+
+  ret.types = {{"k", flex_type_enum::STRING},
+               {"v", flex_type_enum::INTEGER}};
+  return ret;
+}
+
+csv_test test_substitutions_raw_string_matches2() {
+  csv_test ret;
+  std::stringstream strm;
+  strm << "k,v\n"
+       << "\"true\",true\n"
+       << "\"false\",false\n";
+
+  ret.file = strm.str();
+  ret.tokenizer.delimiter = ",";
+  ret.tokenizer.true_values = {"\"true\""};
+  ret.tokenizer.false_values = {"\"false\""};
+  ret.tokenizer.only_raw_string_substitutions = true;
+
+  ret.values.push_back({1, "true"});
+  ret.values.push_back({0, "false"});
+
+  ret.types = {{"k", flex_type_enum::INTEGER},
+               {"v", flex_type_enum::STRING}};
+  return ret;
+}
+
 csv_test test_missing_tab_values() {
   csv_test ret;
   std::stringstream strm;
@@ -518,6 +609,20 @@ csv_test alternate_endline_test() {
   ret.types = {{"a", flex_type_enum::UNDEFINED},
                {"b", flex_type_enum::UNDEFINED},
                {"c", flex_type_enum::UNDEFINED}};
+  return ret;
+}
+
+
+
+csv_test incorrectly_quoted_1() {
+  csv_test ret;
+  std::stringstream strm;
+  strm << "a, b";
+  strm << "\"a\", \"b\"";
+  strm << "\"a\", \"b";
+  strm << "\"a\", \"b\"";
+  ret.file = strm.str();
+  ret.failure_expect = true;
   return ret;
 }
 
@@ -698,6 +803,7 @@ struct sframe_test  {
      fout << data.file;
      fout.close();
      auto frame = validate_file(data, filename);
+     if (data.failure_expect) return;
 
      if (data.perform_subset_test) {
        // try random column subsets
@@ -772,6 +878,10 @@ struct sframe_test  {
                           data.parse_column_subset,
                           0, // row limit
                           data.skip_rows);
+     if (data.failure_expect) {
+       TS_ASSERT_EQUALS(frame.num_rows(), 0);
+       return frame;
+     }
 
      TS_ASSERT_EQUALS(frame.num_rows(), data.values.size());
      TS_ASSERT_EQUALS(frame.num_columns(), data.types.size());
@@ -822,9 +932,13 @@ struct sframe_test  {
      unescape_string(s, false, '\\', '\"', false);
      TS_ASSERT_EQUALS(s, "\\world\\");
    }
-   void test_na() {
+   void test_substitutions() {
      evaluate(test_na_values());
      evaluate(test_na_values2());
+     evaluate(test_true_values());
+     evaluate(test_false_values());
+     evaluate(test_substitutions_raw_string_matches1());
+     evaluate(test_substitutions_raw_string_matches2());
    }
 
    void test_csvs() {
@@ -905,14 +1019,17 @@ struct sframe_test  {
    void test_alternate_line_endings() {
      evaluate(alternate_endline_test());
    }
+   void test_invalid_csv_cases() {
+     evaluate(incorrectly_quoted_1());
+   }
 };
 
 BOOST_FIXTURE_TEST_SUITE(_sframe_test, sframe_test)
 BOOST_AUTO_TEST_CASE(test_string_escaping) {
   sframe_test::test_string_escaping();
 }
-BOOST_AUTO_TEST_CASE(test_na) {
-  sframe_test::test_na();
+BOOST_AUTO_TEST_CASE(test_substitutions) {
+  sframe_test::test_substitutions();
 }
 BOOST_AUTO_TEST_CASE(test_csvs) {
   sframe_test::test_csvs();
@@ -925,5 +1042,8 @@ BOOST_AUTO_TEST_CASE(test_json) {
 }
 BOOST_AUTO_TEST_CASE(test_alternate_line_endings) {
   sframe_test::test_alternate_line_endings();
+}
+BOOST_AUTO_TEST_CASE(test_invalid_csv_cases) {
+  sframe_test::test_invalid_csv_cases();
 }
 BOOST_AUTO_TEST_SUITE_END()

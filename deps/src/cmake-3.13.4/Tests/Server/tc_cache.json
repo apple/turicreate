@@ -1,0 +1,24 @@
+[
+{ "message": "Testing cache" },
+
+{ "message": "Cache after first handshake is empty:" },
+{ "handshake": {"major": 1, "sourceDirectory": "buildsystem1", "buildDirectory": "buildsystem1"} },
+{ "send": { "type": "cache" } },
+{ "validateCache": { "isEmpty": true } },
+
+{ "message": "Cache after configure is populated:" },
+{ "send": { "type": "configure" } },
+{ "reply": { "type": "configure", "skipProgress":true } },
+{ "send": { "type": "cache" } },
+{ "validateCache": { "isEmpty": false } },
+
+{ "message": "Handshake for existing cache requires buildDirectory only:" },
+{ "reconnect": {} },
+{ "handshake": {"major": 1, "sourceDirectory": "", "buildDirectory": "buildsystem1"} },
+
+{ "message": "Cache after reconnect is again populated:" },
+{ "send": { "type": "cache" } },
+{ "validateCache": { "isEmpty": false } },
+
+{ "message": "Everything ok." }
+]

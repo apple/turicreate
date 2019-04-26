@@ -33,8 +33,8 @@ image_type create_image(
 
   size_t size = height * width * 3;
   std::unique_ptr<uint8_t[]> buffer(new uint8_t[size]);
-  for (int j = 0; j < height; ++j) {
-    for (int i = 0; i < width; ++i) {
+  for (size_t j = 0; j < height; ++j) {
+    for (size_t i = 0; i < width; ++i) {
       uint8_t* pixel = buffer.get() + j * width * 3 + i * 3;
       std::tie(pixel[0], pixel[1], pixel[2]) = rgb_generator(i, j);
     }
@@ -77,6 +77,7 @@ BOOST_AUTO_TEST_CASE(test_resize) {
 
   // Create an augmenter that just resizes to 512 by 512.
   image_augmenter::options opts;
+  opts.batch_size = 1;
   opts.output_width = 512;
   opts.output_height = 512;
   auto augmenter = mps_compute_context().create_image_augmenter(opts);
@@ -137,6 +138,7 @@ BOOST_AUTO_TEST_CASE(test_horizontal_flip) {
 
   // Create an augmenter that just performs horizontal flip.
   image_augmenter::options opts;
+  opts.batch_size = 1;
   opts.output_width = 256;
   opts.output_height = 256;
   opts.horizontal_flip_prob = 0.5;
@@ -208,6 +210,7 @@ BOOST_AUTO_TEST_CASE(test_crop) {
 
   // Create an augmenter that just performs crops.
   image_augmenter::options opts;
+  opts.batch_size = 1;
   opts.output_width = 256;
   opts.output_height = 256;
   opts.crop_prob = 0.5f;
@@ -319,6 +322,7 @@ BOOST_AUTO_TEST_CASE(test_pad) {
 
   // Create an augmenter that just performs padding
   image_augmenter::options opts;
+  opts.batch_size = 1;
   opts.output_width = 256;
   opts.output_height = 256;
   opts.pad_prob = 0.5f;

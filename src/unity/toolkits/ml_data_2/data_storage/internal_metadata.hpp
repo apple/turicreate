@@ -140,6 +140,12 @@ struct column_metadata {
   /** Serialization -- load.
    */
   void load(turi::iarchive& iarc);
+
+  /** Create a version of the metadata with all the indexing and statistics cleared.
+   *
+   */
+  std::shared_ptr<column_metadata> create_cleared_copy() const;
+
 };
 
 typedef std::shared_ptr<column_metadata> column_metadata_ptr;

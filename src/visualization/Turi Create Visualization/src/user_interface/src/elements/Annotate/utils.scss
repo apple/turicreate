@@ -1,0 +1,18 @@
+@mixin calculateSize() {
+    width: -webkit-calc(100vw - 226px);
+    width:    -moz-calc(100vw - 226px);
+    width:         calc(100vw - 226px);
+
+    height: -webkit-calc(100vh - 72px);
+    height:    -moz-calc(100vh - 72px);
+    height:         calc(100vh - 72px);
+}
+
+@mixin arrows() {
+    padding: 40px;
+    cursor: pointer;
+}
+
+@mixin arrowHover() {
+    opacity: 0.5;
+}

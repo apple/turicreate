@@ -1,0 +1,1 @@
+  DESCRIPTION may be specified at most once.

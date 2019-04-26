@@ -11,7 +11,7 @@ from __future__ import absolute_import as _
 from ..data_structures.sarray import SArray
 from ..data_structures.sframe import SFrame
 from ..data_structures.sarray import load_sarray
-from ..util.timezone import GMT
+from .._cython.cy_flexible_type import GMT
 from . import util
 
 import pandas as pd
@@ -31,9 +31,6 @@ import tempfile
 import sys
 import six
 
-#######################################################
-# Metrics tracking tests are in test_usage_metrics.py #
-#######################################################
 
 class SArrayTest(unittest.TestCase):
     def setUp(self):
@@ -146,6 +143,10 @@ class SArrayTest(unittest.TestCase):
                           self.vec_data, array.array)
         self.__test_equal(SArray(np.matrix(self.vec_data)),
                           self.vec_data, array.array)
+
+        # Test python 3
+        self.__test_equal(SArray(filter(lambda x: True, self.int_data)), self.int_data, int)
+        self.__test_equal(SArray(map(lambda x: x, self.int_data)), self.int_data, int)
 
     def test_list_with_none_creation(self):
         tlist=[[2,3,4],[5,6],[4,5,10,None]]

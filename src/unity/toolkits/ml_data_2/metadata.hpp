@@ -304,14 +304,14 @@ class EXPORT ml_metadata {
    */
   inline ml_column_mode target_column_mode() const;
 
-  /** Returns the type of the column in the metadata
+  /** Returns the size of the columns in the metadata that were
    *  present at train time.
    *
    *  \param column_index The index of the column. 
    */
   inline flex_type_enum column_type(size_t column_index) const;
 
-  /** Returns the type of the column in the metadata 
+  /** Returns the size of the columns in the metadata that were
    *  present at train time.
    *
    *  \overload
@@ -405,6 +405,11 @@ class EXPORT ml_metadata {
    *  etc. remain the same.  The indexer classes are shared between
    *  the two metadata objects.
    *
+   *  If columns_with_cleared_metadata is given, any specified columns will have
+   *  their index, metadata and statistics cleared.  These columns have the 
+   *  essential metadata -- column dimensions and type -- retained, but all indices 
+   *  and statistics are reset.  
+   *
    *  Example:
    *
    *   ml_data data_user_item({{"sort_by_first_two_columns_on_train", true}});
@@ -419,8 +424,8 @@ class EXPORT ml_metadata {
    *
    */
   std::shared_ptr<ml_metadata> select_columns(
-      const std::vector<std::string>& columns, bool include_target = true) const;
-
+      const std::vector<std::string>& columns, bool include_target = true, 
+      const std::vector<std::string>& columns_with_cleared_metadata = {}) const;
 
  private:
 

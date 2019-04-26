@@ -3,16 +3,16 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include "vega_spec.hpp"
+#include <unity/lib/visualization/escape.hpp>
+#include <unity/lib/visualization/vega_spec.hpp>
 
+#include <capi/TuriCreate.h>
 #include <logger/assertions.hpp>
-#include <flexible_type/string_escape.hpp>
 
 // generated include files for vega spec JSON
 #include <unity/lib/visualization/vega_spec/boxes_and_whiskers.h>
 #include <unity/lib/visualization/vega_spec/categorical.h>
 #include <unity/lib/visualization/vega_spec/categorical_heatmap.h>
-#include <unity/lib/visualization/vega_spec/config.h>
 #include <unity/lib/visualization/vega_spec/heatmap.h>
 #include <unity/lib/visualization/vega_spec/histogram.h>
 #include <unity/lib/visualization/vega_spec/scatter.h>
@@ -23,44 +23,13 @@
 
 namespace turi {
 namespace visualization {
-std::string escape_string(const std::string& str, bool include_quotes) {
-  std::string ret;
-  size_t ret_len;
-  ::turi::escape_string(str, '\\', true /* use_escape_char */, '\"', include_quotes /* use_quote_char */, false /* double_quote */, ret, ret_len);
-
-  // ::turi::escape_string may yield an std::string padded with null terminators, and ret_len represents the true length.
-  // truncate to the ret_len length.
-  ret.resize(ret_len);
-  DASSERT_EQ(ret.size(), strlen(ret.c_str()));
-
-  return ret;
-}
-
-std::string replace_all(std::string str, const std::string& from, const std::string& to) {
-    size_t start_pos = 0;
-    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
-        str.replace(start_pos, from.length(), to);
-        start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
-    }
-    return str;
-}
-
-std::string extra_label_escape(const std::string& str, bool include_quotes){
-  std::string escaped_string = escape_string(str, include_quotes /* include_quotes */);
-  escaped_string = replace_all(escaped_string, std::string("\\n"), std::string("\\\\n"));
-  escaped_string = replace_all(escaped_string, std::string("\\t"), std::string("\\\\t"));
-  escaped_string = replace_all(escaped_string, std::string("\\b"), std::string("\\\\b"));
-  escaped_string = replace_all(escaped_string, std::string("\\r"), std::string("\\\\r"));
-
-  return escaped_string;
-}
 
 /*
  * Prepares a raw JSON format string
  * by doing the following:
  * 1. Strips all newlines.
  */
-static std::string make_format_string(unsigned char *raw_format_str_ptr,
+std::string make_format_string(unsigned char *raw_format_str_ptr,
                                       size_t raw_format_str_len) {
   auto raw_format_str = std::string(
     reinterpret_cast<char *>(raw_format_str_ptr),
@@ -88,11 +57,6 @@ std::string format(const std::string& format_str, const std::unordered_map<std::
   for (const auto& it : format_params) {
     _format_impl(ret, it.first, it.second);
   }
-  // Also replace config from predefined config (maintained separately so we don't
-  // have to repeat the same config in each file, and we can make sure it stays
-  // consistent across the different plots)
-  static std::string config_str = make_format_string(vega_spec_config_json, vega_spec_config_json_len);
-  _format_impl(ret, "{{config}}", config_str);
   return ret;
 }
 
@@ -102,7 +66,7 @@ static std::string label_or_default(const flexible_type& label,
     // undefined should render as null in JSON
     return "null";
 
-  } else if (label == "__TURI_DEFAULT_LABEL") {
+  } else if (label == tc_plot_title_default_label) {
     // substitute the default label
     return extra_label_escape(_default, false /* include_quotes */);
 
@@ -112,15 +76,28 @@ static std::string label_or_default(const flexible_type& label,
   }
 }
 
+static std::string title_or_default(const flexible_type& title, const std::string& default_title) {
+  if (title == FLEX_UNDEFINED) {
+    // undefined/not provided should render as null in JSON
+    return "null";
+  } else if (title == tc_plot_title_default_label) {
+    return extra_label_escape(default_title, true /* include_quotes */);
+  } else {
+    // user-provided label should render with quotes/escaping
+    return extra_label_escape(title.get<flex_string>(), true /* include_quotes */);
+  }
+
+}
+
 static std::string title_or_default(const flexible_type& title, const std::string& xlabel, const std::string& ylabel) {
   if (title == FLEX_UNDEFINED) {
     // undefined/not provided should render as null in JSON
     return "null";
-  } else if (title == "__TURI_DEFAULT_LABEL") {
-    return extra_label_escape(xlabel + " vs. " + ylabel, false /* include_quotes */);
+  } else if (title == tc_plot_title_default_label) {
+    return extra_label_escape(xlabel + " vs. " + ylabel, true /* include_quotes */);
   } else {
     // user-provided label should render with quotes/escaping
-    return extra_label_escape(title.get<flex_string>(), false /* include_quotes */);
+    return extra_label_escape(title.get<flex_string>(), true /* include_quotes */);
   }
 
 }
@@ -129,12 +106,12 @@ EXPORT std::string histogram_spec(const flexible_type& _title,
                                   const flexible_type& _xlabel,
                                   const flexible_type& _ylabel,
                                   flex_type_enum dtype) {
-  static std::string default_title = std::string("Distribution of Values [") +
+  std::string default_title = std::string("Distribution of Values [") +
                                      flex_type_enum_to_name(dtype) +
                                      "]";
-  flexible_type title = label_or_default(_title, default_title);
-  flexible_type xlabel = label_or_default(_xlabel, "Count");
-  flexible_type ylabel = label_or_default(_ylabel, "Values");
+  flexible_type title = title_or_default(_title, default_title);
+  flexible_type xlabel = label_or_default(_xlabel, "Values");
+  flexible_type ylabel = label_or_default(_ylabel, "Count");
 
   auto format_string = make_format_string(vega_spec_histogram_json, vega_spec_histogram_json_len);
   return format(format_string, {
@@ -144,23 +121,20 @@ EXPORT std::string histogram_spec(const flexible_type& _title,
   });
 }
 
-EXPORT std::string categorical_spec(size_t length_list,
-                                    const flexible_type& _title,
+EXPORT std::string categorical_spec(const flexible_type& _title,
                                     const flexible_type& _xlabel,
                                     const flexible_type& _ylabel,
                                     flex_type_enum dtype) {
-  static std::string default_title = std::string("Distribution of Values [") +
+  std::string default_title = std::string("Distribution of Values [") +
                                      flex_type_enum_to_name(dtype) +
                                      "]";
 
-  flexible_type title = label_or_default(_title, default_title);
-  flexible_type xlabel = label_or_default(_xlabel, "Values");
-  flexible_type ylabel = label_or_default(_ylabel, "Count");
+  flexible_type title = title_or_default(_title, default_title);
+  flexible_type xlabel = label_or_default(_xlabel, "Count");
+  flexible_type ylabel = label_or_default(_ylabel, "Values");
 
-  size_t height = static_cast<size_t>(static_cast<double>(length_list) * 25.0 + 160.0);
   auto format_string = make_format_string(vega_spec_categorical_json, vega_spec_categorical_json_len);
   return format(format_string, {
-    {"{{height}}", std::to_string(height)},
     {"{{title}}", title},
     {"{{xlabel}}", xlabel},
     {"{{ylabel}}", ylabel},
@@ -173,7 +147,7 @@ EXPORT std::string summary_view_spec(size_t length_elements){
 
   auto format_string = make_format_string(vega_spec_summary_view_json, vega_spec_summary_view_json_len);
   return format(format_string, {
-    {"{{height}}", std::to_string(height)}
+    {"{{computed_height}}", std::to_string(height)}
   });
 }
 

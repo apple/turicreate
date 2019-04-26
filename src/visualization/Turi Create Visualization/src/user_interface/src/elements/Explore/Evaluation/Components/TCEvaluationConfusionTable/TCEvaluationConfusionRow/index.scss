@@ -1,0 +1,14 @@
+.TCEvaluationConfusionRow{
+	height: 42px;
+	line-height: 42px;
+	display: flex;
+	justify-content: center;
+	border-bottom-style: solid;
+  	border-bottom-width: thin;
+  	border-bottom-color: #D4D7D9;
+  	cursor: pointer;
+}
+
+.TCEvaluationConfusionRow:hover{
+	background: #DEE3E7;
+}

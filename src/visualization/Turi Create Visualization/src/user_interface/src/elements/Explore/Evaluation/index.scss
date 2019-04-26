@@ -1,0 +1,87 @@
+.TCEvaluation{
+	position: absolute;
+	left: 0px;
+	right: 0px;
+	width: 100%;
+	height: 100%;
+	cursor: default;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.TCEvaluationHomePageContainer{
+	padding-top: 20px;
+	width: 100%;
+	display: flex;
+}
+
+.TCEvaluationNaviationContainer{
+	margin-top: 60px;
+	width: 100%;
+}
+
+.TCEvaluationSummaryContainer{
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.TCEvaluationVegaContainer {
+	display: flex;
+	flex-grow: 1;
+	justify-content:center;
+}
+
+.TCEvaluationConsiderationsContainer {
+	display: flex;
+	flex-grow: 1;
+	justify-content:center;
+}
+
+.TCEvaluationSummarySelectedContainer{
+	height: 100vh;
+}
+
+.TCEvaluationSummarySelectedContainerSpacer{
+	height: 54px
+}
+
+.TCEvaluationSummarySelectedContainerData{
+	display: flex;
+	justify-content:center;
+}
+
+.TCEvaluationSummarySelectedModal{
+	display: flex;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+}
+
+.TCEvaluationSummarySelectedView{
+	flex-grow: 1;
+}
+
+.TCEvaluationSummarySelectedContainerDataCont{
+	padding-top: 30px;
+	height: calc(100vh - 86px);
+	overflow-y: scroll;
+}
+
+.TCEvaluationSummarySelectedContainerDataIncorrectly{
+	width: 490px;
+}
+
+.TCEvaluationSummarySelectedContainerDataIncorrectlyCont{
+	display: flex;
+	justify-content:center;
+	padding-top: 20px;
+}
+
+.TCEvaluationConfusionsContainer{
+	
+}

@@ -64,8 +64,28 @@ class Pipe {
         }
     }
     
+    public func writeProtoBuf(message: String){
+        print(message);
+        fflush(__stdoutp)
+    }
+    
     public func writePipe(method: String, start: Int, end: Int){
         print("{'method':'get_rows','start':" + String(start) + ", 'end': " + String(end) + "}");
+        fflush(__stdoutp)
+    }
+    
+    public func writePipeEval(start: Int, length: Int, row_type: String, mat_type: String, cells: String){
+        print("{\"method\":\"get_rows_eval\", \"start\":" + String(start) + ", \"length\": " + String(length) + ", \"row_type\": \"" + row_type + "\", \"mat_type\": \"" + mat_type + "\", \"cells\": " + cells + " }");
+        fflush(__stdoutp)
+    }
+    
+    public func writeIncorrect(label: String){
+        print("{\"method\":\"get_incorrects\", \"label\":\""+label+"\"}");
+        fflush(__stdoutp)
+    }
+    
+    public func writeCorrect(){
+        print("{\"method\":\"get_corrects\"}");
         fflush(__stdoutp)
     }
     
@@ -87,6 +107,10 @@ class Pipe {
                 self.graph_data.set_vega(vega_spec: vega_spec)
             }
             
+            if let evaluation_spec = json["evaluation_spec"] as? [String: Any] {
+                self.graph_data.set_evaluation(evaluation_spec: evaluation_spec)
+            }
+            
             if let data_spec = json["data_spec"] as? [String: Any] {
                 self.graph_data.add_data(data_spec: data_spec)
             }
@@ -97,6 +121,10 @@ class Pipe {
             
             if let accordion_spec = json["accordion_spec"] as? [String: Any] {
                 self.graph_data.add_accordion(accordion_spec: accordion_spec)
+            }
+            
+            if let proto_spec = json["protobuf"] as? String {
+                self.graph_data.send_proto(protobuf: proto_spec)
             }
 
         } catch let error as NSError {

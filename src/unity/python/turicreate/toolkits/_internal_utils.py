@@ -17,9 +17,9 @@ from ..data_structures.sframe import SFrame as _SFrame
 from ..data_structures.sgraph import SGraph as _SGraph
 from ..data_structures.sgraph import Vertex as _Vertex
 from ..data_structures.sgraph import Edge as _Edge
-from ..cython.cy_sarray import UnitySArrayProxy
-from ..cython.cy_sframe import UnitySFrameProxy
-from ..cython.cy_graph import UnityGraphProxy
+from .._cython.cy_sarray import UnitySArrayProxy
+from .._cython.cy_sframe import UnitySFrameProxy
+from .._cython.cy_graph import UnityGraphProxy
 from ..toolkits._main import ToolkitError
 
 import json
@@ -102,16 +102,103 @@ def _find_only_column_of_type(sframe, target_type, type_name, col_name):
         raise ToolkitError('No %s column in "dataset".' % type_name)
     return image_column_name
 
-
 def _find_only_image_column(sframe):
     """
-    Finds the only column in `sframe` with a type of turicreate.Image. If there are zero or
-    more than one image columns, an exception will be raised.
+    Finds the only column in `sframe` with a type of turicreate.Image. 
+    If there are zero or more than one image columns, an exception will 
+    be raised.
     """
     from turicreate import Image
     return _find_only_column_of_type(sframe, target_type=Image,
                                      type_name='image', col_name='feature')
 
+def _find_only_drawing_column(sframe):
+    """
+    Finds the only column that can be interpreted as a drawing feature column.
+    A drawing column can be a stroke-based drawing column (with dtype list)
+    or a bitmap-based drawing column (with dtype turicreate.Image)
+    
+    If there are zero or more than one drawing columns, an exception will be
+    raised.
+    """
+    from turicreate import Image
+    bitmap_success, stroke_success = False, False
+    bitmap_error, stroke_error = None, None
+    feature = None
+    try:
+        feature = _find_only_column_of_type(sframe, 
+            target_type=Image, type_name='drawing', col_name='feature')
+        bitmap_success = True
+    except ToolkitError as err_from_bitmap_search:
+        bitmap_error = err_from_bitmap_search
+    
+    try:
+        feature = _find_only_column_of_type(sframe, 
+            target_type=list, type_name='drawing', col_name='feature')
+        stroke_success = True
+    except ToolkitError as err_from_stroke_search:
+        stroke_error = err_from_stroke_search
+
+    more_than_one_image_columns = ("more than one" in str(bitmap_error) 
+        if not bitmap_success else False)
+    more_than_one_stroke_columns = ("more than one" in str(stroke_error) 
+        if not stroke_success else False)
+
+    corrective_action_for_user = ("\nThe feature column must contain either " 
+        + "bitmap-based drawings or stroke-based drawings but not both.\n" 
+        + "Bitmap-based drawing input must be a grayscale "
+        + "tc.Image of any size.\n"
+        + "Stroke-based drawing input must be in the following format:\n"
+        + "Every drawing must be represented by a list of strokes, where each "
+        + "stroke must be a list of points in the order in which they were "
+        + "drawn on the canvas. "
+        + "Every point must be a dictionary with two keys, 'x' and 'y', and " 
+        + "their respective values must be numerical, " 
+        + "i.e. either integer or float.")
+
+    error_message = (lambda num1, type1, input1, num2, type2, input2:
+            (("No 'feature' column specified. Found {num1} column with type " 
+            + "{type1} (for {input1}-based drawing input) and " 
+            + "{num2} column with type {type2} (for {input2}-based drawing " 
+            + "input) in 'input_dataset'. " 
+            + "Can not infer correct 'feature' column.").format(
+                num1=num1, input1=input1, type1=type1,
+                num2=num2, input2=input2, type2=type2)
+            )
+        )
+
+    if (bitmap_success ^ stroke_success 
+        and not more_than_one_image_columns 
+        and not more_than_one_stroke_columns):
+        # success! 
+        # found exactly one of bitmap-based drawing column and
+        # stroke-based drawing column, and found none of the other.
+        return feature
+    elif bitmap_success and stroke_success:
+        raise ToolkitError(error_message(
+                "one", "turicreate.Image", "bitmap", "one", "list", "stroke") 
+            + corrective_action_for_user)
+    else:
+        if more_than_one_image_columns and more_than_one_stroke_columns:
+            raise ToolkitError(error_message(
+                "more than one", "turicreate.Image", "bitmap", 
+                "more than one", "list", "stroke") 
+                + corrective_action_for_user)
+        elif more_than_one_image_columns and not more_than_one_stroke_columns:
+            raise ToolkitError(error_message(
+                "more than one", "turicreate.Image", "bitmap", 
+                "no", "list", "stroke") 
+                + corrective_action_for_user)
+        elif not more_than_one_image_columns and more_than_one_stroke_columns:
+            raise ToolkitError(error_message(
+                "more than one", "list", "stroke",
+                "no", "turicreate.Image", "bitmap")
+                + corrective_action_for_user)
+        else:
+            raise ToolkitError(error_message(
+                "no", "list", "stroke", 
+                "no", "turicreate.Image", "bitmap")
+                + corrective_action_for_user)
 
 def _SGraphFromJsonTree(json_str):
     """

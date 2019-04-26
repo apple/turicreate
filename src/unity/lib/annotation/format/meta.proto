@@ -1,0 +1,45 @@
+syntax = "proto3";
+option optimize_for = LITE_RUNTIME;
+
+package TuriCreate.Annotation.Specification;
+
+message MetaLabel {
+  oneof Label {
+    string stringLabel = 1;
+    int64 intLabel = 2;
+  }
+
+  int64 elementCount = 3;
+}
+
+message ActivityClassificationMeta { repeated MetaLabel label = 1; }
+
+message AudioClassificationMeta { repeated MetaLabel label = 1; }
+
+message DrawingClassificationMeta { repeated MetaLabel label = 1; }
+
+message ImageClassificationMeta { repeated MetaLabel label = 1; }
+
+message ObjectDetectionMeta { repeated MetaLabel label = 1; }
+
+message MetaData {
+  int64 num_examples = 1;
+
+  enum AnnotationType {
+    ACTIVITY_CLASSIFICATION = 0;
+    AUDIO_CLASSIFICATION = 1;
+    DRAWING_CLASSIFICATION = 2;
+    IMAGE_CLASSIFICATION = 3;
+    OBJECT_DETECTION = 4;
+  }
+
+  AnnotationType type = 2;
+
+  oneof Type {
+    ActivityClassificationMeta activity_classification = 100;
+    AudioClassificationMeta audio_classification = 101;
+    DrawingClassificationMeta drawing_classification = 102;
+    ImageClassificationMeta image_classification = 103;
+    ObjectDetectionMeta object_detection = 104;
+  }
+}

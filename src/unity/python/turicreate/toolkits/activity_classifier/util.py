@@ -10,7 +10,6 @@ from turicreate import SFrame as _SFrame
 from turicreate.util import _raise_error_if_not_of_type
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._internal_utils import _numeric_param_check_range
-from random import Random
 
 import sys as _sys
 if _sys.version_info.major > 2:
@@ -62,6 +61,7 @@ def random_split_by_session(dataset, session_id, fraction=0.9, seed=None):
         >>> len(valid['session_id'].unique())
         205
     """
+    from random import Random
 
     _raise_error_if_not_of_type(dataset, _SFrame, 'dataset')
     _raise_error_if_not_of_type(session_id, str, 'session_id')

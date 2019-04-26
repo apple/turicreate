@@ -10,7 +10,6 @@ import unittest
 import turicreate as tc
 import random
 import tempfile
-import platform
 import math
 import numpy as np
 from numbers import Number
@@ -50,7 +49,7 @@ def _load_data(self, num_examples = 1000, num_features = 3, max_num_sessions = 4
     Creates a random session_id column, that guarantees that the number
     of sessions is exactly the requested one.
 '''
-def _random_session_ids(num_examples , num_sessions):
+def _random_session_ids(num_examples, num_sessions):
     examples_per_session = num_examples // num_sessions
     if (examples_per_session == 0):
         raise ValueError("Can't divide {} lines into {} sessions.".format(num_examples, num_sessions))
@@ -76,7 +75,7 @@ class ActivityClassifierCreateStressTests(unittest.TestCase):
 
     def test_create_none_validation_set(self):
         model = tc.activity_classifier.create(self.data,
-                            features=self.features ,
+                            features=self.features,
                             target=self.target,
                             session_id=self.session_id,
                             prediction_window=self.prediction_window,
@@ -86,7 +85,7 @@ class ActivityClassifierCreateStressTests(unittest.TestCase):
 
     def test_create_no_validation_set(self):
         model = tc.activity_classifier.create(self.data,
-                            features=self.features ,
+                            features=self.features,
                             target=self.target,
                             session_id=self.session_id,
                             prediction_window=self.prediction_window)
@@ -95,7 +94,7 @@ class ActivityClassifierCreateStressTests(unittest.TestCase):
 
     def test_create_features_target_session(self):
         model = tc.activity_classifier.create(self.data,
-                            features=self.features ,
+                            features=self.features,
                             target=self.target,
                             session_id=self.session_id)
         predictions = model.predict(self.data)
@@ -114,7 +113,7 @@ class ActivityClassifierCreateStressTests(unittest.TestCase):
         """
         model = tc.activity_classifier.create(self.data,
                                               features = self.features,
-                                              target ='wrong' ,
+                                              target ='wrong',
                                               session_id=self.session_id,
                                               prediction_window=self.prediction_window,
                                               validation_set=None)
@@ -128,7 +127,7 @@ class ActivityClassifierAutoValdSetTest(unittest.TestCase):
 
     def _create_auto_validation_set(self, is_small=False):
         model = tc.activity_classifier.create(self.data,
-                            features=self.features ,
+                            features=self.features,
                             target=self.target,
                             session_id=self.session_id,
                             prediction_window=self.prediction_window,
@@ -210,7 +209,7 @@ class ActivityClassifierTest(unittest.TestCase):
 
         # Create the model
         self.model = tc.activity_classifier.create(self.data,
-                                                   features=self.features ,
+                                                   features=self.features,
                                                    target=self.target,
                                                    session_id=self.session_id,
                                                    prediction_window=self.prediction_window,
@@ -234,8 +233,8 @@ class ActivityClassifierTest(unittest.TestCase):
             'verbose': lambda x: x == True,
             'session_id': lambda x: x == self.session_id,
             'prediction_window': lambda x: x == self.prediction_window,
-            'training_accuracy': lambda x: x >= 0 and x <= 1 ,
-            'training_log_loss': lambda x: isinstance(x , Number),
+            'training_accuracy': lambda x: x >= 0 and x <= 1,
+            'training_log_loss': lambda x: isinstance(x, Number),
             'max_iterations': lambda x: x == self.def_opts['max_iterations'],
             'num_sessions': lambda x: x == self.num_sessions,
             'num_features': lambda x: x == self.num_features,
@@ -251,9 +250,9 @@ class ActivityClassifierTest(unittest.TestCase):
 
 
 
-    def _calc_expected_predictions_length(self , predict_input , top_k = 1):
+    def _calc_expected_predictions_length(self, predict_input, top_k = 1):
 
-        input_sessions = predict_input.groupby(self.session_id , { 'session_len' : tc.aggregate.COUNT()})
+        input_sessions = predict_input.groupby(self.session_id, { 'session_len' : tc.aggregate.COUNT()})
         prediction_window = self.model.prediction_window
         input_sessions['num_predictions_per_session'] = input_sessions['session_len'].apply(
             lambda x: math.ceil(float(x) / prediction_window) )

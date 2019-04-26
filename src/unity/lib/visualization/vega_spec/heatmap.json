@@ -1,15 +1,14 @@
 {
   "$schema": "https://vega.github.io/schema/vega/v4.json",
-  "autosize": {"type": "fit", "resize": true, "contains": "padding"},
-  "padding": 5,
-  "width": 720,
-  "height": 550,
-  "title": {
-    "text": "{{title}}"
-  },
+  "autosize": {"type": "fit", "resize": false, "contains": "padding"},
+  "padding": 8,
+  "width": {{width}},
+  "height": {{height}},
+  "title": {{title}},
   "data": [
     {
       "name": "source_2"
+      {{pre_filled_data_values}}
     }
   ],
   "marks": [
@@ -127,13 +126,12 @@
     },
     {
       "scale": "y",
-      "labelOverlap": true,
+      "labelOverlap": false,
       "orient": "left",
       "tickCount": {
         "signal": "min(ceil(height/40), 40)"
       },
-      "title": "{{ylabel}}",
-      "zindex": 1
+      "title": "{{ylabel}}"
     }
   ],
   "legends": [

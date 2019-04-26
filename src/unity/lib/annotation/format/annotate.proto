@@ -1,0 +1,46 @@
+syntax = "proto3";
+option optimize_for = LITE_RUNTIME;
+
+package TuriCreate.Annotation.Specification;
+
+message ActivityClassificationLabel {
+  double start = 6;
+  double stop = 7;
+}
+
+message AudioClassificationLabel {
+  double start = 6;
+  double stop = 7;
+}
+
+message DrawingClassificationLabel {}
+message ImageClassificationLabel {}
+
+message ObjectDetectionLabel {
+  double height = 1;
+  double width = 2;
+  double x = 4;
+  double y = 5;
+}
+
+message Label {
+  oneof labelIdentifier {
+    int64 intLabel = 1;
+    string stringLabel = 2;
+  }
+
+  oneof labelType {
+    ActivityClassificationLabel activityClassificationLabel = 100;
+    AudioClassificationLabel audioClassificationLabel = 200;
+    DrawingClassificationLabel drawingClassificationLabel = 300;
+    ImageClassificationLabel imageClassificationLabel = 400;
+    ObjectDetectionLabel objectDetectionLabel = 500;
+  }
+}
+
+message Annotation {
+  repeated Label labels = 1;
+  repeated int64 rowIndex = 2;
+}
+
+message Annotations { repeated Annotation annotation = 1; }

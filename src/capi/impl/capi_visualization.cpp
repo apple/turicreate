@@ -73,6 +73,7 @@ EXPORT tc_plot* tc_plot_create_sframe_summary(const tc_sframe* sf,
 }
 
 EXPORT tc_flexible_type* tc_plot_get_vega_spec(const tc_plot* plot,
+                                               tc_plot_variation variation,
                                                const tc_parameters*,
                                                tc_error** error) {
   ERROR_HANDLE_START();
@@ -80,7 +81,7 @@ EXPORT tc_flexible_type* tc_plot_get_vega_spec(const tc_plot* plot,
 
   CHECK_NOT_NULL(error, plot, "plot", NULL);
 
-  std::string vega_spec = plot->value->get_spec();
+  std::string vega_spec = plot->value->get_spec(variation);
   return tc_ft_create_from_string(vega_spec.data(), vega_spec.size(), error);
 
   ERROR_HANDLE_END(error, NULL);
@@ -105,9 +106,62 @@ EXPORT bool tc_plot_finished_streaming(const tc_plot* plot,
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
-  CHECK_NOT_NULL(error, plot, "plot", NULL);
+  CHECK_NOT_NULL(error, plot, "plot", true);
   return plot->value->finished_streaming();
 
-  ERROR_HANDLE_END(error, NULL);
+  ERROR_HANDLE_END(error, true);
 }
+
+#ifdef __APPLE__
+#ifndef TC_BUILD_IOS
+
+EXPORT void tc_plot_render_final_into_context(const tc_plot* plot,
+                                              tc_plot_variation variation,
+                                              CGContextRef context,
+                                              const tc_parameters *params,
+                                              tc_error** error) {
+  ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
+
+  CHECK_NOT_NULL(error, plot, "plot");
+  CHECK_NOT_NULL(error, context, "context");
+  plot->value->materialize();
+  bool result = plot->value->render(context, variation);
+  ASSERT_TRUE(result);
+  ERROR_HANDLE_END(error);
 }
+
+EXPORT bool tc_plot_render_next_into_context(const tc_plot* plot,
+                                             tc_plot_variation variation,
+                                             CGContextRef context,
+                                             const tc_parameters *params,
+                                             tc_error** error) {
+  ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
+
+  CHECK_NOT_NULL(error, plot, "plot", true);
+  CHECK_NOT_NULL(error, context, "context", true);
+  return plot->value->render(context, variation);
+
+  ERROR_HANDLE_END(error, true);
+
+}
+
+EXPORT void tc_plot_render_vega_spec_into_context(const char * vega_spec,
+                                                  CGContextRef context,
+                                                  const tc_parameters *params,
+                                                  tc_error** error) {
+  ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
+
+  CHECK_NOT_NULL(error, vega_spec, "vega_spec");
+  CHECK_NOT_NULL(error, context, "context");
+  turi::visualization::Plot::render(vega_spec, context);
+
+  ERROR_HANDLE_END(error);
+}
+
+#endif // TC_BUILD_IOS
+#endif // __APPLE__
+
+} // extern "C"

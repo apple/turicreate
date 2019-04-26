@@ -1,0 +1,37 @@
+/* Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
+   file Copyright.txt or https://cmake.org/licensing for details.  */
+
+#define VER_FILEVERSION             @CMake_RCVERSION@
+#define VER_FILEVERSION_STR         "@CMake_RCVERSION_STR@\0"
+
+#define VER_PRODUCTVERSION          @CMake_RCVERSION@
+#define VER_PRODUCTVERSION_STR      "@CMake_RCVERSION_STR@\0"
+
+/* Version-information resource identifier.  */
+#define VS_VERSION_INFO 1
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION    	VER_FILEVERSION
+PRODUCTVERSION 	VER_PRODUCTVERSION
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "FileVersion",      VER_FILEVERSION_STR
+            VALUE "ProductVersion",   VER_PRODUCTVERSION_STR
+        END
+    END
+
+    BLOCK "VarFileInfo"
+    BEGIN
+        /* The following line should only be modified for localized versions.     */
+        /* It consists of any number of WORD,WORD pairs, with each pair           */
+        /* describing a language,codepage combination supported by the file.      */
+        /*                                                                        */
+        /* For example, a file might have values "0x409,1252" indicating that it  */
+        /* supports English language (0x409) in the Windows ANSI codepage (1252). */
+
+        VALUE "Translation", 0x409, 1252
+    END
+END

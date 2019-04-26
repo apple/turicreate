@@ -8,17 +8,16 @@
 
 #include <optimization/optimization_interface.hpp>
 #include <flexible_type/flexible_type.hpp>
-#include <numerics/armadillo.hpp>
 #include <sframe/sframe.hpp>
 
 #include <optimization/utils.hpp>
 #include <optimization/optimization_interface.hpp>
 #include <optimization/regularizer_interface.hpp>
 #include <optimization/line_search-inl.hpp>
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
 
-typedef arma::vec DenseVector;
-typedef arma::mat DenseMatrix;
+typedef Eigen::VectorXd DenseVector;
+typedef Eigen::MatrixXd DenseMatrix;
 
 namespace turi {
   
@@ -140,20 +139,27 @@ class lbfgs_solver {
   
   size_t num_variables = 0;
   size_t lbfgs_memory_level = 0;
+  double function_value = NAN, function_scaling_factor = 1.0;
 
   solver_status m_status; 
   
   // LBFGS storage
   // The search steps and gradient differences are stored in a order
   // controlled by the start point.
-  DenseMatrix y;         // Step difference (prev m iters)
-  DenseMatrix s;         // Gradient difference (prev m iters)
+
+  // Step difference (prev m iters)
+  Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor> y;
+  
+  // Gradient difference (prev m iters)
+  Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor> s;
+
   DenseVector q;         // Storage required for the 2-loop recursion
   DenseVector rho;       // Scaling factors (prev m iters)
   DenseVector alpha;     // Step sizes (prev m iters)
 
-  // Buffers used internally.
-  DenseVector delta_point, reg_gradient, delta_grad, previous_gradient;
+  // Buffers used internally.  The function value and gradient here is scaled my
+  // m_status.function_scaling_value for numerical stability.
+  DenseVector delta_point, gradient, delta_grad, previous_gradient;
 
   double convergence_threshold = 0;
 };

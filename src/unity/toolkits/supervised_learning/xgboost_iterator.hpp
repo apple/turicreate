@@ -8,7 +8,7 @@
 
 #include <ml_data/ml_data.hpp>
 #include <xgboost/src/learner/dmatrix.h>
-#include <toolkits/supervised_learning/xgboost.hpp>
+#include <unity/toolkits/supervised_learning/xgboost.hpp>
 
 namespace turi {
 namespace supervised {

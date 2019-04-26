@@ -393,3 +393,37 @@ class JSONTest(unittest.TestCase):
                 return
 
             _SFrameComparer._assert_sframe_equal(expected, actual)
+
+
+    def test_true_false_substitutions(self):
+        expecteda = [["a", "b", "c"],["a", "b", "c"]]
+        expectedb = [["d", "false", "e", 0, "true", 1, "a"],["d", "e", "f"]]
+
+        records_json_file = """
+[{"a" : ["a", "b", "c"],
+  "b" : ["d", "false", "e", false, "true", true, "a"]},
+ {"a" : ["a", "b", "c"],
+  "b" : ["d", "e", "f"]}]
+"""
+        lines_json_file = """
+{"a" : ["a", "b", "c"], "b" : ["d", "false", "e", false, "true", true, "a"]}
+{"a" : ["a", "b", "c"], "b" : ["d", "e", "f"]}
+"""
+
+
+        with tempfile.NamedTemporaryFile('w') as f:
+            f.write(records_json_file)
+            f.flush()
+            records = SFrame.read_json(f.name, orient='records')
+        self.assertEqual(list(records["a"]), expecteda)
+        self.assertEqual(list(records["b"]), expectedb)
+
+        with tempfile.NamedTemporaryFile('w') as f:
+            f.write(lines_json_file)
+            f.flush()
+            lines = SFrame.read_json(f.name, orient='lines')
+
+        self.assertEqual(list(lines["a"]), expecteda)
+        self.assertEqual(list(lines["b"]), expectedb)
+
+

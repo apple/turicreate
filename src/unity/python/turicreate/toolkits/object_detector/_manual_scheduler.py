@@ -3,7 +3,7 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
-import mxnet as _mx
+from .._mxnet import mxnet as _mx
 import numpy as _np
 
 class ManualScheduler(_mx.lr_scheduler.LRScheduler):

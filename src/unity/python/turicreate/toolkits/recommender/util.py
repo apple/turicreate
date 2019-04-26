@@ -16,11 +16,10 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._model import Model as _Model
 from turicreate.toolkits._internal_utils import _toolkit_repr_print, \
                                         _precomputed_field
-from turicreate.cython.cy_server import QuietProgress
 import turicreate.aggregate as _Aggregate
 from turicreate.data_structures.sarray import SArray as _SArray
 from turicreate.data_structures.sframe import SFrame as _SFrame
-from turicreate.deps import numpy as _numpy, HAS_NUMPY as _HAS_NUMPY
+from turicreate._deps import numpy as _numpy, HAS_NUMPY as _HAS_NUMPY
 
 def _create(observation_data,
            user_id='user_id', item_id='item_id', target=None,
@@ -852,7 +851,7 @@ class _Recommender(_Model):
         if not hasattr(self, "_data_schema"):
             response = self.__proxy__.get_data_schema()
 
-            self._data_schema = {k : _turicreate.cython.cy_flexible_type.pytype_from_type_name(v)
+            self._data_schema = {k : _turicreate._cython.cy_flexible_type.pytype_from_type_name(v)
                                  for k, v in response["schema"].items()}
 
         return self._data_schema
@@ -1165,6 +1164,7 @@ class _Recommender(_Model):
         predict
         evaluate
         """
+        from turicreate._cython.cy_server import QuietProgress
 
         assert type(k) == int
 
@@ -1260,9 +1260,14 @@ class _Recommender(_Model):
                 assert new_observation_data.num_rows() != 0
                 original_user_type = user_column.dtype
                 users[user_id] = user_column.astype(str)
+                user_type=str
 
             elif user_column.dtype != user_type:
                 users[user_id] = user_column.astype(user_type)
+
+        # Cast user specified in exclude to the appropriate type if necessary.
+        if user_id in exclude.column_names() and exclude[user_id].dtype!=user_type:
+                exclude[user_id] = exclude[user_id].astype(user_type)
 
         try:
             diversity = float(diversity)
@@ -1554,7 +1559,7 @@ class _Recommender(_Model):
                               verbose=verbose,
                               **kwargs)
 
-        precision_recall_by_user = _turicreate.recommender.util.precision_recall_by_user(dataset, recs, cutoffs)
+        precision_recall_by_user = self.__proxy__.precision_recall_by_user(dataset, recs, cutoffs)
 
         ret = {'precision_recall_by_user': precision_recall_by_user}
 

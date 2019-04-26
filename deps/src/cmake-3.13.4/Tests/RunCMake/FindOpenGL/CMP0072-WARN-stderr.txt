@@ -1,0 +1,21 @@
+^CMake Warning \(dev\) at .*/Modules/FindOpenGL.cmake:[0-9]+ \(message\):
+  Policy CMP0072 is not set: FindOpenGL prefers GLVND by default when
+  available.  Run "cmake --help-policy CMP0072" for policy details.  Use the
+  cmake_policy command to set the policy and suppress this warning.
+
+  FindOpenGL found both a legacy GL library:
+
+    OPENGL_gl_LIBRARY: GL
+
+  and GLVND libraries for OpenGL and GLX:
+
+    OPENGL_opengl_LIBRARY: OpenGL
+    OPENGL_glx_LIBRARY: GLX
+
+  OpenGL_GL_PREFERENCE has not been set to "GLVND" or "LEGACY", so for
+  compatibility with CMake 3.10 and below the legacy GL library will be used.
+Call Stack \(most recent call first\):
+  CMP0072-common.cmake:[0-9]+ \(find_package\)
+  CMP0072-WARN.cmake:[0-9]+ \(include\)
+  CMakeLists.txt:[0-9]+ \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.$

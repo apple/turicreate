@@ -15,9 +15,9 @@
 #include <unity/lib/extensions/ml_model.hpp>
 #include <unity/lib/gl_sframe.hpp>
 #include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
-#include <unity/toolkits/neural_net/cnn_module.hpp>
 #include <unity/toolkits/neural_net/compute_context.hpp>
 #include <unity/toolkits/neural_net/image_augmentation.hpp>
+#include <unity/toolkits/neural_net/model_backend.hpp>
 #include <unity/toolkits/neural_net/model_spec.hpp>
 #include <unity/toolkits/object_detection/od_data_iterator.hpp>
 
@@ -29,8 +29,7 @@ class EXPORT object_detector: public ml_model_base {
 
   // ml_model_base interface
 
-  void init_options(const std::map<std::string,
-                    flexible_type>& options) override;
+  void init_options(const std::map<std::string, flexible_type>& opts) override;
   size_t get_version() const override;
   void save_impl(oarchive& oarc) const override;
   void load_version(iarchive& iarc, size_t version) override;
@@ -38,22 +37,27 @@ class EXPORT object_detector: public ml_model_base {
   // Interface exposed via Unity server
 
   void train(gl_sframe data, std::string annotations_column_name,
-             std::string image_column_name,
-             std::map<std::string, flexible_type> options);
+             std::string image_column_name, variant_type validation_data,
+             std::map<std::string, flexible_type> opts);
+  variant_map_type evaluate(gl_sframe data, std::string metric,
+                            std::map<std::string, flexible_type> opts);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
-      std::string filename, std::map<std::string, flexible_type> options);
+      std::string filename, std::map<std::string, flexible_type> opts);
 
   // Register with Unity server
 
   BEGIN_CLASS_MEMBER_REGISTRATION("object_detector")
 
-  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::list_fields);
-  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
-      "get_value", object_detector::get_value_from_state, "field");
+  IMPORT_BASE_CLASS_REGISTRATION(ml_model_base);
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::train, "data",
                                  "annotations_column_name",
-                                 "image_column_name", "options");
+                                 "image_column_name", "validation_data",
+                                 "options");
+  register_defaults("train",
+                    {{"validation_data", to_variant(gl_sframe())},
+                     {"options",
+                      to_variant(std::map<std::string, flexible_type>())}});
   REGISTER_CLASS_MEMBER_DOCSTRING(
       object_detector::train,
       "\n"
@@ -68,7 +72,12 @@ class EXPORT object_detector: public ml_model_base {
       "    The number of training iterations. If 0, then it will be automatically\n"
       "    be determined based on the amount of data you provide.\n"
   );
-  // TODO: Addition training options: batch_size, max_iterations, etc.
+
+  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::evaluate, "data", "metric",
+                                 "options");
+  register_defaults("evaluate",
+      {{"metric", std::string("auto")},
+       {"options", to_variant(std::map<std::string, flexible_type>())}});
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::export_to_coreml, "filename",
     "options");
@@ -101,8 +110,7 @@ class EXPORT object_detector: public ml_model_base {
 
   // Factory for data_iterator
   virtual std::unique_ptr<data_iterator> create_iterator(
-      gl_sframe data, std::string annotations_column_name,
-      std::string image_column_name) const;
+      gl_sframe data, std::vector<std::string> class_labels, bool repeat) const;
 
   // Factory for compute_context
   virtual
@@ -117,10 +125,13 @@ class EXPORT object_detector: public ml_model_base {
   // Support for iterative training.
   // TODO: Expose via forthcoming C-API checkpointing mechanism?
 
-  void init_train(gl_sframe data, std::string annotations_column_name,
-                  std::string image_column_name,
-                  std::map<std::string, flexible_type> options);
-  void perform_training_iteration();
+  virtual void init_train(gl_sframe data, std::string annotations_column_name,
+                          std::string image_column_name,
+                          std::map<std::string, flexible_type> opts);
+  virtual void perform_training_iteration();
+
+  virtual variant_map_type perform_evaluation(gl_sframe data,
+                                              std::string metric);
 
   // Utility code
 
@@ -130,6 +141,9 @@ class EXPORT object_detector: public ml_model_base {
   }
 
  private:
+
+  neural_net::float_array_map get_model_params() const;
+
   neural_net::shared_float_array prepare_label_batch(
       std::vector<std::vector<neural_net::image_annotation>> annotations_batch)
       const;
@@ -139,6 +153,9 @@ class EXPORT object_detector: public ml_model_base {
   // Waits until the number of pending patches is at most `max_pending`.
   void wait_for_training_batches(size_t max_pending = 0);
 
+  // Computes and records training/validation metrics.
+  void update_model_metrics(gl_sframe data, gl_sframe validation_data);
+
   // Primary representation for the trained model.
   std::unique_ptr<neural_net::model_spec> nn_spec_;
 
@@ -147,13 +164,13 @@ class EXPORT object_detector: public ml_model_base {
   std::unique_ptr<neural_net::compute_context> training_compute_context_;
   std::unique_ptr<data_iterator> training_data_iterator_;
   std::unique_ptr<neural_net::image_augmenter> training_data_augmenter_;
-  std::unique_ptr<neural_net::cnn_module> training_module_;
+  std::unique_ptr<neural_net::model_backend> training_model_;
 
   // Nonnull while training is in progress, if progress printing is enabled.
   std::unique_ptr<table_printer> training_table_printer_;
 
   // Map from iteration index to the loss future.
-  std::map<size_t, neural_net::deferred_float_array> pending_training_batches_;
+  std::map<size_t, neural_net::shared_float_array> pending_training_batches_;
 };
 
 }  // object_detection

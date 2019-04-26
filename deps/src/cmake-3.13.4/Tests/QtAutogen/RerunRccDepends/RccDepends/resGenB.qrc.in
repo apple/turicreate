@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/TextsGenerated">
+        <file>resGen/input.txt</file>
+        <file alias="Added">resGen/inputAdded.txt</file>
+    </qresource>
+</RCC>

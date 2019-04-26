@@ -3,9 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include "batch_size.hpp"
-#include "item_frequency.hpp"
-#include "vega_spec.hpp"
+#include <unity/lib/visualization/batch_size.hpp>
+#include <unity/lib/visualization/escape.hpp>
+#include <unity/lib/visualization/item_frequency.hpp>
+#include <unity/lib/visualization/vega_spec.hpp>
+
 #include <string>
 
 using namespace turi::visualization;
@@ -58,17 +60,38 @@ std::string item_frequency_result::vega_summary_data() const {
 
 }
 
+static void add_item_and_count(std::stringstream& ss, const std::string& value, size_t i, size_t count, double total_count) {
+  if(i != 0){
+    ss << ",";
+  }
+
+  ss << "{\"label\": ";
+
+  if(value.length() >= 200){
+    ss << escape_string(value.substr(0,199) + std::to_string(i));
+  }else{
+    ss << escape_string(value);
+  }
+
+  ss << ",\"label_idx\": ";
+  ss << i;
+  ss << ",\"count\": ";
+  ss << count;
+  ss << ",\"percentage\": \"";
+  ss << ((100.0 * count)/total_count);
+  ss << "%\"}";
+}
+
 std::string item_frequency_result::vega_column_data(bool sframe) const {
   std::stringstream ss;
   size_t x = 0;
 
   auto items_list = emit().get<flex_dict>();
   size_t size_list;
-
-  if(sframe){
+  if(sframe) {
     size_list = std::min(10UL, items_list.size());
   }else{
-    size_list = std::min(200UL, items_list.size());
+    size_list = std::min(12UL, items_list.size());
   }
 
   std::sort(items_list.begin(), items_list.end(), [](const std::pair<turi::flexible_type,flexible_type> &left, const std::pair<turi::flexible_type,flexible_type> &right) {
@@ -92,41 +115,37 @@ std::string item_frequency_result::vega_column_data(bool sframe) const {
     return left.second > right.second;
   });
 
+  size_t total_count = m_count.emit();
+  size_t count_so_far = 0;
   for(size_t i=0; i<size_list; i++) {
-
     const auto& pair = items_list[i];
     const auto& flex_value = pair.first;
-    if (flex_value.get_type() == flex_type_enum::UNDEFINED) {
-      // skip missing values for now
-      continue;
-    }
-
-    if(x != 0){
-      ss << ",";
-    }
-
-    DASSERT_TRUE(flex_value.get_type() == flex_type_enum::STRING);
-    const auto& value = flex_value.get<flex_string>();
-
     size_t count = pair.second.get<flex_int>();
-
-    ss << "{\"label\": ";
-
-    if(value.length() >= 200){
-      ss << escape_string(value.substr(0,199) + std::to_string(i));
-    }else{
-      ss << escape_string(value);
+    count_so_far += count;
+    if (flex_value.get_type() == flex_type_enum::UNDEFINED) {
+      add_item_and_count(ss, "(null)", x, count, total_count);
+    } else {
+      DASSERT_TRUE(flex_value.get_type() == flex_type_enum::STRING);
+      const auto& value = flex_value.get<flex_string>();
+      add_item_and_count(ss, value, x, count, total_count);
     }
-
-    ss << ",\"label_idx\": ";
-    ss << i;
-    ss << ",\"count\": ";
-    ss << count;
-    ss << ",\"percentage\": \"";
-    ss << ((float)(100.0 * count))/((float) m_count.emit());
-    ss << "%\"}";
-
     x++;
+
+    // if we have already accounted for over 95% of the data,
+    // and we still have 5 or more labels to go, OR
+    // if it's the last slot and we still have labels unaccounted for,
+    // combine remaining values into an "other" bin.
+    size_t labels_remaining = items_list.size() - (i+1);
+    size_t count_remaining = total_count - count_so_far;
+    double fraction_count_remaining = (double)count_remaining / (double)total_count;
+    if ((labels_remaining >= 5 && fraction_count_remaining < 0.05) ||
+        (i == size_list - 1 && (items_list.size() - size_list > 0))) {
+      std::stringstream combined_value;
+      combined_value << "Other (";
+      combined_value << labels_remaining << " labels)";
+      add_item_and_count(ss, combined_value.str(), x, count_remaining, total_count);
+      break;
+    }
   }
 
   return ss.str();
@@ -156,9 +175,7 @@ namespace turi {
 
         auto transformer = std::dynamic_pointer_cast<item_frequency_result>(item_freq.get());
         auto result = transformer->emit().get<flex_dict>();
-        size_t length_list = std::min(200UL, result.size());
-        
-        std::string category_spec = categorical_spec(length_list, title, xlabel, ylabel, self->dtype());
+        std::string category_spec = categorical_spec(title, xlabel, ylabel, self->dtype());
 
         double size_array = static_cast<double>(self->size());
 

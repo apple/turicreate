@@ -24,9 +24,9 @@ set(FILEIO_REMOTE_FS_REQUIRES curl openssl aws-sdk-cpp soft_hdfs)
 endif()
 
 
-make_library(fileio
+make_library(fileio OBJECT
   SOURCES
-  ${FILEIO_REMOTE_FS_SOURCES}
+    ${FILEIO_REMOTE_FS_SOURCES}
     union_fstream.cpp
     general_fstream_source.cpp
     general_fstream_sink.cpp
@@ -42,9 +42,7 @@ make_library(fileio
     fileio_constants.cpp
     block_cache.cpp
   REQUIRES
-  ${FILEIO_REMOTE_FS_REQUIRES} libxml2 logger pthread z cancel_serverside_ops globals process util ${PLATFORM_DEPENDENCIES} network random 
+    ${FILEIO_REMOTE_FS_REQUIRES} libxml2 logger pthread z cancel_serverside_ops globals process util ${PLATFORM_DEPENDENCIES} network random
   MAC_REQUIRES
     iconv
-  )
-    
-
+)

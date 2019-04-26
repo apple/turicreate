@@ -77,21 +77,22 @@ import turicreate.toolkits.image_classifier as image_classifier
 import turicreate.toolkits.image_similarity as image_similarity
 import turicreate.toolkits.object_detector as object_detector
 import turicreate.toolkits.style_transfer as style_transfer
+import turicreate.toolkits.sound_classifier.sound_classifier as sound_classifier
 import turicreate.toolkits.activity_classifier as activity_classifier
+import turicreate.toolkits.drawing_classifier as drawing_classifier
 
 from turicreate.toolkits.image_analysis.image_analysis import load_images
+from turicreate.toolkits.audio_analysis.audio_analysis import load_audio
 
 from turicreate.toolkits import evaluation
 
 # internal util
-from turicreate.connect.main import launch as _launch
-import turicreate.connect.main as glconnect
+from turicreate._connect.main import launch as _launch
 
 ## bring load functions to the top level
 from turicreate.data_structures.sframe import load_sframe
 from turicreate.data_structures.sarray import load_sarray
-from turicreate.toolkits._model import load_model, Model
-from .cython import cy_pylambda_workers
+from turicreate.toolkits._model import load_model
 
 ################### Extension Importing ########################
 import turicreate.extensions
@@ -110,34 +111,13 @@ class _extensions_wrapper(object):
         return getattr(self._wrapped, name)
     except:
         pass
-    turicreate.connect.main.get_unity()
+    turicreate._connect.main.get_unity()
     return getattr(self._wrapped, name)
 
 import sys as _sys
 _sys.modules["turicreate.extensions"] = _extensions_wrapper(_sys.modules["turicreate.extensions"])
 # rewrite the import
 extensions = _sys.modules["turicreate.extensions"]
-
-
-def _mxnet_check():
-    try:
-        import mxnet as _mx
-        version_tuple = tuple(int(x) for x in _mx.__version__.split('.') if x.isdigit())
-        lowest_version = (0, 11, 0)
-        not_yet_supported_version = (1, 2, 0)
-        recommended_version_str = '1.1.0'
-        if not (lowest_version <= version_tuple < not_yet_supported_version):
-            print('WARNING: You are using MXNet', _mx.__version__, 'which may result in breaking behavior.')
-            print('         To fix this, please install the currently recommended version:')
-            print()
-            print('             pip uninstall -y mxnet && pip install mxnet==%s' % recommended_version_str)
-            print()
-            print("         If you want to use a CUDA GPU, then change 'mxnet' to 'mxnet-cu90' (adjust 'cu90' depending on your CUDA version):")
-            print()
-    except (ImportError, OSError):
-        pass
-
-_mxnet_check()
 
 from .visualization import plot, show
 

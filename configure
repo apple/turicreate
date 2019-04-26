@@ -31,12 +31,19 @@ function print_help {
   echo "  --with-capi (default)             Build C API."
   echo "  --with-capi-framework             Build C API as macOS framework (macOS only)"
   echo "  --no-capi                         Skip building the C API." 
-
+  echo
   echo "  --with-python (default)           Build python components."
   echo "  --no-python"
   echo 
   echo "  --with-visualization (default)    Build Turi Create visualization client."
   echo "  --no-visualization"
+  echo
+  echo "  --with-extra-opt-flags (default)  Enable extra optimization flags (e.g. inlining)."
+  echo "  --no-extra-opt-flags"
+  echo
+  echo "  --with-stack-display              Display stack traces to stderr when possible."
+  echo "  --no-stack-display (default)      Only write stack traces to file, not to stderr."
+  echo "  --llvm-path                       Path to LLVM (required for stack trace display)."
   echo
   echo "  --release-opt-for-size            Optimize for size."
   echo "  --debug-opt-for-size              Debug optimize for size."
@@ -46,7 +53,7 @@ function print_help {
   echo "  --no-remotefs                     Disable remote file access."
   echo
   echo "  --virtualenv VIRTUALENV_EXE       Path to virtualenv executable (otherwise looks in \$PATH)."
-  echo 
+  echo
   echo "  --yes                             Defaults to yes on a prompt"
   echo
   echo "  -D var=value                      Specify CFLAGS definitions to be passed on to cmake."
@@ -116,8 +123,12 @@ with_ios=0
 with_ccache=1
 with_visualization=1
 with_remotefs=1
+with_extra_opt_flags=1
+with_stack_display=0
 release_opt_for_size=0
 debug_opt_for_size=0
+
+llvm_path=""
 
 ###############################################################################
 #
@@ -145,6 +156,13 @@ while [ $# -gt 0 ]
 
     --with-python)          with_python=1;;
     --no-python)            with_python=0;;
+
+    --with-extra-opt-flags) with_extra_opt_flags=1;;
+    --no-extra-opt-flags)   with_extra_opt_flags=0;;
+
+    --with-stack-display)   with_stack_display=1;;
+    --no-stack-display)     with_stack_display=0;;
+    --llvm-path)            shift; llvm_path="$1";;
 
     --with-visualization)   with_visualization=1;;
     --no-visualization)     with_visualization=0;;
@@ -186,6 +204,21 @@ if [[ $with_python == 1 ]]; then
   CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_PYTHON=1"
 else
   CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_PYTHON=0"
+fi
+
+if [[ $with_extra_opt_flags == 1 ]]; then
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_EXTRA_OPTIMIZATION_FLAGS=1"
+fi
+
+if [[ $with_stack_display == 1 ]]; then
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_STACK_DISPLAY=1"
+fi
+
+if [[ ! -z "${llvm_path}" ]]; then
+  llvm_libraries=$("${llvm_path}/bin/llvm-config" --link-static --libs | tr ' ' ';')
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_LLVM_PATH=${llvm_path}"
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_LLVM_LIBRARIES='${llvm_libraries}'"
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_HAS_LLVM=1"
 fi
 
 if [[ $release_opt_for_size == 1 ]]; then
@@ -369,11 +402,16 @@ function check_version {
 
 function install_cmake {
   echo "Running script to build bundled cmake version."
-  CC=$CCCMD CXX=$CXXCMD ./scripts/cmake_setup.sh ${PWD}/deps/src/cmake-3.9.3 ${PWD}/deps/local || exit 1
+  CC=$CCCMD CXX=$CXXCMD ./scripts/cmake_setup.sh ${PWD}/deps/src/cmake-3.13.4 ${PWD}/deps/local || exit 1
   return $?
 }
 
 CMAKE=`which cmake || echo ""`
+if [[ ! -f ${CMAKE} ]] ; then
+  if [[ -f /Applications/CMake.app/Contents/bin/cmake ]] ; then
+    CMAKE=/Applications/CMake.app/Contents/bin/cmake
+  fi
+fi
 
 function check_cmake { 
 
@@ -396,9 +434,9 @@ function check_cmake {
     #test cmake version
     echo "Testing existing cmake version..."
     currentversion=`$CMAKE --version | awk -F "patch" '{print $1;}' | tr -dc '[0-9].'`
-    echo "Detected ${currentversion}. Required 3.5.0"
+    echo "Detected ${currentversion}. Required 3.12.0"
 
-    check_version $currentversion "3.5.1"
+    check_version $currentversion "3.12.0"
 
     if [ $? -ne 2 ]; then
       echo "CMake version is good; using built-in version."

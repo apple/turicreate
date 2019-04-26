@@ -18,7 +18,7 @@
 #import <CoreML/CoreML.h>
 #include <memory>
 
-#include <unity/toolkits/coreml_export/MLModel/src/Format.hpp>
+#include <mlmodel/src/Format.hpp>
 
 namespace turi {
 namespace image_deep_feature_extractor {
@@ -103,7 +103,7 @@ private:
 const std::map<const std::string, const neural_network_model_details> model_name_to_info =
   {{"resnet-50", {224, 224, 2048, "flatten0", "data",
                   "Resnet50.mlmodel"}},
-   {"VisionFeaturePrint_Screen", {299, 299, 2048, "output", "image_input", ""}},
+   {"VisionFeaturePrint_Scene", {299, 299, 2048, "output", "image_input", ""}},
    {"squeezenet_v1.1", {227, 227, 1000, "pool10", "image",
                         "https://docs-assets.developer.apple.com/coreml/models/SqueezeNet.mlmodel"}}};
 
@@ -123,8 +123,8 @@ const neural_network_model_details& get_model_info(const std::string& model_name
   return model_info_entry->second;
 }
 
-void build_vision_feature_print_screen_spec(const std::string& model_path) {
-  const neural_network_model_details& model_info = get_model_info("VisionFeaturePrint_Screen");
+void build_vision_feature_print_scene_spec(const std::string& model_path) {
+  const neural_network_model_details& model_info = get_model_info("VisionFeaturePrint_Scene");
 
   CoreML::Specification::Model spec = CoreML::Specification::Model();
   spec.set_specificationversion(CoreML::MLMODEL_SPECIFICATION_VERSION);
@@ -158,7 +158,7 @@ void build_vision_feature_print_screen_spec(const std::string& model_path) {
 
 }
 
-API_AVAILABLE(macos(10.13))
+API_AVAILABLE(macos(10.13),ios(11.0))
 static MLModel *create_model(const std::string& download_path,
 			     const std::string& model_name) {
 
@@ -192,8 +192,8 @@ static MLModel *create_model(const std::string& download_path,
 
     // Create the modified model
     const std::string modified_model_path = download_path + "/" + model_name + "_modified.mlmodel";
-    if(model_name == "VisionFeaturePrint_Screen") {
-      build_vision_feature_print_screen_spec(modified_model_path);
+    if(model_name == "VisionFeaturePrint_Scene") {
+      build_vision_feature_print_scene_spec(modified_model_path);
     } else {
       std::string base_model_path;
       const neural_network_model_details& model_info = get_model_info(model_name);
@@ -201,7 +201,10 @@ static MLModel *create_model(const std::string& download_path,
       if(turi::fileio::get_protocol(model_info.base_model_url) != "") {
         base_model_path = download_path + "/" + model_name + ".mlmodel";
         logstream(LOG_PROGRESS) << "Downloading base mlmodel" << std::endl;
-        turi::download_url(model_info.base_model_url, base_model_path);
+        const int download_ret = turi::download_url(model_info.base_model_url, base_model_path);
+        if(download_ret != 0) {
+          log_and_throw("Unable to download model.");
+        }
       } else {
         base_model_path = download_path + "/" + model_info.base_model_url;
       }
@@ -315,17 +318,17 @@ CVPixelBufferRef create_pixel_buffer_from_flex_image(const flex_image image) {
 }  // namespace
 
 struct mlmodel_image_feature_extractor::impl {
-  API_AVAILABLE(macos(10.13))
+  API_AVAILABLE(macos(10.13),ios(11.0))
   ~impl() {
     [model release];
   }
 
   std::string name;
-  API_AVAILABLE(macos(10.13)) MLModel *model = nil;
+  API_AVAILABLE(macos(10.13),ios(11.0)) MLModel *model = nil;
   CoreML::Specification::Model spec;
 };
 
-API_AVAILABLE(macos(10.13))
+API_AVAILABLE(macos(10.13),ios(11.0))
 mlmodel_image_feature_extractor::mlmodel_image_feature_extractor(
     const std::string& model_name, const std::string& download_path)
   : m_impl(new impl) {
@@ -355,7 +358,7 @@ mlmodel_image_feature_extractor::coreml_spec() const {
   return m_impl->spec;
 }
 
-API_AVAILABLE(macos(10.13))
+API_AVAILABLE(macos(10.13),ios(11.0))
 gl_sarray
 mlmodel_image_feature_extractor::extract_features(gl_sarray data, bool verbose, size_t kBatchSize) const {
   ASSERT_EQ((int)data.dtype(), (int)flex_type_enum::IMAGE);
@@ -403,7 +406,7 @@ mlmodel_image_feature_extractor::extract_features(gl_sarray data, bool verbose, 
     // Santiy check prediction shape
     NSArray<NSNumber *> * shape = [deep_features_values shape];
     size_t feature_dim = -1;
-    if(m_impl->name != "VisionFeaturePrint_Screen") {
+    if(m_impl->name != "VisionFeaturePrint_Scene") {
       ASSERT_EQ(shape.count, (unsigned long)5);
       ASSERT_EQ(shape[0].intValue, 1);
       ASSERT_EQ(shape[1].intValue, 1);
@@ -449,7 +452,7 @@ mlmodel_image_feature_extractor::extract_features(gl_sarray data, bool verbose, 
 #ifdef HAS_CORE_ML_BATCH_INFERENCE
     // Even when compiled with a new enough SDK, guard against older deployment
     // targets at runtime.
-    if (@available(macOS 10.14, *)) {
+    if (@available(macOS 10.14, iOS 12.0,  *)) {
       // Invoke CoreML using the batch inference API for better performance.
       MLArrayBatchProvider *image_batch = [[MLArrayBatchProvider alloc] initWithFeatureProviderArray: inputs];
       MLPredictionOptions* options = [[MLPredictionOptions alloc] init];

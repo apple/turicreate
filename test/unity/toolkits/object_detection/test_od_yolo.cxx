@@ -9,6 +9,7 @@
 #include <unity/toolkits/object_detection/od_yolo.hpp>
 
 #include <algorithm>
+#include <cmath>
 
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
@@ -19,7 +20,113 @@ namespace turi {
 namespace object_detection {
 namespace {
 
-using turi::neural_net::model_spec;
+using neural_net::image_annotation;
+using neural_net::model_spec;
+using neural_net::shared_float_array;
+
+BOOST_AUTO_TEST_CASE(test_convert_yolo_to_annotations) {
+
+  static constexpr size_t OUTPUT_GRID_SIZE = 2;
+  static constexpr size_t NUM_CLASSES = 2;
+  static constexpr size_t NUM_PREDS = NUM_CLASSES + 5;  // 4 for bbox, 1 conf
+
+  const std::vector<std::pair<float, float>> anchor_boxes = {
+      {1.f, 2.f}, {1.f, 1.f},
+  };
+
+  // Allocate a YOLO map and define a setter function so we can populate it
+  // relatively conveniently.
+  size_t buffer_size =
+      anchor_boxes.size() * NUM_PREDS * OUTPUT_GRID_SIZE * OUTPUT_GRID_SIZE;
+  std::vector<float> buffer(buffer_size, 0.f);
+  auto set_val = [&](size_t h, size_t w, size_t b, size_t p, float val) {
+    float* out = buffer.data();
+    out += h * NUM_PREDS * anchor_boxes.size() * OUTPUT_GRID_SIZE;
+    out += w * NUM_PREDS * anchor_boxes.size();
+    out += b * NUM_PREDS;
+    out += p;
+    *out = val;
+  };
+
+  // Initialize all confidence scores to large negative values, which correspond
+  // to zero confidence (after passing through the sigmoid function).
+  for (size_t h = 0; h < OUTPUT_GRID_SIZE; ++h) {
+    for (size_t w = 0; w < OUTPUT_GRID_SIZE; ++w) {
+      for (size_t b = 0; b < anchor_boxes.size(); ++b) {
+        set_val(h, w, b, 4, -1000.f);  // conf
+      }
+    }
+  }
+
+  // Predict class 0 at the center of output cell (1,0) with exactly the size of
+  // anchor box 0.
+  set_val(0, 1, 0, 0, 0.f);  // x
+  set_val(0, 1, 0, 1, 0.f);  // y
+  set_val(0, 1, 0, 2, 0.f);  // w
+  set_val(0, 1, 0, 3, 0.f);  // h
+  set_val(0, 1, 0, 4, 1000.f);  // conf
+  set_val(0, 1, 0, 5, 1000.f);  // class 0
+  set_val(0, 1, 0, 6, 0.f);  // class 1
+
+  // Predict class 1 at the upper-left corner of output cell (0,1) at half the
+  // size of anchor box 1, with confidence 0.5.
+  set_val(1, 0, 1, 0, -1000.f);  // x
+  set_val(1, 0, 1, 1, -1000.f);  // y
+  set_val(1, 0, 1, 2, std::log(0.5f));  // w
+  set_val(1, 0, 1, 3, std::log(0.5f));  // h
+  set_val(1, 0, 1, 4, 0.f);  // conf
+  set_val(1, 0, 1, 5, 0.f);  // class 0
+  set_val(1, 0, 1, 6, 1000.f);  // class 1
+
+  // Create the float_array.
+  shared_float_array arr = shared_float_array::wrap(
+      buffer,
+      { OUTPUT_GRID_SIZE, OUTPUT_GRID_SIZE, anchor_boxes.size() * NUM_PREDS });
+
+  // Parsing annotations with min confidence 0.75 should only find the first
+  // prediction.
+  std::vector<image_annotation> annotations =
+      convert_yolo_to_annotations(arr, anchor_boxes, 0.75f);
+  float center_x = 1.5f;
+  float center_y = 0.5f;
+  float anchor_scale = 1.f;
+  TS_ASSERT_EQUALS(annotations.size(), 1);
+  TS_ASSERT_EQUALS(annotations[0].identifier, 0);
+  TS_ASSERT_EQUALS(annotations[0].confidence, 1.f);
+  TS_ASSERT_EQUALS(annotations[0].bounding_box.x * OUTPUT_GRID_SIZE,
+                   center_x - anchor_scale * anchor_boxes[0].first / 2.f);
+  TS_ASSERT_EQUALS(annotations[0].bounding_box.y * OUTPUT_GRID_SIZE,
+                   center_y - anchor_scale * anchor_boxes[0].second / 2.f);
+  TS_ASSERT_EQUALS(annotations[0].bounding_box.width * OUTPUT_GRID_SIZE,
+                   anchor_scale * anchor_boxes[0].first);
+  TS_ASSERT_EQUALS(annotations[0].bounding_box.height * OUTPUT_GRID_SIZE,
+                   anchor_scale * anchor_boxes[0].second);
+
+  const image_annotation first_prediction = annotations[0];
+
+  // Parsing annotations with min confidence 0.01 should find both predictions.
+  // Sort the results so that the predict we found above is first.
+  annotations = convert_yolo_to_annotations(arr, anchor_boxes, 0.01f);
+  std::sort(annotations.begin(), annotations.end(),
+            [](const image_annotation& a, const image_annotation& b) {
+              return a.confidence > b.confidence;
+            });
+  center_x = 0.f;
+  center_y = 1.f;
+  anchor_scale = 0.5f;
+  TS_ASSERT_EQUALS(annotations.size(), 2);
+  TS_ASSERT(annotations[0] == first_prediction);
+  TS_ASSERT_EQUALS(annotations[1].identifier, 1);
+  TS_ASSERT_EQUALS(annotations[1].confidence, 0.5f);
+  TS_ASSERT_EQUALS(annotations[1].bounding_box.x * OUTPUT_GRID_SIZE,
+                   center_x - anchor_scale * anchor_boxes[1].first / 2.f);
+  TS_ASSERT_EQUALS(annotations[1].bounding_box.y * OUTPUT_GRID_SIZE,
+                   center_y - anchor_scale * anchor_boxes[1].second / 2.f);
+  TS_ASSERT_EQUALS(annotations[1].bounding_box.width * OUTPUT_GRID_SIZE,
+                   anchor_scale * anchor_boxes[1].first);
+  TS_ASSERT_EQUALS(annotations[1].bounding_box.height * OUTPUT_GRID_SIZE,
+                   anchor_scale * anchor_boxes[1].second);
+}
 
 BOOST_AUTO_TEST_CASE(test_add_tiny_darknet_yolo) {
 

@@ -113,14 +113,14 @@ void parallel_read_data_into_matrix(const v2::ml_data& dataset, DenseMatrix& A,
                                     const size_t block_start,
                                     const size_t block_end) {
 
-  DASSERT_EQ(A.n_rows, (block_end - block_start));
-  DASSERT_EQ(A.n_cols, dataset.metadata()->num_dimensions());
+  DASSERT_EQ(A.rows(), (block_end - block_start));
+  DASSERT_EQ(A.cols(), dataset.metadata()->num_dimensions());
 
   v2::ml_data block_data = dataset.slice(block_start, block_end);
 
   in_parallel([&](size_t thread_idx, size_t num_threads) {
     for (auto it = block_data.get_iterator(thread_idx, num_threads); !it.done(); ++it) {
-      it.fill_row_expr(A.row(it.row_index()));
+      it.fill_eigen_row(A.row(it.row_index()));
     }
   });
 }
@@ -132,13 +132,13 @@ void parallel_read_data_into_matrix(const v2::ml_data& dataset, DenseMatrix& A,
 void read_data_into_matrix(const v2::ml_data& dataset, DenseMatrix& A,
                            const size_t block_start, const size_t block_end) {
 
-  DASSERT_EQ(A.n_rows, (block_end - block_start));
-  DASSERT_EQ(A.n_cols, dataset.metadata()->num_dimensions());
+  DASSERT_EQ(A.rows(), (block_end - block_start));
+  DASSERT_EQ(A.cols(), dataset.metadata()->num_dimensions());
 
   v2::ml_data block_data = dataset.slice(block_start, block_end);
 
   for (auto it = block_data.get_iterator(0, 1); !it.done(); ++it) {
-    it.fill_row_expr(A.row(it.row_index()));
+    it.fill_eigen_row(A.row(it.row_index()));
   }
 }
 
@@ -153,8 +153,8 @@ void find_block_neighbors(const DenseMatrix& R, const DenseMatrix& Q,
                           const size_t ref_offset, const size_t query_offset) {
 
   // Compute euclidean distance by matrix multiplication.
-  size_t num_ref_examples = R.n_rows;
-  size_t num_query_examples = Q.n_rows;
+  size_t num_ref_examples = R.rows();
+  size_t num_query_examples = Q.rows();
   DenseMatrix dists(num_ref_examples, num_query_examples);
 
   if (dist_name == "euclidean" || dist_name == "squared_euclidean") {
@@ -201,8 +201,8 @@ void off_diag_block_similarity_graph(const DenseMatrix& R, const DenseMatrix& C,
                                      const size_t col_offset) {
 
   // Compute distances by matrix multiplication.
-  size_t num_rows = R.n_rows;
-  size_t num_cols = C.n_rows;
+  size_t num_rows = R.rows();
+  size_t num_cols = C.rows();
   DenseMatrix dists(num_rows, num_cols);
 
   if (dist_name == "euclidean" || dist_name == "squared_euclidean") {
@@ -926,11 +926,13 @@ double neighbor_candidates::get_max_dist() const {
 flexible_type nearest_neighbors_model::get_reference_data() const {
     DASSERT_EQ(num_examples, mld_ref.size());
 
-    DenseVector ref_data(metadata->num_dimensions());
+    Eigen::VectorXd ref_data;
+    ref_data.resize(metadata->num_dimensions());
     flex_list ret(num_examples);
     for (auto it = mld_ref.get_iterator(0, 1); !it.done(); ++it) {
-      it.fill_row_expr(ref_data);
-      ret[it.row_index()] = arma::conv_to<std::vector<double>>::from(ref_data);
+      it.fill_observation(ref_data);
+      ret[it.row_index()] =
+          flex_vec(&ref_data[0], &ref_data[0] + metadata->num_dimensions());
     }
 
     return ret;

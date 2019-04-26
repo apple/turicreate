@@ -559,11 +559,13 @@ class unity_sframe : public unity_sframe_base {
  private:
   /**
    * Pointer to the lazy evaluator logical operator node.
-   * Should never be NULL.
+   * Should never be NULL.  Must be set with the set_planner_node() function above.
    */
   std::shared_ptr<query_eval::planner_node> m_planner_node;
 
   std::vector<std::string> m_column_names;
+
+  std::shared_ptr<sframe> m_cached_sframe;
 
   /**
    * Supports \ref begin_iterator() and \ref iterator_get_next().

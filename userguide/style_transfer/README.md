@@ -72,6 +72,12 @@ model creation faster, as the cost of obtaining a potentially worse
 model. See [how it works](how-it-works.md) for more details on how this
 model works and some more details on advanced options available to you.
 
+#### Using GPUs
+
+Style transfer model training can be accelerated on Linux using NVIDIA GPUs. To setup GPU training, 
+[see instructions here](https://github.com/apple/turicreate/blob/master/LinuxGPU.md). Training on Mac GPUs is currently not supported.
+
+
 #### Creating stylized images
 
 Once your model is created, you can test by stylizing some new images

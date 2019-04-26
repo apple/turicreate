@@ -25,7 +25,8 @@
 #include <unity/lib/variant_deep_serialize.hpp>
 #include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
 
-#include <numerics/armadillo.hpp>
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
 
 #include <export.hpp>
 
@@ -40,8 +41,8 @@ namespace turi {
 namespace supervised {
 
 class supervised_learning_model_base;
-typedef arma::vec  DenseVector;
-typedef sparse_vector<double>  SparseVector;
+typedef Eigen::Matrix<double, Eigen::Dynamic,1>  DenseVector;
+typedef Eigen::SparseVector<double>  SparseVector;
 
 /**
  * An enumeration over the possible types of prediction that are supported.
@@ -269,15 +270,15 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
    *
    */
   virtual std::map<std::string, variant_type> evaluate(const ml_data&
-                test_data, const std::string& evaluation_type="");
+                test_data, const std::string& evaluation_type="", bool with_prediction=false);
 
   /**
    * Same as evaluate(ml_data), but take SFrame as input.
    */
   virtual std::map<std::string, variant_type> evaluate(const sframe& X,
-                const sframe &y, const std::string& evaluation_type="") {
+                const sframe &y, const std::string& evaluation_type="", bool with_prediction=false) {
     ml_data data = construct_ml_data_using_current_metadata(X, y);
-    return this->evaluate(data, evaluation_type);
+    return this->evaluate(data, evaluation_type, with_prediction);
   }
 
   /**
@@ -668,7 +669,7 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
    */
   // TODO: This function should be const
   variant_map_type api_evaluate(
-      gl_sframe data, std::string missing_value_action, std::string metric);
+      gl_sframe data, std::string missing_value_action, std::string metric, gl_sarray predictions = gl_sarray(), bool with_prediction=false);
 
   /**
    *  API interface through the unity server.
@@ -746,11 +747,14 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
       "evaluate", supervised_learning_model_base::api_evaluate, "data",
-      "missing_value_action", "metric");
+      "missing_value_action", "metric", "predictions", "with_predictions");
 
   register_defaults("evaluate",
                     {{"metric", std::string("_report")},
-                     {"missing_value_action", std::string("auto")}});
+                     {"missing_value_action", std::string("auto")},
+                     {"predictions", gl_sarray()},
+                     {"with_predictions", false}
+                     });
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
       "extract_features", supervised_learning_model_base::api_extract_features,

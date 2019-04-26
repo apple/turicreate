@@ -24,15 +24,16 @@ func debug_log(_ message: String) {
 class VegaContainer: NSObject, WKScriptMessageHandler {
     
     public var vega_spec: [String: Any]?
+    public var evaluation_spec: [String: Any]?
     public var data_spec: [[String: Any]] = []
     public var image_spec: [[String: Any]] = []
     public var table_spec: [String: Any]?
-    public var view: WKWebView
+    public var view: CustomWebKitView
     public var pipe: Pipe?
     private var loaded: Bool = false
     private var ready: Bool = false
     
-    init(view: WKWebView) {
+    init(view: CustomWebKitView) {
         
         // initialize variables
         self.view = view;
@@ -145,7 +146,52 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
             
             self.pipe!.writePipe(method: "get_rows", start: start_num, end: end_num)
             break
+            
+        case "getIncorrects":
+            guard let label = messageBody["label"] as? String else {
+                assert(false, "Expected label in getRows")
+                return
+            }
+            
+            self.pipe!.writeIncorrect(label: label)
+            break
         
+        case "getCorrects":
+            self.pipe!.writeCorrect()
+            break
+            
+        case "getRowsEval":
+            guard let start_idx = messageBody["start"] as? Int else {
+                assert(false, "Expected start in getRowsEval")
+                return
+            }
+            
+            guard let length = messageBody["length"] as? Int else {
+                assert(false, "Expected length in getRowsEval")
+                return
+            }
+            
+            guard let row_type = messageBody["row_type"] as? String else {
+                assert(false, "Expected row_type in getRowsEval")
+                return
+            }
+            
+            guard let mat_type = messageBody["mat_type"] as? String else {
+                assert(false, "Expected mat_type in getRowsEval")
+                return
+            }
+            
+            guard let cells = messageBody["cells"] as? [Any] else {
+                assert(false, "Expected cells in getRowsEval")
+                return
+            }
+            
+            let arrData = try! JSONSerialization.data(withJSONObject: cells)
+            let json_string = String(data: arrData, encoding: .utf8)!
+            self.pipe!.writePipeEval(start: start_idx, length: length, row_type: row_type, mat_type: mat_type, cells: json_string)
+            
+            break
+            
         case "getAccordion":
             guard let column_name = messageBody["column"] as? String else {
                 assert(false, "column in getAccordion")
@@ -160,6 +206,13 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
             self.pipe!.writeAccordion(method: "get_accordian", column_name: column_name, index_val: index_num)
             
             break
+        case "writeProtoBuf":
+            guard let proto_message = messageBody["message"] as? String else {
+                assert(false, "no message in protobuf")
+                return
+            }
+            
+            self.pipe!.writeProtoBuf(message: proto_message);
         default:
             assert(false)
             break
@@ -191,6 +244,19 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
         }
     }
     
+    // set evaluation spec and initial data
+    public func set_evaluation(evaluation_spec: [String: Any]){
+        self.data_spec.removeAll()
+        self.evaluation_spec = evaluation_spec
+        
+        DispatchQueue.main.async {
+            SharedData.shared.save_image?.isHidden = true
+            SharedData.shared.save_vega?.isHidden = true
+            SharedData.shared.print_vega?.isHidden = true
+            SharedData.shared.page_setup?.isHidden = true
+        }
+    }
+    
     public func add_data(data_spec: [String: Any]) {
         // TODO: write function to check valid data spec
         self.data_spec.append(data_spec)
@@ -216,6 +282,23 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
                     assert(false)
                 }
             });
+        }
+    }
+    
+    public func send_proto(protobuf: String) {
+        DispatchQueue.main.async {
+            if(self.loaded){
+                let updateJS = String(format: "setProtoMessage(\"%@\");", protobuf);
+                self.view.evaluateJavaScript(updateJS, completionHandler: { (value, err) in
+                    if err != nil {
+                        // if we got here, we got a JS error
+                        log(err.debugDescription)
+                        assert(false)
+                    }
+                });
+            }else{
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: { self.send_proto(protobuf: protobuf) })
+            }
         }
     }
     
@@ -361,6 +444,10 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
             } else if let spec = self.vega_spec {
                 debug_log("queuing up sending vega spec to JS")
                 self.send_spec_js(spec: spec, type: "vega")
+                // Working on sending the evaluation spec
+            } else if let spec = self.evaluation_spec {
+                debug_log("queuing up sending evaluation spec to JS")
+                self.send_spec_js(spec: spec, type: "evaluate")
             } else {
                 // Still waiting for a spec - if we get here,
                 // it means the UI loaded before the backend actually sent us

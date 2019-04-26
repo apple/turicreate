@@ -1,11 +1,12 @@
 project(unity_toolkits)
 
-make_library(unity_object_detection
+make_library(unity_object_detection OBJECT
   SOURCES
     class_registrations.cpp
     object_detector.cpp
     od_data_iterator.cpp
     od_yolo.cpp
+    od_evaluation.cpp
   REQUIRES
     image_io
     random

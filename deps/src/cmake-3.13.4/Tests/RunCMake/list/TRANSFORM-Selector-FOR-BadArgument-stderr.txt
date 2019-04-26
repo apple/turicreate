@@ -1,0 +1,5 @@
+^CMake Error at TRANSFORM-Selector-FOR-BadArgument.cmake:2 \(list\):
+  list sub-command TRANSFORM, selector FOR expects, at least, two numeric
+  values.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

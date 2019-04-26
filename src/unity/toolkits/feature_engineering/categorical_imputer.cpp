@@ -321,7 +321,7 @@ gl_sgraph categorical_imputer::build_distance_graph(
     if (variance == 0.0) {
       wgtVertex[i] = 0.0;
     } else {
-      wgtVertex[i] = std::exp(double(-1.0 * (wgtVertex[i]*wgtVertex[i]) / variance));
+      wgtVertex[i] = exp(double(-1.0 * (wgtVertex[i]*wgtVertex[i]) / variance));
     }
   }
 

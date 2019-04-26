@@ -6,9 +6,9 @@
 #include <unity/toolkits/coreml_export/coreml_export_utils.hpp>
 #include <unity/toolkits/coreml_export/linear_models_exporter.hpp>
 #include <unity/toolkits/coreml_export/mldata_exporter.hpp>
-#include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
-#include <unity/toolkits/coreml_export/MLModel/src/transforms/LinearModel.hpp>
-#include <unity/toolkits/coreml_export/MLModel/src/transforms/LogisticModel.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <mlmodel/src/transforms/LinearModel.hpp>
+#include <mlmodel/src/transforms/LogisticModel.hpp>
 
 using turi::coreml::MLModelWrapper;
 
@@ -19,7 +19,7 @@ namespace turi {
  */
 std::shared_ptr<MLModelWrapper> export_linear_regression_as_model_asset(
     const std::shared_ptr<ml_metadata>& metadata,
-    const arma::vec& coefs,
+    const Eigen::Matrix<double, Eigen::Dynamic,1>& coefs,
     const std::map<std::string, flexible_type>& context) {
 
   auto pipeline = std::make_shared<CoreML::Pipeline>(
@@ -58,7 +58,7 @@ std::shared_ptr<MLModelWrapper> export_linear_regression_as_model_asset(
 void export_linear_regression_as_model_asset(
     const std::string& filename,
     const std::shared_ptr<ml_metadata>& metadata,
-    const arma::vec& coefs,
+    const Eigen::Matrix<double, Eigen::Dynamic,1>& coefs,
     const std::map<std::string, flexible_type>& context) {
 
   std::shared_ptr<MLModelWrapper> coreml_model =
@@ -72,7 +72,7 @@ void export_linear_regression_as_model_asset(
  */
 std::shared_ptr<MLModelWrapper> export_linear_svm_as_model_asset(
     const std::shared_ptr<ml_metadata>& metadata,
-    const arma::vec& coefs,
+    const Eigen::Matrix<double, Eigen::Dynamic,1>& coefs,
     const std::map<std::string, flexible_type>& context) {
 
   std::string prob_column_name = metadata->target_column_name() + "Probability";
@@ -143,7 +143,7 @@ std::shared_ptr<MLModelWrapper> export_linear_svm_as_model_asset(
 void export_linear_svm_as_model_asset(
     const std::string& filename,
     const std::shared_ptr<ml_metadata>& metadata,
-    const arma::vec& coefs,
+    const Eigen::Matrix<double, Eigen::Dynamic,1>& coefs,
     const std::map<std::string, flexible_type>& context) {
 
   std::shared_ptr<MLModelWrapper> coreml_model =
@@ -157,7 +157,7 @@ void export_linear_svm_as_model_asset(
  */
 std::shared_ptr<MLModelWrapper> export_logistic_model_as_model_asset(
     const std::shared_ptr<ml_metadata>& metadata,
-    const arma::vec& coefs,
+    const Eigen::Matrix<double, Eigen::Dynamic,1>& coefs,
     const std::map<std::string, flexible_type>& context) {
 
 
@@ -186,10 +186,10 @@ std::shared_ptr<MLModelWrapper> export_logistic_model_as_model_asset(
   std::vector<std::vector<double>> weights;
   size_t num_classes = metadata->target_index_size();
   size_t variables_per_class = one_hot_coefs.size() / (num_classes - 1);
-  for(int i = 0; i < num_classes - 1; i++) {
-    int starting_index = i * variables_per_class;
+  for(size_t i = 0; i < num_classes - 1; i++) {
+    size_t starting_index = i * variables_per_class;
     weights.push_back(std::vector<double>());
-    for(int j = 0; j < variables_per_class - 1; j++) {
+    for(size_t j = 0; j < variables_per_class - 1; j++) {
       weights[i].push_back(one_hot_coefs[starting_index + j]);
     }
     double cur_offset = one_hot_coefs[starting_index + variables_per_class - 1];
@@ -244,7 +244,7 @@ std::shared_ptr<MLModelWrapper> export_logistic_model_as_model_asset(
 void export_logistic_model_as_model_asset(
     const std::string& filename,
     const std::shared_ptr<ml_metadata>& metadata,
-    const arma::vec& coefs,
+    const Eigen::Matrix<double, Eigen::Dynamic,1>& coefs,
     const std::map<std::string, flexible_type>& context) {
 
   std::shared_ptr<MLModelWrapper> coreml_model =

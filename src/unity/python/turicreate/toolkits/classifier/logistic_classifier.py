@@ -161,7 +161,7 @@ def create(dataset, target, features=None,
         the model trained. Setting this to more than ``max_iterations`` has the
         same effect as setting it to ``max_iterations``.
 
-    max_iterations : float, optional
+    max_iterations : int, optional
 
         The maximum number of allowed passes through the data. More passes over
         the data can result in a more accurately trained model. Consider
@@ -621,10 +621,12 @@ class LogisticClassifier(_Classifier):
         >>> class_predictions = model.predict(data, output_type='class')
 
         """
-
+        
         return super(_Classifier, self).predict(dataset,
                                                 output_type=output_type,
                                                 missing_value_action=missing_value_action)
+        
+            
 
     def classify(self, dataset, missing_value_action='auto'):
         """
@@ -767,7 +769,7 @@ class LogisticClassifier(_Classifier):
             dataset, missing_value_action, output_type, k)
 
     
-    def evaluate(self, dataset, metric='auto', missing_value_action='auto'):
+    def evaluate(self, dataset, metric='auto', missing_value_action='auto', with_predictions=False):
         """
         Evaluate the model by making predictions of target values and comparing
         these to actual values.
@@ -836,4 +838,5 @@ class LogisticClassifier(_Classifier):
                  'log_loss', 'precision', 'recall', 'f1_score'])
         return super(_Classifier, self).evaluate(dataset,
                                  missing_value_action=missing_value_action,
-                                 metric=metric)
+                                 metric=metric,
+                                 with_predictions=with_predictions)

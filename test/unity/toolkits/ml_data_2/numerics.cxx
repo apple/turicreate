@@ -10,7 +10,9 @@
 #include <util/cityhash_tc.hpp>
 #include <cmath>
 
-#include <numerics/armadillo.hpp>
+// Eigen
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
 
 // SFrame and Flex type
 #include <unity/lib/flex_dict_view.hpp>
@@ -32,10 +34,11 @@
 
 #include <globals/globals.hpp>
 
-using namespace turi;
 
-typedef arma::vec DenseVector;
-typedef sparse_vector<double, size_t> SparseVector;
+typedef Eigen::Matrix<double,Eigen::Dynamic,1>  DenseVector;
+typedef Eigen::SparseVector<double> SparseVector;
+
+using namespace turi;
 
 namespace std {
 

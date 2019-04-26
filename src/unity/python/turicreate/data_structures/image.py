@@ -7,7 +7,7 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-from ..deps import numpy as _np
+from .._deps import numpy as _np
 
 _JPG = "JPG"
 _PNG = "PNG"
@@ -183,6 +183,17 @@ class Image(object):
         ret = ret + "Width: " + str(self._width) + "px\n"
         ret = ret + "Channels: " + str(self._channels) + "\n"
         return ret
+
+    def _repr_png_(self):
+        img = self._to_pil_image()
+        from io import BytesIO
+        b = BytesIO()
+        img.save(b, format='png')
+        data = b.getvalue()
+        res = {"Height" :str(self._height), "Width":str(self._width), "Channels: " :str(self._channels)}
+        return (data,res)
+
+
 
     def _to_pil_image(self):
         from PIL import Image as _PIL_Image

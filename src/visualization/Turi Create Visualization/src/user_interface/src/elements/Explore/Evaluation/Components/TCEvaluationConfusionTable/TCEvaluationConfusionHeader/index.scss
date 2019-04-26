@@ -1,0 +1,31 @@
+.TCEvaluationConfusionHeader{
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	border-bottom-style: solid;
+	border-bottom-width: thin;
+	border-bottom-color: #D4D7D9;
+	padding-bottom: 17px;
+	background: white;
+	z-index: 998;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.TCEvaluationConfusionHeaderTitle{
+	text-align: center;
+	flex:1;
+}
+
+.TCEvaluationConfusionHeaderImageTitle{
+	text-align: center;
+	flex:2;
+}
+
+.TCEvaluationConfusionHeaderText{
+	flex:0.7;
+}

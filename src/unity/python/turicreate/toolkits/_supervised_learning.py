@@ -17,7 +17,7 @@ from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
 from turicreate.toolkits._internal_utils import _SGraphFromJsonTree
 from turicreate.toolkits._internal_utils import _validate_data
 from turicreate.toolkits._main import ToolkitError
-from turicreate.cython.cy_server import QuietProgress
+from turicreate._cython.cy_server import QuietProgress
 
 class SupervisedLearningModel(Model):
     """
@@ -116,7 +116,7 @@ class SupervisedLearningModel(Model):
                 dataset, missing_value_action, output_type)
 
     def evaluate(self, dataset, metric="auto",
-                 missing_value_action='auto', options={}, **kwargs):
+                 missing_value_action='auto', with_predictions=False, options={}, **kwargs):
         """
         Evaluate the model by making predictions of target values and comparing
         these to actual values.
@@ -155,9 +155,9 @@ class SupervisedLearningModel(Model):
 
         _raise_error_if_not_sframe(dataset, "dataset")
         results = self.__proxy__.evaluate(
-            dataset, missing_value_action, metric);
+            dataset, missing_value_action, metric, with_predictions=with_predictions);
         return results
-
+        
     def _training_stats(self):
         """
         Return a dictionary containing statistics collected during model
@@ -317,7 +317,7 @@ def create(dataset, target, model_name, features=None,
         if dataset.num_rows() >= 100:
             if verbose:
                 print_validation_track_notification()
-            dataset, validation_set = dataset.random_split(.95, seed=seed)
+            dataset, validation_set = dataset.random_split(.95, seed=seed, exact=True)
         else:
             validation_set = _turicreate.SFrame()
     elif validation_set is None:
@@ -386,7 +386,7 @@ def create_classification_with_model_selector(dataset, target, model_selector,
             if dataset.num_rows() >= 100:
                 if verbose:
                     print_validation_track_notification()
-                dataset, validation_set = dataset.random_split(.95)
+                dataset, validation_set = dataset.random_split(.95, exact=True)
             else:
                 validation_set = None
         else:

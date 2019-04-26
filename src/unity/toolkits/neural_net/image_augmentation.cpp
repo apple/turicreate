@@ -32,6 +32,26 @@ void image_box::clip(image_box clip_box) {
   height = y_max - y;
 }
 
+void image_box::extend(const image_box& other) {
+
+  if (other.empty()) return;
+
+  if (empty()) {
+
+    *this = other;
+
+  } else {
+
+    float x_max = std::max(x + width, other.x + other.width);
+    x = std::min(x, other.x);
+    width = x_max - x;
+
+    float y_max = std::max(y + height, other.y + other.height);
+    y = std::min(y, other.y);
+    height = y_max - y;
+  }
+}
+
 bool operator==(const image_box& a, const image_box& b) {
   return a.x == b.x && a.y == b.y && a.width == b.width && a.height == b.height;
 }
@@ -52,7 +72,7 @@ bool operator==(const image_annotation& a, const image_annotation& b) {
 image_augmenter::result resize_only_image_augmenter::prepare_images(
     std::vector<labeled_image> source_batch) {
 
-  const size_t n = source_batch.size();
+  const size_t n = opts_.batch_size;
   const size_t h = opts_.output_height;
   const size_t w = opts_.output_width;
   constexpr size_t c = 3;
@@ -60,11 +80,15 @@ image_augmenter::result resize_only_image_augmenter::prepare_images(
   result res;
   res.annotations_batch.reserve(n);
 
+  // Discard any source data in excess of the batch size.
+  if (source_batch.size() > n) {
+    source_batch.resize(n);
+  }
+
   // Allocate a float vector large enough to contain the entire image batch.
   std::vector<float> result_array(n * h * w * c);
 
-  // TODO: Parallelize this computation, which is currently the bottleneck in
-  // training!
+  // Note: this computation could probably be parallelized, if needed.
   auto out_it = result_array.begin();
   for (labeled_image& source : source_batch) {
     // Resize the input image.

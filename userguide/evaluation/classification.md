@@ -56,7 +56,8 @@ them are:
   each class was correctly predicted and incorrectly predicted.
 * **macro**: Calculate metrics for each "class" independently, and find their
   unweighted mean. This does not take label imbalance into account.
-* **None**: Return a metric corresponding to each class.
+* **None**: Return a metric corresponding to each class, which is the 
+  precision for each class.
 
 ```python
 import turicreate as tc
@@ -70,8 +71,8 @@ print(tc.evaluation.accuracy(y, yhat, average = None))
 ```
 ```no-highlight
 0.5
-0.666666666667
-{'dog': 0.75, 'foosa': 0.75, 'cat': 0.5}
+0.6666666666666666
+{'foosa': None, 'dog': 0.5, 'cat': 0.5}
 ```
 
 In general, when there are different numbers of examples per class, the average
@@ -85,6 +86,9 @@ without its own caveats, however: for instance, if there are very few examples o
 class, the test statistics for that class will be unreliable (i.e., they have
 large variance), so it’s not statistically sound to average quantities with
 different degrees of variance.
+
+Note that the `average` parameter passed into `tc.evaluation.accuracy`
+may be deprecated soon, and will break code that uses this API.
 
 
 ## Confusion matrix {#confusion_matrix}
