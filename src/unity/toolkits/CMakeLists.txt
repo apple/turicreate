@@ -21,6 +21,6 @@ subdirs(ml_model
         image
         neural_net
         object_detection
-        one_shot_object_detection
+        object_detection/one_shot_object_detection
         prototype
 )

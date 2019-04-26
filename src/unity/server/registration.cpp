@@ -20,7 +20,7 @@
 
 #include <unity/toolkits/activity_classification/class_registrations.hpp>
 #include <unity/toolkits/object_detection/class_registrations.hpp>
-#include <unity/toolkits/one_shot_object_detection/class_registrations.hpp>
+#include <unity/toolkits/object_detection/one_shot_object_detection/class_registrations.hpp>
 #include <unity/toolkits/drawing_classifier/class_registrations.hpp>
 
 #include <unity/toolkits/evaluation/metrics.hpp>

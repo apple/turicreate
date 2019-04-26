@@ -21,7 +21,7 @@
 #include <image/numeric_extension/perspective_projection.hpp>
 
 #include <unity/toolkits/object_detection/object_detector.hpp>
-#include <unity/toolkits/one_shot_object_detection/one_shot_object_detector.hpp>
+#include <unity/toolkits/object_detection/one_shot_object_detection/one_shot_object_detector.hpp>
 
 namespace turi {
 namespace one_shot_object_detection {

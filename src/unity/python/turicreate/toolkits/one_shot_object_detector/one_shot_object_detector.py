@@ -14,7 +14,7 @@ def create(dataset, target, feature=None, batch_size=0, max_iterations=0,
     if seed is None: seed = _random.randint(0, (1<<31)-1)
     # Option arguments to pass in to C++ Object Detector, if we use it:
     # {'mlmodel_path':'darknet.mlmodel', 'max_iterations' : 25}
-    augmented_data = model.augment(dataset, target, _tc.SFrame(), {"seed":seed})
+    augmented_data = model.augment(dataset, target, _tc.SArray(), {"seed":seed})
     model = _tc.object_detector.create(augmented_data)
     return OneShotObjectDetector(model)
 

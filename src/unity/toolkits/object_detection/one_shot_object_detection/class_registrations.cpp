@@ -4,10 +4,9 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <unity/toolkits/one_shot_object_detection/class_registrations.hpp>
-
 #include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/toolkits/one_shot_object_detection/one_shot_object_detector.hpp>
+#include <unity/toolkits/object_detection/one_shot_object_detection/class_registrations.hpp>
+#include <unity/toolkits/object_detection/one_shot_object_detection/one_shot_object_detector.hpp>
 
 namespace turi {
 namespace one_shot_object_detection {
