@@ -35,13 +35,12 @@ public:
         std::static_pointer_cast<turi::unity_sarray>(
             annotation_sf->select_column(image_column_name));
 
-    std::shared_ptr<turi::gl_sarray> image_gl_sarray =
-        std::make_shared<turi::gl_sarray>(image_sarray);
+    turi::gl_sarray image_gl_sarray = turi::gl_sarray(image_sarray);
 
     turi::gl_sarray feature_sarray =
         turi::annotate::featurize_images(image_gl_sarray);
 
-    TS_ASSERT(image_gl_sarray->dtype() == turi::flex_type_enum::IMAGE);
+    TS_ASSERT(image_gl_sarray.dtype() == turi::flex_type_enum::IMAGE);
     TS_ASSERT(feature_sarray.dtype() == turi::flex_type_enum::VECTOR);
 
     std::vector<turi::flexible_type> feature_vector =
@@ -70,8 +69,7 @@ public:
         std::static_pointer_cast<turi::unity_sarray>(
             annotation_sf->select_column(image_column_name));
 
-    std::shared_ptr<turi::gl_sarray> image_gl_sarray =
-        std::make_shared<turi::gl_sarray>(image_sarray);
+    turi::gl_sarray image_gl_sarray = turi::gl_sarray(image_sarray);
 
     turi::gl_sarray feature_sarray =
         turi::annotate::featurize_images(image_gl_sarray);

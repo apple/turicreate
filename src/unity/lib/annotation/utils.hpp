@@ -6,10 +6,10 @@
 #include "build/format/cpp/message.pb.h"
 #include "build/format/cpp/meta.pb.h"
 
-#include <unity/lib/unity_sarray.hpp>
-#include <unity/lib/gl_sarray.hpp>
 #include <boost/regex.hpp>
 #include <memory>
+#include <unity/lib/gl_sarray.hpp>
+#include <unity/lib/unity_sarray.hpp>
 #include <vector>
 
 namespace annotate_spec = TuriCreate::Annotation::Specification;
@@ -41,12 +41,10 @@ float vectors_distance(const std::vector<double> &a,
 
 bool is_integer(std::string s);
 
-gl_sarray
-featurize_images(const std::shared_ptr<turi::gl_sarray> &images);
+gl_sarray featurize_images(const gl_sarray &images);
 
-std::vector<flexible_type>
-similar_items(const gl_sarray& distances, size_t index,
-              size_t k);
+std::vector<flexible_type> similar_items(const gl_sarray &distances,
+                                         size_t index, size_t k);
 
 } // namespace annotate
 } // namespace turi
