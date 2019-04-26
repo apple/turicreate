@@ -14,47 +14,51 @@
 using namespace Eigen;
 using namespace boost::gil;
 
+/* BEGIN 
+ * TODO: Add the necessary linear algebra to compute the transformation matrix
+ */
+
 MatrixXf get_2D_to_3D(int width, int height) {
   MatrixXf A1(4,3);
-  A1 << 1, 0,  -1*(float)width/2, 
-        0, 1,  -1*(float)height/2, 
-        0, 0,         1, 
-        0, 0,         1;
+  A1 << 1, 0, 0, 
+        0, 1, 0, 
+        0, 0, 1, 
+        0, 0, 1;
   return A1;
 }
 
 MatrixXf get_rotation(float theta, float phi, float gamma) {
   Matrix4f Rx, Ry, Rz, R;
-  Rx << 1,               0,                0, 0,
-        0, std::cos(theta), -1*std::sin(theta), 0,
-        0, std::sin(theta),  std::cos(theta), 0,
-        0,               0,                0, 1;
-  Ry << std::cos(phi), 0, -1*std::sin(phi), 0,
-                    0, 1,              0, 0,
-        std::sin(phi), 0,  std::cos(phi), 0,
-                    0, 0,              0, 1;
-  Rz << std::cos(gamma), -1*std::sin(gamma), 0, 0,
-        std::sin(gamma),  std::cos(gamma), 0, 0,
-                      0,                0, 1, 0,
-                      0,                0, 0, 1;
+  Rx << 1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1;
+  Ry << 1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1;
+  Rz << 1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1;
   R = (Rx * Ry) * Rz;
   return R;
 }
 
 MatrixXf get_translation(int dx, int dy, int dz) {
   Matrix4f T;
-  T << 1, 0, 0, dx,
-       0, 1, 0, dy,
-       0, 0, 1, dz,
+  T << 1, 0, 0, 0,
+       0, 1, 0, 0,
+       0, 0, 1, 0,
        0, 0, 0, 1;
   return T;
 }
 
 MatrixXf get_3D_to_2D(float focal, int width, int height) {
   MatrixXf A2(3,4);
-  A2 << focal,     0,  (float)width/2, 0,
-            0, focal, (float)height/2, 0,
-            0,     0,               1, 0;
+  A2 << 0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 1, 0;
   return A2;
 }
 
@@ -70,6 +74,14 @@ Matrix3f get_transformation_matrix(
   return (A2 * (T * (R * A1)));
 }
 
+/* END 
+ * TODO: Add the necessary linear algebra to compute the transformation matrix
+ */
+
+
+/* A matrix3x3 class with some basic equality assignment 
+ * and multiplication operators 
+ */
 template <typename T>
 class matrix3x3 {
 /*
@@ -89,6 +101,7 @@ public:
     T a,b,c,d,e,f,g,h,i;
 };
 
+/* Matrix - Matrix multiplication */
 template <typename T> 
 matrix3x3<T> operator*(const matrix3x3<T>& m1, const matrix3x3<T>& m2) {
     return matrix3x3<T>(
@@ -103,6 +116,7 @@ matrix3x3<T> operator*(const matrix3x3<T>& m1, const matrix3x3<T>& m2) {
                 m1.c * m2.g + m1.f * m2.h + m1.i * m2.i);
 }
 
+/* Matrix - Vector multiplication */
 template <typename T, typename F> 
 point2<F> operator*(const point2<T>& p, const matrix3x3<F>& m) {
   if (m.c*p.x + m.f*p.y + m.i == 0) {
@@ -116,6 +130,9 @@ point2<F> operator*(const point2<T>& p, const matrix3x3<F>& m) {
 
 namespace boost {
 namespace gil {
+
+/* Conforming to the MapFn concept required by Boost GIL, for matrix3x3
+ */
 template <typename T> struct mapping_traits;
 
 template <typename F>
@@ -124,7 +141,9 @@ struct mapping_traits<matrix3x3<F> > {
 };
 
 template <typename F, typename F2> 
-point2<F> transform(const matrix3x3<F>& mat, const point2<F2>& src) { return src * mat; }
+point2<F> transform(const matrix3x3<F>& mat, const point2<F2>& src) {
+  return src * mat;
+}
 
 } // gil
 } // boost
