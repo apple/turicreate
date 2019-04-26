@@ -30,6 +30,8 @@ docker files:
 * `scripts/Dockerfile-Ubuntu-14.04`: used for testing Python 2.7 and Python 3.5 wheels.
 * `scripts/Dockerfile-Ubuntu-18.04`: used for testing Python 3.6 wheels.
 
+You can start with `./scripts/make_wheel.sh --help` to see available Docker build options.
+
 Build Dependencies
 ------------------
 

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+set -x
 
 # The build image version that will be used for testing
 TC_BUILD_IMAGE_VERSION=1.0.7
@@ -37,8 +38,6 @@ while [ $# -gt 0 ]
   esac
   shift
 done
-
-set -x
 
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 WORKSPACE=${SCRIPT_DIR}/..
