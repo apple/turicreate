@@ -18,7 +18,7 @@ std::vector<std::pair<flexible_type, flexible_type>> triple_apply_degree_count(
   g.init_vertex_field("__degree__", flex_int(0));
   std::vector<std::string> vertex_fields = g.get_vertex_fields();
 
-  auto vertex_degree_data = sgraph_compute::create_vertex_data<std::atomic<size_t>>(g);
+  auto vertex_degree_data = sgraph_compute::create_vertex_data<turi::atomic<size_t>>(g);
 
   if (dir == sgraph::edge_direction::IN_EDGE) {
     fn = [&](sgraph_compute::fast_edge_scope& scope) {
