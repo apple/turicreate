@@ -9,9 +9,10 @@
 #include <algorithm>
 #include <functional>
 #include <numeric>
+#include <random>
+
 #include <logger/assertions.hpp>
 #include <logger/logger.hpp>
-#include <random>
 #include <unity/toolkits/coreml_export/neural_net_models_exporter.hpp>
 #include <unity/toolkits/evaluation/metrics.hpp>
 #include <util/string_util.hpp>
@@ -115,7 +116,7 @@ std::tuple<gl_sframe, gl_sframe> random_split_by_session(gl_sframe data, std::st
                   session_id_column_name);
   }
 
-  if (fraction < 0.f && fraction > 1.f) {
+  if (fraction < 0.f || fraction > 1.f) {
     log_and_throw("Fraction specified must be between 0 and 1");
   }
   // Create a random binary filter (boolean SArray), using the same probability
@@ -512,19 +513,21 @@ activity_classifier::init_data(gl_sframe data, variant_type validation_data,
   }
   else if ((variant_is<flex_string>(validation_data)) && (variant_get_value<flex_string>(validation_data)=="auto")) {
     gl_sarray unique_session = data[session_id_column_name].unique();
-    if (unique_session.size() > 50 && unique_session.size() < 200) {
-      // TODO: Expose seed parameter publicly. 
-      std::tie(train_data, val_data) = random_split_by_session(data, session_id_column_name, 0.9, 1);
-    }
-    else if (unique_session.size() > 200) {
+    if (unique_session.size() >= 200000) {
+      // TODO: Expose seed parameter publicly.
+      float p = 10000.0 / unique_session.size();
+      std::tie(train_data, val_data) =
+          random_split_by_session(data, session_id_column_name, p, 1);
+    } else if (unique_session.size() >= 200) {
       std::tie(train_data, val_data) = random_split_by_session(data, session_id_column_name, 0.95, 1);
-    }
-    else {
+    } else if (unique_session.size() >= 50) {
+      std::tie(train_data, val_data) =
+          random_split_by_session(data, session_id_column_name, 0.90, 1);
+    } else {
       train_data = data;
       std::cout << "The dataset has less than the minimum of 50 sessions required for train-validation split. "
                        "Continuing without validation set.\n";
     }
-
   } else {
     train_data = data;
   }
@@ -536,13 +539,13 @@ void activity_classifier::init_train(
     std::string session_id_column_name, variant_type validation_data,
     std::map<std::string, flexible_type> opts)
 {
-  gl_sframe train_data;
-  gl_sframe val_data;
+
   // Begin printing progress.
   // TODO: Make progress printing optional.
-  
+  gl_sframe train_data;
+  gl_sframe val_data;
   std::tie(train_data, val_data) = init_data(data, validation_data, session_id_column_name);
-  init_table_printer(!(val_data.empty()));
+  init_table_printer(!val_data.empty());
 
   // Extract feature names from options.
   std::vector<std::string> feature_column_names;

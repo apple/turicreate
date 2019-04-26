@@ -1049,7 +1049,7 @@ class gl_sarray {
    * [-2176393851141330893, 7600995152976636137, -5571280844667425574, -4385410391720336496, -4446257658862464208, -7571182417602171808, 3644372782970789199, 3084542717492096231, 4758268028978242780, -6520852338875851008]
    * \endcode
    */
-  gl_sarray hash(size_t seed) const;
+  gl_sarray hash(size_t seed = 0) const;
 
   /**
    * Return true if every element of the \ref gl_sarray evaluates to true. For
