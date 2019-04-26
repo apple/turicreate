@@ -154,18 +154,6 @@ gl_sframe one_shot_object_detector::augment(gl_sframe data,
   // the C++ Object Detector.
   return augmented_data;
 }
-/* TODO: We probably don't need `evaluate` and `export_to_coreml` on the C++ 
-         side for now, but it may not hurt to leave it here.
- */
-variant_map_type one_shot_object_detector::evaluate(gl_sframe data, 
-  std::string metric, std::map<std::string, flexible_type> options) {
-  return model_->evaluate(data, metric, options);
-}
-
-std::shared_ptr<coreml::MLModelWrapper> one_shot_object_detector::export_to_coreml(
-  std::string filename, std::map<std::string, flexible_type> options) {
-  return model_->export_to_coreml(filename, options);
-}
 
 } // one_shot_object_detection
 } // turi

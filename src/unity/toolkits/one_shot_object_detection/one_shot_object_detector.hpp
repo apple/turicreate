@@ -26,18 +26,10 @@ class EXPORT one_shot_object_detector: public ml_model_base {
   // Interface exposed via Unity server
 
   // TODO: augment -> train
-  // TODO: Add a std::map<std::string, flexible_type> options parameter to 
-  // augment when mxnet is plumbed through to C++ and we call in to the Object 
-  // Detector C++ training.
   gl_sframe augment(gl_sframe data,
                     std::string target_column_name,
                     gl_sarray backgrounds,
                     std::map<std::string, flexible_type> options);
-  variant_map_type evaluate(gl_sframe data, 
-                            std::string metric,
-                            std::map<std::string, flexible_type> options);
-  std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
-      std::string filename, std::map<std::string, flexible_type> options);
 
   BEGIN_CLASS_MEMBER_REGISTRATION("one_shot_object_detector")
 
@@ -45,16 +37,6 @@ class EXPORT one_shot_object_detector: public ml_model_base {
 
   REGISTER_CLASS_MEMBER_FUNCTION(one_shot_object_detector::augment, "data",
                                  "target_column_name", "backgrounds", "seed");
-  REGISTER_CLASS_MEMBER_FUNCTION(one_shot_object_detector::evaluate, "data",
-                                 "metric", "options");
-  register_defaults("evaluate",
-      {{"metric", std::string("auto")},
-       {"options", to_variant(std::map<std::string, flexible_type>())}});
-
-  REGISTER_CLASS_MEMBER_FUNCTION(one_shot_object_detector::export_to_coreml, 
-    "filename", "options");
-  register_defaults("export_to_coreml", 
-    {{"options", to_variant(std::map<std::string, flexible_type>())}});
 
   END_CLASS_MEMBER_REGISTRATION
 
