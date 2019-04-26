@@ -63,6 +63,9 @@ if [[ -n "${USE_DOCKER}" ]]; then
       -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
       turicreate/build-image-18.04:${TC_BUILD_IMAGE_VERSION} \
       /build/scripts/test_wheel.sh
+  else
+    echo "Invalid docker python version detected: ${DOCKER_PYTHON}"
+    exit 1
   fi
 
   exit 0
