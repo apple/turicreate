@@ -294,7 +294,7 @@ package_wheel() {
         echo "Skipping pylambda_worker"
       else
         echo "Stripping $f"
-        strip -s $f;
+        strip -Sx $f;
       fi
     done
 
