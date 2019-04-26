@@ -1,3 +1,8 @@
+# Copyright © 2019 Apple Inc. All rights reserved.
+#
+# Use of this source code is governed by a BSD-3-clause license that can
+# be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+#
 import random as _random
 import turicreate as _tc
 from turicreate import extensions as _extensions
@@ -8,7 +13,7 @@ def create(dataset, target, feature=None, batch_size=0, max_iterations=0,
     model = _extensions.one_shot_object_detector()
     if seed is None: seed = _random.randint(0, (1<<31)-1)
     # Option arguments to pass in to C++ Object Detector, if we use it:
-    # {'mlmodel_path':'/Users/schhabra/Desktop/apple/turicreate/darknet.mlmodel', 'max_iterations' : 25}
+    # {'mlmodel_path':'darknet.mlmodel', 'max_iterations' : 25}
     augmented_data = model.augment(dataset, target, _tc.SFrame(), seed)
     model = _tc.object_detector.create(augmented_data)
     return OneShotObjectDetector(model)

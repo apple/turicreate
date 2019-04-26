@@ -1,3 +1,9 @@
+/* Copyright © 2019 Apple Inc. All rights reserved.
+ *
+ * Use of this source code is governed by a BSD-3-clause license that can
+ * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ */
+
 #include <unity/toolkits/one_shot_object_detection/one_shot_object_detector.hpp>
 
 #include <unity/toolkits/object_detection/object_detector.hpp>
@@ -29,10 +35,6 @@
 
 #include <Eigen/Core>
 #include <Eigen/Dense>
-
-using turi::coreml::MLModelWrapper;
-using namespace Eigen;
-using namespace boost::gil;
 
 namespace turi {
 namespace one_shot_object_detection {
@@ -107,7 +109,7 @@ gl_sframe _augment_data(gl_sframe data, gl_sframe backgrounds, long seed) {
   for (int i = 0; i < n; i++) {
     parameter_sampler.sample(seed+i);
 
-    Matrix3f mat = get_transformation_matrix(2*1024, 2*676,
+    Eigen::Matrix3f mat = get_transformation_matrix(2*1024, 2*676,
       parameter_sampler.get_theta(),
       parameter_sampler.get_phi(),
       parameter_sampler.get_gamma(),
@@ -119,23 +121,23 @@ gl_sframe _augment_data(gl_sframe data, gl_sframe backgrounds, long seed) {
     // TODO: Construct annotations that conform to the OD format, from the 
     // four warped corner points.
 
-    rgb8_image_t starter_image, background;
+    boost::gil::rgb8_image_t starter_image, background;
     // TODO: Don't hardcode this.
-    read_image("in-affine.jpg", starter_image, jpeg_tag());
+    boost::gil::read_image("in-affine.jpg", starter_image, boost::gil::jpeg_tag());
     // TODO: Don't hardcode this. Fetch this from the backgrounds SFrame in a 
     //       loop.
-    read_image("background.jpg", background, jpeg_tag());
+    boost::gil::read_image("background.jpg", background, boost::gil::jpeg_tag());
 
     matrix3x3<double> M(mat.inverse());
     // TODO: Use a background.
     // TODO: Use a mask during superposition on a random background.
-    rgb8_image_t transformed(rgb8_image_t::point_t(view(starter_image).dimensions()*2));
-    fill_pixels(view(transformed),rgb8_pixel_t(255, 255, 255));
-    resample_pixels(const_view(starter_image), view(transformed), M, bilinear_sampler());
+    boost::gil::rgb8_image_t transformed(boost::gil::rgb8_image_t::point_t(view(starter_image).dimensions()*2));
+    boost::gil::fill_pixels(view(transformed),boost::gil::rgb8_pixel_t(255, 255, 255));
+    boost::gil::resample_pixels(const_view(starter_image), view(transformed), M, boost::gil::bilinear_sampler());
 
     // TODO: Write these images into an SFrame that this function can return.
     std::string output_filename = "out-perspective-" + std::to_string(i) + ".jpg";
-    write_view(output_filename, view(transformed), jpeg_tag());
+    write_view(output_filename, view(transformed), boost::gil::jpeg_tag());
   }
   // TODO: Return the augmented data once the SFrame is written.
   return data;
@@ -162,7 +164,7 @@ variant_map_type one_shot_object_detector::evaluate(gl_sframe data,
   return model_->evaluate(data, metric, options);
 }
 
-std::shared_ptr<MLModelWrapper> one_shot_object_detector::export_to_coreml(
+std::shared_ptr<coreml::MLModelWrapper> one_shot_object_detector::export_to_coreml(
   std::string filename, std::map<std::string, flexible_type> options) {
   return model_->export_to_coreml(filename, options);
 }
