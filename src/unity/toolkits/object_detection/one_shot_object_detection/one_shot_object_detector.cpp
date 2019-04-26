@@ -93,7 +93,12 @@ private:
 
 };
 
-gl_sframe _augment_data(gl_sframe data, gl_sarray backgrounds, long seed) {
+namespace data_augmentation {
+
+gl_sframe augment_data(gl_sframe data,
+                       std::string target_column_name,
+                       gl_sarray backgrounds,
+                       long seed) {
   // TODO: Get input image from the data sframe.
   // TODO: Use backgrounds from the background SArray.
   // TODO: Generalize 1024 and 676 to be the width and height of the image 
@@ -140,6 +145,8 @@ gl_sframe _augment_data(gl_sframe data, gl_sarray backgrounds, long seed) {
   return data;
 }
 
+}
+
 one_shot_object_detector::one_shot_object_detector() {
   model_.reset(new turi::object_detection::object_detector());
 }
@@ -149,7 +156,10 @@ gl_sframe one_shot_object_detector::augment(gl_sframe data,
                                             gl_sarray backgrounds,
                                             std::map<std::string, flexible_type> options){
   
-  gl_sframe augmented_data = _augment_data(data, backgrounds, options["seed"]);
+  gl_sframe augmented_data = data_augmentation::augment_data(data,
+                                                             target_column_name,
+                                                             backgrounds,
+                                                             options["seed"]);
   // TODO: Call object_detector::train from here once we incorporate mxnet into
   // the C++ Object Detector.
   return augmented_data;
