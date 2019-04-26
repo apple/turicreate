@@ -4,37 +4,24 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <unity/toolkits/one_shot_object_detection/one_shot_object_detector.hpp>
-
-#include <unity/toolkits/object_detection/object_detector.hpp>
-
-// TODO: Clean up imports.
 #include <algorithm>
-#include <array>
 #include <cmath>
-#include <cstdio>
-#include <iostream>
 #include <limits>
-#include <numeric>
-#include <queue>
-#include <utility>
 #include <vector>
 #include <random>
-
-#include <logger/assertions.hpp>
-#include <logger/logger.hpp>
-#include <random/random.hpp>
 
 #include <boost/gil/gil_all.hpp>
 #include <boost/gil/extension/io/jpeg.hpp>
 #include <boost/gil/extension/numeric/sampler.hpp>
 #include <boost/gil/extension/numeric/resample.hpp>
-#include <boost/gil/utilities.hpp>
-
-#include <image/numeric_extension/perspective_projection.hpp>
 
 #include <Eigen/Core>
 #include <Eigen/Dense>
+
+#include <image/numeric_extension/perspective_projection.hpp>
+
+#include <unity/toolkits/object_detection/object_detector.hpp>
+#include <unity/toolkits/one_shot_object_detection/one_shot_object_detector.hpp>
 
 namespace turi {
 namespace one_shot_object_detection {
@@ -109,7 +96,9 @@ gl_sframe _augment_data(gl_sframe data, gl_sframe backgrounds, long seed) {
   for (int i = 0; i < n; i++) {
     parameter_sampler.sample(seed+i);
 
-    Eigen::Matrix3f mat = get_transformation_matrix(2*1024, 2*676,
+    Eigen::Matrix3f mat = warp_perspective::get_transformation_matrix(
+      2*1024,
+      2*676,
       parameter_sampler.get_theta(),
       parameter_sampler.get_phi(),
       parameter_sampler.get_gamma(),

@@ -4,16 +4,13 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <Eigen/Core>
-#include <Eigen/Dense>
 #include <boost/gil/gil_all.hpp>
-#include <boost/gil/extension/io/jpeg.hpp>
-#include <boost/gil/extension/numeric/sampler.hpp>
-#include <boost/gil/extension/numeric/resample.hpp>
-#include <boost/gil/utilities.hpp>
 
 /* BEGIN 
  * TODO: Add the necessary linear algebra to compute the transformation matrix
  */
+
+namespace warp_perspective {
 
 Eigen::MatrixXf get_2D_to_3D(int width, int height) {
   Eigen::MatrixXf A1(4,3);
@@ -75,6 +72,7 @@ Eigen::Matrix3f get_transformation_matrix(
  * TODO: Add the necessary linear algebra to compute the transformation matrix
  */
 
+}
 
 /* A matrix3x3 class with some basic equality assignment 
  * and multiplication operators 

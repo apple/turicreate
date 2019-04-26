@@ -7,21 +7,10 @@
 #ifndef TURI_ONE_SHOT_OBJECT_DETECTOR_H_
 #define TURI_ONE_SHOT_OBJECT_DETECTOR_H_
 
-// TODO: Clean up imports.
-
-#include <functional>
 #include <map>
-#include <memory>
-
-#include <table_printer/table_printer.hpp>
 #include <unity/lib/extensions/ml_model.hpp>
 #include <unity/lib/gl_sframe.hpp>
 #include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
-#include <unity/toolkits/neural_net/compute_context.hpp>
-#include <unity/toolkits/neural_net/image_augmentation.hpp>
-#include <unity/toolkits/neural_net/model_backend.hpp>
-#include <unity/toolkits/neural_net/model_spec.hpp>
-
 #include <unity/toolkits/object_detection/object_detector.hpp>
 
 namespace turi {
