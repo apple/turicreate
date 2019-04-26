@@ -1,5 +1,6 @@
 // Data structures
-#define BOOST_TEST_MODULE
+#define BOOST_TEST_MODULE test_evaluation
+
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
 #include <unity/lib/unity_sarray.hpp>
@@ -18,12 +19,10 @@
 #include <util/testing_utils.hpp>
 
 
-using namespace turi;
+namespace turi {
+namespace evaluation {
 
-struct evaluation_test {
- public:
-  void test_rmse_and_max_error() {
-
+BOOST_AUTO_TEST_CASE(test_rmse_and_max_error) {
     size_t num_observations = 5000;
     random::seed(0);
 
@@ -55,10 +54,9 @@ struct evaluation_test {
                         unity_targets_sa, unity_predictions_sa, "max_error");
     TS_ASSERT(std::abs(variant_get_value<double>(rmse) - true_rmse) < 1e-15);
     TS_ASSERT(std::abs(variant_get_value<double>(max_error) - true_max_error) < 1e-15);
-  }
+}
 
-  void test_roc_curve() {
-
+BOOST_AUTO_TEST_CASE(test_roc_curve) {
     // Arrange
     size_t num_observations = 20;
     random::seed(0);
@@ -119,12 +117,10 @@ struct evaluation_test {
     //logprogress_stream << "Now printing." << std::endl;
     //auto sf = *(variant_get_value<std::shared_ptr<unity_sframe>>(result))->get_underlying_sframe();
     //sf.debug_print();
-    
-  }
+}
 
 
-  void test_accuracy() {
-
+BOOST_AUTO_TEST_CASE(test_accuracy) {
     size_t num_observations = 5000;
     random::seed(0);
     size_t true_positive = 0;
@@ -133,10 +129,15 @@ struct evaluation_test {
     size_t false_negative = 0;
 
     auto predictions = std::vector<flexible_type>(num_observations);
+    auto pred_vectors = std::vector<flexible_type>(num_observations);
+    auto pred_dicts = std::vector<flexible_type>(num_observations);
     auto targets = std::vector<flexible_type>(num_observations);
 
     for (size_t i = 0; i < num_observations; ++i) {
-      predictions[i] = random::fast_uniform<size_t>(0, 1);
+      double prob = random::fast_uniform<double>(0.0, 1.0);
+      predictions[i] = prob > 0.5 ? 1 : 0;
+      pred_vectors[i] = flex_vec({1.0 - prob, prob});
+      pred_dicts[i] = flex_dict({{0, 1.0 - prob}, {1, prob}});
       targets[i] = random::fast_uniform<size_t>(0, 1);
       if (targets[i] == 1) {
         if (predictions[i] == 1) {
@@ -169,21 +170,23 @@ struct evaluation_test {
              unity_targets_sa, unity_predictions_sa, "roc_curve", kwargs);
     variant_type accuracy = evaluation::_supervised_streaming_evaluator(
                         unity_targets_sa, unity_predictions_sa, "accuracy");
-    double true_accuray = (double)(true_positive + true_negative) / num_observations;
-    TS_ASSERT(std::abs(variant_get_value<double>(accuracy) - true_accuray) < 1e-15);
- 
-  }
+    double true_accuracy =
+        static_cast<double>(true_positive + true_negative) / num_observations;
+    TS_ASSERT_DELTA(variant_get_value<double>(accuracy), true_accuracy, 1e-15);
 
-};
+    // Test compute_classifier_metric API
+    gl_sframe data({{"target", gl_sarray(unity_targets_sa)}});
+    std::map<std::string, flexible_type> opts = {{"classes", flex_list({0,1})}};
+    variant_map_type vec_result = compute_classifier_metrics(
+        data, "target", "accuracy", gl_sarray(pred_vectors), opts);
+    TS_ASSERT_DELTA(variant_get_value<double>(vec_result["accuracy"]),
+                    true_accuracy, 1e-15);
 
-BOOST_FIXTURE_TEST_SUITE(_evaluation_test, evaluation_test)
-BOOST_AUTO_TEST_CASE(test_rmse_and_max_error) {
-  evaluation_test::test_rmse_and_max_error();
+    variant_map_type dict_result = compute_classifier_metrics(
+        data, "target", "accuracy", gl_sarray(pred_dicts), opts);
+    TS_ASSERT_DELTA(variant_get_value<double>(dict_result["accuracy"]),
+                    true_accuracy, 1e-15);
 }
-BOOST_AUTO_TEST_CASE(test_roc_curve) {
-  evaluation_test::test_roc_curve();
-}
-BOOST_AUTO_TEST_CASE(test_accuracy) {
-  evaluation_test::test_accuracy();
-}
-BOOST_AUTO_TEST_SUITE_END()
+
+}  // namespace evaluation
+}  // namespace turi
