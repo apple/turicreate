@@ -26,13 +26,13 @@
 namespace turi {
 namespace one_shot_object_detection {
 
-/* A ParameterSweep class to randomly generate different samples of parameters
+/* A ParameterSampler class to randomly generate different samples of parameters
  * that can later be used to compute the transformation matrix necessary to 
  * create image projections.
  */
-class ParameterSweep {
+class ParameterSampler {
 public:
-  ParameterSweep(int width, int height) {
+  ParameterSampler(int width, int height) {
     width_ = width;
     height_ = height;
   }
@@ -41,6 +41,13 @@ public:
     return angle * M_PI / 180.0;
   }
 
+  /* Getters for all the parameters:
+   * theta: rotation around the x axis.
+   * phi: rotation around the y axis.
+   * gamma: rotation around the z axis.
+   * dz: distance of the object from the camera.
+   * focal: focal length of the camera used.
+   */
   double get_theta() {
     return deg_to_rad(theta_);
   }
@@ -61,6 +68,7 @@ public:
     return focal_;
   }
 
+  /* */
   void sample(long seed) {
     /* Barebones */
     theta_ = 0.0;
@@ -90,7 +98,7 @@ gl_sframe _augment_data(gl_sframe data, gl_sframe backgrounds, long seed) {
   // TODO: Use backgrounds from the background SFrame.
   // TODO: Generalize 1024 and 676 to be the width and height of the image 
   //       passed in.
-  ParameterSweep parameter_sampler = ParameterSweep(2*1024, 2*676);
+  ParameterSampler parameter_sampler = ParameterSampler(2*1024, 2*676);
   // TODO: Take n as input.
   int n = 1;
   for (int i = 0; i < n; i++) {
