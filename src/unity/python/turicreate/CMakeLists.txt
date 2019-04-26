@@ -29,8 +29,8 @@ make_library(unity_shared
     ${_TC_COMMON_REQUIREMENTS}
   SHARED
   SHARED_ALL_DEFINED
-  DEAD_STRIP
-  # EXPORT_LINUX_MAP_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../../unity_shared_exports_linux.map
+  #DEAD_STRIP
+  EXPORT_LINUX_MAP_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../../unity_shared_exports_linux.map
 )
 
 make_copy_target(release_binaries
