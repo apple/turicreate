@@ -93,9 +93,9 @@ private:
 
 };
 
-gl_sframe _augment_data(gl_sframe data, gl_sframe backgrounds, long seed) {
+gl_sframe _augment_data(gl_sframe data, gl_sarray backgrounds, long seed) {
   // TODO: Get input image from the data sframe.
-  // TODO: Use backgrounds from the background SFrame.
+  // TODO: Use backgrounds from the background SArray.
   // TODO: Generalize 1024 and 676 to be the width and height of the image 
   //       passed in.
   ParameterSampler parameter_sampler = ParameterSampler(2*1024, 2*676);

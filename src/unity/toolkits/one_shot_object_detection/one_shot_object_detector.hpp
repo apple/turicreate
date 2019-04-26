@@ -31,7 +31,7 @@ class EXPORT one_shot_object_detector: public ml_model_base {
   // Detector C++ training.
   gl_sframe augment(gl_sframe data,
                     std::string target_column_name,
-                    gl_sframe backgrounds,
+                    gl_sarray backgrounds,
                     long seed);
   variant_map_type evaluate(gl_sframe data, 
                             std::string metric,
