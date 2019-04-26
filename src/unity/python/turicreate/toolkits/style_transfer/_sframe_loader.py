@@ -8,7 +8,7 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import numpy as _np
 import turicreate as _tc
-import mxnet as _mx
+from .._mxnet import mxnet as _mx
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 
 _TMP_COL_PREP_IMAGE = '_prepared_image'

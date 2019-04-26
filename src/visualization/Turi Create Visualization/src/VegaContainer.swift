@@ -28,12 +28,12 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
     public var data_spec: [[String: Any]] = []
     public var image_spec: [[String: Any]] = []
     public var table_spec: [String: Any]?
-    public var view: WKWebView
+    public var view: CustomWebKitView
     public var pipe: Pipe?
     private var loaded: Bool = false
     private var ready: Bool = false
     
-    init(view: WKWebView) {
+    init(view: CustomWebKitView) {
         
         // initialize variables
         self.view = view;

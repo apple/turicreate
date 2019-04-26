@@ -12,7 +12,6 @@ from datetime import datetime as _datetime
 import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits import _coreml_utils
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe, _mac_ver
-from .. import _mxnet_utils
 from ._utils import _seconds_as_string
 from .. import _pre_trained_models
 from turicreate.toolkits._model import CustomModel as _CustomModel
@@ -114,6 +113,7 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     from ._sframe_loader import SFrameSTIter as _SFrameSTIter
     import mxnet as _mx
+    from .._mxnet import _mxnet_utils
 
     if style_feature is None:
         style_feature = _tkutl._find_only_image_column(style_dataset)
@@ -132,7 +132,8 @@ def create(style_dataset, content_dataset, style_feature=None,
         'lr': 0.001,
         'content_loss_mult': 1.0,
         'style_loss_mult': [1e-4, 1e-4, 1e-4, 1e-4],  # conv 1-4 layers
-        'finetune_all_params': False,
+        'finetune_all_params': True,
+        'pretrained_weights': False,
         'print_loss_breakdown': False,
         'input_shape': (256, 256),
         'training_content_loader_type': 'stretch',
@@ -176,7 +177,7 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     iterations = 0
     if max_iterations is None:
-        max_iterations = len(style_dataset) * 500 + 2000
+        max_iterations = len(style_dataset) * 10000
         if verbose:
             print('Setting max_iterations to be {}'.format(max_iterations))
 
@@ -199,7 +200,10 @@ def create(style_dataset, content_dataset, style_feature=None,
     transformer_model_path = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS[model]().get_model_path()
     transformer = _Transformer(num_styles, batch_size_each)
     transformer.collect_params().initialize(ctx=ctx)
-    transformer.load_params(transformer_model_path, ctx, allow_missing=True)
+    
+    if params['pretrained_weights']:
+        transformer.load_params(transformer_model_path, ctx, allow_missing=True)
+
     # For some reason, the transformer fails to hybridize for training, so we
     # avoid this until resolved
     # transformer.hybridize()
@@ -426,6 +430,7 @@ class StyleTransfer(_CustomModel):
         return "style_transfer"
 
     def _get_native_state(self):
+        from .._mxnet import _mxnet_utils
         state = self.__proxy__.get_state()
         mxnet_params = state['_model'].collect_params()
         state['_model'] = _mxnet_utils.get_gluon_net_params_state(mxnet_params)
@@ -437,6 +442,8 @@ class StyleTransfer(_CustomModel):
     @classmethod
     def _load_version(cls, state, version):
         from ._model import Transformer as _Transformer
+        from .._mxnet import _mxnet_utils
+
         _tkutl._model_version_check(version, cls._PYTHON_STYLE_TRANSFER_VERSION)
 
         net = _Transformer(state['num_styles'], state['batch_size'])
@@ -628,6 +635,8 @@ class StyleTransfer(_CustomModel):
         from ._sframe_loader import SFrameSTIter as _SFrameSTIter
         import mxnet as _mx
         from mxnet import gluon as _gluon
+        from .._mxnet import _mxnet_utils
+
         set_of_all_idx = self._style_indices()
         style, single_style = self._style_input_check(style)
 
@@ -785,7 +794,7 @@ class StyleTransfer(_CustomModel):
         >>> model.export_coreml('StyleTransfer.mlmodel')
         """
         import mxnet as _mx
-        from .._mxnet_to_coreml import _mxnet_converter
+        from .._mxnet._mxnet_to_coreml import _mxnet_converter
         import coremltools
 
         transformer = self._model

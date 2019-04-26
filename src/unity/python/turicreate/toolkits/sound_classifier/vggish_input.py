@@ -19,8 +19,6 @@ from . import mel_features
 from . import vggish_params
 
 import numpy as np
-import resampy
-from scipy.io import wavfile
 
 
 def waveform_to_examples(data, sample_rate):
@@ -39,6 +37,9 @@ def waveform_to_examples(data, sample_rate):
     spectrogram, covering num_frames frames of audio and num_bands mel frequency
     bands, where the frame length is vggish_params.STFT_HOP_LENGTH_SECONDS.
   """
+  
+  import resampy
+
   # Convert to mono.
   if len(data.shape) > 1:
     data = np.mean(data, axis=1)
@@ -80,6 +81,7 @@ def wavfile_to_examples(wav_file):
   Returns:
     See waveform_to_examples.
   """
+  from scipy.io import wavfile
   sr, wav_data = wavfile.read(wav_file)
   assert wav_data.dtype == np.int16, 'Bad sample type: %r' % wav_data.dtype
   samples = wav_data / 32768.0  # Convert to [-1.0, +1.0]

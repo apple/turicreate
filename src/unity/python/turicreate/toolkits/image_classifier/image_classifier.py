@@ -21,7 +21,6 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate import config as _tc_config
 from .._internal_utils import _mac_ver
-from .. import _mxnet_utils
 from .. import _pre_trained_models
 from .. import _image_feature_extractor
 from ._evaluation import Evaluation as _Evaluation
@@ -727,7 +726,7 @@ class ImageClassifier(_CustomModel):
 
         def hclusterSort(vectors, dist_fn):
             distances = []
-            vecs = vectors[:]
+            vecs = list(vectors)[:]
             for i in range(0, len(vecs)):
                 for j in range(i+1, len(vecs)):
                     distances.append({'from': vecs[i], 'to': vecs[j], 'dist': dist_fn(vecs[i], vecs[j])})
@@ -812,6 +811,7 @@ class ImageClassifier(_CustomModel):
         
         extended_test = extended_test.add_row_number('__idx').rename({'label': 'target_label'})
         evaluation_result['test_data'] = extended_test
+        evaluation_result['feature'] = self.feature
 
         return _Evaluation(evaluation_result)
 
