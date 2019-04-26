@@ -175,11 +175,13 @@ variant_map_type compute_classifier_metrics_from_probability_vectors(
     class_to_index[class_labels[i]] = i;
   }
 
-  // Initialize the evaluators.
+  // Initialize the evaluators. Note that we always use the "multiclass" version
+  // since we have full probability vectors. (The binary versions only expect
+  // a single probability, for the "positive" class.)
   using evaluator_shared_ptr = std::shared_ptr<supervised_evaluation_interface>;
   std::map<std::string, variant_type> opts =
-      { {"index_map",     to_variant(class_to_index)},
-        {"binary", class_labels.size() <= 2}           };
+      { {"index_map", to_variant(class_to_index)},
+        {"binary",    false                     } };
   std::map<std::string, evaluator_shared_ptr> evaluators;
   for (const std::string& metric : metrics) {
     // Apply the default options and tweaks to metric implementations defined
@@ -197,11 +199,7 @@ variant_map_type compute_classifier_metrics_from_probability_vectors(
       opts["beta"] = 1.0;
       metric_impl = "fbeta_score";
     } else if (metric == "log_loss") {
-      if (class_labels.size() > 2) {
-        metric_impl = "multiclass_logloss";
-      } else {
-        metric_impl = "binary_logloss";
-      }
+      metric_impl = "multiclass_logloss";
     } else if (metric == "precision") {
       opts["average"] = "macro";
     } else if (metric == "recall") {
