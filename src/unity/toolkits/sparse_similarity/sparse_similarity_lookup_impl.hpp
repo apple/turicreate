@@ -1851,7 +1851,7 @@ class sparse_similarity_lookup_impl : public sparse_similarity_lookup {
     for(const auto& p : edges_this) {
       if(edges_other.count(p.first) == 0) {
         in_this_not_that.push_back(p);
-      } else if( abs(edges_other.at(p.first) - p.second) > 1e-6) {
+      } else if(std::abs(edges_other.at(p.first) - p.second) > 1e-6) {
         diff_values.push_back( {p.first, {p.second, edges_other.at(p.first)} } );
       }
     }

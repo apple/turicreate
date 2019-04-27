@@ -16,6 +16,7 @@ static const char * MLNeuralNetworkPreprocessingpreprocessor_Name(MLNeuralNetwor
         case MLNeuralNetworkPreprocessingpreprocessor_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLActivationParamsNonlinearityType: int {
@@ -67,6 +68,7 @@ static const char * MLActivationParamsNonlinearityType_Name(MLActivationParamsNo
         case MLActivationParamsNonlinearityType_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLNeuralNetworkLayerlayer: int {
@@ -196,6 +198,7 @@ static const char * MLNeuralNetworkLayerlayer_Name(MLNeuralNetworkLayerlayer x) 
         case MLNeuralNetworkLayerlayer_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLSamePaddingMode: int {
@@ -233,6 +236,7 @@ static const char * MLQuantizationParamsQuantizationType_Name(MLQuantizationPara
         case MLQuantizationParamsQuantizationType_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLConvolutionLayerParamsConvolutionPaddingType: int {
@@ -251,6 +255,7 @@ static const char * MLConvolutionLayerParamsConvolutionPaddingType_Name(MLConvol
         case MLConvolutionLayerParamsConvolutionPaddingType_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLPoolingType: int {
@@ -278,6 +283,7 @@ static const char * MLPoolingLayerParamsPoolingPaddingType_Name(MLPoolingLayerPa
         case MLPoolingLayerParamsPoolingPaddingType_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLPaddingLayerParamsPaddingType: int {
@@ -299,6 +305,7 @@ static const char * MLPaddingLayerParamsPaddingType_Name(MLPaddingLayerParamsPad
         case MLPaddingLayerParamsPaddingType_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLOperation: int {
@@ -384,6 +391,7 @@ static const char * MLCustomLayerParamValuevalue_Name(MLCustomLayerParamValueval
         case MLCustomLayerParamValuevalue_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLNeuralNetworkClassifierClassLabels: int {
@@ -402,6 +410,7 @@ static const char * MLNeuralNetworkClassifierClassLabels_Name(MLNeuralNetworkCla
         case MLNeuralNetworkClassifierClassLabels_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 #endif
