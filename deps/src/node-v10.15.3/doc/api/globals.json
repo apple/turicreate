@@ -1,0 +1,386 @@
+{
+  "type": "module",
+  "source": "doc/api/globals.md",
+  "introduced_in": "v0.10.0",
+  "globals": [
+    {
+      "textRaw": "Class: Buffer",
+      "type": "global",
+      "name": "Buffer",
+      "meta": {
+        "added": [
+          "v0.1.103"
+        ],
+        "changes": []
+      },
+      "desc": "<ul>\n<li><a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function\" class=\"type\">&lt;Function&gt;</a></li>\n</ul>\n<p>Used to handle binary data. See the <a href=\"buffer.html\">buffer section</a>.</p>"
+    },
+    {
+      "textRaw": "clearImmediate(immediateObject)",
+      "type": "global",
+      "name": "clearImmediate",
+      "meta": {
+        "added": [
+          "v0.9.1"
+        ],
+        "changes": []
+      },
+      "desc": "<p><a href=\"timers.html#timers_clearimmediate_immediate\"><code>clearImmediate</code></a> is described in the <a href=\"timers.html\">timers</a> section.</p>"
+    },
+    {
+      "textRaw": "clearInterval(intervalObject)",
+      "type": "global",
+      "name": "clearInterval",
+      "meta": {
+        "added": [
+          "v0.0.1"
+        ],
+        "changes": []
+      },
+      "desc": "<p><a href=\"timers.html#timers_clearinterval_timeout\"><code>clearInterval</code></a> is described in the <a href=\"timers.html\">timers</a> section.</p>"
+    },
+    {
+      "textRaw": "clearTimeout(timeoutObject)",
+      "type": "global",
+      "name": "clearTimeout",
+      "meta": {
+        "added": [
+          "v0.0.1"
+        ],
+        "changes": []
+      },
+      "desc": "<p><a href=\"timers.html#timers_cleartimeout_timeout\"><code>clearTimeout</code></a> is described in the <a href=\"timers.html\">timers</a> section.</p>"
+    },
+    {
+      "textRaw": "console",
+      "name": "console",
+      "meta": {
+        "added": [
+          "v0.1.100"
+        ],
+        "changes": []
+      },
+      "type": "global",
+      "desc": "<ul>\n<li><a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\" class=\"type\">&lt;Object&gt;</a></li>\n</ul>\n<p>Used to print to stdout and stderr. See the <a href=\"console.html\"><code>console</code></a> section.</p>"
+    },
+    {
+      "textRaw": "global",
+      "name": "global",
+      "meta": {
+        "added": [
+          "v0.1.27"
+        ],
+        "changes": []
+      },
+      "type": "global",
+      "desc": "<ul>\n<li><a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\" class=\"type\">&lt;Object&gt;</a> The global namespace object.</li>\n</ul>\n<p>In browsers, the top-level scope is the global scope. This means that\nwithin the browser <code>var something</code> will define a new global variable. In\nNode.js this is different. The top-level scope is not the global scope;\n<code>var something</code> inside a Node.js module will be local to that module.</p>"
+    },
+    {
+      "textRaw": "process",
+      "name": "process",
+      "meta": {
+        "added": [
+          "v0.1.7"
+        ],
+        "changes": []
+      },
+      "type": "global",
+      "desc": "<ul>\n<li><a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\" class=\"type\">&lt;Object&gt;</a></li>\n</ul>\n<p>The process object. See the <a href=\"process.html#process_process\"><code>process</code> object</a> section.</p>"
+    },
+    {
+      "textRaw": "setImmediate(callback[, ...args])",
+      "type": "global",
+      "name": "setImmediate",
+      "meta": {
+        "added": [
+          "v0.9.1"
+        ],
+        "changes": []
+      },
+      "desc": "<p><a href=\"timers.html#timers_setimmediate_callback_args\"><code>setImmediate</code></a> is described in the <a href=\"timers.html\">timers</a> section.</p>"
+    },
+    {
+      "textRaw": "setInterval(callback, delay[, ...args])",
+      "type": "global",
+      "name": "setInterval",
+      "meta": {
+        "added": [
+          "v0.0.1"
+        ],
+        "changes": []
+      },
+      "desc": "<p><a href=\"timers.html#timers_setinterval_callback_delay_args\"><code>setInterval</code></a> is described in the <a href=\"timers.html\">timers</a> section.</p>"
+    },
+    {
+      "textRaw": "setTimeout(callback, delay[, ...args])",
+      "type": "global",
+      "name": "setTimeout",
+      "meta": {
+        "added": [
+          "v0.0.1"
+        ],
+        "changes": []
+      },
+      "desc": "<p><a href=\"timers.html#timers_settimeout_callback_delay_args\"><code>setTimeout</code></a> is described in the <a href=\"timers.html\">timers</a> section.</p>"
+    },
+    {
+      "textRaw": "URL",
+      "name": "URL",
+      "meta": {
+        "added": [
+          "v10.0.0"
+        ],
+        "changes": []
+      },
+      "type": "global",
+      "desc": "<p>The WHATWG <code>URL</code> class. See the <a href=\"url.html#url_class_url\"><code>URL</code></a> section.</p>"
+    },
+    {
+      "textRaw": "URLSearchParams",
+      "name": "URLSearchParams",
+      "meta": {
+        "added": [
+          "v10.0.0"
+        ],
+        "changes": []
+      },
+      "type": "global",
+      "desc": "<p>The WHATWG <code>URLSearchParams</code> class. See the <a href=\"url.html#url_class_urlsearchparams\"><code>URLSearchParams</code></a> section.</p>"
+    },
+    {
+      "textRaw": "WebAssembly",
+      "name": "WebAssembly",
+      "meta": {
+        "added": [
+          "v8.0.0"
+        ],
+        "changes": []
+      },
+      "type": "global",
+      "desc": "<ul>\n<li><a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\" class=\"type\">&lt;Object&gt;</a></li>\n</ul>\n<p>The object that acts as the namespace for all W3C\n<a href=\"https://webassembly.org\">WebAssembly</a> related functionality. See the\n<a href=\"https://developer.mozilla.org/en-US/docs/WebAssembly\">Mozilla Developer Network</a> for usage and compatibility.</p>"
+    }
+  ],
+  "methods": [
+    {
+      "textRaw": "require()",
+      "type": "method",
+      "name": "require",
+      "signatures": [
+        {
+          "params": []
+        }
+      ],
+      "desc": "<p>This variable may appear to be global but is not. See <a href=\"modules.html#modules_require\"><code>require()</code></a>.</p>"
+    }
+  ],
+  "miscs": [
+    {
+      "textRaw": "Global Objects",
+      "name": "Global Objects",
+      "introduced_in": "v0.10.0",
+      "type": "misc",
+      "desc": "<p>These objects are available in all modules. The following variables may appear\nto be global but are not. They exist only in the scope of modules, see the\n<a href=\"modules.html\">module system documentation</a>:</p>\n<ul>\n<li><a href=\"modules.html#modules_dirname\"><code>__dirname</code></a></li>\n<li><a href=\"modules.html#modules_filename\"><code>__filename</code></a></li>\n<li><a href=\"modules.html#modules_exports\"><code>exports</code></a></li>\n<li><a href=\"modules.html#modules_module\"><code>module</code></a></li>\n<li><a href=\"modules.html#modules_require\"><code>require()</code></a></li>\n</ul>\n<p>The objects listed here are specific to Node.js. There are a number of\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects\">built-in objects</a> that are part of the JavaScript language itself, which are\nalso globally accessible.</p>",
+      "globals": [
+        {
+          "textRaw": "Class: Buffer",
+          "type": "global",
+          "name": "Buffer",
+          "meta": {
+            "added": [
+              "v0.1.103"
+            ],
+            "changes": []
+          },
+          "desc": "<ul>\n<li><a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function\" class=\"type\">&lt;Function&gt;</a></li>\n</ul>\n<p>Used to handle binary data. See the <a href=\"buffer.html\">buffer section</a>.</p>"
+        },
+        {
+          "textRaw": "clearImmediate(immediateObject)",
+          "type": "global",
+          "name": "clearImmediate",
+          "meta": {
+            "added": [
+              "v0.9.1"
+            ],
+            "changes": []
+          },
+          "desc": "<p><a href=\"timers.html#timers_clearimmediate_immediate\"><code>clearImmediate</code></a> is described in the <a href=\"timers.html\">timers</a> section.</p>"
+        },
+        {
+          "textRaw": "clearInterval(intervalObject)",
+          "type": "global",
+          "name": "clearInterval",
+          "meta": {
+            "added": [
+              "v0.0.1"
+            ],
+            "changes": []
+          },
+          "desc": "<p><a href=\"timers.html#timers_clearinterval_timeout\"><code>clearInterval</code></a> is described in the <a href=\"timers.html\">timers</a> section.</p>"
+        },
+        {
+          "textRaw": "clearTimeout(timeoutObject)",
+          "type": "global",
+          "name": "clearTimeout",
+          "meta": {
+            "added": [
+              "v0.0.1"
+            ],
+            "changes": []
+          },
+          "desc": "<p><a href=\"timers.html#timers_cleartimeout_timeout\"><code>clearTimeout</code></a> is described in the <a href=\"timers.html\">timers</a> section.</p>"
+        },
+        {
+          "textRaw": "console",
+          "name": "console",
+          "meta": {
+            "added": [
+              "v0.1.100"
+            ],
+            "changes": []
+          },
+          "type": "global",
+          "desc": "<ul>\n<li><a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\" class=\"type\">&lt;Object&gt;</a></li>\n</ul>\n<p>Used to print to stdout and stderr. See the <a href=\"console.html\"><code>console</code></a> section.</p>"
+        },
+        {
+          "textRaw": "global",
+          "name": "global",
+          "meta": {
+            "added": [
+              "v0.1.27"
+            ],
+            "changes": []
+          },
+          "type": "global",
+          "desc": "<ul>\n<li><a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\" class=\"type\">&lt;Object&gt;</a> The global namespace object.</li>\n</ul>\n<p>In browsers, the top-level scope is the global scope. This means that\nwithin the browser <code>var something</code> will define a new global variable. In\nNode.js this is different. The top-level scope is not the global scope;\n<code>var something</code> inside a Node.js module will be local to that module.</p>"
+        },
+        {
+          "textRaw": "process",
+          "name": "process",
+          "meta": {
+            "added": [
+              "v0.1.7"
+            ],
+            "changes": []
+          },
+          "type": "global",
+          "desc": "<ul>\n<li><a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\" class=\"type\">&lt;Object&gt;</a></li>\n</ul>\n<p>The process object. See the <a href=\"process.html#process_process\"><code>process</code> object</a> section.</p>"
+        },
+        {
+          "textRaw": "setImmediate(callback[, ...args])",
+          "type": "global",
+          "name": "setImmediate",
+          "meta": {
+            "added": [
+              "v0.9.1"
+            ],
+            "changes": []
+          },
+          "desc": "<p><a href=\"timers.html#timers_setimmediate_callback_args\"><code>setImmediate</code></a> is described in the <a href=\"timers.html\">timers</a> section.</p>"
+        },
+        {
+          "textRaw": "setInterval(callback, delay[, ...args])",
+          "type": "global",
+          "name": "setInterval",
+          "meta": {
+            "added": [
+              "v0.0.1"
+            ],
+            "changes": []
+          },
+          "desc": "<p><a href=\"timers.html#timers_setinterval_callback_delay_args\"><code>setInterval</code></a> is described in the <a href=\"timers.html\">timers</a> section.</p>"
+        },
+        {
+          "textRaw": "setTimeout(callback, delay[, ...args])",
+          "type": "global",
+          "name": "setTimeout",
+          "meta": {
+            "added": [
+              "v0.0.1"
+            ],
+            "changes": []
+          },
+          "desc": "<p><a href=\"timers.html#timers_settimeout_callback_delay_args\"><code>setTimeout</code></a> is described in the <a href=\"timers.html\">timers</a> section.</p>"
+        },
+        {
+          "textRaw": "URL",
+          "name": "URL",
+          "meta": {
+            "added": [
+              "v10.0.0"
+            ],
+            "changes": []
+          },
+          "type": "global",
+          "desc": "<p>The WHATWG <code>URL</code> class. See the <a href=\"url.html#url_class_url\"><code>URL</code></a> section.</p>"
+        },
+        {
+          "textRaw": "URLSearchParams",
+          "name": "URLSearchParams",
+          "meta": {
+            "added": [
+              "v10.0.0"
+            ],
+            "changes": []
+          },
+          "type": "global",
+          "desc": "<p>The WHATWG <code>URLSearchParams</code> class. See the <a href=\"url.html#url_class_urlsearchparams\"><code>URLSearchParams</code></a> section.</p>"
+        },
+        {
+          "textRaw": "WebAssembly",
+          "name": "WebAssembly",
+          "meta": {
+            "added": [
+              "v8.0.0"
+            ],
+            "changes": []
+          },
+          "type": "global",
+          "desc": "<ul>\n<li><a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\" class=\"type\">&lt;Object&gt;</a></li>\n</ul>\n<p>The object that acts as the namespace for all W3C\n<a href=\"https://webassembly.org\">WebAssembly</a> related functionality. See the\n<a href=\"https://developer.mozilla.org/en-US/docs/WebAssembly\">Mozilla Developer Network</a> for usage and compatibility.</p>"
+        }
+      ],
+      "miscs": [
+        {
+          "textRaw": "__dirname",
+          "name": "__dirname",
+          "desc": "<p>This variable may appear to be global but is not. See <a href=\"modules.html#modules_dirname\"><code>__dirname</code></a>.</p>",
+          "type": "misc",
+          "displayName": "__dirname"
+        },
+        {
+          "textRaw": "__filename",
+          "name": "__filename",
+          "desc": "<p>This variable may appear to be global but is not. See <a href=\"modules.html#modules_filename\"><code>__filename</code></a>.</p>",
+          "type": "misc",
+          "displayName": "__filename"
+        },
+        {
+          "textRaw": "exports",
+          "name": "exports",
+          "desc": "<p>This variable may appear to be global but is not. See <a href=\"modules.html#modules_exports\"><code>exports</code></a>.</p>",
+          "type": "misc",
+          "displayName": "exports"
+        },
+        {
+          "textRaw": "module",
+          "name": "module",
+          "desc": "<p>This variable may appear to be global but is not. See <a href=\"modules.html#modules_module\"><code>module</code></a>.</p>",
+          "type": "misc",
+          "displayName": "module"
+        }
+      ],
+      "methods": [
+        {
+          "textRaw": "require()",
+          "type": "method",
+          "name": "require",
+          "signatures": [
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>This variable may appear to be global but is not. See <a href=\"modules.html#modules_require\"><code>require()</code></a>.</p>"
+        }
+      ]
+    }
+  ]
+}

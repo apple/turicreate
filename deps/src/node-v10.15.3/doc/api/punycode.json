@@ -1,0 +1,191 @@
+{
+  "type": "module",
+  "source": "doc/api/punycode.md",
+  "modules": [
+    {
+      "textRaw": "Punycode",
+      "name": "punycode",
+      "meta": {
+        "changes": [
+          {
+            "version": "v7.0.0",
+            "pr-url": "https://github.com/nodejs/node/pull/7941",
+            "description": "Accessing this module will now emit a deprecation warning."
+          }
+        ]
+      },
+      "introduced_in": "v0.10.0",
+      "stability": 0,
+      "stabilityText": "Deprecated",
+      "desc": "<p><strong>The version of the punycode module bundled in Node.js is being deprecated</strong>.\nIn a future major version of Node.js this module will be removed. Users\ncurrently depending on the <code>punycode</code> module should switch to using the\nuserland-provided <a href=\"https://github.com/bestiejs/punycode.js\">Punycode.js</a> module instead.</p>\n<p>The <code>punycode</code> module is a bundled version of the <a href=\"https://github.com/bestiejs/punycode.js\">Punycode.js</a> module. It\ncan be accessed using:</p>\n<pre><code class=\"language-js\">const punycode = require('punycode');\n</code></pre>\n<p><a href=\"https://tools.ietf.org/html/rfc3492\">Punycode</a> is a character encoding scheme defined by RFC 3492 that is\nprimarily intended for use in Internationalized Domain Names. Because host\nnames in URLs are limited to ASCII characters only, Domain Names that contain\nnon-ASCII characters must be converted into ASCII using the Punycode scheme.\nFor instance, the Japanese character that translates into the English word,\n<code>'example'</code> is <code>'例'</code>. The Internationalized Domain Name, <code>'例.com'</code> (equivalent\nto <code>'example.com'</code>) is represented by Punycode as the ASCII string\n<code>'xn--fsq.com'</code>.</p>\n<p>The <code>punycode</code> module provides a simple implementation of the Punycode standard.</p>\n<p>The <code>punycode</code> module is a third-party dependency used by Node.js and\nmade available to developers as a convenience. Fixes or other modifications to\nthe module must be directed to the <a href=\"https://github.com/bestiejs/punycode.js\">Punycode.js</a> project.</p>",
+      "methods": [
+        {
+          "textRaw": "punycode.decode(string)",
+          "type": "method",
+          "name": "decode",
+          "meta": {
+            "added": [
+              "v0.5.1"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`string` {string}",
+                  "name": "string",
+                  "type": "string"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>The <code>punycode.decode()</code> method converts a <a href=\"https://tools.ietf.org/html/rfc3492\">Punycode</a> string of ASCII-only\ncharacters to the equivalent string of Unicode codepoints.</p>\n<pre><code class=\"language-js\">punycode.decode('maana-pta'); // 'mañana'\npunycode.decode('--dqo34k'); // '☃-⌘'\n</code></pre>"
+        },
+        {
+          "textRaw": "punycode.encode(string)",
+          "type": "method",
+          "name": "encode",
+          "meta": {
+            "added": [
+              "v0.5.1"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`string` {string}",
+                  "name": "string",
+                  "type": "string"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>The <code>punycode.encode()</code> method converts a string of Unicode codepoints to a\n<a href=\"https://tools.ietf.org/html/rfc3492\">Punycode</a> string of ASCII-only characters.</p>\n<pre><code class=\"language-js\">punycode.encode('mañana'); // 'maana-pta'\npunycode.encode('☃-⌘'); // '--dqo34k'\n</code></pre>"
+        },
+        {
+          "textRaw": "punycode.toASCII(domain)",
+          "type": "method",
+          "name": "toASCII",
+          "meta": {
+            "added": [
+              "v0.6.1"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`domain` {string}",
+                  "name": "domain",
+                  "type": "string"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>The <code>punycode.toASCII()</code> method converts a Unicode string representing an\nInternationalized Domain Name to <a href=\"https://tools.ietf.org/html/rfc3492\">Punycode</a>. Only the non-ASCII parts of the\ndomain name will be converted. Calling <code>punycode.toASCII()</code> on a string that\nalready only contains ASCII characters will have no effect.</p>\n<pre><code class=\"language-js\">// encode domain names\npunycode.toASCII('mañana.com');  // 'xn--maana-pta.com'\npunycode.toASCII('☃-⌘.com');   // 'xn----dqo34k.com'\npunycode.toASCII('example.com'); // 'example.com'\n</code></pre>"
+        },
+        {
+          "textRaw": "punycode.toUnicode(domain)",
+          "type": "method",
+          "name": "toUnicode",
+          "meta": {
+            "added": [
+              "v0.6.1"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`domain` {string}",
+                  "name": "domain",
+                  "type": "string"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>The <code>punycode.toUnicode()</code> method converts a string representing a domain name\ncontaining <a href=\"https://tools.ietf.org/html/rfc3492\">Punycode</a> encoded characters into Unicode. Only the <a href=\"https://tools.ietf.org/html/rfc3492\">Punycode</a>\nencoded parts of the domain name are be converted.</p>\n<pre><code class=\"language-js\">// decode domain names\npunycode.toUnicode('xn--maana-pta.com'); // 'mañana.com'\npunycode.toUnicode('xn----dqo34k.com');  // '☃-⌘.com'\npunycode.toUnicode('example.com');       // 'example.com'\n</code></pre>"
+        }
+      ],
+      "properties": [
+        {
+          "textRaw": "punycode.ucs2",
+          "name": "ucs2",
+          "meta": {
+            "added": [
+              "v0.7.0"
+            ],
+            "changes": []
+          },
+          "methods": [
+            {
+              "textRaw": "punycode.ucs2.decode(string)",
+              "type": "method",
+              "name": "decode",
+              "meta": {
+                "added": [
+                  "v0.7.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`string` {string}",
+                      "name": "string",
+                      "type": "string"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>The <code>punycode.ucs2.decode()</code> method returns an array containing the numeric\ncodepoint values of each Unicode symbol in the string.</p>\n<pre><code class=\"language-js\">punycode.ucs2.decode('abc'); // [0x61, 0x62, 0x63]\n// surrogate pair for U+1D306 tetragram for centre:\npunycode.ucs2.decode('\\uD834\\uDF06'); // [0x1D306]\n</code></pre>"
+            },
+            {
+              "textRaw": "punycode.ucs2.encode(codePoints)",
+              "type": "method",
+              "name": "encode",
+              "meta": {
+                "added": [
+                  "v0.7.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`codePoints` {integer[]}",
+                      "name": "codePoints",
+                      "type": "integer[]"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>The <code>punycode.ucs2.encode()</code> method returns a string based on an array of\nnumeric code point values.</p>\n<pre><code class=\"language-js\">punycode.ucs2.encode([0x61, 0x62, 0x63]); // 'abc'\npunycode.ucs2.encode([0x1D306]); // '\\uD834\\uDF06'\n</code></pre>"
+            }
+          ]
+        },
+        {
+          "textRaw": "`version` {string}",
+          "type": "string",
+          "name": "version",
+          "meta": {
+            "added": [
+              "v0.6.1"
+            ],
+            "changes": []
+          },
+          "desc": "<p>Returns a string identifying the current <a href=\"https://github.com/bestiejs/punycode.js\">Punycode.js</a> version number.</p>"
+        }
+      ],
+      "type": "module",
+      "displayName": "Punycode"
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "type": "module",
+  "source": "doc/api/esm.md",
+  "introduced_in": "v8.5.0",
+  "stability": 1,
+  "stabilityText": "Experimental",
+  "miscs": [
+    {
+      "textRaw": "ECMAScript Modules",
+      "name": "esm",
+      "introduced_in": "v8.5.0",
+      "type": "misc",
+      "stability": 1,
+      "stabilityText": "Experimental",
+      "desc": "<p>Node.js contains support for ES Modules based upon the\n<a href=\"https://github.com/nodejs/node-eps/blob/master/002-es-modules.md\">Node.js EP for ES Modules</a>.</p>\n<p>Not all features of the EP are complete and will be landing as both VM support\nand implementation is ready. Error messages are still being polished.</p>",
+      "miscs": [
+        {
+          "textRaw": "Enabling",
+          "name": "Enabling",
+          "type": "misc",
+          "desc": "<p>The <code>--experimental-modules</code> flag can be used to enable features for loading\nESM modules.</p>\n<p>Once this has been set, files ending with <code>.mjs</code> will be able to be loaded\nas ES Modules.</p>\n<pre><code class=\"language-sh\">node --experimental-modules my-app.mjs\n</code></pre>"
+        },
+        {
+          "textRaw": "Features",
+          "name": "Features",
+          "type": "misc",
+          "miscs": [
+            {
+              "textRaw": "Supported",
+              "name": "supported",
+              "desc": "<p>Only the CLI argument for the main entry point to the program can be an entry\npoint into an ESM graph. Dynamic import can also be used to create entry points\ninto ESM graphs at runtime.</p>",
+              "properties": [
+                {
+                  "textRaw": "`meta` {Object}",
+                  "type": "Object",
+                  "name": "meta",
+                  "desc": "<p>The <code>import.meta</code> metaproperty is an <code>Object</code> that contains the following\nproperty:</p>\n<ul>\n<li><code>url</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type\" class=\"type\">&lt;string&gt;</a> The absolute <code>file:</code> URL of the module.</li>\n</ul>"
+                }
+              ],
+              "type": "misc",
+              "displayName": "Supported"
+            },
+            {
+              "textRaw": "Unsupported",
+              "name": "unsupported",
+              "desc": "<table>\n<thead>\n<tr>\n<th>Feature</th>\n<th>Reason</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>require('./foo.mjs')</code></td>\n<td>ES Modules have differing resolution and timing, use dynamic import</td>\n</tr>\n</tbody>\n</table>",
+              "type": "misc",
+              "displayName": "Unsupported"
+            }
+          ]
+        },
+        {
+          "textRaw": "Notable differences between `import` and `require`",
+          "name": "notable_differences_between_`import`_and_`require`",
+          "modules": [
+            {
+              "textRaw": "No NODE_PATH",
+              "name": "no_node_path",
+              "desc": "<p><code>NODE_PATH</code> is not part of resolving <code>import</code> specifiers. Please use symlinks\nif this behavior is desired.</p>",
+              "type": "module",
+              "displayName": "No NODE_PATH"
+            },
+            {
+              "textRaw": "No `require.extensions`",
+              "name": "no_`require.extensions`",
+              "desc": "<p><code>require.extensions</code> is not used by <code>import</code>. The expectation is that loader\nhooks can provide this workflow in the future.</p>",
+              "type": "module",
+              "displayName": "No `require.extensions`"
+            },
+            {
+              "textRaw": "No `require.cache`",
+              "name": "no_`require.cache`",
+              "desc": "<p><code>require.cache</code> is not used by <code>import</code>. It has a separate cache.</p>",
+              "type": "module",
+              "displayName": "No `require.cache`"
+            },
+            {
+              "textRaw": "URL based paths",
+              "name": "url_based_paths",
+              "desc": "<p>ESM are resolved and cached based upon <a href=\"https://url.spec.whatwg.org/\">URL</a>\nsemantics. This means that files containing special characters such as <code>#</code> and\n<code>?</code> need to be escaped.</p>\n<p>Modules will be loaded multiple times if the <code>import</code> specifier used to resolve\nthem have a different query or fragment.</p>\n<pre><code class=\"language-js\">import './foo?query=1'; // loads ./foo with query of \"?query=1\"\nimport './foo?query=2'; // loads ./foo with query of \"?query=2\"\n</code></pre>\n<p>For now, only modules using the <code>file:</code> protocol can be loaded.</p>",
+              "type": "module",
+              "displayName": "URL based paths"
+            }
+          ],
+          "type": "misc",
+          "displayName": "Notable differences between `import` and `require`"
+        },
+        {
+          "textRaw": "Interop with existing modules",
+          "name": "interop_with_existing_modules",
+          "desc": "<p>All CommonJS, JSON, and C++ modules can be used with <code>import</code>.</p>\n<p>Modules loaded this way will only be loaded once, even if their query\nor fragment string differs between <code>import</code> statements.</p>\n<p>When loaded via <code>import</code> these modules will provide a single <code>default</code> export\nrepresenting the value of <code>module.exports</code> at the time they finished evaluating.</p>\n<pre><code class=\"language-js\">// foo.js\nmodule.exports = { one: 1 };\n\n// bar.js\nimport foo from './foo.js';\nfoo.one === 1; // true\n</code></pre>\n<p>Builtin modules will provide named exports of their public API, as well as a\ndefault export which can be used for, among other things, modifying the named\nexports. Named exports of builtin modules are updated when the corresponding\nexports property is accessed, redefined, or deleted.</p>\n<pre><code class=\"language-js\">import EventEmitter from 'events';\nconst e = new EventEmitter();\n</code></pre>\n<pre><code class=\"language-js\">import { readFile } from 'fs';\nreadFile('./foo.txt', (err, source) => {\n  if (err) {\n    console.error(err);\n  } else {\n    console.log(source);\n  }\n});\n</code></pre>\n<pre><code class=\"language-js\">import fs, { readFileSync } from 'fs';\n\nfs.readFileSync = () => Buffer.from('Hello, ESM');\n\nfs.readFileSync === readFileSync;\n</code></pre>",
+          "type": "misc",
+          "displayName": "Interop with existing modules"
+        },
+        {
+          "textRaw": "Loader hooks",
+          "name": "Loader hooks",
+          "type": "misc",
+          "desc": "<p>To customize the default module resolution, loader hooks can optionally be\nprovided via a <code>--loader ./loader-name.mjs</code> argument to Node.js.</p>\n<p>When hooks are used they only apply to ES module loading and not to any\nCommonJS modules loaded.</p>",
+          "miscs": [
+            {
+              "textRaw": "Resolve hook",
+              "name": "resolve_hook",
+              "desc": "<p>The resolve hook returns the resolved file URL and module format for a\ngiven module specifier and parent file URL:</p>\n<pre><code class=\"language-js\">const baseURL = new URL('file://');\nbaseURL.pathname = `${process.cwd()}/`;\n\nexport async function resolve(specifier,\n                              parentModuleURL = baseURL,\n                              defaultResolver) {\n  return {\n    url: new URL(specifier, parentModuleURL).href,\n    format: 'esm'\n  };\n}\n</code></pre>\n<p>The <code>parentModuleURL</code> is provided as <code>undefined</code> when performing main Node.js\nload itself.</p>\n<p>The default Node.js ES module resolution function is provided as a third\nargument to the resolver for easy compatibility workflows.</p>\n<p>In addition to returning the resolved file URL value, the resolve hook also\nreturns a <code>format</code> property specifying the module format of the resolved\nmodule. This can be one of the following:</p>\n<table>\n<thead>\n<tr>\n<th><code>format</code></th>\n<th>Description</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>'esm'</code></td>\n<td>Load a standard JavaScript module</td>\n</tr>\n<tr>\n<td><code>'cjs'</code></td>\n<td>Load a node-style CommonJS module</td>\n</tr>\n<tr>\n<td><code>'builtin'</code></td>\n<td>Load a node builtin CommonJS module</td>\n</tr>\n<tr>\n<td><code>'json'</code></td>\n<td>Load a JSON file</td>\n</tr>\n<tr>\n<td><code>'addon'</code></td>\n<td>Load a <a href=\"addons.html\">C++ Addon</a></td>\n</tr>\n<tr>\n<td><code>'dynamic'</code></td>\n<td>Use a <a href=\"#esm_dynamic_instantiate_hook\">dynamic instantiate hook</a></td>\n</tr>\n</tbody>\n</table>\n<p>For example, a dummy loader to load JavaScript restricted to browser resolution\nrules with only JS file extension and Node.js builtin modules support could\nbe written:</p>\n<pre><code class=\"language-js\">import path from 'path';\nimport process from 'process';\nimport Module from 'module';\n\nconst builtins = Module.builtinModules;\nconst JS_EXTENSIONS = new Set(['.js', '.mjs']);\n\nconst baseURL = new URL('file://');\nbaseURL.pathname = `${process.cwd()}/`;\n\nexport function resolve(specifier, parentModuleURL = baseURL, defaultResolve) {\n  if (builtins.includes(specifier)) {\n    return {\n      url: specifier,\n      format: 'builtin'\n    };\n  }\n  if (/^\\.{0,2}[/]/.test(specifier) !== true &#x26;&#x26; !specifier.startsWith('file:')) {\n    // For node_modules support:\n    // return defaultResolve(specifier, parentModuleURL);\n    throw new Error(\n      `imports must begin with '/', './', or '../'; '${specifier}' does not`);\n  }\n  const resolved = new URL(specifier, parentModuleURL);\n  const ext = path.extname(resolved.pathname);\n  if (!JS_EXTENSIONS.has(ext)) {\n    throw new Error(\n      `Cannot load file with non-JavaScript file extension ${ext}.`);\n  }\n  return {\n    url: resolved.href,\n    format: 'esm'\n  };\n}\n</code></pre>\n<p>With this loader, running:</p>\n<pre><code class=\"language-console\">NODE_OPTIONS='--experimental-modules --loader ./custom-loader.mjs' node x.js\n</code></pre>\n<p>would load the module <code>x.js</code> as an ES module with relative resolution support\n(with <code>node_modules</code> loading skipped in this example).</p>",
+              "type": "misc",
+              "displayName": "Resolve hook"
+            },
+            {
+              "textRaw": "Dynamic instantiate hook",
+              "name": "dynamic_instantiate_hook",
+              "desc": "<p>To create a custom dynamic module that doesn't correspond to one of the\nexisting <code>format</code> interpretations, the <code>dynamicInstantiate</code> hook can be used.\nThis hook is called only for modules that return <code>format: 'dynamic'</code> from\nthe <code>resolve</code> hook.</p>\n<pre><code class=\"language-js\">export async function dynamicInstantiate(url) {\n  return {\n    exports: ['customExportName'],\n    execute: (exports) => {\n      // get and set functions provided for pre-allocated export names\n      exports.customExportName.set('value');\n    }\n  };\n}\n</code></pre>\n<p>With the list of module exports provided upfront, the <code>execute</code> function will\nthen be called at the exact point of module evaluation order for that module\nin the import tree.</p>",
+              "type": "misc",
+              "displayName": "Dynamic instantiate hook"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

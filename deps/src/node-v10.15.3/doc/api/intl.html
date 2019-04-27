@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Internationalization Support | Node.js v10.15.3 Documentation</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/intl.html">
+</head>
+<body class="alt apidoc" id="api-section-intl">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="Go back to the home page">
+          Node.js
+        </a>
+      </div>
+      <ul>
+<li><a href="documentation.html" class="nav-documentation">About these Docs</a></li>
+<li><a href="synopsis.html" class="nav-synopsis">Usage &#x26; Example</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="assert.html" class="nav-assert">Assertion Testing</a></li>
+<li><a href="async_hooks.html" class="nav-async_hooks">Async Hooks</a></li>
+<li><a href="buffer.html" class="nav-buffer">Buffer</a></li>
+<li><a href="addons.html" class="nav-addons">C++ Addons</a></li>
+<li><a href="n-api.html" class="nav-n-api">C/C++ Addons - N-API</a></li>
+<li><a href="child_process.html" class="nav-child_process">Child Processes</a></li>
+<li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
+<li><a href="cli.html" class="nav-cli">Command Line Options</a></li>
+<li><a href="console.html" class="nav-console">Console</a></li>
+<li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
+<li><a href="debugger.html" class="nav-debugger">Debugger</a></li>
+<li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
+<li><a href="dns.html" class="nav-dns">DNS</a></li>
+<li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="esm.html" class="nav-esm">ECMAScript Modules</a></li>
+<li><a href="errors.html" class="nav-errors">Errors</a></li>
+<li><a href="events.html" class="nav-events">Events</a></li>
+<li><a href="fs.html" class="nav-fs">File System</a></li>
+<li><a href="globals.html" class="nav-globals">Globals</a></li>
+<li><a href="http.html" class="nav-http">HTTP</a></li>
+<li><a href="http2.html" class="nav-http2">HTTP/2</a></li>
+<li><a href="https.html" class="nav-https">HTTPS</a></li>
+<li><a href="inspector.html" class="nav-inspector">Inspector</a></li>
+<li><a href="intl.html" class="nav-intl active">Internationalization</a></li>
+<li><a href="modules.html" class="nav-modules">Modules</a></li>
+<li><a href="net.html" class="nav-net">Net</a></li>
+<li><a href="os.html" class="nav-os">OS</a></li>
+<li><a href="path.html" class="nav-path">Path</a></li>
+<li><a href="perf_hooks.html" class="nav-perf_hooks">Performance Hooks</a></li>
+<li><a href="process.html" class="nav-process">Process</a></li>
+<li><a href="punycode.html" class="nav-punycode">Punycode</a></li>
+<li><a href="querystring.html" class="nav-querystring">Query Strings</a></li>
+<li><a href="readline.html" class="nav-readline">Readline</a></li>
+<li><a href="repl.html" class="nav-repl">REPL</a></li>
+<li><a href="stream.html" class="nav-stream">Stream</a></li>
+<li><a href="string_decoder.html" class="nav-string_decoder">String Decoder</a></li>
+<li><a href="timers.html" class="nav-timers">Timers</a></li>
+<li><a href="tls.html" class="nav-tls">TLS/SSL</a></li>
+<li><a href="tracing.html" class="nav-tracing">Trace Events</a></li>
+<li><a href="tty.html" class="nav-tty">TTY</a></li>
+<li><a href="dgram.html" class="nav-dgram">UDP/Datagram</a></li>
+<li><a href="url.html" class="nav-url">URL</a></li>
+<li><a href="util.html" class="nav-util">Utilities</a></li>
+<li><a href="v8.html" class="nav-v8">V8</a></li>
+<li><a href="vm.html" class="nav-vm">VM</a></li>
+<li><a href="worker_threads.html" class="nav-worker_threads">Worker Threads</a></li>
+<li><a href="zlib.html" class="nav-zlib">ZLIB</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="https://github.com/nodejs/node" class="nav-https-github-com-nodejs-node">GitHub Repo &#x26; Issue Tracker</a></li>
+</ul>
+    </div>
+
+    <div id="column1" data-id="intl" class="interior">
+      <header>
+        <h1>Node.js v10.15.3 Documentation</h1>
+        <div id="gtoc">
+          <ul>
+            <li>
+              <a href="index.html" name="toc">Index</a>
+            </li>
+            <li>
+              <a href="all.html">View on single page</a>
+            </li>
+            <li>
+              <a href="intl.json">View as JSON</a>
+            </li>
+            
+    <li class="version-picker">
+      <a href="#">View another version <span>&#x25bc;</span></a>
+      <ol class="version-picker"><li><a href="https://nodejs.org/docs/latest-v11.x/api/intl.html">11.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v10.x/api/intl.html">10.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v9.x/api/intl.html">9.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v8.x/api/intl.html">8.x <b>LTS</b></a></li></ol>
+    </li>
+  
+            <li class="edit_on_github"><a href="https://github.com/nodejs/node/edit/master/doc/api/intl.md"><span class="github_icon"><svg height="16" width="16" viewBox="0 0 16.1 16.1" fill="currentColor"><path d="M8 0a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2 .4-2.5-.5-2.7-1 0-.1-.5-.9-.8-1-.3-.2-.7-.6 0-.6.6 0 1 .6 1.2.8.7 1.2 1.9 1 2.4.7 0-.5.2-.9.5-1-1.8-.3-3.7-1-3.7-4 0-.9.3-1.6.8-2.2 0-.2-.3-1 .1-2 0 0 .7-.3 2.2.7a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.5 1.1.2 2 .1 2.1.5.6.8 1.3.8 2.2 0 3-1.9 3.7-3.6 4 .3.2.5.7.5 1.4v2.2c0 .2.1.5.5.4A8 8 0 0 0 16 8a8 8 0 0 0-8-8z"/></svg></span>Edit on GitHub</a></li>
+          </ul>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>Table of Contents</h2>
+        <ul>
+<li>
+<p><a href="#intl_internationalization_support">Internationalization Support</a></p>
+<ul>
+<li>
+<p><a href="#intl_options_for_building_node_js">Options for building Node.js</a></p>
+<ul>
+<li><a href="#intl_disable_all_internationalization_features_none">Disable all internationalization features (<code>none</code>)</a></li>
+<li><a href="#intl_build_with_a_pre_installed_icu_system_icu">Build with a pre-installed ICU (<code>system-icu</code>)</a></li>
+<li>
+<p><a href="#intl_embed_a_limited_set_of_icu_data_small_icu">Embed a limited set of ICU data (<code>small-icu</code>)</a></p>
+<ul>
+<li><a href="#intl_providing_icu_data_at_runtime">Providing ICU data at runtime</a></li>
+</ul>
+</li>
+<li><a href="#intl_embed_the_entire_icu_full_icu">Embed the entire ICU (<code>full-icu</code>)</a></li>
+</ul>
+</li>
+<li><a href="#intl_detecting_internationalization_support">Detecting internationalization support</a></li>
+</ul>
+</li>
+</ul>
+      </div>
+
+      <div id="apicontent">
+        <h1>Internationalization Support<span><a class="mark" href="#intl_internationalization_support" id="intl_internationalization_support">#</a></span></h1>
+
+
+<p>Node.js has many features that make it easier to write internationalized
+programs. Some of them are:</p>
+<ul>
+<li>
+<p>Locale-sensitive or Unicode-aware functions in the <a href="https://tc39.github.io/ecma262/">ECMAScript Language
+Specification</a>:</p>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize"><code>String.prototype.normalize()</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toLowerCase"><code>String.prototype.toLowerCase()</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toUpperCase"><code>String.prototype.toUpperCase()</code></a></li>
+</ul>
+</li>
+<li>
+<p>All functionality described in the <a href="https://tc39.github.io/ecma402/">ECMAScript Internationalization API
+Specification</a> (aka ECMA-402):</p>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl"><code>Intl</code></a> object</li>
+<li>Locale-sensitive methods like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare"><code>String.prototype.localeCompare()</code></a> and
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString"><code>Date.prototype.toLocaleString()</code></a></li>
+</ul>
+</li>
+<li>The <a href="url.html#url_the_whatwg_url_api">WHATWG URL parser</a>'s <a href="https://en.wikipedia.org/wiki/Internationalized_domain_name">internationalized domain names</a> (IDNs) support</li>
+<li><a href="buffer.html#buffer_buffer_transcode_source_fromenc_toenc"><code>require('buffer').transcode()</code></a></li>
+<li>More accurate <a href="repl.html#repl_repl">REPL</a> line editing</li>
+<li><a href="util.html#util_class_util_textdecoder"><code>require('util').TextDecoder</code></a></li>
+<li><a href="https://github.com/tc39/proposal-regexp-unicode-property-escapes"><code>RegExp</code> Unicode Property Escapes</a></li>
+</ul>
+<p>Node.js (and its underlying V8 engine) uses <a href="http://site.icu-project.org/">ICU</a> to implement these features
+in native C/C++ code. However, some of them require a very large ICU data file
+in order to support all locales of the world. Because it is expected that most
+Node.js users will make use of only a small portion of ICU functionality, only
+a subset of the full ICU data set is provided by Node.js by default. Several
+options are provided for customizing and expanding the ICU data set either when
+building or running Node.js.</p>
+<h2>Options for building Node.js<span><a class="mark" href="#intl_options_for_building_node_js" id="intl_options_for_building_node_js">#</a></span></h2>
+<p>To control how ICU is used in Node.js, four <code>configure</code> options are available
+during compilation. Additional details on how to compile Node.js are documented
+in <a href="https://github.com/nodejs/node/blob/master/BUILDING.md">BUILDING.md</a>.</p>
+<ul>
+<li><code>--with-intl=none</code>/<code>--without-intl</code></li>
+<li><code>--with-intl=system-icu</code></li>
+<li><code>--with-intl=small-icu</code> (default)</li>
+<li><code>--with-intl=full-icu</code></li>
+</ul>
+<p>An overview of available Node.js and JavaScript features for each <code>configure</code>
+option:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th></th><th><code>none</code></th><th><code>system-icu</code></th><th><code>small-icu</code></th><th><code>full-icu</code></th></tr></thead><tbody><tr><td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize"><code>String.prototype.normalize()</code></a></td><td>none (function is no-op)</td><td>full</td><td>full</td><td>full</td></tr><tr><td><code>String.prototype.to*Case()</code></td><td>full</td><td>full</td><td>full</td><td>full</td></tr><tr><td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl"><code>Intl</code></a></td><td>none (object does not exist)</td><td>partial/full (depends on OS)</td><td>partial (English-only)</td><td>full</td></tr><tr><td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare"><code>String.prototype.localeCompare()</code></a></td><td>partial (not locale-aware)</td><td>full</td><td>full</td><td>full</td></tr><tr><td><code>String.prototype.toLocale*Case()</code></td><td>partial (not locale-aware)</td><td>full</td><td>full</td><td>full</td></tr><tr><td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString"><code>Number.prototype.toLocaleString()</code></a></td><td>partial (not locale-aware)</td><td>partial/full (depends on OS)</td><td>partial (English-only)</td><td>full</td></tr><tr><td><code>Date.prototype.toLocale*String()</code></td><td>partial (not locale-aware)</td><td>partial/full (depends on OS)</td><td>partial (English-only)</td><td>full</td></tr><tr><td><a href="url.html#url_the_whatwg_url_api">WHATWG URL Parser</a></td><td>partial (no IDN support)</td><td>full</td><td>full</td><td>full</td></tr><tr><td><a href="buffer.html#buffer_buffer_transcode_source_fromenc_toenc"><code>require('buffer').transcode()</code></a></td><td>none (function does not exist)</td><td>full</td><td>full</td><td>full</td></tr><tr><td><a href="repl.html#repl_repl">REPL</a></td><td>partial (inaccurate line editing)</td><td>full</td><td>full</td><td>full</td></tr><tr><td><a href="util.html#util_class_util_textdecoder"><code>require('util').TextDecoder</code></a></td><td>partial (basic encodings support)</td><td>partial/full (depends on OS)</td><td>partial (Unicode-only)</td><td>full</td></tr><tr><td><a href="https://github.com/tc39/proposal-regexp-unicode-property-escapes"><code>RegExp</code> Unicode Property Escapes</a></td><td>none (invalid <code>RegExp</code> error)</td><td>full</td><td>full</td><td>full</td></tr></tbody></table>
+<p>The "(not locale-aware)" designation denotes that the function carries out its
+operation just like the non-<code>Locale</code> version of the function, if one
+exists. For example, under <code>none</code> mode, <code>Date.prototype.toLocaleString()</code>'s
+operation is identical to that of <code>Date.prototype.toString()</code>.</p>
+<h3>Disable all internationalization features (`none`)<span><a class="mark" href="#intl_disable_all_internationalization_features_none" id="intl_disable_all_internationalization_features_none">#</a></span></h3>
+<p>If this option is chosen, most internationalization features mentioned above
+will be <strong>unavailable</strong> in the resulting <code>node</code> binary.</p>
+<h3>Build with a pre-installed ICU (`system-icu`)<span><a class="mark" href="#intl_build_with_a_pre_installed_icu_system_icu" id="intl_build_with_a_pre_installed_icu_system_icu">#</a></span></h3>
+<p>Node.js can link against an ICU build already installed on the system. In fact,
+most Linux distributions already come with ICU installed, and this option would
+make it possible to reuse the same set of data used by other components in the
+OS.</p>
+<p>Functionalities that only require the ICU library itself, such as
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize"><code>String.prototype.normalize()</code></a> and the <a href="url.html#url_the_whatwg_url_api">WHATWG URL parser</a>, are fully
+supported under <code>system-icu</code>. Features that require ICU locale data in
+addition, such as <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat"><code>Intl.DateTimeFormat</code></a> <em>may</em> be fully or partially
+supported, depending on the completeness of the ICU data installed on the
+system.</p>
+<h3>Embed a limited set of ICU data (`small-icu`)<span><a class="mark" href="#intl_embed_a_limited_set_of_icu_data_small_icu" id="intl_embed_a_limited_set_of_icu_data_small_icu">#</a></span></h3>
+<p>This option makes the resulting binary link against the ICU library statically,
+and includes a subset of ICU data (typically only the English locale) within
+the <code>node</code> executable.</p>
+<p>Functionalities that only require the ICU library itself, such as
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize"><code>String.prototype.normalize()</code></a> and the <a href="url.html#url_the_whatwg_url_api">WHATWG URL parser</a>, are fully
+supported under <code>small-icu</code>. Features that require ICU locale data in addition,
+such as <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat"><code>Intl.DateTimeFormat</code></a>, generally only work with the English locale:</p>
+<pre><code class="language-js">const january = new Date(9e8);
+const english = new Intl.DateTimeFormat('en', { month: 'long' });
+const spanish = new Intl.DateTimeFormat('es', { month: 'long' });
+
+console.log(english.format(january));
+// Prints "January"
+console.log(spanish.format(january));
+// Prints "M01" on small-icu
+// Should print "enero"
+</code></pre>
+<p>This mode provides a good balance between features and binary size, and it is
+the default behavior if no <code>--with-intl</code> flag is passed. The official binaries
+are also built in this mode.</p>
+<h4>Providing ICU data at runtime<span><a class="mark" href="#intl_providing_icu_data_at_runtime" id="intl_providing_icu_data_at_runtime">#</a></span></h4>
+<p>If the <code>small-icu</code> option is used, one can still provide additional locale data
+at runtime so that the JS methods would work for all ICU locales. Assuming the
+data file is stored at <code>/some/directory</code>, it can be made available to ICU
+through either:</p>
+<ul>
+<li>
+<p>The <a href="cli.html#cli_node_icu_data_file"><code>NODE_ICU_DATA</code></a> environment variable:</p>
+<pre><code class="language-shell">env NODE_ICU_DATA=/some/directory node
+</code></pre>
+</li>
+<li>
+<p>The <a href="cli.html#cli_icu_data_dir_file"><code>--icu-data-dir</code></a> CLI parameter:</p>
+<pre><code class="language-shell">node --icu-data-dir=/some/directory
+</code></pre>
+</li>
+</ul>
+<p>(If both are specified, the <code>--icu-data-dir</code> CLI parameter takes precedence.)</p>
+<p>ICU is able to automatically find and load a variety of data formats, but the
+data must be appropriate for the ICU version, and the file correctly named.
+The most common name for the data file is <code>icudt6X[bl].dat</code>, where <code>6X</code> denotes
+the intended ICU version, and <code>b</code> or <code>l</code> indicates the system's endianness.
+Check <a href="http://userguide.icu-project.org/icudata">"ICU Data"</a> article in the ICU User Guide for other supported formats
+and more details on ICU data in general.</p>
+<p>The <a href="https://www.npmjs.com/package/full-icu">full-icu</a> npm module can greatly simplify ICU data installation by
+detecting the ICU version of the running <code>node</code> executable and downloading the
+appropriate data file. After installing the module through <code>npm i full-icu</code>,
+the data file will be available at <code>./node_modules/full-icu</code>. This path can be
+then passed either to <code>NODE_ICU_DATA</code> or <code>--icu-data-dir</code> as shown above to
+enable full <code>Intl</code> support.</p>
+<h3>Embed the entire ICU (`full-icu`)<span><a class="mark" href="#intl_embed_the_entire_icu_full_icu" id="intl_embed_the_entire_icu_full_icu">#</a></span></h3>
+<p>This option makes the resulting binary link against ICU statically and include
+a full set of ICU data. A binary created this way has no further external
+dependencies and supports all locales, but might be rather large. See
+<a href="https://github.com/nodejs/node/blob/master/BUILDING.md#build-with-full-icu-support-all-locales-supported-by-icu">BUILDING.md</a> on how to compile a binary using this mode.</p>
+<h2>Detecting internationalization support<span><a class="mark" href="#intl_detecting_internationalization_support" id="intl_detecting_internationalization_support">#</a></span></h2>
+<p>To verify that ICU is enabled at all (<code>system-icu</code>, <code>small-icu</code>, or
+<code>full-icu</code>), simply checking the existence of <code>Intl</code> should suffice:</p>
+<pre><code class="language-js">const hasICU = typeof Intl === 'object';
+</code></pre>
+<p>Alternatively, checking for <code>process.versions.icu</code>, a property defined only
+when ICU is enabled, works too:</p>
+<pre><code class="language-js">const hasICU = typeof process.versions.icu === 'string';
+</code></pre>
+<p>To check for support for a non-English locale (i.e. <code>full-icu</code> or
+<code>system-icu</code>), <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat"><code>Intl.DateTimeFormat</code></a> can be a good distinguishing factor:</p>
+<pre><code class="language-js">const hasFullICU = (() => {
+  try {
+    const january = new Date(9e8);
+    const spanish = new Intl.DateTimeFormat('es', { month: 'long' });
+    return spanish.format(january) === 'enero';
+  } catch (err) {
+    return false;
+  }
+})();
+</code></pre>
+<p>For more verbose tests for <code>Intl</code> support, the following resources may be found
+to be helpful:</p>
+<ul>
+<li><a href="https://github.com/srl295/btest402">btest402</a>: Generally used to check whether Node.js with <code>Intl</code> support is
+built correctly.</li>
+<li><a href="https://github.com/tc39/test262/tree/master/test/intl402">Test262</a>: ECMAScript's official conformance test suite includes a section
+dedicated to ECMA-402.</li>
+</ul>
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>
