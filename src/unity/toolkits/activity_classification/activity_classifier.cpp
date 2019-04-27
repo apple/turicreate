@@ -153,9 +153,30 @@ std::tuple<float, float> activity_classifier::compute_validation_metrics(
   float cumulative_val_accuracy = 0.f;
   validation_data_iterator_->reset();
 
-  while (validation_data_iterator_->has_next_batch()) {
-    data_iterator::batch val =
+  // To support double buffering, use a queue of pending inference results.
+  std::queue<data_iterator::batch> pending_batches;
+
+  auto pop_until_size = [&](size_t remaining) {
+
+    while (pending_batches.size() > remaining) {
+
+      // Pop one batch from the queue.
+      data_iterator::batch batch = pending_batches.front();
+      pending_batches.pop();
+
+    }
+  };
+
+  data_iterator::batch val =
         validation_data_iterator_->next_batch(batch_size);
+  while (validation_data_iterator_->has_next_batch()) {
+
+    // Wait until we have just one asynchronous batch outstanding. The work
+    // below should be concurrent with the neural net inference for that batch.
+    pop_until_size(1);
+
+
+    // Submit the batch to the neural net model.
     std::map<std::string, shared_float_array> results =
         training_model_->predict({
             {"input", val.features},
@@ -175,7 +196,13 @@ std::tuple<float, float> activity_classifier::compute_validation_metrics(
         cumulative_chunk_accuracy(prediction_window, num_classes, output, val);
 
     val_size += val.batch_info.size();
+
+    // Add the pending result to our queue and move on to the next input batch.
+    pending_batches.push(std::move(val));
+    val = validation_data_iterator_->next_batch(batch_size);
   }
+
+  pop_until_size(0);
 
   float average_val_accuracy = cumulative_val_accuracy / val_size;
   float average_val_loss = cumulative_val_loss / val_size;
@@ -588,45 +615,64 @@ void activity_classifier::perform_training_iteration() {
   size_t num_classes = read_state<size_t>("num_classes");
   size_t prediction_window = read_state<size_t>("prediction_window");
   
-  while (training_data_iterator_->has_next_batch()) {
-    data_iterator::batch batch =
+
+  // To support double buffering, use a queue of pending inference results.
+  std::queue<data_iterator::batch> pending_batches;
+
+  auto pop_until_size = [&](size_t remaining) {
+
+    while (pending_batches.size() > remaining) {
+
+      // Pop one batch from the queue.
+      data_iterator::batch batch = pending_batches.front();
+      pending_batches.pop();
+
+    }
+  };
+
+  // Iterate through the data once.
+  data_iterator::batch input_batch =
         training_data_iterator_->next_batch(batch_size);
+  while (training_data_iterator_->has_next_batch()) {
+
+    // Wait until we have just one asynchronous batch outstanding. The work
+    // below should be concurrent with the neural net inference for that batch.
+    pop_until_size(1);
+
 
     // Submit the batch to the neural net model.
-    // TODO: Implement double buffering.
-    std::map<std::string, shared_float_array> results = training_model_->train(
-        { { "input",   batch.features },
-          { "labels",  batch.labels   },
-          { "weights", batch.weights  }, });
-    const shared_float_array &loss_batch = results.at("loss");
+      std::map<std::string, shared_float_array> results = training_model_->train(
+          { { "input",   input_batch.features },
+            { "labels",  input_batch.labels   },
+            { "weights", input_batch.weights  }, });
+      const shared_float_array &loss_batch = results.at("loss");
 
-    float batch_loss = std::accumulate(loss_batch.data(),
-                                       loss_batch.data() + loss_batch.size(),
-                                       0.f, std::plus<float>());
+      float batch_loss = std::accumulate(loss_batch.data(),
+                                         loss_batch.data() + loss_batch.size(),
+                                         0.f, std::plus<float>());
+      cumulative_batch_loss += batch_loss / input_batch.batch_info.size();
 
-    
-    cumulative_batch_loss += batch_loss / batch.batch_info.size();
+      const shared_float_array& output = results.at("output");
+      cumulative_batch_accuracy +=
+          cumulative_chunk_accuracy(prediction_window, num_classes, output,
+                                    input_batch) /
+          input_batch.batch_info.size();
+      ++num_batches;
 
-    
-    const shared_float_array& output = results.at("output");
-
-    cumulative_batch_accuracy +=
-        cumulative_chunk_accuracy(prediction_window, num_classes, output,
-                                  batch) /
-        batch.batch_info.size();
-
-    ++num_batches;
+      // Add the pending result to our queue and move on to the next input batch.
+    pending_batches.push(std::move(input_batch));
+    input_batch = training_data_iterator_->next_batch(batch_size);
 
   }
 
-  float average_batch_loss = cumulative_batch_loss / num_batches;
-  float average_batch_accuracy = cumulative_batch_accuracy / num_batches;
+  pop_until_size(0);
 
-
+  float average_batch_loss = cumulative_batch_loss / (num_batches+1);
+  float average_batch_accuracy = cumulative_batch_accuracy / (num_batches+1);
   float average_val_accuracy;
   float average_val_loss;
-  if (validation_data_iterator_) {
 
+  if (validation_data_iterator_) {
 
     std::tie(average_val_accuracy, average_val_loss) =
         compute_validation_metrics(prediction_window, num_classes, batch_size);
