@@ -31,6 +31,7 @@ static const char * MLImputerImputedValue_Name(MLImputerImputedValue x) {
         case MLImputerImputedValue_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLImputerReplaceValue: int {
@@ -52,6 +53,7 @@ static const char * MLImputerReplaceValue_Name(MLImputerReplaceValue x) {
         case MLImputerReplaceValue_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 #endif

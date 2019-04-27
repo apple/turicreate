@@ -69,7 +69,7 @@ void triple_apply_pagerank(sgraph& g, size_t& num_iter, double& total_pagerank, 
   logprogress_stream << "Counting out degree" << std::endl;
   // Degree count
   // std::vector<std::vector<atmoic<size_t>>>
-  auto degree_counts = sgraph_compute::create_vertex_data<std::atomic<size_t>>(g);
+  auto degree_counts = sgraph_compute::create_vertex_data<turi::atomic<size_t>>(g);
   sgraph_compute::fast_triple_apply(g,
                                     [&](sgraph_compute::fast_edge_scope& scope) {
                                       auto src_addr = scope.source_vertex_address();

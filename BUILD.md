@@ -16,7 +16,21 @@ overwritten on the next build. Make changes in the `src/` directory, and run bui
 * `src/external`: source drops of 3rd party source dependencies
 * `deps/`: build dependencies and environment
 * `debug/`, `release/`: build output directories for debug and release builds respectively
+* `scripts/`: Useful build, test, and repo maintenance scripts
 * `test/`: C++ unit tests for Turi Create
+
+Using Docker to build and test for Linux
+----------------------------------------
+
+Most of the commands in this repo, including `make_wheel.sh` and `test_wheel.sh`, have optional `--docker-python${VERSION}`
+flags to run the build in Docker. This process is fully automated, and uses Docker images created on the fly from the following
+docker files:
+
+* `scripts/Dockerfile-Ubuntu-10.04`: used for building (see comments in that file re: GLIBC/GLIBCXX compatibility).
+* `scripts/Dockerfile-Ubuntu-14.04`: used for testing Python 2.7 and Python 3.5 wheels.
+* `scripts/Dockerfile-Ubuntu-18.04`: used for testing Python 3.6 wheels.
+
+You can start with `./scripts/make_wheel.sh --help` to see available Docker build options.
 
 Build Dependencies
 ------------------
@@ -33,6 +47,8 @@ You will need:
   * For visualization support, X11 libraries (typically provided by `libx11-dev` or `libX11-devel` packages)
 * On both macOS and Linux:
   * The python `virtualenv` package
+* With Docker:
+  * All dependencies are satisfied for you automatically (see "Using Docker" section above).
 
 Optionally, you may want:
 

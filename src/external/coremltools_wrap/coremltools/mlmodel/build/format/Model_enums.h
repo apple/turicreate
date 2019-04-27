@@ -91,6 +91,7 @@ static const char * MLModelType_Name(MLModelType x) {
         case MLModelType_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 #endif
