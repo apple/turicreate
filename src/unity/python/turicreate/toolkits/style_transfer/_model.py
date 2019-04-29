@@ -68,10 +68,10 @@ class ResidualBlock(HybridBlock):
         super(ResidualBlock, self).__init__()
 
         with self.name_scope():
-            self.refl1 = nn.ReflectionPad2D(1)
+            self.refl1 = _nn.ReflectionPad2D(1)
             self.conv1 = _nn.Conv2D(128, 3, 1, 0, in_channels=128, use_bias=False)
             self.inst_norm1 = InstanceNorm(in_channels=128, num_styles=num_styles, batch_size=batch_size)
-            self.refl2 = nn.ReflectionPad2D(1)
+            self.refl2 = _nn.ReflectionPad2D(1)
             self.conv2 = _nn.Conv2D(128, 3, 1, 0, in_channels=128, use_bias=False)
             self.inst_norm2 = InstanceNorm(in_channels=128, num_styles=num_styles, batch_size=batch_size)
 
@@ -115,15 +115,15 @@ class Transformer(HybridBlock):
         self.scale255 = False
 
         with self.name_scope():
-            self.refl1 = nn.ReflectionPad2D(4)
+            self.refl1 = _nn.ReflectionPad2D(4)
             self.conv1 = _nn.Conv2D(32, 9, 1, 0, in_channels=3, use_bias=False)
             self.inst_norm1 = InstanceNorm(in_channels=32, num_styles=num_styles, batch_size=batch_size)
 
-            self.refl2 = nn.ReflectionPad2D(1)
+            self.refl2 = _nn.ReflectionPad2D(1)
             self.conv2 = _nn.Conv2D(64, 3, 2, 0, in_channels=32, use_bias=False)
             self.inst_norm2 = InstanceNorm(in_channels=64, num_styles=num_styles, batch_size=batch_size)
 
-            self.refl3 = nn.ReflectionPad2D(1)
+            self.refl3 = _nn.ReflectionPad2D(1)
             self.conv3 = _nn.Conv2D(128, 3, 2, 0, in_channels=64, use_bias=False)
             self.inst_norm3 = InstanceNorm(in_channels=128, num_styles=num_styles, batch_size=batch_size)
 
@@ -133,15 +133,15 @@ class Transformer(HybridBlock):
             self.residual4 = block(num_styles, batch_size=batch_size)
             self.residual5 = block(num_styles, batch_size=batch_size)
 
-            self.unrefl1 = nn.ReflectionPad2D(1)
+            self.unrefl1 = _nn.ReflectionPad2D(1)
             self.decoder_conv1 = _nn.Conv2D(64, 3, 1, 0, in_channels=128, use_bias=False)
             self.inst_norm4 = InstanceNorm(in_channels=64, num_styles=num_styles, batch_size=batch_size)
 
-            self.unrefl2 = nn.ReflectionPad2D(1)
+            self.unrefl2 = _nn.ReflectionPad2D(1)
             self.decoder_conv2 = _nn.Conv2D(32, 3, 1, 0, in_channels=64, use_bias=False)
             self.inst_norm5 = InstanceNorm(in_channels=32, num_styles=num_styles, batch_size=batch_size)
 
-            self.unrefl3 = nn.ReflectionPad2D(4)
+            self.unrefl3 = _nn.ReflectionPad2D(4)
             self.decoder_conv3 = _nn.Conv2D(3, 9, 1, 0, in_channels=32, use_bias=False)
             self.inst_norm6 = InstanceNorm(in_channels=3, num_styles=num_styles, batch_size=batch_size)
 
