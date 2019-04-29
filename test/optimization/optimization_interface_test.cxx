@@ -426,7 +426,7 @@ struct optimization_interface_test  {
       check_gradient_checker();
       check_hessian_checker();
 
-      TS_ASSERT(abs(stats.residual) < 1e-5);
+      TS_ASSERT(std::abs(stats.residual) < 1e-5);
     }
 
     void test_lbfgs(){

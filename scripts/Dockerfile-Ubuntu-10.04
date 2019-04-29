@@ -1,0 +1,164 @@
+# vim: set ft=dockerfile:
+
+# This image is intended for building Turi Create for maximum compatibility
+# with various Linux distributions.
+# Based on Ubuntu 10.04 for compatibility with older glibc versions.
+# Builds with LLVM 8.0.0 for modern compiler features and bug fixes.
+# Builds against libstdc++ from GCC 4.8 for compatibility with older libstdc++
+# runtime versions.
+
+FROM ubuntu:10.04
+
+# Prevent apt-get from asking questions and expecting answers
+ENV DEBIAN_FRONTEND noninteractive
+
+# Set env variables for tools to pick up
+ENV CC="gcc"
+ENV CXX="g++"
+ENV PATH="/usr/local/bin:${PATH}"
+ENV CCACHE_DIR=/build/.docker_ccache
+ENV CCACHE_COMPILERCHECK=content
+
+# Fix path to new location for older Ubuntu releases
+RUN sed -i -e 's/archive\./old-releases\./g' /etc/apt/sources.list
+
+# Install add-apt-repository and set up PPA for GCC 4.8 and git
+# Then, install dependencies
+RUN apt-get update && \
+    apt-get -y --no-install-recommends install python-software-properties && \
+    add-apt-repository ppa:ubuntu-toolchain-r/test && \
+    add-apt-repository ppa:git-core/ppa && \
+    add-apt-repository ppa:h-rayflood/llvm && \
+    apt-get update && \
+    apt-get -y --no-install-recommends install \
+               vim-common \
+               gcc-4.8 \
+               g++-4.8 \
+               libgif-dev \
+               libx11-dev \
+               ccache \
+               make \
+               zlib1g-dev \
+               libsqlite3-dev \
+               tk-dev \
+               libgdbm-dev \
+               libc6-dev \
+               libbz2-dev \
+               perl-modules \
+               patch \
+               rsync \
+               git \
+               file \
+               xz-utils && \
+    ln -s /usr/bin/gcc-4.8 /usr/bin/gcc && \
+    ln -s /usr/bin/g++-4.8 /usr/bin/g++ && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install OpenSSL and curl from source
+# The built-in SSL is so old it can't talk to anything on the internet anymore
+# (so even get-pip.py doesn't work!)
+ADD https://www.openssl.org/source/openssl-1.1.0j.tar.gz /src/openssl-1.1.0j.tar.gz
+WORKDIR /src
+RUN tar xf openssl-1.1.0j.tar.gz
+WORKDIR /src/openssl-1.1.0j
+RUN ./config --prefix=/usr/local && \
+    make -j4 --quiet && \
+    make install && \
+    ldconfig && \
+    rm -rf /src/openssl*
+
+ADD https://curl.haxx.se/download/curl-7.64.1.tar.xz /src/curl-7.64.1.tar.xz
+WORKDIR /src
+RUN tar xf curl-7.64.1.tar.xz
+WORKDIR /src/curl-7.64.1
+RUN ./configure --with-ssl --prefix=/usr/local && \
+     make -j24 --quiet && \
+     make --quiet install && \
+     ldconfig && \
+     rm -rf /src/curl*
+
+# Install cmake from binary release
+RUN mkdir -p /opt
+WORKDIR /opt
+RUN curl -O https://cmake.org/files/v3.13/cmake-3.13.4-Linux-x86_64.tar.gz
+RUN tar xf cmake-3.13.4-Linux-x86_64.tar.gz && \
+    rm -rf /opt/cmake-3.13.4-Linux-x86_64.tar.gz
+ENV PATH="/opt/cmake-3.13.4-Linux-x86_64/bin:${PATH}"
+
+# Install Python 2.7 from source
+RUN mkdir -p /src
+WORKDIR /src
+RUN curl -O https://www.python.org/ftp/python/2.7.15/Python-2.7.15.tgz
+RUN tar xf Python-2.7.15.tgz
+WORKDIR /src/Python-2.7.15
+RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enable-loadable-sqlite-extensions && \
+    make -j4 --quiet && \
+    make install && \
+    ldconfig && \
+    rm -rf /src/Python-2.7.15*
+
+# Install Python 3.5 from source
+WORKDIR /src
+RUN curl -O https://www.python.org/ftp/python/3.5.6/Python-3.5.6.tgz
+RUN tar xf Python-3.5.6.tgz
+WORKDIR /src/Python-3.5.6
+RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enable-loadable-sqlite-extensions && \
+    make -j4 --quiet && \
+    make install && \
+    ldconfig && \
+    rm -rf /src/Python-3.5.6*
+
+# Install Python 3.6 from source
+WORKDIR /src
+RUN curl -O https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tgz
+RUN tar xf Python-3.6.8.tgz
+WORKDIR /src/Python-3.6.8
+RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enable-loadable-sqlite-extensions && \
+    make -j4 --quiet && \
+    make install && \
+    ldconfig && \
+    rm -rf /src/Python-3.6.8*
+
+# Install pip and virtualenv
+WORKDIR /src
+RUN curl -O https://bootstrap.pypa.io/get-pip.py
+RUN python2.7 get-pip.py
+RUN pip2.7 install virtualenv
+RUN python3.5 get-pip.py
+RUN pip3.5 install virtualenv
+RUN python3.6 get-pip.py
+RUN pip3.6 install virtualenv
+RUN rm -rf /src/get-pip.py
+
+# Install llvm 8.0.0 from source with clang (no libc++)
+WORKDIR /src
+RUN curl -O https://releases.llvm.org/8.0.0/llvm-8.0.0.src.tar.xz
+RUN curl -O https://releases.llvm.org/8.0.0/cfe-8.0.0.src.tar.xz
+RUN tar xf llvm-8.0.0.src.tar.xz && \
+    tar xf cfe-8.0.0.src.tar.xz && \
+    mv cfe-8.0.0.src llvm-8.0.0.src/tools/clang && \
+    mkdir llvm-8.0.0.build
+WORKDIR /src/llvm-8.0.0.build
+RUN cmake ../llvm-8.0.0.src/ -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_C_COMPILER=gcc-4.8 -DCMAKE_CXX_COMPILER=g++-4.8 -DLLVM_TEMPORARILY_ALLOW_OLD_TOOLCHAIN=ON && \
+    make -j24 || make -j4 && \
+    make --quiet install && \
+    ldconfig && \
+    rm -rf /src/llvm-8.0.0*
+
+# Make clang the default compiler
+# To work around https://gcc.gnu.org/bugzilla/show_bug.cgi?id=60367
+# (By not using gcc 4.8)
+ENV CC="clang"
+ENV CXX="clang++"
+
+# Start at repo root (mounted into Docker)
+WORKDIR /build
+
+# Set ccache size to 4GB
+CMD mkdir -p $CCACHE_DIR
+CMD ccache -s
+CMD ccache -M 4G
+
+# Clean up now-unnecessary paths in image
+CMD apt-get clean
+CMD rm -rf /src

@@ -130,7 +130,7 @@ bool ImageClassification::setAnnotations(
     annotate_spec::Label label = annotation.labels(0);
     size_t sf_idx = annotation.rowindex(0);
 
-    if (sf_idx < 0 || sf_idx >= m_data->size()) {
+    if (sf_idx >= m_data->size()) {
       std::cerr << "Out of range error: Annotation rowIndex exceeds the "
                    "acceptable range"
                 << std::endl;

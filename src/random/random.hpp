@@ -258,7 +258,7 @@ namespace turi {
           total += VType(prb[i]);
         }
 
-        ASSERT_LT(double(abs(norm - total)), std::max(1e-20, 1e-6 * norm));
+        ASSERT_LT(double(std::abs(norm - total)), std::max(1e-20, 1e-6 * norm));
 #endif 
 
         VType rnd = fast_uniform<VType>(0,norm - (std::is_integral<VType>::value ? 1 : 0));

@@ -70,6 +70,10 @@ variant_map_type compute_classifier_metrics_from_probability_vectors(
     std::string target_column_name, std::string prediction_probs_column_name,
     flex_list class_labels);
 
+variant_map_type compute_classifier_metrics(
+    gl_sframe data, std::string target_column_name, std::string metric,
+    gl_sarray predictions, std::map<std::string, flexible_type> opts);
+
 /**
  * Computes the precision and recall for each user.
  *

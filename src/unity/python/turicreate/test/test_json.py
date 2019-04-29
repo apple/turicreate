@@ -354,7 +354,8 @@ class JSONTest(unittest.TestCase):
             sf_expected = SFrame(df)
             _SFrameComparer._assert_sframe_equal(sf_expected, sf_actual)
 
-    @hypothesis.settings(derandomize=True) # deterministic across runs
+    # deterministic across runs, and may take a while
+    @hypothesis.settings(derandomize=True, suppress_health_check=[hypothesis.HealthCheck.too_slow])
     @hypothesis.given(hypothesis_json)
     def test_arbitrary_json(self, json_obj):
         # Known bug #1: escaped chars give different behavior in SFrame JSON parsing

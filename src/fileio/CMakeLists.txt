@@ -46,3 +46,6 @@ make_library(fileio OBJECT
   MAC_REQUIRES
     iconv
 )
+
+target_compile_options(fileio PRIVATE -Ddmlc=__tc_dmlc)
+

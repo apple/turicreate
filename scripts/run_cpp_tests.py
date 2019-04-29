@@ -9,6 +9,19 @@ import hashlib
 import argparse
 import subprocess
 
+# The build image version that will be used for testing
+SCRIPT_DIR=os.path.dirname(__file__)
+WORKSPACE=os.path.abspath(os.path.join(SCRIPT_DIR, '..'))
+TC_BUILD_IMAGE_1004=subprocess.check_output(['bash', os.path.join(WORKSPACE, 'scripts', 'get_docker_image.sh'), '--ubuntu=10.04']).strip()
+
+def run_in_docker(cmd, workdir='/build'):
+    if not(isinstance(cmd, list)):
+      cmd = [cmd]
+    subprocess.check_call(['docker', 'run', '--rm', '-m=4g',
+        '--mount', 'type=bind,source=' + WORKSPACE + ',target=/build,consistency=delegated',
+        '-w=%s' % workdir,
+        TC_BUILD_IMAGE_1004] + cmd)
+
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(
     description='Run cxxtests (optionally caching those that have not been modified).')
@@ -30,8 +43,27 @@ if __name__ == '__main__':
       help='Number of processes to use for ctest command.')
   parser.add_argument('--dry-run', action='store_true',
       help='If present, the ctest command is printed rather than run.')
+  parser.add_argument('--docker', action='store_true',
+      help='Run the C++ tests inside of Docker on Ubuntu 10.04.')
 
   args = parser.parse_args()
+
+  if args.docker:
+    print('Docker run requested! Proceeding to run inside Docker.')
+
+    # create docker images if needed
+    subprocess.check_call(['bash', os.path.join(WORKSPACE, 'scripts/create_docker_images.sh')])
+
+    # make tests if needed
+    run_in_docker(['bash', 'configure']) # TODO use --no-python when it works again
+    run_in_docker(['make', '-j%d' % args.j], '/build/release/test')
+
+    # run tests
+    # TODO pass through other arguments
+    run_in_docker(['python', '/build/scripts/run_cpp_tests.py', '-j%d' % args.j], '/build/release/test')
+
+    # exit if successful (if failed, it will have thrown above)
+    sys.exit(0)
 
   expensive_tests = [
     'boosted_trees_classifier_tests.cxxtest',

@@ -94,3 +94,7 @@ node_modules/
 
 # Visual Studio Code files
 /.vscode/
+
+# CCache within Docker
+/.docker_ccache/
+/.docker_images/

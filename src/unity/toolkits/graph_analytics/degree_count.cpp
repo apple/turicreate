@@ -10,7 +10,7 @@
 #include <unity/lib/unity_sgraph.hpp>
 #include <sgraph/sgraph_fast_triple_apply.hpp>
 #include <sframe/algorithm.hpp>
-#include <atomic>
+#include <platform/parallel/atomic.hpp>
 #include <export.hpp>
 
 namespace turi {
@@ -28,9 +28,9 @@ void compute_degree_count(sgraph& g) {
 
   // Initialize component ids
   typedef std::vector<std::vector<size_t>> size_t_column_type;
-  typedef std::vector<std::vector<std::atomic<size_t>>> atomic_size_t_column_type;
-  atomic_size_t_column_type in_degree_data = sgraph_compute::create_vertex_data<std::atomic<size_t>>(g);
-  atomic_size_t_column_type out_degree_data = sgraph_compute::create_vertex_data<std::atomic<size_t>>(g);
+  typedef std::vector<std::vector<turi::atomic<size_t>>> atomic_size_t_column_type;
+  atomic_size_t_column_type in_degree_data(sgraph_compute::create_vertex_data<turi::atomic<size_t>>(g));
+  atomic_size_t_column_type out_degree_data(sgraph_compute::create_vertex_data<turi::atomic<size_t>>(g));
   size_t_column_type all_degree_data = sgraph_compute::create_vertex_data<size_t>(g);
 
   sgraph_compute::fast_triple_apply_fn_type apply_fn =
@@ -52,11 +52,11 @@ void compute_degree_count(sgraph& g) {
   });
 
   // store result to graph
-  g.add_vertex_field<std::atomic<size_t>, flex_int>(in_degree_data,
+  g.add_vertex_field<turi::atomic<size_t>, flex_int>(in_degree_data,
                                                     IN_DEGREE_COLUMN,
                                                     flex_type_enum::INTEGER);
 
-  g.add_vertex_field<std::atomic<size_t>, flex_int>(out_degree_data,
+  g.add_vertex_field<turi::atomic<size_t>, flex_int>(out_degree_data,
                                                     OUT_DEGREE_COLUMN,
                                                     flex_type_enum::INTEGER);
 
