@@ -418,6 +418,48 @@ def convert_convolution(net, node, module, builder):
         input_name=input_name,
         output_name=output_name)
 
+def convert_padding(net, node, module, builder):
+    """Convert a padding layer from mxnet to coreml.
+
+    Parameters
+    ----------
+    net: network
+        A mxnet network object.
+
+    node: layer
+        Node to convert.
+
+    module: module
+        An module for MXNet
+
+    builder: NeuralNetworkBuilder
+        A neural network builder object.
+    """
+
+    input_name, output_name = _get_input_output_name(net, node)
+    name = node['name']
+
+    param = _get_attr(node)
+    pad = literal_eval(param['pad_width'])
+
+    pad_left = pad[4]
+    pad_top = pad[5]
+    pad_right = pad[6]
+    pad_bottom = pad[7]
+
+    if param['mode'] == 'reflect':
+        builder.add_padding(
+            name=name,
+            top=pad_top,
+            bottom=pad_bottom,
+            left=pad_left,
+            right=pad_right,
+            padding_type='reflection',
+            input_name=input_name,
+            output_name=output_name
+        )
+    else:
+        raise TypeError("Padding type %s not supported" % param['mode'])
 
 def convert_pooling(net, node, module, builder):
     """Convert a pooling layer from mxnet to coreml.

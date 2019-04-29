@@ -39,6 +39,7 @@ _MXNET_LAYER_REGISTRY  = {
     'LeakyReLU'      : _layers.convert_leaky_relu,
     'SoftmaxOutput'  : _layers.convert_softmax,
     'Convolution'    : _layers.convert_convolution,
+    'Pad'            : _layers.convert_padding,
     'Pooling'        : _layers.convert_pooling,
     'Flatten'        : _layers.convert_flatten,
     'transpose'      : _layers.convert_transpose,
