@@ -2,13 +2,6 @@
 
 set -e
 
-# The build image version that will be used for building
-TC_BUILD_IMAGE_VERSION=1.0.7
-
-# Force LD_LIBRARY_PATH to look up from deps
-# Otherwise, binaries run during compilation will prefer system libraries,
-# which might not use the correct glibc version.
-
 PYTHON_SCRIPTS=deps/env/bin
 if [[ $OSTYPE == msys ]]; then
   PYTHON_SCRIPTS=deps/conda/bin/Scripts
@@ -17,7 +10,9 @@ fi
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 WORKSPACE=${SCRIPT_DIR}/..
 build_type="release"
-#export LD_LIBRARY_PATH=${ROOT_DIR}/deps/local/lib:${ROOT_DIR}/deps/local/lib64:$LD_LIBRARY_PATH
+
+# The build image version that will be used for building
+TC_BUILD_IMAGE_1004=$(sh $WORKSPACE/scripts/get_docker_image.sh --ubuntu=10.04)
 
 unknown_option() {
   echo "Unknown option $1. Exiting."
@@ -123,7 +118,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
   docker run --rm -m=8g \
     --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
     -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
-    turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} \
+    ${TC_BUILD_IMAGE_1004} \
     /build/scripts/make_wheel.sh \
     $make_wheel_args
 
@@ -132,7 +127,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
   docker run --rm -m=4g \
     --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
     -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
-    turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} \
+    ${TC_BUILD_IMAGE_1004} \
     rm -rf /build/deps/env
 
   # Run the tests inside Docker (14.04) if desired
@@ -151,7 +146,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
   docker run --rm -m=4g \
     --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
     -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
-    turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} \
+    ${TC_BUILD_IMAGE_1004} \
     rm -rf /build/deps/env
 
   exit 0

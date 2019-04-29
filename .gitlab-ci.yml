@@ -1,5 +1,4 @@
 stages:
-  - create_images
   - build
   - test
 
@@ -7,28 +6,6 @@ cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
     - .docker_ccache
-
-create_images:
-  tags:
-    - docker
-  services:
-    - docker:dind
-  image: docker:stable
-  stage: create_images
-  variables:
-    DOCKER_HOST: tcp://docker:2375/
-    DOCKER_DRIVER: overlay2
-  script:
-    - apk add bash
-    # clear target out of the cache, in case it's there from a previous build
-    - rm -rf target
-    # build each, if needed (skips if version is already in the cache)
-    - bash scripts/create_docker_images.sh --persist_to_repo_dir
-  artifacts:
-    expire_in: 2 weeks
-    paths:
-      - .docker_images/
-
 
 build_wheel_debug_linux_python27:
   tags:
@@ -42,7 +19,6 @@ build_wheel_debug_linux_python27:
     DOCKER_DRIVER: overlay2
   script:
     - apk add bash
-    - docker load -i .docker_images/image-10.04.gz
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --debug --docker-python2.7 --skip_doc
   artifacts:
     expire_in: 2 weeks
@@ -61,7 +37,6 @@ build_wheel_linux_python27:
     DOCKER_DRIVER: overlay2
   script:
     - apk add bash
-    - docker load -i .docker_images/image-10.04.gz
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python2.7 --skip_doc
   artifacts:
     expire_in: 2 weeks
@@ -80,7 +55,6 @@ build_wheel_linux_python35:
     DOCKER_DRIVER: overlay2
   script:
     - apk add bash
-    - docker load -i .docker_images/image-10.04.gz
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.5 --skip_doc
   artifacts:
     expire_in: 2 weeks
@@ -99,7 +73,6 @@ build_wheel_linux_python36:
     DOCKER_DRIVER: overlay2
   script:
     - apk add bash
-    - docker load -i .docker_images/image-10.04.gz
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.6 --skip_doc
   artifacts:
     expire_in: 2 weeks
