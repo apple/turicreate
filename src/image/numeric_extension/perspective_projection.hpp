@@ -78,7 +78,7 @@ Eigen::Matrix3f get_transformation_matrix(
  * and multiplication operators 
  */
 template <typename T>
-class matrix3x3 {
+class matrix3x3  : Eigen::Matrix3f {
 /*
  * a d g
  * b e h
@@ -95,21 +95,6 @@ public:
 
     T a,b,c,d,e,f,g,h,i;
 };
-
-/* Matrix - Matrix multiplication */
-template <typename T> 
-matrix3x3<T> operator*(const matrix3x3<T>& m1, const matrix3x3<T>& m2) {
-    return matrix3x3<T>(
-                m1.a * m2.a + m1.d * m2.b + m1.g * m2.c,
-                m1.b * m2.a + m1.e * m2.b + m1.h * m2.c,
-                m1.c * m2.a + m1.f * m2.b + m1.i * m2.c,
-                m1.a * m2.d + m1.d * m2.e + m1.g * m2.f,
-                m1.b * m2.d + m1.e * m2.e + m1.h * m2.f,
-                m1.c * m2.d + m1.f * m2.e + m1.i * m2.f,
-                m1.a * m2.g + m1.d * m2.h + m1.g * m2.i,
-                m1.b * m2.g + m1.e * m2.h + m1.h * m2.i,
-                m1.c * m2.g + m1.f * m2.h + m1.i * m2.i);
-}
 
 /* Matrix - Vector multiplication */
 template <typename T, typename F> 

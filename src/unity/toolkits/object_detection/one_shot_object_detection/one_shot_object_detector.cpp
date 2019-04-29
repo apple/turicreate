@@ -32,7 +32,7 @@ namespace one_shot_object_detection {
  */
 class ParameterSampler {
 public:
-  ParameterSampler(int width, int height) {
+  ParameterSampler(size_t width, size_t height) {
     width_ = width;
     height_ = height;
   }
@@ -60,7 +60,7 @@ public:
     return deg_to_rad(gamma_);
   }
 
-  int get_dz() {
+  size_t get_dz() {
     return dz_;
   }
 
@@ -81,14 +81,14 @@ public:
   }
 
 private:
-  int width_;
-  int height_;
+  size_t width_;
+  size_t height_;
   double focal_stdev_ = 40.0;
   std::default_random_engine focal_generator_;
   double theta_;
   double phi_;
   double gamma_;
-  int dz_;
+  size_t dz_;
   double focal_;
 
 };
@@ -96,7 +96,7 @@ private:
 namespace data_augmentation {
 
 gl_sframe augment_data(gl_sframe data,
-                       std::string target_column_name,
+                       const std::string& target_column_name,
                        gl_sarray backgrounds,
                        long seed) {
   // TODO: Get input image from the data sframe.
@@ -105,8 +105,8 @@ gl_sframe augment_data(gl_sframe data,
   //       passed in.
   ParameterSampler parameter_sampler = ParameterSampler(2*1024, 2*676);
   // TODO: Take n as input.
-  int n = 1;
-  for (int i = 0; i < n; i++) {
+  size_t n = 1;
+  for (size_t i = 0; i < n; i++) {
     parameter_sampler.sample(seed+i);
 
     Eigen::Matrix3f mat = warp_perspective::get_transformation_matrix(
@@ -152,7 +152,7 @@ one_shot_object_detector::one_shot_object_detector() {
 }
 
 gl_sframe one_shot_object_detector::augment(gl_sframe data,
-                                            std::string target_column_name,
+                                            const std::string& target_column_name,
                                             gl_sarray backgrounds,
                                             std::map<std::string, flexible_type> options){
   

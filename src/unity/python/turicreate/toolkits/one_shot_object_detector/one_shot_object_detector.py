@@ -17,7 +17,7 @@ def create(dataset,
            seed=None,
            verbose=True):
     model = _extensions.one_shot_object_detector()
-    if seed is None: seed = _random.randint(0, (1<<31)-1)
+    if seed is None: seed =  _random.randint(0, 2**64 - 1)
     # Option arguments to pass in to C++ Object Detector, if we use it:
     # {'mlmodel_path':'darknet.mlmodel', 'max_iterations' : 25}
     augmented_data = model.augment(dataset, target, _tc.SArray(), {"seed":seed})
