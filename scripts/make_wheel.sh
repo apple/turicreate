@@ -101,12 +101,15 @@ if [[ -n "${USE_DOCKER}" ]]; then
   # set up arguments to make_wheel.sh within docker
   # always skip smoke test since it (currently) fails on 10.04
   # always skip doc gen since it (currently) fails on 10.04
-  make_wheel_args="--build_number=$BUILD_NUMBER --num_procs=$NUM_PROCS --skip_smoke_test --skip_doc --skip_test"
+  make_wheel_args="--build_number=$BUILD_NUMBER --num_procs=$NUM_PROCS --skip_test"
   if [[ -n $SKIP_BUILD ]]; then
     make_wheel_args="$make_wheel_args --skip_build"
   fi
   if [[ -n $SKIP_CPP_TEST ]]; then
     make_wheel_args="$make_wheel_args --skip_cpp_test"
+  fi
+  if [[ -n $SKIP_DOC ]]; then
+    make_wheel_args="$make_wheel_args --skip_doc"
   fi
   if [[ "$build_type" == "debug" ]]; then
     make_wheel_args="$make_wheel_args --debug"
@@ -135,10 +138,6 @@ if [[ -n "${USE_DOCKER}" ]]; then
   if [[ -z $SKIP_TEST ]]; then
     # run the tests
     ./scripts/test_wheel.sh --docker-python${DOCKER_PYTHON}
-  fi
-
-  if [[ -n $SKIP_DOC ]]; then
-    echo "TODO: run the pydoc build in Docker if requested"
   fi
 
   # Delete env to force re-creation of virtualenv for next build
