@@ -248,11 +248,8 @@ class DrawingClassifierPreTrainedModel(object):
             "auto": "drawing_classifier_pre_trained_model_245_classes_v0.params",
             "quickdraw_245_v0": "drawing_classifier_pre_trained_model_245_classes_v0.params"
         }
-        self.source_url = (_urlparse.urljoin(
+        self.source_url = _urlparse.urljoin(
             MODELS_URL_ROOT, self.model_to_filename[warm_start])
-            if warm_start in ["quickdraw_245_v0", "auto"]
-            else warm_start
-            )
         # @TODO: Think about how to bypass the md5 checksum if the user wants to
         # provide their own pretrained model.
         self.source_md5 = "71ba78e48a852f35fb22999650f0a655"
