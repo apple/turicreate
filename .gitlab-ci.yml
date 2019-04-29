@@ -174,7 +174,6 @@ test_cpp_linux:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
   dependencies:
-    - create_images
     - build_wheel_linux_python27
   script:
     - apk add bash
@@ -230,7 +229,6 @@ test_python_linux_python27:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
   dependencies:
-    - create_images
     - build_wheel_linux_python27
   script:
     - apk add bash
@@ -252,7 +250,6 @@ test_python_linux_python35:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
   dependencies:
-    - create_images
     - build_wheel_linux_python35
   script:
     - apk add bash
@@ -274,7 +271,6 @@ test_python_linux_python36:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
   dependencies:
-    - create_images
     - build_wheel_linux_python36
   script:
     - apk add bash
