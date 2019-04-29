@@ -12,7 +12,7 @@ import subprocess
 # The build image version that will be used for testing
 SCRIPT_DIR=os.path.dirname(__file__)
 WORKSPACE=os.path.abspath(os.path.join(SCRIPT_DIR, '..'))
-TC_BUILD_IMAGE_1004=subprocess.check_output(['bash', os.path.join(WORKSPACE, 'scripts', 'get_docker_image.sh'), '--ubuntu=10.04'])
+TC_BUILD_IMAGE_1004=subprocess.check_output(['bash', os.path.join(WORKSPACE, 'scripts', 'get_docker_image.sh'), '--ubuntu=10.04']).strip()
 
 def run_in_docker(cmd, workdir='/build'):
     if not(isinstance(cmd, list)):
