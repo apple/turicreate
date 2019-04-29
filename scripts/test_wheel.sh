@@ -3,8 +3,12 @@
 set -e
 set -x
 
+SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+WORKSPACE=${SCRIPT_DIR}/..
+
 # The build image version that will be used for testing
-TC_BUILD_IMAGE_VERSION=1.0.7
+TC_BUILD_IMAGE_1404=$(sh $WORKSPACE/scripts/get_docker_image.sh --ubuntu=14.04)
+TC_BUILD_IMAGE_1804=$(sh $WORKSPACE/scripts/get_docker_image.sh --ubuntu=18.04)
 
 unknown_option() {
   echo "Unknown option $1. Exiting."
@@ -55,13 +59,13 @@ if [[ -n "${USE_DOCKER}" ]]; then
     docker run --rm -m=8g \
       --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
       -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
-      turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} \
+      ${TC_BUILD_IMAGE_1404} \
       /build/scripts/test_wheel.sh
   elif [[ "${DOCKER_PYTHON}" == "3.6" ]]; then
     docker run --rm -m=8g \
       --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
       -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
-      turicreate/build-image-18.04:${TC_BUILD_IMAGE_VERSION} \
+      ${TC_BUILD_IMAGE_1804} \
       /build/scripts/test_wheel.sh
   else
     echo "Invalid docker python version detected: ${DOCKER_PYTHON}"
