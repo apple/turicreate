@@ -550,7 +550,7 @@ void activity_classifier::init_train(
                                               feature_column_names.end())}});
 
   // Bind the data to a data iterator.
-  training_data_iterator_ = create_iterator(data, true);
+  training_data_iterator_ = create_iterator(train_data, true);
 
   add_or_update_state({{"classes", training_data_iterator_->class_labels()}});
 
