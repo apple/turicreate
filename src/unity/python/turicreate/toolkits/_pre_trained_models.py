@@ -245,12 +245,12 @@ class VGGish():
 class DrawingClassifierPreTrainedModel(object):
     def __init__(self, warm_start="auto"):
         self.model_to_filename = {
+            "auto": "drawing_classifier_pre_trained_model_245_classes_v0.params",
             "quickdraw_245_v0": "drawing_classifier_pre_trained_model_245_classes_v0.params"
         }
-        self.warm_start = "quickdraw_245_v0" if warm_start == "auto" else warm_start
         self.source_url = (_urlparse.urljoin(
-            MODELS_URL_ROOT, self.model_to_filename[self.warm_start])
-            if self.warm_start == "quickdraw_245_v0"
+            MODELS_URL_ROOT, self.model_to_filename[warm_start])
+            if warm_start in ["quickdraw_245_v0", "auto"]
             else warm_start
             )
         # @TODO: Think about how to bypass the md5 checksum if the user wants to
