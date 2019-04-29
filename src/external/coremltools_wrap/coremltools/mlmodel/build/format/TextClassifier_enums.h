@@ -13,6 +13,7 @@ static const char * MLTextClassifierClassLabels_Name(MLTextClassifierClassLabels
         case MLTextClassifierClassLabels_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 #endif

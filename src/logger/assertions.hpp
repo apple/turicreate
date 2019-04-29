@@ -263,7 +263,7 @@ extern void __print_back_trace();
     const double _CHECK_OP_v2_ = val2;                                        \
     const double _CHECK_OP_delta_ = delta;                                    \
     if (__builtin_expect(                                                     \
-            !(abs((_CHECK_OP_v1_) - (_CHECK_OP_v2_)) <= _CHECK_OP_delta_),    \
+            !(std::abs((_CHECK_OP_v1_) - (_CHECK_OP_v2_)) <= _CHECK_OP_delta_),\
             0)) {                                                             \
       auto throw_error = [&]() GL_GCC_ONLY(GL_COLD_NOINLINE_ERROR) {          \
         std::ostringstream ss;                                                \

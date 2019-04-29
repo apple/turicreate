@@ -25,6 +25,75 @@
 namespace turi {
 namespace evaluation {
 
+namespace {
+
+std::vector<std::string> get_default_classifier_metrics() {
+  return {"accuracy", "auc", "precision", "recall", "f1_score", "log_loss",
+          "confusion_matrix", "roc_curve"};
+}
+
+std::vector<std::string> get_classifier_metrics(const std::string& metric) {
+  // Validate metric and determine list of metrics to compute.
+  std::vector<std::string> metrics = get_default_classifier_metrics();
+  if (metric != "auto") {
+    // If the caller didn't request "auto", then adjust the list of metrics.
+    if (metric == "report") {
+      // Add the per-class report to the standard list of metrics.
+      metrics.push_back("report_by_class");
+    } else {
+      // Just compute the requested metric, if valid.
+      if (std::find(metrics.begin(), metrics.end(), metric) == metrics.end()) {
+        log_and_throw("Unsupported metric " + metric);
+      } else {
+        metrics = {metric};
+      }
+    }
+  }
+  return metrics;
+}
+
+gl_sarray get_prediction_probability_vectors(const gl_sarray& predictions,
+                                             const flex_list& class_labels) {
+  // Canonicalize predictions into flex_vec.
+  gl_sarray result;
+  switch (predictions.dtype()) {
+  case flex_type_enum::VECTOR:
+    result = predictions;
+    break;
+  case flex_type_enum::ND_VECTOR:
+    result = predictions.astype(flex_type_enum::VECTOR);
+    break;
+  case flex_type_enum::DICT: {
+    // Require/assume the dictionary to map class labels to probabilities.
+
+    // Build a fast lookup table from label to flex_vec index.
+    auto class_to_index =
+        std::make_shared<std::unordered_map<flexible_type, size_t>>();
+    for (size_t i = 0; i < class_labels.size(); ++i) {
+      class_to_index->emplace(class_labels[i], i);
+    }
+
+    // Use the lookup table to write a flex_vec for each flex_dict.
+    auto flatten = [class_to_index](const flexible_type& ft) {
+      const flex_dict& dict = ft.get<flex_dict>();
+      flex_vec vec(dict.size());
+      for (const auto& kv : dict) {
+        vec[class_to_index->at(kv.first)] = kv.second;
+      }
+      return vec;
+    };
+    result = predictions.apply(flatten, flex_type_enum::VECTOR);
+    break;
+  }
+  default:
+    log_and_throw("Could not convert predictions to probability vectors for "
+                  "classifier evaluation");
+  }
+  return result;
+}
+
+}
+
 /*
  * Utility function to get the index map for an SArray. 
  * \param[in] targets      SArray of ground-truth
@@ -145,7 +214,7 @@ variant_map_type compute_classifier_metrics_from_probability_vectors(
   auto new_metrics_end = std::remove(metrics.begin(), metrics.end(),
                                      "confusion_matrix");
   if (new_metrics_end != metrics.end()) {
-    // Don't expose get_evaluator_metric() to "report_by_class".
+    // Don't expose get_evaluator_metric() to "confusion_matrix".
     metrics.erase(new_metrics_end, metrics.end());
 
     // Borrow the implementation from the supervised_learning toolkit.
@@ -225,7 +294,7 @@ variant_map_type compute_classifier_metrics_from_probability_vectors(
     }
     return false;  // Never stop before all rows have been tallied.
   };
-  data.materialize_to_callback(callback);
+  data.materialize_to_callback(callback, turi::thread::cpu_count());
 
   // Finalize each metric.
   for (const auto& metric_and_evaluator : evaluators) {
@@ -234,6 +303,37 @@ variant_map_type compute_classifier_metrics_from_probability_vectors(
   }
 
   return result;
+}
+
+variant_map_type compute_classifier_metrics(
+    gl_sframe data, std::string target_column_name, std::string metric,
+    gl_sarray predictions, std::map<std::string, flexible_type> opts)
+{
+  // Expand requested metric into list of actual metrics to compute.
+  std::vector<std::string> metrics = get_classifier_metrics(metric);
+
+  // Retrieve the list of classes.
+  // Note that "classes" is an "option" to guard against future alternate
+  // options, such as inferring labels from the target column or from dictionary
+  // keys in the prediction column.
+  auto opts_it = opts.find("classes");
+  if (opts_it == opts.end()) {
+    log_and_throw("Cannot compute classifier metrics without class labels.");
+  }
+  flex_list class_labels = opts_it->second;
+
+  // Convert predictions if necessary to canonical form: probability vectors.
+  predictions = get_prediction_probability_vectors(predictions, class_labels);
+
+  // Construct SFrame with just the targets and predicted probability vectors.
+  gl_sframe input = gl_sframe({
+      {"target", data[target_column_name]},
+      {"class_probs", predictions},
+  });
+
+  return compute_classifier_metrics_from_probability_vectors(
+      std::move(metrics), std::move(input), "target", "class_probs",
+      std::move(class_labels));
 }
 
 //////////////////////////////////////////////////////////////////////////////////////

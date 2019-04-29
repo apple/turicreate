@@ -22,6 +22,7 @@ static const char * MLKernelkernel_Name(MLKernelkernel x) {
         case MLKernelkernel_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLSupportVectorRegressorsupportVectors: int {
@@ -40,6 +41,7 @@ static const char * MLSupportVectorRegressorsupportVectors_Name(MLSupportVectorR
         case MLSupportVectorRegressorsupportVectors_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLSupportVectorClassifiersupportVectors: int {
@@ -58,6 +60,7 @@ static const char * MLSupportVectorClassifiersupportVectors_Name(MLSupportVector
         case MLSupportVectorClassifiersupportVectors_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLSupportVectorClassifierClassLabels: int {
@@ -76,6 +79,7 @@ static const char * MLSupportVectorClassifierClassLabels_Name(MLSupportVectorCla
         case MLSupportVectorClassifierClassLabels_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 #endif

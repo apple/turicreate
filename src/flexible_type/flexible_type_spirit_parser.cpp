@@ -37,9 +37,9 @@ struct flexible_type_parser_impl: qi::grammar<Iterator, flexible_type(), SpaceTy
   flexible_type_parser_impl(std::string delimiter = ",", 
                             bool use_escape_char = true, 
                             char escape_char = '\\',
-                            const std::unordered_set<std::string>& na_val = {},
-                            const std::unordered_set<std::string>& true_val = {},
-                            const std::unordered_set<std::string>& false_val = {},
+                            const std::unordered_set<std::string>& na_val = std::unordered_set<std::string>(),
+                            const std::unordered_set<std::string>& true_val = std::unordered_set<std::string>(),
+                            const std::unordered_set<std::string>& false_val = std::unordered_set<std::string>(),
                             bool only_raw_string_substitutions=false) :
       flexible_type_parser_impl::base_type(root_parser), delimiter(delimiter) {
     using qi::long_long;

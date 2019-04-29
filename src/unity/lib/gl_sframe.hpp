@@ -2908,8 +2908,8 @@ class gl_sframe_range {
 class gl_sarray_reference: public gl_sarray {
  public:
   gl_sarray_reference() = delete;
-  gl_sarray_reference(gl_sarray_reference&&) = default;
-  gl_sarray_reference& operator=(gl_sarray_reference&&) = default;
+  gl_sarray_reference(gl_sarray_reference&&);
+  gl_sarray_reference& operator=(gl_sarray_reference&&);
   gl_sarray_reference& operator=(const gl_sarray_reference&);
   gl_sarray_reference& operator=(const gl_sarray&);
   gl_sarray_reference& operator=(const flexible_type& value);
@@ -2936,7 +2936,7 @@ class gl_sarray_reference: public gl_sarray {
 class const_gl_sarray_reference: public gl_sarray {
  public:
   const_gl_sarray_reference() = delete;
-  const_gl_sarray_reference(const_gl_sarray_reference&&) = default;
+  const_gl_sarray_reference(const_gl_sarray_reference&&);
   virtual std::shared_ptr<unity_sarray> get_proxy() const;
  private:
   const_gl_sarray_reference(const const_gl_sarray_reference&) = default;

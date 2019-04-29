@@ -16,6 +16,7 @@ static const char * MLDictVectorizerMap_Name(MLDictVectorizerMap x) {
         case MLDictVectorizerMap_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 #endif

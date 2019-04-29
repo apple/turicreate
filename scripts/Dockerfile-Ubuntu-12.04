@@ -1,0 +1,23 @@
+# vim: set ft=dockerfile:
+
+# This image is intended for testing Turi Create on Ubuntu 12.04.
+
+FROM ubuntu:12.04
+
+# Prevent apt-get from asking questions and expecting answers
+ENV DEBIAN_FRONTEND noninteractive
+
+# Update package database
+RUN apt-get update
+
+# Upgrade all possible packages
+RUN apt-get -y upgrade
+
+# Install Python 2.7 with apt
+RUN apt-get -y install python2.7 lsb-release
+
+# Install pip and virtualenv
+ADD https://bootstrap.pypa.io/get-pip.py /src/get-pip.py
+WORKDIR /src
+RUN python2.7 get-pip.py
+RUN pip2.7 install virtualenv

@@ -33,6 +33,7 @@ static const char * MLTreeEnsembleClassifierClassLabels_Name(MLTreeEnsembleClass
         case MLTreeEnsembleClassifierClassLabels_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 #endif

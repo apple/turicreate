@@ -13,6 +13,7 @@ static const char * MLWordTaggerTags_Name(MLWordTaggerTags x) {
         case MLWordTaggerTags_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 #endif
