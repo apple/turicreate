@@ -17,22 +17,6 @@ if [ "debug" != $BUILD_TYPE ] && [ "release" != $BUILD_TYPE ]; then
 fi
 echo BUILD_TYPE=$BUILD_TYPE
 
-if [[ $PYTHON_ENV_SET == 1 ]]; then
-        echo "Previous values set. Unsetting some variables..."
-        if [ ! -z "$OLD_PYTHON_ENV_PATH" ]; then
-                export PATH=$OLD_PYTHON_ENV_PATH
-                PATH=$OLD_PYTHON_ENV_PATH
-        else
-                PATH=""
-        fi
-        if [ ! -z "$OLD_PYTHON_ENV_PYTHONPATH" ]; then
-                export PYTHONPATH=$OLD_PYTHON_ENV_PYTHONPATH
-                PYTHONPATH=$OLD_PYTHON_ENV_PYTHONPATH
-        else
-                PYTHONPATH=""
-        fi
-fi
-
 if [[ -z $BASH_SOURCE ]]; then
         SCRIPT_DIR=$( cd "$( dirname $0)" && pwd )
 else
@@ -41,14 +25,10 @@ fi
 # Turi project root
 ROOT_DIR=$SCRIPT_DIR/..
 
-#export LD_LIBRARY_PATH=${ROOT_DIR}/deps/local/lib:${ROOT_DIR}/deps/local/lib64:$LD_LIBRARY_PATH
 PYTHON_SCRIPTS=deps/env/bin
-if [[ $OSTYPE == msys ]]; then
-  PYTHON_SCRIPTS=deps/conda/bin/Scripts
-fi
 
 # python executable
-export PYTHON_EXECUTABLE=$ROOT_DIR/deps/env/bin/python
+export PYTHON_EXECUTABLE=$ROOT_DIR/$PYTHON_SCRIPTS/python
 export PYTEST_EXECUTABLE=$ROOT_DIR/$PYTHON_SCRIPTS/pytest
 export PIP_EXECUTABLE=$ROOT_DIR/$PYTHON_SCRIPTS/pip
 
@@ -61,20 +41,12 @@ else
         export PYTHONPATH="$TURI_BUILD_ROOT/src/unity/python:$PYTHONPATH"
         export OLD_PYTHON_ENV_PYTHONPATH=$PYTHONPATH
 fi
-export PYTHONHOME=$ROOT_DIR/deps/env
-if [[ $OSTYPE == msys ]]; then
-        export PYTHONHOME="$PYTHONHOME/bin"
-fi
 
-if [[ $OSTYPE == msys ]]; then
-  export PATH=$ROOT_DIR/deps/conda/bin:$ROOT_DIR/deps/conda/bin/Scripts:$ROOT_DIR/deps/local/bin:$PATH
-else
-  export PATH=$ROOT_DIR/deps/env/bin:$ROOT_DIR/deps/local/bin:$PATH
-fi
 echo TURI_ROOT=$TURI_ROOT
 echo TURI_BUILD_ROOT=$TURI_BUILD_ROOT
-echo PYTHONPATH=$PYTHONPATH
-echo PYTHONHOME=$PYTHONHOME
 echo PYTHON_EXECUTABLE=$PYTHON_EXECUTABLE
 echo PYTEST_EXECUTABLE=$PYTEST_EXECUTABLE
 echo PIP_EXECUTABLE=$PIP_EXECUTABLE
+
+echo "Activating virtualenv in deps/env"
+source $ROOT_DIR/deps/env/bin/activate
