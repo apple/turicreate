@@ -132,6 +132,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     from .._mxnet import _mxnet_utils
     
     start_time = _time.time()
+    accepted_values_for_warm_start = ["auto", "quickdraw_245_v0", None]
 
     # @TODO: Should be able to automatically choose number of iterations
     # based on data size: Tracked in Github Issue #1576
@@ -226,6 +227,14 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     model_params.initialize(_mx.init.Xavier(), ctx=ctx)
 
     if warm_start is not None:
+        if type(warm_start) is not str:
+            raise TypeError("'warm_start' must be a string or None. " 
+                + "'warm_start' can take in the following values: " 
+                + str(accepted_values_for_warm_start))
+        if warm_start not in accepted_values_for_warm_start:
+            raise _ToolkitError("Unrecognized value for 'warm_start': " 
+                + warm_start + ". 'warm_start' can take in the following " 
+                + "values: " + str(accepted_values_for_warm_start))
         pretrained_model = _pre_trained_models.DrawingClassifierPreTrainedModel(
             warm_start)
         pretrained_model_params_path = pretrained_model.get_model_path()
