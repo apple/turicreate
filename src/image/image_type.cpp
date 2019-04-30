@@ -17,12 +17,12 @@ image_type::image_type(const boost::gil::rgb8_image_t &gil_image) {
   auto it = view(gil_image).begin();
   const uint8_t* data = reinterpret_cast<const uint8_t*>(&boost::gil::at_c<0>(*it));
   m_image_data.reset(new char[m_image_data_size]);
-  memcpy(&m_image_data[0], data, m_image_data_size);
+  std::copy(data, data + m_image_data_size, &m_image_data[0]);
 }
 
 image_type::image_type(const char* image_data, size_t height, size_t width, size_t channels, size_t image_data_size, int version, int format){
   m_image_data.reset(new char[image_data_size]);
-  memcpy(&m_image_data[0], image_data, image_data_size);
+  std::copy(data, data + image_data_size, &m_image_data[0]);
   m_height = height;
   m_width = width;
   m_channels = channels;
