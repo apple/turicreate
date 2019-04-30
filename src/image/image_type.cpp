@@ -8,7 +8,7 @@
 namespace turi{
 
 image_type::image_type(const boost::gil::rgb8_image_t &gil_image) {
-  auto it = view(gil_image).begin();
+  rgb8_image_t::view_t::iterator it = view(gil_image).begin();
   const char* data = reinterpret_cast<const char*>(&boost::gil::at_c<0>(*it));
   size_t num_channels = boost::gil::num_channels<boost::gil::rgb8_image_t>();
   image_type::image_type( data, 
