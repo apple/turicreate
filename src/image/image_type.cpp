@@ -8,21 +8,21 @@
 namespace turi{
 
 image_type::image_type(const boost::gil::rgb8_image_t &gil_image) {
-  m_height = gil_image.height();
-  m_width = gil_image.width();
-  m_channels = boost::gil::num_channels<boost::gil::rgb8_image_t>();
-  m_image_data_size = m_height * m_width * m_channels;
-  m_version = IMAGE_TYPE_CURRENT_VERSION;
-  m_format = Format::RAW_ARRAY;
   auto it = view(gil_image).begin();
-  const uint8_t* data = reinterpret_cast<const uint8_t*>(&boost::gil::at_c<0>(*it));
-  m_image_data.reset(new char[m_image_data_size]);
-  std::copy(data, data + m_image_data_size, &m_image_data[0]);
+  const char* data = reinterpret_cast<const char*>(&boost::gil::at_c<0>(*it));
+  size_t num_channels = boost::gil::num_channels<boost::gil::rgb8_image_t>();
+  image_type::image_type( data, 
+                          gil_image.height(),
+                          gil_image.width(),
+                          num_channels,
+                          gil_image.height() * gil_image.width() * num_channels,
+                          IMAGE_TYPE_CURRENT_VERSION,
+                          Format::RAW_ARRAY);
 }
 
 image_type::image_type(const char* image_data, size_t height, size_t width, size_t channels, size_t image_data_size, int version, int format){
   m_image_data.reset(new char[image_data_size]);
-  std::copy(data, data + image_data_size, &m_image_data[0]);
+  std::copy(image_data, image_data + image_data_size, &m_image_data[0]);
   m_height = height;
   m_width = width;
   m_channels = channels;
