@@ -9,6 +9,7 @@
 #include <string>
 #include <serialization/serialization_includes.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/gil/gil_all.hpp>
 
 const char IMAGE_TYPE_CURRENT_VERSION = 0;
 
