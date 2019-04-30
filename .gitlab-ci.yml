@@ -452,7 +452,7 @@ collect_artifacts:
     - build_wheel_mac_10_14_python36
   script:
     - mv release/src/objc/*.dylib target/
-    - rmdir -p release
+    - rmdir -p release || (echo "WARNING: stray artifacts found:" && find release)
   artifacts:
     expire_in: 2 weeks
     paths:
