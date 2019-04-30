@@ -12,8 +12,46 @@ from __future__ import absolute_import as _
 
 from ...visualization import _get_client_app_path
 import turicreate.toolkits._internal_utils as _tkutl
+from .. import _image_feature_extractor
 
 import turicreate as __tc
+
+import array as _array
+from mxnet.io import DataBatch as __DataBatch
+
+def __featurizer_model():
+    from .._pre_trained_models import MODELS, _get_model_cache_dir
+    from .._mxnet import _mxnet_utils
+    import mxnet as _mx
+
+    ptModel = MODELS["squeezenet_v1.1"]()
+
+    context = _mxnet_utils.get_mxnet_context()
+
+    sym, arg_params, aux_params = ptModel.mxmodel
+    all_layers = sym.get_internals()
+    feature_layer_sym = all_layers[ptModel.feature_layer]
+
+    if (ptModel.label_layer is not None) and (ptModel.label_layer not in arg_params):
+        arg_params[ptModel.label_layer] = _mx.nd.array([0])
+
+    context = context[:1]
+    model = _mx.mod.Module(symbol=feature_layer_sym, label_names=None, context=context)
+
+    model.bind(for_training=False, data_shapes=[(ptModel.data_layer, (1, ) + ptModel.input_image_shape)])
+    model.set_params(arg_params, aux_params)
+
+    return model
+
+def __extract_features(image_array, model):
+    data_batch = __DataBatch(data=mx.nd.array(image_array))
+    model.forward(data_batch)
+    mx_out = [_array.array('d',m) for m in model.get_outputs()[0].asnumpy()][0]
+    return mx_out
+
+from ...util import _pickle_to_temp_location_or_memory
+
+#_pickle_to_temp_location_or_memory()
 
 def _warning_annotations():
     print(

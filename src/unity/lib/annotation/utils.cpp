@@ -17,7 +17,7 @@ bool is_integer(std::string s) {
 
 gl_sarray featurize_images(const gl_sarray &images) {
   DASSERT_EQ(images.dtype(), flex_type_enum::IMAGE);
-
+#ifdef __APPLE__
   image_deep_feature_extractor::image_deep_feature_extractor_toolkit
       feature_extractor =
           image_deep_feature_extractor::image_deep_feature_extractor_toolkit();
@@ -31,14 +31,19 @@ gl_sarray featurize_images(const gl_sarray &images) {
   feature_extractor.init_options(options);
 
   return feature_extractor.sarray_extract_features(images, false, 6);
+#else
+  return NULL;
+#endif
 }
 
 float vectors_distance(const std::vector<double> &a,
                        const std::vector<double> &b) {
-	DASSERT_EQ(a.size(), b.size()); 
-	double acc = 0;
-	for(size_t i = 0; i < a.size(); ++i) { acc += std::pow(a[i] - b[i], 2); }
-	return std::sqrt(acc);
+  DASSERT_EQ(a.size(), b.size());
+  double acc = 0;
+  for (size_t i = 0; i < a.size(); ++i) {
+    acc += std::pow(a[i] - b[i], 2);
+  }
+  return std::sqrt(acc);
 }
 
 /**
@@ -55,7 +60,7 @@ std::vector<flexible_type> similar_items(const gl_sarray &distances,
             vectors_distance(target_vector, a.get<flex_vec>()));
       },
       flex_type_enum::FLOAT);
-  
+
   calculated_distances.materialize();
   std::vector<flexible_type> indicies(distances.size());
   std::iota(indicies.begin(), indicies.end(), 0);
