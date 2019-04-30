@@ -56,7 +56,7 @@ Eigen::MatrixXf get_3D_to_2D(float focal, int width, int height) {
   return A2;
 }
 
-Eigen::Matrix3f get_transformation_matrix(
+Eigen::Matrix<float, 3, 3> get_transformation_matrix(
   int width, int height, 
   float theta, float phi, float gamma, 
   int dx, int dy, int dz, 
@@ -74,56 +74,34 @@ Eigen::Matrix3f get_transformation_matrix(
 
 }
 
-/* A matrix3x3 class with some basic equality assignment 
- * and multiplication operators 
- */
-template <typename T>
-class matrix3x3  : Eigen::Matrix3f {
-/*
- * a d g
- * b e h
- * c f i
- */
-public:
-    matrix3x3() : a(1), b(0), c(0), d(0), e(1), f(0), g(0), h(0), i(1) {}
-    matrix3x3(T A, T B, T C, T D, T E, T F, T G, T H, T I) : a(A),b(B),c(C),d(D),e(E),f(F),g(G),h(H),i(I) {}
-    matrix3x3(const matrix3x3& mat) : a(mat.a), b(mat.b), c(mat.c), d(mat.d), e(mat.e), f(mat.f), g(mat.g), h(mat.h), i(mat.i) {}
-    matrix3x3(const Eigen::Matrix3f M) : a(M(0,0)), b(M(1,0)), c(M(2,0)), d(M(0,1)), e(M(1,1)), f(M(2,1)), g(M(0,2)), h(M(1,2)), i(M(2,2)) {}
-    matrix3x3& operator=(const matrix3x3& m) { a=m.a; b=m.b; c=m.c; d=m.d; e=m.e; f=m.f; g=m.g; h=m.h; i=m.i; return *this; }
-
-    matrix3x3& operator*=(const matrix3x3& m) { (*this) = (*this)*m; return *this; }
-
-    T a,b,c,d,e,f,g,h,i;
-};
-
-/* Matrix - Vector multiplication */
-template <typename T, typename F> 
-boost::gil::point2<F> operator*(const boost::gil::point2<T>& p, const matrix3x3<F>& m) {
-  if (m.c*p.x + m.f*p.y + m.i == 0) {
-    // TODO: Figure out the right failure behavior for when denominator is 0.
-    return boost::gil::point2<F>(0,0);
-  }
-  return boost::gil::point2<F>((m.a*p.x + m.d*p.y + m.g)/(m.c*p.x + m.f*p.y + m.i), 
-                   (m.b*p.x + m.e*p.y + m.h)/(m.c*p.x + m.f*p.y + m.i));
-}
-
-
 namespace boost {
 namespace gil {
 
-/* Conforming to the MapFn concept required by Boost GIL, for matrix3x3
+/* Matrix - Vector multiplication */
+template <typename T, typename F> 
+boost::gil::point2<F> operator*(const boost::gil::point2<T>& p, const Eigen::Matrix<F, 3, 3>& m) {
+  float denominator = m(2,0)*p.x + m(2,1)*p.y + m(2,2);
+  if (denominator == 0) {
+    // TODO: Figure out the right failure behavior for when denominator is 0.
+    return boost::gil::point2<F>(0,0);
+  }
+  return boost::gil::point2<F>((m(0,0)*p.x + m(0,1)*p.y + m(0,2))/denominator, 
+                               (m(1,0)*p.x + m(1,1)*p.y + m(1,2))/denominator);
+}
+
+/* Conforming to the MapFn concept required by Boost GIL, for Eigen::Matrix3f
  */
 template <typename T> struct mapping_traits;
 
-template <typename F>
-struct mapping_traits<matrix3x3<F> > {
-    typedef boost::gil::point2<F> result_type;
-};
-
 template <typename F, typename F2> 
-boost::gil::point2<F> transform(const matrix3x3<F>& mat, const boost::gil::point2<F2>& src) {
+boost::gil::point2<F> transform(const Eigen::Matrix<F, 3, 3>& mat, const boost::gil::point2<F2>& src) {
   return src * mat;
 }
+
+template <typename F>
+struct mapping_traits<Eigen::Matrix<F, 3, 3> >{
+    typedef boost::gil::point2<F> result_type;
+};
 
 } // gil
 } // boost

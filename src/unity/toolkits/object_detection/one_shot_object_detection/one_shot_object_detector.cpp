@@ -109,7 +109,7 @@ gl_sframe augment_data(gl_sframe data,
   for (size_t i = 0; i < n; i++) {
     parameter_sampler.sample(seed+i);
 
-    Eigen::Matrix3f mat = warp_perspective::get_transformation_matrix(
+    Eigen::Matrix<float, 3, 3> mat = warp_perspective::get_transformation_matrix(
       2*1024,
       2*676,
       parameter_sampler.get_theta(),
@@ -130,7 +130,7 @@ gl_sframe augment_data(gl_sframe data,
     //       loop.
     boost::gil::read_image("background.jpg", background, boost::gil::jpeg_tag());
 
-    matrix3x3<double> M(mat.inverse());
+    Eigen::Matrix<float, 3, 3> M = mat.inverse();
     // TODO: Use a background.
     // TODO: Use a mask during superposition on a random background.
     boost::gil::rgb8_image_t transformed(boost::gil::rgb8_image_t::point_t(view(starter_image).dimensions()*2));
