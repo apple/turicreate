@@ -13,6 +13,7 @@ static const char * MLNonMaximumSuppressionSuppressionMethod_Name(MLNonMaximumSu
         case MLNonMaximumSuppressionSuppressionMethod_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLNonMaximumSuppressionClassLabels: int {
@@ -31,6 +32,7 @@ static const char * MLNonMaximumSuppressionClassLabels_Name(MLNonMaximumSuppress
         case MLNonMaximumSuppressionClassLabels_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 #endif

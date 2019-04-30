@@ -16,6 +16,7 @@ static const char * MLCategoricalMappingMappingType_Name(MLCategoricalMappingMap
         case MLCategoricalMappingMappingType_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLCategoricalMappingValueOnUnknown: int {
@@ -34,6 +35,7 @@ static const char * MLCategoricalMappingValueOnUnknown_Name(MLCategoricalMapping
         case MLCategoricalMappingValueOnUnknown_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 #endif

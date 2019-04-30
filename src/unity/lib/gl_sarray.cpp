@@ -447,6 +447,10 @@ gl_sarray gl_sarray::filter(std::function<bool(const flexible_type&)> fn,
                        }, flex_type_enum::INTEGER, skip_undefined)];
 }
 
+gl_sarray gl_sarray::hash(size_t seed) const {
+  return get_proxy()->hash(seed);
+}
+
 gl_sarray gl_sarray::sample(double fraction) const {
   return get_proxy()->sample(fraction, time(NULL));
 }
