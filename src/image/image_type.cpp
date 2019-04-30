@@ -20,15 +20,16 @@ image_type::image_type(const boost::gil::rgb8_image_t &gil_image) {
                           Format::RAW_ARRAY);
 }
 
-image_type::image_type(const char* image_data, size_t height, size_t width, size_t channels, size_t image_data_size, int version, int format){
+image_type::image_type(const char* image_data, size_t height, size_t width, size_t channels, size_t image_data_size, int version, int format)
+: m_height(height)
+, m_width(width)
+, m_channels(channels)
+, m_image_data_size(image_data_size)
+, m_version(version)
+, m_format(static_cast<Format>(format))
+{
   m_image_data.reset(new char[image_data_size]);
   std::copy(image_data, image_data + image_data_size, &m_image_data[0]);
-  m_height = height;
-  m_width = width;
-  m_channels = channels;
-  m_image_data_size = image_data_size;
-  m_version = (char)version;
-  m_format = static_cast<Format>(format);
 }
 
 
