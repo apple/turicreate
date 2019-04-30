@@ -37,9 +37,9 @@ class flexible_type_parser {
   flexible_type_parser(std::string delimiter = ",", 
                        bool use_escape_char = true, 
                        char escape_char = '\\',
-                       const std::unordered_set<std::string>& na_val = {},
-                       const std::unordered_set<std::string>& true_val = {},
-                       const std::unordered_set<std::string>& false_val = {},
+                       const std::unordered_set<std::string>& na_val = std::unordered_set<std::string>(),
+                       const std::unordered_set<std::string>& true_val = std::unordered_set<std::string>(),
+                       const std::unordered_set<std::string>& false_val = std::unordered_set<std::string>(),
                        bool only_raw_string_substitutions=false);
   /**
    * Parses a generalized flexible type from a string. The *str pointer will be

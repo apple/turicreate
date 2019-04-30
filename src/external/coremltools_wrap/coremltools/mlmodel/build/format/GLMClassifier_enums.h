@@ -26,6 +26,7 @@ static const char * MLGLMClassifierClassLabels_Name(MLGLMClassifierClassLabels x
         case MLGLMClassifierClassLabels_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 #endif

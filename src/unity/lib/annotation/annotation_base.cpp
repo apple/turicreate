@@ -162,14 +162,6 @@ void AnnotationBase::_reshapeIndicies(size_t &start, size_t &end) {
     start = data_size;
   }
 
-  if (start < 0) {
-    start = 0;
-  }
-
-  if (end < 0) {
-    end = 0;
-  }
-
   if (start >= data_size) {
     start = data_size;
   }
