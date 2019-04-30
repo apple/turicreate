@@ -176,6 +176,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a2253dff94e09e1adb29918f86dba289a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a8075ba507a8073ea724c8110e2c951"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classturi_1_1gl__sarray.html">gl_sarray</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1gl__sarray.html#a5a8075ba507a8073ea724c8110e2c951">sample</a> (double fraction, size_t seed, bool exact=false) const </td></tr>
 <tr class="separator:a5a8075ba507a8073ea724c8110e2c951"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5936424e6d8d6c2a2c0aef0fc04019b2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classturi_1_1gl__sarray.html">gl_sarray</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1gl__sarray.html#a5936424e6d8d6c2a2c0aef0fc04019b2">hash</a> (size_t seed=0) const </td></tr>
+<tr class="separator:a5936424e6d8d6c2a2c0aef0fc04019b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d65bdaab3f108e0fb8b65a7fb15f5b0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1gl__sarray.html#a8d65bdaab3f108e0fb8b65a7fb15f5b0">all</a> () const </td></tr>
 <tr class="separator:a8d65bdaab3f108e0fb8b65a7fb15f5b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab396158e4c73f5e9cb2bf1d5899e6330"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1gl__sarray.html#ab396158e4c73f5e9cb2bf1d5899e6330">any</a> () const </td></tr>
@@ -1373,6 +1375,37 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classturi_1_1gl__sarray.html#a33b26c857dd6d75094f7a87304a3d7f0">turi::gl_sarray</a>.</p>
 
+</div>
+</div>
+<a class="anchor" id="a5936424e6d8d6c2a2c0aef0fc04019b2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classturi_1_1gl__sarray.html">gl_sarray</a> turi::gl_sarray::hash </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>seed</em> = <code>0</code></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inherited</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns an SArray with a hash of each element. seed can be used to change the hash function to allow this method to be used for random number generation.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">seed</td><td>Defaults to 0. Can be changed to different values to get different hash results.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Example: </p><div class="fragment"><div class="line">sa = <a class="code" href="classturi_1_1gl__sarray.html#a902f16b58fbdde7e6125f4ed63189095">gl_sarray::from_sequence</a>(0,10);</div><div class="line">std::cout &lt;&lt; sa.hash(123)</div></div><!-- fragment --><p>Produces output: </p><div class="fragment"><div class="line">dtype: <span class="keywordtype">int</span></div><div class="line">Rows: 10</div><div class="line">[-2176393851141330893, 7600995152976636137, -5571280844667425574, -4385410391720336496, -4446257658862464208, -7571182417602171808, 3644372782970789199, 3084542717492096231, 4758268028978242780, -6520852338875851008]</div></div><!-- fragment --> 
 </div>
 </div>
 <a class="anchor" id="ade0d5952cc33b5ea57f07e0c83877cbc"></a>

@@ -16,7 +16,7 @@ var searchData=
   ['parallel_5fsframe_5fiterator_5finitializer',['parallel_sframe_iterator_initializer',['../classturi_1_1parallel__sframe__iterator__initializer.html#a205f7de2c80db77d3b8384f6c3524c6e',1,'turi::parallel_sframe_iterator_initializer::parallel_sframe_iterator_initializer(sframe data, const size_t &amp;_row_start=0, const size_t &amp;_row_end=-1)'],['../classturi_1_1parallel__sframe__iterator__initializer.html#aaeeb2cfb6bcb8b6f43d10b2c54897e53',1,'turi::parallel_sframe_iterator_initializer::parallel_sframe_iterator_initializer(const std::vector&lt; sframe &gt; &amp;data_sources, const size_t &amp;_row_start=0, const size_t &amp;_row_end=-1)']]],
   ['parallel_5ftask_5fqueue',['parallel_task_queue',['../classturi_1_1parallel__task__queue.html#ac3981c4b2ade9f02d6de2f92e96a3ba8',1,'turi::parallel_task_queue']]],
   ['parent',['parent',['../classturi_1_1mutable__queue.html#a6e18b5401b653ff97b679ec8bbf06e32',1,'turi::mutable_queue']]],
-  ['parse_5fas',['parse_as',['../structturi_1_1csv__line__tokenizer.html#a33d5d1496e0248e1f59f8eb447ee9185',1,'turi::csv_line_tokenizer']]],
+  ['parse_5fas',['parse_as',['../structturi_1_1csv__line__tokenizer.html#ae2d1562bff94b47af0033f0e75c0f808',1,'turi::csv_line_tokenizer']]],
   ['parse_5fcsvs_5fto_5fsframe',['parse_csvs_to_sframe',['../group__csv__utils.html#ga47c2dfa066b365cb7c087850b50a8371',1,'turi']]],
   ['parse_5fhdfs_5furl',['parse_hdfs_url',['../group__fileio.html#ga5960b295c95ba0e4db8ddecf2438f924',1,'turi::fileio']]],
   ['parse_5fjpeg',['parse_jpeg',['../namespaceturi.html#a038a75dabfb984fcb3a983de4556d68d',1,'turi']]],

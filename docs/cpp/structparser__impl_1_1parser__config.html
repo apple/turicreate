@@ -135,6 +135,8 @@ char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <tr class="separator:ad226a116ed782daf8997b21bde6c7792"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18488efd5e8552911c936a3a8bd4c267"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structparser__impl_1_1parser__config.html#a18488efd5e8552911c936a3a8bd4c267">double_quote</a> = true</td></tr>
 <tr class="separator:a18488efd5e8552911c936a3a8bd4c267"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fc6e78d8ea8a634a9680e05a88e8cdf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structparser__impl_1_1parser__config.html#a6fc6e78d8ea8a634a9680e05a88e8cdf">only_raw_string_substitutions</a> = false</td></tr>
+<tr class="separator:a6fc6e78d8ea8a634a9680e05a88e8cdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The string parsing configuration. </p>
@@ -168,6 +170,21 @@ char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>whether double quotes inside of a quote are treated as a single quote. i.e. """hello""" =&gt; "hello" </p>
 
 <p>Definition at line <a class="el" href="string__parser_8hpp_source.html#l00039">39</a> of file <a class="el" href="string__parser_8hpp_source.html">string_parser.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a6fc6e78d8ea8a634a9680e05a88e8cdf"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool parser_impl::parser_config::only_raw_string_substitutions = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>If this is set (defaults to false), then the true/false/na substitutions are only permitted on raw unparsed strings; that is strings before dequoting, de-escaping, etc. </p>
+
+<p>Definition at line <a class="el" href="string__parser_8hpp_source.html#l00050">50</a> of file <a class="el" href="string__parser_8hpp_source.html">string_parser.hpp</a>.</p>
 
 </div>
 </div>

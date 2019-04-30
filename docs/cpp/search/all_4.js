@@ -41,6 +41,7 @@ var searchData=
   ['default_5fvalue',['default_value',['../structturi_1_1option__handling_1_1option__info.html#af08d03fe82c59d86ed2237bdd95b3b52',1,'turi::option_handling::option_info']]],
   ['deferred_5frwlock',['deferred_rwlock',['../classturi_1_1deferred__rwlock.html',1,'turi']]],
   ['define_5fgroup',['define_group',['../classturi_1_1groupby__aggregate__impl_1_1group__aggregate__container.html#acc5cb882502d33c20c012f279f7e0627',1,'turi::groupby_aggregate_impl::group_aggregate_container']]],
+  ['deindexing_5flambda',['deindexing_lambda',['../classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#a64367d84967cf05052776b9fe76e24e3',1,'turi::v2::ml_data_internal::column_indexer::deindexing_lambda()'],['../classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#a087c38863d37648661d2a86d0ac9039e',1,'turi::v2::ml_data_internal::column_unique_indexer::deindexing_lambda()']]],
   ['delete_5fall_5fcache_5ffiles',['delete_all_cache_files',['../classturi_1_1broadcast__queue.html#ae5dd3411c031611e9c3d1bfcad3a0b36',1,'turi::broadcast_queue']]],
   ['delete_5farchive',['delete_archive',['../classturi_1_1dir__archive.html#a70fc0df7115b45d7be0eaa986d525cdf',1,'turi::dir_archive']]],
   ['delete_5fedge_5ffield',['delete_edge_field',['../classturi_1_1unity__sgraph.html#af5521c9bd620329c95e68074d725432b',1,'turi::unity_sgraph']]],

@@ -1,5 +1,13 @@
 var NAVTREEINDEX24 =
 {
+"group__sgraph__physical.html":[1,21],
+"group__shmipc.html":[1,17],
+"group__shmipc.html#ga04143717a3a06d7072695c3c586701c6":[1,17,5],
+"group__shmipc.html#ga4b39271c33fa1fc4c29114181eaa928e":[1,17,2],
+"group__shmipc.html#gaf13c738b9a23254ba3108d16cda18116":[1,17,3],
+"group__shmipc.html#gafe8e2c5dc62a0de5aa0568c3517c4f9d":[1,17,4],
+"group__sketching.html":[1,22],
+"group__soutils.html":[1,18],
 "group__technical__details__serialization.html":[1,2,0],
 "group__threading.html":[1,14],
 "group__threading.html#ga0a15654a80afea264bde55b177e8b212":[1,14,15],
@@ -214,8 +222,8 @@ var NAVTREEINDEX24 =
 "mutable__queue_8hpp_source.html":[4,0,28,24],
 "mutex_8hpp_source.html":[4,0,16,4,6],
 "namespacedocstring__macro__impl.html":[2,0,0],
-"namespacemembers.html":[2,1,0],
 "namespacemembers.html":[2,1,0,0],
+"namespacemembers.html":[2,1,0],
 "namespacemembers_a.html":[2,1,0,1],
 "namespacemembers_b.html":[2,1,0,2],
 "namespacemembers_c.html":[2,1,0,3],
@@ -223,8 +231,8 @@ var NAVTREEINDEX24 =
 "namespacemembers_e.html":[2,1,0,5],
 "namespacemembers_enum.html":[2,1,4],
 "namespacemembers_f.html":[2,1,0,6],
-"namespacemembers_func.html":[2,1,1,0],
 "namespacemembers_func.html":[2,1,1],
+"namespacemembers_func.html":[2,1,1,0],
 "namespacemembers_func_a.html":[2,1,1,1],
 "namespacemembers_func_b.html":[2,1,1,2],
 "namespacemembers_func_c.html":[2,1,1,3],
@@ -241,13 +249,5 @@ var NAVTREEINDEX24 =
 "namespacemembers_func_o.html":[2,1,1,14],
 "namespacemembers_func_p.html":[2,1,1,15],
 "namespacemembers_func_q.html":[2,1,1,16],
-"namespacemembers_func_r.html":[2,1,1,17],
-"namespacemembers_func_s.html":[2,1,1,18],
-"namespacemembers_func_t.html":[2,1,1,19],
-"namespacemembers_func_u.html":[2,1,1,20],
-"namespacemembers_func_v.html":[2,1,1,21],
-"namespacemembers_func_w.html":[2,1,1,22],
-"namespacemembers_g.html":[2,1,0,7],
-"namespacemembers_h.html":[2,1,0,8],
-"namespacemembers_i.html":[2,1,0,9]
+"namespacemembers_func_r.html":[2,1,1,17]
 };

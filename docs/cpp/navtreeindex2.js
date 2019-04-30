@@ -1,5 +1,6 @@
 var NAVTREEINDEX2 =
 {
+"classturi_1_1evaluation_1_1fbeta__score.html#aa8ea2a38339c94df2b56b75a9c6aa455":[3,0,2,4,2,5],
 "classturi_1_1evaluation_1_1fbeta__score.html#ab0114144993987650deca114521c9df4":[3,0,2,4,2,2],
 "classturi_1_1evaluation_1_1fbeta__score.html#ac2a0cf9021c926c98ad2706aae940cd1":[3,0,2,4,2,8],
 "classturi_1_1evaluation_1_1fbeta__score.html#ac481d6ecc571b2d7fab8c08d1a52910b":[3,0,2,4,2,9],
@@ -248,6 +249,5 @@ var NAVTREEINDEX2 =
 "classturi_1_1fixed__dense__bitset.html#a32b6c9dff06db09e0f207aea93cb3201":[3,0,2,76,12],
 "classturi_1_1fixed__dense__bitset.html#a3a65fc5c29cbfb6a3d66311827e0bd55":[3,0,2,76,20],
 "classturi_1_1fixed__dense__bitset.html#a409838230dd22218cd742ed515cdc2f4":[3,0,2,76,0],
-"classturi_1_1fixed__dense__bitset.html#a474d7e94febb127e79c6c9b8e57dcc53":[3,0,2,76,4],
-"classturi_1_1fixed__dense__bitset.html#a6a1a95f8eb7c50da00ffea97d824bbc3":[3,0,2,76,1]
+"classturi_1_1fixed__dense__bitset.html#a474d7e94febb127e79c6c9b8e57dcc53":[3,0,2,76,4]
 };

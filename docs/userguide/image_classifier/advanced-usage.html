@@ -443,6 +443,19 @@
             
         </li>
     
+        <li class="chapter " data-level="1.3.3.4" data-path="../drawing_classifier/advanced-usage.html">
+            
+                <a href="../drawing_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
@@ -475,7 +488,20 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.4.2" data-path="../sound_classifier/export-coreml.html">
+        <li class="chapter " data-level="1.3.4.2" data-path="../sound_classifier/advanced-usage.html">
+            
+                <a href="../sound_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.3" data-path="../sound_classifier/export-coreml.html">
             
                 <a href="../sound_classifier/export-coreml.html">
             
@@ -1162,8 +1188,29 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="advanced-usage"><a name="advanced-usage" class="plugin-anchor" href="#advanced-usage"><i class="fa fa-link" aria-hidden="true"></i></a>Advanced usage</h1><p>In this section, we will cover some more advanced options in the image
-classifier toolkit that let you do more.</p><h5 id="changing-models"><a name="changing-models" class="plugin-anchor" href="#changing-models"><i class="fa fa-link" aria-hidden="true"></i></a>Changing Models</h5><p>The image classifier toolkit is based on a technique known as transfer
+                                <h1 id="advanced-usage"><a name="advanced-usage" class="plugin-anchor" href="#advanced-usage"><i class="fa fa-link" aria-hidden="true"></i></a>Advanced Usage</h1><p>In this section, we will cover some more advanced options in the image
+classifier toolkit that let you do more.</p><h4 id="annotating-data"><a name="annotating-data" class="plugin-anchor" href="#annotating-data"><i class="fa fa-link" aria-hidden="true"></i></a>Annotating Data</h4><p>If you only have images without corresponding labels, you can 
+use the annotation utility built into the image_classifier. An example
+of its usage is shown below:</p><pre><code class="lang-python"><span class="hljs-keyword">import</span> turicreate <span class="hljs-keyword">as</span> tc
+
+<span class="hljs-comment"># Use the example provided in the `Introductory Example`</span>
+
+<span class="hljs-comment"># Use the Annotation GUI to annotate your data.</span>
+annotated_data = tc.image_classifier.annotate(data)
+</code></pre>
+<p>If you forget to assign the output of your annotation to a variable, 
+we&apos;ve included a method to help you recover those annotations. The code
+for that is shown below:</p><pre><code class="lang-python">
+<span class="hljs-keyword">import</span> turicreate <span class="hljs-keyword">as</span> tc
+
+<span class="hljs-comment"># Use the example provided in the `Introductory Example`</span>
+
+<span class="hljs-comment"># If you forget to assign the output to a variable</span>
+tc.image_classifier.annotate(data)
+
+<span class="hljs-comment"># recover your annotation with this method</span>
+annotated_data = tc.image_classifier.recover_annotation()</code></pre>
+<p>The annotation utility supports label types of <code>str</code> and <code>int</code>.</p><h5 id="changing-models"><a name="changing-models" class="plugin-anchor" href="#changing-models"><i class="fa fa-link" aria-hidden="true"></i></a>Changing Models</h5><p>The image classifier toolkit is based on a technique known as transfer
 learning. At a high level, model creation is
 accomplished by simply removing the output layer of the Deep Neural
 Network for 1000 categories, and taking the signals that would have been
@@ -1228,7 +1275,7 @@ turicreate.config.set_num_gpus(<span class="hljs-number">0</span>)</code></pre>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Advanced Usage","level":"1.3.2.1","depth":3,"next":{"title":"How it works","level":"1.3.2.2","depth":3,"path":"image_classifier/how-it-works.md","ref":"image_classifier/how-it-works.md","articles":[]},"previous":{"title":"Image classification","level":"1.3.2","depth":2,"path":"image_classifier/README.md","ref":"image_classifier/README.md","articles":[{"title":"Advanced Usage","level":"1.3.2.1","depth":3,"path":"image_classifier/advanced-usage.md","ref":"image_classifier/advanced-usage.md","articles":[]},{"title":"How it works","level":"1.3.2.2","depth":3,"path":"image_classifier/how-it-works.md","ref":"image_classifier/how-it-works.md","articles":[]},{"title":"Deployment to Core ML","level":"1.3.2.3","depth":3,"path":"image_classifier/export-coreml.md","ref":"image_classifier/export-coreml.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"image_classifier/advanced-usage.md","mtime":"2019-03-20T20:55:18.133Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2019-03-20T21:12:06.159Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Advanced Usage","level":"1.3.2.1","depth":3,"next":{"title":"How it works","level":"1.3.2.2","depth":3,"path":"image_classifier/how-it-works.md","ref":"image_classifier/how-it-works.md","articles":[]},"previous":{"title":"Image classification","level":"1.3.2","depth":2,"path":"image_classifier/README.md","ref":"image_classifier/README.md","articles":[{"title":"Advanced Usage","level":"1.3.2.1","depth":3,"path":"image_classifier/advanced-usage.md","ref":"image_classifier/advanced-usage.md","articles":[]},{"title":"How it works","level":"1.3.2.2","depth":3,"path":"image_classifier/how-it-works.md","ref":"image_classifier/how-it-works.md","articles":[]},{"title":"Deployment to Core ML","level":"1.3.2.3","depth":3,"path":"image_classifier/export-coreml.md","ref":"image_classifier/export-coreml.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"image_classifier/advanced-usage.md","mtime":"2019-04-30T00:18:58.949Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2019-04-30T00:21:03.451Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

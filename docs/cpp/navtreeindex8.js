@@ -1,5 +1,8 @@
 var NAVTREEINDEX8 =
 {
+"classturi_1_1nearest__neighbors_1_1lsh__neighbors.html#a3fb54ec09a47a5c0108a390e2a5f6a13":[3,0,2,18,9,5],
+"classturi_1_1nearest__neighbors_1_1lsh__neighbors.html#a6a5f4e776ed3db1c4fcb14e83d5d200e":[3,0,2,18,9,3],
+"classturi_1_1nearest__neighbors_1_1lsh__neighbors.html#a9a60c7e9f4307fc3e5c730731fe8f668":[3,0,2,18,9,2],
 "classturi_1_1nearest__neighbors_1_1lsh__neighbors.html#aa4c6f95516ceb375637ca582c5141f31":[3,0,2,18,9,1],
 "classturi_1_1nearest__neighbors_1_1lsh__neighbors.html#ab4bf1a954be325683200e4720651315d":[3,0,2,18,9,6],
 "classturi_1_1nearest__neighbors_1_1lsh__squared__euclidean.html":[3,0,2,18,10],
@@ -246,8 +249,5 @@ var NAVTREEINDEX8 =
 "classturi_1_1pattern__mining_1_1fp__growth.html#ae644bf18bba7a98ca72108180d86d5e8":[3,0,2,23,0,28],
 "classturi_1_1pattern__mining_1_1fp__growth.html#af5c89057d11ae0f2ee9b7631fcec1760":[3,0,2,23,0,7],
 "classturi_1_1pattern__mining_1_1fp__node.html":[3,0,2,23,1],
-"classturi_1_1pattern__mining_1_1fp__node.html#a4bbb7ebcca46a027466d894196ae2b2c":[3,0,2,23,1,4],
-"classturi_1_1pattern__mining_1_1fp__node.html#a51ff0a53b8d2d76aefe96cc6a55deafa":[3,0,2,23,1,1],
-"classturi_1_1pattern__mining_1_1fp__node.html#a6c772970c56ac56ed603866dfe327de8":[3,0,2,23,1,0],
-"classturi_1_1pattern__mining_1_1fp__node.html#aa7b06f94be1d711c05328f106e17b4a0":[3,0,2,23,1,5]
+"classturi_1_1pattern__mining_1_1fp__node.html#a4bbb7ebcca46a027466d894196ae2b2c":[3,0,2,23,1,4]
 };

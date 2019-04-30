@@ -1,5 +1,6 @@
 var NAVTREEINDEX3 =
 {
+"classturi_1_1fixed__dense__bitset.html#a6a1a95f8eb7c50da00ffea97d824bbc3":[3,0,2,76,1],
 "classturi_1_1fixed__dense__bitset.html#a6d0b10b42d78b9a1ef65ddb73399d301":[3,0,2,76,7],
 "classturi_1_1fixed__dense__bitset.html#a6e9b5a37a465d283898c7b230a5a10e7":[3,0,2,76,18],
 "classturi_1_1fixed__dense__bitset.html#aa9bc63c76b4e9c3daec8a08d33421d2b":[3,0,2,76,19],
@@ -248,6 +249,5 @@ var NAVTREEINDEX3 =
 "classturi_1_1gl__gframe.html#ac4a4f0e0c1ba3c70b2bc0505628e4729":[3,0,2,88,21],
 "classturi_1_1gl__gframe.html#acb3d50c5d978bf53af08bbb041d1a0f8":[3,0,2,88,26],
 "classturi_1_1gl__gframe.html#acdeae8b0f02bf076ea79d404a765ae9c":[3,0,2,88,29],
-"classturi_1_1gl__gframe.html#ace609374924fef71163ee21de0f6f8aa":[3,0,2,88,2],
-"classturi_1_1gl__gframe.html#acfeffb9fa392580db53e70e9e4f46235":[3,0,2,88,0]
+"classturi_1_1gl__gframe.html#ace609374924fef71163ee21de0f6f8aa":[3,0,2,88,2]
 };

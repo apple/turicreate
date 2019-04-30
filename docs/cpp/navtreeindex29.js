@@ -1,5 +1,16 @@
 var NAVTREEINDEX29 =
 {
+"util_2testing__utils_8hpp_source.html":[4,0,28,32],
+"utilities_8hpp_source.html":[4,0,27,4,18,7],
+"value__container__mapper_8hpp_source.html":[4,0,6,24],
+"value__container__mapper__internal_8hpp_source.html":[4,0,6,25],
+"variant_8hpp_source.html":[4,0,27,1,37],
+"variant__converter_8hpp_source.html":[4,0,27,1,38],
+"variant__deep__serialize_8hpp_source.html":[4,0,27,1,39],
+"vector_8hpp_source.html":[4,0,18,22],
+"vector__internals_8hpp_source.html":[4,0,6,26],
+"vector__serialization_8hpp_source.html":[4,0,6,27],
+"vega__data_8hpp_source.html":[4,0,27,1,3,19],
 "vega__spec_8hpp_source.html":[4,0,27,1,3,20],
 "version_8hpp_source.html":[4,0,27,1,40],
 "version__number_8hpp_source.html":[4,0,27,1,41],

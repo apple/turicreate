@@ -1,5 +1,16 @@
 var NAVTREEINDEX28 =
 {
+"structturi_1_1sframe__index__file__information.html#a20956b05a17e62f588b972608ad6b99c":[1,19,5,7,2],
+"structturi_1_1sframe__index__file__information.html#a5a1c46fe5bbe6f6f4feb5f5bde69fbff":[1,19,5,7,4],
+"structturi_1_1sframe__index__file__information.html#a71535873296b681f23a9767dd9b3d3aa":[1,19,5,7,6],
+"structturi_1_1sframe__index__file__information.html#a7198889333d7ee562bfd6fb774a1c98e":[1,19,5,7,0],
+"structturi_1_1sframe__index__file__information.html#a8c464d1e5aa55758ffb9884fc7327d43":[1,19,5,7,3],
+"structturi_1_1sframe__index__file__information.html#a8d81bd84bb60b215e1e0a39c5608ff88":[1,19,5,7,5],
+"structturi_1_1sframe__rows_1_1const__iterator.html":[1,19,5,13,0],
+"structturi_1_1sframe__rows_1_1const__iterator.html#a37521b613b77298667931bbf3cc87ac9":[1,19,5,13,0,1],
+"structturi_1_1sframe__rows_1_1const__iterator.html#ae5512d7b861b4f564191bb21600b57d2":[1,19,5,13,0,0],
+"structturi_1_1sframe__rows_1_1iterator.html":[1,19,5,13,1],
+"structturi_1_1sframe__rows_1_1iterator.html#a9917740085df8efde96359dd3aa67683":[1,19,5,13,1,1],
 "structturi_1_1sframe__rows_1_1iterator.html#ad42f03e01518f68969ec4838f022153b":[1,19,5,13,1,0],
 "structturi_1_1sframe__rows_1_1row.html":[1,19,5,13,2],
 "structturi_1_1sframe__rows_1_1row.html#a1823c70e062c73dc00b1a2e7419b977c":[1,19,5,13,2,11],
@@ -238,16 +249,5 @@ var NAVTREEINDEX28 =
 "unsupported__serialize_8hpp_source.html":[4,0,18,21],
 "user__item__graph_8hpp_source.html":[4,0,27,4,16,5],
 "user__item__lists_8hpp_source.html":[4,0,27,4,16,6],
-"util_2basic__types_8hpp_source.html":[4,0,28,1],
-"util_2testing__utils_8hpp_source.html":[4,0,28,32],
-"utilities_8hpp_source.html":[4,0,27,4,18,7],
-"value__container__mapper_8hpp_source.html":[4,0,6,24],
-"value__container__mapper__internal_8hpp_source.html":[4,0,6,25],
-"variant_8hpp_source.html":[4,0,27,1,37],
-"variant__converter_8hpp_source.html":[4,0,27,1,38],
-"variant__deep__serialize_8hpp_source.html":[4,0,27,1,39],
-"vector_8hpp_source.html":[4,0,18,22],
-"vector__internals_8hpp_source.html":[4,0,6,26],
-"vector__serialization_8hpp_source.html":[4,0,6,27],
-"vega__data_8hpp_source.html":[4,0,27,1,3,19]
+"util_2basic__types_8hpp_source.html":[4,0,28,1]
 };

@@ -1,5 +1,8 @@
 var NAVTREEINDEX6 =
 {
+"classturi_1_1groupby__operators_1_1vector__average.html#a89733b6d67696b0a44218c33a14a7e22":[3,0,2,12,14,7],
+"classturi_1_1groupby__operators_1_1vector__average.html#aa292518db7286f479151e9319a68fe27":[3,0,2,12,14,12],
+"classturi_1_1groupby__operators_1_1vector__average.html#aab7e0d3af1fd18228cf110f8ae00b795":[3,0,2,12,14,9],
 "classturi_1_1groupby__operators_1_1vector__average.html#ab7f650faa6b98ef4b3c3a7ace6b075d9":[3,0,2,12,14,6],
 "classturi_1_1groupby__operators_1_1vector__average.html#ad4262697510185d68dfb3397d0d7686f":[3,0,2,12,14,0],
 "classturi_1_1groupby__operators_1_1vector__average.html#af0d1b85714e64dc61a24d999562e541a":[3,0,2,12,14,2],
@@ -246,8 +249,5 @@ var NAVTREEINDEX6 =
 "classturi_1_1ml__data.html#ada35d7631c561f20ee0df641f7e3865e":[1,11,3,8],
 "classturi_1_1ml__data.html#af371642583d09a4f2f0e722adf9f78d6":[1,11,3,9],
 "classturi_1_1ml__data.html#afb59cbec74175ad3cdf33937ebfcab70":[1,11,3,1],
-"classturi_1_1ml__data__internal_1_1column__indexer.html":[1,11,0],
-"classturi_1_1ml__data__internal_1_1column__indexer.html#a046b086e8f618ba64bd16ca1647cdb7f":[1,11,0,9],
-"classturi_1_1ml__data__internal_1_1column__indexer.html#a05ac9131ff74272f7dd570e32ad1a0c1":[1,11,0,4],
-"classturi_1_1ml__data__internal_1_1column__indexer.html#a15c743c8797902d577282aaf41664073":[1,11,0,15]
+"classturi_1_1ml__data__internal_1_1column__indexer.html":[1,11,0]
 };

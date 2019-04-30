@@ -1,5 +1,8 @@
 var NAVTREEINDEX7 =
 {
+"classturi_1_1ml__data__internal_1_1column__indexer.html#a046b086e8f618ba64bd16ca1647cdb7f":[1,11,0,9],
+"classturi_1_1ml__data__internal_1_1column__indexer.html#a05ac9131ff74272f7dd570e32ad1a0c1":[1,11,0,4],
+"classturi_1_1ml__data__internal_1_1column__indexer.html#a15c743c8797902d577282aaf41664073":[1,11,0,15],
 "classturi_1_1ml__data__internal_1_1column__indexer.html#a19d093a2f4004c77302f44c3649a1899":[1,11,0,2],
 "classturi_1_1ml__data__internal_1_1column__indexer.html#a1fc56149f1878893d00a679ca4a15c34":[1,11,0,6],
 "classturi_1_1ml__data__internal_1_1column__indexer.html#a54117e113877397ac5110a4185fb297b":[1,11,0,10],
@@ -246,8 +249,5 @@ var NAVTREEINDEX7 =
 "classturi_1_1nearest__neighbors_1_1lsh__manhattan.html":[3,0,2,18,8],
 "classturi_1_1nearest__neighbors_1_1lsh__neighbors.html":[3,0,2,18,9],
 "classturi_1_1nearest__neighbors_1_1lsh__neighbors.html#a1744ace3fc84857ea50b0911f6993722":[3,0,2,18,9,0],
-"classturi_1_1nearest__neighbors_1_1lsh__neighbors.html#a346afff24665e6a42899b18ac970036f":[3,0,2,18,9,4],
-"classturi_1_1nearest__neighbors_1_1lsh__neighbors.html#a3fb54ec09a47a5c0108a390e2a5f6a13":[3,0,2,18,9,5],
-"classturi_1_1nearest__neighbors_1_1lsh__neighbors.html#a6a5f4e776ed3db1c4fcb14e83d5d200e":[3,0,2,18,9,3],
-"classturi_1_1nearest__neighbors_1_1lsh__neighbors.html#a9a60c7e9f4307fc3e5c730731fe8f668":[3,0,2,18,9,2]
+"classturi_1_1nearest__neighbors_1_1lsh__neighbors.html#a346afff24665e6a42899b18ac970036f":[3,0,2,18,9,4]
 };

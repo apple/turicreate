@@ -65,7 +65,7 @@
     <link rel="next" href="../image_similarity/" />
     
     
-    <link rel="prev" href="how-it-works.html" />
+    <link rel="prev" href="advanced-usage.html" />
     
 
     <script src="../turi/js/jquery/jquery-2.1.3.min.js"></script>
@@ -443,6 +443,19 @@
             
         </li>
     
+        <li class="chapter " data-level="1.3.3.4" data-path="../drawing_classifier/advanced-usage.html">
+            
+                <a href="../drawing_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
@@ -475,7 +488,20 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.3.4.2" data-path="export-coreml.html">
+        <li class="chapter " data-level="1.3.4.2" data-path="advanced-usage.html">
+            
+                <a href="advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.3.4.3" data-path="export-coreml.html">
             
                 <a href="export-coreml.html">
             
@@ -1183,7 +1209,7 @@ The dialog box should look like:
 your model simply do the following:</p><pre><code class="lang-swift"><span class="hljs-keyword">let</span> model = my_sound_classifier()</code></pre>
 <p>The input to this model is an <code>MLMultiArray</code> of length 15,600 this is
 975ms of data at a sample rate of 16K per second (.975 * 16,000 = 15,600).
-The input must also only be one channel (i.e. mono not stero). It is
+The input must also only be one channel (i.e. mono not stereo). It is
 important that the input to the model be 15,600 elements of one channel
 data at a 16k sample rate.</p><p>In order get predictions from your model, you will need to chuck your
 data into the correct size. Below is an example of doing that:</p><pre><code class="lang-swift"><span class="hljs-comment">// Read wav file</span>
@@ -1214,10 +1240,10 @@ data into the correct size. Below is an example of doing that:</p><pre><code cla
 }
 
 <span class="hljs-comment">// Ignore any partial window at the end.</span>
-<span class="hljs-keyword">var</span> windowNumber = <span class="hljs-number">0</span>
 <span class="hljs-keyword">var</span> results = [<span class="hljs-type">Dictionary</span>&lt;<span class="hljs-type">String</span>, <span class="hljs-type">Double</span>&gt;]()
-<span class="hljs-keyword">while</span> ((windowNumber+<span class="hljs-number">1</span>) * windowSize) &lt;= (wav_file.length - <span class="hljs-type">Int64</span>(windowSize)) {
-   <span class="hljs-keyword">let</span> offset = windowNumber * windowSize
+<span class="hljs-keyword">let</span> windowNumber = wavFile.length / <span class="hljs-type">Int64</span>(windowSize)
+<span class="hljs-keyword">for</span> windowIndex <span class="hljs-keyword">in</span> <span class="hljs-number">0</span>..&lt;<span class="hljs-type">Int</span>(windowNumber) {
+   <span class="hljs-keyword">let</span> offset = windowIndex * windowSize
    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-number">0</span>...windowSize {
       audioData[i] = <span class="hljs-type">NSNumber</span>.<span class="hljs-keyword">init</span>(value: bufferData[<span class="hljs-number">0</span>][offset + i])
    }
@@ -1226,8 +1252,7 @@ data into the correct size. Below is an example of doing that:</p><pre><code cla
    <span class="hljs-keyword">guard</span> <span class="hljs-keyword">let</span> modelOutput = <span class="hljs-keyword">try</span>? model.prediction(input: modelInput) <span class="hljs-keyword">else</span> {
       <span class="hljs-built_in">fatalError</span>(<span class="hljs-string">&quot;Error calling predict&quot;</span>)
    }
-   results.append(modelOutput.categoryProbability)
-   windowNumber += <span class="hljs-number">1</span>
+   results.append(modelOutput.labelProbability)
 }</code></pre>
 <p>Once all window predictions are saved, to generate the overall
 prediction, calculate the mean across all prediction windows:</p><pre><code class="lang-swift"><span class="hljs-comment">// Average model results from each chunk</span>
@@ -1248,7 +1273,7 @@ prediction, calculate the mean across all prediction windows:</p><pre><code clas
 }
 
 <span class="hljs-keyword">let</span> most_probable_label = max_sum_label
-<span class="hljs-keyword">let</span> probability = max_sum / <span class="hljs-type">Float</span>(prob_sums.<span class="hljs-built_in">count</span>)
+<span class="hljs-keyword">let</span> probability = max_sum / <span class="hljs-type">Float</span>(results.<span class="hljs-built_in">count</span>)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;<span class="hljs-subst">\(most_probable_label)</span> predicted, with probability: <span class="hljs-subst">\(probability)</span>&quot;</span>)</code></pre>
 
                                 
@@ -1277,7 +1302,7 @@ prediction, calculate the mean across all prediction windows:</p><pre><code clas
 
             
                 
-                <a href="how-it-works.html" class="navigation navigation-prev " aria-label="Previous page: How it works">
+                <a href="advanced-usage.html" class="navigation navigation-prev " aria-label="Previous page: Advanced Usage">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
@@ -1293,7 +1318,7 @@ prediction, calculate the mean across all prediction windows:</p><pre><code clas
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Deployment to Core ML","level":"1.3.4.2","depth":3,"next":{"title":"Image similarity","level":"1.3.5","depth":2,"path":"image_similarity/README.md","ref":"image_similarity/README.md","articles":[{"title":"Deployment to Core ML","level":"1.3.5.1","depth":3,"path":"image_similarity/export-coreml.md","ref":"image_similarity/export-coreml.md","articles":[]}]},"previous":{"title":"How it works","level":"1.3.4.1","depth":3,"path":"sound_classifier/how-it-works.md","ref":"sound_classifier/how-it-works.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"sound_classifier/export-coreml.md","mtime":"2019-03-20T20:55:18.181Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2019-03-20T21:12:06.159Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Deployment to Core ML","level":"1.3.4.3","depth":3,"next":{"title":"Image similarity","level":"1.3.5","depth":2,"path":"image_similarity/README.md","ref":"image_similarity/README.md","articles":[{"title":"Deployment to Core ML","level":"1.3.5.1","depth":3,"path":"image_similarity/export-coreml.md","ref":"image_similarity/export-coreml.md","articles":[]}]},"previous":{"title":"Advanced Usage","level":"1.3.4.2","depth":3,"path":"sound_classifier/advanced-usage.md","ref":"sound_classifier/advanced-usage.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"sound_classifier/export-coreml.md","mtime":"2019-04-30T00:18:59.049Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2019-04-30T00:21:03.451Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

@@ -132,8 +132,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aa376cd75c34ec2d110451b3264531854"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a35643bcd9ec71f78916182d6b6e4eb36"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1csv__line__tokenizer.html#a35643bcd9ec71f78916182d6b6e4eb36">tokenize_line</a> (char *str, size_t len, std::vector&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;output, bool permit_undefined, const std::vector&lt; size_t &gt; *output_order=nullptr)</td></tr>
 <tr class="separator:a35643bcd9ec71f78916182d6b6e4eb36"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33d5d1496e0248e1f59f8eb447ee9185"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1csv__line__tokenizer.html#a33d5d1496e0248e1f59f8eb447ee9185">parse_as</a> (char **buf, size_t len, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;out, bool recursive_parse=false)</td></tr>
-<tr class="separator:a33d5d1496e0248e1f59f8eb447ee9185"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2d1562bff94b47af0033f0e75c0f808"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1csv__line__tokenizer.html#ae2d1562bff94b47af0033f0e75c0f808">parse_as</a> (char **buf, size_t len, const char *raw, size_t rawlen, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;out, bool recursive_parse=false)</td></tr>
+<tr class="separator:ae2d1562bff94b47af0033f0e75c0f808"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a241fcb0a3251da667f8e623aac97289b"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1csv__line__tokenizer.html#a241fcb0a3251da667f8e623aac97289b">get_last_parse_error_diagnosis</a> () const </td></tr>
 <tr class="separator:a241fcb0a3251da667f8e623aac97289b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -165,6 +165,8 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a4419fed8f27bbffd3a95213c76349e16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a015772eb0fdb2c26df69aa440964f267"><td class="memItemLeft" align="right" valign="top">std::unordered_set&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1csv__line__tokenizer.html#a015772eb0fdb2c26df69aa440964f267">false_values</a></td></tr>
 <tr class="separator:a015772eb0fdb2c26df69aa440964f267"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf846b5d74d764338a030c57e96a49e7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1csv__line__tokenizer.html#aaf846b5d74d764338a030c57e96a49e7">only_raw_string_substitutions</a> = false</td></tr>
+<tr class="separator:aaf846b5d74d764338a030c57e96a49e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>CSV Line Tokenizer.</p>
@@ -222,7 +224,7 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a33d5d1496e0248e1f59f8eb447ee9185"></a>
+<a class="anchor" id="ae2d1562bff94b47af0033f0e75c0f808"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -237,6 +239,18 @@ Public Attributes</h2></td></tr>
           <td></td>
           <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>len</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>raw</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>rawlen</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -547,6 +561,21 @@ Public Attributes</h2></td></tr>
 <p>(also see empty_string_in_na_values) </p>
 
 <p>Definition at line <a class="el" href="csv__line__tokenizer_8hpp_source.html#l00124">124</a> of file <a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aaf846b5d74d764338a030c57e96a49e7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool turi::csv_line_tokenizer::only_raw_string_substitutions = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>If this is set (defaults to false), then the true/false/na substitutions are only permitted on raw unparsed strings; that is strings before dequoting, de-escaping, etc. </p>
+
+<p>Definition at line <a class="el" href="csv__line__tokenizer_8hpp_source.html#l00141">141</a> of file <a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a>.</p>
 
 </div>
 </div>

@@ -1,5 +1,9 @@
 var NAVTREEINDEX16 =
 {
+"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__classifier.html#a54cc93ecfb9ea8ebf1ceba59a4ff07ec":[3,0,2,35,0,0,27],
+"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__classifier.html#a575e38efe7bb9c9f00c032bdd829a5dc":[3,0,2,35,0,0,55],
+"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__classifier.html#a5c1790359d7599151516731515667a0b":[3,0,2,35,0,0,31],
+"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__classifier.html#a5cf40c6ddfcc9a6880e3fbc12887e674":[3,0,2,35,0,0,72],
 "classturi_1_1supervised_1_1xgboost_1_1boosted__trees__classifier.html#a5fd5fa386b7ca1f9d1c5d193987c6034":[3,0,2,35,0,0,42],
 "classturi_1_1supervised_1_1xgboost_1_1boosted__trees__classifier.html#a60ff6d6a4e4ecd8f2f8843dc55fdce5c":[3,0,2,35,0,0,45],
 "classturi_1_1supervised_1_1xgboost_1_1boosted__trees__classifier.html#a62a2c727d9a88421071d543ca5a26cce":[3,0,2,35,0,0,1],
@@ -245,9 +249,5 @@ var NAVTREEINDEX16 =
 "classturi_1_1supervised_1_1xgboost_1_1random__forest__classifier.html#ac80230851af5ab9e01bd61d113bbcffb":[3,0,2,35,0,2,36],
 "classturi_1_1supervised_1_1xgboost_1_1random__forest__classifier.html#aca1d7cccf562841ac8e24e7b9c532ca4":[3,0,2,35,0,2,17],
 "classturi_1_1supervised_1_1xgboost_1_1random__forest__classifier.html#acc33dcb80a41fd65e24c8fe4eb54e2e7":[3,0,2,35,0,2,70],
-"classturi_1_1supervised_1_1xgboost_1_1random__forest__classifier.html#acca5f3d025ba23f9c4cb8338519ce729":[3,0,2,35,0,2,38],
-"classturi_1_1supervised_1_1xgboost_1_1random__forest__classifier.html#ad088ea4286e4aa12fb504c7357943b97":[3,0,2,35,0,2,46],
-"classturi_1_1supervised_1_1xgboost_1_1random__forest__classifier.html#ad0c33935135c211cb55739441703c676":[3,0,2,35,0,2,92],
-"classturi_1_1supervised_1_1xgboost_1_1random__forest__classifier.html#ad51a44b7c739bc0c394b2ae900ef3d3b":[3,0,2,35,0,2,79],
-"classturi_1_1supervised_1_1xgboost_1_1random__forest__classifier.html#ad90fc6c00808d3f8808d8c1186b00530":[3,0,2,35,0,2,53]
+"classturi_1_1supervised_1_1xgboost_1_1random__forest__classifier.html#acca5f3d025ba23f9c4cb8338519ce729":[3,0,2,35,0,2,38]
 };

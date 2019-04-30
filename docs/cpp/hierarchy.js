@@ -339,15 +339,15 @@ var hierarchy =
     [ "turi::v2::ml_data_entry", "structturi_1_1v2_1_1ml__data__entry.html", null ],
     [ "turi::ml_data_entry_global_index", "structturi_1_1ml__data__entry__global__index.html", null ],
     [ "turi::v2::ml_data_entry_global_index", "structturi_1_1v2_1_1ml__data__entry__global__index.html", null ],
-    [ "turi::v2::ml_data_full_entry", "structturi_1_1v2_1_1ml__data__full__entry.html", null ],
     [ "turi::ml_data_full_entry", "structturi_1_1ml__data__full__entry.html", null ],
+    [ "turi::v2::ml_data_full_entry", "structturi_1_1v2_1_1ml__data__full__entry.html", null ],
     [ "turi::ml_data_iterator", "classturi_1_1ml__data__iterator.html", null ],
     [ "turi::v2::ml_data_iterator_base", "classturi_1_1v2_1_1ml__data__iterator__base.html", [
       [ "turi::v2::ml_data_block_iterator", "classturi_1_1v2_1_1ml__data__block__iterator.html", null ],
       [ "turi::v2::ml_data_iterator", "classturi_1_1v2_1_1ml__data__iterator.html", null ]
     ] ],
-    [ "turi::v2::ml_data_row_reference", "classturi_1_1v2_1_1ml__data__row__reference.html", null ],
     [ "turi::ml_data_row_reference", "classturi_1_1ml__data__row__reference.html", null ],
+    [ "turi::v2::ml_data_row_reference", "classturi_1_1v2_1_1ml__data__row__reference.html", null ],
     [ "turi::v2::ml_data_side_features", "classturi_1_1v2_1_1ml__data__side__features.html", null ],
     [ "turi::ml_metadata", "classturi_1_1ml__metadata.html", null ],
     [ "turi::flexible_type_impl::mod_equal_operator", "structturi_1_1flexible__type__impl_1_1mod__equal__operator.html", null ],
@@ -565,11 +565,11 @@ var hierarchy =
     [ "turi::spinrwlock", "classturi_1_1spinrwlock.html", null ],
     [ "spmat", "classspmat.html", null ],
     [ "turi::nearest_neighbors::squared_euclidean", "structturi_1_1nearest__neighbors_1_1squared__euclidean.html", null ],
-    [ "turi::standardization_interface", "classturi_1_1standardization__interface.html", [
-      [ "turi::l2_rescaling", "classturi_1_1l2__rescaling.html", null ]
-    ] ],
     [ "turi::supervised::standardization_interface", "classturi_1_1supervised_1_1standardization__interface.html", [
       [ "turi::supervised::l2_rescaling", "classturi_1_1supervised_1_1l2__rescaling.html", null ]
+    ] ],
+    [ "turi::standardization_interface", "classturi_1_1standardization__interface.html", [
+      [ "turi::l2_rescaling", "classturi_1_1l2__rescaling.html", null ]
     ] ],
     [ "turi::statistics_tracker", "classturi_1_1statistics__tracker.html", null ],
     [ "turi::sketches::streaming_quantile_sketch< T, Comparator >", "classturi_1_1sketches_1_1streaming__quantile__sketch.html", null ],

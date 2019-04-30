@@ -28,7 +28,7 @@ var searchData=
   ['parameters',['parameters',['../structturi_1_1object__detection_1_1data__iterator_1_1parameters.html',1,'turi::object_detection::data_iterator']]],
   ['params',['params',['../classturi_1_1simple__model.html#ac48a20d0cc234f2ea76cb62e14f190d0',1,'turi::simple_model::params()'],['../structturi_1_1toolkit__function__invocation.html#a0f288ea78853c0ac3b8751f6d545ff49',1,'turi::toolkit_function_invocation::params()'],['../structturi_1_1toolkit__function__response__type.html#aa588134c6fa7f9331aa01eebe8fb91b0',1,'turi::toolkit_function_response_type::params()']]],
   ['parent',['parent',['../classturi_1_1mutable__queue.html#a6e18b5401b653ff97b679ec8bbf06e32',1,'turi::mutable_queue']]],
-  ['parse_5fas',['parse_as',['../structturi_1_1csv__line__tokenizer.html#a33d5d1496e0248e1f59f8eb447ee9185',1,'turi::csv_line_tokenizer']]],
+  ['parse_5fas',['parse_as',['../structturi_1_1csv__line__tokenizer.html#ae2d1562bff94b47af0033f0e75c0f808',1,'turi::csv_line_tokenizer']]],
   ['parse_5fcsvs_5fto_5fsframe',['parse_csvs_to_sframe',['../group__csv__utils.html#ga47c2dfa066b365cb7c087850b50a8371',1,'turi']]],
   ['parse_5fhdfs_5furl',['parse_hdfs_url',['../group__fileio.html#ga5960b295c95ba0e4db8ddecf2438f924',1,'turi::fileio']]],
   ['parse_5fjpeg',['parse_jpeg',['../namespaceturi.html#a038a75dabfb984fcb3a983de4556d68d',1,'turi']]],

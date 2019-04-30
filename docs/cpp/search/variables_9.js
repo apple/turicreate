@@ -7,6 +7,7 @@ var searchData=
   ['index_5fmap',['index_map',['../classturi_1_1mutable__queue.html#a15dc452ff64e3c160a72d0606b150296',1,'turi::mutable_queue']]],
   ['inputs',['inputs',['../structturi_1_1query__eval_1_1node__info.html#a9f413ddae8f0786ebb3cc72397a2401c',1,'turi::query_eval::node_info::inputs()'],['../structturi_1_1query__eval_1_1planner__node.html#a07fb41b9ade382cad3c43d0b7589e34e',1,'turi::query_eval::planner_node::inputs()']]],
   ['is_5fdense',['is_dense',['../classturi_1_1supervised_1_1linear__regression__opt__interface.html#aa292e1a527661cce4ac807f1d6ca9aeb',1,'turi::supervised::linear_regression_opt_interface::is_dense()'],['../classturi_1_1supervised_1_1logistic__regression__opt__interface.html#ae96ddf881abe1adc37066fff93c7a519',1,'turi::supervised::logistic_regression_opt_interface::is_dense()']]],
+  ['item_5fsim',['item_sim',['../classturi_1_1recsys_1_1recsys__itemcf.html#a7ccce39152915d6550230e8f3375a2b1',1,'turi::recsys::recsys_itemcf']]],
   ['iter_5frow_5findex_5fend',['iter_row_index_end',['../classturi_1_1v2_1_1ml__data__iterator__base.html#a746fd033c9f542a40c5dffd7f08bd9c9',1,'turi::v2::ml_data_iterator_base']]],
   ['iter_5frow_5findex_5fstart',['iter_row_index_start',['../classturi_1_1v2_1_1ml__data__iterator__base.html#a2c29d49193483b0e1b4da730b0f5e992',1,'turi::v2::ml_data_iterator_base']]],
   ['iteration',['iteration',['../group__LBFGS.html#gafb35c599eb5189710aefe09941f01a4c',1,'turi::optimization::solver_status']]],

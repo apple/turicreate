@@ -443,6 +443,19 @@
             
         </li>
     
+        <li class="chapter " data-level="1.3.3.4" data-path="../drawing_classifier/advanced-usage.html">
+            
+                <a href="../drawing_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
@@ -475,7 +488,20 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.4.2" data-path="../sound_classifier/export-coreml.html">
+        <li class="chapter " data-level="1.3.4.2" data-path="../sound_classifier/advanced-usage.html">
+            
+                <a href="../sound_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.3" data-path="../sound_classifier/export-coreml.html">
             
                 <a href="../sound_classifier/export-coreml.html">
             
@@ -1183,30 +1209,38 @@ particular topics?
 (or aspects) of entities that are mentioned, and then estimate the
 sentiment for each aspect. For example, when studying reviews about
 mobile phones you may be interested in how people feel about aspects
-such as battery life, screen resolution, size, etc.</p><h4 id="introductory-example"><a name="introductory-example" class="plugin-anchor" href="#introductory-example"><i class="fa fa-link" aria-hidden="true"></i></a>Introductory Example</h4><p>Let&apos;s now take a look at a simple example of sentiment analysis where
+such as battery life, screen resolution, size, etc.</p><h4 id="loading-data"><a name="loading-data" class="plugin-anchor" href="#loading-data"><i class="fa fa-link" aria-hidden="true"></i></a>Loading Data</h4><p>The <a href="https://archive.ics.uci.edu/ml/datasets/SMS+Spam+Collection" target="_blank">SMS Spam Collection Dataset</a> provides more than five thousand labeled text messages.<a href="../datasets.html"><sup>1</sup></a> After downloading and decompressing the dataset, move the <code>SMSSpamCollection</code> file to your project directory.</p><h4 id="introductory-example"><a name="introductory-example" class="plugin-anchor" href="#introductory-example"><i class="fa fa-link" aria-hidden="true"></i></a>Introductory Example</h4><p>Let&apos;s now take a look at a simple example of sentiment analysis where
 the task is to predict whether it contains positive or negative
 sentiment.  For instance, the model will predict &quot;positive sentiment&quot;
-for a snippet of text -- whether it is a movie review or a tweet -- when
+for a snippet of text -- whether it is a text message, movie review or a tweet -- when
 it contains words like &quot;awesome&quot; and &quot;fantastic&quot;. Likewise, having many
 words with a negative connotation will yield a prediction of &quot;negative
 sentiment&quot;.</p><pre><code class="lang-python"><span class="hljs-keyword">import</span> turicreate <span class="hljs-keyword">as</span> tc
 
-<span class="hljs-comment"># Load data</span>
-data = tc.SFrame(<span class="hljs-string">&apos;ratings_data.csv&apos;</span>)
+<span class="hljs-comment"># Only load the first two columns from csv</span>
+data = tc.SFrame.read_csv(<span class="hljs-string">&apos;SMSSpamCollection&apos;</span>, header=<span class="hljs-keyword">False</span>, delimiter=<span class="hljs-string">&apos;\t&apos;</span>, quote_char=<span class="hljs-string">&apos;\0&apos;</span>)
 
-<span class="hljs-comment"># Create a model</span>
-model = tc.text_classifier.create(data, <span class="hljs-string">&apos;rating&apos;</span>, features=[<span class="hljs-string">&apos;text&apos;</span>])
+<span class="hljs-comment"># Rename the columns</span>
+data = data.rename({<span class="hljs-string">&apos;X1&apos;</span>: <span class="hljs-string">&apos;label&apos;</span>, <span class="hljs-string">&apos;X2&apos;</span>: <span class="hljs-string">&apos;text&apos;</span>})
 
-<span class="hljs-comment"># Make predictions &amp; evaluation the model</span>
-predictions = model.predict(data)
-results = model.evaluate(data)
+<span class="hljs-comment"># Split the data into training and testing</span>
+training_data, test_data = data.random_split(<span class="hljs-number">0.8</span>)
+
+<span class="hljs-comment"># Create a model using higher max_iterations than default</span>
+model = tc.text_classifier.create(training_data, <span class="hljs-string">&apos;label&apos;</span>, features=[<span class="hljs-string">&apos;text&apos;</span>], max_iterations=<span class="hljs-number">100</span>)
+
+<span class="hljs-comment"># Save predictions to an SArray</span>
+predictions = model.predict(test_data)
+
+<span class="hljs-comment"># Make evaluation the model</span>
+metrics = model.evaluate(test_data)
+print(metrics[<span class="hljs-string">&apos;accuracy&apos;</span>])
 
 <span class="hljs-comment"># Save the model for later use in Turi Create</span>
-model.save(<span class="hljs-string">&apos;MyTextClassifier.model&apos;</span>)
+model.save(<span class="hljs-string">&apos;MyTextMessageClassifier.model&apos;</span>)
 
 <span class="hljs-comment"># Export for use in Core ML</span>
-model.export_coreml(<span class="hljs-string">&apos;MySentenceClassifier.mlmodel&apos;</span>)
-</code></pre>
+model.export_coreml(<span class="hljs-string">&apos;MyTextMessageClassifier.mlmodel&apos;</span>)</code></pre>
 <h4 id="how-it-works"><a name="how-it-works" class="plugin-anchor" href="#how-it-works"><i class="fa fa-link" aria-hidden="true"></i></a>How it works</h4><p>Training a text classifier is really important when you want to tune the
 model to your data set to take advantage of vocabulary that is
 particular to your application. The text classifier in Turi Create is
@@ -1220,7 +1254,7 @@ on the above features
 baseline for this particular task and works on a wide variety of
 datasets.</p><p>After creating the above model, you can inspect the underlying
 classifier model using:</p><pre><code class="lang-python">classifier = model.classifier</code></pre>
-<h4 id="deploying-to-core-ml"><a name="deploying-to-core-ml" class="plugin-anchor" href="#deploying-to-core-ml"><i class="fa fa-link" aria-hidden="true"></i></a>Deploying to Core ML</h4><p>You can use the trained text classifier in Xcode by exporting it to Core ML. Exporting is done by:</p><pre><code class="lang-python">model.export_coreml(<span class="hljs-string">&apos;MySentenceClassifier.mlmodel&apos;</span>)</code></pre>
+<h4 id="deploying-to-core-ml"><a name="deploying-to-core-ml" class="plugin-anchor" href="#deploying-to-core-ml"><i class="fa fa-link" aria-hidden="true"></i></a>Deploying to Core ML</h4><p>You can use the trained text classifier in Xcode by exporting it to Core ML. Exporting is done by:</p><pre><code class="lang-python">model.export_coreml(<span class="hljs-string">&apos;MyTextMessageClassifier.mlmodel&apos;</span>)</code></pre>
 <p>Dragging the saved model into Xcode and inspecting it looks like the following:
 <img src="images/sentence_classifier_model.png"></p><p>The model expects a bag-of-words representation of the input text. In Swift, we can use the <a href="https://developer.apple.com/documentation/foundation/nslinguistictagger/tokenizing_natural_language_text" target="_blank">NSLinguisticTagger</a> to parse the input string into words and create this representation. The example below demonstrates how to use the NSLinguisticTagger, and get predictions from the exported model.</p><pre><code class="lang-swift"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">bow</span><span class="hljs-params">(text: String)</span></span> -&gt; [<span class="hljs-type">String</span>: <span class="hljs-type">Double</span>] {
     <span class="hljs-keyword">var</span> bagOfWords = [<span class="hljs-type">String</span>: <span class="hljs-type">Double</span>]()
@@ -1287,7 +1321,7 @@ classifier model using:</p><pre><code class="lang-python">classifier = model.cla
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Text classifier","level":"1.3.9","depth":2,"next":{"title":"Machine learning essentials","level":"1.4","depth":1,"path":"modeling-data/README.md","ref":"modeling-data/README.md","articles":[{"title":"Classification","level":"1.4.1","depth":2,"path":"supervised-learning/classifier.md","ref":"supervised-learning/classifier.md","articles":[{"title":"Boosted Trees Classifier","level":"1.4.1.1","depth":3,"path":"supervised-learning/boosted_trees_classifier.md","ref":"supervised-learning/boosted_trees_classifier.md","articles":[]},{"title":"Decision Tree Classifier","level":"1.4.1.2","depth":3,"path":"supervised-learning/decision_tree_classifier.md","ref":"supervised-learning/decision_tree_classifier.md","articles":[]},{"title":"Logistic Regression","level":"1.4.1.3","depth":3,"path":"supervised-learning/logistic-regression.md","ref":"supervised-learning/logistic-regression.md","articles":[]},{"title":"Nearest Neighbor Classifier","level":"1.4.1.4","depth":3,"path":"supervised-learning/knn_classifier.md","ref":"supervised-learning/knn_classifier.md","articles":[]},{"title":"Random Forest Classifier","level":"1.4.1.5","depth":3,"path":"supervised-learning/random_forest_classifier.md","ref":"supervised-learning/random_forest_classifier.md","articles":[]},{"title":"SVM","level":"1.4.1.6","depth":3,"path":"supervised-learning/svm.md","ref":"supervised-learning/svm.md","articles":[]},{"title":"Deployment to Core ML","level":"1.4.1.7","depth":3,"path":"supervised-learning/export-coreml.md","ref":"supervised-learning/export-coreml.md","articles":[]}]},{"title":"Clustering","level":"1.4.2","depth":2,"path":"clustering/README.md","ref":"clustering/README.md","articles":[{"title":"KMeans","level":"1.4.2.1","depth":3,"path":"clustering/kmeans.md","ref":"clustering/kmeans.md","articles":[]},{"title":"DBSCAN","level":"1.4.2.2","depth":3,"path":"clustering/dbscan.md","ref":"clustering/dbscan.md","articles":[]}]},{"title":"Graph analytics","level":"1.4.3","depth":2,"path":"graph_analytics/README.md","ref":"graph_analytics/README.md","articles":[]},{"title":"Nearest neighbors","level":"1.4.4","depth":2,"path":"nearest_neighbors/nearest_neighbors.md","ref":"nearest_neighbors/nearest_neighbors.md","articles":[]},{"title":"Regression","level":"1.4.5","depth":2,"path":"supervised-learning/regression.md","ref":"supervised-learning/regression.md","articles":[{"title":"Boosted Trees Regression","level":"1.4.5.1","depth":3,"path":"supervised-learning/boosted_trees_regression.md","ref":"supervised-learning/boosted_trees_regression.md","articles":[]},{"title":"Decision Tree Regression","level":"1.4.5.2","depth":3,"path":"supervised-learning/decision_tree_regression.md","ref":"supervised-learning/decision_tree_regression.md","articles":[]},{"title":"Linear Regression","level":"1.4.5.3","depth":3,"path":"supervised-learning/linear-regression.md","ref":"supervised-learning/linear-regression.md","articles":[]},{"title":"Random Forest Regression","level":"1.4.5.4","depth":3,"path":"supervised-learning/random_forest_regression.md","ref":"supervised-learning/random_forest_regression.md","articles":[]},{"title":"Deployment to Core ML","level":"1.4.5.5","depth":3,"path":"supervised-learning/export-coreml.md","ref":"supervised-learning/export-coreml.md","articles":[]}]},{"title":"Text analysis","level":"1.4.6","depth":2,"path":"text/README.md","ref":"text/README.md","articles":[]}]},"previous":{"title":"How it works","level":"1.3.8.4","depth":3,"path":"activity_classifier/how-it-works.md","ref":"activity_classifier/how-it-works.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"text_classifier/README.md","mtime":"2019-03-20T20:55:18.229Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2019-03-20T21:12:06.159Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Text classifier","level":"1.3.9","depth":2,"next":{"title":"Machine learning essentials","level":"1.4","depth":1,"path":"modeling-data/README.md","ref":"modeling-data/README.md","articles":[{"title":"Classification","level":"1.4.1","depth":2,"path":"supervised-learning/classifier.md","ref":"supervised-learning/classifier.md","articles":[{"title":"Boosted Trees Classifier","level":"1.4.1.1","depth":3,"path":"supervised-learning/boosted_trees_classifier.md","ref":"supervised-learning/boosted_trees_classifier.md","articles":[]},{"title":"Decision Tree Classifier","level":"1.4.1.2","depth":3,"path":"supervised-learning/decision_tree_classifier.md","ref":"supervised-learning/decision_tree_classifier.md","articles":[]},{"title":"Logistic Regression","level":"1.4.1.3","depth":3,"path":"supervised-learning/logistic-regression.md","ref":"supervised-learning/logistic-regression.md","articles":[]},{"title":"Nearest Neighbor Classifier","level":"1.4.1.4","depth":3,"path":"supervised-learning/knn_classifier.md","ref":"supervised-learning/knn_classifier.md","articles":[]},{"title":"Random Forest Classifier","level":"1.4.1.5","depth":3,"path":"supervised-learning/random_forest_classifier.md","ref":"supervised-learning/random_forest_classifier.md","articles":[]},{"title":"SVM","level":"1.4.1.6","depth":3,"path":"supervised-learning/svm.md","ref":"supervised-learning/svm.md","articles":[]},{"title":"Deployment to Core ML","level":"1.4.1.7","depth":3,"path":"supervised-learning/export-coreml.md","ref":"supervised-learning/export-coreml.md","articles":[]}]},{"title":"Clustering","level":"1.4.2","depth":2,"path":"clustering/README.md","ref":"clustering/README.md","articles":[{"title":"KMeans","level":"1.4.2.1","depth":3,"path":"clustering/kmeans.md","ref":"clustering/kmeans.md","articles":[]},{"title":"DBSCAN","level":"1.4.2.2","depth":3,"path":"clustering/dbscan.md","ref":"clustering/dbscan.md","articles":[]}]},{"title":"Graph analytics","level":"1.4.3","depth":2,"path":"graph_analytics/README.md","ref":"graph_analytics/README.md","articles":[]},{"title":"Nearest neighbors","level":"1.4.4","depth":2,"path":"nearest_neighbors/nearest_neighbors.md","ref":"nearest_neighbors/nearest_neighbors.md","articles":[]},{"title":"Regression","level":"1.4.5","depth":2,"path":"supervised-learning/regression.md","ref":"supervised-learning/regression.md","articles":[{"title":"Boosted Trees Regression","level":"1.4.5.1","depth":3,"path":"supervised-learning/boosted_trees_regression.md","ref":"supervised-learning/boosted_trees_regression.md","articles":[]},{"title":"Decision Tree Regression","level":"1.4.5.2","depth":3,"path":"supervised-learning/decision_tree_regression.md","ref":"supervised-learning/decision_tree_regression.md","articles":[]},{"title":"Linear Regression","level":"1.4.5.3","depth":3,"path":"supervised-learning/linear-regression.md","ref":"supervised-learning/linear-regression.md","articles":[]},{"title":"Random Forest Regression","level":"1.4.5.4","depth":3,"path":"supervised-learning/random_forest_regression.md","ref":"supervised-learning/random_forest_regression.md","articles":[]},{"title":"Deployment to Core ML","level":"1.4.5.5","depth":3,"path":"supervised-learning/export-coreml.md","ref":"supervised-learning/export-coreml.md","articles":[]}]},{"title":"Text analysis","level":"1.4.6","depth":2,"path":"text/README.md","ref":"text/README.md","articles":[]}]},"previous":{"title":"How it works","level":"1.3.8.4","depth":3,"path":"activity_classifier/how-it-works.md","ref":"activity_classifier/how-it-works.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"text_classifier/README.md","mtime":"2019-04-30T00:18:59.171Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2019-04-30T00:21:03.451Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

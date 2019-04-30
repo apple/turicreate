@@ -147,6 +147,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a0d4aab7c8d565c00da3cf6c2453a630a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af583d3ecfe4ac8136c44c7e7d2c1ee10"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#af583d3ecfe4ac8136c44c7e7d2c1ee10">load_version</a> (<a class="el" href="classturi_1_1iarchive.html">turi::iarchive</a> &amp;iarc, size_t version)=0</td></tr>
 <tr class="separator:af583d3ecfe4ac8136c44c7e7d2c1ee10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64367d84967cf05052776b9fe76e24e3"><td class="memItemLeft" align="right" valign="top">virtual std::function&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>(const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;)&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#a64367d84967cf05052776b9fe76e24e3">deindexing_lambda</a> () const  =0</td></tr>
+<tr class="separator:a64367d84967cf05052776b9fe76e24e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa853e932d0941ba6774446b96dba4ce5"><td class="memItemLeft" align="right" valign="top">virtual std::function&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>(const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;)&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#aa853e932d0941ba6774446b96dba4ce5">indexing_lambda</a> () const  =0</td></tr>
+<tr class="separator:aa853e932d0941ba6774446b96dba4ce5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aba2cd1d25311a7ff1068a5d4665d202a"><td class="memItemLeft" align="right" valign="top">virtual std::shared_ptr&lt; <a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html">column_indexer</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#aba2cd1d25311a7ff1068a5d4665d202a">create_cleared_copy</a> () const  =0</td></tr>
 <tr class="separator:aba2cd1d25311a7ff1068a5d4665d202a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2424308c9caaa0b522d2775943ed8ca1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#a2424308c9caaa0b522d2775943ed8ca1">set_values</a> (std::vector&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;&amp;<a class="el" href="group__set__and__map.html#gaa4a5ba603bdef39e4c11f7d8692741c7">values</a>)=0</td></tr>
@@ -172,7 +176,7 @@ Public Attributes</h2></td></tr>
 <div class="textblock"><p>COMMENT.</p>
 <p><a class="el" href="structturi_1_1v2_1_1ml__data__internal_1_1column__metadata.html">column_metadata</a> contains "meta data" concerning indexing of a single column of an SFrame. A collection of meta_data column objects is "all" the metadata required in the <a class="el" href="classturi_1_1ml__data.html">ml_data</a> container. </p>
 
-<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html#l00026">26</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html">column_indexer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html#l00027">27</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html">column_indexer.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a4fcd0b7ff13071d576e55a6919bef90b"></a>
 <div class="memitem">
@@ -196,7 +200,7 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>Default constructor. </p>
 
-<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html#l00032">32</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html">column_indexer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html#l00033">33</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html">column_indexer.hpp</a>.</p>
 
 </div>
 </div>
@@ -227,6 +231,32 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a64367d84967cf05052776b9fe76e24e3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::function&lt;<a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>(const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>&amp;)&gt; turi::v2::ml_data_internal::column_indexer::deindexing_lambda </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns a lambda function that can be used as a lambda function for deindexing a column. </p>
+
+<p>Implemented in <a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#a087c38863d37648661d2a86d0ac9039e">turi::v2::ml_data_internal::column_unique_indexer</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="ae2104c559508bbbf2abe9ff410bdbc13"></a>
 <div class="memitem">
 <div class="memproto">
@@ -252,7 +282,7 @@ Public Attributes</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#a9c607ea273868ab8b71f861147d1596e">turi::v2::ml_data_internal::column_unique_indexer</a>.</p>
 
-<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html#l00107">107</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html">column_indexer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html#l00108">108</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html">column_indexer.hpp</a>.</p>
 
 </div>
 </div>
@@ -397,6 +427,33 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="aa853e932d0941ba6774446b96dba4ce5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::function&lt;<a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>(const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>&amp;)&gt; turi::v2::ml_data_internal::column_indexer::indexing_lambda </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns a lambda function that can be used as a lambda function for indexing a column.</p>
+<p>Does not add any new index values. </p>
+
+<p>Implemented in <a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#a86e029b59057035326c9c19a537e51e0">turi::v2::ml_data_internal::column_unique_indexer</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a0f9e22184098713da370e2c4cc0e52bd"></a>
 <div class="memitem">
 <div class="memproto">
@@ -449,7 +506,7 @@ Public Attributes</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#ab5703e7dd161e0aa0065d5fc3c358873">turi::v2::ml_data_internal::column_unique_indexer</a>.</p>
 
-<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html#l00080">80</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html">column_indexer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html#l00081">81</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html">column_indexer.hpp</a>.</p>
 
 </div>
 </div>
@@ -522,7 +579,7 @@ Public Attributes</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html#a3b604ecbdc531d02cb82abe387d89c24">turi::v2::ml_data_internal::column_unique_indexer</a>.</p>
 
-<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html#l00093">93</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html">column_indexer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html#l00094">94</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html">column_indexer.hpp</a>.</p>
 
 </div>
 </div>
@@ -639,7 +696,7 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>The name of the column. </p>
 
-<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html#l00160">160</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html">column_indexer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html#l00174">174</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html">column_indexer.hpp</a>.</p>
 
 </div>
 </div>
@@ -654,7 +711,7 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>The mode of the column; </p>
 
-<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html#l00164">164</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html">column_indexer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html#l00178">178</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html">column_indexer.hpp</a>.</p>
 
 </div>
 </div>
@@ -669,7 +726,7 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>A map of the options passed in to <a class="el" href="classturi_1_1ml__data.html">ml_data</a>. May include options for the indexers. </p>
 
-<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html#l00173">173</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html">column_indexer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html#l00187">187</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html">column_indexer.hpp</a>.</p>
 
 </div>
 </div>
@@ -684,7 +741,7 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>Original column type </p>
 
-<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html#l00168">168</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html">column_indexer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html#l00182">182</a> of file <a class="el" href="unity_2toolkits_2ml__data__2_2indexing_2column__indexer_8hpp_source.html">column_indexer.hpp</a>.</p>
 
 </div>
 </div>

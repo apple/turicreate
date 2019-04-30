@@ -54,6 +54,7 @@ var classturi_1_1recsys_1_1recsys__itemcf =
     [ "train", "classturi_1_1recsys_1_1recsys__itemcf.html#a7cd112e5638e4cc2b88bf34e904d0b86", null ],
     [ "uid", "classturi_1_1recsys_1_1recsys__itemcf.html#a66e833929a097ce52e44585ed2d91ffd", null ],
     [ "user_type", "classturi_1_1recsys_1_1recsys__itemcf.html#a47d465685f73505a33aca38bd595a9ec", null ],
+    [ "item_sim", "classturi_1_1recsys_1_1recsys__itemcf.html#a7ccce39152915d6550230e8f3375a2b1", null ],
     [ "state", "classturi_1_1recsys_1_1recsys__itemcf.html#a6f247683fa7362282797f5aebc780d70", null ],
     [ "USER_COLUMN_INDEX", "classturi_1_1recsys_1_1recsys__itemcf.html#a9860392e345d97dd7a6d992f42438508", null ]
 ];
