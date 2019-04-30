@@ -191,15 +191,16 @@ std::tuple<float, float> activity_classifier::compute_validation_metrics(
 
     }
   };
+  data_iterator::batch prev_val;
 
-  data_iterator::batch val =
-        validation_data_iterator_->next_batch(batch_size);
   while (validation_data_iterator_->has_next_batch()) {
 
+    data_iterator::batch val =
+        validation_data_iterator_->next_batch(batch_size);
+    
     // Wait until we have just one asynchronous batch outstanding. The work
     // below should be concurrent with the neural net inference for that batch.
     pop_until_size(1);
-
 
     // Submit the batch to the neural net model.
     std::map<std::string, shared_float_array> results =
@@ -212,22 +213,24 @@ std::tuple<float, float> activity_classifier::compute_validation_metrics(
     const shared_float_array &output = results.at("output");
     const shared_float_array &loss = results.at("loss");
 
+
+    val_size += val.batch_info.size();
+    prev_val = val;
+    // Add the pending result to our queue and move on to the next input batch.
+    pending_batches.push(std::move(val));
+    val = validation_data_iterator_->next_batch(batch_size);
+
+    cumulative_val_accuracy +=
+        cumulative_chunk_accuracy(prediction_window, num_classes, output, prev_val);
     float val_loss = std::accumulate(loss.data(), loss.data() + loss.size(),
                                      0.f, std::plus<float>());
 
     cumulative_val_loss += val_loss;
-
-    cumulative_val_accuracy +=
-        cumulative_chunk_accuracy(prediction_window, num_classes, output, val);
-
-    val_size += val.batch_info.size();
-
-    // Add the pending result to our queue and move on to the next input batch.
-    pending_batches.push(std::move(val));
-    val = validation_data_iterator_->next_batch(batch_size);
+    
   }
 
   pop_until_size(0);
+
 
   float average_val_accuracy = cumulative_val_accuracy / val_size;
   float average_val_loss = cumulative_val_loss / val_size;
@@ -681,34 +684,34 @@ void activity_classifier::perform_training_iteration() {
 
 
     // Submit the batch to the neural net model.
-      std::map<std::string, shared_float_array> results = training_model_->train(
-          { { "input",   input_batch.features },
-            { "labels",  input_batch.labels   },
-            { "weights", input_batch.weights  }, });
-      const shared_float_array &loss_batch = results.at("loss");
+    std::map<std::string, shared_float_array> results = training_model_->train(
+        { { "input",   input_batch.features },
+          { "labels",  input_batch.labels   },
+          { "weights", input_batch.weights  }, });
+    const shared_float_array &loss_batch = results.at("loss");
+    const shared_float_array& output = results.at("output");
 
-      float batch_loss = std::accumulate(loss_batch.data(),
-                                         loss_batch.data() + loss_batch.size(),
-                                         0.f, std::plus<float>());
-      cumulative_batch_loss += batch_loss / input_batch.batch_info.size();
+      
+    ++num_batches;
+    data_iterator::batch prev_batch = input_batch;
 
-      const shared_float_array& output = results.at("output");
-      cumulative_batch_accuracy +=
-          cumulative_chunk_accuracy(prediction_window, num_classes, output,
-                                    input_batch) /
-          input_batch.batch_info.size();
-      ++num_batches;
-
-      // Add the pending result to our queue and move on to the next input batch.
+    // Add the pending result to our queue and move on to the next input batch.
     pending_batches.push(std::move(input_batch));
     input_batch = training_data_iterator_->next_batch(batch_size);
+    cumulative_batch_accuracy += cumulative_chunk_accuracy(prediction_window, num_classes, output,
+                                    prev_batch) / prev_batch.batch_info.size();
+
+    float batch_loss = std::accumulate(loss_batch.data(),
+                                         loss_batch.data() + loss_batch.size(),
+                                         0.f, std::plus<float>());
+    cumulative_batch_loss += batch_loss / prev_batch.batch_info.size();
 
   }
 
   pop_until_size(0);
 
-  float average_batch_loss = cumulative_batch_loss / (num_batches+1);
-  float average_batch_accuracy = cumulative_batch_accuracy / (num_batches+1);
+  float average_batch_loss = cumulative_batch_loss / num_batches;
+  float average_batch_accuracy = cumulative_batch_accuracy / num_batches;
   float average_val_accuracy;
   float average_val_loss;
 
