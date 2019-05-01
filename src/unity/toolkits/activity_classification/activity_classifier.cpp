@@ -231,10 +231,15 @@ void activity_classifier::train(gl_sframe data, std::string target_column_name,
                                 std::map<std::string, flexible_type> opts)
 {
 
+  gl_sframe train_data;
+  gl_sframe val_data;
+  std::tie(train_data, val_data) =
+      init_data(data, validation_data, session_id_column_name);
+
   // Instantiate the training dependencies: data iterator, compute context,
   // backend NN model.
-  init_train(std::move(data), std::move(target_column_name),
-             std::move(session_id_column_name), std::move(validation_data),
+  init_train(std::move(train_data), std::move(target_column_name),
+             std::move(session_id_column_name), std::move(val_data),
              std::move(opts));
 
   // Perform all the iterations at once.
@@ -247,10 +252,48 @@ void activity_classifier::train(gl_sframe data, std::string target_column_name,
   training_table_printer_->print_footer();
   training_table_printer_.reset();
 
+
   // Sync trained weights to our local storage of the NN weights.
   float_array_map trained_weights = training_model_->export_weights();
   nn_spec_->update_params(trained_weights);
+
+  // Update the state with recall, precision and confusion matrix for training
+  // data
+  gl_sarray train_predictions = predict(train_data, "probability_vector");
+  gl_sframe train_eval({{"target", train_data[target_column_name]},
+                        {"probs", train_predictions}});
+  variant_map_type train_metric =
+      evaluation::compute_classifier_metrics_from_probability_vectors(
+          {"recall", "precision", "confusion_matrix", "accuracy", "log_loss"},
+          train_eval, "target", "probs",
+          {{"classes", read_state<flex_list>("classes")}});
+  add_or_update_state(
+      {{"training_precision", train_metric["precision"]},
+       {"training_recall", train_metric["recall"]},
+       {"training_accuracy", train_metric["accuracy"]},
+       {"training_log_loss", train_metric["log_loss"]},
+       {"training_confusion_matrix", train_metric["confusion_matrix"]},
+       {"num_examples", train_data.size()}});
+
+  // Update the state with recall, precision and confusion matrix for validation
+  // data
+  gl_sarray val_predictions = predict(train_data, "probability_vector");
+  gl_sframe val_eval(
+      {{"target", val_data[target_column_name]}, {"probs", val_predictions}});
+  variant_map_type val_metric =
+      evaluation::compute_classifier_metrics_from_probability_vectors(
+          {"recall", "precision", "confusion_matrix", "accuracy", "log_loss"},
+          val_eval, "target", "probs",
+          {{"classes", read_state<flex_list>("classes")}});
+  add_or_update_state(
+      {{"validation_precision", val_metric["precision"]},
+       {"validation_recall", val_metric["recall"]},
+       {"validation_accuracy", val_metric["accuracy"]},
+       {"validation_log_loss", val_metric["log_loss"]},
+       {"validation_confusion_matrix", val_metric["confusion_matrix"]}});
 }
+
+
 
 gl_sarray activity_classifier::predict(gl_sframe data,
                                        std::string output_type) {
@@ -520,16 +563,12 @@ activity_classifier::init_data(gl_sframe data, variant_type validation_data,
 
 void activity_classifier::init_train(
     gl_sframe data, std::string target_column_name,
-    std::string session_id_column_name, variant_type validation_data,
-    std::map<std::string, flexible_type> opts)
-{
+    std::string session_id_column_name, gl_sframe validation_data,
+    std::map<std::string, flexible_type> opts) {
 
   // Begin printing progress.
   // TODO: Make progress printing optional.
-  gl_sframe train_data;
-  gl_sframe val_data;
-  std::tie(train_data, val_data) = init_data(data, validation_data, session_id_column_name);
-  init_table_printer(!val_data.empty());
+  init_table_printer(!validation_data.empty());
 
   // Extract feature names from options.
   std::vector<std::string> feature_column_names;
@@ -550,13 +589,13 @@ void activity_classifier::init_train(
                                               feature_column_names.end())}});
 
   // Bind the data to a data iterator.
-  training_data_iterator_ = create_iterator(train_data, true);
+  training_data_iterator_ = create_iterator(data, true);
 
   add_or_update_state({{"classes", training_data_iterator_->class_labels()}});
 
   // Bind the validation data to a data iterator.
-  if (!val_data.empty()) {
-    validation_data_iterator_ = create_iterator(val_data, false);
+  if (!validation_data.empty()) {
+    validation_data_iterator_ = create_iterator(validation_data, false);
   } else {
     validation_data_iterator_ = nullptr;
   }
