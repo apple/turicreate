@@ -10,10 +10,6 @@
 #include <serialization/serialization_includes.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/gil/gil_all.hpp>
-#include <boost/gil/rgb.hpp>
-// #include <boost/gil/utilities.hpp>
-// #include <boost/gil/extension/toolbox/metafunctions.hpp>
-// #include <boost/gil/extension/toolbox/metafunctions/gil_extensions.hpp>
 
 const char IMAGE_TYPE_CURRENT_VERSION = 0;
 
@@ -55,10 +51,10 @@ public:
   Format m_format = Format::UNDEFINED; 
   /// Constructor
   image_type() = default;
-  /// Construct from a Boost GIL Image
   /// Construct from existing data
   image_type(const char* image_data, size_t height, size_t width,
              size_t channels, size_t image_data_size, int version, int format);
+  /// Construct from a Boost GIL Image
   explicit image_type(const boost::gil::rgb8_image_t &boost_image);
   /// Check whether image is decoded
   inline bool is_decoded() const { return m_format == Format::RAW_ARRAY; }

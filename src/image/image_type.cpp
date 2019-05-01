@@ -28,7 +28,7 @@ image_type::image_type(const boost::gil::rgb8_image_t &gil_image)
 , m_format(Format::RAW_ARRAY)
 {
   size_t image_data_size = gil_image.height() * gil_image.width() * boost::gil::num_channels<boost::gil::rgb8_image_t>();
-  boost::gil::rgb8_image_t::view_t::iterator it = const_view(gil_image).begin();
+  auto it = const_view(gil_image).begin();
   const char* data = reinterpret_cast<const char*>(&boost::gil::at_c<0>(*it));
   m_image_data.reset(new char[image_data_size]);
   std::copy(data, data + image_data_size, &m_image_data[0]);
