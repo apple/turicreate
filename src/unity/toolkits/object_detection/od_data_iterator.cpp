@@ -36,8 +36,15 @@ gl_sframe get_data(const data_iterator::parameters& params) {
     images = images.apply(image_util::encode_image, flex_type_enum::IMAGE);
   }
 
-  return gl_sframe({ { params.annotations_column_name, annotations },
+  gl_sframe result({ { params.annotations_column_name, annotations },
                      { params.image_column_name,       images      }  });
+
+  if (!params.predictions_column_name.empty()) {
+    result[params.predictions_column_name] =
+        params.data[params.predictions_column_name];
+  }
+
+  return result;
 }
 
 std::vector<image_annotation> parse_annotations(
@@ -190,6 +197,9 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
 
     // Determine which column is which within each (ordered) row.
     annotations_index_(data_.column_index(params.annotations_column_name)),
+    predictions_index_(params.predictions_column_name.empty()
+                       ? -1
+                       : data_.column_index(params.predictions_column_name)),
     image_index_(data_.column_index(params.image_column_name)),
 
     // Whether to traverse the SFrame more than once, and whether to shuffle.
@@ -208,12 +218,17 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
 
 std::vector<labeled_image> simple_data_iterator::next_batch(size_t batch_size) {
 
-  std::vector<std::pair<flexible_type, flexible_type>> raw_batch;
+  // Accumulate batch_size tuples: (image, annotations, predictions).
+  std::vector<std::tuple<flexible_type,flexible_type,flexible_type>> raw_batch;
   raw_batch.reserve(batch_size);
   while (raw_batch.size() < batch_size && next_row_ != range_iterator_.end()) {
 
     const sframe_rows::row& row = *next_row_;
-    raw_batch.emplace_back(row[image_index_], row[annotations_index_]);
+    flexible_type preds = FLEX_UNDEFINED;
+    if (predictions_index_ >= 0) {
+      preds = row[predictions_index_];
+    }
+    raw_batch.emplace_back(row[image_index_], row[annotations_index_], preds);
 
     if (++next_row_ == range_iterator_.end() && repeat_) {
 
@@ -243,14 +258,22 @@ std::vector<labeled_image> simple_data_iterator::next_batch(size_t batch_size) {
 
   std::vector<labeled_image> result(raw_batch.size());
   for (size_t i = 0; i < raw_batch.size(); ++i) {
+    flexible_type raw_image, raw_annotations, raw_predictions;
+    std::tie(raw_image, raw_annotations, raw_predictions) = raw_batch[i];
 
     // Reads the undecoded image data from disk, if necessary.
     // TODO: Investigate parallelizing this file I/O.
-    result[i].image = get_image(raw_batch[i].first);
+    result[i].image = get_image(raw_image);
 
     result[i].annotations = parse_annotations(
-        raw_batch[i].second, result[i].image.m_width, result[i].image.m_height,
+        raw_annotations, result[i].image.m_width, result[i].image.m_height,
         annotation_properties_.class_to_index_map);
+
+    if (raw_predictions != FLEX_UNDEFINED) {
+      result[i].predictions = parse_annotations(
+          raw_predictions, result[i].image.m_width, result[i].image.m_height,
+          annotation_properties_.class_to_index_map);
+    }
   }
 
   return result;

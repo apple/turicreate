@@ -18,6 +18,9 @@ namespace {
 using neural_net::image_annotation;
 using neural_net::image_box;
 
+constexpr char AP[] = "average_precision";
+constexpr char AP50[] = "average_precision_50";
+
 BOOST_AUTO_TEST_CASE(test_nms_with_empty_preds) {
 
   std::vector<image_annotation> empty;
@@ -112,20 +115,27 @@ BOOST_AUTO_TEST_CASE(test_average_precision_iou_threshold) {
   preds[0].bounding_box = image_box(0.f, 0.f, 0.625f, 1.f);
 
   // Compute metrics at IOU thresholds 0.5 and 0.75.
-  average_precision_calculator calc(/* num_classes */ 2,
+  average_precision_calculator calc(/* class_labels */ {"class0", "class1"},
                                     /* iou_thresholds */ { 0.5f, 0.75f });
   calc.add_row(preds, gt_labels);
 
-  auto average_precisions = calc.evaluate();
-  TS_ASSERT_EQUALS(average_precisions.size(), 2);  // num_classes == 2
+  auto res = calc.evaluate();
+  flex_dict ap50 = variant_get_value<flex_dict>(res[AP50]);
+  flex_dict ap = variant_get_value<flex_dict>(res[AP]);
+  TS_ASSERT_EQUALS(ap50.size(), 2);  // num_classes == 2
+  TS_ASSERT_EQUALS(ap.size(), 2);  // num_classes == 2
 
   // For class 0, we should have AP 1.0 at IOU 50 and 0.0 at IOU 75
-  TS_ASSERT_EQUALS(average_precisions[0][0.5f], 1.f);
-  TS_ASSERT_EQUALS(average_precisions[0][0.75f], 0.f);
+  TS_ASSERT_EQUALS(ap50[0].first, "class0");
+  TS_ASSERT_EQUALS(ap50[0].second, 1.f);
+  TS_ASSERT_EQUALS(ap[0].first, "class0");
+  TS_ASSERT_EQUALS(ap[0].second, 0.5f);
 
   // For class 1, we had no ground truth labels, so AP is always 0.
-  TS_ASSERT_EQUALS(average_precisions[1][0.5f], 0.f);
-  TS_ASSERT_EQUALS(average_precisions[1][0.75f], 0.f);
+  TS_ASSERT_EQUALS(ap50[1].first, "class1");
+  TS_ASSERT_EQUALS(ap50[1].second, 0.f);
+  TS_ASSERT_EQUALS(ap[1].first, "class1");
+  TS_ASSERT_EQUALS(ap[1].second, 0.f);
 }
 
 BOOST_AUTO_TEST_CASE(test_average_precision_class_label_mismatch) {
@@ -143,17 +153,22 @@ BOOST_AUTO_TEST_CASE(test_average_precision_class_label_mismatch) {
   preds[0].bounding_box = image_box(0.f, 0.f, 0.625f, 1.f);
 
   // Compute metrics at IOU thresholds 0.5.
-  average_precision_calculator calc(/* num_classes */ 2,
+  average_precision_calculator calc(/* class_labels */ {"class0", "class1"},
                                     /* iou_thresholds */ { 0.5f });
   calc.add_row(preds, gt_labels);
 
-  auto average_precisions = calc.evaluate();
-  TS_ASSERT_EQUALS(average_precisions.size(), 2);  // num_classes == 2
+  auto res = calc.evaluate();
+  flex_dict ap50 = variant_get_value<flex_dict>(res[AP50]);
+  flex_dict ap = variant_get_value<flex_dict>(res[AP]);
+  TS_ASSERT_EQUALS(ap50.size(), 2);  // num_classes == 2
+  TS_ASSERT_EQUALS(ap.size(), 2);  // num_classes == 2
 
   // AP should be 0 for both classes, since the one prediction and the one
   // ground truth label had different class labels.
-  TS_ASSERT_EQUALS(average_precisions[0][0.5f], 0.f);
-  TS_ASSERT_EQUALS(average_precisions[1][0.5f], 0.f);
+  TS_ASSERT_EQUALS(ap50[0].second, 0.f);
+  TS_ASSERT_EQUALS(ap[0].second, 0.f);
+  TS_ASSERT_EQUALS(ap50[1].second, 0.f);
+  TS_ASSERT_EQUALS(ap[1].second, 0.f);
 }
 
 BOOST_AUTO_TEST_CASE(test_average_precision_image_row_mismatch) {
@@ -171,17 +186,21 @@ BOOST_AUTO_TEST_CASE(test_average_precision_image_row_mismatch) {
   preds[0].bounding_box = image_box(0.f, 0.f, 1.f, 1.f);
 
   // Compute metrics at IOU thresholds 0.5.
-  average_precision_calculator calc(/* num_classes */ 1,
+  average_precision_calculator calc(/* class_labels */ {"class0"},
                                     /* iou_thresholds */ { 0.5f });
   calc.add_row(preds, {});
   calc.add_row({}, gt_labels);
 
-  auto average_precisions = calc.evaluate();
-  TS_ASSERT_EQUALS(average_precisions.size(), 1);  // num_classes == 1
+  auto res = calc.evaluate();
+  flex_dict ap50 = variant_get_value<flex_dict>(res[AP50]);
+  flex_dict ap = variant_get_value<flex_dict>(res[AP]);
+  TS_ASSERT_EQUALS(ap50.size(), 1);  // num_classes == 1
+  TS_ASSERT_EQUALS(ap.size(), 1);  // num_classes == 1
 
   // The AP should be 0, since although the prediction was for image/row 0, and
   // only image/row1 had a labeled annotation.
-  TS_ASSERT_EQUALS(average_precisions[0][0.5f], 0.f);
+  TS_ASSERT_EQUALS(ap50[0].second, 0.f);
+  TS_ASSERT_EQUALS(ap[0].second, 0.f);
 }
 
 BOOST_AUTO_TEST_CASE(test_average_precision_overlapping_match) {
@@ -209,23 +228,24 @@ BOOST_AUTO_TEST_CASE(test_average_precision_overlapping_match) {
   preds[2].bounding_box = image_box(0.f, 0.5f, 1.f, 0.5f);
 
   // Compute metrics at IOU thresholds 0.5.
-  average_precision_calculator calc(/* num_classes */ 1,
+  average_precision_calculator calc(/* class_labels */ {"class0"},
                                     /* iou_thresholds */ { 0.5f });
   calc.add_row(preds, gt_labels);
 
-  auto average_precisions = calc.evaluate();
-  TS_ASSERT_EQUALS(average_precisions.size(), 1);  // num_classes == 1
+  auto res = calc.evaluate();
+  flex_dict ap50 = variant_get_value<flex_dict>(res[AP50]);
+  TS_ASSERT_EQUALS(ap50.size(), 1);  // num_classes == 1
 
   // For class 0, the AP should be an average of precision 1.0 for the first
   // matched label, and precision 0.666 for the second matched label, since only
   // one of the matches for first ground truth label can count.
-  TS_ASSERT_DELTA(average_precisions[0][0.5f], 5.f/6.f, 0.0001f);
+  TS_ASSERT_DELTA(ap50[0].second, 5.f/6.f, 0.0001f);
 }
 
 BOOST_AUTO_TEST_CASE(test_average_precision_aggregate_across_rows) {
 
   // Compute metrics at IOU thresholds 0.5.
-  average_precision_calculator calc(/* num_classes */ 1,
+  average_precision_calculator calc(/* class_labels */ {"class0"},
                                     /* iou_thresholds */ { 0.5f });
 
   // Ground truth label on entire unit square, for convenience.
@@ -253,19 +273,20 @@ BOOST_AUTO_TEST_CASE(test_average_precision_aggregate_across_rows) {
   calc.add_row(preds, gt_labels);
 
   // Compute AP.
-  auto average_precisions = calc.evaluate();
-  TS_ASSERT_EQUALS(average_precisions.size(), 1);  // num_classes == 1
+  auto res = calc.evaluate();
+  flex_dict ap50 = variant_get_value<flex_dict>(res[AP50]);
+  TS_ASSERT_EQUALS(ap50.size(), 1);  // num_classes == 1
 
   // The AP should be an average of precision 1.0 for the first matched label,
   // and precision 0.666 for the second matched label (in the second image/row),
   // since the bad prediction for the first image/row ranks higher.
-  TS_ASSERT_DELTA(average_precisions[0][0.5f], 5.f/6.f, 0.0001f);
+  TS_ASSERT_DELTA(ap50[0].second, 5.f/6.f, 0.0001f);
 }
 
 BOOST_AUTO_TEST_CASE(test_average_precision_monotonic_precision) {
 
   // Compute metrics at IOU thresholds 0.5.
-  average_precision_calculator calc(/* num_classes */ 1,
+  average_precision_calculator calc(/* class_labels */ {"class0"},
                                     /* iou_thresholds */ { 0.5f });
 
   // Ground truth label on entire unit square, for convenience.
@@ -293,14 +314,15 @@ BOOST_AUTO_TEST_CASE(test_average_precision_monotonic_precision) {
   calc.add_row(preds, gt_labels);
 
   // Compute AP.
-  auto average_precisions = calc.evaluate();
-  TS_ASSERT_EQUALS(average_precisions.size(), 1);  // num_classes == 1
+  auto res = calc.evaluate();
+  flex_dict ap50 = variant_get_value<flex_dict>(res[AP50]);
+  TS_ASSERT_EQUALS(ap50.size(), 1);  // num_classes == 1
 
   // The AP should be 0.666, even though the precision upon matching the first
   // ground truth label is 0.5 (and the precision upon matching the second is
   // 0.666), since the user is assumed to prefer the point on the raw curve that
   // dominates in both precision and recall.
-  TS_ASSERT_DELTA(average_precisions[0][0.5f], 2.f/3.f, 0.0001f);
+  TS_ASSERT_DELTA(ap50[0].second, 2.f/3.f, 0.0001f);
 }
 
 }  // namespace

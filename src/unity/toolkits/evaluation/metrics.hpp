@@ -74,6 +74,11 @@ variant_map_type compute_classifier_metrics(
     gl_sframe data, std::string target_column_name, std::string metric,
     gl_sarray predictions, std::map<std::string, flexible_type> opts);
 
+variant_map_type compute_object_detection_metrics(
+    gl_sframe data, std::string annotations_column_name,
+    std::string image_column_name, gl_sarray predictions,
+    std::map<std::string, flexible_type> opts);
+
 /**
  * Computes the precision and recall for each user.
  *
