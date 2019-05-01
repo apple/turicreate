@@ -792,7 +792,7 @@ class ImageClassifier(_CustomModel):
         evaluation_result['conf_mat'] = list(sf_conf_mat)
         evaluation_result['hesitant_conf_mat'] = list(sf_hesitant_conf_mat)
         evaluation_result['confidently_wrong_conf_mat'] = list(sf_confidently_wrong_conf_mat)
-
+        evaluation_result['model_name'] = state['model']
         
         # Get sorted labels (sorted by hCluster)
         vectors = map(lambda l: {'name': l, 'pos':list(sf_conf_mat[sf_conf_mat['target_label']==l].sort('predicted_label')['norm_prob'])},
