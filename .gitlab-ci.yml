@@ -1,6 +1,7 @@
 stages:
   - build
   - test
+  - collect_artifacts
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
@@ -21,7 +22,7 @@ build_wheel_debug_linux_python27:
     - apk add bash
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --debug --docker-python2.7 --skip_doc
   artifacts:
-    expire_in: 2 weeks
+    expire_in: 1 day
     paths:
       - target/
 
@@ -39,7 +40,7 @@ build_wheel_linux_python27:
     - apk add bash
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python2.7
   artifacts:
-    expire_in: 2 weeks
+    expire_in: 1 day
     paths:
       - target/
 
@@ -57,7 +58,7 @@ build_wheel_linux_python35:
     - apk add bash
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.5 --skip_doc
   artifacts:
-    expire_in: 2 weeks
+    expire_in: 1 day
     paths:
       - target/
 
@@ -75,7 +76,7 @@ build_wheel_linux_python36:
     - apk add bash
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.6 --skip_doc
   artifacts:
-    expire_in: 2 weeks
+    expire_in: 1 day
     paths:
       - target/
 
@@ -91,7 +92,7 @@ build_wheel_mac_10_14_python27:
     - source scripts/use_ccache.sh
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
   artifacts:
-    expire_in: 2 weeks
+    expire_in: 1 day
     paths:
       - target/
 
@@ -107,7 +108,7 @@ build_wheel_mac_10_14_python35:
     - source scripts/use_ccache.sh
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
   artifacts:
-    expire_in: 2 weeks
+    expire_in: 1 day
     paths:
       - target/
 
@@ -123,7 +124,7 @@ build_wheel_mac_10_14_python36:
     - source scripts/use_ccache.sh
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
   artifacts:
-    expire_in: 2 weeks
+    expire_in: 1 day
     paths:
       - target/
 
@@ -140,7 +141,7 @@ build_dylib_macos_10_14:
     - cd release/src/objc
     - make -j8
   artifacts:
-    expire_in: 2 weeks
+    expire_in: 1 day
     paths:
       - release/src/objc/libAudioPreprocessing.dylib
       - release/src/objc/libRecommender.dylib
@@ -158,7 +159,7 @@ build_dylib_ios_12:
     - cd release/src/objc
     - make -j8
   artifacts:
-    expire_in: 2 weeks
+    expire_in: 1 day
     paths:
       - release/src/objc/libAudioPreprocessing.dylib
       - release/src/objc/libRecommender.dylib
@@ -432,3 +433,28 @@ scenario_tests_mac_python27_10_14:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - cd scenario-tests
     - ./run_scenario_tests.sh ../target/turicreate-*.whl
+
+collect_artifacts:
+  tags:
+    - docker
+  services:
+    - docker:dind
+  image: alpine:latest
+  stage: collect_artifacts
+  dependencies:
+    - build_dylib_ios_12
+    - build_dylib_macos_10_14
+    - build_wheel_linux_python27
+    - build_wheel_linux_python35
+    - build_wheel_linux_python36
+    - build_wheel_mac_10_14_python27
+    - build_wheel_mac_10_14_python35
+    - build_wheel_mac_10_14_python36
+  script:
+    - mv release/src/objc/*.dylib target/
+    - rmdir -p release || find release
+  artifacts:
+    expire_in: 2 weeks
+    paths:
+      - target/
+
