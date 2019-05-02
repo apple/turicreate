@@ -54,7 +54,7 @@ public:
   image_type(const char* image_data, size_t height, size_t width,
              size_t channels, size_t image_data_size, int version, int format);
   /// Construct from a Boost GIL Image
-  /// Note: image_type can be any of the Boost GIL image types.
+  /// Note: gil_image_type can be any of the Boost GIL image types.
   template<typename gil_image_type>
   explicit image_type(const gil_image_type &gil_image);
   /// Check whether image is decoded
