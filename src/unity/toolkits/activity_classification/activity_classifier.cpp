@@ -215,20 +215,20 @@ std::tuple<float, float> activity_classifier::compute_validation_metrics(
 
 
     val_size += val.batch_info.size();
-    prev_val = val;
+  
     // Add the pending result to our queue and move on to the next input batch.
     pending_batches.push(std::move(val));
     val = validation_data_iterator_->next_batch(batch_size);
 
     cumulative_val_accuracy +=
-        cumulative_chunk_accuracy(prediction_window, num_classes, output, prev_val);
+        cumulative_chunk_accuracy(prediction_window, num_classes, output, pending_batches.back());
     float val_loss = std::accumulate(loss.data(), loss.data() + loss.size(),
                                      0.f, std::plus<float>());
 
     cumulative_val_loss += val_loss;
     
   }
-
+  // Process all remaining batches.
   pop_until_size(0);
 
 
@@ -690,24 +690,22 @@ void activity_classifier::perform_training_iteration() {
           { "weights", input_batch.weights  }, });
     const shared_float_array &loss_batch = results.at("loss");
     const shared_float_array& output = results.at("output");
-
       
     ++num_batches;
-    data_iterator::batch prev_batch = input_batch;
-
+    
     // Add the pending result to our queue and move on to the next input batch.
     pending_batches.push(std::move(input_batch));
     input_batch = training_data_iterator_->next_batch(batch_size);
     cumulative_batch_accuracy += cumulative_chunk_accuracy(prediction_window, num_classes, output,
-                                    prev_batch) / prev_batch.batch_info.size();
+                                    pending_batches.back()) / pending_batches.back().batch_info.size();
 
     float batch_loss = std::accumulate(loss_batch.data(),
                                          loss_batch.data() + loss_batch.size(),
                                          0.f, std::plus<float>());
-    cumulative_batch_loss += batch_loss / prev_batch.batch_info.size();
+    cumulative_batch_loss += batch_loss / pending_batches.back().batch_info.size();
 
   }
-
+  // Process all remaining batches.
   pop_until_size(0);
 
   float average_batch_loss = cumulative_batch_loss / num_batches;
