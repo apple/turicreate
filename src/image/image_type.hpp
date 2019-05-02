@@ -55,8 +55,8 @@ public:
              size_t channels, size_t image_data_size, int version, int format);
   /// Construct from a Boost GIL Image
   /// Note: image_type can be any of the Boost GIL image types.
-  template<typename image_type>
-  explicit image_type(const image_type &gil_image);
+  template<typename gil_image_type>
+  explicit image_type(const gil_image_type &gil_image);
   /// Check whether image is decoded
   inline bool is_decoded() const { return m_format == Format::RAW_ARRAY; }
   /// Serialization
