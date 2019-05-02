@@ -15,9 +15,10 @@ bool is_integer(std::string s) {
   return (*p == 0);
 }
 
+#ifdef __APPLE__
 gl_sarray featurize_images(const gl_sarray &images) {
   DASSERT_EQ(images.dtype(), flex_type_enum::IMAGE);
-#ifdef __APPLE__
+
   image_deep_feature_extractor::image_deep_feature_extractor_toolkit
       feature_extractor =
           image_deep_feature_extractor::image_deep_feature_extractor_toolkit();
@@ -31,10 +32,8 @@ gl_sarray featurize_images(const gl_sarray &images) {
   feature_extractor.init_options(options);
 
   return feature_extractor.sarray_extract_features(images, false, 6);
-#else
-  return NULL;
-#endif
 }
+#endif
 
 float vectors_distance(const std::vector<double> &a,
                        const std::vector<double> &b) {
@@ -46,9 +45,6 @@ float vectors_distance(const std::vector<double> &a,
   return std::sqrt(acc);
 }
 
-/**
- * Note: very inefficient way of calculating the distances.
- */
 std::vector<flexible_type> similar_items(const gl_sarray &distances,
                                          size_t index, size_t k) {
   DASSERT_EQ(distances.dtype(), flex_type_enum::VECTOR);

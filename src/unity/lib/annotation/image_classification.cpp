@@ -24,7 +24,12 @@ ImageClassification::ImageClassification(
     const std::shared_ptr<unity_sframe> &data,
     const std::vector<std::string> &data_columns,
     const std::string &annotation_column)
-    : AnnotationBase(data, data_columns, annotation_column) {}
+    : AnnotationBase(data, data_columns, annotation_column) {
+
+  m_image_features =
+      std::async(std::launch::async,
+                 &ImageClassification::_calculateFeatureSimilarity, this);
+}
 
 annotate_spec::Data ImageClassification::getItems(size_t start, size_t end) {
   annotate_spec::Data data;
@@ -197,6 +202,13 @@ void ImageClassification::_addAnnotationToSFrame(size_t index,
   m_data->add_column(place_holder, m_annotation_column);
 }
 
+void ImageClassification::add_image_features(
+    const std::shared_ptr<unity_sarray> &data) {
+  std::promise<std::shared_ptr<unity_sarray>> setter;
+  m_image_features = setter.get_future();
+  setter.set_value(data);
+}
+
 void ImageClassification::_addAnnotationToSFrame(size_t index, int label) {
   /* Assert that the column type is indeed of type flex_enum::INTEGER */
   size_t annotation_column_index = m_data->column_index(m_annotation_column);
@@ -357,6 +369,22 @@ ImageClassification::_filterDataSFrame(size_t &start, size_t &end) {
 
   return std::static_pointer_cast<unity_sarray>(
       data_sarray->copy_range(start, 1, end));
+}
+
+std::shared_ptr<unity_sarray>
+ImageClassification::_calculateFeatureSimilarity() {
+#ifdef __APPLE__
+  std::shared_ptr<unity_sarray> data_sarray =
+      std::static_pointer_cast<unity_sarray>(
+          m_data->select_column(m_data_columns.at(0)));
+
+  gl_sarray image_gl_sarray = gl_sarray(data_sarray);
+  std::shared_ptr<unity_sarray> image_features =
+      std::shared_ptr<unity_sarray>(featurize_images(image_gl_sarray));
+  return image_features;
+#else
+  return NULL;
+#endif
 }
 
 std::shared_ptr<unity_sarray>
