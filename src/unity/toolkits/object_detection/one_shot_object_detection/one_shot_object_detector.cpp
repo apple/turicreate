@@ -43,13 +43,13 @@ public:
     return angle * M_PI / 180.0;
   }
 
-  /* Getters for all the parameters:    
-   * theta: rotation around the x axis.   
-   * phi: rotation around the y axis.   
-   * gamma: rotation around the z axis.   
-   * dz: distance of the object from the camera.    
+  /* Getters for all the parameters:
+   * theta: rotation around the x axis.
+   * phi: rotation around the y axis.
+   * gamma: rotation around the z axis.
+   * dz: distance of the object from the camera.
    * focal: focal length of the camera used.
-   * transform: The transformation matrix built from the above parameters    
+   * transform: The transformation matrix built from the above parameters
    */
   double get_theta() {
     return deg_to_rad(theta_);
