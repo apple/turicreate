@@ -43,6 +43,14 @@ public:
     return angle * M_PI / 180.0;
   }
 
+  /* Getters for all the parameters:    
+   * theta: rotation around the x axis.   
+   * phi: rotation around the y axis.   
+   * gamma: rotation around the z axis.   
+   * dz: distance of the object from the camera.    
+   * focal: focal length of the camera used.
+   * transform: The transformation matrix built from the above parameters    
+   */
   double get_theta() {
     return deg_to_rad(theta_);
   }
@@ -67,10 +75,15 @@ public:
     return transform_;
   }
 
+  /* Setter for warped_corners, built after applying the transformation
+   * matrix on the corners of the starter image.
+   * Order of warped_corners is top_left, top_right, bottom_left, bottom_right
+   */ 
   void set_warped_corners(const std::vector<Eigen::Vector3f> &warped_corners) {
     warped_corners_ = warped_corners;
   }
 
+  /* Getter for warped_corners */
   std::vector<Eigen::Vector3f> get_warped_corners() {
     return warped_corners_;
   }
