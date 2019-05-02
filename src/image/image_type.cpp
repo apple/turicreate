@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <image/image_type.hpp>
+#include <boost/gil/gil_all.hpp>
 
 namespace turi{
 

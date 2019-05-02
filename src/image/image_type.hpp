@@ -9,7 +9,12 @@
 #include <string>
 #include <serialization/serialization_includes.hpp>
 #include <boost/shared_ptr.hpp>
-#include <boost/gil/gil_all.hpp>
+
+namespace boost {
+namespace gil {
+  class rgb8_image_t;
+} // gil
+} // boost
 
 const char IMAGE_TYPE_CURRENT_VERSION = 0;
 

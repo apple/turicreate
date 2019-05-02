@@ -13,6 +13,7 @@ make_library(image_type OBJECT
   REQUIRES
     logger
     image_io
+    boost
   EXTERNAL_VISIBILITY
 )
 
@@ -29,10 +30,11 @@ make_library(image_io OBJECT
     jpeg_io.cpp
     png_io.cpp
   REQUIRES
-    libpng		
-    libjpeg		
-    logger		
-    fileio		
+    libpng
+    libjpeg
+    logger
+    fileio
+    boost
   EXTERNAL_VISIBILITY
 )
 
