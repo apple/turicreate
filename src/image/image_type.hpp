@@ -10,12 +10,6 @@
 #include <serialization/serialization_includes.hpp>
 #include <boost/shared_ptr.hpp>
 
-namespace boost {
-namespace gil {
-  class rgb8_image_t;
-} // gil
-} // boost
-
 const char IMAGE_TYPE_CURRENT_VERSION = 0;
 
 namespace turi {
@@ -60,7 +54,9 @@ public:
   image_type(const char* image_data, size_t height, size_t width,
              size_t channels, size_t image_data_size, int version, int format);
   /// Construct from a Boost GIL Image
-  explicit image_type(const boost::gil::rgb8_image_t &boost_image);
+  /// Note: image_type can be any of the Boost GIL image types.
+  template<typename image_type>
+  explicit image_type(const image_type &gil_image);
   /// Check whether image is decoded
   inline bool is_decoded() const { return m_format == Format::RAW_ARRAY; }
   /// Serialization
