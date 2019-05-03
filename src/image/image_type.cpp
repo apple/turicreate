@@ -4,18 +4,35 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <image/image_type.hpp>
+#include <boost/gil/gil_all.hpp>
 
 namespace turi{
 
-image_type::image_type(const char* image_data, size_t height, size_t width, size_t channels, size_t image_data_size, int version, int format){
+image_type::image_type(const char* image_data, size_t height, size_t width, size_t channels, size_t image_data_size, int version, int format)
+: m_height(height)
+, m_width(width)
+, m_channels(channels)
+, m_image_data_size(image_data_size)
+, m_version(version)
+, m_format(static_cast<Format>(format))
+{
   m_image_data.reset(new char[image_data_size]);
-  memcpy(&m_image_data[0], image_data, image_data_size);
-  m_height = height;
-  m_width = width;
-  m_channels = channels;
-  m_image_data_size = image_data_size;
-  m_version = (char)version;
-  m_format = static_cast<Format>(format);
+  std::copy(image_data, image_data + image_data_size, &m_image_data[0]);
+}
+
+image_type::image_type(const boost::gil::rgb8_image_t &gil_image)
+: m_height(gil_image.height())
+, m_width(gil_image.width())
+, m_channels(boost::gil::num_channels<boost::gil::rgb8_image_t>())
+, m_image_data_size(gil_image.height() * gil_image.width() * boost::gil::num_channels<boost::gil::rgb8_image_t>())
+, m_version(IMAGE_TYPE_CURRENT_VERSION)
+, m_format(Format::RAW_ARRAY)
+{
+  size_t image_data_size = gil_image.height() * gil_image.width() * boost::gil::num_channels<boost::gil::rgb8_image_t>();
+  auto it = const_view(gil_image).begin();
+  const char* data = reinterpret_cast<const char*>(&boost::gil::at_c<0>(*it));
+  m_image_data.reset(new char[image_data_size]);
+  std::copy(data, data + image_data_size, &m_image_data[0]);
 }
 
 
