@@ -52,7 +52,7 @@ std::vector<flexible_type> similar_items(const gl_sarray &distances,
 }
 
 #ifdef __APPLE__
-gl_sarray featurize_images(const gl_sarray &images) {
+gl_sarray featurize_images(const gl_sarray &images, std::string& base_directory) {
   DASSERT_EQ(images.dtype(), flex_type_enum::IMAGE);
 
   image_deep_feature_extractor::image_deep_feature_extractor_toolkit
@@ -61,8 +61,7 @@ gl_sarray featurize_images(const gl_sarray &images) {
 
   std::map<std::string, flexible_type> options = {
       {"model_name", "squeezenet_v1.1"},
-      {"download_path",
-       "./"} // TODO: figure out the cache directory in TuriCreate
+      {"download_path", base_directory}
   };
 
   feature_extractor.init_options(options);

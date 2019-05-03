@@ -25,6 +25,7 @@ ImageClassification::ImageClassification(
     const std::vector<std::string> &data_columns,
     const std::string &annotation_column)
     : AnnotationBase(data, data_columns, annotation_column) {
+
   /*
   m_image_features =
       std::async(std::launch::async,
