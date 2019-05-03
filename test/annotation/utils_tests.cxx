@@ -78,9 +78,11 @@ public:
 };
 
 BOOST_FIXTURE_TEST_SUITE(_utils_test, utils_test)
+#ifdef __APPLE__
 BOOST_AUTO_TEST_CASE(test_featurize_images) {
   utils_test::test_featurize_images();
 }
+#endif
 BOOST_AUTO_TEST_CASE(test_most_similar_items) {
   utils_test::test_most_similar_items();
 }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import style from './index.module.css';
+import style from './index.module.scss';
 
 
 class NavigationBar extends Component{
@@ -22,9 +22,9 @@ class NavigationBar extends Component{
         var image_number = parseInt(this.state.value,10);
         this.setState({value:''});
         this.getIndex(image_number);
-        
+
         if (this.props.infiniteScroll){
-        	this.props.toggleInfiniteScroll();
+          this.props.toggleInfiniteScroll();
         }
       }
     }
@@ -39,14 +39,14 @@ class NavigationBar extends Component{
   }
  
 render(){
-	return (
-		<div className="BottomBar">
-		<div className="jumpToImageContainer">
-		<input className="imageNumber" type="text" value={this.state.value} onChange={this.handleChange} id="imgNum" onKeyDown={this.enterPressJumpRow} placeholder="Image #"/>
-		</div>
-		</div>
-		);
-	}
+  return (
+    <div className="BottomBar">
+      <div className="jumpToImageContainer">
+        <input className="imageNumber" type="text" value={this.state.value} onChange={this.handleChange} id="imgNum" onKeyDown={this.enterPressJumpRow} placeholder="Image #"/>
+      </div>
+    </div>
+    );
+  }
 };
 
 export default NavigationBar;

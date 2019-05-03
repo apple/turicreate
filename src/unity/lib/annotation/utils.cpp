@@ -15,26 +15,6 @@ bool is_integer(std::string s) {
   return (*p == 0);
 }
 
-#ifdef __APPLE__
-gl_sarray featurize_images(const gl_sarray &images) {
-  DASSERT_EQ(images.dtype(), flex_type_enum::IMAGE);
-
-  image_deep_feature_extractor::image_deep_feature_extractor_toolkit
-      feature_extractor =
-          image_deep_feature_extractor::image_deep_feature_extractor_toolkit();
-
-  std::map<std::string, flexible_type> options = {
-      {"model_name", "squeezenet_v1.1"},
-      {"download_path",
-       "./"} // TODO: figure out the cache directory in TuriCreate
-  };
-
-  feature_extractor.init_options(options);
-
-  return feature_extractor.sarray_extract_features(images, false, 6);
-}
-#endif
-
 float vectors_distance(const std::vector<double> &a,
                        const std::vector<double> &b) {
   DASSERT_EQ(a.size(), b.size());
@@ -70,6 +50,26 @@ std::vector<flexible_type> similar_items(const gl_sarray &distances,
 
   return std::shared_ptr<unity_sarray>(head_gl_sorted)->to_vector();
 }
+
+#ifdef __APPLE__
+gl_sarray featurize_images(const gl_sarray &images) {
+  DASSERT_EQ(images.dtype(), flex_type_enum::IMAGE);
+
+  image_deep_feature_extractor::image_deep_feature_extractor_toolkit
+      feature_extractor =
+          image_deep_feature_extractor::image_deep_feature_extractor_toolkit();
+
+  std::map<std::string, flexible_type> options = {
+      {"model_name", "squeezenet_v1.1"},
+      {"download_path",
+       "./"} // TODO: figure out the cache directory in TuriCreate
+  };
+
+  feature_extractor.init_options(options);
+
+  return feature_extractor.sarray_extract_features(images, false, 6);
+}
+#endif
 
 } // namespace annotate
 } // namespace turi
