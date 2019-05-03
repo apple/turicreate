@@ -6,10 +6,6 @@
 #include <Eigen/Core>
 #include <boost/gil/gil_all.hpp>
 
-/* BEGIN 
- * TODO: Add the necessary linear algebra to compute the transformation matrix
- */
-
 namespace warp_perspective {
 
 Eigen::MatrixXf get_2D_to_3D(int width, int height) {
@@ -67,10 +63,6 @@ Eigen::Matrix<float, 3, 3> get_transformation_matrix(
   Eigen::MatrixXf A2  = get_3D_to_2D(focal, width, height);
   return (A2 * (T * (R * A1)));
 }
-
-/* END 
- * TODO: Add the necessary linear algebra to compute the transformation matrix
- */
 
 }
 
