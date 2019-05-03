@@ -41,12 +41,12 @@ float vectors_distance(const std::vector<double> &a,
 
 bool is_integer(std::string s);
 
+std::vector<flexible_type> similar_items(const gl_sarray &distances,
+                                         size_t index, size_t k);
+
 #ifdef __APPLE__
 gl_sarray featurize_images(const gl_sarray &images);
 #endif
-
-std::vector<flexible_type> similar_items(const gl_sarray &distances,
-                                         size_t index, size_t k);
 
 } // namespace annotate
 } // namespace turi

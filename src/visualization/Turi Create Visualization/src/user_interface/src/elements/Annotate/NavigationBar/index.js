@@ -3,7 +3,6 @@ import style from './index.module.scss';
 
 
 class NavigationBar extends Component{
-
   constructor(props){
     super(props);
     this.state = {value:''};
@@ -17,7 +16,6 @@ class NavigationBar extends Component{
 
   enterPressJumpRow(e) {
     if(e.keyCode == 13){
-
       if(this.state.value != null){
         var image_number = parseInt(this.state.value,10);
         this.setState({value:''});
@@ -37,14 +35,20 @@ class NavigationBar extends Component{
       this.props.getAnnotations((index - 1), index + 1);
     }
   }
- 
-render(){
-  return (
-    <div className="BottomBar">
-      <div className="jumpToImageContainer">
-        <input className="imageNumber" type="text" value={this.state.value} onChange={this.handleChange} id="imgNum" onKeyDown={this.enterPressJumpRow} placeholder="Image #"/>
+
+  render(){
+    return (
+      <div className="BottomBar">
+        <div className="jumpToImageContainer">
+          <input className="imageNumber"
+                 id={"imgNum"}
+                 onChange={this.handleChange}
+                 onKeyDown={this.enterPressJumpRow}
+                 placeholder={"Image #"}
+                 type={"text"}
+                 value={this.state.value}/>
+        </div>
       </div>
-    </div>
     );
   }
 };
