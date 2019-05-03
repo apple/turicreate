@@ -9,6 +9,7 @@
 #include <string>
 #include <serialization/serialization_includes.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/gil/typedefs.hpp>
 
 const char IMAGE_TYPE_CURRENT_VERSION = 0;
 
@@ -53,6 +54,8 @@ public:
   /// Construct from existing data
   image_type(const char* image_data, size_t height, size_t width,
              size_t channels, size_t image_data_size, int version, int format);
+  /// Construct from a Boost GIL rgb8 Image
+  explicit image_type(const boost::gil::rgb8_image_t& gil_image);
   /// Check whether image is decoded
   inline bool is_decoded() const { return m_format == Format::RAW_ARRAY; }
   /// Serialization
