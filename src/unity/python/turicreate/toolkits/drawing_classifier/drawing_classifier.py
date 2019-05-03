@@ -85,11 +85,13 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     warm_start : string optional
         A string to denote which pretrained model to use. Set to "auto"
         by default which uses a model trained on 245 of the 345 classes in the
-        Quick, Draw! dataset. Here is a list of all the pretrained models that
+        Quick, Draw! dataset. To disable warm start, pass in None to this 
+        argument. Here is a list of all the pretrained models that
         can be passed in as this argument:
         "auto": Uses quickdraw_245_v0
         "quickdraw_245_v0": Uses a model trained on 245 of the 345 classes in the
                          Quick, Draw! dataset.
+        None: No Warm Start
 
     batch_size: int optional
         The number of drawings per training step. If not set, a default
@@ -132,6 +134,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     from .._mxnet import _mxnet_utils
     
     start_time = _time.time()
+    accepted_values_for_warm_start = ["auto", "quickdraw_245_v0", None]
 
     # @TODO: Should be able to automatically choose number of iterations
     # based on data size: Tracked in Github Issue #1576
@@ -226,6 +229,14 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     model_params.initialize(_mx.init.Xavier(), ctx=ctx)
 
     if warm_start is not None:
+        if type(warm_start) is not str:
+            raise TypeError("'warm_start' must be a string or None. " 
+                + "'warm_start' can take in the following values: " 
+                + str(accepted_values_for_warm_start))
+        if warm_start not in accepted_values_for_warm_start:
+            raise _ToolkitError("Unrecognized value for 'warm_start': " 
+                + warm_start + ". 'warm_start' can take in the following " 
+                + "values: " + str(accepted_values_for_warm_start))
         pretrained_model = _pre_trained_models.DrawingClassifierPreTrainedModel(
             warm_start)
         pretrained_model_params_path = pretrained_model.get_model_path()

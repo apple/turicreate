@@ -29,10 +29,10 @@ make_library(image_io OBJECT
     jpeg_io.cpp
     png_io.cpp
   REQUIRES
-    libpng		
-    libjpeg		
-    logger		
-    fileio		
+    libpng
+    libjpeg
+    logger
+    fileio
   EXTERNAL_VISIBILITY
 )
 

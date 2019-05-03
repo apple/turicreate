@@ -84,6 +84,9 @@ EXPORT std::vector<toolkit_function_specification> get_toolkit_function_registra
                         "unity_predictions", "metric", "kwargs");
   REGISTER_FUNCTION(compute_classifier_metrics, "data", "target", "prediction",
                     "metric", "options");
+  REGISTER_FUNCTION(compute_object_detection_metrics, "data",
+                    "annotations_column_name", "image_column_name",
+                    "prediction", "options");
   return specs;
 }
 

@@ -46,6 +46,14 @@ public:
     std::string annotations_column_name;
 
     /**
+     * Optional name of a column containing predictions.
+     *
+     * If not empty, then the iterator will parse and yield a secondary stream
+     * of bounding boxes, intended for use in evaluating existing predictions.
+     */
+    std::string predictions_column_name;
+
+    /**
      * The name of the column containing the images.
      *
      * Each value is either an image or a path to an image file on disk.
@@ -57,6 +65,8 @@ public:
      *
      * If empty, then the labels will be inferred from the data. If non-empty,
      * an exception will be thrown upon encountering an unexpected label.
+     *
+     * \TODO: This should be a flex_list to accomodate integer labels!
      */
     std::vector<std::string> class_labels;
 
@@ -136,6 +146,7 @@ private:
 
   gl_sframe data_;
   const size_t annotations_index_;
+  const ssize_t predictions_index_;
   const size_t image_index_;
   const bool repeat_;
   const bool shuffle_;

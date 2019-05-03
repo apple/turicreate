@@ -10,9 +10,9 @@ import argparse
 import subprocess
 
 # The build image version that will be used for testing
-TC_BUILD_IMAGE_VERSION="1.0.7"
 SCRIPT_DIR=os.path.dirname(__file__)
 WORKSPACE=os.path.abspath(os.path.join(SCRIPT_DIR, '..'))
+TC_BUILD_IMAGE_1004=subprocess.check_output(['bash', os.path.join(WORKSPACE, 'scripts', 'get_docker_image.sh'), '--ubuntu=10.04']).strip()
 
 def run_in_docker(cmd, workdir='/build'):
     if not(isinstance(cmd, list)):
@@ -20,7 +20,7 @@ def run_in_docker(cmd, workdir='/build'):
     subprocess.check_call(['docker', 'run', '--rm', '-m=4g',
         '--mount', 'type=bind,source=' + WORKSPACE + ',target=/build,consistency=delegated',
         '-w=%s' % workdir,
-        'turicreate/build-image-10.04:' + TC_BUILD_IMAGE_VERSION] + cmd)
+        TC_BUILD_IMAGE_1004] + cmd)
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(

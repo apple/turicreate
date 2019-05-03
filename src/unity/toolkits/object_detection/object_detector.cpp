@@ -12,7 +12,6 @@
 #include <cstdio>
 #include <iostream>
 #include <limits>
-#include <numeric>
 #include <queue>
 #include <utility>
 #include <vector>
@@ -90,19 +89,6 @@ const std::vector<std::pair<float, float>>& anchor_boxes() {
       });
   return *default_boxes;
 };
-
-// For computing average precision averaged over IOU thresholds from 50% to 90%,
-// at intervals of 5%, as popularized by COCO.
-std::vector<float> iou_thresholds_for_evaluation() {
-
-  std::vector<float> result;
-
-  for (float x = 50.f; x < 100.f; x += 5.f) {
-    result.push_back(x / 100.f);
-  }
-
-  return result;
-}
 
 // These are the fixed values that the Python implementation currently passes
 // into TCMPS.
@@ -400,8 +386,7 @@ variant_map_type object_detector::perform_evaluation(gl_sframe data,
       get_model_params());
 
   // Initialize the metric calculator
-  average_precision_calculator calculator(
-      class_labels.size(), iou_thresholds_for_evaluation());
+  average_precision_calculator calculator(class_labels);
 
   // To support double buffering, use a queue of pending inference results.
   std::queue<image_augmenter::result> pending_batches;
@@ -472,53 +457,23 @@ variant_map_type object_detector::perform_evaluation(gl_sframe data,
 
   // Compute the average precision (area under the precision-recall curve) for
   // each combination of IOU threshold and class label.
-  std::vector<std::map<float,float>> raw_average_precisions =
-      calculator.evaluate();
-  ASSERT_EQ(class_labels.size(), raw_average_precisions.size());
+  variant_map_type result_map = calculator.evaluate();
 
-  std::vector<float> average_precision_50(class_labels.size());
-  std::vector<float> average_precision(class_labels.size());
-  for (size_t i = 0; i < class_labels.size(); ++i) {
-
-    // Extract the average precision for this class at IOU threshold 50%.
-    average_precision_50[i] = raw_average_precisions[i].at(0.5f);
-
-    // Compute the average precision for this class averaged over all the IOU
-    // threshold.
-    float sum = 0.f;
-    for (const auto& threshold_and_ap : raw_average_precisions[i]) {
-      sum += threshold_and_ap.second;
-    }
-    average_precision[i] = sum /= raw_average_precisions[i].size();
+  // Trim undesired metrics from the final result. (For consistency with other
+  // toolkits. In this case, almost all of the work is shared across metrics.)
+  if (std::find(metrics.begin(), metrics.end(), AP) == metrics.end()) {
+    result_map.erase(AP);
+  }
+  if (std::find(metrics.begin(), metrics.end(), AP50) == metrics.end()) {
+    result_map.erase(AP50);
+  }
+  if (std::find(metrics.begin(), metrics.end(), MAP50) == metrics.end()) {
+    result_map.erase(MAP50);
+  }
+  if (std::find(metrics.begin(), metrics.end(), MAP) == metrics.end()) {
+    result_map.erase(MAP);
   }
 
-  // Store the requested summary statistics.
-  auto create_dict = [&class_labels](const std::vector<float>& v) {
-    flex_dict class_dict;
-    class_dict.reserve(class_labels.size());
-    for (size_t i = 0; i < class_labels.size(); ++i) {
-      class_dict.emplace_back(class_labels[i], v[i]);
-    }
-    return class_dict;
-  };
-  auto compute_mean = [](const std::vector<float>& v) {
-    return std::accumulate(v.begin(), v.end(), 0.f) / v.size();
-  };
-  variant_map_type result_map;
-  
-  if (std::find(metrics.begin(), metrics.end(), AP) != metrics.end()) {
-    result_map[AP] = create_dict(average_precision);
-  }
-  if (std::find(metrics.begin(), metrics.end(), AP50) != metrics.end()) {
-    result_map[AP50] = create_dict(average_precision_50);
-  }
-  if (std::find(metrics.begin(), metrics.end(), MAP50) != metrics.end()) {
-    result_map[MAP50] = compute_mean(average_precision_50);
-  }
-  if (std::find(metrics.begin(), metrics.end(), MAP) != metrics.end()) {
-    result_map[MAP] = compute_mean(average_precision);
-  }
-  
   return result_map;
 }
 
