@@ -44,8 +44,9 @@ public:
                                        "features");
   END_CLASS_MEMBER_REGISTRATION
 private:
+  /*
   std::future<std::shared_ptr<unity_sarray>> m_image_features;
-
+  */
   void _addAnnotationToSFrame(size_t index, std::string label);
   void _addAnnotationToSFrame(size_t index, int label);
 

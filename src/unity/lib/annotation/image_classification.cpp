@@ -206,9 +206,11 @@ void ImageClassification::_addAnnotationToSFrame(size_t index,
 
 void ImageClassification::add_image_features(
     const std::shared_ptr<unity_sarray> &data) {
+  /*
   std::promise<std::shared_ptr<unity_sarray>> setter;
   m_image_features = setter.get_future();
   setter.set_value(data);
+  */
 }
 
 void ImageClassification::_addAnnotationToSFrame(size_t index, int label) {
