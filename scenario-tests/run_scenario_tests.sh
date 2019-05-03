@@ -3,12 +3,13 @@
 set -e
 set -x
 
-# The build image version that will be used for testing
-TC_BUILD_IMAGE_VERSION=1.0.7
-
 SCENARIO_TESTS_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 cd $SCENARIO_TESTS_DIR
 WORKSPACE=${SCENARIO_TESTS_DIR}/..
+
+# The build image version that will be used for testing
+TC_BUILD_IMAGE_1404=$(sh $WORKSPACE/scripts/get_docker_image.sh --ubuntu=14.04)
+TC_BUILD_IMAGE_1804=$(sh $WORKSPACE/scripts/get_docker_image.sh --ubuntu=18.04)
 
 function print_help {
   echo "Executes all scenario tests using a given egg location"
@@ -83,13 +84,13 @@ if [[ -n "${USE_DOCKER}" ]]; then
     docker run --rm -m=4g \
       --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
       -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
-      turicreate/build-image-14.04:${TC_BUILD_IMAGE_VERSION} \
+      ${TC_BUILD_IMAGE_1404} \
       /build/scenario-tests/run_scenario_tests.sh $TC_WHEEL_UNDER_TEST
   elif [[ "${DOCKER_PYTHON}" == "3.6" ]]; then
     docker run --rm -m=4g \
       --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
       -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
-      turicreate/build-image-18.04:${TC_BUILD_IMAGE_VERSION} \
+      ${TC_BUILD_IMAGE_1804} \
       /build/scenario-tests/run_scenario_tests.sh $TC_WHEEL_UNDER_TEST
   else
     echo "Invalid docker python version detected: ${DOCKER_PYTHON}"

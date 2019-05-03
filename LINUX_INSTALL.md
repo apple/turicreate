@@ -1,10 +1,10 @@
 # Linux Installation Instructions
 
 The minimum requirements are:
- - python 2.7 
- - glibc >= 2.11 (Centos >= 6, Ubuntu >= 10.04)
- - For Neural Network support, glibc >= 2.17 is needed (Centos >= 7 and Ubuntu >= 13.04)
- - libstdc++ >= 6.0.19 (Ubuntu >= 14.04 or equivalent, or newer libstdc++ installed on an older distribution)
+ - python 2.7, 3.5, or 3.6 (support for 3.7 pending #788)
+ - glibc >= 2.10 (Centos >= 6, Ubuntu >= 9.10, or equivalent)
+ - For Neural Network support, glibc >= 2.17 is needed (Centos >= 7, Ubuntu >= 13.04, or equivalent)
+ - libstdc++ >= 6.0.19 (Ubuntu >= 14.04 or equivalent, or GCC 4.8.3 or later)
  - libgconf-2-4 (on Ubuntu 17.10 and later)
 
 ## Ubuntu

@@ -20,6 +20,7 @@
 
 #include <unity/toolkits/activity_classification/class_registrations.hpp>
 #include <unity/toolkits/object_detection/class_registrations.hpp>
+#include <unity/toolkits/object_detection/one_shot_object_detection/class_registrations.hpp>
 #include <unity/toolkits/drawing_classifier/class_registrations.hpp>
 
 #include <unity/toolkits/evaluation/metrics.hpp>
@@ -136,6 +137,9 @@ void register_models(toolkit_class_registry& registry) {
 
   // Object Detection
   registry.register_toolkit_class(turi::object_detection::get_toolkit_class_registration());
+
+  // One Shot Object Detection
+  registry.register_toolkit_class(turi::one_shot_object_detection::get_toolkit_class_registration());
   
   // Activity Classification
   registry.register_toolkit_class(turi::activity_classification::get_toolkit_class_registration());

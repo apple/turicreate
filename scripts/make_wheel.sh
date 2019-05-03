@@ -2,13 +2,6 @@
 
 set -e
 
-# The build image version that will be used for building
-TC_BUILD_IMAGE_VERSION=1.0.7
-
-# Force LD_LIBRARY_PATH to look up from deps
-# Otherwise, binaries run during compilation will prefer system libraries,
-# which might not use the correct glibc version.
-
 PYTHON_SCRIPTS=deps/env/bin
 if [[ $OSTYPE == msys ]]; then
   PYTHON_SCRIPTS=deps/conda/bin/Scripts
@@ -17,7 +10,9 @@ fi
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 WORKSPACE=${SCRIPT_DIR}/..
 build_type="release"
-#export LD_LIBRARY_PATH=${ROOT_DIR}/deps/local/lib:${ROOT_DIR}/deps/local/lib64:$LD_LIBRARY_PATH
+
+# The build image version that will be used for building
+TC_BUILD_IMAGE_1004=$(sh $WORKSPACE/scripts/get_docker_image.sh --ubuntu=10.04)
 
 unknown_option() {
   echo "Unknown option $1. Exiting."
@@ -106,12 +101,15 @@ if [[ -n "${USE_DOCKER}" ]]; then
   # set up arguments to make_wheel.sh within docker
   # always skip smoke test since it (currently) fails on 10.04
   # always skip doc gen since it (currently) fails on 10.04
-  make_wheel_args="--build_number=$BUILD_NUMBER --num_procs=$NUM_PROCS --skip_smoke_test --skip_doc --skip_test"
+  make_wheel_args="--build_number=$BUILD_NUMBER --num_procs=$NUM_PROCS --skip_test"
   if [[ -n $SKIP_BUILD ]]; then
     make_wheel_args="$make_wheel_args --skip_build"
   fi
   if [[ -n $SKIP_CPP_TEST ]]; then
     make_wheel_args="$make_wheel_args --skip_cpp_test"
+  fi
+  if [[ -n $SKIP_DOC ]]; then
+    make_wheel_args="$make_wheel_args --skip_doc"
   fi
   if [[ "$build_type" == "debug" ]]; then
     make_wheel_args="$make_wheel_args --debug"
@@ -123,7 +121,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
   docker run --rm -m=8g \
     --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
     -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
-    turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} \
+    ${TC_BUILD_IMAGE_1004} \
     /build/scripts/make_wheel.sh \
     $make_wheel_args
 
@@ -132,7 +130,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
   docker run --rm -m=4g \
     --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
     -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
-    turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} \
+    ${TC_BUILD_IMAGE_1004} \
     rm -rf /build/deps/env
 
   # Run the tests inside Docker (14.04) if desired
@@ -142,16 +140,12 @@ if [[ -n "${USE_DOCKER}" ]]; then
     ./scripts/test_wheel.sh --docker-python${DOCKER_PYTHON}
   fi
 
-  if [[ -n $SKIP_DOC ]]; then
-    echo "TODO: run the pydoc build in Docker if requested"
-  fi
-
   # Delete env to force re-creation of virtualenv for next build
   # (to prevent reuse of 14.04/18.04 virtualenv on 10.04)
   docker run --rm -m=4g \
     --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
     -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
-    turicreate/build-image-10.04:${TC_BUILD_IMAGE_VERSION} \
+    ${TC_BUILD_IMAGE_1004} \
     rm -rf /build/deps/env
 
   exit 0

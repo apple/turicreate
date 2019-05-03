@@ -188,7 +188,7 @@ class EXPORT activity_classifier: public ml_model_base {
   // TODO: Expose via forthcoming C-API checkpointing mechanism?
   virtual void init_train(gl_sframe data, std::string target_column_name,
                           std::string session_id_column_name,
-                          variant_type validation_data,
+                          gl_sframe validation_data,
                           std::map<std::string, flexible_type> opts);
   virtual void perform_training_iteration();
 

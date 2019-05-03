@@ -210,7 +210,7 @@ class TCEvaluation extends Component {
                               iterations={this.props.spec.max_iterations}
                               precision={this.props.spec.precision}
                               recall={this.props.spec.recall}
-                              model_type={"Resnet-50"}
+                              model_type={this.props.spec.model_name}
                               accuracy_visible={this.state.accuracy_visible}
                               precision_visible={this.state.precision_visible}
                               f1_score_visible={this.state.f1_score_visible}

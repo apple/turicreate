@@ -317,3 +317,9 @@ class DrawingClassifierFromScratchTest(DrawingClassifierTest):
         super(DrawingClassifierFromScratchTest, self).setUpClass(
             warm_start=None)
 
+class DrawingClassifierUsingQuickdraw245(DrawingClassifierTest):
+    @classmethod
+    def setUpClass(self):
+        super(DrawingClassifierUsingQuickdraw245, self).setUpClass(
+            warm_start="quickdraw_245_v0")
+

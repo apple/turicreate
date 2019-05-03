@@ -9,6 +9,7 @@
 
 #include <vector>
 
+#include <unity/lib/variant.hpp>
 #include <unity/toolkits/neural_net/image_augmentation.hpp>
 
 namespace turi {
@@ -34,16 +35,19 @@ class average_precision_calculator {
 public:
 
   /**
-   * \param num_classes The number of class labels. Each prediction and ground
-   *            truth annotation must have a nonnegative identifier smaller than
-   *            this value.
+   * \param class_labels Each prediction and ground truth annotation must have a
+                nonnegative identifier indexing into this list.
    * \param iou_thresholds The IOU (intersection over union) thresholds at which
    *            to compute the average precisions. This threshold determines
    *            whether a predicted bounding box and a ground truth bounding box
    *            are considered to match.
    */
-  average_precision_calculator(size_t num_classes,
+  average_precision_calculator(flex_list class_labels,
                                std::vector<float> iou_thresholds);
+
+  // Variant of above that uses the default list of iou_thresholds, ranging from
+  // 0.5 to 0.95 with a step size of 0.05.
+  explicit average_precision_calculator(flex_list class_labels);
 
   /**
    * Registers the predictions and ground truth annotations for one image.
@@ -55,14 +59,25 @@ public:
    * Computes the average precision for each combination of class and requested
    * IOU threshold.
    *
-   * \return A vector, indexed by class identifier, of maps associating IOU
-   *         threshold to average precision.
+   * \return A map of evaluation results keyed by metric.
    *
-   * Each value is the average precision for a specific class label with a
-   * specific IOU threshold. This metric can be interpreted as the area under
-   * the precision-recall curve.
+   * The average precision can be interpreted as the area under the
+   * precision-recall curve.
+   *
+   * average_precision_50 is a dictionary mapping class label to the average
+   * precision for that class label at 50% IOU.
+   *
+   * average_precision is a dictionary mapping class label to the average
+   * precision for that class label, average across IOU thresholds from 50% to
+   * 95%.
+   *
+   * mean_average_precision_50 is the mean across class labels of the
+   * average_precision_50 values.
+   *
+   * mean_average_precision is the mean across class labels of the
+   * average_precision values.
    */
-  std::vector<std::map<float,float>> evaluate();
+  variant_map_type evaluate();
 
 private:
 
@@ -96,6 +111,7 @@ private:
     std::vector<size_t> ground_truth_indices;
   };
 
+  flex_list class_labels_;
   std::vector<class_data> data_;
   std::vector<float> iou_thresholds_;
 };

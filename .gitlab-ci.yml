@@ -1,38 +1,16 @@
 stages:
-  - create_images
   - build
   - test
+  - collect_artifacts
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
     - .docker_ccache
 
-create_images:
-  tags:
-    - docker-in-docker
-  services:
-    - docker:dind
-  image: docker:stable
-  stage: create_images
-  variables:
-    DOCKER_HOST: tcp://docker:2375/
-    DOCKER_DRIVER: overlay2
-  script:
-    - apk add bash
-    # clear target out of the cache, in case it's there from a previous build
-    - rm -rf target
-    # build each, if needed (skips if version is already in the cache)
-    - bash scripts/create_docker_images.sh --persist_to_repo_dir
-  artifacts:
-    expire_in: 2 weeks
-    paths:
-      - .docker_images/
-
-
 build_wheel_debug_linux_python27:
   tags:
-    - docker-in-docker
+    - docker
   services:
     - docker:dind
   image: docker:stable
@@ -42,16 +20,15 @@ build_wheel_debug_linux_python27:
     DOCKER_DRIVER: overlay2
   script:
     - apk add bash
-    - docker load -i .docker_images/image-10.04.gz
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --debug --docker-python2.7 --skip_doc
   artifacts:
-    expire_in: 2 weeks
+    expire_in: 1 day
     paths:
       - target/
 
 build_wheel_linux_python27:
   tags:
-    - docker-in-docker
+    - docker
   services:
     - docker:dind
   image: docker:stable
@@ -61,16 +38,15 @@ build_wheel_linux_python27:
     DOCKER_DRIVER: overlay2
   script:
     - apk add bash
-    - docker load -i .docker_images/image-10.04.gz
-    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python2.7 --skip_doc
+    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python2.7
   artifacts:
-    expire_in: 2 weeks
+    expire_in: 1 day
     paths:
       - target/
 
 build_wheel_linux_python35:
   tags:
-    - docker-in-docker
+    - docker
   services:
     - docker:dind
   image: docker:stable
@@ -80,16 +56,15 @@ build_wheel_linux_python35:
     DOCKER_DRIVER: overlay2
   script:
     - apk add bash
-    - docker load -i .docker_images/image-10.04.gz
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.5 --skip_doc
   artifacts:
-    expire_in: 2 weeks
+    expire_in: 1 day
     paths:
       - target/
 
 build_wheel_linux_python36:
   tags:
-    - docker-in-docker
+    - docker
   services:
     - docker:dind
   image: docker:stable
@@ -99,55 +74,66 @@ build_wheel_linux_python36:
     DOCKER_DRIVER: overlay2
   script:
     - apk add bash
-    - docker load -i .docker_images/image-10.04.gz
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.6 --skip_doc
   artifacts:
-    expire_in: 2 weeks
+    expire_in: 1 day
     paths:
       - target/
 
 build_wheel_mac_10_14_python27:
   tags:
     - macos10.14
+  only:
+    variables:
+      - $TC_HAS_MACOS_RUNNERS == "1"
   stage: build
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - source scripts/use_ccache.sh
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
   artifacts:
-    expire_in: 2 weeks
+    expire_in: 1 day
     paths:
       - target/
 
 build_wheel_mac_10_14_python35:
   tags:
     - macos10.14
+  only:
+    variables:
+      - $TC_HAS_MACOS_RUNNERS == "1"
   stage: build
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.5/bin/virtualenv"
     - source scripts/use_ccache.sh
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
   artifacts:
-    expire_in: 2 weeks
+    expire_in: 1 day
     paths:
       - target/
 
 build_wheel_mac_10_14_python36:
   tags:
     - macos10.14
+  only:
+    variables:
+      - $TC_HAS_MACOS_RUNNERS == "1"
   stage: build
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.6/bin/virtualenv"
     - source scripts/use_ccache.sh
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
   artifacts:
-    expire_in: 2 weeks
+    expire_in: 1 day
     paths:
       - target/
 
 build_dylib_macos_10_14:
   tags:
     - macos10.14
+  only:
+    variables:
+      - $TC_HAS_MACOS_RUNNERS == "1"
   stage: build
   script:
     - source scripts/use_ccache.sh
@@ -155,7 +141,7 @@ build_dylib_macos_10_14:
     - cd release/src/objc
     - make -j8
   artifacts:
-    expire_in: 2 weeks
+    expire_in: 1 day
     paths:
       - release/src/objc/libAudioPreprocessing.dylib
       - release/src/objc/libRecommender.dylib
@@ -163,6 +149,9 @@ build_dylib_macos_10_14:
 build_dylib_ios_12:
   tags:
     - macos10.14
+  only:
+    variables:
+      - $TC_HAS_MACOS_RUNNERS == "1"
   stage: build
   script:
     - source scripts/use_ccache.sh
@@ -170,14 +159,14 @@ build_dylib_ios_12:
     - cd release/src/objc
     - make -j8
   artifacts:
-    expire_in: 2 weeks
+    expire_in: 1 day
     paths:
       - release/src/objc/libAudioPreprocessing.dylib
       - release/src/objc/libRecommender.dylib
 
 test_cpp_linux:
   tags:
-    - docker-in-docker
+    - docker
   services:
     - docker:dind
   image: docker:stable
@@ -186,7 +175,6 @@ test_cpp_linux:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
   dependencies:
-    - create_images
     - build_wheel_linux_python27
   script:
     - apk add bash
@@ -196,6 +184,9 @@ test_cpp_linux:
 test_cpp_mac_10_13:
   tags:
     - macos10.13
+  only:
+    variables:
+      - $TC_HAS_MACOS_RUNNERS == "1"
   stage: test
   dependencies:
     - build_wheel_mac_10_14_python27
@@ -212,6 +203,9 @@ test_cpp_mac_10_13:
 test_cpp_mac_10_14:
   tags:
     - macos10.14
+  only:
+    variables:
+      - $TC_HAS_MACOS_RUNNERS == "1"
   stage: test
   dependencies:
     - build_wheel_mac_10_14_python27
@@ -227,7 +221,7 @@ test_cpp_mac_10_14:
 
 test_python_linux_python27:
   tags:
-    - docker-in-docker
+    - docker
   services:
     - docker:dind
   image: docker:stable
@@ -236,7 +230,6 @@ test_python_linux_python27:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
   dependencies:
-    - create_images
     - build_wheel_linux_python27
   script:
     - apk add bash
@@ -249,7 +242,7 @@ test_python_linux_python27:
 
 test_python_linux_python35:
   tags:
-    - docker-in-docker
+    - docker
   services:
     - docker:dind
   image: docker:stable
@@ -258,7 +251,6 @@ test_python_linux_python35:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
   dependencies:
-    - create_images
     - build_wheel_linux_python35
   script:
     - apk add bash
@@ -271,7 +263,7 @@ test_python_linux_python35:
 
 test_python_linux_python36:
   tags:
-    - docker-in-docker
+    - docker
   services:
     - docker:dind
   image: docker:stable
@@ -280,7 +272,6 @@ test_python_linux_python36:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
   dependencies:
-    - create_images
     - build_wheel_linux_python36
   script:
     - apk add bash
@@ -295,6 +286,9 @@ test_python_linux_python36:
 test_python_mac_python27_10_13:
   tags:
     - macos10.13
+  only:
+    variables:
+      - $TC_HAS_MACOS_RUNNERS == "1"
   stage: test
   dependencies:
     - build_wheel_mac_10_14_python27
@@ -310,6 +304,9 @@ test_python_mac_python27_10_13:
 test_python_mac_python27_10_14:
   tags:
     - macos10.14
+  only:
+    variables:
+      - $TC_HAS_MACOS_RUNNERS == "1"
   stage: test
   dependencies:
     - build_wheel_mac_10_14_python27
@@ -325,6 +322,9 @@ test_python_mac_python27_10_14:
 test_python_mac_python35_10_14:
   tags:
     - macos10.14
+  only:
+    variables:
+      - $TC_HAS_MACOS_RUNNERS == "1"
   stage: test
   dependencies:
     - build_wheel_mac_10_14_python35
@@ -340,6 +340,9 @@ test_python_mac_python35_10_14:
 test_python_mac_python36_10_14:
   tags:
     - macos10.14
+  only:
+    variables:
+      - $TC_HAS_MACOS_RUNNERS == "1"
   stage: test
   dependencies:
     - build_wheel_mac_10_14_python36
@@ -354,7 +357,7 @@ test_python_mac_python36_10_14:
 
 scenario_tests_linux_python27:
   tags:
-    - docker-in-docker
+    - docker
   services:
     - docker:dind
   image: docker:stable
@@ -371,7 +374,7 @@ scenario_tests_linux_python27:
 
 scenario_tests_linux_python35:
   tags:
-    - docker-in-docker
+    - docker
   services:
     - docker:dind
   image: docker:stable
@@ -388,7 +391,7 @@ scenario_tests_linux_python35:
 
 scenario_tests_linux_python36:
   tags:
-    - docker-in-docker
+    - docker
   services:
     - docker:dind
   image: docker:stable
@@ -406,6 +409,9 @@ scenario_tests_linux_python36:
 scenario_tests_mac_python27_10_13:
   tags:
     - macos10.13
+  only:
+    variables:
+      - $TC_HAS_MACOS_RUNNERS == "1"
   stage: test
   dependencies:
     - build_wheel_mac_10_14_python27
@@ -417,6 +423,9 @@ scenario_tests_mac_python27_10_13:
 scenario_tests_mac_python27_10_14:
   tags:
     - macos10.14
+  only:
+    variables:
+      - $TC_HAS_MACOS_RUNNERS == "1"
   stage: test
   dependencies:
     - build_wheel_mac_10_14_python27
@@ -424,3 +433,28 @@ scenario_tests_mac_python27_10_14:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - cd scenario-tests
     - ./run_scenario_tests.sh ../target/turicreate-*.whl
+
+collect_artifacts:
+  tags:
+    - docker
+  services:
+    - docker:dind
+  image: alpine:latest
+  stage: collect_artifacts
+  dependencies:
+    - build_dylib_ios_12
+    - build_dylib_macos_10_14
+    - build_wheel_linux_python27
+    - build_wheel_linux_python35
+    - build_wheel_linux_python36
+    - build_wheel_mac_10_14_python27
+    - build_wheel_mac_10_14_python35
+    - build_wheel_mac_10_14_python36
+  script:
+    - mv release/src/objc/*.dylib target/
+    - rmdir -p release || find release
+  artifacts:
+    expire_in: 2 weeks
+    paths:
+      - target/
+
