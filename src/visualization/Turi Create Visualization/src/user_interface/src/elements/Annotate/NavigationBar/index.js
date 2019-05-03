@@ -4,31 +4,28 @@ import style from './index.module.css';
 
 class NavigationBar extends Component{
 
-constructor(props){
-  super(props);
-  this.state = {value:''};
-  this.handleChange = this.handleChange.bind(this);
-  this.enterPressJumpRow = this.enterPressJumpRow.bind(this);
-}
+  constructor(props){
+    super(props);
+    this.state = {value:''};
+    this.handleChange = this.handleChange.bind(this);
+    this.enterPressJumpRow = this.enterPressJumpRow.bind(this);
+  }
 
-handleChange(event){
-  this.setState({value: event.target.value});
-};
+  handleChange(event){
+    this.setState({value: event.target.value});
+  };
 
-enterPressJumpRow(e) {
+  enterPressJumpRow(e) {
     if(e.keyCode == 13){
 
       if(this.state.value != null){
-      var image_number = parseInt(this.state.value,10);
-      this.setState({value:''});
-      
-      this.getIndex(image_number)
-      if (this.props.infiniteScroll)
-      	{
-      	this.props.toggleInfiniteScroll();
+        var image_number = parseInt(this.state.value,10);
+        this.setState({value:''});
+        this.getIndex(image_number);
+        
+        if (this.props.infiniteScroll){
+        	this.props.toggleInfiniteScroll();
         }
-
-      
       }
     }
   }

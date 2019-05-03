@@ -5,10 +5,6 @@ import Labels from './Labels';
 	
 class LabelContainer extends Component {
 
-  renderLabels = () => {
-    
-  }
-
   setAnnotation = (name) => {
     if(!this.props.infiniteScroll){
       this.props.setAnnotation(this.props.incrementalCurrentIndex, name);

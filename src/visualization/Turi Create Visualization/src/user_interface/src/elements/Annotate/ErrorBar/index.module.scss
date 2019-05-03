@@ -1,51 +1,51 @@
 .ErrorBar{
-    position: absolute;
-    z-index: 99999;
-    top: 10px;
-    left: 50%;
-    width: 380px;
-    text-align: left;
+  position: absolute;
+  z-index: 99999;
+  top: 10px;
+  left: 50%;
+  width: 380px;
+  text-align: left;
 
-    margin-left: -190px;
+  margin-left: -190px;
 
-    font-family: Helvetica;
-    font-size: 13px;
-    color: #F32D22;
-    line-height: 18px;
-    background: #FEF7F7;
-    border: 1px solid #DB332A;
+  font-family: Helvetica;
+  font-size: 13px;
+  color: #F32D22;
+  line-height: 18px;
+  background: #FEF7F7;
+  border: 1px solid #DB332A;
 
-    border-radius:4px;
-    -webkit-border-radius:4px;
-    -moz-border-radius:4px;
-    -ms-border-radius:4px;
-    -o-border-radius:4px;
+  border-radius:4px;
+  -webkit-border-radius:4px;
+  -moz-border-radius:4px;
+  -ms-border-radius:4px;
+  -o-border-radius:4px;
 }
 
 .ErrorMessage {
-    padding: 8px;
-    display: inline-block;
+  padding: 8px;
+  display: inline-block;
 }
 
 .ErrorIcon{
-    vertical-align: middle;
-    padding-left: 10px;
-    padding-right: 3px;
-    width: 15px;
-    height: 15px;
+  vertical-align: middle;
+  padding-left: 10px;
+  padding-right: 3px;
+  width: 15px;
+  height: 15px;
 }
 
 .ErrorClose {
-    margin-top:6px;
-    margin-bottom:6px;
-    padding: 2px;
-    padding-left: 10px;
-    padding-right: 10px;
-    float: right;
-    cursor: pointer;
-    border-left: 1px solid#F32D22;;
+  margin-top:6px;
+  margin-bottom:6px;
+  padding: 2px;
+  padding-left: 10px;
+  padding-right: 10px;
+  float: right;
+  cursor: pointer;
+  border-left: 1px solid#F32D22;;
 }
 
 .ErrorClose:hover{
-    color: #772222;
+  color: #772222;
 }

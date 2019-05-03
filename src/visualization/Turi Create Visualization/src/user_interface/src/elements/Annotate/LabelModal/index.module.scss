@@ -1,104 +1,104 @@
 .LabelModal {
-    position: fixed;
-    background: black;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-    z-index: 100;
-    opacity: 0.5;
+  position: fixed;
+  background: black;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  opacity: 0.5;
 }
 
 .modalWindow{
-    z-index: 999;
-    background: white;
-    position: absolute;
-    width: 368px;
-    height: 164px;
-    top: 50%;
-    left: 50%;
-    margin-left: -210px;
-    margin-top: -108px;
+  z-index: 999;
+  background: white;
+  position: absolute;
+  width: 368px;
+  height: 164px;
+  top: 50%;
+  left: 50%;
+  margin-left: -210px;
+  margin-top: -108px;
 
-    padding: 26px;
-    text-align: left;
+  padding: 26px;
+  text-align: left;
 
-    border-radius:8px;
-    -webkit-border-radius:8px;
-    -moz-border-radius:8px;
-    -ms-border-radius:8px;
-    -o-border-radius:8px;
-    -webkit-border-radius:8px;
+  border-radius:8px;
+  -webkit-border-radius:8px;
+  -moz-border-radius:8px;
+  -ms-border-radius:8px;
+  -o-border-radius:8px;
+  -webkit-border-radius:8px;
 }
 
 .modalWindowHeader{
-    font-family: Helvetica;
-    font-size: 24px;
-    color: #484856;
-    line-height: 32px;
-    padding-bottom: 16px;
+  font-family: Helvetica;
+  font-size: 24px;
+  color: #484856;
+  line-height: 32px;
+  padding-bottom: 16px;
 }
 
 .modalWindowDescription{
-    font-family: Helvetica;
-    font-size: 14px;
-    color: #484856;
-    line-height: 22px;
+  font-family: Helvetica;
+  font-size: 14px;
+  color: #484856;
+  line-height: 22px;
 }
 
 .modalInput {
-    margin-top: 8px;
-    width: 300px;
-    background: white;
-    border: 1px solid #D4D7D9;
-    box-shadow: inset 0 1px 2px 1px #EFF0F1;
-    border-radius: 4px;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    -ms-border-radius: 4px;
-    -o-border-radius: 4px;
-    padding: 5px;
+  margin-top: 8px;
+  width: 300px;
+  background: white;
+  border: 1px solid #D4D7D9;
+  box-shadow: inset 0 1px 2px 1px #EFF0F1;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  padding: 5px;
 }
 
 .errorMessage {
-    padding-top: 8px;
-    font-family: Helvetica;
-    font-size: 12px;
-    color: #D0021B;
+  padding-top: 8px;
+  font-family: Helvetica;
+  font-size: 12px;
+  color: #D0021B;
 }
 
 .cancelButton {
-    background: #F9F9FA;
-    border: 1px solid #D4D7D9;
-    border-radius: 4px;
-    font-family: Helvetica;
-    font-size: 13px;
-    color: #484856;
-    line-height: 18px;
-    padding: 5px;
-    padding-left: 20px;
-    padding-right: 20px;
-    cursor: pointer;
+  background: #F9F9FA;
+  border: 1px solid #D4D7D9;
+  border-radius: 4px;
+  font-family: Helvetica;
+  font-size: 13px;
+  color: #484856;
+  line-height: 18px;
+  padding: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+  cursor: pointer;
 }
 
 .buttonContainer{
-    margin-top: 8px;
+  margin-top: 8px;
 }
 
 .createButton{
-    background: #007AFF;
-    border: 1px solid #066EE0;
-    border-radius: 4px;
-    font-family: Helvetica;
-    font-size: 13px;
-    color: #FFFFFF;
-    line-height: 18px;
-    padding: 5px;
-    padding-left: 20px;
-    padding-right: 20px;
-    cursor: pointer;
+  background: #007AFF;
+  border: 1px solid #066EE0;
+  border-radius: 4px;
+  font-family: Helvetica;
+  font-size: 13px;
+  color: #FFFFFF;
+  line-height: 18px;
+  padding: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+  cursor: pointer;
 }
 
 .createButton:hover{
-    background: #066EE0;
+  background: #066EE0;
 }

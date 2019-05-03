@@ -1,30 +1,30 @@
 .StatusBar {
-    height: 16px;
-    text-align:left;
-    padding: 16px;
-    font-family: Helvetica;
-    font-size: 14px;
-    color: #484856;
-    line-height: 20px;
-    display: flex;
-    justify-content: space-between;
+  height: 16px;
+  text-align:left;
+  padding: 16px;
+  font-family: Helvetica;
+  font-size: 14px;
+  color: #484856;
+  line-height: 20px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .SwapButton {
-    margin-right: 18px;
+  margin-right: 18px;
 }
 
 .SwapButton:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .SwapButtonHelperText {
-    font-family: Helvetica;
-    height: 16px;
-    line-height: 40px;
-    font-size: 10px;
-    margin-top: -30px; 
-    color: #484856;
-    display: inline-block;    
-    vertical-align: middle;
+  font-family: Helvetica;
+  height: 16px;
+  line-height: 40px;
+  font-size: 10px;
+  margin-top: -30px; 
+  color: #484856;
+  display: inline-block;    
+  vertical-align: middle;
 }

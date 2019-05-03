@@ -23,7 +23,6 @@ class StatusBar extends Component {
             <div className={style.SwapButtonHelperText}>
                 Hide Annotated image
             </div>
-
         </div>
       </div>
     );

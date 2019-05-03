@@ -12,7 +12,6 @@ class LabelModal extends Component {
   }
 
   renderError = () => {
-    {/* TODO: plumb error into the system */}
     if(this.props.error){
       return this .props.error;
     }else{
