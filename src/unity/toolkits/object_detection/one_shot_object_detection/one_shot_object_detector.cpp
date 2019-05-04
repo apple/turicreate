@@ -15,132 +15,13 @@
 #include <boost/gil/extension/numeric/sampler.hpp>
 #include <boost/gil/extension/numeric/resample.hpp>
 
-#include <Eigen/Core>
-#include <Eigen/Dense>
-
-#include <image/numeric_extension/perspective_projection.hpp>
-
 #include <unity/toolkits/object_detection/object_detector.hpp>
 #include <unity/toolkits/object_detection/one_shot_object_detection/one_shot_object_detector.hpp>
+#include <unity/toolkits/object_detection/one_shot_object_detection/parameter_sampler.hpp>
+#include <unity/toolkits/object_detection/one_shot_object_detection/mapping_function.hpp>
 
 namespace turi {
 namespace one_shot_object_detection {
-
-/* A ParameterSampler class to randomly generate different samples of parameters
- * that can later be used to compute the transformation matrix necessary to 
- * create image projections.
- */
-class ParameterSampler {
-public:
-  ParameterSampler(size_t width, size_t height, size_t dx, size_t dy) {
-    width_ = width;
-    height_ = height;
-    dx_ = dx;
-    dy_ = dy;
-  }
-
-  double deg_to_rad(double angle) {
-    return angle * M_PI / 180.0;
-  }
-
-  /* Getters for all the parameters:
-   * theta: rotation around the x axis.
-   * phi: rotation around the y axis.
-   * gamma: rotation around the z axis.
-   * dz: distance of the object from the camera.
-   * focal: focal length of the camera used.
-   * transform: The transformation matrix built from the above parameters
-   */
-  double get_theta() {
-    return deg_to_rad(theta_);
-  }
-
-  double get_phi() {
-    return deg_to_rad(phi_);
-  }
-
-  double get_gamma() {
-    return deg_to_rad(gamma_);
-  }
-
-  size_t get_dz() {
-    return dz_;
-  }
-
-  double get_focal() {
-    return focal_;
-  }
-
-  Eigen::Matrix<float, 3, 3> get_transform() {
-    return transform_;
-  }
-
-  /* Setter for warped_corners, built after applying the transformation
-   * matrix on the corners of the starter image.
-   * Order of warped_corners is top_left, top_right, bottom_left, bottom_right
-   */ 
-  void set_warped_corners(const std::vector<Eigen::Vector3f> &warped_corners) {
-    warped_corners_ = warped_corners;
-  }
-
-  /* Getter for warped_corners */
-  std::vector<Eigen::Vector3f> get_warped_corners() {
-    return warped_corners_;
-  }
-
-  void sample(long seed) {
-    double theta_mean, phi_mean, gamma_mean;
-    std::srand(seed);
-    theta_mean = theta_means_[std::rand() % theta_means_.size()];
-    std::srand(seed+1);
-    phi_mean = phi_means_[std::rand() % phi_means_.size()];
-    std::srand(seed+2);
-    gamma_mean = gamma_means_[std::rand() % gamma_means_.size()];
-    std::normal_distribution<double> theta_distribution(theta_mean, angle_stdev_);
-    std::normal_distribution<double> phi_distribution(phi_mean, angle_stdev_);
-    std::normal_distribution<double> gamma_distribution(gamma_mean, angle_stdev_);
-    std::normal_distribution<double> focal_distribution((double)width_, focal_stdev_);
-    theta_generator_.seed(seed+3);
-    theta_ = theta_distribution(theta_generator_);
-    phi_generator_.seed(seed+4);
-    phi_ = phi_distribution(phi_generator_);
-    gamma_generator_.seed(seed+5);
-    gamma_ = gamma_distribution(gamma_generator_);
-    focal_generator_.seed(seed+6);
-    focal_ = focal_distribution(focal_generator_);
-    std::uniform_int_distribution<int> dz_distribution(
-      std::max(width_, height_), max_depth_);
-    dz_generator_.seed(seed+7);
-    dz_ = focal_ + dz_distribution(dz_generator_);
-    transform_ = warp_perspective::get_transformation_matrix(
-      width_, height_, theta_, phi_, gamma_, dx_, dy_, dz_, focal_);
-    warped_corners_.reserve(4);
-  }
-
-private:
-  size_t width_;
-  size_t height_;
-  size_t max_depth_ = 13000;
-  double angle_stdev_ = 20.0;
-  double focal_stdev_ = 40.0;
-  std::vector<double> theta_means_ = {-180.0, 0.0, 180.0};
-  std::vector<double> phi_means_   = {-180.0, 0.0, 180.0};
-  std::vector<double> gamma_means_ = {-180.0, -90.0, 0.0, 90.0, 180.0};
-  std::default_random_engine theta_generator_;
-  std::default_random_engine phi_generator_;
-  std::default_random_engine gamma_generator_;
-  std::default_random_engine dz_generator_;
-  std::default_random_engine focal_generator_;
-  double theta_;
-  double phi_;
-  double gamma_;
-  size_t dx_;
-  size_t dy_;
-  size_t dz_;
-  double focal_;
-  Eigen::Matrix<float, 3, 3> transform_;
-  std::vector<Eigen::Vector3f> warped_corners_;
-};
 
 namespace data_augmentation {
 
