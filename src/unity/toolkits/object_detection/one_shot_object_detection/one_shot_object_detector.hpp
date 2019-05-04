@@ -36,7 +36,7 @@ class EXPORT one_shot_object_detector: public ml_model_base {
   IMPORT_BASE_CLASS_REGISTRATION(ml_model_base);
 
   REGISTER_CLASS_MEMBER_FUNCTION(one_shot_object_detector::augment, "data",
-                                 "target_column_name", "backgrounds", "seed");
+                                 "target_column_name", "backgrounds", "options");
 
   END_CLASS_MEMBER_REGISTRATION
 
