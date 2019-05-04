@@ -4,11 +4,6 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <Eigen/Core>
-#include <boost/gil/gil_all.hpp>
-
-/* BEGIN 
- * TODO: Add the necessary linear algebra to compute the transformation matrix
- */
 
 namespace warp_perspective {
 
@@ -68,40 +63,4 @@ Eigen::Matrix<float, 3, 3> get_transformation_matrix(
   return (A2 * (T * (R * A1)));
 }
 
-/* END 
- * TODO: Add the necessary linear algebra to compute the transformation matrix
- */
-
 }
-
-namespace boost {
-namespace gil {
-
-/* Matrix - Vector multiplication */
-template <typename T, typename F> 
-boost::gil::point2<F> operator*(const boost::gil::point2<T>& p, const Eigen::Matrix<F, 3, 3>& m) {
-  float denominator = m(2,0)*p.x + m(2,1)*p.y + m(2,2);
-  if (denominator == 0) {
-    // TODO: Figure out the right failure behavior for when denominator is 0.
-    return boost::gil::point2<F>(0,0);
-  }
-  return boost::gil::point2<F>((m(0,0)*p.x + m(0,1)*p.y + m(0,2))/denominator, 
-                               (m(1,0)*p.x + m(1,1)*p.y + m(1,2))/denominator);
-}
-
-/* Conforming to the MapFn concept required by Boost GIL, for Eigen::Matrix3f
- */
-template <typename T> struct mapping_traits;
-
-template <typename F, typename F2> 
-boost::gil::point2<F> transform(const Eigen::Matrix<F, 3, 3>& mat, const boost::gil::point2<F2>& src) {
-  return src * mat;
-}
-
-template <typename F>
-struct mapping_traits<Eigen::Matrix<F, 3, 3> >{
-    typedef boost::gil::point2<F> result_type;
-};
-
-} // gil
-} // boost

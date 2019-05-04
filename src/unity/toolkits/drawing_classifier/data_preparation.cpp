@@ -435,7 +435,7 @@ static std::map<std::string,size_t> generate_column_index_map(
     for (size_t k=0; k < column_names.size(); ++k) {
         index_map[column_names[k]] = k;
     }
-    return  index_map;
+    return index_map;
 }
 
 gl_sframe _drawing_classifier_prepare_data(const gl_sframe &data,
