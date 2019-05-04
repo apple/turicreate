@@ -6,7 +6,7 @@
 
 #include <image/numeric_extension/perspective_projection.hpp>
 
-#include <unity/toolkits/object_detection/one_shot_object_detection/parameter_sampler.hpp>
+#include <unity/toolkits/object_detection/one_shot_object_detection/util/parameter_sampler.hpp>
 
 /* A ParameterSampler class to randomly generate different samples of parameters
  * that can later be used to compute the transformation matrix necessary to 

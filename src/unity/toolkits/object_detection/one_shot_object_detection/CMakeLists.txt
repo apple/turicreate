@@ -3,7 +3,8 @@ project(unity_toolkits)
 make_library(unity_one_shot_object_detection OBJECT
   SOURCES
     class_registrations.cpp
-    parameter_sampler.cpp
+    util/parameter_sampler.cpp
+    util/quadrilateral_geometry.cpp
     one_shot_object_detector.cpp
   REQUIRES
     image_io
