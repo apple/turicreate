@@ -20,17 +20,11 @@ foreach(loop_var ${EXTENSIONS_LIST})
   list(APPEND INSTALLATION_EXTENSIONS ${loop_var})
 endforeach()
 
-make_library(unity_shared
-  SOURCES
-    ${unity_shared_deps}
-    ${_TC_DEFAULT_SERVER_INITIALIZER}
-    ${_TC_COMMON_OBJECTS}
-  REQUIRES
-    ${_TC_COMMON_REQUIREMENTS}
-  SHARED
-  SHARED_ALL_DEFINED
-  DEAD_STRIP
+make_copy_target(copy_unity_shared
+  FILES
+  $<TARGET_FILE:unity_shared>
 )
+add_dependencies(copy_unity_shared unity_shared)
 
 make_copy_target(release_binaries
         TARGETS
