@@ -24,7 +24,7 @@ bool Line::side_of_line(size_t x, size_t y) {
 
 
 bool is_in_quadrilateral(size_t x, size_t y, 
-  std::vector<Eigen::Vector3f> &warped_corners) {
+  const std::vector<Eigen::Vector3f> &warped_corners) {
   float min_x = std::numeric_limits<float>::max();
   float max_x = std::numeric_limits<float>::min();
   float min_y = std::numeric_limits<float>::max();
@@ -38,10 +38,6 @@ bool is_in_quadrilateral(size_t x, size_t y,
   if (x < min_x || x > max_x || y < min_y || y > max_y) {
     return false;
   }
-  // swap last two entries to make the corners cyclic.
-  Eigen::Vector3f temp = warped_corners[2];
-  warped_corners[2] = warped_corners[3];
-  warped_corners[3] = temp;
   size_t num_true = 0;
   for (size_t index = 0; index < warped_corners.size(); index++) {
     auto left_corner = warped_corners[index % warped_corners.size()];
@@ -54,7 +50,7 @@ bool is_in_quadrilateral(size_t x, size_t y,
 
 void color_quadrilateral(const boost::gil::rgb8_image_t::view_t &mask_view, 
                          const boost::gil::rgb8_image_t::view_t &mask_complement_view, 
-                         std::vector<Eigen::Vector3f> warped_corners) {
+                         const std::vector<Eigen::Vector3f> &warped_corners) {
   for (int y = 0; y < mask_view.height(); ++y) {
     auto mask_row_iterator = mask_view.row_begin(y);
     auto mask_complement_row_iterator = mask_complement_view.row_begin(y);
