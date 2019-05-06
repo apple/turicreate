@@ -136,13 +136,14 @@ std::tuple<gl_sframe, gl_sframe> random_split_by_session(gl_sframe data, std::st
   return std::make_tuple(train,val);
 }
 
-}  // namespace
-
 struct result {
     shared_float_array loss_info;
     shared_float_array output_info;
     data_iterator::batch data_info;
 };
+
+}  // namespace
+
 
 void activity_classifier::init_options(
     const std::map<std::string, flexible_type>& opts)
@@ -209,40 +210,31 @@ std::tuple<float, float> activity_classifier::compute_validation_metrics(
 
   while (validation_data_iterator_->has_next_batch()) {
 
-    data_iterator::batch val =
-        validation_data_iterator_->next_batch(batch_size);
-    
     // Wait until we have just one asynchronous batch outstanding. The work
     // below should be concurrent with the neural net inference for that batch.
     pop_until_size(1);
 
     result result_batch;
-
-    result_batch.data_info = val;
-
+    result_batch.data_info = validation_data_iterator_->next_batch(batch_size);
 
     // Submit the batch to the neural net model.
     std::map<std::string, shared_float_array> results =
         training_model_->predict({
-            {"input", val.features},
-            {"labels", val.labels},
-            {"weights", val.weights},
+            {"input", result_batch.data_info.features},
+            {"labels", result_batch.data_info.labels},
+            {"weights", result_batch.data_info.weights},
         });
 
     result_batch.output_info = results.at("output");
     result_batch.loss_info = results.at("loss");
-
-
-    val_size += val.batch_info.size();
+    val_size += result_batch.data_info.batch_info.size();
   
     // Add the pending result to our queue and move on to the next input batch.
-    pending_batches.push(std::move(result_batch));
-    val = validation_data_iterator_->next_batch(batch_size);   
+    pending_batches.push(std::move(result_batch));  
     
   }
   // Process all remaining batches.
   pop_until_size(0);
-
 
   float average_val_accuracy = cumulative_val_accuracy / val_size;
   float average_val_loss = cumulative_val_loss / val_size;
@@ -657,7 +649,7 @@ void activity_classifier::init_train(
 }
 
 void activity_classifier::perform_training_iteration() {
-  
+
   // Training must have been initialized.
   ASSERT_TRUE(training_data_iterator_ != nullptr);
   ASSERT_TRUE(training_model_ != nullptr);
@@ -695,9 +687,7 @@ void activity_classifier::perform_training_iteration() {
     }
   };
 
-  // Iterate through the data once.
-  data_iterator::batch input_batch =
-        training_data_iterator_->next_batch(batch_size);
+  
   while (training_data_iterator_->has_next_batch()) {
 
     // Wait until we have just one asynchronous batch outstanding. The work
@@ -705,17 +695,13 @@ void activity_classifier::perform_training_iteration() {
     pop_until_size(1);
 
     result result_batch;
-
-    // Instead of giving the ground truth data to the image augmenter and the
-    // neural net, instead save them for later, pairing them with the future
-    // predictions.
-    result_batch.data_info = input_batch;
+    result_batch.data_info = training_data_iterator_->next_batch(batch_size);;
 
     // Submit the batch to the neural net model.
     std::map<std::string, shared_float_array> results = training_model_->train(
-        { { "input",   input_batch.features },
-          { "labels",  input_batch.labels   },
-          { "weights", input_batch.weights  }, });
+        { { "input",   result_batch.data_info.features },
+          { "labels",  result_batch.data_info.labels   },
+          { "weights", result_batch.data_info.weights  }, });
     result_batch.loss_info = results.at("loss");
     result_batch.output_info = results.at("output");
       
@@ -723,7 +709,6 @@ void activity_classifier::perform_training_iteration() {
     
     // Add the pending result to our queue and move on to the next input batch.
     pending_batches.push(std::move(result_batch));
-    input_batch = training_data_iterator_->next_batch(batch_size);
     
   }
   // Process all remaining batches.
@@ -840,29 +825,21 @@ gl_sframe activity_classifier::perform_inference(data_iterator *data) const {
 
   while (data->has_next_batch()) {
 
-    data_iterator::batch input_batch =
-        data->next_batch(read_state<flex_int>("batch_size"));
-
     // Wait until we have just one asynchronous batch outstanding. The work
     // below should be concurrent with the neural net inference for that batch.
     pop_until_size(1);
     
     result result_batch;
-
-    // Instead of giving the ground truth data to the image augmenter and the
-    // neural net, instead save them for later, pairing them with the future
-    // predictions.
-    result_batch.data_info = input_batch;
+    result_batch.data_info = data->next_batch(read_state<flex_int>("batch_size"));;
     
     // Send the inputs to the model.
     std::map<std::string, shared_float_array> results =
-        backend->predict({ { "input", input_batch.features } });
+        backend->predict({ { "input", result_batch.data_info.features } });
 
     // Copy the (float) outputs to our (double) buffer and add to the SArray.
     result_batch.output_info = results.at("output");
 
     pending_batches.push(std::move(result_batch));
-    input_batch = data->next_batch(read_state<flex_int>("batch_size"));
     
   }
 
