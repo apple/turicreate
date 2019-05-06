@@ -28,10 +28,10 @@ class EXPORT activity_classifier: public ml_model_base {
 
   // Interface exposed via Unity server
 
-  void train(gl_sframe data, std::string target_column_name,
-             std::string session_id_column_name,
+  void train(gl_sframe data, const std::string& target_column_name,
+             const std::string& session_id_column_name,
              variant_type validation_data,
-             std::map<std::string, flexible_type> opts);
+             const std::map<std::string, flexible_type>& opts);
   gl_sarray predict(gl_sframe data, std::string output_type);
   gl_sframe predict_per_window(gl_sframe data, std::string output_type);
   variant_map_type evaluate(gl_sframe data, std::string metric);
