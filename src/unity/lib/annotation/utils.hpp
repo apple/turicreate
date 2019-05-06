@@ -7,6 +7,10 @@
 #include "build/format/cpp/meta.pb.h"
 
 #include <boost/regex.hpp>
+#include <memory>
+#include <unity/lib/gl_sarray.hpp>
+#include <unity/lib/unity_sarray.hpp>
+#include <vector>
 
 namespace annotate_spec = TuriCreate::Annotation::Specification;
 
@@ -32,8 +36,17 @@ populate_parcel(annotate_spec::Parcel &parcel, T message) {
   parcel.mutable_metadata()->CopyFrom(message);
 }
 
-bool isInteger(std::string s);
+float vectors_distance(const std::vector<double> &a,
+                       const std::vector<double> &b);
 
+bool is_integer(std::string s);
+
+std::vector<flexible_type> similar_items(const gl_sarray &distances,
+                                         size_t index, size_t k);
+
+#ifdef __APPLE__
+gl_sarray featurize_images(const gl_sarray &images, std::string base_directory="./");
+#endif
 
 } // namespace annotate
 } // namespace turi

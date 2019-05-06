@@ -47,5 +47,6 @@ make_library(annotation OBJECT
     protobuf
     process
     visualization
+    image_deep_feature_extractor
   EXTERNAL_VISIBILITY
 )

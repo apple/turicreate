@@ -260,7 +260,6 @@ class Annotate extends Component {
     if(previousLabel == labels){
       return;
     }
-
     if(previousLabel != null){
       for (var x = 0; x < previousLabelData.length; x++) {
         if(this.state.labels[x].name == previousLabel) {
@@ -268,7 +267,6 @@ class Annotate extends Component {
           tempLabel.num_annotated -= 1;
           previousLabelData[x] = tempLabel;
         }
-
         if(this.state.labels[x].name == labels){
           var tempLabel = previousLabelData[x];
           tempLabel.num_annotated += 1;
@@ -282,7 +280,6 @@ class Annotate extends Component {
     } else if(this.state.type == LabelType.INTEGER) {
       previousAnnotationData[rowIndex] = parseInt(labels, 10);
     }
-
 
     const root = Root.fromJSON(messageFormat);
     const ParcelMessage = root.lookupType("TuriCreate.Annotation.Specification.ClientRequest");
@@ -395,7 +392,6 @@ class Annotate extends Component {
                         openLabelModal={this.openLabelModal.bind(this)}
                         closeLabelModal={this.closeLabelModal.bind(this)}
                         annotationData={this.state.annotationData}/>
-
         </div>
       </div>
     );

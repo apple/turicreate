@@ -12,8 +12,14 @@ from __future__ import absolute_import as _
 
 from ...visualization import _get_client_app_path
 import turicreate.toolkits._internal_utils as _tkutl
+from .. import _image_feature_extractor
 
 import turicreate as __tc
+
+from sys import platform as __platform
+
+import array as _array
+from mxnet.io import DataBatch as __DataBatch
 
 def _warning_annotations():
     print(
@@ -27,7 +33,7 @@ def _warning_annotations():
         """
     )
 
-def annotate(data, image_column=None, annotation_column='annotations'):
+def annotate(data, image_column=None, annotation_column='annotations', image_similarity=True):
     """
         Annotate your images loaded in either an SFrame or SArray Format
 
@@ -166,8 +172,14 @@ def annotate(data, image_column=None, annotation_column='annotations'):
                             [image_column],
                             annotation_column
                         )
-    annotation_window.annotate(_get_client_app_path())
+
+    # TODO: plumb `image_similarity`
+    if __platform == "linux" or __platform == "linux2":
+        model = _image_feature_extractor._create_feature_extractor("squeezenet_v1.1")
+        feature_sframe = model.extract_features(data, image_column, verbose=False, batch_size=64)
+        annotation_window.add_image_features(feature_sframe)
     
+    annotation_window.annotate(_get_client_app_path())
     return annotation_window.returnAnnotations()
 
 def recover_annotation():

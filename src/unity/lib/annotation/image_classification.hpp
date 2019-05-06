@@ -3,6 +3,11 @@
 
 #include <export.hpp>
 
+#include <future>
+#include <thread>
+#include <chrono>
+#include <iostream>
+
 #include <unity/lib/annotation/annotation_base.hpp>
 
 #include "build/format/cpp/annotate.pb.h"
@@ -30,12 +35,22 @@ public:
 
   void cast_annotations() override;
 
+  void add_image_features(const std::shared_ptr<unity_sarray> &features);
+
   BEGIN_CLASS_MEMBER_REGISTRATION("ImageClassification");
   IMPORT_BASE_CLASS_REGISTRATION(AnnotationBase);
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("add_image_features",
+                                       ImageClassification::add_image_features,
+                                       "features");
   END_CLASS_MEMBER_REGISTRATION
 private:
+  /*
+  std::future<std::shared_ptr<unity_sarray>> m_image_features;
+  */
   void _addAnnotationToSFrame(size_t index, std::string label);
   void _addAnnotationToSFrame(size_t index, int label);
+
+  std::shared_ptr<unity_sarray> _calculateFeatureSimilarity();
 
   std::shared_ptr<unity_sarray> _filterDataSFrame(size_t &start, size_t &end);
   std::shared_ptr<unity_sarray> _filterAnnotationSFrame(size_t &start,

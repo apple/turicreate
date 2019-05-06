@@ -1,49 +1,49 @@
 .LabelContainer{
-    position: fixed;
-    top: 0px;
-    right: 0px;
+  position: fixed;
+  top: 0px;
+  right: 0px;
 
-    width: 226px;
-    height: 100%;
+  width: 226px;
+  height: 100%;
 
-    overflow-y:scroll;
+  overflow-y:scroll;
 
-    background: #FFFFFF;
-    border: 1px solid #EDEDEB;
-    z-index: 0;
+  background: #FFFFFF;
+  border: 1px solid #EDEDEB;
+  z-index: 0;
 }
 
 .LabelHeader{
-    font-family: Helvetica;
-    font-size: 13px;
-    color: #484856;
-    text-align: left;
-    padding: 21px;
+  font-family: Helvetica;
+  font-size: 13px;
+  color: #484856;
+  text-align: left;
+  padding: 21px;
 }
 
 .LabelAddLabel{
-    margin-top: 20px;
-    background: #007AFF;
-    border: 1px solid #066EE0;
-    border-radius: 4px;
-    font-family: Helvetica;
-    font-size: 13px;
-    color: #FFFFFF;
-    line-height: 18px;
-    padding: 5px;
-    padding-left: 20px;
-    padding-right: 20px;
-    margin: auto;
-    cursor: pointer;
+  margin-top: 20px;
+  background: #007AFF;
+  border: 1px solid #066EE0;
+  border-radius: 4px;
+  font-family: Helvetica;
+  font-size: 13px;
+  color: #FFFFFF;
+  line-height: 18px;
+  padding: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin: auto;
+  cursor: pointer;
 }
 
 .LabelAddLabel:hover{
-    background: #066EE0;
+  background: #066EE0;
 }
 
 .LabelAddLabelContainer{
-    padding-top: 40px;
-    padding-bottom: 40px;
-    width: 100%;
-    text-align: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  width: 100%;
+  text-align: center;
 }
