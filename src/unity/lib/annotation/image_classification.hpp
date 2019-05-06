@@ -3,10 +3,10 @@
 
 #include <export.hpp>
 
-#include <future>
-#include <thread>
 #include <chrono>
+#include <future>
 #include <iostream>
+#include <thread>
 
 #include <unity/lib/annotation/annotation_base.hpp>
 

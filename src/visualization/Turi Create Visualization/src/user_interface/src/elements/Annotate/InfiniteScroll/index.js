@@ -71,9 +71,7 @@ class InfiniteScroll extends Component {
             const endVal = (tempEndVal > this.props.numElements)?this.props.numElements:tempEndVal;
             this.props.getData(this.state.startValue, endVal);
             this.props.getAnnotations(this.state.startValue, endVal);
-            // look into this work around
             this.currentComponent.current.scrollBy(0, -scrollOffset);
-            // change this into a property rather than a state
             this.setState({
               enableScroll: true
             })
@@ -133,7 +131,7 @@ class InfiniteScroll extends Component {
                                  type={this.props.type}
                                  value={x}/>)
     }
-    
+
     return boxes;
   }
 
