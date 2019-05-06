@@ -119,6 +119,7 @@ class InfiniteScroll extends Component {
     const tempEndVal = scaling.numX * (scaling.numY + 2 * CELL_PADDING) + this.state.startValue;
     const endValue = (tempEndVal > this.props.numElements)?this.props.numElements:tempEndVal;
     const selectedBoxes = Object.keys(this.props.infiniteSelected);
+
     // TODO: filter annotation  array use `x` as index into the array
     for(var x = this.state.startValue; x < endValue; x++ ){
       boxes.push(<ImageContainer key={`images_${x}`}
@@ -132,6 +133,7 @@ class InfiniteScroll extends Component {
                                  type={this.props.type}
                                  value={x}/>)
     }
+    
     return boxes;
   }
 

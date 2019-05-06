@@ -1,6 +1,6 @@
 
-$imgSize:90;
-$imgMargin:17;
+$imgSize: 90;
+$imgMargin: 17;
 
 :export { 
   imgSize: $imgSize;
@@ -20,21 +20,26 @@ $imgMargin:17;
   box-shadow: 0 0 10px 0 rgba(#000, 0.1);
 }
 
-.selected{
+.ImageContainerSourceSelected {
+  opacity: 0.75;
+  background: #666666;
+}
+
+.selected {
   box-shadow:0px 0px 0px 5px #007AFF inset;
 }
 
-.realImage{
+.realImage {
   background:rgba(0, 0, 0, 0);
   cursor: pointer;
 }
 
-.ImageContainerSource{
+.ImageContainerSource {
   position: absolute;
   z-index: -1;
 }
 
-.ImageLabel{
+.ImageLabel {
   position: absolute;
   bottom:0px;
   left: 0px;
@@ -49,11 +54,20 @@ $imgMargin:17;
   border-radius: 0px 4px 0px 0px;
 }
 
+.LoadingContainer {
+  position: absolute;
+  width: $imgSize + px;
+  height: $imgSize + px;
+}
+
 .bouncer {
   width: 5px;
   height: 5px;
   margin: 5px;
-  margin-top: 42px;
+
+  margin-top: -webkit-calc(50% - 5px);
+  margin-top:    -moz-calc(50% - 5px);
+  margin-top:         calc(50% - 5px);
 
   box-shadow: 0 0 5px 0 rgba(#000, 0.3);
 
