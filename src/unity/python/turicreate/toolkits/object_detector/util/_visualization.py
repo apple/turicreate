@@ -9,6 +9,7 @@ from __future__ import absolute_import as _
 import turicreate as _tc
 import numpy as _np
 from turicreate.toolkits._internal_utils import _numeric_param_check_range
+from turicreate.toolkits._main import ToolkitError as _ToolkitError
 
 
 def _string_hash(s):
@@ -128,24 +129,33 @@ def draw_bounding_boxes(images, annotations, confidence_threshold=0):
     def draw_single_image(row):
         image = row['image']
         anns = row['annotations']
+        row_number = row['id']
         if anns == None:
             anns = []
         elif type(anns) == dict:
             anns = [anns]
-        pil_img = Image.fromarray(image.pixel_data)
-        _annotate_image(pil_img, anns, confidence_threshold=confidence_threshold)
-        image = _np.array(pil_img)
-        FORMAT_RAW = 2
-        annotated_image = _tc.Image(_image_data=image.tobytes(),
-                                    _width=image.shape[1],
-                                    _height=image.shape[0],
-                                    _channels=image.shape[2],
-                                    _format_enum=FORMAT_RAW,
-                                    _image_data_size=image.size)
+        try:
+            pil_img = Image.fromarray(image.pixel_data)
+            _annotate_image(pil_img, anns, confidence_threshold=confidence_threshold)
+            image = _np.array(pil_img)
+            FORMAT_RAW = 2
+            annotated_image = _tc.Image(_image_data=image.tobytes(),
+                                        _width=image.shape[1],
+                                        _height=image.shape[0],
+                                        _channels=image.shape[2],
+                                        _format_enum=FORMAT_RAW,
+                                        _image_data_size=image.size)
+        except Exception as e:
+            if row_number == -1:
+                # indication that it was a single image and not an SFrame
+                raise _ToolkitError(e)
+            raise _ToolkitError("Received exception at the " + str(row_number) + "th row: " + e)
         return annotated_image
 
     if isinstance(images, _tc.Image) and isinstance(annotations, list):
-        return draw_single_image({'image': images, 'annotations': annotations})
+        return draw_single_image({'image': images, 'annotations': annotations, 'id': -1})
     else:
-        return (_tc.SFrame({'image': images, 'annotations': annotations})
-                .apply(draw_single_image))
+        sf = _tc.SFrame({'image': images, 'annotations': annotations})
+        sf = sf.add_row_number()
+        annotated_images = sf.apply(draw_single_image)
+        return annotated_images
