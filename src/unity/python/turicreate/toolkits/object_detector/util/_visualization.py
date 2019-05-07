@@ -149,7 +149,7 @@ def draw_bounding_boxes(images, annotations, confidence_threshold=0):
             if row_number == -1:
                 # indication that it was a single image and not an SFrame
                 raise _ToolkitError(e)
-            raise _ToolkitError("Received exception at the " + str(row_number) + "th row: " + e)
+            raise _ToolkitError("Received exception at row " + str(row_number) + ": " + e)
         return annotated_image
 
     if isinstance(images, _tc.Image) and isinstance(annotations, list):
