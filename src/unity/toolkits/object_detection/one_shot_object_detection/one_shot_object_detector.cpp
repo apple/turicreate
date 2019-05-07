@@ -87,7 +87,7 @@ flex_dict build_annotation( ParameterSampler &parameter_sampler,
   
   Eigen::Matrix<float, 3, 3> mat = parameter_sampler.get_transform();
 
-  const std::vector<Eigen::Vector3f> &warped_corners = {
+  const std::vector<Eigen::Vector3f> warped_corners = {
                                           normalize(mat * top_left_corner)   ,
                                           normalize(mat * top_right_corner)  ,
                                           normalize(mat * bottom_left_corner),
