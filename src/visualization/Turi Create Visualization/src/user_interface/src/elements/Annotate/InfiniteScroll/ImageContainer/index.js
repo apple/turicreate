@@ -48,7 +48,7 @@ class ImageContainer extends Component {
         <div className={`${style.ImageContainer} ${style.realImage} ${style.selected}`}
              onClick={this.image_click.bind(this)}>
           <img src={this.props.src.src}
-             className={style.ImageContainerSource}
+             className={`${style.ImageContainerSource} ${style.ImageContainerSourceSelected}`}
              style={this.resizeImage(this.props.src.width, this.props.src.height)}/>
           {this.renderAnnotation()}
         </div>
@@ -65,10 +65,12 @@ class ImageContainer extends Component {
       );
     } else {
       return(
-        <div className={style.ImageContainer}>
-          <div class={`${style.bounce1} ${style.bouncer}`}></div>
-          <div class={`${style.bounce2} ${style.bouncer}`}></div>
-          <div class={`${style.bounce2} ${style.bouncer}`}></div>
+        <div className={`${style.ImageContainer}`}>
+          <div className={`${style.LoadingContainer}`}>
+            <div className={`${style.bounce1} ${style.bouncer}`}></div>
+            <div className={`${style.bounce2} ${style.bouncer}`}></div>
+            <div className={`${style.bounce2} ${style.bouncer}`}></div>
+          </div>
         </div>
       );
     }
