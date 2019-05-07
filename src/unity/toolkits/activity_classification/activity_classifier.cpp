@@ -238,9 +238,8 @@ void activity_classifier::train(gl_sframe data, const std::string& target_column
 
   // Instantiate the training dependencies: data iterator, compute context,
   // backend NN model.
-  init_train(std::move(train_data), std::move(target_column_name),
-             std::move(session_id_column_name), std::move(val_data),
-             std::move(opts));
+  init_train(std::move(train_data), target_column_name, session_id_column_name,
+             std::move(val_data), opts);
 
   // Perform all the iterations at once.
   flex_int max_iterations = read_state<flex_int>("max_iterations");
