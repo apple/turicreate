@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SArray.save &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SArray.save &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.SArray.save<a class="headerlink" href="#turicreate-sarray-save" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SArray.save">
-<code class="descclassname">SArray.</code><code class="descname">save</code><span class="sig-paren">(</span><em>filename</em>, <em>format=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SArray.save" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SArray.</code><code class="descname">save</code><span class="sig-paren">(</span><em>self</em>, <em>filename</em>, <em>format=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SArray.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Saves the SArray to file.</p>
 <p>The saved SArray will be in a directory named with the <cite>targetfile</cite>
 parameter.</p>
@@ -133,18 +136,18 @@ parameter.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">A local path or a remote URL.  If format is &#8216;text&#8217;, it will be
-saved as a text file. If format is &#8216;binary&#8217;, a directory will be
+<dd><p class="first last">A local path or a remote URL.  If format is ‘text’, it will be
+saved as a text file. If format is ‘binary’, a directory will be
 created at the location which will contain the SArray.</p>
 </dd>
-<dt><strong>format</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;binary&#8217;, &#8216;text&#8217;, &#8216;csv&#8217;}, optional</span></dt>
+<dt><strong>format</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{‘binary’, ‘text’, ‘csv’}, optional</span></dt>
 <dd><p class="first last">Format in which to save the SFrame. Binary saved SArrays can be
 loaded much faster and without any format conversion losses.
-&#8216;text&#8217; and &#8216;csv&#8217; are synonymous: Each SArray row will be written
+‘text’ and ‘csv’ are synonymous: Each SArray row will be written
 as a single line in an output text file. If not
 given, will try to infer the format from filename given. If file
-name ends with &#8216;csv&#8217;, &#8216;txt&#8217; or &#8216;.csv.gz&#8217;, then save as &#8216;csv&#8217; format,
-otherwise save as &#8216;binary&#8217; format.</p>
+name ends with ‘csv’, ‘txt’ or ‘.csv.gz’, then save as ‘csv’ format,
+otherwise save as ‘binary’ format.</p>
 </dd>
 </dl>
 </td>
@@ -164,7 +167,7 @@ otherwise save as &#8216;binary&#8217; format.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -182,7 +185,7 @@ otherwise save as &#8216;binary&#8217; format.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

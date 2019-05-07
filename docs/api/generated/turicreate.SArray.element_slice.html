@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SArray.element_slice &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SArray.element_slice &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,15 +126,15 @@
 <h1>turicreate.SArray.element_slice<a class="headerlink" href="#turicreate-sarray-element-slice" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SArray.element_slice">
-<code class="descclassname">SArray.</code><code class="descname">element_slice</code><span class="sig-paren">(</span><em>start=None</em>, <em>stop=None</em>, <em>step=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SArray.element_slice" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SArray.</code><code class="descname">element_slice</code><span class="sig-paren">(</span><em>self</em>, <em>start=None</em>, <em>stop=None</em>, <em>step=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SArray.element_slice" title="Permalink to this definition">¶</a></dt>
 <dd><p>This returns an SArray with each element sliced accordingly to the
 slice specified. This is conceptually equivalent to:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">step</span><span class="p">:</span><span class="n">stop</span><span class="p">])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">step</span><span class="p">:</span><span class="n">stop</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>The SArray must be of type list, vector, or string.</p>
 <p>For instance:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">([</span><span class="s2">&quot;abcdef&quot;</span><span class="p">,</span><span class="s2">&quot;qwerty&quot;</span><span class="p">])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">([</span><span class="s2">&quot;abcdef&quot;</span><span class="p">,</span><span class="s2">&quot;qwerty&quot;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">element_slice</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="go">dtype: str</span>
 <span class="go">Rows: 2</span>
@@ -146,7 +149,7 @@ slice specified. This is conceptually equivalent to:</p>
 <span class="go">[&quot;def&quot;, &quot;rty&quot;]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">element_slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="go">dtype: str</span>
 <span class="go">Rows: 2</span>
@@ -192,7 +195,7 @@ slice specified. This is conceptually equivalent to:</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -210,7 +213,7 @@ slice specified. This is conceptually equivalent to:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

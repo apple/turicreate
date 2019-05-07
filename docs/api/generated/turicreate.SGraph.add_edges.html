@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SGraph.add_edges &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SGraph.add_edges &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,14 +126,14 @@
 <h1>turicreate.SGraph.add_edges<a class="headerlink" href="#turicreate-sgraph-add-edges" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SGraph.add_edges">
-<code class="descclassname">SGraph.</code><code class="descname">add_edges</code><span class="sig-paren">(</span><em>edges</em>, <em>src_field=None</em>, <em>dst_field=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SGraph.add_edges" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SGraph.</code><code class="descname">add_edges</code><span class="sig-paren">(</span><em>self</em>, <em>edges</em>, <em>src_field=None</em>, <em>dst_field=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SGraph.add_edges" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add edges to the SGraph. Edges should be input as a list of
 <a class="reference internal" href="turicreate.Edge.html#turicreate.Edge" title="turicreate.Edge"><code class="xref py py-class docutils literal"><span class="pre">Edge</span></code></a> objects, an <a class="reference internal" href="turicreate.SFrame.html#turicreate.SFrame" title="turicreate.SFrame"><code class="xref py py-class docutils literal"><span class="pre">SFrame</span></code></a>, or a
 Pandas DataFrame. If the new edges are in an SFrame or DataFrame, then
 <code class="docutils literal"><span class="pre">src_field</span></code> and <code class="docutils literal"><span class="pre">dst_field</span></code> are required to specify the columns that
 contain the source and destination vertex IDs; additional columns are
 treated as edge attributes. If these attributes are not already present
-in the graph&#8217;s edge data, they are added, with existing edges acquiring
+in the graph’s edge data, they are added, with existing edges acquiring
 the value <code class="docutils literal"><span class="pre">None</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -165,7 +168,10 @@ vertex IDs. Not required if <code class="docutils literal"><span class="pre">edg
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.SGraph.edges.html#turicreate.SGraph.edges" title="turicreate.SGraph.edges"><code class="xref py py-obj docutils literal"><span class="pre">edges</span></code></a>, <a class="reference internal" href="turicreate.SFrame.html#turicreate.SFrame" title="turicreate.SFrame"><code class="xref py py-obj docutils literal"><span class="pre">SFrame</span></code></a>, <a class="reference internal" href="turicreate.SGraph.add_vertices.html#turicreate.SGraph.add_vertices" title="turicreate.SGraph.add_vertices"><code class="xref py py-obj docutils literal"><span class="pre">add_vertices</span></code></a></p>
+<dl class="last docutils">
+<dt><code class="xref py py-obj docutils literal"><span class="pre">edges</span></code>, <a class="reference internal" href="turicreate.SFrame.html#turicreate.SFrame" title="turicreate.SFrame"><code class="xref py py-obj docutils literal"><span class="pre">SFrame</span></code></a>, <a class="reference internal" href="turicreate.SGraph.add_vertices.html#turicreate.SGraph.add_vertices" title="turicreate.SGraph.add_vertices"><code class="xref py py-obj docutils literal"><span class="pre">add_vertices</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Notes</p>
 <ul class="simple">
@@ -175,7 +181,7 @@ contrasts with <a class="reference internal" href="turicreate.SGraph.add_vertice
 vertices.</li>
 </ul>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">SGraph</span><span class="p">,</span> <span class="n">Vertex</span><span class="p">,</span> <span class="n">Edge</span><span class="p">,</span> <span class="n">SFrame</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="k">import</span> <span class="n">SGraph</span><span class="p">,</span> <span class="n">Vertex</span><span class="p">,</span> <span class="n">Edge</span><span class="p">,</span> <span class="n">SFrame</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">SGraph</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">verts</span> <span class="o">=</span> <span class="p">[</span><span class="n">Vertex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;breed&#39;</span><span class="p">:</span> <span class="s1">&#39;labrador&#39;</span><span class="p">}),</span>
 <span class="go">             Vertex(1, attr={&#39;breed&#39;: &#39;labrador&#39;}),</span>
@@ -184,15 +190,15 @@ vertices.</li>
 </pre></div>
 </div>
 <p>Add a single edge.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">add_edges</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">add_edges</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>Add a list of edges.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span><span class="n">Edge</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">Edge</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span><span class="n">Edge</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">Edge</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
 </pre></div>
 </div>
 <p>Add edges from an SFrame.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf_edge</span> <span class="o">=</span> <span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;dest&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]})</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf_edge</span> <span class="o">=</span> <span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;dest&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">add_edges</span><span class="p">(</span><span class="n">sf_edge</span><span class="p">,</span> <span class="n">src_field</span><span class="o">=</span><span class="s1">&#39;source&#39;</span><span class="p">,</span> <span class="n">dst_field</span><span class="o">=</span><span class="s1">&#39;dest&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -209,7 +215,7 @@ vertices.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -227,7 +233,7 @@ vertices.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

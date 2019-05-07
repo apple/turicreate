@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.shortest_path.create &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.shortest_path.create &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="graph_analytics" href="../turicreate.toolkits.graph_analytics.html"/>
         <link rel="next" title="turicreate.shortest_path.ShortestPathModel" href="turicreate.shortest_path.ShortestPathModel.html"/>
         <link rel="prev" title="turicreate.pagerank.PagerankModel" href="turicreate.pagerank.PagerankModel.html"/> 
@@ -167,7 +170,10 @@ weights.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.shortest_path.ShortestPathModel.html#turicreate.shortest_path.ShortestPathModel" title="turicreate.shortest_path.ShortestPathModel"><code class="xref py py-obj docutils literal"><span class="pre">ShortestPathModel</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.shortest_path.ShortestPathModel.html#turicreate.shortest_path.ShortestPathModel" title="turicreate.shortest_path.ShortestPathModel"><code class="xref py py-obj docutils literal"><span class="pre">ShortestPathModel</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">References</p>
 <ul class="simple">
@@ -176,29 +182,29 @@ weights.</p>
 <p class="rubric">Examples</p>
 <p>If given an <a class="reference internal" href="turicreate.SGraph.html#turicreate.SGraph" title="turicreate.SGraph"><code class="xref py py-class docutils literal"><span class="pre">SGraph</span></code></a> <code class="docutils literal"><span class="pre">g</span></code>, we can create
 a <a class="reference internal" href="turicreate.shortest_path.ShortestPathModel.html#turicreate.shortest_path.ShortestPathModel" title="turicreate.shortest_path.ShortestPathModel"><code class="xref py py-class docutils literal"><span class="pre">ShortestPathModel</span></code></a> as follows:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">load_sgraph</span><span class="p">(</span><span class="s1">&#39;http://snap.stanford.edu/data/email-Enron.txt.gz&#39;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s1">&#39;snap&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">load_sgraph</span><span class="p">(</span><span class="s1">&#39;http://snap.stanford.edu/data/email-Enron.txt.gz&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;snap&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">shortest_path</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">source_vid</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>We can obtain the shortest path distance from the source vertex to each
 vertex in the graph <code class="docutils literal"><span class="pre">g</span></code> as follows:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sp_sframe</span> <span class="o">=</span> <span class="n">sp</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">]</span>   <span class="c1"># SFrame</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sp_sframe</span> <span class="o">=</span> <span class="n">sp</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">]</span>   <span class="c1"># SFrame</span>
 </pre></div>
 </div>
 <p>We can add the new distance field to the original graph g using:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="s1">&#39;distance_to_1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp</span><span class="p">[</span><span class="s1">&#39;graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">]</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="s1">&#39;distance_to_1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp</span><span class="p">[</span><span class="s1">&#39;graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>Note that the task above does not require a join because the vertex
 ordering is preserved through <code class="docutils literal"><span class="pre">create()</span></code>.</p>
 <p>To get the actual path from the source vertex to any destination vertex:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="n">vid</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="n">vid</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>We can obtain an auxiliary graph with additional information corresponding
 to the shortest path from the source vertex to each vertex in the graph
 <code class="docutils literal"><span class="pre">g</span></code> as follows:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sp_graph</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">graph</span>      <span class="c1"># SGraph</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sp_graph</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">graph</span>      <span class="c1"># SGraph</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -223,7 +229,7 @@ to the shortest path from the source vertex to each vertex in the graph
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -241,7 +247,7 @@ to the shortest path from the source vertex to each vertex in the graph
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

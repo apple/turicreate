@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.image_classifier.create &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.image_classifier.create &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,10 +27,13 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="image_classifier" href="../turicreate.toolkits.image_classifier.html"/>
         <link rel="next" title="turicreate.image_classifier.ImageClassifier" href="turicreate.image_classifier.ImageClassifier.html"/>
-        <link rel="prev" title="turicreate.image_classifier.annotate" href="turicreate.image_classifier.annotate.html"/> 
+        <link rel="prev" title="image_classifier" href="../turicreate.toolkits.image_classifier.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -138,21 +141,21 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
-<dd><p class="first last">Input data. The column named by the &#8216;feature&#8217; parameter will be
+<dd><p class="first last">Input data. The column named by the ‘feature’ parameter will be
 extracted for modeling.</p>
 </dd>
 <dt><strong>target</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, or int</span></dt>
 <dd><p class="first last">Name of the column containing the target variable. The values in this
 column must be of string or integer type. String target variables are
 automatically mapped to integers in the order in which they are provided.
-For example, a target variable with &#8216;cat&#8217; and &#8216;dog&#8217; as possible
+For example, a target variable with ‘cat’ and ‘dog’ as possible
 values is mapped to 0 and 1 respectively with 0 being the base class
 and 1 being the reference class. Use <cite>model.classes</cite> to retrieve
 the order in which the classes are mapped.</p>
 </dd>
 <dt><strong>feature</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
 <dd><p class="first last">indicates that the SFrame has only column of Image type and that will
-Name of the column containing the input images. &#8216;None&#8217; (the default)
+Name of the column containing the input images. ‘None’ (the default)
 indicates the only image column in <cite>dataset</cite> should be used as the
 feature.</p>
 </dd>
@@ -184,7 +187,7 @@ and model parameters.</li>
 </ul>
 <p>For this model, the Newton-Raphson method is equivalent to the
 iteratively re-weighted least squares algorithm. If the l1_penalty is
-greater than 0, use the &#8216;fista&#8217; solver.</p>
+greater than 0, use the ‘fista’ solver.</p>
 <p>The model is trained using a carefully engineered collection of methods
 that are automatically picked based on the input data. The <code class="docutils literal"><span class="pre">newton</span></code>
 method  works best for datasets with plenty of examples and few features
@@ -227,17 +230,17 @@ same effect as setting it to <code class="docutils literal"><span class="pre">ma
 <blockquote>
 <div><ul class="simple">
 <li><dl class="first docutils">
-<dt>&#8220;resnet-50&#8221; <span class="classifier-delimiter">:</span> <span class="classifier">Uses a pretrained resnet model.</span></dt>
+<dt>“resnet-50” <span class="classifier-delimiter">:</span> <span class="classifier">Uses a pretrained resnet model.</span></dt>
 <dd>Exported Core ML model will be ~90M.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt>&#8220;squeezenet_v1.1&#8221; <span class="classifier-delimiter">:</span> <span class="classifier">Uses a pretrained squeezenet model.</span></dt>
+<dt>“squeezenet_v1.1” <span class="classifier-delimiter">:</span> <span class="classifier">Uses a pretrained squeezenet model.</span></dt>
 <dd>Exported Core ML model will be ~4.7M.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt>&#8220;VisionFeaturePrint_Scene&#8221;: Uses an OS internal feature extractor.</dt>
+<dt>“VisionFeaturePrint_Scene”: Uses an OS internal feature extractor.</dt>
 <dd>Only on available on iOS 12.0+,
 macOS 10.14+ and tvOS 12.0+.
 Exported Core ML model will be ~41K.</dd>
@@ -261,12 +264,12 @@ weights. If set to <cite>None</cite>, all classes are supposed to have weight on
 examples in the training data with the given class.</p>
 </dd>
 <dt><strong>validation_set</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
-<dd><p class="first last">A dataset for monitoring the model&#8217;s generalization performance.
+<dd><p class="first last">A dataset for monitoring the model’s generalization performance.
 The format of this SFrame must be the same as the training set.
-By default this argument is set to &#8216;auto&#8217; and a validation set is
+By default this argument is set to ‘auto’ and a validation set is
 automatically sampled and used for progress printing. If
 validation_set is set to None, then no additional metrics
-are computed. The default value is &#8216;auto&#8217;.</p>
+are computed. The default value is ‘auto’.</p>
 </dd>
 <dt><strong>max_iterations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
 <dd><p class="first last">The maximum number of allowed passes through the data. More passes over
@@ -299,7 +302,10 @@ have a powerful computer, increasing this value may improve performance.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.image_classifier.ImageClassifier.html#turicreate.image_classifier.ImageClassifier" title="turicreate.image_classifier.ImageClassifier"><code class="xref py py-obj docutils literal"><span class="pre">ImageClassifier</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.image_classifier.ImageClassifier.html#turicreate.image_classifier.ImageClassifier" title="turicreate.image_classifier.ImageClassifier"><code class="xref py py-obj docutils literal"><span class="pre">ImageClassifier</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">image_classifier</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;is_expensive&#39;</span><span class="p">)</span>
@@ -326,7 +332,7 @@ have a powerful computer, increasing this value may improve performance.</p>
         <a href="turicreate.image_classifier.ImageClassifier.html" class="btn btn-neutral float-right" title="turicreate.image_classifier.ImageClassifier">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="turicreate.image_classifier.annotate.html" class="btn btn-neutral" title="turicreate.image_classifier.annotate"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../turicreate.toolkits.image_classifier.html" class="btn btn-neutral" title="image_classifier"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -335,7 +341,7 @@ have a powerful computer, increasing this value may improve performance.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -353,7 +359,7 @@ have a powerful computer, increasing this value may improve performance.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

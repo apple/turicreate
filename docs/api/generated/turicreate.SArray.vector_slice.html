@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SArray.vector_slice &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SArray.vector_slice &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.SArray.vector_slice<a class="headerlink" href="#turicreate-sarray-vector-slice" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SArray.vector_slice">
-<code class="descclassname">SArray.</code><code class="descname">vector_slice</code><span class="sig-paren">(</span><em>start</em>, <em>end=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SArray.vector_slice" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SArray.</code><code class="descname">vector_slice</code><span class="sig-paren">(</span><em>self</em>, <em>start</em>, <em>end=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SArray.vector_slice" title="Permalink to this definition">¶</a></dt>
 <dd><p>If this SArray contains vectors or lists, this returns a new SArray
 containing each individual element sliced, between start and
 end (exclusive).</p>
@@ -156,54 +159,54 @@ position.</p>
 </table>
 <p class="rubric">Examples</p>
 <p>If g is a vector of floats:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span>
 <span class="go">dtype: array</span>
 <span class="go">Rows: 2</span>
 <span class="go">[array(&#39;d&#39;, [1.0, 2.0, 3.0]), array(&#39;d&#39;, [2.0, 3.0, 4.0])]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">vector_slice</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># extracts the first element of each vector</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">vector_slice</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># extracts the first element of each vector</span>
 <span class="go">dtype: float</span>
 <span class="go">Rows: 2</span>
 <span class="go">[1.0, 2.0]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">vector_slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="c1"># extracts the first two elements of each vector</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">vector_slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="c1"># extracts the first two elements of each vector</span>
 <span class="go">dtype: array.array</span>
 <span class="go">Rows: 2</span>
 <span class="go">[array(&#39;d&#39;, [1.0, 2.0]), array(&#39;d&#39;, [2.0, 3.0])]</span>
 </pre></div>
 </div>
 <p>If a vector cannot be sliced, the result will be None:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">([[</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">([[</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span>
 <span class="go">dtype: array.array</span>
 <span class="go">Rows: 3</span>
 <span class="go">[array(&#39;d&#39;, [1.0]), array(&#39;d&#39;, [1.0, 2.0]), array(&#39;d&#39;, [1.0, 2.0, 3.0])]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">vector_slice</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">vector_slice</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="go">dtype: float</span>
 <span class="go">Rows: 3</span>
 <span class="go">[None, None, 3.0]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">vector_slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">vector_slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
 <span class="go">dtype: list</span>
 <span class="go">Rows: 3</span>
 <span class="go">[None, array(&#39;d&#39;, [1.0, 2.0]), array(&#39;d&#39;, [1.0, 2.0])]</span>
 </pre></div>
 </div>
 <p>If g is a vector of mixed types (float, int, str, array, list, etc.):</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">([[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mf">1.0</span><span class="p">],[</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mf">2.0</span><span class="p">]])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">([[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mf">1.0</span><span class="p">],[</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mf">2.0</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span>
 <span class="go">dtype: list</span>
 <span class="go">Rows: 2</span>
 <span class="go">[[&#39;a&#39;, 1, 1.0], [&#39;b&#39;, 2, 2.0]]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">vector_slice</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># extracts the first element of each vector</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">vector_slice</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># extracts the first element of each vector</span>
 <span class="go">dtype: list</span>
 <span class="go">Rows: 2</span>
 <span class="go">[[&#39;a&#39;], [&#39;b&#39;]]</span>
@@ -222,7 +225,7 @@ position.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -240,7 +243,7 @@ position.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

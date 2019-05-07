@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.evaluation.roc_curve &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.evaluation.roc_curve &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="evaluation" href="../turicreate.toolkits.evaluation.html"/>
         <link rel="next" title="turicreate.evaluation.rmse" href="turicreate.evaluation.rmse.html"/>
         <link rel="prev" title="turicreate.evaluation.recall" href="turicreate.evaluation.recall.html"/> 
@@ -172,7 +175,7 @@ the vectors in <code class="docutils literal"><span class="pre">predictions</spa
 <dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
 <dd><p class="first">Each row represents the predictive performance when using a given
 cutoff threshold, where all predictions above that cutoff are
-considered &#8220;positive&#8221;. Four columns are used to describe the
+considered “positive”. Four columns are used to describe the
 performance:</p>
 <blockquote class="last">
 <div><ul class="simple">
@@ -191,22 +194,25 @@ performance:</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.evaluation.confusion_matrix.html#turicreate.evaluation.confusion_matrix" title="turicreate.evaluation.confusion_matrix"><code class="xref py py-obj docutils literal"><span class="pre">confusion_matrix</span></code></a>, <a class="reference internal" href="turicreate.evaluation.auc.html#turicreate.evaluation.auc" title="turicreate.evaluation.auc"><code class="xref py py-obj docutils literal"><span class="pre">auc</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.evaluation.confusion_matrix.html#turicreate.evaluation.confusion_matrix" title="turicreate.evaluation.confusion_matrix"><code class="xref py py-obj docutils literal"><span class="pre">confusion_matrix</span></code></a>, <a class="reference internal" href="turicreate.evaluation.auc.html#turicreate.evaluation.auc" title="turicreate.evaluation.auc"><code class="xref py py-obj docutils literal"><span class="pre">auc</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li>For binary classification, when the target label is of type &#8220;string&#8221;,
+<li>For binary classification, when the target label is of type “string”,
 then the labels are sorted alphanumerically and the largest label is
-chosen as the &#8220;positive&#8221; label.  For example, if the classifier labels
-are {&#8220;cat&#8221;, &#8220;dog&#8221;}, then &#8220;dog&#8221; is chosen as the positive label for the
+chosen as the “positive” label.  For example, if the classifier labels
+are {“cat”, “dog”}, then “dog” is chosen as the positive label for the
 binary classification case. This behavior can be overridden by providing
 an explicit <code class="docutils literal"><span class="pre">index_map</span></code>.</li>
 <li>For multi-class classification, when the target label is of type
-&#8220;string&#8221;, then the probability vector is assumed to be a vector of
+“string”, then the probability vector is assumed to be a vector of
 probabilities of classes as sorted alphanumerically. Hence, for the
-probability vector [0.1, 0.2, 0.7] for a dataset with classes &#8220;cat&#8221;,
-&#8220;dog&#8221;, and &#8220;rat&#8221;; the 0.1 corresponds to &#8220;cat&#8221;, the 0.2 to &#8220;dog&#8221; and the
-0.7 to &#8220;rat&#8221;. This behavior can be overridden by providing an explicit
+probability vector [0.1, 0.2, 0.7] for a dataset with classes “cat”,
+“dog”, and “rat”; the 0.1 corresponds to “cat”, the 0.2 to “dog” and the
+0.7 to “rat”. This behavior can be overridden by providing an explicit
 <code class="docutils literal"><span class="pre">index_map</span></code>.</li>
 <li>The ROC curve is computed using a binning approximation with 1M bins and
 is hence accurate only to the 5th decimal.</li>
@@ -333,7 +339,7 @@ is hence accurate only to the 5th decimal.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -351,7 +357,7 @@ is hence accurate only to the 5th decimal.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

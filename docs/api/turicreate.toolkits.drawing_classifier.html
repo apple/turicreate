@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>drawing_classifier &mdash; Turi Create API 5.4 documentation</title>
+  <title>drawing_classifier &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="index.html"/>
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="index.html"/>
         <link rel="up" title="Modelling" href="turicreate.toolkits.html"/>
         <link rel="next" title="turicreate.drawing_classifier.create" href="generated/turicreate.drawing_classifier.create.html"/>
         <link rel="prev" title="turicreate.image_classifier.annotate" href="generated/turicreate.image_classifier.annotate.html"/> 
@@ -144,8 +147,8 @@ parameters will be extracted for training the drawing classifier.</p>
 column must be of string or integer type.</p>
 </dd>
 <dt><strong>feature</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string optional</span></dt>
-<dd><p class="first last">Name of the column containing the input drawings. &#8216;None&#8217; (the default)
-indicates the column in <cite>dataset</cite> named &#8220;drawing&#8221; should be used as the
+<dd><p class="first last">Name of the column containing the input drawings. ‘None’ (the default)
+indicates the column in <cite>dataset</cite> named “drawing” should be used as the
 feature.
 The feature column can contain both bitmap-based drawings as well as
 stroke-based drawings. Bitmap-based drawing input can be a grayscale
@@ -154,27 +157,29 @@ Stroke-based drawing input must be in the following format:
 Every drawing must be represented by a list of strokes, where each
 stroke must be a list of points in the order in which they were drawn
 on the canvas.
-Each point must be a dictionary with two keys, &#8220;x&#8221; and &#8220;y&#8221;, and their
+Each point must be a dictionary with two keys, “x” and “y”, and their
 respective values must be numerical, i.e. either integer or float.</p>
 </dd>
 <dt><strong>validation_set</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame optional</span></dt>
-<dd><p class="first last">A dataset for monitoring the model&#8217;s generalization performance.
+<dd><p class="first last">A dataset for monitoring the model’s generalization performance.
 The format of this SFrame must be the same as the training set.
-By default this argument is set to &#8216;auto&#8217; and a validation set is
+By default this argument is set to ‘auto’ and a validation set is
 automatically sampled and used for progress printing. If
 validation_set is set to None, then no additional metrics
-are computed. The default value is &#8216;auto&#8217;.</p>
+are computed. The default value is ‘auto’.</p>
 </dd>
 <dt><strong>warm_start</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string optional</span></dt>
-<dd><p class="first">A string to denote which pretrained model to use. Set to &#8220;auto&#8221;
+<dd><p class="first">A string to denote which pretrained model to use. Set to “auto”
 by default which uses a model trained on 245 of the 345 classes in the
-Quick, Draw! dataset. Here is a list of all the pretrained models that
+Quick, Draw! dataset. To disable warm start, pass in None to this 
+argument. Here is a list of all the pretrained models that
 can be passed in as this argument:
-&#8220;auto&#8221;: Uses quickdraw_245_v0
-&#8220;quickdraw_245_v0&#8221;: Uses a model trained on 245 of the 345 classes in the</p>
-<blockquote class="last">
+“auto”: Uses quickdraw_245_v0
+“quickdraw_245_v0”: Uses a model trained on 245 of the 345 classes in the</p>
+<blockquote>
 <div><p>Quick, Draw! dataset.</p>
 </div></blockquote>
+<p class="last">None: No Warm Start</p>
 </dd>
 <dt><strong>batch_size: int optional</strong></dt>
 <dd><p class="first last">The number of drawings per training step. If not set, a default
@@ -203,7 +208,10 @@ the data can result in a more accurately trained model.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#turicreate.toolkits.drawing_classifier.DrawingClassifier" title="turicreate.toolkits.drawing_classifier.DrawingClassifier"><code class="xref py py-obj docutils literal"><span class="pre">DrawingClassifier</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="#turicreate.toolkits.drawing_classifier.DrawingClassifier" title="turicreate.toolkits.drawing_classifier.DrawingClassifier"><code class="xref py py-obj docutils literal"><span class="pre">DrawingClassifier</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Train a drawing classifier model</span>
@@ -223,7 +231,7 @@ exported to Core ML.</p>
 <p>This model should not be constructed directly.</p>
 <dl class="method">
 <dt id="turicreate.toolkits.drawing_classifier.DrawingClassifier.evaluate">
-<code class="descname">evaluate</code><span class="sig-paren">(</span><em>dataset</em>, <em>metric='auto'</em>, <em>batch_size=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.toolkits.drawing_classifier.DrawingClassifier.evaluate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">evaluate</code><span class="sig-paren">(</span><em>self</em>, <em>dataset</em>, <em>metric='auto'</em>, <em>batch_size=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.toolkits.drawing_classifier.DrawingClassifier.evaluate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate the model by making predictions of target values and comparing
 these to actual values.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -239,19 +247,19 @@ Additional columns are ignored.</p>
 <dt><strong>metric</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
 <dd><p class="first">Name of the evaluation metric. Possible values are:</p>
 <ul class="last simple">
-<li>&#8216;auto&#8217;             : Returns all available metrics.</li>
-<li>&#8216;accuracy&#8217;         : Classification accuracy (micro average).</li>
-<li>&#8216;auc&#8217;              : Area under the ROC curve (macro average)</li>
-<li>&#8216;precision&#8217;        : Precision score (macro average)</li>
-<li>&#8216;recall&#8217;           : Recall score (macro average)</li>
-<li>&#8216;f1_score&#8217;         : F1 score (macro average)</li>
+<li>‘auto’             : Returns all available metrics.</li>
+<li>‘accuracy’         : Classification accuracy (micro average).</li>
+<li>‘auc’              : Area under the ROC curve (macro average)</li>
+<li>‘precision’        : Precision score (macro average)</li>
+<li>‘recall’           : Recall score (macro average)</li>
+<li>‘f1_score’         : F1 score (macro average)</li>
 <li><dl class="first docutils">
-<dt>&#8216;confusion_matrix&#8217; <span class="classifier-delimiter">:</span> <span class="classifier">An SFrame with counts of possible </span></dt>
+<dt>‘confusion_matrix’ <span class="classifier-delimiter">:</span> <span class="classifier">An SFrame with counts of possible </span></dt>
 <dd>prediction/true label combinations.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt>&#8216;roc_curve&#8217; <span class="classifier-delimiter">:</span> <span class="classifier">An SFrame containing information needed for an</span></dt>
+<dt>‘roc_curve’ <span class="classifier-delimiter">:</span> <span class="classifier">An SFrame containing information needed for an</span></dt>
 <dd>ROC curve</dd>
 </dl>
 </li>
@@ -276,7 +284,10 @@ score.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#turicreate.toolkits.drawing_classifier.create" title="turicreate.toolkits.drawing_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a>, <a class="reference internal" href="#turicreate.toolkits.drawing_classifier.DrawingClassifier.predict" title="turicreate.toolkits.drawing_classifier.DrawingClassifier.predict"><code class="xref py py-obj docutils literal"><span class="pre">predict</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="#turicreate.toolkits.drawing_classifier.create" title="turicreate.toolkits.drawing_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a>, <a class="reference internal" href="#turicreate.toolkits.drawing_classifier.DrawingClassifier.predict" title="turicreate.toolkits.drawing_classifier.DrawingClassifier.predict"><code class="xref py py-obj docutils literal"><span class="pre">predict</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -287,7 +298,7 @@ score.</p>
 
 <dl class="method">
 <dt id="turicreate.toolkits.drawing_classifier.DrawingClassifier.export_coreml">
-<code class="descname">export_coreml</code><span class="sig-paren">(</span><em>filename</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.toolkits.drawing_classifier.DrawingClassifier.export_coreml" title="Permalink to this definition">¶</a></dt>
+<code class="descname">export_coreml</code><span class="sig-paren">(</span><em>self</em>, <em>filename</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.toolkits.drawing_classifier.DrawingClassifier.export_coreml" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save the model in Core ML format. The Core ML model takes a grayscale 
 drawing of fixed size as input and produces two outputs: 
 <cite>classLabel</cite> and <cite>labelProbabilities</cite>.</p>
@@ -315,17 +326,20 @@ probabilities as the values.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><code class="xref py py-obj docutils literal"><span class="pre">save</span></code></p>
+<dl class="last docutils">
+<dt><code class="xref py py-obj docutils literal"><span class="pre">save</span></code></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">export_coreml</span><span class="p">(</span><span class="s1">&#39;drawing_classifier.mlmodel&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">export_coreml</span><span class="p">(</span><span class="s1">&#39;drawing_classifier.mlmodel&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="turicreate.toolkits.drawing_classifier.DrawingClassifier.predict">
-<code class="descname">predict</code><span class="sig-paren">(</span><em>data</em>, <em>output_type='class'</em>, <em>batch_size=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.toolkits.drawing_classifier.DrawingClassifier.predict" title="Permalink to this definition">¶</a></dt>
+<code class="descname">predict</code><span class="sig-paren">(</span><em>self</em>, <em>data</em>, <em>output_type='class'</em>, <em>batch_size=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.toolkits.drawing_classifier.DrawingClassifier.predict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Predict on an SFrame or SArray of drawings, or on a single drawing.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -341,14 +355,14 @@ If the data is a single drawing, it can be either of type tc.Image,
 in which case it is a bitmap-based drawing input,
 or of type list, in which case it is a stroke-based drawing input.</p>
 </dd>
-<dt><strong>output_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;probability&#8217;, &#8216;class&#8217;, &#8216;probability_vector&#8217;}, optional</span></dt>
+<dt><strong>output_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{‘probability’, ‘class’, ‘probability_vector’}, optional</span></dt>
 <dd><p class="first">Form of the predictions which are one of:</p>
 <ul class="last simple">
-<li>&#8216;class&#8217;: Class prediction. For multi-class classification, this
+<li>‘class’: Class prediction. For multi-class classification, this
 returns the class with maximum probability.</li>
-<li>&#8216;probability&#8217;: Prediction probability associated with the True
+<li>‘probability’: Prediction probability associated with the True
 class (not applicable for multi-class classification)</li>
-<li>&#8216;probability_vector&#8217;: Prediction probability associated with each
+<li>‘probability_vector’: Prediction probability associated with each
 class as a vector. Label ordering is dictated by the <code class="docutils literal"><span class="pre">classes</span></code>
 member variable.</li>
 </ul>
@@ -380,7 +394,10 @@ prediction.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#turicreate.toolkits.drawing_classifier.DrawingClassifier.evaluate" title="turicreate.toolkits.drawing_classifier.DrawingClassifier.evaluate"><code class="xref py py-obj docutils literal"><span class="pre">evaluate</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="#turicreate.toolkits.drawing_classifier.DrawingClassifier.evaluate" title="turicreate.toolkits.drawing_classifier.DrawingClassifier.evaluate"><code class="xref py py-obj docutils literal"><span class="pre">evaluate</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Make predictions</span>
@@ -397,7 +414,7 @@ prediction.</p>
 
 <dl class="method">
 <dt id="turicreate.toolkits.drawing_classifier.DrawingClassifier.predict_topk">
-<code class="descname">predict_topk</code><span class="sig-paren">(</span><em>dataset</em>, <em>output_type='probability'</em>, <em>k=3</em>, <em>batch_size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.toolkits.drawing_classifier.DrawingClassifier.predict_topk" title="Permalink to this definition">¶</a></dt>
+<code class="descname">predict_topk</code><span class="sig-paren">(</span><em>self</em>, <em>dataset</em>, <em>output_type='probability'</em>, <em>k=3</em>, <em>batch_size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.toolkits.drawing_classifier.DrawingClassifier.predict_topk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return top-k predictions for the <code class="docutils literal"><span class="pre">dataset</span></code>, using the trained model.
 Predictions are returned as an SFrame with three columns: <cite>id</cite>,
 <cite>class</cite>, and <cite>probability</cite> or <cite>rank</cite>, depending on the <code class="docutils literal"><span class="pre">output_type</span></code>
@@ -413,7 +430,7 @@ If dataset is an SFrame, it must include columns with the same
 names as the features used for model training, but does not require
 a target column. Additional columns are ignored.</p>
 </dd>
-<dt><strong>output_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;probability&#8217;, &#8216;rank&#8217;}, optional</span></dt>
+<dt><strong>output_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{‘probability’, ‘rank’}, optional</span></dt>
 <dd><p class="first">Choose the return type of the prediction:</p>
 <ul class="last simple">
 <li><dl class="first docutils">
@@ -446,10 +463,13 @@ performance.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#turicreate.toolkits.drawing_classifier.DrawingClassifier.predict" title="turicreate.toolkits.drawing_classifier.DrawingClassifier.predict"><code class="xref py py-obj docutils literal"><span class="pre">predict</span></code></a>, <a class="reference internal" href="#turicreate.toolkits.drawing_classifier.DrawingClassifier.evaluate" title="turicreate.toolkits.drawing_classifier.DrawingClassifier.evaluate"><code class="xref py py-obj docutils literal"><span class="pre">evaluate</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="#turicreate.toolkits.drawing_classifier.DrawingClassifier.predict" title="turicreate.toolkits.drawing_classifier.DrawingClassifier.predict"><code class="xref py py-obj docutils literal"><span class="pre">predict</span></code></a>, <a class="reference internal" href="#turicreate.toolkits.drawing_classifier.DrawingClassifier.evaluate" title="turicreate.toolkits.drawing_classifier.DrawingClassifier.evaluate"><code class="xref py py-obj docutils literal"><span class="pre">evaluate</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pred</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">predict_topk</span><span class="p">(</span><span class="n">validation_data</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pred</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">predict_topk</span><span class="p">(</span><span class="n">validation_data</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pred</span>
 <span class="go">+----+-------+-------------------+</span>
 <span class="go">| id | class |   probability     |</span>
@@ -510,7 +530,7 @@ performance.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -528,7 +548,7 @@ performance.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

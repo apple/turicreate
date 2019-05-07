@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.topic_model.TopicModel.evaluate &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.topic_model.TopicModel.evaluate &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,8 +126,8 @@
 <h1>turicreate.topic_model.TopicModel.evaluate<a class="headerlink" href="#turicreate-topic-model-topicmodel-evaluate" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.topic_model.TopicModel.evaluate">
-<code class="descclassname">TopicModel.</code><code class="descname">evaluate</code><span class="sig-paren">(</span><em>train_data</em>, <em>test_data=None</em>, <em>metric='perplexity'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.topic_model.TopicModel.evaluate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Estimate the model&#8217;s ability to predict new data. Imagine you have a
+<code class="descclassname">TopicModel.</code><code class="descname">evaluate</code><span class="sig-paren">(</span><em>self</em>, <em>train_data</em>, <em>test_data=None</em>, <em>metric='perplexity'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.topic_model.TopicModel.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate the model’s ability to predict new data. Imagine you have a
 corpus of books. One common approach to evaluating topic models is to
 train on the first half of all of the books and see how well the model
 predicts the second half of each book.</p>
@@ -134,7 +137,7 @@ likelihood of observing these words under the given model. See
 <p>The provided <cite>train_data</cite> and <cite>test_data</cite> must have the same length,
 i.e., both data sets must have the same number of documents; the model
 will use train_data to estimate which topic the document belongs to, and
-this is used to estimate the model&#8217;s performance at predicting the
+this is used to estimate the model’s performance at predicting the
 unseen words in the test data.</p>
 <p>See <a class="reference internal" href="turicreate.topic_model.TopicModel.predict.html#turicreate.topic_model.TopicModel.predict" title="turicreate.topic_model.TopicModel.predict"><code class="xref py py-func docutils literal"><span class="pre">predict()</span></code></a> for details
 on how these predictions are made, and see
@@ -154,7 +157,7 @@ By default this will set to be the same as train_data.</p>
 </dd>
 <dt><strong>metric</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">The chosen metric to use for evaluating the topic model.
-Currently only &#8216;perplexity&#8217; is supported.</p>
+Currently only ‘perplexity’ is supported.</p>
 </dd>
 </dl>
 </td>
@@ -170,10 +173,13 @@ Currently only &#8216;perplexity&#8217; is supported.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.topic_model.TopicModel.predict.html#turicreate.topic_model.TopicModel.predict" title="turicreate.topic_model.TopicModel.predict"><code class="xref py py-obj docutils literal"><span class="pre">predict</span></code></a>, <code class="xref py py-obj docutils literal"><span class="pre">turicreate.toolkits.text_analytics.random_split</span></code></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.topic_model.TopicModel.predict.html#turicreate.topic_model.TopicModel.predict" title="turicreate.topic_model.TopicModel.predict"><code class="xref py py-obj docutils literal"><span class="pre">predict</span></code></a>, <code class="xref py py-obj docutils literal"><span class="pre">turicreate.toolkits.text_analytics.random_split</span></code></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">docs</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">(</span><span class="s1">&#39;https://static.turi.com/datasets/nips-text&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">docs</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">(</span><span class="s1">&#39;https://static.turi.com/datasets/nips-text&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">train_data</span><span class="p">,</span> <span class="n">test_data</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">random_split</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">topic_model</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">test_data</span><span class="p">)</span>
@@ -193,7 +199,7 @@ Currently only &#8216;perplexity&#8217; is supported.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -211,7 +217,7 @@ Currently only &#8216;perplexity&#8217; is supported.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

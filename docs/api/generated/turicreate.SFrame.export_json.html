@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.export_json &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SFrame.export_json &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.SFrame.export_json<a class="headerlink" href="#turicreate-sframe-export-json" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SFrame.export_json">
-<code class="descclassname">SFrame.</code><code class="descname">export_json</code><span class="sig-paren">(</span><em>filename</em>, <em>orient='records'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.export_json" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SFrame.</code><code class="descname">export_json</code><span class="sig-paren">(</span><em>self</em>, <em>filename</em>, <em>orient='records'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.export_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes an SFrame to a JSON file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -133,9 +136,9 @@
 <dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">The location to save the JSON file.</p>
 </dd>
-<dt><strong>orient</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional. Either &#8220;records&#8221; or &#8220;lines&#8221;</span></dt>
-<dd><p class="first last">If orient=&#8221;records&#8221; the file is saved as a single JSON array.
-If orient=&#8221;lines&#8221;, the file is saves as a JSON value per line.</p>
+<dt><strong>orient</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional. Either “records” or “lines”</span></dt>
+<dd><p class="first last">If orient=”records” the file is saved as a single JSON array.
+If orient=”lines”, the file is saves as a JSON value per line.</p>
 </dd>
 </dl>
 </td>
@@ -145,9 +148,9 @@ If orient=&#8221;lines&#8221;, the file is saves as a JSON value per line.</p>
 <p class="rubric">Examples</p>
 <p>The orient parameter describes the expected input format of the JSON
 file.</p>
-<p>If orient=&#8221;records&#8221;, the output will be a single JSON Array where
+<p>If orient=”records”, the output will be a single JSON Array where
 each array element is a dictionary describing the row.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&gt;&gt;&gt; g
+<div class="highlight-default"><div class="highlight"><pre><span></span>&gt;&gt;&gt; g
 Columns:
         a       int
         b       int
@@ -169,9 +172,9 @@ Data:
 ]
 </pre></div>
 </div>
-<p>If orient=&#8221;rows&#8221;, each row will be emitted as a JSON dictionary to
+<p>If orient=”rows”, each row will be emitted as a JSON dictionary to
 each file line.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&gt;&gt;&gt; g
+<div class="highlight-default"><div class="highlight"><pre><span></span>&gt;&gt;&gt; g
 Columns:
         a       int
         b       int
@@ -204,7 +207,7 @@ Data:
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -222,7 +225,7 @@ Data:
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

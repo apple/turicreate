@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.recommender.create &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.recommender.create &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,10 +27,13 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="recommender" href="../turicreate.toolkits.recommender.html"/>
         <link rel="next" title="turicreate.recommender.item_similarity_recommender.create" href="turicreate.recommender.item_similarity_recommender.create.html"/>
-        <link rel="prev" title="turicreate.recommender.util.precision_recall_by_user" href="turicreate.recommender.util.precision_recall_by_user.html"/> 
+        <link rel="prev" title="recommender" href="../turicreate.toolkits.recommender.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -149,8 +152,8 @@ are stored with the model so that they can later be excluded from
 recommendations if desired. It can optionally contain a target ratings
 column. All other columns are interpreted by the underlying model as
 side features for the observations.</p>
-<p class="last">The user id and item id columns must be of type &#8216;int&#8217; or &#8216;str&#8217;. The
-target column must be of type &#8216;int&#8217; or &#8216;float&#8217;.</p>
+<p class="last">The user id and item id columns must be of type ‘int’ or ‘str’. The
+target column must be of type ‘int’ or ‘float’.</p>
 </dd>
 <dt><strong>user_id</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
 <dd><p class="first last">The name of the column in <cite>observation_data</cite> that corresponds to the
@@ -203,7 +206,7 @@ information.</p>
 <p><strong>Basic usage</strong></p>
 <p>Given basic user-item observation data, an
 <a class="reference internal" href="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.html#turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender" title="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender"><code class="xref py py-class docutils literal"><span class="pre">ItemSimilarityRecommender</span></code></a> is created:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">],</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">],</span>
 <span class="gp">... </span>                      <span class="s1">&#39;item_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">recommender</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">recs</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">recommend</span><span class="p">()</span>
@@ -212,10 +215,10 @@ information.</p>
 <p><strong>Creating a model for ratings data</strong></p>
 <p>This trains a <a class="reference internal" href="turicreate.recommender.factorization_recommender.FactorizationRecommender.html#turicreate.recommender.factorization_recommender.FactorizationRecommender" title="turicreate.recommender.factorization_recommender.FactorizationRecommender"><code class="xref py py-class docutils literal"><span class="pre">FactorizationRecommender</span></code></a> that
 can predict target ratings:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf2</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">],</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf2</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">],</span>
 <span class="gp">... </span>                       <span class="s1">&#39;item_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">],</span>
 <span class="gp">... </span>                       <span class="s1">&#39;rating&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">]})</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">m2</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">recommender</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf2</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;rating&quot;</span><span class="p">,</span> <span class="n">ranking</span> <span class="o">=</span> <span class="bp">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m2</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">recommender</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf2</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;rating&quot;</span><span class="p">,</span> <span class="n">ranking</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Creating specific models</strong></p>
@@ -227,7 +230,7 @@ just like any other parameter. For example, the following code creates
 an <code class="xref py py-class docutils literal"><span class="pre">ItemSimilarityRecommender</span></code> with a space-saving
 option called <cite>only_top_k</cite>. The returned model stores only the 2 most
 similar items for item:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate.recommender</span> <span class="kn">import</span> <span class="n">item_similarity_recommender</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate.recommender</span> <span class="k">import</span> <span class="n">item_similarity_recommender</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">item_similarity_recommender</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">only_top_k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -244,7 +247,7 @@ similar items for item:</p>
         <a href="turicreate.recommender.item_similarity_recommender.create.html" class="btn btn-neutral float-right" title="turicreate.recommender.item_similarity_recommender.create">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="turicreate.recommender.util.precision_recall_by_user.html" class="btn btn-neutral" title="turicreate.recommender.util.precision_recall_by_user"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../turicreate.toolkits.recommender.html" class="btn btn-neutral" title="recommender"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -253,7 +256,7 @@ similar items for item:</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -271,7 +274,7 @@ similar items for item:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

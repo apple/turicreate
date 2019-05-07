@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.nearest_neighbor_classifier.create &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.nearest_neighbor_classifier.create &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="classifier" href="../turicreate.toolkits.classifier.html"/>
         <link rel="next" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier" href="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.html"/>
         <link rel="prev" title="turicreate.svm_classifier.SVMClassifier" href="turicreate.svm_classifier.SVMClassifier.html"/> 
@@ -134,11 +137,11 @@
 <dd><p>Create a
 <a class="reference internal" href="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.html#turicreate.nearest_neighbor_classifier.NearestNeighborClassifier" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier"><code class="xref py py-class docutils literal"><span class="pre">NearestNeighborClassifier</span></code></a>
 model. This model predicts the class of a query instance by finding the most
-common class among the query&#8217;s nearest neighbors.</p>
+common class among the query’s nearest neighbors.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">The &#8216;dot_product&#8217; distance is deprecated and will be removed in future
-versions of Turi Create. Please use &#8216;transformed_dot_product&#8217;
+<p class="last">The ‘dot_product’ distance is deprecated and will be removed in future
+versions of Turi Create. Please use ‘transformed_dot_product’
 distance instead, although note that this is more than a name change; it
 is a <em>different</em> transformation of the dot product of two vectors.
 Please see the distances module documentation for more details.</p>
@@ -156,7 +159,7 @@ Please see the distances module documentation for more details.</p>
 column must be of string or integer type.</p>
 </dd>
 <dt><strong>features</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[str], optional</span></dt>
-<dd><p class="first">Name of the columns with features to use in comparing records. &#8216;None&#8217;
+<dd><p class="first">Name of the columns with features to use in comparing records. ‘None’
 (the default) indicates that all columns except the target variable
 should be used. Please note: if <cite>distance</cite> is specified as a composite
 distance, then that parameter controls which features are used in the
@@ -177,9 +180,9 @@ that parameter controls which features are used in the model.</p>
 may be one of three types:</p>
 <ul class="simple">
 <li><em>String</em>: the name of a standard distance function. One of
-&#8216;euclidean&#8217;, &#8216;squared_euclidean&#8217;, &#8216;manhattan&#8217;, &#8216;levenshtein&#8217;,
-&#8216;jaccard&#8217;, &#8216;weighted_jaccard&#8217;, &#8216;cosine&#8217;, &#8216;dot_product&#8217; (deprecated),
-or &#8216;transformed_dot_product&#8217;.</li>
+‘euclidean’, ‘squared_euclidean’, ‘manhattan’, ‘levenshtein’,
+‘jaccard’, ‘weighted_jaccard’, ‘cosine’, ‘dot_product’ (deprecated),
+or ‘transformed_dot_product’.</li>
 <li><em>Function</em>: a function handle from the
 <a class="reference internal" href="../turicreate.toolkits.distances.html#module-turicreate.toolkits.distances" title="turicreate.toolkits.distances"><code class="xref py py-mod docutils literal"><span class="pre">distances</span></code></a> module.</li>
 <li><em>Composite distance</em>: the weighted sum of several standard distance
@@ -195,7 +198,7 @@ items:<ol class="arabic">
 <p>For more information about Turi Create distance functions, please
 see the <a class="reference internal" href="../turicreate.toolkits.distances.html#module-turicreate.toolkits.distances" title="turicreate.toolkits.distances"><code class="xref py py-mod docutils literal"><span class="pre">distances</span></code></a> module.</p>
 <p>For sparse vectors, missing keys are assumed to have value 0.0.</p>
-<p class="last">If &#8216;distance&#8217; is left unspecified or set to &#8216;auto&#8217;, a composite distance
+<p class="last">If ‘distance’ is left unspecified or set to ‘auto’, a composite distance
 is constructed automatically based on feature types.</p>
 </dd>
 <dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
@@ -216,7 +219,14 @@ is constructed automatically based on feature types.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.html#turicreate.nearest_neighbor_classifier.NearestNeighborClassifier" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier"><code class="xref py py-obj docutils literal"><span class="pre">NearestNeighborClassifier</span></code></a>, <a class="reference internal" href="../turicreate.toolkits.nearest_neighbors.html#module-turicreate.toolkits.nearest_neighbors" title="turicreate.toolkits.nearest_neighbors"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.toolkits.nearest_neighbors</span></code></a>, <a class="reference internal" href="../turicreate.toolkits.distances.html#module-turicreate.toolkits.distances" title="turicreate.toolkits.distances"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.toolkits.distances</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.html#turicreate.nearest_neighbor_classifier.NearestNeighborClassifier" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier"><code class="xref py py-obj docutils literal"><span class="pre">NearestNeighborClassifier</span></code></a></dt>
+<dd></dd>
+<dt><a class="reference internal" href="../turicreate.toolkits.nearest_neighbors.html#module-turicreate.toolkits.nearest_neighbors" title="turicreate.toolkits.nearest_neighbors"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.toolkits.nearest_neighbors</span></code></a></dt>
+<dd></dd>
+<dt><a class="reference internal" href="../turicreate.toolkits.distances.html#module-turicreate.toolkits.distances" title="turicreate.toolkits.distances"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.toolkits.distances</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">References</p>
 <ul class="simple">
@@ -226,7 +236,7 @@ Statistical Learning</a>.
 Vol. 2. New York. Springer. pp. 463-481.</li>
 </ul>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;species&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">,</span> <span class="s1">&#39;fossa&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">],</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;species&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">,</span> <span class="s1">&#39;fossa&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">],</span>
 <span class="gp">... </span>                      <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">23</span><span class="p">],</span>
 <span class="gp">... </span>                      <span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">22</span><span class="p">]})</span>
 <span class="gp">...</span>
@@ -235,7 +245,7 @@ Vol. 2. New York. Springer. pp. 463-481.</li>
 </div>
 <p>As with the nearest neighbors toolkit, the nearest neighbor classifier
 accepts composite distance functions.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_dist</span> <span class="o">=</span> <span class="p">[[(</span><span class="s1">&#39;height&#39;</span><span class="p">,</span> <span class="s1">&#39;weight&#39;</span><span class="p">),</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="mf">2.7</span><span class="p">],</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_dist</span> <span class="o">=</span> <span class="p">[[(</span><span class="s1">&#39;height&#39;</span><span class="p">,</span> <span class="s1">&#39;weight&#39;</span><span class="p">),</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="mf">2.7</span><span class="p">],</span>
 <span class="gp">... </span>           <span class="p">[(</span><span class="s1">&#39;height&#39;</span><span class="p">,</span> <span class="s1">&#39;weight&#39;</span><span class="p">),</span> <span class="s1">&#39;manhattan&#39;</span><span class="p">,</span> <span class="mf">1.6</span><span class="p">]]</span>
 <span class="gp">...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">nearest_neighbor_classifier</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;species&#39;</span><span class="p">,</span>
@@ -264,7 +274,7 @@ accepts composite distance functions.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -282,7 +292,7 @@ accepts composite distance functions.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

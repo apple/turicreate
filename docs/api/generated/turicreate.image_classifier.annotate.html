@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.image_classifier.annotate &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.image_classifier.annotate &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="image_classifier" href="../turicreate.toolkits.image_classifier.html"/>
         <link rel="next" title="drawing_classifier" href="../turicreate.toolkits.drawing_classifier.html"/>
         <link rel="prev" title="turicreate.image_classifier.ImageClassifier" href="turicreate.image_classifier.ImageClassifier.html"/> 
@@ -144,26 +147,26 @@ images and annotations.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray | SFrame</span></dt>
-<dd><p class="first last">The data containing the images. If the data type is &#8216;SArray&#8217;
-the &#8216;image_column&#8217;, and &#8216;annotation_column&#8217; variables are used to construct
-a new &#8216;SFrame&#8217; containing the &#8216;SArray&#8217; data for annotation.
-If the data type is &#8216;SFrame&#8217; the &#8216;image_column&#8217;, and &#8216;annotation_column&#8217;
+<dd><p class="first last">The data containing the images. If the data type is ‘SArray’
+the ‘image_column’, and ‘annotation_column’ variables are used to construct
+a new ‘SFrame’ containing the ‘SArray’ data for annotation.
+If the data type is ‘SFrame’ the ‘image_column’, and ‘annotation_column’
 variables are used to annotate the images.</p>
 </dd>
 <dt><strong>image_column: string, optional</strong></dt>
-<dd><p class="first last">If the data type is SFrame and the &#8216;image_column&#8217; parameter is specified
+<dd><p class="first last">If the data type is SFrame and the ‘image_column’ parameter is specified
 then the column name is used as the image column used in the annotation. If
-the data type is &#8216;SFrame&#8217; and the &#8216;image_column&#8217; variable is left empty. A
-default column value of &#8216;image&#8217; is used in the annotation. If the data type is
-&#8216;SArray&#8217;, the &#8216;image_column&#8217; is used to construct the &#8216;SFrame&#8217; data for
+the data type is ‘SFrame’ and the ‘image_column’ variable is left empty. A
+default column value of ‘image’ is used in the annotation. If the data type is
+‘SArray’, the ‘image_column’ is used to construct the ‘SFrame’ data for
 the annotation</p>
 </dd>
 <dt><strong>annotation_column</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
-<dd><p class="first last">If the data type is SFrame and the &#8216;annotation_column&#8217; parameter is specified
+<dd><p class="first last">If the data type is SFrame and the ‘annotation_column’ parameter is specified
 then the column name is used as the annotation column used in the annotation. If
-the data type is &#8216;SFrame&#8217; and the &#8216;annotation_column&#8217; variable is left empty. A
-default column value of &#8216;annotation&#8217; is used in the annotation. If the data type is
-&#8216;SArray&#8217;, the &#8216;annotation_column&#8217; is used to construct the &#8216;SFrame&#8217; data for
+the data type is ‘SFrame’ and the ‘annotation_column’ variable is left empty. A
+default column value of ‘annotation’ is used in the annotation. If the data type is
+‘SArray’, the ‘annotation_column’ is used to construct the ‘SFrame’ data for
 the annotation</p>
 </dd>
 </dl>
@@ -180,7 +183,7 @@ the annotation</p>
 </table>
 <p class="rubric">Examples</p>
 <p>&gt;&gt; import turicreate as tc
-&gt;&gt; images = tc.image_analysis.load_images(&#8220;path/to/images&#8221;)
+&gt;&gt; images = tc.image_analysis.load_images(“path/to/images”)
 &gt;&gt; print(images)</p>
 <blockquote>
 <div><p>Columns:</p>
@@ -189,14 +192,14 @@ the annotation</p>
 image   Image</div></blockquote>
 <p>Rows: 4</p>
 <p>Data:
-+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8211;+
++————————+————————–+
 |          path          |          image           |
-+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8211;+
-| /Users/username/Doc... | Height: 1712 Width: 1952 |
-| /Users/username/Doc... | Height: 1386 Width: 1000 |
-| /Users/username/Doc... |  Height: 536 Width: 858  |
-| /Users/username/Doc... | Height: 1512 Width: 2680 |
-+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8211;+
++————————+————————–+
+| /Users/username/Doc… | Height: 1712 Width: 1952 |
+| /Users/username/Doc… | Height: 1386 Width: 1000 |
+| /Users/username/Doc… |  Height: 536 Width: 858  |
+| /Users/username/Doc… | Height: 1512 Width: 2680 |
++————————+————————–+
 [4 rows x 2 columns]</p>
 </div></blockquote>
 <p>&gt;&gt; images = tc.image_classifier.annotate(images)
@@ -210,14 +213,14 @@ annotation  str</dd>
 </dl>
 <p>Rows: 4</p>
 <p>Data:
-+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8211;+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;-+
++————————+————————–+——————-+
 |          path          |          image           |    annotation     |
-+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8211;+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;-+
-| /Users/username/Doc... | Height: 1712 Width: 1952 |        dog        |
-| /Users/username/Doc... | Height: 1386 Width: 1000 |        dog        |
-| /Users/username/Doc... |  Height: 536 Width: 858  |        cat        |
-| /Users/username/Doc... | Height: 1512 Width: 2680 |       mouse       |
-+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8211;+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;-+
++————————+————————–+——————-+
+| /Users/username/Doc… | Height: 1712 Width: 1952 |        dog        |
+| /Users/username/Doc… | Height: 1386 Width: 1000 |        dog        |
+| /Users/username/Doc… |  Height: 536 Width: 858  |        cat        |
+| /Users/username/Doc… | Height: 1512 Width: 2680 |       mouse       |
++————————+————————–+——————-+
 [4 rows x 3 columns]</p>
 </div></blockquote>
 </dd></dl>
@@ -242,7 +245,7 @@ annotation  str</dd>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -260,7 +263,7 @@ annotation  str</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

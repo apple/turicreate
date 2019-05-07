@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.kmeans.create &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.kmeans.create &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="clustering" href="../turicreate.toolkits.clustering.html"/>
         <link rel="next" title="turicreate.kmeans.KmeansModel" href="turicreate.kmeans.KmeansModel.html"/>
         <link rel="prev" title="turicreate.dbscan.DBSCANModel" href="turicreate.dbscan.DBSCANModel.html"/> 
@@ -133,7 +136,7 @@
 <code class="descclassname">turicreate.kmeans.</code><code class="descname">create</code><span class="sig-paren">(</span><em>dataset</em>, <em>num_clusters=None</em>, <em>features=None</em>, <em>label=None</em>, <em>initial_centers=None</em>, <em>max_iterations=10</em>, <em>batch_size=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.kmeans.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a k-means clustering model. The KmeansModel object contains the
 computed cluster centers and the cluster assignment for each instance in
-the input &#8216;dataset&#8217;.</p>
+the input ‘dataset’.</p>
 <p>Given a number of clusters, k-means iteratively chooses the best cluster
 centers and assigns nearby points to the best cluster. If no points change
 cluster membership between iterations, the algorithm terminates.</p>
@@ -146,11 +149,11 @@ cluster membership between iterations, the algorithm terminates.</p>
 <dd><p class="first last">Each row in the SFrame is an observation.</p>
 </dd>
 <dt><strong>num_clusters</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd><p class="first last">Number of clusters. This is the &#8216;k&#8217; in k-means.</p>
+<dd><p class="first last">Number of clusters. This is the ‘k’ in k-means.</p>
 </dd>
 <dt><strong>features</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[str], optional</span></dt>
 <dd><p class="first">Names of feature columns to use in computing distances between
-observations and cluster centers. &#8216;None&#8217; (the default) indicates that
+observations and cluster centers. ‘None’ (the default) indicates that
 all columns should be used as features. Columns may be of the following
 types:</p>
 <ul class="simple">
@@ -171,8 +174,8 @@ row numbers are used by default.</p>
 <dt><strong>initial_centers</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
 <dd><p class="first">Initial centers to use when starting the K-means algorithm. If
 specified, this parameter overrides the <em>num_clusters</em> parameter. The
-&#8216;initial_centers&#8217; SFrame must contain the same features used in the
-input &#8216;dataset&#8217;.</p>
+‘initial_centers’ SFrame must contain the same features used in the
+input ‘dataset’.</p>
 <p class="last">If not specified (the default), initial centers are chosen
 intelligently with the K-means++ algorithm.</p>
 </dd>
@@ -184,7 +187,7 @@ assignments to those centers.</p>
 </dd>
 <dt><strong>batch_size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
 <dd><p class="first last">Number of randomly-chosen data points to use in each iteration. If
-&#8216;None&#8217; (the default) or greater than the number of rows in &#8216;dataset&#8217;,
+‘None’ (the default) or greater than the number of rows in ‘dataset’,
 then this parameter is ignored: all rows of <cite>dataset</cite> are used in each
 iteration and model training terminates once point assignments stop
 changing or <cite>max_iterations</cite> is reached.</p>
@@ -207,11 +210,14 @@ of the clusters.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.kmeans.KmeansModel.html#turicreate.kmeans.KmeansModel" title="turicreate.kmeans.KmeansModel"><code class="xref py py-obj docutils literal"><span class="pre">KmeansModel</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.kmeans.KmeansModel.html#turicreate.kmeans.KmeansModel" title="turicreate.kmeans.KmeansModel"><code class="xref py py-obj docutils literal"><span class="pre">KmeansModel</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li>Integer features in the &#8216;dataset&#8217; or &#8216;initial_centers&#8217; inputs are
+<li>Integer features in the ‘dataset’ or ‘initial_centers’ inputs are
 converted internally to float type, and the corresponding features in the
 output centers are float-typed.</li>
 <li>It can be important for the K-means model to standardize the features so
@@ -233,7 +239,7 @@ Proceedings of the 19th International Conference on World Wide Web. pp.
 1177-1178</li>
 </ul>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span>
 <span class="gp">... </span>    <span class="s1">&#39;x1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.6777</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.391</span><span class="p">,</span> <span class="mf">7.0385</span><span class="p">,</span> <span class="mf">2.2657</span><span class="p">,</span> <span class="mf">7.7864</span><span class="p">,</span> <span class="o">-</span><span class="mf">10.16</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.162</span><span class="p">,</span>
 <span class="gp">... </span>           <span class="mf">8.8817</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.525</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.153</span><span class="p">,</span> <span class="mf">2.0860</span><span class="p">,</span> <span class="mf">7.6619</span><span class="p">,</span> <span class="mf">6.5511</span><span class="p">,</span> <span class="mf">2.7020</span><span class="p">],</span>
 <span class="gp">... </span>    <span class="s1">&#39;x2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">5.6110</span><span class="p">,</span> <span class="mf">8.5139</span><span class="p">,</span> <span class="mf">5.3913</span><span class="p">,</span> <span class="mf">5.4743</span><span class="p">,</span> <span class="mf">8.3606</span><span class="p">,</span> <span class="mf">7.8843</span><span class="p">,</span> <span class="mf">2.7305</span><span class="p">,</span>
@@ -264,7 +270,7 @@ Proceedings of the 19th International Conference on World Wide Web. pp.
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -282,7 +288,7 @@ Proceedings of the 19th International Conference on World Wide Web. pp.
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

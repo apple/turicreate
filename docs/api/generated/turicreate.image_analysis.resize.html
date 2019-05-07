@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.image_analysis.resize &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.image_analysis.resize &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="image_analysis" href="../turicreate.toolkits.image_analysis.html"/>
         <link rel="next" title="nearest_neighbors" href="../turicreate.toolkits.nearest_neighbors.html"/>
         <link rel="prev" title="turicreate.image_analysis.load_images" href="turicreate.image_analysis.load_images.html"/> 
@@ -156,7 +159,7 @@ channels corresponds to RGBA images.</p>
 <dd><p class="first last">Whether to store the resized image in decoded format. Decoded takes
 more space, but makes the resize and future operations on the image faster.</p>
 </dd>
-<dt><strong>resample</strong> <span class="classifier-delimiter">:</span> <span class="classifier">&#8216;nearest&#8217; or &#8216;bilinear&#8217;</span></dt>
+<dt><strong>resample</strong> <span class="classifier-delimiter">:</span> <span class="classifier">‘nearest’ or ‘bilinear’</span></dt>
 <dd><p class="first">Specify the resampling filter:</p>
 <blockquote class="last">
 <div><ul class="simple">
@@ -185,14 +188,14 @@ and Blue values.</p>
 <p>RGBA Images -&gt; An RGB image with an opacity channel.</p>
 <p class="rubric">Examples</p>
 <p>Resize a single image</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">img</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">&#39;https://static.turi.com/datasets/images/sample.jpg&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">img</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">&#39;https://static.turi.com/datasets/images/sample.jpg&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">resized_img</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">image_analysis</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">img</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Resize an SArray of images</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">url</span> <span class="o">=</span><span class="s1">&#39;https://static.turi.com/datasets/images/nested&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">image_sframe</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">image_analysis</span><span class="o">.</span><span class="n">load_images</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">with_path</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-<span class="gp">... </span>                                                   <span class="n">recursive</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">url</span> <span class="o">=</span><span class="s1">&#39;https://static.turi.com/datasets/images/nested&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image_sframe</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">image_analysis</span><span class="o">.</span><span class="n">load_images</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">with_path</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="gp">... </span>                                                   <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image_sarray</span> <span class="o">=</span> <span class="n">image_sframe</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">resized_images</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">image_analysis</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">image_sarray</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 </pre></div>
@@ -219,7 +222,7 @@ and Blue values.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -237,7 +240,7 @@ and Blue values.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

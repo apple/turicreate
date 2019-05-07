@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.text_analytics.stop_words &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.text_analytics.stop_words &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="text_analytics" href="../turicreate.toolkits.text_analytics.html"/>
         <link rel="next" title="turicreate.text_analytics.tokenize" href="turicreate.text_analytics.tokenize.html"/>
         <link rel="prev" title="turicreate.text_analytics.random_split" href="turicreate.text_analytics.random_split.html"/> 
@@ -132,14 +135,14 @@
 <dt id="turicreate.text_analytics.stop_words">
 <code class="descclassname">turicreate.text_analytics.</code><code class="descname">stop_words</code><span class="sig-paren">(</span><em>lang='en'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.text_analytics.stop_words" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get common words that are often removed during preprocessing of text data,
-i.e. &#8220;stop words&#8221;. Currently only English stop words are provided.</p>
+i.e. “stop words”. Currently only English stop words are provided.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>lang</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
-<dd><p class="first last">The desired language. Default: &#8216;en&#8217; (English).</p>
+<dd><p class="first last">The desired language. Default: ‘en’ (English).</p>
 </dd>
 </dl>
 </td>
@@ -155,8 +158,8 @@ i.e. &#8220;stop words&#8221;. Currently only English stop words are provided.</
 </table>
 <p class="rubric">Examples</p>
 <p>You may remove stop words from an SArray as follows:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">docs</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([{</span><span class="s1">&#39;are&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;you&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;not&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;entertained&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">}])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">docs</span><span class="o">.</span><span class="n">dict_trim_by_keys</span><span class="p">(</span><span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">stop_words</span><span class="p">(),</span> <span class="bp">True</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">docs</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([{</span><span class="s1">&#39;are&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;you&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;not&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;entertained&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">}])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">docs</span><span class="o">.</span><span class="n">dict_trim_by_keys</span><span class="p">(</span><span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">stop_words</span><span class="p">(),</span> <span class="kc">True</span><span class="p">)</span>
 <span class="go">dtype: dict</span>
 <span class="go">Rows: 1</span>
 <span class="go">[{&#39;entertained&#39;: 1}]</span>
@@ -184,7 +187,7 @@ i.e. &#8220;stop words&#8221;. Currently only English stop words are provided.</
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -202,7 +205,7 @@ i.e. &#8220;stop words&#8221;. Currently only English stop words are provided.</
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

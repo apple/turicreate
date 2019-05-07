@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.recommender.util.compare_models &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.recommender.util.compare_models &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="recommender" href="../turicreate.toolkits.recommender.html"/>
         <link rel="next" title="turicreate.recommender.util.random_split_by_user" href="turicreate.recommender.util.random_split_by_user.html"/>
         <link rel="prev" title="turicreate.recommender.popularity_recommender.PopularityRecommender" href="turicreate.recommender.popularity_recommender.PopularityRecommender.html"/> 
@@ -155,20 +158,20 @@ precision-recall.</p>
 <dd><p class="first last">Sampling proportion of unique users to use in estimating model
 performance. Defaults to 1.0, i.e. use all users in the dataset.</p>
 </dd>
-<dt><strong>metric</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, {&#8216;auto&#8217;, &#8216;rmse&#8217;, &#8216;precision_recall&#8217;}, optional</span></dt>
+<dt><strong>metric</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, {‘auto’, ‘rmse’, ‘precision_recall’}, optional</span></dt>
 <dd><p class="first last">Metric for the evaluation. The default automatically splits
 models into two groups with their default evaluation metric respectively:
-&#8216;rmse&#8217; for models trained with a target, and &#8216;precision_recall&#8217;
+‘rmse’ for models trained with a target, and ‘precision_recall’
 otherwise.</p>
 </dd>
 <dt><strong>target</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
 <dd><p class="first last">The name of the target column for evaluating rmse. If the model is
 trained with a target column, the default is to using the same column.
-If the model is trained without a target column and <cite>metric=&#8217;rmse&#8217;</cite>,
+If the model is trained without a target column and <cite>metric=’rmse’</cite>,
 then this option must be provided by user.</p>
 </dd>
 <dt><strong>exclude_known_for_precision_recall</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">A useful option when <cite>metric=&#8217;precision_recall&#8217;</cite>. Recommender models
+<dd><p class="first last">A useful option when <cite>metric=’precision_recall’</cite>. Recommender models
 automatically exclude items seen in the training data from the
 final recommendation list. If the input evaluation <cite>dataset</cite> is the
 same as the data used for training the models, set this option to False.</p>
@@ -193,7 +196,7 @@ the respective model on the given dataset</p>
 <p>If you have created two ItemSimilarityRecommenders <code class="docutils literal"><span class="pre">m1</span></code> and <code class="docutils literal"><span class="pre">m2</span></code> and have
 an <a class="reference internal" href="turicreate.SFrame.html#turicreate.SFrame" title="turicreate.SFrame"><code class="xref py py-class docutils literal"><span class="pre">SFrame</span></code></a> <code class="docutils literal"><span class="pre">test_data</span></code>, then you may compare the
 performance of the two models on test data using:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">turicreate</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">turicreate</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">train_data</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">],</span>
 <span class="gp">... </span>                              <span class="s1">&#39;item_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">test_data</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">],</span>
@@ -203,19 +206,19 @@ performance of the two models on test data using:</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">recommender</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">compare_models</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="p">[</span><span class="n">m1</span><span class="p">,</span> <span class="n">m2</span><span class="p">],</span> <span class="n">model_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;m1&quot;</span><span class="p">,</span> <span class="s2">&quot;m2&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
-<p>The evaluation metric is automatically set to &#8216;precision_recall&#8217;, and the
+<p>The evaluation metric is automatically set to ‘precision_recall’, and the
 evaluation will be based on recommendations that exclude items seen in the
 training data.</p>
 <p>If you want to evaluate on the original training set:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">recommender</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">compare_models</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="p">[</span><span class="n">m1</span><span class="p">,</span> <span class="n">m2</span><span class="p">],</span>
-<span class="gp">... </span>                                    <span class="n">exclude_known_for_precision_recall</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">recommender</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">compare_models</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="p">[</span><span class="n">m1</span><span class="p">,</span> <span class="n">m2</span><span class="p">],</span>
+<span class="gp">... </span>                                    <span class="n">exclude_known_for_precision_recall</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Suppose you have four models, two trained with a target rating column, and
 the other two trained without a target. By default, the models are put into
-two different groups with &#8220;rmse&#8221;, and &#8220;precision-recall&#8221; as the evaluation
+two different groups with “rmse”, and “precision-recall” as the evaluation
 metric respectively.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">train_data2</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">],</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">train_data2</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">],</span>
 <span class="gp">... </span>                               <span class="s1">&#39;item_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">],</span>
 <span class="gp">... </span>                               <span class="s1">&#39;rating&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">test_data2</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">],</span>
@@ -226,9 +229,9 @@ metric respectively.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">recommender</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">compare_models</span><span class="p">(</span><span class="n">test_data2</span><span class="p">,</span> <span class="p">[</span><span class="n">m3</span><span class="p">,</span> <span class="n">m4</span><span class="p">])</span>
 </pre></div>
 </div>
-<p>To compare all four models using the same &#8216;precision_recall&#8217; metric, you can
+<p>To compare all four models using the same ‘precision_recall’ metric, you can
 do:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">recommender</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">compare_models</span><span class="p">(</span><span class="n">test_data2</span><span class="p">,</span> <span class="p">[</span><span class="n">m1</span><span class="p">,</span> <span class="n">m2</span><span class="p">,</span> <span class="n">m3</span><span class="p">,</span> <span class="n">m4</span><span class="p">],</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">recommender</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">compare_models</span><span class="p">(</span><span class="n">test_data2</span><span class="p">,</span> <span class="p">[</span><span class="n">m1</span><span class="p">,</span> <span class="n">m2</span><span class="p">,</span> <span class="n">m3</span><span class="p">,</span> <span class="n">m4</span><span class="p">],</span>
 <span class="gp">... </span>                                         <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;precision_recall&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -254,7 +257,7 @@ do:</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -272,7 +275,7 @@ do:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

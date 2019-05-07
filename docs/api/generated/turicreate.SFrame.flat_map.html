@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.flat_map &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SFrame.flat_map &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,16 +126,16 @@
 <h1>turicreate.SFrame.flat_map<a class="headerlink" href="#turicreate-sframe-flat-map" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SFrame.flat_map">
-<code class="descclassname">SFrame.</code><code class="descname">flat_map</code><span class="sig-paren">(</span><em>column_names</em>, <em>fn</em>, <em>column_types='auto'</em>, <em>seed=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.flat_map" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SFrame.</code><code class="descname">flat_map</code><span class="sig-paren">(</span><em>self</em>, <em>column_names</em>, <em>fn</em>, <em>column_types='auto'</em>, <em>seed=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.flat_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Map each row of the SFrame to multiple rows in a new SFrame via a
 function.</p>
-<p>The output of <cite>fn</cite> must have type List[List[...]].  Each inner list
+<p>The output of <cite>fn</cite> must have type List[List[…]].  Each inner list
 will be a single row in the new output, and the collection of these
 rows within the outer list make up the data for the output SFrame.
 All rows must have the same length and the same order of types to
 make sure the result columns are homogeneously typed.  For example, if
 the first element emitted into in the outer list by <cite>fn</cite> is
-[43, 2.3, &#8216;string&#8217;], then all other elements emitted into the outer
+[43, 2.3, ‘string’], then all other elements emitted into the outer
 list must be a list with three elements, where the first is an int,
 second is a float, and third is a string.  If column_types is not
 specified, the first 10 rows of the SFrame are used to determine the
@@ -147,7 +150,7 @@ column types of the returned sframe.</p>
 </dd>
 <dt><strong>fn</strong> <span class="classifier-delimiter">:</span> <span class="classifier">function</span></dt>
 <dd><p class="first last">The function that maps each of the sframe row into multiple rows,
-returning List[List[...]].  All outputted rows must have the same
+returning List[List[…]].  All outputted rows must have the same
 length and order of types.</p>
 </dd>
 <dt><strong>column_types</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[type], optional</span></dt>
@@ -173,8 +176,8 @@ original SFrame.</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<p>Repeat each row according to the value in the &#8216;number&#8217; column.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;letter&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">],</span>
+<p>Repeat each row according to the value in the ‘number’ column.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;letter&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">],</span>
 <span class="gp">... </span>                      <span class="s1">&#39;number&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">flat_map</span><span class="p">([</span><span class="s1">&#39;number&#39;</span><span class="p">,</span> <span class="s1">&#39;letter&#39;</span><span class="p">],</span>
 <span class="gp">... </span>            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">itervalues</span><span class="p">())</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;number&#39;</span><span class="p">])])</span>
@@ -204,7 +207,7 @@ original SFrame.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -222,7 +225,7 @@ original SFrame.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

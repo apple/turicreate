@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.image_similarity.create &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.image_similarity.create &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,10 +27,13 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="image_similarity" href="../turicreate.toolkits.image_similarity.html"/>
         <link rel="next" title="turicreate.image_similarity.ImageSimilarityModel" href="turicreate.image_similarity.ImageSimilarityModel.html"/>
-        <link rel="prev" title="turicreate.image_similarity.ImageSimilarityModel" href="turicreate.image_similarity.ImageSimilarityModel.html"/> 
+        <link rel="prev" title="image_similarity" href="../turicreate.toolkits.image_similarity.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -138,27 +141,27 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
-<dd><p class="first last">Input data. The column named by the &#8216;feature&#8217; parameter will be
+<dd><p class="first last">Input data. The column named by the ‘feature’ parameter will be
 extracted for modeling.</p>
 </dd>
 <dt><strong>label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">Name of the SFrame column with row labels to be used as uuid&#8217;s to
-identify the data. If &#8216;label&#8217; is set to None, row numbers are used to
+<dd><p class="first last">Name of the SFrame column with row labels to be used as uuid’s to
+identify the data. If ‘label’ is set to None, row numbers are used to
 identify reference dataset rows when the model is queried.</p>
 </dd>
 <dt><strong>feature</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">indicates that the SFrame has only column of Image type and that will
-Name of the column containing the input images. &#8216;None&#8217; (the default)
+Name of the column containing the input images. ‘None’ (the default)
 be used for similarity.</p>
 </dd>
 <dt><strong>model: string, optional</strong></dt>
 <dd><p class="first">Uses a pretrained model to bootstrap an image similarity model</p>
 <blockquote>
 <div><ul class="simple">
-<li>&#8220;resnet-50&#8221; : Uses a pretrained resnet model.</li>
-<li>&#8220;squeezenet_v1.1&#8221; : Uses a pretrained squeezenet model.</li>
+<li>“resnet-50” : Uses a pretrained resnet model.</li>
+<li>“squeezenet_v1.1” : Uses a pretrained squeezenet model.</li>
 <li><dl class="first docutils">
-<dt>&#8220;VisionFeaturePrint_Scene&#8221;: Uses an OS internal feature extractor.</dt>
+<dt>“VisionFeaturePrint_Scene”: Uses an OS internal feature extractor.</dt>
 <dd>Only on available on iOS 12.0+,
 macOS 10.14+ and tvOS 12.0+.</dd>
 </dl>
@@ -189,7 +192,10 @@ have a powerful computer, increasing this value may improve performance.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.image_similarity.ImageSimilarityModel.html#turicreate.image_similarity.ImageSimilarityModel" title="turicreate.image_similarity.ImageSimilarityModel"><code class="xref py py-obj docutils literal"><span class="pre">ImageSimilarityModel</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.image_similarity.ImageSimilarityModel.html#turicreate.image_similarity.ImageSimilarityModel" title="turicreate.image_similarity.ImageSimilarityModel"><code class="xref py py-obj docutils literal"><span class="pre">ImageSimilarityModel</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Train an image similarity model</span>
@@ -227,7 +233,7 @@ have a powerful computer, increasing this value may improve performance.</p>
         <a href="turicreate.image_similarity.ImageSimilarityModel.html" class="btn btn-neutral float-right" title="turicreate.image_similarity.ImageSimilarityModel">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="turicreate.image_similarity.ImageSimilarityModel.html" class="btn btn-neutral" title="turicreate.image_similarity.ImageSimilarityModel"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../turicreate.toolkits.image_similarity.html" class="btn btn-neutral" title="image_similarity"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -236,7 +242,7 @@ have a powerful computer, increasing this value may improve performance.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -254,7 +260,7 @@ have a powerful computer, increasing this value may improve performance.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.evaluation.log_loss &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.evaluation.log_loss &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="evaluation" href="../turicreate.toolkits.evaluation.html"/>
         <link rel="next" title="turicreate.evaluation.precision" href="turicreate.evaluation.precision.html"/>
         <link rel="prev" title="turicreate.evaluation.fbeta_score" href="turicreate.evaluation.fbeta_score.html"/> 
@@ -138,7 +141,7 @@ observations:</p>
 <div class="math">
 \[\textrm{logloss} = - \frac{1}{N} \sum_{i \in 1,\ldots,N}
     (y_i \log(p_i) + (1-y_i)\log(1-p_i)) ,\]</div>
-<p>where y_i is the i&#8217;th target value and p_i is the i&#8217;th predicted
+<p>where y_i is the i’th target value and p_i is the i’th predicted
 probability.</p>
 <p>For multiclass situations, the definition is a slight generalization of the
 above:</p>
@@ -159,7 +162,7 @@ observation <cite>i</cite> has class label <cite>j</cite>.</p>
 <dt><strong>predictions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray</span></dt>
 <dd><p class="first last">The predicted probability that corresponds to each target value. For
 binary classification, the probability corresponds to the probability
-of the &#8220;positive&#8221; label being predicted. For multi-class
+of the “positive” label being predicted. For multi-class
 classification, the predictions are expected to be an array of
 predictions for each class.</p>
 </dd>
@@ -183,22 +186,25 @@ the vectors in <code class="docutils literal"><span class="pre">predictions</spa
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.evaluation.accuracy.html#turicreate.evaluation.accuracy" title="turicreate.evaluation.accuracy"><code class="xref py py-obj docutils literal"><span class="pre">accuracy</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.evaluation.accuracy.html#turicreate.evaluation.accuracy" title="turicreate.evaluation.accuracy"><code class="xref py py-obj docutils literal"><span class="pre">accuracy</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li>For binary classification, when the target label is of type &#8220;string&#8221;,
+<li>For binary classification, when the target label is of type “string”,
 then the labels are sorted alphanumerically and the largest label is
-chosen as the &#8220;positive&#8221; label.  For example, if the classifier labels
-are {&#8220;cat&#8221;, &#8220;dog&#8221;}, then &#8220;dog&#8221; is chosen as the positive label for the
+chosen as the “positive” label.  For example, if the classifier labels
+are {“cat”, “dog”}, then “dog” is chosen as the positive label for the
 binary classification case. This behavior can be overridden by providing
 an explicit <code class="docutils literal"><span class="pre">index_map</span></code>.</li>
 <li>For multi-class classification, when the target label is of type
-&#8220;string&#8221;, then the probability vector is assumed to be a vector of
+“string”, then the probability vector is assumed to be a vector of
 probabilities of classes as sorted alphanumerically. Hence, for the
-probability vector [0.1, 0.2, 0.7] for a dataset with classes &#8220;cat&#8221;,
-&#8220;dog&#8221;, and &#8220;rat&#8221;; the 0.1 corresponds to &#8220;cat&#8221;, the 0.2 to &#8220;dog&#8221; and the
-0.7 to &#8220;rat&#8221;. This behavior can be overridden by providing an explicit
+probability vector [0.1, 0.2, 0.7] for a dataset with classes “cat”,
+“dog”, and “rat”; the 0.1 corresponds to “cat”, the 0.2 to “dog” and the
+0.7 to “rat”. This behavior can be overridden by providing an explicit
 <code class="docutils literal"><span class="pre">index_map</span></code>.</li>
 <li>Logloss is undefined when a probability value p = 0, or p = 1.  Hence,
 probabilities are clipped to max(EPSILON, min(1 - EPSILON, p)) where
@@ -213,9 +219,9 @@ EPSILON = 1e-15.</li>
 <span class="n">log_loss</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">evaluation</span><span class="o">.</span><span class="n">log_loss</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">predictions</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>For binary classification, when the target label is of type &#8220;string&#8221;, then
+<p>For binary classification, when the target label is of type “string”, then
 the labels are sorted alphanumerically and the largest label is chosen as
-the &#8220;positive&#8221; label.</p>
+the “positive” label.</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">turicreate</span> <span class="kn">as</span> <span class="nn">tc</span>
 <span class="n">targets</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="s2">&quot;cat&quot;</span><span class="p">,</span> <span class="s2">&quot;dog&quot;</span><span class="p">,</span> <span class="s2">&quot;dog&quot;</span><span class="p">,</span> <span class="s2">&quot;cat&quot;</span><span class="p">])</span>
 <span class="n">predictions</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">])</span>
@@ -234,11 +240,11 @@ correspond to the probability of prediction for each of the three classes.</p>
 <span class="n">log_loss</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">evaluation</span><span class="o">.</span><span class="n">log_loss</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">predictions</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>For multi-class classification, when the target label is of type &#8220;string&#8221;,
+<p>For multi-class classification, when the target label is of type “string”,
 then the probability vector is assumed to be a vector of probabilities of
 class as sorted alphanumerically. Hence, for the probability vector [0.1,
-0.2, 0.7] for a dataset with classes &#8220;cat&#8221;, &#8220;dog&#8221;, and &#8220;rat&#8221;; the 0.1
-corresponds to &#8220;cat&#8221;, the 0.2 to &#8220;dog&#8221; and the 0.7 to &#8220;rat&#8221;.</p>
+0.2, 0.7] for a dataset with classes “cat”, “dog”, and “rat”; the 0.1
+corresponds to “cat”, the 0.2 to “dog” and the 0.7 to “rat”.</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">target</span>    <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span> <span class="s2">&quot;dog&quot;</span><span class="p">,</span> <span class="s2">&quot;cat&quot;</span><span class="p">,</span> <span class="s2">&quot;foosa&quot;</span><span class="p">,</span> <span class="s2">&quot;dog&quot;</span><span class="p">])</span>
 <span class="n">predictions</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">SArray</span><span class="p">([[</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">8</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
                         <span class="p">[</span><span class="o">.</span><span class="mi">9</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
@@ -280,7 +286,7 @@ the targets, an explicit index map must be provided.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -298,7 +304,7 @@ the targets, an explicit index map must be provided.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

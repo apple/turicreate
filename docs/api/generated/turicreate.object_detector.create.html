@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.object_detector.create &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.object_detector.create &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,10 +27,13 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="object_detector" href="../turicreate.toolkits.object_detector.html"/>
         <link rel="next" title="turicreate.object_detector.ObjectDetector" href="turicreate.object_detector.ObjectDetector.html"/>
-        <link rel="prev" title="turicreate.object_detector.util.unstack_annotations" href="turicreate.object_detector.util.unstack_annotations.html"/> 
+        <link rel="prev" title="object_detector" href="../turicreate.toolkits.object_detector.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -147,7 +150,7 @@ column should be a list of dictionaries (or a single dictionary), with
 each dictionary representing a bounding box of an object instance. Here
 is an example of the annotations for a single image with two object
 instances:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">[{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;dog&#39;</span><span class="p">,</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;dog&#39;</span><span class="p">,</span>
   <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;rectangle&#39;</span><span class="p">,</span>
   <span class="s1">&#39;coordinates&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mi">223</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="mi">198</span><span class="p">,</span>
                   <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">130</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">230</span><span class="p">}},</span>
@@ -159,11 +162,11 @@ instances:</p>
 </div>
 <p class="last">The value for <cite>x</cite> is the horizontal center of the box paired with
 <cite>width</cite> and <cite>y</cite> is the vertical center of the box paired with <cite>height</cite>.
-&#8216;None&#8217; (the default) indicates the only list column in <cite>dataset</cite> should
+‘None’ (the default) indicates the only list column in <cite>dataset</cite> should
 be used for the annotations.</p>
 </dd>
 <dt><strong>feature</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">Name of the column containing the input images. &#8216;None&#8217; (the default)
+<dd><p class="first last">Name of the column containing the input images. ‘None’ (the default)
 indicates the only image column in <cite>dataset</cite> should be used as the
 feature.</p>
 </dd>
@@ -171,7 +174,7 @@ feature.</p>
 <dd><p class="first">Object detection model to use:</p>
 <blockquote class="last">
 <div><ul class="simple">
-<li>&#8220;darknet-yolo&#8221; : Fast and medium-sized model</li>
+<li>“darknet-yolo” : Fast and medium-sized model</li>
 </ul>
 </div></blockquote>
 </dd>
@@ -204,7 +207,10 @@ be determined based on the amount of data you provide.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.object_detector.ObjectDetector.html#turicreate.object_detector.ObjectDetector" title="turicreate.object_detector.ObjectDetector"><code class="xref py py-obj docutils literal"><span class="pre">ObjectDetector</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.object_detector.ObjectDetector.html#turicreate.object_detector.ObjectDetector" title="turicreate.object_detector.ObjectDetector"><code class="xref py py-obj docutils literal"><span class="pre">ObjectDetector</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Train an object detector model</span>
@@ -230,7 +236,7 @@ be determined based on the amount of data you provide.</p>
         <a href="turicreate.object_detector.ObjectDetector.html" class="btn btn-neutral float-right" title="turicreate.object_detector.ObjectDetector">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="turicreate.object_detector.util.unstack_annotations.html" class="btn btn-neutral" title="turicreate.object_detector.util.unstack_annotations"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../turicreate.toolkits.object_detector.html" class="btn btn-neutral" title="object_detector"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -239,7 +245,7 @@ be determined based on the amount of data you provide.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -257,7 +263,7 @@ be determined based on the amount of data you provide.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

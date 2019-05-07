@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.image_classifier.ImageClassifier.evaluate &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.image_classifier.ImageClassifier.evaluate &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.image_classifier.ImageClassifier.evaluate<a class="headerlink" href="#turicreate-image-classifier-imageclassifier-evaluate" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.image_classifier.ImageClassifier.evaluate">
-<code class="descclassname">ImageClassifier.</code><code class="descname">evaluate</code><span class="sig-paren">(</span><em>dataset</em>, <em>metric='auto'</em>, <em>verbose=True</em>, <em>batch_size=64</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.image_classifier.ImageClassifier.evaluate" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ImageClassifier.</code><code class="descname">evaluate</code><span class="sig-paren">(</span><em>self</em>, <em>dataset</em>, <em>metric='auto'</em>, <em>verbose=True</em>, <em>batch_size=64</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.image_classifier.ImageClassifier.evaluate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate the model by making predictions of target values and comparing
 these to actual values.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -139,15 +142,15 @@ columns are ignored.</p>
 <dt><strong>metric</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
 <dd><p class="first">Name of the evaluation metric.  Possible values are:</p>
 <ul class="simple">
-<li>&#8216;auto&#8217;             : Returns all available metrics.</li>
-<li>&#8216;accuracy&#8217;         : Classification accuracy (micro average).</li>
-<li>&#8216;auc&#8217;              : Area under the ROC curve (macro average)</li>
-<li>&#8216;precision&#8217;        : Precision score (macro average)</li>
-<li>&#8216;recall&#8217;           : Recall score (macro average)</li>
-<li>&#8216;f1_score&#8217;         : F1 score (macro average)</li>
-<li>&#8216;log_loss&#8217;         : Log loss</li>
-<li>&#8216;confusion_matrix&#8217; : An SFrame with counts of possible prediction/true label combinations.</li>
-<li>&#8216;roc_curve&#8217;        : An SFrame containing information needed for an ROC curve</li>
+<li>‘auto’             : Returns all available metrics.</li>
+<li>‘accuracy’         : Classification accuracy (micro average).</li>
+<li>‘auc’              : Area under the ROC curve (macro average)</li>
+<li>‘precision’        : Precision score (macro average)</li>
+<li>‘recall’           : Recall score (macro average)</li>
+<li>‘f1_score’         : F1 score (macro average)</li>
+<li>‘log_loss’         : Log loss</li>
+<li>‘confusion_matrix’ : An SFrame with counts of possible prediction/true label combinations.</li>
+<li>‘roc_curve’        : An SFrame containing information needed for an ROC curve</li>
 </ul>
 <p class="last">For more flexibility in calculating evaluation metrics, use the
 <code class="xref py py-class docutils literal"><span class="pre">evaluation</span></code> module.</p>
@@ -175,7 +178,10 @@ score.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.image_classifier.create.html#turicreate.image_classifier.create" title="turicreate.image_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a>, <a class="reference internal" href="turicreate.image_classifier.ImageClassifier.predict.html#turicreate.image_classifier.ImageClassifier.predict" title="turicreate.image_classifier.ImageClassifier.predict"><code class="xref py py-obj docutils literal"><span class="pre">predict</span></code></a>, <a class="reference internal" href="turicreate.image_classifier.ImageClassifier.classify.html#turicreate.image_classifier.ImageClassifier.classify" title="turicreate.image_classifier.ImageClassifier.classify"><code class="xref py py-obj docutils literal"><span class="pre">classify</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.image_classifier.create.html#turicreate.image_classifier.create" title="turicreate.image_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a>, <a class="reference internal" href="turicreate.image_classifier.ImageClassifier.predict.html#turicreate.image_classifier.ImageClassifier.predict" title="turicreate.image_classifier.ImageClassifier.predict"><code class="xref py py-obj docutils literal"><span class="pre">predict</span></code></a>, <a class="reference internal" href="turicreate.image_classifier.ImageClassifier.classify.html#turicreate.image_classifier.ImageClassifier.classify" title="turicreate.image_classifier.ImageClassifier.classify"><code class="xref py py-obj docutils literal"><span class="pre">classify</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -195,7 +201,7 @@ score.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -213,7 +219,7 @@ score.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

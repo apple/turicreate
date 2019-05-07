@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.evaluate &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.evaluate &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,8 +126,8 @@
 <h1>turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.evaluate<a class="headerlink" href="#turicreate-nearest-neighbor-classifier-nearestneighborclassifier-evaluate" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.evaluate">
-<code class="descclassname">NearestNeighborClassifier.</code><code class="descname">evaluate</code><span class="sig-paren">(</span><em>dataset</em>, <em>metric='auto'</em>, <em>max_neighbors=10</em>, <em>radius=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.evaluate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluate the model&#8217;s predictive accuracy. This is done by predicting the
+<code class="descclassname">NearestNeighborClassifier.</code><code class="descname">evaluate</code><span class="sig-paren">(</span><em>self</em>, <em>dataset</em>, <em>metric='auto'</em>, <em>max_neighbors=10</em>, <em>radius=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the model’s predictive accuracy. This is done by predicting the
 target class for instances in a new dataset and comparing to known
 target values.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -140,11 +143,11 @@ columns are ignored.</p>
 <dt><strong>metric</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
 <dd><p class="first">Name of the evaluation metric.  Possible values are:</p>
 <ul class="last simple">
-<li>&#8216;auto&#8217;: Returns all available metrics.</li>
-<li>&#8216;accuracy&#8217;: Classification accuracy.</li>
-<li>&#8216;confusion_matrix&#8217;: An SFrame with counts of possible
+<li>‘auto’: Returns all available metrics.</li>
+<li>‘accuracy’: Classification accuracy.</li>
+<li>‘confusion_matrix’: An SFrame with counts of possible
 prediction/true label combinations.</li>
-<li>&#8216;roc_curve&#8217;: An SFrame containing information needed for an roc
+<li>‘roc_curve’: An SFrame containing information needed for an roc
 curve (binary classification only).</li>
 </ul>
 </dd>
@@ -170,7 +173,10 @@ dataset.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.nearest_neighbor_classifier.create.html#turicreate.nearest_neighbor_classifier.create" title="turicreate.nearest_neighbor_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a>, <a class="reference internal" href="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.predict.html#turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.predict" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.predict"><code class="xref py py-obj docutils literal"><span class="pre">predict</span></code></a>, <a class="reference internal" href="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.predict_topk.html#turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.predict_topk" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.predict_topk"><code class="xref py py-obj docutils literal"><span class="pre">predict_topk</span></code></a>, <a class="reference internal" href="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.classify.html#turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.classify" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.classify"><code class="xref py py-obj docutils literal"><span class="pre">classify</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.nearest_neighbor_classifier.create.html#turicreate.nearest_neighbor_classifier.create" title="turicreate.nearest_neighbor_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a>, <a class="reference internal" href="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.predict.html#turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.predict" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.predict"><code class="xref py py-obj docutils literal"><span class="pre">predict</span></code></a>, <a class="reference internal" href="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.predict_topk.html#turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.predict_topk" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.predict_topk"><code class="xref py py-obj docutils literal"><span class="pre">predict_topk</span></code></a>, <a class="reference internal" href="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.classify.html#turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.classify" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.classify"><code class="xref py py-obj docutils literal"><span class="pre">classify</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Notes</p>
 <ul class="simple">
@@ -178,13 +184,13 @@ dataset.</p>
 results of repeated calls to <cite>evaluate</cite> method may differ.</li>
 </ul>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf_train</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;species&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">,</span> <span class="s1">&#39;fossa&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">],</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf_train</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;species&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">,</span> <span class="s1">&#39;fossa&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">],</span>
 <span class="gp">... </span>                            <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">23</span><span class="p">],</span>
 <span class="gp">... </span>                            <span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">22</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">nearest_neighbor_classifier</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;species&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ans</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">sf_train</span><span class="p">,</span> <span class="n">max_neighbors</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
 <span class="gp">... </span>                 <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;confusion_matrix&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">ans</span><span class="p">[</span><span class="s1">&#39;confusion_matrix&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">ans</span><span class="p">[</span><span class="s1">&#39;confusion_matrix&#39;</span><span class="p">]</span>
 <span class="go">+--------------+-----------------+-------+</span>
 <span class="go">| target_label | predicted_label | count |</span>
 <span class="go">+--------------+-----------------+-------+</span>
@@ -207,7 +213,7 @@ results of repeated calls to <cite>evaluate</cite> method may differ.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -225,7 +231,7 @@ results of repeated calls to <cite>evaluate</cite> method may differ.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

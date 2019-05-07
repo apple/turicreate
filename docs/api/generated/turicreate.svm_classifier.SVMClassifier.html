@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.svm_classifier.SVMClassifier &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.svm_classifier.SVMClassifier &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="classifier" href="../turicreate.toolkits.classifier.html"/>
         <link rel="next" title="turicreate.nearest_neighbor_classifier.create" href="turicreate.nearest_neighbor_classifier.create.html"/>
         <link rel="prev" title="turicreate.svm_classifier.create" href="turicreate.svm_classifier.create.html"/> 
@@ -130,7 +133,7 @@
 <h1>turicreate.svm_classifier.SVMClassifier<a class="headerlink" href="#turicreate-svm-classifier-svmclassifier" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="turicreate.svm_classifier.SVMClassifier">
-<em class="property">class </em><code class="descclassname">turicreate.svm_classifier.</code><code class="descname">SVMClassifier</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.svm_classifier.SVMClassifier" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">turicreate.svm_classifier.</code><code class="descname">SVMClassifier</code><span class="sig-paren">(</span><em>model_proxy</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.svm_classifier.SVMClassifier" title="Permalink to this definition">¶</a></dt>
 <dd><p>Support Vector Machines can be used to predict binary target variable using
 several feature variables.</p>
 <p>The <code class="xref py py-class docutils literal"><span class="pre">SVMClassifier</span></code> model predicts a binary target
@@ -143,7 +146,7 @@ SVM minimizes the loss function:</p>
 <div><div class="math">
 \[f_i(\theta) =  \max(1 - \theta^T x, 0)\]</div>
 </div></blockquote>
-<p>An intercept term is added by appending a column of 1&#8217;s to the features.
+<p>An intercept term is added by appending a column of 1’s to the features.
 Regularization is often required to prevent over fitting by penalizing
 models with extreme parameter values. The composite objective being
 optimized for is the following:</p>
@@ -158,7 +161,10 @@ Additional details on parameter options and code samples are available in
 the documentation for the create function.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.svm_classifier.create.html#turicreate.svm_classifier.create" title="turicreate.svm_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.svm_classifier.create.html#turicreate.svm_classifier.create" title="turicreate.svm_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Load the data (From an S3 bucket)</span>
@@ -192,22 +198,22 @@ the documentation for the create function.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.classify.html#turicreate.svm_classifier.SVMClassifier.classify" title="turicreate.svm_classifier.SVMClassifier.classify"><code class="xref py py-obj docutils literal"><span class="pre">SVMClassifier.classify</span></code></a>(dataset[,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.classify.html#turicreate.svm_classifier.SVMClassifier.classify" title="turicreate.svm_classifier.SVMClassifier.classify"><code class="xref py py-obj docutils literal"><span class="pre">SVMClassifier.classify</span></code></a>(self,&nbsp;dataset[,&nbsp;…])</td>
 <td>Return a classification, for each example in the <code class="docutils literal"><span class="pre">dataset</span></code>, using the trained SVM model.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.evaluate.html#turicreate.svm_classifier.SVMClassifier.evaluate" title="turicreate.svm_classifier.SVMClassifier.evaluate"><code class="xref py py-obj docutils literal"><span class="pre">SVMClassifier.evaluate</span></code></a>(dataset[,&nbsp;metric,&nbsp;...])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.evaluate.html#turicreate.svm_classifier.SVMClassifier.evaluate" title="turicreate.svm_classifier.SVMClassifier.evaluate"><code class="xref py py-obj docutils literal"><span class="pre">SVMClassifier.evaluate</span></code></a>(self,&nbsp;dataset[,&nbsp;…])</td>
 <td>Evaluate the model by making predictions of target values and comparing these to actual values.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.export_coreml.html#turicreate.svm_classifier.SVMClassifier.export_coreml" title="turicreate.svm_classifier.SVMClassifier.export_coreml"><code class="xref py py-obj docutils literal"><span class="pre">SVMClassifier.export_coreml</span></code></a>(filename)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.export_coreml.html#turicreate.svm_classifier.SVMClassifier.export_coreml" title="turicreate.svm_classifier.SVMClassifier.export_coreml"><code class="xref py py-obj docutils literal"><span class="pre">SVMClassifier.export_coreml</span></code></a>(self,&nbsp;filename)</td>
 <td>Export the model in Core ML format.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.predict.html#turicreate.svm_classifier.SVMClassifier.predict" title="turicreate.svm_classifier.SVMClassifier.predict"><code class="xref py py-obj docutils literal"><span class="pre">SVMClassifier.predict</span></code></a>(dataset[,&nbsp;...])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.predict.html#turicreate.svm_classifier.SVMClassifier.predict" title="turicreate.svm_classifier.SVMClassifier.predict"><code class="xref py py-obj docutils literal"><span class="pre">SVMClassifier.predict</span></code></a>(self,&nbsp;dataset[,&nbsp;…])</td>
 <td>Return predictions for <code class="docutils literal"><span class="pre">dataset</span></code>, using the trained logistic regression model.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.save.html#turicreate.svm_classifier.SVMClassifier.save" title="turicreate.svm_classifier.SVMClassifier.save"><code class="xref py py-obj docutils literal"><span class="pre">SVMClassifier.save</span></code></a>(location)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.save.html#turicreate.svm_classifier.SVMClassifier.save" title="turicreate.svm_classifier.SVMClassifier.save"><code class="xref py py-obj docutils literal"><span class="pre">SVMClassifier.save</span></code></a>(self,&nbsp;location)</td>
 <td>Save the model.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.summary.html#turicreate.svm_classifier.SVMClassifier.summary" title="turicreate.svm_classifier.SVMClassifier.summary"><code class="xref py py-obj docutils literal"><span class="pre">SVMClassifier.summary</span></code></a>([output])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.summary.html#turicreate.svm_classifier.SVMClassifier.summary" title="turicreate.svm_classifier.SVMClassifier.summary"><code class="xref py py-obj docutils literal"><span class="pre">SVMClassifier.summary</span></code></a>(self[,&nbsp;output])</td>
 <td>Print a summary of the model.</td>
 </tr>
 </tbody>
@@ -232,7 +238,7 @@ the documentation for the create function.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -250,7 +256,7 @@ the documentation for the create function.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

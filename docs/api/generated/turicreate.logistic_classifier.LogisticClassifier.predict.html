@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.logistic_classifier.LogisticClassifier.predict &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.logistic_classifier.LogisticClassifier.predict &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,15 +126,15 @@
 <h1>turicreate.logistic_classifier.LogisticClassifier.predict<a class="headerlink" href="#turicreate-logistic-classifier-logisticclassifier-predict" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.logistic_classifier.LogisticClassifier.predict">
-<code class="descclassname">LogisticClassifier.</code><code class="descname">predict</code><span class="sig-paren">(</span><em>dataset</em>, <em>output_type='class'</em>, <em>missing_value_action='auto'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.logistic_classifier.LogisticClassifier.predict" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">LogisticClassifier.</code><code class="descname">predict</code><span class="sig-paren">(</span><em>self</em>, <em>dataset</em>, <em>output_type='class'</em>, <em>missing_value_action='auto'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.logistic_classifier.LogisticClassifier.predict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return predictions for <code class="docutils literal"><span class="pre">dataset</span></code>, using the trained logistic
 regression model. Predictions can be generated as class labels,
 probabilities that the target value is True, or margins (i.e. the
 distance of the observations from the hyperplane separating the
 classes). <cite>probability_vector</cite> returns a vector of probabilities by
 each class.</p>
-<p>For each new example in <code class="docutils literal"><span class="pre">dataset</span></code>, the margin&#8212;also known as the
-linear predictor&#8212;is the inner product of the example and the model
+<p>For each new example in <code class="docutils literal"><span class="pre">dataset</span></code>, the margin—also known as the
+linear predictor—is the inner product of the example and the model
 coefficients. The probability is obtained by passing the margin through
 the logistic function. Predicted classes are obtained by thresholding
 the predicted probabilities at 0.5. If you would like to threshold
@@ -147,16 +150,16 @@ Turi Create evaluation toolkit.</p>
 names as the features used for model training, but does not require
 a target column. Additional columns are ignored.</p>
 </dd>
-<dt><strong>output_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;probability&#8217;, &#8216;margin&#8217;, &#8216;class&#8217;, &#8216;probability_vector&#8217;}, optional</span></dt>
+<dt><strong>output_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{‘probability’, ‘margin’, ‘class’, ‘probability_vector’}, optional</span></dt>
 <dd><p class="first">Form of the predictions which are one of:</p>
 <ul class="last simple">
-<li>&#8216;probability&#8217;: Prediction probability associated with the True
+<li>‘probability’: Prediction probability associated with the True
 class (not applicable for multi-class classification)</li>
-<li>&#8216;probability_vector&#8217;: Prediction probability associated with each
+<li>‘probability_vector’: Prediction probability associated with each
 class as a vector. The probability of the first class (sorted
 alphanumerically by name of the class in the training set) is in
 position 0 of the vector, the second in position 1 and so on.</li>
-<li>&#8216;class&#8217;: Class prediction. For multi-class classification, this
+<li>‘class’: Class prediction. For multi-class classification, this
 returns the class with maximum probability.</li>
 </ul>
 </dd>
@@ -164,12 +167,12 @@ returns the class with maximum probability.</li>
 <dd><p class="first">Action to perform when missing values are encountered. Can be
 one of:</p>
 <ul class="last simple">
-<li>&#8216;auto&#8217;: Default to &#8216;impute&#8217;</li>
-<li>&#8216;impute&#8217;: Proceed with evaluation by filling in the missing
+<li>‘auto’: Default to ‘impute’</li>
+<li>‘impute’: Proceed with evaluation by filling in the missing
 values with the mean of the training data. Missing
 values are also imputed if an entire column of data is
 missing during evaluation.</li>
-<li>&#8216;error&#8217;: Do not proceed with evaluation and terminate with
+<li>‘error’: Do not proceed with evaluation and terminate with
 an error message.</li>
 </ul>
 </dd>
@@ -187,19 +190,22 @@ an error message.</li>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.logistic_classifier.create.html#turicreate.logistic_classifier.create" title="turicreate.logistic_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a>, <a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.evaluate.html#turicreate.logistic_classifier.LogisticClassifier.evaluate" title="turicreate.logistic_classifier.LogisticClassifier.evaluate"><code class="xref py py-obj docutils literal"><span class="pre">evaluate</span></code></a>, <a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.classify.html#turicreate.logistic_classifier.LogisticClassifier.classify" title="turicreate.logistic_classifier.LogisticClassifier.classify"><code class="xref py py-obj docutils literal"><span class="pre">classify</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.logistic_classifier.create.html#turicreate.logistic_classifier.create" title="turicreate.logistic_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a>, <a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.evaluate.html#turicreate.logistic_classifier.LogisticClassifier.evaluate" title="turicreate.logistic_classifier.LogisticClassifier.evaluate"><code class="xref py py-obj docutils literal"><span class="pre">evaluate</span></code></a>, <a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.classify.html#turicreate.logistic_classifier.LogisticClassifier.classify" title="turicreate.logistic_classifier.LogisticClassifier.classify"><code class="xref py py-obj docutils literal"><span class="pre">classify</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span>  <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">(</span><span class="s1">&#39;https://static.turi.com/datasets/regression/houses.csv&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span>  <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">(</span><span class="s1">&#39;https://static.turi.com/datasets/regression/houses.csv&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;is_expensive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;price&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">30000</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;is_expensive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;price&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">30000</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">logistic_classifier</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
 <span class="go">                                     target=&#39;is_expensive&#39;,</span>
 <span class="go">                                     features=[&#39;bath&#39;, &#39;bedroom&#39;, &#39;size&#39;])</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">probability_predictions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="s1">&#39;probability&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">probability_predictions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="s1">&#39;probability&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">margin_predictions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="s1">&#39;margin&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">class_predictions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="s1">&#39;class&#39;</span><span class="p">)</span>
 </pre></div>
@@ -217,7 +223,7 @@ an error message.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -235,7 +241,7 @@ an error message.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

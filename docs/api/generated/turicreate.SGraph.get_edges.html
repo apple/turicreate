@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SGraph.get_edges &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SGraph.get_edges &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.SGraph.get_edges<a class="headerlink" href="#turicreate-sgraph-get-edges" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SGraph.get_edges">
-<code class="descclassname">SGraph.</code><code class="descname">get_edges</code><span class="sig-paren">(</span><em>self</em>, <em>src_ids=list()</em>, <em>dst_ids=list()</em>, <em>fields={}</em>, <em>format='sframe'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SGraph.get_edges" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SGraph.</code><code class="descname">get_edges</code><span class="sig-paren">(</span><em>self</em>, <em>src_ids=[]</em>, <em>dst_ids=[]</em>, <em>fields={}</em>, <em>format='sframe'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SGraph.get_edges" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a collection of edges and their attributes. This function is used
 to find edges by vertex IDs, filter on edge attributes, or list in-out
 neighbors of vertex sets.</p>
@@ -143,13 +146,13 @@ may be left empty, which implies an array of all wild cards.</p>
 <dt><strong>fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
 <dd><p class="first last">Dictionary specifying equality constraints on field values. For
 example, <code class="docutils literal"><span class="pre">{'relationship':</span> <span class="pre">'following'}</span></code>, returns only edges whose
-&#8216;relationship&#8217; field equals &#8216;following&#8217;. <code class="docutils literal"><span class="pre">None</span></code> can be used as a
+‘relationship’ field equals ‘following’. <code class="docutils literal"><span class="pre">None</span></code> can be used as a
 value to designate a wild card. e.g. <code class="docutils literal"><span class="pre">{'relationship':</span> <span class="pre">None}</span></code> will
-find all edges with the field &#8216;relationship&#8217; regardless of the
+find all edges with the field ‘relationship’ regardless of the
 value.</p>
 </dd>
-<dt><strong>format</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;sframe&#8217;, &#8216;list&#8217;}, optional</span></dt>
-<dd><p class="first last">Output format. The &#8216;sframe&#8217; output (default) contains columns
+<dt><strong>format</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{‘sframe’, ‘list’}, optional</span></dt>
+<dd><p class="first last">Output format. The ‘sframe’ output (default) contains columns
 __src_id and __dst_id with edge vertex IDs and a column for each
 edge attribute. List output returns a list of Edge objects.</p>
 </dd>
@@ -167,15 +170,18 @@ edge attribute. List output returns a list of Edge objects.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.SGraph.edges.html#turicreate.SGraph.edges" title="turicreate.SGraph.edges"><code class="xref py py-obj docutils literal"><span class="pre">edges</span></code></a>, <a class="reference internal" href="turicreate.SGraph.get_vertices.html#turicreate.SGraph.get_vertices" title="turicreate.SGraph.get_vertices"><code class="xref py py-obj docutils literal"><span class="pre">get_vertices</span></code></a></p>
+<dl class="last docutils">
+<dt><code class="xref py py-obj docutils literal"><span class="pre">edges</span></code>, <a class="reference internal" href="turicreate.SGraph.get_vertices.html#turicreate.SGraph.get_vertices" title="turicreate.SGraph.get_vertices"><code class="xref py py-obj docutils literal"><span class="pre">get_vertices</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
 <p>Return all edges in the graph.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">SGraph</span><span class="p">,</span> <span class="n">Edge</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="k">import</span> <span class="n">SGraph</span><span class="p">,</span> <span class="n">Edge</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">SGraph</span><span class="p">()</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span><span class="n">Edge</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;rating&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}),</span>
 <span class="go">                            Edge(0, 2, attr={&#39;rating&#39;: 2}),</span>
 <span class="go">                            Edge(1, 2)])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">src_ids</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">],</span> <span class="n">dst_ids</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">src_ids</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">],</span> <span class="n">dst_ids</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">])</span>
 <span class="go">+----------+----------+--------+</span>
 <span class="go">| __src_id | __dst_id | rating |</span>
 <span class="go">+----------+----------+--------+</span>
@@ -185,8 +191,8 @@ edge attribute. List output returns a list of Edge objects.</p>
 <span class="go">+----------+----------+--------+</span>
 </pre></div>
 </div>
-<p>Return edges with the attribute &#8220;rating&#8221; of 5.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;rating&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
+<p>Return edges with the attribute “rating” of 5.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;rating&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
 <span class="go">+----------+----------+--------+</span>
 <span class="go">| __src_id | __dst_id | rating |</span>
 <span class="go">+----------+----------+--------+</span>
@@ -194,8 +200,8 @@ edge attribute. List output returns a list of Edge objects.</p>
 <span class="go">+----------+----------+--------+</span>
 </pre></div>
 </div>
-<p>Return edges 0 &#8211;&gt; 1 and 1 &#8211;&gt; 2 (if present in the graph).</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">src_ids</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dst_ids</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<p>Return edges 0 –&gt; 1 and 1 –&gt; 2 (if present in the graph).</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">src_ids</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dst_ids</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
 <span class="go">+----------+----------+--------+</span>
 <span class="go">| __src_id | __dst_id | rating |</span>
 <span class="go">+----------+----------+--------+</span>
@@ -217,7 +223,7 @@ edge attribute. List output returns a list of Edge objects.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -235,7 +241,7 @@ edge attribute. List output returns a list of Edge objects.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

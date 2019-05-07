@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.classifier.create &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.classifier.create &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,10 +27,13 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="classifier" href="../turicreate.toolkits.classifier.html"/>
         <link rel="next" title="turicreate.random_forest_classifier.create" href="turicreate.random_forest_classifier.create.html"/>
-        <link rel="prev" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier" href="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.html"/> 
+        <link rel="prev" title="classifier" href="../turicreate.toolkits.classifier.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -147,13 +150,13 @@ of the corresponding model.</p>
 <dd><p class="first last">Name of the column containing the target variable. The values in this
 column must be of string or integer type. String target variables are
 automatically mapped to integers in the order in which they are
-provided.  For example, a target variable with &#8216;cat&#8217; and &#8216;dog&#8217; as
+provided.  For example, a target variable with ‘cat’ and ‘dog’ as
 possible values is mapped to 0 and 1 respectively with 0 being the base
 class and 1 being the reference class. Use <cite>model.classes</cite> to
 retrieve the order in which the classes are mapped.</p>
 </dd>
 <dt><strong>features</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[string], optional</span></dt>
-<dd><p class="first">Names of the columns containing features. &#8216;None&#8217; (the default) indicates
+<dd><p class="first">Names of the columns containing features. ‘None’ (the default) indicates
 that all columns except the target variable should be used as features.</p>
 <p>The features are columns in the input SFrame that can be of the
 following types:</p>
@@ -173,13 +176,13 @@ types. If the lists contain data of mixed types, separate
 them out into different columns.</p>
 </dd>
 <dt><strong>validation_set</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
-<dd><p class="first last">A dataset for monitoring the model&#8217;s generalization performance.  For
+<dd><p class="first last">A dataset for monitoring the model’s generalization performance.  For
 each row of the progress table, the chosen metrics are computed for
 both the provided training dataset and the validation_set. The format
 of this SFrame must be the same as the training set.  By default this
-argument is set to &#8216;auto&#8217; and a validation set is automatically sampled
+argument is set to ‘auto’ and a validation set is automatically sampled
 and used for progress printing. If validation_set is set to None, then
-no additional metrics are computed. The default value is &#8216;auto&#8217;.</p>
+no additional metrics are computed. The default value is ‘auto’.</p>
 </dd>
 <dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
 <dd><p class="first last">If True, print progress information during training.</p>
@@ -197,7 +200,16 @@ no additional metrics are computed. The default value is &#8216;auto&#8217;.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.boosted_trees_classifier.BoostedTreesClassifier.html#turicreate.boosted_trees_classifier.BoostedTreesClassifier" title="turicreate.boosted_trees_classifier.BoostedTreesClassifier"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.boosted_trees_classifier.BoostedTreesClassifier</span></code></a>, <a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.html#turicreate.logistic_classifier.LogisticClassifier" title="turicreate.logistic_classifier.LogisticClassifier"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.logistic_classifier.LogisticClassifier</span></code></a>, <a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.html#turicreate.svm_classifier.SVMClassifier" title="turicreate.svm_classifier.SVMClassifier"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.svm_classifier.SVMClassifier</span></code></a>, <a class="reference internal" href="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.html#turicreate.nearest_neighbor_classifier.NearestNeighborClassifier" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.nearest_neighbor_classifier.NearestNeighborClassifier</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.boosted_trees_classifier.BoostedTreesClassifier.html#turicreate.boosted_trees_classifier.BoostedTreesClassifier" title="turicreate.boosted_trees_classifier.BoostedTreesClassifier"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.boosted_trees_classifier.BoostedTreesClassifier</span></code></a></dt>
+<dd></dd>
+<dt><a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.html#turicreate.logistic_classifier.LogisticClassifier" title="turicreate.logistic_classifier.LogisticClassifier"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.logistic_classifier.LogisticClassifier</span></code></a></dt>
+<dd></dd>
+<dt><a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.html#turicreate.svm_classifier.SVMClassifier" title="turicreate.svm_classifier.SVMClassifier"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.svm_classifier.SVMClassifier</span></code></a></dt>
+<dd></dd>
+<dt><a class="reference internal" href="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.html#turicreate.nearest_neighbor_classifier.NearestNeighborClassifier" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.nearest_neighbor_classifier.NearestNeighborClassifier</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Setup the data</span>
@@ -227,7 +239,7 @@ no additional metrics are computed. The default value is &#8216;auto&#8217;.</p>
         <a href="turicreate.random_forest_classifier.create.html" class="btn btn-neutral float-right" title="turicreate.random_forest_classifier.create">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.html" class="btn btn-neutral" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../turicreate.toolkits.classifier.html" class="btn btn-neutral" title="classifier"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -236,7 +248,7 @@ no additional metrics are computed. The default value is &#8216;auto&#8217;.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -254,7 +266,7 @@ no additional metrics are computed. The default value is &#8216;auto&#8217;.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

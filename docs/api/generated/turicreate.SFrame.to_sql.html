@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.to_sql &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SFrame.to_sql &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.SFrame.to_sql<a class="headerlink" href="#turicreate-sframe-to-sql" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SFrame.to_sql">
-<code class="descclassname">SFrame.</code><code class="descname">to_sql</code><span class="sig-paren">(</span><em>conn</em>, <em>table_name</em>, <em>dbapi_module=None</em>, <em>use_python_type_specifiers=False</em>, <em>use_exact_column_names=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.to_sql" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SFrame.</code><code class="descname">to_sql</code><span class="sig-paren">(</span><em>self</em>, <em>conn</em>, <em>table_name</em>, <em>dbapi_module=None</em>, <em>use_python_type_specifiers=False</em>, <em>use_exact_column_names=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.to_sql" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert an SFrame to a single table in a SQL database.</p>
 <p>This function does not attempt to create the table or check if a table
 named <cite>table_name</cite> exists in the database. It simply assumes that
@@ -137,7 +140,7 @@ parameterized SQL insert statements.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>conn</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dbapi2.Connection</span></dt>
 <dd><p class="first last">A DBAPI2 connection object. Any connection object originating from
-the &#8216;connect&#8217; method of a DBAPI2-compliant package can be used.</p>
+the ‘connect’ method of a DBAPI2-compliant package can be used.</p>
 </dd>
 <dt><strong>table_name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">The name of the table to append the data in this SFrame.</p>
@@ -149,10 +152,10 @@ connection came from is made. In the event that this guess is wrong,
 this will need to be specified.</p>
 </dd>
 <dt><strong>use_python_type_specifiers</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">If the DBAPI2 module&#8217;s parameter marker style is &#8216;format&#8217; or
-&#8216;pyformat&#8217;, attempt to use accurate type specifiers for each value
-(&#8216;s&#8217; for string, &#8216;d&#8217; for integer, etc.). Many DBAPI2 modules simply
-use &#8216;s&#8217; for all types if they use these parameter markers, so this is
+<dd><p class="first last">If the DBAPI2 module’s parameter marker style is ‘format’ or
+‘pyformat’, attempt to use accurate type specifiers for each value
+(‘s’ for string, ‘d’ for integer, etc.). Many DBAPI2 modules simply
+use ‘s’ for all types if they use these parameter markers, so this is
 False by default.</p>
 </dd>
 <dt><strong>use_exact_column_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
@@ -180,7 +183,7 @@ schema of the DB table. True by default.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -198,7 +201,7 @@ schema of the DB table. True by default.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

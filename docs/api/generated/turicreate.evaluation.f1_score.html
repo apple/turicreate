@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.evaluation.f1_score &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.evaluation.f1_score &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="evaluation" href="../turicreate.toolkits.evaluation.html"/>
         <link rel="next" title="turicreate.evaluation.fbeta_score" href="turicreate.evaluation.fbeta_score.html"/>
         <link rel="prev" title="turicreate.evaluation.confusion_matrix" href="turicreate.evaluation.confusion_matrix.html"/> 
@@ -155,16 +158,16 @@ float.</p>
 must have the same length as <code class="docutils literal"><span class="pre">targets</span></code> and must be of the same type
 as the <code class="docutils literal"><span class="pre">targets</span></code> SArray.</p>
 </dd>
-<dt><strong>average</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, [None, &#8216;macro&#8217; (default), &#8216;micro&#8217;]</span></dt>
+<dt><strong>average</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, [None, ‘macro’ (default), ‘micro’]</span></dt>
 <dd><p class="first">Metric averaging strategies for multiclass classification. Averaging
 strategies can be one of the following:</p>
 <blockquote>
 <div><ul class="simple">
 <li>None: No averaging is performed and a single metric is returned
 for each class.</li>
-<li>&#8216;micro&#8217;: Calculate metrics globally by counting the total true
+<li>‘micro’: Calculate metrics globally by counting the total true
 positives, false negatives and false positives.</li>
-<li>&#8216;macro&#8217;: Calculate metrics for each label, and find their
+<li>‘macro’: Calculate metrics for each label, and find their
 unweighted mean. This does not take label imbalance into account.</li>
 </ul>
 </div></blockquote>
@@ -189,20 +192,23 @@ label.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.evaluation.confusion_matrix.html#turicreate.evaluation.confusion_matrix" title="turicreate.evaluation.confusion_matrix"><code class="xref py py-obj docutils literal"><span class="pre">confusion_matrix</span></code></a>, <a class="reference internal" href="turicreate.evaluation.accuracy.html#turicreate.evaluation.accuracy" title="turicreate.evaluation.accuracy"><code class="xref py py-obj docutils literal"><span class="pre">accuracy</span></code></a>, <a class="reference internal" href="turicreate.evaluation.precision.html#turicreate.evaluation.precision" title="turicreate.evaluation.precision"><code class="xref py py-obj docutils literal"><span class="pre">precision</span></code></a>, <a class="reference internal" href="turicreate.evaluation.recall.html#turicreate.evaluation.recall" title="turicreate.evaluation.recall"><code class="xref py py-obj docutils literal"><span class="pre">recall</span></code></a>, <a class="reference internal" href="turicreate.evaluation.fbeta_score.html#turicreate.evaluation.fbeta_score" title="turicreate.evaluation.fbeta_score"><code class="xref py py-obj docutils literal"><span class="pre">fbeta_score</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.evaluation.confusion_matrix.html#turicreate.evaluation.confusion_matrix" title="turicreate.evaluation.confusion_matrix"><code class="xref py py-obj docutils literal"><span class="pre">confusion_matrix</span></code></a>, <a class="reference internal" href="turicreate.evaluation.accuracy.html#turicreate.evaluation.accuracy" title="turicreate.evaluation.accuracy"><code class="xref py py-obj docutils literal"><span class="pre">accuracy</span></code></a>, <a class="reference internal" href="turicreate.evaluation.precision.html#turicreate.evaluation.precision" title="turicreate.evaluation.precision"><code class="xref py py-obj docutils literal"><span class="pre">precision</span></code></a>, <a class="reference internal" href="turicreate.evaluation.recall.html#turicreate.evaluation.recall" title="turicreate.evaluation.recall"><code class="xref py py-obj docutils literal"><span class="pre">recall</span></code></a>, <a class="reference internal" href="turicreate.evaluation.fbeta_score.html#turicreate.evaluation.fbeta_score" title="turicreate.evaluation.fbeta_score"><code class="xref py py-obj docutils literal"><span class="pre">fbeta_score</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li>For binary classification, when the target label is of type &#8220;string&#8221;,
+<li>For binary classification, when the target label is of type “string”,
 then the labels are sorted alphanumerically and the largest label is
-chosen as the &#8220;positive&#8221; label.  For example, if the classifier labels
-are {&#8220;cat&#8221;, &#8220;dog&#8221;}, then &#8220;dog&#8221; is chosen as the positive label for the
+chosen as the “positive” label.  For example, if the classifier labels
+are {“cat”, “dog”}, then “dog” is chosen as the positive label for the
 binary classification case.</li>
 </ul>
 <p class="rubric">References</p>
 <ul class="simple">
-<li>[1] Sokolova, Marina, and Guy Lapalme. &#8220;A systematic analysis of
-performance measures for classification tasks.&#8221; Information Processing &amp;
+<li>[1] Sokolova, Marina, and Guy Lapalme. “A systematic analysis of
+performance measures for classification tasks.” Information Processing &amp;
 Management 45.4 (2009): 427-437.</li>
 </ul>
 <p class="rubric">Examples</p>
@@ -271,7 +277,7 @@ Management 45.4 (2009): 427-437.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -289,7 +295,7 @@ Management 45.4 (2009): 427-437.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

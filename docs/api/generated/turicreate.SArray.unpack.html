@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SArray.unpack &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SArray.unpack &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.SArray.unpack<a class="headerlink" href="#turicreate-sarray-unpack" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SArray.unpack">
-<code class="descclassname">SArray.</code><code class="descname">unpack</code><span class="sig-paren">(</span><em>column_name_prefix='X'</em>, <em>column_types=None</em>, <em>na_value=None</em>, <em>limit=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SArray.unpack" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SArray.</code><code class="descname">unpack</code><span class="sig-paren">(</span><em>self</em>, <em>column_name_prefix='X'</em>, <em>column_types=None</em>, <em>na_value=None</em>, <em>limit=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SArray.unpack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert an SArray of list, array, or dict type to an SFrame with
 multiple columns.</p>
 <p><cite>unpack</cite> expands an SArray using the values of each list/array/dict as
@@ -162,8 +165,8 @@ missing value if specified.</p>
 </dd>
 <dt><strong>limit: list, optional</strong></dt>
 <dd><p class="first last">Limits the set of list/array/dict keys to unpack.
-For list/array SArrays, &#8216;limit&#8217; must contain integer indices.
-For dict SArray, &#8216;limit&#8217; must contain dictionary keys.</p>
+For list/array SArrays, ‘limit’ must contain integer indices.
+For dict SArray, ‘limit’ must contain dictionary keys.</p>
 </dd>
 </dl>
 </td>
@@ -179,14 +182,14 @@ For dict SArray, &#8216;limit&#8217; must contain dictionary keys.</p>
 </table>
 <p class="rubric">Examples</p>
 <p>To unpack a dict SArray</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">([{</span> <span class="s1">&#39;word&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span>     <span class="s1">&#39;count&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">([{</span> <span class="s1">&#39;word&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span>     <span class="s1">&#39;count&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
 <span class="gp">... </span>             <span class="p">{</span> <span class="s1">&#39;word&#39;</span><span class="p">:</span> <span class="s1">&#39;cat&#39;</span><span class="p">,</span>   <span class="s1">&#39;count&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
 <span class="gp">... </span>             <span class="p">{</span> <span class="s1">&#39;word&#39;</span><span class="p">:</span> <span class="s1">&#39;is&#39;</span><span class="p">,</span>    <span class="s1">&#39;count&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span>
 <span class="gp">... </span>             <span class="p">{</span> <span class="s1">&#39;word&#39;</span><span class="p">:</span> <span class="s1">&#39;coming&#39;</span><span class="p">,</span><span class="s1">&#39;count&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}])</span>
 </pre></div>
 </div>
 <p>Normal case of unpacking SArray of type dict:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">column_name_prefix</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">column_name_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 <span class="go">Columns:</span>
 <span class="go">    count   int</span>
 <span class="go">    word    str</span>
@@ -205,8 +208,8 @@ For dict SArray, &#8216;limit&#8217; must contain dictionary keys.</p>
 <span class="go">[4 rows x 2 columns]</span>
 </pre></div>
 </div>
-<p>Unpack only keys with &#8216;word&#8217;:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;word&#39;</span><span class="p">])</span>
+<p>Unpack only keys with ‘word’:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;word&#39;</span><span class="p">])</span>
 <span class="go">Columns:</span>
 <span class="go">    X.word  str</span>
 
@@ -224,14 +227,14 @@ For dict SArray, &#8216;limit&#8217; must contain dictionary keys.</p>
 <span class="go">[4 rows x 1 columns]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa2</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">([</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa2</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">([</span>
 <span class="gp">... </span>              <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
 <span class="gp">... </span>              <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
 <span class="gp">... </span>              <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
 </pre></div>
 </div>
 <p>Convert all zeros to missing values:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa2</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">column_types</span><span class="o">=</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">na_value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa2</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">column_types</span><span class="o">=</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">na_value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="go">Columns:</span>
 <span class="go">    X.0     int</span>
 <span class="go">    X.1     int</span>
@@ -263,7 +266,7 @@ For dict SArray, &#8216;limit&#8217; must contain dictionary keys.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -281,7 +284,7 @@ For dict SArray, &#8216;limit&#8217; must contain dictionary keys.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

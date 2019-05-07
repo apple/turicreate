@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SArrayBuilder &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SArrayBuilder &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="Data" href="../turicreate.data_structures.html"/>
         <link rel="next" title="turicreate.SFrameBuilder" href="turicreate.SFrameBuilder.html"/>
         <link rel="prev" title="turicreate.Edge" href="turicreate.Edge.html"/> 
@@ -130,7 +133,7 @@
 <dt id="turicreate.SArrayBuilder">
 <em class="property">class </em><code class="descclassname">turicreate.</code><code class="descname">SArrayBuilder</code><span class="sig-paren">(</span><em>dtype</em>, <em>num_segments=1</em>, <em>history_size=10</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SArrayBuilder" title="Permalink to this definition">¶</a></dt>
 <dd><p>An interface to incrementally build an SArray element by element.</p>
-<p>Once closed, the SArray cannot be &#8220;reopened&#8221; using this interface.</p>
+<p>Once closed, the SArray cannot be “reopened” using this interface.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -158,19 +161,19 @@
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">SArrayBuilder</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="k">import</span> <span class="n">SArrayBuilder</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sb</span> <span class="o">=</span> <span class="n">SArrayBuilder</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sb</span> <span class="o">=</span> <span class="n">SArrayBuilder</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sb</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sb</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sb</span><span class="o">.</span><span class="n">append_multiple</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sb</span><span class="o">.</span><span class="n">append_multiple</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 <span class="go">dtype: int</span>
 <span class="go">Rows: 3</span>
 <span class="go">[1, 2, 3]</span>
@@ -185,19 +188,19 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArrayBuilder.append.html#turicreate.SArrayBuilder.append" title="turicreate.SArrayBuilder.append"><code class="xref py py-obj docutils literal"><span class="pre">SArrayBuilder.append</span></code></a>(data[,&nbsp;segment])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArrayBuilder.append.html#turicreate.SArrayBuilder.append" title="turicreate.SArrayBuilder.append"><code class="xref py py-obj docutils literal"><span class="pre">SArrayBuilder.append</span></code></a>(self,&nbsp;data[,&nbsp;segment])</td>
 <td>Append a single element to an SArray.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArrayBuilder.append_multiple.html#turicreate.SArrayBuilder.append_multiple" title="turicreate.SArrayBuilder.append_multiple"><code class="xref py py-obj docutils literal"><span class="pre">SArrayBuilder.append_multiple</span></code></a>(data[,&nbsp;segment])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArrayBuilder.append_multiple.html#turicreate.SArrayBuilder.append_multiple" title="turicreate.SArrayBuilder.append_multiple"><code class="xref py py-obj docutils literal"><span class="pre">SArrayBuilder.append_multiple</span></code></a>(self,&nbsp;data[,&nbsp;…])</td>
 <td>Append multiple elements to an SArray.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArrayBuilder.close.html#turicreate.SArrayBuilder.close" title="turicreate.SArrayBuilder.close"><code class="xref py py-obj docutils literal"><span class="pre">SArrayBuilder.close</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArrayBuilder.close.html#turicreate.SArrayBuilder.close" title="turicreate.SArrayBuilder.close"><code class="xref py py-obj docutils literal"><span class="pre">SArrayBuilder.close</span></code></a>(self)</td>
 <td>Creates an SArray from all values that were appended to the SArrayBuilder.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArrayBuilder.get_type.html#turicreate.SArrayBuilder.get_type" title="turicreate.SArrayBuilder.get_type"><code class="xref py py-obj docutils literal"><span class="pre">SArrayBuilder.get_type</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArrayBuilder.get_type.html#turicreate.SArrayBuilder.get_type" title="turicreate.SArrayBuilder.get_type"><code class="xref py py-obj docutils literal"><span class="pre">SArrayBuilder.get_type</span></code></a>(self)</td>
 <td>The type the result SArray will be if <cite>close</cite> is called.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArrayBuilder.read_history.html#turicreate.SArrayBuilder.read_history" title="turicreate.SArrayBuilder.read_history"><code class="xref py py-obj docutils literal"><span class="pre">SArrayBuilder.read_history</span></code></a>([num,&nbsp;segment])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArrayBuilder.read_history.html#turicreate.SArrayBuilder.read_history" title="turicreate.SArrayBuilder.read_history"><code class="xref py py-obj docutils literal"><span class="pre">SArrayBuilder.read_history</span></code></a>(self[,&nbsp;num,&nbsp;segment])</td>
 <td>Outputs the last <cite>num</cite> elements that were appended either by <cite>append</cite> or <cite>append_multiple</cite>.</td>
 </tr>
 </tbody>
@@ -222,7 +225,7 @@
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -240,7 +243,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.evaluate_precision_recall &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.evaluate_precision_recall &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,8 +126,8 @@
 <h1>turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.evaluate_precision_recall<a class="headerlink" href="#turicreate-recommender-ranking-factorization-recommender-rankingfactorizationrecommender-evaluate-precision-recall" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.evaluate_precision_recall">
-<code class="descclassname">RankingFactorizationRecommender.</code><code class="descname">evaluate_precision_recall</code><span class="sig-paren">(</span><em>dataset, cutoffs=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16, 21, 26, 31, 36, 41, 46], skip_set=None, exclude_known=True, verbose=True, **kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.evaluate_precision_recall" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute a model&#8217;s precision and recall scores for a particular dataset.</p>
+<code class="descclassname">RankingFactorizationRecommender.</code><code class="descname">evaluate_precision_recall</code><span class="sig-paren">(</span><em>self, dataset, cutoffs=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16, 21, 26, 31, 36, 41, 46], skip_set=None, exclude_known=True, verbose=True, **kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.evaluate_precision_recall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute a model’s precision and recall scores for a particular dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -132,12 +135,12 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
 <dd><p class="first last">An SFrame in the same format as the one used during training.
-This will be compared to the model&#8217;s recommendations, which exclude
+This will be compared to the model’s recommendations, which exclude
 the (user, item) pairs seen at training time.</p>
 </dd>
 <dt><strong>cutoffs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list, optional</span></dt>
 <dd><p class="first last">A list of cutoff values for which one wants to evaluate precision
-and recall, i.e. the value of k in &#8220;precision at k&#8221;.</p>
+and recall, i.e. the value of k in “precision at k”.</p>
 </dd>
 <dt><strong>skip_set</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
 <dd><p class="first last">Passed to <a class="reference internal" href="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.recommend.html#turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.recommend" title="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.recommend"><code class="xref py py-meth docutils literal"><span class="pre">recommend()</span></code></a> as <code class="docutils literal"><span class="pre">exclude</span></code>.</p>
@@ -169,10 +172,13 @@ user in <code class="docutils literal"><span class="pre">dataset</span></code>.<
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.recommender.util.precision_recall_by_user.html#turicreate.recommender.util.precision_recall_by_user" title="turicreate.recommender.util.precision_recall_by_user"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.recommender.util.precision_recall_by_user</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.recommender.util.precision_recall_by_user.html#turicreate.recommender.util.precision_recall_by_user" title="turicreate.recommender.util.precision_recall_by_user"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.recommender.util.precision_recall_by_user</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">turicreate</span> <span class="kn">as</span> <span class="nn">tc</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">turicreate</span> <span class="k">as</span> <span class="nn">tc</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">SFrame</span><span class="p">(</span><span class="s1">&#39;https://static.turi.com/datasets/audioscrobbler&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">train</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">recommender</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">random_split_by_user</span><span class="p">(</span><span class="n">sf</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">recommender</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
@@ -192,7 +198,7 @@ user in <code class="docutils literal"><span class="pre">dataset</span></code>.<
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -210,7 +216,7 @@ user in <code class="docutils literal"><span class="pre">dataset</span></code>.<
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

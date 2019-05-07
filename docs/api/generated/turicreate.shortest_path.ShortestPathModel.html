@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.shortest_path.ShortestPathModel &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.shortest_path.ShortestPathModel &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="graph_analytics" href="../turicreate.toolkits.graph_analytics.html"/>
         <link rel="next" title="turicreate.triangle_counting.create" href="turicreate.triangle_counting.create.html"/>
         <link rel="prev" title="turicreate.shortest_path.create" href="turicreate.shortest_path.create.html"/> 
@@ -130,7 +133,7 @@
 <h1>turicreate.shortest_path.ShortestPathModel<a class="headerlink" href="#turicreate-shortest-path-shortestpathmodel" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="turicreate.shortest_path.ShortestPathModel">
-<em class="property">class </em><code class="descclassname">turicreate.shortest_path.</code><code class="descname">ShortestPathModel</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.shortest_path.ShortestPathModel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">turicreate.shortest_path.</code><code class="descname">ShortestPathModel</code><span class="sig-paren">(</span><em>model</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.shortest_path.ShortestPathModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Model object containing the distance for each vertex in the graph to a
 single source vertex, which is specified during
 <a class="reference internal" href="turicreate.shortest_path.create.html#turicreate.shortest_path.create" title="turicreate.shortest_path.create"><code class="xref py py-func docutils literal"><span class="pre">turicreate.shortest_path.create()</span></code></a>.</p>
@@ -152,7 +155,7 @@ vertex to any other vertex in the graph.</p>
 <td>A new SGraph with the distance as a vertex property</td>
 </tr>
 <tr class="row-odd"><td>distance</td>
-<td>An SFrame with each vertex&#8217;s distance to the source vertex</td>
+<td>An SFrame with each vertex’s distance to the source vertex</td>
 </tr>
 <tr class="row-even"><td>weight_field</td>
 <td>The edge field for weight</td>
@@ -174,7 +177,10 @@ of this model. A detailed list of parameter options and code samples
 are available in the documentation for the create function.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.shortest_path.create.html#turicreate.shortest_path.create" title="turicreate.shortest_path.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.shortest_path.create.html#turicreate.shortest_path.create" title="turicreate.shortest_path.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 </dd></dl>
 
@@ -185,16 +191,16 @@ are available in the documentation for the create function.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.shortest_path.ShortestPathModel.get_path.html#turicreate.shortest_path.ShortestPathModel.get_path" title="turicreate.shortest_path.ShortestPathModel.get_path"><code class="xref py py-obj docutils literal"><span class="pre">ShortestPathModel.get_path</span></code></a>(vid[,&nbsp;highlight])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.shortest_path.ShortestPathModel.get_path.html#turicreate.shortest_path.ShortestPathModel.get_path" title="turicreate.shortest_path.ShortestPathModel.get_path"><code class="xref py py-obj docutils literal"><span class="pre">ShortestPathModel.get_path</span></code></a>(self,&nbsp;vid[,&nbsp;…])</td>
 <td>Get the shortest path.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.shortest_path.ShortestPathModel.name.html#turicreate.shortest_path.ShortestPathModel.name" title="turicreate.shortest_path.ShortestPathModel.name"><code class="xref py py-obj docutils literal"><span class="pre">ShortestPathModel.name</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.shortest_path.ShortestPathModel.name.html#turicreate.shortest_path.ShortestPathModel.name" title="turicreate.shortest_path.ShortestPathModel.name"><code class="xref py py-obj docutils literal"><span class="pre">ShortestPathModel.name</span></code></a>(self)</td>
 <td>Returns the name of the model.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.shortest_path.ShortestPathModel.save.html#turicreate.shortest_path.ShortestPathModel.save" title="turicreate.shortest_path.ShortestPathModel.save"><code class="xref py py-obj docutils literal"><span class="pre">ShortestPathModel.save</span></code></a>(location)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.shortest_path.ShortestPathModel.save.html#turicreate.shortest_path.ShortestPathModel.save" title="turicreate.shortest_path.ShortestPathModel.save"><code class="xref py py-obj docutils literal"><span class="pre">ShortestPathModel.save</span></code></a>(self,&nbsp;location)</td>
 <td>Save the model.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.shortest_path.ShortestPathModel.summary.html#turicreate.shortest_path.ShortestPathModel.summary" title="turicreate.shortest_path.ShortestPathModel.summary"><code class="xref py py-obj docutils literal"><span class="pre">ShortestPathModel.summary</span></code></a>([output])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.shortest_path.ShortestPathModel.summary.html#turicreate.shortest_path.ShortestPathModel.summary" title="turicreate.shortest_path.ShortestPathModel.summary"><code class="xref py py-obj docutils literal"><span class="pre">ShortestPathModel.summary</span></code></a>(self[,&nbsp;output])</td>
 <td>Print a summary of the model.</td>
 </tr>
 </tbody>
@@ -219,7 +225,7 @@ are available in the documentation for the create function.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -237,7 +243,7 @@ are available in the documentation for the create function.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.random_forest_regression.create &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.random_forest_regression.create &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="regression" href="../turicreate.toolkits.regression.html"/>
         <link rel="next" title="turicreate.random_forest_regression.RandomForestRegression" href="turicreate.random_forest_regression.RandomForestRegression.html"/>
         <link rel="prev" title="turicreate.regression.create" href="turicreate.regression.create.html"/> 
@@ -185,16 +188,16 @@ prevent overfitting.  Setting it to 0.5 means that model randomly
 collected half of the columns to grow each tree.</p>
 </dd>
 <dt><strong>validation_set</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
-<dd><p class="first last">A dataset for monitoring the model&#8217;s generalization performance.
+<dd><p class="first last">A dataset for monitoring the model’s generalization performance.
 For each row of the progress table, the chosen metrics are computed
 for both the provided training dataset and the validation_set. The
 format of this SFrame must be the same as the training set.
-By default this argument is set to &#8216;auto&#8217; and a validation set is
+By default this argument is set to ‘auto’ and a validation set is
 automatically sampled and used for progress printing. If
 validation_set is set to None, then no additional metrics
 are computed. This is computed once per full iteration. Large
 differences in model accuracy between the training data and validation
-data is indicative of overfitting. The default value is &#8216;auto&#8217;.</p>
+data is indicative of overfitting. The default value is ‘auto’.</p>
 </dd>
 <dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
 <dd><p class="first last">If True, print progress information during training.</p>
@@ -207,7 +210,7 @@ results are reproducible.</p>
 <dd><p class="first last">Performance metric(s) that are tracked during training. When specified,
 the progress table will display the tracked metric(s) on training and
 validation set.
-Supported metrics are: {&#8216;rmse&#8217;, &#8216;max_error&#8217;}</p>
+Supported metrics are: {‘rmse’, ‘max_error’}</p>
 </dd>
 <dt><strong>kwargs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
 <dd><p class="first">Additional arguments for training the model.</p>
@@ -218,7 +221,7 @@ Supported metrics are: {&#8216;rmse&#8217;, &#8216;max_error&#8217;}</p>
 where n is specified by <code class="docutils literal"><span class="pre">model_checkpoint_interval</span></code>.
 For instance, if <cite>model_checkpoint_interval</cite> is 5, and <cite>model_checkpoint_path</cite> is
 set to <code class="docutils literal"><span class="pre">/tmp/model_tmp</span></code>, the checkpoints will be saved into
-<code class="docutils literal"><span class="pre">/tmp/model_tmp/model_checkpoint_5</span></code>, <code class="docutils literal"><span class="pre">/tmp/model_tmp/model_checkpoint_10</span></code>, ... etc.
+<code class="docutils literal"><span class="pre">/tmp/model_tmp/model_checkpoint_5</span></code>, <code class="docutils literal"><span class="pre">/tmp/model_tmp/model_checkpoint_10</span></code>, … etc.
 Training can be resumed by setting <code class="docutils literal"><span class="pre">resume_from_checkpoint</span></code> to one of these checkpoints.</dd>
 </dl>
 </li>
@@ -250,29 +253,32 @@ exact the same training data as the checkpointed model.</dd>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.random_forest_regression.RandomForestRegression.html#turicreate.random_forest_regression.RandomForestRegression" title="turicreate.random_forest_regression.RandomForestRegression"><code class="xref py py-obj docutils literal"><span class="pre">RandomForestRegression</span></code></a>, <a class="reference internal" href="turicreate.linear_regression.LinearRegression.html#turicreate.linear_regression.LinearRegression" title="turicreate.linear_regression.LinearRegression"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.linear_regression.LinearRegression</span></code></a>, <a class="reference internal" href="turicreate.regression.create.html#turicreate.regression.create" title="turicreate.regression.create"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.regression.create</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.random_forest_regression.RandomForestRegression.html#turicreate.random_forest_regression.RandomForestRegression" title="turicreate.random_forest_regression.RandomForestRegression"><code class="xref py py-obj docutils literal"><span class="pre">RandomForestRegression</span></code></a>, <a class="reference internal" href="turicreate.linear_regression.LinearRegression.html#turicreate.linear_regression.LinearRegression" title="turicreate.linear_regression.LinearRegression"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.linear_regression.LinearRegression</span></code></a>, <a class="reference internal" href="turicreate.regression.create.html#turicreate.regression.create" title="turicreate.regression.create"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.regression.create</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">References</p>
 <ul class="simple">
-<li><a class="reference external" href="http://jessica2.msri.org/attachments/10778/10778-boost.pdf">Trevor Hastie&#8217;s slides on Boosted Trees and Random Forest</a></li>
+<li><a class="reference external" href="http://jessica2.msri.org/attachments/10778/10778-boost.pdf">Trevor Hastie’s slides on Boosted Trees and Random Forest</a></li>
 </ul>
 <p class="rubric">Examples</p>
 <p>Setup the data:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://static.turi.com/datasets/xgboost/mushroom.csv&#39;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://static.turi.com/datasets/xgboost/mushroom.csv&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;p&#39;</span>
 </pre></div>
 </div>
 <p>Split the data into training and test data:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">train</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">random_split</span><span class="p">(</span><span class="mf">0.8</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">train</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">random_split</span><span class="p">(</span><span class="mf">0.8</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Create the model:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">random_forest_regression</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;label&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">random_forest_regression</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;label&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Make predictions and evaluate the model:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -298,7 +304,7 @@ exact the same training data as the checkpointed model.</dd>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -316,7 +322,7 @@ exact the same training data as the checkpointed model.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

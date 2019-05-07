@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.read_json &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SFrame.read_json &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -132,11 +135,11 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>url</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">Location of the CSV file or directory to load. If URL is a directory
-or a &#8220;glob&#8221; pattern, all matching files will be loaded.</p>
+or a “glob” pattern, all matching files will be loaded.</p>
 </dd>
-<dt><strong>orient</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional. Either &#8220;records&#8221; or &#8220;lines&#8221;</span></dt>
-<dd><p class="first last">If orient=&#8221;records&#8221; the file is expected to contain a single JSON
-array, where each array element is a dictionary. If orient=&#8221;lines&#8221;,
+<dt><strong>orient</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional. Either “records” or “lines”</span></dt>
+<dd><p class="first last">If orient=”records” the file is expected to contain a single JSON
+array, where each array element is a dictionary. If orient=”lines”,
 the file is expected to contain a JSON element per line.</p>
 </dd>
 </dl>
@@ -147,10 +150,10 @@ the file is expected to contain a JSON element per line.</p>
 <p class="rubric">Examples</p>
 <p>The orient parameter describes the expected input format of the JSON
 file.</p>
-<p>If orient=&#8221;records&#8221;, the JSON file is expected to contain a single
+<p>If orient=”records”, the JSON file is expected to contain a single
 JSON Array where each array element is a dictionary describing the row.
 For instance:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&gt;&gt;&gt; !cat input.json
+<div class="highlight-default"><div class="highlight"><pre><span></span>&gt;&gt;&gt; !cat input.json
 [{&#39;a&#39;:1,&#39;b&#39;:1}, {&#39;a&#39;:2,&#39;b&#39;:2}, {&#39;a&#39;:3,&#39;b&#39;:3}]
 &gt;&gt;&gt; SFrame.read_json(&#39;input.json&#39;, orient=&#39;records&#39;)
 Columns:
@@ -167,10 +170,10 @@ Data:
 +---+---+
 </pre></div>
 </div>
-<p>If orient=&#8221;lines&#8221;, the JSON file is expected to contain a JSON element
+<p>If orient=”lines”, the JSON file is expected to contain a JSON element
 per line. If each line contains a dictionary, it is automatically
 unpacked.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&gt;&gt;&gt; !cat input.json
+<div class="highlight-default"><div class="highlight"><pre><span></span>&gt;&gt;&gt; !cat input.json
 {&#39;a&#39;:1,&#39;b&#39;:1}
 {&#39;a&#39;:2,&#39;b&#39;:2}
 {&#39;a&#39;:3,&#39;b&#39;:3}
@@ -190,7 +193,7 @@ Data:
 </pre></div>
 </div>
 <p>If the lines are not dictionaries, the original format is maintained.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&gt;&gt;&gt; !cat input.json
+<div class="highlight-default"><div class="highlight"><pre><span></span>&gt;&gt;&gt; !cat input.json
 [&#39;a&#39;,&#39;b&#39;,&#39;c&#39;]
 [&#39;d&#39;,&#39;e&#39;,&#39;f&#39;]
 [&#39;g&#39;,&#39;h&#39;,&#39;i&#39;]
@@ -223,7 +226,7 @@ Data:
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -241,7 +244,7 @@ Data:
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

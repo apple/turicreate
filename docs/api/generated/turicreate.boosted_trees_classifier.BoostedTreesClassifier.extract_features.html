@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.boosted_trees_classifier.BoostedTreesClassifier.extract_features &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.boosted_trees_classifier.BoostedTreesClassifier.extract_features &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.boosted_trees_classifier.BoostedTreesClassifier.extract_features<a class="headerlink" href="#turicreate-boosted-trees-classifier-boostedtreesclassifier-extract-features" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.boosted_trees_classifier.BoostedTreesClassifier.extract_features">
-<code class="descclassname">BoostedTreesClassifier.</code><code class="descname">extract_features</code><span class="sig-paren">(</span><em>dataset</em>, <em>missing_value_action='auto'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.boosted_trees_classifier.BoostedTreesClassifier.extract_features" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">BoostedTreesClassifier.</code><code class="descname">extract_features</code><span class="sig-paren">(</span><em>self</em>, <em>dataset</em>, <em>missing_value_action='auto'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.boosted_trees_classifier.BoostedTreesClassifier.extract_features" title="Permalink to this definition">¶</a></dt>
 <dd><p>For each example in the dataset, extract the leaf indices of
 each tree as features.</p>
 <p>For multiclass classification, each leaf index contains #num_class
@@ -146,21 +149,21 @@ a target column. Additional columns are ignored.</p>
 <dd><p class="first">Action to perform when missing values are encountered. This can be
 one of:</p>
 <ul class="last simple">
-<li>&#8216;auto&#8217;: Choose a model dependent missing value policy.</li>
+<li>‘auto’: Choose a model dependent missing value policy.</li>
 <li><dl class="first docutils">
-<dt>&#8216;impute&#8217;: Proceed with evaluation by filling in the missing</dt>
+<dt>‘impute’: Proceed with evaluation by filling in the missing</dt>
 <dd>values with the mean of the training data. Missing
 values are also imputed if an entire column of data is
 missing during evaluation.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt>&#8216;none&#8217;: Treat missing value as is. Model must be able to handle</dt>
+<dt>‘none’: Treat missing value as is. Model must be able to handle</dt>
 <dd>missing value.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt>&#8216;error&#8217; <span class="classifier-delimiter">:</span> <span class="classifier">Do not proceed with prediction and terminate with</span></dt>
+<dt>‘error’ <span class="classifier-delimiter">:</span> <span class="classifier">Do not proceed with prediction and terminate with</span></dt>
 <dd>an error message.</dd>
 </dl>
 </li>
@@ -179,15 +182,15 @@ missing during evaluation.</dd>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span>  <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">(</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span>  <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">(</span>
 <span class="go">    &#39;https://static.turi.com/datasets/regression/houses.csv&#39;)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Regression Tree Models</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Regression Tree Models</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;regression_tree_features&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">extract_features</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Classification Tree Models</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Classification Tree Models</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;classification_tree_features&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">extract_features</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -204,7 +207,7 @@ missing during evaluation.</dd>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -222,7 +225,7 @@ missing during evaluation.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

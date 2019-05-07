@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.decision_tree_regression.DecisionTreeRegression &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.decision_tree_regression.DecisionTreeRegression &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="regression" href="../turicreate.toolkits.regression.html"/>
         <link rel="next" title="turicreate.boosted_trees_regression.create" href="turicreate.boosted_trees_regression.create.html"/>
         <link rel="prev" title="turicreate.decision_tree_regression.create" href="turicreate.decision_tree_regression.create.html"/> 
@@ -130,7 +133,7 @@
 <h1>turicreate.decision_tree_regression.DecisionTreeRegression<a class="headerlink" href="#turicreate-decision-tree-regression-decisiontreeregression" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="turicreate.decision_tree_regression.DecisionTreeRegression">
-<em class="property">class </em><code class="descclassname">turicreate.decision_tree_regression.</code><code class="descname">DecisionTreeRegression</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.decision_tree_regression.DecisionTreeRegression" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">turicreate.decision_tree_regression.</code><code class="descname">DecisionTreeRegression</code><span class="sig-paren">(</span><em>proxy</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.decision_tree_regression.DecisionTreeRegression" title="Permalink to this definition">¶</a></dt>
 <dd><p>The prediction is based on a collection of base learners, <a class="reference external" href="http://en.wikipedia.org/wiki/Decision_tree_learning">regression trees</a>. This algorithm is
 a special case for boosted trees regression with number of trees set to 1.</p>
 <p>Different from linear models, e.g. linear regression, the gradient boost
@@ -145,7 +148,10 @@ this model. A detailed list of parameter options and code samples are
 available in the documentation for the create function.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.decision_tree_regression.create.html#turicreate.decision_tree_regression.create" title="turicreate.decision_tree_regression.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.decision_tree_regression.create.html#turicreate.decision_tree_regression.create" title="turicreate.decision_tree_regression.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 </dd></dl>
 
@@ -156,25 +162,25 @@ available in the documentation for the create function.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.decision_tree_regression.DecisionTreeRegression.evaluate.html#turicreate.decision_tree_regression.DecisionTreeRegression.evaluate" title="turicreate.decision_tree_regression.DecisionTreeRegression.evaluate"><code class="xref py py-obj docutils literal"><span class="pre">DecisionTreeRegression.evaluate</span></code></a>(dataset[,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.decision_tree_regression.DecisionTreeRegression.evaluate.html#turicreate.decision_tree_regression.DecisionTreeRegression.evaluate" title="turicreate.decision_tree_regression.DecisionTreeRegression.evaluate"><code class="xref py py-obj docutils literal"><span class="pre">DecisionTreeRegression.evaluate</span></code></a>(self,&nbsp;dataset)</td>
 <td>Evaluate the model on the given dataset.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.decision_tree_regression.DecisionTreeRegression.export_coreml.html#turicreate.decision_tree_regression.DecisionTreeRegression.export_coreml" title="turicreate.decision_tree_regression.DecisionTreeRegression.export_coreml"><code class="xref py py-obj docutils literal"><span class="pre">DecisionTreeRegression.export_coreml</span></code></a>(filename)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.decision_tree_regression.DecisionTreeRegression.export_coreml.html#turicreate.decision_tree_regression.DecisionTreeRegression.export_coreml" title="turicreate.decision_tree_regression.DecisionTreeRegression.export_coreml"><code class="xref py py-obj docutils literal"><span class="pre">DecisionTreeRegression.export_coreml</span></code></a>(self,&nbsp;…)</td>
 <td>Export the model in Core ML format.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.decision_tree_regression.DecisionTreeRegression.extract_features.html#turicreate.decision_tree_regression.DecisionTreeRegression.extract_features" title="turicreate.decision_tree_regression.DecisionTreeRegression.extract_features"><code class="xref py py-obj docutils literal"><span class="pre">DecisionTreeRegression.extract_features</span></code></a>(dataset)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.decision_tree_regression.DecisionTreeRegression.extract_features.html#turicreate.decision_tree_regression.DecisionTreeRegression.extract_features" title="turicreate.decision_tree_regression.DecisionTreeRegression.extract_features"><code class="xref py py-obj docutils literal"><span class="pre">DecisionTreeRegression.extract_features</span></code></a>(…)</td>
 <td>For each example in the dataset, extract the leaf indices of each tree as features.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.decision_tree_regression.DecisionTreeRegression.get_feature_importance.html#turicreate.decision_tree_regression.DecisionTreeRegression.get_feature_importance" title="turicreate.decision_tree_regression.DecisionTreeRegression.get_feature_importance"><code class="xref py py-obj docutils literal"><span class="pre">DecisionTreeRegression.get_feature_importance</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.decision_tree_regression.DecisionTreeRegression.get_feature_importance.html#turicreate.decision_tree_regression.DecisionTreeRegression.get_feature_importance" title="turicreate.decision_tree_regression.DecisionTreeRegression.get_feature_importance"><code class="xref py py-obj docutils literal"><span class="pre">DecisionTreeRegression.get_feature_importance</span></code></a>(self)</td>
 <td>Get the importance of features used by the model.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.decision_tree_regression.DecisionTreeRegression.predict.html#turicreate.decision_tree_regression.DecisionTreeRegression.predict" title="turicreate.decision_tree_regression.DecisionTreeRegression.predict"><code class="xref py py-obj docutils literal"><span class="pre">DecisionTreeRegression.predict</span></code></a>(dataset[,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.decision_tree_regression.DecisionTreeRegression.predict.html#turicreate.decision_tree_regression.DecisionTreeRegression.predict" title="turicreate.decision_tree_regression.DecisionTreeRegression.predict"><code class="xref py py-obj docutils literal"><span class="pre">DecisionTreeRegression.predict</span></code></a>(self,&nbsp;dataset)</td>
 <td>Predict the target column of the given dataset.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.decision_tree_regression.DecisionTreeRegression.save.html#turicreate.decision_tree_regression.DecisionTreeRegression.save" title="turicreate.decision_tree_regression.DecisionTreeRegression.save"><code class="xref py py-obj docutils literal"><span class="pre">DecisionTreeRegression.save</span></code></a>(location)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.decision_tree_regression.DecisionTreeRegression.save.html#turicreate.decision_tree_regression.DecisionTreeRegression.save" title="turicreate.decision_tree_regression.DecisionTreeRegression.save"><code class="xref py py-obj docutils literal"><span class="pre">DecisionTreeRegression.save</span></code></a>(self,&nbsp;location)</td>
 <td>Save the model.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.decision_tree_regression.DecisionTreeRegression.summary.html#turicreate.decision_tree_regression.DecisionTreeRegression.summary" title="turicreate.decision_tree_regression.DecisionTreeRegression.summary"><code class="xref py py-obj docutils literal"><span class="pre">DecisionTreeRegression.summary</span></code></a>([output])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.decision_tree_regression.DecisionTreeRegression.summary.html#turicreate.decision_tree_regression.DecisionTreeRegression.summary" title="turicreate.decision_tree_regression.DecisionTreeRegression.summary"><code class="xref py py-obj docutils literal"><span class="pre">DecisionTreeRegression.summary</span></code></a>(self[,&nbsp;output])</td>
 <td>Print a summary of the model.</td>
 </tr>
 </tbody>
@@ -199,7 +205,7 @@ available in the documentation for the create function.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -217,7 +223,7 @@ available in the documentation for the create function.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

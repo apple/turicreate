@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.activity_classifier.ActivityClassifier.classify &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.activity_classifier.ActivityClassifier.classify &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.activity_classifier.ActivityClassifier.classify<a class="headerlink" href="#turicreate-activity-classifier-activityclassifier-classify" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.activity_classifier.ActivityClassifier.classify">
-<code class="descclassname">ActivityClassifier.</code><code class="descname">classify</code><span class="sig-paren">(</span><em>dataset</em>, <em>output_frequency='per_row'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.activity_classifier.ActivityClassifier.classify" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ActivityClassifier.</code><code class="descname">classify</code><span class="sig-paren">(</span><em>self</em>, <em>dataset</em>, <em>output_frequency='per_row'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.activity_classifier.ActivityClassifier.classify" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a classification, for each <code class="docutils literal"><span class="pre">prediction_window</span></code> examples in the
 <code class="docutils literal"><span class="pre">dataset</span></code>, using the trained activity classification model. The output
 SFrame contains predictions as both class labels as well as probabilities 
@@ -138,11 +141,11 @@ that the predicted value is the associated label.</p>
 names as the features and session id used for model training, but
 does not require a target column. Additional columns are ignored.</p>
 </dd>
-<dt><strong>output_frequency</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;per_row&#8217;, &#8216;per_window&#8217;}, optional</span></dt>
+<dt><strong>output_frequency</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{‘per_row’, ‘per_window’}, optional</span></dt>
 <dd><p class="first">The frequency of the predictions which is one of:</p>
 <ul class="last simple">
-<li>&#8216;per_row&#8217;: Each prediction is returned <code class="docutils literal"><span class="pre">prediction_window</span></code> times.</li>
-<li>&#8216;per_window&#8217;: Return a single prediction for each 
+<li>‘per_row’: Each prediction is returned <code class="docutils literal"><span class="pre">prediction_window</span></code> times.</li>
+<li>‘per_window’: Return a single prediction for each 
 <code class="docutils literal"><span class="pre">prediction_window</span></code> rows in <code class="docutils literal"><span class="pre">dataset</span></code> per <code class="docutils literal"><span class="pre">session_id</span></code>.</li>
 </ul>
 </dd>
@@ -160,10 +163,13 @@ does not require a target column. Additional columns are ignored.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.activity_classifier.create.html#turicreate.activity_classifier.create" title="turicreate.activity_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a>, <a class="reference internal" href="turicreate.activity_classifier.ActivityClassifier.evaluate.html#turicreate.activity_classifier.ActivityClassifier.evaluate" title="turicreate.activity_classifier.ActivityClassifier.evaluate"><code class="xref py py-obj docutils literal"><span class="pre">evaluate</span></code></a>, <a class="reference internal" href="turicreate.activity_classifier.ActivityClassifier.predict.html#turicreate.activity_classifier.ActivityClassifier.predict" title="turicreate.activity_classifier.ActivityClassifier.predict"><code class="xref py py-obj docutils literal"><span class="pre">predict</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.activity_classifier.create.html#turicreate.activity_classifier.create" title="turicreate.activity_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a>, <a class="reference internal" href="turicreate.activity_classifier.ActivityClassifier.evaluate.html#turicreate.activity_classifier.ActivityClassifier.evaluate" title="turicreate.activity_classifier.ActivityClassifier.evaluate"><code class="xref py py-obj docutils literal"><span class="pre">evaluate</span></code></a>, <a class="reference internal" href="turicreate.activity_classifier.ActivityClassifier.predict.html#turicreate.activity_classifier.ActivityClassifier.predict" title="turicreate.activity_classifier.ActivityClassifier.predict"><code class="xref py py-obj docutils literal"><span class="pre">predict</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">classes</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">classify</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">classes</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">classify</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -179,7 +185,7 @@ does not require a target column. Additional columns are ignored.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -197,7 +203,7 @@ does not require a target column. Additional columns are ignored.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

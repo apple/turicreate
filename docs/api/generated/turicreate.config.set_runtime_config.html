@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.config.set_runtime_config &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.config.set_runtime_config &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="Configuration" href="../turicreate.utils.html"/>
         <link rel="next" title="turicreate.config.get_environment_config" href="turicreate.config.get_environment_config.html"/>
         <link rel="prev" title="turicreate.config.set_num_gpus" href="turicreate.config.set_num_gpus.html"/> 
@@ -151,7 +154,7 @@ are developed and implemented.</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>RuntimeError</strong></dt>
+<dt>RuntimeError</dt>
 <dd><p class="first last">If the key does not exist, or if the value cannot be changed to the
 requested value.</p>
 </dd>
@@ -168,8 +171,8 @@ that can be configured.</p>
 <li><em>TURI_NUM_GPUS</em>: Number of GPUs to use when applicable. Set to 0 to force
 CPU use in all situations.</li>
 <li><em>TURI_CACHE_FILE_LOCATIONS</em>: The directory in which intermediate
-SFrames/SArray are stored.  For instance &#8220;/var/tmp&#8221;.  Multiple
-directories can be specified separated by a colon (ex: &#8220;/var/tmp:/tmp&#8221;)
+SFrames/SArray are stored.  For instance “/var/tmp”.  Multiple
+directories can be specified separated by a colon (ex: “/var/tmp:/tmp”)
 in which case intermediate SFrames will be striped across both
 directories (useful for specifying multiple disks).  Defaults to /var/tmp
 if the directory exists, /tmp otherwise.</li>
@@ -236,7 +239,7 @@ handles will be recycled, reducing performance. This limit should be
 rarely approached by most SFrame/SArray operations. Large SGraphs however
 may create a large a number of SFrames in which case increasing this
 limit may improve performance (You may also need to increase the system
-file handle limit with &#8220;ulimit -n&#8221;).  Defaults to 128.</li>
+file handle limit with “ulimit -n”).  Defaults to 128.</li>
 </ul>
 </dd></dl>
 
@@ -260,7 +263,7 @@ file handle limit with &#8220;ulimit -n&#8221;).  Defaults to 128.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -278,7 +281,7 @@ file handle limit with &#8220;ulimit -n&#8221;).  Defaults to 128.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.join &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SFrame.join &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.SFrame.join<a class="headerlink" href="#turicreate-sframe-join" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SFrame.join">
-<code class="descclassname">SFrame.</code><code class="descname">join</code><span class="sig-paren">(</span><em>right</em>, <em>on=None</em>, <em>how='inner'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.join" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SFrame.</code><code class="descname">join</code><span class="sig-paren">(</span><em>self</em>, <em>right</em>, <em>on=None</em>, <em>how='inner'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.join" title="Permalink to this definition">¶</a></dt>
 <dd><p>Merge two SFrames. Merges the current (left) SFrame with the given
 (right) SFrame using a SQL-style equi-join operation by columns.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -138,7 +141,7 @@
 <dd><p class="first">The column name(s) representing the set of join keys.  Each row that
 has the same value in this set of columns will be merged together.</p>
 <ul class="last simple">
-<li>If &#8216;None&#8217; is given, join will use all columns that have the same
+<li>If ‘None’ is given, join will use all columns that have the same
 name as the set of join keys.</li>
 <li>If a str is given, this is interpreted as a join using one column,
 where both SFrames have the same column name.</li>
@@ -148,11 +151,11 @@ SFrames.</li>
 <li>If a dict is given, each dict key is taken as a column name in the
 left SFrame, and each dict value is taken as the column name in
 right SFrame that will be joined together. e.g.
-{&#8216;left_col_name&#8217;:&#8217;right_col_name&#8217;}.</li>
+{‘left_col_name’:’right_col_name’}.</li>
 </ul>
 </dd>
-<dt><strong>how</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;left&#8217;, &#8216;right&#8217;, &#8216;outer&#8217;, &#8216;inner&#8217;}, optional</span></dt>
-<dd><p class="first">The type of join to perform.  &#8216;inner&#8217; is default.</p>
+<dt><strong>how</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{‘left’, ‘right’, ‘outer’, ‘inner’}, optional</span></dt>
+<dd><p class="first">The type of join to perform.  ‘inner’ is default.</p>
 <ul class="last simple">
 <li>inner: Equivalent to a SQL inner join.  Result consists of the
 rows from the two frames whose join key values match exactly,
@@ -180,7 +183,7 @@ outer join.</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">animals</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">animals</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
 <span class="gp">... </span>                          <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;dog&#39;</span><span class="p">,</span> <span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="s1">&#39;sheep&#39;</span><span class="p">,</span> <span class="s1">&#39;cow&#39;</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sounds</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
 <span class="gp">... </span>                         <span class="s1">&#39;sound&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;woof&#39;</span><span class="p">,</span> <span class="s1">&#39;baa&#39;</span><span class="p">,</span> <span class="s1">&#39;moo&#39;</span><span class="p">,</span> <span class="s1">&#39;oink&#39;</span><span class="p">]})</span>
@@ -195,7 +198,7 @@ outer join.</li>
 <span class="go">[3 rows x 3 columns]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">animals</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sounds</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">animals</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sounds</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
 <span class="go">+----+-------+-------+</span>
 <span class="go">| id |  name | sound |</span>
 <span class="go">+----+-------+-------+</span>
@@ -207,7 +210,7 @@ outer join.</li>
 <span class="go">[4 rows x 3 columns]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">animals</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sounds</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">animals</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sounds</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
 <span class="go">+----+-------+-------+</span>
 <span class="go">| id |  name | sound |</span>
 <span class="go">+----+-------+-------+</span>
@@ -219,7 +222,7 @@ outer join.</li>
 <span class="go">[4 rows x 3 columns]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">animals</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sounds</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span><span class="s1">&#39;id&#39;</span><span class="p">},</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;outer&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">animals</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sounds</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span><span class="s1">&#39;id&#39;</span><span class="p">},</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;outer&#39;</span><span class="p">)</span>
 <span class="go">+----+-------+-------+</span>
 <span class="go">| id |  name | sound |</span>
 <span class="go">+----+-------+-------+</span>
@@ -245,7 +248,7 @@ outer join.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -263,7 +266,7 @@ outer join.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

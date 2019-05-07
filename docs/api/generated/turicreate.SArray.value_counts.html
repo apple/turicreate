@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SArray.value_counts &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SArray.value_counts &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.SArray.value_counts<a class="headerlink" href="#turicreate-sarray-value-counts" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SArray.value_counts">
-<code class="descclassname">SArray.</code><code class="descname">value_counts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SArray.value_counts" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SArray.</code><code class="descname">value_counts</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SArray.value_counts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an SFrame containing counts of unique values. The resulting
 SFrame will be sorted in descending frequency.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -132,8 +135,8 @@ SFrame will be sorted in descending frequency.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
-<dd><p class="first last">An SFrame containing 2 columns : &#8216;value&#8217;, and &#8216;count&#8217;. The SFrame will
-be sorted in descending order by the column &#8216;count&#8217;.</p>
+<dd><p class="first last">An SFrame containing 2 columns : ‘value’, and ‘count’. The SFrame will
+be sorted in descending order by the column ‘count’.</p>
 </dd>
 </dl>
 </td>
@@ -142,10 +145,13 @@ be sorted in descending order by the column &#8216;count&#8217;.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.summary</span></code></p>
+<dl class="last docutils">
+<dt><code class="xref py py-obj docutils literal"><span class="pre">SFrame.summary</span></code></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
 <span class="go">    Columns:</span>
 <span class="go">            value       int</span>
@@ -175,7 +181,7 @@ be sorted in descending order by the column &#8216;count&#8217;.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -193,7 +199,7 @@ be sorted in descending order by the column &#8216;count&#8217;.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

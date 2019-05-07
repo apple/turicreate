@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SArray.str_to_datetime &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SArray.str_to_datetime &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,24 +126,24 @@
 <h1>turicreate.SArray.str_to_datetime<a class="headerlink" href="#turicreate-sarray-str-to-datetime" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SArray.str_to_datetime">
-<code class="descclassname">SArray.</code><code class="descname">str_to_datetime</code><span class="sig-paren">(</span><em>format='%Y-%m-%dT%H:%M:%S%ZP'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SArray.str_to_datetime" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SArray.</code><code class="descname">str_to_datetime</code><span class="sig-paren">(</span><em>self</em>, <em>format='%Y-%m-%dT%H:%M:%S%ZP'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SArray.str_to_datetime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new SArray with all the values cast to datetime. The string format is
-specified by the &#8216;format&#8217; parameter.</p>
+specified by the ‘format’ parameter.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>format</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">The string format of the input SArray. Default format is &#8220;%Y-%m-%dT%H:%M:%S%ZP&#8221;.
-If format is &#8220;ISO&#8221;, the the format is &#8220;%Y%m%dT%H%M%S%F%q&#8221;</p>
+<dd><p class="first last">The string format of the input SArray. Default format is “%Y-%m-%dT%H:%M:%S%ZP”.
+If format is “ISO”, the the format is “%Y%m%dT%H%M%S%F%q”</p>
 </dd>
 <dt><strong>Returns</strong></dt>
 <dd></dd>
-<dt><strong>&#8212;&#8212;-</strong></dt>
+<dt><strong>——-</strong></dt>
 <dd></dd>
 <dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray[datetime.datetime]</span></dt>
-<dd><p class="first last">The SArray converted to the type &#8216;datetime&#8217;.</p>
+<dd><p class="first last">The SArray converted to the type ‘datetime’.</p>
 </dd>
 </dl>
 </td>
@@ -149,12 +152,15 @@ If format is &#8220;ISO&#8221;, the the format is &#8220;%Y%m%dT%H%M%S%F%q&#8221
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.SArray.datetime_to_str.html#turicreate.SArray.datetime_to_str" title="turicreate.SArray.datetime_to_str"><code class="xref py py-obj docutils literal"><span class="pre">datetime_to_str</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.SArray.datetime_to_str.html#turicreate.SArray.datetime_to_str" title="turicreate.SArray.datetime_to_str"><code class="xref py py-obj docutils literal"><span class="pre">datetime_to_str</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">References</p>
 <p>[1] boost date time to string conversion guide (<a class="reference external" href="http://www.boost.org/doc/libs/1_48_0/doc/html/date_time/date_time_io.html">http://www.boost.org/doc/libs/1_48_0/doc/html/date_time/date_time_io.html</a>)</p>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="s2">&quot;20-Oct-2011 09:30:10 GMT-05:30&quot;</span><span class="p">])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="s2">&quot;20-Oct-2011 09:30:10 GMT-05:30&quot;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span><span class="o">.</span><span class="n">str_to_datetime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">-%b-%Y %H:%M:%S %ZP&quot;</span><span class="p">)</span>
 <span class="go">dtype: datetime</span>
 <span class="go">Rows: 1</span>
@@ -174,7 +180,7 @@ If format is &#8220;ISO&#8221;, the the format is &#8220;%Y%m%dT%H%M%S%F%q&#8221
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -192,7 +198,7 @@ If format is &#8220;ISO&#8221;, the the format is &#8220;%Y%m%dT%H%M%S%F%q&#8221
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.nearest_neighbors.NearestNeighborsModel.query &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.nearest_neighbors.NearestNeighborsModel.query &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,11 +126,11 @@
 <h1>turicreate.nearest_neighbors.NearestNeighborsModel.query<a class="headerlink" href="#turicreate-nearest-neighbors-nearestneighborsmodel-query" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.nearest_neighbors.NearestNeighborsModel.query">
-<code class="descclassname">NearestNeighborsModel.</code><code class="descname">query</code><span class="sig-paren">(</span><em>dataset</em>, <em>label=None</em>, <em>k=5</em>, <em>radius=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.nearest_neighbors.NearestNeighborsModel.query" title="Permalink to this definition">¶</a></dt>
-<dd><p>For each row of the input &#8216;dataset&#8217;, retrieve the nearest neighbors
-from the model&#8217;s stored data. In general, the query dataset does not
+<code class="descclassname">NearestNeighborsModel.</code><code class="descname">query</code><span class="sig-paren">(</span><em>self</em>, <em>dataset</em>, <em>label=None</em>, <em>k=5</em>, <em>radius=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.nearest_neighbors.NearestNeighborsModel.query" title="Permalink to this definition">¶</a></dt>
+<dd><p>For each row of the input ‘dataset’, retrieve the nearest neighbors
+from the model’s stored data. In general, the query dataset does not
 need to be the same as the reference data stored in the model, but if
-it is, the &#8216;include_self_edges&#8217; parameter can be set to False to
+it is, the ‘include_self_edges’ parameter can be set to False to
 exclude results that match query points to themselves.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -142,7 +145,7 @@ allowed, but ignored. Please see the nearest neighbors
 detail on allowable data types.</p>
 </dd>
 <dt><strong>label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
-<dd><p class="first last">Name of the query SFrame column with row labels. If &#8216;label&#8217; is not
+<dd><p class="first last">Name of the query SFrame column with row labels. If ‘label’ is not
 specified, row numbers are used to identify query dataset rows in
 the output SFrame.</p>
 </dd>
@@ -171,7 +174,7 @@ The result contains four columns: the first is the label of the
 query observation, the second is the label of the nearby reference
 observation, the third is the distance between the query and
 reference observations, and the fourth is the rank of the reference
-observation among the query&#8217;s k-nearest neighbors.</p>
+observation among the query’s k-nearest neighbors.</p>
 </dd>
 </dl>
 </td>
@@ -180,7 +183,10 @@ observation among the query&#8217;s k-nearest neighbors.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.nearest_neighbors.NearestNeighborsModel.similarity_graph.html#turicreate.nearest_neighbors.NearestNeighborsModel.similarity_graph" title="turicreate.nearest_neighbors.NearestNeighborsModel.similarity_graph"><code class="xref py py-obj docutils literal"><span class="pre">similarity_graph</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.nearest_neighbors.NearestNeighborsModel.similarity_graph.html#turicreate.nearest_neighbors.NearestNeighborsModel.similarity_graph" title="turicreate.nearest_neighbors.NearestNeighborsModel.similarity_graph"><code class="xref py py-obj docutils literal"><span class="pre">similarity_graph</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Notes</p>
 <ul class="simple">
@@ -193,15 +199,15 @@ strings are imputed to be empty strings.</li>
 returns all of the reference set. If the reference dataset has
 <span class="math">\(n\)</span> rows and the query dataset has <span class="math">\(m\)</span> rows, the output
 is an SFrame with <span class="math">\(nm\)</span> rows.</li>
-<li>For models created with the &#8216;lsh&#8217; method, the query results may have
+<li>For models created with the ‘lsh’ method, the query results may have
 fewer query labels than input query points. Because LSH is an
-approximate method, a query point may have fewer than &#8216;k&#8217; neighbors.
+approximate method, a query point may have fewer than ‘k’ neighbors.
 If LSH returns no neighbors at all for a query, the query point is
 omitted from the results.</li>
 </ul>
 <p class="rubric">Examples</p>
 <p>First construct a toy SFrame and create a nearest neighbors model:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
 <span class="gp">... </span>                      <span class="s1">&#39;feature1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.98</span><span class="p">,</span> <span class="mf">0.62</span><span class="p">,</span> <span class="mf">0.11</span><span class="p">],</span>
 <span class="gp">... </span>                      <span class="s1">&#39;feature2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.69</span><span class="p">,</span> <span class="mf">0.58</span><span class="p">,</span> <span class="mf">0.36</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">nearest_neighbors</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">)</span>
@@ -209,7 +215,7 @@ omitted from the results.</li>
 </div>
 <p>A new SFrame contains query observations with same schema as the
 reference SFrame. This SFrame is passed to the <code class="docutils literal"><span class="pre">query</span></code> method.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">queries</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">queries</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
 <span class="gp">... </span>                           <span class="s1">&#39;feature1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.61</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">],</span>
 <span class="gp">... </span>                           <span class="s1">&#39;feature2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.06</span><span class="p">,</span> <span class="mf">0.97</span><span class="p">,</span> <span class="mf">0.86</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">queries</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -238,7 +244,7 @@ reference SFrame. This SFrame is passed to the <code class="docutils literal"><s
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -256,7 +262,7 @@ reference SFrame. This SFrame is passed to the <code class="docutils literal"><s
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

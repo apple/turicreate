@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.random_forest_classifier.RandomForestClassifier.get_feature_importance &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.random_forest_classifier.RandomForestClassifier.get_feature_importance &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,13 +126,13 @@
 <h1>turicreate.random_forest_classifier.RandomForestClassifier.get_feature_importance<a class="headerlink" href="#turicreate-random-forest-classifier-randomforestclassifier-get-feature-importance" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.random_forest_classifier.RandomForestClassifier.get_feature_importance">
-<code class="descclassname">RandomForestClassifier.</code><code class="descname">get_feature_importance</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.random_forest_classifier.RandomForestClassifier.get_feature_importance" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">RandomForestClassifier.</code><code class="descname">get_feature_importance</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.random_forest_classifier.RandomForestClassifier.get_feature_importance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the importance of features used by the model.</p>
 <p>The measure of importance of feature X
 is determined by the sum of occurrence of X
 as a branching node in all trees.</p>
-<p>When X is a categorical feature, e.g. &#8220;Gender&#8221;,
-the index column contains the value of the feature, e.g. &#8220;M&#8221; or &#8220;F&#8221;.
+<p>When X is a categorical feature, e.g. “Gender”,
+the index column contains the value of the feature, e.g. “M” or “F”.
 When X is a numerical feature, index of X is None.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -138,7 +141,7 @@ When X is a numerical feature, index of X is None.</p>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
 <dd><p class="first last">A table with three columns: name, index, count,
-ordered by &#8216;count&#8217; in descending order.</p>
+ordered by ‘count’ in descending order.</p>
 </dd>
 </dl>
 </td>
@@ -146,7 +149,7 @@ ordered by &#8216;count&#8217; in descending order.</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">get_feature_importance</span><span class="p">()</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">get_feature_importance</span><span class="p">()</span>
 <span class="go">Rows: 31</span>
 <span class="go">Data:</span>
 <span class="go">    +-----------------------------+-------+-------+</span>
@@ -179,7 +182,7 @@ ordered by &#8216;count&#8217; in descending order.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -197,7 +200,7 @@ ordered by &#8216;count&#8217; in descending order.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

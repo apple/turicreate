@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.activity_classifier.create &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.activity_classifier.create &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,10 +27,13 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="activity_classifier" href="../turicreate.toolkits.activity_classifier.html"/>
         <link rel="next" title="turicreate.activity_classifier.ActivityClassifier" href="turicreate.activity_classifier.ActivityClassifier.html"/>
-        <link rel="prev" title="turicreate.activity_classifier.util.random_split_by_session" href="turicreate.activity_classifier.util.random_split_by_session.html"/> 
+        <link rel="prev" title="activity_classifier" href="../turicreate.toolkits.activity_classifier.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -163,12 +166,12 @@ data is sampled at 100Hz, and the <cite>prediction_window</cite> is set to 100,
 then this model will make a prediction every 1 second.</p>
 </dd>
 <dt><strong>validation_set</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
-<dd><p class="first">A dataset for monitoring the model&#8217;s generalization performance to
+<dd><p class="first">A dataset for monitoring the model’s generalization performance to
 prevent the model from overfitting to the training data.</p>
 <p>For each row of the progress table, accuracy is measured over the
 provided training dataset and the <cite>validation_set</cite>. The format of this
 SFrame must be the same as the training set.</p>
-<p class="last">When set to &#8216;auto&#8217;, a validation set is automatically sampled from the
+<p class="last">When set to ‘auto’, a validation set is automatically sampled from the
 training data (if the training data has &gt; 100 sessions). If
 validation_set is set to None, then all the data will be used for
 training.</p>
@@ -198,7 +201,10 @@ the number of GPUs in use.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.activity_classifier.ActivityClassifier.html#turicreate.activity_classifier.ActivityClassifier" title="turicreate.activity_classifier.ActivityClassifier"><code class="xref py py-obj docutils literal"><span class="pre">ActivityClassifier</span></code></a>, <a class="reference internal" href="turicreate.activity_classifier.util.random_split_by_session.html#turicreate.activity_classifier.util.random_split_by_session" title="turicreate.activity_classifier.util.random_split_by_session"><code class="xref py py-obj docutils literal"><span class="pre">util.random_split_by_session</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.activity_classifier.ActivityClassifier.html#turicreate.activity_classifier.ActivityClassifier" title="turicreate.activity_classifier.ActivityClassifier"><code class="xref py py-obj docutils literal"><span class="pre">ActivityClassifier</span></code></a>, <a class="reference internal" href="turicreate.activity_classifier.util.random_split_by_session.html#turicreate.activity_classifier.util.random_split_by_session" title="turicreate.activity_classifier.util.random_split_by_session"><code class="xref py py-obj docutils literal"><span class="pre">util.random_split_by_session</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">turicreate</span> <span class="kn">as</span> <span class="nn">tc</span>
@@ -245,7 +251,7 @@ the number of GPUs in use.</p>
         <a href="turicreate.activity_classifier.ActivityClassifier.html" class="btn btn-neutral float-right" title="turicreate.activity_classifier.ActivityClassifier">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="turicreate.activity_classifier.util.random_split_by_session.html" class="btn btn-neutral" title="turicreate.activity_classifier.util.random_split_by_session"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../turicreate.toolkits.activity_classifier.html" class="btn btn-neutral" title="activity_classifier"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -254,7 +260,7 @@ the number of GPUs in use.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -272,7 +278,7 @@ the number of GPUs in use.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

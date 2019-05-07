@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.text_analytics.parse_sparse &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.text_analytics.parse_sparse &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="text_analytics" href="../turicreate.toolkits.text_analytics.html"/>
         <link rel="next" title="turicreate.text_analytics.parse_docword" href="turicreate.text_analytics.parse_docword.html"/>
         <link rel="prev" title="turicreate.text_analytics.count_ngrams" href="turicreate.text_analytics.count_ngrams.html"/> 
@@ -131,7 +134,7 @@
 <dl class="function">
 <dt id="turicreate.text_analytics.parse_sparse">
 <code class="descclassname">turicreate.text_analytics.</code><code class="descname">parse_sparse</code><span class="sig-paren">(</span><em>filename</em>, <em>vocab_filename</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.text_analytics.parse_sparse" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse a file that&#8217;s in libSVM format. In libSVM format each line of the text
+<dd><p>Parse a file that’s in libSVM format. In libSVM format each line of the text
 file represents a document in bag of words format:</p>
 <p>num_unique_words_in_doc word_id:count another_id:count</p>
 <p>The word_ids have 0-based indexing, i.e. 0 corresponds to the first
@@ -161,8 +164,8 @@ word in the vocab filename.</p>
 </table>
 <p class="rubric">Examples</p>
 <p>If we have two documents:
-1. &#8220;It was the best of times, it was the worst of times&#8221;
-2. &#8220;It was the age of wisdom, it was the age of foolishness&#8221;</p>
+1. “It was the best of times, it was the worst of times”
+2. “It was the age of wisdom, it was the age of foolishness”</p>
 <p>Then the vocabulary file might contain the unique words, with a word
 on each line, in the following order:
 it, was, the, best, of, times, worst, age, wisdom, foolishness</p>
@@ -171,9 +174,9 @@ it, was, the, best, of, times, worst, age, wisdom, foolishness</p>
 7 0:2 1:2 2:2 7:2 8:1 9:1 10:1</p>
 <p>The following command will parse the above two files into an SArray
 of type dict.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">file</span> <span class="o">=</span> <span class="s1">&#39;https://static.turi.com/datasets/text/ap.dat&#39;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;https://static.turi.com/datasets/text/ap.dat&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">vocab</span> <span class="o">=</span> <span class="s1">&#39;https://static.turi.com/datasets/text/ap.vocab.txt&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">docs</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">parse_sparse</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">vocab</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">docs</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">parse_sparse</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">vocab</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -198,7 +201,7 @@ of type dict.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -216,7 +219,7 @@ of type dict.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

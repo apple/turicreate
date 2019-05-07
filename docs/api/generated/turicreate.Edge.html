@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.Edge &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.Edge &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="Data" href="../turicreate.data_structures.html"/>
         <link rel="next" title="turicreate.SArrayBuilder" href="turicreate.SArrayBuilder.html"/>
         <link rel="prev" title="turicreate.Vertex" href="turicreate.Vertex.html"/> 
@@ -128,7 +131,7 @@
 <h1>turicreate.Edge<a class="headerlink" href="#turicreate-edge" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="turicreate.Edge">
-<em class="property">class </em><code class="descclassname">turicreate.</code><code class="descname">Edge</code><span class="sig-paren">(</span><em>self</em>, <em>vid</em>, <em>attr={}</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.Edge" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">turicreate.</code><code class="descname">Edge</code><span class="sig-paren">(</span><em>src_vid</em>, <em>dst_vid</em>, <em>attr={}</em>, <em>_series=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.Edge" title="Permalink to this definition">¶</a></dt>
 <dd><p>A directed edge between two Vertex objects. An Edge object consists of a
 source vertex ID, a destination vertex ID, and a dictionary of edge
 attributes.</p>
@@ -154,18 +157,21 @@ following types: integer, float, string, array of floats.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.Vertex.html#turicreate.Vertex" title="turicreate.Vertex"><code class="xref py py-obj docutils literal"><span class="pre">Vertex</span></code></a>, <a class="reference internal" href="turicreate.SGraph.html#turicreate.SGraph" title="turicreate.SGraph"><code class="xref py py-obj docutils literal"><span class="pre">SGraph</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.Vertex.html#turicreate.Vertex" title="turicreate.Vertex"><code class="xref py py-obj docutils literal"><span class="pre">Vertex</span></code></a>, <a class="reference internal" href="turicreate.SGraph.html#turicreate.SGraph" title="turicreate.SGraph"><code class="xref py py-obj docutils literal"><span class="pre">SGraph</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">SGraph</span><span class="p">,</span> <span class="n">Vertex</span><span class="p">,</span> <span class="n">Edge</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="k">import</span> <span class="n">SGraph</span><span class="p">,</span> <span class="n">Vertex</span><span class="p">,</span> <span class="n">Edge</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">verts</span> <span class="o">=</span> <span class="p">[</span><span class="n">Vertex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;breed&#39;</span><span class="p">:</span> <span class="s1">&#39;labrador&#39;</span><span class="p">}),</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">verts</span> <span class="o">=</span> <span class="p">[</span><span class="n">Vertex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;breed&#39;</span><span class="p">:</span> <span class="s1">&#39;labrador&#39;</span><span class="p">}),</span>
 <span class="go">             Vertex(1, attr={&#39;breed&#39;: &#39;vizsla&#39;})]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">edges</span> <span class="o">=</span> <span class="p">[</span><span class="n">Edge</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="s1">&#39;larger_than&#39;</span><span class="p">})]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">SGraph</span><span class="p">()</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">SGraph</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">add_vertices</span><span class="p">(</span><span class="n">verts</span><span class="p">)</span><span class="o">.</span><span class="n">add_edges</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -178,24 +184,6 @@ following types: integer, float, string, array of floats.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-</tbody>
-</table>
-<p class="rubric">Attributes</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.Edge.attr.html#turicreate.Edge.attr" title="turicreate.Edge.attr"><code class="xref py py-obj docutils literal"><span class="pre">Edge.attr</span></code></a></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.Edge.dst_vid.html#turicreate.Edge.dst_vid" title="turicreate.Edge.dst_vid"><code class="xref py py-obj docutils literal"><span class="pre">Edge.dst_vid</span></code></a></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.Edge.src_vid.html#turicreate.Edge.src_vid" title="turicreate.Edge.src_vid"><code class="xref py py-obj docutils literal"><span class="pre">Edge.src_vid</span></code></a></td>
-<td></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -218,7 +206,7 @@ following types: integer, float, string, array of floats.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -236,7 +224,7 @@ following types: integer, float, string, array of floats.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

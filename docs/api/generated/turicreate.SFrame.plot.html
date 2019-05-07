@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.plot &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SFrame.plot &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.SFrame.plot<a class="headerlink" href="#turicreate-sframe-plot" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SFrame.plot">
-<code class="descclassname">SFrame.</code><code class="descname">plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.plot" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SFrame.</code><code class="descname">plot</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a Plot object that contains a summary of each column 
 in an SFrame.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -133,7 +136,7 @@ in an SFrame.</p>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Plot</span></dt>
 <dd></dd>
-<dt><strong>A :class: Plot object that is the columnwise summary of the sframe.</strong></dt>
+<dt>A :class: Plot object that is the columnwise summary of the sframe.</dt>
 <dd></dd>
 </dl>
 </td>
@@ -144,15 +147,15 @@ in an SFrame.</p>
 <ul class="simple">
 <li>The plot will render either inline in a Jupyter Notebook, or in a
 native GUI window, depending on the value provided in
-<cite>turicreate.visualization.set_target</cite> (defaults to &#8216;auto&#8217;).</li>
+<cite>turicreate.visualization.set_target</cite> (defaults to ‘auto’).</li>
 </ul>
 <p class="rubric">Examples</p>
-<p>Suppose &#8216;sf&#8217; is an SFrame, we can make a plot object as:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<p>Suppose ‘sf’ is an SFrame, we can make a plot object as:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>We can then visualize the plot using:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -168,7 +171,7 @@ native GUI window, depending on the value provided in
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -186,7 +189,7 @@ native GUI window, depending on the value provided in
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SArray.split_datetime &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SArray.split_datetime &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.SArray.split_datetime<a class="headerlink" href="#turicreate-sarray-split-datetime" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SArray.split_datetime">
-<code class="descclassname">SArray.</code><code class="descname">split_datetime</code><span class="sig-paren">(</span><em>column_name_prefix='X'</em>, <em>limit=None</em>, <em>timezone=False</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SArray.split_datetime" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SArray.</code><code class="descname">split_datetime</code><span class="sig-paren">(</span><em>self</em>, <em>column_name_prefix='X'</em>, <em>limit=None</em>, <em>timezone=False</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SArray.split_datetime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Splits an SArray of datetime type to multiple columns, return a
 new SFrame that contains expanded columns. A SArray of datetime will be
 split by default into an SFrame of 6 columns, one for each
@@ -131,7 +134,7 @@ year/month/day/hour/minute/second element.</p>
 <p><strong>Column Naming</strong></p>
 <p>When splitting a SArray of datetime type, new columns are named:
 prefix.year, prefix.month, etc. The prefix is set by the parameter
-&#8220;column_name_prefix&#8221; and defaults to &#8216;X&#8217;. If column_name_prefix is
+“column_name_prefix” and defaults to ‘X’. If column_name_prefix is
 None or empty, then no prefix is used.</p>
 <p><strong>Timezone Column</strong>
 If timezone parameter is True, then timezone information is represented
@@ -144,25 +147,25 @@ GMT(0.0) or from UTC.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>column_name_prefix: str, optional</strong></dt>
 <dd><p class="first last">If provided, expanded column names would start with the given prefix.
-Defaults to &#8220;X&#8221;.</p>
+Defaults to “X”.</p>
 </dd>
 <dt><strong>limit: list[str], optional</strong></dt>
 <dd><p class="first">Limits the set of datetime elements to expand.
-Possible values are &#8216;year&#8217;,&#8217;month&#8217;,&#8217;day&#8217;,&#8217;hour&#8217;,&#8217;minute&#8217;,&#8217;second&#8217;,
-&#8216;weekday&#8217;, &#8216;isoweekday&#8217;, &#8216;tmweekday&#8217;, and &#8216;us&#8217;.
-If not provided, only [&#8216;year&#8217;,&#8217;month&#8217;,&#8217;day&#8217;,&#8217;hour&#8217;,&#8217;minute&#8217;,&#8217;second&#8217;]
+Possible values are ‘year’,’month’,’day’,’hour’,’minute’,’second’,
+‘weekday’, ‘isoweekday’, ‘tmweekday’, and ‘us’.
+If not provided, only [‘year’,’month’,’day’,’hour’,’minute’,’second’]
 are expanded.</p>
 <ul class="last simple">
-<li>&#8216;year&#8217;: The year number</li>
-<li>&#8216;month&#8217;: A value between 1 and 12 where 1 is January.</li>
-<li>&#8216;day&#8217;: Day of the months. Begins at 1.</li>
-<li>&#8216;hour&#8217;: Hours since midnight.</li>
-<li>&#8216;minute&#8217;: Minutes after the hour.</li>
-<li>&#8216;second&#8217;: Seconds after the minute.</li>
-<li>&#8216;us&#8217;: Microseconds after the second. Between 0 and 999,999.</li>
-<li>&#8216;weekday&#8217;: A value between 0 and 6 where 0 is Monday.</li>
-<li>&#8216;isoweekday&#8217;: A value between 1 and 7 where 1 is Monday.</li>
-<li>&#8216;tmweekday&#8217;: A value between 0 and 7 where 0 is Sunday</li>
+<li>‘year’: The year number</li>
+<li>‘month’: A value between 1 and 12 where 1 is January.</li>
+<li>‘day’: Day of the months. Begins at 1.</li>
+<li>‘hour’: Hours since midnight.</li>
+<li>‘minute’: Minutes after the hour.</li>
+<li>‘second’: Seconds after the minute.</li>
+<li>‘us’: Microseconds after the second. Between 0 and 999,999.</li>
+<li>‘weekday’: A value between 0 and 6 where 0 is Monday.</li>
+<li>‘isoweekday’: A value between 1 and 7 where 1 is Monday.</li>
+<li>‘tmweekday’: A value between 0 and 7 where 0 is Sunday</li>
 </ul>
 </dd>
 <dt><strong>timezone: bool, optional</strong></dt>
@@ -183,12 +186,12 @@ Defaults to False.</p>
 </table>
 <p class="rubric">Examples</p>
 <p>To expand only day and year elements of a datetime SArray</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">(</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">(</span>
 <span class="go">   [datetime(2011, 1, 21, 7, 7, 21, tzinfo=GMT(0)),</span>
 <span class="go">    datetime(2010, 2, 5, 7, 8, 21, tzinfo=GMT(4.5)])</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span><span class="o">.</span><span class="n">split_datetime</span><span class="p">(</span><span class="n">column_name_prefix</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">limit</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">,</span><span class="s1">&#39;year&#39;</span><span class="p">])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span><span class="o">.</span><span class="n">split_datetime</span><span class="p">(</span><span class="n">column_name_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">limit</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">,</span><span class="s1">&#39;year&#39;</span><span class="p">])</span>
 <span class="go">   Columns:</span>
 <span class="go">       day   int</span>
 <span class="go">       year  int</span>
@@ -205,8 +208,8 @@ Defaults to False.</p>
 </div>
 <p>To expand only year and timezone elements of a datetime SArray
 with timezone column represented as a string. Columns are named with prefix:
-&#8216;Y.column_name&#8217;.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span><span class="o">.</span><span class="n">split_datetime</span><span class="p">(</span><span class="n">column_name_prefix</span><span class="o">=</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span><span class="n">limit</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">],</span><span class="n">timezone</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+‘Y.column_name’.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span><span class="o">.</span><span class="n">split_datetime</span><span class="p">(</span><span class="n">column_name_prefix</span><span class="o">=</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span><span class="n">limit</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">],</span><span class="n">timezone</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="go">    Columns:</span>
 <span class="go">        Y.year  int</span>
 <span class="go">        Y.timezone float</span>
@@ -234,7 +237,7 @@ with timezone column represented as a string. Columns are named with prefix:
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -252,7 +255,7 @@ with timezone column represented as a string. Columns are named with prefix:
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

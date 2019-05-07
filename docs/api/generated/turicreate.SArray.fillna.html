@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SArray.fillna &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SArray.fillna &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,19 +126,19 @@
 <h1>turicreate.SArray.fillna<a class="headerlink" href="#turicreate-sarray-fillna" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SArray.fillna">
-<code class="descclassname">SArray.</code><code class="descname">fillna</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SArray.fillna" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SArray.</code><code class="descname">fillna</code><span class="sig-paren">(</span><em>self</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SArray.fillna" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create new SArray with all missing values (None or NaN) filled in
 with the given value.</p>
 <p>The size of the new SArray will be the same as the original SArray. If
 the given value is not the same type as the values in the SArray,
-<cite>fillna</cite> will attempt to convert the value to the original SArray&#8217;s
+<cite>fillna</cite> will attempt to convert the value to the original SArray’s
 type. If this fails, an error will be raised.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>value</strong> <span class="classifier-delimiter">:</span> <span class="classifier">type convertible to SArray&#8217;s type</span></dt>
+<dt><strong>value</strong> <span class="classifier-delimiter">:</span> <span class="classifier">type convertible to SArray’s type</span></dt>
 <dd><p class="first last">The value used to replace all missing values</p>
 </dd>
 </dl>
@@ -163,7 +166,7 @@ type. If this fails, an error will be raised.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -181,7 +184,7 @@ type. If this fails, an error will be raised.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

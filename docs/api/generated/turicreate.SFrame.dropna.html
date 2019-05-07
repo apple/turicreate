@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.dropna &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SFrame.dropna &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,11 +126,11 @@
 <h1>turicreate.SFrame.dropna<a class="headerlink" href="#turicreate-sframe-dropna" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SFrame.dropna">
-<code class="descclassname">SFrame.</code><code class="descname">dropna</code><span class="sig-paren">(</span><em>columns=None</em>, <em>how='any'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.dropna" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SFrame.</code><code class="descname">dropna</code><span class="sig-paren">(</span><em>self</em>, <em>columns=None</em>, <em>how='any'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.dropna" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove missing values from an SFrame. A missing value is either <code class="docutils literal"><span class="pre">None</span></code>
-or <code class="docutils literal"><span class="pre">NaN</span></code>.  If <code class="docutils literal"><span class="pre">how</span></code> is &#8216;any&#8217;, a row will be removed if any of the
+or <code class="docutils literal"><span class="pre">NaN</span></code>.  If <code class="docutils literal"><span class="pre">how</span></code> is ‘any’, a row will be removed if any of the
 columns in the <code class="docutils literal"><span class="pre">columns</span></code> parameter contains at least one missing
-value.  If <code class="docutils literal"><span class="pre">how</span></code> is &#8216;all&#8217;, a row will be removed if all of the columns
+value.  If <code class="docutils literal"><span class="pre">how</span></code> is ‘all’, a row will be removed if all of the columns
 in the <code class="docutils literal"><span class="pre">columns</span></code> parameter are missing values.</p>
 <p>If the <code class="docutils literal"><span class="pre">columns</span></code> parameter is not specified, the default is to
 consider all columns when searching for missing values.</p>
@@ -140,9 +143,9 @@ consider all columns when searching for missing values.</p>
 <dd><p class="first last">The columns to use when looking for missing values. By default, all
 columns are used.</p>
 </dd>
-<dt><strong>how</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;any&#8217;, &#8216;all&#8217;}, optional</span></dt>
+<dt><strong>how</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{‘any’, ‘all’}, optional</span></dt>
 <dd><p class="first last">Specifies whether a row should be dropped if at least one column
-has missing values, or if all columns have missing values.  &#8216;any&#8217; is
+has missing values, or if all columns have missing values.  ‘any’ is
 default.</p>
 </dd>
 </dl>
@@ -166,7 +169,7 @@ default.</p>
 </div>
 <p class="rubric">Examples</p>
 <p>Drop all missing values.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">],</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">]})</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
 <span class="go">+---+---+</span>
 <span class="go">| a | b |</span>
@@ -177,7 +180,7 @@ default.</p>
 </pre></div>
 </div>
 <p>Drop rows where every value is missing.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="nb">any</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="nb">any</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
 <span class="go">+------+---+</span>
 <span class="go">|  a   | b |</span>
 <span class="go">+------+---+</span>
@@ -187,8 +190,8 @@ default.</p>
 <span class="go">[2 rows x 2 columns]</span>
 </pre></div>
 </div>
-<p>Drop rows where column &#8216;a&#8217; has a missing value.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="nb">any</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+<p>Drop rows where column ‘a’ has a missing value.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="nb">any</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
 <span class="go">+---+---+</span>
 <span class="go">| a | b |</span>
 <span class="go">+---+---+</span>
@@ -210,7 +213,7 @@ default.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -228,7 +231,7 @@ default.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

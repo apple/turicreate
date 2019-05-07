@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.Sketch.element_sub_sketch &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.Sketch.element_sub_sketch &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.Sketch.element_sub_sketch<a class="headerlink" href="#turicreate-sketch-element-sub-sketch" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.Sketch.element_sub_sketch">
-<code class="descclassname">Sketch.</code><code class="descname">element_sub_sketch</code><span class="sig-paren">(</span><em>keys=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.Sketch.element_sub_sketch" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">Sketch.</code><code class="descname">element_sub_sketch</code><span class="sig-paren">(</span><em>self</em>, <em>keys=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.Sketch.element_sub_sketch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the sketch summary for the given set of keys. This is only
 applicable for sketch summary created from SArray of sarray or dict type.
 For dict SArray, the keys are the keys in dict value.
@@ -143,9 +146,9 @@ if not given, then retrieve all sub sketches that are available</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>A dictionary that maps from the key(index) to the actual sketch summary</strong></dt>
+<dt>A dictionary that maps from the key(index) to the actual sketch summary</dt>
 <dd></dd>
-<dt><strong>for that key(index)</strong></dt>
+<dt>for that key(index)</dt>
 <dd></dd>
 </dl>
 </td>
@@ -153,7 +156,7 @@ if not given, then retrieve all sub sketches that are available</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span><span class="mi">2</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">}])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span><span class="mi">2</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">}])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">sub_sketch_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">element_sub_sketch</span><span class="p">([</span><span class="s1">&#39;a&#39;</span><span class="p">])</span>
 <span class="go">{&#39;a&#39;:</span>
@@ -197,7 +200,7 @@ if not given, then retrieve all sub sketches that are available</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -215,7 +218,7 @@ if not given, then retrieve all sub sketches that are available</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

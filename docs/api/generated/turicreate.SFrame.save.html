@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.save &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SFrame.save &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.SFrame.save<a class="headerlink" href="#turicreate-sframe-save" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SFrame.save">
-<code class="descclassname">SFrame.</code><code class="descname">save</code><span class="sig-paren">(</span><em>filename</em>, <em>format=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.save" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SFrame.</code><code class="descname">save</code><span class="sig-paren">(</span><em>self</em>, <em>filename</em>, <em>format=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save the SFrame to a file system for later use.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -132,15 +135,15 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">The location to save the SFrame. Either a local directory or a
-remote URL. If the format is &#8216;binary&#8217;, a directory will be created
+remote URL. If the format is ‘binary’, a directory will be created
 at the location which will contain the sframe.</p>
 </dd>
-<dt><strong>format</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;binary&#8217;, &#8216;csv&#8217;, &#8216;json&#8217;}, optional</span></dt>
+<dt><strong>format</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{‘binary’, ‘csv’, ‘json’}, optional</span></dt>
 <dd><p class="first last">Format in which to save the SFrame. Binary saved SFrames can be
 loaded much faster and without any format conversion losses. If not
 given, will try to infer the format from filename given. If file
-name ends with &#8216;csv&#8217; or &#8216;.csv.gz&#8217;, then save as &#8216;csv&#8217; format,
-otherwise save as &#8216;binary&#8217; format.
+name ends with ‘csv’ or ‘.csv.gz’, then save as ‘csv’ format,
+otherwise save as ‘binary’ format.
 See export_csv for more csv saving options.</p>
 </dd>
 </dl>
@@ -150,15 +153,18 @@ See export_csv for more csv saving options.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.load_sframe.html#turicreate.load_sframe" title="turicreate.load_sframe"><code class="xref py py-obj docutils literal"><span class="pre">load_sframe</span></code></a>, <a class="reference internal" href="turicreate.SFrame.html#turicreate.SFrame" title="turicreate.SFrame"><code class="xref py py-obj docutils literal"><span class="pre">SFrame</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.load_sframe.html#turicreate.load_sframe" title="turicreate.load_sframe"><code class="xref py py-obj docutils literal"><span class="pre">load_sframe</span></code></a>, <a class="reference internal" href="turicreate.SFrame.html#turicreate.SFrame" title="turicreate.SFrame"><code class="xref py py-obj docutils literal"><span class="pre">SFrame</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Save the sframe into binary format</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Save the sframe into binary format</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;data/training_data_sframe&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Save the sframe into csv format</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;data/training_data.csv&#39;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s1">&#39;csv&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Save the sframe into csv format</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;data/training_data.csv&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csv&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -174,7 +180,7 @@ See export_csv for more csv saving options.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -192,7 +198,7 @@ See export_csv for more csv saving options.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

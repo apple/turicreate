@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.label_propagation.LabelPropagationModel &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.label_propagation.LabelPropagationModel &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="graph_analytics" href="../turicreate.toolkits.graph_analytics.html"/>
         <link rel="next" title="turicreate.pagerank.create" href="turicreate.pagerank.create.html"/>
         <link rel="prev" title="turicreate.label_propagation.create" href="turicreate.label_propagation.create.html"/> 
@@ -130,7 +133,7 @@
 <h1>turicreate.label_propagation.LabelPropagationModel<a class="headerlink" href="#turicreate-label-propagation-labelpropagationmodel" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="turicreate.label_propagation.LabelPropagationModel">
-<em class="property">class </em><code class="descclassname">turicreate.label_propagation.</code><code class="descname">LabelPropagationModel</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.label_propagation.LabelPropagationModel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">turicreate.label_propagation.</code><code class="descname">LabelPropagationModel</code><span class="sig-paren">(</span><em>model</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.label_propagation.LabelPropagationModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>A LabelPropagationModel computes the probability of each class label
 for each unlabeled vertex.</p>
 <p>For each labeled vertices, the probability for class k is fixed to:</p>
@@ -143,7 +146,7 @@ for each unlabeled vertex.</p>
 from applying the following update iteratively:</p>
 <blockquote>
 <div><div class="math">
-\[Pr_i(label=k) = Pr_i(label=k) * W_0 + \sum_{j\in N(i)} Pr_j(label=k) * W(j,i)\]\[Pr_i = Normalize(Pr_i)\]</div>
+\[ \begin{align}\begin{aligned}Pr_i(label=k) = Pr_i(label=k) * W_0 + \sum_{j\in N(i)} Pr_j(label=k) * W(j,i)\\Pr_i = Normalize(Pr_i)\end{aligned}\end{align} \]</div>
 </div></blockquote>
 <p>where <span class="math">\(N(i)\)</span> is the set containing all vertices <span class="math">\(j\)</span> such that
 there is an edge going from <span class="math">\(j\)</span> to <span class="math">\(i\)</span>. <span class="math">\(W(j,i)\)</span> is
@@ -151,7 +154,7 @@ the edge weight from <span class="math">\(j\)</span> to <span class="math">\(i\)
 weight for self edge.</p>
 <p>In the above equation, the first term is the probability
 of keeping the label from the previous iteration, and the second term
-is the probability of transition to a neighbor&#8217;s label.</p>
+is the probability of transition to a neighbor’s label.</p>
 <p>Repeated edges (i.e., multiple edges where the source vertices are the same and the
 destination vertices are the same) are treated like normal edges in the
 above recursion.</p>
@@ -209,7 +212,10 @@ of this model. A detailed list of parameter options and code samples
 are available in the documentation for the create function.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.label_propagation.create.html#turicreate.label_propagation.create" title="turicreate.label_propagation.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.label_propagation.create.html#turicreate.label_propagation.create" title="turicreate.label_propagation.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 </dd></dl>
 
@@ -220,13 +226,13 @@ are available in the documentation for the create function.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.label_propagation.LabelPropagationModel.name.html#turicreate.label_propagation.LabelPropagationModel.name" title="turicreate.label_propagation.LabelPropagationModel.name"><code class="xref py py-obj docutils literal"><span class="pre">LabelPropagationModel.name</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.label_propagation.LabelPropagationModel.name.html#turicreate.label_propagation.LabelPropagationModel.name" title="turicreate.label_propagation.LabelPropagationModel.name"><code class="xref py py-obj docutils literal"><span class="pre">LabelPropagationModel.name</span></code></a>(self)</td>
 <td>Returns the name of the model.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.label_propagation.LabelPropagationModel.save.html#turicreate.label_propagation.LabelPropagationModel.save" title="turicreate.label_propagation.LabelPropagationModel.save"><code class="xref py py-obj docutils literal"><span class="pre">LabelPropagationModel.save</span></code></a>(location)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.label_propagation.LabelPropagationModel.save.html#turicreate.label_propagation.LabelPropagationModel.save" title="turicreate.label_propagation.LabelPropagationModel.save"><code class="xref py py-obj docutils literal"><span class="pre">LabelPropagationModel.save</span></code></a>(self,&nbsp;location)</td>
 <td>Save the model.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.label_propagation.LabelPropagationModel.summary.html#turicreate.label_propagation.LabelPropagationModel.summary" title="turicreate.label_propagation.LabelPropagationModel.summary"><code class="xref py py-obj docutils literal"><span class="pre">LabelPropagationModel.summary</span></code></a>([output])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.label_propagation.LabelPropagationModel.summary.html#turicreate.label_propagation.LabelPropagationModel.summary" title="turicreate.label_propagation.LabelPropagationModel.summary"><code class="xref py py-obj docutils literal"><span class="pre">LabelPropagationModel.summary</span></code></a>(self[,&nbsp;output])</td>
 <td>Print a summary of the model.</td>
 </tr>
 </tbody>
@@ -251,7 +257,7 @@ are available in the documentation for the create function.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -269,7 +275,7 @@ are available in the documentation for the create function.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

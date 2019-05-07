@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.sort &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SFrame.sort &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.SFrame.sort<a class="headerlink" href="#turicreate-sframe-sort" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SFrame.sort">
-<code class="descclassname">SFrame.</code><code class="descname">sort</code><span class="sig-paren">(</span><em>key_column_names</em>, <em>ascending=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.sort" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SFrame.</code><code class="descname">sort</code><span class="sig-paren">(</span><em>self</em>, <em>key_column_names</em>, <em>ascending=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.sort" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sort current SFrame by the given columns, using the given sort order.
 Only columns that are type of str, int and float can be sorted.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -157,12 +160,15 @@ value is a boolean indicating whether the sort order is ascending.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.SFrame.topk.html#turicreate.SFrame.topk" title="turicreate.SFrame.topk"><code class="xref py py-obj docutils literal"><span class="pre">topk</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.SFrame.topk.html#turicreate.SFrame.topk" title="turicreate.SFrame.topk"><code class="xref py py-obj docutils literal"><span class="pre">topk</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
-<p>Suppose &#8216;sf&#8217; is an sframe that has three columns &#8216;a&#8217;, &#8216;b&#8217;, &#8216;c&#8217;.
-To sort by column &#8216;a&#8217;, ascending</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span>
+<p>Suppose ‘sf’ is an sframe that has three columns ‘a’, ‘b’, ‘c’.
+To sort by column ‘a’, ascending</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span>
 <span class="gp">... </span>                      <span class="s1">&#39;b&#39;</span><span class="p">:[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="s1">&#39;c&#39;</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">],</span>
 <span class="gp">... </span>                      <span class="s1">&#39;c&#39;</span><span class="p">:[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span>
@@ -177,7 +183,7 @@ To sort by column &#8216;a&#8217;, ascending</p>
 <span class="go">[4 rows x 3 columns]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
 <span class="go">+---+---+---+</span>
 <span class="go">| a | b | c |</span>
 <span class="go">+---+---+---+</span>
@@ -189,8 +195,8 @@ To sort by column &#8216;a&#8217;, ascending</p>
 <span class="go">[4 rows x 3 columns]</span>
 </pre></div>
 </div>
-<p>To sort by column &#8216;a&#8217;, descending</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">ascending</span> <span class="o">=</span> <span class="bp">False</span><span class="p">)</span>
+<p>To sort by column ‘a’, descending</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 <span class="go">+---+---+---+</span>
 <span class="go">| a | b | c |</span>
 <span class="go">+---+---+---+</span>
@@ -202,8 +208,8 @@ To sort by column &#8216;a&#8217;, ascending</p>
 <span class="go">[4 rows x 3 columns]</span>
 </pre></div>
 </div>
-<p>To sort by column &#8216;a&#8217; and &#8216;b&#8217;, all ascending</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">sort</span><span class="p">([</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">])</span>
+<p>To sort by column ‘a’ and ‘b’, all ascending</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">sort</span><span class="p">([</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">])</span>
 <span class="go">+---+---+---+</span>
 <span class="go">| a | b | c |</span>
 <span class="go">+---+---+---+</span>
@@ -215,8 +221,8 @@ To sort by column &#8216;a&#8217;, ascending</p>
 <span class="go">[4 rows x 3 columns]</span>
 </pre></div>
 </div>
-<p>To sort by column &#8216;a&#8217; ascending, and then by column &#8216;c&#8217; descending</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">sort</span><span class="p">([(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)])</span>
+<p>To sort by column ‘a’ ascending, and then by column ‘c’ descending</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">sort</span><span class="p">([(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)])</span>
 <span class="go">+---+---+---+</span>
 <span class="go">| a | b | c |</span>
 <span class="go">+---+---+---+</span>
@@ -241,7 +247,7 @@ To sort by column &#8216;a&#8217;, ascending</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -259,7 +265,7 @@ To sort by column &#8216;a&#8217;, ascending</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

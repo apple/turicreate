@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.recommender.item_content_recommender.ItemContentRecommender.recommend &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.recommender.item_content_recommender.ItemContentRecommender.recommend &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.recommender.item_content_recommender.ItemContentRecommender.recommend<a class="headerlink" href="#turicreate-recommender-item-content-recommender-itemcontentrecommender-recommend" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.recommender.item_content_recommender.ItemContentRecommender.recommend">
-<code class="descclassname">ItemContentRecommender.</code><code class="descname">recommend</code><span class="sig-paren">(</span><em>users=None</em>, <em>k=10</em>, <em>exclude=None</em>, <em>items=None</em>, <em>new_observation_data=None</em>, <em>new_user_data=None</em>, <em>new_item_data=None</em>, <em>exclude_known=True</em>, <em>diversity=0</em>, <em>random_seed=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.recommender.item_content_recommender.ItemContentRecommender.recommend" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ItemContentRecommender.</code><code class="descname">recommend</code><span class="sig-paren">(</span><em>self</em>, <em>users=None</em>, <em>k=10</em>, <em>exclude=None</em>, <em>items=None</em>, <em>new_observation_data=None</em>, <em>new_user_data=None</em>, <em>new_item_data=None</em>, <em>exclude_known=True</em>, <em>diversity=0</em>, <em>random_seed=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.recommender.item_content_recommender.ItemContentRecommender.recommend" title="Permalink to this definition">¶</a></dt>
 <dd><p>Recommend the <code class="docutils literal"><span class="pre">k</span></code> highest scored items for each user.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -137,8 +140,8 @@ of user IDs. By default, recommendations are returned for all
 users present when the model was trained. However, if the
 recommender model was created with additional features in the
 <code class="docutils literal"><span class="pre">observation_data</span></code> SFrame, then a corresponding SFrame of
-observation queries &#8211; observation data without item or target
-columns &#8211; can be passed to this method. For example, a model
+observation queries – observation data without item or target
+columns – can be passed to this method. For example, a model
 trained with user ID, item ID, time, and rating columns may be
 queried using an SFrame with user ID and time columns.  In this
 case, the user ID column must be present, and all column names
@@ -156,8 +159,8 @@ used, for example, to restrict the recommendations to items
 within a particular category or genre. If <code class="docutils literal"><span class="pre">items</span></code> is an
 SFrame with user ID and item ID columns, then the item
 restriction is specialized to each user. For example, if
-<code class="docutils literal"><span class="pre">items</span></code> contains 3 rows with user U1 &#8211; (U1, I1), (U1, I2),
-and (U1, I3) &#8211; then the recommendations for user U1 are
+<code class="docutils literal"><span class="pre">items</span></code> contains 3 rows with user U1 – (U1, I1), (U1, I2),
+and (U1, I3) – then the recommendations for user U1 are
 chosen from items I1, I2, and I3. By default, recommendations
 are made from all items present when the model was trained.</p>
 </dd>
@@ -235,7 +238,14 @@ depends on the method used for recommendations.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.recommender.item_content_recommender.ItemContentRecommender.recommend_from_interactions.html#turicreate.recommender.item_content_recommender.ItemContentRecommender.recommend_from_interactions" title="turicreate.recommender.item_content_recommender.ItemContentRecommender.recommend_from_interactions"><code class="xref py py-obj docutils literal"><span class="pre">recommend_from_interactions</span></code></a>, <a class="reference internal" href="turicreate.recommender.item_content_recommender.ItemContentRecommender.predict.html#turicreate.recommender.item_content_recommender.ItemContentRecommender.predict" title="turicreate.recommender.item_content_recommender.ItemContentRecommender.predict"><code class="xref py py-obj docutils literal"><span class="pre">predict</span></code></a>, <a class="reference internal" href="turicreate.recommender.item_content_recommender.ItemContentRecommender.evaluate.html#turicreate.recommender.item_content_recommender.ItemContentRecommender.evaluate" title="turicreate.recommender.item_content_recommender.ItemContentRecommender.evaluate"><code class="xref py py-obj docutils literal"><span class="pre">evaluate</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.recommender.item_content_recommender.ItemContentRecommender.recommend_from_interactions.html#turicreate.recommender.item_content_recommender.ItemContentRecommender.recommend_from_interactions" title="turicreate.recommender.item_content_recommender.ItemContentRecommender.recommend_from_interactions"><code class="xref py py-obj docutils literal"><span class="pre">recommend_from_interactions</span></code></a></dt>
+<dd></dd>
+<dt><a class="reference internal" href="turicreate.recommender.item_content_recommender.ItemContentRecommender.predict.html#turicreate.recommender.item_content_recommender.ItemContentRecommender.predict" title="turicreate.recommender.item_content_recommender.ItemContentRecommender.predict"><code class="xref py py-obj docutils literal"><span class="pre">predict</span></code></a></dt>
+<dd></dd>
+<dt><a class="reference internal" href="turicreate.recommender.item_content_recommender.ItemContentRecommender.evaluate.html#turicreate.recommender.item_content_recommender.ItemContentRecommender.evaluate" title="turicreate.recommender.item_content_recommender.ItemContentRecommender.evaluate"><code class="xref py py-obj docutils literal"><span class="pre">evaluate</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 </dd></dl>
 
@@ -250,7 +260,7 @@ depends on the method used for recommendations.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -268,7 +278,7 @@ depends on the method used for recommendations.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

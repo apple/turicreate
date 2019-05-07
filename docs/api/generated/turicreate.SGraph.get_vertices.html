@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SGraph.get_vertices &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SGraph.get_vertices &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.SGraph.get_vertices<a class="headerlink" href="#turicreate-sgraph-get-vertices" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SGraph.get_vertices">
-<code class="descclassname">SGraph.</code><code class="descname">get_vertices</code><span class="sig-paren">(</span><em>self</em>, <em>ids=list()</em>, <em>fields={}</em>, <em>format='sframe'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SGraph.get_vertices" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SGraph.</code><code class="descname">get_vertices</code><span class="sig-paren">(</span><em>self</em>, <em>ids=[]</em>, <em>fields={}</em>, <em>format='sframe'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SGraph.get_vertices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a collection of vertices and their attributes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -136,12 +139,12 @@ returned. Also accepts a single vertex id.</p>
 </dd>
 <dt><strong>fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict | pandas.DataFrame</span></dt>
 <dd><p class="first last">Dictionary specifying equality constraint on field values. For
-example <code class="docutils literal"><span class="pre">{'gender':</span> <span class="pre">'M'}</span></code>, returns only vertices whose &#8216;gender&#8217;
-field is &#8216;M&#8217;. <code class="docutils literal"><span class="pre">None</span></code> can be used to designate a wild card. For
-example, {&#8216;relationship&#8217;: None} will find all vertices with the
-field &#8216;relationship&#8217; regardless of the value.</p>
+example <code class="docutils literal"><span class="pre">{'gender':</span> <span class="pre">'M'}</span></code>, returns only vertices whose ‘gender’
+field is ‘M’. <code class="docutils literal"><span class="pre">None</span></code> can be used to designate a wild card. For
+example, {‘relationship’: None} will find all vertices with the
+field ‘relationship’ regardless of the value.</p>
 </dd>
-<dt><strong>format</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;sframe&#8217;, &#8216;list&#8217;}</span></dt>
+<dt><strong>format</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{‘sframe’, ‘list’}</span></dt>
 <dd><p class="first last">Output format. The SFrame output (default) contains a column
 <code class="docutils literal"><span class="pre">__src_id</span></code> with vertex IDs and a column for each vertex attribute.
 List output returns a list of Vertex objects.</p>
@@ -160,11 +163,14 @@ List output returns a list of Vertex objects.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.SGraph.vertices.html#turicreate.SGraph.vertices" title="turicreate.SGraph.vertices"><code class="xref py py-obj docutils literal"><span class="pre">vertices</span></code></a>, <a class="reference internal" href="turicreate.SGraph.get_edges.html#turicreate.SGraph.get_edges" title="turicreate.SGraph.get_edges"><code class="xref py py-obj docutils literal"><span class="pre">get_edges</span></code></a></p>
+<dl class="last docutils">
+<dt><code class="xref py py-obj docutils literal"><span class="pre">vertices</span></code>, <a class="reference internal" href="turicreate.SGraph.get_edges.html#turicreate.SGraph.get_edges" title="turicreate.SGraph.get_edges"><code class="xref py py-obj docutils literal"><span class="pre">get_edges</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
 <p>Return all vertices in the graph.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">SGraph</span><span class="p">,</span> <span class="n">Vertex</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="k">import</span> <span class="n">SGraph</span><span class="p">,</span> <span class="n">Vertex</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">SGraph</span><span class="p">()</span><span class="o">.</span><span class="n">add_vertices</span><span class="p">([</span><span class="n">Vertex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="s1">&#39;M&#39;</span><span class="p">}),</span>
 <span class="go">                               Vertex(1, attr={&#39;gender&#39;: &#39;F&#39;}),</span>
 <span class="go">                               Vertex(2, attr={&#39;gender&#39;: &#39;F&#39;})])</span>
@@ -179,7 +185,7 @@ List output returns a list of Vertex objects.</p>
 </pre></div>
 </div>
 <p>Return vertices 0 and 2.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">get_vertices</span><span class="p">(</span><span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">get_vertices</span><span class="p">(</span><span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
 <span class="go">+------+--------+</span>
 <span class="go">| __id | gender |</span>
 <span class="go">+------+--------+</span>
@@ -188,8 +194,8 @@ List output returns a list of Vertex objects.</p>
 <span class="go">+------+--------+</span>
 </pre></div>
 </div>
-<p>Return vertices with the vertex attribute &#8220;gender&#8221; equal to &#8220;M&#8221;.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">get_vertices</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="s1">&#39;M&#39;</span><span class="p">})</span>
+<p>Return vertices with the vertex attribute “gender” equal to “M”.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">get_vertices</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;gender&#39;</span><span class="p">:</span> <span class="s1">&#39;M&#39;</span><span class="p">})</span>
 <span class="go">+------+--------+</span>
 <span class="go">| __id | gender |</span>
 <span class="go">+------+--------+</span>
@@ -210,7 +216,7 @@ List output returns a list of Vertex objects.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -228,7 +234,7 @@ List output returns a list of Vertex objects.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

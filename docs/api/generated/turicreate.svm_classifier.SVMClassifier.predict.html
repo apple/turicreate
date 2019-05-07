@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.svm_classifier.SVMClassifier.predict &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.svm_classifier.SVMClassifier.predict &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,14 +126,14 @@
 <h1>turicreate.svm_classifier.SVMClassifier.predict<a class="headerlink" href="#turicreate-svm-classifier-svmclassifier-predict" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.svm_classifier.SVMClassifier.predict">
-<code class="descclassname">SVMClassifier.</code><code class="descname">predict</code><span class="sig-paren">(</span><em>dataset</em>, <em>output_type='class'</em>, <em>missing_value_action='auto'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.svm_classifier.SVMClassifier.predict" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SVMClassifier.</code><code class="descname">predict</code><span class="sig-paren">(</span><em>self</em>, <em>dataset</em>, <em>output_type='class'</em>, <em>missing_value_action='auto'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.svm_classifier.SVMClassifier.predict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return predictions for <code class="docutils literal"><span class="pre">dataset</span></code>, using the trained logistic
 regression model. Predictions can be generated as class labels (0 or
 1), or margins (i.e. the distance of the observations from the hyperplane
 separating the classes). By default, the predict method returns class
 labels.</p>
-<p>For each new example in <code class="docutils literal"><span class="pre">dataset</span></code>, the margin&#8212;also known as the
-linear predictor&#8212;is the inner product of the example and the model
+<p>For each new example in <code class="docutils literal"><span class="pre">dataset</span></code>, the margin—also known as the
+linear predictor—is the inner product of the example and the model
 coefficients plus the intercept term. Predicted classes are obtained by
 thresholding the margins at 0.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -143,24 +146,24 @@ thresholding the margins at 0.</p>
 names as the features used for model training, but does not require
 a target column. Additional columns are ignored.</p>
 </dd>
-<dt><strong>output_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;margin&#8217;, &#8216;class&#8217;}, optional</span></dt>
+<dt><strong>output_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{‘margin’, ‘class’}, optional</span></dt>
 <dd><p class="first">Form of the predictions which are one of:</p>
 <ul class="last simple">
-<li>&#8216;margin&#8217;: Distance of the observations from the hyperplane
+<li>‘margin’: Distance of the observations from the hyperplane
 separating the classes.</li>
-<li>&#8216;class&#8217;: Class prediction.</li>
+<li>‘class’: Class prediction.</li>
 </ul>
 </dd>
 <dt><strong>missing_value_action</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
 <dd><p class="first">Action to perform when missing values are encountered. This can be
 one of:</p>
 <ul class="last simple">
-<li>&#8216;auto&#8217;: Default to &#8216;impute&#8217;</li>
-<li>&#8216;impute&#8217;: Proceed with evaluation by filling in the missing
+<li>‘auto’: Default to ‘impute’</li>
+<li>‘impute’: Proceed with evaluation by filling in the missing
 values with the mean of the training data. Missing
 values are also imputed if an entire column of data is
 missing during evaluation.</li>
-<li>&#8216;error&#8217; : Do not proceed with prediction and terminate with
+<li>‘error’ : Do not proceed with prediction and terminate with
 an error message.</li>
 </ul>
 </dd>
@@ -178,19 +181,22 @@ an error message.</li>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.svm_classifier.create.html#turicreate.svm_classifier.create" title="turicreate.svm_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a>, <a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.evaluate.html#turicreate.svm_classifier.SVMClassifier.evaluate" title="turicreate.svm_classifier.SVMClassifier.evaluate"><code class="xref py py-obj docutils literal"><span class="pre">evaluate</span></code></a>, <a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.classify.html#turicreate.svm_classifier.SVMClassifier.classify" title="turicreate.svm_classifier.SVMClassifier.classify"><code class="xref py py-obj docutils literal"><span class="pre">classify</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.svm_classifier.create.html#turicreate.svm_classifier.create" title="turicreate.svm_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a>, <a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.evaluate.html#turicreate.svm_classifier.SVMClassifier.evaluate" title="turicreate.svm_classifier.SVMClassifier.evaluate"><code class="xref py py-obj docutils literal"><span class="pre">evaluate</span></code></a>, <a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.classify.html#turicreate.svm_classifier.SVMClassifier.classify" title="turicreate.svm_classifier.SVMClassifier.classify"><code class="xref py py-obj docutils literal"><span class="pre">classify</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span>  <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">(</span><span class="s1">&#39;https://static.turi.com/datasets/regression/houses.csv&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span>  <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">(</span><span class="s1">&#39;https://static.turi.com/datasets/regression/houses.csv&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;is_expensive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;price&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">30000</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;is_expensive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;price&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">30000</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">svm_classifier</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
 <span class="go">                          target=&#39;is_expensive&#39;,</span>
 <span class="go">                          features=[&#39;bath&#39;, &#39;bedroom&#39;, &#39;size&#39;])</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">class_predictions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">progressredict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">class_predictions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">progressredict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">margin_predictions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">progressredict</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="s1">&#39;margin&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -207,7 +213,7 @@ an error message.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -225,7 +231,7 @@ an error message.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

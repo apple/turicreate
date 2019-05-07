@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.text_classifier.create &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.text_classifier.create &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,10 +27,13 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="text_classifier" href="../turicreate.toolkits.text_classifier.html"/>
         <link rel="next" title="turicreate.text_classifier.TextClassifier" href="turicreate.text_classifier.TextClassifier.html"/>
-        <link rel="prev" title="turicreate.text_classifier.TextClassifier" href="turicreate.text_classifier.TextClassifier.html"/> 
+        <link rel="prev" title="text_classifier" href="../turicreate.toolkits.text_classifier.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -152,7 +155,7 @@ dataset, such as that appearing in forums, user-generated reviews, etc.</p>
 must be str type. Defaults to using all columns of type str.</p>
 </dd>
 <dt><strong>drop_stop_words</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">Ignore very common words, eg: &#8220;the&#8221;, &#8220;a&#8221;, &#8220;is&#8221;.
+<dd><p class="first last">Ignore very common words, eg: “the”, “a”, “is”.
 For the complete list of stop words, see: <cite>text_classifier.drop_words()</cite>.</p>
 </dd>
 <dt><strong>word_count_threshold</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
@@ -161,17 +164,17 @@ ignored.</p>
 </dd>
 <dt><strong>method: str, optional</strong></dt>
 <dd><p class="first last">Method to use for feature engineering and modeling. Currently only
-bag-of-words and logistic classifier (&#8216;bow-logistic&#8217;) is available.</p>
+bag-of-words and logistic classifier (‘bow-logistic’) is available.</p>
 </dd>
 <dt><strong>validation_set</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
-<dd><p class="first last">A dataset for monitoring the model&#8217;s generalization performance.
+<dd><p class="first last">A dataset for monitoring the model’s generalization performance.
 For each row of the progress table, the chosen metrics are computed
 for both the provided training dataset and the validation_set. The
 format of this SFrame must be the same as the training set.
-By default this argument is set to &#8216;auto&#8217; and a validation set is
+By default this argument is set to ‘auto’ and a validation set is
 automatically sampled and used for progress printing. If
 validation_set is set to None, then no additional metrics
-are computed. The default value is &#8216;auto&#8217;.</p>
+are computed. The default value is ‘auto’.</p>
 </dd>
 <dt><strong>max_iterations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
 <dd><p class="first last">The maximum number of allowed passes through the data. More passes over
@@ -192,19 +195,22 @@ low and the <em>Grad-Norm</em> in the display is large.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><code class="xref py py-obj docutils literal"><span class="pre">text_classifier.stop_words</span></code>, <code class="xref py py-obj docutils literal"><span class="pre">text_classifier.drop_words</span></code></p>
+<dl class="last docutils">
+<dt><code class="xref py py-obj docutils literal"><span class="pre">text_classifier.stop_words</span></code>, <code class="xref py py-obj docutils literal"><span class="pre">text_classifier.drop_words</span></code></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">turicreate</span> <span class="kn">as</span> <span class="nn">tc</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">turicreate</span> <span class="k">as</span> <span class="nn">tc</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;rating&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;hate it&#39;</span><span class="p">,</span> <span class="s1">&#39;love it&#39;</span><span class="p">]})</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">text_classifier</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s1">&#39;rating&#39;</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">text_classifier</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s1">&#39;rating&#39;</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>You may also evaluate predictions against known text scores.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metrics</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metrics</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -220,7 +226,7 @@ low and the <em>Grad-Norm</em> in the display is large.</p>
         <a href="turicreate.text_classifier.TextClassifier.html" class="btn btn-neutral float-right" title="turicreate.text_classifier.TextClassifier">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="turicreate.text_classifier.TextClassifier.html" class="btn btn-neutral" title="turicreate.text_classifier.TextClassifier"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../turicreate.toolkits.text_classifier.html" class="btn btn-neutral" title="text_classifier"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -229,7 +235,7 @@ low and the <em>Grad-Norm</em> in the display is large.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -247,7 +253,7 @@ low and the <em>Grad-Norm</em> in the display is large.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

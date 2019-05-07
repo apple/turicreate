@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>distances &mdash; Turi Create API 5.4 documentation</title>
+  <title>distances &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="index.html"/>
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="index.html"/>
         <link rel="up" title="Modelling" href="turicreate.toolkits.html"/>
         <link rel="next" title="turicreate.toolkits.distances.euclidean" href="generated/turicreate.toolkits.distances.euclidean.html"/>
         <link rel="prev" title="load_model" href="turicreate.load_model.html"/> 
@@ -134,8 +137,8 @@ are used in all toolkits based on a nearest neighbors search, including
 <blockquote>
 <div><div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">The &#8216;dot_product&#8217; distance is deprecated and will be removed in future
-versions of Turi Create. Please use &#8216;logistic&#8217; distance instead,
+<p class="last">The ‘dot_product’ distance is deprecated and will be removed in future
+versions of Turi Create. Please use ‘logistic’ distance instead,
 although note that this is more than a name change; it is a <em>different</em>
 transformation of the dot product of two vectors. Please see the
 distances module documentation for more details.</p>
@@ -159,16 +162,16 @@ Jaccard or weighted Jaccard distance.</li>
 <p>These functions may be passed to a model by specifying either the name or the
 handle of the function in this module. For example, suppose we have the
 following SFrame of data:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;X1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.98</span><span class="p">,</span> <span class="mf">0.62</span><span class="p">,</span> <span class="mf">0.11</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">],</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;X1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.98</span><span class="p">,</span> <span class="mf">0.62</span><span class="p">,</span> <span class="mf">0.11</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">],</span>
 <span class="gp">... </span>                      <span class="s1">&#39;X2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.69</span><span class="p">,</span> <span class="mf">0.58</span><span class="p">,</span> <span class="mf">0.36</span><span class="p">,</span> <span class="mf">1.23</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
 <span class="gp">... </span>                      <span class="s1">&#39;species&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">,</span> <span class="s1">&#39;elephant&#39;</span><span class="p">,</span> <span class="s1">&#39;fossa&#39;</span><span class="p">,</span> <span class="s1">&#39;giraffe&#39;</span><span class="p">]})</span>
 </pre></div>
 </div>
 <p>To find the nearest neighbors of each row, we create a nearest neighbors model,
 and we have to indicate how we want to measure the distance between any pair of
-rows. Suppose we only want to use the numeric features &#8216;X1&#8217; and &#8216;X2&#8217;; then we
+rows. Suppose we only want to use the numeric features ‘X1’ and ‘X2’; then we
 can use any of the standard numeric distances.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">nearest_neighbors</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;X1&#39;</span><span class="p">,</span> <span class="s1">&#39;X2&#39;</span><span class="p">],</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">nearest_neighbors</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;X1&#39;</span><span class="p">,</span> <span class="s1">&#39;X2&#39;</span><span class="p">],</span>
 <span class="gp">... </span>                                      <span class="n">distance</span><span class="o">=</span><span class="s1">&#39;euclidean&#39;</span><span class="p">)</span>
 <span class="gp">...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">m2</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">nearest_neighbors</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;X1&#39;</span><span class="p">,</span> <span class="s1">&#39;X2&#39;</span><span class="p">],</span>
@@ -199,7 +202,7 @@ distance by a factor of 0.3. Our composite distance is</p>
 \[D(a, b) = 2 * d_{euclidean}(a[X1, X2], b[X1, X2])
         + 0.3 * d_{levenshtein}(a[species], b[species])\]</div>
 <p>This is represented in Python code as:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">species_dist</span> <span class="o">=</span> <span class="p">[[(</span><span class="s1">&#39;X1&#39;</span><span class="p">,</span> <span class="s1">&#39;X2&#39;</span><span class="p">),</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">species_dist</span> <span class="o">=</span> <span class="p">[[(</span><span class="s1">&#39;X1&#39;</span><span class="p">,</span> <span class="s1">&#39;X2&#39;</span><span class="p">),</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
 <span class="gp">... </span>                <span class="p">[(</span><span class="s1">&#39;species&#39;</span><span class="p">,),</span> <span class="s1">&#39;levenshtein&#39;</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">]]</span>
 </pre></div>
 </div>
@@ -218,9 +221,9 @@ replacement for the standard distance name or function.</p>
 because the composite distance already contains that information. Models that
 use composite distances store the specification so it can be retrieved,
 modified, and reused. For example, suppose we decided that the Levenshtein
-distance on species name should have a higher weight. We don&#8217;t have to construct
+distance on species name should have a higher weight. We don’t have to construct
 a composite distance from scratch; we can modify the one we used previously.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m3</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">nearest_neighbors</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="n">dist_spec</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m3</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">nearest_neighbors</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="n">dist_spec</span><span class="p">)</span>
 <span class="gp">...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dist_spec2</span> <span class="o">=</span> <span class="n">m3</span><span class="p">[</span><span class="s1">&#39;composite_params&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dist_spec2</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.7</span>
@@ -231,14 +234,14 @@ a composite distance from scratch; we can modify the one we used previously.</p>
 which features and standard distances to use, but only a vague idea how much
 each component should be weighted. The <cite>compute_composite_distance</cite> function can
 help with this by evaluating a composite distance on two specific data points.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">d1</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">distances</span><span class="o">.</span><span class="n">compute_composite_distance</span><span class="p">(</span><span class="n">dist_spec</span><span class="p">,</span> <span class="n">sf</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sf</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">d1</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">distances</span><span class="o">.</span><span class="n">compute_composite_distance</span><span class="p">(</span><span class="n">dist_spec</span><span class="p">,</span> <span class="n">sf</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sf</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">d2</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">distances</span><span class="o">.</span><span class="n">compute_composite_distance</span><span class="p">(</span><span class="n">dist_spec</span><span class="p">,</span> <span class="n">sf</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sf</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="s2">&quot;d1:&quot;</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="s2">&quot;d2:&quot;</span><span class="p">,</span> <span class="n">d2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="s2">&quot;d1:&quot;</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="s2">&quot;d2:&quot;</span><span class="p">,</span> <span class="n">d2</span>
 <span class="go">d1: 1.65286120899 d2: 3.66096749031</span>
 </pre></div>
 </div>
-<p>This tells that under our first composite distance, the &#8216;cat&#8217; and &#8216;dog&#8217; data
-points are closer than the &#8216;cat&#8217; and &#8216;elephant&#8217; data points.</p>
+<p>This tells that under our first composite distance, the ‘cat’ and ‘dog’ data
+points are closer than the ‘cat’ and ‘elephant’ data points.</p>
 <div class="section" id="id1">
 <h2>distances<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="longtable docutils">
@@ -266,7 +269,7 @@ points are closer than the &#8216;cat&#8217; and &#8216;elephant&#8217; data poi
 <td>Compute the dot_product between two dictionaries or two lists of equal length.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.toolkits.distances.transformed_dot_product.html#turicreate.toolkits.distances.transformed_dot_product" title="turicreate.toolkits.distances.transformed_dot_product"><code class="xref py py-obj docutils literal"><span class="pre">transformed_dot_product</span></code></a>(x,&nbsp;y)</td>
-<td>Compute the &#8220;transformed_dot_product&#8221; distance between two dictionaries or two lists of equal length.</td>
+<td>Compute the “transformed_dot_product” distance between two dictionaries or two lists of equal length.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/turicreate.toolkits.distances.jaccard.html#turicreate.toolkits.distances.jaccard" title="turicreate.toolkits.distances.jaccard"><code class="xref py py-obj docutils literal"><span class="pre">jaccard</span></code></a>(x,&nbsp;y)</td>
 <td>Compute the Jaccard distance between between two dictionaries.</td>
@@ -288,7 +291,7 @@ points are closer than the &#8216;cat&#8217; and &#8216;elephant&#8217; data poi
 <tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.toolkits.distances.compute_composite_distance.html#turicreate.toolkits.distances.compute_composite_distance" title="turicreate.toolkits.distances.compute_composite_distance"><code class="xref py py-obj docutils literal"><span class="pre">compute_composite_distance</span></code></a>(distance,&nbsp;x,&nbsp;y)</td>
 <td>Compute the value of a composite distance function on two dictionaries, typically SFrame rows.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.toolkits.distances.build_address_distance.html#turicreate.toolkits.distances.build_address_distance" title="turicreate.toolkits.distances.build_address_distance"><code class="xref py py-obj docutils literal"><span class="pre">build_address_distance</span></code></a>([number,&nbsp;street,&nbsp;...])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.toolkits.distances.build_address_distance.html#turicreate.toolkits.distances.build_address_distance" title="turicreate.toolkits.distances.build_address_distance"><code class="xref py py-obj docutils literal"><span class="pre">build_address_distance</span></code></a>([number,&nbsp;street,&nbsp;…])</td>
 <td>Construct a composite distance appropriate for matching address data.</td>
 </tr>
 </tbody>
@@ -314,7 +317,7 @@ points are closer than the &#8216;cat&#8217; and &#8216;elephant&#8217; data poi
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -332,7 +335,7 @@ points are closer than the &#8216;cat&#8217; and &#8216;elephant&#8217; data poi
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

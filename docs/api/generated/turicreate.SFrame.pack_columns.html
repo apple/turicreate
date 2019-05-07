@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.pack_columns &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SFrame.pack_columns &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.SFrame.pack_columns<a class="headerlink" href="#turicreate-sframe-pack-columns" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SFrame.pack_columns">
-<code class="descclassname">SFrame.</code><code class="descname">pack_columns</code><span class="sig-paren">(</span><em>column_names=None</em>, <em>column_name_prefix=None</em>, <em>dtype=&lt;class 'list'&gt;</em>, <em>fill_na=None</em>, <em>remove_prefix=True</em>, <em>new_column_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.pack_columns" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SFrame.</code><code class="descname">pack_columns</code><span class="sig-paren">(</span><em>self</em>, <em>column_names=None</em>, <em>column_name_prefix=None</em>, <em>dtype=&lt;class 'list'&gt;</em>, <em>fill_na=None</em>, <em>remove_prefix=True</em>, <em>new_column_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.pack_columns" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pack columns of the current SFrame into one single column. The result
 is a new SFrame with the unaffected columns from the original SFrame
 plus the newly created column.</p>
@@ -190,24 +193,27 @@ packed column.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.SFrame.unpack.html#turicreate.SFrame.unpack" title="turicreate.SFrame.unpack"><code class="xref py py-obj docutils literal"><span class="pre">unpack</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.SFrame.unpack.html#turicreate.SFrame.unpack" title="turicreate.SFrame.unpack"><code class="xref py py-obj docutils literal"><span class="pre">unpack</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Notes</p>
 <ul class="simple">
 <li>If packing to dictionary, missing key is always dropped. Missing
 values are dropped if fill_na is not provided, otherwise, missing
-value is replaced by &#8216;fill_na&#8217;. If packing to list or array, missing
-values will be kept. If &#8216;fill_na&#8217; is provided, the missing value is
-replaced with &#8216;fill_na&#8217; value.</li>
+value is replaced by ‘fill_na’. If packing to list or array, missing
+values will be kept. If ‘fill_na’ is provided, the missing value is
+replaced with ‘fill_na’ value.</li>
 </ul>
 <p class="rubric">Examples</p>
-<p>Suppose &#8216;sf&#8217; is an an SFrame that maintains business category
+<p>Suppose ‘sf’ is an an SFrame that maintains business category
 information:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;business&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
-<span class="gp">... </span>                      <span class="s1">&#39;category.retail&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">None</span><span class="p">],</span>
-<span class="gp">... </span>                      <span class="s1">&#39;category.food&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">],</span>
-<span class="gp">... </span>                      <span class="s1">&#39;category.service&#39;</span><span class="p">:</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">None</span><span class="p">],</span>
-<span class="gp">... </span>                      <span class="s1">&#39;category.shop&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">]})</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;business&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+<span class="gp">... </span>                      <span class="s1">&#39;category.retail&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+<span class="gp">... </span>                      <span class="s1">&#39;category.food&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+<span class="gp">... </span>                      <span class="s1">&#39;category.service&#39;</span><span class="p">:</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+<span class="gp">... </span>                      <span class="s1">&#39;category.shop&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span>
 <span class="go">+----------+-----------------+---------------+------------------+---------------+</span>
 <span class="go">| business | category.retail | category.food | category.service | category.shop |</span>
@@ -221,7 +227,7 @@ information:</p>
 </pre></div>
 </div>
 <p>To pack all category columns into a list:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">pack_columns</span><span class="p">(</span><span class="n">column_name_prefix</span><span class="o">=</span><span class="s1">&#39;category&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">pack_columns</span><span class="p">(</span><span class="n">column_name_prefix</span><span class="o">=</span><span class="s1">&#39;category&#39;</span><span class="p">)</span>
 <span class="go">+----------+-----------------------+</span>
 <span class="go">| business |        category       |</span>
 <span class="go">+----------+-----------------------+</span>
@@ -234,7 +240,7 @@ information:</p>
 </pre></div>
 </div>
 <p>To pack all category columns into a dictionary, with new column name:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">pack_columns</span><span class="p">(</span><span class="n">column_name_prefix</span><span class="o">=</span><span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">pack_columns</span><span class="p">(</span><span class="n">column_name_prefix</span><span class="o">=</span><span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
 <span class="gp">... </span>                <span class="n">new_column_name</span><span class="o">=</span><span class="s1">&#39;new name&#39;</span><span class="p">)</span>
 <span class="go">+----------+-------------------------------+</span>
 <span class="go">| business |            new name           |</span>
@@ -248,7 +254,7 @@ information:</p>
 </pre></div>
 </div>
 <p>To keep column prefix in the resulting dict key:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">pack_columns</span><span class="p">(</span><span class="n">column_name_prefix</span><span class="o">=</span><span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">pack_columns</span><span class="p">(</span><span class="n">column_name_prefix</span><span class="o">=</span><span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
 <span class="go">                    remove_prefix=False)</span>
 <span class="go">+----------+-------------------------------+</span>
 <span class="go">| business |            category           |</span>
@@ -262,7 +268,7 @@ information:</p>
 </pre></div>
 </div>
 <p>To explicitly pack a set of columns:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">pack_columns</span><span class="p">(</span><span class="n">column_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;business&#39;</span><span class="p">,</span> <span class="s1">&#39;category.retail&#39;</span><span class="p">,</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">pack_columns</span><span class="p">(</span><span class="n">column_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;business&#39;</span><span class="p">,</span> <span class="s1">&#39;category.retail&#39;</span><span class="p">,</span>
 <span class="go">                               &#39;category.food&#39;, &#39;category.service&#39;,</span>
 <span class="go">                               &#39;category.shop&#39;])</span>
 <span class="go">+-----------------------+</span>
@@ -276,9 +282,9 @@ information:</p>
 <span class="go">[4 rows x 1 columns]</span>
 </pre></div>
 </div>
-<p>To pack all columns with name starting with &#8216;category&#8217; into an array
+<p>To pack all columns with name starting with ‘category’ into an array
 type, and with missing value replaced with 0:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">array</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">array</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">pack_columns</span><span class="p">(</span><span class="n">column_name_prefix</span><span class="o">=</span><span class="s2">&quot;category&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
 <span class="gp">... </span>                <span class="n">fill_na</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="go">+----------+----------------------+</span>
@@ -305,7 +311,7 @@ type, and with missing value replaced with 0:</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -323,7 +329,7 @@ type, and with missing value replaced with 0:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.label_propagation.create &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.label_propagation.create &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="graph_analytics" href="../turicreate.toolkits.graph_analytics.html"/>
         <link rel="next" title="turicreate.label_propagation.LabelPropagationModel" href="turicreate.label_propagation.LabelPropagationModel.html"/>
         <link rel="prev" title="turicreate.kcore.KcoreModel" href="turicreate.kcore.KcoreModel.html"/> 
@@ -133,7 +136,7 @@
 <code class="descclassname">turicreate.label_propagation.</code><code class="descname">create</code><span class="sig-paren">(</span><em>graph</em>, <em>label_field</em>, <em>threshold=0.001</em>, <em>weight_field=''</em>, <em>self_weight=1.0</em>, <em>undirected=False</em>, <em>max_iterations=None</em>, <em>_single_precision=False</em>, <em>_distributed='auto'</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.label_propagation.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a weighted graph with observed class labels of a subset of vertices,
 infer the label probability for the unobserved vertices using the
-&#8220;label propagation&#8221; algorithm.</p>
+“label propagation” algorithm.</p>
 <p>The algorithm iteratively updates the label probability of current vertex
 as a weighted sum of label probability of self and the neighboring vertices
 until converge.  See
@@ -156,7 +159,7 @@ must be [0, num_classes). None values indicate unobserved vertex labels.</p>
 </dd>
 <dt><strong>threshold</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
 <dd><p class="first last">Threshold for convergence, measured in the average L2 norm
-(the sum of squared values) of the delta of each vertex&#8217;s
+(the sum of squared values) of the delta of each vertex’s
 label probability vector.</p>
 </dd>
 <dt><strong>max_iterations: int, optional</strong></dt>
@@ -198,7 +201,10 @@ and use less memory.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.label_propagation.LabelPropagationModel.html#turicreate.label_propagation.LabelPropagationModel" title="turicreate.label_propagation.LabelPropagationModel"><code class="xref py py-obj docutils literal"><span class="pre">LabelPropagationModel</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.label_propagation.LabelPropagationModel.html#turicreate.label_propagation.LabelPropagationModel" title="turicreate.label_propagation.LabelPropagationModel"><code class="xref py py-obj docutils literal"><span class="pre">LabelPropagationModel</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">References</p>
 <ul class="simple">
@@ -208,8 +214,8 @@ with label propagation</a>.</li>
 <p class="rubric">Examples</p>
 <p>If given an <a class="reference internal" href="turicreate.SGraph.html#turicreate.SGraph" title="turicreate.SGraph"><code class="xref py py-class docutils literal"><span class="pre">SGraph</span></code></a> <code class="docutils literal"><span class="pre">g</span></code>, we can create
 a <a class="reference internal" href="turicreate.label_propagation.LabelPropagationModel.html#turicreate.label_propagation.LabelPropagationModel" title="turicreate.label_propagation.LabelPropagationModel"><code class="xref py py-class docutils literal"><span class="pre">LabelPropagationModel</span></code></a> as follows:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">load_sgraph</span><span class="p">(</span><span class="s1">&#39;http://snap.stanford.edu/data/email-Enron.txt.gz&#39;</span><span class="p">,</span>
-<span class="gp">... </span>                        <span class="n">format</span><span class="o">=</span><span class="s1">&#39;snap&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">load_sgraph</span><span class="p">(</span><span class="s1">&#39;http://snap.stanford.edu/data/email-Enron.txt.gz&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                        <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;snap&#39;</span><span class="p">)</span>
 <span class="go"># Initialize random classes for a subset of vertices</span>
 <span class="go"># Leave the unobserved vertices with None label.</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">random</span>
@@ -220,14 +226,14 @@ a <a class="reference internal" href="turicreate.label_propagation.LabelPropagat
 <span class="gp">... </span>    <span class="k">elif</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mf">0.9</span><span class="p">:</span>
 <span class="gp">... </span>        <span class="k">return</span> <span class="mi">1</span>
 <span class="gp">... </span>    <span class="k">else</span><span class="p">:</span>
-<span class="gp">... </span>        <span class="k">return</span> <span class="bp">None</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="kc">None</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="s1">&#39;__id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">init_label</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">label_propagation</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">label_field</span><span class="o">=</span><span class="s1">&#39;label&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>We can obtain for each vertex the predicted label and the probability of
 each label in the graph <code class="docutils literal"><span class="pre">g</span></code> using:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">labels</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">]</span>     <span class="c1"># SFrame</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">labels</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">]</span>     <span class="c1"># SFrame</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">labels</span>
 <span class="go">+------+-------+-----------------+-------------------+----------------+</span>
 <span class="go">| __id | label | predicted_label |         P0        |       P1       |</span>
@@ -268,7 +274,7 @@ each label in the graph <code class="docutils literal"><span class="pre">g</span
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -286,7 +292,7 @@ each label in the graph <code class="docutils literal"><span class="pre">g</span
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

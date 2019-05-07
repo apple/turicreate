@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.groupby &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SFrame.groupby &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.SFrame.groupby<a class="headerlink" href="#turicreate-sframe-groupby" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SFrame.groupby">
-<code class="descclassname">SFrame.</code><code class="descname">groupby</code><span class="sig-paren">(</span><em>key_column_names</em>, <em>operations</em>, <em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.groupby" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SFrame.</code><code class="descname">groupby</code><span class="sig-paren">(</span><em>self</em>, <em>key_column_names</em>, <em>operations</em>, <em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.groupby" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a group on the key_column_names followed by aggregations on the
 columns listed in operations.</p>
 <p>The operations parameter is a dictionary that indicates which
@@ -166,7 +169,10 @@ aggregation operation.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.aggregate.html#module-turicreate.aggregate" title="turicreate.aggregate"><code class="xref py py-obj docutils literal"><span class="pre">aggregate</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.aggregate.html#module-turicreate.aggregate" title="turicreate.aggregate"><code class="xref py py-obj docutils literal"><span class="pre">aggregate</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Notes</p>
 <ul class="simple">
@@ -176,13 +182,13 @@ aggregation operation.</p>
 As an example, <cite>sum([None, 5, 10]) = 15</cite> because the <cite>None</cite> value is
 skipped.
 * Aggregators have a default value when no values (after skipping all
-<cite>None</cite> values) are present. Default values are <cite>None</cite> for [&#8216;ARGMAX&#8217;,
-&#8216;ARGMIN&#8217;, &#8216;AVG&#8217;, &#8216;STD&#8217;, &#8216;MEAN&#8217;, &#8216;MIN&#8217;, &#8216;MAX&#8217;],  <cite>0</cite> for [&#8216;COUNT&#8217;
-&#8216;COUNT_DISTINCT&#8217;, &#8216;DISTINCT&#8217;] <cite>[]</cite> for &#8216;CONCAT&#8217;, &#8216;QUANTILE&#8217;,
-&#8216;DISTINCT&#8217;, and <cite>{}</cite> for &#8216;FREQ_COUNT&#8217;.</p>
+<cite>None</cite> values) are present. Default values are <cite>None</cite> for [‘ARGMAX’,
+‘ARGMIN’, ‘AVG’, ‘STD’, ‘MEAN’, ‘MIN’, ‘MAX’],  <cite>0</cite> for [‘COUNT’
+‘COUNT_DISTINCT’, ‘DISTINCT’] <cite>[]</cite> for ‘CONCAT’, ‘QUANTILE’,
+‘DISTINCT’, and <cite>{}</cite> for ‘FREQ_COUNT’.</p>
 <p class="rubric">Examples</p>
 <p>Suppose we have an SFrame with movie ratings by many users.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">turicreate.aggregate</span> <span class="kn">as</span> <span class="nn">agg</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">turicreate.aggregate</span> <span class="k">as</span> <span class="nn">agg</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://static.turi.com/datasets/rating_data_example.csv&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span>
@@ -205,7 +211,7 @@ skipped.
 </pre></div>
 </div>
 <p>Compute the number of occurrences of each user.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">user_count</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">key_column_names</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">user_count</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">key_column_names</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                        <span class="n">operations</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;count&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">COUNT</span><span class="p">()})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">user_count</span>
 <span class="go">+---------+-------+</span>
@@ -227,7 +233,7 @@ skipped.
 </pre></div>
 </div>
 <p>Compute the mean and standard deviation of ratings per user.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">user_rating_stats</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">key_column_names</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">user_rating_stats</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">key_column_names</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                               <span class="n">operations</span><span class="o">=</span><span class="p">{</span>
 <span class="gp">... </span>                                   <span class="s1">&#39;mean_rating&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">MEAN</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">),</span>
 <span class="gp">... </span>                                   <span class="s1">&#39;std_rating&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">STD</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">)</span>
@@ -252,7 +258,7 @@ skipped.
 </pre></div>
 </div>
 <p>Compute the movie with the minimum rating per user.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chosen_movies</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">key_column_names</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chosen_movies</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">key_column_names</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                           <span class="n">operations</span><span class="o">=</span><span class="p">{</span>
 <span class="gp">... </span>                               <span class="s1">&#39;worst_movies&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">ARGMIN</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">,</span><span class="s1">&#39;movie_id&#39;</span><span class="p">)</span>
 <span class="gp">... </span>                           <span class="p">})</span>
@@ -277,7 +283,7 @@ skipped.
 </div>
 <p>Compute the movie with the max rating per user and also the movie with
 the maximum imdb-ranking per user.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="p">[</span><span class="s1">&#39;imdb-ranking&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sf</span><span class="p">[</span><span class="s1">&#39;rating&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="p">[</span><span class="s1">&#39;imdb-ranking&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sf</span><span class="p">[</span><span class="s1">&#39;rating&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">chosen_movies</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">key_column_names</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span>
 <span class="gp">... </span>        <span class="n">operations</span><span class="o">=</span><span class="p">{(</span><span class="s1">&#39;max_rating_movie&#39;</span><span class="p">,</span><span class="s1">&#39;max_imdb_ranking_movie&#39;</span><span class="p">):</span> <span class="n">agg</span><span class="o">.</span><span class="n">ARGMAX</span><span class="p">((</span><span class="s1">&#39;rating&#39;</span><span class="p">,</span><span class="s1">&#39;imdb-ranking&#39;</span><span class="p">),</span><span class="s1">&#39;movie_id&#39;</span><span class="p">)})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">chosen_movies</span>
@@ -300,18 +306,18 @@ the maximum imdb-ranking per user.</p>
 </pre></div>
 </div>
 <p>Compute the movie with the max rating per user.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chosen_movies</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">key_column_names</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chosen_movies</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">key_column_names</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span>
 <span class="go">            operations={&#39;best_movies&#39;: agg.ARGMAX(&#39;rating&#39;,&#39;movie&#39;)})</span>
 </pre></div>
 </div>
 <p>Compute the movie with the max rating per user and also the movie with the maximum imdb-ranking per user.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chosen_movies</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">key_column_names</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chosen_movies</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">key_column_names</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span>
 <span class="go">           operations={(&#39;max_rating_movie&#39;,&#39;max_imdb_ranking_movie&#39;): agg.ARGMAX((&#39;rating&#39;,&#39;imdb-ranking&#39;),&#39;movie&#39;)})</span>
 </pre></div>
 </div>
 <p>Compute the count, mean, and standard deviation of ratings per (user,
 time), automatically assigning output column names.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;user_id&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;movie_id&#39;</span><span class="p">])</span> <span class="o">%</span> <span class="mi">11</span> <span class="o">+</span> <span class="mi">2000</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;user_id&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;movie_id&#39;</span><span class="p">])</span> <span class="o">%</span> <span class="mi">11</span> <span class="o">+</span> <span class="mi">2000</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">user_rating_stats</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">],</span>
 <span class="gp">... </span>                               <span class="p">[</span><span class="n">agg</span><span class="o">.</span><span class="n">COUNT</span><span class="p">(),</span>
 <span class="gp">... </span>                                <span class="n">agg</span><span class="o">.</span><span class="n">AVG</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">),</span>
@@ -338,7 +344,7 @@ time), automatically assigning output column names.</p>
 <p>The groupby function can take a variable length list of aggregation
 specifiers so if we want the count and the 0.25 and 0.75 quantiles of
 ratings:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">user_rating_stats</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">agg</span><span class="o">.</span><span class="n">COUNT</span><span class="p">(),</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">user_rating_stats</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">agg</span><span class="o">.</span><span class="n">COUNT</span><span class="p">(),</span>
 <span class="gp">... </span>                               <span class="p">{</span><span class="s1">&#39;rating_quantiles&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">QUANTILE</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">,[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">])})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">user_rating_stats</span>
 <span class="go">+------+---------+-------+------------------------+</span>
@@ -360,7 +366,7 @@ ratings:</p>
 </pre></div>
 </div>
 <p>To put all items a user rated into one list value by their star rating:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">user_rating_stats</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;user_id&quot;</span><span class="p">,</span> <span class="s2">&quot;rating&quot;</span><span class="p">],</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">user_rating_stats</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;user_id&quot;</span><span class="p">,</span> <span class="s2">&quot;rating&quot;</span><span class="p">],</span>
 <span class="gp">... </span>                               <span class="p">{</span><span class="s2">&quot;rated_movie_ids&quot;</span><span class="p">:</span><span class="n">agg</span><span class="o">.</span><span class="n">CONCAT</span><span class="p">(</span><span class="s2">&quot;movie_id&quot;</span><span class="p">)})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">user_rating_stats</span>
 <span class="go">+--------+---------+----------------------+</span>
@@ -383,7 +389,7 @@ ratings:</p>
 </div>
 <p>To put all items and rating of a given user together into a dictionary
 value:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">user_rating_stats</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;user_id&quot;</span><span class="p">,</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">user_rating_stats</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;user_id&quot;</span><span class="p">,</span>
 <span class="gp">... </span>                               <span class="p">{</span><span class="s2">&quot;movie_rating&quot;</span><span class="p">:</span><span class="n">agg</span><span class="o">.</span><span class="n">CONCAT</span><span class="p">(</span><span class="s2">&quot;movie_id&quot;</span><span class="p">,</span> <span class="s2">&quot;rating&quot;</span><span class="p">)})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">user_rating_stats</span>
 <span class="go">+---------+--------------+</span>
@@ -417,7 +423,7 @@ value:</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -435,7 +441,7 @@ value:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

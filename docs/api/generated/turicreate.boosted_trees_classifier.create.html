@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.boosted_trees_classifier.create &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.boosted_trees_classifier.create &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="classifier" href="../turicreate.toolkits.classifier.html"/>
         <link rel="next" title="turicreate.boosted_trees_classifier.BoostedTreesClassifier" href="turicreate.boosted_trees_classifier.BoostedTreesClassifier.html"/>
         <link rel="prev" title="turicreate.decision_tree_classifier.DecisionTreeClassifier" href="turicreate.decision_tree_classifier.DecisionTreeClassifier.html"/> 
@@ -146,7 +149,7 @@ gradient boosted trees (sometimes known as GBMs).</p>
 <dd><p class="first last">Name of the column containing the target variable. The values in this
 column must be of string or integer type.  String target variables are
 automatically mapped to integers in alphabetical order of the variable values.
-For example, a target variable with &#8216;cat&#8217;, &#8216;dog&#8217;, and &#8216;foosa&#8217; as possible
+For example, a target variable with ‘cat’, ‘dog’, and ‘foosa’ as possible
 values is mapped to 0, 1, and, 2 respectively.</p>
 </dd>
 <dt><strong>features</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[str], optional</span></dt>
@@ -159,16 +162,16 @@ excepting the target column..</p>
 in the creation of an extra tree.</p>
 </dd>
 <dt><strong>validation_set</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
-<dd><p class="first last">A dataset for monitoring the model&#8217;s generalization performance.
+<dd><p class="first last">A dataset for monitoring the model’s generalization performance.
 For each row of the progress table, the chosen metrics are computed
 for both the provided training dataset and the validation_set. The
 format of this SFrame must be the same as the training set.
-By default this argument is set to &#8216;auto&#8217; and a validation set is
+By default this argument is set to ‘auto’ and a validation set is
 automatically sampled and used for progress printing. If
 validation_set is set to None, then no additional metrics
 are computed. This is computed once per full iteration. Large
 differences in model accuracy between the training data and validation
-data is indicative of overfitting. The default value is &#8216;auto&#8217;.</p>
+data is indicative of overfitting. The default value is ‘auto’.</p>
 </dd>
 <dt><strong>class_weights</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{dict, <cite>auto</cite>}, optional</span></dt>
 <dd><p class="first last">Weights the examples in the training data according to the given class
@@ -228,7 +231,7 @@ results are reproducable.</p>
 <dd><p class="first last">Performance metric(s) that are tracked during training. When specified,
 the progress table will display the tracked metric(s) on training and
 validation set.
-Supported metrics are: {&#8216;accuracy&#8217;, &#8216;auc&#8217;, &#8216;log_loss&#8217;}</p>
+Supported metrics are: {‘accuracy’, ‘auc’, ‘log_loss’}</p>
 </dd>
 <dt><strong>kwargs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
 <dd><p class="first">Additional arguments for training the model.</p>
@@ -246,7 +249,7 @@ If multiple metrics are being tracked, the last one is used.</dd>
 where n is specified by <code class="docutils literal"><span class="pre">model_checkpoint_interval</span></code>.
 For instance, if <cite>model_checkpoint_interval</cite> is 5, and <cite>model_checkpoint_path</cite> is
 set to <code class="docutils literal"><span class="pre">/tmp/model_tmp</span></code>, the checkpoints will be saved into
-<code class="docutils literal"><span class="pre">/tmp/model_tmp/model_checkpoint_5</span></code>, <code class="docutils literal"><span class="pre">/tmp/model_tmp/model_checkpoint_10</span></code>, ... etc.
+<code class="docutils literal"><span class="pre">/tmp/model_tmp/model_checkpoint_5</span></code>, <code class="docutils literal"><span class="pre">/tmp/model_tmp/model_checkpoint_10</span></code>, … etc.
 Training can be resumed by setting <code class="docutils literal"><span class="pre">resume_from_checkpoint</span></code> to one of these checkpoints.</dd>
 </dl>
 </li>
@@ -278,12 +281,15 @@ exact the same training data as the checkpointed model.</dd>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.boosted_trees_classifier.BoostedTreesClassifier.html#turicreate.boosted_trees_classifier.BoostedTreesClassifier" title="turicreate.boosted_trees_classifier.BoostedTreesClassifier"><code class="xref py py-obj docutils literal"><span class="pre">BoostedTreesClassifier</span></code></a>, <a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.html#turicreate.logistic_classifier.LogisticClassifier" title="turicreate.logistic_classifier.LogisticClassifier"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.logistic_classifier.LogisticClassifier</span></code></a>, <a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.html#turicreate.svm_classifier.SVMClassifier" title="turicreate.svm_classifier.SVMClassifier"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.svm_classifier.SVMClassifier</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.boosted_trees_classifier.BoostedTreesClassifier.html#turicreate.boosted_trees_classifier.BoostedTreesClassifier" title="turicreate.boosted_trees_classifier.BoostedTreesClassifier"><code class="xref py py-obj docutils literal"><span class="pre">BoostedTreesClassifier</span></code></a>, <a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.html#turicreate.logistic_classifier.LogisticClassifier" title="turicreate.logistic_classifier.LogisticClassifier"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.logistic_classifier.LogisticClassifier</span></code></a>, <a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.html#turicreate.svm_classifier.SVMClassifier" title="turicreate.svm_classifier.SVMClassifier"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.svm_classifier.SVMClassifier</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">References</p>
 <ul class="simple">
 <li><a class="reference external" href="http://en.wikipedia.org/wiki/Gradient_boosting#Gradient_tree_boosting">Wikipedia - Gradient tree boosting</a></li>
-<li><a class="reference external" href="http://jessica2.msri.org/attachments/10778/10778-boost.pdf">Trevor Hastie&#8217;s slides on Boosted Trees and Random Forest</a></li>
+<li><a class="reference external" href="http://jessica2.msri.org/attachments/10778/10778-boost.pdf">Trevor Hastie’s slides on Boosted Trees and Random Forest</a></li>
 </ul>
 <p class="rubric">Examples</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://static.turi.com/datasets/xgboost/mushroom.csv&#39;</span>
@@ -318,7 +324,7 @@ exact the same training data as the checkpointed model.</dd>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -336,7 +342,7 @@ exact the same training data as the checkpointed model.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

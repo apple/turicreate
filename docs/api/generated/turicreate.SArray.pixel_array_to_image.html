@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SArray.pixel_array_to_image &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SArray.pixel_array_to_image &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.SArray.pixel_array_to_image<a class="headerlink" href="#turicreate-sarray-pixel-array-to-image" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SArray.pixel_array_to_image">
-<code class="descclassname">SArray.</code><code class="descname">pixel_array_to_image</code><span class="sig-paren">(</span><em>width</em>, <em>height</em>, <em>channels</em>, <em>undefined_on_failure=True</em>, <em>allow_rounding=False</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SArray.pixel_array_to_image" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SArray.</code><code class="descname">pixel_array_to_image</code><span class="sig-paren">(</span><em>self</em>, <em>width</em>, <em>height</em>, <em>channels</em>, <em>undefined_on_failure=True</em>, <em>allow_rounding=False</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SArray.pixel_array_to_image" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new SArray with all the values cast to <code class="xref py py-class docutils literal"><span class="pre">turicreate.image.Image</span></code>
 of uniform size.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -153,7 +156,7 @@ If False, raises error upon rounding.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray[turicreate.Image]</span></dt>
-<dd><p class="first last">The SArray converted to the type &#8216;turicreate.Image&#8217;.</p>
+<dd><p class="first last">The SArray converted to the type ‘turicreate.Image’.</p>
 </dd>
 </dl>
 </td>
@@ -162,15 +165,18 @@ If False, raises error upon rounding.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.SArray.astype.html#turicreate.SArray.astype" title="turicreate.SArray.astype"><code class="xref py py-obj docutils literal"><span class="pre">astype</span></code></a>, <a class="reference internal" href="turicreate.SArray.str_to_datetime.html#turicreate.SArray.str_to_datetime" title="turicreate.SArray.str_to_datetime"><code class="xref py py-obj docutils literal"><span class="pre">str_to_datetime</span></code></a>, <a class="reference internal" href="turicreate.SArray.datetime_to_str.html#turicreate.SArray.datetime_to_str" title="turicreate.SArray.datetime_to_str"><code class="xref py py-obj docutils literal"><span class="pre">datetime_to_str</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.SArray.astype.html#turicreate.SArray.astype" title="turicreate.SArray.astype"><code class="xref py py-obj docutils literal"><span class="pre">astype</span></code></a>, <a class="reference internal" href="turicreate.SArray.str_to_datetime.html#turicreate.SArray.str_to_datetime" title="turicreate.SArray.str_to_datetime"><code class="xref py py-obj docutils literal"><span class="pre">str_to_datetime</span></code></a>, <a class="reference internal" href="turicreate.SArray.datetime_to_str.html#turicreate.SArray.datetime_to_str" title="turicreate.SArray.datetime_to_str"><code class="xref py py-obj docutils literal"><span class="pre">datetime_to_str</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
 <p>The MNIST data is scaled from 0 to 1, but our image type only loads integer  pixel values
 from 0 to 255. If we just convert without scaling, all values below one would be cast to
 0.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mnist_array</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">(</span><span class="s1">&#39;https://static.turi.com/datasets/mnist/mnist_vec_sarray&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mnist_array</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">(</span><span class="s1">&#39;https://static.turi.com/datasets/mnist/mnist_vec_sarray&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scaled_mnist_array</span> <span class="o">=</span> <span class="n">mnist_array</span> <span class="o">*</span> <span class="mi">255</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mnist_img_sarray</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">SArray</span><span class="o">.</span><span class="n">pixel_array_to_image</span><span class="p">(</span><span class="n">scaled_mnist_array</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">allow_rounding</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mnist_img_sarray</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">SArray</span><span class="o">.</span><span class="n">pixel_array_to_image</span><span class="p">(</span><span class="n">scaled_mnist_array</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">allow_rounding</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -186,7 +192,7 @@ from 0 to 255. If we just convert without scaling, all values below one would be
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -204,7 +210,7 @@ from 0 to 255. If we just convert without scaling, all values below one would be
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

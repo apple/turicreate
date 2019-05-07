@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.read_csv &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SFrame.read_csv &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.SFrame.read_csv<a class="headerlink" href="#turicreate-sframe-read-csv" title="Permalink to this headline">¶</a></h1>
 <dl class="classmethod">
 <dt id="turicreate.SFrame.read_csv">
-<em class="property">classmethod </em><code class="descclassname">SFrame.</code><code class="descname">read_csv</code><span class="sig-paren">(</span><em>url, delimiter=',', header=True, error_bad_lines=False, comment_char='', escape_char='\\', double_quote=True, quote_char='&quot;', skip_initial_space=True, column_type_hints=None, na_values=['NA'], line_terminator='\n', usecols=[], nrows=None, skiprows=0, verbose=True, nrows_to_infer=100, true_values=[], false_values=[], **kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.read_csv" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="descclassname">SFrame.</code><code class="descname">read_csv</code><span class="sig-paren">(</span><em>url, delimiter=',', header=True, error_bad_lines=False, comment_char='', escape_char='\', double_quote=True, quote_char='&quot;', skip_initial_space=True, column_type_hints=None, na_values=['NA'], line_terminator='n', usecols=[], nrows=None, skiprows=0, verbose=True, nrows_to_infer=100, true_values=[], false_values=[], _only_raw_string_substitutions=False, **kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.read_csv" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div>Constructs an SFrame from a CSV file or a path to multiple CSVs.</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
@@ -134,7 +137,7 @@
 <dt><strong>url</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><blockquote class="first">
 <div><p>Location of the CSV file or directory to load. If URL is a directory
-or a &#8220;glob&#8221; pattern, all matching files will be loaded.</p>
+or a “glob” pattern, all matching files will be loaded.</p>
 </div></blockquote>
 <dl class="last docutils">
 <dt>delimiter <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
@@ -142,7 +145,7 @@ or a &#8220;glob&#8221; pattern, all matching files will be loaded.</p>
 </dd>
 <dt>header <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
 <dd><p class="first last">If true, uses the first row as the column names. Otherwise use the
-default column names : &#8216;X1, X2, ...&#8217;.</p>
+default column names : ‘X1, X2, …’.</p>
 </dd>
 <dt>error_bad_lines <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">If true, will fail upon encountering a bad line. If false, will
@@ -182,7 +185,7 @@ string.</li>
 <li>If a dictionary of column name to type is provided,
 each type value in the dictionary is applied to the key it
 belongs to.
-For instance {&#8216;user&#8217;:int} will hint that the column called &#8220;user&#8221;
+For instance {‘user’:int} will hint that the column called “user”
 should be parsed as an integer, and the rest will be type inferred.</li>
 </ul>
 </dd>
@@ -196,21 +199,21 @@ should be parsed as an integer, and the rest will be type inferred.</li>
 <dd><p class="first last">A string or list of strings to be interpreted as 0</p>
 </dd>
 <dt>line_terminator <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
-<dd><p class="first last">A string to be interpreted as the line terminator. Defaults to &#8220;</p>
+<dd><p class="first last">A string to be interpreted as the line terminator. Defaults to “</p>
 </dd>
 </dl>
 </dd>
-<dt><strong>&#8220;</strong></dt>
+<dt><strong>“</strong></dt>
 <dd><blockquote class="first">
 <div><p>which will also correctly match Mac, Linux and Windows line endings
-(&#8220;r&#8221;, &#8220;n&#8221; and &#8220;rn&#8221; respectively)</p>
+(“r”, “n” and “rn” respectively)</p>
 </div></blockquote>
 <dl class="last docutils">
 <dt>usecols <span class="classifier-delimiter">:</span> <span class="classifier">list of str, optional</span></dt>
 <dd><p class="first last">A subset of column names to output. If unspecified (default),
 all columns will be read. This can provide performance gains if the
 number of columns are large. If the input file has no headers,
-usecols=[&#8216;X1&#8217;,&#8217;X3&#8217;] will read columns 1 and 3.</p>
+usecols=[‘X1’,’X3’] will read columns 1 and 3.</p>
 </dd>
 <dt>nrows <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
 <dd><p class="first last">If set, only this many rows will be read from the file.</p>
@@ -237,7 +240,7 @@ usecols=[&#8216;X1&#8217;,&#8217;X3&#8217;] will read columns 1 and 3.</p>
 <p class="rubric">Examples</p>
 <p>Read a regular csv file, with all default options, automatically
 determine types:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://static.turi.com/datasets/rating_data_example.csv&#39;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://static.turi.com/datasets/rating_data_example.csv&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span>
 <span class="go">Columns:</span>
@@ -259,7 +262,7 @@ determine types:</p>
 </pre></div>
 </div>
 <p>Read only the first 100 lines of the csv file:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span>
 <span class="go">Columns:</span>
 <span class="go">  user_id int</span>
@@ -280,7 +283,7 @@ determine types:</p>
 </pre></div>
 </div>
 <p>Read all columns as str type</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">column_type_hints</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">column_type_hints</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span>
 <span class="go">Columns:</span>
 <span class="go">  user_id  str</span>
@@ -301,7 +304,7 @@ determine types:</p>
 </pre></div>
 </div>
 <p>Specify types for a subset of columns and leave the rest to be str.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">,</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">,</span>
 <span class="gp">... </span>                              <span class="n">column_type_hints</span><span class="o">=</span><span class="p">{</span>
 <span class="gp">... </span>                              <span class="s1">&#39;user_id&#39;</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;rating&#39;</span><span class="p">:</span><span class="nb">float</span>
 <span class="gp">... </span>                              <span class="p">})</span>
@@ -325,7 +328,7 @@ determine types:</p>
 </pre></div>
 </div>
 <p>Not treat first line as header:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span>
 <span class="go">Columns:</span>
 <span class="go">  X1  str</span>
@@ -346,8 +349,8 @@ determine types:</p>
 <span class="go">[10001 rows x 3 columns]</span>
 </pre></div>
 </div>
-<p>Treat &#8216;3&#8217; as missing value:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">na_values</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;3&#39;</span><span class="p">],</span> <span class="n">column_type_hints</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+<p>Treat ‘3’ as missing value:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">na_values</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;3&#39;</span><span class="p">],</span> <span class="n">column_type_hints</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span>
 <span class="go">Columns:</span>
 <span class="go">  user_id str</span>
@@ -368,8 +371,8 @@ determine types:</p>
 </pre></div>
 </div>
 <p>Throw error on parse failure:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bad_url</span> <span class="o">=</span> <span class="s1">&#39;https://static.turi.com/datasets/bad_csv_example.csv&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">bad_url</span><span class="p">,</span> <span class="n">error_bad_lines</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bad_url</span> <span class="o">=</span> <span class="s1">&#39;https://static.turi.com/datasets/bad_csv_example.csv&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">bad_url</span><span class="p">,</span> <span class="n">error_bad_lines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="go">RuntimeError: Runtime Exception. Unable to parse line &quot;x,y,z,a,b,c&quot;</span>
 <span class="go">Set error_bad_lines=False to skip bad lines</span>
 </pre></div>
@@ -387,7 +390,7 @@ determine types:</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -405,7 +408,7 @@ determine types:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

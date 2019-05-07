@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.drawing_classifier.create &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.drawing_classifier.create &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,10 +27,13 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="drawing_classifier" href="../turicreate.toolkits.drawing_classifier.html"/>
         <link rel="next" title="turicreate.drawing_classifier.DrawingClassifier" href="turicreate.drawing_classifier.DrawingClassifier.html"/>
-        <link rel="prev" title="turicreate.drawing_classifier.DrawingClassifier" href="turicreate.drawing_classifier.DrawingClassifier.html"/> 
+        <link rel="prev" title="drawing_classifier" href="../turicreate.toolkits.drawing_classifier.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -146,8 +149,8 @@ parameters will be extracted for training the drawing classifier.</p>
 column must be of string or integer type.</p>
 </dd>
 <dt><strong>feature</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string optional</span></dt>
-<dd><p class="first last">Name of the column containing the input drawings. &#8216;None&#8217; (the default)
-indicates the column in <cite>dataset</cite> named &#8220;drawing&#8221; should be used as the
+<dd><p class="first last">Name of the column containing the input drawings. ‘None’ (the default)
+indicates the column in <cite>dataset</cite> named “drawing” should be used as the
 feature.
 The feature column can contain both bitmap-based drawings as well as
 stroke-based drawings. Bitmap-based drawing input can be a grayscale
@@ -156,27 +159,29 @@ Stroke-based drawing input must be in the following format:
 Every drawing must be represented by a list of strokes, where each
 stroke must be a list of points in the order in which they were drawn
 on the canvas.
-Each point must be a dictionary with two keys, &#8220;x&#8221; and &#8220;y&#8221;, and their
+Each point must be a dictionary with two keys, “x” and “y”, and their
 respective values must be numerical, i.e. either integer or float.</p>
 </dd>
 <dt><strong>validation_set</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame optional</span></dt>
-<dd><p class="first last">A dataset for monitoring the model&#8217;s generalization performance.
+<dd><p class="first last">A dataset for monitoring the model’s generalization performance.
 The format of this SFrame must be the same as the training set.
-By default this argument is set to &#8216;auto&#8217; and a validation set is
+By default this argument is set to ‘auto’ and a validation set is
 automatically sampled and used for progress printing. If
 validation_set is set to None, then no additional metrics
-are computed. The default value is &#8216;auto&#8217;.</p>
+are computed. The default value is ‘auto’.</p>
 </dd>
 <dt><strong>warm_start</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string optional</span></dt>
-<dd><p class="first">A string to denote which pretrained model to use. Set to &#8220;auto&#8221;
+<dd><p class="first">A string to denote which pretrained model to use. Set to “auto”
 by default which uses a model trained on 245 of the 345 classes in the
-Quick, Draw! dataset. Here is a list of all the pretrained models that
+Quick, Draw! dataset. To disable warm start, pass in None to this 
+argument. Here is a list of all the pretrained models that
 can be passed in as this argument:
-&#8220;auto&#8221;: Uses quickdraw_245_v0
-&#8220;quickdraw_245_v0&#8221;: Uses a model trained on 245 of the 345 classes in the</p>
-<blockquote class="last">
+“auto”: Uses quickdraw_245_v0
+“quickdraw_245_v0”: Uses a model trained on 245 of the 345 classes in the</p>
+<blockquote>
 <div><p>Quick, Draw! dataset.</p>
 </div></blockquote>
+<p class="last">None: No Warm Start</p>
 </dd>
 <dt><strong>batch_size: int optional</strong></dt>
 <dd><p class="first last">The number of drawings per training step. If not set, a default
@@ -205,7 +210,10 @@ the data can result in a more accurately trained model.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.drawing_classifier.DrawingClassifier.html#turicreate.drawing_classifier.DrawingClassifier" title="turicreate.drawing_classifier.DrawingClassifier"><code class="xref py py-obj docutils literal"><span class="pre">DrawingClassifier</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.drawing_classifier.DrawingClassifier.html#turicreate.drawing_classifier.DrawingClassifier" title="turicreate.drawing_classifier.DrawingClassifier"><code class="xref py py-obj docutils literal"><span class="pre">DrawingClassifier</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Train a drawing classifier model</span>
@@ -228,7 +236,7 @@ the data can result in a more accurately trained model.</p>
         <a href="turicreate.drawing_classifier.DrawingClassifier.html" class="btn btn-neutral float-right" title="turicreate.drawing_classifier.DrawingClassifier">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="turicreate.drawing_classifier.DrawingClassifier.html" class="btn btn-neutral" title="turicreate.drawing_classifier.DrawingClassifier"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../turicreate.toolkits.drawing_classifier.html" class="btn btn-neutral" title="drawing_classifier"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -237,7 +245,7 @@ the data can result in a more accurately trained model.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -255,7 +263,7 @@ the data can result in a more accurately trained model.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

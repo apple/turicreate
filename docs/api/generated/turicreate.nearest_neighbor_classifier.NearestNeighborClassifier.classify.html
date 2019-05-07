@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.classify &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.classify &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.classify<a class="headerlink" href="#turicreate-nearest-neighbor-classifier-nearestneighborclassifier-classify" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.classify">
-<code class="descclassname">NearestNeighborClassifier.</code><code class="descname">classify</code><span class="sig-paren">(</span><em>dataset</em>, <em>max_neighbors=10</em>, <em>radius=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.classify" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">NearestNeighborClassifier.</code><code class="descname">classify</code><span class="sig-paren">(</span><em>self</em>, <em>dataset</em>, <em>max_neighbors=10</em>, <em>radius=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.classify" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the predicted class for each observation in <em>dataset</em>. This
 prediction is made based on the closest neighbors stored in the nearest
 neighbors classifier model.</p>
@@ -163,19 +166,22 @@ predicted probability for that class.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.nearest_neighbor_classifier.create.html#turicreate.nearest_neighbor_classifier.create" title="turicreate.nearest_neighbor_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a>, <a class="reference internal" href="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.predict.html#turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.predict" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.predict"><code class="xref py py-obj docutils literal"><span class="pre">predict</span></code></a>, <a class="reference internal" href="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.predict_topk.html#turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.predict_topk" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.predict_topk"><code class="xref py py-obj docutils literal"><span class="pre">predict_topk</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.nearest_neighbor_classifier.create.html#turicreate.nearest_neighbor_classifier.create" title="turicreate.nearest_neighbor_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a>, <a class="reference internal" href="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.predict.html#turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.predict" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.predict"><code class="xref py py-obj docutils literal"><span class="pre">predict</span></code></a>, <a class="reference internal" href="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.predict_topk.html#turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.predict_topk" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.predict_topk"><code class="xref py py-obj docutils literal"><span class="pre">predict_topk</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li>If the &#8216;radius&#8217; parameter is small, it is possible that a query point
+<li>If the ‘radius’ parameter is small, it is possible that a query point
 has no qualified neighbors in the training dataset. In this case, the
-resulting class and probability for that query are &#8216;None&#8217; in the
+resulting class and probability for that query are ‘None’ in the
 SFrame output by this method. If the target column in the training
 dataset has missing values, these predictions will be ambiguous.</li>
 <li>Ties between predicted classes are broken randomly.</li>
 </ul>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf_train</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;species&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">,</span> <span class="s1">&#39;fossa&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">],</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf_train</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;species&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">,</span> <span class="s1">&#39;fossa&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">],</span>
 <span class="gp">... </span>                            <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">23</span><span class="p">],</span>
 <span class="gp">... </span>                            <span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">22</span><span class="p">]})</span>
 <span class="gp">...</span>
@@ -184,7 +190,7 @@ dataset has missing values, these predictions will be ambiguous.</li>
 <span class="gp">...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">nearest_neighbor_classifier</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;species&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ystar</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">classify</span><span class="p">(</span><span class="n">sf_new</span><span class="p">,</span> <span class="n">max_neighbors</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">ystar</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">ystar</span>
 <span class="go">+-------+-------------+</span>
 <span class="go">| class | probability |</span>
 <span class="go">+-------+-------------+</span>
@@ -206,7 +212,7 @@ dataset has missing values, these predictions will be ambiguous.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -224,7 +230,7 @@ dataset has missing values, these predictions will be ambiguous.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

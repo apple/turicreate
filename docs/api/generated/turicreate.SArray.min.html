@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SArray.min &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SArray.min &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.SArray.min<a class="headerlink" href="#turicreate-sarray-min" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SArray.min">
-<code class="descclassname">SArray.</code><code class="descname">min</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SArray.min" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SArray.</code><code class="descname">min</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SArray.min" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get minimum numeric value in SArray.</p>
 <p>Returns None on an empty SArray. Raises an exception if called on an
 SArray with non-numeric type.</p>
@@ -142,10 +145,13 @@ SArray with non-numeric type.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.SArray.max.html#turicreate.SArray.max" title="turicreate.SArray.max"><code class="xref py py-obj docutils literal"><span class="pre">max</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.SArray.max.html#turicreate.SArray.max" title="turicreate.SArray.max"><code class="xref py py-obj docutils literal"><span class="pre">max</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="mi">14</span><span class="p">,</span> <span class="mi">62</span><span class="p">,</span> <span class="mi">83</span><span class="p">,</span> <span class="mi">72</span><span class="p">,</span> <span class="mi">77</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">69</span><span class="p">,</span> <span class="mi">66</span><span class="p">])</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="mi">14</span><span class="p">,</span> <span class="mi">62</span><span class="p">,</span> <span class="mi">83</span><span class="p">,</span> <span class="mi">72</span><span class="p">,</span> <span class="mi">77</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">69</span><span class="p">,</span> <span class="mi">66</span><span class="p">])</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -161,7 +167,7 @@ SArray with non-numeric type.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -179,7 +185,7 @@ SArray with non-numeric type.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

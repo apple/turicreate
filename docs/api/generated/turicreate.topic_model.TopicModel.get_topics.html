@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.topic_model.TopicModel.get_topics &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.topic_model.TopicModel.get_topics &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +126,7 @@
 <h1>turicreate.topic_model.TopicModel.get_topics<a class="headerlink" href="#turicreate-topic-model-topicmodel-get-topics" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.topic_model.TopicModel.get_topics">
-<code class="descclassname">TopicModel.</code><code class="descname">get_topics</code><span class="sig-paren">(</span><em>topic_ids=None</em>, <em>num_words=5</em>, <em>cdf_cutoff=1.0</em>, <em>output_type='topic_probabilities'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.topic_model.TopicModel.get_topics" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">TopicModel.</code><code class="descname">get_topics</code><span class="sig-paren">(</span><em>self</em>, <em>topic_ids=None</em>, <em>num_words=5</em>, <em>cdf_cutoff=1.0</em>, <em>output_type='topic_probabilities'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.topic_model.TopicModel.get_topics" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the words associated with a given topic. The score column is the
 probability of choosing that word given that you have chosen a
 particular topic.</p>
@@ -134,7 +137,7 @@ particular topic.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>topic_ids</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of int, optional</span></dt>
 <dd><p class="first last">The topics to retrieve words. Topic ids are zero-based.
-Throws an error if greater than or equal to m[&#8216;num_topics&#8217;], or
+Throws an error if greater than or equal to m[‘num_topics’], or
 if the requested topic name is not present.</p>
 </dd>
 <dt><strong>num_words</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
@@ -145,12 +148,12 @@ if the requested topic name is not present.</p>
 probability is below this cutoff. For example if there exist
 three words where</p>
 <div class="math">
-\[p(word_1 | topic_k) = .1\]\[p(word_2 | topic_k) = .2\]\[p(word_3 | topic_k) = .05\]</div>
+\[ \begin{align}\begin{aligned}p(word_1 | topic_k) = .1\\p(word_2 | topic_k) = .2\\p(word_3 | topic_k) = .05\end{aligned}\end{align} \]</div>
 <p class="last">then setting <span class="math">\(cdf_{cutoff}=.3\)</span> would return only
 <span class="math">\(word_1\)</span> and <span class="math">\(word_2\)</span> since
 <span class="math">\(p(word_1 | topic_k) + p(word_2 | topic_k) &lt;= cdf_{cutoff}\)</span></p>
 </dd>
-<dt><strong>output_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;topic_probabilities&#8217; | &#8216;topic_words&#8217;}, optional</span></dt>
+<dt><strong>output_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{‘topic_probabilities’ | ‘topic_words’}, optional</span></dt>
 <dd><p class="first last">Determine the type of desired output. See below.</p>
 </dd>
 </dl>
@@ -158,7 +161,7 @@ three words where</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
-<dd><p class="first last">If output_type is &#8216;topic_probabilities&#8217;, then the returned value is
+<dd><p class="first last">If output_type is ‘topic_probabilities’, then the returned value is
 an SFrame with a column of words ranked by a column of scores for
 each topic. Otherwise, the returned value is a SArray where
 each element is a list of the most probable words for each topic.</p>
@@ -170,7 +173,7 @@ each element is a list of the most probable words for each topic.</p>
 </table>
 <p class="rubric">Examples</p>
 <p>Get the highest ranked words for all topics.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">docs</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">(</span><span class="s1">&#39;https://static.turi.com/datasets/nips-text&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">docs</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">(</span><span class="s1">&#39;https://static.turi.com/datasets/nips-text&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">topic_model</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span>
 <span class="go">                                    num_iterations=50)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">get_topics</span><span class="p">()</span>
@@ -193,7 +196,7 @@ each element is a list of the most probable words for each topic.</p>
 </div>
 <p>Get the highest ranked words for topics 0 and 1 and show 15 words per
 topic.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">get_topics</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">num_words</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">get_topics</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">num_words</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
 <span class="go">+-------+----------+------------------+</span>
 <span class="go">| topic |   word   |      score       |</span>
 <span class="go">+-------+----------+------------------+</span>
@@ -213,7 +216,7 @@ topic.</p>
 </div>
 <p>If one wants to instead just get the top words per topic, one may
 change the format of the output as follows.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">topics</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_topics</span><span class="p">(</span><span class="n">output_type</span><span class="o">=</span><span class="s1">&#39;topic_words&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">topics</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_topics</span><span class="p">(</span><span class="n">output_type</span><span class="o">=</span><span class="s1">&#39;topic_words&#39;</span><span class="p">)</span>
 <span class="go">dtype: list</span>
 <span class="go">Rows: 10</span>
 <span class="go">[[&#39;cell&#39;, &#39;image&#39;, &#39;input&#39;, &#39;object&#39;, &#39;visual&#39;],</span>
@@ -241,7 +244,7 @@ change the format of the output as follows.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -259,7 +262,7 @@ change the format of the output as follows.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

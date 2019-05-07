@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.dbscan.create &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.dbscan.create &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,10 +27,13 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="clustering" href="../turicreate.toolkits.clustering.html"/>
         <link rel="next" title="turicreate.dbscan.DBSCANModel" href="turicreate.dbscan.DBSCANModel.html"/>
-        <link rel="prev" title="turicreate.kmeans.KmeansModel" href="turicreate.kmeans.KmeansModel.html"/> 
+        <link rel="prev" title="clustering" href="../turicreate.toolkits.clustering.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -139,13 +142,13 @@ density at each point.</p>
 Specifically, <cite>min_core_neighbors</cite> must be within distance <cite>radius</cite> of a
 point for it to be considered a core point.</li>
 <li><strong>Boundary</strong> points are within distance <cite>radius</cite> of a core point, but
-don&#8217;t have sufficient neighbors of their own to be considered core.</li>
+don’t have sufficient neighbors of their own to be considered core.</li>
 <li><strong>Noise</strong> points comprise the remainder of the data. These points have too
 few neighbors to be considered core points, and are further than distance
 <cite>radius</cite> from all core points.</li>
 </ul>
 <p>Clusters are formed by connecting core points that are neighbors of each
-other, then assigning boundary points to their nearest core neighbor&#8217;s
+other, then assigning boundary points to their nearest core neighbor’s
 cluster.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -158,7 +161,7 @@ include all features specified in the <cite>features</cite> parameter, but may h
 additional columns as well.</p>
 </dd>
 <dt><strong>features</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[str], optional</span></dt>
-<dd><p class="first last">Name of the columns with features to use in comparing records. &#8216;None&#8217;
+<dd><p class="first last">Name of the columns with features to use in comparing records. ‘None’
 (the default) indicates that all columns of the input <cite>dataset</cite> should
 be used to train the model. All features must be numeric, i.e. integer
 or float types.</p>
@@ -168,9 +171,9 @@ or float types.</p>
 may be one of two types:</p>
 <ul class="simple">
 <li><em>String</em>: the name of a standard distance function. One of
-&#8216;euclidean&#8217;, &#8216;squared_euclidean&#8217;, &#8216;manhattan&#8217;, &#8216;levenshtein&#8217;,
-&#8216;jaccard&#8217;, &#8216;weighted_jaccard&#8217;, &#8216;cosine&#8217;, &#8216;dot_product&#8217; (deprecated),
-or &#8216;transformed_dot_product&#8217;.</li>
+‘euclidean’, ‘squared_euclidean’, ‘manhattan’, ‘levenshtein’,
+‘jaccard’, ‘weighted_jaccard’, ‘cosine’, ‘dot_product’ (deprecated),
+or ‘transformed_dot_product’.</li>
 <li><em>Composite distance</em>: the weighted sum of several standard distance
 functions applied to various features. This is specified as a list of
 distance components, each of which is itself a list containing three
@@ -184,16 +187,16 @@ items:<ol class="arabic">
 <p>For more information about Turi Create distance functions, please
 see the <a class="reference internal" href="../turicreate.toolkits.distances.html#module-turicreate.toolkits.distances" title="turicreate.toolkits.distances"><code class="xref py py-mod docutils literal"><span class="pre">distances</span></code></a> module.</p>
 <p>For sparse vectors, missing keys are assumed to have value 0.0.</p>
-<p class="last">If &#8216;distance&#8217; is left unspecified, a composite distance is constructed
+<p class="last">If ‘distance’ is left unspecified, a composite distance is constructed
 automatically based on feature types.</p>
 </dd>
 <dt><strong>radius</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int or float, optional</span></dt>
-<dd><p class="first last">Size of each point&#8217;s neighborhood, with respect to the specified
+<dd><p class="first last">Size of each point’s neighborhood, with respect to the specified
 distance function.</p>
 </dd>
 <dt><strong>min_core_neighbors</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
 <dd><p class="first last">Number of neighbors that must be within distance <cite>radius</cite> of a point in
-order for that point to be considered a &#8220;core point&#8221; of a cluster.</p>
+order for that point to be considered a “core point” of a cluster.</p>
 </dd>
 <dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
 <dd><p class="first last">If True, print progress updates and model details during model creation.</p>
@@ -214,15 +217,18 @@ and noise points.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.dbscan.DBSCANModel.html#turicreate.dbscan.DBSCANModel" title="turicreate.dbscan.DBSCANModel"><code class="xref py py-obj docutils literal"><span class="pre">DBSCANModel</span></code></a>, <a class="reference internal" href="../turicreate.toolkits.distances.html#module-turicreate.toolkits.distances" title="turicreate.toolkits.distances"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.toolkits.distances</span></code></a></p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.dbscan.DBSCANModel.html#turicreate.dbscan.DBSCANModel" title="turicreate.dbscan.DBSCANModel"><code class="xref py py-obj docutils literal"><span class="pre">DBSCANModel</span></code></a>, <a class="reference internal" href="../turicreate.toolkits.distances.html#module-turicreate.toolkits.distances" title="turicreate.toolkits.distances"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.toolkits.distances</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Notes</p>
 <ul class="simple">
 <li>Our implementation of DBSCAN first computes the similarity graph on the
 input dataset, which can be a computationally intensive process. In the
 current implementation, some distances are substantially faster than
-others; in particular &#8220;euclidean&#8221;, &#8220;squared_euclidean&#8221;, &#8220;cosine&#8221;, and
-&#8220;transformed_dot_product&#8221; are quite fast, while composite distances can be
+others; in particular “euclidean”, “squared_euclidean”, “cosine”, and
+“transformed_dot_product” are quite fast, while composite distances can be
 slow.</li>
 <li>Any distance function in the GL Create library may be used with DBSCAN but
 the results may be poor for distances that violate the standard metric
@@ -231,7 +237,7 @@ identity of indiscernibles. In particular, the DBSCAN algorithm is based
 on the concept of connecting high-density points that are <em>close</em> to each
 other into a single cluster, but the notion of <em>close</em> may be very
 counterintuitive if the chosen distance function is not a valid metric.
-The distances &#8220;euclidean&#8221;, &#8220;manhattan&#8221;, &#8220;jaccard&#8221;, and &#8220;levenshtein&#8221; will
+The distances “euclidean”, “manhattan”, “jaccard”, and “levenshtein” will
 likely yield the best results.</li>
 </ul>
 <p class="rubric">References</p>
@@ -244,7 +250,7 @@ pp. 226-231.</li>
 <li><a class="reference external" href="http://www.naftaliharris.com/blog/visualizing-dbscan-clustering/">Visualizing DBSCAN Clustering</a></li>
 </ul>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span>
 <span class="gp">... </span>    <span class="s1">&#39;x1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.6777</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.391</span><span class="p">,</span> <span class="mf">7.0385</span><span class="p">,</span> <span class="mf">2.2657</span><span class="p">,</span> <span class="mf">7.7864</span><span class="p">,</span> <span class="o">-</span><span class="mf">10.16</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.162</span><span class="p">,</span>
 <span class="gp">... </span>           <span class="mf">8.8817</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.525</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.153</span><span class="p">,</span> <span class="mf">2.0860</span><span class="p">,</span> <span class="mf">7.6619</span><span class="p">,</span> <span class="mf">6.5511</span><span class="p">,</span> <span class="mf">2.7020</span><span class="p">],</span>
 <span class="gp">... </span>    <span class="s1">&#39;x2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">5.6110</span><span class="p">,</span> <span class="mf">8.5139</span><span class="p">,</span> <span class="mf">5.3913</span><span class="p">,</span> <span class="mf">5.4743</span><span class="p">,</span> <span class="mf">8.3606</span><span class="p">,</span> <span class="mf">7.8843</span><span class="p">,</span> <span class="mf">2.7305</span><span class="p">,</span>
@@ -286,7 +292,7 @@ pp. 226-231.</li>
         <a href="turicreate.dbscan.DBSCANModel.html" class="btn btn-neutral float-right" title="turicreate.dbscan.DBSCANModel">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="turicreate.kmeans.KmeansModel.html" class="btn btn-neutral" title="turicreate.kmeans.KmeansModel"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../turicreate.toolkits.clustering.html" class="btn btn-neutral" title="clustering"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -295,7 +301,7 @@ pp. 226-231.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -313,7 +319,7 @@ pp. 226-231.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

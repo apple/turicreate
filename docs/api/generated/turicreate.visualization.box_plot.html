@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.visualization.box_plot &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.visualization.box_plot &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -141,14 +144,14 @@ Must be an SArray with dtype string.</p>
 Must be numeric (int/float) and must be the same length as <cite>x</cite>.</p>
 </dd>
 <dt><strong>xlabel</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str (optional)</span></dt>
-<dd><p class="first last">The text label for the X axis. Defaults to &#8220;X&#8221;.</p>
+<dd><p class="first last">The text label for the X axis. Defaults to “X”.</p>
 </dd>
 <dt><strong>ylabel</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str (optional)</span></dt>
-<dd><p class="first last">The text label for the Y axis. Defaults to &#8220;Y&#8221;.</p>
+<dd><p class="first last">The text label for the Y axis. Defaults to “Y”.</p>
 </dd>
 <dt><strong>title</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str (optional)</span></dt>
 <dd><p class="first last">The title of the plot. Defaults to LABEL_DEFAULT. If the value is
-LABEL_DEFAULT, the title will be &#8220;&lt;xlabel&gt; vs. &lt;ylabel&gt;&#8221;. If the value
+LABEL_DEFAULT, the title will be “&lt;xlabel&gt; vs. &lt;ylabel&gt;”. If the value
 is None, the title will be omitted. Otherwise, the string passed in as the
 title will be used as the plot title.</p>
 </dd>
@@ -166,7 +169,7 @@ title will be used as the plot title.</p>
 </table>
 <p class="rubric">Examples</p>
 <p>Make a box and whiskers plot.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bp</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">box_plot</span><span class="p">(</span><span class="n">tc</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="s1">&#39;c&#39;</span><span class="p">,</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="s1">&#39;a&#39;</span><span class="p">]),</span><span class="n">tc</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="mf">4.0</span><span class="p">,</span><span class="mf">3.25</span><span class="p">,</span><span class="mf">2.1</span><span class="p">,</span><span class="mf">2.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">]))</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bp</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">box_plot</span><span class="p">(</span><span class="n">tc</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="s1">&#39;c&#39;</span><span class="p">,</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="s1">&#39;a&#39;</span><span class="p">]),</span><span class="n">tc</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="mf">4.0</span><span class="p">,</span><span class="mf">3.25</span><span class="p">,</span><span class="mf">2.1</span><span class="p">,</span><span class="mf">2.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">]))</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -182,7 +185,7 @@ title will be used as the plot title.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -200,7 +203,7 @@ title will be used as the plot title.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

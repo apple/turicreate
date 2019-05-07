@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.topic_model.perplexity &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.topic_model.perplexity &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,10 +27,13 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/>
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/>
         <link rel="up" title="topic_model" href="../turicreate.toolkits.topic_model.html"/>
-        <link rel="next" title="turicreate.topic_model.TopicModel" href="turicreate.topic_model.TopicModel.html"/>
-        <link rel="prev" title="turicreate.topic_model.create" href="turicreate.topic_model.create.html"/> 
+        <link rel="next" title="load_model" href="../turicreate.load_model.html"/>
+        <link rel="prev" title="topic_model" href="../turicreate.toolkits.topic_model.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -163,8 +166,8 @@ occurs. This can be the output of
 <a class="reference internal" href="turicreate.topic_model.TopicModel.predict.html#turicreate.topic_model.TopicModel.predict" title="turicreate.topic_model.TopicModel.predict"><code class="xref py py-func docutils literal"><span class="pre">predict()</span></code></a>, for example.</p>
 </dd>
 <dt><strong>topics</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
-<dd><p class="first last">An SFrame containing two columns: &#8216;vocabulary&#8217; and &#8216;topic_probabilities&#8217;.
-The value returned by m[&#8216;topics&#8217;] is a valid input for this argument,
+<dd><p class="first last">An SFrame containing two columns: ‘vocabulary’ and ‘topic_probabilities’.
+The value returned by m[‘topics’] is a valid input for this argument,
 where m is a trained <a class="reference internal" href="turicreate.topic_model.TopicModel.html#turicreate.topic_model.TopicModel" title="turicreate.topic_model.TopicModel"><code class="xref py py-class docutils literal"><span class="pre">TopicModel</span></code></a>.</p>
 </dd>
 <dt><strong>vocabulary</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray</span></dt>
@@ -182,19 +185,19 @@ vocabulary will be ignored.</p>
 <table class="docutils citation" frame="void" id="rcd72a313dfc4-perp" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[PERP]</a></td><td><a class="reference external" href="http://en.wikipedia.org/wiki/Perplexity">Wikipedia - perplexity</a></td></tr>
+<tr><td class="label">[PERP]</td><td><a class="reference external" href="http://en.wikipedia.org/wiki/Perplexity">Wikipedia - perplexity</a></td></tr>
 </tbody>
 </table>
 <table class="docutils citation" frame="void" id="rcd72a313dfc4-pattersonteh2013" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[PattersonTeh2013]</a></td><td>Patterson, Teh. <a class="reference external" href="http://www.stats.ox.ac.uk/~teh/research/compstats/PatTeh2013a.pdf">&#8220;Stochastic Gradient Riemannian
-Langevin Dynamics on the Probability Simplex&#8221;</a>
+<tr><td class="label">[PattersonTeh2013]</td><td>Patterson, Teh. <a class="reference external" href="http://www.stats.ox.ac.uk/~teh/research/compstats/PatTeh2013a.pdf">“Stochastic Gradient Riemannian
+Langevin Dynamics on the Probability Simplex”</a>
 NIPS, 2013.</td></tr>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">topic_model</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="k">import</span> <span class="n">topic_model</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">train_data</span><span class="p">,</span> <span class="n">test_data</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">random_split</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">topic_model</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pred</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span>
@@ -216,10 +219,10 @@ NIPS, 2013.</td></tr>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="turicreate.topic_model.TopicModel.html" class="btn btn-neutral float-right" title="turicreate.topic_model.TopicModel">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../turicreate.load_model.html" class="btn btn-neutral float-right" title="load_model">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="turicreate.topic_model.create.html" class="btn btn-neutral" title="turicreate.topic_model.create"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../turicreate.toolkits.topic_model.html" class="btn btn-neutral" title="topic_model"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -228,7 +231,7 @@ NIPS, 2013.</td></tr>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -246,7 +249,7 @@ NIPS, 2013.</td></tr>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

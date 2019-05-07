@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SGraph.add_vertices &mdash; Turi Create API 5.4 documentation</title>
+  <title>turicreate.SGraph.add_vertices &mdash; Turi Create API 5.5 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.4 documentation" href="../index.html"/> 
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,13 +126,13 @@
 <h1>turicreate.SGraph.add_vertices<a class="headerlink" href="#turicreate-sgraph-add-vertices" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SGraph.add_vertices">
-<code class="descclassname">SGraph.</code><code class="descname">add_vertices</code><span class="sig-paren">(</span><em>vertices</em>, <em>vid_field=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SGraph.add_vertices" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SGraph.</code><code class="descname">add_vertices</code><span class="sig-paren">(</span><em>self</em>, <em>vertices</em>, <em>vid_field=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SGraph.add_vertices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add vertices to the SGraph. Vertices should be input as a list of
 <a class="reference internal" href="turicreate.Vertex.html#turicreate.Vertex" title="turicreate.Vertex"><code class="xref py py-class docutils literal"><span class="pre">Vertex</span></code></a> objects, an <a class="reference internal" href="turicreate.SFrame.html#turicreate.SFrame" title="turicreate.SFrame"><code class="xref py py-class docutils literal"><span class="pre">SFrame</span></code></a>, or a
 pandas DataFrame. If vertices are specified by SFrame or DataFrame,
 <code class="docutils literal"><span class="pre">vid_field</span></code> specifies which column contains the vertex ID. Remaining
 columns are assumed to hold additional vertex attributes. If these
-attributes are not already present in the graph&#8217;s vertex data, they are
+attributes are not already present in the graph’s vertex data, they are
 added, with existing vertices acquiring the value <code class="docutils literal"><span class="pre">None</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -160,7 +163,10 @@ vertices is an SFrame. If <code class="docutils literal"><span class="pre">verti
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.SGraph.vertices.html#turicreate.SGraph.vertices" title="turicreate.SGraph.vertices"><code class="xref py py-obj docutils literal"><span class="pre">vertices</span></code></a>, <a class="reference internal" href="turicreate.SFrame.html#turicreate.SFrame" title="turicreate.SFrame"><code class="xref py py-obj docutils literal"><span class="pre">SFrame</span></code></a>, <a class="reference internal" href="turicreate.SGraph.add_edges.html#turicreate.SGraph.add_edges" title="turicreate.SGraph.add_edges"><code class="xref py py-obj docutils literal"><span class="pre">add_edges</span></code></a></p>
+<dl class="last docutils">
+<dt><code class="xref py py-obj docutils literal"><span class="pre">vertices</span></code>, <a class="reference internal" href="turicreate.SFrame.html#turicreate.SFrame" title="turicreate.SFrame"><code class="xref py py-obj docutils literal"><span class="pre">SFrame</span></code></a>, <a class="reference internal" href="turicreate.SGraph.add_edges.html#turicreate.SGraph.add_edges" title="turicreate.SGraph.add_edges"><code class="xref py py-obj docutils literal"><span class="pre">add_edges</span></code></a></dt>
+<dd></dd>
+</dl>
 </div>
 <p class="rubric">Notes</p>
 <ul class="simple">
@@ -169,23 +175,23 @@ they are overwritten completely. All attributes for these vertices
 will conform to the specification in this method.</li>
 </ul>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">SGraph</span><span class="p">,</span> <span class="n">Vertex</span><span class="p">,</span> <span class="n">SFrame</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="k">import</span> <span class="n">SGraph</span><span class="p">,</span> <span class="n">Vertex</span><span class="p">,</span> <span class="n">SFrame</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">SGraph</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Add a single vertex.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">add_vertices</span><span class="p">(</span><span class="n">Vertex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;breed&#39;</span><span class="p">:</span> <span class="s1">&#39;labrador&#39;</span><span class="p">}))</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">add_vertices</span><span class="p">(</span><span class="n">Vertex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;breed&#39;</span><span class="p">:</span> <span class="s1">&#39;labrador&#39;</span><span class="p">}))</span>
 </pre></div>
 </div>
 <p>Add a list of vertices.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">verts</span> <span class="o">=</span> <span class="p">[</span><span class="n">Vertex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;breed&#39;</span><span class="p">:</span> <span class="s1">&#39;labrador&#39;</span><span class="p">}),</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">verts</span> <span class="o">=</span> <span class="p">[</span><span class="n">Vertex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;breed&#39;</span><span class="p">:</span> <span class="s1">&#39;labrador&#39;</span><span class="p">}),</span>
 <span class="go">             Vertex(1, attr={&#39;breed&#39;: &#39;labrador&#39;}),</span>
 <span class="go">             Vertex(2, attr={&#39;breed&#39;: &#39;vizsla&#39;})]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">add_vertices</span><span class="p">(</span><span class="n">verts</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Add vertices from an SFrame.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf_vert</span> <span class="o">=</span> <span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;breed&#39;</span><span class="p">:[</span><span class="s1">&#39;lab&#39;</span><span class="p">,</span> <span class="s1">&#39;lab&#39;</span><span class="p">,</span> <span class="s1">&#39;vizsla&#39;</span><span class="p">]})</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf_vert</span> <span class="o">=</span> <span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;breed&#39;</span><span class="p">:[</span><span class="s1">&#39;lab&#39;</span><span class="p">,</span> <span class="s1">&#39;lab&#39;</span><span class="p">,</span> <span class="s1">&#39;vizsla&#39;</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">add_vertices</span><span class="p">(</span><span class="n">sf_vert</span><span class="p">,</span> <span class="n">vid_field</span><span class="o">=</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -202,7 +208,7 @@ will conform to the specification in this method.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 27, 2019.
+      Last updated on Apr 29, 2019.
     </p>
   </div>
 </footer>
@@ -220,7 +226,7 @@ will conform to the specification in this method.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.4',
+            VERSION:'5.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false
