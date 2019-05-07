@@ -154,8 +154,7 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
         data.groupby({session_id}, {{"count", aggregate::COUNT()}});
     std::cout << session_counts;
 
-    int chunk_size = prediction_window * predictions_in_chunk;
-    int feature_size = chunk_size * features.size();
+    // int feature_size = chunk_size * features.size();
 
     // Build a dict of the column order by column name, to later access within
     // the iterator
@@ -163,7 +162,7 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
     
     flex_vec curr_chunk_targets;
     flex_vec curr_chunk_features;
-    curr_chunk_features.reserve(feature_size);
+    // curr_chunk_features.reserve(feature_size);
     flex_vec curr_window_targets;
     flexible_type last_session_id = data[session_id][0];
 
@@ -183,7 +182,8 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
     gl_sframe_writer output_writer(output_column_names, output_column_types, 1);
 
     if (verbose) {
-      logprogress_stream << "Using sequences of size " << chunk_size << " for model creation." << std::endl;
+      logprogress_stream << "Using sequences of size 1000 for model creation."
+                         << std::endl;
     }
 
     time_t last_print_time = time(0);
@@ -193,22 +193,30 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
     // whenever a the ending of a prediction_window, chunk or session is reached.
     for (const auto& line: data.range_iterator()) {
 
-        auto curr_session_id = line[column_index_map[session_id]];
+      int chunk_size = 0;
+      auto curr_session_id = line[column_index_map[session_id]];
 
-        // Check if a new session has started
-        if (curr_session_id != last_session_id) {
-          // size_t chunk = data[data[session_id]==curr_session_id].size();
-          // std::cout << (chunk);
-          // Finalize the last chunk of the previous session
-          if (curr_chunk_features.size() > 0) {
-            finalize_chunk(curr_chunk_features, curr_chunk_targets,
-                           curr_window_targets, last_session_id, output_writer,
-                           chunk_size, feature_size, predictions_in_chunk,
-                           use_target);
-            }
+      // Check if a new session has started
+      if (curr_session_id != last_session_id) {
 
-            last_session_id = curr_session_id;
-            number_of_sessions++;
+        int feature_size = chunk_size * features.size();
+        curr_chunk_features.reserve(feature_size);
+
+        // Finalize the chunk of this session
+        if (curr_chunk_features.size() > 0) {
+          finalize_chunk(curr_chunk_features, curr_chunk_targets,
+                         curr_window_targets, last_session_id, output_writer,
+                         chunk_size, feature_size, predictions_in_chunk,
+                         use_target);
+        }
+
+        else {
+
+          chunk_size++;
+        }
+        std::cout << chunk_size;
+        last_session_id = curr_session_id;
+        number_of_sessions++;
         }
 
         for (const auto feature_name : features) {
@@ -228,19 +236,19 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
                 curr_window_targets.clear();
             }
         }
-        // Check if the aggregated chunk data has reached the maximal chunk length, and finalize
-        // the chunk processing.
-        if (curr_chunk_features.size() == static_cast<size_t>(feature_size)) {
-            finalize_chunk(curr_chunk_features,
-                           curr_chunk_targets,
-                           curr_window_targets,
-                           curr_session_id,
-                           output_writer,
-                           chunk_size,
-                           feature_size,
-                           predictions_in_chunk,
-                           use_target);
-        }
+        // Check if the aggregated chunk data has reached the maximal chunk
+        // length, and finalize the chunk processing. if
+        // (curr_chunk_features.size() == static_cast<size_t>(feature_size)) {
+        //     finalize_chunk(curr_chunk_features,
+        //                    curr_chunk_targets,
+        //                    curr_window_targets,
+        //                    curr_session_id,
+        //                    output_writer,
+        //                    chunk_size,
+        //                    feature_size,
+        //                    predictions_in_chunk,
+        //                    use_target);
+        // }
 
         time_t now = time(0);
         if (verbose && difftime(now, last_print_time) > 10) {
@@ -253,16 +261,16 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
 
     // Handle the tail of the data - the last few lines of the last chunk, which
     // needs to be finalized. if (curr_chunk_features.size() > 0) {
-    //     finalize_chunk(curr_chunk_features,
-    //                    curr_chunk_targets,
-    //                    curr_window_targets,
-    //                    last_session_id,
-    //                    output_writer,
-    //                    chunk_size,
-    //                    feature_size,
-    //                    predictions_in_chunk,
-    //                    use_target);
-    // }
+    // finalize_chunk(curr_chunk_features,
+    //                curr_chunk_targets,
+    //                curr_window_targets,
+    //                last_session_id,
+    //                output_writer,
+    //                chunk_size,
+    //                feature_size,
+    //                predictions_in_chunk,
+    //                use_target);
+    //}
 
     // Update the count of the last session in the dataset
     number_of_sessions++;
