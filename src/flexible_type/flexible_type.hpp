@@ -14,18 +14,18 @@
 #include <typeindex>
 #include <parallel/atomic.hpp>
 #include <util/int128_types.hpp>
-//#define FLEX_TYPE_ASSERT DASSERT_TRUE
 #include <flexible_type/flexible_type_base_types.hpp>
 namespace turi {
 void flexible_type_fail(bool);
 }
 
+// Note: Uses the same assert behavior in both release and debug,
+// to ensure we never crash (always throw instead).
+// See https://github.com/apple/turicreate/issues/1835
+#define FLEX_TYPE_ASSERT(param) flexible_type_fail(param);
+
 #ifdef NDEBUG
 //  ---- RELEASE MODE ---
-// In release mode, disable assertions on DFLEX_TYPE_ASSERT
-#define FLEX_TYPE_ASSERT(param) flexible_type_fail(param);
-#define DFLEX_TYPE_ASSERT(param)
-
 #ifdef TURI_COMPILE_EXTRA_OPTIMIZATION
   // also enable all the inline and flatten attributes
   #define FLEX_ALWAYS_INLINE __attribute__((always_inline))
@@ -37,9 +37,6 @@ void flexible_type_fail(bool);
 
 #else
 //  ---- DEBUG MODE ---
-// In debug mode, turn on everything
-#define FLEX_TYPE_ASSERT(param) flexible_type_fail(param);
-#define DFLEX_TYPE_ASSERT(param) flexible_type_fail(param);
 // disable the always_inline and flatten attributes
 #define FLEX_ALWAYS_INLINE
 #define FLEX_ALWAYS_INLINE_FLATTEN
@@ -1480,26 +1477,26 @@ inline FLEX_ALWAYS_INLINE_FLATTEN flexible_type& flexible_type::set_date_time_fr
 // flex_date_time
 template <>
 inline FLEX_ALWAYS_INLINE flex_date_time& flexible_type::mutable_get<flex_date_time>() {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::DATETIME);
+  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::DATETIME);
   return val.dtval;
 }
 
 template <>
 inline FLEX_ALWAYS_INLINE const flex_date_time& flexible_type::get<flex_date_time>() const {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::DATETIME);
+  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::DATETIME);
   return val.dtval;
 }
 
 // INTEGER
 template <>
 inline FLEX_ALWAYS_INLINE flex_int& flexible_type::mutable_get<flex_int>() {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::INTEGER);
+  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::INTEGER);
   return val.intval;
 }
 
 template <>
 inline FLEX_ALWAYS_INLINE const flex_int& flexible_type::get<flex_int>() const {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::INTEGER);
+  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::INTEGER);
   return val.intval;
 }
 
@@ -1516,14 +1513,14 @@ inline FLEX_ALWAYS_INLINE const flex_int& flexible_type::reinterpret_get<flex_in
 // flex_float
 template <>
 inline FLEX_ALWAYS_INLINE flex_float& flexible_type::mutable_get<flex_float>() {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::FLOAT);
+  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::FLOAT);
   return val.dblval;
 }
 
 
 template <>
 inline FLEX_ALWAYS_INLINE const flex_float& flexible_type::get<flex_float>() const {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::FLOAT);
+  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::FLOAT);
   return val.dblval;
 }
 
@@ -1541,14 +1538,14 @@ inline FLEX_ALWAYS_INLINE const flex_float& flexible_type::reinterpret_get<flex_
 // STRING
 template <>
 inline FLEX_ALWAYS_INLINE flex_string& flexible_type::mutable_get<flex_string>() {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::STRING);
+  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::STRING);
   ensure_unique();
   return val.strval->second;
 }
 
 template <>
 inline FLEX_ALWAYS_INLINE const flex_string& flexible_type::get<flex_string>() const {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::STRING);
+  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::STRING);
   return val.strval->second;
 }
 
@@ -1556,7 +1553,7 @@ inline FLEX_ALWAYS_INLINE const flex_string& flexible_type::get<flex_string>() c
 // VECTOR
 template <>
 inline FLEX_ALWAYS_INLINE flex_vec& flexible_type::mutable_get<flex_vec>() {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::VECTOR);
+  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::VECTOR);
   ensure_unique();
   return val.vecval->second;
 }
@@ -1564,7 +1561,7 @@ inline FLEX_ALWAYS_INLINE flex_vec& flexible_type::mutable_get<flex_vec>() {
 
 template <>
 inline FLEX_ALWAYS_INLINE const flex_vec& flexible_type::get<flex_vec>() const {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::VECTOR);
+  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::VECTOR);
   return val.vecval->second;
 }
 
@@ -1572,7 +1569,7 @@ inline FLEX_ALWAYS_INLINE const flex_vec& flexible_type::get<flex_vec>() const {
 // ND_VECTOR
 template <>
 inline FLEX_ALWAYS_INLINE flex_nd_vec& flexible_type::mutable_get<flex_nd_vec>() {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::ND_VECTOR);
+  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::ND_VECTOR);
   ensure_unique();
   return val.ndvecval->second;
 }
@@ -1580,7 +1577,7 @@ inline FLEX_ALWAYS_INLINE flex_nd_vec& flexible_type::mutable_get<flex_nd_vec>()
 
 template <>
 inline FLEX_ALWAYS_INLINE const flex_nd_vec& flexible_type::get<flex_nd_vec>() const {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::ND_VECTOR);
+  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::ND_VECTOR);
   return val.ndvecval->second;
 }
 
@@ -1588,7 +1585,7 @@ inline FLEX_ALWAYS_INLINE const flex_nd_vec& flexible_type::get<flex_nd_vec>() c
 // LIST
 template <>
 inline FLEX_ALWAYS_INLINE flex_list& flexible_type::mutable_get<flex_list>() {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::LIST);
+  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::LIST);
   ensure_unique();
   return val.recval->second;
 }
@@ -1596,7 +1593,7 @@ inline FLEX_ALWAYS_INLINE flex_list& flexible_type::mutable_get<flex_list>() {
 
 template <>
 inline FLEX_ALWAYS_INLINE const flex_list& flexible_type::get<flex_list>() const {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::LIST);
+  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::LIST);
   return val.recval->second;
 }
 
@@ -1604,7 +1601,7 @@ inline FLEX_ALWAYS_INLINE const flex_list& flexible_type::get<flex_list>() const
 // DICT
 template <>
 inline FLEX_ALWAYS_INLINE flex_dict& flexible_type::mutable_get<flex_dict>() {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::DICT);
+  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::DICT);
   ensure_unique();
   return val.dictval->second;
 }
@@ -1612,7 +1609,7 @@ inline FLEX_ALWAYS_INLINE flex_dict& flexible_type::mutable_get<flex_dict>() {
 
 template <>
 inline FLEX_ALWAYS_INLINE const flex_dict& flexible_type::get<flex_dict>() const {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::DICT);
+  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::DICT);
   return val.dictval->second;
 }
 
@@ -1620,14 +1617,14 @@ inline FLEX_ALWAYS_INLINE const flex_dict& flexible_type::get<flex_dict>() const
 // IMAGE
 template <>
 inline FLEX_ALWAYS_INLINE flex_image& flexible_type::mutable_get<flex_image>() {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::IMAGE);
+  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::IMAGE);
   ensure_unique();
   return val.imgval->second;
 }
 
 template <>
 inline FLEX_ALWAYS_INLINE const flex_image& flexible_type::get<flex_image>() const {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::IMAGE);
+  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::IMAGE);
   return val.imgval->second;
 }
 
@@ -1916,7 +1913,7 @@ inline FLEX_ALWAYS_INLINE_FLATTEN auto flexible_type::apply_mutating_visitor(Vis
      flex_undefined undef;
      return visitor(undef);
    default:
-     DFLEX_TYPE_ASSERT(false);
+     FLEX_TYPE_ASSERT(false);
   }
   __builtin_unreachable();
 }
@@ -1948,7 +1945,7 @@ inline FLEX_ALWAYS_INLINE_FLATTEN auto flexible_type::apply_visitor(Visitor visi
      flex_undefined undef;
      return visitor(undef);
    default:
-     DFLEX_TYPE_ASSERT(false);
+     FLEX_TYPE_ASSERT(false);
   }
   __builtin_unreachable();
 }
@@ -1991,7 +1988,7 @@ inline FLEX_ALWAYS_INLINE_FLATTEN auto flexible_type::apply_mutating_visitor(Vis
      return apply_mutating_visitor(const_visitor_wrapper<Visitor,
                                          flex_undefined>{visitor, undef});
    default:
-     DFLEX_TYPE_ASSERT(false);
+     FLEX_TYPE_ASSERT(false);
   }
   __builtin_unreachable();
 }
@@ -2033,7 +2030,7 @@ inline FLEX_ALWAYS_INLINE_FLATTEN auto flexible_type::apply_visitor(Visitor visi
      return apply_visitor(const_visitor_wrapper<Visitor,
                                          flex_undefined>{visitor, undef});
    default:
-     DFLEX_TYPE_ASSERT(false);
+     FLEX_TYPE_ASSERT(false);
   }
   __builtin_unreachable();
 }

@@ -158,6 +158,12 @@ class Annotate extends Component {
     });
   }
 
+  setError = (error_message) => {
+    this.setState({
+      totalError: error_message
+    });
+  }
+
   updateIncrementalCurrentIndex = (index) => {
     this.setState({
       incrementalCurrentIndex: index
@@ -377,6 +383,8 @@ class Annotate extends Component {
 
             {this.renderMainContent()}
         <NavigationBar infiniteScroll={this.state.infiniteScroll}
+                       setError={this.setError.bind(this)}
+                       numElements={this.props.metadata.numExamples}
                        toggleInfiniteScroll={this.toggleInfiniteScroll.bind(this)}
                        updateIncrementalCurrentIndex={this.updateIncrementalCurrentIndex.bind(this)}
                        getData={this.getData.bind(this)}

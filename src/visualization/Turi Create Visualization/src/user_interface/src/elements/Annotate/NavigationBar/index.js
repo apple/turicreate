@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import style from './index.module.scss';
-
+import ErrorBar from '../ErrorBar';
 
 class NavigationBar extends Component{
   constructor(props){
@@ -16,35 +16,33 @@ class NavigationBar extends Component{
 
   enterPressJumpRow(e) {
     if(e.keyCode == 13){
+      var image_number = parseInt(this.state.value,10);
+      this.setState({value:''});
       if(this.state.value != null){
-        var image_number = parseInt(this.state.value,10);
-        this.setState({value:''});
-        this.getIndex(image_number);
+        if (image_number < 0 || image_number >= this.props.numElements || isNaN(image_number)) {
+          this.props.setError(`Input '${this.state.value}', is invalid.`)
+        } else {
+          this.props.updateIncrementalCurrentIndex(image_number);
+          this.props.getData((image_number-1 ), image_number + 1);
+          this.props.getAnnotations((image_number - 1), image_number + 1);
 
-        if (this.props.infiniteScroll){
-          this.props.toggleInfiniteScroll();
+          if (this.props.infiniteScroll){
+            this.props.toggleInfiniteScroll();
+          }
         }
       }
     }
   }
 
-  getIndex = (index) => {
-    if (index >= 0) {
-      this.props.updateIncrementalCurrentIndex(index);
-      this.props.getData((index-1 ), index + 1);
-      this.props.getAnnotations((index - 1), index + 1);
-    }
-  }
-
   render(){
     return (
-      <div className="BottomBar">
-        <div className="jumpToImageContainer">
-          <input className="imageNumber"
+      <div className={style.BottomBar}>
+        <div className={style.jumpToImageContainer}>
+          <input className={style.imageNumber}
                  id={"imgNum"}
                  onChange={this.handleChange}
                  onKeyDown={this.enterPressJumpRow}
-                 placeholder={"Image #"}
+                 placeholder={"Jump to image"}
                  type={"text"}
                  value={this.state.value}/>
         </div>
