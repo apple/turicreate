@@ -145,7 +145,7 @@ void recsys_model_base::setup_and_train(
         logprogress_stream << "Warning: " << "Column '"
                            << data.column_name(additional_columns[0])
                            << "' ignored." << std::endl;
-        logprogress_stream << "    To use this column as the target, set target = \""
+        logprogress_stream << " To use one of these as a rating column, specify the column name to be used as target "
                            << data.column_name(additional_columns[0])
                            << "\" and use a method that allows the use of a target."
                            << std::endl;
@@ -163,7 +163,7 @@ void recsys_model_base::setup_and_train(
               << "Warning: Ignoring columns " << columns_ss.str() << ";"
               << std::endl;
           logprogress_stream
-              << "    To use one of these as a target column, set target = <column_name> "
+              << " To use one of these as a rating column, specify the column name to be used as target "
               << std::endl;
           logprogress_stream
               << "    and use a method that allows the use of a target."
