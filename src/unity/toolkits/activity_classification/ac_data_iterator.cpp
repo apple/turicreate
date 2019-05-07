@@ -150,10 +150,15 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
         logprogress_stream << "Pre-processing " << data.size() << " samples..." << std::endl;
     }
 
+    gl_sframe session_counts =
+        data.groupby({session_id}, {{"count", aggregate::COUNT()}});
+    std::cout << session_counts;
+
     int chunk_size = prediction_window * predictions_in_chunk;
     int feature_size = chunk_size * features.size();
 
-    // Build a dict pf the column order by column name, to later access within the iterator
+    // Build a dict of the column order by column name, to later access within
+    // the iterator
     auto column_index_map = generate_column_index_map(data.column_names());
     
     flex_vec curr_chunk_targets;
@@ -192,18 +197,14 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
 
         // Check if a new session has started
         if (curr_session_id != last_session_id) {
-
-            // Finalize the last chunk of the previous session
-            if (curr_chunk_features.size() > 0) {
-                finalize_chunk(curr_chunk_features,
-                               curr_chunk_targets,
-                               curr_window_targets,
-                               last_session_id,
-                               output_writer,
-                               chunk_size,
-                               feature_size,
-                               predictions_in_chunk,
-                               use_target);
+          // size_t chunk = data[data[session_id]==curr_session_id].size();
+          // std::cout << (chunk);
+          // Finalize the last chunk of the previous session
+          if (curr_chunk_features.size() > 0) {
+            finalize_chunk(curr_chunk_features, curr_chunk_targets,
+                           curr_window_targets, last_session_id, output_writer,
+                           chunk_size, feature_size, predictions_in_chunk,
+                           use_target);
             }
 
             last_session_id = curr_session_id;
@@ -250,18 +251,18 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
         processed_lines += 1;
     }
 
-    // Handle the tail of the data - the last few lines of the last chunk, which needs to be finalized.
-    if (curr_chunk_features.size() > 0) {
-        finalize_chunk(curr_chunk_features,
-                       curr_chunk_targets,
-                       curr_window_targets,
-                       last_session_id,
-                       output_writer,
-                       chunk_size,
-                       feature_size,
-                       predictions_in_chunk,
-                       use_target);
-    }
+    // Handle the tail of the data - the last few lines of the last chunk, which
+    // needs to be finalized. if (curr_chunk_features.size() > 0) {
+    //     finalize_chunk(curr_chunk_features,
+    //                    curr_chunk_targets,
+    //                    curr_window_targets,
+    //                    last_session_id,
+    //                    output_writer,
+    //                    chunk_size,
+    //                    feature_size,
+    //                    predictions_in_chunk,
+    //                    use_target);
+    // }
 
     // Update the count of the last session in the dataset
     number_of_sessions++;
