@@ -82,8 +82,8 @@ EXPORT std::vector<toolkit_function_specification> get_toolkit_function_registra
   specs.push_back(precision_recall_by_user_spec);
   REGISTER_FUNCTION(_supervised_streaming_evaluator, "unity_targets", 
                         "unity_predictions", "metric", "kwargs");
-  REGISTER_FUNCTION(compute_classifier_metrics, "data", "target", "prediction",
-                    "metric", "options");
+  REGISTER_FUNCTION(compute_classifier_metrics, "data", "target", "metric",
+                    "prediction", "options");
   REGISTER_FUNCTION(compute_object_detection_metrics, "data",
                     "annotations_column_name", "image_column_name",
                     "prediction", "options");
