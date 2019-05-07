@@ -225,10 +225,10 @@ void activity_classifier::init_table_printer(bool has_validation) {
   }
 }
 
-void activity_classifier::train(gl_sframe data, std::string target_column_name,
-                                std::string session_id_column_name,
+void activity_classifier::train(gl_sframe data, const std::string& target_column_name,
+                                const std::string& session_id_column_name,
                                 variant_type validation_data,
-                                std::map<std::string, flexible_type> opts)
+                                const std::map<std::string, flexible_type>& opts)
 {
 
   gl_sframe train_data;
@@ -238,9 +238,8 @@ void activity_classifier::train(gl_sframe data, std::string target_column_name,
 
   // Instantiate the training dependencies: data iterator, compute context,
   // backend NN model.
-  init_train(std::move(train_data), std::move(target_column_name),
-             std::move(session_id_column_name), std::move(val_data),
-             std::move(opts));
+  init_train(std::move(train_data), target_column_name, session_id_column_name,
+             std::move(val_data), opts);
 
   // Perform all the iterations at once.
   flex_int max_iterations = read_state<flex_int>("max_iterations");
@@ -260,13 +259,11 @@ void activity_classifier::train(gl_sframe data, std::string target_column_name,
   // Update the state with recall, precision and confusion matrix for training
   // data
   gl_sarray train_predictions = predict(train_data, "probability_vector");
-  gl_sframe train_eval({{"target", train_data[target_column_name]},
-                        {"probs", train_predictions}});
   variant_map_type train_metric =
-      evaluation::compute_classifier_metrics_from_probability_vectors(
-          {"recall", "precision", "confusion_matrix", "accuracy", "log_loss"},
-          train_eval, "target", "probs",
-          {{"classes", read_state<flex_list>("classes")}});
+      evaluation::compute_classifier_metrics(
+      train_data, target_column_name, "auto", train_predictions,
+      {{"classes", read_state<flex_list>("classes")}});
+
   add_or_update_state(
       {{"training_precision", train_metric["precision"]},
        {"training_recall", train_metric["recall"]},
@@ -277,20 +274,19 @@ void activity_classifier::train(gl_sframe data, std::string target_column_name,
 
   // Update the state with recall, precision and confusion matrix for validation
   // data
-  gl_sarray val_predictions = predict(train_data, "probability_vector");
-  gl_sframe val_eval(
-      {{"target", val_data[target_column_name]}, {"probs", val_predictions}});
-  variant_map_type val_metric =
-      evaluation::compute_classifier_metrics_from_probability_vectors(
-          {"recall", "precision", "confusion_matrix", "accuracy", "log_loss"},
-          val_eval, "target", "probs",
-          {{"classes", read_state<flex_list>("classes")}});
-  add_or_update_state(
-      {{"validation_precision", val_metric["precision"]},
-       {"validation_recall", val_metric["recall"]},
-       {"validation_accuracy", val_metric["accuracy"]},
-       {"validation_log_loss", val_metric["log_loss"]},
-       {"validation_confusion_matrix", val_metric["confusion_matrix"]}});
+  if (!val_data.empty()){
+    gl_sarray val_predictions = predict(val_data, "probability_vector");
+    variant_map_type val_metric =
+      evaluation::compute_classifier_metrics(
+      val_data, target_column_name, "auto", val_predictions,
+      {{"classes", read_state<flex_list>("classes")}});
+    add_or_update_state(
+        {{"validation_precision", val_metric["precision"]},
+         {"validation_recall", val_metric["recall"]},
+         {"validation_accuracy", val_metric["accuracy"]},
+         {"validation_log_loss", val_metric["log_loss"]},
+         {"validation_confusion_matrix", val_metric["confusion_matrix"]}});
+  }
 }
 
 
