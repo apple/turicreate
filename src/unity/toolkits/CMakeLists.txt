@@ -14,6 +14,7 @@ subdirs(ml_model
         util 
         evaluation
         supervised_learning
+        sound_classifier
         nearest_neighbors
         pattern_mining
         feature_engineering

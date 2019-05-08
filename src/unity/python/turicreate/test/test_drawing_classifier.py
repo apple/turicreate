@@ -323,3 +323,7 @@ class DrawingClassifierUsingQuickdraw245(DrawingClassifierTest):
         super(DrawingClassifierUsingQuickdraw245, self).setUpClass(
             warm_start="quickdraw_245_v0")
 
+class DrawingClassifierMPS(unittest.TestCase):
+    def test_cpp(self):
+        
+
