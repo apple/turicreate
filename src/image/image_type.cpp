@@ -57,13 +57,6 @@ void image_type::save(oarchive& oarc) const {
   }
 }
 
-void image_type::save(oarchive& oarc) const {
-  oarc << m_version << m_height << m_width << m_channels << m_format <<m_image_data_size;
-  if (m_image_data_size > 0) {
-      oarc.write(&m_image_data[0], m_image_data_size);
-  }
-}
-
 void image_type::load(iarchive& iarc) {
   iarc >> m_version >> m_height >> m_width >> m_channels >> m_format >> m_image_data_size;
   if (m_image_data_size > 0){
