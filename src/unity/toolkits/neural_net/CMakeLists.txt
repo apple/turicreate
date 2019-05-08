@@ -26,6 +26,14 @@ if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
       mps_graph_layers.mm
       mps_weight.mm
       mps_device_manager.m
+
+      layers/addition_layer.mm
+      layers/convolution_layer.mm
+      layers/convolution_padding.mm
+      layers/convolution_data_loader.mm
+      layers/fully_connected.mm
+      layers/fully_connected_data_loader.mm
+
     REQUIRES
       unity_core
       ${ACCELERATE}
