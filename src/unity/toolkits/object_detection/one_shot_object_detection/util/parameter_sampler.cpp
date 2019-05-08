@@ -68,6 +68,9 @@ std::vector<Eigen::Vector3f> ParameterSampler::get_warped_corners() {
  */ 
 void ParameterSampler::set_warped_corners(const std::vector<Eigen::Vector3f> &warped_corners) {
   warped_corners_ = warped_corners;
+  // swap last two entries to make the corners cyclic.
+  warped_corners_[2] = warped_corners[3];
+  warped_corners_[3] = warped_corners[2];
 }
 
 /* Function to sample all the parameters needed to build a transform, and

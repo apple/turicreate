@@ -87,7 +87,7 @@ flex_dict build_annotation( ParameterSampler &parameter_sampler,
   
   Eigen::Matrix<float, 3, 3> mat = parameter_sampler.get_transform();
 
-  std::vector<Eigen::Vector3f> warped_corners = {
+  const std::vector<Eigen::Vector3f> warped_corners = {
                                           normalize(mat * top_left_corner)   ,
                                           normalize(mat * top_right_corner)  ,
                                           normalize(mat * bottom_left_corner),
@@ -130,13 +130,14 @@ static std::map<std::string,size_t> generate_column_index_map(
     return index_map;
 }
 
-gl_sframe augment_data(gl_sframe data,
+gl_sframe augment_data(const gl_sframe &data,
                        const std::string& image_column_name,
                        const std::string& target_column_name,
-                       gl_sarray backgrounds,
-                       long seed) {
+                       const gl_sarray &backgrounds,
+                       long long seed) {
   auto column_index_map = generate_column_index_map(data.column_names());
-  std::vector<flexible_type> annotations, images;
+  std::vector<flexible_type> annotations;
+  std::vector<flexible_type> images;
   for (const auto& row: data.range_iterator()) {
     flex_image object = row[column_index_map[image_column_name]].to<flex_image>();
     std::string label = row[column_index_map[target_column_name]].to<flex_string>();
@@ -146,7 +147,7 @@ gl_sframe augment_data(gl_sframe data,
     if (!(object.is_decoded())) {
       decode_image_inplace(object);
     }
-    size_t row_number = -1;
+    int row_number = -1;
     for (const auto& background_ft: backgrounds.range_iterator()) {
       row_number++;
       flex_image flex_background = background_ft.to<flex_image>();
@@ -167,8 +168,6 @@ gl_sframe augment_data(gl_sframe data,
                                               object_width, object_height, 
                                               seed+row_number);
 
-      std::vector<Eigen::Vector3f> corners = parameter_sampler.get_warped_corners();
-      
       // create a gil view of the src buffer
       boost::gil::rgb8_image_t::view_t starter_image_view = interleaved_view(
         object_width,
@@ -176,7 +175,7 @@ gl_sframe augment_data(gl_sframe data,
         (boost::gil::rgb8_pixel_t*) (object.get_image_data()),
         object_channels * object_width // row length in bytes
         );
-      
+
       DASSERT_TRUE(flex_background.get_image_data() != nullptr);
       DASSERT_TRUE(object.is_decoded());
       DASSERT_TRUE(flex_background.is_decoded());
@@ -206,7 +205,7 @@ gl_sframe augment_data(gl_sframe data,
       // Superposition:
       // mask * warped + (1-mask) * background
       superimpose_image(view(masked), view(mask), view(transformed), 
-                                      view(mask_complement), background_view);
+                        view(mask_complement), background_view);
       annotations.push_back(annotation);
       images.push_back(flex_image(masked));
     }
@@ -227,10 +226,10 @@ one_shot_object_detector::one_shot_object_detector() {
   model_.reset(new turi::object_detection::object_detector());
 }
 
-gl_sframe one_shot_object_detector::augment(gl_sframe data,
+gl_sframe one_shot_object_detector::augment(const gl_sframe &data,
                                             const std::string& target_column_name,
-                                            gl_sarray backgrounds,
-                                            std::map<std::string, flexible_type> options){
+                                            const gl_sarray &backgrounds,
+                                            std::map<std::string, flexible_type> &options){
   
   // TODO: Automatically infer the image column name, or throw error if you can't
   // This should just happen on the Python side.
