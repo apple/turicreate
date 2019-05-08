@@ -12,6 +12,7 @@
 
 #include <unity/toolkits/neural_net/float_array.hpp>
 #include <unity/toolkits/neural_net/model_backend.hpp>
+#include <unity/toolkits/neural_net/mps_command_queue.hpp>
 
 #import "mps_networks.h"
 #import "mps_updater.h"
@@ -25,7 +26,7 @@ namespace neural_net {
 class mps_cnn_module: public model_backend {
 public:
 
-  mps_cnn_module(id <MTLDevice> dev);
+  mps_cnn_module(const mps_command_queue& command_queue);
 
   void init(int network_id, int n, int c_in, int h_in, int w_in, int c_out,
             int h_out, int w_out, int updater_id,
