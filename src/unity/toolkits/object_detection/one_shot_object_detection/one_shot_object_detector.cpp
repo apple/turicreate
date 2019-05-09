@@ -153,7 +153,6 @@ gl_sframe augment_data(const gl_sframe &data,
         background_channels * background_width // row length in bytes
         );
 
-      // create a gil view of the src buffer
       if (object.m_channels == 4) {
         images.push_back(
           superposition::create_synthetic_rgba_image(background_view, parameter_sampler, object)
