@@ -50,11 +50,12 @@ mps_graph_cnn_module::mps_graph_cnn_module() {
   }
 }
 
-mps_graph_cnn_module::mps_graph_cnn_module(id <MTLDevice> dev) {
+mps_graph_cnn_module::mps_graph_cnn_module(
+    const mps_command_queue& command_queue) {
   @autoreleasepool {
 
-  dev_ = dev;
-  cmd_queue_ = [dev_ newCommandQueue];
+  cmd_queue_ = command_queue.impl;
+  dev_ = cmd_queue_.device;
 
   }  // @autoreleasepool
 }
