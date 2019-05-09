@@ -270,7 +270,7 @@ void activity_classifier::train(gl_sframe data, const std::string& target_column
        {"training_accuracy", train_metric["accuracy"]},
        {"training_log_loss", train_metric["log_loss"]},
        {"training_confusion_matrix", train_metric["confusion_matrix"]},
-       {"num_examples", train_data.size()}});
+       {"training_number_of_examples", train_data.size()}});
 
   // Update the state with recall, precision and confusion matrix for validation
   // data
@@ -285,7 +285,8 @@ void activity_classifier::train(gl_sframe data, const std::string& target_column
          {"validation_recall", val_metric["recall"]},
          {"validation_accuracy", val_metric["accuracy"]},
          {"validation_log_loss", val_metric["log_loss"]},
-         {"validation_confusion_matrix", val_metric["confusion_matrix"]}});
+         {"validation_confusion_matrix", val_metric["confusion_matrix"]},
+         {"validation_number_of_examples", val_data.size()}});
   }
 }
 
