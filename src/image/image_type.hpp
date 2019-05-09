@@ -56,6 +56,8 @@ public:
              size_t channels, size_t image_data_size, int version, int format);
   /// Construct from a Boost GIL rgb8 Image
   explicit image_type(const boost::gil::rgb8_image_t& gil_image);
+  /// Construct from a Boost GIL rgba8 Image
+  explicit image_type(const boost::gil::rgba8_image_t& gil_image);
   /// Check whether image is decoded
   inline bool is_decoded() const { return m_format == Format::RAW_ARRAY; }
   /// Serialization
