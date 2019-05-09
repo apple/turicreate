@@ -11,8 +11,6 @@
 #include <random>
 
 #include <boost/gil/gil_all.hpp>
-#include <boost/gil/extension/numeric/sampler.hpp>
-#include <boost/gil/extension/numeric/resample.hpp>
 
 #include <Eigen/Core>
 #include <Eigen/Dense>
