@@ -75,27 +75,15 @@ static double vec_mode(flex_vec::const_iterator first,
  * \param[in]       predictions_in_chunk    The numer of prediction windows in each chunks. This is also the number of target values per chunk.
  * \param[in]       use_target              A bool indicating whether the user's dataset includes a target column.
  */
-static void finalize_chunk(flex_vec &curr_chunk_features,
-                           flex_vec &curr_chunk_targets,
-                           flexible_type curr_session_id,
-                           gl_sframe_writer &output_writer, size_t chunk_size,
-                           size_t feature_size, size_t predictions_in_chunk,
-                           bool use_target) {
+// static void finalize_chunk(flex_vec &curr_chunk_features,
+//                            flex_vec &curr_chunk_targets,
+//                            flexible_type curr_session_id,
+//                            gl_sframe_writer &output_writer, size_t
+//                            chunk_size, size_t feature_size, size_t
+//                            predictions_in_chunk, bool use_target) {
 
-
-  if (use_target) {
-    output_writer.write(
-        {curr_chunk_features, chunk_size, curr_session_id, curr_chunk_targets},
-        0);
-  } else {
-    output_writer.write({curr_chunk_features, chunk_size, curr_session_id}, 0);
-  }
-
-  curr_chunk_features.clear();
-  curr_chunk_targets.clear();
-
-  return;
-}
+//   return;
+// }
 
 variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
                                                         const std::vector<std::string> &features,
@@ -172,9 +160,16 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
         // Finalize the chunk of this session
 
         if (curr_chunk_features.size() > 0) {
-          finalize_chunk(curr_chunk_features, curr_chunk_targets,
-                         last_session_id, output_writer, chunk_size,
-                         feature_size, predictions_in_chunk, use_target);
+          if (use_target) {
+            output_writer.write({curr_chunk_features, chunk_size,
+                                 last_session_id, curr_chunk_targets},
+                                0);
+          } else {
+            output_writer.write(
+                {curr_chunk_features, chunk_size, last_session_id}, 0);
+          }
+          curr_chunk_features.clear();
+          curr_chunk_targets.clear();
         }
 
         chunk_size = 0;
@@ -211,9 +206,16 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
     feature_size = chunk_size * features.size();
 
     if (curr_chunk_features.size() > 0) {
-      finalize_chunk(curr_chunk_features, curr_chunk_targets, last_session_id,
-                     output_writer, chunk_size, feature_size,
-                     predictions_in_chunk, use_target);
+      if (use_target) {
+        output_writer.write({curr_chunk_features, chunk_size, last_session_id,
+                             curr_chunk_targets},
+                            0);
+      } else {
+        output_writer.write({curr_chunk_features, chunk_size, last_session_id},
+                            0);
+      }
+      curr_chunk_features.clear();
+      curr_chunk_targets.clear();
     }
 
     // Update the count of the last session in the dataset
@@ -333,7 +335,7 @@ simple_data_iterator::simple_data_iterator(const parameters &params)
       num_predictions_per_chunk_(params.predictions_in_chunk),
       range_iterator_(data_.chunks.range_iterator()),
       next_row_(range_iterator_.begin()), end_of_rows_(range_iterator_.end()),
-      sample_in_row_(0), do_aug(params.verbose) {}
+      sample_in_row_(0), training(params.verbose) {}
 
 const flex_list& simple_data_iterator::feature_names() const {
   return data_.feature_names;
@@ -373,7 +375,6 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
   if (data_.has_target) {
     labels_column_index = data_.chunks.column_index("target");
-    // weights_column_index = data_.chunks.column_index("weights");
   }
 
   // Allocate buffers for the resulting batch data.
@@ -398,22 +399,20 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
     const sframe_rows::row& row = *next_row_;
 
-    // Copy the feature values (converting from double to float).
-
     const flex_int &chunk_length = row[chunk_len_column_index].get<flex_int>();
 
     if (sample_in_row_ == 0 &&
         static_cast<size_t>(chunk_length) > num_samples_per_prediction_ &&
-        do_aug) {
+        training) {
       sample_in_row_ = std::rand() % (num_samples_per_prediction_ - 1);
     }
 
     size_t jump = sample_in_row_ + num_samples_per_chunk;
     size_t end = std::min(jump, static_cast<size_t>(chunk_length));
 
+    // Copy the feature values (converting from double to float).
     const flex_vec& feature_vec = row[features_column_index].get<flex_vec>();
 
-    // ASSERT_EQ(feature_vec.size(), features_stride);
     std::copy(feature_vec.begin() + sample_in_row_ * num_features,
               feature_vec.begin() + end * num_features, features_out);
     features_out += num_features * num_samples_per_chunk;
