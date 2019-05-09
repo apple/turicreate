@@ -40,27 +40,27 @@ static std::map<std::string,size_t> generate_column_index_map(const std::vector<
  * \return    The most frequent value within the given vector.
  */
 
-// static double vec_mode(const flex_vec& input_vec) {
-//     std::vector<int> histogram;
-//     for (size_t i = 0; i < input_vec.size(); ++i) {
-//         size_t value = static_cast<size_t>(input_vec[i]);
+static double vec_mode(flex_vec::const_iterator first,
+                       flex_vec::const_iterator last) {
+  std::vector<int> histogram;
+  for (flex_vec::const_iterator i = first; i < last; ++i) {
+    size_t value = static_cast<size_t>(*i);
 
-//         // Each value should be in the index of a class label
-//         DASSERT_EQ(static_cast<double>(static_cast<size_t>(input_vec[i])),
-//         input_vec[i]);
+    // Each value should be in the index of a class label
+    DASSERT_EQ(static_cast<double>(static_cast<size_t>(*i)), *i);
 
-//         if(histogram.size() < (value + 1)){
-//           histogram.resize(value + 1);
-//         }
+    if (histogram.size() < (value + 1)) {
+      histogram.resize(value + 1);
+    }
 
-//         histogram[value]++;
-//     }
+    histogram[value]++;
+  }
 
-//     auto majority = std::max_element(histogram.begin(), histogram.end());
+  auto majority = std::max_element(histogram.begin(), histogram.end());
 
-//     // return index to mode majority value
-//     return std::distance(histogram.begin(), majority);
-// }
+  // return index to mode majority value
+  return std::distance(histogram.begin(), majority);
+}
 
 /**
  * Write the aggregated data of the current chunk as a single new vector in the converted SFrame,
@@ -77,46 +77,18 @@ static std::map<std::string,size_t> generate_column_index_map(const std::vector<
  */
 static void finalize_chunk(flex_vec &curr_chunk_features,
                            flex_vec &curr_chunk_targets,
-                           // flex_vec&            curr_window_targets,
                            flexible_type curr_session_id,
                            gl_sframe_writer &output_writer, size_t chunk_size,
                            size_t feature_size, size_t predictions_in_chunk,
                            bool use_target) {
 
-  size_t curr_feature_size = curr_chunk_features.size();
-  size_t num_features = feature_size / chunk_size;
-  size_t curr_chunk_size = curr_feature_size / num_features;
-
-  // If the required chunk length hasn't been reached (may happen in the last
-  // chunk of each session) - the features vector needs to be padded. The vector
-  // is padded to feature_size
-  if (curr_feature_size < feature_size) {
-    curr_chunk_features.resize(feature_size, 0.0);
-  }
 
   if (use_target) {
-    // if (curr_window_targets.size() > 0) {
-    //     curr_chunk_targets.push_back(vec_mode(curr_window_targets));
-    //     curr_window_targets.clear();
-    // }
-
-    // // The last chunk of each session may be padded, in which case the target
-    // data should be ignored.
-    // // This is achieved by setting a weight of "1" for all actual targets,
-    // and "0" for padded data. flex_vec
-    // curr_chunk_weights(curr_chunk_targets.size(), 1.0);
-
-    // if (curr_chunk_targets.size() < predictions_in_chunk) {
-    //     curr_chunk_targets.resize(predictions_in_chunk, 0.0);
-    //     curr_chunk_weights.resize(predictions_in_chunk, 0.0);
-    // }
-
-    output_writer.write({curr_chunk_features, curr_chunk_size, curr_session_id,
-                         curr_chunk_targets},
-                        0);
+    output_writer.write(
+        {curr_chunk_features, chunk_size, curr_session_id, curr_chunk_targets},
+        0);
   } else {
-    output_writer.write({curr_chunk_features, curr_chunk_size, curr_session_id},
-                        0);
+    output_writer.write({curr_chunk_features, chunk_size, curr_session_id}, 0);
   }
 
   curr_chunk_features.clear();
@@ -152,9 +124,6 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
 
     gl_sframe session_counts =
         data.groupby({session_id}, {{"count", aggregate::COUNT()}});
-    std::cout << session_counts;
-
-    // int feature_size = chunk_size * features.size();
 
     // Build a dict of the column order by column name, to later access within
     // the iterator
@@ -162,10 +131,9 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
     
     flex_vec curr_chunk_targets;
     flex_vec curr_chunk_features;
-    // curr_chunk_features.reserve(feature_size);
+    // curr_chunk_features.reserve();
     // flex_vec curr_window_targets;
     flexible_type last_session_id = data[session_id][0];
-
     size_t number_of_sessions = 0;
 
     // Prepare an output SFrame writer, that will write a new SFrame in the converted batch-processing
@@ -188,6 +156,7 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
 
     time_t last_print_time = time(0);
     size_t processed_lines = 0;
+    int feature_size;
 
     // Iterate over the user data. The features and targets are aggregated, and handled
     // whenever a the ending of a prediction_window, chunk or session is reached.
@@ -195,31 +164,23 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
     for (const auto& line: data.range_iterator()) {
 
       auto curr_session_id = line[column_index_map[session_id]];
-      // std::cout << curr_session_id;
-      // Check if a new session has started
+
       if (curr_session_id != last_session_id) {
 
-        int feature_size = chunk_size * features.size();
-
-        if (use_target) {
-          curr_chunk_targets.reserve(chunk_size);
-        }
-
-        curr_chunk_features.reserve(feature_size);
+        feature_size = chunk_size * features.size();
 
         // Finalize the chunk of this session
+
         if (curr_chunk_features.size() > 0) {
           finalize_chunk(curr_chunk_features, curr_chunk_targets,
                          last_session_id, output_writer, chunk_size,
                          feature_size, predictions_in_chunk, use_target);
         }
-        std::cout << chunk_size << "\t";
+
         chunk_size = 0;
         last_session_id = curr_session_id;
         number_of_sessions++;
       }
-
-      else {
 
         chunk_size += 1;
 
@@ -233,28 +194,7 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
         // the most frequent value (statistical mode) within the window.
         if (use_target) {
           curr_chunk_targets.push_back(line[column_index_map[target]]);
-
-          // if (curr_window_targets.size() ==
-          // static_cast<size_t>(prediction_window)) {
-          //     // auto target_val = vec_mode(curr_window_targets);
-          //     curr_chunk_targets.push_back(target_val);
-          //     curr_window_targets.clear();
-          // }
         }
-        // Check if the aggregated chunk data has reached the maximal chunk
-        // length, and finalize the chunk processing. if
-        // (curr_chunk_features.size() == static_cast<size_t>(feature_size)) {
-        //     finalize_chunk(curr_chunk_features,
-        //                    curr_chunk_targets,
-        //                    curr_window_targets,
-        //                    curr_session_id,
-        //                    output_writer,
-        //                    chunk_size,
-        //                    feature_size,
-        //                    predictions_in_chunk,
-        //                    use_target);
-        // }
-      }
 
         time_t now = time(0);
         if (verbose && difftime(now, last_print_time) > 10) {
@@ -266,17 +206,15 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
     }
 
     // Handle the tail of the data - the last few lines of the last chunk, which
-    // needs to be finalized. if (curr_chunk_features.size() > 0) {
-    // finalize_chunk(curr_chunk_features,
-    //                curr_chunk_targets,
-    //                curr_window_targets,
-    //                last_session_id,
-    //                output_writer,
-    //                chunk_size,
-    //                feature_size,
-    //                predictions_in_chunk,
-    //                use_target);
-    //}
+    // needs to be finalized.
+
+    feature_size = chunk_size * features.size();
+
+    if (curr_chunk_features.size() > 0) {
+      finalize_chunk(curr_chunk_features, curr_chunk_targets, last_session_id,
+                     output_writer, chunk_size, feature_size,
+                     predictions_in_chunk, use_target);
+    }
 
     // Update the count of the last session in the dataset
     number_of_sessions++;
@@ -387,14 +325,15 @@ simple_data_iterator::preprocessed_data simple_data_iterator::preprocess_data(
   return result;
 }
 
-simple_data_iterator::simple_data_iterator(const parameters& params)
-  : data_(preprocess_data(params)),
-    num_samples_per_prediction_(params.prediction_window),
-    num_predictions_per_chunk_(params.predictions_in_chunk),
-    range_iterator_(data_.chunks.range_iterator()),
-    next_row_(range_iterator_.begin()),
-    end_of_rows_(range_iterator_.end())
-{}
+size_t sample = 0;
+
+simple_data_iterator::simple_data_iterator(const parameters &params)
+    : data_(preprocess_data(params)),
+      num_samples_per_prediction_(params.prediction_window),
+      num_predictions_per_chunk_(params.predictions_in_chunk),
+      range_iterator_(data_.chunks.range_iterator()),
+      next_row_(range_iterator_.begin()), end_of_rows_(range_iterator_.end()),
+      sample_in_row_(0), do_aug(params.verbose) {}
 
 const flex_list& simple_data_iterator::feature_names() const {
   return data_.feature_names;
@@ -414,6 +353,12 @@ bool simple_data_iterator::has_next_batch() const {
 
 data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
+  // First take the input which is converted sframe has all the data per session
+  // chunk into prediction_per_chunk * per_window and pick the label for it
+  // accumulate 32 of them and pass in batch but keep track of sample number
+  // keep track of corner case where there aren't a 1000 for label so you pad
+  // with 0s
+
   size_t num_samples_per_chunk =
       num_samples_per_prediction_ * num_predictions_per_chunk_;
   size_t num_features = data_.feature_names.size();
@@ -425,10 +370,10 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
   size_t chunk_len_column_index = data_.chunks.column_index("chunk_len");
   size_t session_id_column_index = data_.chunks.column_index("session_id");
   size_t labels_column_index = 0;
-  size_t weights_column_index = 0;
+
   if (data_.has_target) {
     labels_column_index = data_.chunks.column_index("target");
-    weights_column_index = data_.chunks.column_index("weights");
+    // weights_column_index = data_.chunks.column_index("weights");
   }
 
   // Allocate buffers for the resulting batch data.
@@ -440,39 +385,71 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     labels.resize(labels_size, 0.f);
     weights.resize(labels_size, 0.f);
   }
+  std::vector<batch::chunk_info> batch_info;
+  batch_info.reserve(batch_size);
 
   // Iterate through SFrame rows until filling the batch or reaching the end of
   // the data.
   float* features_out = features.data();
   float* labels_out = labels.data();
   float* weights_out = weights.data();
-  std::vector<batch::chunk_info> batch_info;
-  batch_info.reserve(batch_size);
+
   while (batch_info.size() < batch_size && next_row_ != end_of_rows_) {
 
     const sframe_rows::row& row = *next_row_;
 
     // Copy the feature values (converting from double to float).
-    const flex_vec& feature_vec = row[features_column_index].get<flex_vec>();
-    ASSERT_EQ(feature_vec.size(), features_stride);
-    features_out = std::copy(feature_vec.begin(), feature_vec.end(),
-                             features_out);
 
+    const flex_int &chunk_length = row[chunk_len_column_index].get<flex_int>();
+
+    if (sample_in_row_ == 0 &&
+        static_cast<size_t>(chunk_length) > num_samples_per_prediction_ &&
+        do_aug) {
+      sample_in_row_ = std::rand() % (num_samples_per_prediction_ - 1);
+    }
+
+    size_t jump = sample_in_row_ + num_samples_per_chunk;
+    size_t end = std::min(jump, static_cast<size_t>(chunk_length));
+
+    const flex_vec& feature_vec = row[features_column_index].get<flex_vec>();
+
+    // ASSERT_EQ(feature_vec.size(), features_stride);
+    std::copy(feature_vec.begin() + sample_in_row_ * num_features,
+              feature_vec.begin() + end * num_features, features_out);
+    features_out += num_features * num_samples_per_chunk;
+
+    // //std::cout << features;
     if (data_.has_target) {
 
-      // Also copy the labels and weights.
-      const flex_vec& target_vec = row[labels_column_index].get<flex_vec>();
-      const flex_vec& weight_vec = row[weights_column_index].get<flex_vec>();
-      labels_out = std::copy(target_vec.begin(), target_vec.end(), labels_out);
-      weights_out = std::copy(weight_vec.begin(), weight_vec.end(),
-                              weights_out);
+      const flex_vec &label_vec = row[labels_column_index].get<flex_vec>();
+
+      // it there are 1000 of them - weights to be written as 1
+      // split them into 50 and take vec_mode and store in labels_out
+      // else if not 1000 write for the rest 0 in weights and take vec mode of
+      // the ones present store in labels_out
+      for (size_t i = sample_in_row_; i < end;
+           i += num_samples_per_prediction_) {
+        size_t window_end = std::min(i + num_samples_per_prediction_, end);
+        double label =
+            vec_mode(label_vec.begin() + i, label_vec.begin() + window_end);
+        labels_out[(i - sample_in_row_) / num_samples_per_prediction_] =
+            static_cast<float>(label);
+        weights_out[(i - sample_in_row_) / num_samples_per_prediction_] = 1.f;
+      }
+      labels_out += num_predictions_per_chunk_;
+      weights_out += num_predictions_per_chunk_;
     }
 
     batch_info.emplace_back();
     batch_info.back().session_id = row[session_id_column_index];
-    batch_info.back().num_samples = row[chunk_len_column_index];
+    batch_info.back().num_samples = end - sample_in_row_;
 
-    ++next_row_;
+    sample_in_row_ = end;
+
+    if (sample_in_row_ >= static_cast<size_t>(chunk_length)) {
+      ++next_row_;
+      sample_in_row_ = 0;
+    }
   }
 
   // Wrap the buffers as float_array values.

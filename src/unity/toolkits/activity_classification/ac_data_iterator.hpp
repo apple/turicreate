@@ -179,6 +179,8 @@ private:
   gl_sframe_range range_iterator_;
   gl_sframe_range::iterator next_row_;
   gl_sframe_range::iterator end_of_rows_;
+  size_t sample_in_row_;
+  bool do_aug;
 };
 
 /**
