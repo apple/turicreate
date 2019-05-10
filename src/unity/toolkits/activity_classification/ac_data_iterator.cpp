@@ -62,28 +62,6 @@ static double vec_mode(flex_vec::const_iterator first,
   return std::distance(histogram.begin(), majority);
 }
 
-/**
- * Write the aggregated data of the current chunk as a single new vector in the converted SFrame,
- * and init all aggregation vectors to begin a new chunk.
- *
- * \param[in,out]   curr_chunk_features     A vector with the aggregated features data (flattened row-major) of the current chunk.
- * \param[in,out]   curr_chunk_targets      A vector with the aggregated target data (flattened row-major) of the current chunk - after subsampling by predicion_window.
- * \param[in,out]   curr_window_targets     A vector with the aggregate raw target data (flattened row-major) of the current precdiction window, in case it was not finalized yet.
- * \param[in,out]   output_writer           A gl_sframe_writer object, which is used to write the converted SFrame.
- * \param[in]       curr_session_id         The current session id - may be integer or string.
- * \param[in]       chunk_size              The constant sequence length which is used for training and predicion.
- * \param[in]       predictions_in_chunk    The numer of prediction windows in each chunks. This is also the number of target values per chunk.
- * \param[in]       use_target              A bool indicating whether the user's dataset includes a target column.
- */
-// static void finalize_chunk(flex_vec &curr_chunk_features,
-//                            flex_vec &curr_chunk_targets,
-//                            flexible_type curr_session_id,
-//                            gl_sframe_writer &output_writer, size_t
-//                            chunk_size, size_t feature_size, size_t
-//                            predictions_in_chunk, bool use_target) {
-
-//   return;
-// }
 
 variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
                                                         const std::vector<std::string> &features,
@@ -119,8 +97,7 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
     
     flex_vec curr_chunk_targets;
     flex_vec curr_chunk_features;
-    // curr_chunk_features.reserve();
-    // flex_vec curr_window_targets;
+
     flexible_type last_session_id = data[session_id][0];
     size_t number_of_sessions = 0;
 
@@ -146,8 +123,8 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
     size_t processed_lines = 0;
     int feature_size;
 
-    // Iterate over the user data. The features and targets are aggregated, and handled
-    // whenever a the ending of a prediction_window, chunk or session is reached.
+    // Iterate over the user data. The features and targets are aggregated, and
+    // handled whenever a the ending of a session is reached.
     int chunk_size = 0;
     for (const auto& line: data.range_iterator()) {
 
@@ -157,8 +134,10 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
 
         feature_size = chunk_size * features.size();
 
-        // Finalize the chunk of this session
-
+        // Write the aggregated data of the current chunk (which includes all
+        // the samples in the current session) as a single new vector in the
+        // converted SFrame, and init all aggregation vectors to begin a new
+        // chunk.
         if (curr_chunk_features.size() > 0) {
           if (use_target) {
             output_writer.write({curr_chunk_features, chunk_size,
@@ -200,9 +179,8 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
         processed_lines += 1;
     }
 
-    // Handle the tail of the data - the last few lines of the last chunk, which
-    // needs to be finalized.
-
+    // Handle the last session, which needs to be aggregated and written in the
+    // converted sframe.
     feature_size = chunk_size * features.size();
 
     if (curr_chunk_features.size() > 0) {
@@ -306,9 +284,7 @@ simple_data_iterator::preprocessed_data simple_data_iterator::preprocess_data(
   }
 
   // Chunk the data, so that each row of the resulting SFrame corresponds to a
-  // sequence of up to predictions_in_chunk prediction windows (from the same
-  // session), each comprising up to prediction_window rows from the original
-  // SFrame.
+  // all samples in a session from the original SFrame.
   variant_map_type result_map = _activity_classifier_prepare_data_impl(
       data, feature_column_names, params.session_id_column_name,
       static_cast<int>(params.prediction_window),
@@ -355,11 +331,6 @@ bool simple_data_iterator::has_next_batch() const {
 
 data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
-  // First take the input which is converted sframe has all the data per session
-  // chunk into prediction_per_chunk * per_window and pick the label for it
-  // accumulate 32 of them and pass in batch but keep track of sample number
-  // keep track of corner case where there aren't a 1000 for label so you pad
-  // with 0s
 
   size_t num_samples_per_chunk =
       num_samples_per_prediction_ * num_predictions_per_chunk_;
@@ -401,13 +372,18 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
     const flex_int &chunk_length = row[chunk_len_column_index].get<flex_int>();
 
+    // Only for training, we introduce a random offset
     if (sample_in_row_ == 0 &&
         static_cast<size_t>(chunk_length) > num_samples_per_prediction_ &&
         training) {
       sample_in_row_ = std::rand() % (num_samples_per_prediction_ - 1);
     }
 
+    // Stores the start of next instance
     size_t jump = sample_in_row_ + num_samples_per_chunk;
+
+    // End keeps track of the start of next instance if the last instance is
+    // smaller
     size_t end = std::min(jump, static_cast<size_t>(chunk_length));
 
     // Copy the feature values (converting from double to float).
@@ -417,15 +393,11 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
               feature_vec.begin() + end * num_features, features_out);
     features_out += num_features * num_samples_per_chunk;
 
-    // //std::cout << features;
     if (data_.has_target) {
 
       const flex_vec &label_vec = row[labels_column_index].get<flex_vec>();
 
-      // it there are 1000 of them - weights to be written as 1
-      // split them into 50 and take vec_mode and store in labels_out
-      // else if not 1000 write for the rest 0 in weights and take vec mode of
-      // the ones present store in labels_out
+      // The label is picked using majority voting for every prediction_window
       for (size_t i = sample_in_row_; i < end;
            i += num_samples_per_prediction_) {
         size_t window_end = std::min(i + num_samples_per_prediction_, end);
