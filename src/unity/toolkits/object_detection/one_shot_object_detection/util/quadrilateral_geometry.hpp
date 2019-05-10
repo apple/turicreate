@@ -31,7 +31,7 @@ private:
  * order from top right to bottom left.
  */
 bool is_in_quadrilateral(size_t x, size_t y, 
-  std::vector<Eigen::Vector3f> &corners);
+  const std::vector<Eigen::Vector3f> &corners);
 
 /* mask is an image with all pixels set to black and
  * mask_complement is an image with all pixels set to white.
@@ -40,7 +40,7 @@ bool is_in_quadrilateral(size_t x, size_t y,
  */
 void color_quadrilateral(const boost::gil::rgb8_image_t::view_t &mask_view, 
                          const boost::gil::rgb8_image_t::view_t &mask_complement_view, 
-                         std::vector<Eigen::Vector3f> corners);
+                         const std::vector<Eigen::Vector3f> &corners);
 
 } // quadrilateral_geometry
 } // data_augmentation

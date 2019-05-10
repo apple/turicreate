@@ -7,7 +7,7 @@ if [[ -z $VIRTUALENV ]]; then
   VIRTUALENV=virtualenv
 fi
 
-$VIRTUALENV deps/env
+$VIRTUALENV `pwd`/deps/env
 source deps/env/bin/activate
 
 PYTHON="${PWD}/deps/env/bin/python"

@@ -138,6 +138,9 @@ def draw_bounding_boxes(images, annotations, confidence_threshold=0):
             pil_img = Image.fromarray(image.pixel_data)
             _annotate_image(pil_img, anns, confidence_threshold=confidence_threshold)
             image = _np.array(pil_img)
+            if len(image.shape) == 2:
+                # Grayscale image, reshape image shape
+                image = image.reshape(image.shape[0], image.shape[1], 1)
             FORMAT_RAW = 2
             annotated_image = _tc.Image(_image_data=image.tobytes(),
                                         _width=image.shape[1],

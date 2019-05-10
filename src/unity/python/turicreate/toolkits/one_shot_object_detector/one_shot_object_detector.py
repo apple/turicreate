@@ -11,16 +11,20 @@ from turicreate.toolkits._model import CustomModel as _CustomModel
 
 def create(dataset,
            target,
+           backgrounds=None,
            feature=None,
            batch_size=0,
            max_iterations=0,
            seed=None,
            verbose=True):
     model = _extensions.one_shot_object_detector()
-    if seed is None: seed =  _random.randint(0, 2**64 - 1)
+    if seed is None: seed = _random.randint(0, 2**32 - 1)
+    if backgrounds is None:
+        # replace this with loading backgrounds from developer.apple.com
+        backgrounds = _tc.SArray()
     # Option arguments to pass in to C++ Object Detector, if we use it:
     # {'mlmodel_path':'darknet.mlmodel', 'max_iterations' : 25}
-    augmented_data = model.augment(dataset, target, _tc.SArray(), {"seed":seed})
+    augmented_data = model.augment(dataset, target, backgrounds, {"seed":seed})
     od_model = _tc.object_detector.create(augmented_data)
     state = {'detector':od_model}
     return OneShotObjectDetector(state)

@@ -44,6 +44,18 @@ if(APPLE AND HAS_MLCUSTOMMODEL)
   )
 endif()
 
+make_library(unity_shared
+  SOURCES
+    ${unity_shared_deps}
+    ${_TC_DEFAULT_SERVER_INITIALIZER}
+    ${_TC_COMMON_OBJECTS}
+  REQUIRES
+    ${_TC_COMMON_REQUIREMENTS}
+  SHARED
+  SHARED_ALL_DEFINED
+  DEAD_STRIP
+)
+
 # same as unity_shared, but all symbols exported
 # uses add_library instead of make_library so dependencies' symbols can be exported.
 add_library(unity_shared_for_testing SHARED

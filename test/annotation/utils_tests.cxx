@@ -13,6 +13,9 @@
 
 #include "utils.cpp"
 
+/* The C++ featurizer API only works on Apple platforms. */
+#ifdef __APPLE__
+
 struct utils_test {
 public:
   /*
@@ -78,12 +81,12 @@ public:
 };
 
 BOOST_FIXTURE_TEST_SUITE(_utils_test, utils_test)
-#ifdef __APPLE__
 BOOST_AUTO_TEST_CASE(test_featurize_images) {
   utils_test::test_featurize_images();
 }
 BOOST_AUTO_TEST_CASE(test_most_similar_items) {
   utils_test::test_most_similar_items();
 }
-#endif
 BOOST_AUTO_TEST_SUITE_END()
+
+#endif

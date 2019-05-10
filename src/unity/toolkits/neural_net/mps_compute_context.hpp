@@ -10,6 +10,7 @@
 #include <memory>
 
 #include <unity/toolkits/neural_net/compute_context.hpp>
+#include <unity/toolkits/neural_net/mps_command_queue.hpp>
 
 namespace turi {
 namespace neural_net {
@@ -21,6 +22,11 @@ namespace neural_net {
  */
 class mps_compute_context: public compute_context {
 public:
+
+  /**
+   * Constructs a context wrapping the given Metal command queue.
+   */
+  mps_compute_context(std::unique_ptr<mps_command_queue> command_queue);
 
   /**
    * Constructs a context wrapping the best currently available Metal device.
@@ -55,10 +61,7 @@ public:
 
 private:
 
-  // Use PIMPL pattern to keep Objective C out of this header.
-  struct impl;
-
-  std::unique_ptr<impl> impl_;
+  std::unique_ptr<mps_command_queue> command_queue_;
 };
 
 }  // namespace neural_net

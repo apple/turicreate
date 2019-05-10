@@ -7,6 +7,7 @@
 
 #include <logger/logger.hpp>
 #include <unity/toolkits/neural_net/float_array.hpp>
+#include <unity/toolkits/neural_net/mps_command_queue.hpp>
 
 #import "mps_cnnmodule.h"
 #import "mps_device_manager.h"
@@ -18,6 +19,7 @@ using turi::neural_net::float_array_map;
 using turi::neural_net::float_array_map_iterator;
 using turi::neural_net::make_array_map;
 using turi::neural_net::mps_cnn_module;
+using turi::neural_net::mps_command_queue;
 using turi::neural_net::shared_float_array;
 
 int TCMPSCreateCNNModule(MPSHandle *out) {
@@ -29,7 +31,9 @@ int TCMPSCreateCNNModule(MPSHandle *out) {
     log_and_throw("No valid Metal device.");
   }
 
-  mps_cnn_module *mps = new mps_cnn_module(dev);
+  mps_command_queue command_queue;
+  command_queue.impl = [dev newCommandQueue];
+  mps_cnn_module *mps = new mps_cnn_module(command_queue);
   *out = (void *)mps;
 
   API_END();
