@@ -291,37 +291,33 @@ void activity_classifier::train(gl_sframe data, const std::string& target_column
   float_array_map trained_weights = training_model_->export_weights();
   nn_spec_->update_params(trained_weights);
 
+  variant_map_type state_update;
+
   // Update the state with recall, precision and confusion matrix for training
   // data
   gl_sarray train_predictions = predict(train_data, "probability_vector");
-  variant_map_type train_metric =
-      evaluation::compute_classifier_metrics(
-      train_data, target_column_name, "auto", train_predictions,
+  variant_map_type train_metric = evaluation::compute_classifier_metrics(
+      train_data, target_column_name, "report", train_predictions,
       {{"classes", read_state<flex_list>("classes")}});
 
-  add_or_update_state(
-      {{"training_precision", train_metric["precision"]},
-       {"training_recall", train_metric["recall"]},
-       {"training_accuracy", train_metric["accuracy"]},
-       {"training_log_loss", train_metric["log_loss"]},
-       {"training_confusion_matrix", train_metric["confusion_matrix"]},
-       {"num_examples", train_data.size()}});
+  for (auto &p : train_metric) {
+    state_update["training_" + p.first] = p.second;
+  }
 
   // Update the state with recall, precision and confusion matrix for validation
   // data
-  if (!val_data.empty()){
+  if (!val_data.empty()) {
     gl_sarray val_predictions = predict(val_data, "probability_vector");
-    variant_map_type val_metric =
-      evaluation::compute_classifier_metrics(
-      val_data, target_column_name, "auto", val_predictions,
-      {{"classes", read_state<flex_list>("classes")}});
-    add_or_update_state(
-        {{"validation_precision", val_metric["precision"]},
-         {"validation_recall", val_metric["recall"]},
-         {"validation_accuracy", val_metric["accuracy"]},
-         {"validation_log_loss", val_metric["log_loss"]},
-         {"validation_confusion_matrix", val_metric["confusion_matrix"]}});
+    variant_map_type val_metric = evaluation::compute_classifier_metrics(
+        val_data, target_column_name, "report", val_predictions,
+        {{"classes", read_state<flex_list>("classes")}});
+
+    for (auto &p : val_metric) {
+      state_update["validation_" + p.first] = p.second;
+    }
   }
+
+  add_or_update_state(state_update);
 }
 
 
