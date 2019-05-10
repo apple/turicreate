@@ -88,9 +88,6 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
         logprogress_stream << "Pre-processing " << data.size() << " samples..." << std::endl;
     }
 
-    gl_sframe session_counts =
-        data.groupby({session_id}, {{"count", aggregate::COUNT()}});
-
     // Build a dict of the column order by column name, to later access within
     // the iterator
     auto column_index_map = generate_column_index_map(data.column_names());
