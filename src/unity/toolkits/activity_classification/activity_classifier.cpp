@@ -268,7 +268,6 @@ void activity_classifier::train(gl_sframe data, const std::string& target_column
   for (auto &p : train_metric) {
     state_update["training_" + p.first] = p.second;
   }
-  state_update["training_number_of_examples"] = train_data.size();
 
   // Update the state with recall, precision and confusion matrix for validation
   // data
@@ -281,7 +280,6 @@ void activity_classifier::train(gl_sframe data, const std::string& target_column
     for (auto &p : val_metric) {
       state_update["validation_" + p.first] = p.second;
     }
-    state_update["validation_number_of_examples"] = val_data.size();
   }
 
   add_or_update_state(state_update);
