@@ -1,6 +1,6 @@
 # Deploying Turicreate ML Models using Flask and Docker
 
-Over here, we are assuming that you’ve already built and saved your model onto your local machine. We can deploy our model by following the steps below - 
+We are assuming that you’ve already built and saved your model onto your local machine. We can deploy our model by following the steps below - 
 
 1. Wrap your model with a restful web service using Flask. This makes it easily accessible.
 2. Containerize your web service with docker. This ensures fault tolerance by allowing us to spin up new containers very quickly should one break down.
@@ -9,7 +9,7 @@ Over here, we are assuming that you’ve already built and saved your model onto
 
 The following models are supported 
 
-Toolkits
+### Toolkits
 Image Classification
 Drawing Classification 
 Sound Classification 
@@ -19,7 +19,7 @@ Activity Classification
 Image Similarity 
 Text_classification 
 
-Classification
+### Classification
 Random Forest Classification 
 Decision Tree Classification
 Boosted Trees Classification
@@ -27,17 +27,17 @@ Logistic Classification
 SVM Classification 
 Nearest Neighbor Classification
 
-Recommendation Models
+### Recommendation Models
 Item Similiarity Recommender 
 Item Content Recommender 
 Factorization Recommender 
 Ranking Factorization Recommender
 Popularity Recomender 
 
-Clustering
+### Clustering
 Kmeans 
 
-Regression
+### Regression
 Random Forest Regression 
 Decision Tree Regression 
 Boosted Trees Regression 
