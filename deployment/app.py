@@ -441,7 +441,7 @@ def model_predict():
             data = json.dumps(loaded_data)
             loaded_data = json.loads(data)
             
-            if (!all(x in info["features"] for x in loaded_data.keys)) :
+            if not all(x in info["features"] for x in loaded_data.keys):
                 return return_success({"error" : "Column needed for inference is missing or \
                     the column name given does not match the model info"}, False)
 
