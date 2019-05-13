@@ -20,6 +20,11 @@ class SingleImage extends Component {
       this.props.getAnnotations((this.props.incrementalCurrentIndex - 2), this.props.incrementalCurrentIndex);
     }
   }
+  renderSimilarImages = () => {
+    if(this.props.similarImages != null){
+      return this.props.similarImages.map((x) => <SimilarImage src={x}/> );
+    }
+  }
 
   incrementIndex = () => {
     if (this.props.incrementalCurrentIndex < (this.props.numElements - 1)) {
@@ -33,11 +38,7 @@ class SingleImage extends Component {
     return (
       <div className={style.SingleImage}>
         <div className={style.SingleImageSimilar}>
-          {  
-            this.props.similarImages.map((x) => 
-              <SimilarImage src={x}/>
-            )
-          }
+          { this.renderSimilarImages() }
         </div>
         <div className={style.SingleImageContainer}>
             <div className={style.LeftArrow}
