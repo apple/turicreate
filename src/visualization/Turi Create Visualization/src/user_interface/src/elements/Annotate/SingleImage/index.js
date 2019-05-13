@@ -36,7 +36,7 @@ class SingleImage extends Component {
           {  
             this.props.similarImages.map((x) => 
               <SimilarImage src={x}/>
-            );
+            )
           }
         </div>
         <div className={style.SingleImageContainer}>
