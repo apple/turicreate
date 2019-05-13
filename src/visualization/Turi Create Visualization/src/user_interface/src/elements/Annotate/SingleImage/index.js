@@ -5,6 +5,8 @@ import leftArrow from './assets/left_arrow.svg';
 import rightArrow from './assets/right_arrow.svg';
 import ImageLabeler from './ImageLabeler/index'
 
+import SimilarImage from './SimilarImage';
+
 class SingleImage extends Component {
 
   componentDidMount() {
@@ -30,6 +32,9 @@ class SingleImage extends Component {
   render() {
     return (
       <div className={style.SingleImage}>
+        <div className={style.SingleImageSimilar}>
+          <SimilarImage />
+        </div>
         <div className={style.SingleImageContainer}>
             <div className={style.LeftArrow}
                  onClick={this.decrementIndex.bind(this)}>
