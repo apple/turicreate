@@ -31,6 +31,7 @@ class Annotate extends Component {
       incrementalCurrentIndex: 0,
       LabelModalValue: "",
       imageData: {},
+      similar_images: [],
       annotationData: {},
       infiniteSelected:{},
       labels:[],
@@ -339,6 +340,7 @@ class Annotate extends Component {
     } else {
       return (
         <SingleImage src={this.state.imageData[this.state.incrementalCurrentIndex]}
+                     similarImages={this.state.similar_images[this.state.incrementalCurrentIndex]}
                      getData={this.getData.bind(this)}
                      getAnnotations={this.getAnnotations.bind(this)}
                      numElements={this.props.metadata.numExamples}
