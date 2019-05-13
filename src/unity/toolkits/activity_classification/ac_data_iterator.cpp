@@ -373,7 +373,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     if (sample_in_row_ == 0 &&
         static_cast<size_t>(chunk_length) > num_samples_per_prediction_ &&
         training) {
-      sample_in_row_ = sample_offset_ * 10;
+      sample_in_row_ = sample_offset_ * 2;
       // sample_in_row_ = std::rand() % (num_samples_per_prediction_ - 1);
     }
 
@@ -383,7 +383,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     // End keeps track of the start of next instance if the last instance is
     // smaller
     size_t end = std::min(jump, static_cast<size_t>(chunk_length));
-    std::cout << end << " ";
+    //std::cout << end << " ";
 
     // Copy the feature values (converting from double to float).
     const flex_vec& feature_vec = row[features_column_index].get<flex_vec>();
@@ -410,20 +410,36 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
       weights_out += num_predictions_per_chunk_;
     }
 
+
+    // for (std::vector<float>::const_iterator i = features.begin(); i < features.end(); ++i) {
+    //   std::cout << *i << " ";
+    
+    // }
+
+
     batch_info.emplace_back();
     batch_info.back().session_id = row[session_id_column_index];
     batch_info.back().num_samples = end - sample_in_row_;
 
     sample_in_row_ = end;
 
-    if (sample_in_row_ >= static_cast<size_t>(chunk_length)) {
-      sample_in_row_ = 0;
-      ++sample_offset_;
-      if (sample_offset_ == 4) {
-        ++next_row_;
-        sample_offset_ = 0;
+    if ( sample_in_row_ >= static_cast<size_t>(chunk_length)) {
+      if (training) {
+        sample_in_row_ = 0;
+        ++sample_offset_;
+        if (sample_offset_ == 4) {
+          ++next_row_;
+          sample_offset_ = 0;
+        }
       }
+      else {
+        sample_in_row_ = 0;
+        ++next_row_;
+      }
+      
     }
+    
+
   }
 
   // Wrap the buffers as float_array values.
