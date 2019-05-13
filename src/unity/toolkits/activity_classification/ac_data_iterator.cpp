@@ -308,7 +308,7 @@ simple_data_iterator::simple_data_iterator(const parameters &params)
       num_predictions_per_chunk_(params.predictions_in_chunk),
       range_iterator_(data_.chunks.range_iterator()),
       next_row_(range_iterator_.begin()), end_of_rows_(range_iterator_.end()),
-      sample_in_row_(0), training(params.verbose) {}
+      sample_offset_(0), sample_in_row_(0), training(params.verbose) {}
 
 const flex_list& simple_data_iterator::feature_names() const {
   return data_.feature_names;
@@ -373,7 +373,8 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     if (sample_in_row_ == 0 &&
         static_cast<size_t>(chunk_length) > num_samples_per_prediction_ &&
         training) {
-      sample_in_row_ = std::rand() % (num_samples_per_prediction_ - 1);
+      sample_in_row_ = sample_offset_ * 10;
+      // sample_in_row_ = std::rand() % (num_samples_per_prediction_ - 1);
     }
 
     // Stores the start of next instance
@@ -382,6 +383,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     // End keeps track of the start of next instance if the last instance is
     // smaller
     size_t end = std::min(jump, static_cast<size_t>(chunk_length));
+    std::cout << end << " ";
 
     // Copy the feature values (converting from double to float).
     const flex_vec& feature_vec = row[features_column_index].get<flex_vec>();
@@ -415,8 +417,12 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     sample_in_row_ = end;
 
     if (sample_in_row_ >= static_cast<size_t>(chunk_length)) {
-      ++next_row_;
       sample_in_row_ = 0;
+      ++sample_offset_;
+      if (sample_offset_ == 4) {
+        ++next_row_;
+        sample_offset_ = 0;
+      }
     }
   }
 
