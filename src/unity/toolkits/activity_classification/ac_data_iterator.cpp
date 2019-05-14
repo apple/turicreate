@@ -372,7 +372,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     if (sample_in_row_ == 0 &&
         static_cast<size_t>(chunk_length) > num_samples_per_prediction_ &&
         training) {
-      sample_in_row_ = sample_offset_ * 10;
+      sample_in_row_ = sample_offset_ * 2;
       // sample_in_row_ = std::rand() % (num_samples_per_prediction_ - 1);
     }
 
