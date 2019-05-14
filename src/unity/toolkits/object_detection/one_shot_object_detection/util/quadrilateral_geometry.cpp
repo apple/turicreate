@@ -1,3 +1,9 @@
+/* Copyright © 2019 Apple Inc. All rights reserved.
+ *
+ * Use of this source code is governed by a BSD-3-clause license that can
+ * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ */
+
 #include <unity/toolkits/object_detection/one_shot_object_detection/util/quadrilateral_geometry.hpp>
 
 static const size_t TRANSPARENT(0);
