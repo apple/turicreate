@@ -41,7 +41,7 @@ void superimpose_image_rgb(const boost::gil::rgb8_image_t::view_t &masked,
 }
 
 
-flex_image create_synthetic_rgb_image(const boost::gil::rgb8_image_t::view_t &background_view,
+flex_image create_synthetic_image_from_rgb_object(const boost::gil::rgb8_image_t::view_t &background_view,
                                       ParameterSampler &parameter_sampler,
                                       const flex_image &object) {
   Eigen::Matrix<float, 3, 3> M = parameter_sampler.get_transform().inverse();
@@ -71,7 +71,7 @@ flex_image create_synthetic_rgb_image(const boost::gil::rgb8_image_t::view_t &ba
 }
 
 
-void superimpose_image_rgba(const boost::gil::rgba8_image_t::view_t &masked,
+void superimpose_image_rgba(const boost::gil::rgb8_image_t::view_t &masked,
                             const boost::gil::rgba8_image_t::view_t &transformed,
                             const boost::gil::rgba8_image_t::view_t &background) {
   for (int y = 0; y < masked.height(); ++y) {
@@ -88,12 +88,11 @@ void superimpose_image_rgba(const boost::gil::rgba8_image_t::view_t &masked,
       masked_row_it[x][0] = AoverB(transformed_row_it[x][0], background_row_it[x][0], alpha_a, alpha_b);
       masked_row_it[x][1] = AoverB(transformed_row_it[x][1], background_row_it[x][1], alpha_a, alpha_b);
       masked_row_it[x][2] = AoverB(transformed_row_it[x][2], background_row_it[x][2], alpha_a, alpha_b);
-      masked_row_it[x][3] = AoverB(transformed_row_it[x][3], background_row_it[x][3], alpha_a, alpha_b);;
     }
   }
 }
 
-flex_image create_synthetic_rgba_image(const boost::gil::rgb8_image_t::view_t &background_view, 
+flex_image create_synthetic_image_from_rgba_object(const boost::gil::rgb8_image_t::view_t &background_view, 
                                        ParameterSampler &parameter_sampler,
                                        const flex_image &object) {
   Eigen::Matrix<float, 3, 3> M = parameter_sampler.get_transform().inverse();
@@ -113,8 +112,8 @@ flex_image create_synthetic_rgba_image(const boost::gil::rgb8_image_t::view_t &b
   boost::gil::rgba8_image_t transformed(boost::gil::rgba8_image_t::point_t(background_view.dimensions()));
   fill_pixels(view(transformed), RGBA_WHITE);
   resample_pixels(starter_image_view, view(transformed), M, boost::gil::bilinear_sampler());
-  boost::gil::rgba8_image_t masked(boost::gil::rgba8_image_t::point_t(background_view.dimensions()));
-  fill_pixels(view(masked), RGBA_WHITE);
+  boost::gil::rgb8_image_t masked(boost::gil::rgb8_image_t::point_t(background_view.dimensions()));
+  fill_pixels(view(masked), WHITE);
   superimpose_image_rgba(view(masked), view(transformed), 
                          view(background_rgba));
   return flex_image(masked);
