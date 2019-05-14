@@ -6,8 +6,8 @@
 
 #include <unity/toolkits/object_detection/one_shot_object_detection/util/quadrilateral_geometry.hpp>
 
-#define BLACK boost::gil::rgb8_pixel_t(0,0,0)
-#define WHITE boost::gil::rgb8_pixel_t(255,255,255)
+static const boost::gil::rgb8_pixel_t BLACK(0, 0, 0);
+static const boost::gil::rgb8_pixel_t WHITE(255, 255, 255);
 
 namespace turi {
 namespace one_shot_object_detection {

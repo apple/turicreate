@@ -27,7 +27,6 @@
 
 namespace turi {
 namespace one_shot_object_detection {
-
 namespace data_augmentation {
 
 flex_dict build_annotation( ParameterSampler &parameter_sampler,
@@ -153,11 +152,11 @@ gl_sframe augment_data(const gl_sframe &data,
 
       if (object.m_channels == 4) {
         images.push_back(
-          superposition::create_synthetic_rgba_image(background_view, parameter_sampler, object)
+          create_synthetic_rgba_image(background_view, parameter_sampler, object)
           );
       } else {
         images.push_back(
-          superposition::create_synthetic_rgb_image(background_view, parameter_sampler, object)
+          create_synthetic_rgb_image(background_view, parameter_sampler, object)
           );
       }
       annotations.push_back(annotation);
