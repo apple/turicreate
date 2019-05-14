@@ -1,7 +1,7 @@
 #include <unity/toolkits/object_detection/one_shot_object_detection/util/quadrilateral_geometry.hpp>
 
-static const size_t TRANSPARENT(0);
-static const size_t OPAQUE(255);
+static constexpr size_t TRANSPARENT = 0;
+static constexpr size_t OPAQUE = 255;
 
 namespace turi {
 namespace one_shot_object_detection {
