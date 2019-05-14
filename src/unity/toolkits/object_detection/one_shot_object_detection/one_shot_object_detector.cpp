@@ -11,8 +11,6 @@
 #include <random>
 
 #include <boost/gil/gil_all.hpp>
-#include <boost/gil/extension/numeric/sampler.hpp>
-#include <boost/gil/extension/numeric/resample.hpp>
 
 #include <Eigen/Core>
 #include <Eigen/Dense>
@@ -29,7 +27,6 @@
 
 namespace turi {
 namespace one_shot_object_detection {
-
 namespace data_augmentation {
 
 flex_dict build_annotation( ParameterSampler &parameter_sampler,
