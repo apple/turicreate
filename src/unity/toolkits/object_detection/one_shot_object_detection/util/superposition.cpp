@@ -72,9 +72,7 @@ void transform_and_superimpose_object_image(ParameterSampler &parameter_sampler,
   }
   Eigen::Matrix<float, 3, 3> M = parameter_sampler.get_transform().inverse();
   resample_pixels(view(starter_image), transformed, M, boost::gil::bilinear_sampler());
-  if (object.m_channels == 3) {
-    color_quadrilateral(transformed, parameter_sampler.get_warped_corners());
-  }
+  color_quadrilateral(transformed, parameter_sampler.get_warped_corners());
   superimpose_image(superimposed, transformed, background);
 }
 
