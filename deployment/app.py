@@ -263,7 +263,7 @@ elif (type(model) == tc.toolkits.classifier.boosted_tree_classifier.BoostedTreeC
     info["max_depth"] = model.max_depth
     info["training_loss"] = model.training_log_loss
     info["training_accuracy"] = model.training_log_accuracy
-elif (type(model) == tc.toolkits.classifier.svm_classifier.):
+elif (type(model) == tc.toolkits.classifier.svm_classifier.SVMClassifier):
     info["type"] = ModelType.svm_classifier
     info["features"] = model.features
     info["classes"] = model.classes
