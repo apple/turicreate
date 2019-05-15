@@ -25,6 +25,9 @@ class EXPORT activity_classifier: public ml_model_base {
   // ml_model_base interface
 
   void init_options(const std::map<std::string, flexible_type>& opts) override;
+  size_t get_version() const override;
+  void save_impl(oarchive& oarc) const override;
+  void load_version(iarchive& iarc, size_t version) override;
 
   // Interface exposed via Unity server
 
@@ -37,8 +40,7 @@ class EXPORT activity_classifier: public ml_model_base {
   variant_map_type evaluate(gl_sframe data, std::string metric);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
       std::string filename);
-
-  // TODO: Remainder of public interface: export, evaluate, predict, save/load
+  void import_from_custom_model(variant_map_type model_data, size_t version);
 
   BEGIN_CLASS_MEMBER_REGISTRATION("activity_classifier")
 
@@ -163,6 +165,9 @@ class EXPORT activity_classifier: public ml_model_base {
   );
   REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::export_to_coreml,
                                  "filename");
+
+  REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::import_from_custom_model,
+                                 "model_data", "version");
 
   END_CLASS_MEMBER_REGISTRATION
 
