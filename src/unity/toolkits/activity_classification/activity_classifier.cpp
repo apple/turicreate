@@ -456,17 +456,20 @@ std::shared_ptr<MLModelWrapper> activity_classifier::export_to_coreml(
 }
 
 std::unique_ptr<data_iterator>
-activity_classifier::create_iterator(gl_sframe data, bool requires_labels, bool verbose) const {
+activity_classifier::create_iterator(gl_sframe data, bool requires_labels,
+                                     bool is_train) const {
 
   data_iterator::parameters data_params;
   data_params.data = std::move(data);
 
-  if (!requires_labels){
+  if (!is_train) {
     data_params.class_labels = read_state<flex_list>("classes");
   }
-  
-  data_params.verbose = verbose;
-  data_params.target_column_name = read_state<flex_string>("target");
+
+  data_params.verbose = is_train;
+  if (requires_labels) {
+    data_params.target_column_name = read_state<flex_string>("target");
+  }
   data_params.session_id_column_name = read_state<flex_string>("session_id");
   flex_list features = read_state<flex_list>("features");
   data_params.feature_column_names =
