@@ -32,5 +32,6 @@ void color_convert<rgba8_pixel_t,rgb8_pixel_t>(
   get_color(dst, blue_t())  = get_color(src, blue_t());
   // ignore the alpha channel
 }
+
 } // gil
 } // boost

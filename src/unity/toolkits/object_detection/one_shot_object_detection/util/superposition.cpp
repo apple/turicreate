@@ -4,6 +4,8 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <typeinfo>
+
 #include <boost/gil/extension/numeric/sampler.hpp>
 #include <boost/gil/extension/numeric/resample.hpp>
 
@@ -18,10 +20,10 @@ namespace turi {
 namespace one_shot_object_detection {
 namespace data_augmentation {
 
-void superimpose_image(const boost::gil::rgb8_image_t::view_t &masked,
+void superimpose_image(const boost::gil::rgb8_image_t::view_t &superimposed,
                        const boost::gil::rgba8_image_t::view_t &transformed,
                        const boost::gil::rgba8_image_t::view_t &background) {
-  boost::gil::transform_pixels(transformed, background, masked, 
+  boost::gil::transform_pixels(transformed, background, superimposed, 
     [](boost::gil::rgba8_ref_t a, boost::gil::rgba8_ref_t b) {
           boost::gil::red_t   R;
           boost::gil::green_t G;
@@ -39,44 +41,43 @@ void superimpose_image(const boost::gil::rgb8_image_t::view_t &masked,
   });
 }
 
-void superimpose_rgb_object_image(ParameterSampler &parameter_sampler,
-                                  const flex_image &object,
-                                  const boost::gil::rgb8_image_t::view_t &masked,
-                                  const boost::gil::rgba8_image_t::view_t &transformed,
-                                  const boost::gil::rgba8_image_t::view_t &background) {
+void transform_and_superimpose_object_image(ParameterSampler &parameter_sampler,
+                              const flex_image &object,
+                              const boost::gil::rgb8_image_t::view_t &superimposed,
+                              const boost::gil::rgba8_image_t::view_t &transformed,
+                              const boost::gil::rgba8_image_t::view_t &background) {
+  boost::gil::rgba8_image_t starter_image(boost::gil::rgba8_image_t::point_t(object.m_width, object.m_height));
+  if (object.m_channels == 3) {
+    // RGB
+    boost::gil::rgb8_image_t::view_t preliminary_starter_image_view = interleaved_view(
+      object.m_width,
+      object.m_height,
+      (boost::gil::rgb8_pixel_t*) (object.get_image_data()),
+      object.m_channels * object.m_width // row length in bytes
+    );
+    boost::gil::copy_and_convert_pixels(
+      preliminary_starter_image_view,
+      view(starter_image)
+    );
+  } else {
+    // RGBA
+    boost::gil::rgba8_image_t::view_t preliminary_starter_image_view = interleaved_view(
+      object.m_width,
+      object.m_height,
+      (boost::gil::rgba8_pixel_t*) (object.get_image_data()),
+      object.m_channels * object.m_width // row length in bytes
+    );
+    boost::gil::copy_pixels(
+      preliminary_starter_image_view,
+      view(starter_image)
+    );
+  }
   Eigen::Matrix<float, 3, 3> M = parameter_sampler.get_transform().inverse();
-  boost::gil::rgb8_image_t::view_t starter_image_view = interleaved_view(
-    object.m_width,
-    object.m_height,
-    (boost::gil::rgb8_pixel_t*) (object.get_image_data()),
-    object.m_channels * object.m_width // row length in bytes
-  );
-  boost::gil::rgba8_image_t starter_image_rgba(boost::gil::rgba8_image_t::point_t(starter_image_view.dimensions()));
-  // The following line uses the color_convert conversion to convert the 
-  // background from RGB to RGBA
-  boost::gil::copy_and_convert_pixels(
-    starter_image_view,
-    view(starter_image_rgba)
-  );
-  resample_pixels(view(starter_image_rgba), transformed, M, boost::gil::bilinear_sampler());
-  color_quadrilateral(transformed, parameter_sampler.get_warped_corners());
-  superimpose_image(masked, transformed, background);
-}
-
-void superimpose_rgba_object_image(ParameterSampler &parameter_sampler,
-                                   const flex_image &object,
-                                   const boost::gil::rgb8_image_t::view_t &masked,
-                                   const boost::gil::rgba8_image_t::view_t &transformed,
-                                   const boost::gil::rgba8_image_t::view_t &background) {
-  Eigen::Matrix<float, 3, 3> M = parameter_sampler.get_transform().inverse();
-  boost::gil::rgba8_image_t::view_t starter_image_view = interleaved_view(
-    object.m_width,
-    object.m_height,
-    (boost::gil::rgba8_pixel_t*) (object.get_image_data()),
-    object.m_channels * object.m_width // row length in bytes
-  );
-  resample_pixels(starter_image_view, transformed, M, boost::gil::bilinear_sampler());
-  superimpose_image(masked, transformed, background);
+  resample_pixels(view(starter_image), transformed, M, boost::gil::bilinear_sampler());
+  if (object.m_channels == 3) {
+    color_quadrilateral(transformed, parameter_sampler.get_warped_corners());
+  }
+  superimpose_image(superimposed, transformed, background);
 }
 
 flex_image create_synthetic_image(const boost::gil::rgb8_image_t::view_t &background_view,
@@ -89,14 +90,11 @@ flex_image create_synthetic_image(const boost::gil::rgb8_image_t::view_t &backgr
   );
   boost::gil::rgba8_image_t transformed(boost::gil::rgba8_image_t::point_t(background_view.dimensions()));
   fill_pixels(view(transformed), RGBA_WHITE);
-  boost::gil::rgb8_image_t masked(boost::gil::rgba8_image_t::point_t(background_view.dimensions()));
-  fill_pixels(view(masked), RGB_WHITE);
-  if (object.m_channels == 4) {
-    superimpose_rgba_object_image(parameter_sampler, object, view(masked), view(transformed), view(background_rgba));
-  } else {
-    superimpose_rgb_object_image(parameter_sampler, object, view(masked), view(transformed), view(background_rgba));
-  }
-  return flex_image(masked);
+  boost::gil::rgb8_image_t superimposed(boost::gil::rgba8_image_t::point_t(background_view.dimensions()));
+  fill_pixels(view(superimposed), RGB_WHITE);
+  transform_and_superimpose_object_image(parameter_sampler, object,
+    view(superimposed), view(transformed), view(background_rgba));
+  return flex_image(superimposed);
 }
 
 } // data_augmentation
