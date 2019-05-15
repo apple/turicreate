@@ -46,7 +46,6 @@ void transform_and_superimpose_object_image(ParameterSampler &parameter_sampler,
                               const boost::gil::rgb8_image_t::view_t &superimposed,
                               const boost::gil::rgba8_image_t::view_t &transformed,
                               const boost::gil::rgba8_image_t::view_t &background) {
-  boost::gil::rgba8_image_t starter_image(boost::gil::rgba8_image_t::point_t(object_input.m_width, object_input.m_height));
   flex_image object = image_util::resize_image(object_input,
                                                object_input.m_width,
                                                object_input.m_height,
@@ -62,6 +61,9 @@ void transform_and_superimpose_object_image(ParameterSampler &parameter_sampler,
   );
   Eigen::Matrix<float, 3, 3> M = parameter_sampler.get_transform().inverse();
   resample_pixels(starter_image_view, transformed, M, boost::gil::bilinear_sampler());
+  // We need to color the alpha channel of the quadrilateral in the transformed
+  // image to guard against artifacts that appear when we use bilinear sampling
+  // to resample pixels.
   color_quadrilateral(transformed, parameter_sampler.get_warped_corners());
   superimpose_image(superimposed, transformed, background);
 }
