@@ -171,7 +171,7 @@ class EXPORT activity_classifier: public ml_model_base {
   // Override points allowing subclasses to inject dependencies
 
   // Factory for data_iterator
-  virtual std::unique_ptr<data_iterator> create_iterator(gl_sframe data, bool is_train) const;
+  virtual std::unique_ptr<data_iterator> create_iterator(gl_sframe data, bool requires_labels, bool verbose) const;
 
   // Factory for compute_context
   virtual
