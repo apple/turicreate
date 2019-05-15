@@ -217,6 +217,9 @@ std::tuple<float, float> activity_classifier::compute_validation_metrics(
     result result_batch;
     result_batch.data_info = validation_data_iterator_->next_batch(batch_size);
 
+
+
+
     // Submit the batch to the neural net model.
     std::map<std::string, shared_float_array> results =
         training_model_->predict({
@@ -227,6 +230,8 @@ std::tuple<float, float> activity_classifier::compute_validation_metrics(
 
     result_batch.output_info = results.at("output");
     result_batch.loss_info = results.at("loss");
+
+
     val_size += result_batch.data_info.batch_info.size();
   
     // Add the pending result to our queue and move on to the next input batch.
@@ -726,7 +731,11 @@ void activity_classifier::perform_training_iteration() {
     pop_until_size(1);
 
     result result_batch;
-    result_batch.data_info = training_data_iterator_->next_batch(batch_size);;
+    result_batch.data_info = training_data_iterator_->next_batch(batch_size);
+
+    // std::cout<< result_batch.data_info.features << "\n";
+    // std::cout << result_batch.data_info.labels << "\n";
+    // std::cout << result_batch.data_info.weights << "\n";
 
     // Submit the batch to the neural net model.
     std::map<std::string, shared_float_array> results = training_model_->train(
