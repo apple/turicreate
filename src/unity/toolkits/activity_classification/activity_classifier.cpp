@@ -332,7 +332,8 @@ gl_sarray activity_classifier::predict(gl_sframe data,
   }
 
   // Bind the data to a data iterator.
-  std::unique_ptr<data_iterator> data_it = create_iterator(data, false, false);
+  std::unique_ptr<data_iterator> data_it =
+      create_iterator(data, /* requires_labels */ false, /* is_train */ false);
 
   // Accumulate the class probabilities for each prediction window.
   gl_sframe raw_preds_per_window = perform_inference(data_it.get());
@@ -376,7 +377,8 @@ gl_sframe activity_classifier::predict_per_window(gl_sframe data,
   }
 
   // Bind the data to a data iterator.
-  std::unique_ptr<data_iterator> data_it = create_iterator(data, false, false);
+  std::unique_ptr<data_iterator> data_it =
+      create_iterator(data, /* requires_labels */ false, /* is_train */ false);
 
   // Accumulate the class probabilities for each prediction window.
   gl_sframe raw_preds_per_window = perform_inference(data_it.get());
@@ -619,13 +621,15 @@ void activity_classifier::init_train(
                                               feature_column_names.end())}});
 
   // Bind the data to a data iterator.
-  training_data_iterator_ = create_iterator(data, true, true);
+  training_data_iterator_ =
+      create_iterator(data, /* requires_labels */ true, /* is_train */ true);
 
   add_or_update_state({{"classes", training_data_iterator_->class_labels()}});
 
   // Bind the validation data to a data iterator.
   if (!validation_data.empty()) {
-    validation_data_iterator_ = create_iterator(validation_data, true, false);
+    validation_data_iterator_ = create_iterator(
+        validation_data, /* requires_labels */ true, /* is_train */ false);
   } else {
     validation_data_iterator_ = nullptr;
   }
