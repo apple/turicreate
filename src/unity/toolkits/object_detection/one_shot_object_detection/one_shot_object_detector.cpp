@@ -104,6 +104,36 @@ static std::map<std::string,size_t> generate_column_index_map(
     return index_map;
 }
 
+boost::gil::rgba8_image_t create_starter_image(flex_image &object) {
+  boost::gil::rgba8_image_t starter_image(boost::gil::rgba8_image_t::point_t(object.m_width, object.m_height));
+  if (object.m_channels == 3) {
+    // RGB
+    boost::gil::rgb8_image_t::view_t preliminary_starter_image_view = interleaved_view(
+      object.m_width,
+      object.m_height,
+      (boost::gil::rgb8_pixel_t*) (object.get_image_data()),
+      object.m_channels * object.m_width // row length in bytes
+    );
+    boost::gil::copy_and_convert_pixels(
+      preliminary_starter_image_view,
+      view(starter_image)
+    );
+  } else {
+    // RGBA
+    boost::gil::rgba8_image_t::view_t preliminary_starter_image_view = interleaved_view(
+      object.m_width,
+      object.m_height,
+      (boost::gil::rgba8_pixel_t*) (object.get_image_data()),
+      object.m_channels * object.m_width // row length in bytes
+    );
+    boost::gil::copy_pixels(
+      preliminary_starter_image_view,
+      view(starter_image)
+    );
+  }
+  return starter_image;
+}
+
 gl_sframe augment_data(const gl_sframe &data,
                        const std::string& image_column_name,
                        const std::string& target_column_name,
@@ -143,6 +173,8 @@ gl_sframe augment_data(const gl_sframe &data,
       DASSERT_TRUE(object.is_decoded());
       DASSERT_TRUE(flex_background.is_decoded());
 
+      boost::gil::rgba8_image_t starter_image = create_starter_image(object);
+
       boost::gil::rgb8_image_t::view_t background_view = interleaved_view(
         background_width,
         background_height,
@@ -150,15 +182,9 @@ gl_sframe augment_data(const gl_sframe &data,
         background_channels * background_width // row length in bytes
         );
 
-      if (object.m_channels == 4) {
-        images.push_back(
-          create_synthetic_image_from_rgba_object(background_view, parameter_sampler, object)
-          );
-      } else {
-        images.push_back(
-          create_synthetic_image_from_rgb_object(background_view, parameter_sampler, object)
-          );
-      }
+      images.push_back(
+        create_synthetic_image(view(starter_image), background_view, parameter_sampler, object)
+      );
       annotations.push_back(annotation);
     }
   }
