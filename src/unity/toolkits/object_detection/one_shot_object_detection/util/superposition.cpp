@@ -11,6 +11,8 @@
 #include <unity/toolkits/object_detection/one_shot_object_detection/util/superposition.hpp>
 #include <unity/toolkits/object_detection/one_shot_object_detection/util/quadrilateral_geometry.hpp>
 
+#include <unity/lib/image_util.hpp>
+
 static const boost::gil::rgb8_pixel_t RGB_WHITE(255,255,255);
 static const boost::gil::rgba8_pixel_t RGBA_WHITE(255,255,255,0);
 
@@ -40,38 +42,26 @@ void superimpose_image(const boost::gil::rgb8_image_t::view_t &superimposed,
 }
 
 void transform_and_superimpose_object_image(ParameterSampler &parameter_sampler,
-                              const flex_image &object,
+                              const flex_image &object_input,
                               const boost::gil::rgb8_image_t::view_t &superimposed,
                               const boost::gil::rgba8_image_t::view_t &transformed,
                               const boost::gil::rgba8_image_t::view_t &background) {
-  boost::gil::rgba8_image_t starter_image(boost::gil::rgba8_image_t::point_t(object.m_width, object.m_height));
-  if (object.m_channels == 3) {
-    // RGB
-    boost::gil::rgb8_image_t::view_t preliminary_starter_image_view = interleaved_view(
-      object.m_width,
-      object.m_height,
-      (boost::gil::rgb8_pixel_t*) (object.get_image_data()),
-      object.m_channels * object.m_width // row length in bytes
-    );
-    boost::gil::copy_and_convert_pixels(
-      preliminary_starter_image_view,
-      view(starter_image)
-    );
-  } else {
-    // RGBA
-    boost::gil::rgba8_image_t::view_t preliminary_starter_image_view = interleaved_view(
-      object.m_width,
-      object.m_height,
-      (boost::gil::rgba8_pixel_t*) (object.get_image_data()),
-      object.m_channels * object.m_width // row length in bytes
-    );
-    boost::gil::copy_pixels(
-      preliminary_starter_image_view,
-      view(starter_image)
-    );
-  }
+  boost::gil::rgba8_image_t starter_image(boost::gil::rgba8_image_t::point_t(object_input.m_width, object_input.m_height));
+  flex_image object = image_util::resize_image(object_input,
+                                               object_input.m_width,
+                                               object_input.m_height,
+                                               4,
+                                               true).to<flex_image>();
+  DASSERT_TRUE(object.is_decoded());
+  DASSERT_EQ(object.m_channels, 4);
+  boost::gil::rgba8_image_t::view_t starter_image_view = interleaved_view(
+    object.m_width,
+    object.m_height,
+    (boost::gil::rgba8_pixel_t*) (object.get_image_data()),
+    object.m_channels * object.m_width // row length in bytes
+  );
   Eigen::Matrix<float, 3, 3> M = parameter_sampler.get_transform().inverse();
-  resample_pixels(view(starter_image), transformed, M, boost::gil::bilinear_sampler());
+  resample_pixels(starter_image_view, transformed, M, boost::gil::bilinear_sampler());
   color_quadrilateral(transformed, parameter_sampler.get_warped_corners());
   superimpose_image(superimposed, transformed, background);
 }
