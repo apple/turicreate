@@ -201,6 +201,8 @@ private:
 // Convenient typedef for data structure used to pass configuration and weights.
 using float_array_map = std::map<std::string, shared_float_array>;
 
+std::ostream &operator<<(std::ostream &out, const float_array &arr);
+
 }  // namespace neural_net
 }  // namespace turi
 
