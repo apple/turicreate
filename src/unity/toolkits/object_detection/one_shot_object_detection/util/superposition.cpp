@@ -11,6 +11,8 @@
 #include <unity/toolkits/object_detection/one_shot_object_detection/util/superposition.hpp>
 #include <unity/toolkits/object_detection/one_shot_object_detection/util/quadrilateral_geometry.hpp>
 
+#include <unity/lib/image_util.hpp>
+
 static const boost::gil::rgb8_pixel_t RGB_WHITE(255,255,255);
 static const boost::gil::rgba8_pixel_t RGBA_WHITE(255,255,255,0);
 
@@ -39,20 +41,6 @@ void superimpose_image(const boost::gil::rgb8_image_t::view_t &superimposed,
   });
 }
 
-void transform_and_superimpose_object_image(ParameterSampler &parameter_sampler,
-                              const boost::gil::rgba8_image_t::view_t &starter_image_view,
-                              const boost::gil::rgb8_image_t::view_t &superimposed,
-                              const boost::gil::rgba8_image_t::view_t &transformed,
-                              const boost::gil::rgba8_image_t::view_t &background) {
-  Eigen::Matrix<float, 3, 3> M = parameter_sampler.get_transform().inverse();
-  resample_pixels(starter_image_view, transformed, M, boost::gil::bilinear_sampler());
-  // We don't really need to call color_quadrilateral for objects that were
-  // RGBA from the beginning.
-  // But how do we tell here so we can reduce computation?
-  color_quadrilateral(transformed, parameter_sampler.get_warped_corners());
-  superimpose_image(superimposed, transformed, background);
-}
-
 flex_image create_synthetic_image(const boost::gil::rgba8_image_t::view_t &starter_image_view,
                                   const boost::gil::rgb8_image_t::view_t &background_view,
                                   ParameterSampler &parameter_sampler,
@@ -66,8 +54,13 @@ flex_image create_synthetic_image(const boost::gil::rgba8_image_t::view_t &start
   fill_pixels(view(transformed), RGBA_WHITE);
   boost::gil::rgb8_image_t superimposed(boost::gil::rgba8_image_t::point_t(background_view.dimensions()));
   fill_pixels(view(superimposed), RGB_WHITE);
-  transform_and_superimpose_object_image(parameter_sampler, starter_image_view,
-    view(superimposed), view(transformed), view(background_rgba));
+  Eigen::Matrix<float, 3, 3> M = parameter_sampler.get_transform().inverse();
+  resample_pixels(starter_image_view, view(transformed), M, boost::gil::bilinear_sampler());
+  // We need to color the alpha channel of the quadrilateral in the transformed
+  // image to guard against artifacts that appear when we use bilinear sampling
+  // to resample pixels.
+  color_quadrilateral(view(transformed), parameter_sampler.get_warped_corners());
+  superimpose_image(view(superimposed), view(transformed), view(background_rgba));
   return flex_image(superimposed);
 }
 

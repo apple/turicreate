@@ -104,34 +104,21 @@ static std::map<std::string,size_t> generate_column_index_map(
     return index_map;
 }
 
-boost::gil::rgba8_image_t create_starter_image(flex_image &object) {
-  boost::gil::rgba8_image_t starter_image(boost::gil::rgba8_image_t::point_t(object.m_width, object.m_height));
-  if (object.m_channels == 3) {
-    // RGB
-    boost::gil::rgb8_image_t::view_t preliminary_starter_image_view = interleaved_view(
-      object.m_width,
-      object.m_height,
-      (boost::gil::rgb8_pixel_t*) (object.get_image_data()),
-      object.m_channels * object.m_width // row length in bytes
-    );
-    boost::gil::copy_and_convert_pixels(
-      preliminary_starter_image_view,
-      view(starter_image)
-    );
-  } else {
-    // RGBA
-    boost::gil::rgba8_image_t::view_t preliminary_starter_image_view = interleaved_view(
-      object.m_width,
-      object.m_height,
-      (boost::gil::rgba8_pixel_t*) (object.get_image_data()),
-      object.m_channels * object.m_width // row length in bytes
-    );
-    boost::gil::copy_pixels(
-      preliminary_starter_image_view,
-      view(starter_image)
-    );
-  }
-  return starter_image;
+boost::gil::rgba8_image_t::view_t create_starter_image_view(flex_image &object_input) {
+  flex_image object = image_util::resize_image(object_input,
+                                               object_input.m_width,
+                                               object_input.m_height,
+                                               4,
+                                               true).to<flex_image>();
+  DASSERT_TRUE(object.is_decoded());
+  DASSERT_EQ(object.m_channels, 4);
+  boost::gil::rgba8_image_t::view_t starter_image_view = interleaved_view(
+    object.m_width,
+    object.m_height,
+    (boost::gil::rgba8_pixel_t*) (object.get_image_data()),
+    object.m_channels * object.m_width // row length in bytes
+  );
+  return starter_image_view;
 }
 
 gl_sframe augment_data(const gl_sframe &data,
@@ -173,7 +160,7 @@ gl_sframe augment_data(const gl_sframe &data,
       DASSERT_TRUE(object.is_decoded());
       DASSERT_TRUE(flex_background.is_decoded());
 
-      boost::gil::rgba8_image_t starter_image = create_starter_image(object);
+      boost::gil::rgba8_image_t::view_t starter_image_view = create_starter_image_view(object);
 
       boost::gil::rgb8_image_t::view_t background_view = interleaved_view(
         background_width,
@@ -183,7 +170,7 @@ gl_sframe augment_data(const gl_sframe &data,
         );
 
       images.push_back(
-        create_synthetic_image(view(starter_image), background_view, parameter_sampler, object)
+        create_synthetic_image(starter_image_view, background_view, parameter_sampler, object)
       );
       annotations.push_back(annotation);
     }
