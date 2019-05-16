@@ -2,14 +2,14 @@
 
 @implementation InstanceNormLayer
 
-- (id)initWithParameters:(NSString *)name
-                channels:(int)channels
-                  styles:(int)styles
-                   gamma:(float **)gamma
-                    beta:(float **)beta
-               inputNode:(MPSNNImageNode *)inputNode
-                  device:(id<MTLDevice> _Nonnull)dev
-               cmd_queue:(id<MTLCommandQueue> _Nonnull)cmd_q {
+- (id _Nonnull)initWithParameters:(NSString *_Nonnull)name
+                         channels:(int)channels
+                           styles:(int)styles
+                            gamma:(float *_Nonnull *_Nonnull)gamma
+                             beta:(float *_Nonnull *_Nonnull)beta
+                        inputNode:(MPSNNImageNode *_Nonnull)inputNode
+                           device:(id<MTLDevice> _Nonnull)dev
+                        cmd_queue:(id<MTLCommandQueue> _Nonnull)cmd_q {
   @autoreleasepool {
     self = [self init];
 
@@ -39,11 +39,11 @@
   }
 }
 
-- (MPSCNNInstanceNormalizationNode *)underlyingNode {
+- (MPSCNNInstanceNormalizationNode *_Nonnull)underlyingNode {
   return mInstNormNode;
 }
 
-- (InstanceNormDataLoader *)underlyingDataLoader {
+- (InstanceNormDataLoader *_Nonnull)underlyingDataLoader {
   return mInstNormDataLoad;
 }
 

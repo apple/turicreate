@@ -25,17 +25,17 @@ API_AVAILABLE(macos(10.14))
   id<MTLDevice> mDevice;
 }
 
-- (id)initWithParameters:(NSString *)name
-                channels:(int)channels
-                  styles:(int)styles
-                   gamma:(float **)gamma
-                    beta:(float **)beta
-               inputNode:(MPSNNImageNode *)inputNode
-                  device:(id<MTLDevice> _Nonnull)dev
-               cmd_queue:(id<MTLCommandQueue> _Nonnull)cmd_q;
+- (id _Nonnull)initWithParameters:(NSString *_Nonnull)name
+                         channels:(int)channels
+                           styles:(int)styles
+                            gamma:(float *_Nonnull *_Nonnull)gamma
+                             beta:(float *_Nonnull *_Nonnull)beta
+                        inputNode:(MPSNNImageNode *_Nonnull)inputNode
+                           device:(id<MTLDevice> _Nonnull)dev
+                        cmd_queue:(id<MTLCommandQueue> _Nonnull)cmd_q;
 
-- (MPSCNNInstanceNormalizationNode *)underlyingNode;
-- (InstanceNormDataLoader *)underlyingDataLoader;
+- (MPSCNNInstanceNormalizationNode *_Nonnull)underlyingNode;
+- (InstanceNormDataLoader *_Nonnull)underlyingDataLoader;
 - (MPSNNImageNode *_Nonnull)resultImage;
 
 @end

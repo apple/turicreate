@@ -15,23 +15,23 @@ API_AVAILABLE(macos(10.14))
 }
 @property(class, readonly) BOOL supportsSecureCoding;
 
-- (id)initWithParams:(int)paddingWidth
-       paddingHeight:(int)paddingHeight
-         strideWidth:(int)strideWidth
-        strideHeight:(int)strideHeight;
+- (id _Nonnull)initWithParams:(int)paddingWidth
+                paddingHeight:(int)paddingHeight
+                  strideWidth:(int)strideWidth
+                 strideHeight:(int)strideHeight;
 
-- (nullable instancetype)initWithCoder:(NSCoder *)coder;
+- (nullable instancetype)initWithCoder:(NSCoder *_Nonnull)coder;
 
 - (MPSNNPaddingMethod)paddingMethod;
-- (void)encodeWithCoder:(NSCoder *)coder;
-- (MPSImageDescriptor *)
+- (void)encodeWithCoder:(NSCoder *_Nonnull)coder;
+- (MPSImageDescriptor *_Nonnull)
     destinationImageDescriptorForSourceImages:
-        (NSArray<MPSImage *> *)sourceImages
-                                 sourceStates:
-                                     (NSArray<MPSState *> *)sourceStates
-                                    forKernel:(MPSKernel *)kernel
+        (NSArray<MPSImage *> *_Nonnull)sourceImages
+                                 sourceStates:(NSArray<MPSState *> *_Nullable)
+                                                  sourceStates
+                                    forKernel:(MPSKernel *_Nonnull)kernel
                           suggestedDescriptor:
-                              (MPSImageDescriptor *)inDescriptor;
+                              (MPSImageDescriptor *_Nonnull)inDescriptor;
 
 @end
 

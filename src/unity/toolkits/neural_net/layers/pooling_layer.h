@@ -12,16 +12,16 @@ API_AVAILABLE(macos(10.14))
   MPSCNNPoolingAverageNode *mPoolingNode;
 }
 
-- (id)initWithParams:(NSString *)name
-           inputNode:(MPSNNImageNode *)inputNode
-         kernelWidth:(int)kernelWidth
-        kernelHeight:(int)kernelHeight
-         strideWidth:(int)strideWidth
-        strideHeight:(int)strideHeight;
+- (id _Nonnull)initWithParams:(NSString *_Nonnull)name
+                    inputNode:(MPSNNImageNode *_Nonnull)inputNode
+                  kernelWidth:(int)kernelWidth
+                 kernelHeight:(int)kernelHeight
+                  strideWidth:(int)strideWidth
+                 strideHeight:(int)strideHeight;
 
 - (MPSNNImageNode *_Nonnull)resultImage;
 
-- (MPSCNNPoolingAverageNode *)underlyingNode;
+- (MPSCNNPoolingAverageNode *_Nonnull)underlyingNode;
 
 @end
 

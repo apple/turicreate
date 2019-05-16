@@ -6,10 +6,10 @@
   return true;
 }
 
-- (id)initWithParams:(int)paddingWidth
-       paddingHeight:(int)paddingHeight
-         strideWidth:(int)strideWidth
-        strideHeight:(int)strideHeight {
+- (id _Nonnull)initWithParams:(int)paddingWidth
+                paddingHeight:(int)paddingHeight
+                  strideWidth:(int)strideWidth
+                 strideHeight:(int)strideHeight {
   @autoreleasepool {
     self = [self init];
     mPaddingWidth = paddingWidth;
@@ -20,7 +20,7 @@
   }
 }
 
-- (nullable instancetype)initWithCoder:(NSCoder *)coder {
+- (nullable instancetype)initWithCoder:(NSCoder *_Nonnull)coder {
   @autoreleasepool {
     self = [self init];
     return self;
@@ -31,14 +31,14 @@
   return MPSNNPaddingMethodCustom;
 }
 
-- (MPSImageDescriptor *)
+- (MPSImageDescriptor *_Nonnull)
     destinationImageDescriptorForSourceImages:
-        (NSArray<MPSImage *> *)sourceImages
-                                 sourceStates:
-                                     (NSArray<MPSState *> *)sourceStates
-                                    forKernel:(MPSKernel *)kernel
+        (NSArray<MPSImage *> *_Nonnull)sourceImages
+                                 sourceStates:(NSArray<MPSState *> *_Nullable)
+                                                  sourceStates
+                                    forKernel:(MPSKernel *_Nonnull)kernel
                           suggestedDescriptor:
-                              (MPSImageDescriptor *)inDescriptor {
+                              (MPSImageDescriptor *_Nonnull)inDescriptor {
   MPSCNNConvolution *layer = (MPSCNNConvolution *)kernel;
 
   MPSOffset pad;
@@ -55,7 +55,7 @@
   return inDescriptor;
 }
 
-- (void)encodeWithCoder:(NSCoder *)coder {
+- (void)encodeWithCoder:(NSCoder *_Nonnull)coder {
 }
 
 @end

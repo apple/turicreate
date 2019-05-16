@@ -2,7 +2,8 @@
 
 @implementation SigmoidLayer
 
-- (id)initWithParams:(NSString *)name inputNode:(MPSNNImageNode *)inputNode {
+- (id _Nonnull)initWithParams:(NSString *_Nonnull)name
+                    inputNode:(MPSNNImageNode *_Nonnull)inputNode {
   @autoreleasepool {
     self = [self init];
 
@@ -17,7 +18,7 @@
   return mSigmoidNode.resultImage;
 }
 
-- (MPSCNNNeuronSigmoidNode *)underlyingNode {
+- (MPSCNNNeuronSigmoidNode *_Nonnull)underlyingNode {
   return mSigmoidNode;
 }
 

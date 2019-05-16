@@ -36,23 +36,23 @@ API_AVAILABLE(macos(10.14))
   id<MTLDevice> mDevice;
 }
 
-- (id)initWithParameters:(NSString *)name
-              kernelWidth:(int)kernelWidth
-             kernelHeight:(int)kernelHeight
-     inputFeatureChannels:(int)inputFeatureChannels
-    outputFeatureChannels:(int)outputFeatureChannels
-              strideWidth:(int)strideWidth
-             strideHeight:(int)strideHeight
-             paddingWidth:(int)paddingWidth
-            paddingHeight:(int)paddingHeight
-                  weights:(float *)weights
-                   biases:(float *)biases
-                inputNode:(MPSNNImageNode *)inputNode
-                   device:(id<MTLDevice> _Nonnull)dev
-                cmd_queue:(id<MTLCommandQueue> _Nonnull)cmd_q;
+- (id _Nonnull)initWithParameters:(NSString *_Nullable)name
+                      kernelWidth:(int)kernelWidth
+                     kernelHeight:(int)kernelHeight
+             inputFeatureChannels:(int)inputFeatureChannels
+            outputFeatureChannels:(int)outputFeatureChannels
+                      strideWidth:(int)strideWidth
+                     strideHeight:(int)strideHeight
+                     paddingWidth:(int)paddingWidth
+                    paddingHeight:(int)paddingHeight
+                          weights:(float *_Nonnull)weights
+                           biases:(float *_Nonnull)biases
+                        inputNode:(MPSNNImageNode *_Nonnull)inputNode
+                           device:(id<MTLDevice> _Nonnull)dev
+                        cmd_queue:(id<MTLCommandQueue> _Nonnull)cmd_q;
 
-- (MPSCNNConvolutionNode *)underlyingNode;
-- (ConvolutionDataLoader *)underlyingDataLoader;
+- (MPSCNNConvolutionNode *_Nonnull)underlyingNode;
+- (ConvolutionDataLoader *_Nonnull)underlyingDataLoader;
 - (MPSNNImageNode *_Nonnull)resultImage;
 
 @end

@@ -2,9 +2,9 @@
 
 @implementation SubtractionLayer
 
-- (id)initWithParams:(NSString *)name
-            leftNode:(MPSNNImageNode *)leftNode
-           rightNode:(MPSNNImageNode *)rightNode {
+- (id _Nonnull)initWithParams:(NSString *_Nonnull)name
+                     leftNode:(MPSNNImageNode *_Nonnull)leftNode
+                    rightNode:(MPSNNImageNode *_Nonnull)rightNode {
   @autoreleasepool {
     self = [self init];
 
@@ -20,7 +20,7 @@
   return mSubtractionNode.resultImage;
 }
 
-- (MPSNNSubtractionNode *)underlyingNode {
+- (MPSNNSubtractionNode *_Nonnull)underlyingNode {
   return mSubtractionNode;
 }
 

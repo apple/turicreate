@@ -44,26 +44,27 @@ API_AVAILABLE(macos(10.14))
   id<MTLCommandQueue> mCq;
 }
 
-- (id)initWithParams:(NSString *)name
-              kernelWidth:(int)kernelWidth
-             kernelHeight:(int)kernelHeight
-     inputFeatureChannels:(int)inputFeatureChannels
-    outputFeatureChannels:(int)outputFeatureChannels
-              strideWidth:(int)strideWidth
-             strideHeight:(int)strideHeight
-                  weights:(float * _Nonnull)weights
-                   biases:(float * _Nonnull)biases
-                   device:(id<MTLDevice> _Nonnull)dev
-                cmd_queue:(id<MTLCommandQueue> _Nonnull)cmd_q;
+- (id _Nonnull)initWithParams:(NSString *_Nullable)name
+                  kernelWidth:(int)kernelWidth
+                 kernelHeight:(int)kernelHeight
+         inputFeatureChannels:(int)inputFeatureChannels
+        outputFeatureChannels:(int)outputFeatureChannels
+                  strideWidth:(int)strideWidth
+                 strideHeight:(int)strideHeight
+                      weights:(float *_Nonnull)weights
+                       biases:(float *_Nonnull)biases
+                       device:(id<MTLDevice> _Nonnull)dev
+                    cmd_queue:(id<MTLCommandQueue> _Nonnull)cmd_q;
 
 - (MPSDataType)dataType;
 - (MPSCNNConvolutionDescriptor *__nonnull)descriptor;
 
-- (MPSCNNConvolutionWeightsAndBiasesState *)
-    updateWithCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
-              gradientState:(MPSCNNConvolutionGradientState *)gradientState
-                sourceState:
-                    (MPSCNNConvolutionWeightsAndBiasesState *)sourceState;
+- (MPSCNNConvolutionWeightsAndBiasesState *_Nonnull)
+    updateWithCommandBuffer:(id<MTLCommandBuffer> _Nonnull)commandBuffer
+              gradientState:
+                  (MPSCNNConvolutionGradientState *_Nonnull)gradientState
+                sourceState:(MPSCNNConvolutionWeightsAndBiasesState *_Nonnull)
+                                sourceState;
 
 - (size_t)weight_size;
 - (void)loadWeight:(float *__nullable)src;
@@ -77,7 +78,7 @@ API_AVAILABLE(macos(10.14))
 - (void)purge;
 
 - (NSString *__nullable)label;
-- (id)copyWithZone:(nullable NSZone *)zone;
+- (id _Nonnull)copyWithZone:(nullable NSZone *)zone;
 
 - (void)checkpointWithCommandQueue:(nonnull id<MTLCommandQueue>)commandQueue;
 

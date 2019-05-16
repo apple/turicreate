@@ -2,12 +2,12 @@
 
 @implementation PoolingLayer
 
-- (id)initWithParams:(NSString *)name
-           inputNode:(MPSNNImageNode *)inputNode
-         kernelWidth:(int)kernelWidth
-        kernelHeight:(int)kernelHeight
-         strideWidth:(int)strideWidth
-        strideHeight:(int)strideHeight {
+- (id _Nonnull)initWithParams:(NSString *_Nonnull)name
+                    inputNode:(MPSNNImageNode *_Nonnull)inputNode
+                  kernelWidth:(int)kernelWidth
+                 kernelHeight:(int)kernelHeight
+                  strideWidth:(int)strideWidth
+                 strideHeight:(int)strideHeight {
   @autoreleasepool {
     self = [self init];
 
@@ -27,7 +27,7 @@
   return mPoolingNode.resultImage;
 }
 
-- (MPSCNNPoolingAverageNode *)underlyingNode {
+- (MPSCNNPoolingAverageNode *_Nonnull)underlyingNode {
   return mPoolingNode;
 }
 

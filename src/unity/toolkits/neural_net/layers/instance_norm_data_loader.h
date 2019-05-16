@@ -6,6 +6,8 @@
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 
+#include <unity/toolkits/neural_net/mps_weight.h>
+
 typedef struct {
   int size;
   float beta1;
@@ -62,34 +64,35 @@ API_AVAILABLE(macos(10.14))
   id<MTLCommandQueue> mCq;
 }
 
-- (id)initWithParams:(NSString *)name
-             gammaWeights:(float **)gammaWeights
-              betaWeights:(float **)betaWeights
-    numberFeatureChannels:(int)numberFeatureChannels
-                   styles:(int)styles
-                   device:(id<MTLDevice> _Nonnull)dev
-                cmd_queue:(id<MTLCommandQueue> _Nonnull)cmd_q;
+- (id _Nonnull)initWithParams:(NSString *_Nullable)name
+                 gammaWeights:(float *_Nonnull *_Nonnull)gammaWeights
+                  betaWeights:(float *_Nonnull *_Nonnull)betaWeights
+        numberFeatureChannels:(int)numberFeatureChannels
+                       styles:(int)styles
+                       device:(id<MTLDevice> _Nonnull)dev
+                    cmd_queue:(id<MTLCommandQueue> _Nonnull)cmd_q;
 
 - (void)updateNumberOfStyles:(int)styles;
 - (void)updateCurrentStyle:(int)style;
 - (int)getCurrentStyle;
 
-- (void)loadBeta:(float **)beta;
-- (float *)beta;
+- (void)loadBeta:(float *_Nonnull *_Nonnull)beta;
+- (float *_Nonnull)beta;
 
-- (void)loadGamma:(float **)gamma;
-- (float *)gamma;
+- (void)loadGamma:(float *_Nonnull *_Nonnull)gamma;
+- (float *_Nonnull)gamma;
 
-- (MPSCNNNormalizationGammaAndBetaState *)
-    updateGammaAndBetaWithCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
+- (MPSCNNNormalizationGammaAndBetaState *_Nonnull)
+    updateGammaAndBetaWithCommandBuffer:
+        (id<MTLCommandBuffer> _Nonnull)commandBuffer
         instanceNormalizationStateBatch:
-            (MPSCNNInstanceNormalizationGradientStateBatch *)
+            (MPSCNNInstanceNormalizationGradientStateBatch *_Nonnull)
                 instanceNormalizationStateBatch;
 
 - (void)checkpointWithCommandQueue:(nonnull id<MTLCommandQueue>)commandQueue;
 
 - (NSString *__nullable)label;
-- (id)copyWithZone:(nullable NSZone *)zone;
+- (id _Nonnull)copyWithZone:(nullable NSZone *)zone;
 
 @end
 

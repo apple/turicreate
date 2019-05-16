@@ -12,13 +12,13 @@ API_AVAILABLE(macos(10.14))
   MPSNNSubtractionNode *mSubtractionNode;
 }
 
-- (id)initWithParams:(NSString *)name
-            leftNode:(MPSNNImageNode *)leftNode
-           rightNode:(MPSNNImageNode *)rightNode;
+- (id _Nonnull)initWithParams:(NSString *_Nonnull)name
+                     leftNode:(MPSNNImageNode *_Nonnull)leftNode
+                    rightNode:(MPSNNImageNode *_Nonnull)rightNode;
 
 - (MPSNNImageNode *_Nonnull)resultImage;
 
-- (MPSNNSubtractionNode *)underlyingNode;
+- (MPSNNSubtractionNode *_Nonnull)underlyingNode;
 
 @end
 

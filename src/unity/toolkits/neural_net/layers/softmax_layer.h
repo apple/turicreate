@@ -12,9 +12,10 @@ API_AVAILABLE(macos(10.14))
   MPSCNNSoftMaxNode *mSoftmaxNode;
 }
 
-- (id)initWithParams:(NSString *)name inputNode:(MPSNNImageNode *)inputNode;
+- (id _Nonnull)initWithParams:(NSString *_Nonnull)name
+                    inputNode:(MPSNNImageNode *_Nonnull)inputNode;
 
-- (MPSCNNSoftMaxNode *)underlyingNode;
+- (MPSCNNSoftMaxNode *_Nonnull)underlyingNode;
 - (MPSNNImageNode *_Nonnull)resultImage;
 
 @end

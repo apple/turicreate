@@ -10,19 +10,19 @@
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 
+#import <unity/toolkits/neural_net/layers/addition_layer.h>
 #import <unity/toolkits/neural_net/layers/convolution_layer.h>
-#import <unity/toolkits/neural_net/layers/instance_norm_layer.h>
 #import <unity/toolkits/neural_net/layers/fully_connected.h>
+#import <unity/toolkits/neural_net/layers/instance_norm_layer.h>
+#import <unity/toolkits/neural_net/layers/multiplication_layer.h>
+#import <unity/toolkits/neural_net/layers/pooling_layer.h>
 #import <unity/toolkits/neural_net/layers/relu_layer.h>
 #import <unity/toolkits/neural_net/layers/sigmoid_layer.h>
 #import <unity/toolkits/neural_net/layers/softmax_layer.h>
-#import <unity/toolkits/neural_net/layers/upsampling_layer.h>
-#import <unity/toolkits/neural_net/layers/addition_layer.h>
-#import <unity/toolkits/neural_net/layers/multiplication_layer.h>
 #import <unity/toolkits/neural_net/layers/subtraction_layer.h>
-#import <unity/toolkits/neural_net/layers/pooling_layer.h>
 
 /*
+
 API_AVAILABLE(macos(10.14))
 @interface DrawingClassifierModel : NSObject {
 	ConvolutionalLayer *conv1;

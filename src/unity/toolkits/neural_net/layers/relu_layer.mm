@@ -2,7 +2,8 @@
 
 @implementation ReluLayer
 
-- (id)initWithParams:(NSString *)name inputNode:(MPSNNImageNode *)inputNode {
+- (id _Nonnull)initWithParams:(NSString *_Nonnull)name
+                    inputNode:(MPSNNImageNode *_Nonnull)inputNode {
   @autoreleasepool {
     self = [self init];
 
@@ -17,7 +18,7 @@
   return mReluNode.resultImage;
 }
 
-- (MPSCNNNeuronReLUNode *)underlyingNode {
+- (MPSCNNNeuronReLUNode *_Nonnull)underlyingNode {
   return mReluNode;
 }
 

@@ -2,17 +2,17 @@
 
 @implementation ConvolutionDataLoader
 
-- (id)initWithParams:(NSString *)name
-              kernelWidth:(int)kernelWidth
-             kernelHeight:(int)kernelHeight
-     inputFeatureChannels:(int)inputFeatureChannels
-    outputFeatureChannels:(int)outputFeatureChannels
-              strideWidth:(int)strideWidth
-             strideHeight:(int)strideHeight
-                  weights:(float *)weights
-                   biases:(float *)biases
-                   device:(id<MTLDevice> _Nonnull)dev
-                cmd_queue:(id<MTLCommandQueue> _Nonnull)cmd_q {
+- (id _Nonnull)initWithParams:(NSString *_Nullable)name
+                  kernelWidth:(int)kernelWidth
+                 kernelHeight:(int)kernelHeight
+         inputFeatureChannels:(int)inputFeatureChannels
+        outputFeatureChannels:(int)outputFeatureChannels
+                  strideWidth:(int)strideWidth
+                 strideHeight:(int)strideHeight
+                      weights:(float *_Nonnull)weights
+                       biases:(float *_Nonnull)biases
+                       device:(id<MTLDevice> _Nonnull)dev
+                    cmd_queue:(id<MTLCommandQueue> _Nonnull)cmd_q {
 
   self = [super init];
 
@@ -125,20 +125,22 @@
   return convDesc;
 }
 
-- (MPSCNNConvolutionWeightsAndBiasesState *)
-    updateWithCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
-              gradientState:(MPSCNNConvolutionGradientState *)gradientState
-                sourceState:
-                    (MPSCNNConvolutionWeightsAndBiasesState *)sourceState {
+- (MPSCNNConvolutionWeightsAndBiasesState *_Nonnull)
+    updateWithCommandBuffer:(id<MTLCommandBuffer> _Nonnull)commandBuffer
+              gradientState:
+                  (MPSCNNConvolutionGradientState *_Nonnull)gradientState
+                sourceState:(MPSCNNConvolutionWeightsAndBiasesState *_Nonnull)
+                                sourceState {
 
-  [mOptimizer encodeToCommandBuffer:commandBuffer
-          convolutionGradientState:gradientState
-            convolutionSourceState:mState
-                  inputMomentumVectors:@[mWeightMomentumVector,
-     mBiasMomentumVector] inputVelocityVectors:@[mWeightVelocityVector,
-     mBiasVelocityVector] resultState:mState];
+  [mOptimizer
+         encodeToCommandBuffer:commandBuffer
+      convolutionGradientState:gradientState
+        convolutionSourceState:mState
+          inputMomentumVectors:@[ mWeightMomentumVector, mBiasMomentumVector ]
+          inputVelocityVectors:@[ mWeightVelocityVector, mBiasVelocityVector ]
+                   resultState:mState];
 
-	return mState;
+  return mState;
 }
 
 - (size_t)weight_size {
@@ -181,7 +183,7 @@
   return mName;
 }
 
-- (id)copyWithZone:(nullable NSZone *)zone {
+- (id _Nonnull)copyWithZone:(nullable NSZone *)zone {
   return self;
 }
 

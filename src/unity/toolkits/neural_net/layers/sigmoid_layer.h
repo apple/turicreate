@@ -12,9 +12,10 @@ API_AVAILABLE(macos(10.14))
   MPSCNNNeuronSigmoidNode *mSigmoidNode;
 }
 
-- (id)initWithParams:(NSString *)name inputNode:(MPSNNImageNode *)inputNode;
+- (id _Nonnull)initWithParams:(NSString *_Nonnull)name
+                    inputNode:(MPSNNImageNode *_Nonnull)inputNode;
 
-- (MPSCNNNeuronSigmoidNode *)underlyingNode;
+- (MPSCNNNeuronSigmoidNode *_Nonnull)underlyingNode;
 - (MPSNNImageNode *_Nonnull)resultImage;
 
 @end

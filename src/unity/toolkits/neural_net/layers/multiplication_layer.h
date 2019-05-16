@@ -12,13 +12,13 @@ API_AVAILABLE(macos(10.14))
   MPSNNMultiplicationNode *mMultiplicationNode;
 }
 
-- (id)initWithParams:(NSString *)name
-            leftNode:(MPSNNImageNode *)leftNode
-           rightNode:(MPSNNImageNode *)rightNode;
+- (id _Nonnull)initWithParams:(NSString *_Nonnull)name
+                     leftNode:(MPSNNImageNode *_Nonnull)leftNode
+                    rightNode:(MPSNNImageNode *_Nonnull)rightNode;
 
 - (MPSNNImageNode *_Nonnull)resultImage;
 
-- (MPSNNMultiplicationNode *)underlyingNode;
+- (MPSNNMultiplicationNode *_Nonnull)underlyingNode;
 
 @end
 

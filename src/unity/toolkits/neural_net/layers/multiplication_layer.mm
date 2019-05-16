@@ -2,9 +2,9 @@
 
 @implementation MultiplicationLayer
 
-- (id)initWithParams:(NSString *)name
-            leftNode:(MPSNNImageNode *)leftNode
-           rightNode:(MPSNNImageNode *)rightNode {
+- (id _Nonnull)initWithParams:(NSString *_Nonnull)name
+                     leftNode:(MPSNNImageNode *_Nonnull)leftNode
+                    rightNode:(MPSNNImageNode *_Nonnull)rightNode {
   @autoreleasepool {
     self = [self init];
 
@@ -21,7 +21,7 @@
   return mMultiplicationNode.resultImage;
 }
 
-- (MPSNNMultiplicationNode *)underlyingNode {
+- (MPSNNMultiplicationNode *_Nonnull)underlyingNode {
   return mMultiplicationNode;
 }
 

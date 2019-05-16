@@ -12,13 +12,13 @@
 
 @synthesize numberOfFeatureChannels = mNumberOfFeatureChannels;
 
-- (id)initWithParams:(NSString *)name
-             gammaWeights:(float **)gammaWeights
-              betaWeights:(float **)betaWeights
-    numberFeatureChannels:(int)numberFeatureChannels
-                   styles:(int)styles
-                   device:(id<MTLDevice> _Nonnull)dev
-                cmd_queue:(id<MTLCommandQueue> _Nonnull)cmd_q {
+- (id _Nonnull)initWithParams:(NSString *_Nullable)name
+                 gammaWeights:(float *_Nonnull *_Nonnull)gammaWeights
+                  betaWeights:(float *_Nonnull *_Nonnull)betaWeights
+        numberFeatureChannels:(int)numberFeatureChannels
+                       styles:(int)styles
+                       device:(id<MTLDevice> _Nonnull)dev
+                    cmd_queue:(id<MTLCommandQueue> _Nonnull)cmd_q {
   @autoreleasepool {
     self = [self init];
 
@@ -37,7 +37,7 @@
     float *zeros_ptr = zeros.data();
     std::vector<float> ones(mNumberOfFeatureChannels, 1);
     float *ones_ptr = ones.data();
-    
+
     runningUpdatePipelineState = nil;
 
     vDesc = [MPSVectorDescriptor
@@ -131,28 +131,29 @@
   return mCurrentStyle;
 }
 
-- (void)loadBeta:(float **)beta {
+- (void)loadBeta:(float *_Nonnull *_Nonnull)beta {
   mBeta = beta;
 }
 
-- (float *)beta {
+- (float *_Nonnull)beta {
   [self checkpointWithCommandQueue:mCq];
   return (float *)[[mBetaVector data] contents];
 }
 
-- (void)loadGamma:(float **)gamma {
+- (void)loadGamma:(float *_Nonnull *_Nonnull)gamma {
   mGamma = gamma;
 }
 
-- (float *)gamma {
+- (float *_Nonnull)gamma {
   [self checkpointWithCommandQueue:mCq];
   return (float *)[[mGammaVector data] contents];
 }
 
-- (MPSCNNNormalizationGammaAndBetaState *)
-    updateGammaAndBetaWithCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
+- (MPSCNNNormalizationGammaAndBetaState *_Nonnull)
+    updateGammaAndBetaWithCommandBuffer:
+        (id<MTLCommandBuffer> _Nonnull)commandBuffer
         instanceNormalizationStateBatch:
-            (MPSCNNInstanceNormalizationGradientStateBatch *)
+            (MPSCNNInstanceNormalizationGradientStateBatch *_Nonnull)
                 instanceNormalizationStateBatch {
 
   NSUInteger t1 = [adamGamma timeStep];
@@ -221,7 +222,7 @@
   return mName;
 }
 
-- (id)copyWithZone:(nullable NSZone *)zone {
+- (id _Nonnull)copyWithZone:(nullable NSZone *)zone {
   return self;
 }
 
