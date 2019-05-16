@@ -1,5 +1,5 @@
 #import <unity/toolkits/drawing_classifier/mps_drawing_classifier.hpp>
-
+/*
 @implementation DrawingClassifierModel
 
 - (id _Nullable)initWithParameters:(NSString *_Nonnull)name
@@ -166,3 +166,4 @@
 }
 
 @end
+*/

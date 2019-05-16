@@ -28,19 +28,6 @@ if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
       mps_device_manager.m
 
       layers/addition_layer.mm
-      layers/convolution_layer.mm
-      layers/convolution_padding.mm
-      layers/convolution_data_loader.mm
-      layers/fully_connected.mm
-      layers/fully_connected_data_loader.mm
-      layers/instance_norm_layer.mm
-      layers/instance_norm_data_loader.mm
-      layers/multiplication_layer.mm
-      layers/pooling_layer.mm
-      layers/relu_layer.mm
-      layers/sigmoid_layer.mm
-      layers/softmax_layer.mm
-      layers/subtraction_layer.mm
 
     REQUIRES
       unity_core

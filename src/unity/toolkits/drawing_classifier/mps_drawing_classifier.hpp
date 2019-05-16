@@ -22,6 +22,7 @@
 #import <unity/toolkits/neural_net/layers/subtraction_layer.h>
 #import <unity/toolkits/neural_net/layers/pooling_layer.h>
 
+/*
 API_AVAILABLE(macos(10.14))
 @interface DrawingClassifierModel : NSObject {
 	ConvolutionalLayer *conv1;
@@ -59,5 +60,6 @@ API_AVAILABLE(macos(10.14))
 - (SoftmaxLayer * _Nonnull) finalLayer;
 - (MPSNNImageNode * _Nonnull) backwardPass:(MPSNNImageNode *)inputNode;
 @end
+*/
 
 #endif
