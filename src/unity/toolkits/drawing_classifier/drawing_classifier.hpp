@@ -1,5 +1,5 @@
-#ifndef TURI_DRAWING_CLASSIGFIER_H_
-#define TURI_DRAWING_CLASSIGFIER_H_
+#ifndef TURI_DRAWING_CLASSIFIER_H_
+#define TURI_DRAWING_CLASSIFIER_H_
 
 #include <map>
 #include <string>
