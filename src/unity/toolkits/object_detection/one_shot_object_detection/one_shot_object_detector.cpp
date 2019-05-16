@@ -17,6 +17,7 @@
 
 #include <image/image_util_impl.hpp>
 
+#include <unity/lib/image_util.hpp>
 #include <unity/toolkits/object_detection/object_detector.hpp>
 #include <unity/toolkits/object_detection/one_shot_object_detection/one_shot_object_detector.hpp>
 #include <unity/toolkits/object_detection/one_shot_object_detection/util/color_convert.hpp>
