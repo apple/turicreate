@@ -150,15 +150,9 @@ gl_sframe augment_data(const gl_sframe &data,
         background_channels * background_width // row length in bytes
         );
 
-      if (object.m_channels == 4) {
-        images.push_back(
-          create_synthetic_image_from_rgba_object(background_view, parameter_sampler, object)
-          );
-      } else {
-        images.push_back(
-          create_synthetic_image_from_rgb_object(background_view, parameter_sampler, object)
-          );
-      }
+      images.push_back(
+        create_synthetic_image(background_view, parameter_sampler, object)
+      );
       annotations.push_back(annotation);
     }
   }
