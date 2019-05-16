@@ -2,9 +2,9 @@
 
 @implementation AdditionLayer
 
-- (id)initWithParams:(NSString *)name
-            leftNode:(MPSNNImageNode *)leftNode
-           rightNode:(MPSNNImageNode *)rightNode {
+- (id)initWithParams:(NSString * _Nullable)name
+            leftNode:(MPSNNImageNode * _Nonnull)leftNode
+           rightNode:(MPSNNImageNode * _Nonnull)rightNode {
   @autoreleasepool {
     self = [self init];
     mName = name;
@@ -14,11 +14,11 @@
   }
 }
 
-- (MPSNNImageNode *_Nonnull)resultImage {
+- (MPSNNImageNode *_Nonnull)resultImage{
   return mAdditionNode.resultImage;
 }
 
-- (MPSNNAdditionNode *)underlyingNode {
+- (MPSNNAdditionNode * _Nonnull)underlyingNode {
   return mAdditionNode;
 }
 

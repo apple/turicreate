@@ -5,7 +5,7 @@ namespace turi {
 namespace drawing_classifier {
 
 void init_model(std::map<std::string, std::vector<float>> weights) {
-
+	
 }
 
 } // namespace drawing_classifier

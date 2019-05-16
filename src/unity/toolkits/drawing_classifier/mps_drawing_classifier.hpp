@@ -44,7 +44,7 @@ API_AVAILABLE(macos(10.14))
 
 	MPSNNImageNode *endNode;
 
-	id<MTLDevice> mDev;
+	id<MTLDevice> mDev; 
 	id<MTLCommandQueue> mCq;
 }
 

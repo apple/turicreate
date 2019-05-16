@@ -51,8 +51,8 @@ API_AVAILABLE(macos(10.14))
     outputFeatureChannels:(int)outputFeatureChannels
               strideWidth:(int)strideWidth
              strideHeight:(int)strideHeight
-                  weights:(float *)weights
-                   biases:(float *)biases
+                  weights:(float * _Nonnull)weights
+                   biases:(float * _Nonnull)biases
                    device:(id<MTLDevice> _Nonnull)dev
                 cmd_queue:(id<MTLCommandQueue> _Nonnull)cmd_q;
 
