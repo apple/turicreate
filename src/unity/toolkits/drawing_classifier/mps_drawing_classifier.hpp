@@ -21,32 +21,45 @@
 #import <unity/toolkits/neural_net/layers/softmax_layer.h>
 #import <unity/toolkits/neural_net/layers/subtraction_layer.h>
 
+
+API_AVAILABLE(macos(10.14))
+@interface DrawingClassifierModel : NSObject {}
+
+- (id _Nullable)initWithParameters:(NSString *_Nonnull)name
+                       initWeights:(float_array_map&)weights;
+
+- (float_array_map) export_weights;
+- (float_array_map) predict:(float_array_map&)inputs;
+- (float_array_map) train:(float_array_map&) inputs;
+
+@end
+
 /*
 
 API_AVAILABLE(macos(10.14))
 @interface DrawingClassifierModel : NSObject {
-	ConvolutionalLayer *conv1;
-	ReluLayer* relu1;
-	PoolingLayer* pooling1;
+    ConvolutionalLayer *conv1;
+    ReluLayer* relu1;
+    PoolingLayer* pooling1;
 
-	ConvolutionalLayer *conv2;
-	ReluLayer* relu2;
-	PoolingLayer* pooling2;
+    ConvolutionalLayer *conv2;
+    ReluLayer* relu2;
+    PoolingLayer* pooling2;
 
-	ConvolutionalLayer *conv3;
-	ReluLayer* relu3;
-	PoolingLayer* pooling3;
+    ConvolutionalLayer *conv3;
+    ReluLayer* relu3;
+    PoolingLayer* pooling3;
 
-	FullyConnected* fully_connected_1;
-	ReluLayer* relu_fc_1;
-	FullyConnected* fully_connected_2;
+    FullyConnected* fully_connected_1;
+    ReluLayer* relu_fc_1;
+    FullyConnected* fully_connected_2;
 
-	SoftmaxLayer* softmax_1;
+    SoftmaxLayer* softmax_1;
 
-	MPSNNImageNode *endNode;
+    MPSNNImageNode *endNode;
 
-	id<MTLDevice> mDev; 
-	id<MTLCommandQueue> mCq;
+    id<MTLDevice> mDev; 
+    id<MTLCommandQueue> mCq;
 }
 
 - (id _Nullable)initWithParameters:(NSString *_Nonnull)name
