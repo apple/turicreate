@@ -19,7 +19,6 @@ import turicreate as __tc
 from sys import platform as __platform
 
 import array as _array
-from mxnet.io import DataBatch as __DataBatch
 
 def _warning_annotations():
     print(

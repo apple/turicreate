@@ -13,6 +13,7 @@
 
 #include <logger/assertions.hpp>
 #include <logger/logger.hpp>
+#include <unity/lib/variant_deep_serialize.hpp>
 #include <unity/toolkits/coreml_export/neural_net_models_exporter.hpp>
 #include <unity/toolkits/evaluation/metrics.hpp>
 #include <util/string_util.hpp>
@@ -34,6 +35,9 @@ using neural_net::xavier_weight_initializer;
 using neural_net::zero_weight_initializer;
 
 using padding_type = model_spec::padding_type;
+
+// The last Python version was 2.
+constexpr size_t ACTIVITY_CLASSIFIER_VERSION = 3;
 
 constexpr size_t NUM_PREDICTIONS_PER_CHUNK = 20;
 
@@ -94,8 +98,10 @@ float cumulative_chunk_accuracy(size_t prediction_window, size_t num_classes,
     data_iterator::batch::chunk_info info = batch.batch_info[i];
     size_t num_predictions = (info.num_samples + prediction_window - 1) / prediction_window;
     size_t num_correct_predictions = count_correct_predictions(num_classes, output_chunk, label_chunk, num_predictions);
+
     
     cumulative_per_batch_accuracy += static_cast<float>(num_correct_predictions) / num_predictions;
+
   }
 
   return cumulative_per_batch_accuracy;
@@ -134,7 +140,36 @@ std::tuple<gl_sframe, gl_sframe> random_split_by_session(gl_sframe data, std::st
   return std::make_tuple(train,val);
 }
 
+struct result {
+    shared_float_array loss_info;
+    shared_float_array output_info;
+    data_iterator::batch data_info;
+};
+
 }  // namespace
+
+size_t activity_classifier::get_version() const {
+  return ACTIVITY_CLASSIFIER_VERSION;
+}
+
+void activity_classifier::save_impl(oarchive& oarc) const {
+  // Save model attributes.
+  variant_deep_save(state, oarc);
+
+  // Save neural net weights.
+  oarc << nn_spec_->export_params_view();
+}
+
+void activity_classifier::load_version(iarchive& iarc, size_t version) {
+  // Load model attributes.
+  variant_deep_load(state, iarc);
+
+  // Load neural net weights.
+  float_array_map nn_params;
+  iarc >> nn_params;
+  nn_spec_ = init_model();
+  nn_spec_->update_params(nn_params);
+}
 
 void activity_classifier::init_options(
     const std::map<std::string, flexible_type>& opts)
@@ -173,40 +208,66 @@ void activity_classifier::init_options(
 std::tuple<float, float> activity_classifier::compute_validation_metrics(
     size_t prediction_window, size_t num_classes, size_t batch_size) {
 
+
   float cumulative_val_loss = 0.f;
   size_t val_size = 0;
   float cumulative_val_accuracy = 0.f;
   validation_data_iterator_->reset();
 
+  // To support double buffering, use a queue of pending inference results.
+  std::queue<result> pending_batches;
+
+  auto pop_until_size = [&](size_t remaining) {
+
+    while (pending_batches.size() > remaining) {
+
+      // Pop one batch from the queue.
+      result batch = pending_batches.front();
+      pending_batches.pop();
+
+      cumulative_val_accuracy += cumulative_chunk_accuracy(prediction_window, num_classes, batch.output_info, batch.data_info);
+
+      float val_loss = std::accumulate(batch.loss_info.data(), batch.loss_info.data() + batch.loss_info.size(),
+                                     0.f, std::plus<float>());
+      cumulative_val_loss += val_loss;
+
+    }
+  };
+
   while (validation_data_iterator_->has_next_batch()) {
-    data_iterator::batch val =
-        validation_data_iterator_->next_batch(batch_size);
+
+    // Wait until we have just one asynchronous batch outstanding. The work
+    // below should be concurrent with the neural net inference for that batch.
+    pop_until_size(1);
+
+    result result_batch;
+    result_batch.data_info = validation_data_iterator_->next_batch(batch_size);
+
+    // Submit the batch to the neural net model.
     std::map<std::string, shared_float_array> results =
         training_model_->predict({
-            {"input", val.features},
-            {"labels", val.labels},
-            {"weights", val.weights},
+            {"input", result_batch.data_info.features},
+            {"labels", result_batch.data_info.labels},
+            {"weights", result_batch.data_info.weights},
         });
 
-    const shared_float_array &output = results.at("output");
-    const shared_float_array &loss = results.at("loss");
-
-    float val_loss = std::accumulate(loss.data(), loss.data() + loss.size(),
-                                     0.f, std::plus<float>());
-
-    cumulative_val_loss += val_loss;
-
-    cumulative_val_accuracy +=
-        cumulative_chunk_accuracy(prediction_window, num_classes, output, val);
-
-    val_size += val.batch_info.size();
+    result_batch.output_info = results.at("output");
+    result_batch.loss_info = results.at("loss");
+    val_size += result_batch.data_info.batch_info.size();
+  
+    // Add the pending result to our queue and move on to the next input batch.
+    pending_batches.push(std::move(result_batch));  
+    
   }
+  // Process all remaining batches.
+  pop_until_size(0);
 
   float average_val_accuracy = cumulative_val_accuracy / val_size;
   float average_val_loss = cumulative_val_loss / val_size;
 
   return std::make_tuple(average_val_accuracy, average_val_loss);
 }
+
 
 void activity_classifier::init_table_printer(bool has_validation) {
   if (has_validation) {
@@ -256,37 +317,33 @@ void activity_classifier::train(gl_sframe data, const std::string& target_column
   float_array_map trained_weights = training_model_->export_weights();
   nn_spec_->update_params(trained_weights);
 
+  variant_map_type state_update;
+
   // Update the state with recall, precision and confusion matrix for training
   // data
   gl_sarray train_predictions = predict(train_data, "probability_vector");
-  variant_map_type train_metric =
-      evaluation::compute_classifier_metrics(
-      train_data, target_column_name, "auto", train_predictions,
+  variant_map_type train_metric = evaluation::compute_classifier_metrics(
+      train_data, target_column_name, "report", train_predictions,
       {{"classes", read_state<flex_list>("classes")}});
 
-  add_or_update_state(
-      {{"training_precision", train_metric["precision"]},
-       {"training_recall", train_metric["recall"]},
-       {"training_accuracy", train_metric["accuracy"]},
-       {"training_log_loss", train_metric["log_loss"]},
-       {"training_confusion_matrix", train_metric["confusion_matrix"]},
-       {"num_examples", train_data.size()}});
+  for (auto &p : train_metric) {
+    state_update["training_" + p.first] = p.second;
+  }
 
   // Update the state with recall, precision and confusion matrix for validation
   // data
-  if (!val_data.empty()){
+  if (!val_data.empty()) {
     gl_sarray val_predictions = predict(val_data, "probability_vector");
-    variant_map_type val_metric =
-      evaluation::compute_classifier_metrics(
-      val_data, target_column_name, "auto", val_predictions,
-      {{"classes", read_state<flex_list>("classes")}});
-    add_or_update_state(
-        {{"validation_precision", val_metric["precision"]},
-         {"validation_recall", val_metric["recall"]},
-         {"validation_accuracy", val_metric["accuracy"]},
-         {"validation_log_loss", val_metric["log_loss"]},
-         {"validation_confusion_matrix", val_metric["confusion_matrix"]}});
+    variant_map_type val_metric = evaluation::compute_classifier_metrics(
+        val_data, target_column_name, "report", val_predictions,
+        {{"classes", read_state<flex_list>("classes")}});
+
+    for (auto &p : val_metric) {
+      state_update["validation_" + p.first] = p.second;
+    }
   }
+
+  add_or_update_state(state_update);
 }
 
 
@@ -301,7 +358,8 @@ gl_sarray activity_classifier::predict(gl_sframe data,
   }
 
   // Bind the data to a data iterator.
-  std::unique_ptr<data_iterator> data_it = create_iterator(data, false);
+  std::unique_ptr<data_iterator> data_it =
+      create_iterator(data, /* requires_labels */ false, /* is_train */ false);
 
   // Accumulate the class probabilities for each prediction window.
   gl_sframe raw_preds_per_window = perform_inference(data_it.get());
@@ -345,7 +403,8 @@ gl_sframe activity_classifier::predict_per_window(gl_sframe data,
   }
 
   // Bind the data to a data iterator.
-  std::unique_ptr<data_iterator> data_it = create_iterator(data, false);
+  std::unique_ptr<data_iterator> data_it =
+      create_iterator(data, /* requires_labels */ false, /* is_train */ false);
 
   // Accumulate the class probabilities for each prediction window.
   gl_sframe raw_preds_per_window = perform_inference(data_it.get());
@@ -424,18 +483,117 @@ std::shared_ptr<MLModelWrapper> activity_classifier::export_to_coreml(
   return model_wrapper;
 }
 
+// Converts a model saved from the original Python (CustomModel) toolkit.
+void activity_classifier::import_from_custom_model(
+    variant_map_type model_data, size_t version) {
+
+  // Extract the neural net weights from the model data.
+  auto it = model_data.find("_pred_model");
+  flex_dict pred_model = variant_get_value<flex_dict>(it->second);
+  model_data.erase(it);
+
+  // The remaining model data should be interpreted as model attributes (state).
+  state.clear();
+  state.insert(model_data.begin(), model_data.end());
+
+  // Migrate the MXNet weights from pred_model, which is a nested dictionary
+  // with three layers. The weights we want are spread among two top-level keys:
+  // "arg_params" and "aux_params". The mid-level keys are "data" and "shapes".
+  // The bottom-level keys are the layer names.
+  float_array_map nn_params;
+  auto import_mxnet_params = [&](const flex_dict& params) {
+    // Here, params is the value for either "arg_params" or "aux_params" in the
+    // top-level dictionary. Extract the data dictionary and shape dictionary.
+    flex_dict mxnet_data_dict;
+    flex_dict mxnet_shape_dict;
+    for (const auto& params_kv : params) {
+      if (params_kv.first == "data") {
+        mxnet_data_dict = params_kv.second;
+      } else if (params_kv.first == "shapes") {
+        mxnet_shape_dict = params_kv.second;
+      }
+    }
+
+    // Sort the two dictionaries, assuming that they contain the same keys.
+    auto cmp = [](const flex_dict::value_type& a, const flex_dict::value_type& b) {
+      return a.first < b.first;
+    };
+    std::sort(mxnet_data_dict.begin(), mxnet_data_dict.end(), cmp);
+    std::sort(mxnet_shape_dict.begin(), mxnet_shape_dict.end(), cmp);
+    ASSERT_EQ(mxnet_data_dict.size(), mxnet_shape_dict.size());
+
+    // Iterate through the shapes and data simultaneously, one layer at a time.
+    for (size_t i = 0; i < mxnet_data_dict.size(); ++i) {
+      // Copy/convert to std::vector of float (for data) and size_t (for shape).
+      std::string name = mxnet_data_dict[i].first;
+      flex_nd_vec mxnet_data_nd = mxnet_data_dict[i].second.to<flex_nd_vec>();
+      flex_nd_vec mxnet_shape_nd = mxnet_shape_dict[i].second.to<flex_nd_vec>();
+      const std::vector<double>& mxnet_data = mxnet_data_nd.elements();
+      const std::vector<double>& mxnet_shape = mxnet_shape_nd.elements();
+      std::vector<float> data(mxnet_data.size());
+      std::vector<size_t> shape(mxnet_shape.size());
+      std::copy(mxnet_data.begin(), mxnet_data.end(), data.begin());
+      std::copy(mxnet_shape.begin(), mxnet_shape.end(), shape.begin());
+
+      // Replace "moving" with "running" in layer names.
+      auto moving_pos = name.find("moving");
+      if (moving_pos != std::string::npos) {
+        name.replace(moving_pos, 6, "running");
+      }
+
+      if (name.find("lstm") == 0) {
+        // MXNet packs the parameters for a LSTM layer into a single block,
+        // concatenating the input gate, forget gate, cell, and output gate
+        // weights. CoreML expects these to be split into separate names.
+        shape[0] /= 4;
+        std::string prefix = name.substr(0, 8);  // "lstm_i2h" or "lstm_h2h"
+        std::string suffix = name.substr(9);     // "weight" or "bias"
+        size_t size = data.size() / 4;
+        nn_params[prefix + "_i_" + suffix] = shared_float_array::wrap(
+            std::vector<float>(data.begin(), data.begin() + size), shape);
+        nn_params[prefix + "_f_" + suffix] = shared_float_array::wrap(
+            std::vector<float>(data.begin() + size, data.begin() + size*2),
+            shape);
+        nn_params[prefix + "_c_" + suffix] = shared_float_array::wrap(
+            std::vector<float>(data.begin() + size*2, data.begin() + size*3),
+            shape);
+        nn_params[prefix + "_o_" + suffix] = shared_float_array::wrap(
+            std::vector<float>(data.begin() + size*3, data.end()), shape);
+      } else {
+        nn_params[name] =
+            shared_float_array::wrap(std::move(data), std::move(shape));
+      }
+    }
+  };
+
+  // Migrate all the weights found under the "arg_params" or "aux_params" keys.
+  for (const auto& pred_model_kv : pred_model) {
+    const std::string& key = pred_model_kv.first;
+    if (key == "arg_params" || key == "aux_params") {
+      import_mxnet_params(pred_model_kv.second.get<flex_dict>());
+    }
+  }
+
+  // Load the migrated weights.
+  nn_spec_ = init_model();
+  nn_spec_->update_params(nn_params);
+}
+
 std::unique_ptr<data_iterator>
-activity_classifier::create_iterator(gl_sframe data, bool is_train) const {
+activity_classifier::create_iterator(gl_sframe data, bool requires_labels,
+                                     bool is_train) const {
 
   data_iterator::parameters data_params;
   data_params.data = std::move(data);
 
-  if (!is_train){
+  if (!is_train) {
     data_params.class_labels = read_state<flex_list>("classes");
   }
-  
+
   data_params.verbose = is_train;
-  data_params.target_column_name = read_state<flex_string>("target");
+  if (requires_labels) {
+    data_params.target_column_name = read_state<flex_string>("target");
+  }
   data_params.session_id_column_name = read_state<flex_string>("session_id");
   flex_list features = read_state<flex_list>("features");
   data_params.feature_column_names =
@@ -585,13 +743,15 @@ void activity_classifier::init_train(
                                               feature_column_names.end())}});
 
   // Bind the data to a data iterator.
-  training_data_iterator_ = create_iterator(data, true);
+  training_data_iterator_ =
+      create_iterator(data, /* requires_labels */ true, /* is_train */ true);
 
   add_or_update_state({{"classes", training_data_iterator_->class_labels()}});
 
   // Bind the validation data to a data iterator.
   if (!validation_data.empty()) {
-    validation_data_iterator_ = create_iterator(validation_data, false);
+    validation_data_iterator_ = create_iterator(
+        validation_data, /* requires_labels */ true, /* is_train */ false);
   } else {
     validation_data_iterator_ = nullptr;
   }
@@ -663,45 +823,63 @@ void activity_classifier::perform_training_iteration() {
   size_t num_classes = read_state<size_t>("num_classes");
   size_t prediction_window = read_state<size_t>("prediction_window");
   
+
+  // To support double buffering, use a queue of pending inference results.
+  std::queue<result> pending_batches;
+
+  auto pop_until_size = [&](size_t remaining) {
+
+    while (pending_batches.size() > remaining) {
+
+      // Pop one batch from the queue.
+      result batch = pending_batches.front();
+      pending_batches.pop();
+
+      cumulative_batch_accuracy += cumulative_chunk_accuracy(prediction_window, num_classes, batch.output_info,
+                                    batch.data_info ) / batch.data_info.batch_info.size();
+
+      float batch_loss = std::accumulate(batch.loss_info.data(),
+                                         batch.loss_info.data() + batch.loss_info.size(),
+                                         0.f, std::plus<float>());
+
+      cumulative_batch_loss += batch_loss / batch.data_info.batch_info.size();
+
+    }
+  };
+
+  
   while (training_data_iterator_->has_next_batch()) {
-    data_iterator::batch batch =
-        training_data_iterator_->next_batch(batch_size);
+
+    // Wait until we have just one asynchronous batch outstanding. The work
+    // below should be concurrent with the neural net inference for that batch.
+    pop_until_size(1);
+
+    result result_batch;
+    result_batch.data_info = training_data_iterator_->next_batch(batch_size);;
 
     // Submit the batch to the neural net model.
-    // TODO: Implement double buffering.
     std::map<std::string, shared_float_array> results = training_model_->train(
-        { { "input",   batch.features },
-          { "labels",  batch.labels   },
-          { "weights", batch.weights  }, });
-    const shared_float_array &loss_batch = results.at("loss");
-
-    float batch_loss = std::accumulate(loss_batch.data(),
-                                       loss_batch.data() + loss_batch.size(),
-                                       0.f, std::plus<float>());
-
-    
-    cumulative_batch_loss += batch_loss / batch.batch_info.size();
-
-    
-    const shared_float_array& output = results.at("output");
-
-    cumulative_batch_accuracy +=
-        cumulative_chunk_accuracy(prediction_window, num_classes, output,
-                                  batch) /
-        batch.batch_info.size();
-
+        { { "input",   result_batch.data_info.features },
+          { "labels",  result_batch.data_info.labels   },
+          { "weights", result_batch.data_info.weights  }, });
+    result_batch.loss_info = results.at("loss");
+    result_batch.output_info = results.at("output");
+      
     ++num_batches;
-
+    
+    // Add the pending result to our queue and move on to the next input batch.
+    pending_batches.push(std::move(result_batch));
+    
   }
+  // Process all remaining batches.
+  pop_until_size(0);
 
   float average_batch_loss = cumulative_batch_loss / num_batches;
   float average_batch_accuracy = cumulative_batch_accuracy / num_batches;
-
-
   float average_val_accuracy;
   float average_val_loss;
-  if (validation_data_iterator_) {
 
+  if (validation_data_iterator_) {
 
     std::tie(average_val_accuracy, average_val_loss) =
         compute_validation_metrics(prediction_window, num_classes, batch_size);
@@ -733,6 +911,7 @@ void activity_classifier::perform_training_iteration() {
   }
 
   training_data_iterator_->reset();
+
   }
 
 gl_sframe activity_classifier::perform_inference(data_iterator *data) const {
@@ -761,21 +940,21 @@ gl_sframe activity_classifier::perform_inference(data_iterator *data) const {
       get_inference_config(prediction_window),
       nn_spec_->export_params_view());
 
-  while (data->has_next_batch()) {
-    // Obtain the next batch of inputs.
-    data_iterator::batch inputs =
-        data->next_batch(read_state<flex_int>("batch_size"));
+  // To support double buffering, use a queue of pending inference results.
+  std::queue<result> pending_batches;
+  
+  auto pop_until_size = [&](size_t remaining) {
 
-    // Send the inputs to the model.
-    // TODO: Implement double buffering.
-    std::map<std::string, shared_float_array> results =
-        backend->predict({ { "input", inputs.features } });
+    while (pending_batches.size() > remaining) {
 
-    // Copy the (float) outputs to our (double) buffer and add to the SArray.
-    const shared_float_array& output = results.at("output");
-    for (size_t i = 0; i < inputs.batch_info.size(); ++i) {
-      shared_float_array output_chunk = output[i];
-      data_iterator::batch::chunk_info info = inputs.batch_info[i];
+      // Pop one batch from the queue.
+      result batch = pending_batches.front();
+      pending_batches.pop();
+      
+      for (size_t i = 0; i < batch.data_info.batch_info.size(); ++i) {
+      
+      shared_float_array output_chunk = batch.output_info[i];
+      data_iterator::batch::chunk_info info = batch.data_info.batch_info[i];
 
       // Interpret the NN output as a sequence of NUM_PREDICTIONS_PER_CHUNK
       // probability vectors.
@@ -783,24 +962,50 @@ gl_sframe activity_classifier::perform_inference(data_iterator *data) const {
 
       const float* output_ptr = output_chunk.data();
       size_t cumulative_samples = 0;
-      while (cumulative_samples < info.num_samples) {
-        // Copy the probability vector for this prediction.
-        std::copy(output_ptr, output_ptr + num_classes, preds.begin());
-        output_ptr += num_classes;
-
-        // Compute how many samples this prediction applies to.
-        size_t num_samples = std::min(prediction_window,
-                                      info.num_samples - cumulative_samples);
-        cumulative_samples += prediction_window;
-        // Add a row to the output SFrame.
-        writer.write({ info.session_id, preds, num_samples },
-                     /* segment_id */ 0);
+      
+        while (cumulative_samples < info.num_samples) {
+          
+          // Copy the probability vector for this prediction.
+          std::copy(output_ptr, output_ptr + num_classes, preds.begin());
+        
+          output_ptr += num_classes;
+          
+          // Compute how many samples this prediction applies to.
+          size_t num_samples = std::min(prediction_window,
+                                        info.num_samples - cumulative_samples);
+          cumulative_samples += prediction_window ;
+          // Add a row to the output SFrame.
+          writer.write({ info.session_id, preds, num_samples },
+                       /* segment_id */ 0);
+          
+        }
       }
     }
+  };
+
+  while (data->has_next_batch()) {
+
+    // Wait until we have just one asynchronous batch outstanding. The work
+    // below should be concurrent with the neural net inference for that batch.
+    pop_until_size(1);
+    
+    result result_batch;
+    result_batch.data_info = data->next_batch(read_state<flex_int>("batch_size"));;
+    
+    // Send the inputs to the model.
+    std::map<std::string, shared_float_array> results =
+        backend->predict({ { "input", result_batch.data_info.features } });
+
+    // Copy the (float) outputs to our (double) buffer and add to the SArray.
+    result_batch.output_info = results.at("output");
+
+    pending_batches.push(std::move(result_batch));
+    
   }
+
+  pop_until_size(0);
 
   return writer.close();
 }
-
 }  // namespace activity_classification
 }  // namespace turi

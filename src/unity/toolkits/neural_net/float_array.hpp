@@ -14,6 +14,8 @@
 #include <string>
 #include <vector>
 
+#include <serialization/serialization_includes.hpp>
+
 namespace turi {
 namespace neural_net {
 
@@ -157,6 +159,10 @@ public:
   shared_float_array operator[](size_t idx) const;
 
   // TODO: Operations such as reshape, slice, etc.?
+
+  // Serialization.
+  void save(oarchive& oarc) const;
+  void load(iarchive& iarc);
 
 protected:
   shared_float_array(std::shared_ptr<float_array> impl, size_t offset,

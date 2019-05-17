@@ -35,6 +35,20 @@ image_type::image_type(const boost::gil::rgb8_image_t &gil_image)
   std::copy(data, data + image_data_size, &m_image_data[0]);
 }
 
+image_type::image_type(const boost::gil::rgba8_image_t &gil_image)
+: m_height(gil_image.height())
+, m_width(gil_image.width())
+, m_channels(boost::gil::num_channels<boost::gil::rgba8_image_t>())
+, m_image_data_size(gil_image.height() * gil_image.width() * boost::gil::num_channels<boost::gil::rgba8_image_t>())
+, m_version(IMAGE_TYPE_CURRENT_VERSION)
+, m_format(Format::RAW_ARRAY)
+{
+  size_t image_data_size = gil_image.height() * gil_image.width() * boost::gil::num_channels<boost::gil::rgba8_image_t>();
+  auto it = const_view(gil_image).begin();
+  const char* data = reinterpret_cast<const char*>(&boost::gil::at_c<0>(*it));
+  m_image_data.reset(new char[image_data_size]);
+  std::copy(data, data + image_data_size, &m_image_data[0]);
+}
 
 void image_type::save(oarchive& oarc) const {
   oarc << m_version << m_height << m_width << m_channels << m_format <<m_image_data_size;

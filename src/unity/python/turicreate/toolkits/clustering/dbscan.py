@@ -115,7 +115,7 @@ def create(dataset, features=None, distance=None, radius=1.,
       "transformed_dot_product" are quite fast, while composite distances can be
       slow.
 
-    - Any distance function in the GL Create library may be used with DBSCAN but
+    - Any distance function in the Turi Create library may be used with DBSCAN but
       the results may be poor for distances that violate the standard metric
       properties, i.e. symmetry, non-negativity, triangle inequality, and
       identity of indiscernibles. In particular, the DBSCAN algorithm is based
