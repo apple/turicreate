@@ -117,7 +117,7 @@ def ac_weights_mxnet_to_mps(arg_params, aux_params, lstm_h_size):
             w = mxnet_weights[key].asnumpy()
             mps_weights[key] = w[..., _np.newaxis, :]
         elif key.startswith('dense') and key.endswith('weight'):
-            mps_weights[key] = w[:, _np.newaxis, _np.newaxis]
+            mps_weights[key] = w[..., _np.newaxis, _np.newaxis]
         else:
             mps_weights[key] = w
 

@@ -17,6 +17,7 @@
 
 #include <image/image_util_impl.hpp>
 
+#include <unity/lib/image_util.hpp>
 #include <unity/toolkits/object_detection/object_detector.hpp>
 #include <unity/toolkits/object_detection/one_shot_object_detection/one_shot_object_detector.hpp>
 #include <unity/toolkits/object_detection/one_shot_object_detection/util/color_convert.hpp>
@@ -104,6 +105,23 @@ static std::map<std::string,size_t> generate_column_index_map(
     return index_map;
 }
 
+boost::gil::rgba8_image_t::view_t create_starter_image_view(flex_image &object_input) {
+  flex_image object = image_util::resize_image(object_input,
+                                               object_input.m_width,
+                                               object_input.m_height,
+                                               4,
+                                               true).to<flex_image>();
+  DASSERT_TRUE(object.is_decoded());
+  DASSERT_EQ(object.m_channels, 4);
+  boost::gil::rgba8_image_t::view_t starter_image_view = interleaved_view(
+    object.m_width,
+    object.m_height,
+    (boost::gil::rgba8_pixel_t*) (object.get_image_data()),
+    object.m_channels * object.m_width // row length in bytes
+  );
+  return starter_image_view;
+}
+
 gl_sframe augment_data(const gl_sframe &data,
                        const std::string& image_column_name,
                        const std::string& target_column_name,
@@ -143,6 +161,8 @@ gl_sframe augment_data(const gl_sframe &data,
       DASSERT_TRUE(object.is_decoded());
       DASSERT_TRUE(flex_background.is_decoded());
 
+      boost::gil::rgba8_image_t::view_t starter_image_view = create_starter_image_view(object);
+
       boost::gil::rgb8_image_t::view_t background_view = interleaved_view(
         background_width,
         background_height,
@@ -150,15 +170,9 @@ gl_sframe augment_data(const gl_sframe &data,
         background_channels * background_width // row length in bytes
         );
 
-      if (object.m_channels == 4) {
-        images.push_back(
-          create_synthetic_image_from_rgba_object(background_view, parameter_sampler, object)
-          );
-      } else {
-        images.push_back(
-          create_synthetic_image_from_rgb_object(background_view, parameter_sampler, object)
-          );
-      }
+      images.push_back(
+        create_synthetic_image(starter_image_view, background_view, parameter_sampler, object)
+      );
       annotations.push_back(annotation);
     }
   }

@@ -44,7 +44,7 @@ boost::gil::point2<F> transform(const Eigen::Matrix<F, 3, 3>& mat, const boost::
 
 template <typename F>
 struct mapping_traits<Eigen::Matrix<F, 3, 3> >{
-    typedef boost::gil::point2<F> result_type;
+  using result_type = boost::gil::point2<F>;
 };
 
 } // gil

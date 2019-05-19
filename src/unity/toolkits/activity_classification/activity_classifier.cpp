@@ -13,6 +13,7 @@
 
 #include <logger/assertions.hpp>
 #include <logger/logger.hpp>
+#include <unity/lib/variant_deep_serialize.hpp>
 #include <unity/toolkits/coreml_export/neural_net_models_exporter.hpp>
 #include <unity/toolkits/evaluation/metrics.hpp>
 #include <util/string_util.hpp>
@@ -34,6 +35,9 @@ using neural_net::xavier_weight_initializer;
 using neural_net::zero_weight_initializer;
 
 using padding_type = model_spec::padding_type;
+
+// The last Python version was 2.
+constexpr size_t ACTIVITY_CLASSIFIER_VERSION = 3;
 
 constexpr size_t NUM_PREDICTIONS_PER_CHUNK = 20;
 
@@ -144,6 +148,28 @@ struct result {
 
 }  // namespace
 
+size_t activity_classifier::get_version() const {
+  return ACTIVITY_CLASSIFIER_VERSION;
+}
+
+void activity_classifier::save_impl(oarchive& oarc) const {
+  // Save model attributes.
+  variant_deep_save(state, oarc);
+
+  // Save neural net weights.
+  oarc << nn_spec_->export_params_view();
+}
+
+void activity_classifier::load_version(iarchive& iarc, size_t version) {
+  // Load model attributes.
+  variant_deep_load(state, iarc);
+
+  // Load neural net weights.
+  float_array_map nn_params;
+  iarc >> nn_params;
+  nn_spec_ = init_model();
+  nn_spec_->update_params(nn_params);
+}
 
 void activity_classifier::init_options(
     const std::map<std::string, flexible_type>& opts)
@@ -332,7 +358,8 @@ gl_sarray activity_classifier::predict(gl_sframe data,
   }
 
   // Bind the data to a data iterator.
-  std::unique_ptr<data_iterator> data_it = create_iterator(data, false);
+  std::unique_ptr<data_iterator> data_it =
+      create_iterator(data, /* requires_labels */ false, /* is_train */ false);
 
   // Accumulate the class probabilities for each prediction window.
   gl_sframe raw_preds_per_window = perform_inference(data_it.get());
@@ -376,7 +403,8 @@ gl_sframe activity_classifier::predict_per_window(gl_sframe data,
   }
 
   // Bind the data to a data iterator.
-  std::unique_ptr<data_iterator> data_it = create_iterator(data, false);
+  std::unique_ptr<data_iterator> data_it =
+      create_iterator(data, /* requires_labels */ false, /* is_train */ false);
 
   // Accumulate the class probabilities for each prediction window.
   gl_sframe raw_preds_per_window = perform_inference(data_it.get());
@@ -455,18 +483,117 @@ std::shared_ptr<MLModelWrapper> activity_classifier::export_to_coreml(
   return model_wrapper;
 }
 
+// Converts a model saved from the original Python (CustomModel) toolkit.
+void activity_classifier::import_from_custom_model(
+    variant_map_type model_data, size_t version) {
+
+  // Extract the neural net weights from the model data.
+  auto it = model_data.find("_pred_model");
+  flex_dict pred_model = variant_get_value<flex_dict>(it->second);
+  model_data.erase(it);
+
+  // The remaining model data should be interpreted as model attributes (state).
+  state.clear();
+  state.insert(model_data.begin(), model_data.end());
+
+  // Migrate the MXNet weights from pred_model, which is a nested dictionary
+  // with three layers. The weights we want are spread among two top-level keys:
+  // "arg_params" and "aux_params". The mid-level keys are "data" and "shapes".
+  // The bottom-level keys are the layer names.
+  float_array_map nn_params;
+  auto import_mxnet_params = [&](const flex_dict& params) {
+    // Here, params is the value for either "arg_params" or "aux_params" in the
+    // top-level dictionary. Extract the data dictionary and shape dictionary.
+    flex_dict mxnet_data_dict;
+    flex_dict mxnet_shape_dict;
+    for (const auto& params_kv : params) {
+      if (params_kv.first == "data") {
+        mxnet_data_dict = params_kv.second;
+      } else if (params_kv.first == "shapes") {
+        mxnet_shape_dict = params_kv.second;
+      }
+    }
+
+    // Sort the two dictionaries, assuming that they contain the same keys.
+    auto cmp = [](const flex_dict::value_type& a, const flex_dict::value_type& b) {
+      return a.first < b.first;
+    };
+    std::sort(mxnet_data_dict.begin(), mxnet_data_dict.end(), cmp);
+    std::sort(mxnet_shape_dict.begin(), mxnet_shape_dict.end(), cmp);
+    ASSERT_EQ(mxnet_data_dict.size(), mxnet_shape_dict.size());
+
+    // Iterate through the shapes and data simultaneously, one layer at a time.
+    for (size_t i = 0; i < mxnet_data_dict.size(); ++i) {
+      // Copy/convert to std::vector of float (for data) and size_t (for shape).
+      std::string name = mxnet_data_dict[i].first;
+      flex_nd_vec mxnet_data_nd = mxnet_data_dict[i].second.to<flex_nd_vec>();
+      flex_nd_vec mxnet_shape_nd = mxnet_shape_dict[i].second.to<flex_nd_vec>();
+      const std::vector<double>& mxnet_data = mxnet_data_nd.elements();
+      const std::vector<double>& mxnet_shape = mxnet_shape_nd.elements();
+      std::vector<float> data(mxnet_data.size());
+      std::vector<size_t> shape(mxnet_shape.size());
+      std::copy(mxnet_data.begin(), mxnet_data.end(), data.begin());
+      std::copy(mxnet_shape.begin(), mxnet_shape.end(), shape.begin());
+
+      // Replace "moving" with "running" in layer names.
+      auto moving_pos = name.find("moving");
+      if (moving_pos != std::string::npos) {
+        name.replace(moving_pos, 6, "running");
+      }
+
+      if (name.find("lstm") == 0) {
+        // MXNet packs the parameters for a LSTM layer into a single block,
+        // concatenating the input gate, forget gate, cell, and output gate
+        // weights. CoreML expects these to be split into separate names.
+        shape[0] /= 4;
+        std::string prefix = name.substr(0, 8);  // "lstm_i2h" or "lstm_h2h"
+        std::string suffix = name.substr(9);     // "weight" or "bias"
+        size_t size = data.size() / 4;
+        nn_params[prefix + "_i_" + suffix] = shared_float_array::wrap(
+            std::vector<float>(data.begin(), data.begin() + size), shape);
+        nn_params[prefix + "_f_" + suffix] = shared_float_array::wrap(
+            std::vector<float>(data.begin() + size, data.begin() + size*2),
+            shape);
+        nn_params[prefix + "_c_" + suffix] = shared_float_array::wrap(
+            std::vector<float>(data.begin() + size*2, data.begin() + size*3),
+            shape);
+        nn_params[prefix + "_o_" + suffix] = shared_float_array::wrap(
+            std::vector<float>(data.begin() + size*3, data.end()), shape);
+      } else {
+        nn_params[name] =
+            shared_float_array::wrap(std::move(data), std::move(shape));
+      }
+    }
+  };
+
+  // Migrate all the weights found under the "arg_params" or "aux_params" keys.
+  for (const auto& pred_model_kv : pred_model) {
+    const std::string& key = pred_model_kv.first;
+    if (key == "arg_params" || key == "aux_params") {
+      import_mxnet_params(pred_model_kv.second.get<flex_dict>());
+    }
+  }
+
+  // Load the migrated weights.
+  nn_spec_ = init_model();
+  nn_spec_->update_params(nn_params);
+}
+
 std::unique_ptr<data_iterator>
-activity_classifier::create_iterator(gl_sframe data, bool is_train) const {
+activity_classifier::create_iterator(gl_sframe data, bool requires_labels,
+                                     bool is_train) const {
 
   data_iterator::parameters data_params;
   data_params.data = std::move(data);
 
-  if (!is_train){
+  if (!is_train) {
     data_params.class_labels = read_state<flex_list>("classes");
   }
-  
+
   data_params.verbose = is_train;
-  data_params.target_column_name = read_state<flex_string>("target");
+  if (requires_labels) {
+    data_params.target_column_name = read_state<flex_string>("target");
+  }
   data_params.session_id_column_name = read_state<flex_string>("session_id");
   flex_list features = read_state<flex_list>("features");
   data_params.feature_column_names =
@@ -616,13 +743,15 @@ void activity_classifier::init_train(
                                               feature_column_names.end())}});
 
   // Bind the data to a data iterator.
-  training_data_iterator_ = create_iterator(data, true);
+  training_data_iterator_ =
+      create_iterator(data, /* requires_labels */ true, /* is_train */ true);
 
   add_or_update_state({{"classes", training_data_iterator_->class_labels()}});
 
   // Bind the validation data to a data iterator.
   if (!validation_data.empty()) {
-    validation_data_iterator_ = create_iterator(validation_data, false);
+    validation_data_iterator_ = create_iterator(
+        validation_data, /* requires_labels */ true, /* is_train */ false);
   } else {
     validation_data_iterator_ = nullptr;
   }

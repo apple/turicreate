@@ -97,6 +97,26 @@ std::ostream &operator<<(std::ostream &os, const float_array &arr) {
   }
   os << "\n";
   return os;
+
+void shared_float_array::save(oarchive& oarc) const {
+  // Write shape.
+  serialize_iterator(oarc, shape(), shape() + dim(), dim());
+
+  // Write data.
+  serialize_iterator(oarc, data(), data() + size(), size());
+}
+
+void shared_float_array::load(iarchive& iarc) {
+  // Read shape.
+  std::vector<size_t> shape;
+  iarc >> shape;
+
+  // Read data.
+  std::vector<float> data;
+  iarc >> data;
+
+  // Overwrite self with a new float_array wrapping the deserialized data.
+  *this = wrap(std::move(data), std::move(shape));
 }
 
 // static
