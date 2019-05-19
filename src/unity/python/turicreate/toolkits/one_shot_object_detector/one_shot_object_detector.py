@@ -8,6 +8,9 @@ import random as _random
 import turicreate as _tc
 import turicreate.toolkits._internal_utils as _tkutl
 from turicreate import extensions as _extensions
+from turicreate.toolkits._model import CustomModel as _CustomModel
+from turicreate.toolkits._model import PythonProxy as _PythonProxy
+from turicreate.toolkits.object_detector.object_detector import ObjectDetector as _ObjectDetector
 
 def create(dataset,
            target,
@@ -187,4 +190,12 @@ def create(dataset,
                                         batch_size=batch_size,
                                         max_iterations=max_iterations,
                                         verbose=verbose)
-    return model
+    return OneShotObjectDetector(model.__proxy__)
+
+
+class OneShotObjectDetector(_ObjectDetector):
+    def __init__(self, state):
+        super(OneShotObjectDetector, self).__init__(state)
+
+    def get_augmented_images(self):
+        pass
