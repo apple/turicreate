@@ -14,6 +14,7 @@
 #include <vector>
 
 #include <boost/test/unit_test.hpp>
+#include <unity/toolkits/coreml_export/neural_net_models_exporter.hpp>
 #include <util/test_macros.hpp>
 
 namespace turi {
@@ -108,6 +109,9 @@ public:
   using predict_call =
       std::function<float_array_map(const float_array_map& inputs)>;
 
+  using export_weights_call =
+      std::function<float_array_map()>;
+
   ~mock_model_backend() {
     TS_ASSERT(train_calls_.empty());
     TS_ASSERT(predict_calls_.empty());
@@ -138,13 +142,16 @@ public:
   }
 
   float_array_map export_weights() const override {
-    return export_weights_retval_;
+    TS_ASSERT(!export_weights_calls_.empty());
+    export_weights_call expected_call = std::move(export_weights_calls_.front());
+    export_weights_calls_.pop_front();
+    return expected_call();
   }
 
   std::deque<set_learning_rate_call> set_learning_rate_calls_;
   std::deque<train_call> train_calls_;
   mutable std::deque<predict_call> predict_calls_;
-  float_array_map export_weights_retval_;
+  std::deque<export_weights_call> export_weights_calls_;
 };
 
 class mock_compute_context: public compute_context {
@@ -217,8 +224,14 @@ public:
   using create_compute_context_call =
       std::function<std::unique_ptr<compute_context>()>;
 
+  using init_train_call = std::function<void(gl_sframe data, 
+      std::string annotations_column_name, std::string image_column_name,
+      std::map<std::string, flexible_type> opts)>;
+
   using init_model_call = std::function<std::unique_ptr<model_spec>(
       const std::string& pretrained_mlmodel_path)>;
+
+  using perform_training_iteration_call = std::function<void()>;
 
   using perform_evaluation_call =
       std::function<variant_map_type(gl_sframe data, std::string metric)>;
@@ -249,6 +262,23 @@ public:
     return expected_call();
   }
 
+  void init_train(gl_sframe data, std::string annotations_column_name,
+                          std::string image_column_name,
+                          std::map<std::string, flexible_type> opts) override {
+    TS_ASSERT(!init_train_calls_.empty());
+    init_train_call expected_call =
+        std::move(init_train_calls_.front());
+    init_train_calls_.pop_front();
+    expected_call(data, annotations_column_name, image_column_name, opts);
+  }
+  void init_train_public(gl_sframe data, std::string annotations_column_name,
+                          std::string image_column_name,
+                          std::map<std::string, flexible_type> opts) {
+    object_detector::init_train(data, annotations_column_name,
+                          image_column_name,
+                          opts);
+  }
+
   std::unique_ptr<model_spec> init_model(
       const std::string& pretrained_mlmodel_path) const override {
 
@@ -256,6 +286,18 @@ public:
     init_model_call expected_call = std::move(init_model_calls_.front());
     init_model_calls_.pop_front();
     return expected_call(pretrained_mlmodel_path);
+  }
+
+  void perform_training_iteration() override {
+    TS_ASSERT(!perform_training_iteration_calls_.empty());
+    perform_training_iteration_call expected_call =
+        std::move(perform_training_iteration_calls_.front());
+    perform_training_iteration_calls_.pop_front();
+    expected_call();
+  }
+
+  void perform_training_iteration_public() {
+    object_detector::perform_training_iteration();
   }
 
   variant_map_type perform_evaluation(gl_sframe data,
@@ -267,6 +309,7 @@ public:
     return expected_call(data, metric);
   }
 
+
   template <class T>
   T get_field(const std::string& name) {
     return variant_get_value<T>(get_value_from_state(name));
@@ -274,7 +317,9 @@ public:
 
   mutable std::deque<create_iterator_call> create_iterator_calls_;
   mutable std::deque<create_compute_context_call> create_compute_context_calls_;
+  mutable std::deque<init_train_call> init_train_calls_;
   mutable std::deque<init_model_call> init_model_calls_;
+  mutable std::deque<perform_training_iteration_call> perform_training_iteration_calls_;
   mutable std::deque<perform_evaluation_call> perform_evaluation_calls_;
 };
 
@@ -361,6 +406,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
 
       return res;
     };
+
     mock_augmenter->prepare_images_calls_.push_back(prepare_images_impl);
 
     // The mock_model_backend should expect calls to set_learning_rate just at
@@ -461,6 +507,12 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
 
     return std::move(mock_nn_model);
   };
+
+  auto perform_training_iteration_impl = [&]() {
+    model.perform_training_iteration_public();
+  };
+  model.perform_training_iteration_calls_.resize(test_max_iterations, perform_training_iteration_impl);
+
   mock_context->create_object_detector_calls_.push_back(
       create_object_detector_impl);
 
@@ -474,6 +526,15 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
     return result;
   };
   model.perform_evaluation_calls_.push_back(perform_evaluation_impl);
+
+  auto init_train_impl = [&](gl_sframe data, std::string annotations_column_name,
+                          std::string image_column_name,
+                          std::map<std::string, flexible_type> opts) {
+    model.init_train_public(data, annotations_column_name, image_column_name, opts);
+  };
+  model.init_train_calls_.push_back(init_train_impl);
+
+  
 
   // Create an arbitrary SFrame with test_num_examples rows, since
   // object_detector uses the number of rows to compute num_examples, which is
@@ -511,7 +572,83 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
   // Deconstructing `model` here will assert that every expected call to a
   // mocked-out method has been called.
 }
+
+BOOST_AUTO_TEST_CASE(test_object_detector_auto) { 
+
+  test_object_detector model;
+
+  std::unique_ptr<mock_model_backend> mock_nn_model(
+      new mock_model_backend);
+  std::unique_ptr<mock_compute_context> mock_context(new mock_compute_context);
+
+  static constexpr size_t test_max_iterations = 1;
+  static constexpr size_t test_batch_size = 2;
+  const std::vector<std::string> test_class_labels = { "label1", "label2"};
+  static constexpr size_t test_num_examples = 200;
+
+  const std::string test_mlmodel_path = "/test/foo.mlmodel";
+  const std::string test_annotations_name = "test_annotations";
+  const std::string test_image_name = "test_image";
+
+  size_t num_perform_evalution_calls = 0;
+  size_t perform_evaluation_cumulative_data_size = 0;
+  auto perform_evaluation_impl = [&](gl_sframe data, std::string metric) {
+    perform_evaluation_cumulative_data_size += data.size();
+    if (++num_perform_evalution_calls == 2) {
+      TS_ASSERT_EQUALS(perform_evaluation_cumulative_data_size, test_num_examples);
+    }
+    std::map<std::string, variant_type> result;
+    result["mean_average_precision"] = 0.80f;
+    return result;
+  };
+
+  model.perform_evaluation_calls_.resize(2, perform_evaluation_impl);
+
+
+
+  auto perform_training_iteration_impl = []{};
+  model.perform_training_iteration_calls_.push_back(perform_training_iteration_impl);
+
+  
+
+  auto init_train_impl = [&](gl_sframe data, std::string annotations_column_name,
+                          std::string image_column_name,
+                          std::map<std::string, flexible_type> opts) {
+    std::unique_ptr<model_spec> nn_spec(new model_spec);
+    nn_spec->add_convolution("test_layer", "test_input", 16, 16, 3, 3, 1, 1,
+                             model_spec::padding_type::SAME,
+                             /* weight_init_fn */ [](float*w , float* w_end) {
+                               for (int i = 0; i < w_end - w; ++i) {
+                                 w[i] = static_cast<float>(i);
+                               }
+                             });
+    float_array_map trained_weights = model.export_weights();
     
+    nn_spec->update_params(trained_weights);
+    
+    TS_ASSERT(test_num_examples > data.size());
+  };
+
+  
+
+
+
+  model.add_or_update_state({
+      { "training_iterations", test_max_iterations },
+      { "max_iterations", test_max_iterations }
+    });
+
+  model.init_train_calls_.push_back(init_train_impl);
+
+  gl_sframe data({{"ignored", gl_sarray::from_sequence(0, test_num_examples)}});
+  
+  model.train(data, test_annotations_name, test_image_name, "auto",
+              { { "mlmodel_path",   test_mlmodel_path   },
+                { "batch_size",     test_batch_size     },
+                { "max_iterations", test_max_iterations }, });
+
+}    
+
 }  // namespace
 }  // namespace object_detection
 }  // namespace turi
