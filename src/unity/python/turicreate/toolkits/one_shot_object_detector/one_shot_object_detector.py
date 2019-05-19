@@ -19,7 +19,7 @@ def create(dataset,
            flip_vertical=True,
            backgrounds=None,
            batch_size=0,
-           max_iterations=1,
+           max_iterations=0,
            seed=None,
            verbose=True,
            **kwargs):
