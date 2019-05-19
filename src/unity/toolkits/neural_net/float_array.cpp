@@ -97,6 +97,7 @@ std::ostream &operator<<(std::ostream &os, const float_array &arr) {
   }
   os << "\n";
   return os;
+}
 
 void shared_float_array::save(oarchive& oarc) const {
   // Write shape.
