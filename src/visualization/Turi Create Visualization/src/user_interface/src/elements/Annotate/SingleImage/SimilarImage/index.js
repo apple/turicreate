@@ -8,7 +8,7 @@ class SimilarImage extends Component {
   
   render() {
     return (
-      <div className={style.SigleImageSimilarityImage}>
+      <div className={style.SingleImageSimilarityImage}>
         <img src={this.props.src} />
       </div>
     );
