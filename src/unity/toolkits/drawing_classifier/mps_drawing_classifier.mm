@@ -13,8 +13,11 @@
 
         MPSNNImageNode *inputNode = [MPSNNImageNode nodeWithHandle: nil];
 
+        // d_tempInput = (float *) malloc(sizeof(d_inputArray));
+        // weights["drawing_classifier_conv0_weight"].data(), weights["drawing_classifier_conv0_weight"].size()
+
         NSString* conv1handle = [name stringByAppendingString:@"drawing_classifier_conv0"];
-        ConvolutionalLayer* conv1 = [[ConvolutionalLayer alloc] initWithParameters:conv1handle
+        conv1 = [[ConvolutionalLayer alloc] initWithParameters:conv1handle
                                                                        kernelWidth:3
                                                                       kernelHeight:3
                                                               inputFeatureChannels:1

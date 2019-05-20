@@ -25,8 +25,8 @@ API_AVAILABLE(macos(10.14))
   int mPaddingWidth;
   int mPaddingHeight;
 
-  const float *mWeight;
-  const float *mBiases;
+  float *mWeight;
+  float *mBiases;
 
   MPSNNImageNode *mInputNode;
   MPSCNNConvolutionNode *mConvNode;

@@ -25,6 +25,8 @@
 
 API_AVAILABLE(macos(10.14))
 @interface DrawingClassifierModel : NSObject {
+  ConvolutionalLayer* conv1;
+
   id<MTLDevice> mDev; 
   id<MTLCommandQueue> mCq;
 }
