@@ -21,16 +21,20 @@
 #import <unity/toolkits/neural_net/layers/softmax_layer.h>
 #import <unity/toolkits/neural_net/layers/subtraction_layer.h>
 
+#include <unity/toolkits/neural_net/float_array.hpp>
 
 API_AVAILABLE(macos(10.14))
-@interface DrawingClassifierModel : NSObject {}
+@interface DrawingClassifierModel : NSObject {
+  id<MTLDevice> mDev; 
+  id<MTLCommandQueue> mCq;
+}
 
 - (id _Nullable)initWithParameters:(NSString *_Nonnull)name
-                       initWeights:(float_array_map&)weights;
+                       initWeights:(turi::neural_net::float_array_map&)weights;
 
-- (float_array_map) export_weights;
-- (float_array_map) predict:(float_array_map&)inputs;
-- (float_array_map) train:(float_array_map&) inputs;
+- (turi::neural_net::float_array_map) export_weights;
+- (turi::neural_net::float_array_map) predict:(turi::neural_net::float_array_map&)inputs;
+- (turi::neural_net::float_array_map) train:(turi::neural_net::float_array_map&) inputs;
 
 @end
 

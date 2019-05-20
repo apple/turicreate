@@ -25,8 +25,8 @@ API_AVAILABLE(macos(10.14))
   int mPaddingWidth;
   int mPaddingHeight;
 
-  float *mWeight;
-  float *mBiases;
+  const float *mWeight;
+  const float *mBiases;
 
   MPSNNImageNode *mInputNode;
   MPSCNNConvolutionNode *mConvNode;
@@ -45,8 +45,8 @@ API_AVAILABLE(macos(10.14))
                      strideHeight:(int)strideHeight
                      paddingWidth:(int)paddingWidth
                     paddingHeight:(int)paddingHeight
-                          weights:(float *_Nonnull)weights
-                           biases:(float *_Nonnull)biases
+                          weights:(const float *_Nonnull)weights
+                           biases:(const float *_Nonnull)biases
                         inputNode:(MPSNNImageNode *_Nonnull)inputNode
                            device:(id<MTLDevice> _Nonnull)dev
                         cmd_queue:(id<MTLCommandQueue> _Nonnull)cmd_q;
