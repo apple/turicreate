@@ -233,6 +233,11 @@ class Image(object):
 
         """
         from ..visualization._plot import _target
+
+        # Suppress visualization output if 'none' target is set
+        if _target == 'none':
+            return
+
         try:
             img = self._to_pil_image()
             try:

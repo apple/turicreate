@@ -49,7 +49,12 @@ class Evaluation(dict):
     return str(_json.dumps({ "evaluation_spec": evaluation_dictionary }, allow_nan = False))
 
   def explore(self):
-    _thread.start_new_thread(_start_process, (self._get_eval_json()+"\n", self.data["test_data"], self, ))
+    params = (self._get_eval_json()+"\n", self.data["test_data"], self, )
+    # Suppress visualization output if 'none' target is set
+    from ...visualization._plot import _target
+    if _target == 'none':
+        return
+    _thread.start_new_thread(_start_process, params)
 
 
 def _get_data_spec(filters, start, length, row_type, mat_type, sframe, evaluation):
