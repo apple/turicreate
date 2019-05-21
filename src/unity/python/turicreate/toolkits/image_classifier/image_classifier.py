@@ -742,8 +742,8 @@ class ImageClassifier(_CustomModel):
 
                 excluding_names = [min_dist['from']['name'], min_dist['to']['name']]
 
-                vecs = filter(lambda v: v['name'] not in excluding_names, vecs)
-                distances = filter(lambda dist: (dist['from']['name'] not in excluding_names) and (dist['to']['name'] not in excluding_names), distances)
+                vecs = list(filter(lambda v: v['name'] not in excluding_names, vecs))
+                distances = list(filter(lambda dist: (dist['from']['name'] not in excluding_names) and (dist['to']['name'] not in excluding_names), distances))
 
                 for v in vecs:
                     total = 0
