@@ -46,8 +46,8 @@ def _run_cmdline(command):
 
 def set_target(target='auto'):
     """
-    Sets the target for visualizations launched with the `show` method. If
-    unset, or if target is not provided, defaults to 'auto'.
+    Sets the target for visualizations launched with the `show` or `explore`
+    methods. If unset, or if target is not provided, defaults to 'auto'.
 
     Notes
     -----
@@ -63,10 +63,11 @@ def set_target(target='auto'):
         * 'auto': display plot output inline when in Jupyter Notebook, and
           otherwise launch a native GUI window.
         * 'gui': always launch a native GUI window.
+        * 'none': prevent all visualizations from being displayed.
     """
     global _target
-    if target not in ['auto', 'gui']:
-        raise ValueError("Expected target to be one of: 'auto', 'gui'.")
+    if target not in ['auto', 'gui', 'none']:
+        raise ValueError("Expected target to be one of: 'auto', 'gui', 'none'.")
     _target = target
 
 
@@ -121,6 +122,11 @@ class Plot(object):
 
         """
         global _target
+
+        # Suppress visualization output if 'none' target is set
+        if _target == 'none':
+            return
+
         display = False
         try:
             if _target == 'auto' and \

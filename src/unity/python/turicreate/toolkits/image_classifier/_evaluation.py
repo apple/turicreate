@@ -12,6 +12,7 @@ from __future__ import absolute_import as _
 from ...visualization import _get_client_app_path, _focus_client_app
 
 import subprocess as __subprocess
+import six as _six
 from six.moves import _thread
 
 import json as _json
@@ -28,10 +29,10 @@ class Evaluation(dict):
   def _get_eval_json(self):
     evaluation_dictionary = dict()
 
-    for key, value in self.data.iteritems():
+    for key, value in _six.iteritems(self.data):
       if (isinstance(value, float) or isinstance(value, int)) and _math.isnan(value):
         continue
-      if (key is "test_data"):
+      if (key is "test_data" or key is "confusion_matrix" or key is "roc_curve"):
         continue
       evaluation_dictionary[key] = value
 
@@ -48,7 +49,12 @@ class Evaluation(dict):
     return str(_json.dumps({ "evaluation_spec": evaluation_dictionary }, allow_nan = False))
 
   def explore(self):
-    _thread.start_new_thread(_start_process, (self._get_eval_json()+"\n", self.data["test_data"], self, ))
+    params = (self._get_eval_json()+"\n", self.data["test_data"], self, )
+    # Suppress visualization output if 'none' target is set
+    from ...visualization._plot import _target
+    if _target == 'none':
+        return
+    _thread.start_new_thread(_start_process, params)
 
 
 def _get_data_spec(filters, start, length, row_type, mat_type, sframe, evaluation):
