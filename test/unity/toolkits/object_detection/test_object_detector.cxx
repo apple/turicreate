@@ -109,8 +109,6 @@ public:
   using predict_call =
       std::function<float_array_map(const float_array_map& inputs)>;
 
-  using export_weights_call =
-      std::function<float_array_map()>;
 
   ~mock_model_backend() {
     TS_ASSERT(train_calls_.empty());
@@ -142,16 +140,13 @@ public:
   }
 
   float_array_map export_weights() const override {
-    TS_ASSERT(!export_weights_calls_.empty());
-    export_weights_call expected_call = std::move(export_weights_calls_.front());
-    export_weights_calls_.pop_front();
-    return expected_call();
+    return export_weights_retval_;
   }
 
   std::deque<set_learning_rate_call> set_learning_rate_calls_;
   std::deque<train_call> train_calls_;
   mutable std::deque<predict_call> predict_calls_;
-  std::deque<export_weights_call> export_weights_calls_;
+  float_array_map export_weights_retval_;
 };
 
 class mock_compute_context: public compute_context {
@@ -532,9 +527,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
                           std::map<std::string, flexible_type> opts) {
     model.init_train_public(data, annotations_column_name, image_column_name, opts);
   };
-  model.init_train_calls_.push_back(init_train_impl);
-
-  
+  model.init_train_calls_.push_back(init_train_impl); 
 
   // Create an arbitrary SFrame with test_num_examples rows, since
   // object_detector uses the number of rows to compute num_examples, which is
@@ -622,15 +615,13 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto) {
                                  w[i] = static_cast<float>(i);
                                }
                              });
+
     float_array_map trained_weights = model.export_weights();
     
     nn_spec->update_params(trained_weights);
     
     TS_ASSERT(test_num_examples > data.size());
   };
-
-  
-
 
 
   model.add_or_update_state({
