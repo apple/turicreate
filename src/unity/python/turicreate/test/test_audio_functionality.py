@@ -228,6 +228,7 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
             self.model.export_coreml(file_name)
             core_ml_model = coremltools.models.MLModel(file_name)
 
+        # Check predictions
         for cur_audio in self.data['audio']:
             resampled_data = resampy.resample(cur_audio['data'], cur_audio['sample_rate'], 16000)
             first_audio_frame = resampled_data[:15600]
@@ -243,6 +244,10 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
                 self.assertAlmostEquals(tc_prob_vector[i],
                                         coreml_y[core_ml_prob_output_name][cur_class],
                                         delta=0.001)
+        # Check metadata
+        metadata = core_ml_model.get_spec().description.metadata
+        self.assertTrue('sampleRate' in metadata.userDefined)
+        self.assertEqual(metadata.userDefined['sampleRate'], '16000')
 
     @unittest.skipIf(_mac_ver() >= (10,14), 'Already testing export to Core ML with predictions')
     def test_export_core_ml_no_prediction(self):
@@ -250,6 +255,11 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
             file_name = temp_dir + '/model.mlmodel'
             self.model.export_coreml(file_name)
             core_ml_model = coremltools.models.MLModel(file_name)
+
+        # Check metadata
+        metadata = core_ml_model.get_spec().description.metadata
+        self.assertTrue('sampleRate' in metadata.userDefined)
+        self.assertEqual(metadata.userDefined['sampleRate'], '16000')
 
     def test_evaluate(self):
         evaluation = self.model.evaluate(self.data)
