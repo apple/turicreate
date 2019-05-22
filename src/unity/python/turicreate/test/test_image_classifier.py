@@ -242,6 +242,12 @@ class ImageClassifierTest(unittest.TestCase):
             self.test_list_fields()
             print("List fields passed")
 
+    def test_evaluate_explore(self):
+        # Run the explore method and make sure we don't throw an exception.
+        # This will test the JSON serialization logic.
+        tc.visualization.set_target('none')
+        evaluation = self.model.evaluate(data)
+        evaluation.explore()
 
 class ImageClassifierSqueezeNetTest(ImageClassifierTest):
     @classmethod
