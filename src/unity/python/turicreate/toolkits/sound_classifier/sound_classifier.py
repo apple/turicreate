@@ -684,6 +684,9 @@ class SoundClassifier(_CustomModel):
             prob_output.type.dictionaryType.stringKeyType.MergeFromString(b'')
             label_output.type.stringType.MergeFromString(b'')
 
+        # Set metadata
+        user_metadata = desc.metadata.userDefined
+        user_metadata['sampleRate'] = str(self._feature_extractor.input_sample_rate)
 
         pipeline = top_level_spec.pipelineClassifier.pipeline
 
