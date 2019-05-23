@@ -31,6 +31,8 @@
 #include "annotate.pb.h"  // IWYU pragma: export
 #include "data.pb.h"  // IWYU pragma: export
 #include "meta.pb.h"  // IWYU pragma: export
+#include "progress.pb.h"  // IWYU pragma: export
+#include "similarity.pb.h"  // IWYU pragma: export
 // @@protoc_insertion_point(includes)
 namespace TuriCreate {
 namespace Annotation {
@@ -98,6 +100,12 @@ extern ObjectDetectionMetaDefaultTypeInternal _ObjectDetectionMeta_default_insta
 class Parcel;
 class ParcelDefaultTypeInternal;
 extern ParcelDefaultTypeInternal _Parcel_default_instance_;
+class ProgressMeta;
+class ProgressMetaDefaultTypeInternal;
+extern ProgressMetaDefaultTypeInternal _ProgressMeta_default_instance_;
+class Similarity;
+class SimilarityDefaultTypeInternal;
+extern SimilarityDefaultTypeInternal _Similarity_default_instance_;
 class TextDatum;
 class TextDatumDefaultTypeInternal;
 extern TextDatumDefaultTypeInternal _TextDatum_default_instance_;
@@ -143,6 +151,8 @@ class Parcel : public ::google::protobuf::MessageLite /* @@protoc_insertion_poin
     kAnnotations = 1,
     kData = 2,
     kMetadata = 3,
+    kProgress = 4,
+    kSimilarity = 5,
     MESSAGE_NOT_SET = 0,
   };
 
@@ -221,12 +231,32 @@ class Parcel : public ::google::protobuf::MessageLite /* @@protoc_insertion_poin
   ::TuriCreate::Annotation::Specification::MetaData* release_metadata();
   void set_allocated_metadata(::TuriCreate::Annotation::Specification::MetaData* metadata);
 
+  // .TuriCreate.Annotation.Specification.ProgressMeta progress = 4;
+  bool has_progress() const;
+  void clear_progress();
+  static const int kProgressFieldNumber = 4;
+  const ::TuriCreate::Annotation::Specification::ProgressMeta& progress() const;
+  ::TuriCreate::Annotation::Specification::ProgressMeta* mutable_progress();
+  ::TuriCreate::Annotation::Specification::ProgressMeta* release_progress();
+  void set_allocated_progress(::TuriCreate::Annotation::Specification::ProgressMeta* progress);
+
+  // .TuriCreate.Annotation.Specification.Similarity similarity = 5;
+  bool has_similarity() const;
+  void clear_similarity();
+  static const int kSimilarityFieldNumber = 5;
+  const ::TuriCreate::Annotation::Specification::Similarity& similarity() const;
+  ::TuriCreate::Annotation::Specification::Similarity* mutable_similarity();
+  ::TuriCreate::Annotation::Specification::Similarity* release_similarity();
+  void set_allocated_similarity(::TuriCreate::Annotation::Specification::Similarity* similarity);
+
   MessageCase Message_case() const;
   // @@protoc_insertion_point(class_scope:TuriCreate.Annotation.Specification.Parcel)
  private:
   void set_has_annotations();
   void set_has_data();
   void set_has_metadata();
+  void set_has_progress();
+  void set_has_similarity();
 
   inline bool has_Message() const;
   void clear_Message();
@@ -238,6 +268,8 @@ class Parcel : public ::google::protobuf::MessageLite /* @@protoc_insertion_poin
     ::TuriCreate::Annotation::Specification::Annotations* annotations_;
     ::TuriCreate::Annotation::Specification::Data* data_;
     ::TuriCreate::Annotation::Specification::MetaData* metadata_;
+    ::TuriCreate::Annotation::Specification::ProgressMeta* progress_;
+    ::TuriCreate::Annotation::Specification::Similarity* similarity_;
   } Message_;
   mutable int _cached_size_;
   ::google::protobuf::uint32 _oneof_case_[1];
@@ -503,6 +535,102 @@ inline void Parcel::set_allocated_metadata(::TuriCreate::Annotation::Specificati
     Message_.metadata_ = metadata;
   }
   // @@protoc_insertion_point(field_set_allocated:TuriCreate.Annotation.Specification.Parcel.metadata)
+}
+
+// .TuriCreate.Annotation.Specification.ProgressMeta progress = 4;
+inline bool Parcel::has_progress() const {
+  return Message_case() == kProgress;
+}
+inline void Parcel::set_has_progress() {
+  _oneof_case_[0] = kProgress;
+}
+inline void Parcel::clear_progress() {
+  if (has_progress()) {
+    delete Message_.progress_;
+    clear_has_Message();
+  }
+}
+inline  const ::TuriCreate::Annotation::Specification::ProgressMeta& Parcel::progress() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.Parcel.progress)
+  return has_progress()
+      ? *Message_.progress_
+      : ::TuriCreate::Annotation::Specification::ProgressMeta::default_instance();
+}
+inline ::TuriCreate::Annotation::Specification::ProgressMeta* Parcel::mutable_progress() {
+  if (!has_progress()) {
+    clear_Message();
+    set_has_progress();
+    Message_.progress_ = new ::TuriCreate::Annotation::Specification::ProgressMeta;
+  }
+  // @@protoc_insertion_point(field_mutable:TuriCreate.Annotation.Specification.Parcel.progress)
+  return Message_.progress_;
+}
+inline ::TuriCreate::Annotation::Specification::ProgressMeta* Parcel::release_progress() {
+  // @@protoc_insertion_point(field_release:TuriCreate.Annotation.Specification.Parcel.progress)
+  if (has_progress()) {
+    clear_has_Message();
+    ::TuriCreate::Annotation::Specification::ProgressMeta* temp = Message_.progress_;
+    Message_.progress_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Parcel::set_allocated_progress(::TuriCreate::Annotation::Specification::ProgressMeta* progress) {
+  clear_Message();
+  if (progress) {
+    set_has_progress();
+    Message_.progress_ = progress;
+  }
+  // @@protoc_insertion_point(field_set_allocated:TuriCreate.Annotation.Specification.Parcel.progress)
+}
+
+// .TuriCreate.Annotation.Specification.Similarity similarity = 5;
+inline bool Parcel::has_similarity() const {
+  return Message_case() == kSimilarity;
+}
+inline void Parcel::set_has_similarity() {
+  _oneof_case_[0] = kSimilarity;
+}
+inline void Parcel::clear_similarity() {
+  if (has_similarity()) {
+    delete Message_.similarity_;
+    clear_has_Message();
+  }
+}
+inline  const ::TuriCreate::Annotation::Specification::Similarity& Parcel::similarity() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.Parcel.similarity)
+  return has_similarity()
+      ? *Message_.similarity_
+      : ::TuriCreate::Annotation::Specification::Similarity::default_instance();
+}
+inline ::TuriCreate::Annotation::Specification::Similarity* Parcel::mutable_similarity() {
+  if (!has_similarity()) {
+    clear_Message();
+    set_has_similarity();
+    Message_.similarity_ = new ::TuriCreate::Annotation::Specification::Similarity;
+  }
+  // @@protoc_insertion_point(field_mutable:TuriCreate.Annotation.Specification.Parcel.similarity)
+  return Message_.similarity_;
+}
+inline ::TuriCreate::Annotation::Specification::Similarity* Parcel::release_similarity() {
+  // @@protoc_insertion_point(field_release:TuriCreate.Annotation.Specification.Parcel.similarity)
+  if (has_similarity()) {
+    clear_has_Message();
+    ::TuriCreate::Annotation::Specification::Similarity* temp = Message_.similarity_;
+    Message_.similarity_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Parcel::set_allocated_similarity(::TuriCreate::Annotation::Specification::Similarity* similarity) {
+  clear_Message();
+  if (similarity) {
+    set_has_similarity();
+    Message_.similarity_ = similarity;
+  }
+  // @@protoc_insertion_point(field_set_allocated:TuriCreate.Annotation.Specification.Parcel.similarity)
 }
 
 inline bool Parcel::has_Message() const {

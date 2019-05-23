@@ -1,4 +1,3 @@
-#include <unity/lib/visualization/process_wrapper.hpp>
 #include <unity/lib/visualization/thread.hpp>
 
 #include <logger/assertions.hpp>
@@ -18,9 +17,9 @@ namespace annotate {
 AnnotationBase::AnnotationBase(const std::shared_ptr<unity_sframe> &data,
                                const std::vector<std::string> &data_columns,
                                const std::string &annotation_column)
-    : m_data(data), m_data_columns(data_columns),
+    : m_data(data),
+      m_data_columns(data_columns),
       m_annotation_column(annotation_column) {
-
   /* Copy as so not to mutate the sframe passed into the function */
   m_data = std::static_pointer_cast<unity_sframe>(
       m_data->copy_range(0, 1, m_data->size()));
@@ -31,14 +30,13 @@ AnnotationBase::AnnotationBase(const std::shared_ptr<unity_sframe> &data,
 }
 
 void AnnotationBase::annotate(const std::string &path_to_client) {
-  visualization::process_wrapper aw(path_to_client);
+  m_aw = std::make_shared<visualization::process_wrapper>(path_to_client);
+  *m_aw << this->_serialize_proto<annotate_spec::MetaData>(this->metaData())
+               .c_str();
 
-  aw << this->__serialize_proto<annotate_spec::MetaData>(this->metaData())
-            .c_str();
-
-  while (aw.good()) {
+  while (m_aw->good()) {
     std::string input;
-    aw >> input;
+    *m_aw >> input;
 
     if (input.empty()) {
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -48,13 +46,20 @@ void AnnotationBase::annotate(const std::string &path_to_client) {
     std::string response = this->__parse_proto_and_respond(input).c_str();
 
     if (!response.empty()) {
-      aw << response;
+      *m_aw << response;
     }
   }
 }
 
-std::shared_ptr<unity_sframe>
-AnnotationBase::returnAnnotations(bool drop_null) {
+void AnnotationBase::_sendProgress(double value) {
+  annotate_spec::ProgressMeta progress;
+  progress.set_percentage(value);
+  *m_aw
+      << this->_serialize_proto<annotate_spec::ProgressMeta>(progress).c_str();
+}
+
+std::shared_ptr<unity_sframe> AnnotationBase::returnAnnotations(
+    bool drop_null) {
   this->cast_annotations();
 
   std::shared_ptr<unity_sframe> copy_data =
@@ -132,9 +137,9 @@ void AnnotationBase::_checkDataSet() {
   flex_type_enum image_column_dtype = m_data->dtype().at(image_column_index);
 
   if (image_column_dtype != flex_type_enum::IMAGE) {
-    std_log_and_throw(std::invalid_argument, "Image column \"" +
-                                                 m_data_columns.at(0) +
-                                                 "\" not of image type.");
+    std_log_and_throw(
+        std::invalid_argument,
+        "Image column \"" + m_data_columns.at(0) + "\" not of image type.");
   }
 
   size_t annotation_column_index = m_data->column_index(m_annotation_column);
@@ -143,7 +148,6 @@ void AnnotationBase::_checkDataSet() {
 
   if (!(annotation_column_dtype == flex_type_enum::STRING ||
         annotation_column_dtype == flex_type_enum::INTEGER)) {
-
     std_log_and_throw(std::invalid_argument,
                       "Annotation column \"" + m_data_columns.at(0) +
                           "\" of type \'" +
@@ -175,12 +179,11 @@ void AnnotationBase::_reshapeIndicies(size_t &start, size_t &end) {
 }
 
 template <typename T, typename>
-std::string AnnotationBase::__serialize_proto(T message) {
+std::string AnnotationBase::_serialize_proto(T message) {
   std::stringstream ss;
   ss << "{\"protobuf\": \"";
 
   annotate_spec::Parcel parcel;
-
   populate_parcel<T>(parcel, message);
 
   std::string proto_intermediary;
@@ -222,15 +225,15 @@ std::string AnnotationBase::__parse_proto_and_respond(std::string &input) {
   if (request.has_getter()) {
     annotate_spec::DataGetter data_getter = request.getter();
     switch (data_getter.type()) {
-    case annotate_spec::DataGetter_GetterType::DataGetter_GetterType_DATA:
-      return this->__serialize_proto<annotate_spec::Data>(
-          this->getItems(data_getter.start(), data_getter.end()));
-    case annotate_spec::DataGetter_GetterType::
-        DataGetter_GetterType_ANNOTATIONS:
-      return this->__serialize_proto<annotate_spec::Annotations>(
-          this->getAnnotations(data_getter.start(), data_getter.end()));
-    default:
-      break;
+      case annotate_spec::DataGetter_GetterType::DataGetter_GetterType_DATA:
+        return this->_serialize_proto<annotate_spec::Data>(
+            this->getItems(data_getter.start(), data_getter.end()));
+      case annotate_spec::DataGetter_GetterType::
+          DataGetter_GetterType_ANNOTATIONS:
+        return this->_serialize_proto<annotate_spec::Annotations>(
+            this->getAnnotations(data_getter.start(), data_getter.end()));
+      default:
+        break;
     }
   } else if (request.has_annotations()) {
     this->setAnnotations(request.annotations());
@@ -238,5 +241,5 @@ std::string AnnotationBase::__parse_proto_and_respond(std::string &input) {
   return "";
 }
 
-} // namespace annotate
-} // namespace turi
+}  // namespace annotate
+}  // namespace turi

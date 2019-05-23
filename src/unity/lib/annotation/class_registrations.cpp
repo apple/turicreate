@@ -16,5 +16,5 @@ REGISTER_FUNCTION(create_image_classification_annotation, "data",
                   "data_columns", "annotation_column");
 END_FUNCTION_REGISTRATION
 
-} // namespace annotate
-} // namespace turi
+}  // namespace annotate
+}  // namespace turi

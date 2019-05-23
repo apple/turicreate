@@ -126,6 +126,8 @@ window.setProtoMessage = function setProtoMessage(value){
             const annotation = decoded["annotations"]["annotation"][i]["labels"][0];
             component_rendered.setAnnotationData(row_index, annotation);
         }
+    } else {
+        console.log("here");
     }
 }
 
