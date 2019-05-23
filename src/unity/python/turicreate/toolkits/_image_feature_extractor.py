@@ -12,7 +12,7 @@ def _create_feature_extractor(model_name):
     import os
     from platform import system
     from ._internal_utils import _mac_ver
-    from ._pre_trained_models import MODELS, _get_model_cache_dir
+    from ._pre_trained_models import MODELS, _get_cache_dir
     from turicreate.config import get_runtime_config
     from turicreate import extensions
 
@@ -21,7 +21,7 @@ def _create_feature_extractor(model_name):
         ptModel = MODELS[model_name]()
         return MXFeatureExtractor(ptModel)
 
-    download_path = _get_model_cache_dir()
+    download_path = _get_cache_dir()
 
     if(model_name == 'resnet-50'):
         mlmodel_resnet_save_path = download_path + "/Resnet50.mlmodel"
