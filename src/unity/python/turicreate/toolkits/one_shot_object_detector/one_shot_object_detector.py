@@ -8,6 +8,7 @@ import random as _random
 import turicreate as _tc
 from turicreate import extensions as _extensions
 from turicreate.toolkits._model import CustomModel as _CustomModel
+from .. import _data_zoo
 
 def create(dataset,
            target,
@@ -20,8 +21,8 @@ def create(dataset,
     model = _extensions.one_shot_object_detector()
     if seed is None: seed = _random.randint(0, 2**32 - 1)
     if backgrounds is None:
-        # replace this with loading backgrounds from developer.apple.com
-        backgrounds = _tc.SArray()
+        background_data = _data_zoo.OneShotObjectDetectorBackgroundData()
+        backgrounds = _tc.SArray(background_data.get_backgrounds_path())
     # Option arguments to pass in to C++ Object Detector, if we use it:
     # {'mlmodel_path':'darknet.mlmodel', 'max_iterations' : 25}
     augmented_data = model.augment(dataset, target, backgrounds, {"seed":seed})
