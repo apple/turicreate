@@ -3,30 +3,42 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+
+import random as _random
+import turicreate as _tc
 from turicreate import extensions as _extensions
+from turicreate.toolkits.one_shot_object_detector.util._error_handling import check_one_shot_input
 
 def preview_augmented_images(data,
                              target,
-                             n=1,
-                             augmentation_mode="auto",
-                             flip_horizontal=True,
-                             flip_vertical=True,
                              backgrounds=None,
-                             seed=None,
                              verbose=True,
                              **kwargs):
     """
     A utility function that would allow the user to visualize 
-    `n` augmented images per row of the data if data is an SFrame,
-    and just one augmented image if the data is an Image.
+    augmented images where data is the SFrame of starter images.
 
     Parameters
     ----------
 
     data : SFrame | tc.Image
+        An SFrame that contains all the starter images along with their
+        corresponding labels.
+        If the dataset is a single tc.Image, this parameter is just that image.
+        Every starter image should entirely be just the starter image without
+        any padding.
+        RGB and RGBA images allowed.
+
     target : string
-    n : int
-        The number of augmented images per row of data to generate.
+        The target column name in the SFrame that contains all the labels. 
+        If the dataset is a single tc.Image, this parameter is just a label for
+        that image.
+    
+    backgrounds : optional SArray
+        A list of backgrounds that the user wants to provide for data
+        augmentation.
+        If this is provided, only the backgrounds provided as this field will be
+        used for augmentation.
 
     Returns
     -------
@@ -35,12 +47,14 @@ def preview_augmented_images(data,
     """
     dataset_to_augment, image_column_name, target_column_name = check_one_shot_input(data, target)
     one_shot_model = _extensions.one_shot_object_detector()
+    seed = kwargs["seed"] if "seed" in kwargs else _random.randint(0, 2**32 - 1)
+    if backgrounds is None:
+        # replace this with loading backgrounds from developer.apple.com
+        backgrounds = _tc.SArray()
+    # Option arguments to pass in to C++ Object Detector, if we use it:
+    # {'mlmodel_path':'darknet.mlmodel', 'max_iterations' : 25}
     options_for_augmentation = {
-        "seed": seed,
-        "flip_horizontal": flip_horizontal,
-        "flip_vertical": flip_vertical,
-        "kwargs": kwargs,
-        "n": n
+        "seed": seed
     }
     augmented_data = one_shot_model.augment(dataset_to_augment,
                                             image_column_name,
