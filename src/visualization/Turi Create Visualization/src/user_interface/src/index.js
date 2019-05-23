@@ -126,8 +126,10 @@ window.setProtoMessage = function setProtoMessage(value){
             const annotation = decoded["annotations"]["annotation"][i]["labels"][0];
             component_rendered.setAnnotationData(row_index, annotation);
         }
-    } else {
-        console.log("here");
+    } else if(decoded.hasOwnProperty('progress')) {
+        console.log("update progress");
+    } else if(decoded.hasOwnProperty('similarity')) {
+        console.log("similar items");
     }
 }
 
