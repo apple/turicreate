@@ -22,8 +22,7 @@ provided value of `num_epochs` would be ignored.
 
 To boost the accuracy of the Drawing Classifier models you train, and to help
 those models converge faster, we provide the option of loading in a 
-pretrained model for a warm start. This can be done by passing `auto` in the `warm_start` 
-parameter. 
+pretrained model for a warm start.
 
 A cold start to training would be when the weights are randomly initialized. 
 A warm start is when the weights in the neural network are loaded from those 
@@ -31,5 +30,9 @@ of an already trained model. This improves the initial values of the weights
 in the network to something better than random, thereby improving accuracy 
 and also helping the model converge faster.
 
-We trained this model on 1,000 examples each of the first 245 of the
+We have published a pre-trained model that automatically gets downloaded when you pass in 
+`auto` to the `warm_start` parameter. This model is trained on millions of drawings spread 
+over the first 245 classes of the “Quick,Draw!” dataset.
+
+We trained this model on over 60,000 examples each of the first 245 of the
 345 classes in the Quick, Draw! dataset.
