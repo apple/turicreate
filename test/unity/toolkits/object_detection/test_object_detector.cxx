@@ -607,14 +607,8 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto) {
   auto init_train_impl = [&](gl_sframe data, std::string annotations_column_name,
                           std::string image_column_name,
                           std::map<std::string, flexible_type> opts) {
-    std::unique_ptr<model_spec> nn_spec(new model_spec);
-    nn_spec->add_convolution("test_layer", "test_input", 16, 16, 3, 3, 1, 1,
-                             model_spec::padding_type::SAME,
-                             /* weight_init_fn */ [](float*w , float* w_end) {
-                               for (int i = 0; i < w_end - w; ++i) {
-                                 w[i] = static_cast<float>(i);
-                               }
-                             });
+    model.set_training_model(std::unique_ptr<model_backend>(new mock_model_backend));
+    model.set_nn_spec(std::unique_ptr<nn_spec>(new nn_spec));
 
     float_array_map trained_weights = model.export_weights();
     
