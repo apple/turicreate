@@ -676,7 +676,6 @@ class ImageClassifier(_CustomModel):
         state = self.__proxy__.get_state()
         labels = state["classes"]
 
-
         def entropy(probs):
             return _reduce(lambda x, y: x + (y*math.log(1/y, 2) if y > 0 else 0) , probs, 0) / math.log(len(probs),2)
 
