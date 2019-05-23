@@ -86,12 +86,13 @@ const int ImageDatum_Format_Format_ARRAYSIZE = ImageDatum_Format_Format_MAX + 1;
 enum DataGetter_GetterType {
   DataGetter_GetterType_DATA = 0,
   DataGetter_GetterType_ANNOTATIONS = 1,
+  DataGetter_GetterType_SIMILARITY = 2,
   DataGetter_GetterType_DataGetter_GetterType_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
   DataGetter_GetterType_DataGetter_GetterType_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
 };
 bool DataGetter_GetterType_IsValid(int value);
 const DataGetter_GetterType DataGetter_GetterType_GetterType_MIN = DataGetter_GetterType_DATA;
-const DataGetter_GetterType DataGetter_GetterType_GetterType_MAX = DataGetter_GetterType_ANNOTATIONS;
+const DataGetter_GetterType DataGetter_GetterType_GetterType_MAX = DataGetter_GetterType_SIMILARITY;
 const int DataGetter_GetterType_GetterType_ARRAYSIZE = DataGetter_GetterType_GetterType_MAX + 1;
 
 // ===================================================================
@@ -484,6 +485,8 @@ class DataGetter : public ::google::protobuf::MessageLite /* @@protoc_insertion_
     DataGetter_GetterType_DATA;
   static const GetterType ANNOTATIONS =
     DataGetter_GetterType_ANNOTATIONS;
+  static const GetterType SIMILARITY =
+    DataGetter_GetterType_SIMILARITY;
   static inline bool GetterType_IsValid(int value) {
     return DataGetter_GetterType_IsValid(value);
   }

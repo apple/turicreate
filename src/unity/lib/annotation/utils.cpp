@@ -82,5 +82,5 @@ gl_sarray featurize_images(const gl_sarray &images,
 }
 #endif
 
-}  // namespace annotate
-}  // namespace turi
+} // namespace annotate
+} // namespace turi

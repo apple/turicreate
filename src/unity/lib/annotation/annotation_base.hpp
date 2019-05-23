@@ -79,6 +79,9 @@ public:
   virtual bool
   setAnnotations(const annotate_spec::Annotations &annotations) = 0;
 
+  virtual annotate_spec::Similarity get_similar_items(size_t index,
+                                                      size_t k = 7) = 0;
+
   virtual void cast_annotations() = 0;
 
   BEGIN_BASE_CLASS_MEMBER_REGISTRATION()
@@ -121,6 +124,7 @@ protected:
   template <typename T, typename = typename std::enable_if<std::is_base_of<
                             ::google::protobuf::MessageLite, T>::value>::type>
   std::string _serialize_proto(T message);
+
 private:
   std::string __parse_proto_and_respond(std::string &input);
 };

@@ -127,9 +127,13 @@ window.setProtoMessage = function setProtoMessage(value){
             component_rendered.setAnnotationData(row_index, annotation);
         }
     } else if(decoded.hasOwnProperty('progress')) {
-        console.log("update progress");
+        if (decoded['progress'].hasOwnProperty("percentage")) {
+            component_rendered.setPercentage(decoded['progress']["percentage"]);
+        } else {
+            component_rendered.setPercentage(0);
+        }
     } else if(decoded.hasOwnProperty('similarity')) {
-        console.log("similar items");
+        component_rendered.add_similarity(decoded['similarity']);
     }
 }
 

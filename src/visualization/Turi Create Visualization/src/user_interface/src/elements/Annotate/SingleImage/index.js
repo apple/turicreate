@@ -20,9 +20,12 @@ class SingleImage extends Component {
       this.props.getAnnotations((this.props.incrementalCurrentIndex - 2), this.props.incrementalCurrentIndex);
     }
   }
+
   renderSimilarImages = () => {
     if(this.props.similarImages != null){
-      return this.props.similarImages.map((x) => <SimilarImage src={x}/> );
+      return this.props.similarImages.map((x) => <SimilarImage src={x}
+                                                               onClick={this.props.onSingleImageClick}
+                                                               selected={this.props.similarSelected.includes(x.index)}/> );
     }
   }
 

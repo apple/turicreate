@@ -31,11 +31,13 @@ class Annotate extends Component {
       incrementalCurrentIndex: 0,
       LabelModalValue: "",
       imageData: {},
-      similar_images: [],
+      similar_images: {},
       annotationData: {},
       infiniteSelected:{},
+      similarSelected:[],
       labels:[],
-      type:null
+      type:null,
+      percent:0
     }
   }
 
@@ -99,7 +101,51 @@ class Annotate extends Component {
       }
     }
   }
+
+  add_similarity = (similarity) => {
+    var similar_index = 0;
+    if(similarity.hasOwnProperty("rowIndex")){
+      similar_index = similarity["rowIndex"];
+    }
+
+    var similar_images = [];
+    for (var x = 0 ;x < similarity["data"].length; x++) {
+      var datum_index = 0;
+      if(similarity["data"][x].hasOwnProperty("rowIndex")){
+        datum_index = similarity["data"][x]["rowIndex"];
+      }
+      var datum_image =  similarity["data"][x]["images"][0];
+      const type = datum_image["type"];
+      const data = datum_image["imgData"];
+      const width = datum_image["width"];
+      const height = datum_image["height"];
+      const image = "data:image/" + type + ";base64," + data;
+
+      similar_images.push({src:image, width:width, height:height, index:datum_index});
+    }
+
+    var similar_images_state = this.state.similar_images;
+    similar_images_state[similar_index] = similar_images;
+
+    this.setState({
+      similar_images: similar_images_state
+    });
+  }
   
+  setPercentage = (percent) => {
+    this.setState({percent: percent});
+    if (percent == 2) {
+      this.getHelper(this.state.incrementalCurrentIndex, 0, 2);
+    }
+  }
+
+  getSimilar = (index) => {
+    if(this.state.similar_images[index] == undefined) {
+      if (this.state.percent == 2) {
+        this.getHelper(index, 0, 2);
+      }
+    }
+  }
 
   getData = (start, end) => {
     this.cleanCache(start, end);
@@ -166,6 +212,7 @@ class Annotate extends Component {
   }
 
   updateIncrementalCurrentIndex = (index) => {
+    this.getSimilar(index);
     this.setState({
       incrementalCurrentIndex: index
     })
@@ -320,6 +367,23 @@ class Annotate extends Component {
     });
   }
 
+  onSingleImageClick = (index) => {
+    if (this.state.similarSelected.includes(index)) {
+      var similarItems = this.state.similarSelected;
+      var item_index = similarItems.indexOf(index);
+      if (item_index !== -1) similarItems.splice(item_index, 1);
+      this.setState({
+        similarSelected:similarItems
+      });
+    } else {
+      var similarItems = this.state.similarSelected;
+      similarItems.push(index);
+      this.setState({
+        similarSelected:similarItems
+      });
+    }
+  }
+
   renderMainContent = () => {
     if(this.state.infiniteScroll) {
       return (
@@ -341,11 +405,14 @@ class Annotate extends Component {
       return (
         <SingleImage src={this.state.imageData[this.state.incrementalCurrentIndex]}
                      similarImages={this.state.similar_images[this.state.incrementalCurrentIndex]}
+                     onSingleImageClick={this.onSingleImageClick.bind(this)}
                      getData={this.getData.bind(this)}
                      getAnnotations={this.getAnnotations.bind(this)}
                      numElements={this.props.metadata.numExamples}
                      incrementalCurrentIndex={this.state.incrementalCurrentIndex}
-                     updateIncrementalCurrentIndex={this.updateIncrementalCurrentIndex.bind(this)}/>
+                     updateIncrementalCurrentIndex={this.updateIncrementalCurrentIndex.bind(this)}
+                     similarSelected={this.state.similarSelected}
+                     getSimilar={this.getSimilar.bind(this)}/>
       );
     }
   }
@@ -390,7 +457,8 @@ class Annotate extends Component {
                        toggleInfiniteScroll={this.toggleInfiniteScroll.bind(this)}
                        updateIncrementalCurrentIndex={this.updateIncrementalCurrentIndex.bind(this)}
                        getData={this.getData.bind(this)}
-                       getAnnotations={this.getAnnotations.bind(this)}/>
+                       getAnnotations={this.getAnnotations.bind(this)}
+                       percentage={this.state.percent}/>
         </div>
         <div className={style.leftBar}>
         <LabelContainer labels={this.state.labels}

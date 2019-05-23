@@ -17,8 +17,7 @@ namespace annotate {
 AnnotationBase::AnnotationBase(const std::shared_ptr<unity_sframe> &data,
                                const std::vector<std::string> &data_columns,
                                const std::string &annotation_column)
-    : m_data(data),
-      m_data_columns(data_columns),
+    : m_data(data), m_data_columns(data_columns),
       m_annotation_column(annotation_column) {
   /* Copy as so not to mutate the sframe passed into the function */
   m_data = std::static_pointer_cast<unity_sframe>(
@@ -58,8 +57,8 @@ void AnnotationBase::_sendProgress(double value) {
       << this->_serialize_proto<annotate_spec::ProgressMeta>(progress).c_str();
 }
 
-std::shared_ptr<unity_sframe> AnnotationBase::returnAnnotations(
-    bool drop_null) {
+std::shared_ptr<unity_sframe>
+AnnotationBase::returnAnnotations(bool drop_null) {
   this->cast_annotations();
 
   std::shared_ptr<unity_sframe> copy_data =
@@ -137,9 +136,9 @@ void AnnotationBase::_checkDataSet() {
   flex_type_enum image_column_dtype = m_data->dtype().at(image_column_index);
 
   if (image_column_dtype != flex_type_enum::IMAGE) {
-    std_log_and_throw(
-        std::invalid_argument,
-        "Image column \"" + m_data_columns.at(0) + "\" not of image type.");
+    std_log_and_throw(std::invalid_argument, "Image column \"" +
+                                                 m_data_columns.at(0) +
+                                                 "\" not of image type.");
   }
 
   size_t annotation_column_index = m_data->column_index(m_annotation_column);
@@ -225,15 +224,18 @@ std::string AnnotationBase::__parse_proto_and_respond(std::string &input) {
   if (request.has_getter()) {
     annotate_spec::DataGetter data_getter = request.getter();
     switch (data_getter.type()) {
-      case annotate_spec::DataGetter_GetterType::DataGetter_GetterType_DATA:
-        return this->_serialize_proto<annotate_spec::Data>(
-            this->getItems(data_getter.start(), data_getter.end()));
-      case annotate_spec::DataGetter_GetterType::
-          DataGetter_GetterType_ANNOTATIONS:
-        return this->_serialize_proto<annotate_spec::Annotations>(
-            this->getAnnotations(data_getter.start(), data_getter.end()));
-      default:
-        break;
+    case annotate_spec::DataGetter_GetterType::DataGetter_GetterType_DATA:
+      return this->_serialize_proto<annotate_spec::Data>(
+          this->getItems(data_getter.start(), data_getter.end()));
+    case annotate_spec::DataGetter_GetterType::
+        DataGetter_GetterType_ANNOTATIONS:
+      return this->_serialize_proto<annotate_spec::Annotations>(
+          this->getAnnotations(data_getter.start(), data_getter.end()));
+    case annotate_spec::DataGetter_GetterType::DataGetter_GetterType_SIMILARITY:
+      return this->_serialize_proto<annotate_spec::Similarity>(
+          this->get_similar_items(data_getter.start()));
+    default:
+      break;
     }
   } else if (request.has_annotations()) {
     this->setAnnotations(request.annotations());
@@ -241,5 +243,5 @@ std::string AnnotationBase::__parse_proto_and_respond(std::string &input) {
   return "";
 }
 
-}  // namespace annotate
-}  // namespace turi
+} // namespace annotate
+} // namespace turi

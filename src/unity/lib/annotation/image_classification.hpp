@@ -9,8 +9,8 @@
 #include <thread>
 
 #include <unity/lib/annotation/annotation_base.hpp>
-#include <unity/toolkits/nearest_neighbors/unity_nearest_neighbors.hpp>
 #include <unity/lib/variant.hpp>
+#include <unity/toolkits/nearest_neighbors/unity_nearest_neighbors.hpp>
 
 #include "build/format/cpp/annotate.pb.h"
 #include "build/format/cpp/data.pb.h"
@@ -37,7 +37,8 @@ public:
 
   void cast_annotations() override;
 
-  annotate_spec::Similarity get_similar_items(size_t index, size_t k = 5);
+  annotate_spec::Similarity get_similar_items(size_t index,
+                                              size_t k = 7) override;
 
   BEGIN_CLASS_MEMBER_REGISTRATION("ImageClassification");
   IMPORT_BASE_CLASS_REGISTRATION(AnnotationBase);

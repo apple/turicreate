@@ -136,8 +136,9 @@ void ImageClassification::_create_nearest_neighbors_model() {
   this->m_nn_model = turi::nearest_neighbors::train(opts);
 }
 
-annotate_spec::Similarity ImageClassification::get_similar_items(size_t index, size_t k) {
-  gl_sframe sf({{"features", {this->m_feature_sarray[0]}}});
+annotate_spec::Similarity ImageClassification::get_similar_items(size_t index,
+                                                                 size_t k) {
+  gl_sframe sf({{"features", {this->m_feature_sarray[index]}}});
 
   const std::vector<flexible_type> query_labels = {0};
   gl_sarray sa(query_labels, flex_type_enum::INTEGER);
@@ -160,8 +161,8 @@ annotate_spec::Similarity ImageClassification::get_similar_items(size_t index, s
 
   for (const auto &idx : ref_label.range_iterator()) {
     std::shared_ptr<unity_sarray> data_sarray =
-      std::static_pointer_cast<unity_sarray>(
-          m_data->select_column(m_data_columns.at(0)));
+        std::static_pointer_cast<unity_sarray>(
+            m_data->select_column(m_data_columns.at(0)));
 
     gl_sarray data_sa(data_sarray);
 
@@ -233,16 +234,16 @@ bool ImageClassification::setAnnotations(
     }
 
     switch (label.labelIdentifier_case()) {
-      case annotate_spec::Label::LabelIdentifierCase::kIntLabel:
-        _addAnnotationToSFrame(sf_idx, label.intlabel());
-        break;
-      case annotate_spec::Label::LabelIdentifierCase::kStringLabel:
-        _addAnnotationToSFrame(sf_idx, label.stringlabel());
-        break;
-      default:
-        std::cerr << "Unexpected label type type. Expected INTEGER or STRING."
-                  << std::endl;
-        error = false;
+    case annotate_spec::Label::LabelIdentifierCase::kIntLabel:
+      _addAnnotationToSFrame(sf_idx, label.intlabel());
+      break;
+    case annotate_spec::Label::LabelIdentifierCase::kStringLabel:
+      _addAnnotationToSFrame(sf_idx, label.stringlabel());
+      break;
+    default:
+      std::cerr << "Unexpected label type type. Expected INTEGER or STRING."
+                << std::endl;
+      error = false;
     }
   }
 
@@ -478,7 +479,8 @@ void ImageClassification::_calculateFeatures() {
     this->_sendProgress(1);
     this->m_feature_sarray = writer.close();
     this->_create_nearest_neighbors_model();
-    this->get_similar_items(1);
+
+    this->_sendProgress(2);
 
   } catch (const std::exception &e) {
     std::cerr << "Error in featurization background thread: " << e.what()
@@ -493,8 +495,8 @@ void ImageClassification::_calculateFeatures() {
   }
 }
 
-std::shared_ptr<unity_sarray> ImageClassification::_filterDataSFrame(
-    size_t &start, size_t &end) {
+std::shared_ptr<unity_sarray>
+ImageClassification::_filterDataSFrame(size_t &start, size_t &end) {
   this->_reshapeIndicies(start, end);
 
   /* ASSUMPTION
@@ -510,8 +512,8 @@ std::shared_ptr<unity_sarray> ImageClassification::_filterDataSFrame(
       data_sarray->copy_range(start, 1, end));
 }
 
-std::shared_ptr<unity_sarray> ImageClassification::_filterAnnotationSFrame(
-    size_t &start, size_t &end) {
+std::shared_ptr<unity_sarray>
+ImageClassification::_filterAnnotationSFrame(size_t &start, size_t &end) {
   this->_reshapeIndicies(start, end);
 
   std::shared_ptr<unity_sarray> data_sarray =
@@ -530,5 +532,5 @@ std::shared_ptr<ImageClassification> create_image_classification_annotation(
                                                annotation_column);
 }
 
-}  // namespace annotate
-}  // namespace turi
+} // namespace annotate
+} // namespace turi

@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import style from './index.module.scss';
 import ErrorBar from '../ErrorBar';
+import * as d3 from "d3";
 
 class NavigationBar extends Component{
   constructor(props){
     super(props);
+    this.formatDecimal = d3.format(".0f")
     this.state = {value:''};
     this.handleChange = this.handleChange.bind(this);
     this.enterPressJumpRow = this.enterPressJumpRow.bind(this);
@@ -34,6 +36,22 @@ class NavigationBar extends Component{
     }
   }
 
+  renderExtractingFeatures = () => {
+    if (this.props.percentage < 1) {
+      return (
+        <div className={style.extractingFeatures}>
+          Extracting Features: {this.formatDecimal(this.props.percentage*100)}%
+        </div>
+      );
+    }else if(this.props.percentage < 2) {
+      return (
+        <div className={style.extractingFeatures}>
+          Initializing Similarity Model...
+        </div>
+      );
+    }
+  }
+
   render(){
     return (
       <div className={style.BottomBar}>
@@ -46,6 +64,7 @@ class NavigationBar extends Component{
                  type={"text"}
                  value={this.state.value}/>
         </div>
+        {this.renderExtractingFeatures()}
       </div>
     );
   }
