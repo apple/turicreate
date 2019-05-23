@@ -400,7 +400,7 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
         }
     }
     
-    public func get_image(completion: @escaping (NSImage) -> Void) {
+    public func get_image(completion: @escaping (NSImage?) -> Void) {
         let jsString = "export_png();";
         self.view.evaluateJavaScript(jsString, completionHandler: { (value , err) in
             
@@ -412,7 +412,7 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
             let dataDecoded = Data(base64Encoded: s, options: Data.Base64DecodingOptions(rawValue: NSData.Base64DecodingOptions.RawValue(0)))!
             let image = NSImage(data: dataDecoded)
             
-            completion(image!);
+            completion(image);
         });
     }
 

@@ -21,10 +21,12 @@ namespace activity_classification {
 class EXPORT activity_classifier: public ml_model_base {
 
  public:
-
   // ml_model_base interface
 
   void init_options(const std::map<std::string, flexible_type>& opts) override;
+  size_t get_version() const override;
+  void save_impl(oarchive& oarc) const override;
+  void load_version(iarchive& iarc, size_t version) override;
 
   // Interface exposed via Unity server
 
@@ -37,8 +39,7 @@ class EXPORT activity_classifier: public ml_model_base {
   variant_map_type evaluate(gl_sframe data, std::string metric);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
       std::string filename);
-
-  // TODO: Remainder of public interface: export, evaluate, predict, save/load
+  void import_from_custom_model(variant_map_type model_data, size_t version);
 
   BEGIN_CLASS_MEMBER_REGISTRATION("activity_classifier")
 
@@ -164,25 +165,29 @@ class EXPORT activity_classifier: public ml_model_base {
   REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::export_to_coreml,
                                  "filename");
 
+  REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::import_from_custom_model,
+                                 "model_data", "version");
+
   END_CLASS_MEMBER_REGISTRATION
 
  protected:
-
   // Override points allowing subclasses to inject dependencies
 
   // Factory for data_iterator
-  virtual std::unique_ptr<data_iterator> create_iterator(gl_sframe data, bool is_train) const;
+  virtual std::unique_ptr<data_iterator> create_iterator(gl_sframe data,
+                                                         bool requires_labels,
+                                                         bool is_train) const;
 
   // Factory for compute_context
-  virtual
-  std::unique_ptr<neural_net::compute_context> create_compute_context() const;
+  virtual std::unique_ptr<neural_net::compute_context> create_compute_context()
+      const;
 
   // Returns the initial neural network to train
   virtual std::unique_ptr<neural_net::model_spec> init_model() const;
 
-  virtual std::tuple<gl_sframe, gl_sframe>
-  init_data(gl_sframe data, variant_type validation_data,
-            std::string session_id_column_name) const;
+  virtual std::tuple<gl_sframe, gl_sframe> init_data(
+      gl_sframe data, variant_type validation_data,
+      std::string session_id_column_name) const;
 
   // Support for iterative training.
   // TODO: Expose via forthcoming C-API checkpointing mechanism?
@@ -192,9 +197,8 @@ class EXPORT activity_classifier: public ml_model_base {
                           std::map<std::string, flexible_type> opts);
   virtual void perform_training_iteration();
 
-  virtual std::tuple<float, float>
-  compute_validation_metrics(size_t prediction_window, size_t num_classes,
-                             size_t batch_size);
+  virtual std::tuple<float, float> compute_validation_metrics(
+      size_t prediction_window, size_t num_classes, size_t batch_size);
 
   virtual void init_table_printer(bool has_validation);
 
@@ -204,7 +208,7 @@ class EXPORT activity_classifier: public ml_model_base {
   // probability vector for the prediction window, and "num_samples" indicating
   // the number of corresponding rows from the original SFrame (at most the
   // prediction window size).
-  virtual gl_sframe perform_inference(data_iterator *data) const;
+  virtual gl_sframe perform_inference(data_iterator* data) const;
 
   // Utility code
 
@@ -214,7 +218,6 @@ class EXPORT activity_classifier: public ml_model_base {
   }
 
  private:
-
   // Primary representation for the trained model.
   std::unique_ptr<neural_net::model_spec> nn_spec_;
 

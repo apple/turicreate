@@ -15,12 +15,12 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
     )
     set(VISUALIZATION_XCODE_INPUT
       "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization.xcodeproj/project.pbxproj"
-      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/Base.lproj/Main.storyboard"
       "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/Info.plist"
       "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/Debugging.swift"
       "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/Pipe.swift"
       "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/AppDelegate.swift"
       "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/JSON.swift"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/CustomWebKitView.swift"
       "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/VegaContainer.swift"
       "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/ViewController.swift"
       "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/NSWindowWorkaround.swift"
