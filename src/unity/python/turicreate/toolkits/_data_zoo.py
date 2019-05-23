@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright © 2017 Apple Inc. All rights reserved.
+# Copyright © 2019 Apple Inc. All rights reserved.
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
@@ -13,23 +13,9 @@ import turicreate as _tc
 import hashlib as _hashlib
 from six.moves.urllib import parse as _urlparse
 from ._pre_trained_models import _download_and_checksum_files
+from ._pre_trained_models import _get_cache_dir
 
 DATA_URL_ROOT = 'https://docs-assets.developer.apple.com/turicreate/data/'
-
-def _get_data_cache_dir():
-    cache_dir = _tc.config.get_runtime_config()['TURI_CACHE_FILE_LOCATIONS']
-    download_path = _os.path.join(cache_dir, 'data_cache')
-
-    if not _os.path.exists(download_path):
-        try:
-            _os.makedirs(download_path)
-        except:
-            raise RuntimeError("Could not write to the turicreate file cache, which is currently set to \"{cache_dir}\".\n"
-                               "To continue you must update this location to a writable path by calling:\n"
-                               "\ttc.config.set_runtime_config(\'TURI_CACHE_FILE_LOCATIONS\', <path>)\n"
-                               "Where <path> is a writable file path that exists.".format(cache_dir=cache_dir))
-
-    return download_path
 
 class OneShotObjectDetectorBackgroundData(object):
     def __init__(self):
@@ -43,6 +29,6 @@ class OneShotObjectDetectorBackgroundData(object):
 
     def get_backgrounds_path(self):
         backgrounds_path = _download_and_checksum_files(
-            self.sarray_url_md5_pairs, _os.path.join(_get_data_cache_dir(), self.destination_tar_filename)
+            self.sarray_url_md5_pairs, _os.path.join(_get_cache_dir("data"), self.destination_tar_filename)
             )[0]
         return backgrounds_path
