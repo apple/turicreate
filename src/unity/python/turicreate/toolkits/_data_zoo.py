@@ -31,53 +31,6 @@ def _get_data_cache_dir():
 
     return download_path
 
-# def _download_and_checksum_files(urls, dirname, delete=False):
-#     def url_sha_pair(url_or_pair):
-#         if isinstance(url_or_pair, tuple):
-#             return url_or_pair
-#         else:
-#             return url_or_pair, None
-
-#     urls, shas = zip(*[url_sha_pair(pair) for pair in urls])
-#     fns = [
-#         _os.path.join(dirname, _os.path.basename(_urlparse.urlparse(url).path))
-#         for url in urls
-#     ]
-
-#     if delete:
-#         for fn in fns:
-#             if _os.path.exists(fn):
-#                 _os.remove(fn)
-
-#     try:
-#         for url, fn, sha in zip(urls, fns, shas):
-#             if sha is not None:
-#                 md5 = _hashlib.md5()
-
-#             if not _os.path.exists(fn):
-#                 r = _requests.get(url, stream=True)
-#                 assert r.status_code == 200, "%s (%d)" % (r.reason, r.status_code)
-#                 print('Downloading', url)
-#                 with open(fn, 'wb') as f:
-#                     BUFFER = 1 << 16
-#                     for i, chunk in enumerate(r.iter_content(chunk_size=BUFFER)):
-#                         if chunk:
-#                             f.write(chunk)
-#                             if sha is not None:
-#                                 md5.update(chunk)
-#                 if sha is not None:
-#                     assert sha == md5.hexdigest(), "mismatched checksum, please try the command again"
-#                 print('Download completed:', fn)
-#     except (KeyboardInterrupt, AssertionError, _requests.RequestException) as e:
-#         # Only print if message is available (not the case for KeyboardInterrupt)
-#         if e:
-#             print('ERROR: Download failed:', e, file=_sys.stderr)
-#         for fn in fns:
-#             if _os.path.exists(fn):
-#                 _os.remove(fn)
-#         _sys.exit(1)
-#     return fns
-
 class OneShotObjectDetectorBackgroundData(object):
     def __init__(self):
         self.sarray_url = _urlparse.urljoin(
