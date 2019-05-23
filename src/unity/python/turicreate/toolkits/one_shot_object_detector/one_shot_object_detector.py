@@ -6,11 +6,12 @@
 #
 import random as _random
 import turicreate as _tc
-import turicreate.toolkits._internal_utils as _tkutl
 from turicreate import extensions as _extensions
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits.object_detector.object_detector import ObjectDetector as _ObjectDetector
+from util._error_handling import check_one_shot_input
+from util._augmentation import preview_augmented_images
 
 def create(dataset,
            target,
@@ -154,19 +155,7 @@ def create(dataset,
                 augmented images should have their lightings perturbed or not.
                 True by default.
     """
-    if not isinstance(target, str):
-        raise TypeError("'target' must be of type string")
-    if isinstance(dataset, _tc.SFrame):
-        image_column_name = _tkutl._find_only_image_column(dataset)
-        target_column_name = target
-        dataset_to_augment = dataset
-    elif isinstance(dataset, _tc.Image):
-        image_column_name = "image"
-        target_column_name = "target"
-        dataset_to_augment = _tc.SFrame({image_column_name: dataset,
-                                         target_column_name: target})
-    else:
-        raise TypeError("'dataset' must be of type SFrame or Image")
+    dataset_to_augment, image_column_name, target_column_name = check_one_shot_input(data, target)
 
     one_shot_model = _extensions.one_shot_object_detector()
     if seed is None: seed = _random.randint(0, 2**32 - 1)
