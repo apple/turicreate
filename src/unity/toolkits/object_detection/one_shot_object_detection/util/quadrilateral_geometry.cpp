@@ -53,7 +53,7 @@ void color_quadrilateral(const boost::gil::rgba8_image_t::view_t &transformed_vi
     auto transformed_row_iterator = transformed_view.row_begin(y);
     for (size_t x = min_x; x < max_x; ++x) {
       if (is_in_quadrilateral(x, y, warped_corners)) {
-        get_color(transformed_row_iterator[x], boost::gil::alpha_t()) = OPAQUE;
+        get_color(transformed_row_iterator[x], boost::gil::alpha_t()) = std::min((size_t)get_color(transformed_row_iterator[x], boost::gil::alpha_t()), OPAQUE);
       } else {
         get_color(transformed_row_iterator[x], boost::gil::alpha_t()) = TRANSPARENT;
       }

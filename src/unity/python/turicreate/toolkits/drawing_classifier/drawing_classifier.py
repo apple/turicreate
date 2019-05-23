@@ -214,14 +214,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
                  load_labels=True,
                  shuffle=True,
                  iterations=1)
-    if verbose and iteration == 0:
-        column_names = ['iteration', 'train_loss', 'train_accuracy', 'time']
-        column_titles = ['Iteration', 'Training Loss', 'Training Accuracy', 'Elapsed Time (seconds)']
-        if validation_set is not None:
-            column_names.insert(3, 'validation_accuracy')
-            column_titles.insert(3, 'Validation Accuracy')
-        table_printer = _tc.util._ProgressTablePrinter(
-            column_names, column_titles)
+    
 
     ctx = _mxnet_utils.get_mxnet_context(max_devices=batch_size)
     model = _Model(num_classes = len(classes), prefix="drawing_")
@@ -246,6 +239,15 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     softmax_cross_entropy = _mx.gluon.loss.SoftmaxCrossEntropyLoss()
     model.hybridize()
     trainer = _mx.gluon.Trainer(model.collect_params(), 'adam')
+
+    if verbose and iteration == 0:
+        column_names = ['iteration', 'train_loss', 'train_accuracy', 'time']
+        column_titles = ['Iteration', 'Training Loss', 'Training Accuracy', 'Elapsed Time (seconds)']
+        if validation_set is not None:
+            column_names.insert(3, 'validation_accuracy')
+            column_titles.insert(3, 'Validation Accuracy')
+        table_printer = _tc.util._ProgressTablePrinter(
+            column_names, column_titles)
 
     train_accuracy = _mx.metric.Accuracy()
     validation_accuracy = _mx.metric.Accuracy()

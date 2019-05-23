@@ -742,8 +742,8 @@ class ImageClassifier(_CustomModel):
 
                 excluding_names = [min_dist['from']['name'], min_dist['to']['name']]
 
-                vecs = filter(lambda v: v['name'] not in excluding_names, vecs)
-                distances = filter(lambda dist: (dist['from']['name'] not in excluding_names) and (dist['to']['name'] not in excluding_names), distances)
+                vecs = list(filter(lambda v: v['name'] not in excluding_names, vecs))
+                distances = list(filter(lambda dist: (dist['from']['name'] not in excluding_names) and (dist['to']['name'] not in excluding_names), distances))
 
                 for v in vecs:
                     total = 0
@@ -763,9 +763,10 @@ class ImageClassifier(_CustomModel):
                 dist +=  math.pow(v1['pos'][i] - v2['pos'][i], 2)
             return math.pow(dist, 0.5)
 
-    
 
-        evaluation_result = {k: metrics[k] for k in ['accuracy', 'f1_score', 'log_loss', 'precision', 'recall', 'auc']}
+
+        evaluation_result = {k: metrics[k] for k in ['accuracy', 'f1_score', 'log_loss', 'precision',
+                                                     'recall', 'auc', 'roc_curve', 'confusion_matrix']}
         evaluation_result['num_test_examples'] = len(dataset)
         for k in ['num_classes', 'num_features', 'input_image_shape', 'num_examples', 'training_loss', 'training_time', 'model', 'max_iterations']:
             evaluation_result[k] = getattr(self, k)

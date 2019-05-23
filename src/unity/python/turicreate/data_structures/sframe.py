@@ -4479,6 +4479,12 @@ class SFrame(object):
         if sys.platform != 'darwin' and sys.platform != 'linux2' and sys.platform != 'linux':
             raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
 
+
+        # Suppress visualization output if 'none' target is set
+        from ..visualization._plot import _target
+        if _target == 'none':
+            return
+
         path_to_client = _get_client_app_path()
 
         if title is None:

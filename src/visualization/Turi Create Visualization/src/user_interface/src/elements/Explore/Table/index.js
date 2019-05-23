@@ -13,6 +13,9 @@ var numberWithCommas = d3.format(",");
 class TcTable extends Component {
 
   renderCell(value, type){
+    if (value == null) {
+      return <div />;
+    }
     switch (type) {
       case "string":
         return (
