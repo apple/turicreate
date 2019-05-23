@@ -29,6 +29,6 @@ class OneShotObjectDetectorBackgroundData(object):
 
     def get_backgrounds_path(self):
         backgrounds_path = _download_and_checksum_files(
-            self.sarray_url_md5_pairs, _os.path.join(_get_cache_dir("data"), self.destination_tar_filename)
+            self.sarray_url_md5_pairs, _get_cache_dir("data")
             )[0]
         return backgrounds_path

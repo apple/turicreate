@@ -22,7 +22,8 @@ def create(dataset,
     model = _extensions.one_shot_object_detector()
     if seed is None: seed = _random.randint(0, 2**32 - 1)
     if backgrounds is None:
-        backgrounds_tar_path = _data_zoo.OneShotObjectDetectorBackgroundData()
+        backgrounds_downloader = _data_zoo.OneShotObjectDetectorBackgroundData()
+        backgrounds_tar_path = backgrounds_downloader.get_backgrounds_path()
         backgrounds_tar = _tarfile.open(backgrounds_tar_path)
         backgrounds_tar.extractall()
         backgrounds = _tc.SArray("one_shot_backgrounds.sarray")
@@ -32,7 +33,6 @@ def create(dataset,
     od_model = _tc.object_detector.create(augmented_data)
     state = {'detector':od_model}
     return OneShotObjectDetector(state)
-
 
 class OneShotObjectDetector(_CustomModel):
     _PYTHON_ONE_SHOT_OBJECT_DETECTOR_VERSION = 1
