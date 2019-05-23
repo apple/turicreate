@@ -872,10 +872,13 @@ class DrawingClassifier(_CustomModel):
         if output_type == "class":
             return predicted[self.target]
         elif output_type == "probability":
-            _class_to_index = self._class_to_index
-            target = self.target
-            return predicted.apply(
-                lambda row: row["probability"][_class_to_index[row[target]]])
+            if len(self.classes) == 2:
+                _class_to_index = self._class_to_index
+                target = self.target
+                return predicted.apply(
+                    lambda row: row["probability"][_class_to_index[row[target]]])
+            else:
+                raise RuntimeError("Use probability vector in case of multi-class classification")
         else:
             assert (output_type == "probability_vector")
             return predicted["probability"]
