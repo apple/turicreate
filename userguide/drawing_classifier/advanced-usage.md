@@ -31,8 +31,4 @@ in the network to something better than random, thereby improving accuracy
 and also helping the model converge faster.
 
 We have published a pre-trained model that automatically gets downloaded when you pass in 
-`auto` to the `warm_start` parameter. This model is trained on millions of drawings spread 
-over the first 245 classes of the “Quick,Draw!” dataset.
-
-We trained this model on over 60,000 examples each of the first 245 of the
-345 classes in the Quick, Draw! dataset.
+`auto` to the `warm_start` parameter. 
