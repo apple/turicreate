@@ -872,7 +872,7 @@ class DrawingClassifier(_CustomModel):
         if output_type == "class":
             return predicted[self.target]
         elif output_type == "probability":
-            if len(self.classes) == 2:
+            if len(self.classes) <= 2:
                 _class_to_index = self._class_to_index
                 target = self.target
                 return predicted.apply(
