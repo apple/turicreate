@@ -92,6 +92,7 @@ class DrawingClassifierTest(unittest.TestCase):
         self.trains = [self.check_cross_sf, self.stroke_sf]
         self.models = [self.check_cross_model, self.stroke_model]
 
+
     def test_create_with_missing_feature(self):
         for sf in self.trains:
             with self.assertRaises(_ToolkitError):
@@ -160,12 +161,13 @@ class DrawingClassifierTest(unittest.TestCase):
         for index in range(len(self.models)):
             model = self.models[index]
             sf = self.trains[index]
-            for output_type in ["class", "probability", "probability_vector"]:
+            for output_type in ["class", "probability_vector"]:
                 preds = model.predict(sf, output_type=output_type)
                 if output_type == "class":
                     assert (preds.dtype == sf[self.target].dtype)
-                elif output_type == "probability":
-                    assert (preds.dtype == float)
+                # elif output_type == "probability":
+                #     if len(sf[self.target].unique()) > 2:
+                #         assert (preds.dtype == float)
                 else:
                     assert (preds.dtype == _array)
                 assert (len(preds) == len(sf))
@@ -174,12 +176,13 @@ class DrawingClassifierTest(unittest.TestCase):
         for index in range(len(self.models)):
             model = self.models[index]
             sf = self.trains[index]
-            for output_type in ["class", "probability", "probability_vector"]:
+            for output_type in ["class", "probability_vector"]:
                 preds = model.predict(sf[self.feature], output_type=output_type)
                 if output_type == "class":
                     assert (preds.dtype == sf[self.target].dtype)
-                elif output_type == "probability":
-                    assert (preds.dtype == float)
+                # elif output_type == "probability":
+                #     if len(sf[self.target].unique()) > 2:
+                #         assert (preds.dtype == float)
                 else:
                     assert (preds.dtype == _array)
                 assert (len(preds) == len(sf))
@@ -201,6 +204,29 @@ class DrawingClassifierTest(unittest.TestCase):
                     assert (preds["probability"].dtype == float)
                 assert (len(preds) == k*len(sf))
 
+    def test_predict_output_type_probability_with_sframe(self):
+        for index in range(len(self.models)):
+            model = self.models[index]
+            sf = self.trains[index]
+            if len(sf[self.target].unique()) > 2:
+                with self.assertRaises(_ToolkitError):
+                    model.predict(sf, output_type="probability")
+            else:
+                preds = model.predict(sf, output_type="probability")
+                assert (preds.dtype == float)
+
+    def test_predict_output_type_probability_with_sarray(self):
+        for index in range(len(self.models)):
+            model = self.models[index]
+            sf = self.trains[index]
+            if len(sf[self.target].unique()) > 2:
+                with self.assertRaises(_ToolkitError):
+                    model.predict(sf[self.feature], output_type="probability")
+            else:
+                preds = model.predict(sf[self.feature], output_type="probability")
+                assert (preds.dtype == float)
+
+
     def test_evaluate_without_ground_truth(self):
         for index in range(len(self.trains)):
             model = self.models[index]
@@ -210,7 +236,7 @@ class DrawingClassifierTest(unittest.TestCase):
                 model.evaluate(sf_without_ground_truth)
 
     def test_evaluate_with_ground_truth(self):
-        all_metrics = ["accuracy", "auc", "precision", "recall",
+        all_metrics = ["accuracy", "auc", "precision", "recall", 
                        "f1_score", "confusion_matrix", "roc_curve"]
         for index in range(len(self.models)):
             model = self.models[index]
