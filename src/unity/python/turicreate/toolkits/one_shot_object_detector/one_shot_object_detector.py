@@ -6,8 +6,10 @@
 #
 import random as _random
 import turicreate as _tc
+import tarfile as _tarfile
 from turicreate import extensions as _extensions
 from turicreate.toolkits._model import CustomModel as _CustomModel
+from .. import _data_zoo
 
 def create(dataset,
            target,
@@ -20,15 +22,17 @@ def create(dataset,
     model = _extensions.one_shot_object_detector()
     if seed is None: seed = _random.randint(0, 2**32 - 1)
     if backgrounds is None:
-        # replace this with loading backgrounds from developer.apple.com
-        backgrounds = _tc.SArray()
+        backgrounds_downloader = _data_zoo.OneShotObjectDetectorBackgroundData()
+        backgrounds_tar_path = backgrounds_downloader.get_backgrounds_path()
+        backgrounds_tar = _tarfile.open(backgrounds_tar_path)
+        backgrounds_tar.extractall()
+        backgrounds = _tc.SArray("one_shot_backgrounds.sarray")
     # Option arguments to pass in to C++ Object Detector, if we use it:
     # {'mlmodel_path':'darknet.mlmodel', 'max_iterations' : 25}
     augmented_data = model.augment(dataset, target, backgrounds, {"seed":seed})
     od_model = _tc.object_detector.create(augmented_data)
     state = {'detector':od_model}
     return OneShotObjectDetector(state)
-
 
 class OneShotObjectDetector(_CustomModel):
     _PYTHON_ONE_SHOT_OBJECT_DETECTOR_VERSION = 1
