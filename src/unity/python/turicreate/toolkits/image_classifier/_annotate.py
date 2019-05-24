@@ -13,6 +13,7 @@ from __future__ import absolute_import as _
 from ...visualization import _get_client_app_path
 import turicreate.toolkits._internal_utils as _tkutl
 from .. import _image_feature_extractor
+from turicreate._cython.cy_server import QuietProgress
 
 import turicreate as __tc
 
@@ -165,7 +166,7 @@ def annotate(data, image_column=None, annotation_column='annotations', image_sim
         raise TypeError("'data' must be an SFrame or SArray")
 
     _warning_annotations()
-
+    
     annotation_window = __tc.extensions.create_image_classification_annotation(
                             data,
                             [image_column],
@@ -178,8 +179,9 @@ def annotate(data, image_column=None, annotation_column='annotations', image_sim
         feature_sframe = model.extract_features(data, image_column, verbose=False, batch_size=64)
         annotation_window.add_image_features(feature_sframe)
     
-    annotation_window.annotate(_get_client_app_path())
-    return annotation_window.returnAnnotations()
+    with QuietProgress(False):
+        annotation_window.annotate(_get_client_app_path())
+        return annotation_window.returnAnnotations()
 
 def recover_annotation():
     """

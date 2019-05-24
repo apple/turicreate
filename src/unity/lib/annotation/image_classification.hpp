@@ -36,6 +36,8 @@ public:
   bool setAnnotations(const annotate_spec::Annotations &annotations) override;
 
   void cast_annotations() override;
+  
+  void background_work() override;
 
   annotate_spec::Similarity get_similar_items(size_t index,
                                               size_t k = 7) override;
@@ -45,15 +47,20 @@ public:
   END_CLASS_MEMBER_REGISTRATION
 
 private:
-  size_t m_feature_batch_size = 1000;
+  size_t m_feature_batch_size = 16;
   gl_sarray m_feature_sarray;
   variant_map_type m_nn_model;
   std::shared_ptr<std::thread> featurizer_thread;
+  image_deep_feature_extractor::image_deep_feature_extractor_toolkit m_extractor;
+  gl_sarray m_image_feature_extraction_sarray;
+  std::shared_ptr<gl_sarray_writer> m_writer;
+  
 
   void _addAnnotationToSFrame(size_t index, std::string label);
   void _addAnnotationToSFrame(size_t index, int label);
-  void _calculateFeatures();
   void _create_nearest_neighbors_model();
+  void _createFeaturesExtractor();
+  bool _stepFeaturesExtractor();
 
   std::shared_ptr<unity_sarray> _filterDataSFrame(size_t &start, size_t &end);
   std::shared_ptr<unity_sarray> _filterAnnotationSFrame(size_t &start,

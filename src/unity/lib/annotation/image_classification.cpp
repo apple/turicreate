@@ -28,8 +28,7 @@ ImageClassification::ImageClassification(
     const std::vector<std::string> &data_columns,
     const std::string &annotation_column)
     : AnnotationBase(data, data_columns, annotation_column) {
-  featurizer_thread = std::make_shared<std::thread>(&ImageClassification::_calculateFeatures, this);
-  featurizer_thread->detach();
+  this->_createFeaturesExtractor();
 }
 
 annotate_spec::Data ImageClassification::getItems(size_t start, size_t end) {
@@ -108,6 +107,19 @@ annotate_spec::Annotations ImageClassification::getAnnotations(size_t start,
   }
 
   return annotations;
+}
+
+void ImageClassification::background_work() {
+  if(m_nn_model.size() == 0) {
+    if (!this->_stepFeaturesExtractor()) {
+      this->_sendProgress(1);
+      this->m_feature_sarray = m_writer->close();
+      this->_create_nearest_neighbors_model();
+      this->_sendProgress(2);
+    }
+  }else{
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  }
 }
 
 void ImageClassification::_create_nearest_neighbors_model() {
@@ -436,60 +448,37 @@ annotate_spec::MetaData ImageClassification::metaData() {
   return meta_data;
 }
 
-void ImageClassification::_calculateFeatures() {
-  std::shared_ptr<unity_sarray> data_sarray =
-      std::static_pointer_cast<unity_sarray>(
-          m_data->select_column(m_data_columns.at(0)));
-  
-  gl_sarray image_gl_sarray = gl_sarray(data_sarray);
+void ImageClassification::_createFeaturesExtractor() {
+  m_extractor = create_feature_extractor();
+  auto data_sarray = std::static_pointer_cast<unity_sarray>(m_data->select_column(m_data_columns.at(0)));
+  m_image_feature_extraction_sarray = gl_sarray(data_sarray);
+  m_writer = std::make_shared<gl_sarray_writer>(flex_type_enum::VECTOR, 1);
+}
 
-  try {
-    size_t sa_size = image_gl_sarray.size();
-    size_t index = 0;
+bool ImageClassification::_stepFeaturesExtractor() {
+  // Step batch
+  size_t sa_size = m_image_feature_extraction_sarray.size();
+  size_t index = 0;
+  size_t endIdx = ((index + this->m_feature_batch_size) > sa_size)
+                      ? sa_size
+                      : (index + this->m_feature_batch_size);
+  auto img_batch = m_image_feature_extraction_sarray[{static_cast<long long>(index),
+                                                      static_cast<long long>(endIdx)}];
+  auto extracted_features =
+      m_extractor.sarray_extract_features(img_batch, false, 6);
 
-    auto extractor = create_feature_extractor();
-    gl_sarray_writer writer(flex_type_enum::VECTOR, 1);
-
-    while (true) {
-      size_t endIdx = ((index + this->m_feature_batch_size) > sa_size)
-                          ? sa_size
-                          : (index + this->m_feature_batch_size);
-
-      auto img_batch = image_gl_sarray[{static_cast<long long>(index),
-                                        static_cast<long long>(endIdx)}];
-
-      auto extracted_features =
-          extractor.sarray_extract_features(img_batch, false, 6);
-
-      for (const auto &row : extracted_features.range_iterator()) {
-        writer.write(row, 0);
-      }
-
-      this->_sendProgress((float)index / sa_size);
-
-      index += this->m_feature_batch_size;
-      if (index >= sa_size) {
-        break;
-      }
-    }
-
-    this->_sendProgress(1);
-    this->m_feature_sarray = writer.close();
-    this->_create_nearest_neighbors_model();
-
-    this->_sendProgress(2);
-
-  } catch (const std::exception &e) {
-    std::cerr << "Error in featurization background thread: " << e.what()
-              << std::endl;
-  } catch (const std::string &s) {
-    std::cerr << "Error in featurization background thread: " << s << std::endl;
-  } catch (const char *c) {
-    std::cerr << "Error in featurization background thread: " << c << std::endl;
-  } catch (...) {
-    std::cerr << "Unknown error in featurization background thread."
-              << std::endl;
+  for (const auto &row : extracted_features.range_iterator()) {
+    m_writer->write(row, 0);
   }
+
+  this->_sendProgress(1.0 - ((float)m_image_feature_extraction_sarray.size() / m_data->size()));
+
+  // slice off the rows we already featurized
+  m_image_feature_extraction_sarray = m_image_feature_extraction_sarray[{static_cast<long long>(endIdx),
+                                                                         static_cast<long long>(m_image_feature_extraction_sarray.size())}];
+
+  // if more remain, return true
+  return m_image_feature_extraction_sarray.size() > 0;
 }
 
 std::shared_ptr<unity_sarray>

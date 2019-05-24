@@ -18,6 +18,7 @@ class SingleImage extends Component {
       this.props.updateIncrementalCurrentIndex(this.props.incrementalCurrentIndex - 1);
       this.props.getData((this.props.incrementalCurrentIndex - 2), this.props.incrementalCurrentIndex);
       this.props.getAnnotations((this.props.incrementalCurrentIndex - 2), this.props.incrementalCurrentIndex);
+      this.props.getSimilar(this.props.incrementalCurrentIndex - 1)
     }
   }
 
@@ -34,6 +35,7 @@ class SingleImage extends Component {
       this.props.updateIncrementalCurrentIndex(this.props.incrementalCurrentIndex + 1);
       this.props.getData(this.props.incrementalCurrentIndex, (this.props.incrementalCurrentIndex + 2));
       this.props.getAnnotations(this.props.incrementalCurrentIndex, (this.props.incrementalCurrentIndex + 2));
+      this.props.getSimilar(this.props.incrementalCurrentIndex + 1)
     }
   }
 
@@ -48,7 +50,8 @@ class SingleImage extends Component {
                  onClick={this.decrementIndex.bind(this)}>
                 <img src={leftArrow} />
             </div>
-            <ImageLabeler src={this.props.src}/>
+            <ImageLabeler src={this.props.src}
+                          similarImages={this.props.similarImages}/>
             <div className={style.RightArrow}
                  onClick={this.incrementIndex.bind(this)}  >
                 <img src={rightArrow} />

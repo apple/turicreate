@@ -84,6 +84,8 @@ public:
 
   virtual void cast_annotations() = 0;
 
+  virtual void background_work() = 0;
+
   BEGIN_BASE_CLASS_MEMBER_REGISTRATION()
 
   IMPORT_BASE_CLASS_REGISTRATION(ml_model_base);

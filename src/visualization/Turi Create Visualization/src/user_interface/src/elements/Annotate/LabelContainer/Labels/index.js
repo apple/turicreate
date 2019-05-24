@@ -3,6 +3,14 @@ import styles from './index.module.scss';
 import ProgressBar from './ProgressBar';
   
 class Label extends Component {
+  renderApply = () => {
+    if (!this.props.active || this.props.similarSelected.length != 0) {
+      return "Apply";
+    } else {
+      return "";
+    }
+  }
+
   render() {
     const percent_gradient = this.props.num_annotated * 100.0 / this.props.num_expected;
   
@@ -11,7 +19,7 @@ class Label extends Component {
     ]
 
     if(this.props.active){
-    classes.push(styles.LabelSelected);
+      classes.push(styles.LabelSelected);
     }
 
     return (
@@ -28,7 +36,7 @@ class Label extends Component {
       <div className={styles.LabelApplyButton}
            onClick={this.props.onClick.bind(this)}>
         <span>
-        {(!this.props.active)?"Apply":""}
+        {this.renderApply()}
         </span>
       </div>
       <div>

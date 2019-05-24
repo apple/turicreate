@@ -27,6 +27,7 @@ class NavigationBar extends Component{
           this.props.updateIncrementalCurrentIndex(image_number);
           this.props.getData((image_number-1 ), image_number + 1);
           this.props.getAnnotations((image_number - 1), image_number + 1);
+          this.props.getSimilar(image_number);
 
           if (this.props.infiniteScroll){
             this.props.toggleInfiniteScroll();

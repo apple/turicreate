@@ -20,6 +20,10 @@ class ImageLabeler extends Component {
     window.removeEventListener("resize", this.updateDimensions.bind(this));
   }
 
+  componentWillReceiveProps() {
+    this.updateDimensions();
+  }
+
   handleImageLoaded = () => {
     this.updateDimensions();
   }

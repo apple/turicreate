@@ -109,7 +109,7 @@ class Annotate extends Component {
     }
 
     var similar_images = [];
-    for (var x = 0 ;x < similarity["data"].length; x++) {
+    for (var x = 1; x < similarity["data"].length; x++) {
       var datum_index = 0;
       if(similarity["data"][x].hasOwnProperty("rowIndex")){
         datum_index = similarity["data"][x]["rowIndex"];
@@ -212,7 +212,6 @@ class Annotate extends Component {
   }
 
   updateIncrementalCurrentIndex = (index) => {
-    this.getSimilar(index);
     this.setState({
       incrementalCurrentIndex: index
     })
@@ -306,6 +305,18 @@ class Annotate extends Component {
     }
   }
 
+  setAnnotationSimilar = (name) => {
+    const selectedValues = this.state.similarSelected;
+
+    for (var i = 0; i < selectedValues.length; i++) {
+      this.setAnnotation(parseInt(selectedValues[i], 10), name);
+    }
+
+    this.setState({
+      similarSelected:[]
+    })
+  }
+
   setAnnotation = (rowIndex, labels) => {
     var previousAnnotationData = this.state.annotationData;
     var previousLabelData = this.state.labels;
@@ -314,19 +325,24 @@ class Annotate extends Component {
     if(previousLabel == labels){
       return;
     }
-    if(previousLabel != null){
-      for (var x = 0; x < previousLabelData.length; x++) {
+
+    for (var x = 0; x < previousLabelData.length; x++) {
+      if(previousLabel != null){
         if(this.state.labels[x].name == previousLabel) {
           var tempLabel = previousLabelData[x];
           tempLabel.num_annotated -= 1;
           previousLabelData[x] = tempLabel;
         }
-        if(this.state.labels[x].name == labels){
-          var tempLabel = previousLabelData[x];
-          tempLabel.num_annotated += 1;
-          previousLabelData[x] = tempLabel;
-        }
       }
+      if(this.state.labels[x].name == labels){
+        var tempLabel = previousLabelData[x];
+        tempLabel.num_annotated += 1;
+        previousLabelData[x] = tempLabel;
+      }
+    }
+
+    for (var x = 0; x < previousLabelData.length; x++) {
+
     }
 
     if (this.state.type == LabelType.STRING) {
@@ -458,6 +474,7 @@ class Annotate extends Component {
                        updateIncrementalCurrentIndex={this.updateIncrementalCurrentIndex.bind(this)}
                        getData={this.getData.bind(this)}
                        getAnnotations={this.getAnnotations.bind(this)}
+                       getSimilar={this.getSimilar.bind(this)}
                        percentage={this.state.percent}/>
         </div>
         <div className={style.leftBar}>
@@ -467,9 +484,11 @@ class Annotate extends Component {
                         infiniteSelected={this.state.infiniteSelected}
                         setAnnotation={this.setAnnotation.bind(this)}
                         setAnnotationMass={this.setAnnotationMass.bind(this)}
+                        setAnnotationSimilar={this.setAnnotationSimilar.bind(this)}
                         openLabelModal={this.openLabelModal.bind(this)}
                         closeLabelModal={this.closeLabelModal.bind(this)}
-                        annotationData={this.state.annotationData}/>
+                        annotationData={this.state.annotationData}
+                        similarSelected={this.state.similarSelected}/>
         </div>
       </div>
     );
