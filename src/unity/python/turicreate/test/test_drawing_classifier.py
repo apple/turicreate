@@ -165,9 +165,6 @@ class DrawingClassifierTest(unittest.TestCase):
                 preds = model.predict(sf, output_type=output_type)
                 if output_type == "class":
                     assert (preds.dtype == sf[self.target].dtype)
-                # elif output_type == "probability":
-                #     if len(sf[self.target].unique()) > 2:
-                #         assert (preds.dtype == float)
                 else:
                     assert (preds.dtype == _array)
                 assert (len(preds) == len(sf))
@@ -180,9 +177,6 @@ class DrawingClassifierTest(unittest.TestCase):
                 preds = model.predict(sf[self.feature], output_type=output_type)
                 if output_type == "class":
                     assert (preds.dtype == sf[self.target].dtype)
-                # elif output_type == "probability":
-                #     if len(sf[self.target].unique()) > 2:
-                #         assert (preds.dtype == float)
                 else:
                     assert (preds.dtype == _array)
                 assert (len(preds) == len(sf))
