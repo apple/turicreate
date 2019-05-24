@@ -163,6 +163,10 @@ def create(input_dataset, target, feature=None, validation_set='auto',
 
     classes = dataset[target].unique()
     classes = sorted(classes)
+
+    if len(classes) == 1:
+        _ToolkitError("The number of classes has to be greater than one")
+
     class_to_index = {name: index for index, name in enumerate(classes)}
 
     validation_set_corrective_string = ("'validation_set' parameter must be "
