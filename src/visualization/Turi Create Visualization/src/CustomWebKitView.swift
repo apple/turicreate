@@ -8,7 +8,15 @@ import WebKit
 
 class CustomWebKitView: WKWebView {
     override func performKeyEquivalent(with event: NSEvent) -> Bool {
-        super.performKeyEquivalent(with: event)
-        return true
+        let ret = super.performKeyEquivalent(with: event)
+        if (event.modifierFlags.contains(.command) &&
+            (event.charactersIgnoringModifiers == "=" ||
+                event.charactersIgnoringModifiers == "-" ||
+                event.charactersIgnoringModifiers == "+")) {
+            // if cmd+ or cmd- are pressed, those will zoom in the
+            // browser pane and are handled.
+            return true
+        }
+        return ret
     }
 }

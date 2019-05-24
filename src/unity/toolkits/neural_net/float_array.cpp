@@ -83,6 +83,22 @@ shared_float_array shared_float_array::operator[](size_t idx) const {
   return shared_float_array(impl_, offset_ + offset, shape_ + 1, dim_ - 1);
 }
 
+std::ostream &operator<<(std::ostream &os, const float_array &arr) {
+  const size_t *sh = arr.shape();
+  os << "[";
+  for (size_t i = 0; i < arr.dim(); i++) {
+    os << sh[i] << " ";
+  }
+  os << "]";
+
+  const float *ptr = arr.data();
+  for (size_t i = 0; i < arr.size(); i++) {
+    os << ptr[i] << " ";
+  }
+  os << "\n";
+  return os;
+}
+
 void shared_float_array::save(oarchive& oarc) const {
   // Write shape.
   serialize_iterator(oarc, shape(), shape() + dim(), dim());

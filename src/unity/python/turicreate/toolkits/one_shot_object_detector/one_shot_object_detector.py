@@ -6,6 +6,7 @@
 #
 
 import turicreate as _tc
+import tarfile as _tarfile
 from turicreate import extensions as _extensions
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
@@ -64,7 +65,6 @@ def create(data,
         "augmented_data": augmented_data
         }
     return OneShotObjectDetector(state)
-
 
 class OneShotObjectDetector(_CustomModel):
     _PYTHON_ONE_SHOT_OBJECT_DETECTOR_VERSION = 1

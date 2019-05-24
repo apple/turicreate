@@ -20,6 +20,7 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
       "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/Pipe.swift"
       "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/AppDelegate.swift"
       "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/JSON.swift"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/CustomWebKitView.swift"
       "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/VegaContainer.swift"
       "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/ViewController.swift"
       "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/NSWindowWorkaround.swift"

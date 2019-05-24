@@ -23,7 +23,6 @@
 #include <unity/toolkits/object_detection/one_shot_object_detection/util/color_convert.hpp>
 #include <unity/toolkits/object_detection/one_shot_object_detection/util/mapping_function.hpp>
 #include <unity/toolkits/object_detection/one_shot_object_detection/util/parameter_sampler.hpp>
-#include <unity/toolkits/object_detection/one_shot_object_detection/util/quadrilateral_geometry.hpp>
 #include <unity/toolkits/object_detection/one_shot_object_detection/util/superposition.hpp>
 
 namespace turi {
@@ -106,6 +105,7 @@ static std::map<std::string,size_t> generate_column_index_map(
 }
 
 boost::gil::rgba8_image_t::view_t create_starter_image_view(flex_image &object_input) {
+  DASSERT_TRUE(object_input.is_decoded());
   flex_image object = image_util::resize_image(object_input,
                                                object_input.m_width,
                                                object_input.m_height,

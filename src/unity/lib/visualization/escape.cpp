@@ -40,6 +40,7 @@ std::string escapeForTable( const flexible_type& value,
     switch (value.get_type()) {
       case flex_type_enum::UNDEFINED:
         ss << "null";
+        break;
       case flex_type_enum::FLOAT:
         {
           flex_float f = value.get<flex_float>();

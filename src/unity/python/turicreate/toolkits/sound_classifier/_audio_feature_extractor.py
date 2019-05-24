@@ -6,6 +6,7 @@ import numpy as _np
 import turicreate as _tc
 from mxnet.gluon import nn
 
+from .vggish_params import SAMPLE_RATE
 from .._internal_utils import _mac_ver
 from .._mxnet import _mxnet_utils
 from .._pre_trained_models import VGGish
@@ -35,6 +36,7 @@ class Flatten_channel_last(nn.HybridBlock):
 class VGGishFeatureExtractor(object):
     name = 'VGGish'
     output_length = 12288
+    input_sample_rate = SAMPLE_RATE
 
     @staticmethod
     def _preprocess_data(audio_data, verbose=True):
