@@ -363,7 +363,7 @@ class DrawingClassifier(_CustomModel):
         from ._model_architecture import Model as _Model
         from .._mxnet import _mxnet_utils
         net = _Model(num_classes = len(state['classes']), prefix = 'drawing_')
-        ctx = _mxnet_utils.get_mxnet_context(max_devices=state['batch_size'])
+        ctx = _mxnet_utils.get_mxnet_context()
         net_params = net.collect_params()
         _mxnet_utils.load_net_params_from_state(
             net_params, state['_model'], ctx=ctx 
