@@ -51,10 +51,12 @@ void AnnotationBase::annotate(const std::string &path_to_client) {
 }
 
 void AnnotationBase::_sendProgress(double value) {
-  annotate_spec::ProgressMeta progress;
-  progress.set_percentage(value);
-  *m_aw
-      << this->_serialize_proto<annotate_spec::ProgressMeta>(progress).c_str();
+  if(m_aw->good()){
+    annotate_spec::ProgressMeta progress;
+    progress.set_percentage(value);
+    *m_aw
+        << this->_serialize_proto<annotate_spec::ProgressMeta>(progress).c_str();
+  }
 }
 
 std::shared_ptr<unity_sframe>

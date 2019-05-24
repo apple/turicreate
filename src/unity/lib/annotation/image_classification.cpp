@@ -28,8 +28,8 @@ ImageClassification::ImageClassification(
     const std::vector<std::string> &data_columns,
     const std::string &annotation_column)
     : AnnotationBase(data, data_columns, annotation_column) {
-  std::thread t(&ImageClassification::_calculateFeatures, this);
-  t.detach();
+  featurizer_thread = std::make_shared<std::thread>(&ImageClassification::_calculateFeatures, this);
+  featurizer_thread->detach();
 }
 
 annotate_spec::Data ImageClassification::getItems(size_t start, size_t end) {
@@ -437,13 +437,10 @@ annotate_spec::MetaData ImageClassification::metaData() {
 }
 
 void ImageClassification::_calculateFeatures() {
-  image_deep_feature_extractor::image_deep_feature_extractor_toolkit extractor =
-      create_feature_extractor();
-
   std::shared_ptr<unity_sarray> data_sarray =
       std::static_pointer_cast<unity_sarray>(
           m_data->select_column(m_data_columns.at(0)));
-
+  
   gl_sarray image_gl_sarray = gl_sarray(data_sarray);
 
   try {

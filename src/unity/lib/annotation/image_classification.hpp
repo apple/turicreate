@@ -25,7 +25,7 @@ public:
                       const std::vector<std::string> &data_columns,
                       const std::string &annotation_column);
 
-  ~ImageClassification(){};
+  ~ImageClassification() {};
 
   annotate_spec::MetaData metaData() override;
 
@@ -48,6 +48,7 @@ private:
   size_t m_feature_batch_size = 1000;
   gl_sarray m_feature_sarray;
   variant_map_type m_nn_model;
+  std::shared_ptr<std::thread> featurizer_thread;
 
   void _addAnnotationToSFrame(size_t index, std::string label);
   void _addAnnotationToSFrame(size_t index, int label);
