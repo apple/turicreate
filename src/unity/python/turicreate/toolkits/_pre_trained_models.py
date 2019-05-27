@@ -15,10 +15,12 @@ from six.moves.urllib import parse as _urlparse
 
 MODELS_URL_ROOT = 'https://docs-assets.developer.apple.com/turicreate/models/'
 
-
-def _get_model_cache_dir():
+def _get_cache_dir(_type="model"):
     cache_dir = _tc.config.get_runtime_config()['TURI_CACHE_FILE_LOCATIONS']
-    download_path = _os.path.join(cache_dir, 'model_cache')
+    if _type == "model":
+        download_path = _os.path.join(cache_dir, 'model_cache')
+    else:
+        download_path = _os.path.join(cache_dir, 'data_cache')
 
     if not _os.path.exists(download_path):
         try:
@@ -30,7 +32,6 @@ def _get_model_cache_dir():
                                "Where <path> is a writable file path that exists.".format(cache_dir=cache_dir))
 
     return download_path
-
 
 def _download_and_checksum_files(urls, dirname, delete=False):
     def url_sha_pair(url_or_pair):
@@ -102,7 +103,7 @@ class ResNetImageClassifier(ImageClassifierPreTrainedModel):
         self.symbols_md5 = '2989c88d1d6629b777949a3ae695a42e'
         self.params_url = _urlparse.urljoin(MODELS_URL_ROOT, '%s-%04d.params' % (self.name, epoch))
         self.params_md5 = '246423771006aaf77acf68c99852f5b5'
-        path = _get_model_cache_dir()
+        path = _get_cache_dir()
         _download_and_checksum_files([
             (self.symbols_url, self.symbols_md5),
             (self.params_url, self.params_md5),
@@ -127,7 +128,7 @@ class SqueezeNetImageClassifierV1_1(ImageClassifierPreTrainedModel):
         self.symbols_md5 = 'bab4d80f45e9285cf9f4a3f01f07022e'
         self.params_url = _urlparse.urljoin(MODELS_URL_ROOT, '%s-%04d.params' % (self.name, epoch))
         self.params_md5 = '05b1eb6acabdaaee37c9c9ff666c1b51'
-        path = _get_model_cache_dir()
+        path = _get_cache_dir()
         _download_and_checksum_files([
             (self.symbols_url, self.symbols_md5),
             (self.params_url, self.params_md5),
@@ -161,7 +162,7 @@ class DarkNetObjectDetectorBase(ObjectDetectorBasePreTrainedModel):
             ]
         self.model_path = _download_and_checksum_files([
             (self.source_url, self.source_md5)
-        ], _get_model_cache_dir())[0]
+        ], _get_cache_dir())[0]
 
     def available_parameters_subset(self, mx_params):
         """
@@ -190,7 +191,7 @@ class StyleTransferTransformer():
         self.source_md5 = 'ac232afa6d0ead93a8c75b6c455f6dd3'
         self.model_path = _download_and_checksum_files([
             (self.source_url, self.source_md5)
-        ], _get_model_cache_dir())[0]
+        ], _get_cache_dir())[0]
 
 
     def get_model_path(self):
@@ -205,7 +206,7 @@ class Vgg16():
         self.source_md5 = '52e75e03160e64e5aa9cfbbc62a92345'
         self.model_path = _download_and_checksum_files([
             (self.source_url, self.source_md5)
-        ], _get_model_cache_dir())[0]
+        ], _get_cache_dir())[0]
 
 
     def get_model_path(self):
@@ -237,7 +238,7 @@ class VGGish():
 
         checksum = self.source_md5[format]
         model_path = _download_and_checksum_files(
-            [(url, checksum)], _get_model_cache_dir()
+            [(url, checksum)], _get_cache_dir()
             )[0]
 
         return model_path
@@ -256,7 +257,7 @@ class DrawingClassifierPreTrainedModel(object):
 
     def get_model_path(self):
         model_path = _download_and_checksum_files(
-            [(self.source_url, self.source_md5)], _get_model_cache_dir()
+            [(self.source_url, self.source_md5)], _get_cache_dir()
             )[0]
         return model_path
 
