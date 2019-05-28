@@ -632,7 +632,12 @@ class DrawingClassifier(_CustomModel):
                                    prediction/true label combinations.
             - 'roc_curve'        : An SFrame containing information needed for an
                                    ROC curve
-        
+
+        batch_size : int, optional
+            If you are getting memory errors, try decreasing this value. If you
+            have a powerful computer, increasing this value may improve
+            performance.
+
         verbose : bool, optional
             If True, prints prediction progress.
 
@@ -739,7 +744,7 @@ class DrawingClassifier(_CustomModel):
         Examples
         --------
         >>> pred = m.predict_topk(validation_data, k=3)
-        >>> pred
+        >>> print(pred)
         +----+-------+-------------------+
         | id | class |   probability     |
         +----+-------+-------------------+

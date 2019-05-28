@@ -40,16 +40,19 @@ data we have to deal with during the rasterization step. In most
 drawing/rendering ecosystems, points are usually sampled at a frequency high 
 enough that some key points can capture the drawing that all the points 
 rendered. To simplify drawings and get rid of redundant points, we employ the
-Ramer-Douglas-Peucker algorithm, which decimates a stroke composed of 
+[Ramer-Douglas-Peucker algorithm](https://en.wikipedia.org/wiki/Ramer–Douglas–Peucker_algorithm), which decimates a stroke composed of
 line segments to a similar curve with fewer points.
 
 3. **Rasterization**: Rasterization from the simplified normalized strokes to 
 the final bitmap that the Neural Network can consume, can be further broken 
 down into three steps: 
+
     1. First, we render the simplified drawing that we 
-    got as an output from Step 2 as an intermediate bitmap of size 256x256 
-    (since all our normalized points lie in [0, 255]). 
+    got as an output from Step 2 as an intermediate bitmap of size 256x256
+    (since all our normalized points lie in [0, 255]).
+
     2. Next, we blur the intermediate bitmap.
+
     3. Finally, we resize the blurred intermediate bitmap down to a final bitmap
     size of 28x28, which the Neural Network can consume.
 

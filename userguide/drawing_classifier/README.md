@@ -74,7 +74,7 @@ data =  tc.SFrame(SFRAME_PATH)
 train_data, test_data = data.random_split(0.7)
 
 # Create a model
-model = tc.drawing_classifier.create(train_data)
+model = tc.drawing_classifier.create(train_data, 'label')
 
 # Save predictions to an SArray
 predictions = model.predict(test_data)

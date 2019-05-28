@@ -3,7 +3,7 @@
 Drawing Classifier models created in Turi Create can easily be deployed to
 Core ML.
 
-You can export to Core ML in Turi Create 5.4 as follows:
+You can export to Core ML in Turi Create 5.4 or higher as follows:
 ```python
 model.export_coreml("MySquareTriangleClassifier.mlmodel")
 ```
