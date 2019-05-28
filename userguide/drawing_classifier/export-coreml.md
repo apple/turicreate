@@ -40,11 +40,11 @@ let handler = VNImageRequestHandler(cgImage: grayscaleImage.cgImage!, options: [
 try? handler.perform([request])}
 
 func processClassifications(for request: VNRequest) {
-	if let sortedResults = request.results! as? [VNClassificationObservation] {
-		for result in sortedResults {
-			// Use results
-		}
-	}
+    if let sortedResults = request.results! as? [VNClassificationObservation] {
+        for result in sortedResults {
+            // Use results
+        }
+    }
 }
 ```
 
