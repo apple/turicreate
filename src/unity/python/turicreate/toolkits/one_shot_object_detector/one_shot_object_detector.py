@@ -55,7 +55,6 @@ def create(data,
         If True, print progress updates and model details.
     """
     augmented_data = preview_augmented_images(data, target, backgrounds)
-    import pdb; pdb.set_trace()
     model = _tc.object_detector.create( augmented_data,
                                         batch_size=batch_size,
                                         max_iterations=max_iterations,
