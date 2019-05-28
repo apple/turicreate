@@ -47,7 +47,9 @@ public:
   END_CLASS_MEMBER_REGISTRATION
 
 private:
+#ifdef __APPLE__
   size_t m_feature_batch_size = 16;
+#endif
   gl_sarray m_feature_sarray;
   variant_map_type m_nn_model;
   std::shared_ptr<std::thread> featurizer_thread;
