@@ -110,6 +110,7 @@ annotate_spec::Annotations ImageClassification::getAnnotations(size_t start,
 }
 
 void ImageClassification::background_work() {
+#ifdef __APPLE__
   if(m_nn_model.size() == 0) {
     if (!this->_stepFeaturesExtractor()) {
       this->_sendProgress(1);
@@ -120,9 +121,11 @@ void ImageClassification::background_work() {
   }else{
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
+#endif
 }
 
 void ImageClassification::_create_nearest_neighbors_model() {
+#ifdef __APPLE__
   std::shared_ptr<unity_sarray> ref_labels =
       std::static_pointer_cast<unity_sarray>(m_data->select_column("__idx"));
 
@@ -146,6 +149,7 @@ void ImageClassification::_create_nearest_neighbors_model() {
   opts["composite_params"] = to_variant(p);
 
   this->m_nn_model = turi::nearest_neighbors::train(opts);
+#endif
 }
 
 annotate_spec::Similarity ImageClassification::get_similar_items(size_t index,
@@ -482,6 +486,7 @@ bool ImageClassification::_stepFeaturesExtractor() {
   // if more remain, return true
   return m_image_feature_extraction_sarray.size() > 0;
 #endif
+  return false;
 }
 
 std::shared_ptr<unity_sarray>
