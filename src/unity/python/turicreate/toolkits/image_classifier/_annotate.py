@@ -33,7 +33,7 @@ def _warning_annotations():
         """
     )
 
-def annotate(data, image_column=None, annotation_column='annotations', image_similarity=True):
+def annotate(data, image_column=None, annotation_column='annotations'):
     """
         Annotate your images loaded in either an SFrame or SArray Format
 
@@ -172,8 +172,7 @@ def annotate(data, image_column=None, annotation_column='annotations', image_sim
                             [image_column],
                             annotation_column
                         )
-
-    # TODO: plumb `image_similarity`
+    
     if __platform == "linux" or __platform == "linux2":
         model = _image_feature_extractor._create_feature_extractor("squeezenet_v1.1")
         feature_sframe = model.extract_features(data, image_column, verbose=False, batch_size=64)
