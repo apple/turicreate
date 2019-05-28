@@ -203,6 +203,9 @@ class Image(object):
         """
         Saves the image to a file system for later use.
 
+        File format is inferred from the file extension of the `filename`.
+        Supported file extensions include: bmp, gif, jpg, png, tiff.
+
         Parameters
         ----------
         filename : string
