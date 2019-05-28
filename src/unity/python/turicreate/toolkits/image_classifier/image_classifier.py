@@ -676,8 +676,6 @@ class ImageClassifier(_CustomModel):
         state = self.__proxy__.get_state()
         labels = state["classes"]
 
-        # TODO: Imports here
-
         from .._evaluate_utils import  (
             entropy,
             confidence, 
