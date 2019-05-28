@@ -564,7 +564,12 @@ class DrawingClassifier(_CustomModel):
         from array import array
 
         classes = self.classes
-        all_predicted_builder = SArrayBuilder(dtype=type(classes[0]))
+        class_type = None
+        for class_ in classes:
+            if class_ is not None:
+                class_type = type(class_)
+                break
+        all_predicted_builder = SArrayBuilder(dtype=class_type)
         all_probabilities_builder = SArrayBuilder(dtype=array)
 
         for batch in loader:
