@@ -230,8 +230,9 @@ class DrawingClassifierTest(unittest.TestCase):
                 model.evaluate(sf_without_ground_truth)
 
     def test_evaluate_with_ground_truth(self):
-        all_metrics = ["accuracy", "auc", "precision", "recall", 
-                       "f1_score", "confusion_matrix", "roc_curve"]
+
+        all_metrics = ["accuracy", "auc", "precision", "recall",
+                       "f1_score", "log_loss", "confusion_matrix", "roc_curve"]
         for index in range(len(self.models)):
             model = self.models[index]
             sf = self.trains[index]
