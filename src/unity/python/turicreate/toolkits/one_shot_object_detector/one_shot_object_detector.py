@@ -61,6 +61,7 @@ def create(data,
                                         verbose=verbose)
     state = {
         "detector": model,
+        "detector_version": _ObjectDetector._PYTHON_OBJECT_DETECTOR_VERSION,
         "augmented_data": augmented_data
         }
     return OneShotObjectDetector(state)
@@ -103,6 +104,7 @@ class OneShotObjectDetector(_CustomModel):
         assert(version == cls._PYTHON_ONE_SHOT_OBJECT_DETECTOR_VERSION)
         # we need to undo what we did at save and turn the proxy object
         # back into a Python class
-        state['detector'] = _ObjectDetector(state['detector'])
+        state['detector'] = _ObjectDetector._load_version(
+            state['detector'], state["detector_version"])
         return OneShotObjectDetector(state)
 
