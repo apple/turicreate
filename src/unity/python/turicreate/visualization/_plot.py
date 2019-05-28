@@ -35,7 +35,7 @@ def _focus_client_app():
             tell application \"Turi Create Visualization\" to activate
             '''
     focus = _Popen(['osascript', '-'], stdout=_PIPE, stdin=_PIPE)
-    focus.communicate(scpt)
+    focus.communicate(scpt.encode('utf-8'))
 
 def _run_cmdline(command):
     # runs a shell command

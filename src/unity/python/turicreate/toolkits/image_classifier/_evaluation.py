@@ -177,7 +177,7 @@ def _process_value(value, extended_sframe, proc, evaluation):
 
 def _start_process(process_input, extended_sframe, evaluation):
   proc = __subprocess.Popen(_get_client_app_path(), stdout=__subprocess.PIPE, stdin=__subprocess.PIPE)
-  proc.stdin.write(process_input)
+  proc.stdin.write(process_input.encode('utf-8'))
 
   _focus_client_app()
   
