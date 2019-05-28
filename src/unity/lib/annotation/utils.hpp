@@ -6,6 +6,8 @@
 #include "build/format/cpp/message.pb.h"
 #include "build/format/cpp/meta.pb.h"
 
+#include <toolkits/image_deep_feature_extractor/image_deep_feature_extractor_toolkit.hpp>
+
 #include <boost/regex.hpp>
 #include <memory>
 #include <unity/lib/gl_sarray.hpp>
@@ -36,6 +38,20 @@ populate_parcel(annotate_spec::Parcel &parcel, T message) {
   parcel.mutable_metadata()->CopyFrom(message);
 }
 
+template <typename T>
+typename std::enable_if<
+    std::is_same<T, annotate_spec::ProgressMeta>::value>::type
+populate_parcel(annotate_spec::Parcel &parcel, T message) {
+  parcel.mutable_progress()->CopyFrom(message);
+}
+
+template <typename T>
+typename std::enable_if<
+    std::is_same<T, annotate_spec::Similarity>::value>::type
+populate_parcel(annotate_spec::Parcel &parcel, T message) {
+  parcel.mutable_similarity()->CopyFrom(message);
+}
+
 float vectors_distance(const std::vector<double> &a,
                        const std::vector<double> &b);
 
@@ -45,6 +61,10 @@ std::vector<flexible_type> similar_items(const gl_sarray &distances,
                                          size_t index, size_t k);
 
 #ifdef __APPLE__
+
+image_deep_feature_extractor::image_deep_feature_extractor_toolkit
+create_feature_extractor(std::string base_directory = "./");
+
 gl_sarray featurize_images(const gl_sarray &images,
                            std::string base_directory = "./");
 #endif

@@ -126,6 +126,18 @@ window.setProtoMessage = function setProtoMessage(value){
             const annotation = decoded["annotations"]["annotation"][i]["labels"][0];
             component_rendered.setAnnotationData(row_index, annotation);
         }
+    } else if(decoded.hasOwnProperty('progress')) {
+        if (decoded['progress'].hasOwnProperty("percentage")) {
+            if(component_rendered != null){
+                component_rendered.setPercentage(decoded['progress']["percentage"]);
+            }
+        } else {
+            if(component_rendered != null){
+                component_rendered.setPercentage(0);
+            }
+        }
+    } else if(decoded.hasOwnProperty('similarity')) {
+        component_rendered.add_similarity(decoded['similarity']);
     }
 }
 

@@ -31,8 +31,7 @@ public:
         annotation_testing::random_sframe(50, image_column_name,
                                           annotation_column_name);
 
-    turi::annotate::ImageClassification ic_annotate =
-        turi::annotate::ImageClassification(
+    turi::annotate::ImageClassification ic_annotate(
             annotation_sf, std::vector<std::string>({image_column_name}),
             annotation_column_name);
 
@@ -57,8 +56,7 @@ public:
         annotation_testing::random_sframe(50, image_column_name,
                                           annotation_column_name);
 
-    turi::annotate::ImageClassification ic_annotate =
-        turi::annotate::ImageClassification(
+    turi::annotate::ImageClassification ic_annotate(
             annotation_sf, std::vector<std::string>({image_column_name}),
             annotation_column_name);
 
@@ -107,8 +105,7 @@ public:
         annotation_testing::random_sframe(50, image_column_name,
                                           annotation_column_name);
 
-    turi::annotate::ImageClassification ic_annotate =
-        turi::annotate::ImageClassification(
+    turi::annotate::ImageClassification ic_annotate(
             annotation_sf, std::vector<std::string>({image_column_name}),
             annotation_column_name);
 
@@ -133,8 +130,7 @@ public:
         annotation_testing::random_sframe(50, image_column_name,
                                           annotation_column_name);
 
-    turi::annotate::ImageClassification ic_annotate =
-        turi::annotate::ImageClassification(
+    turi::annotate::ImageClassification ic_annotate(
             annotation_sf, std::vector<std::string>({image_column_name}),
             annotation_column_name);
 
@@ -182,8 +178,7 @@ public:
         annotation_testing::random_sframe(50, image_column_name,
                                           annotation_column_name);
 
-    turi::annotate::ImageClassification ic_annotate =
-        turi::annotate::ImageClassification(
+    turi::annotate::ImageClassification ic_annotate(
             annotation_sf, std::vector<std::string>({image_column_name}),
             annotation_column_name);
 
@@ -218,8 +213,7 @@ public:
         annotation_testing::random_sframe(50, image_column_name,
                                           annotation_column_name);
 
-    turi::annotate::ImageClassification ic_annotate =
-        turi::annotate::ImageClassification(
+    turi::annotate::ImageClassification ic_annotate(
             annotation_sf, std::vector<std::string>({image_column_name}),
             annotation_column_name);
 
@@ -248,8 +242,7 @@ public:
         annotation_testing::random_sframe(50, image_column_name,
                                           annotation_column_name);
 
-    turi::annotate::ImageClassification ic_annotate =
-        turi::annotate::ImageClassification(
+    turi::annotate::ImageClassification ic_annotate(
             annotation_sf, std::vector<std::string>({image_column_name}),
             annotation_column_name);
 
@@ -273,9 +266,7 @@ public:
     std::shared_ptr<turi::unity_sframe> annotation_sf =
         annotation_testing::random_sframe(50, image_column_name,
                                           annotation_column_name, true);
-
-    turi::annotate::ImageClassification ic_annotate =
-        turi::annotate::ImageClassification(
+    turi::annotate::ImageClassification ic_annotate(
             annotation_sf, std::vector<std::string>({image_column_name}),
             annotation_column_name);
 
@@ -301,8 +292,7 @@ public:
         annotation_testing::random_sframe(50, image_column_name,
                                           annotation_column_name, true);
 
-    turi::annotate::ImageClassification ic_annotate =
-        turi::annotate::ImageClassification(
+    turi::annotate::ImageClassification ic_annotate(
             annotation_sf, std::vector<std::string>({image_column_name}),
             annotation_column_name);
 
@@ -347,8 +337,7 @@ public:
         annotation_testing::random_sframe(50, image_column_name,
                                           annotation_column_name, true);
 
-    turi::annotate::ImageClassification ic_annotate =
-        turi::annotate::ImageClassification(
+    turi::annotate::ImageClassification ic_annotate(
             annotation_sf, std::vector<std::string>({image_column_name}),
             annotation_column_name);
 
@@ -357,8 +346,8 @@ public:
 
     TS_ASSERT(annotation_testing::check_equality(annotation_sf, returned_sf));
 
-    turi::annotate::ImageClassification back_up_annotation =
-        turi::annotate::ImageClassification();
+    
+    turi::annotate::ImageClassification back_up_annotation;
 
     std::shared_ptr<turi::annotate::annotation_global>
         annotation_global_sframe = back_up_annotation.get_annotation_registry();

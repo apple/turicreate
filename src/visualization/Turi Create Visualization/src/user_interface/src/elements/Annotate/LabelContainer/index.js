@@ -8,6 +8,7 @@ class LabelContainer extends Component {
   setAnnotation = (name) => {
     if(!this.props.infiniteScroll){
       this.props.setAnnotation(this.props.incrementalCurrentIndex, name);
+      this.props.setAnnotationSimilar(name);
     }else{
       this.props.setAnnotationMass(name);
     }
@@ -37,6 +38,7 @@ class LabelContainer extends Component {
       		{
             this.props.labels.map((x) => 
               <Labels active={this.checkActive(x.name)}
+                      similarSelected={this.props.similarSelected}
                       name={x.name}
                       onClick={this.setAnnotation.bind(this, x.name)}
                       num_annotated={x.num_annotated}

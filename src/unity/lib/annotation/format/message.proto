@@ -4,6 +4,8 @@ option optimize_for = LITE_RUNTIME;
 import public "annotate.proto";
 import public "data.proto";
 import public "meta.proto";
+import public "progress.proto";
+import public "similarity.proto";
 
 package TuriCreate.Annotation.Specification;
 
@@ -12,6 +14,8 @@ message Parcel {
     Annotations annotations = 1;
     Data data = 2;
     MetaData metadata = 3;
+    ProgressMeta progress = 4;
+    Similarity similarity = 5;
   }
 }
 

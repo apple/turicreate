@@ -8,12 +8,15 @@
 #include <boost/archive/iterators/remove_whitespace.hpp>
 #include <boost/archive/iterators/transform_width.hpp>
 
+#include <unity/toolkits/nearest_neighbors/nearest_neighbors.hpp>
+
 #include <boost/range/combine.hpp>
 
 #include <sframe/groupby_aggregate.hpp>
 #include <sframe/groupby_aggregate_operators.hpp>
 
 #include <unity/lib/image_util.hpp>
+#include <unity/lib/unity_sarray_builder.hpp>
 
 #include "utils.hpp"
 
@@ -25,12 +28,7 @@ ImageClassification::ImageClassification(
     const std::vector<std::string> &data_columns,
     const std::string &annotation_column)
     : AnnotationBase(data, data_columns, annotation_column) {
-
-  /*
-  m_image_features =
-      std::async(std::launch::async,
-                 &ImageClassification::_calculateFeatureSimilarity, this);
-  */
+  this->_createFeaturesExtractor();
 }
 
 annotate_spec::Data ImageClassification::getItems(size_t start, size_t end) {
@@ -111,9 +109,116 @@ annotate_spec::Annotations ImageClassification::getAnnotations(size_t start,
   return annotations;
 }
 
+void ImageClassification::background_work() {
+#ifdef __APPLE__
+  if(m_nn_model.size() == 0) {
+    if (!this->_stepFeaturesExtractor()) {
+      this->_sendProgress(1);
+      this->m_feature_sarray = m_writer->close();
+      this->_create_nearest_neighbors_model();
+      this->_sendProgress(2);
+    }
+  }else{
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  }
+#endif
+}
+
+void ImageClassification::_create_nearest_neighbors_model() {
+#ifdef __APPLE__
+  std::shared_ptr<unity_sarray> ref_labels =
+      std::static_pointer_cast<unity_sarray>(m_data->select_column("__idx"));
+
+  std::map<std::string, gl_sarray> feature_map;
+  feature_map["features"] = this->m_feature_sarray;
+  gl_sframe feature_sf(feature_map);
+
+  std::vector<std::string> features = {"features"};
+
+  auto fn = function_closure_info();
+  fn.native_fn_name = "_distances.euclidean";
+
+  std::vector<nearest_neighbors::dist_component_type> p = {
+      std::make_tuple(features, fn, 1.0)};
+
+  variant_map_type opts;
+
+  opts["model_name"] = "nearest_neighbors_ball_tree";
+  opts["ref_labels"] = to_variant(ref_labels);
+  opts["sf_features"] = to_variant(feature_sf);
+  opts["composite_params"] = to_variant(p);
+
+  this->m_nn_model = turi::nearest_neighbors::train(opts);
+#endif
+}
+
+annotate_spec::Similarity ImageClassification::get_similar_items(size_t index,
+                                                                 size_t k) {
+  gl_sframe sf({{"features", {this->m_feature_sarray[index]}}});
+
+  const std::vector<flexible_type> query_labels = {0};
+  gl_sarray sa(query_labels, flex_type_enum::INTEGER);
+
+  variant_map_type opts;
+
+  opts["model"] = this->m_nn_model["model"];
+  opts["model_name"] = "nearest_neighbors";
+  opts["features"] = to_variant(sf);
+  opts["query_labels"] = to_variant(sa);
+  opts["k"] = k;
+  opts["radius"] = -1.0;
+
+  auto ret_neighbors = turi::nearest_neighbors::query(opts);
+  gl_sframe neighbors = safe_varmap_get<gl_sframe>(ret_neighbors, "neighbors");
+  gl_sarray ref_label = neighbors["reference_label"];
+
+  annotate_spec::Similarity similar;
+  similar.set_rowindex(index);
+
+  for (const auto &idx : ref_label.range_iterator()) {
+    std::shared_ptr<unity_sarray> data_sarray =
+        std::static_pointer_cast<unity_sarray>(
+            m_data->select_column(m_data_columns.at(0)));
+
+    gl_sarray data_sa(data_sarray);
+
+    flex_image img = data_sa[idx];
+    img = turi::image_util::encode_image(img);
+
+    size_t img_width = img.m_width;
+    size_t img_height = img.m_height;
+    size_t img_channels = img.m_channels;
+
+    annotate_spec::Datum *datum = similar.add_data();
+    annotate_spec::ImageDatum *img_datum = datum->add_images();
+
+    img_datum->set_width(img_width);
+    img_datum->set_height(img_height);
+    img_datum->set_channels(img_channels);
+
+    const unsigned char *img_bytes = img.get_image_data();
+    size_t img_data_size = img.m_image_data_size;
+
+    std::string img_base64(
+        boost::archive::iterators::base64_from_binary<
+            boost::archive::iterators::transform_width<const unsigned char *, 6,
+                                                       8>>(img_bytes),
+        boost::archive::iterators::base64_from_binary<
+            boost::archive::iterators::transform_width<const unsigned char *, 6,
+                                                       8>>(img_bytes +
+                                                           img_data_size));
+
+    img_datum->set_type((annotate_spec::ImageDatum_Format)img.m_format);
+    img_datum->set_imgdata(img_base64);
+
+    datum->set_rowindex(idx);
+  }
+
+  return similar;
+}
+
 bool ImageClassification::setAnnotations(
     const annotate_spec::Annotations &annotations) {
-
   /* For Image Classification a number of assumptions are made.
    *
    * - There can only be one label per image.
@@ -125,7 +230,6 @@ bool ImageClassification::setAnnotations(
 
   bool error = true;
   for (int a_idx = 0; a_idx < annotations.annotation_size(); a_idx++) {
-
     annotate_spec::Annotation annotation = annotations.annotation(a_idx);
 
     if (annotation.labels_size() < 1) {
@@ -202,15 +306,6 @@ void ImageClassification::_addAnnotationToSFrame(size_t index,
   DASSERT_EQ(place_holder->size(), m_data->size());
 
   m_data->add_column(place_holder, m_annotation_column);
-}
-
-void ImageClassification::add_image_features(
-    const std::shared_ptr<unity_sarray> &data) {
-  /*
-  std::promise<std::shared_ptr<unity_sarray>> setter;
-  m_image_features = setter.get_future();
-  setter.set_value(data);
-  */
 }
 
 void ImageClassification::_addAnnotationToSFrame(size_t index, int label) {
@@ -339,7 +434,6 @@ annotate_spec::MetaData ImageClassification::metaData() {
       meta_data.mutable_image_classification();
 
   for (size_t x = 0; x < label_vector.size(); x++) {
-
     if (array_type == flex_type_enum::STRING) {
       annotate_spec::MetaLabel *labels_meta =
           image_classification_meta->add_label();
@@ -358,6 +452,43 @@ annotate_spec::MetaData ImageClassification::metaData() {
   return meta_data;
 }
 
+void ImageClassification::_createFeaturesExtractor() {
+#ifdef __APPLE__
+  m_extractor = create_feature_extractor();
+  auto data_sarray = std::static_pointer_cast<unity_sarray>(m_data->select_column(m_data_columns.at(0)));
+  m_image_feature_extraction_sarray = gl_sarray(data_sarray);
+  m_writer = std::make_shared<gl_sarray_writer>(flex_type_enum::VECTOR, 1);
+#endif
+}
+
+bool ImageClassification::_stepFeaturesExtractor() {
+#ifdef __APPLE__
+  size_t sa_size = m_image_feature_extraction_sarray.size();
+  size_t index = 0;
+  size_t endIdx = ((index + this->m_feature_batch_size) > sa_size)
+                      ? sa_size
+                      : (index + this->m_feature_batch_size);
+  auto img_batch = m_image_feature_extraction_sarray[{static_cast<long long>(index),
+                                                      static_cast<long long>(endIdx)}];
+  auto extracted_features =
+      m_extractor.sarray_extract_features(img_batch, false, 6);
+
+  for (const auto &row : extracted_features.range_iterator()) {
+    m_writer->write(row, 0);
+  }
+
+  this->_sendProgress(1.0 - ((float)m_image_feature_extraction_sarray.size() / m_data->size()));
+
+  // slice off the rows we already featurized
+  m_image_feature_extraction_sarray = m_image_feature_extraction_sarray[{static_cast<long long>(endIdx),
+                                                                         static_cast<long long>(m_image_feature_extraction_sarray.size())}];
+
+  // if more remain, return true
+  return m_image_feature_extraction_sarray.size() > 0;
+#endif
+  return false;
+}
+
 std::shared_ptr<unity_sarray>
 ImageClassification::_filterDataSFrame(size_t &start, size_t &end) {
   this->_reshapeIndicies(start, end);
@@ -373,22 +504,6 @@ ImageClassification::_filterDataSFrame(size_t &start, size_t &end) {
 
   return std::static_pointer_cast<unity_sarray>(
       data_sarray->copy_range(start, 1, end));
-}
-
-std::shared_ptr<unity_sarray>
-ImageClassification::_calculateFeatureSimilarity() {
-#ifdef __APPLE__
-  std::shared_ptr<unity_sarray> data_sarray =
-      std::static_pointer_cast<unity_sarray>(
-          m_data->select_column(m_data_columns.at(0)));
-
-  gl_sarray image_gl_sarray = gl_sarray(data_sarray);
-  std::shared_ptr<unity_sarray> image_features =
-      std::shared_ptr<unity_sarray>(featurize_images(image_gl_sarray));
-  return image_features;
-#else
-  return NULL;
-#endif
 }
 
 std::shared_ptr<unity_sarray>

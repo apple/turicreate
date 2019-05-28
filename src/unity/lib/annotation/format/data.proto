@@ -33,6 +33,7 @@ message DataGetter {
   enum GetterType {
     DATA = 0;
     ANNOTATIONS = 1;
+    SIMILARITY = 2;
   }
 
   GetterType type = 1;

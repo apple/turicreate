@@ -1,6 +1,5 @@
 #include "utils.hpp"
 #include <logger/assertions.hpp>
-#include <toolkits/image_deep_feature_extractor/image_deep_feature_extractor_toolkit.hpp>
 
 namespace turi {
 namespace annotate {
@@ -52,6 +51,20 @@ std::vector<flexible_type> similar_items(const gl_sarray &distances,
 }
 
 #ifdef __APPLE__
+
+image_deep_feature_extractor::image_deep_feature_extractor_toolkit
+create_feature_extractor(std::string base_directory) {
+  image_deep_feature_extractor::image_deep_feature_extractor_toolkit
+      feature_extractor =
+          image_deep_feature_extractor::image_deep_feature_extractor_toolkit();
+
+  std::map<std::string, flexible_type> options = {
+      {"model_name", "squeezenet_v1.1"}, {"download_path", base_directory}};
+
+  feature_extractor.init_options(options);
+  return feature_extractor;
+}
+
 gl_sarray featurize_images(const gl_sarray &images,
                            std::string base_directory) {
   DASSERT_EQ(images.dtype(), flex_type_enum::IMAGE);

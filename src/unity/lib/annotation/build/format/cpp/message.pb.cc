@@ -22,6 +22,8 @@ class ParcelDefaultTypeInternal : public ::google::protobuf::internal::Explicitl
   const ::TuriCreate::Annotation::Specification::Annotations* annotations_;
   const ::TuriCreate::Annotation::Specification::Data* data_;
   const ::TuriCreate::Annotation::Specification::MetaData* metadata_;
+  const ::TuriCreate::Annotation::Specification::ProgressMeta* progress_;
+  const ::TuriCreate::Annotation::Specification::Similarity* similarity_;
 } _Parcel_default_instance_;
 class ClientRequestDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<ClientRequest> {
   public:
@@ -59,6 +61,8 @@ void TableStruct::InitDefaultsImpl() {
   ::TuriCreate::Annotation::Specification::protobuf_annotate_2eproto::InitDefaults();
   ::TuriCreate::Annotation::Specification::protobuf_data_2eproto::InitDefaults();
   ::TuriCreate::Annotation::Specification::protobuf_meta_2eproto::InitDefaults();
+  ::TuriCreate::Annotation::Specification::protobuf_progress_2eproto::InitDefaults();
+  ::TuriCreate::Annotation::Specification::protobuf_similarity_2eproto::InitDefaults();
   _Parcel_default_instance_.DefaultConstruct();
   _ClientRequest_default_instance_.DefaultConstruct();
 }
@@ -72,6 +76,8 @@ void AddDescriptorsImpl() {
   ::TuriCreate::Annotation::Specification::protobuf_annotate_2eproto::AddDescriptors();
   ::TuriCreate::Annotation::Specification::protobuf_data_2eproto::AddDescriptors();
   ::TuriCreate::Annotation::Specification::protobuf_meta_2eproto::AddDescriptors();
+  ::TuriCreate::Annotation::Specification::protobuf_progress_2eproto::AddDescriptors();
+  ::TuriCreate::Annotation::Specification::protobuf_similarity_2eproto::AddDescriptors();
   ::google::protobuf::internal::OnShutdown(&TableStruct::Shutdown);
 }
 
@@ -97,6 +103,8 @@ struct StaticDescriptorInitializer {
 const int Parcel::kAnnotationsFieldNumber;
 const int Parcel::kDataFieldNumber;
 const int Parcel::kMetadataFieldNumber;
+const int Parcel::kProgressFieldNumber;
+const int Parcel::kSimilarityFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Parcel::Parcel()
@@ -124,6 +132,14 @@ Parcel::Parcel(const Parcel& from)
     }
     case kMetadata: {
       mutable_metadata()->::TuriCreate::Annotation::Specification::MetaData::MergeFrom(from.metadata());
+      break;
+    }
+    case kProgress: {
+      mutable_progress()->::TuriCreate::Annotation::Specification::ProgressMeta::MergeFrom(from.progress());
+      break;
+    }
+    case kSimilarity: {
+      mutable_similarity()->::TuriCreate::Annotation::Specification::Similarity::MergeFrom(from.similarity());
       break;
     }
     case MESSAGE_NOT_SET: {
@@ -180,6 +196,14 @@ void Parcel::clear_Message() {
     }
     case kMetadata: {
       delete Message_.metadata_;
+      break;
+    }
+    case kProgress: {
+      delete Message_.progress_;
+      break;
+    }
+    case kSimilarity: {
+      delete Message_.similarity_;
       break;
     }
     case MESSAGE_NOT_SET: {
@@ -241,6 +265,30 @@ bool Parcel::MergePartialFromCodedStream(
         break;
       }
 
+      // .TuriCreate.Annotation.Specification.ProgressMeta progress = 4;
+      case 4: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(34u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_progress()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .TuriCreate.Annotation.Specification.Similarity similarity = 5;
+      case 5: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(42u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_similarity()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
       default: {
       handle_unusual:
         if (tag == 0 ||
@@ -286,6 +334,18 @@ void Parcel::SerializeWithCachedSizes(
       3, *Message_.metadata_, output);
   }
 
+  // .TuriCreate.Annotation.Specification.ProgressMeta progress = 4;
+  if (has_progress()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      4, *Message_.progress_, output);
+  }
+
+  // .TuriCreate.Annotation.Specification.Similarity similarity = 5;
+  if (has_similarity()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      5, *Message_.similarity_, output);
+  }
+
   // @@protoc_insertion_point(serialize_end:TuriCreate.Annotation.Specification.Parcel)
 }
 
@@ -313,6 +373,20 @@ size_t Parcel::ByteSizeLong() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Message_.metadata_);
+      break;
+    }
+    // .TuriCreate.Annotation.Specification.ProgressMeta progress = 4;
+    case kProgress: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *Message_.progress_);
+      break;
+    }
+    // .TuriCreate.Annotation.Specification.Similarity similarity = 5;
+    case kSimilarity: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *Message_.similarity_);
       break;
     }
     case MESSAGE_NOT_SET: {
@@ -349,6 +423,14 @@ void Parcel::MergeFrom(const Parcel& from) {
     }
     case kMetadata: {
       mutable_metadata()->::TuriCreate::Annotation::Specification::MetaData::MergeFrom(from.metadata());
+      break;
+    }
+    case kProgress: {
+      mutable_progress()->::TuriCreate::Annotation::Specification::ProgressMeta::MergeFrom(from.progress());
+      break;
+    }
+    case kSimilarity: {
+      mutable_similarity()->::TuriCreate::Annotation::Specification::Similarity::MergeFrom(from.similarity());
       break;
     }
     case MESSAGE_NOT_SET: {
@@ -527,6 +609,102 @@ void Parcel::set_allocated_metadata(::TuriCreate::Annotation::Specification::Met
     Message_.metadata_ = metadata;
   }
   // @@protoc_insertion_point(field_set_allocated:TuriCreate.Annotation.Specification.Parcel.metadata)
+}
+
+// .TuriCreate.Annotation.Specification.ProgressMeta progress = 4;
+bool Parcel::has_progress() const {
+  return Message_case() == kProgress;
+}
+void Parcel::set_has_progress() {
+  _oneof_case_[0] = kProgress;
+}
+void Parcel::clear_progress() {
+  if (has_progress()) {
+    delete Message_.progress_;
+    clear_has_Message();
+  }
+}
+ const ::TuriCreate::Annotation::Specification::ProgressMeta& Parcel::progress() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.Parcel.progress)
+  return has_progress()
+      ? *Message_.progress_
+      : ::TuriCreate::Annotation::Specification::ProgressMeta::default_instance();
+}
+::TuriCreate::Annotation::Specification::ProgressMeta* Parcel::mutable_progress() {
+  if (!has_progress()) {
+    clear_Message();
+    set_has_progress();
+    Message_.progress_ = new ::TuriCreate::Annotation::Specification::ProgressMeta;
+  }
+  // @@protoc_insertion_point(field_mutable:TuriCreate.Annotation.Specification.Parcel.progress)
+  return Message_.progress_;
+}
+::TuriCreate::Annotation::Specification::ProgressMeta* Parcel::release_progress() {
+  // @@protoc_insertion_point(field_release:TuriCreate.Annotation.Specification.Parcel.progress)
+  if (has_progress()) {
+    clear_has_Message();
+    ::TuriCreate::Annotation::Specification::ProgressMeta* temp = Message_.progress_;
+    Message_.progress_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void Parcel::set_allocated_progress(::TuriCreate::Annotation::Specification::ProgressMeta* progress) {
+  clear_Message();
+  if (progress) {
+    set_has_progress();
+    Message_.progress_ = progress;
+  }
+  // @@protoc_insertion_point(field_set_allocated:TuriCreate.Annotation.Specification.Parcel.progress)
+}
+
+// .TuriCreate.Annotation.Specification.Similarity similarity = 5;
+bool Parcel::has_similarity() const {
+  return Message_case() == kSimilarity;
+}
+void Parcel::set_has_similarity() {
+  _oneof_case_[0] = kSimilarity;
+}
+void Parcel::clear_similarity() {
+  if (has_similarity()) {
+    delete Message_.similarity_;
+    clear_has_Message();
+  }
+}
+ const ::TuriCreate::Annotation::Specification::Similarity& Parcel::similarity() const {
+  // @@protoc_insertion_point(field_get:TuriCreate.Annotation.Specification.Parcel.similarity)
+  return has_similarity()
+      ? *Message_.similarity_
+      : ::TuriCreate::Annotation::Specification::Similarity::default_instance();
+}
+::TuriCreate::Annotation::Specification::Similarity* Parcel::mutable_similarity() {
+  if (!has_similarity()) {
+    clear_Message();
+    set_has_similarity();
+    Message_.similarity_ = new ::TuriCreate::Annotation::Specification::Similarity;
+  }
+  // @@protoc_insertion_point(field_mutable:TuriCreate.Annotation.Specification.Parcel.similarity)
+  return Message_.similarity_;
+}
+::TuriCreate::Annotation::Specification::Similarity* Parcel::release_similarity() {
+  // @@protoc_insertion_point(field_release:TuriCreate.Annotation.Specification.Parcel.similarity)
+  if (has_similarity()) {
+    clear_has_Message();
+    ::TuriCreate::Annotation::Specification::Similarity* temp = Message_.similarity_;
+    Message_.similarity_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void Parcel::set_allocated_similarity(::TuriCreate::Annotation::Specification::Similarity* similarity) {
+  clear_Message();
+  if (similarity) {
+    set_has_similarity();
+    Message_.similarity_ = similarity;
+  }
+  // @@protoc_insertion_point(field_set_allocated:TuriCreate.Annotation.Specification.Parcel.similarity)
 }
 
 bool Parcel::has_Message() const {

@@ -9,6 +9,8 @@
 #include <thread>
 
 #include <unity/lib/annotation/annotation_base.hpp>
+#include <unity/lib/variant.hpp>
+#include <unity/toolkits/nearest_neighbors/unity_nearest_neighbors.hpp>
 
 #include "build/format/cpp/annotate.pb.h"
 #include "build/format/cpp/data.pb.h"
@@ -23,7 +25,7 @@ public:
                       const std::vector<std::string> &data_columns,
                       const std::string &annotation_column);
 
-  ~ImageClassification(){};
+  ~ImageClassification() {};
 
   annotate_spec::MetaData metaData() override;
 
@@ -34,23 +36,31 @@ public:
   bool setAnnotations(const annotate_spec::Annotations &annotations) override;
 
   void cast_annotations() override;
+  
+  void background_work() override;
 
-  void add_image_features(const std::shared_ptr<unity_sarray> &features);
+  annotate_spec::Similarity get_similar_items(size_t index,
+                                              size_t k = 7) override;
 
   BEGIN_CLASS_MEMBER_REGISTRATION("ImageClassification");
   IMPORT_BASE_CLASS_REGISTRATION(AnnotationBase);
-  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("add_image_features",
-                                       ImageClassification::add_image_features,
-                                       "features");
   END_CLASS_MEMBER_REGISTRATION
+
 private:
-  /*
-  std::future<std::shared_ptr<unity_sarray>> m_image_features;
-  */
+  size_t m_feature_batch_size = 16;
+  gl_sarray m_feature_sarray;
+  variant_map_type m_nn_model;
+  std::shared_ptr<std::thread> featurizer_thread;
+  image_deep_feature_extractor::image_deep_feature_extractor_toolkit m_extractor;
+  gl_sarray m_image_feature_extraction_sarray;
+  std::shared_ptr<gl_sarray_writer> m_writer;
+  
+
   void _addAnnotationToSFrame(size_t index, std::string label);
   void _addAnnotationToSFrame(size_t index, int label);
-
-  std::shared_ptr<unity_sarray> _calculateFeatureSimilarity();
+  void _create_nearest_neighbors_model();
+  void _createFeaturesExtractor();
+  bool _stepFeaturesExtractor();
 
   std::shared_ptr<unity_sarray> _filterDataSFrame(size_t &start, size_t &end);
   std::shared_ptr<unity_sarray> _filterAnnotationSFrame(size_t &start,

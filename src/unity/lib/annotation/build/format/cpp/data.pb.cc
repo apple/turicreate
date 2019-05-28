@@ -117,6 +117,7 @@ bool DataGetter_GetterType_IsValid(int value) {
   switch (value) {
     case 0:
     case 1:
+    case 2:
       return true;
     default:
       return false;
@@ -126,6 +127,7 @@ bool DataGetter_GetterType_IsValid(int value) {
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const DataGetter_GetterType DataGetter::DATA;
 const DataGetter_GetterType DataGetter::ANNOTATIONS;
+const DataGetter_GetterType DataGetter::SIMILARITY;
 const DataGetter_GetterType DataGetter::GetterType_MIN;
 const DataGetter_GetterType DataGetter::GetterType_MAX;
 const int DataGetter::GetterType_ARRAYSIZE;

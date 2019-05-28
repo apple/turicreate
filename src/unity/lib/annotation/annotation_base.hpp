@@ -19,8 +19,11 @@
 #include "build/format/cpp/data.pb.h"
 #include "build/format/cpp/message.pb.h"
 #include "build/format/cpp/meta.pb.h"
+#include "build/format/cpp/progress.pb.h"
+#include "build/format/cpp/similarity.pb.h"
 
 #include <unity/lib/annotation/utils.hpp>
+#include <unity/lib/visualization/process_wrapper.hpp>
 
 namespace turi {
 namespace annotate {
@@ -76,7 +79,12 @@ public:
   virtual bool
   setAnnotations(const annotate_spec::Annotations &annotations) = 0;
 
+  virtual annotate_spec::Similarity get_similar_items(size_t index,
+                                                      size_t k = 7) = 0;
+
   virtual void cast_annotations() = 0;
+
+  virtual void background_work() = 0;
 
   BEGIN_BASE_CLASS_MEMBER_REGISTRATION()
 
@@ -102,13 +110,14 @@ protected:
   std::shared_ptr<unity_sframe> m_data;
   const std::vector<std::string> m_data_columns;
   std::string m_annotation_column;
+  std::shared_ptr<visualization::process_wrapper> m_aw;
 
   void _addAnnotationColumn();
   void _addIndexColumn();
   void _checkDataSet();
   void _reshapeIndicies(size_t &start, size_t &end);
+  void _sendProgress(double value);
 
-private:
   /* A little trick to overload the `__serialize_proto` function at compile time
    * so I don't have to define that for every Annotation::Specification type.
    *
@@ -116,8 +125,9 @@ private:
    */
   template <typename T, typename = typename std::enable_if<std::is_base_of<
                             ::google::protobuf::MessageLite, T>::value>::type>
-  std::string __serialize_proto(T message);
+  std::string _serialize_proto(T message);
 
+private:
   std::string __parse_proto_and_respond(std::string &input);
 };
 
