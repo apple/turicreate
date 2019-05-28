@@ -55,6 +55,7 @@ def create(data,
         If True, print progress updates and model details.
     """
     augmented_data = preview_augmented_images(data, target, backgrounds)
+    import pdb; pdb.set_trace()
     model = _tc.object_detector.create( augmented_data,
                                         batch_size=batch_size,
                                         max_iterations=max_iterations,
@@ -95,12 +96,12 @@ class OneShotObjectDetector(_CustomModel):
 
         # We don't know how to serialize a Python class, hence we need to 
         # reduce the detector to the proxy object before saving it.
-        state['detector'] = state['detector'].__proxy__
+        state['detector'] = state['detector']._get_native_state()
         return state
 
     @classmethod
     def _load_version(cls, state, version):
-        assert(version == _PYTHON_ONE_SHOT_OBJECT_DETECTOR_VERSION)
+        assert(version == cls._PYTHON_ONE_SHOT_OBJECT_DETECTOR_VERSION)
         # we need to undo what we did at save and turn the proxy object
         # back into a Python class
         state['detector'] = _ObjectDetector(state['detector'])
