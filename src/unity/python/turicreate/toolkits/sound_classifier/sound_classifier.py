@@ -159,6 +159,8 @@ def create(dataset, target, feature, max_iterations=10,
 
     classes = list(dataset[target].unique().sort())
     num_labels = len(classes)
+    if num_labels <= 1:
+        raise ValueError('The number of classes must be greater than one.')
     feature_extractor_name = 'VGGish'
     feature_extractor = _get_feature_extractor(feature_extractor_name)
     class_label_to_id = {l: i for i, l in enumerate(classes)}
