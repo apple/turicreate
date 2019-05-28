@@ -30,6 +30,7 @@ namespace one_shot_object_detection {
 namespace data_augmentation {
 
 flex_dict build_annotation( ParameterSampler &parameter_sampler,
+                            std::string label,
                             size_t object_width,
                             size_t object_height,
                             long seed) {
@@ -90,7 +91,7 @@ flex_dict build_annotation( ParameterSampler &parameter_sampler,
                            std::make_pair("height", bounding_box_height)
                           };
   flex_dict annotation = {std::make_pair("coordinates", coordinates),
-                          std::make_pair("label", "placeholder")
+                          std::make_pair("label", label)
                          };
   return annotation;
 }
@@ -153,8 +154,8 @@ gl_sframe augment_data(const gl_sframe &data,
                                               (background_width-object.m_width)/2,
                                               (background_height-object.m_height)/2);
 
-      flex_dict annotation = build_annotation(parameter_sampler, 
-                                              object.m_width, object.m_height, 
+      flex_dict annotation = build_annotation(parameter_sampler, label,
+                                              object.m_width, object.m_height,
                                               seed+row_number);
 
       DASSERT_TRUE(flex_background.get_image_data() != nullptr);
