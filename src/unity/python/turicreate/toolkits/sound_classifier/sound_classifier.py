@@ -226,8 +226,8 @@ def create(dataset, target, feature, max_iterations=10,
 
     if verbose:
         # Setup progress table
-        row_ids = ['epoch', 'train_accuracy', 'time']
-        row_display_names = ['Epoch', 'Training Accuracy (%)', 'Elapsed Time (seconds)']
+        row_ids = ['iteration', 'train_accuracy', 'time']
+        row_display_names = ['Iteration', 'Training Accuracy', 'Elapsed Time']
         if validation_data:
             row_ids.insert(2, 'validation_accuracy')
             row_display_names.insert(2, 'Validation Accuracy (%)')
@@ -275,7 +275,7 @@ def create(dataset, target, feature, max_iterations=10,
         # Get metrics, print progress table
         _, train_accuracy = train_metric.get()
         train_metric.reset()
-        printed_row_values = {'epoch': i, 'train_accuracy': train_accuracy}
+        printed_row_values = {'iteration': i+1, 'train_accuracy': train_accuracy}
         if validation_data:
             _, validataion_accuracy = validation_metric.get()
             printed_row_values['validation_accuracy'] = validataion_accuracy
