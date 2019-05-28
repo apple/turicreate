@@ -1,3 +1,7 @@
+from six.moves import reduce as _reduce
+import os, json, math
+import turicreate as _tc
+
 def entropy(probs):
     return _reduce(lambda x, y: x + (y*math.log(1/y, 2) if y > 0 else 0) , probs, 0) / math.log(len(probs),2)
 
