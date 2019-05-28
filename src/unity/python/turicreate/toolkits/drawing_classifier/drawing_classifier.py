@@ -197,6 +197,18 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         raise TypeError("Unrecognized type for 'validation_set'."
             + validation_set_corrective_string)
 
+
+    original_dataset_size = len(dataset)
+    dataset = dataset.dropna(columns=feature)
+    if original_dataset_size != len(dataset):
+        print("Dropping %d rows containing None values from the training dataset.", original_dataset_size - len(dataset))
+
+    if validation_set is not None:
+        original_validation_size = len(validation_dataset)
+        validation_dataset = validation_dataset.dropna(columns=feature)
+        if original_validation_size != len(validation_dataset):
+            print("Dropping %d rows containing None values from the validation dataset.", original_validation_size - len(validation_dataset))
+
     train_loader = _SFrameClassifierIter(dataset, batch_size,
                  feature_column=feature,
                  target_column=target,
@@ -602,7 +614,7 @@ class DrawingClassifier(_CustomModel):
                 if verbose and (dataset_size >= 5
                     and cur_time > last_time + 30 or done):
                     print('Predicting {cur_n:{width}d}/{max_n:{width}d}'.format(
-                        cur_n = index + 1 if not done else index,
+                        cur_n = index + 1 if index + 1 > dataset_size - 1 else index,
                         max_n = dataset_size,
                         width = len(str(dataset_size))))
                     last_time = cur_time
