@@ -21,6 +21,7 @@ Making a prediction at inference time on device is easy! In this section, we go
 over your workflow depending on what input you may have in your app at inference
 time.
 
+
 #### Using Bitmap Input
 
 At inference time, if you have access to a bitmap and/or image that represents
@@ -28,13 +29,6 @@ the drawing you want to classify, you can use the Vision framework to consume
 the exported Core ML model. Note that the image you provide to the Vision API
 must be a Grayscale Image. 
 
-```swift
-let model = try VNCoreMLModel(for: MySquareTriangleClassifier().model)
-
-let request = VNCoreMLRequest(model: model, completionHandler: { [weak self] request, error in
-    self?.processClassifications(for: request, error: error)
-})
-```
 
 #### Using Stroke-Based Drawing Input
 
@@ -114,6 +108,7 @@ as described above under "Using Bitmap Input".
 The code snippet containing `rasterize` and its helper, 
 `normalize` are provided below.
 
+
 ```swift
 
 func normalize(drawing D:Drawing) -> Drawing {
@@ -167,6 +162,39 @@ func rasterize(drawing stroke_based_drawing:Drawing) -> CGImage {
         space:grayscale, bitmapInfo:CGImageAlphaInfo.none.rawValue)
     let final_rect = CGRect(x: 0.0, y: 0.0, width: 28.0, height: 28.0)
     final_bitmap_context?.draw(intermediate_image!, in: final_rect)
-    return (final_bitmap_context?.makeImage())!
+    return cgImage : (final_bitmap_context?.makeImage())!
 }
 ```
+
+
+Through a simple drag and drop process, you can incorporate the model into Xcode. The following Swift code is needed to consume the model in an iOS app.
+
+```swift
+let model = try VNCoreMLModel(for: MySquareTriangleClassifier().model)
+
+let request = VNCoreMLRequest(model: model, completionHandler: { [weak self] request, error in
+    self?.processClassifications(for: request, error: error)
+
+//Using Bitmap input
+let grayscaleImage = UIImage(named: "MyImage")
+let handler = VNImageRequestHandler(cgImage: grayscaleImage.cgImage!, options: [:])
+
+//Using stroke-based drawing as input
+let main_image : CGImage = rasterize(drawing: myDrawing)
+let handler = VNImageRequestHandler(cgImage: main_image)        
+
+try? handler.perform([request])}
+
+func processClassifications(for request: VNRequest) {
+    if let sortedResults = request.results! as? [VNClassificationObservation] {
+        for result in sortedResults {
+            // Use results
+        }
+    }
+}
+```
+
+Refer to the [Core ML sample application
+](https://developer.apple.com/documentation/vision/classifying_images_with_vision_and_core_ml)
+for more details on using image classifiers in Core ML and Vision
+frameworks for iOS and macOS.
