@@ -449,14 +449,16 @@ annotate_spec::MetaData ImageClassification::metaData() {
 }
 
 void ImageClassification::_createFeaturesExtractor() {
+#ifdef __APPLE__
   m_extractor = create_feature_extractor();
   auto data_sarray = std::static_pointer_cast<unity_sarray>(m_data->select_column(m_data_columns.at(0)));
   m_image_feature_extraction_sarray = gl_sarray(data_sarray);
   m_writer = std::make_shared<gl_sarray_writer>(flex_type_enum::VECTOR, 1);
+#endif
 }
 
 bool ImageClassification::_stepFeaturesExtractor() {
-  // Step batch
+#ifdef __APPLE__
   size_t sa_size = m_image_feature_extraction_sarray.size();
   size_t index = 0;
   size_t endIdx = ((index + this->m_feature_batch_size) > sa_size)
@@ -479,6 +481,7 @@ bool ImageClassification::_stepFeaturesExtractor() {
 
   // if more remain, return true
   return m_image_feature_extraction_sarray.size() > 0;
+#endif
 }
 
 std::shared_ptr<unity_sarray>
