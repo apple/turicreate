@@ -707,7 +707,11 @@ class DrawingClassifier(_CustomModel):
             ret['roc_curve'] = _evaluation.roc_curve(
                 dataset[self.target], predicted['probability'], 
                 index_map=self._class_to_index)
-<<<<<<< HEAD
+
+        if 'log_loss' in metrics:
+            ret['log_loss'] = _evaluation.log_loss(
+                dataset[self.target], predicted['probability'],
+                index_map=self._class_to_index)
 
         from .._evaluate_utils import  (
             entropy,
@@ -759,12 +763,6 @@ class DrawingClassifier(_CustomModel):
         per_pl = per_pl.rename({'predicted_label': 'label'})
         evaluation_result['label_metrics'] = list(per_l.join(per_pl, on='label', how='outer').select_columns(['label', 'count', 'correct_count', 'predicted_count', 'recall', 'precision']))
         evaluation_result['labels'] = labels
-=======
-        if 'log_loss' in metrics:
-            ret['log_loss'] = _evaluation.log_loss(
-                dataset[self.target], predicted['probability'],
-                index_map=self._class_to_index)
->>>>>>> 9336f16459cc6de6e2ad625612b7ec4f866ed849
         
         extended_test = extended_test.add_row_number('__idx').rename({'label': 'target_label'})
 
