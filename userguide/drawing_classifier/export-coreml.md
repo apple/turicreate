@@ -34,6 +34,18 @@ let model = try VNCoreMLModel(for: MySquareTriangleClassifier().model)
 let request = VNCoreMLRequest(model: model, completionHandler: { [weak self] request, error in
     self?.processClassifications(for: request, error: error)
 })
+let image = UIImage(named: "MyImage")
+        
+let handler = VNImageRequestHandler(cgImage: grayscaleImage.cgImage!, options: [:])
+try? handler.perform([request])}
+
+func processClassifications(for request: VNRequest) {
+	if let sortedResults = request.results! as? [VNClassificationObservation] {
+		for result in sortedResults {
+			// Use results
+		}
+	}
+}
 ```
 
 #### Using Stroke-Based Drawing Input
