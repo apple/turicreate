@@ -44,6 +44,17 @@ def _raise_error_if_not_drawing_classifier_input_sframe(
     if len(dataset) == 0:
         raise _ToolkitError("Input Dataset is empty!")
 
+def drop_missing_values(dataset, feature, is_train):
+    original_dataset_size = len(dataset)
+    dataset = dataset.dropna(columns=feature)
+    if is_train:
+        dataset_type = "train"
+    else:
+        dataset_type = "validation"
+    if original_dataset_size != len(dataset):
+        print("Dropping " + str(original_dataset_size - len(dataset)) + " rows for missing features in the " + dataset_type + " dataset.")
+    return dataset
+
 def create(input_dataset, target, feature=None, validation_set='auto',
             warm_start='auto', batch_size=256, 
             max_iterations=100, verbose=True):
@@ -197,17 +208,10 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         raise TypeError("Unrecognized type for 'validation_set'."
             + validation_set_corrective_string)
 
-
-    original_dataset_size = len(dataset)
-    dataset = dataset.dropna(columns=feature)
-    if original_dataset_size != len(dataset):
-        print("Dropping " + str(original_dataset_size - len(dataset)) + " rows from the training dataset.")
+    dataset = drop_missing_values(dataset, feature, is_train =True)
 
     if validation_set is not None:
-        original_validation_size = len(validation_dataset)
-        validation_dataset = validation_dataset.dropna(columns=feature)
-        if original_validation_size != len(validation_dataset):
-            print("Dropping " + str(original_validation_size - len(validation_dataset)) + " rows from the validation dataset.")
+        validation_dataset = drop_missing_values(validation_dataset, feature, is_train=False)
 
     train_loader = _SFrameClassifierIter(dataset, batch_size,
                  feature_column=feature,
@@ -309,7 +313,6 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         trainer.step(train_batch.data[0].shape[0])
         # calculate training metrics
         train_loss = loss.mean().asscalar()
-        train_time = _time.time() - start_time
 
         if train_batch.iteration > iteration:
 
@@ -323,7 +326,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
                 kwargs = {  "iteration": iteration + 1,
                             "train_loss": float(train_loss),
                             "train_accuracy": train_accuracy.get()[1],
-                            "time": train_time}
+                            "time": _time.time() - start_time}
                 if validation_set is not None:
                     kwargs["validation_accuracy"] = validation_accuracy.get()[1]
                 table_printer.print_row(**kwargs)
@@ -336,7 +339,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         'input_image_shape': (1, BITMAP_WIDTH, BITMAP_HEIGHT),
         'training_loss': train_loss,
         'training_accuracy': train_accuracy.get()[1],
-        'training_time': train_time,
+        'training_time': _time.time() - start_time,
         'validation_accuracy': validation_accuracy.get()[1] if validation_set else None, 
         # None if validation_set=None
         'max_iterations': max_iterations,
@@ -573,7 +576,6 @@ class DrawingClassifier(_CustomModel):
 
         index = 0
         last_time = 0
-        done = False
 
         from turicreate import SArrayBuilder
         from array import array
@@ -606,15 +608,13 @@ class DrawingClassifier(_CustomModel):
                 all_predicted_builder.append_multiple(predicted)
                 all_probabilities_builder.append_multiple(z.tolist())
                 index += split_length 
-                if index == dataset_size - 1:
-                    done = True
 
                 cur_time = _time.time()
                 # Do not print progress if only a few samples are predicted
                 if verbose and (dataset_size >= 5
-                    and cur_time > last_time + 30 or done):
-                    print('Predicting {cur_n:{width}d}/{max_n:{width}d}'.format(
-                        cur_n = index + 1 if index + 1 > dataset_size - 1 else index,
+                    and cur_time > last_time + 30 or index >= dataset_size ):
+                    print('Predicting {num_processed:{width}d}/{max_n:{width}d}'.format(
+                        num_processed = index,
                         max_n = dataset_size,
                         width = len(str(dataset_size))))
                     last_time = cur_time
