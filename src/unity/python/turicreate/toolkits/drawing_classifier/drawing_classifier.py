@@ -201,13 +201,13 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     original_dataset_size = len(dataset)
     dataset = dataset.dropna(columns=feature)
     if original_dataset_size != len(dataset):
-        print("Dropping %d rows containing None values from the training dataset.", original_dataset_size - len(dataset))
+        print("Dropping " + str(original_dataset_size - len(dataset)) + " rows from the training dataset.")
 
     if validation_set is not None:
         original_validation_size = len(validation_dataset)
         validation_dataset = validation_dataset.dropna(columns=feature)
         if original_validation_size != len(validation_dataset):
-            print("Dropping %d rows containing None values from the validation dataset.", original_validation_size - len(validation_dataset))
+            print("Dropping " + str(original_validation_size - len(validation_dataset)) + " rows from the validation dataset.")
 
     train_loader = _SFrameClassifierIter(dataset, batch_size,
                  feature_column=feature,
