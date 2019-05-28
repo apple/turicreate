@@ -13,7 +13,7 @@ namespace image_util{
 
 BEGIN_FUNCTION_REGISTRATION
 REGISTER_FUNCTION(load_image, "url", "format")
-REGISTER_FUNCTION(load_images, "url", "format", "with_path", "recursive", "ignore_failure", "random_order")
+REGISTER_FUNCTION(load_images, "url", "format", "with_path", "recursive", "ignore_failure", "random_order", "extract_label")
 REGISTER_FUNCTION(decode_image, "image")
 REGISTER_FUNCTION(decode_image_sarray, "image_sarray")
 REGISTER_FUNCTION(resize_image, "image",  "resized_width", "resized_height", "resized_channels", "decode", "resample_method")

@@ -9,7 +9,7 @@ from __future__ import absolute_import as _
 from ...data_structures.image import Image as _Image
 
 
-def load_images(url, format='auto', with_path=True, recursive=True, ignore_failure=True, random_order=False):
+def load_images(url, format='auto', with_path=True, recursive=True, ignore_failure=True, random_order=False, extract_label=False):
     """
     Loads images from a directory. JPEG and PNG images are supported.
 
@@ -39,13 +39,19 @@ def load_images(url, format='auto', with_path=True, recursive=True, ignore_failu
     random_order : bool, optional
         Load images in random order.
 
+    extract_label : bool, optional
+        Extract the label from the path assuming the path is of the form 
+        ...../label.EXTENSION
+
     Returns
     -------
     out : SFrame
         Returns an SFrame with either an 'image' column or both an 'image' and
-        a 'path' column. The 'image' column is a column of Image objects. If
-        with_path is True, there is also a 'path' column which contains the image
-        path for each of each corresponding Image object.
+        a 'path' column. The 'image' column is a column of Image objects.
+        If 'with_path' is True, there is also a 'path' column which contains
+        the image path for each of each corresponding Image object.
+        If 'extract_label' is True, there is also a 'label' column which
+        contains the 'label' column for each corresponding Image object.
 
     Examples
     --------
@@ -57,7 +63,8 @@ def load_images(url, format='auto', with_path=True, recursive=True, ignore_failu
     from ... import extensions as _extensions
     from ...util import _make_internal_url
     return _extensions.load_images(url, format, with_path,
-                                     recursive, ignore_failure, random_order)
+                                    recursive, ignore_failure, random_order, 
+                                    extract_label)
 
 
 def _decode(image_data):

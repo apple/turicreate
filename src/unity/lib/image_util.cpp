@@ -18,6 +18,13 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/path.hpp>
 
+const std::string kPathSeparator =
+#ifdef _WIN32
+                            "\\";
+#else
+                            "/";
+#endif
+
 namespace turi{
 
 namespace image_util{
@@ -161,8 +168,10 @@ namespace {
 size_t load_images_impl(std::vector<std::string>& all_files,
                         sarray<flexible_type>::iterator& image_iter,
                         sarray<flexible_type>::iterator& path_iter,
+                        sarray<flexible_type>::iterator& label_iter,
                         const std::string& format,
-                        bool with_path, bool ignore_failure, size_t thread_id) {
+                        bool with_path, bool ignore_failure, bool extract_label, 
+                        size_t thread_id) {
   timer mytimer;
 
   atomic<size_t> cnt = 0;
@@ -174,13 +183,25 @@ size_t load_images_impl(std::vector<std::string>& all_files,
   auto end = all_files.end();
   while(iter < end && !cancel) {
     flexible_type img(flex_type_enum::IMAGE);
+    flexible_type label_string(flex_type_enum::STRING);
     // read a single image
     try {
       img = read_image(*iter, format);
       *image_iter = img;
       ++image_iter;
-      if (with_path) {
+      if (with_path || extract_label) {
         *path_iter = *iter;
+        if (extract_label) {
+          std::vector<std::string> path_elements;
+          std::string path = *iter;
+          boost::split(path_elements, path, boost::is_any_of(kPathSeparator));
+          std::string filename = path_elements.back();
+          std::vector<std::string> filename_elements;
+          boost::split(filename_elements, filename, boost::is_any_of("."));
+          label_string = filename_elements[0];
+          *label_iter = label_string;
+          ++label_iter;
+        }
         ++path_iter;
       }
       ++cnt;
@@ -258,7 +279,7 @@ bool lacks_image_extension(const std::string& url) {
  * Construct an sframe of flex_images, with url pointing to directory where images reside. 
  */
 std::shared_ptr<unity_sframe> load_images(std::string url, std::string format, bool with_path, bool recursive,
-                                          bool ignore_failure, bool random_order) {
+                                          bool ignore_failure, bool random_order, bool extract_label) {
     log_func_entry();
 
     std::vector<std::string> all_files;
@@ -300,6 +321,7 @@ std::shared_ptr<unity_sframe> load_images(std::string url, std::string format, b
 
     sframe image_sframe;
     auto path_sarray = std::make_shared<sarray<flexible_type>>();
+    auto label_sarray = std::make_shared<sarray<flexible_type>>();
     auto image_sarray = std::make_shared<sarray<flexible_type>>();
 
     // Parallel read dioes not seems to help, and it slow IO down when there is only one disk.
@@ -309,8 +331,10 @@ std::shared_ptr<unity_sframe> load_images(std::string url, std::string format, b
     column_names = {"path","image"};
     path_sarray->open_for_write(num_threads + 1); // open one more segment for appending recursive results
     image_sarray->open_for_write(num_threads + 1); // ditto
+    label_sarray->open_for_write(num_threads + 1);
     path_sarray->set_type(flex_type_enum::STRING);
     image_sarray->set_type(flex_type_enum::IMAGE);
+    label_sarray->set_type(flex_type_enum::STRING);
 
     if (random_order) {
       std::random_shuffle(all_files.begin(), all_files.end());
@@ -322,18 +346,23 @@ std::shared_ptr<unity_sframe> load_images(std::string url, std::string format, b
     parallel_for(0, num_threads, [&](size_t thread_id) {
       auto path_iter = path_sarray->get_output_iterator(thread_id);
       auto image_iter = image_sarray->get_output_iterator(thread_id);
+      auto label_iter = label_sarray->get_output_iterator(thread_id);
 
       size_t begin = files_per_thread * thread_id;
       size_t end = (thread_id + 1) == num_threads ? all_files.size() : begin + files_per_thread;
 
       std::vector<std::string> subset(all_files.begin() + begin, all_files.begin() + end);
-      load_images_impl(subset, image_iter, path_iter, format, with_path, ignore_failure, thread_id);
+      load_images_impl(subset, image_iter, path_iter, label_iter, format, with_path, ignore_failure, extract_label, thread_id);
     });
 
     image_sarray->close();
     path_sarray->close();
+    label_sarray->close();
 
-    if (with_path){
+    if (extract_label) {
+      std::vector<std::shared_ptr<sarray<flexible_type> > > sframe_columns {label_sarray, image_sarray};
+      image_sframe = sframe(sframe_columns, {"label","image"});
+    } else if (with_path) {
       std::vector<std::shared_ptr<sarray<flexible_type> > > sframe_columns {path_sarray, image_sarray};
       image_sframe = sframe(sframe_columns, {"path","image"});
     } else {

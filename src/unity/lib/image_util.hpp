@@ -39,7 +39,8 @@ flexible_type generate_mean(std::shared_ptr<unity_sarray> unity_data);
  * Construct an sframe of flex_images, with url pointing to directory where images reside. 
  */
 std::shared_ptr<unity_sframe> load_images(std::string url, std::string format,
-    bool with_path, bool recursive, bool ignore_failure, bool random_order);
+    bool with_path, bool recursive, bool ignore_failure, bool random_order,
+    bool extract_label);
 
 /**
  * Construct a single image from url, and format hint.
