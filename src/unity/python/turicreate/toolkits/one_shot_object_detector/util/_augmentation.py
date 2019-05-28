@@ -5,6 +5,7 @@
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 
 import random as _random
+import tarfile as _tarfile
 import turicreate as _tc
 from turicreate import extensions as _extensions
 from turicreate.toolkits.one_shot_object_detector.util._error_handling import check_one_shot_input
