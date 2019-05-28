@@ -707,7 +707,6 @@ class DrawingClassifier(_CustomModel):
             ret['roc_curve'] = _evaluation.roc_curve(
                 dataset[self.target], predicted['probability'], 
                 index_map=self._class_to_index)
-
         if 'log_loss' in metrics:
             ret['log_loss'] = _evaluation.log_loss(
                 dataset[self.target], predicted['probability'],
