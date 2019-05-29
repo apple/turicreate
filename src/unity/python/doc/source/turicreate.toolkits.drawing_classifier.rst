@@ -15,3 +15,11 @@ drawing classifier
 
   drawing_classifier.create
   drawing_classifier.DrawingClassifier
+
+utilities
+---------
+.. autosummary::
+  :toctree: generated/
+  :nosignatures:
+
+  util.draw_strokes
