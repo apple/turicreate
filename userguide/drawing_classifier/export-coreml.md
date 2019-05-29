@@ -32,19 +32,19 @@ must be a Grayscale Image.
 ```swift
 let model = try VNCoreMLModel(for: MySquareTriangleClassifier().model)
 
-let request = VNCoreMLRequest(model: model, completionHandler: { [weak self] request, error in
+let request = VNCoreMLRequest(model: model!, completionHandler: { [weak self] request, error in
     self?.processClassifications(for: request, error: error)
 })
 
-let grayscaleImage = UIImage(named: bitmapFilename)
+let grayscaleImage! = UIImage(named: bitmapFilename)
 let handler = VNImageRequestHandler(cgImage: grayscaleImage.cgImage!, options: [:])
 
-try? handler.perform([request])}
+try? handler.perform([request])
 
-func processClassifications(for request: VNRequest) {
+func processClassifications(for request: VNRequest, error: error) {
     if let sortedResults = request.results! as? [VNClassificationObservation] {
         for result in sortedResults {
-            // Use results
+            print(result.identifier, result.confidence)
         }
     }
 }
@@ -142,7 +142,6 @@ let example_drawing = [
 let myDrawing = Drawing()
 for stroke in example_drawing {
     for point in stroke {
-        print(point)
         myDrawing.add(point: CGPoint(x: point["x"]!, y: point["y"]!))
     }
     myDrawing.endStroke()
@@ -229,12 +228,12 @@ let request = VNCoreMLRequest(model: model, completionHandler: { [weak self] req
 let main_image: CGImage = rasterize(drawing: myDrawing)
 let handler = VNImageRequestHandler(cgImage: main_image)        
 
-try? handler.perform([request])}
+try? handler.perform([request])
 
-func processClassifications(for request: VNRequest) {
+func processClassifications(for request: VNRequest, error: error) {
     if let sortedResults = request.results! as? [VNClassificationObservation] {
         for result in sortedResults {
-            // Use results
+            print(result.identifier, result.confidence)
         }
     }
 }
