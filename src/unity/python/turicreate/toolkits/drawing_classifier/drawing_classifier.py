@@ -780,7 +780,7 @@ class DrawingClassifier(_CustomModel):
 
         Parameters
         ----------
-        dataset : SFrame | SArray | turicreate.Image | list
+        dataset : SFrame | SArray | turicreate.Image 
             Drawings to be classified.
             If dataset is an SFrame, it must include columns with the same
             names as the features used for model training, but does not require
@@ -872,7 +872,7 @@ class DrawingClassifier(_CustomModel):
 
         Parameters
         ----------
-        data : SFrame | SArray | tc.Image | list
+        data : SFrame | SArray | tc.Image 
             The drawing(s) on which to perform drawing classification.
             If dataset is an SFrame, it must have a column with the same name
             as the feature column during training. Additional columns are
