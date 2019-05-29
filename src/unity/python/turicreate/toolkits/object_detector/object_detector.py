@@ -96,8 +96,8 @@ def _raise_error_if_not_detection_sframe(dataset, feature, annotations, require_
 
 
 def create(dataset, annotations=None, feature=None, model='darknet-yolo',
-           classes=None, batch_size=0, max_iterations=0, verbose=True,
-           **kwargs):
+           grid_shape=[13, 13], classes=None, batch_size=0, 
+           max_iterations=0, verbose=True, **kwargs):
     """
     Create a :class:`ObjectDetector` model.
 
@@ -137,6 +137,11 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         Object detection model to use:
 
            - "darknet-yolo" : Fast and medium-sized model
+
+    grid_shape : array optional
+        Shape of the grid used for object detection. Higher values increase precision for small objects, but at a higher computational cost
+
+           - [13, 13] : Default grid value for a Fast and medium-sized model
 
     classes : list optional
         List of strings containing the names of the classes of objects.
@@ -221,7 +226,6 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
             (8.0, 16.0), (8.0, 8.0), (16.0, 8.0),
             (16.0, 32.0), (16.0, 16.0), (32.0, 16.0),
         ],
-        'grid_shape': [13, 13],
         'aug_resize': 0,
         'aug_rand_crop': 0.9,
         'aug_rand_pad': 0.9,
@@ -297,7 +301,6 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         _tkutl._print_neural_compute_device(cuda_gpus=cuda_gpus, use_mps=use_mps,
                                             cuda_mem_req=cuda_mem_req)
 
-    grid_shape = params['grid_shape']
     input_image_shape = (3,
                          grid_shape[0] * ref_model.spatial_reduction,
                          grid_shape[1] * ref_model.spatial_reduction)
