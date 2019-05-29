@@ -22,10 +22,8 @@ import array as _array
 def annotate(data, image_column=None, annotation_column='annotations'):
     """
     Annotate images using a GUI assisted application. When the GUI is
-    terminated an SFrame is returned with the representative, images and
-    annotations.
-
-    The returned SFrame includes the newly created annotations.
+    terminated an SFrame with the representative images and annotations is
+    returned.
 
     Parameters
     ----------
@@ -33,20 +31,18 @@ def annotate(data, image_column=None, annotation_column='annotations'):
         The data containing the input images.
 
     image_column: string, optional
-        The name of the input column in the SFrame that contains the image
-        that needs to be annotated. In case `data` is of type SArray, then
-        the output SFrame contains a column with this name corresonding to
-        the input images.
+        The name of the input column in the SFrame that contains the image that
+        needs to be annotated. In case `data` is of type SArray, then the
+        output SFrame contains a column (with this name) containing the input
+        images.
 
     annotation_column : string, optional
-        The column name containing the annotations in the output SFrame.
+        The column containing the annotations in the output SFrame.
 
     Returns
     -------
     out : SFrame
-        A new SFrame that contains the newly annotated data. The output
-        SFrame contains 2 columns, one for the images and another for the
-        annotations.
+        A new SFrame that contains the newly annotated data.
 
     Examples
     --------
