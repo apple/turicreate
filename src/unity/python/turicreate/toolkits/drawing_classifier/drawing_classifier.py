@@ -44,14 +44,11 @@ def _raise_error_if_not_drawing_classifier_input_sframe(
     if len(dataset) == 0:
         raise _ToolkitError("Input Dataset is empty!")
 
-def drop_missing_values(dataset, feature, is_train):
+def _drop_missing_values(dataset, feature, is_train):
     original_dataset_size = len(dataset)
     dataset = dataset.dropna(columns=feature)
-    if is_train:
-        dataset_type = "train"
-    else:
-        dataset_type = "validation"
     if original_dataset_size != len(dataset):
+        dataset_type = "train" if is_train else "validation"
         print("Dropping " + str(original_dataset_size - len(dataset)) + " rows for missing features in the " + dataset_type + " dataset.")
     return dataset
 
@@ -208,10 +205,10 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         raise TypeError("Unrecognized type for 'validation_set'."
             + validation_set_corrective_string)
 
-    dataset = drop_missing_values(dataset, feature, is_train =True)
+    dataset = _drop_missing_values(dataset, feature, is_train =True)
 
     if validation_set is not None:
-        validation_dataset = drop_missing_values(validation_dataset, feature, is_train=False)
+        validation_dataset = _drop_missing_values(validation_dataset, feature, is_train=False)
 
     train_loader = _SFrameClassifierIter(dataset, batch_size,
                  feature_column=feature,
@@ -574,7 +571,7 @@ class DrawingClassifier(_CustomModel):
         dataset_size = len(dataset)
         ctx = _mxnet_utils.get_mxnet_context()
 
-        index = 0
+        num_processed = 0
         last_time = 0
 
         from turicreate import SArrayBuilder
@@ -607,14 +604,14 @@ class DrawingClassifier(_CustomModel):
                 split_length = z.shape[0]
                 all_predicted_builder.append_multiple(predicted)
                 all_probabilities_builder.append_multiple(z.tolist())
-                index += split_length 
+                num_processed += split_length 
 
                 cur_time = _time.time()
                 # Do not print progress if only a few samples are predicted
                 if verbose and (dataset_size >= 5
-                    and cur_time > last_time + 30 or index >= dataset_size ):
-                    print('Predicting {num_processed:{width}d}/{max_n:{width}d}'.format(
-                        num_processed = index,
+                    and cur_time > last_time + 30 or num_processed >= dataset_size ):
+                    print('Predicting {cur_n:{width}d}/{max_n:{width}d}'.format(
+                        cur_n = num_processed,
                         max_n = dataset_size,
                         width = len(str(dataset_size))))
                     last_time = cur_time
