@@ -31,10 +31,9 @@ must be a Grayscale Image.
 
 ```swift
 let model = try VNCoreMLModel(for: MySquareTriangleClassifier().model)
-
-let request = VNCoreMLRequest(model: model!, completionHandler: { [weak self] request, error in
-    self?.processClassifications(for: request, error: error)
-})
+let request = VNCoreMLRequest(model: model!, completionHandler: { [] request, error in
+        processClassifications(for: request, error: error)
+    })
 
 let grayscaleImage! = UIImage(named: bitmapFilename)
 let handler = VNImageRequestHandler(cgImage: grayscaleImage.cgImage!, options: [:])
@@ -220,10 +219,9 @@ as described above under "Using Bitmap Input".
 
 ```swift
 let model = try VNCoreMLModel(for: MySquareTriangleClassifier().model)
-
-let request = VNCoreMLRequest(model: model!, completionHandler: { [weak self] request, error in
-    self?.processClassifications(for: request, error: error)
-})
+let request = VNCoreMLRequest(model: model!, completionHandler: { [] request, error in
+        processClassifications(for: request, error: error)
+    })
 
 let main_image: CGImage = rasterize(drawing: myDrawing)
 let handler = VNImageRequestHandler(cgImage: main_image)        
