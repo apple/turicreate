@@ -29,7 +29,27 @@ the drawing you want to classify, you can use the Vision framework to consume
 the exported Core ML model. Note that the image you provide to the Vision API
 must be a Grayscale Image. 
 
+```swift
+let model = try VNCoreMLModel(for: MySquareTriangleClassifier().model)
 
+let request = VNCoreMLRequest(model: model, completionHandler: { [weak self] request, error in
+    self?.processClassifications(for: request, error: error)
+})
+
+let grayscaleImage = UIImage(named: bitmapFilename)
+let handler = VNImageRequestHandler(cgImage: grayscaleImage.cgImage!, options: [:])
+
+try? handler.perform([request])}
+
+func processClassifications(for request: VNRequest) {
+    if let sortedResults = request.results! as? [VNClassificationObservation] {
+        for result in sortedResults {
+            // Use results
+        }
+    }
+}
+
+```
 #### Using Stroke-Based Drawing Input
 
 On the other hand, if you have access to raw stroke-based drawing data at 
@@ -97,13 +117,43 @@ class Drawing {
         stroke.removeAllObjects()
     }
 }
-
 ```
+
+The Drawing class can be used in the following way.
+
+```swift
+let example_drawing = [
+            [
+                ["x": 1.0, "y": 2.0],
+                ["x": 2.0, "y": 2.0],
+                ["x": 3.0, "y": 2.0],
+                ["x": 4.0, "y": 2.0],
+                ["x": 5.0, "y": 2.0]
+            ],
+            [
+                ["x": 10.0, "y": 10.0],
+                ["x": 10.5, "y": 10.5],
+                ["x": 11.0, "y": 11.0],
+                ["x": 12.5, "y": 12.5],
+                ["x": 15.0, "y": 15.0]
+            ]
+        ]
+
+let myDrawing = Drawing()
+for stroke in example_drawing {
+    for point in stroke {
+        print(point)
+        myDrawing.add(point: CGPoint(x: point["x"]!, y: point["y"]!))
+    }
+    myDrawing.endStroke()
+}
+```
+
+Each drawing is a set of strokes and each stroke is a set of points. Here, example_drawing is a drawing with two strokes and each stroke with different number of points. The drawing data can also be collected as streaming points using touch events, mouse events etc using the Drawing class.
 
 Once your stroke-based drawing is a member of the above Drawing class, call the 
 `rasterize` function on it to build a 28x28 grayscale bitmap. 
-The Core ML model can then run inference on this bitmap via the Vision framework
-as described above under "Using Bitmap Input". 
+ 
 
 The code snippet containing `rasterize` and its helper, 
 `normalize` are provided below.
@@ -162,25 +212,21 @@ func rasterize(drawing stroke_based_drawing:Drawing) -> CGImage {
         space:grayscale, bitmapInfo:CGImageAlphaInfo.none.rawValue)
     let final_rect = CGRect(x: 0.0, y: 0.0, width: 28.0, height: 28.0)
     final_bitmap_context?.draw(intermediate_image!, in: final_rect)
-    return cgImage : (final_bitmap_context?.makeImage())!
+    return (final_bitmap_context?.makeImage())!
 }
 ```
+The Core ML model can then run inference on this bitmap via the Vision framework
+as described above under "Using Bitmap Input".
 
-
-Through a simple drag and drop process, you can incorporate the model into Xcode. The following Swift code is needed to consume the model in an iOS app.
 
 ```swift
 let model = try VNCoreMLModel(for: MySquareTriangleClassifier().model)
 
 let request = VNCoreMLRequest(model: model, completionHandler: { [weak self] request, error in
     self?.processClassifications(for: request, error: error)
+})
 
-//Using Bitmap input
-let grayscaleImage = UIImage(named: "MyImage")
-let handler = VNImageRequestHandler(cgImage: grayscaleImage.cgImage!, options: [:])
-
-//Using stroke-based drawing as input
-let main_image : CGImage = rasterize(drawing: myDrawing)
+let main_image: CGImage = rasterize(drawing: myDrawing)
 let handler = VNImageRequestHandler(cgImage: main_image)        
 
 try? handler.perform([request])}
@@ -193,6 +239,8 @@ func processClassifications(for request: VNRequest) {
     }
 }
 ```
+
+Through a simple drag and drop process, you can incorporate the model into Xcode. The Swift code snippets are provided to take either bitmap or stroke-based drawing as input and consume the model in an iOS app.
 
 Refer to the [Core ML sample application
 ](https://developer.apple.com/documentation/vision/classifying_images_with_vision_and_core_ml)
