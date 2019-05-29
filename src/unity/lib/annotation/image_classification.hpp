@@ -49,11 +49,11 @@ public:
 private:
 #ifdef __APPLE__
   size_t m_feature_batch_size = 16;
+  image_deep_feature_extractor::image_deep_feature_extractor_toolkit m_extractor;
 #endif
   gl_sarray m_feature_sarray;
   variant_map_type m_nn_model;
   std::shared_ptr<std::thread> featurizer_thread;
-  image_deep_feature_extractor::image_deep_feature_extractor_toolkit m_extractor;
   gl_sarray m_image_feature_extraction_sarray;
   std::shared_ptr<gl_sarray_writer> m_writer;
   
