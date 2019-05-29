@@ -221,7 +221,7 @@ as described above under "Using Bitmap Input".
 ```swift
 let model = try VNCoreMLModel(for: MySquareTriangleClassifier().model)
 
-let request = VNCoreMLRequest(model: model, completionHandler: { [weak self] request, error in
+let request = VNCoreMLRequest(model: model!, completionHandler: { [weak self] request, error in
     self?.processClassifications(for: request, error: error)
 })
 
