@@ -23,8 +23,8 @@ def preview_synthetic_training_data(data,
     ----------
     data : SFrame | tc.Image
         A single starter image or an SFrame that contains the starter images
-        along with their corresponding labels. These images can be of in RGB
-        and RGBA format and should not be padded.
+        along with their corresponding labels.  These image(s) can be in either
+        RGB or RGBA format. They should not be padded.
 
     target : string
         Name of the target (when data is a single image) or the target column
