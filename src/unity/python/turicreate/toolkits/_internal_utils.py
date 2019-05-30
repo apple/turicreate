@@ -407,9 +407,9 @@ def _toolkit_repr_print(model, fields, section_titles, width = None, class_name 
         "doesn't match the number of groups of fields, {0}.".format(len(fields))
 
     if class_name == 'auto':
-        out_fields = [ ("Class", class_name), ""]
-    else:
         out_fields = [ ("Class", model.__class__.__name__), ""]
+    else:
+        out_fields = [ ("Class", class_name), ""]
 
     # Record the max_width so that if width is not provided, we calculate it.
     max_width = len("Class")
