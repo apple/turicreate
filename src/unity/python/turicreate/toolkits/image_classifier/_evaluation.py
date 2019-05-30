@@ -51,7 +51,9 @@ class Evaluation(dict):
     return str(_json.dumps({ "evaluation_spec": evaluation_dictionary }, allow_nan = False))
 
   def explore(self):
-    params = (self._get_eval_json()+"\n", self.data["test_data"], self, )
+    """
+    Explore model evaluation qualitatively through a GUI assisted application.
+    """
     # Suppress visualization output if 'none' target is set
     from ...visualization._plot import _target
     if _target == 'none':
