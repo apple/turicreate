@@ -126,7 +126,7 @@ class OneShotObjectDetector(_CustomModel):
         Returns
         -------
         out : string
-            wA description of the OneShotObjectDetector
+            A description of the OneShotObjectDetector
         """
         return self.__repr__()
 
