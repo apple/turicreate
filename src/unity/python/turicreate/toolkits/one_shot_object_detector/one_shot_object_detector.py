@@ -72,7 +72,6 @@ def create(data,
         "target": target,
         "num_classes": model.num_classes,
         "num_starter_images": num_starter_images,
-        "synthetic_training_data": augmented_data,
         "_detector_version": _ObjectDetector._PYTHON_OBJECT_DETECTOR_VERSION,
         }
     return OneShotObjectDetector(state)
@@ -89,9 +88,6 @@ class OneShotObjectDetector(_CustomModel):
 
     def evaluate(self, dataset, metric="auto"):
         return self.__proxy__['detector'].evaluate(dataset, metric)
-
-    def _get_synthetic_images(self):
-        return self.__proxy__['synthetic_training_data']
 
     def _get_version(self):
         return self._PYTHON_ONE_SHOT_OBJECT_DETECTOR_VERSION
