@@ -21,4 +21,4 @@ utilities
   :toctree: generated/
   :nosignatures:
 
-  util.preview_augmented_images
+  util.preview_synthetic_training_data
