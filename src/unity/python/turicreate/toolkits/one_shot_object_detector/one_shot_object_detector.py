@@ -86,7 +86,7 @@ class OneShotObjectDetector(_CustomModel):
 
     def predict(self, dataset, confidence_threshold=0.25, iou_threshold=None, verbose=True):
         """
-        Predict object instances in an sframe of images.
+        Predict object instances in an SFrame of images.
 
         Parameters
         ----------
@@ -198,8 +198,8 @@ class OneShotObjectDetector(_CustomModel):
         --------
         >>> model.export_coreml('one_shot.mlmodel')
         """
-        model = self.__proxy__['detector']._create_coreml_model(include_non_maximum_suppression=include_non_maximum_suppression, iou_threshold=iou_threshold, confidence_threshold=confidence_threshold)
         from coremltools.models.utils import save_spec as _save_spec
+        model = self.__proxy__['detector']._create_coreml_model(include_non_maximum_suppression=include_non_maximum_suppression, iou_threshold=iou_threshold, confidence_threshold=confidence_threshold)
         model.description.metadata.shortDescription = 'One Shot ' + model.description.metadata.shortDescription
         model.description.metadata.userDefined["type"] = 'OneShotObjectDetector'
         _save_spec(model, filename)
