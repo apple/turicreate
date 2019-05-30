@@ -359,7 +359,7 @@ def _make_repr_table_from_sframe(X):
     return ['  '.join(row) for row in out_data]
 
 
-def _toolkit_repr_print(model, fields, section_titles, width = None):
+def _toolkit_repr_print(model, fields, section_titles, width = None, class_name = 'auto'):
     """
     Display a toolkit repr according to some simple rules.
 
@@ -406,7 +406,10 @@ def _toolkit_repr_print(model, fields, section_titles, width = None):
         "The number of section titles ({0}) ".format(len(section_titles)) +\
         "doesn't match the number of groups of fields, {0}.".format(len(fields))
 
-    out_fields = [ ("Class", model.__class__.__name__), ""]
+    if class_name == 'auto':
+        out_fields = [ ("Class", class_name), ""]
+    else:
+        out_fields = [ ("Class", model.__class__.__name__), ""]
 
     # Record the max_width so that if width is not provided, we calculate it.
     max_width = len("Class")
