@@ -45,6 +45,9 @@ class Evaluation(dict):
 
     evaluation_dictionary["corrects_size"] = len(self.data["test_data"].filter_by([True], "correct"))
     evaluation_dictionary["incorrects_size"] = evaluation_dictionary["table_spec"]["size"] - evaluation_dictionary["corrects_size"]
+
+    # make sure numpy.float32 is serializable
+    evaluation_dictionary["training_loss"] = float(evaluation_dictionary["training_loss"])
     return str(_json.dumps({ "evaluation_spec": evaluation_dictionary }, allow_nan = False))
 
   def explore(self):

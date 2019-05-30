@@ -79,7 +79,7 @@ class OneShotObjectDetector(_CustomModel):
     def evaluate(self, dataset, metric="auto"):
         return self.__proxy__['detector'].evaluate(dataset, metric)
 
-    def get_augmented_images(self):
+    def _get_augmented_images(self):
         return self.__proxy__['augmented_data']
 
     def _get_version(self):

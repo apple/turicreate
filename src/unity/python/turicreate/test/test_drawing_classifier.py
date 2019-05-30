@@ -229,6 +229,7 @@ class DrawingClassifierTest(unittest.TestCase):
             with self.assertRaises(_ToolkitError):
                 model.evaluate(sf_without_ground_truth)
 
+    @pytest.mark.xfail(reason='Fails, see https://github.com/apple/turicreate/issues/1973')
     def test_evaluate_with_ground_truth(self):
 
         all_metrics = ["accuracy", "auc", "precision", "recall",

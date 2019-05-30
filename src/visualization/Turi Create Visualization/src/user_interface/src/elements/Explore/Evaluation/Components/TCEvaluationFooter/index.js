@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import * as d3 from 'd3';
 import './index.scss';
 
 import down_arrow from './assets/down.svg';
@@ -106,7 +107,10 @@ class TCEvaluationFooter extends Component {
           <div className="TCEvaluationFooterText">
             <div>
               <div className="TCEvaluationErrorsPill">
-                {this.props.considerations.filter(this.filterErrorData).length}
+                {d3.sum(this.props.considerations
+                                  .filter(this.filterErrorData)
+                                  .map((element) => element.count))
+                }
               </div>
               Errors
             </div>

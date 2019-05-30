@@ -46,6 +46,14 @@ def _raise_error_if_not_drawing_classifier_input_sframe(
     if len(dataset) == 0:
         raise _ToolkitError("Input Dataset is empty!")
 
+def _drop_missing_values(dataset, feature, is_train):
+    original_dataset_size = len(dataset)
+    dataset = dataset.dropna(columns=feature)
+    if original_dataset_size != len(dataset):
+        dataset_type = "train" if is_train else "validation"
+        print("Dropping " + str(original_dataset_size - len(dataset)) + " rows for missing features in the " + dataset_type + " dataset.")
+    return dataset
+
 def create(input_dataset, target, feature=None, validation_set='auto',
             warm_start='auto', batch_size=256, 
             max_iterations=100, verbose=True):
@@ -199,6 +207,9 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         raise TypeError("Unrecognized type for 'validation_set'."
             + validation_set_corrective_string)
 
+    dataset = _drop_missing_values(dataset, feature, is_train =True)
+    validation_dataset = _drop_missing_values(validation_dataset, feature, is_train=False)
+
     train_loader = _SFrameClassifierIter(dataset, batch_size,
                  feature_column=feature,
                  target_column=target,
@@ -299,7 +310,6 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         trainer.step(train_batch.data[0].shape[0])
         # calculate training metrics
         train_loss = loss.mean().asscalar()
-        train_time = _time.time() - start_time
 
         if train_batch.iteration > iteration:
 
@@ -313,7 +323,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
                 kwargs = {  "iteration": iteration + 1,
                             "train_loss": float(train_loss),
                             "train_accuracy": train_accuracy.get()[1],
-                            "time": train_time}
+                            "time": _time.time() - start_time}
                 if validation_set is not None:
                     kwargs["validation_accuracy"] = validation_accuracy.get()[1]
                 table_printer.print_row(**kwargs)
@@ -326,7 +336,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         'input_image_shape': (1, BITMAP_WIDTH, BITMAP_HEIGHT),
         'training_loss': train_loss,
         'training_accuracy': train_accuracy.get()[1],
-        'training_time': train_time,
+        'training_time': _time.time() - start_time,
         'validation_accuracy': validation_accuracy.get()[1] if validation_set else None, 
         # None if validation_set=None
         'max_iterations': max_iterations,
@@ -561,9 +571,8 @@ class DrawingClassifier(_CustomModel):
         dataset_size = len(dataset)
         ctx = _mxnet_utils.get_mxnet_context()
 
-        index = 0
+        num_processed = 0
         last_time = 0
-        done = False
 
         from turicreate import SArrayBuilder
         from array import array
@@ -595,16 +604,14 @@ class DrawingClassifier(_CustomModel):
                 split_length = z.shape[0]
                 all_predicted_builder.append_multiple(predicted)
                 all_probabilities_builder.append_multiple(z.tolist())
-                index += split_length 
-                if index == dataset_size - 1:
-                    done = True
+                num_processed += split_length 
 
                 cur_time = _time.time()
                 # Do not print progress if only a few samples are predicted
                 if verbose and (dataset_size >= 5
-                    and cur_time > last_time + 30 or done):
+                    and cur_time > last_time + 30 or num_processed >= dataset_size ):
                     print('Predicting {cur_n:{width}d}/{max_n:{width}d}'.format(
-                        cur_n = index + 1 if not done else index,
+                        cur_n = num_processed,
                         max_n = dataset_size,
                         width = len(str(dataset_size))))
                     last_time = cur_time
@@ -780,7 +787,7 @@ class DrawingClassifier(_CustomModel):
 
         Parameters
         ----------
-        dataset : SFrame | SArray | turicreate.Image | list
+        dataset : SFrame | SArray | turicreate.Image 
             Drawings to be classified.
             If dataset is an SFrame, it must include columns with the same
             names as the features used for model training, but does not require
@@ -872,7 +879,7 @@ class DrawingClassifier(_CustomModel):
 
         Parameters
         ----------
-        data : SFrame | SArray | tc.Image | list
+        data : SFrame | SArray | tc.Image 
             The drawing(s) on which to perform drawing classification.
             If dataset is an SFrame, it must have a column with the same name
             as the feature column during training. Additional columns are
