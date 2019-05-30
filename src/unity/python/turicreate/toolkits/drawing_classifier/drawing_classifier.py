@@ -208,7 +208,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
             + validation_set_corrective_string)
 
     dataset = _drop_missing_values(dataset, feature, is_train =True)
-    if len(validation_set) > 0:
+    if len(validation_dataset) > 0:
         validation_dataset = _drop_missing_values(validation_dataset, feature, is_train=False)
 
     train_loader = _SFrameClassifierIter(dataset, batch_size,
