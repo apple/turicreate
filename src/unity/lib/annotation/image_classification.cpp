@@ -90,22 +90,23 @@ annotate_spec::Annotations ImageClassification::getAnnotations(size_t start,
   std::vector<flexible_type> flex_data = filtered_data->to_vector();
 
   for (size_t i = 0; i < flex_data.size(); i++) {
-    annotate_spec::Annotation *annotation = annotations.add_annotation();
-    annotate_spec::Label *label = annotation->add_labels();
-
-    label->imageclassificationlabel();
-
     const flexible_type& flex_label = flex_data.at(i);
     if (flex_label.get_type() == flex_type_enum::UNDEFINED) {
       // skip unlabeled items
       continue;
     }
 
+    annotate_spec::Annotation *annotation = annotations.add_annotation();
+    annotate_spec::Label *label = annotation->add_labels();
+
+    // initialize the label as an image classification label
+    label->mutable_imageclassificationlabel();
+
     if (flex_label.get_type() == flex_type_enum::STRING) {
-      std::string label_value = flex_label.get<flex_string>();
+      const flex_string& label_value = flex_label.get<flex_string>();
       label->set_stringlabel(label_value);
     } else if (flex_label.get_type() == flex_type_enum::INTEGER) {
-      int label_value = flex_label;
+      flex_int label_value = flex_label.get<flex_int>();
       label->set_intlabel(label_value);
     }
 
@@ -450,15 +451,15 @@ annotate_spec::MetaData ImageClassification::metaData() {
     if (array_type == flex_type_enum::STRING) {
       annotate_spec::MetaLabel *labels_meta =
           image_classification_meta->add_label();
-      labels_meta->set_stringlabel(label.to<std::string>());
-      labels_meta->set_elementcount(count_vector.at(x));
+      labels_meta->set_stringlabel(label.get<flex_string>());
+      labels_meta->set_elementcount(count_vector.at(x).get<flex_int>());
     }
 
     if (array_type == flex_type_enum::INTEGER) {
       annotate_spec::MetaLabel *labels_meta =
           image_classification_meta->add_label();
       labels_meta->set_intlabel(label.to<flex_int>());
-      labels_meta->set_elementcount(count_vector.at(x));
+      labels_meta->set_elementcount(count_vector.at(x).get<flex_int>());
     }
   }
 
