@@ -54,6 +54,7 @@ class Evaluation(dict):
     """
     Explore model evaluation qualitatively through a GUI assisted application.
     """
+    params = (self._get_eval_json()+"\n", self.data["test_data"], self, )
     # Suppress visualization output if 'none' target is set
     from ...visualization._plot import _target
     if _target == 'none':
