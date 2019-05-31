@@ -101,6 +101,12 @@ void _test_resize_impl(
   TS_ASSERT_EQUALS(resized_image.m_width, new_width);
   TS_ASSERT_EQUALS(resized_image.m_height, new_height);
   TS_ASSERT_EQUALS(resized_image.m_channels, new_channels);
+
+  // other parts of the code depend on the output being specifically
+  // encoded in PNG format when resized with decode=False
+  if (!save_as_decoded) {
+    TS_ASSERT_EQUALS(static_cast<size_t>(resized_image.m_format), static_cast<size_t>(Format::PNG));
+  }
 }
 
 }  // namespace
