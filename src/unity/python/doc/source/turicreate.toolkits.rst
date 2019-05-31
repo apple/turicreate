@@ -19,6 +19,7 @@ Applications
     turicreate.toolkits.sound_classifier
     turicreate.toolkits.image_similarity
     turicreate.toolkits.object_detector
+    turicreate.toolkits.one_shot_object_detector
     turicreate.toolkits.recommender
     turicreate.toolkits.text_classifier
     turicreate.toolkits.style_transfer.rst
