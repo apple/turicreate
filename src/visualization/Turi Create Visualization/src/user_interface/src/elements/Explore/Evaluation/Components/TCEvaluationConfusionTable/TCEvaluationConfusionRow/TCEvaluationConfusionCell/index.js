@@ -37,7 +37,7 @@ class TCEvaluationConfusionCell extends Component {
   	if(this.props.type == "images"){
       return (
         <div className="TCEvaluationConfusionCellImage">
-          {this.props.value.map((data, index) => {
+          {this.props.value.slice(0, 100).map((data, index) => {
             return(
               <TCEvaluationImageCells value={data}/>
             )
