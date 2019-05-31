@@ -21,7 +21,7 @@ import coremltools
 
 _CLASSES = ['logo_a', 'logo_b', 'logo_c', 'logo_d']
 
-def _get_data(feature, annotations, target):
+def _get_data(feature, target):
     from PIL import Image as _PIL_Image
     rs = np.random.RandomState(1234)
     def from_pil_image(pil_img, image_format='png'):
@@ -44,7 +44,6 @@ def _get_data(feature, annotations, target):
     max_num_boxes_per_image = 10
     classes = _CLASSES
     images = []
-    anns = []
     FORMATS = ['png', 'jpeg', 'raw']
     for i in range(num_examples):
         # Randomly determine image size (should handle large and small)
@@ -56,29 +55,7 @@ def _get_data(feature, annotations, target):
         image_format = FORMATS[rs.randint(len(FORMATS))]
         images.append(from_pil_image(pil_img, image_format=image_format))
 
-        ann = []
-        for j in range(rs.randint(max_num_boxes_per_image)):
-            left, right = np.sort(rs.randint(0, img_shape[1], size=2))
-            top, bottom = np.sort(rs.randint(0, img_shape[0], size=2))
-
-            x = (left + right) / 2
-            y = (top + bottom) / 2
-
-            width = max(right - left, 1)
-            height = max(bottom - top, 1)
-
-            label = {
-                'coordinates': {
-                    'x': x,
-                    'y': y,
-                    'width': width,
-                    'height': height,
-                },
-                'label': classes[rs.randint(len(classes))],
-                'type': 'rectangle',
-            }
-            ann.append(label)
-        anns.append(ann)
+        
 
     starter_images = []
     starter_target = []
@@ -96,7 +73,6 @@ def _get_data(feature, annotations, target):
     })
     test = tc.SFrame({
         feature: tc.SArray(images),
-        annotations: tc.SArray(anns),
     })
     backgrounds = test[feature].head(5)
     return train, test, backgrounds
@@ -110,7 +86,6 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
         """
         self.feature = 'myimage'
         self.target = 'mytarget'
-        self.annotations = 'myannotations'
 
         ## Create the model
         self.def_opts = {
@@ -119,7 +94,7 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
         }
 
         # Model
-        self.train, self.test, self.backgrounds = _get_data(feature=self.feature, target = self.target, annotations=self.annotations)
+        self.train, self.test, self.backgrounds = _get_data(feature=self.feature, target=self.target)
         self.model = tc.one_shot_object_detector.create(self.train,
                                                         target=self.target,
                                                         backgrounds=self.backgrounds,
@@ -131,25 +106,26 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
         self.opts['max_iterations'] = 1
 
         self.get_ans = {
-           'classes': lambda x: x == sorted(_CLASSES),
-           'target': lambda x: x == self.feature,
+           'target': lambda x: x == self.target,
            'num_starter_images': lambda x: x > 0,
            'num_classes': lambda x: x == len(_CLASSES),
+           'detector': lambda x: isinstance(x, tc.object_detector.object_detector.ObjectDetector),
+           '_detector_version': lambda x: x==1
         }
         self.fields_ans = self.get_ans.keys()
 
-    @pytest.mark.xfail(raises = _ToolkitError)
     def test_create_with_missing_target(self):
-        tc.one_shot_object_detector.create(self.train, target='wrong_feature')
+        with self.assertRaises(_ToolkitError):
+            tc.one_shot_object_detector.create(self.train, target='wrong_feature', 
+                backgrounds=self.backgrounds, max_iterations=1)
 
-    @pytest.mark.xfail(raises = _ToolkitError)
     def test_create_with_empty_dataset(self):
-        tc.one_shot_object_detector.create(self.train[:0])
+        with self.assertRaises(_ToolkitError):
+            tc.one_shot_object_detector.create(self.train[:0], target=self.target)
 
     def test_predict(self):
         sf = self.test.head()
         # Make sure this does not need the annotations column to work
-        del sf[self.annotations]
 
         pred = self.model.predict(sf.head())
 
@@ -162,7 +138,7 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
                          [])
 
         # Predict should work on no input (and produce no predictions)
-        pred0 = self.model.predict(sf[:0])
+        pred0 = self.model.predict(sf[self.feature][:0])
         self.assertEqual(len(pred0), 0)
 
     def test_predict_single_image(self):
@@ -187,39 +163,6 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
         # This should return predictions
         self.assertTrue(len(stacked) > 0)
 
-    def test_evaluate(self):
-        ret = self.model.evaluate(self.test.head(), metric='average_precision')
-
-        self.assertTrue(set(ret), {'average_precision'})
-        self.assertEqual(set(ret['average_precision'].keys()), set(_CLASSES))
-
-        ret = self.model.evaluate(self.sf.head())
-        self.assertEqual(set(ret), {'mean_average_precision_50', 'average_precision_50'})
-        self.assertTrue(isinstance(ret['mean_average_precision_50'], float))
-        self.assertEqual(set(ret['average_precision_50'].keys()), set(_CLASSES))
-
-        # Empty dataset should not fail with error (although it should to 0
-        # metrics)
-        ret = self.model.evaluate(self.sf[:0])
-        self.assertEqual(ret['mean_average_precision_50'], 0.0)
-
-    @pytest.mark.xfail(raises = _ToolkitError)
-    def test_evaluate_invalid_metric(self):
-        self.model.evaluate(self.test.head(), metric='not-supported-metric', annotations = self.annotations)
-
-    @pytest.mark.xfail(raises = _ToolkitError)
-    def test_evaluate_invalid_format(self):
-        self.model.evaluate(self.test.head(), output_type='not-supported-format', annotations = self.annotations)
-
-    @pytest.mark.xfail(raises = _ToolkitError)
-    def test_evaluate_missing_annotations_param(self):
-        self.model.evaluate(self.test.head())
-
-    @pytest.mark.xfail(raises = _ToolkitError)
-    def test_evaluate_missing_annotations(self):
-        sf = self.test.copy()
-        del sf[self.annotations]
-        self.model.evaluate(sf.head(), annotations = self.annotations)
 
     def test_export_coreml(self):
         from PIL import Image
@@ -229,7 +172,7 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
             include_non_maximum_suppression=False)
 
         coreml_model = coremltools.models.MLModel(filename)
-        img = self.sf[0:1][self.feature][0]
+        img = self.train[0:1][self.feature][0]
         img_fixed = tc.image_analysis.resize(img, 416, 416, 3)
         pil_img = Image.fromarray(img_fixed.pixel_data)
         if _mac_ver() >= (10, 13):
@@ -247,8 +190,8 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
         filename2 = tempfile.mkstemp('bingo2.mlmodel')[1]
         # We also test at the same time if we can export a model with a single
         # class
-        sf = tc.SFrame({'image': [self.sf[self.feature][0]],
-                        'ann': [self.sf[self.annotations][0][:1]]})
+        sf = tc.SFrame({'image': tc.SArray([self.train[self.feature][0]]),
+                        'label': tc.SArray([self.train[self.target][0]])})
         model2 = tc.object_detector.create(sf, max_iterations=1)
         model2.export_coreml(filename2, 
             include_non_maximum_suppression=False)
@@ -258,7 +201,7 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
         fields = model._list_fields()
         self.assertEqual(set(fields), set(self.fields_ans))
 
-    def test_get(self):
+    def test_get(self, ):
         model = self.model
         for field in self.fields_ans:
             ans = model._get(field)

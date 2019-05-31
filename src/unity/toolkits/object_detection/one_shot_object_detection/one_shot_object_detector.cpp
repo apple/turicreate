@@ -180,8 +180,8 @@ gl_sframe augment_data(const gl_sframe &data,
 
 
   const std::map<std::string, std::vector<flexible_type> >& augmented_data = {
-    {"annotation", annotations},
-    {"image", images}
+    {target_column_name, annotations},
+    {image_column_name, images}
   };
   gl_sframe augmented_data_out = gl_sframe(augmented_data);
   return augmented_data_out;
