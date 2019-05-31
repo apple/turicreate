@@ -7,5 +7,6 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 from ._augmentation import preview_synthetic_training_data
+from ._visualization import draw_bounding_boxes
 
-__all__ = ['preview_synthetic_training_data']
+__all__ = ['preview_synthetic_training_data', 'draw_bounding_boxes']
