@@ -28,5 +28,17 @@ def draw_bounding_boxes(images, annotations, confidence_threshold=0):
         Similar to the input `images`, except the images are decorated with
         boxes to visualize the object instances.
 
+    See Also
+    --------
+    predict
+
+    Examples
+    --------
+    .. sourcecode:: python
+
+        # Make predictions
+        >>> pred = model.predict(data)
+        >>> predictions_with_bounding_boxes = tc.one_shot_object_detector.util.draw_bounding_boxes(data['images'], pred)
+        >>> predictions_with_bounding_boxes.explore()
     """
     return _draw_bounding_boxes(images, annotations, confidence_threshold)
