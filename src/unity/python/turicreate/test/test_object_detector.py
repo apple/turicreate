@@ -142,7 +142,7 @@ class ObjectDetectorTest(unittest.TestCase):
 
     @pytest.mark.xfail(raises = _ToolkitError)
     def test_create_with_missing_feature(self):
-        tc.object_detector.create(self.sf, feature='wrong_feature')
+        tc.object_detector.create(self.sf, feature='wrong_feature', annotations=self.annotations)
 
     @pytest.mark.xfail(raises = _ToolkitError)
     def test_create_with_missing_annotations(self):
