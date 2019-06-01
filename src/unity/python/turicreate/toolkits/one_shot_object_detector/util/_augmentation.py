@@ -51,7 +51,8 @@ def preview_synthetic_training_data(data,
     # Option arguments to pass in to C++ Object Detector, if we use it:
     # {'mlmodel_path':'darknet.mlmodel', 'max_iterations' : 25}
     options_for_augmentation = {
-        "seed": seed
+        "seed": seed,
+        "verbose": verbose
     }
     augmented_data = one_shot_model.augment(dataset_to_augment,
                                             image_column_name,
