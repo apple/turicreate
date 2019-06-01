@@ -55,9 +55,9 @@ class Evaluation(dict):
     """
     Explore model evaluation qualitatively through a GUI assisted application.
     """
-    if self.data["test_data"]["image"].dtype == _tc.Image:
+    if self.data["test_data"][self["feature"]].dtype == _tc.Image:
       print("Resizing image data... ", end='')
-      self.data["test_data"]["image"] = self.data["test_data"]["image"].apply(_image_conversion)
+      self.data["test_data"][self["feature"]] = self.data["test_data"][self["feature"]].apply(_image_conversion)
       self.data["test_data"].materialize()
       print("Done.")
     params = (self._get_eval_json()+"\n", self.data["test_data"], self, )
