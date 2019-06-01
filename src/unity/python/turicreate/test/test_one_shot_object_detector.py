@@ -45,7 +45,7 @@ def _get_data(feature, target):
     classes = _CLASSES
     images = []
     FORMATS = ['png', 'jpeg', 'raw']
-    for i in range(num_examples):
+    for _ in range(num_examples):
         # Randomly determine image size (should handle large and small)
         img_shape = tuple(rs.randint(100, 1000, size=2)) + (3,)
         img = rs.randint(255, size=img_shape)
@@ -101,13 +101,9 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
                                                         batch_size=2,
                                                         max_iterations=1)
 
-        ## Answers
-        self.opts = self.def_opts.copy()
-        self.opts['max_iterations'] = 1
-
         self.get_ans = {
            'target': lambda x: x == self.target,
-           'num_starter_images': lambda x: x > 0,
+           'num_starter_images': lambda x: len(self.train),
            'num_classes': lambda x: x == len(_CLASSES),
            'detector': lambda x: isinstance(x, tc.object_detector.object_detector.ObjectDetector),
            '_detector_version': lambda x: x==1
@@ -125,8 +121,6 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
 
     def test_predict(self):
         sf = self.test.head()
-        # Make sure this does not need the annotations column to work
-
         pred = self.model.predict(sf.head())
 
         # Check the structure of the output
@@ -182,8 +176,6 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
             self.assertEqual(ret['confidence'].shape[1], len(_CLASSES))
             self.assertEqual(ret['coordinates'].shape[0], 
                 ret['confidence'].shape[0])
-            # A numeric comparison of the resulting of top bounding boxes is
-            # not that meaningful unless the model has converged
 
         # Also check if we can train a second model and export it (there could
         # be naming issues in mxnet)
@@ -192,7 +184,7 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
         # class
         sf = tc.SFrame({'image': tc.SArray([self.train[self.feature][0]]),
                         'label': tc.SArray([self.train[self.target][0]])})
-        model2 = tc.object_detector.create(sf, max_iterations=1)
+        model2 = tc.one_shot_object_detector.create(sf, 'label', max_iterations=1)
         model2.export_coreml(filename2, 
             include_non_maximum_suppression=False)
 
@@ -222,12 +214,7 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
         with test_util.TempDirectory() as filename:
             self.model.save(filename)
             self.model = tc.load_model(filename)
-
             self.test_predict()
-            print("Predict passed")
             self.test_get()
-            print("Get passed")
             self.test_summary()
-            print("Summary passed")
             self.test__list_fields()
-            print("List fields passed")
