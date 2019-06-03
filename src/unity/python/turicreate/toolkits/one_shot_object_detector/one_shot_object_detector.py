@@ -111,7 +111,6 @@ class OneShotObjectDetector(_CustomModel):
         verbose : bool
             If True, prints prediction progress.
 
-
         Returns
         -------
         out : SArray
@@ -123,7 +122,7 @@ class OneShotObjectDetector(_CustomModel):
 
         See Also
         --------
-        evaluate
+        draw_bounding_boxes
 
         Examples
         --------
@@ -131,6 +130,8 @@ class OneShotObjectDetector(_CustomModel):
 
             # Make predictions
             >>> pred = model.predict(data)
+            >>> predictions_with_bounding_boxes = tc.one_shot_object_detector.util.draw_bounding_boxes(data['images'], pred)
+            >>> predictions_with_bounding_boxes.explore()
 
         """
         return self.__proxy__['detector'].predict(dataset=dataset, 

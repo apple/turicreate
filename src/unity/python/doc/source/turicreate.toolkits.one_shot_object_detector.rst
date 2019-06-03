@@ -22,3 +22,4 @@ utilities
   :nosignatures:
 
   util.preview_synthetic_training_data
+  util.draw_bounding_boxes
