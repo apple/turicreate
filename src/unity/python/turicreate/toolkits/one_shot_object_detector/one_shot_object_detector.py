@@ -59,7 +59,6 @@ def create(data,
         # Make predictions on the training set and as column to the SFrame
         >>> test_data['predictions'] = model.predict(test_data)
     """
-    _tkutl._raise_error_if_column_exists(data, target, "dataset", target)
     augmented_data = _preview_synthetic_training_data(data, target, backgrounds)
     model = _tc.object_detector.create( augmented_data,
                                         batch_size=batch_size,

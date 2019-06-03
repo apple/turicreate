@@ -10,6 +10,7 @@ import turicreate.toolkits._internal_utils as _tkutl
 def check_one_shot_input(data, target):
     if not isinstance(target, str):
         raise TypeError("'target' must be of type string.")
+    _tkutl._raise_error_if_column_exists(data, target, "data", target)
     if isinstance(data, _tc.SFrame):
         image_column_name = _tkutl._find_only_image_column(data)
         target_column_name = target
