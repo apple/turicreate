@@ -18,7 +18,7 @@
 #include <xgboost/src/utils/io.h>
 #include <xgboost/src/utils/fmap.h>
 #include <xgboost/src/utils/utils.h>
-#include <json/json_include.hpp>
+#include <core/data/json/json_include.hpp>
 
 namespace xgboost {
 namespace tree {

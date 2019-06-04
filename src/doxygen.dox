@@ -1,8 +1,0 @@
-// This file is only used to define doxygen documentation groups
-/**
-\defgroup util Utility Classes and Functions
-\defgroup random Random Number Generators
-\defgroup group_serialization Serialization
-\defgroup toolkits Turi Toolkits
-\defgroup unity Unity Libraries
-*/

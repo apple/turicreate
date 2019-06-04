@@ -16,8 +16,8 @@
 #include <xgboost/src/utils/random.h>
 
 // GLC parallel lambda premitive 
-#include <parallel/lambda_omp.hpp>
-#include <parallel/pthread_tools.hpp>
+#include <core/system/platform/parallel/lambda_omp.hpp>
+#include <core/system/platform/parallel/pthread_tools.hpp>
 
 namespace xgboost {
 namespace tree {

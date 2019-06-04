@@ -57,7 +57,7 @@ in rows and columns. This dataset contains the following columns:
 
 Each line in this dataset is created by performing the following steps:
 
-1. From the set of possible file paths under `src/unity`, sample a random file
+1. From the set of possible file paths under `src`, sample a random file
    path. This becomes the `File Path` column.
 2. From the set of possible
    [clang-format options](https://clang.llvm.org/docs/ClangFormatStyleOptions.html#configurable-format-style-options),

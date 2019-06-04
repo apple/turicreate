@@ -9,9 +9,9 @@
 #include <memory>
 
 #include <toolkits/image_deep_feature_extractor/image_feature_extractor.hpp>
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/lib/extensions/ml_model.hpp>
-#include <unity/lib/toolkit_class_macros.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <core/model_server/model_base/ml_model.hpp>
+#include <core/unity/toolkit_class_macros.hpp>
 
 
 namespace turi {

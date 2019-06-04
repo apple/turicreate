@@ -11,8 +11,8 @@ build. This means that the build itself, and the products of the build, take pla
 overwritten on the next build. Make changes in the `src/` directory, and run build commands to produce output.
 
 * `src/`: source code of Turi Create
-* `src/unity/python`: the Python module source code
-* `src/unity/python/turicreate/test`: Python unit tests for Turi Create
+* `src/python`: the Python module source code
+* `src/python/turicreate/test`: Python unit tests for Turi Create
 * `src/external`: source drops of 3rd party source dependencies
 * `deps/`: build dependencies and environment
 * `debug/`, `release/`: build output directories for debug and release builds respectively
@@ -89,13 +89,13 @@ Then, run `./configure` (optionally with command line arguments to control what 
     ./configure
 
 Running `./configure` will create two sub-directories, `release/` and
-`debug/` . cd into `src/unity` under either of these directories and running make will build the
+`debug/` . cd into `src` under either of these directories and running make will build the
 release or the debug versions respectively.
 
 We recommend using make’s parallel build feature to accelerate the compilation
 process. For instance:
 
-    cd debug/src/unity
+    cd debug/src
     make -j 4
 
 will perform up to 4 build tasks in parallel. When building in release mode,
@@ -120,7 +120,7 @@ Running Unit Tests
 ### Running Python unit tests
 From the repo root:
 
-    cd debug/src/unity/python/turicreate/test
+    cd debug/src/python/turicreate/test
     pytest
 
 

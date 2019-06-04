@@ -19,9 +19,9 @@
 #include "./helper_utils.h"
 
 // GLC parallel lambda premitive 
-#include <parallel/lambda_omp.hpp>
-#include <parallel/pthread_tools.hpp>
-#include <parallel/atomic.hpp>
+#include <core/system/platform/parallel/lambda_omp.hpp>
+#include <core/system/platform/parallel/pthread_tools.hpp>
+#include <core/system/platform/parallel/atomic.hpp>
 
 namespace xgboost {
 namespace learner {
