@@ -191,9 +191,120 @@ annotate_spec::Annotations ObjectDetection::getAnnotations(size_t start,
 
 bool ObjectDetection::setAnnotations(
     const annotate_spec::Annotations &annotations) {
+  bool error = true;
+  for (int a_idx = 0; a_idx < annotations.annotation_size(); a_idx++) {
+    annotate_spec::Annotation annotation = annotations.annotation(a_idx);
 
-  // TODO: implement `setAnnotations`
-  return true;
+    if (annotation.labels_size() < 1) {
+      std::cerr << "No Labels present in the Annotation" << std::endl;
+      error = false;
+      continue;
+    }
+
+    size_t sf_idx = annotation.rowindex(0);
+    if (sf_idx >= m_data->size()) {
+      std::cerr << "Out of range error: Annotation rowIndex exceeds the "
+                   "acceptable range"
+                << std::endl;
+      error = false;
+      continue;
+    }
+
+    flex_list annotation_list;
+    for (int l_idx = 0; l_idx < annotation.labels_size(); l_idx++) {
+      annotate_spec::Label label = annotation.labels(l_idx);
+      switch (label.labelIdentifier_case()) {
+      case annotate_spec::Label::LabelIdentifierCase::kIntLabel:
+        switch (label.labelType_case()) {
+        case annotate_spec::Label::LabelTypeCase::kObjectDetectionLabel: {
+          flex_dict bounds = _parse_bounding_boxes(label);
+          int tag = label.intlabel();
+
+          flex_dict annotation_dict = {{"label", tag}, {"coordinates", bounds}};
+
+          annotation_list.push_back(annotation_dict);
+        } break;
+        default:
+          std::cerr << "Unexpected label type type. Expected `ObjectDetection`"
+                    << std::endl;
+          error = false;
+        }
+        break;
+      case annotate_spec::Label::LabelIdentifierCase::kStringLabel:
+        switch (label.labelType_case()) {
+        case annotate_spec::Label::LabelTypeCase::kObjectDetectionLabel: {
+          flex_dict bounds = _parse_bounding_boxes(label);
+          std::string tag = label.stringlabel();
+
+          flex_dict annotation_dict = {{"label", tag}, {"coordinates", bounds}};
+
+          annotation_list.push_back(annotation_dict);
+        } break;
+        default:
+          std::cerr << "Unexpected label type type. Expected `ObjectDetection`"
+                    << std::endl;
+          error = false;
+        }
+        break;
+      default:
+        std::cerr
+            << "Unexpected label identifier type. Expected INTEGER or STRING."
+            << std::endl;
+        error = false;
+      }
+    }
+
+    _addAnnotationToSFrame(sf_idx, annotation_list);
+  }
+
+  return error;
+}
+
+void ObjectDetection::_addAnnotationToSFrame(size_t index, flex_list label) {
+  /* Assert that the column type is indeed of type flex_enum::LIST */
+  size_t annotation_column_index = m_data->column_index(m_annotation_column);
+  DASSERT_EQ(m_data->dtype().at(annotation_column_index), flex_type_enum::LIST);
+
+  std::shared_ptr<unity_sarray> data_sarray =
+      std::static_pointer_cast<unity_sarray>(
+          m_data->select_column(m_annotation_column));
+
+  m_data->remove_column(annotation_column_index);
+
+  std::shared_ptr<unity_sarray> place_holder = std::make_shared<unity_sarray>();
+
+  place_holder->construct_from_const(label, 1, flex_type_enum::LIST);
+
+  /* if index is not equal to the first index */
+  if (index != 0) {
+    std::shared_ptr<unity_sarray> top_sarray =
+        std::static_pointer_cast<unity_sarray>(
+            data_sarray->copy_range(0, 1, index));
+    place_holder = std::static_pointer_cast<unity_sarray>(
+        top_sarray->append(place_holder));
+  }
+
+  /* if index is not equal to the last index */
+  if (index != (m_data->size() - 1)) {
+    std::shared_ptr<unity_sarray_base> bottom_sarray =
+        data_sarray->copy_range((index + 1), 1, m_data->size());
+    place_holder = std::static_pointer_cast<unity_sarray>(
+        place_holder->append(bottom_sarray));
+  }
+
+  /* Assert that the sarray we just created and the sframe are the same size. */
+  DASSERT_EQ(place_holder->size(), m_data->size());
+
+  m_data->add_column(place_holder, m_annotation_column);
+}
+
+flex_dict ObjectDetection::_parse_bounding_boxes(annotate_spec::Label label) {
+  annotate_spec::ObjectDetectionLabel od_label = label.objectdetectionlabel();
+  flex_dict bounds = {{"height", od_label.height()},
+                      {"width", od_label.width()},
+                      {"x", od_label.x()},
+                      {"y", od_label.y()}};
+  return bounds;
 }
 
 void ObjectDetection::cast_annotations() {

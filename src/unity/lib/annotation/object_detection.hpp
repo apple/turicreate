@@ -40,6 +40,9 @@ public:
   BEGIN_CLASS_MEMBER_REGISTRATION("ObjectDetection");
   IMPORT_BASE_CLASS_REGISTRATION(AnnotationBase);
   END_CLASS_MEMBER_REGISTRATION
+private:
+  flex_dict _parse_bounding_boxes(annotate_spec::Label label);
+  void _addAnnotationToSFrame(size_t index, flex_list label);
 };
 
 } // namespace annotate
