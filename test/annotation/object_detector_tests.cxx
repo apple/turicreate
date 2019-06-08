@@ -19,6 +19,10 @@ struct object_detection_test {
     // TODO: plumb through `test_pass_through`
   }
 
+  void test_get_metadata() {
+    // TODO: plumb through `test_get_metadata`
+  }
+
   void test_get_items() {
     // TODO: plumb through `test_get_items`
   }
@@ -60,6 +64,9 @@ struct object_detection_test {
 BOOST_FIXTURE_TEST_SUITE(_object_detection_test, object_detection_test)
 BOOST_AUTO_TEST_CASE(test_pass_through) {
   object_detection_test::test_pass_through();
+}
+BOOST_AUTO_TEST_CASE(test_get_metadata) {
+  object_detection_test::test_get_metadata();
 }
 BOOST_AUTO_TEST_CASE(test_get_items_out_of_index) {
   object_detection_test::test_get_items_out_of_index();
