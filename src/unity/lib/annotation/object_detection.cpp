@@ -3,9 +3,17 @@
 #include <unity/lib/annotation/object_detection.hpp>
 #include <unity/lib/annotation/utils.hpp>
 
+#include <boost/archive/iterators/base64_from_binary.hpp>
+#include <boost/archive/iterators/binary_from_base64.hpp>
+#include <boost/archive/iterators/remove_whitespace.hpp>
+#include <boost/archive/iterators/transform_width.hpp>
+
 #include <sframe/group_aggregate_value.hpp>
 #include <sframe/groupby_aggregate_operators.hpp>
+
 #include <unity/lib/gl_sframe.hpp>
+#include <unity/lib/image_util.hpp>
+#include <unity/lib/unity_sarray_builder.hpp>
 
 namespace turi {
 namespace annotate {
@@ -18,17 +26,21 @@ ObjectDetection::ObjectDetection(const std::shared_ptr<unity_sframe> &data,
 annotate_spec::MetaData ObjectDetection::metaData() {
   annotate_spec::MetaData meta_data;
 
-  meta_data.set_type(annotate_spec::MetaData_AnnotationType::MetaData_AnnotationType_OBJECT_DETECTION);
+  meta_data.set_type(annotate_spec::MetaData_AnnotationType::
+                         MetaData_AnnotationType_OBJECT_DETECTION);
   meta_data.set_num_examples(m_data->size());
-  
-  annotate_spec::ObjectDetectionMeta *object_detection_meta = meta_data.mutable_object_detection();
+
+  annotate_spec::ObjectDetectionMeta *object_detection_meta =
+      meta_data.mutable_object_detection();
 
   gl_sframe gl_data(m_data);
-  gl_sframe stacked_annotations = gl_data.stack(m_annotation_column, "annotations", true);
+  gl_sframe stacked_annotations =
+      gl_data.stack(m_annotation_column, "annotations", true);
   gl_sframe unpacked_annotations = stacked_annotations.unpack("annotations");
 
   gl_sarray labels = unpacked_annotations["annotations.label"].dropna();
-  gl_sarray counts = labels.cumulative_aggregate(std::make_shared<groupby_operators::count>());
+  gl_sarray counts =
+      labels.cumulative_aggregate(std::make_shared<groupby_operators::count>());
 
   flex_type_enum array_type = labels.dtype();
 
@@ -36,15 +48,17 @@ annotate_spec::MetaData ObjectDetection::metaData() {
 
   gl_sframe label_counts({{"labels", labels}, {"count", counts}});
 
-  for(const auto& row: label_counts.range_iterator()) {
+  for (const auto &row : label_counts.range_iterator()) {
     if (array_type == flex_type_enum::STRING) {
-      annotate_spec::MetaLabel *labels_meta = object_detection_meta->add_label();
+      annotate_spec::MetaLabel *labels_meta =
+          object_detection_meta->add_label();
       labels_meta->set_stringlabel(row[0].get<flex_string>());
       labels_meta->set_elementcount(row[1].get<flex_int>());
     }
 
     if (array_type == flex_type_enum::INTEGER) {
-      annotate_spec::MetaLabel *labels_meta = object_detection_meta->add_label();
+      annotate_spec::MetaLabel *labels_meta =
+          object_detection_meta->add_label();
       labels_meta->set_intlabel(row[0].get<flex_int>());
       labels_meta->set_elementcount(row[1].get<flex_int>());
     }
@@ -55,7 +69,51 @@ annotate_spec::MetaData ObjectDetection::metaData() {
 
 annotate_spec::Data ObjectDetection::getItems(size_t start, size_t end) {
   annotate_spec::Data data;
-  // TODO: Implement `getItems`
+
+  gl_sframe gl_data(m_data);
+
+  gl_sframe filtered_data =
+      gl_data[{static_cast<long long>(start), static_cast<long long>(end)}];
+
+  gl_sarray filtered_images = filtered_data[m_data_columns.at(0)].dropna();
+
+  DASSERT_EQ(filtered_images.dtype(), flex_type_enum::IMAGE);
+
+  size_t i = 0;
+  for (const auto &image : filtered_images.range_iterator()) {
+    flex_image img = image.get<flex_image>();
+    img = turi::image_util::encode_image(img);
+
+    size_t img_width = img.m_width;
+    size_t img_height = img.m_height;
+    size_t img_channels = img.m_channels;
+
+    annotate_spec::Datum *datum = data.add_data();
+    annotate_spec::ImageDatum *img_datum = datum->add_images();
+
+    img_datum->set_width(img_width);
+    img_datum->set_height(img_height);
+    img_datum->set_channels(img_channels);
+
+    const unsigned char *img_bytes = img.get_image_data();
+    size_t img_data_size = img.m_image_data_size;
+
+    std::string img_base64(
+        boost::archive::iterators::base64_from_binary<
+            boost::archive::iterators::transform_width<const unsigned char *, 6,
+                                                       8>>(img_bytes),
+        boost::archive::iterators::base64_from_binary<
+            boost::archive::iterators::transform_width<const unsigned char *, 6,
+                                                       8>>(img_bytes +
+                                                           img_data_size));
+
+    img_datum->set_type((annotate_spec::ImageDatum_Format)img.m_format);
+    img_datum->set_imgdata(img_base64);
+
+    datum->set_rowindex(start + i);
+    i++;
+  }
+
   return data;
 }
 
