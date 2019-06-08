@@ -120,22 +120,88 @@ annotate_spec::Data ObjectDetection::getItems(size_t start, size_t end) {
 annotate_spec::Annotations ObjectDetection::getAnnotations(size_t start,
                                                            size_t end) {
   annotate_spec::Annotations annotations;
-  // TODO: Implement `getAnnotations`
+
+  gl_sframe gl_data(m_data);
+
+  gl_sframe filtered_data =
+      gl_data[{static_cast<long long>(start), static_cast<long long>(end)}];
+
+  gl_sarray filtered_images = filtered_data[m_annotation_column].dropna();
+
+  DASSERT_EQ(filtered_images.dtype(), flex_type_enum::LIST);
+
+  size_t i = 0;
+  for (const auto &image : filtered_images.range_iterator()) {
+    if (image.get_type() == flex_type_enum::UNDEFINED) {
+      continue;
+    }
+
+    annotate_spec::Annotation *annotation = annotations.add_annotation();
+    const flex_list &vectors = image.get<flex_list>();
+
+    for (size_t i = 0; i < vectors.size(); ++i) {
+      annotate_spec::Label *label = annotation->add_labels();
+
+      flex_dict object_detection_label = vectors.at(i).get<flex_dict>();
+
+      for (const auto &pair : object_detection_label) {
+        const auto &dict_key = pair.first;
+        const auto &dict_value = pair.second;
+        if (std::string(dict_key) == "coordinates") {
+          annotate_spec::ObjectDetectionLabel *od_label =
+              label->mutable_objectdetectionlabel();
+
+          flex_dict od_box = dict_value.get<flex_dict>();
+          for (const auto &box : od_box) {
+            const auto &box_key = box.first;
+            const auto &box_value = box.second;
+            if (std::string(box_key) == "height") {
+              od_label->set_height(box_value.get<flex_float>());
+            }
+
+            if (std::string(box_key) == "width") {
+              od_label->set_width(box_value.get<flex_float>());
+            }
+
+            if (std::string(box_key) == "x") {
+              od_label->set_x(box_value.get<flex_float>());
+            }
+
+            if (std::string(box_key) == "y") {
+              od_label->set_y(box_value.get<flex_float>());
+            }
+          }
+        }
+        if (std::string(dict_key) == "label") {
+          if (dict_value.get_type() == flex_type_enum::STRING) {
+            label->set_stringlabel(dict_value.get<flex_string>());
+          } else if (dict_value.get_type() == flex_type_enum::INTEGER) {
+            label->set_intlabel(dict_value.get<flex_int>());
+          }
+        }
+      }
+    }
+
+    annotation->add_rowindex(start + i);
+    i++;
+  }
+
   return annotations;
 }
 
 bool ObjectDetection::setAnnotations(
     const annotate_spec::Annotations &annotations) {
+
   // TODO: implement `setAnnotations`
   return true;
 }
 
 void ObjectDetection::cast_annotations() {
-  // TODO: implement `cast_annotations`
+  // TODO: implement `cast_annotations` used with Image Saliency for OD
 }
 
 void ObjectDetection::background_work() {
-  // TODO: implement `background_work`
+  // TODO: implement `background_work` used with Image Saliency for OD
 }
 
 } // namespace annotate
