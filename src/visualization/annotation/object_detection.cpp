@@ -21,7 +21,10 @@ namespace annotate {
 ObjectDetection::ObjectDetection(const std::shared_ptr<unity_sframe> &data,
                                  const std::vector<std::string> &data_columns,
                                  const std::string &annotation_column)
-    : AnnotationBase(data, data_columns, annotation_column) {}
+    : AnnotationBase(data, data_columns, annotation_column) {
+  this->addAnnotationColumn();
+  this->checkDataSet();
+}
 
 annotate_spec::MetaData ObjectDetection::metaData() {
   annotate_spec::MetaData meta_data;
@@ -29,24 +32,15 @@ annotate_spec::MetaData ObjectDetection::metaData() {
   meta_data.set_type(annotate_spec::MetaData_AnnotationType::
                          MetaData_AnnotationType_OBJECT_DETECTION);
   meta_data.set_num_examples(m_data->size());
-
   annotate_spec::ObjectDetectionMeta *object_detection_meta =
       meta_data.mutable_object_detection();
-
   gl_sframe gl_data(m_data);
   gl_sframe stacked_annotations =
       gl_data.stack(m_annotation_column, "annotations", true);
   gl_sframe unpacked_annotations = stacked_annotations.unpack("annotations");
-
-  gl_sarray labels = unpacked_annotations["annotations.label"].dropna();
-  gl_sarray counts =
-      labels.cumulative_aggregate(std::make_shared<groupby_operators::count>());
-
-  flex_type_enum array_type = labels.dtype();
-
-  DASSERT_TRUE(labels.size() == labels.size());
-
-  gl_sframe label_counts({{"labels", labels}, {"count", counts}});
+  gl_sframe labels({{"labels", unpacked_annotations["X.label"].dropna()}});
+  gl_sframe label_counts = labels.groupby({"labels"}, {{"count", aggregate::COUNT()}});
+  flex_type_enum array_type = labels["labels"].dtype();
 
   for (const auto &row : label_counts.range_iterator()) {
     if (array_type == flex_type_enum::STRING) {
@@ -63,7 +57,6 @@ annotate_spec::MetaData ObjectDetection::metaData() {
       labels_meta->set_elementcount(row[1].get<flex_int>());
     }
   }
-
   return meta_data;
 }
 
@@ -258,6 +251,48 @@ bool ObjectDetection::setAnnotations(
   }
 
   return error;
+}
+
+void ObjectDetection::addAnnotationColumn() {
+  std::vector<std::string> column_names = m_data->column_names();
+
+  if (m_annotation_column == "") {
+    m_annotation_column = "annotations";
+  }
+
+  if (!(std::find(column_names.begin(), column_names.end(),
+                  m_annotation_column) != column_names.end())) {
+    std::shared_ptr<unity_sarray> empty_annotation_sarray =
+        std::make_shared<unity_sarray>();
+
+    empty_annotation_sarray->construct_from_const(
+        FLEX_UNDEFINED, m_data->size(), flex_type_enum::LIST);
+
+    m_data->add_column(empty_annotation_sarray, m_annotation_column);
+  }
+}
+
+void ObjectDetection::checkDataSet() {
+  size_t image_column_index = m_data->column_index(m_data_columns.at(0));
+  flex_type_enum image_column_dtype = m_data->dtype().at(image_column_index);
+
+  if (image_column_dtype != flex_type_enum::IMAGE) {
+    std_log_and_throw(std::invalid_argument, "Image column \"" +
+                                                 m_data_columns.at(0) +
+                                                 "\" not of image type.");
+  }
+
+  size_t annotation_column_index = m_data->column_index(m_annotation_column);
+  flex_type_enum annotation_column_dtype =
+      m_data->dtype().at(annotation_column_index);
+
+  if (!(annotation_column_dtype == flex_type_enum::LIST)) {
+    std_log_and_throw(std::invalid_argument,
+                      "Annotation column \"" + m_data_columns.at(0) +
+                          "\" of type \'" +
+                          flex_type_enum_to_name(annotation_column_dtype) +
+                          "\' not of 'list' type.");
+  }
 }
 
 void ObjectDetection::_addAnnotationToSFrame(size_t index, flex_list label) {

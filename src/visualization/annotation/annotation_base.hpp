@@ -86,6 +86,10 @@ public:
 
   virtual void background_work() = 0;
 
+  virtual void addAnnotationColumn() = 0;
+
+  virtual void checkDataSet() = 0;
+
   BEGIN_BASE_CLASS_MEMBER_REGISTRATION()
 
   IMPORT_BASE_CLASS_REGISTRATION(ml_model_base);
@@ -112,9 +116,7 @@ protected:
   std::string m_annotation_column;
   std::shared_ptr<visualization::process_wrapper> m_aw;
 
-  void _addAnnotationColumn();
   void _addIndexColumn();
-  void _checkDataSet();
   void _reshapeIndicies(size_t &start, size_t &end);
   void _sendProgress(double value);
 

@@ -39,6 +39,10 @@ public:
 
   void background_work() override;
 
+  void addAnnotationColumn() override;
+
+  void checkDataSet() override;
+
   annotate_spec::Similarity get_similar_items(size_t index,
                                               size_t k = 7) override;
 

@@ -104,7 +104,7 @@ random_bounding_box_sarray(size_t length, bool fill_na) {
   std::shared_ptr<turi::unity_sarray> sa =
       std::make_shared<turi::unity_sarray>();
   sa->construct_from_vector(annotation_column_data,
-                            turi::flex_type_enum::STRING);
+                            turi::flex_type_enum::LIST);
   return sa;
 }
 
