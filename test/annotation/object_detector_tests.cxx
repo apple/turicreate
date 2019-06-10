@@ -232,7 +232,31 @@ struct object_detection_test {
   }
 
   void test_annotation_registry() {
-    // TODO: plumb through `test_annotation_registry`
+    std::string image_column_name = "image";
+    std::string annotation_column_name = "bounding_boxes";
+    std::shared_ptr<turi::unity_sframe> annotation_sf =
+        annotation_testing::random_od_sframe(50, image_column_name,
+                                          annotation_column_name);
+
+    turi::annotate::ObjectDetection od_annotate(
+            annotation_sf, std::vector<std::string>({image_column_name}),
+            annotation_column_name);
+
+    std::shared_ptr<turi::unity_sframe> returned_sf =
+        od_annotate.returnAnnotations(false);
+
+    TS_ASSERT(annotation_testing::check_equality(annotation_sf, returned_sf));
+
+    
+    turi::annotate::ObjectDetection back_up_annotation;
+
+    std::shared_ptr<turi::annotate::annotation_global>
+        annotation_global_sframe = back_up_annotation.get_annotation_registry();
+
+    std::shared_ptr<turi::unity_sframe> recovered_sf =
+        annotation_global_sframe->annotation_sframe;
+
+    TS_ASSERT(annotation_testing::check_equality(annotation_sf, recovered_sf));
   }
 };
 
