@@ -90,7 +90,20 @@ struct object_detection_test {
   }
 
   void test_get_items_out_of_index() {
-    // TODO: plumb through `test_get_items_out_of_index`
+    std::string image_column_name = "image";
+    std::string annotation_column_name = "bounding_boxes";
+    std::shared_ptr<turi::unity_sframe> annotation_sf =
+        annotation_testing::random_od_sframe(50, image_column_name,
+                                          annotation_column_name);
+
+    turi::annotate::ObjectDetection od_annotate(
+            annotation_sf, std::vector<std::string>({image_column_name}),
+            annotation_column_name);
+
+    TuriCreate::Annotation::Specification::Data items =
+        od_annotate.getItems(50, 100);
+
+    TS_ASSERT(items.data_size() == 0);
   }
 
   void test_set_annotations_pass() {
