@@ -111,7 +111,36 @@ struct object_detection_test {
   }
 
   void test_set_annotations_out_of_index() {
-    // TODO: plumb through `test_set_annotations_out_of_index`
+    std::string image_column_name = "image";
+    std::string annotation_column_name = "bounding_boxes";
+    std::shared_ptr<turi::unity_sframe> annotation_sf =
+        annotation_testing::random_od_sframe(50, image_column_name,
+                                          annotation_column_name);
+
+    turi::annotate::ObjectDetection od_annotate(
+            annotation_sf, std::vector<std::string>({image_column_name}),
+            annotation_column_name);
+
+    TuriCreate::Annotation::Specification::Annotations annotations;
+    TuriCreate::Annotation::Specification::Annotation *annotation =
+        annotations.add_annotation();
+
+    annotate_spec::Label *label = annotation->add_labels();
+    annotate_spec::ObjectDetectionLabel *od_label = label->mutable_objectdetectionlabel();
+
+    std::string label_value = annotation_testing::random_string();
+    turi::flex_list label_bounding_box = annotation_testing::random_bounding_box();
+    
+    od_label->set_height((int)(rand() % 256) + 1);
+    od_label->set_width((int)(rand() % 256) + 1);
+    od_label->set_x((int)(rand() % 256) + 1);
+    od_label->set_y((int)(rand() % 256) + 1);
+
+    label->set_stringlabel(label_value);
+    annotation->add_rowindex(100);
+
+    /* Check if the annotations get properly handled */
+    TS_ASSERT(!od_annotate.setAnnotations(annotations));
   }
 
   void test_set_annotations_wrong_type() {
