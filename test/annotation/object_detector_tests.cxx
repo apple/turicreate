@@ -197,7 +197,38 @@ struct object_detection_test {
   }
 
   void test_return_annotations_drop_na() {
-    // TODO: plumb through `test_return_annotations_drop_na`
+    std::string image_column_name = "image";
+    std::string annotation_column_name = "bounding_boxes";
+    std::shared_ptr<turi::unity_sframe> annotation_sf =
+        annotation_testing::random_od_sframe(50, image_column_name,
+                                          annotation_column_name);
+
+    turi::annotate::ObjectDetection od_annotate(
+            annotation_sf, std::vector<std::string>({image_column_name}),
+            annotation_column_name);
+
+    std::shared_ptr<turi::unity_sframe> returned_sf =
+        od_annotate.returnAnnotations(true);
+
+    std::shared_ptr<turi::unity_sarray> labels_sa =
+        std::static_pointer_cast<turi::unity_sarray>(
+            returned_sf->select_column(annotation_column_name));
+
+    labels_sa = std::static_pointer_cast<turi::unity_sarray>(
+        labels_sa->drop_missing_values());
+
+    TS_ASSERT(labels_sa->size() == annotation_sf->size());
+
+    std::shared_ptr<turi::unity_sarray> expected_sa =
+        std::static_pointer_cast<turi::unity_sarray>(
+            annotation_sf->select_column(annotation_column_name));
+
+    std::vector<turi::flexible_type> flex_data_first = expected_sa->to_vector();
+    std::vector<turi::flexible_type> flex_data_second = labels_sa->to_vector();
+
+    for (std::vector<int>::size_type x = 0; x != flex_data_first.size(); x++) {
+      TS_ASSERT(flex_data_first[x] == flex_data_second[x]);
+    }
   }
 
   void test_annotation_registry() {

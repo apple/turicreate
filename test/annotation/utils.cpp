@@ -95,7 +95,7 @@ std::shared_ptr<turi::unity_sarray> random_bounding_box_sarray(size_t length,
   std::vector<turi::flexible_type> annotation_column_data;
   for (size_t x = 0; x < length; x++) {
     if (rand() % 20 > 15 && fill_na) {
-      annotation_column_data.push_back(NULL);
+      annotation_column_data.push_back(turi::flex_undefined());
     } else {
       annotation_column_data.push_back(random_bounding_box());
     }
