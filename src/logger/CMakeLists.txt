@@ -17,7 +17,6 @@ make_library(logger OBJECT
     boost
     timer
     parallel
-    stack_trace
     cppipc
   EXTERNAL_VISIBILITY
 )

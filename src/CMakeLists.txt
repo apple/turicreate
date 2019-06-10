@@ -30,7 +30,6 @@ subdirs(
   sframe_query_engine
   sgraph
   sketches
-  stack_trace
   startup_teardown
   table_printer
   unity

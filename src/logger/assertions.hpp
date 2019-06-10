@@ -312,9 +312,6 @@ extern void __print_back_trace();
 
 #define ASSERT_UNREACHABLE()  { EXPECT_TRUE(false); assert(false); TURI_BUILTIN_UNREACHABLE(); }
 
-// Convenience wrapper since this is a very common case.
-#define AU() { ASSERT_UNREACHABLE(); }
-
 #define ASSERT_MSG(condition, fmt, ...)                                  \
   do {                                                                   \
     if (__builtin_expect(!(condition), 0)) {                             \
@@ -384,26 +381,6 @@ extern void __print_back_trace();
 #ifdef ERROR
 #undef ERROR      // may conflict with ERROR macro on windows
 #endif
-
-#define BOOST_ENABLE_ASSERT_HANDLER
-
-namespace boost {
-  inline void assertion_failed(
-    char const * expr, char const * function, char const * file, long line) {
-
-    std::cerr << "Boost assertion failed: " << expr << std::endl;
-    ASSERT_UNREACHABLE();
-  }
-
-  inline void assertion_failed_msg(
-    char const * expr, char const * msg, char const * function,
-    char const * file, long line) {
-
-    std::cerr << "Boost assertion failed: " << expr << std::endl;
-    std::cerr << "Boost assertion message: " << msg << std::endl;
-    ASSERT_UNREACHABLE();
-  }
-}
 
 #endif // _LOGGING_H_
 
