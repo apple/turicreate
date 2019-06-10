@@ -12,7 +12,7 @@ Given an image and a one-shot detector trained on category 'stop sign', the outp
 In this example, the goal is to localize where in the image instances of the category 'stop sign' are present. For this task we supply a single image of a stop sign as a starter image:
 
 
-```
+```python
 import turicreate as tc
 
 # Load the starter images
@@ -46,7 +46,7 @@ model.export_coreml('MyCustomOneShotDetector.mlmodel')
 We can preview the augmented images generated and used by the model for training:  
 
 
-```
+```python
 augmented_images = tc.one_shot_object_detector.util.preview_synthetic_training_data(starter_images, 'label')
 
 augmented_images.explore()
@@ -64,7 +64,7 @@ Some examples of synthetic training data generated:
 To visualize the predictions made on the test set:
 
 
-```
+```python
 test_data['image_pred'] = tc.object_detector.util.draw_bounding_boxes(test_data['image'], test_data['predictions'])
 
 test_data.explore()
@@ -94,7 +94,7 @@ To learn more about deploying One-Shot to CoreML details, refer to the Object De
 The One-Shot Object Detectors allows using custom background images. To do so:
 
 
-```
+```python
 import turicreate as tc
 
 # Load the starter images
