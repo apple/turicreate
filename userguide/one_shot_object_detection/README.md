@@ -4,9 +4,7 @@ One-Shot object detection is the task of learning to detect a set of categories 
 
 Given an image and a one-shot detector trained on category 'stop sign', the output prediction will look like:
 
-![Stop Sign vector image](images/red_stop_sign.png)
-
-![Stop Sign prediction image](images/stop_sign_prediction_sample.png)
+![Stop Sign vector image](images/red_stop_sign.png) ![Stop Sign prediction image](images/stop_sign_prediction_sample.png)
 
 
 #### Introductory Example
@@ -14,7 +12,8 @@ Given an image and a one-shot detector trained on category 'stop sign', the outp
 In this example, the goal is to localize where in the image instances of the category 'stop sign' are present. For this task we supply a single image of a stop sign as a starter image:
 
 
-```import turicreate as tc
+```
+import turicreate as tc
 
 # Load the starter images
 starter_images = tc.SFrame({'image':[tc.Image('stop_sign.png')],
@@ -47,16 +46,17 @@ model.export_coreml('MyCustomOneShotDetector.mlmodel')
 We can preview the augmented images generated and used by the model for training:  
 
 
-```augmented_images = tc.one_shot_object_detector.util.preview_synthetic_training_data(starter_images, 'label')
+```
+augmented_images = tc.one_shot_object_detector.util.preview_synthetic_training_data(starter_images, 'label')
 
 augmented_images.explore()
 ```
 
-[Explore augmented images](images/augmented_images_explore.png)
+![Explore augmented images](images/augmented_images_explore.png)
 
 Some examples of synthetic training data generated:
 
-[Sample augmented images](images/augmented_images_collage.png)
+![Sample augmented images](images/augmented_images_collage.png)
 
 *Note: In order to view the exact augmented images used to train the model, the same seed should be used which was used to train the model.*
 
@@ -64,18 +64,17 @@ Some examples of synthetic training data generated:
 To visualize the predictions made on the test set:
 
 
-```test_data['image_pred'] = tc.object_detector.util.draw_bounding_boxes(test_data['image'], test_data['predictions'])
+```
+test_data['image_pred'] = tc.object_detector.util.draw_bounding_boxes(test_data['image'], test_data['predictions'])
 
 test_data.explore()
 ```
 
-[Prediction test data](images/test_data_explore.png)
+![Prediction test data](images/test_data_explore.png)
 
 Examples of test image predictions:
 
-[Sample prediction image - 1](images/sample_prediction_image1.png)
-
-[Sample prediction image - 2](images/sample_prediction_image2.png)
+![Sample prediction image - 1](images/sample_prediction_image1.png) ![Sample prediction image - 2](images/sample_prediction_image2.png)
 
 
 #### How it works
@@ -95,7 +94,8 @@ To learn more about deploying One-Shot to CoreML details, refer to the Object De
 The One-Shot Object Detectors allows using custom background images. To do so:
 
 
-```import turicreate as tc
+```
+import turicreate as tc
 
 # Load the starter images
 starter_images = tc.SFrame({'image':[tc.Image('stop_sign.png')],
