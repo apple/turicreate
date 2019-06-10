@@ -1,6 +1,6 @@
 # One-Shot Object Detection
 
-One-Shot object detection is the task of learning to detect from as few as one example per category. Unlike the Object Detector which requires many varied examples of objects in the real world, the One-Shot detector only requires a single canonical example of an object to train the classifier on and performs predictions for that category in the wild.
+One-Shot object detection is the task of learning to detect from as few as one example per category. Unlike the Object Detector which requires many varied examples of objects in the real world, the One-Shot detector only requires a single canonical example of an object to train the classifier on and performs predictions for that category in the wild. It is best suited for 2D objects such as playing cards, logos, road signs and clapperboards, in a 3D environment. One-Shot detctor is not suitable for 3D objects such as faces, animals and cars. 
 
 Given an image and a one-shot detector trained on category 'stop sign', the output prediction will look like:
 
