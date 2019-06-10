@@ -105,8 +105,7 @@ starter_images = tc.SFrame({'image':[tc.Image('stop_sign.png')],
 # Load background images
 my_backgrounds = tc.SArray('my_custom_backgrounds.sarray')
 
-# Create a model using custom background images
-# The time to train a model with                                       
+# Create a model using custom background images                                    
 model = tc.one_shot_object_detector.create(starter_images, 'label', backgrounds = my_backgrounds)
 ```
 
