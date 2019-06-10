@@ -90,8 +90,8 @@ std::shared_ptr<turi::unity_sarray> random_string_sarray(size_t length,
   return sa;
 }
 
-std::shared_ptr<turi::unity_sarray>
-random_bounding_box_sarray(size_t length, bool fill_na) {
+std::shared_ptr<turi::unity_sarray> random_bounding_box_sarray(size_t length,
+                                                               bool fill_na) {
   std::vector<turi::flexible_type> annotation_column_data;
   for (size_t x = 0; x < length; x++) {
     if (rand() % 20 > 15 && fill_na) {
@@ -103,8 +103,7 @@ random_bounding_box_sarray(size_t length, bool fill_na) {
 
   std::shared_ptr<turi::unity_sarray> sa =
       std::make_shared<turi::unity_sarray>();
-  sa->construct_from_vector(annotation_column_data,
-                            turi::flex_type_enum::LIST);
+  sa->construct_from_vector(annotation_column_data, turi::flex_type_enum::LIST);
   return sa;
 }
 

@@ -49,7 +49,44 @@ struct object_detection_test {
   }
 
   void test_get_items() {
-    // TODO: plumb through `test_get_items`
+    std::string image_column_name = "image";
+    std::string annotation_column_name = "bounding_boxes";
+    std::shared_ptr<turi::unity_sframe> annotation_sf =
+        annotation_testing::random_od_sframe(50, image_column_name,
+                                          annotation_column_name);
+
+    turi::annotate::ObjectDetection od_annotate(
+            annotation_sf, std::vector<std::string>({image_column_name}),
+            annotation_column_name);
+
+    TuriCreate::Annotation::Specification::Data items =
+        od_annotate.getItems(0, 10);
+
+    TS_ASSERT(items.data_size() == 10);
+
+    std::shared_ptr<turi::unity_sarray> image_sa =
+        std::static_pointer_cast<turi::unity_sarray>(
+            annotation_sf->select_column(image_column_name));
+
+    std::vector<turi::flexible_type> image_vector = image_sa->to_vector();
+
+    for (int x = 0; x < items.data_size(); x++) {
+      TuriCreate::Annotation::Specification::Datum item = items.data(x);
+      TS_ASSERT(item.images_size() == 1);
+
+      TuriCreate::Annotation::Specification::ImageDatum image_datum =
+          item.images(0);
+
+      size_t datum_width = image_datum.width();
+      size_t datum_height = image_datum.height();
+      size_t datum_channels = image_datum.channels();
+
+      turi::flex_image image = image_vector.at(x).get<turi::flex_image>();
+
+      TS_ASSERT(image.m_width == datum_width);
+      TS_ASSERT(image.m_height == datum_height);
+      TS_ASSERT(image.m_channels == datum_channels);
+    }
   }
 
   void test_get_items_out_of_index() {
