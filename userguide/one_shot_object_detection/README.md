@@ -9,7 +9,7 @@ Given an image and a one-shot detector trained on category 'stop sign', the outp
 
 #### Introductory Example
 
-In this example, the goal is to localize where in the image instances of the category 'stop sign' are present. For this task we supply a single image of a stop sign as a starter image:
+In this example, the goal is to **localize** where in the image instances of the category **stop sign** are present. For this task we supply a single image of a stop sign as a starter image:
 
 
 ```python
@@ -91,8 +91,9 @@ To learn more about deploying One-Shot to CoreML details, refer to the Object De
 
 #### Advanced Usage
 
-The One-Shot Object Detectors allows using custom background images. To do so:
+**Background images**
 
+The One-Shot Object Detector generates a set of synthetic images with which to train the detector. These images contain the object in various transformations in the wild. When the network is trained with these images, it allows the model to learn to identify the object in different environments. For convenience, we provide a set of background images by default. However, you may also supply your own custom background images specific to your application. These can be supplied within the `create()` method as follows:    
 
 ```python
 import turicreate as tc
@@ -102,8 +103,18 @@ starter_images = tc.SFrame({'image':[tc.Image('stop_sign.png')],
                    'label':['stop_sign']})
 
 # Load background images
-my_backgrounds = tc.SArray('custom_backgrounds.sarray')
+my_backgrounds = tc.SArray('my_custom_backgrounds.sarray')
 
 # Create a model using custom background images                                      
 model = tc.one_shot_object_detector.create(starter_images, 'label', backgrounds = my_backgrounds)
 ```
+
+To view the synthetic images generated with your custom background images:
+
+```python
+augmented_images = tc.one_shot_object_detector.util.preview_synthetic_training_data(starter_images, 'label', my_backgrounds)
+
+augmented_images.explore()
+```
+
+*Note: In order to view the exact augmented images used to train the model, the same seed should be used which was used to train the model.*
