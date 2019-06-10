@@ -4,7 +4,7 @@ One-Shot object detection is the task of learning to detect a set of categories 
 
 Given an image and a one-shot detector trained on category 'stop sign', the output prediction will look like:
 
-![Stop Sign vector image](images/red_stop_sign.png) ![Stop Sign prediction image](images/stop_sign_prediction_sample.png)
+![Stop Sign vector and prediction images](images/stop_sign_sample.png) 
 
 
 #### Introductory Example
