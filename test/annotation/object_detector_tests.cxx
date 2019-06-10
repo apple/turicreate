@@ -144,11 +144,39 @@ struct object_detection_test {
   }
 
   void test_set_annotations_wrong_type() {
-    // TODO: plumb through `test_set_annotations_wrong_type`
+    std::string image_column_name = "image";
+    std::string annotation_column_name = "bounding_boxes";
+    std::shared_ptr<turi::unity_sframe> annotation_sf =
+        annotation_testing::random_od_sframe(50, image_column_name,
+                                          annotation_column_name);
+
+    turi::annotate::ObjectDetection od_annotate(
+            annotation_sf, std::vector<std::string>({image_column_name}),
+            annotation_column_name);
+
+    TuriCreate::Annotation::Specification::Annotations annotations;
+    TuriCreate::Annotation::Specification::Annotation *annotation =
+        annotations.add_annotation();
+
+    annotation->add_rowindex(100);
+
+    TS_ASSERT(!od_annotate.setAnnotations(annotations));
   }
 
   void test_set_annotations_empty() {
-    // TODO: plumb through `test_set_annotations_empty`
+    std::string image_column_name = "image";
+    std::string annotation_column_name = "annotate";
+    std::shared_ptr<turi::unity_sframe> annotation_sf =
+        annotation_testing::random_od_sframe(50, image_column_name,
+                                          annotation_column_name);
+
+    turi::annotate::ObjectDetection od_annotate(
+            annotation_sf, std::vector<std::string>({image_column_name}),
+            annotation_column_name);
+
+    TuriCreate::Annotation::Specification::Annotations annotations;
+
+    TS_ASSERT(od_annotate.setAnnotations(annotations));
   }
 
   void test_return_annotations() {
