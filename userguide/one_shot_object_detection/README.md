@@ -74,7 +74,7 @@ test_data.explore()
 
 Examples of test image predictions:
 
-![Sample prediction image - 1](images/sample_prediction_image1.png) ![Sample prediction image - 2](images/sample_prediction_image2.png)
+![Sample prediction image - 1 and 2](images/sample_prediction_images_1_2.png)
 
 
 #### How it works
