@@ -165,7 +165,7 @@ struct object_detection_test {
 
   void test_set_annotations_empty() {
     std::string image_column_name = "image";
-    std::string annotation_column_name = "annotate";
+    std::string annotation_column_name = "bounding_boxes";
     std::shared_ptr<turi::unity_sframe> annotation_sf =
         annotation_testing::random_od_sframe(50, image_column_name,
                                           annotation_column_name);
@@ -180,7 +180,20 @@ struct object_detection_test {
   }
 
   void test_return_annotations() {
-    // TODO: plumb through `test_return_annotations`
+    std::string image_column_name = "image";
+    std::string annotation_column_name = "bounding_boxes";
+    std::shared_ptr<turi::unity_sframe> annotation_sf =
+        annotation_testing::random_od_sframe(50, image_column_name,
+                                          annotation_column_name);
+
+    turi::annotate::ObjectDetection od_annotate(
+            annotation_sf, std::vector<std::string>({image_column_name}),
+            annotation_column_name);
+
+    std::shared_ptr<turi::unity_sframe> returned_sf =
+        od_annotate.returnAnnotations(false);
+
+    TS_ASSERT(annotation_testing::check_equality(annotation_sf, returned_sf));
   }
 
   void test_return_annotations_drop_na() {
