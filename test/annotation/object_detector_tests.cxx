@@ -1,5 +1,5 @@
 #define BOOST_TEST_MODULE image_classification_annotation_tests
-#include <unity/lib/annotation/image_classification.hpp>
+#include <unity/lib/annotation/object_detection.hpp>
 
 #include <unity/lib/gl_sarray.hpp>
 
@@ -14,13 +14,38 @@
 #include "utils.cpp"
 
 struct object_detection_test {
-  
+
   void test_pass_through() {
-    // TODO: plumb through `test_pass_through`
+    std::string image_column_name = "image";
+    std::string annotation_column_name = "bounding_boxes";
+    std::shared_ptr<turi::unity_sframe> annotation_sf =
+        annotation_testing::random_od_sframe(50, image_column_name,
+                                             annotation_column_name);
+
+    turi::annotate::ObjectDetection od_annotate(
+        annotation_sf, std::vector<std::string>({image_column_name}),
+        annotation_column_name);
+
+    std::shared_ptr<turi::unity_sframe> returned_sf =
+        od_annotate.returnAnnotations(false);
+
+    TS_ASSERT(annotation_testing::check_equality(annotation_sf, returned_sf));
   }
 
   void test_get_metadata() {
-    // TODO: plumb through `test_get_metadata`
+    std::string image_column_name = "image";
+    std::string annotation_column_name = "bounding_boxes";
+    std::shared_ptr<turi::unity_sframe> annotation_sf =
+        annotation_testing::random_od_sframe(50, image_column_name,
+                                             annotation_column_name);
+
+    turi::annotate::ObjectDetection od_annotate(
+        annotation_sf, std::vector<std::string>({image_column_name}),
+        annotation_column_name);
+
+    annotate_spec::MetaData od_meta_data = od_annotate.metaData();
+
+    TS_ASSERT(od_meta_data.Type_case() == annotate_spec::MetaData::TypeCase::kObjectDetection);
   }
 
   void test_get_items() {
@@ -58,7 +83,6 @@ struct object_detection_test {
   void test_annotation_registry() {
     // TODO: plumb through `test_annotation_registry`
   }
-
 };
 
 BOOST_FIXTURE_TEST_SUITE(_object_detection_test, object_detection_test)

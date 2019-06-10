@@ -111,7 +111,7 @@ void AnnotationBase::_addAnnotationColumn() {
         std::make_shared<unity_sarray>();
 
     empty_annotation_sarray->construct_from_const(
-        FLEX_UNDEFINED, m_data->size(), flex_type_enum::STRING);
+        FLEX_UNDEFINED, m_data->size(), flex_type_enum::LIST); // change here
 
     m_data->add_column(empty_annotation_sarray, m_annotation_column);
   }
