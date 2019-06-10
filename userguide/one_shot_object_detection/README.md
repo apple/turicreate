@@ -43,7 +43,7 @@ model.save('mymodel.model')
 model.export_coreml('MyCustomOneShotDetector.mlmodel')
 ```
 
-We can preview the augmented images generated and used by the model for training:  
+Previewing the synthetic images generated for training is useful to gauge the kind of test images the model would be trained to handle. We can preview the augmented images generated and used by the model for training as follows:  
 
 
 ```python
@@ -105,7 +105,8 @@ starter_images = tc.SFrame({'image':[tc.Image('stop_sign.png')],
 # Load background images
 my_backgrounds = tc.SArray('my_custom_backgrounds.sarray')
 
-# Create a model using custom background images                                      
+# Create a model using custom background images
+# The time to train a model with                                       
 model = tc.one_shot_object_detector.create(starter_images, 'label', backgrounds = my_backgrounds)
 ```
 
