@@ -1209,7 +1209,6 @@ set(_TC_COMMON_OBJECTS
   "$<TARGET_OBJECTS:sframe_query_engine>"
   "$<TARGET_OBJECTS:sgraph>"
   "$<TARGET_OBJECTS:shmipc>"
-  "$<TARGET_OBJECTS:stack_trace>"
   "$<TARGET_OBJECTS:startup_teardown>"
   "$<TARGET_OBJECTS:supervised_learning>"
   "$<TARGET_OBJECTS:table_printer>"
