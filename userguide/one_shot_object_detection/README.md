@@ -1,6 +1,6 @@
 # One-Shot Object Detection
 
-One-Shot object detection is the task of learning to detect from as few as one example per category. Unlike the Object Detector which requires many varied examples of objects in the real world, the One-Shot detector only requires a single canonical example of an object to train the classifier on and performs predictions for that category in the wild. It is best suited for 2D objects such as playing cards, logos, road signs and clapperboards, in a 3D environment. One-Shot detector is not suitable for 3D objects such as faces, animals and cars. 
+One-Shot object detection is the task of learning to detect from as few as one example per category. Unlike the Object Detector which requires many varied examples of objects in the real world, the One-Shot detector only requires a single canonical example of an object to train the classifier on and performs predictions for that category in the wild. It is best suited for 2D objects or when there isn't much expected variance in the examples, such as playing cards, logos, road signs and clapperboards. One-Shot detector is not suitable for 3D objects such as faces, animals and cars. 
 
 Given an image and a one-shot detector trained on category 'stop sign', the output prediction will look like:
 
@@ -24,7 +24,7 @@ test_data = tc.SFrame({'image':[tc.Image('stop_sign_photo1.png'),
                                 tc.Image('stop_sign_photo2.png')],
                         'label':['stop_sign', 'stop_sign']})
 
-# Create a model                                      
+# Create a model. This step may take several hours.                                      
 model = tc.one_shot_object_detector.create(starter_images, 'label')
 
 # Save predictions on the test set as a column in the SFrame
