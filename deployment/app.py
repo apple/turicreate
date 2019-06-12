@@ -97,9 +97,13 @@ parser.add_argument('--debug', dest='debug', action='store_true',
 args = parser.parse_args()
 
 ALLOWED_IMAGE_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_AUDIO_EXTENSIONS = set(['wav', 'mp3'])
+
 def allowed_image_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
 
+def allowed_audio_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_AUDIO_EXTENSIONS
 
 data = None
 if args.data != None:
@@ -120,7 +124,8 @@ def model_predict():
     if request.method == 'POST':
         if type(model) == tc.toolkits.image_classifier.image_classifier.ImageClassifier or \
            type(model) == tc.toolkits.drawing_classifier.drawing_classifier.DrawingClassifier or \
-           type(model) == tc.toolkits.object_detector.object_detector.ObjectDetector:
+           type(model) == tc.toolkits.object_detector.object_detector.ObjectDetector or \
+           type(model) == tc.toolkits.one_shot_object_detector.one_shot_object_detector.OneShotObjectDetector:
             images = []
             result = dict()
             result['image'] = []
@@ -196,8 +201,7 @@ def model_predict():
             files = request.files.getlist("file")
             style_images = list()
             images = list()
-            for file in files :
-                
+            for file in files:
                 if file.filename == '':
                     return return_success({"error": "No selected file"}, False)
                 if file and allowed_image_file(file.filename):
@@ -248,10 +252,6 @@ def model_predict():
              type(model) == tc.toolkits.regression.linear_regression.LinearRegression or \
              type(model) == tc.toolkits.regression.boosted_trees_regression.BoostedTreesRegression or \
              type(model) == tc.toolkits.clustering.kmeans.KmeansModel:
-             # type(model) == tc.toolkits.recommender.item_similarity_recommender.ItemSimilarityRecommender or \
-             # type(model) == tc.toolkits.recommender.item_content_recommender.ItemContentRecommender or \
-             # type(model) == tc.toolkitstc.toolkits.recommender.popularity_recommender.PopularityRecommender or \
-             # type(model) == tc.toolkits.recommender.ranking_factorization_recommender.RankingFactorizationRecommender:
 
             if 'file' not in request.files:
                 loaded_data = request.get_json()
@@ -271,6 +271,7 @@ def model_predict():
                     sf_data = tc.SFrame.read_csv(file)
                 else:
                     return return_success({"error": "File format not supported"}, False)
+
             result = dict()
 
             if type(model) == tc.toolkits.activity_classifier.ActivityClassifier or \
@@ -294,42 +295,95 @@ def model_predict():
                             result[str(model.classes[i])] = [probabilities[j][i]]
                 return return_success(result, True) 
 
-        elif type(model) == tc.toolkits.regression.random_forest_regression.RandomForestRegression or \
-             type(model) == tc.toolkits.regression.decision_tree_regression.DecisionTreeRegression or \
-             type(model) == tc.toolkits.regression.linear_regression.LinearRegression or \
-             type(model) == tc.toolkits.regression.boosted_trees_regression.BoostedTreesRegression:
+            elif type(model) == tc.toolkits.regression.random_forest_regression.RandomForestRegression or \
+                 type(model) == tc.toolkits.regression.decision_tree_regression.DecisionTreeRegression or \
+                 type(model) == tc.toolkits.regression.linear_regression.LinearRegression or \
+                 type(model) == tc.toolkits.regression.boosted_trees_regression.BoostedTreesRegression:
 
-            prediction =  model.predict(dataset=sf_data)
-            result["estimated_value"] = []
+                prediction =  model.predict(dataset=sf_data)
+                result["estimated_value"] = []
+                for p in prediction:
+                    result["estimated_value"].append(p)
+                return return_success(result, True) 
+
+            elif type(model) == tc.toolkits.clustering.kmeans.KmeansModel:
+                prediction =  model.predict(dataset=sf_data)
+                result["clusters"] = []
+                for p in prediction:
+                    result["clusters"].append(p)
+                return return_success(result, True) 
+
+        elif type(model) == tc.toolkits.sound_classifier.sound_classifier.SoundClassifier:
+
+            loaded_data = request.get_json()
+            data = json.dumps(loaded_data)
+            loaded_data = json.loads(data)
+            print(loaded_data)
+            inp = {}
+            for key in loaded_data.keys():
+                print(key)
+                if type(loaded_data[key])==list or key == model.feature:
+                    inp[key]=loaded_data[key]
+                else:
+                    inp[key]=[loaded_data[key]]
+            audio_data = tc.SFrame(inp)
+            print(audio_data)
+                # from os.path import basename
+                # if 'file' not in request.files:
+                #     return return_success({"error": "No selected file"}, False)
+                # result = dict()
+                # result["predicted_class"] = list()
+                # files = request.files.getlist("file")
+                # for file in files:
+                #     if file.filename == '':
+                #         return return_success({"error": "No selected file"}, False)
+                #     if file and allowed_audio_file(file.filename):
+            # audio_data = tc.SFrame()
+            # audio_data['filename'] = audio_data['path'].apply(lambda p: basename(p))
+            # audio_data = audio_data.join(data)
+            prediction = model.predict(audio_data)
+            print(prediction)
             for p in prediction:
-                result["estimated_value"].append(p)
+                result["predicted_class"].append(p)
+            for j in range(len(probabilities)):
+                for i in range(len(model.classes)):
+                    if model.classes[i] in result:
+                        result[str(model.classes[i])].append(probabilities[j][i])
+                    else:
+                        result[str(model.classes[i])] = [probabilities[j][i]]
+            return return_success(result, True)
 
-        elif type(model) == tc.toolkits.clustering.kmeans.KmeansModel:
-            prediction =  model.predict(dataset=sf_data)
-            result["clusters"] = []
-            for p in prediction:
-                result["clusters"].append(p)
-
-
-
-        # elif type(model) == tc.toolkits.recommender.item_similarity_recommender.ItemSimilarityRecommender or \
-        #      type(model) == tc.toolkits.recommender.item_content_recommender.ItemContentRecommender or \
-        #      type(model) == tc.toolkitstc.toolkits.recommender.popularity_recommender.PopularityRecommender or \
-        #      type(model) == tc.toolkits.recommender.ranking_factorization_recommender.RankingFactorizationRecommender:
-
-        #     prediction =  model.recommend(dataset=sf_data)
-        #     result["recommendation"] = []
-        #     for p in prediction:
-        #         result["recommendation"].append(p)
-
-
-            
-            return return_success(result, True)  
+        elif type(model) == tc.toolkits.recommender.item_similarity_recommender.ItemSimilarityRecommender or \
+             type(model) == tc.toolkits.recommender.item_content_recommender.ItemContentRecommender or \
+             type(model) == tc.toolkitstc.toolkits.recommender.popularity_recommender.PopularityRecommender or \
+             type(model) == tc.toolkits.recommender.ranking_factorization_recommender.RankingFactorizationRecommender or \
+             type(model) == tc.toolkits.recommender.factorization_recommender.FactorizationRecommender:
+            return return_success({"error": "Recommenders use recommend method instead of predict"}, False)
         else:
             return return_success({"error": "Unimplemented Toolkit"}, False)
     return return_success({}, True)
 
+@app.route('/recommend', methods=['GET', 'POST'])
+def recommend():
+    if type(model) == tc.toolkits.recommender.item_similarity_recommender.ItemSimilarityRecommender or \
+       type(model) == tc.toolkits.recommender.item_content_recommender.ItemContentRecommender or \
+       type(model) == tc.toolkitstc.toolkits.recommender.popularity_recommender.PopularityRecommender or \
+       type(model) == tc.toolkits.recommender.ranking_factorization_recommender.RankingFactorizationRecommender or \
+       type(model) == tc.toolkits.recommender.factorization_recommender.FactorizationRecommender:
+
+        loaded_data = request.get_json()
+        data = json.dumps(loaded_data)
+        loaded_data = json.loads(data)
+
+        result = dict()
+        recommendations = model.recommend_from_interactions(loaded_data.values())
+        column_names = recommendations.column_names()
+        for r in range(len(column_names)):
+            result[str(column_names[r])] = list(recommendations[str(column_names[r])])
+        return return_success(result, True)
+    else:
+        return return_success({"error": "Other toolkits use predict method instead of recommend"}, False)
+
 
 if __name__ == '__main__':
     app.run(debug= args.debug, host="0.0.0.0")
-        # args.debug, host=args.host, port=int(args.port))
