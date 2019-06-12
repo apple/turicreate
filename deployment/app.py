@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+# Copyright © 2017 Apple Inc. All rights reserved.
+#
+# Use of this source code is governed by a BSD-3-clause license that can
+# be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 from flask import Flask, jsonify, send_file, request
 import turicreate as tc
 from enum import Enum
@@ -8,6 +12,9 @@ import argparse
 import datetime
 import zipfile
 import json
+import wave
+from scipy.io.wavfile import read, write
+import io
 
 try:
     from StringIO import StringIO
@@ -60,7 +67,7 @@ print(
            $$                               
 
     Pass in model (and data if necessary) files.
-    This file will take care of the rest of the Magic!
+    This file will take care of the rest of the magic!
 
     Routes
     ------
@@ -97,7 +104,7 @@ parser.add_argument('--debug', dest='debug', action='store_true',
 args = parser.parse_args()
 
 ALLOWED_IMAGE_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
-ALLOWED_AUDIO_EXTENSIONS = set(['wav', 'mp3'])
+ALLOWED_AUDIO_EXTENSIONS = set(['wav'])
 
 def allowed_image_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
@@ -126,15 +133,15 @@ def model_predict():
            type(model) == tc.toolkits.drawing_classifier.drawing_classifier.DrawingClassifier or \
            type(model) == tc.toolkits.object_detector.object_detector.ObjectDetector or \
            type(model) == tc.toolkits.one_shot_object_detector.one_shot_object_detector.OneShotObjectDetector:
-            images = []
+            images = list()
             result = dict()
-            result['image'] = []
-            result['confidence'] = []
-            result['predicted_class'] = []
-            result['x'] = []
-            result['y'] = []
-            result['width'] = []
-            result['height'] = []
+            result['image'] = list()
+            result['confidence'] = list()
+            result['predicted_class'] = list()
+            result['x'] = list()
+            result['y'] = list()
+            result['width'] = list()
+            result['height'] = list()
             if 'file' not in request.files:
                 return return_success({"error": "No selected file"}, False)
             files = request.files.getlist("file")
@@ -244,7 +251,7 @@ def model_predict():
              type(model) == tc.toolkits.text_classifier.TextClassifier or \
              type(model) == tc.toolkits.classifier.random_forest_classifier.RandomForestClassifier or \
              type(model) == tc.toolkits.classifier.decision_tree_classifier.DecisionTreeClassifier or \
-             type(model) == tc.toolkits.regression.boosted_trees_classification.BoostedTreesClassification or \
+             type(model) == tc.toolkits.classifier.boosted_trees_classifier.BoostedTreesClassifier or \
              type(model) == tc.toolkits.classifier.nearest_neighbor_classifier.NearestNeighborClassifier or \
              type(model) == tc.toolkits.classifier.svm_classifier.SVMClassifier or \
              type(model) == tc.toolkits.regression.random_forest_regression.RandomForestRegression or \
@@ -314,33 +321,21 @@ def model_predict():
                 return return_success(result, True) 
 
         elif type(model) == tc.toolkits.sound_classifier.sound_classifier.SoundClassifier:
-
-            loaded_data = request.get_json()
-            data = json.dumps(loaded_data)
-            loaded_data = json.loads(data)
-            print(loaded_data)
-            inp = {}
-            for key in loaded_data.keys():
-                print(key)
-                if type(loaded_data[key])==list or key == model.feature:
-                    inp[key]=loaded_data[key]
-                else:
-                    inp[key]=[loaded_data[key]]
-            audio_data = tc.SFrame(inp)
-            print(audio_data)
-                # from os.path import basename
-                # if 'file' not in request.files:
-                #     return return_success({"error": "No selected file"}, False)
-                # result = dict()
-                # result["predicted_class"] = list()
-                # files = request.files.getlist("file")
-                # for file in files:
-                #     if file.filename == '':
-                #         return return_success({"error": "No selected file"}, False)
-                #     if file and allowed_audio_file(file.filename):
-            # audio_data = tc.SFrame()
-            # audio_data['filename'] = audio_data['path'].apply(lambda p: basename(p))
-            # audio_data = audio_data.join(data)
+            
+            if 'file' not in request.files:
+                 return return_success({"error": "No selected file"}, False)
+            file = request.files['file']
+            result = dict()
+            result["predicted_class"] = list()
+            files = request.files.getlist("file")
+            if file.filename == '':
+                return return_success({"error": "No selected file"}, False)
+            if file and allowed_audio_file(file.filename):
+                with open(file.filename, 'rb') as audio :
+                    input_audio = audio.read()
+                rate, audio_bytes = read(io.BytesIO(input_audio))
+                audio_data = tc.load_audio(audio_bytes)
+                print(audio_data)
             prediction = model.predict(audio_data)
             print(prediction)
             for p in prediction:
@@ -376,7 +371,7 @@ def recommend():
         loaded_data = json.loads(data)
 
         result = dict()
-        recommendations = model.recommend_from_interactions(loaded_data.values())
+        recommendations = model.recommend(loaded_data['users'])
         column_names = recommendations.column_names()
         for r in range(len(column_names)):
             result[str(column_names[r])] = list(recommendations[str(column_names[r])])

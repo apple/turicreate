@@ -1,4 +1,4 @@
-# Deploying Turicreate ML Models using Flask and Docker
+# Deploying Turi Create ML Models using Flask and Docker
 
 We are assuming that you’ve already built and saved your model onto your local machine. We can deploy our model by following the steps below - 
 
@@ -7,41 +7,7 @@ We are assuming that you’ve already built and saved your model onto your local
 
 ## MODELS SUPPORTED
 
-The following models are supported 
-
-### Toolkits
-Image Classification
-Drawing Classification 
-Sound Classification 
-Object Detection 
-Style Transfer 
-Activity Classification 
-Image Similarity 
-Text_classification 
-
-### Classification
-Random Forest Classification 
-Decision Tree Classification
-Boosted Trees Classification
-Logistic Classification
-SVM Classification 
-Nearest Neighbor Classification
-
-### Recommendation Models
-Item Similiarity Recommender 
-Item Content Recommender 
-Factorization Recommender 
-Ranking Factorization Recommender
-Popularity Recomender 
-
-### Clustering
-Kmeans 
-
-### Regression
-Random Forest Regression 
-Decision Tree Regression 
-Boosted Trees Regression 
-Linear Regression 
+All Turi Create models are supported except sound classification.
 
 ## API CALLS
 
