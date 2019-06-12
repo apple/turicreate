@@ -91,7 +91,7 @@ parser.add_argument('model', type=str,
 parser.add_argument('data', type=str, nargs='?',
                     help='(optional) The path to the data file')
 
-parser.add_argument('--debug', action='store_true', 
+parser.add_argument('--debug', dest='debug', action='store_true', 
                     help='print debug messages to stderr')
 
 args = parser.parse_args()
@@ -172,9 +172,7 @@ def model_predict():
                             result[str(model.classes[i])].append(probabilities[j][i])
                         else:
                             result[str(model.classes[i])] = [probabilities[j][i]]
-            else:
-                
-
+            else:                
                 prediction = model.predict(dataset=sf_image)
                 
                 for images in prediction:
@@ -185,9 +183,6 @@ def model_predict():
                         result['y'].append(images[image]['coordinates']['y'])
                         result['width'].append(images[image]['coordinates']['width'])
                         result['height'].append(images[image]['coordinates']['height'])
-
-                        # result['image'] = tc.object_detector.util.draw_bounding_boxes(sf_image, 'label')
-
                 return return_success(result, True)
 
         elif type(model) == tc.toolkits.style_transfer.style_transfer.StyleTransfer:
@@ -257,6 +252,7 @@ def model_predict():
              # type(model) == tc.toolkits.recommender.item_content_recommender.ItemContentRecommender or \
              # type(model) == tc.toolkitstc.toolkits.recommender.popularity_recommender.PopularityRecommender or \
              # type(model) == tc.toolkits.recommender.ranking_factorization_recommender.RankingFactorizationRecommender:
+
             if 'file' not in request.files:
                 loaded_data = request.get_json()
                 data = json.dumps(loaded_data)
@@ -275,43 +271,29 @@ def model_predict():
                     sf_data = tc.SFrame.read_csv(file)
                 else:
                     return return_success({"error": "File format not supported"}, False)
-                result = dict()
+            result = dict()
 
-            if type(model) == tc.toolkits.activity_classifier.ActivityClassifier:
-
-                for output_frequency in ['per_row', 'per_window']:
-                    prediction =  model.predict(dataset=sf_data, output_type="class", output_frequency=output_frequency)
-                    probabilities = model.predict(sf_data, output_type="probability_vector", output_frequency=output_frequency)
-                    result[output_frequency] = {}
-                    result[output_frequency]["predicted_class"] = []
-                    for p in prediction:
-                        result[output_frequency]["predicted_class"].append(p)
-                    for j in range(len(probabilities)):
-                        for i in range(len(model.classes)):
-                            if model.classes[i] in result:
-                                result[output_frequency][str(model.classes[i])].append(probabilities[j][i])
-                            else:
-                                result[output_frequency][str(model.classes[i])] = [probabilities[j][i]]
-            return return_success(result, True)
-
-        elif type(model) == tc.toolkits.classifier.random_forest_classifier.RandomForestClassifier or \
+            if type(model) == tc.toolkits.activity_classifier.ActivityClassifier or \
+             type(model) == tc.toolkits.classifier.random_forest_classifier.RandomForestClassifier or \
              type(model) == tc.toolkits.classifier.decision_tree_classifier.DecisionTreeClassifier or \
              type(model) == tc.toolkits.regression.boosted_trees_classification.BoostedTreesClassification or \
              type(model) == tc.toolkits.classifier.nearest_neighbor_classifier.NearestNeighborClassifier or \
              type(model) == tc.toolkits.classifier.svm_classifier.SVMClassifier:
 
-            prediction =  model.predict(dataset=sf_data, output_type="class")
-            probabilities = model.predict(sf_data, output_type="probability_vector")
-            
-            result["predicted_class"] = []
-            for p in prediction:
-                result["predicted_class"].append(p)
-            for j in range(len(probabilities)):
-                for i in range(len(model.classes)):
-                    if model.classes[i] in result:
-                        result[str(model.classes[i])].append(probabilities[j][i])
-                    else:
-                        result[str(model.classes[i])] = [probabilities[j][i]]
+                prediction =  model.predict(dataset=sf_data, output_type="class")
+                probabilities = model.predict(sf_data, output_type="probability_vector")
+                
+                result["predicted_class"] = []
+                for p in prediction:
+                    result["predicted_class"].append(p)
+                for j in range(len(probabilities)):
+                    for i in range(len(model.classes)):
+                        if model.classes[i] in result:
+                            result[str(model.classes[i])].append(probabilities[j][i])
+                        else:
+                            result[str(model.classes[i])] = [probabilities[j][i]]
+                return return_success(result, True) 
+
         elif type(model) == tc.toolkits.regression.random_forest_regression.RandomForestRegression or \
              type(model) == tc.toolkits.regression.decision_tree_regression.DecisionTreeRegression or \
              type(model) == tc.toolkits.regression.linear_regression.LinearRegression or \
@@ -341,6 +323,7 @@ def model_predict():
         #         result["recommendation"].append(p)
 
 
+            
             return return_success(result, True)  
         else:
             return return_success({"error": "Unimplemented Toolkit"}, False)
@@ -348,5 +331,5 @@ def model_predict():
 
 
 if __name__ == '__main__':
-    app.run(debug= True, host="0.0.0.0")
+    app.run(debug= args.debug, host="0.0.0.0")
         # args.debug, host=args.host, port=int(args.port))
