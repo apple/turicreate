@@ -10,8 +10,6 @@
 #include <vector>
 #include <queue>
 
-#define BOOST_COROUTINES_NO_DEPRECATION_WARNING
-#include <boost/coroutine/coroutine.hpp>
 
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/storage/query_engine/operators/operator.hpp>
@@ -35,6 +33,7 @@ namespace query_eval {
 
 
 class query_context;
+struct source_executor;
 
 /**
  * \ingroup sframe_query_engine
@@ -243,7 +242,7 @@ class execution_node  : public std::enable_shared_from_this<execution_node> {
   std::shared_ptr<query_operator> m_operator;
 
   /// The coroutine running the actual function
-  typename boost::coroutines::coroutine<void>::pull_type m_source;
+  std::shared_ptr<source_executor> m_source;
 
   /**
    * The inputs to this execution node:
@@ -269,6 +268,7 @@ class execution_node  : public std::enable_shared_from_this<execution_node> {
   std::exception_ptr m_exception;
 
   friend class query_context;
+  friend struct source_executor;
 };
 
 /// \}

@@ -96,6 +96,8 @@ class query_operator {
 
   virtual planner_node_type type() const = 0;
 
+  virtual bool coro_running() const = 0;
+
   /**
    * Basic execution attributes about the query.
    */
