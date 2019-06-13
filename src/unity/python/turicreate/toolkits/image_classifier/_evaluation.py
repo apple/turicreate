@@ -10,6 +10,7 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 from ...visualization import _get_client_app_path, _focus_client_app
+import turicreate as _tc
 
 import subprocess as __subprocess
 import six as _six
@@ -45,10 +46,20 @@ class Evaluation(dict):
 
     evaluation_dictionary["corrects_size"] = len(self.data["test_data"].filter_by([True], "correct"))
     evaluation_dictionary["incorrects_size"] = evaluation_dictionary["table_spec"]["size"] - evaluation_dictionary["corrects_size"]
-    
+
+    # make sure numpy.float32 is serializable
+    evaluation_dictionary["training_loss"] = float(evaluation_dictionary["training_loss"])
     return str(_json.dumps({ "evaluation_spec": evaluation_dictionary }, allow_nan = False))
 
   def explore(self):
+    """
+    Explore model evaluation qualitatively through a GUI assisted application.
+    """
+    if self.data["test_data"][self["feature"]].dtype == _tc.Image:
+      print("Resizing image data... ", end='')
+      self.data["test_data"][self["feature"]] = self.data["test_data"][self["feature"]].apply(_image_conversion)
+      self.data["test_data"].materialize()
+      print("Done.")
     params = (self._get_eval_json()+"\n", self.data["test_data"], self, )
     # Suppress visualization output if 'none' target is set
     from ...visualization._plot import _target
@@ -94,7 +105,7 @@ def _get_data_spec(filters, start, length, row_type, mat_type, sframe, evaluatio
   
 def _reform_sframe(sf):
   sf_sending_data = sf.select_columns(["__idx", "path", "target_label", "predicted_label", "confidence", "relative_confidence", "entropy"])
-  sf_sending_data["image"] = sf["image"].apply(_image_conversion)
+  sf_sending_data["image"] = sf["image"]
   sf_sending_data["probs"] = sf["probs"].astype(list)
   return list(sf_sending_data)
   
@@ -140,7 +151,7 @@ def __get_incorrects(label, sf, evaluation):
   data = []
   for u in unique_predictions:
     u_filt = filtered_sframe.filter_by([u], "predicted_label")
-    data.append({"label": str(u), "images": list(u_filt[evaluation.data['feature']].apply(_image_conversion))})
+    data.append({"label": str(u), "images": list(u_filt[evaluation.data['feature']])})
 
   return {"data_spec": { "incorrects": {"target": label, "data": data }}}
 
@@ -154,7 +165,7 @@ def __get_corrects(sf, evaluation):
   data = []
   for u in unique_predictions:
     u_filt = sf.filter_by([u], "predicted_label")
-    data.append({"target": u, "images": list(u_filt[evaluation.data['feature']].apply(_image_conversion))})
+    data.append({"target": u, "images": list(u_filt[evaluation.data['feature']])})
   return {"data_spec": { "correct": data}}
 
 def _process_value(value, extended_sframe, proc, evaluation):
@@ -200,18 +211,26 @@ def _image_conversion(image):
     "format": "png"
   }
 
-  if(_sys.version_info >= (3, 0)):
-    from io import BytesIO
+  # resize with decode=False will produce a PNG encoded image
+  # (even starting with a decoded image)
+  # this behavior is enforced in test/unity/image_util.cxx:test_resize
+  # then, we can go through this function again and fall into the above case.
+  # while we're resizing (which implies decoding) anyway, let's take
+  # the opportunity to reduce the size if it's quite large.
+  width = image.width
+  height = image.height
+  while (width > 400):
+    width = width / 2
+    height = height / 2
+  
+  # if already in jpeg and the size isn't changing, force a decode/encode
+  # to convert to PNG
+  if image._format_enum == 0 and width == image.width:
+    image = _tc.image_analysis.resize(image, width=width, height=height, decode=True)
 
-    image_buffer = BytesIO()
-    image._to_pil_image().save(image_buffer, format='PNG')
-    result["data"] = _base64.b64encode(image_buffer.getvalue())
+  # now resize with decode=False to get PNG
+  image = _tc.image_analysis.resize(image, width=int(width), height=int(height), decode=False)
+  assert(image._format_enum == 1) # png
 
-  else:
-    import cStringIO
-
-    image_buffer = cStringIO.StringIO()
-    image._to_pil_image().save(image_buffer, format="PNG")
-    result["data"] =  str(_base64.b64encode(image_buffer.getvalue()))
-
+  result["data"] = _base64.b64encode(image._image_data)
   return result

@@ -11,41 +11,33 @@ from turicreate import extensions as _extensions
 from turicreate.toolkits.one_shot_object_detector.util._error_handling import check_one_shot_input
 from turicreate.toolkits import _data_zoo
 
-def preview_augmented_images(data,
-                             target,
-                             backgrounds=None,
-                             verbose=True,
-                             **kwargs):
+def preview_synthetic_training_data(data,
+                                    target,
+                                    backgrounds=None,
+                                    verbose=True,
+                                    **kwargs):
     """
-    A utility function that would allow the user to visualize 
-    augmented images where data is the SFrame of starter images.
+    A utility function to visualize the synthetically generated data.
 
     Parameters
     ----------
-
     data : SFrame | tc.Image
-        An SFrame that contains all the starter images along with their
-        corresponding labels.
-        If the dataset is a single tc.Image, this parameter is just that image.
-        Every starter image should entirely be just the starter image without
-        any padding.
-        RGB and RGBA images allowed.
+        A single starter image or an SFrame that contains the starter images
+        along with their corresponding labels.  These image(s) can be in either
+        RGB or RGBA format. They should not be padded.
 
     target : string
-        The target column name in the SFrame that contains all the labels. 
-        If the dataset is a single tc.Image, this parameter is just a label for
-        that image.
-    
+        Name of the target (when data is a single image) or the target column
+        name (when data is an SFrame of images).
+
     backgrounds : optional SArray
-        A list of backgrounds that the user wants to provide for data
-        augmentation.
-        If this is provided, only the backgrounds provided as this field will be
-        used for augmentation.
+        A list of backgrounds used for synthetic data generation. When set to
+        None, a set of default backgrounds are downloaded and used.
 
     Returns
     -------
     out : SFrame
-        An SFrame of n augmented images along with their annotations.
+        An SFrame of sythetically generated annotated training data.
     """
     dataset_to_augment, image_column_name, target_column_name = check_one_shot_input(data, target)
     one_shot_model = _extensions.one_shot_object_detector()
@@ -59,7 +51,8 @@ def preview_augmented_images(data,
     # Option arguments to pass in to C++ Object Detector, if we use it:
     # {'mlmodel_path':'darknet.mlmodel', 'max_iterations' : 25}
     options_for_augmentation = {
-        "seed": seed
+        "seed": seed,
+        "verbose": verbose
     }
     augmented_data = one_shot_model.augment(dataset_to_augment,
                                             image_column_name,

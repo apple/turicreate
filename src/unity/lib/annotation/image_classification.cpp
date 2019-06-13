@@ -90,16 +90,23 @@ annotate_spec::Annotations ImageClassification::getAnnotations(size_t start,
   std::vector<flexible_type> flex_data = filtered_data->to_vector();
 
   for (size_t i = 0; i < flex_data.size(); i++) {
+    const flexible_type& flex_label = flex_data.at(i);
+    if (flex_label.get_type() == flex_type_enum::UNDEFINED) {
+      // skip unlabeled items
+      continue;
+    }
+
     annotate_spec::Annotation *annotation = annotations.add_annotation();
     annotate_spec::Label *label = annotation->add_labels();
 
-    label->imageclassificationlabel();
+    // initialize the label as an image classification label
+    label->mutable_imageclassificationlabel();
 
-    if (flex_data.at(i).get_type() == flex_type_enum::STRING) {
-      std::string label_value = flex_data.at(i).get<flex_string>();
+    if (flex_label.get_type() == flex_type_enum::STRING) {
+      const flex_string& label_value = flex_label.get<flex_string>();
       label->set_stringlabel(label_value);
-    } else if (flex_data.at(i).get_type() == flex_type_enum::INTEGER) {
-      int label_value = flex_data.at(i);
+    } else if (flex_label.get_type() == flex_type_enum::INTEGER) {
+      flex_int label_value = flex_label.get<flex_int>();
       label->set_intlabel(label_value);
     }
 
@@ -434,18 +441,25 @@ annotate_spec::MetaData ImageClassification::metaData() {
       meta_data.mutable_image_classification();
 
   for (size_t x = 0; x < label_vector.size(); x++) {
+
+    const flexible_type& label = label_vector.at(x);
+    if (label.get_type() == flex_type_enum::UNDEFINED) {
+      // skip unlabeled items
+      continue;
+    }
+
     if (array_type == flex_type_enum::STRING) {
       annotate_spec::MetaLabel *labels_meta =
           image_classification_meta->add_label();
-      labels_meta->set_stringlabel(label_vector.at(x).to<std::string>());
-      labels_meta->set_elementcount(count_vector.at(x));
+      labels_meta->set_stringlabel(label.get<flex_string>());
+      labels_meta->set_elementcount(count_vector.at(x).get<flex_int>());
     }
 
     if (array_type == flex_type_enum::INTEGER) {
       annotate_spec::MetaLabel *labels_meta =
           image_classification_meta->add_label();
-      labels_meta->set_intlabel(label_vector.at(x));
-      labels_meta->set_elementcount(count_vector.at(x));
+      labels_meta->set_intlabel(label.to<flex_int>());
+      labels_meta->set_elementcount(count_vector.at(x).get<flex_int>());
     }
   }
 

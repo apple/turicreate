@@ -7,6 +7,7 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 from .drawing_classifier import create, DrawingClassifier
+from ..image_classifier._annotate import annotate, recover_annotation
 from . import util
 
-__all__ = ['create', 'DrawingClassifier', 'util']
+__all__ = ['create', 'DrawingClassifier', 'util', 'annotate', 'recover_annotation']

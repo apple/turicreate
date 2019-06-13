@@ -127,11 +127,22 @@ gl_sframe augment_data(const gl_sframe &data,
                        const std::string& image_column_name,
                        const std::string& target_column_name,
                        const gl_sarray &backgrounds,
-                       long long seed) {
+                       long long seed,
+                       bool verbose) {
+  size_t backgrounds_size = backgrounds.size();
+  size_t total_augmented_rows = data.size() * backgrounds_size;
+  table_printer table( { {"Images Augmented", 0}, {"Elapsed Time", 0}, {"Percent Complete", 0} } );
+  if (verbose) {
+    logprogress_stream << "Augmenting input images using " << backgrounds.size() << " background images." << std::endl;
+    table.print_header();
+  }
+
   auto column_index_map = generate_column_index_map(data.column_names());
   std::vector<flexible_type> annotations;
   std::vector<flexible_type> images;
+  int input_row_index = -1;
   for (const auto& row: data.range_iterator()) {
+    input_row_index++;
     flex_image object = row[column_index_map[image_column_name]].to<flex_image>();
     std::string label = row[column_index_map[target_column_name]].to<flex_string>();
     if (!(object.is_decoded())) {
@@ -175,13 +186,29 @@ gl_sframe augment_data(const gl_sframe &data,
         create_synthetic_image(starter_image_view, background_view, parameter_sampler, object)
       );
       annotations.push_back(annotation);
+
+      if (verbose) {
+        std::ostringstream d;
+        // For pretty printing, floor percent done
+        // resolution to the nearest .25% interval.  Do this by multiplying by
+        // 400, then do integer division by the total size, then float divide
+        // by 4.0
+        int augmented_rows_completed = (input_row_index * backgrounds_size) + row_number;
+        d << augmented_rows_completed * 400 / total_augmented_rows / 4.0 << '%';
+        table.print_progress_row(augmented_rows_completed,
+                                  augmented_rows_completed,
+                                  progress_time(), d.str());
+      }
     }
+  }
+  if (verbose) {
+    table.print_footer();
   }
 
 
   const std::map<std::string, std::vector<flexible_type> >& augmented_data = {
-    {"annotation", annotations},
-    {"image", images}
+    {target_column_name, annotations},
+    {image_column_name, images}
   };
   gl_sframe augmented_data_out = gl_sframe(augmented_data);
   return augmented_data_out;
@@ -205,7 +232,8 @@ gl_sframe one_shot_object_detector::augment(const gl_sframe &data,
                                                              image_column_name,
                                                              target_column_name,
                                                              backgrounds,
-                                                             options["seed"]);
+                                                             options["seed"],
+                                                             options["verbose"]);
   // TODO: Call object_detector::train from here once we incorporate mxnet into
   // the C++ Object Detector.
   return augmented_data;
