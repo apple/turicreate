@@ -121,5 +121,6 @@ def style_params(pretrained=False, ctx=cpu(), **kwargs):
     net = StyleParams(**kwargs)
     if pretrained:
         current_path = os.path.dirname(os.path.realpath(__file__))
+        # TODO: upload param files
         net.load_parameters(os.path.join(current_path, "../style_params.params"), ignore_extra=True, ctx=ctx)
     return net

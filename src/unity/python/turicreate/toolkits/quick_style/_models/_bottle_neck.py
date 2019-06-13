@@ -24,3 +24,12 @@ class BottleNeck(HybridBlock):
         x = self.conv1(x)
 
         return x
+
+
+def bottle_neck(pretrained=False, ctx=cpu(), **kwargs):
+    net = BottleNeck(**kwargs)
+    if pretrained:
+        current_path = os.path.dirname(os.path.realpath(__file__))
+        # TODO: upload param files
+        net.load_parameters(os.path.join(current_path, "../bottle_neck.params"), ignore_extra=True, ctx=ctx)
+    return net

@@ -158,5 +158,6 @@ def inception_v3(pretrained=False, ctx=cpu(),
     net = Inception3(**kwargs)
     if pretrained:
         current_path = os.path.dirname(os.path.realpath(__file__))
+        # TODO: upload param files
         net.load_parameters(os.path.join(current_path, "../inception_v3.params"), ignore_extra=True, ctx=ctx)
     return net

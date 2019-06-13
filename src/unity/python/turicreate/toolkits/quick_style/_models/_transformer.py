@@ -210,5 +210,6 @@ def transformer(pretrained=False, num_styles=1, ctx=cpu(), **kwargs):
     net = Transformer(num_styles, 1)
     if pretrained:
         current_path = os.path.dirname(os.path.realpath(__file__))
+        # TODO: upload param files
         net.load_parameters(os.path.join(current_path, "../transformer.params"), ignore_extra=True, ctx=ctx)
     return net
