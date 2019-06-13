@@ -1,0 +1,32 @@
+namespace turi {
+/**
+\page unity_lib Unity Library
+
+This is an elaborate library containing 3 pieces
+
+\section SFrame Python Library
+All these are documented in Sphinx
+
+\section Old Unity Interface
+These describes the old interface for interprocess communication between
+Python and C++: \subpage unity_writing_toolkit
+
+In addition, the \ref unity_sarray, \ref unity_sframe, \ref unity_sgraph
+and a few related types like \ref unity_sketch are the SFrame, SGraph, objects
+exported to Python via this interface
+
+\section SDK Interface
+This is the 2nd generation interface for exposing classes and functions
+implemented in C++ to Python.
+
+ - \subpage page_turicreate_extension_interface
+
+To support the SDK Interface, a nicer wrapper around the \ref unity_sframe,
+\ref unity_sgraph, objects are provide. These are called the \ref gl_sframe
+and \ref gl_sgraph. They provide a more natural C++11-ish syntax for accessing
+the SFrame and SGraph datastructures.
+
+ - \subpage page_userguide_sframe
+ - \subpage page_userguide_sgraph
+ */
+}
