@@ -168,6 +168,14 @@ image_augmenter::options get_augmentation_options(flex_int batch_size) {
   return opts;
 }
 
+void set_nn_spec(std::unique_ptr<neural_net::model_spec> nn_spec) {
+  nn_spec_= std::move(nn_spec);
+}
+
+void set_training_model(std::unique_ptr<neural_net::model_backend> training_model) {
+  training_model_= std::move(training_model);
+}
+
 flex_int estimate_max_iterations(flex_int num_instances, flex_int batch_size) {
 
   // Scale with square root of number of labeled instances.

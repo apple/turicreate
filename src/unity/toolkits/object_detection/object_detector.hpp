@@ -132,7 +132,9 @@ class EXPORT object_detector: public ml_model_base {
 
   virtual variant_map_type perform_evaluation(gl_sframe data,
                                               std::string metric);
+  virtual void set_training_model(std::unique_ptr<neural_net::model_spec> nn_spec);
 
+  virtual void set_nn_spec(std::unique_ptr<neural_net::model_backend> training_model);
   // Utility code
 
   template <typename T>
