@@ -10,9 +10,9 @@
  * Meta header including all recsys models.
  */
 
-#include <unity/toolkits/recsys/models/popularity.hpp>
-#include <unity/toolkits/recsys/models/itemcf.hpp>
-#include <unity/toolkits/recsys/models/item_content_recommender.hpp>
-#include <unity/toolkits/recsys/models/factorization_models.hpp>
+#include <toolkits/recsys/models/popularity.hpp>
+#include <toolkits/recsys/models/itemcf.hpp>
+#include <toolkits/recsys/models/item_content_recommender.hpp>
+#include <toolkits/recsys/models/factorization_models.hpp>
 
 #endif /* TURI_RECSYS_MODELS_H_ */

@@ -6,7 +6,7 @@
 /******************************************************************************
  * WARNING! This JSON utility is deprecated.                                  *
  * For bidirectional JSON serialization of flexible_type,                     *
- * use "json_flexible_type.hpp" in src/unity/extensions/json.                 *
+ * use "json_flexible_type.hpp" in src/extensions/json.                 *
  ******************************************************************************/
 
 #ifndef TURI_JSON_INCLUDE

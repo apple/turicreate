@@ -6,11 +6,11 @@
 #ifndef TURI_BITOPS_H
 #define TURI_BITOPS_H
 
-#include <util/int128_types.hpp>
+#include <core/util/int128_types.hpp>
 #include <cmath>
 #include <type_traits>
 #include <climits>
-#include <util/code_optimization.hpp>
+#include <core/util/code_optimization.hpp>
 // #include <bitset>
 // #include <iostream>
 

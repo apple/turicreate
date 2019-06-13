@@ -6,7 +6,7 @@
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>
 #include <capi/impl/capi_initialization_internal.hpp>
-#include <unity/lib/unity_global.hpp>
+#include <model_server/lib/unity_global.hpp>
 
 /******************************************************************************/
 /*                                                                            */

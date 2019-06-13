@@ -3,9 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <lambda/lambda_constants.hpp>
-#include <util/bitops.hpp>
-#include <globals/globals.hpp>
+#include <core/system/lambda/lambda_constants.hpp>
+#include <core/util/bitops.hpp>
+#include <core/globals/globals.hpp>
 
 namespace turi {
 

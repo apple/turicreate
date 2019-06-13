@@ -10,9 +10,9 @@
 #include <string>
 #include <memory>
 
-#include <sframe/sframe.hpp>
-#include <sframe_query_engine/planning/materialize_options.hpp>
-#include <sframe_query_engine/planning/planner_node.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/query_engine/planning/materialize_options.hpp>
+#include <core/storage/query_engine/planning/planner_node.hpp>
 
 namespace turi {
 namespace query_eval {

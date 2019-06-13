@@ -4,11 +4,11 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <functional>
-#include <flexible_type/flexible_type.hpp>
-#include <sframe/sarray_v2_block_types.hpp>
-#include <sframe/sarray_v2_type_encoding.hpp>
-#include <util/dense_bitset.hpp>
-#include <sframe/integer_pack.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/sframe_data/sarray_v2_block_types.hpp>
+#include <core/storage/sframe_data/sarray_v2_type_encoding.hpp>
+#include <core/util/dense_bitset.hpp>
+#include <core/storage/sframe_data/integer_pack.hpp>
 
 
 namespace turi {

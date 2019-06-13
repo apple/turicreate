@@ -8,7 +8,7 @@ from .cy_flexible_type cimport flexible_type
 from libcpp.vector cimport vector
 from .cy_unity_base_types cimport *
 
-cdef extern from "<unity/lib/unity_sarray_builder.hpp>" namespace "turi":
+cdef extern from "<core/storage/sframe_interface/unity_sarray_builder.hpp>" namespace "turi":
     cdef cppclass unity_sarray_builder nogil:
         unity_sarray_builder() except +
         void init(size_t, size_t, flex_type_enum) except +

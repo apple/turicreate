@@ -10,12 +10,12 @@
 #include <algorithm>
 #include <type_traits>
 #include <iterator>
-#include <parallel/lambda_omp.hpp>
-#include <random/random.hpp>
-#include <sframe/siterable.hpp>
-#include <sframe/swriter_base.hpp>
-#include <sframe/sarray_reader.hpp>
-#include <sframe/is_sarray_like.hpp>
+#include <core/parallel/lambda_omp.hpp>
+#include <core/random/random.hpp>
+#include <core/storage/sframe_data/siterable.hpp>
+#include <core/storage/sframe_data/swriter_base.hpp>
+#include <core/storage/sframe_data/sarray_reader.hpp>
+#include <core/storage/sframe_data/is_sarray_like.hpp>
 namespace turi {
 /**
  * \ingroup sframe_physical

@@ -6,10 +6,10 @@
 
 #define BOOST_TEST_MODULE test_od_evaluation
 
-#include <unity/toolkits/object_detection/od_evaluation.hpp>
+#include <toolkits/object_detection/od_evaluation.hpp>
 
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 
 namespace turi {
 namespace object_detection {

@@ -3,9 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <unity/toolkits/sparse_similarity/sparse_similarity_lookup.hpp>
-#include <unity/toolkits/sparse_similarity/sparse_similarity_lookup_impl.hpp>
-#include <unity/toolkits/sparse_similarity/similarities.hpp>
+#include <toolkits/sparse_similarity/sparse_similarity_lookup.hpp>
+#include <toolkits/sparse_similarity/sparse_similarity_lookup_impl.hpp>
+#include <toolkits/sparse_similarity/similarities.hpp>
 
 namespace turi {
 

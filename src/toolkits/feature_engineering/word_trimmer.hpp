@@ -6,10 +6,10 @@
 #ifndef _WORD_TRIMMER_H_
 #define _WORD_TRIMMER_H_
 #include <string>
-#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/toolkits/feature_engineering/transformer_base.hpp>
-#include <unity/toolkits/feature_engineering/topk_indexer.hpp>
-#include <export.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
+#include <toolkits/feature_engineering/transformer_base.hpp>
+#include <toolkits/feature_engineering/topk_indexer.hpp>
+#include <core/export.hpp>
 
 namespace turi {
 namespace sdk_model {

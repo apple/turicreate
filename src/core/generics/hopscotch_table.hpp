@@ -11,7 +11,7 @@
 #include <algorithm>
 #include <functional>
 #include <iterator>
-#include <logger/assertions.hpp>
+#include <core/logging/assertions.hpp>
 
 #define _HOPSCOTCH_TABLE_DEFAULT_HASH std::hash<T>
 

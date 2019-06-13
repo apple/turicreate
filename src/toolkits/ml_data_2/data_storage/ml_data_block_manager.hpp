@@ -6,7 +6,7 @@
 #ifndef TURI_ML_DATA_BLOCK_MANAGER_H_
 #define TURI_ML_DATA_BLOCK_MANAGER_H_
 
-#include <unity/toolkits/ml_data_2/data_storage/ml_data_row_format.hpp>
+#include <toolkits/ml_data_2/data_storage/ml_data_row_format.hpp>
 
 
 namespace turi { namespace v2 { namespace ml_data_internal {

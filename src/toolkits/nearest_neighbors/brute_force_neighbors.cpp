@@ -4,22 +4,22 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 // ML Data
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <unity/toolkits/ml_data_2/metadata.hpp>
-#include <unity/toolkits/ml_data_2/ml_data_iterators.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
+#include <toolkits/ml_data_2/metadata.hpp>
+#include <toolkits/ml_data_2/ml_data_iterators.hpp>
 
 // Toolkits
-#include <unity/toolkits/nearest_neighbors/nearest_neighbors.hpp>
-#include <unity/toolkits/nearest_neighbors/brute_force_neighbors.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
+#include <toolkits/nearest_neighbors/nearest_neighbors.hpp>
+#include <toolkits/nearest_neighbors/brute_force_neighbors.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
 
 // Miscellaneous
 #include <timer/timer.hpp>
 #include <algorithm>
 #include <string>
 #include <Eigen/Core>
-#include <unity/lib/toolkit_util.hpp>
-#include <table_printer/table_printer.hpp>
+#include <model_server/lib/toolkit_util.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
 
 
 namespace turi {

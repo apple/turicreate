@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include <flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 namespace turi {
 
 

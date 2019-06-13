@@ -9,11 +9,11 @@
 #include <map>
 #include <cmath>
 #include <vector>
-#include <unity/toolkits/sgd/sgd_interface.hpp>
-#include <logger/assertions.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <unity/lib/variant.hpp>
-#include <unity/lib/unity_sframe.hpp>
+#include <toolkits/sgd/sgd_interface.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <model_server/lib/variant.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
 
 namespace turi {
 

@@ -6,12 +6,12 @@
 #ifndef TURI_SFRAME_SARRAY_SORTED_BUFFER_HPP
 #define TURI_SFRAME_SARRAY_SORTED_BUFFER_HPP
 
-#include<parallel/mutex.hpp>
+#include<core/parallel/mutex.hpp>
 #include<memory>
 #include<vector>
 #include<future>
-#include<sframe/sarray.hpp>
-#include<sframe/sframe.hpp>
+#include<core/storage/sframe_data/sarray.hpp>
+#include<core/storage/sframe_data/sframe.hpp>
 
 
 namespace turi {

@@ -8,27 +8,27 @@
 #include <set>
 #include <iterator>
 #include <type_traits>
-#include <logger/logger.hpp>
-#include <logger/assertions.hpp>
+#include <core/logging/logger.hpp>
+#include <core/logging/assertions.hpp>
 #include <boost/algorithm/string/predicate.hpp>
-#include <sframe/output_iterator.hpp>
-#include <serialization/iarchive.hpp>
-#include <serialization/oarchive.hpp>
-#include <parallel/pthread_tools.hpp>
-#include <parallel/lambda_omp.hpp>
-#include <sframe/swriter_base.hpp>
-#include <sframe/sarray_file_format_v2.hpp>
-#include <sframe/sarray_index_file.hpp>
-#include <sframe/algorithm.hpp>
-#include <sframe/sframe_config.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <fileio/fixed_size_cache_manager.hpp>
-#include <fileio/file_ownership_handle.hpp>
-#include <fileio/file_handle_pool.hpp>
-#include <exceptions/error_types.hpp>
-#include <sframe/sframe_constants.hpp>
-#include <sframe/sarray_saving.hpp>
-#include <sframe/sframe_compact.hpp>
+#include <core/storage/sframe_data/output_iterator.hpp>
+#include <core/storage/serialization/iarchive.hpp>
+#include <core/storage/serialization/oarchive.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/parallel/lambda_omp.hpp>
+#include <core/storage/sframe_data/swriter_base.hpp>
+#include <core/storage/sframe_data/sarray_file_format_v2.hpp>
+#include <core/storage/sframe_data/sarray_index_file.hpp>
+#include <core/storage/sframe_data/algorithm.hpp>
+#include <core/storage/sframe_data/sframe_config.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/fileio/fixed_size_cache_manager.hpp>
+#include <core/storage/fileio/file_ownership_handle.hpp>
+#include <core/storage/fileio/file_handle_pool.hpp>
+#include <core/system/exceptions/error_types.hpp>
+#include <core/storage/sframe_data/sframe_constants.hpp>
+#include <core/storage/sframe_data/sarray_saving.hpp>
+#include <core/storage/sframe_data/sframe_compact.hpp>
 
 
 namespace turi {
@@ -824,8 +824,8 @@ inline sarray<flexible_type>::get_output_iterator(size_t segmentid) {
 
 } // namespace turi
 
-#include <sframe/sarray_reader.hpp>
-#include <sframe/sframe_compact_impl.hpp>
+#include <core/storage/sframe_data/sarray_reader.hpp>
+#include <core/storage/sframe_data/sframe_compact_impl.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Implement serialization for

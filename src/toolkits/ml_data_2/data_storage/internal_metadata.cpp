@@ -3,9 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <unity/toolkits/ml_data_2/data_storage/internal_metadata.hpp>
-#include <unity/toolkits/ml_data_2/ml_data_column_modes.hpp>
-#include <unity/toolkits/ml_data_2/metadata.hpp>
+#include <toolkits/ml_data_2/data_storage/internal_metadata.hpp>
+#include <toolkits/ml_data_2/ml_data_column_modes.hpp>
+#include <toolkits/ml_data_2/metadata.hpp>
 
 namespace turi { namespace v2 { namespace ml_data_internal {
 

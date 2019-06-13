@@ -6,7 +6,7 @@
 #ifndef CPPIPC_IPC_OBJECT_BASE_HPP
 #define CPPIPC_IPC_OBJECT_BASE_HPP
 #include <memory>
-#include <export.hpp>
+#include <core/export.hpp>
 /**
  * All exported base classes must inherit from this class.
  */

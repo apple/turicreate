@@ -7,9 +7,9 @@
 #define TURI_LAMBDA_LAMBDA_MASTER_HPP
 
 #include <map>
-#include <globals/globals.hpp>
-#include <lambda/lambda_interface.hpp>
-#include <lambda/worker_pool.hpp>
+#include <core/globals/globals.hpp>
+#include <core/system/lambda/lambda_interface.hpp>
+#include <core/system/lambda/worker_pool.hpp>
 
 namespace turi {
 

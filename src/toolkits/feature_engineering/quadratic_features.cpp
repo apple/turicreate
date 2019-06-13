@@ -3,14 +3,14 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <util/hash_value.hpp>
+#include <core/util/hash_value.hpp>
 #include <math.h>
 #include <algorithm>
 #include <set>
 
-#include <unity/lib/variant_deep_serialize.hpp>
-#include <unity/toolkits/feature_engineering/quadratic_features.hpp>
-#include <unity/toolkits/feature_engineering/transform_utils.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
+#include <toolkits/feature_engineering/quadratic_features.hpp>
+#include <toolkits/feature_engineering/transform_utils.hpp>
 
 namespace turi {
 namespace sdk_model {

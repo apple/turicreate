@@ -4,12 +4,12 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <unity/toolkits/activity_classification/class_registrations.hpp>
+#include <toolkits/activity_classification/class_registrations.hpp>
 
-#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/lib/toolkit_function_macros.hpp>
-#include <unity/toolkits/activity_classification/ac_data_iterator.hpp>
-#include <unity/toolkits/activity_classification/activity_classifier.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
+#include <model_server/lib/toolkit_function_macros.hpp>
+#include <toolkits/activity_classification/ac_data_iterator.hpp>
+#include <toolkits/activity_classification/activity_classifier.hpp>
 
 namespace turi {
 namespace activity_classification {

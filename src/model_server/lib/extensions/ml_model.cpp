@@ -3,17 +3,17 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <unity/lib/extensions/ml_model.hpp>
+#include <model_server/lib/extensions/ml_model.hpp>
 
-#include <fileio/general_fstream.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
+#include <core/storage/fileio/general_fstream.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
 
 // Unity global
-#include <unity/lib/unity_global.hpp>
-#include <unity/lib/unity_global_singleton.hpp>
+#include <model_server/lib/unity_global.hpp>
+#include <model_server/lib/unity_global_singleton.hpp>
 
 /// SDK
-#include <unity/lib/toolkit_function_macros.hpp>
+#include <model_server/lib/toolkit_function_macros.hpp>
 
 namespace turi {
 

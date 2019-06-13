@@ -3,9 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <fileio/fileio_constants.hpp>
-#include <logger/assertions.hpp>
-#include <fileio/fs_utils.hpp>
+#include <core/storage/fileio/fileio_constants.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
 extern "C" {
 #include <curl/curl.h>
 }

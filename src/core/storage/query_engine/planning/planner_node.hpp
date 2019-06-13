@@ -10,9 +10,9 @@
 #include <string>
 #include <map>
 #include <vector>
-#include <flexible_type/flexible_type.hpp>
-#include <util/any.hpp>
-#include <sframe_query_engine/operators/operator_properties.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/util/any.hpp>
+#include <core/storage/query_engine/operators/operator_properties.hpp>
 
 namespace turi {
 namespace query_eval {

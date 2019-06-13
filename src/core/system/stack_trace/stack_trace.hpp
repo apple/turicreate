@@ -7,7 +7,7 @@
 #ifndef TURI_STACK_TRACE_H_
 #define TURI_STACK_TRACE_H_
 
-#include <util/basic_types.hpp>
+#include <core/util/basic_types.hpp>
 
 using std::string;
 using std::ostream;

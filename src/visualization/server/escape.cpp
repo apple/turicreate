@@ -1,6 +1,6 @@
-#include <unity/lib/visualization/escape.hpp>
+#include <visualization/server/escape.hpp>
 
-#include <flexible_type/string_escape.hpp>
+#include <core/data/flexible_type/string_escape.hpp>
 
 namespace turi {
 namespace visualization {

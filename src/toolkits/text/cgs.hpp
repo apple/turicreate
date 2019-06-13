@@ -7,9 +7,9 @@
 #define TURI_TEXT_CGS_H_
 
 #include <vector>
-#include <export.hpp>
-#include <unity/toolkits/text/topic_model.hpp>
-#include <unity/toolkits/util/spmat.hpp>
+#include <core/export.hpp>
+#include <toolkits/text/topic_model.hpp>
+#include <toolkits/util/spmat.hpp>
 
 namespace turi {
 

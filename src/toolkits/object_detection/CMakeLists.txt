@@ -14,3 +14,5 @@ make_library(unity_object_detection OBJECT
     unity_core
     unity_neural_net
 )
+
+subdirs(one_shot_object_detection)

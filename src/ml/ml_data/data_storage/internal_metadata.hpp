@@ -7,10 +7,10 @@
 #ifndef TURI_DML_DATA_COLUMN_METADATA_H_
 #define TURI_DML_DATA_COLUMN_METADATA_H_
 
-#include <ml_data/column_indexer.hpp>
-#include <ml_data/column_statistics.hpp>
-#include <ml_data/ml_data_column_modes.hpp>
-#include <sframe/sarray.hpp>
+#include <ml/ml_data/column_indexer.hpp>
+#include <ml/ml_data/column_statistics.hpp>
+#include <ml/ml_data/ml_data_column_modes.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
 
 namespace turi {
 

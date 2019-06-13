@@ -11,7 +11,7 @@
 #include <boost/random.hpp>
 #include <boost/unordered_map.hpp>
 #include <ctime>
-#include <serialization/serialization_includes.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
 
 namespace turi {
 

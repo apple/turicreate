@@ -6,7 +6,7 @@
 #ifndef TURI_SFRAME_GROUP_AGGREGATE_VALUE_HPP
 #define TURI_SFRAME_GROUP_AGGREGATE_VALUE_HPP
 
-#include <flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 
 namespace turi {
 

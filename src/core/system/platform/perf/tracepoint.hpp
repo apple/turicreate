@@ -9,9 +9,9 @@
 #include <vector>
 #include <string>
 #include <timer/timer.hpp>
-#include <util/branch_hints.hpp>
-#include <parallel/atomic.hpp>
-#include <parallel/atomic_ops.hpp>
+#include <core/util/branch_hints.hpp>
+#include <core/parallel/atomic.hpp>
+#include <core/parallel/atomic_ops.hpp>
 
 /**
  * \defgroup perfmonitoring Intrusive Performance Monitoring

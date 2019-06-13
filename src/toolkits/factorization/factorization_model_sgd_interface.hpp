@@ -13,10 +13,10 @@
 #include <map>
 #include <atomic>
 
-#include <util/code_optimization.hpp>
-#include <util/fast_integer_power.hpp>
-#include <unity/toolkits/sgd/sgd_interface.hpp>
-#include <unity/toolkits/factorization/factorization_model_impl.hpp>
+#include <core/util/code_optimization.hpp>
+#include <core/util/fast_integer_power.hpp>
+#include <toolkits/sgd/sgd_interface.hpp>
+#include <toolkits/factorization/factorization_model_impl.hpp>
 
 namespace turi { namespace factorization {
 

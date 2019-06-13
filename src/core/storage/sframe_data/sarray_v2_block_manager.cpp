@@ -7,12 +7,12 @@ extern "C" {
 #include <lz4/lz4.h>
 }
 #include <algorithm>
-#include <parallel/mutex.hpp>
+#include <core/parallel/mutex.hpp>
 #include <boost/algorithm/string.hpp>
-#include <sframe/sarray_v2_block_manager.hpp>
-#include <sframe/sarray_index_file.hpp>
-#include <sframe/sframe_constants.hpp>
-#include <sframe/unfair_lock.hpp>
+#include <core/storage/sframe_data/sarray_v2_block_manager.hpp>
+#include <core/storage/sframe_data/sarray_index_file.hpp>
+#include <core/storage/sframe_data/sframe_constants.hpp>
+#include <core/storage/sframe_data/unfair_lock.hpp>
 
 namespace turi {
 namespace v2_block_impl {

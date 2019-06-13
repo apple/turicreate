@@ -7,26 +7,26 @@
 #define TURI_TEXT_TOPICMODEL_H_
 
 // SFrame
-#include <sframe/sarray.hpp>
-#include <sframe/sframe.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
 
 // Other
-#include <fileio/temp_files.hpp>
+#include <core/storage/fileio/temp_files.hpp>
 #include <iostream>
 
 // Types
-#include <unity/lib/unity_base_types.hpp>
-#include <util/hash_value.hpp>
-#include <unity/lib/flex_dict_view.hpp>
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <unity/toolkits/ml_data_2/metadata.hpp>
+#include <model_server/lib/unity_base_types.hpp>
+#include <core/util/hash_value.hpp>
+#include <model_server/lib/flex_dict_view.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
+#include <toolkits/ml_data_2/metadata.hpp>
 
 // Interfaces
-#include <unity/lib/extensions/ml_model.hpp>
+#include <model_server/lib/extensions/ml_model.hpp>
 
 // External
 #include <Eigen/Core>
-#include <export.hpp>
+#include <core/export.hpp>
 namespace turi {
 
 namespace text {

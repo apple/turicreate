@@ -4,8 +4,8 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include<vector>
-#include<parallel/mutex.hpp>
-#include<sframe/sframe_constants.hpp>
+#include<core/parallel/mutex.hpp>
+#include<core/storage/sframe_data/sframe_constants.hpp>
 
 namespace turi {
 /**

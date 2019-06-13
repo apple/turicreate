@@ -38,7 +38,7 @@ extern "C" {
 #include <vector>
 #include <iostream>
 #include <boost/iostreams/stream.hpp>
-#include <logger/assertions.hpp>
+#include <core/logging/assertions.hpp>
 
 
 namespace turi {

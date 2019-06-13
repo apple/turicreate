@@ -3,22 +3,22 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <unity/lib/variant.hpp>
-#include <unity/lib/unity_global.hpp>
-#include <unity/lib/variant_converter.hpp>
-#include <unity/lib/unity_sgraph.hpp>
-#include <unity/lib/unity_sarray.hpp>
-#include <unity/lib/unity_sframe.hpp>
+#include <model_server/lib/variant.hpp>
+#include <model_server/lib/unity_global.hpp>
+#include <model_server/lib/variant_converter.hpp>
+#include <core/storage/sframe_interface/unity_sgraph.hpp>
+#include <core/storage/sframe_interface/unity_sarray.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
 
 #ifndef DISABLE_SDK_TYPES
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/lib/gl_sarray.hpp>
-#include <unity/lib/gl_sgraph.hpp>
-#include <unity/lib/gl_gframe.hpp>
-#include <globals/globals.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <core/data/sframe/gl_sgraph.hpp>
+#include <core/data/sframe/gl_gframe.hpp>
+#include <core/globals/globals.hpp>
 #endif
 
-#include <unity/lib/api/function_closure_info.hpp>
+#include <model_server/lib/api/function_closure_info.hpp>
 
 namespace turi {
 

@@ -4,8 +4,8 @@
  * be found in the LICENSE.txt file or at
  * https://opensource.org/licenses/BSD-3-Clause
  */
-#include <unity/lib/extensions/model_base.hpp>
-#include <unity/lib/unity_global.hpp>
+#include <model_server/lib/extensions/model_base.hpp>
+#include <model_server/lib/unity_global.hpp>
 
 namespace turi {
 

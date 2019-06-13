@@ -10,9 +10,9 @@
 #include <vector>
 #include <algorithm>
 #include <tuple>
-#include <logger/assertions.hpp>
-#include <serialization/serialization_includes.hpp>
-#include <util/basic_types.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
+#include <core/util/basic_types.hpp>
 
 namespace turi {
 namespace sketches {

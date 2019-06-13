@@ -3,8 +3,8 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <sframe/sframe_iterators.hpp>
-#include <sframe/sframe_config.hpp>
+#include <core/storage/sframe_data/sframe_iterators.hpp>
+#include <core/storage/sframe_data/sframe_config.hpp>
 
 namespace turi {
 

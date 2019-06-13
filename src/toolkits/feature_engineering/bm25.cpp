@@ -5,12 +5,12 @@
  */
 #include <vector>
 #include <string>
-#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
 
-#include <unity/toolkits/feature_engineering/transform_utils.hpp>
-#include <unity/toolkits/feature_engineering/bm25.hpp>
-#include <unity/toolkits/feature_engineering/topk_indexer.hpp>
+#include <toolkits/feature_engineering/transform_utils.hpp>
+#include <toolkits/feature_engineering/bm25.hpp>
+#include <toolkits/feature_engineering/topk_indexer.hpp>
 
 namespace turi {
 namespace sdk_model {
@@ -136,7 +136,7 @@ flexible_type calc_avg_document_lengths(const gl_sarray& src){
  * \param[in] b - parameter to downweight scores of long documents
  *
  * For more information, see http://en.wikipedia.org/wiki/Okapi_BM25
- * and see src/unity/python/turicreate/toolkits/feature_engineering/_bm25.py
+ * and see src/python/turicreate/toolkits/feature_engineering/_bm25.py
  */
 double compute_bm25(const int term_frequency,
                     const size_t document_length,

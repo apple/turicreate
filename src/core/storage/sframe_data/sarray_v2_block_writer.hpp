@@ -9,13 +9,13 @@
 #include <vector>
 #include <fstream>
 #include <tuple>
-#include <parallel/pthread_tools.hpp>
-#include <parallel/atomic.hpp>
-#include <fileio/general_fstream.hpp>
-#include <sframe/sarray_index_file.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <util/buffer_pool.hpp>
-#include <sframe/sarray_v2_block_types.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/parallel/atomic.hpp>
+#include <core/storage/fileio/general_fstream.hpp>
+#include <core/storage/sframe_data/sarray_index_file.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/util/buffer_pool.hpp>
+#include <core/storage/sframe_data/sarray_v2_block_types.hpp>
 
 namespace turi {
 

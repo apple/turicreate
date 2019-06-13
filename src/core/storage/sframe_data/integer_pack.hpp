@@ -8,10 +8,10 @@
 #include <cstdint>
 #include <cstddef>
 #include <algorithm>
-#include <logger/logger.hpp>
-#include <logger/assertions.hpp>
-#include <sframe/integer_pack_impl.hpp>
-#include <util/bitops.hpp>
+#include <core/logging/logger.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/storage/sframe_data/integer_pack_impl.hpp>
+#include <core/util/bitops.hpp>
 
 namespace turi {
 

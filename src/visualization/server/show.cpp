@@ -10,8 +10,8 @@
 #include "heatmap.hpp"
 #include "scatter.hpp"
 
-#include <logger/logger.hpp>
-#include <unity/lib/toolkit_function_macros.hpp>
+#include <core/logging/logger.hpp>
+#include <model_server/lib/toolkit_function_macros.hpp>
 
 static bool isString(const turi::gl_sarray& sa) {
   return sa.dtype() == turi::flex_type_enum::STRING;

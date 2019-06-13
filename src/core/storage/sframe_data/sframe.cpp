@@ -3,20 +3,20 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <logger/logger.hpp>
-#include <sframe/sframe.hpp>
-#include <sframe/sframe_reader.hpp>
-#include <sframe/algorithm.hpp>
-#include <sframe/parallel_csv_parser.hpp>
-#include <sframe/csv_writer.hpp>
+#include <core/logging/logger.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_data/sframe_reader.hpp>
+#include <core/storage/sframe_data/algorithm.hpp>
+#include <core/storage/sframe_data/parallel_csv_parser.hpp>
+#include <core/storage/sframe_data/csv_writer.hpp>
 #include <boost/algorithm/string/predicate.hpp>
-#include <fileio/temp_files.hpp>
+#include <core/storage/fileio/temp_files.hpp>
 #include <boost/filesystem.hpp>
-#include <sframe/sframe_constants.hpp>
-#include <sframe/sframe_config.hpp>
-#include <sframe/sframe_saving.hpp>
-#include <sframe/sframe_compact.hpp>
-#include <exceptions/error_types.hpp>
+#include <core/storage/sframe_data/sframe_constants.hpp>
+#include <core/storage/sframe_data/sframe_config.hpp>
+#include <core/storage/sframe_data/sframe_saving.hpp>
+#include <core/storage/sframe_data/sframe_compact.hpp>
+#include <core/system/exceptions/error_types.hpp>
 namespace turi {
 
 sframe::sframe(const sframe& other) {

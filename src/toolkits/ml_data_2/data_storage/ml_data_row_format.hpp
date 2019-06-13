@@ -6,13 +6,13 @@
 #ifndef TURI_ML2_DATA_ROW_FORMAT_H_
 #define TURI_ML2_DATA_ROW_FORMAT_H_
 
-#include <unity/toolkits/ml_data_2/ml_data_entry.hpp>
-#include <unity/toolkits/ml_data_2/ml_data_missing_values.hpp>
-#include <unity/toolkits/ml_data_2/ml_data_column_modes.hpp>
-#include <unity/toolkits/ml_data_2/data_storage/internal_metadata.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <util/code_optimization.hpp>
-#include <util/dense_bitset.hpp>
+#include <toolkits/ml_data_2/ml_data_entry.hpp>
+#include <toolkits/ml_data_2/ml_data_missing_values.hpp>
+#include <toolkits/ml_data_2/ml_data_column_modes.hpp>
+#include <toolkits/ml_data_2/data_storage/internal_metadata.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/util/code_optimization.hpp>
+#include <core/util/dense_bitset.hpp>
 
 #ifdef ERROR
 #undef ERROR

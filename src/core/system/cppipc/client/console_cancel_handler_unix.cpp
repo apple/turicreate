@@ -3,12 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <cppipc/client/console_cancel_handler_unix.hpp>
-#include <cppipc/client/comm_client.hpp>
+#include <core/system/cppipc/client/console_cancel_handler_unix.hpp>
+#include <core/system/cppipc/client/comm_client.hpp>
 #include <errno.h>
 #include <string.h>
-#include <util/syserr_reporting.hpp>
-#include <export.hpp>
+#include <core/util/syserr_reporting.hpp>
+#include <core/export.hpp>
 
 namespace cppipc {
 

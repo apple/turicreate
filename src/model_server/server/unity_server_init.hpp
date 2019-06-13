@@ -6,8 +6,8 @@
 #ifndef TURI_UNITY_SERVER_UNITY_SERVER_INIT_HPP
 #define TURI_UNITY_SERVER_UNITY_SERVER_INIT_HPP
 
-#include <unity/lib/toolkit_class_registry.hpp>
-#include <unity/lib/toolkit_function_registry.hpp>
+#include <model_server/lib/toolkit_class_registry.hpp>
+#include <model_server/lib/toolkit_function_registry.hpp>
 
 namespace turi {
 

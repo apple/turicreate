@@ -1,6 +1,6 @@
-#include <unity/toolkits/nearest_neighbors/ball_tree_neighbors.hpp>
-#include <unity/toolkits/nearest_neighbors/brute_force_neighbors.hpp>
-#include <unity/toolkits/nearest_neighbors/lsh_neighbors.hpp>
+#include <toolkits/nearest_neighbors/ball_tree_neighbors.hpp>
+#include <toolkits/nearest_neighbors/brute_force_neighbors.hpp>
+#include <toolkits/nearest_neighbors/lsh_neighbors.hpp>
 
 namespace turi {
 namespace nearest_neighbors {

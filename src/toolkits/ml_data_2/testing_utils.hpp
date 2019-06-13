@@ -6,15 +6,15 @@
 #ifndef TURI_UNITY_ML_DATA_2_TESTING_UTILS_H_
 #define TURI_UNITY_ML_DATA_2_TESTING_UTILS_H_
 
-#include <sframe/sframe.hpp>
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <unity/toolkits/ml_data_2/ml_data_iterators.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
+#include <toolkits/ml_data_2/ml_data_iterators.hpp>
 #include <vector>
 #include <string>
 #include <map>
 #include <iostream>
 #include <unordered_set>
-#include <sframe/testing_utils.hpp>
+#include <core/storage/sframe_data/testing_utils.hpp>
 
 namespace turi { namespace v2 {
 

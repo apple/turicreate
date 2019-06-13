@@ -3,7 +3,7 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <image/io.hpp>
+#include <core/data/image/io.hpp>
 #ifndef png_infopp_NULL
 #define png_infopp_NULL (png_infopp)NULL
 #endif
@@ -13,8 +13,8 @@
 #endif
 
 #include <boost/gil/gil_all.hpp>
-#include <image/numeric_extension/sampler.hpp>
-#include <image/numeric_extension/resample.hpp>
+#include <core/data/image/numeric_extension/sampler.hpp>
+#include <core/data/image/numeric_extension/resample.hpp>
 
 namespace turi {
 

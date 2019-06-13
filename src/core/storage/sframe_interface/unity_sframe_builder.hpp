@@ -8,9 +8,9 @@
 
 #include <vector>
 #include <set>
-#include <sframe/sframe.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
 #include <boost/circular_buffer.hpp>
-#include <unity/lib/api/unity_sframe_builder_interface.hpp>
+#include <model_server/lib/api/unity_sframe_builder_interface.hpp>
 
 typedef boost::circular_buffer<std::vector<turi::flexible_type>> row_history_t;
 

@@ -8,11 +8,11 @@
 #include <boost/property_tree/ini_parser.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string/predicate.hpp>
-#include <logger/logger.hpp>
-#include <sframe/sframe_index_file.hpp>
-#include <fileio/general_fstream.hpp>
-#include <fileio/fs_utils.hpp>
-#include <util/boost_property_tree_utils.hpp>
+#include <core/logging/logger.hpp>
+#include <core/storage/sframe_data/sframe_index_file.hpp>
+#include <core/storage/fileio/general_fstream.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
+#include <core/util/boost_property_tree_utils.hpp>
 
 namespace turi {
 sframe_index_file_information read_sframe_index_file(std::string index_file) {

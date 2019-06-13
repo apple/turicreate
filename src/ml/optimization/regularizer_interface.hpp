@@ -7,14 +7,14 @@
 #define TURI_REGULARIZER_INTERFACE_H_
 
 #include <string>
-#include <flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 
 // Eigen
 #include <Eigen/Core>
 #include <Eigen/SparseCore>
 
 // Optimizaiton
-#include <optimization/optimization_interface.hpp>
+#include <ml/optimization/optimization_interface.hpp>
 
 // TODO: List of todo's for this file
 //------------------------------------------------------------------------------

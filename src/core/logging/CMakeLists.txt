@@ -21,3 +21,5 @@ make_library(logger OBJECT
     cppipc
   EXTERNAL_VISIBILITY
 )
+
+subdirs(table_printer)

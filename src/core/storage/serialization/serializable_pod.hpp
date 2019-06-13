@@ -6,7 +6,7 @@
 #ifndef SERIALIZABLE_POD_HPP
 #define SERIALIZABLE_POD_HPP
 
-#include <serialization/is_pod.hpp>
+#include <core/storage/serialization/is_pod.hpp>
 
 #define SERIALIZABLE_POD(tname)                   \
 namespace turi {                              \

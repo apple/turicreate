@@ -5,10 +5,10 @@
  */
 #ifndef TURI_LAMBDA_GRAPH_LAMBDA_INTERFACE_HPP
 #define TURI_LAMBDA_GRAPH_LAMBDA_INTERFACE_HPP
-#include <sgraph/sgraph_types.hpp>
-#include <sgraph/sgraph_synchronize.hpp>
-#include <cppipc/cppipc.hpp>
-#include <cppipc/magic_macros.hpp>
+#include <core/storage/sgraph_data/sgraph_types.hpp>
+#include <core/storage/sgraph_data/sgraph_synchronize.hpp>
+#include <core/system/cppipc/cppipc.hpp>
+#include <core/system/cppipc/magic_macros.hpp>
 
 namespace turi {
 

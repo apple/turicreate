@@ -3,27 +3,27 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <serialization/serialization_includes.hpp>
-#include <fileio/temp_files.hpp>
-#include <unity/lib/toolkit_function_macros.hpp>
-#include <unity/lib/toolkit_function_specification.hpp>
-#include <unity/lib/toolkit_util.hpp>
-#include <unity/lib/unity_base_types.hpp>
-#include <unity/lib/unity_sframe.hpp>
-#include <sframe/sframe.hpp>
-#include <sframe/algorithm.hpp>
-#include <fileio/general_fstream.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
+#include <core/storage/fileio/temp_files.hpp>
+#include <model_server/lib/toolkit_function_macros.hpp>
+#include <model_server/lib/toolkit_function_specification.hpp>
+#include <model_server/lib/toolkit_util.hpp>
+#include <model_server/lib/unity_base_types.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_data/algorithm.hpp>
+#include <core/storage/fileio/general_fstream.hpp>
 #include <sstream>
 #include <string>
 #include <iostream>
-#include <util/bitops.hpp>
-#include <unity/toolkits/text/unity_text.hpp>
-#include <unity/toolkits/text/topic_model.hpp>
-#include <unity/toolkits/text/cgs.hpp>
-#include <unity/toolkits/text/alias.hpp>
-#include <unity/toolkits/text/perplexity.hpp>
+#include <core/util/bitops.hpp>
+#include <toolkits/text/unity_text.hpp>
+#include <toolkits/text/topic_model.hpp>
+#include <toolkits/text/cgs.hpp>
+#include <toolkits/text/alias.hpp>
+#include <toolkits/text/perplexity.hpp>
 #include <timer/timer.hpp>
-#include <export.hpp>
+#include <core/export.hpp>
 namespace turi {
 namespace text {
 

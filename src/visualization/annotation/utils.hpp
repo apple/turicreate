@@ -10,8 +10,8 @@
 
 #include <boost/regex.hpp>
 #include <memory>
-#include <unity/lib/gl_sarray.hpp>
-#include <unity/lib/unity_sarray.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <core/storage/sframe_interface/unity_sarray.hpp>
 #include <vector>
 
 namespace annotate_spec = TuriCreate::Annotation::Specification;

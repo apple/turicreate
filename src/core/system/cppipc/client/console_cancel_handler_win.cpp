@@ -3,9 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <cppipc/client/console_cancel_handler_win.hpp>
-#include <cppipc/client/comm_client.hpp>
-#include <export.hpp>
+#include <core/system/cppipc/client/console_cancel_handler_win.hpp>
+#include <core/system/cppipc/client/comm_client.hpp>
+#include <core/export.hpp>
 #include <cross_platform/windows_wrapper.hpp>
 
 namespace cppipc {

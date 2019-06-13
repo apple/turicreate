@@ -7,10 +7,10 @@
 #define LOCK_FREE_POOL_HPP
 #include <stdint.h>
 #include <vector>
-#include <logger/assertions.hpp>
-#include <parallel/atomic.hpp>
-#include <generics/lock_free_internal.hpp>
-#include <util/branch_hints.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/parallel/atomic.hpp>
+#include <core/generics/lock_free_internal.hpp>
+#include <core/util/branch_hints.hpp>
 
 namespace turi {
   template <typename T, typename index_type = uint32_t>

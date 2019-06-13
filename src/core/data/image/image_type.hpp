@@ -7,7 +7,7 @@
 #define TURI_IMAGE_IMAGE_TYPE_HPP
 
 #include <string>
-#include <serialization/serialization_includes.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/gil/typedefs.hpp>
 

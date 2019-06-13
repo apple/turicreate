@@ -4,29 +4,29 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 ///// SDK
-//#include <unity/lib/toolkit_function_macros.hpp>
+//#include <model_server/lib/toolkit_function_macros.hpp>
 
 // Data structures
-#include <flexible_type/flexible_type_base_types.hpp>
-#include <unity/lib/unity_sframe.hpp>
-#include <unity/lib/variant.hpp>
-#include <sframe/sframe.hpp>
-#include <sframe/sframe_iterators.hpp>
+#include <core/data/flexible_type/flexible_type_base_types.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
+#include <model_server/lib/variant.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_data/sframe_iterators.hpp>
 
 // Unity library
-#include <unity/lib/toolkit_util.hpp>
-#include <unity/lib/toolkit_function_specification.hpp>
+#include <model_server/lib/toolkit_util.hpp>
+#include <model_server/lib/toolkit_function_specification.hpp>
 
 // Toolkits
-#include <unity/toolkits/evaluation/unity_evaluation.hpp>
-#include <unity/toolkits/evaluation/metrics.hpp>
-#include <unity/toolkits/evaluation/evaluation_constants.hpp>
+#include <toolkits/evaluation/unity_evaluation.hpp>
+#include <toolkits/evaluation/metrics.hpp>
+#include <toolkits/evaluation/evaluation_constants.hpp>
 
 
 /// SDK
-#include <unity/lib/toolkit_function_macros.hpp>
+#include <model_server/lib/toolkit_function_macros.hpp>
 
-#include <export.hpp>
+#include <core/export.hpp>
 
 namespace turi {
 namespace evaluation {

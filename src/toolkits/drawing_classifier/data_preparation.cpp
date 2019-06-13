@@ -7,9 +7,9 @@
 #include <iterator>
 #include <limits.h>
 #include <math.h>
-#include <logger/assertions.hpp>
-#include <image/image_type.hpp>
-#include <util/sys_util.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/data/image/image_type.hpp>
+#include <core/util/sys_util.hpp>
 #ifdef __APPLE__
 #include <CoreGraphics/CoreGraphics.h>
 #endif // __APPLE__

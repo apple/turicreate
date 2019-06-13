@@ -4,7 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <process/process.hpp>
-#include <logger/logger.hpp>
+#include <core/logging/logger.hpp>
 
 namespace turi {
 

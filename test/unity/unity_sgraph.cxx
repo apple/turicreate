@@ -5,12 +5,12 @@
  */
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <iostream>
 #include <unistd.h>
-#include <sgraph/sgraph.hpp>
-#include <unity/lib/unity_sgraph.hpp>
-#include <unity/lib/unity_sframe.hpp>
+#include <core/storage/sgraph_data/sgraph.hpp>
+#include <core/storage/sframe_interface/unity_sgraph.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
 using namespace turi;
 
 struct unity_graph_test {

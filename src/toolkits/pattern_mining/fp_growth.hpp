@@ -11,17 +11,17 @@
 #include <stack>
 #include <string>
 #include <algorithm>
-#include <export.hpp>
-#include <util/dense_bitset.hpp>
+#include <core/export.hpp>
+#include <core/util/dense_bitset.hpp>
 
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/lib/gl_sarray.hpp>
-#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/lib/extensions/ml_model.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
+#include <model_server/lib/extensions/ml_model.hpp>
 
-#include <unity/toolkits/pattern_mining/fp_tree.hpp>
-#include <unity/toolkits/pattern_mining/fp_results_tree.hpp>
-#include <unity/toolkits/feature_engineering/topk_indexer.hpp>
+#include <toolkits/pattern_mining/fp_tree.hpp>
+#include <toolkits/pattern_mining/fp_results_tree.hpp>
+#include <toolkits/feature_engineering/topk_indexer.hpp>
 
 namespace turi {
 namespace pattern_mining {

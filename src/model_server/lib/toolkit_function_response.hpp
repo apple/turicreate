@@ -6,8 +6,8 @@
 #ifndef TURI_UNITY_TOOLKIT_RESPONSE_TYPE_HPP
 #define TURI_UNITY_TOOLKIT_RESPONSE_TYPE_HPP
 #include <string>
-#include <unity/lib/variant.hpp>
-#include <serialization/serialization_includes.hpp>
+#include <model_server/lib/variant.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
 
 namespace turi {
 

@@ -6,17 +6,17 @@
 #ifndef TURI_ML2_DATA_ITERATOR_BASE_H_
 #define TURI_ML2_DATA_ITERATOR_BASE_H_
 
-#include <logger/assertions.hpp>
-#include <unity/toolkits/ml_data_2/data_storage/ml_data_row_translation.hpp>
-#include <unity/toolkits/ml_data_2/data_storage/ml_data_block_manager.hpp>
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <unity/toolkits/ml_data_2/side_features.hpp>
-#include <unity/toolkits/ml_data_2/iterators/composite_row_type.hpp>
-#include <unity/toolkits/ml_data_2/iterators/row_reference.hpp>
-#include <util/code_optimization.hpp>
+#include <core/logging/assertions.hpp>
+#include <toolkits/ml_data_2/data_storage/ml_data_row_translation.hpp>
+#include <toolkits/ml_data_2/data_storage/ml_data_block_manager.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
+#include <toolkits/ml_data_2/side_features.hpp>
+#include <toolkits/ml_data_2/iterators/composite_row_type.hpp>
+#include <toolkits/ml_data_2/iterators/row_reference.hpp>
+#include <core/util/code_optimization.hpp>
 
 // SArray and Flex type
-#include <sframe/sarray.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
 
 #include <Eigen/SparseCore>
 #include <Eigen/Core>

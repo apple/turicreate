@@ -6,12 +6,12 @@
 #ifndef TURI_SPARSE_SIMILARITY_UTILITIES_H
 #define TURI_SPARSE_SIMILARITY_UTILITIES_H
 
-#include <sframe/sarray.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
 #include <vector>
-#include <parallel/pthread_tools.hpp>
-#include <util/try_finally.hpp>
-#include <table_printer/table_printer.hpp>
-#include <sframe/sarray_iterators.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/util/try_finally.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
+#include <core/storage/sframe_data/sarray_iterators.hpp>
 
 namespace turi {
 

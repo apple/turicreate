@@ -9,17 +9,17 @@
 #include <vector>
 #include <cmath>
 
-#include <sgraph/sgraph.hpp>
+#include <core/storage/sgraph_data/sgraph.hpp>
 
-#include <unity/lib/gl_sgraph.hpp>
-#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/lib/unity_sgraph.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
+#include <core/data/sframe/gl_sgraph.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
+#include <core/storage/sframe_interface/unity_sgraph.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
 
-#include <unity/toolkits/clustering/kmeans.hpp>
+#include <toolkits/clustering/kmeans.hpp>
 
-#include <unity/toolkits/feature_engineering/transform_utils.hpp>
-#include <unity/toolkits/feature_engineering/categorical_imputer.hpp>
+#include <toolkits/feature_engineering/transform_utils.hpp>
+#include <toolkits/feature_engineering/categorical_imputer.hpp>
 
 
 /***************************************************************************/

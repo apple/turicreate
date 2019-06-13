@@ -8,9 +8,9 @@
 #include <memory>
 #include <vector>
 #include <string>
-#include <flexible_type/flexible_type.hpp>
-#include <unity/lib/api/function_closure_info.hpp>
-#include <cppipc/magic_macros.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <model_server/lib/api/function_closure_info.hpp>
+#include <core/system/cppipc/magic_macros.hpp>
 
 namespace turi {
 
@@ -92,4 +92,4 @@ GENERATE_INTERFACE_AND_PROXY(unity_sarray_base, unity_sarray_proxy,
     )
 } // namespace turi
 #endif // TURI_UNITY_SARRAY_INTERFACE_HPP
-#include <unity/lib/api/unity_sframe_interface.hpp>
+#include <model_server/lib/api/unity_sframe_interface.hpp>

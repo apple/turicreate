@@ -10,9 +10,9 @@
 #include <memory>
 #include <string>
 
-#include <ml_data/metadata.hpp>
+#include <ml/ml_data/metadata.hpp>
 #include <Eigen/Core>
-#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
+#include <toolkits/coreml_export/mlmodel_wrapper.hpp>
 
 namespace turi {
 

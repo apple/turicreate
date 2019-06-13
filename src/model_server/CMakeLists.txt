@@ -1,8 +1,7 @@
 project(unity)
 
 subdirs(extensions
-  lib
-  toolkits)
+  lib)
 
 set(additional_unity_requirements)
 if(HAS_CORE_ML)
@@ -25,7 +24,7 @@ make_library(unity OBJECT
 )
 
 # Pull in all the libraries in the extensions directory.
-get_property(EXTENSIONS_LIST DIRECTORY "extensions" PROPERTY EXTENSIONS_LIST)
+get_property(EXTENSIONS_LIST DIRECTORY "${CMAKE_SOURCE_DIR}/src/model_server/extensions" PROPERTY EXTENSIONS_LIST)
 
 foreach(loop_var ${EXTENSIONS_LIST})
   message(STATUS "unity depending on extension ${loop_var}")
@@ -70,10 +69,3 @@ target_link_libraries(unity_shared_for_testing ${_TC_COMMON_REQUIREMENTS})
 # Let's make sure they don't link at the same time.
 add_dependencies(unity_shared_for_testing unity_shared)
 
-if(${TC_BUILD_PYTHON})
-  subdirs(python)
-
-  include_directories(${PYTHON_INCLUDE_DIRS})
-  message("Python library = ${PYTHON_LIBRARIES}")
-
-endif()

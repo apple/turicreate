@@ -3,32 +3,32 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <flexible_type/flexible_type_base_types.hpp>
-#include <sframe/sframe_iterators.hpp>
-#include <util/try_finally.hpp>
+#include <core/data/flexible_type/flexible_type_base_types.hpp>
+#include <core/storage/sframe_data/sframe_iterators.hpp>
+#include <core/util/try_finally.hpp>
 
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <unity/toolkits/ml_data_2/ml_data_iterators.hpp>
-#include <unity/toolkits/ml_data_2/sframe_index_mapping.hpp>
-#include <unity/toolkits/util/indexed_sframe_tools.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
+#include <toolkits/ml_data_2/ml_data_iterators.hpp>
+#include <toolkits/ml_data_2/sframe_index_mapping.hpp>
+#include <toolkits/util/indexed_sframe_tools.hpp>
 
-#include <unity/toolkits/recsys/models.hpp>
-#include <unity/toolkits/recsys/user_item_lists.hpp>
-#include <unity/toolkits/recsys/recsys_model_base.hpp>
-#include <unity/toolkits/recsys/train_test_split.hpp>
-#include <unity/toolkits/util/precision_recall.hpp>
-#include <unity/toolkits/util/sframe_utils.hpp>
-#include <unity/toolkits/evaluation/metrics.hpp>
-#include <util/fast_top_k.hpp>
+#include <toolkits/recsys/models.hpp>
+#include <toolkits/recsys/user_item_lists.hpp>
+#include <model_server/lib/extensions/model_base.hpp>
+#include <toolkits/recsys/train_test_split.hpp>
+#include <toolkits/util/precision_recall.hpp>
+#include <toolkits/util/sframe_utils.hpp>
+#include <toolkits/evaluation/metrics.hpp>
+#include <core/util/fast_top_k.hpp>
 #include <timer/timer.hpp>
 #include <algorithm>
-#include <logger/logger.hpp>
+#include <core/logging/logger.hpp>
 #include <sstream>
-#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
+#include <toolkits/coreml_export/mlmodel_wrapper.hpp>
 
 // Types
-#include <unity/lib/variant.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
+#include <model_server/lib/variant.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
 
 namespace turi { namespace recsys {
 

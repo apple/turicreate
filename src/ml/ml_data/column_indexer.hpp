@@ -6,14 +6,14 @@
 #ifndef TURI_DML_DATA_COLUMN_INDEXER_H_
 #define TURI_DML_DATA_COLUMN_INDEXER_H_
 
-#include <flexible_type/flexible_type.hpp>
-#include <util/hash_value.hpp>
-#include <logger/assertions.hpp>
-#include <util/bitops.hpp>
-#include <ml_data/ml_data_column_modes.hpp>
-#include <serialization/serialization_includes.hpp>
-#include <generics/hopscotch_map.hpp>
-#include <parallel/pthread_tools.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/util/hash_value.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/util/bitops.hpp>
+#include <ml/ml_data/ml_data_column_modes.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
+#include <core/generics/hopscotch_map.hpp>
+#include <core/parallel/pthread_tools.hpp>
 
 namespace turi {
 

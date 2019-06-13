@@ -9,8 +9,8 @@
 #include <iostream>
 #include <array>
 #include <algorithm>
-#include <util/bitops.hpp>
-#include <util/code_optimization.hpp>
+#include <core/util/bitops.hpp>
+#include <core/util/code_optimization.hpp>
 
 namespace turi {
 

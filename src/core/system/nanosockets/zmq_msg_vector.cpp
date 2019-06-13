@@ -4,10 +4,10 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <stdint.h>
-#include <nanosockets/zmq_msg_vector.hpp>
-#include <nanosockets/print_zmq_error.hpp>
-#include <serialization/oarchive.hpp>
-#include <serialization/iarchive.hpp>
+#include <core/system/nanosockets/zmq_msg_vector.hpp>
+#include <core/system/nanosockets/print_zmq_error.hpp>
+#include <core/storage/serialization/oarchive.hpp>
+#include <core/storage/serialization/iarchive.hpp>
 
 extern "C" {
 #include <nanomsg/nn.h>

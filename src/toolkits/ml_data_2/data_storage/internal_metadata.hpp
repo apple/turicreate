@@ -6,9 +6,9 @@
 #ifndef TURI_ML2_DATA_COLUMN_METADATA_H_
 #define TURI_ML2_DATA_COLUMN_METADATA_H_
 
-#include <unity/toolkits/ml_data_2/indexing/column_indexer.hpp>
-#include <unity/toolkits/ml_data_2/statistics/column_statistics.hpp>
-#include <sframe/sarray.hpp>
+#include <toolkits/ml_data_2/indexing/column_indexer.hpp>
+#include <toolkits/ml_data_2/statistics/column_statistics.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
 
 namespace turi {
 

@@ -6,11 +6,11 @@
 #ifndef TURI_PARALLEL_PARALLEL_ALL_HPP_
 #define TURI_PARALLEL_PARALLEL_ALL_HPP_
 
-#include <parallel/atomic.hpp>
-#include <parallel/atomic_ops.hpp>
-#include <parallel/atomic_add_vector2.hpp>
-#include <parallel/pthread_tools.hpp>
-#include <parallel/lambda_omp.hpp>
-#include <parallel/mutex.hpp>
+#include <core/parallel/atomic.hpp>
+#include <core/parallel/atomic_ops.hpp>
+#include <core/parallel/atomic_add_vector2.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/parallel/lambda_omp.hpp>
+#include <core/parallel/mutex.hpp>
 
 #endif

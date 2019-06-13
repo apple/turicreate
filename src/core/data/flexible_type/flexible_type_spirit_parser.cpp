@@ -15,8 +15,8 @@
 #include <boost/spirit/include/phoenix_stl.hpp>
 #include <boost/spirit/include/qi_char_class.hpp>
 #include <boost/fusion/include/std_pair.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <flexible_type/flexible_type_spirit_parser.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/flexible_type_spirit_parser.hpp>
 #include <boost/spirit/include/support_utree.hpp>
 
 namespace turi {

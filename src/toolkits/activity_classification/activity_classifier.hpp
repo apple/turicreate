@@ -6,14 +6,14 @@
 #ifndef TURI_ACTIVITY_CLASSIFIER_H_
 #define TURI_ACTIVITY_CLASSIFIER_H_
 
-#include <table_printer/table_printer.hpp>
-#include <unity/lib/extensions/ml_model.hpp>
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/toolkits/activity_classification/ac_data_iterator.hpp>
-#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
-#include <unity/toolkits/neural_net/compute_context.hpp>
-#include <unity/toolkits/neural_net/model_backend.hpp>
-#include <unity/toolkits/neural_net/model_spec.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
+#include <model_server/lib/extensions/ml_model.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <toolkits/activity_classification/ac_data_iterator.hpp>
+#include <toolkits/coreml_export/mlmodel_wrapper.hpp>
+#include <ml/neural_net/compute_context.hpp>
+#include <ml/neural_net/model_backend.hpp>
+#include <ml/neural_net/model_spec.hpp>
 
 namespace turi {
 namespace activity_classification {

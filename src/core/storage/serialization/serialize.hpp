@@ -5,19 +5,19 @@
  */
 #ifndef TURI_SERIALIZE_HPP
 #define TURI_SERIALIZE_HPP
-#include <serialization/iarchive.hpp>
-#include <serialization/oarchive.hpp>
-#include <serialization/basic_types.hpp>
+#include <core/storage/serialization/iarchive.hpp>
+#include <core/storage/serialization/oarchive.hpp>
+#include <core/storage/serialization/basic_types.hpp>
 
-#include <serialization/list.hpp>
-#include <serialization/set.hpp>
-#include <serialization/vector.hpp>
-#include <serialization/map.hpp>
-#include <serialization/unordered_map.hpp>
-#include <serialization/unordered_set.hpp>
-#include <serialization/serializable_pod.hpp>
-#include <serialization/unsupported_serialize.hpp>
-#include <serialization/serialize_to_from_string.hpp>
-#include <serialization/conditional_serialize.hpp>
-#include <serialization/serialize_eigen.hpp>
+#include <core/storage/serialization/list.hpp>
+#include <core/storage/serialization/set.hpp>
+#include <core/storage/serialization/vector.hpp>
+#include <core/storage/serialization/map.hpp>
+#include <core/storage/serialization/unordered_map.hpp>
+#include <core/storage/serialization/unordered_set.hpp>
+#include <core/storage/serialization/serializable_pod.hpp>
+#include <core/storage/serialization/unsupported_serialize.hpp>
+#include <core/storage/serialization/serialize_to_from_string.hpp>
+#include <core/storage/serialization/conditional_serialize.hpp>
+#include <core/storage/serialization/serialize_eigen.hpp>
 #endif

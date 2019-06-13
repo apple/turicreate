@@ -6,8 +6,8 @@
 #include <string>
 #include <cmath>
 #include <functional>
-#include <flexible_type/flexible_type.hpp>
-#include <unity/lib/unity_sarray_binary_operations.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/sframe_interface/unity_sarray_binary_operations.hpp>
 
 namespace turi {
 namespace unity_sarray_binary_operations {

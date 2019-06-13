@@ -3,15 +3,15 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <logger/logger.hpp>
+#include <core/logging/logger.hpp>
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
 #include <fstream>
 #include <iostream>
-#include <parallel/pthread_h.h>
-#include <logger/backtrace.hpp>
-#include <export.hpp>
+#include <core/parallel/pthread_h.h>
+#include <core/logging/backtrace.hpp>
+#include <core/export.hpp>
 
 EXPORT file_logger& global_logger() {
   static file_logger l;

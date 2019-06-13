@@ -10,15 +10,15 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
-#include <logger/logger.hpp>
-#include <logger/assertions.hpp>
-#include <sframe/sarray_index_file.hpp>
-#include <fileio/general_fstream.hpp>
-#include <fileio/fs_utils.hpp>
-#include <fileio/sanitize_url.hpp>
-#include <util/boost_property_tree_utils.hpp>
-#include <serialization/serialization_includes.hpp>
-#include <json/json_include.hpp>
+#include <core/logging/logger.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/storage/sframe_data/sarray_index_file.hpp>
+#include <core/storage/fileio/general_fstream.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
+#include <core/storage/fileio/sanitize_url.hpp>
+#include <core/util/boost_property_tree_utils.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
+#include <core/data/json/json_include.hpp>
 namespace turi {
 
 void index_file_information::save(oarchive& oarc) const {

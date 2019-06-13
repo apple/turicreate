@@ -7,10 +7,10 @@
 #include <boost/archive/iterators/transform_width.hpp>
 #include <boost/date_time/local_time/local_time.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <flexible_type/ndarray.hpp>
-#include <unity/lib/visualization/vega_data.hpp>
-#include <unity/lib/image_util.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/ndarray.hpp>
+#include <visualization/server/vega_data.hpp>
+#include <model_server/lib/image_util.hpp>
 #include <string>
 #include <vector>
 #include <queue>

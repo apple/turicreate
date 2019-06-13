@@ -1,8 +1,8 @@
-#include <unity/lib/visualization/thread.hpp>
+#include <visualization/server/thread.hpp>
 
-#include <logger/assertions.hpp>
+#include <core/logging/assertions.hpp>
 
-#include <unity/lib/annotation/annotation_base.hpp>
+#include <visualization/annotation/annotation_base.hpp>
 
 #include <boost/archive/iterators/base64_from_binary.hpp>
 #include <boost/archive/iterators/binary_from_base64.hpp>

@@ -10,9 +10,9 @@
 #include <fstream>
 #include <boost/iostreams/stream.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
-#include <fileio/general_fstream_source.hpp>
-#include <fileio/general_fstream_sink.hpp>
-#include <export.hpp>
+#include <core/storage/fileio/general_fstream_source.hpp>
+#include <core/storage/fileio/general_fstream_sink.hpp>
+#include <core/export.hpp>
 
 namespace turi {
 typedef boost::iostreams::stream<fileio_impl::general_fstream_source>

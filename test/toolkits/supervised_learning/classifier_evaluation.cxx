@@ -1,10 +1,10 @@
 #define BOOST_TEST_MODULE classifier_evaluations
 
 #include <vector>
-#include <unity/toolkits/supervised_learning/classifier_evaluations.hpp>
+#include <toolkits/supervised_learning/classifier_evaluations.hpp>
 #include <boost/test/unit_test.hpp>
-#include <unity/lib/gl_sframe.hpp>
-#include <util/test_macros.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <core/util/test_macros.hpp>
 
 using namespace turi;
 using namespace turi::supervised;

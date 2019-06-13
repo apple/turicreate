@@ -7,7 +7,7 @@
 #define CPPIPC_CLIENT_CLIENT_HPP
 #include <string>
 #include <map>
-#include <cppipc/client/comm_client.hpp>
+#include <core/system/cppipc/client/comm_client.hpp>
 namespace cppipc {
 
 

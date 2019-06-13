@@ -5,18 +5,18 @@
  */
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <vector>
 #include <string>
 
-#include <random/random.hpp>
+#include <core/random/random.hpp>
 
-#include <sframe/testing_utils.hpp>
-#include <util/testing_utils.hpp>
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <unity/toolkits/ml_data_2/sframe_index_mapping.hpp>
-#include <unity/toolkits/recsys/train_test_split.hpp>
-#include <sframe/sframe_iterators.hpp>
+#include <core/storage/sframe_data/testing_utils.hpp>
+#include <core/util/testing_utils.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
+#include <toolkits/ml_data_2/sframe_index_mapping.hpp>
+#include <toolkits/recsys/train_test_split.hpp>
+#include <core/storage/sframe_data/sframe_iterators.hpp>
 
 
 

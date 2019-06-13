@@ -6,7 +6,7 @@
 #ifndef CPPIPC_COMMON_AUTHENTICATION_BASE_HPP
 #define CPPIPC_COMMON_AUTHENTICATION_BASE_HPP
 #include <string>
-#include <cppipc/common/message_types.hpp>
+#include <core/system/cppipc/common/message_types.hpp>
 namespace cppipc {
 
 /**

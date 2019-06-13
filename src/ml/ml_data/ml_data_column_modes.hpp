@@ -8,7 +8,7 @@
 
 #include <string>
 #include <map>
-#include <flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 
 #ifdef ERROR
 #undef ERROR

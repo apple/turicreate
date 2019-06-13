@@ -5,10 +5,10 @@
  */
 #ifndef TURI_TEXT_TOKENIZER_H_
 #define TURI_TEXT_TOKENIZER_H_
-#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/toolkits/feature_engineering/transformer_base.hpp>
-#include <unity/toolkits/feature_engineering/transform_utils.hpp>
-#include <export.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
+#include <toolkits/feature_engineering/transformer_base.hpp>
+#include <toolkits/feature_engineering/transform_utils.hpp>
+#include <core/export.hpp>
 
 namespace turi {
 namespace sdk_model {

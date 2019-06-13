@@ -6,12 +6,12 @@
 #ifndef TURI_DML_DATA_ROW_FORMAT_H_
 #define TURI_DML_DATA_ROW_FORMAT_H_
 
-#include <ml_data/ml_data_entry.hpp>
-#include <ml_data/ml_data_column_modes.hpp>
-#include <ml_data/data_storage/internal_metadata.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <util/code_optimization.hpp>
-#include <util/dense_bitset.hpp>
+#include <ml/ml_data/ml_data_entry.hpp>
+#include <ml/ml_data/ml_data_column_modes.hpp>
+#include <ml/ml_data/data_storage/internal_metadata.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/util/code_optimization.hpp>
+#include <core/util/dense_bitset.hpp>
 
 
 /**

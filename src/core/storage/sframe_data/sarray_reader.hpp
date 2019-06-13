@@ -9,15 +9,15 @@
 #include <iterator>
 #include <type_traits>
 #include <functional>
-#include <logger/assertions.hpp>
-#include <serialization/iarchive.hpp>
-#include <parallel/pthread_tools.hpp>
-#include <sframe/siterable.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <sframe/sarray_file_format_v2.hpp>
-#include <sframe/sframe_constants.hpp>
-#include <fileio/file_ownership_handle.hpp>
-#include <sframe/sarray_reader_buffer.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/storage/serialization/iarchive.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/storage/sframe_data/siterable.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/sframe_data/sarray_file_format_v2.hpp>
+#include <core/storage/sframe_data/sframe_constants.hpp>
+#include <core/storage/fileio/file_ownership_handle.hpp>
+#include <core/storage/sframe_data/sarray_reader_buffer.hpp>
 namespace turi {
 
 template <typename T>

@@ -3,19 +3,19 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <logger/logger.hpp>
-#include <unity/lib/unity_sgraph.hpp>
-#include <unity/lib/unity_sframe.hpp>
-#include <lazy_eval/lazy_eval_operation_dag.hpp>
-#include <lazy_eval/lazy_eval_operation.hpp>
-#include <unity/lib/unity_sgraph_lazy_ops.hpp>
-#include <unity/lib/unity_global.hpp>
-#include <unity/lib/unity_global_singleton.hpp>
-#include <unity/lib/variant.hpp>
-#include <sgraph/sgraph_io.hpp>
-#include <sgraph/sgraph_triple_apply.hpp>
-#include <parallel/lambda_omp.hpp>
-#include <parallel/mutex.hpp>
+#include <core/logging/logger.hpp>
+#include <core/storage/sframe_interface/unity_sgraph.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
+#include <core/storage/lazy_eval/lazy_eval_operation_dag.hpp>
+#include <core/storage/lazy_eval/lazy_eval_operation.hpp>
+#include <core/storage/sframe_interface/unity_sgraph_lazy_ops.hpp>
+#include <model_server/lib/unity_global.hpp>
+#include <model_server/lib/unity_global_singleton.hpp>
+#include <model_server/lib/variant.hpp>
+#include <core/storage/sgraph_data/sgraph_io.hpp>
+#include <core/storage/sgraph_data/sgraph_triple_apply.hpp>
+#include <core/parallel/lambda_omp.hpp>
+#include <core/parallel/mutex.hpp>
 #include <boost/range/adaptors.hpp>
 #include <functional>
 

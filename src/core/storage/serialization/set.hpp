@@ -7,9 +7,9 @@
 #define TURI_SERIALIZE_SET_HPP
 
 #include <set>
-#include <serialization/iarchive.hpp>
-#include <serialization/oarchive.hpp>
-#include <serialization/iterator.hpp>
+#include <core/storage/serialization/iarchive.hpp>
+#include <core/storage/serialization/oarchive.hpp>
+#include <core/storage/serialization/iterator.hpp>
 
 namespace turi {
 namespace archive_detail {

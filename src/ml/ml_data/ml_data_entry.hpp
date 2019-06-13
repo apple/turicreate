@@ -7,7 +7,7 @@
 #define TURI_DML_DATA_ENTRY_H_
 
 #include <cstdlib>
-#include <serialization/serialization_includes.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
 
 namespace turi {
 

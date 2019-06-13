@@ -7,10 +7,10 @@
 #define TURI_OPTIMIZATION_INTERFACE_H_
 
 #include <string>
-#include <flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 #include <Eigen/Core>
 #include <Eigen/SparseCore>
-#include <sframe/sframe.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
 
 // TODO: List of todo's for this file
 //------------------------------------------------------------------------------

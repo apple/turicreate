@@ -4,13 +4,13 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <unity/toolkits/neural_net/float_array.hpp>
+#include <ml/neural_net/float_array.hpp>
 
 #include <algorithm>
 #include <cassert>
 #include <numeric>
 
-#include <logger/assertions.hpp>
+#include <core/logging/assertions.hpp>
 
 namespace turi {
 namespace neural_net {

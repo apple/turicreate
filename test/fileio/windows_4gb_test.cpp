@@ -4,8 +4,8 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <iostream>
-#include <logger/assertions.hpp>
-#include <fileio/general_fstream.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/storage/fileio/general_fstream.hpp>
 using namespace turi;
 
 int main() {

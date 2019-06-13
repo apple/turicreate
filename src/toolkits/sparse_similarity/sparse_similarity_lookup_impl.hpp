@@ -6,22 +6,22 @@
 #ifndef TURI_UNITY_ITEM_SIMILARITY_LOOKUP_CONSTRUCTION_H_
 #define TURI_UNITY_ITEM_SIMILARITY_LOOKUP_CONSTRUCTION_H_
 
-#include <unity/toolkits/sparse_similarity/item_processing.hpp>
-#include <unity/toolkits/sparse_similarity/index_mapper.hpp>
-#include <unity/toolkits/sparse_similarity/sparse_similarity_lookup.hpp>
-#include <unity/toolkits/sparse_similarity/similarities.hpp>
-#include <unity/toolkits/sparse_similarity/utilities.hpp>
-#include <unity/toolkits/sparse_similarity/neighbor_search.hpp>
-#include <unity/toolkits/sparse_similarity/sliced_itemitem_matrix.hpp>
-#include <table_printer/table_printer.hpp>
-#include <generics/sparse_parallel_2d_array.hpp>
-#include <sframe/sframe.hpp>
-#include <sframe/sframe_iterators.hpp>
-#include <util/logit_math.hpp>
-#include <util/cityhash_tc.hpp>
-#include <util/dense_bitset.hpp>
-#include <util/sys_util.hpp>
-#include <parallel/pthread_tools.hpp>
+#include <toolkits/sparse_similarity/item_processing.hpp>
+#include <toolkits/sparse_similarity/index_mapper.hpp>
+#include <toolkits/sparse_similarity/sparse_similarity_lookup.hpp>
+#include <toolkits/sparse_similarity/similarities.hpp>
+#include <toolkits/sparse_similarity/utilities.hpp>
+#include <toolkits/sparse_similarity/neighbor_search.hpp>
+#include <toolkits/sparse_similarity/sliced_itemitem_matrix.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
+#include <core/generics/sparse_parallel_2d_array.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_data/sframe_iterators.hpp>
+#include <core/util/logit_math.hpp>
+#include <core/util/cityhash_tc.hpp>
+#include <core/util/dense_bitset.hpp>
+#include <core/util/sys_util.hpp>
+#include <core/parallel/pthread_tools.hpp>
 
 namespace turi { namespace sparse_sim {
 

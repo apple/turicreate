@@ -6,9 +6,9 @@
 #ifndef TURI_PYTHON_CALLBACKS_H_
 #define TURI_PYTHON_CALLBACKS_H_
 
-#include <util/code_optimization.hpp>
+#include <core/util/code_optimization.hpp>
 #include <string>
-#include <export.hpp>
+#include <core/export.hpp>
 
 /** Provides a generic interface to call cython functions (which can
  *  in turn call python functions) from the C++ code and properly

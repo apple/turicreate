@@ -7,15 +7,15 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <regex>
-#include <fileio/fs_utils.hpp>
-#include <fileio/hdfs.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
+#include <core/storage/fileio/hdfs.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
-#include <fileio/fixed_size_cache_manager.hpp>
-#include <fileio/file_handle_pool.hpp>
-#include <fileio/s3_api.hpp>
-#include <fileio/sanitize_url.hpp>
-#include <export.hpp>
+#include <core/storage/fileio/fixed_size_cache_manager.hpp>
+#include <core/storage/fileio/file_handle_pool.hpp>
+#include <core/storage/fileio/s3_api.hpp>
+#include <core/storage/fileio/sanitize_url.hpp>
+#include <core/export.hpp>
 
 namespace turi {
 namespace fileio {

@@ -7,13 +7,13 @@
 #include <vector>
 #include <map>
 #include <algorithm>
-#include <timer/timer.hpp>
-#include <sframe/sarray.hpp>
-#include <sframe/sframe.hpp>
-#include <sframe/sframe_constants.hpp>
-#include <sframe/sframe_config.hpp>
-#include <sframe/sarray_v2_block_manager.hpp>
-#include <flexible_type/flexible_type.hpp>
+#include <core/system/platform/timer//timer.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_data/sframe_constants.hpp>
+#include <core/storage/sframe_data/sframe_config.hpp>
+#include <core/storage/sframe_data/sarray_v2_block_manager.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 namespace turi {
 namespace query_eval {
 using sframe_config::SFRAME_SORT_BUFFER_SIZE;

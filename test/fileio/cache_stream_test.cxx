@@ -1,10 +1,10 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <string>
 #include <boost/iostreams/stream.hpp>
-#include <fileio/cache_stream_sink.hpp>
-#include <fileio/cache_stream_source.hpp>
+#include <core/storage/fileio/cache_stream_sink.hpp>
+#include <core/storage/fileio/cache_stream_source.hpp>
 
 using namespace turi::fileio;
 using namespace turi::fileio_impl;

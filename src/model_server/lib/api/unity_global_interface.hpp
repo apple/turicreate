@@ -9,11 +9,11 @@
 #include <vector>
 #include <string>
 #include <map>
-#include <unity/lib/api/unity_sarray_interface.hpp>
-#include <unity/lib/api/unity_graph_interface.hpp>
-#include <unity/lib/toolkit_function_response.hpp>
-#include <unity/lib/api/client_base_types.hpp>
-#include <cppipc/magic_macros.hpp>
+#include <model_server/lib/api/unity_sarray_interface.hpp>
+#include <model_server/lib/api/unity_graph_interface.hpp>
+#include <model_server/lib/toolkit_function_response.hpp>
+#include <model_server/lib/api/client_base_types.hpp>
+#include <core/system/cppipc/magic_macros.hpp>
 
 namespace turi {
 

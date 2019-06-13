@@ -6,7 +6,7 @@
 #ifndef RESAMPLE_INTERPOLATE_VALUE_H
 #define RESAMPLE_INTERPOLATE_VALUE_H
 
-#include <flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 
 namespace turi {
 namespace timeseries {

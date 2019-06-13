@@ -7,7 +7,7 @@
 #define TURI_SFRAME_INTEGER_PACK_IMPL_HPP
 
 
-#include <serialization/serialization_includes.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
 namespace turi {
 
 /**

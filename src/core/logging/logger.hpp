@@ -45,13 +45,13 @@
 #include <system_error>
 #endif
 #include <functional>
-#include <parallel/pthread_h.h>
+#include <core/parallel/pthread_h.h>
 #include <timer/timer.hpp>
-#include <logger/fail_method.hpp>
-#include <logger/backtrace.hpp>
-#include <logger/error.hpp>
-#include <cppipc/server/cancel_ops.hpp>
-#include <util/code_optimization.hpp>
+#include <core/logging/fail_method.hpp>
+#include <core/logging/backtrace.hpp>
+#include <core/logging/error.hpp>
+#include <core/system/cppipc/server/cancel_ops.hpp>
+#include <core/util/code_optimization.hpp>
 #include <process/process_util.hpp>
 
 /**

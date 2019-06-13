@@ -16,7 +16,7 @@ from libcpp.string cimport string
 from .cy_unity cimport function_closure_info
 from .cy_unity cimport make_function_closure_info
 
-cdef extern from "<unity/lib/unity_sgraph.hpp>" namespace "turi":
+cdef extern from "<core/storage/sframe_interface/unity_sgraph.hpp>" namespace "turi":
     cdef cppclass unity_sgraph nogil:
         unity_sgraph() except +
         vector[string] get_vertex_fields(size_t) except +

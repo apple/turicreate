@@ -13,7 +13,7 @@
 #include <string>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/lexical_cast.hpp>
-#include <logger/logger.hpp>
+#include <core/logging/logger.hpp>
 namespace turi {
 namespace ini {
 

@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <png.h>
 #include <string.h>
-#include <logger/logger.hpp>
+#include <core/logging/logger.hpp>
 
 #ifndef png_infopp_NULL
 #define png_infopp_NULL (png_infopp)NULL

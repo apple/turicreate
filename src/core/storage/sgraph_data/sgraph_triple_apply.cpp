@@ -3,13 +3,13 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <sgraph/sgraph_triple_apply.hpp>
-#include <sgraph/hilbert_parallel_for.hpp>
-#include <sgraph/sgraph_constants.hpp>
-#include <util/cityhash_tc.hpp>
-#include <lambda/graph_lambda_interface.hpp>
-#include <lambda/graph_pylambda_master.hpp>
-#include <lambda/lambda_utils.hpp>
+#include <core/storage/sgraph_data/sgraph_triple_apply.hpp>
+#include <core/storage/sgraph_data/hilbert_parallel_for.hpp>
+#include <core/storage/sgraph_data/sgraph_constants.hpp>
+#include <core/util/cityhash_tc.hpp>
+#include <core/system/lambda/graph_lambda_interface.hpp>
+#include <core/system/lambda/graph_pylambda_master.hpp>
+#include <core/system/lambda/lambda_utils.hpp>
 
 namespace turi {
 namespace sgraph_compute {

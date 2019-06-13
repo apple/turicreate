@@ -1,6 +1,6 @@
 #include "batch_size.hpp"
 #include "columnwise_summary.hpp"
-#include <unity/lib/unity_sframe.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
 
 namespace turi {
   namespace visualization {

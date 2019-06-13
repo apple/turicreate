@@ -11,8 +11,8 @@
 #include <string>
 #include <vector>
 
-#include <ml_data/metadata.hpp>
-#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
+#include <ml/ml_data/metadata.hpp>
+#include <toolkits/coreml_export/mlmodel_wrapper.hpp>
 
 namespace turi {
 

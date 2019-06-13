@@ -7,7 +7,7 @@
 #define TURI_UNITY_SGRAPH_TRIPLE_APPLY_TYPEDEFS_HPP
 
 #include<map>
-#include<flexible_type/flexible_type.hpp>
+#include<core/data/flexible_type/flexible_type.hpp>
 
 namespace turi {
 

@@ -7,9 +7,9 @@
 #include <string>
 #include <map>
 #include <boost/algorithm/string/predicate.hpp>
-#include <fileio/get_s3_endpoint.hpp>
-#include <fileio/get_s3_endpoint.hpp>
-#include <fileio/fileio_constants.hpp>
+#include <core/storage/fileio/get_s3_endpoint.hpp>
+#include <core/storage/fileio/get_s3_endpoint.hpp>
+#include <core/storage/fileio/fileio_constants.hpp>
 
 namespace turi {
 namespace fileio {

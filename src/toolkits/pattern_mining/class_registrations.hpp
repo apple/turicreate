@@ -6,9 +6,9 @@
 #ifndef PATTERN_MINING_REGISTRATIONS_H_
 #define PATTERN_MINING_REGISTRATIONS_H_
 
-#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/lib/toolkit_class_specification.hpp>
-#include <unity/lib/toolkit_function_specification.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
+#include <model_server/lib/toolkit_class_specification.hpp>
+#include <model_server/lib/toolkit_function_specification.hpp>
 
 namespace turi {
 namespace pattern_mining {

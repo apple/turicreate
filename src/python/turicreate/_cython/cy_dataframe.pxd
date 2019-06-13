@@ -12,7 +12,7 @@ from .cy_flexible_type cimport flex_type_enum
 from .cy_flexible_type cimport flexible_type
 from .cy_flexible_type cimport flex_list
 
-cdef extern from "<sframe/dataframe.hpp>" namespace "turi":
+cdef extern from "<core/storage/sframe_data/dataframe.hpp>" namespace "turi":
     cdef cppclass dataframe_t:
         vector[string] names
         map[string, flex_type_enum] types

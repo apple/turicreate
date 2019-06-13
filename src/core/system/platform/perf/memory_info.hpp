@@ -12,7 +12,7 @@
 #ifdef HAS_TCMALLOC
 #include <google/malloc_extension.h>
 #endif
-#include <logger/assertions.hpp>
+#include <core/logging/assertions.hpp>
 namespace turi {
   /**
    * \internal \brief Memory info namespace contains functions used to

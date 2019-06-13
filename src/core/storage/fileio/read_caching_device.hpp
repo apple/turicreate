@@ -5,11 +5,11 @@
  */
 #ifndef TURI_FILEIO_CACHING_DEVICE_HPP
 #define TURI_FILEIO_CACHING_DEVICE_HPP
-#include <logger/logger.hpp>
-#include <fileio/block_cache.hpp>
-#include <fileio/sanitize_url.hpp>
-#include <parallel/mutex.hpp>
-#include <util/basic_types.hpp>
+#include <core/logging/logger.hpp>
+#include <core/storage/fileio/block_cache.hpp>
+#include <core/storage/fileio/sanitize_url.hpp>
+#include <core/parallel/mutex.hpp>
+#include <core/util/basic_types.hpp>
 #include <mutex>
 #include <map>
 namespace turi {

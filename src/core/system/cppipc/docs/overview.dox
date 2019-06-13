@@ -100,8 +100,8 @@ going to maintain an integer counter which we can read, and add to.
 
 Begin by #including the appropriate headers
 \code
-#include <cppipc/cppipc.hpp>
-#include <cppipc/magic_macros.hpp>
+#include <core/system/cppipc/cppipc.hpp>
+#include <core/system/cppipc/magic_macros.hpp>
 \endcode
 
 We can then generate the interface and proxy objects using the \ref
@@ -205,7 +205,7 @@ Next create 2 cpp files, one server, and one client.
 \code
 // Server Example
 #include <iostream>
-#include <cppipc/cppipc.hpp>
+#include <core/system/cppipc/cppipc.hpp>
 #include "basic_counter.hpp"
 
 basic_counter_base* basic_counter_factory() {
@@ -235,7 +235,7 @@ server how to construct an instance of the object when asked by a client.
 \code
 // Client Example
 #include <iostream>
-#include <cppipc/cppipc.hpp>
+#include <core/system/cppipc/cppipc.hpp>
 #include "basic_counter.hpp"
 
 int main(int argc, char** argv) {
@@ -586,7 +586,7 @@ the basic_counter_proxy in the client example, I could equivalently write:
 \code
 // Client Example
 #include <iostream>
-#include <cppipc/cppipc.hpp>
+#include <core/system/cppipc/cppipc.hpp>
 #include "basic_counter.hpp"
 
 int main(int argc, char** argv) {
@@ -629,8 +629,8 @@ the type signature.
 
 \section technical_details_cppipc_serialiation Basic Call Serialization/Deserialization
 
-The basic call serialization/deserialization code is in cppipc/client/issue.hpp
-and cppipc/server/dispatch_impl.hpp respectively. The call/issue (client) side
+The basic call serialization/deserialization code is in core/system/cppipc/client/issue.hpp
+and core/system/cppipc/server/dispatch_impl.hpp respectively. The call/issue (client) side
 is surprisingly simple.
 
 The actual \ref cppipc::issue "issue" call is a variadic template function

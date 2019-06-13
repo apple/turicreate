@@ -7,27 +7,27 @@
 #define TURI_NEAREST_NEIGHBORS_H_
 
 // Types
-#include <sframe/sframe.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
 
 // Data structure utils
-#include <sframe/sframe_iterators.hpp>
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <unity/toolkits/ml_data_2/metadata.hpp>
-#include <unity/toolkits/ml_data_2/row_slicing_utilities.hpp>
+#include <core/storage/sframe_data/sframe_iterators.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
+#include <toolkits/ml_data_2/metadata.hpp>
+#include <toolkits/ml_data_2/row_slicing_utilities.hpp>
 
 // Interfaces
-#include <unity/lib/toolkit_function_specification.hpp>
-#include <unity/lib/variant.hpp>
-#include <unity/lib/unity_base_types.hpp>
-#include <unity/lib/extensions/ml_model.hpp>
-#include <unity/toolkits/util/algorithmic_utils.hpp>
-#include <unity/toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <model_server/lib/toolkit_function_specification.hpp>
+#include <model_server/lib/variant.hpp>
+#include <model_server/lib/unity_base_types.hpp>
+#include <model_server/lib/extensions/ml_model.hpp>
+#include <toolkits/util/algorithmic_utils.hpp>
+#include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
 
-#include <unity/toolkits/nearest_neighbors/distance_functions.hpp>
+#include <toolkits/nearest_neighbors/distance_functions.hpp>
 
-#include <export.hpp>
+#include <core/export.hpp>
 #include <Eigen/Core>
 #include <Eigen/SparseCore>
 

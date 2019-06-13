@@ -3,14 +3,14 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <ml_data/ml_data.hpp>
-#include <ml_data/ml_data_iterator.hpp>
-#include <ml_data/data_storage/ml_data_row_format.hpp>
-#include <ml_data/data_storage/ml_data_row_translation.hpp>
-#include <ml_data/data_storage/ml_data_block_manager.hpp>
-#include <ml_data/data_storage/util.hpp>
-#include <util/basic_types.hpp>
-#include <util/try_finally.hpp>
+#include <ml/ml_data/ml_data.hpp>
+#include <ml/ml_data/ml_data_iterator.hpp>
+#include <ml/ml_data/data_storage/ml_data_row_format.hpp>
+#include <ml/ml_data/data_storage/ml_data_row_translation.hpp>
+#include <ml/ml_data/data_storage/ml_data_block_manager.hpp>
+#include <ml/ml_data/data_storage/util.hpp>
+#include <core/util/basic_types.hpp>
+#include <core/util/try_finally.hpp>
 
 using namespace turi::ml_data_internal;
 

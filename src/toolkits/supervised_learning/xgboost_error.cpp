@@ -4,9 +4,9 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <cstring>
-#include <logger/logger.hpp>
-#include <logger/assertions.hpp>
-#include <export.hpp>
+#include <core/logging/logger.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/export.hpp>
 
 // these are implementation of xgboost error hanlding
 // so that xgboost's Error, Check, Assert, Printf

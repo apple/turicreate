@@ -4,20 +4,20 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 // ML Data
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <unity/toolkits/ml_data_2/metadata.hpp>
-#include <unity/toolkits/ml_data_2/ml_data_iterators.hpp>
-#include <unity/toolkits/ml_data_2/sframe_index_mapping.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
+#include <toolkits/ml_data_2/metadata.hpp>
+#include <toolkits/ml_data_2/ml_data_iterators.hpp>
+#include <toolkits/ml_data_2/sframe_index_mapping.hpp>
 
 // Toolkits
-#include <unity/toolkits/nearest_neighbors/nearest_neighbors.hpp>
-#include <unity/toolkits/nearest_neighbors/ball_tree_neighbors.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
-#include <unity/lib/toolkit_util.hpp>
-#include <logger/assertions.hpp>
-#include <sframe/groupby.hpp>
-#include <sframe/sframe.hpp>
-#include <sframe/sarray.hpp>
+#include <toolkits/nearest_neighbors/nearest_neighbors.hpp>
+#include <toolkits/nearest_neighbors/ball_tree_neighbors.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
+#include <model_server/lib/toolkit_util.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/storage/sframe_data/groupby.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
 
 // Miscellaneous
 #include <timer/timer.hpp>
@@ -25,7 +25,7 @@
 #include <Eigen/SparseCore>
 #include <limits>
 #include <stack>
-#include <table_printer/table_printer.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
 
 namespace turi {
 namespace nearest_neighbors {

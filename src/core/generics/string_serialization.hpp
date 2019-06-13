@@ -6,10 +6,10 @@
 #ifndef TURI_SERIALIZE_GL_STRING_HPP
 #define TURI_SERIALIZE_GL_STRING_HPP
 
-#include <serialization/iarchive.hpp>
-#include <serialization/oarchive.hpp>
-#include <serialization/iterator.hpp>
-#include <generics/gl_string.hpp>
+#include <core/storage/serialization/iarchive.hpp>
+#include <core/storage/serialization/oarchive.hpp>
+#include <core/storage/serialization/iterator.hpp>
+#include <core/generics/gl_string.hpp>
 
 namespace turi {
 

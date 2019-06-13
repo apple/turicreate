@@ -9,11 +9,11 @@
 #include <sstream>
 #include <cmath>
 #include <string>
-#include <logger/assertions.hpp>
-#include <util/stl_util.hpp>
-#include <util/cityhash_tc.hpp>
-#include <serialization/serialization_includes.hpp>
-#include <flexible_type/flexible_type_base_types.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/util/stl_util.hpp>
+#include <core/util/cityhash_tc.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
+#include <core/data/flexible_type/flexible_type_base_types.hpp>
 namespace boost { namespace posix_time {
 class ptime;
 } }

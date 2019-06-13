@@ -7,8 +7,8 @@
 #include <boost/gil/extension/numeric/sampler.hpp>
 #include <boost/gil/extension/numeric/resample.hpp>
 
-#include <unity/toolkits/object_detection/one_shot_object_detection/util/mapping_function.hpp>
-#include <unity/toolkits/object_detection/one_shot_object_detection/util/superposition.hpp>
+#include <toolkits/object_detection/one_shot_object_detection/util/mapping_function.hpp>
+#include <toolkits/object_detection/one_shot_object_detection/util/superposition.hpp>
 
 static const boost::gil::rgb8_pixel_t RGB_WHITE(255,255,255);
 static const boost::gil::rgba8_pixel_t RGBA_WHITE(255,255,255,0);

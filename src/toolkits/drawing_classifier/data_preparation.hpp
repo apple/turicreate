@@ -6,9 +6,9 @@
 #ifndef TURI_DRAWING_DATA_PREPARATION_H_
 #define TURI_DRAWING_DATA_PREPARATION_H_
 
-#include <export.hpp>
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/lib/image_util.hpp>
+#include <core/export.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <model_server/lib/image_util.hpp>
 
 namespace turi {
 namespace drawing_classifier {

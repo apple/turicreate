@@ -4,14 +4,14 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <string>
-#include <logger/logger.hpp>
+#include <core/logging/logger.hpp>
 #include <boost/algorithm/string/predicate.hpp>
-#include <fileio/curl_downloader.hpp>
-#include <fileio/temp_files.hpp>
-#include <fileio/file_download_cache.hpp>
-#include <fileio/s3_api.hpp>
-#include <fileio/sanitize_url.hpp>
-#include "export.hpp"
+#include <core/storage/fileio/curl_downloader.hpp>
+#include <core/storage/fileio/temp_files.hpp>
+#include <core/storage/fileio/file_download_cache.hpp>
+#include <core/storage/fileio/s3_api.hpp>
+#include <core/storage/fileio/sanitize_url.hpp>
+#include <core/export.hpp>
 
 namespace turi {
 

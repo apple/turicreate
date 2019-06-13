@@ -8,10 +8,10 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <flexible_type/flexible_type.hpp>
-#include <sframe/sframe.hpp>
-#include <sframe/csv_line_tokenizer.hpp>
-#include <sframe/sframe_constants.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_data/csv_line_tokenizer.hpp>
+#include <core/storage/sframe_data/sframe_constants.hpp>
 namespace turi {
 
 

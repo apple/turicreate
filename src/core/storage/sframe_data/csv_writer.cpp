@@ -3,9 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <sframe/csv_writer.hpp>
-#include <flexible_type/string_escape.hpp>
-#include <logger/logger.hpp>
+#include <core/storage/sframe_data/csv_writer.hpp>
+#include <core/data/flexible_type/string_escape.hpp>
+#include <core/logging/logger.hpp>
 namespace turi {
 
 void csv_writer::write_verbatim(std::ostream& out,

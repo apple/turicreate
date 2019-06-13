@@ -1,11 +1,11 @@
-#include <unity/toolkits/object_detection/od_data_iterator.hpp>
+#include <toolkits/object_detection/od_data_iterator.hpp>
 
 #include <algorithm>
 #include <cmath>
 
-#include <image/io.hpp>
-#include <logger/logger.hpp>
-#include <unity/lib/image_util.hpp>
+#include <core/data/image/io.hpp>
+#include <core/logging/logger.hpp>
+#include <model_server/lib/image_util.hpp>
 
 namespace turi {
 namespace object_detection {

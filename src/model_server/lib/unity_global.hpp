@@ -6,11 +6,11 @@
 #ifndef TURI_UNITY_GLOBAL_HPP
 #define TURI_UNITY_GLOBAL_HPP
 
-#include <unity/lib/unity_base_types.hpp>
-#include <unity/lib/toolkit_function_specification.hpp>
-#include <unity/lib/toolkit_function_registry.hpp>
-#include <unity/lib/toolkit_class_registry.hpp>
-#include <unity/lib/api/unity_global_interface.hpp>
+#include <model_server/lib/unity_base_types.hpp>
+#include <model_server/lib/toolkit_function_specification.hpp>
+#include <model_server/lib/toolkit_function_registry.hpp>
+#include <model_server/lib/toolkit_class_registry.hpp>
+#include <model_server/lib/api/unity_global_interface.hpp>
 
 namespace turi {
 

@@ -1,14 +1,14 @@
-#include <unity/toolkits/supervised_learning/class_registrations.hpp>
+#include <toolkits/supervised_learning/class_registrations.hpp>
 
-#include <unity/toolkits/supervised_learning/boosted_trees.hpp>
-#include <unity/toolkits/supervised_learning/decision_tree.hpp>
-#include <unity/toolkits/supervised_learning/random_forest.hpp>
-#include <unity/toolkits/supervised_learning/linear_regression.hpp>
-#include <unity/toolkits/supervised_learning/linear_svm.hpp>
-#include <unity/toolkits/supervised_learning/logistic_regression.hpp>
-#include <unity/toolkits/supervised_learning/classifier_evaluations.hpp>
-#include <unity/toolkits/supervised_learning/automatic_model_creation.hpp>
-#include <unity/lib/toolkit_function_macros.hpp>
+#include <toolkits/supervised_learning/boosted_trees.hpp>
+#include <toolkits/supervised_learning/decision_tree.hpp>
+#include <toolkits/supervised_learning/random_forest.hpp>
+#include <toolkits/supervised_learning/linear_regression.hpp>
+#include <toolkits/supervised_learning/linear_svm.hpp>
+#include <toolkits/supervised_learning/logistic_regression.hpp>
+#include <toolkits/supervised_learning/classifier_evaluations.hpp>
+#include <toolkits/supervised_learning/automatic_model_creation.hpp>
+#include <model_server/lib/toolkit_function_macros.hpp>
 
 namespace turi { namespace supervised {
 

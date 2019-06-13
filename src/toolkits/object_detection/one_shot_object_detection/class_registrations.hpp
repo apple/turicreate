@@ -9,7 +9,7 @@
 
 #include <vector>
 
-#include <unity/lib/toolkit_class_specification.hpp>
+#include <model_server/lib/toolkit_class_specification.hpp>
 
 namespace turi {
 namespace one_shot_object_detection {

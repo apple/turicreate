@@ -3,13 +3,13 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <ml_data/metadata.hpp>
-#include <ml_data/column_statistics.hpp>
-#include <serialization/serialization_includes.hpp>
-#include <sframe/sframe.hpp>
-#include <globals/globals.hpp>
-#include <unity/lib/variant.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
+#include <ml/ml_data/metadata.hpp>
+#include <ml/ml_data/column_statistics.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/globals/globals.hpp>
+#include <model_server/lib/variant.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
 
 namespace turi { namespace ml_data_internal {
 

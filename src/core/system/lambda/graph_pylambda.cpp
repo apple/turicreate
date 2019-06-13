@@ -3,10 +3,10 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <lambda/lambda_utils.hpp>
-#include <lambda/graph_pylambda.hpp>
-#include <lambda/pylambda.hpp>
-#include <lambda/python_callbacks.hpp>
+#include <core/system/lambda/lambda_utils.hpp>
+#include <core/system/lambda/graph_pylambda.hpp>
+#include <core/system/lambda/pylambda.hpp>
+#include <core/system/lambda/python_callbacks.hpp>
 
 namespace turi {
 namespace lambda {

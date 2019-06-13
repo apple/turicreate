@@ -12,11 +12,11 @@
 #include <string>
 #include <map>
 #include <memory>
-#include <unity/toolkits/factorization/loss_model_profiles.hpp>
-#include <serialization/serialization_includes.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <unity/lib/variant.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
+#include <toolkits/factorization/loss_model_profiles.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <model_server/lib/variant.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
 
 
 namespace turi {
@@ -68,6 +68,11 @@ class factorization_model {
   ////////////////////////////////////////////////////////////////////////////////
   //
   //  Part 1: Model Training
+
+  // Constants dictating how the training data is laid out.
+  static constexpr size_t USER_COLUMN_INDEX = 0;
+  static constexpr size_t ITEM_COLUMN_INDEX = 1;
+
 
   /** Create and train a factorization model with the given options.
    *  Uses the factory method pattern.

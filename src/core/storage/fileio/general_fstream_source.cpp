@@ -4,8 +4,8 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <boost/algorithm/string.hpp>
-#include <logger/assertions.hpp>
-#include <fileio/general_fstream_source.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/storage/fileio/general_fstream_source.hpp>
 
 namespace turi {
 namespace fileio_impl {

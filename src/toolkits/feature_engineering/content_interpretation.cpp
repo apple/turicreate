@@ -6,12 +6,12 @@
 #include <vector>
 #include <string>
 #include <limits>
-#include <export.hpp>
-#include <util/cityhash_tc.hpp>
-#include <random/random.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <unity/lib/gl_sarray.hpp>
-#include <unity/toolkits/feature_engineering/content_interpretation.hpp>
+#include <core/export.hpp>
+#include <core/util/cityhash_tc.hpp>
+#include <core/random/random.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <toolkits/feature_engineering/content_interpretation.hpp>
 
 /** Code for infering string content interpretations.
  */

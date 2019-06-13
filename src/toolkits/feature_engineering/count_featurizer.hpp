@@ -5,10 +5,10 @@
  */
 #ifndef TURI_FEATURE_ENGINEERING_COUNT_FEATURIZER_HPP
 #define TURI_FEATURE_ENGINEERING_COUNT_FEATURIZER_HPP
-#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/toolkits/feature_engineering/transformer_base.hpp>
-#include <sketches/countmin.hpp>
-#include <export.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
+#include <toolkits/feature_engineering/transformer_base.hpp>
+#include <ml/sketches/countmin.hpp>
+#include <core/export.hpp>
 using namespace turi;
 
 

@@ -6,9 +6,9 @@
 #ifndef __TC_VIS_GROUPBY
 #define __TC_VIS_GROUPBY
 
-#include <sframe/groupby_aggregate_operators.hpp>
-#include <unity/lib/gl_sframe.hpp>
-#include <util/sys_util.hpp>
+#include <core/storage/sframe_data/groupby_aggregate_operators.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <core/util/sys_util.hpp>
 
 #include "transformation.hpp"
 

@@ -6,8 +6,8 @@
 #ifndef CPPIPC_IPC_DESERIALIZER_MINIMAL_HPP
 #define CPPIPC_IPC_DESERIALIZER_MINIMAL_HPP
 #include <type_traits>
-#include <serialization/iarchive.hpp>
-#include <cppipc/ipc_object_base.hpp>
+#include <core/storage/serialization/iarchive.hpp>
+#include <core/system/cppipc/ipc_object_base.hpp>
 
 namespace turi {
 namespace archive_detail {

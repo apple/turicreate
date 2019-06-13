@@ -3,10 +3,10 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
-#include <unity/toolkits/feature_engineering/word_counter.hpp>
-#include <logger/assertions.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
+#include <toolkits/feature_engineering/word_counter.hpp>
+#include <core/logging/assertions.hpp>
 
 
 

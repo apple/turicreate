@@ -8,7 +8,7 @@
 
 #include <vector>
 #include <string>
-#include <unity/toolkits/recsys/models/itemcf.hpp>
+#include <toolkits/recsys/models/itemcf.hpp>
 
 namespace turi {
 

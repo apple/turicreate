@@ -6,12 +6,12 @@
 #ifndef TURI_ML2_DATA_SIDE_FEATURES_TRANSATION_H_
 #define TURI_ML2_DATA_SIDE_FEATURES_TRANSATION_H_
 
-#include <unity/toolkits/ml_data_2/data_storage/ml_data_row_format.hpp>
-#include <unity/toolkits/ml_data_2/ml_data_entry.hpp>
-#include <unity/toolkits/ml_data_2/ml_data_column_modes.hpp>
-#include <unity/toolkits/ml_data_2/data_storage/internal_metadata.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <util/code_optimization.hpp>
+#include <toolkits/ml_data_2/data_storage/ml_data_row_format.hpp>
+#include <toolkits/ml_data_2/ml_data_entry.hpp>
+#include <toolkits/ml_data_2/ml_data_column_modes.hpp>
+#include <toolkits/ml_data_2/data_storage/internal_metadata.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/util/code_optimization.hpp>
 #include <type_traits>
 
 namespace turi { namespace v2 {

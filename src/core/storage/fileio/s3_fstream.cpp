@@ -4,16 +4,16 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <fstream>
-#include <logger/assertions.hpp>
-#include <fileio/s3_fstream.hpp>
-#include <logger/logger.hpp>
-#include <fileio/sanitize_url.hpp>
-#include <fileio/s3_api.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/storage/fileio/s3_fstream.hpp>
+#include <core/logging/logger.hpp>
+#include <core/storage/fileio/sanitize_url.hpp>
+#include <core/storage/fileio/s3_api.hpp>
 #include <boost/algorithm/string.hpp>
-#include <fileio/sanitize_url.hpp>
-#include <fileio/dmlcio/s3_filesys.h>
-#include <fileio/dmlcio/filesys.h>
-#include <fileio/dmlcio/io.h>
+#include <core/storage/fileio/sanitize_url.hpp>
+#include <core/storage/fileio/dmlcio/s3_filesys.h>
+#include <core/storage/fileio/dmlcio/filesys.h>
+#include <core/storage/fileio/dmlcio/io.h>
 namespace turi {
 
 s3_device::s3_device(const std::string& filename, const bool write) {

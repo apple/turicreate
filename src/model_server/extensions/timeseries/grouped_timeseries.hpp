@@ -6,9 +6,9 @@
 #ifndef TURI_GROUPED_TIMESERIES_HPP
 #define TURI_GROUPED_TIMESERIES_HPP
 
-#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/lib/extensions/model_base.hpp>
-#include <unity/extensions/grouped_sframe.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
+#include <model_server/lib/extensions/model_base.hpp>
+#include <model_server/extensions/grouped_sframe.hpp>
 
 namespace turi {
 namespace timeseries {

@@ -7,13 +7,13 @@
 #define CPPIPC_IPC_DESERIALIZER_HPP
 
 #ifdef DISABLE_TURI_CPPIPC_PROXY_GENERATION
-#include <cppipc/common/ipc_deserializer_minimal.hpp>
+#include <core/system/cppipc/common/ipc_deserializer_minimal.hpp>
 
 #else
 
 #include <type_traits>
-#include <serialization/iarchive.hpp>
-#include <cppipc/ipc_object_base.hpp>
+#include <core/storage/serialization/iarchive.hpp>
+#include <core/system/cppipc/ipc_object_base.hpp>
 namespace cppipc {
 
 class comm_server;

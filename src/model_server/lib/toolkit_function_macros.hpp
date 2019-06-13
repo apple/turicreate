@@ -5,10 +5,10 @@
  */
 #ifndef TURI_UNITY_TOOLKIT_FUNCTION_MACROS_HPP
 #define TURI_UNITY_TOOLKIT_FUNCTION_MACROS_HPP
-#include <unity/lib/toolkit_util.hpp>
-#include <unity/lib/toolkit_function_specification.hpp>
-#include <unity/lib/toolkit_function_wrapper_impl.hpp>
-#include <unity/lib/toolkit_class_wrapper_impl.hpp>
+#include <model_server/lib/toolkit_util.hpp>
+#include <model_server/lib/toolkit_function_specification.hpp>
+#include <model_server/lib/toolkit_function_wrapper_impl.hpp>
+#include <model_server/lib/toolkit_class_wrapper_impl.hpp>
 
 
 /**************************************************************************/
@@ -29,7 +29,7 @@
  * Example:
  * \code
  *  #include <string>
- *  #include <turicreate/sdk/toolkit_function_macros.hpp>
+ *  #include <model_server/lib/toolkit_function_macros.hpp>
  *  using namespace turi;
  *
  *  std::string demo_to_string(int in) {

@@ -6,7 +6,7 @@
 #ifndef TURI_SFRAME_QUERY_ENGINE_QUERY_OPTIMIZATION_TRANSFORMS_H_
 #define TURI_SFRAME_QUERY_ENGINE_QUERY_OPTIMIZATION_TRANSFORMS_H_
 
-#include <sframe_query_engine/planning/optimization_node_info.hpp>
+#include <core/storage/query_engine/planning/optimization_node_info.hpp>
 #include <string>
 
 namespace turi {

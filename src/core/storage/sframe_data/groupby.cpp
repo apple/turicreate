@@ -3,11 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include<sframe/groupby.hpp>
-#include<sframe/sarray_reader_buffer.hpp>
+#include<core/storage/sframe_data/groupby.hpp>
+#include<core/storage/sframe_data/sarray_reader_buffer.hpp>
 #include<unordered_set>
 #include<queue>
-#include <util/cityhash_tc.hpp>
+#include <core/util/cityhash_tc.hpp>
 
 namespace turi {
 

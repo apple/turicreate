@@ -4,12 +4,12 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <unity/toolkits/object_detection/od_evaluation.hpp>
+#include <toolkits/object_detection/od_evaluation.hpp>
 
 #include <algorithm>
 #include <numeric>
 
-#include <logger/assertions.hpp>
+#include <core/logging/assertions.hpp>
 
 namespace turi {
 namespace object_detection {

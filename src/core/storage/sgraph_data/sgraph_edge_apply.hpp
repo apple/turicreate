@@ -9,13 +9,13 @@
 #include <vector>
 #include <tuple>
 #include <type_traits>
-#include <flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 #include <functional>
-#include <sframe/sarray.hpp>
-#include <sgraph/sgraph.hpp>
-#include <sgraph/hilbert_parallel_for.hpp>
-#include <sgraph/sgraph_compute_vertex_block.hpp>
-#include <util/cityhash_tc.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
+#include <core/storage/sgraph_data/sgraph.hpp>
+#include <core/storage/sgraph_data/hilbert_parallel_for.hpp>
+#include <core/storage/sgraph_data/sgraph_compute_vertex_block.hpp>
+#include <core/util/cityhash_tc.hpp>
 
 namespace turi {
 

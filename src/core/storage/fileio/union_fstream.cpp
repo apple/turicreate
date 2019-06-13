@@ -3,19 +3,19 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <logger/logger.hpp>
-#include <fileio/union_fstream.hpp>
-#include <fileio/cache_stream.hpp>
+#include <core/logging/logger.hpp>
+#include <core/storage/fileio/union_fstream.hpp>
+#include <core/storage/fileio/cache_stream.hpp>
 
 #ifdef TC_ENABLE_REMOTEFS
-#include <fileio/s3_fstream.hpp>
-#include <fileio/curl_downloader.hpp>
-#include <fileio/file_download_cache.hpp>
-#include <fileio/hdfs.hpp>
+#include <core/storage/fileio/s3_fstream.hpp>
+#include <core/storage/fileio/curl_downloader.hpp>
+#include <core/storage/fileio/file_download_cache.hpp>
+#include <core/storage/fileio/hdfs.hpp>
 #endif
-#include <fileio/sanitize_url.hpp>
+#include <core/storage/fileio/sanitize_url.hpp>
 #include <boost/algorithm/string.hpp>
-#include <fileio/fs_utils.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
 
 #include <cstring>
 #include <cerrno>

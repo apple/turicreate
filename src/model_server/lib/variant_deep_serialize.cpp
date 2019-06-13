@@ -3,13 +3,13 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <unity/lib/variant.hpp>
-#include <unity/lib/variant_converter.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
-#include <unity/lib/unity_sframe.hpp>
-#include <unity/lib/unity_sarray.hpp>
-#include <unity/lib/unity_sgraph.hpp>
-#include <serialization/serialization_includes.hpp>
+#include <model_server/lib/variant.hpp>
+#include <model_server/lib/variant_converter.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
+#include <core/storage/sframe_interface/unity_sarray.hpp>
+#include <core/storage/sframe_interface/unity_sgraph.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
 namespace turi {
 /**
  * Serialize the variant type, deep copying the pointer types.

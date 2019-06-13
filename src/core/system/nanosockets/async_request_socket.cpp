@@ -4,12 +4,12 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <cassert>
-#include <parallel/atomic.hpp>
-#include <logger/logger.hpp>
-#include <nanosockets/print_zmq_error.hpp>
-#include <nanosockets/socket_errors.hpp>
-#include <nanosockets/socket_config.hpp>
-#include <nanosockets/async_request_socket.hpp>
+#include <core/parallel/atomic.hpp>
+#include <core/logging/logger.hpp>
+#include <core/system/nanosockets/print_zmq_error.hpp>
+#include <core/system/nanosockets/socket_errors.hpp>
+#include <core/system/nanosockets/socket_config.hpp>
+#include <core/system/nanosockets/async_request_socket.hpp>
 
 extern "C" {
 #include <nanomsg/nn.h>

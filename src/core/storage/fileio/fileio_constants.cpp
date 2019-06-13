@@ -7,20 +7,20 @@
 #include <vector>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
-#include <fileio/fileio_constants.hpp>
-#include <fileio/fs_utils.hpp>
-#include <fileio/temp_files.hpp>
-#include <fileio/block_cache.hpp>
-#include <globals/globals.hpp>
-#include <random/random.hpp>
+#include <core/storage/fileio/fileio_constants.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
+#include <core/storage/fileio/temp_files.hpp>
+#include <core/storage/fileio/block_cache.hpp>
+#include <core/globals/globals.hpp>
+#include <core/random/random.hpp>
 #ifdef TC_ENABLE_REMOTEFS
-#include <fileio/hdfs.hpp>
+#include <core/storage/fileio/hdfs.hpp>
 #endif
 #include <iostream>
-#include <export.hpp>
+#include <core/export.hpp>
 
 #ifdef __APPLE__
-#include <platform/config/apple_config.hpp>
+#include <core/system/platform/config/apple_config.hpp>
 #endif
 
 namespace fs = boost::filesystem;

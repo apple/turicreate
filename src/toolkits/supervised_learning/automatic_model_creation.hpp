@@ -1,7 +1,7 @@
 #ifndef TURI_AUTOMATIC_SUPERVISED_LEARNING_H_
 #define TURI_AUTOMATIC_SUPERVISED_LEARNING_H_
 
-#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
+#include <toolkits/supervised_learning/supervised_learning.hpp>
 
 namespace turi {
 namespace supervised {

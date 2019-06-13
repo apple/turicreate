@@ -10,8 +10,8 @@
 #include <functional>
 #include <type_traits>
 
-#include <util/basic_types.hpp>
-#include <parallel/thread_pool.hpp>
+#include <core/util/basic_types.hpp>
+#include <core/parallel/thread_pool.hpp>
 
 using std::string;
 

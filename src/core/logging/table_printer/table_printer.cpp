@@ -3,13 +3,13 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <logger/logger.hpp>
-#include <logger/assertions.hpp>
+#include <core/logging/logger.hpp>
+#include <core/logging/assertions.hpp>
 #include <timer/timer.hpp>
 #include <sstream>
-#include <util/try_finally.hpp>
-#include <globals/globals.hpp>
-#include <table_printer/table_printer.hpp>
+#include <core/util/try_finally.hpp>
+#include <core/globals/globals.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
 
 #ifdef __APPLE__
 #include <os/log.h>

@@ -9,11 +9,11 @@
 #include <algorithm>
 #include <memory>
 #include <vector>
-#include <logger/logger.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <sframe/sarray_reader.hpp>
-#include <sframe/sframe_index_file.hpp>
-#include <sframe/sframe_constants.hpp>
+#include <core/logging/logger.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/sframe_data/sarray_reader.hpp>
+#include <core/storage/sframe_data/sframe_index_file.hpp>
+#include <core/storage/sframe_data/sframe_constants.hpp>
 
 
 namespace turi {

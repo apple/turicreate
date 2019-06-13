@@ -6,12 +6,12 @@
 #ifndef TURI_SFRAME_QUERY_MANAGER_IDENTITY_NODE_HPP_
 #define TURI_SFRAME_QUERY_MANAGER_IDENTITY_NODE_HPP_
 
-#include <flexible_type/flexible_type.hpp>
-#include <random/random.hpp>
-#include <parallel/pthread_tools.hpp>
-#include <sframe_query_engine/operators/operator.hpp>
-#include <sframe_query_engine/execution/query_context.hpp>
-#include <sframe_query_engine/operators/operator_properties.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/random/random.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/storage/query_engine/operators/operator.hpp>
+#include <core/storage/query_engine/execution/query_context.hpp>
+#include <core/storage/query_engine/operators/operator_properties.hpp>
 
 namespace turi {
 namespace query_eval {

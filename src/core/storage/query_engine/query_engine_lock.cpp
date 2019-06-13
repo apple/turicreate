@@ -3,7 +3,7 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <parallel/mutex.hpp>
+#include <core/parallel/mutex.hpp>
 namespace turi {
 namespace query_eval {
 recursive_mutex global_query_lock;

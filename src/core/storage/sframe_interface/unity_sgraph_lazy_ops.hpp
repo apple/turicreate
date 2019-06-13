@@ -5,8 +5,8 @@
  */
 #ifndef UNITY_SGRAPH_LAZY_OPS_HPP
 #define UNITY_SGRAPH_LAZY_OPS_HPP
-#include <sgraph/sgraph.hpp>
-#include<unity/lib/unity_sgraph.hpp>
+#include <core/storage/sgraph_data/sgraph.hpp>
+#include<core/storage/sframe_interface/unity_sgraph.hpp>
 
 /**************************************************************************/
 /*                                                                        */

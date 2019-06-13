@@ -8,9 +8,9 @@
 
 #include <vector>
 #include <string>
-#include <unity/toolkits/recsys/recsys_model_base.hpp>
-#include <unity/toolkits/nearest_neighbors/nearest_neighbors.hpp>
-#include <unity/toolkits/nearest_neighbors/ball_tree_neighbors.hpp>
+#include <toolkits/recsys/recsys_model_base.hpp>
+#include <toolkits/nearest_neighbors/nearest_neighbors.hpp>
+#include <toolkits/nearest_neighbors/ball_tree_neighbors.hpp>
 
 
 namespace turi {

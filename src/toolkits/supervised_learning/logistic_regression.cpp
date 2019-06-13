@@ -7,27 +7,27 @@
 // otherwise at least CHECK() collides with incompatible implementation.
 
 // ML Data
-#include <sframe/sframe.hpp>
-#include <sframe/algorithm.hpp>
-#include <unity/lib/unity_sframe.hpp>
-#include <ml_data/ml_data.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_data/algorithm.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
+#include <ml/ml_data/ml_data.hpp>
 
 // Toolkits
-#include <unity/toolkits/supervised_learning/logistic_regression_opt_interface.hpp>
-#include <unity/toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <toolkits/supervised_learning/logistic_regression_opt_interface.hpp>
+#include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
 
 // Core ML
-#include <unity/toolkits/coreml_export/linear_models_exporter.hpp>
+#include <toolkits/coreml_export/linear_models_exporter.hpp>
 
 // Solvers
-#include <optimization/utils.hpp>
-#include <optimization/newton_method-inl.hpp>
-#include <optimization/lbfgs.hpp>
-#include <optimization/gradient_descent-inl.hpp>
-#include <optimization/accelerated_gradient-inl.hpp>
+#include <ml/optimization/utils.hpp>
+#include <ml/optimization/newton_method-inl.hpp>
+#include <ml/optimization/lbfgs.hpp>
+#include <ml/optimization/gradient_descent-inl.hpp>
+#include <ml/optimization/accelerated_gradient-inl.hpp>
 
 // Regularizer
-#include <optimization/regularizers-inl.hpp>
+#include <ml/optimization/regularizers-inl.hpp>
 
 // Utilities
 #include <Eigen/SparseCore>

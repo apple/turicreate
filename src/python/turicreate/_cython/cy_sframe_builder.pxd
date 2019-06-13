@@ -9,7 +9,7 @@ from libcpp.vector cimport vector
 from libcpp.string cimport string
 from .cy_unity_base_types cimport *
 
-cdef extern from "<unity/lib/unity_sframe_builder.hpp>" namespace "turi":
+cdef extern from "<core/storage/sframe_interface/unity_sframe_builder.hpp>" namespace "turi":
     cdef cppclass unity_sframe_builder nogil:
         unity_sframe_builder() except +
         void init(size_t, size_t, vector[string], vector[flex_type_enum], string) except +

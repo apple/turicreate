@@ -3,23 +3,23 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <unity/lib/unity_sframe.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
 
 // Toolkits
-#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
-#include <unity/toolkits/supervised_learning/linear_regression.hpp>
-#include <unity/toolkits/supervised_learning/linear_regression_opt_interface.hpp>
-#include <unity/toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <toolkits/supervised_learning/supervised_learning.hpp>
+#include <toolkits/supervised_learning/linear_regression.hpp>
+#include <toolkits/supervised_learning/linear_regression_opt_interface.hpp>
+#include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
 
 // Solvers
-#include <optimization/utils.hpp>
-#include <optimization/newton_method-inl.hpp>
-#include <optimization/gradient_descent-inl.hpp>
-#include <optimization/accelerated_gradient-inl.hpp>
-#include <optimization/lbfgs.hpp>
+#include <ml/optimization/utils.hpp>
+#include <ml/optimization/newton_method-inl.hpp>
+#include <ml/optimization/gradient_descent-inl.hpp>
+#include <ml/optimization/accelerated_gradient-inl.hpp>
+#include <ml/optimization/lbfgs.hpp>
 
 // Regularizer
-#include <optimization/regularizers-inl.hpp>
+#include <ml/optimization/regularizers-inl.hpp>
 #include <Eigen/SparseCore>
 
 constexpr size_t LINEAR_REGRESSION_BATCH_SIZE = 1000;

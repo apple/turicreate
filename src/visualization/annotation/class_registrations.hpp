@@ -1,8 +1,8 @@
 #ifndef TURI_ANNOTATIONS_CLASS_REGISTRATIONS_HPP
 #define TURI_ANNOTATIONS_CLASS_REGISTRATIONS_HPP
 
-#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/lib/toolkit_class_specification.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
+#include <model_server/lib/toolkit_class_specification.hpp>
 
 namespace turi {
 namespace annotate {

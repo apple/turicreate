@@ -7,10 +7,10 @@
 #define TURI_SGD_BASIC_SGD_SOLVER_CLASS_H_
 
 #include <map>
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <unity/toolkits/ml_data_2/ml_data_iterators.hpp>
-#include <unity/toolkits/sgd/sgd_solver_base.hpp>
-#include <unity/toolkits/sgd/sgd_interface.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
+#include <toolkits/ml_data_2/ml_data_iterators.hpp>
+#include <toolkits/sgd/sgd_solver_base.hpp>
+#include <toolkits/sgd/sgd_interface.hpp>
 
 #ifdef interface
 #undef interface

@@ -1,8 +1,8 @@
 #ifndef TURI_SUPERVISED_LEARNING_CLASSIFIER_EVALUATION_H_
 #define TURI_SUPERVISED_LEARNING_CLASSIFIER_EVALUATION_H_
 
-#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
-#include <unity/toolkits/supervised_learning/boosted_trees.hpp>
+#include <toolkits/supervised_learning/supervised_learning.hpp>
+#include <toolkits/supervised_learning/boosted_trees.hpp>
 
 
 namespace turi {

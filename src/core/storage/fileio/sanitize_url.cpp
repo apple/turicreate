@@ -5,11 +5,11 @@
  */
 #include <string>
 #include <boost/algorithm/string/predicate.hpp>
-#include <logger/logger.hpp>
-#include <fileio/sanitize_url.hpp>
-#include <export.hpp>
+#include <core/logging/logger.hpp>
+#include <core/storage/fileio/sanitize_url.hpp>
+#include <core/export.hpp>
 #ifdef TC_ENABLE_REMOTEFS
-#include <fileio/s3_api.hpp>
+#include <core/storage/fileio/s3_api.hpp>
 #endif
 
 namespace turi {

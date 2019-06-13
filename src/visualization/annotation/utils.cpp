@@ -1,5 +1,5 @@
 #include "utils.hpp"
-#include <logger/assertions.hpp>
+#include <core/logging/assertions.hpp>
 
 namespace turi {
 namespace annotate {

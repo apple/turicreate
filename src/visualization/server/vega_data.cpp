@@ -5,7 +5,7 @@
  */
 #include "vega_data.hpp"
 #include "vega_spec.hpp"
-#include <flexible_type/flexible_type_spirit_parser.hpp>
+#include <core/data/flexible_type/flexible_type_spirit_parser.hpp>
 #include <algorithm>
 
 namespace turi {

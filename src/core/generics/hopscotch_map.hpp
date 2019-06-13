@@ -6,9 +6,9 @@
 #ifndef TURI_UTIL_HOPSCOTCH_HASH_HPP
 #define TURI_UTIL_HOPSCOTCH_HASH_HPP
 
-#include <generics/hopscotch_table.hpp>
+#include <core/generics/hopscotch_table.hpp>
 
-#include <serialization/serialization_includes.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
 
 
 #define _HOPSCOTCH_MAP_DEFAULT_HASH std::hash<Key>

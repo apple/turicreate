@@ -3,9 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <parallel/mutex.hpp>
-#include <parallel/thread_pool.hpp>
-#include <parallel/pthread_tools.hpp>
+#include <core/parallel/mutex.hpp>
+#include <core/parallel/thread_pool.hpp>
+#include <core/parallel/pthread_tools.hpp>
 
 namespace turi {
 /*

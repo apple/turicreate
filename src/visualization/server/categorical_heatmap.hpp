@@ -6,9 +6,9 @@
 #ifndef __TC_CATEGORICAL_HEATMAP
 #define __TC_CATEGORICAL_HEATMAP
 
-#include <unity/lib/gl_sframe.hpp>
-#include <sframe/groupby_aggregate_operators.hpp>
-#include <unity/lib/visualization/plot.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <core/storage/sframe_data/groupby_aggregate_operators.hpp>
+#include <visualization/server/plot.hpp>
 #include "transformation.hpp"
 
 namespace turi {

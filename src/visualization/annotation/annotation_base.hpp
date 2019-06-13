@@ -6,14 +6,14 @@
 #include <string>
 #include <vector>
 
-#include <export.hpp>
+#include <core/export.hpp>
 
-#include <flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 
-#include <unity/lib/extensions/ml_model.hpp>
+#include <model_server/lib/extensions/ml_model.hpp>
 
-#include <unity/lib/unity_sarray.hpp>
-#include <unity/lib/unity_sframe.hpp>
+#include <core/storage/sframe_interface/unity_sarray.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
 
 #include "build/format/cpp/annotate.pb.h"
 #include "build/format/cpp/data.pb.h"
@@ -22,8 +22,8 @@
 #include "build/format/cpp/progress.pb.h"
 #include "build/format/cpp/similarity.pb.h"
 
-#include <unity/lib/annotation/utils.hpp>
-#include <unity/lib/visualization/process_wrapper.hpp>
+#include <visualization/annotation/utils.hpp>
+#include <visualization/server/process_wrapper.hpp>
 
 namespace turi {
 namespace annotate {

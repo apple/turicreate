@@ -6,9 +6,9 @@
 #ifndef TURI_SFRAME_QUERY_OPTIMIZATION_ENGINE_H_
 #define TURI_SFRAME_QUERY_OPTIMIZATION_ENGINE_H_
 
-#include <sframe_query_engine/planning/planner_node.hpp>
-#include <sframe_query_engine/planning/materialize_options.hpp>
-#include <sframe_query_engine/planning/optimization_node_info.hpp>
+#include <core/storage/query_engine/planning/planner_node.hpp>
+#include <core/storage/query_engine/planning/materialize_options.hpp>
+#include <core/storage/query_engine/planning/optimization_node_info.hpp>
 
 namespace turi { namespace query_eval {
 

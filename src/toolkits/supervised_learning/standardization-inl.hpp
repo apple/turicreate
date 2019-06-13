@@ -7,18 +7,18 @@
 #define TURI_STANDARDIZATION_H_
 
 #include <string>
-#include <flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 
 // Eigen
 #include <Eigen/Core>
 #include <Eigen/SparseCore>
 
 // Optimizaiton
-#include <optimization/optimization_interface.hpp>
+#include <ml/optimization/optimization_interface.hpp>
 
 // ML-Data
-#include <ml_data/ml_data.hpp>
-#include <ml_data/metadata.hpp>
+#include <ml/ml_data/ml_data.hpp>
+#include <ml/ml_data/metadata.hpp>
 
 // TODO: List of todo's for this file
 //------------------------------------------------------------------------------

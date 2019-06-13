@@ -8,7 +8,7 @@
 
 #include <cstdint>
 #include <string>
-#include <sframe/sframe.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
 
 namespace turi { namespace recsys {
 

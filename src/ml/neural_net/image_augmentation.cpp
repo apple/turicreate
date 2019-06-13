@@ -4,12 +4,12 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <unity/toolkits/neural_net/image_augmentation.hpp>
+#include <ml/neural_net/image_augmentation.hpp>
 
 #include <algorithm>
 
-#include <logger/assertions.hpp>
-#include <unity/lib/image_util.hpp>
+#include <core/logging/assertions.hpp>
+#include <model_server/lib/image_util.hpp>
 
 namespace turi {
 namespace neural_net {

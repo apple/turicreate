@@ -11,9 +11,9 @@
 #include <cmath>
 #include <set>
 
-#include <util/code_optimization.hpp>
+#include <core/util/code_optimization.hpp>
 #include <sparsehash/dense_hash_set>
-#include <generics/value_container_mapper_internal.hpp>
+#include <core/generics/value_container_mapper_internal.hpp>
 
 namespace turi {
 
@@ -43,7 +43,7 @@ namespace turi {
  *     below sticks to this assumption; it just tracks things for lazy
  *     cleanup).
  *
- *  For a usage example, see sketches/space_saving.hpp.
+ *  For a usage example, see ml/sketches/space_saving.hpp.
  *
  *  The value_container_mapper::hashkey class is initializable by
  *  value:

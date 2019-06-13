@@ -5,10 +5,10 @@
  */
 #ifndef TURI_SFRAME_QUERY_ENGINE_UTIL_AGGREGATES_HPP
 #define TURI_SFRAME_QUERY_ENGINE_UTIL_AGGREGATES_HPP
-#include <sframe/sframe.hpp>
-#include <serialization/serialization_includes.hpp>
-#include <sframe_query_engine/operators/reduce.hpp>
-#include <sframe_query_engine/planning/planner.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
+#include <core/storage/query_engine/operators/reduce.hpp>
+#include <core/storage/query_engine/planning/planner.hpp>
 
 namespace turi {
 

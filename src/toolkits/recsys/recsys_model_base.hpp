@@ -10,20 +10,20 @@
 #include <string>
 #include <set>
 
-#include <unity/lib/extensions/option_manager.hpp>
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/lib/gl_sarray.hpp>
-#include <unity/lib/toolkit_function_specification.hpp>
-#include <unity/lib/unity_base_types.hpp>
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <unity/toolkits/ml_data_2/ml_data_iterators.hpp>
-#include <util/fast_top_k.hpp>
-#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
+#include <model_server/lib/extensions/option_manager.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <model_server/lib/toolkit_function_specification.hpp>
+#include <model_server/lib/unity_base_types.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
+#include <toolkits/ml_data_2/ml_data_iterators.hpp>
+#include <core/util/fast_top_k.hpp>
+#include <toolkits/coreml_export/mlmodel_wrapper.hpp>
 
 
 // Interfaces
-#include <unity/lib/extensions/ml_model.hpp>
-#include <export.hpp>
+#include <model_server/lib/extensions/ml_model.hpp>
+#include <core/export.hpp>
 
 namespace turi {
 

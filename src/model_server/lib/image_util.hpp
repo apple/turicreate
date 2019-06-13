@@ -6,8 +6,8 @@
 #ifndef IMAGE_UTIL_HPP
 #define IMAGE_UTIL_HPP
 
-#include <flexible_type/flexible_type.hpp>
-#include <unity/lib/unity_sframe.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
 namespace turi{
 
 namespace image_util{

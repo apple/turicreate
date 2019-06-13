@@ -10,9 +10,9 @@
 #include <vector>
 #include <random>
 #include <type_traits>
-#include <util/code_optimization.hpp>
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <unity/toolkits/factorization/ranking_sgd_solver_base.hpp>
+#include <core/util/code_optimization.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
+#include <toolkits/factorization/ranking_sgd_solver_base.hpp>
 
 namespace turi { namespace factorization {
 

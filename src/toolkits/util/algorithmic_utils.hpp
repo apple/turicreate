@@ -7,7 +7,7 @@
 #define TURI_ALGORITHMIC_UTILS_H_
 
 #include <algorithm>
-#include <logger/assertions.hpp>
+#include <core/logging/assertions.hpp>
 
 namespace turi {
 

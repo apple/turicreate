@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <stdlib.h>
 #include <vector>
 #include <string>
@@ -8,9 +8,9 @@
 #include <random>
 #include <cfenv>
 
-#include <ml_data/ml_data.hpp>
-#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
-#include <sframe/testing_utils.hpp>
+#include <ml/ml_data/ml_data.hpp>
+#include <toolkits/supervised_learning/supervised_learning.hpp>
+#include <core/storage/sframe_data/testing_utils.hpp>
 
 using namespace turi;
 using namespace turi::supervised;

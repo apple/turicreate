@@ -6,8 +6,8 @@
 #ifndef TURI_UNITY_RANDOM_SFRAME_GENERATION_H_
 #define TURI_UNITY_RANDOM_SFRAME_GENERATION_H_
 
-#include <unity/lib/gl_sarray.hpp>
-#include <unity/lib/gl_sframe.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
 #include <string>
 
 turi::gl_sframe _generate_random_sframe(size_t num_rows, std::string column_types,

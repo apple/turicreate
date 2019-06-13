@@ -6,8 +6,8 @@
 #ifndef TURI_SFRAME_QUERY_OPERATOR_TRANSFORMATIONS_H_
 #define TURI_SFRAME_QUERY_OPERATOR_TRANSFORMATIONS_H_
 
-#include <sframe_query_engine/operators/all_operators.hpp>
-#include <sframe_query_engine/operators/operator_properties.hpp>
+#include <core/storage/query_engine/operators/all_operators.hpp>
+#include <core/storage/query_engine/operators/operator_properties.hpp>
 
 namespace turi { namespace query_eval {
 

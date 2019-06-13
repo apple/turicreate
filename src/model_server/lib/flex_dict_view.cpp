@@ -4,8 +4,8 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <vector>
-#include <flexible_type/flexible_type.hpp>
-#include <unity/lib/flex_dict_view.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <model_server/lib/flex_dict_view.hpp>
 
 namespace turi {
 

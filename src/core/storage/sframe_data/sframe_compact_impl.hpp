@@ -7,7 +7,7 @@
 #define TURI_SFRAME_COMPACT_IMPL_HPP
 #include <vector>
 #include <memory>
-#include <sframe/sarray.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
 namespace turi {
 namespace {
 /**

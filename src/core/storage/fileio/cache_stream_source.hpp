@@ -8,8 +8,8 @@
 
 #include <iostream>
 #include <boost/iostreams/stream.hpp>
-#include <fileio/general_fstream_source.hpp>
-#include <fileio/fixed_size_cache_manager.hpp>
+#include <core/storage/fileio/general_fstream_source.hpp>
+#include <core/storage/fileio/fixed_size_cache_manager.hpp>
 
 namespace turi {
 namespace fileio_impl {

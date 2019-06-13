@@ -4,9 +4,9 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <vector>
-#include <unity/toolkits/factorization/factorization_model.hpp>
-#include <unity/toolkits/sgd/basic_sgd_solver.hpp>
-#include <unity/toolkits/sgd/sgd_interface.hpp>
+#include <toolkits/factorization/factorization_model.hpp>
+#include <toolkits/sgd/basic_sgd_solver.hpp>
+#include <toolkits/sgd/sgd_interface.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Option handling for the factorization machine model

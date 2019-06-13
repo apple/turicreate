@@ -3,17 +3,17 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <dot_graph_printer/dot_graph.hpp>
-#include <sframe_query_engine/execution/execution_node.hpp>
-#include <sframe_query_engine/planning/planner_node.hpp>
-#include <sframe_query_engine/execution/subplan_executor.hpp>
-#include <sframe_query_engine/operators/operator_transformations.hpp>
-#include <sframe_query_engine/operators/all_operators.hpp>
-#include <sframe_query_engine/planning/planner.hpp>
-#include <sframe_query_engine/planning/optimization_engine.hpp>
-#include <sframe_query_engine/query_engine_lock.hpp>
-#include <globals/globals.hpp>
-#include <sframe/sframe.hpp>
+#include <core/util/dot_graph_printer/dot_graph.hpp>
+#include <core/storage/query_engine/execution/execution_node.hpp>
+#include <core/storage/query_engine/planning/planner_node.hpp>
+#include <core/storage/query_engine/execution/subplan_executor.hpp>
+#include <core/storage/query_engine/operators/operator_transformations.hpp>
+#include <core/storage/query_engine/operators/all_operators.hpp>
+#include <core/storage/query_engine/planning/planner.hpp>
+#include <core/storage/query_engine/planning/optimization_engine.hpp>
+#include <core/storage/query_engine/query_engine_lock.hpp>
+#include <core/globals/globals.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
 
 namespace turi { namespace query_eval {
 

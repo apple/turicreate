@@ -4,7 +4,6 @@ subdirs(
   crash_handler
   minipsutil
   network
-  parallel
   perf
   process
   shmipc

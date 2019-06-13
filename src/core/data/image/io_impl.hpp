@@ -14,12 +14,12 @@
 #define int_p_NULL (int*)NULL
 #endif
 
-#include <image/image_type.hpp>
+#include <core/data/image/image_type.hpp>
 #include <boost/gil/extension/io/jpeg.hpp>
 #include <boost/gil/extension/io/jpeg/old.hpp>
 #include <boost/gil/extension/io/png.hpp>
 #include <boost/gil/extension/io/png/old.hpp>
-#include <logger/logger.hpp>
+#include <core/logging/logger.hpp>
 
 using namespace boost::gil;
 

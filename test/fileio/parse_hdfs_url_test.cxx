@@ -1,7 +1,7 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
-#include <fileio/fs_utils.hpp>
+#include <core/util/test_macros.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
 
 using namespace turi::fileio;
 

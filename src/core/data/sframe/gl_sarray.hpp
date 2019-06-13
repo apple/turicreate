@@ -10,10 +10,10 @@
 #include <cstddef>
 #include <string>
 #include <iostream>
-#include <sframe/sframe_rows.hpp>
-#include <sframe/group_aggregate_value.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <unity/lib/visualization/plot.hpp>
+#include <core/storage/sframe_data/sframe_rows.hpp>
+#include <core/storage/sframe_data/group_aggregate_value.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <visualization/server/plot.hpp>
 
 namespace turi {
 /**************************************************************************/

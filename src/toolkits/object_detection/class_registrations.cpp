@@ -4,10 +4,10 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <unity/toolkits/object_detection/class_registrations.hpp>
+#include <toolkits/object_detection/class_registrations.hpp>
 
-#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/toolkits/object_detection/object_detector.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
+#include <toolkits/object_detection/object_detector.hpp>
 
 namespace turi {
 namespace object_detection {

@@ -12,7 +12,7 @@ from .cy_unity_base_types cimport model_base_ptr
 
 cdef create_model_from_proxy(const model_base_ptr& proxy)
 
-cdef extern from "<unity/lib/extensions/model_base.hpp>" namespace "turi":
+cdef extern from "<model_server/lib/extensions/model_base.hpp>" namespace "turi":
     cdef cppclass model_base nogil:
         vector[string] list_keys() except +
         variant_type get_value(string, variant_map_type&) except +

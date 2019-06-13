@@ -8,7 +8,7 @@
 
 #include <vector>
 #include <algorithm>
-#include <util/cuckoo_set_pow2.hpp>
+#include <core/util/cuckoo_set_pow2.hpp>
 
 /**
  * Contains a fast set implementation and utilities.

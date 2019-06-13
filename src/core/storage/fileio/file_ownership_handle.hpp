@@ -7,8 +7,8 @@
 #define TURI_FILEIO_FILE_OWNERSHIP_HANDLE_HPP
 #include <vector>
 #include <string>
-#include <logger/logger.hpp>
-#include <fileio/fs_utils.hpp>
+#include <core/logging/logger.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
 namespace turi {
 namespace fileio {
 /**

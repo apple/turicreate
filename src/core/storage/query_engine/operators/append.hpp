@@ -6,11 +6,11 @@
 #ifndef TURI_SFRAME_QUERY_MANAGER_APPEND_HPP
 #define TURI_SFRAME_QUERY_MANAGER_APPEND_HPP
 
-#include <logger/assertions.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <sframe_query_engine/operators/operator.hpp>
-#include <sframe_query_engine/execution/query_context.hpp>
-#include <sframe_query_engine/operators/operator_properties.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/query_engine/operators/operator.hpp>
+#include <core/storage/query_engine/execution/query_context.hpp>
+#include <core/storage/query_engine/operators/operator_properties.hpp>
 
 namespace turi {
 

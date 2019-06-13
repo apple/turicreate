@@ -5,9 +5,9 @@
  */
 #ifndef TURI_SARRAY_SAVING_HPP
 #define TURI_SARRAY_SAVING_HPP
-#include <sframe/sarray.hpp>
-#include <sframe/sarray_v2_block_manager.hpp>
-#include <sframe/sframe_saving_impl.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
+#include <core/storage/sframe_data/sarray_v2_block_manager.hpp>
+#include <core/storage/sframe_data/sframe_saving_impl.hpp>
 namespace turi {
 
 template <typename T>

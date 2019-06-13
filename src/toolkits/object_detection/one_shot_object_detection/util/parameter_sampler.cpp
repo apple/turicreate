@@ -4,9 +4,9 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <image/numeric_extension/perspective_projection.hpp>
+#include <core/data/image/numeric_extension/perspective_projection.hpp>
 
-#include <unity/toolkits/object_detection/one_shot_object_detection/util/parameter_sampler.hpp>
+#include <toolkits/object_detection/one_shot_object_detection/util/parameter_sampler.hpp>
 
 /* A ParameterSampler class to randomly generate different samples of parameters
  * that can later be used to compute the transformation matrix necessary to

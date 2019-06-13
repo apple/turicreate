@@ -13,7 +13,7 @@ from .cy_unity_base_types cimport *
 from .cy_unity cimport function_closure_info
 from .cy_unity cimport make_function_closure_info
 
-cdef extern from "<unity/lib/unity_sarray.hpp>" namespace "turi":
+cdef extern from "<core/storage/sframe_interface/unity_sarray.hpp>" namespace "turi":
     cdef cppclass unity_sarray nogil:
         unity_sarray() except +
         void construct_from_vector(const flex_list&, flex_type_enum) except +

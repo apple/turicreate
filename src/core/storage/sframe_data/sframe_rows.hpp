@@ -7,7 +7,7 @@
 #define TURI_SFRAME_sframe_rows_HPP
 #include <vector>
 #include <map>
-#include <flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 namespace turi {
 class oarchive;
 class iarchive;

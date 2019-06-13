@@ -6,10 +6,10 @@
 #ifndef SPARSE_NN_HPP
 #define SPARSE_NN_HPP
 
-#include <export.hpp>
-#include <unity/lib/extensions/ml_model.hpp>
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/lib/toolkit_class_macros.hpp>
+#include <core/export.hpp>
+#include <model_server/lib/extensions/ml_model.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
 
 namespace turi {
 namespace prototype {

@@ -10,9 +10,9 @@
 #include <vector>
 #include <cstdint>
 #include <iostream>
-#include <serialization/serialization_includes.hpp>
-#include <flexible_type/ndarray.hpp>
-#include <image/image_type.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
+#include <core/data/flexible_type/ndarray.hpp>
+#include <core/data/image/image_type.hpp>
 
 namespace turi {
 

@@ -13,10 +13,10 @@
 #include <boost/integer.hpp>
 #include <boost/random.hpp>
 
-#include <parallel/pthread_tools.hpp>
-#include <parallel/atomic.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/parallel/atomic.hpp>
 
-#include <generics/float_selector.hpp>
+#include <core/generics/float_selector.hpp>
 
 
 

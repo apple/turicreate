@@ -4,16 +4,16 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <timer/timer.hpp>
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/lib/gl_sarray.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
-#include <table_printer/table_printer.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
 
-#include <unity/toolkits/pattern_mining/fp_growth.hpp>
-#include <unity/toolkits/pattern_mining/rule_mining.hpp>
-#include <unity/toolkits/feature_engineering/topk_indexer.hpp>
+#include <toolkits/pattern_mining/fp_growth.hpp>
+#include <toolkits/pattern_mining/rule_mining.hpp>
+#include <toolkits/feature_engineering/topk_indexer.hpp>
 
-#include <util/sys_util.hpp>
+#include <core/util/sys_util.hpp>
 
 namespace turi {
 namespace pattern_mining {

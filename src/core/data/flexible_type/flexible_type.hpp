@@ -12,9 +12,9 @@
 #include <iostream>
 #include <functional>
 #include <typeindex>
-#include <parallel/atomic.hpp>
-#include <util/int128_types.hpp>
-#include <flexible_type/flexible_type_base_types.hpp>
+#include <core/parallel/atomic.hpp>
+#include <core/util/int128_types.hpp>
+#include <core/data/flexible_type/flexible_type_base_types.hpp>
 namespace turi {
 void flexible_type_fail(bool);
 }
@@ -1440,7 +1440,7 @@ inline void swap(turi::flexible_type& a, turi::flexible_type& b) noexcept {
 /**************************************************************************/
 
 
-#include <flexible_type/flexible_type_detail.hpp>
+#include <core/data/flexible_type/flexible_type_detail.hpp>
 
 
 namespace turi {

@@ -1,13 +1,13 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <string>
 #include <random>
 #include <set>
 #include <sstream>
 #include <vector>
 #include <algorithm>
-#include <util/cityhash_tc.hpp>
+#include <core/util/cityhash_tc.hpp>
 #include <cmath>
 
 // Eigen
@@ -15,10 +15,10 @@
 #include <Eigen/SparseCore>
 
 // ML-Data Utils
-#include <unity/toolkits/ml_data_2/standardization-inl.hpp>
+#include <toolkits/ml_data_2/standardization-inl.hpp>
 
 // Testing utils common to all of ml_data
-#include <unity/toolkits/ml_data_2/testing_utils.hpp>
+#include <toolkits/ml_data_2/testing_utils.hpp>
 
 typedef Eigen::Matrix<double,Eigen::Dynamic,1>  DenseVector;
 typedef Eigen::SparseVector<double> SparseVector;

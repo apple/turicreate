@@ -5,7 +5,7 @@
  */
 #ifndef TURI_STARTUP_TEARDOWN_HPP
 #define TURI_STARTUP_TEARDOWN_HPP
-#include <export.hpp>
+#include <core/export.hpp>
 #include <string>
 
 namespace turi {

@@ -5,15 +5,15 @@
  */
 #ifndef CPPIPC_MAGIC_MACROS_HPP
 #define CPPIPC_MAGIC_MACROS_HPP
-#include <cppipc/ipc_object_base.hpp>
-#include <cppipc/registration_macros.hpp>
+#include <core/system/cppipc/ipc_object_base.hpp>
+#include <core/system/cppipc/registration_macros.hpp>
 #ifndef DISABLE_TURI_CPPIPC_PROXY_GENERATION
-#include <cppipc/server/comm_server.hpp>
-#include <cppipc/client/object_proxy.hpp>
-#include <cppipc/cppipc.hpp>
+#include <core/system/cppipc/server/comm_server.hpp>
+#include <core/system/cppipc/client/object_proxy.hpp>
+#include <core/system/cppipc/cppipc.hpp>
 #endif
-#include <cppipc/common/ipc_deserializer.hpp>
-#include <serialization/serialization_includes.hpp>
+#include <core/system/cppipc/common/ipc_deserializer.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
 #include <boost/preprocessor.hpp>
 #define __GENERATE_REGISTRATION__(r, base_name, elem) \
     REGISTER(base_name::BOOST_PP_TUPLE_ELEM(3,1,elem))

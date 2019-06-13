@@ -10,9 +10,9 @@
 #include <memory>
 #include <string>
 
-#include <flexible_type/flexible_type.hpp>
-#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
-#include <unity/toolkits/neural_net/model_spec.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <toolkits/coreml_export/mlmodel_wrapper.hpp>
+#include <ml/neural_net/model_spec.hpp>
 
 namespace turi {
 

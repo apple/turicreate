@@ -8,8 +8,8 @@
 #include <map>
 #include <string>
 #include <functional>
-#include <cppipc/client/object_proxy.hpp>
-#include <cppipc/common/object_factory_base.hpp>
+#include <core/system/cppipc/client/object_proxy.hpp>
+#include <core/system/cppipc/common/object_factory_base.hpp>
 namespace cppipc {
 
 /**

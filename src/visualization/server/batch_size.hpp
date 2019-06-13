@@ -7,8 +7,8 @@
 #ifndef TURI_VISUALIZATION_BATCH_SIZE_HPP
 #define TURI_VISUALIZATION_BATCH_SIZE_HPP
 
-#include <unity/lib/gl_sarray.hpp>
-#include <unity/lib/gl_sframe.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
 
 namespace turi {
 namespace visualization {

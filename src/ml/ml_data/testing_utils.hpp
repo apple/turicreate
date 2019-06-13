@@ -6,8 +6,8 @@
 #ifndef TURI_DML_DATA_TESTING_UTILS_H_
 #define TURI_DML_DATA_TESTING_UTILS_H_
 
-#include <sframe/sframe.hpp>
-#include <ml_data/ml_data.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <ml/ml_data/ml_data.hpp>
 #include <vector>
 #include <string>
 #include <map>

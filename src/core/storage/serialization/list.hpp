@@ -8,9 +8,9 @@
 
 #include <list>
 
-#include <serialization/iarchive.hpp>
-#include <serialization/oarchive.hpp>
-#include <serialization/iterator.hpp>
+#include <core/storage/serialization/iarchive.hpp>
+#include <core/storage/serialization/oarchive.hpp>
+#include <core/storage/serialization/iterator.hpp>
 
 
 namespace turi {

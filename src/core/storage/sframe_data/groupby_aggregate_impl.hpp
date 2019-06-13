@@ -11,11 +11,11 @@
 #include <cstdint>
 #include <functional>
 #include <unordered_set>
-#include <sframe/sframe.hpp>
-#include <util/cityhash_tc.hpp>
-#include <parallel/mutex.hpp>
-#include <sframe/group_aggregate_value.hpp>
-#include <generics/hopscotch_map.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/util/cityhash_tc.hpp>
+#include <core/parallel/mutex.hpp>
+#include <core/storage/sframe_data/group_aggregate_value.hpp>
+#include <core/generics/hopscotch_map.hpp>
 
 namespace turi {
 

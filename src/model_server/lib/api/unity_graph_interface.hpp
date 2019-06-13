@@ -8,10 +8,10 @@
 #include <memory>
 #include <vector>
 #include <string>
-#include <flexible_type/flexible_type.hpp>
-#include <unity/lib/options_map.hpp>
-#include <unity/lib/api/unity_sframe_interface.hpp>
-#include <cppipc/magic_macros.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <model_server/lib/options_map.hpp>
+#include <model_server/lib/api/unity_sframe_interface.hpp>
+#include <core/system/cppipc/magic_macros.hpp>
 
 namespace turi {
 

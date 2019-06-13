@@ -7,8 +7,8 @@
 #define TURI_FLEXIBLE_TYPE_NDARRAY
 #include <tuple>
 #include <iostream>
-#include <logger/assertions.hpp>
-#include <serialization/serialization_includes.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
 namespace turi {
 namespace flexible_type_impl {
 

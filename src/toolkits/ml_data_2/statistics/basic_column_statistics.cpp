@@ -3,11 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <unity/toolkits/ml_data_2/metadata.hpp>
-#include <unity/toolkits/ml_data_2/statistics/basic_column_statistics.hpp>
-#include <serialization/serialization_includes.hpp>
-#include <sframe/sframe.hpp>
-#include <globals/globals.hpp>
+#include <toolkits/ml_data_2/metadata.hpp>
+#include <toolkits/ml_data_2/statistics/basic_column_statistics.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/globals/globals.hpp>
 
 namespace turi { namespace v2 { namespace ml_data_internal {
 

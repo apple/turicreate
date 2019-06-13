@@ -8,25 +8,25 @@
 
 #include <Eigen/LU>
 // SFrame
-#include <sframe/sarray.hpp>
-#include <sframe/sframe.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
 
 // ML-Data Utils
-#include <ml_data/ml_data.hpp>
-#include <ml_data/metadata.hpp>
-#include <util/testing_utils.hpp>
+#include <ml/ml_data/ml_data.hpp>
+#include <ml/ml_data/metadata.hpp>
+#include <core/util/testing_utils.hpp>
 // Supervised learning includes.
-#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
+#include <toolkits/supervised_learning/supervised_learning.hpp>
 
 // Types
-#include <unity/lib/variant.hpp>
-#include <unity/lib/unity_base_types.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
-#include <unity/lib/flex_dict_view.hpp>
+#include <model_server/lib/variant.hpp>
+#include <model_server/lib/unity_base_types.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
+#include <model_server/lib/flex_dict_view.hpp>
 
 /// SKD
-#include <unity/lib/toolkit_function_macros.hpp>
-#include <serialization/serialization_includes.hpp>
+#include <model_server/lib/toolkit_function_macros.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
 
 
 namespace turi {

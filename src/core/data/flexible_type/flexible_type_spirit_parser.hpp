@@ -6,8 +6,8 @@
 #ifndef TURI_FLEXIBLE_TYPE_SPIRIT_PARSER_HPP
 #define TURI_FLEXIBLE_TYPE_SPIRIT_PARSER_HPP
 
-#include <flexible_type/flexible_type.hpp>
-#include <flexible_type/string_parser.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/string_parser.hpp>
 
 namespace boost { namespace spirit {
   namespace iso8859_1 {

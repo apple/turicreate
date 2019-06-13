@@ -8,7 +8,7 @@
 #include <cstdint>
 #include <cstddef>
 #include <map>
-#include <parallel/pthread_tools.hpp>
+#include <core/parallel/pthread_tools.hpp>
 namespace turi {
 
 

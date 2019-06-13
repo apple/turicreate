@@ -3,10 +3,10 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <unity/toolkits/coreml_export/coreml_export_utils.hpp>
-#include <unity/toolkits/coreml_export/linear_models_exporter.hpp>
-#include <unity/toolkits/coreml_export/mldata_exporter.hpp>
-#include <unity/toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <toolkits/coreml_export/coreml_export_utils.hpp>
+#include <toolkits/coreml_export/linear_models_exporter.hpp>
+#include <toolkits/coreml_export/mldata_exporter.hpp>
+#include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
 #include <mlmodel/src/transforms/LinearModel.hpp>
 #include <mlmodel/src/transforms/LogisticModel.hpp>
 

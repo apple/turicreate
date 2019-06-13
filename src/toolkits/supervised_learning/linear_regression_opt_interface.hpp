@@ -7,16 +7,16 @@
 #define TURI_REGR_LINEAR_REGRESSION_OPT_INTERFACE_H_
 
 // ML-Data Utils
-#include <ml_data/ml_data.hpp>
+#include <ml/ml_data/ml_data.hpp>
 
 
 // Toolkits
-#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
-#include <unity/toolkits/supervised_learning/standardization-inl.hpp>
-#include <unity/toolkits/supervised_learning/linear_regression.hpp>
+#include <toolkits/supervised_learning/supervised_learning.hpp>
+#include <toolkits/supervised_learning/standardization-inl.hpp>
+#include <toolkits/supervised_learning/linear_regression.hpp>
 
 // Optimization Interface
-#include <optimization/optimization_interface.hpp>
+#include <ml/optimization/optimization_interface.hpp>
 
 
 // TODO: List of todo's for this file

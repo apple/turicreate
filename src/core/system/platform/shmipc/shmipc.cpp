@@ -4,9 +4,9 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <thread>
-#include <parallel/atomic.hpp>
-#include <logger/logger.hpp>
-#include <logger/assertions.hpp>
+#include <core/parallel/atomic.hpp>
+#include <core/logging/logger.hpp>
+#include <core/logging/assertions.hpp>
 #include <shmipc/shmipc.hpp>
 #include <shmipc/shmipc_garbage_collect.hpp>
 #include <process/process_util.hpp>
@@ -21,7 +21,7 @@
 #include <boost/interprocess/shared_memory_object.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/interprocess/sync/interprocess_semaphore.hpp>
-#include <boost/interprocess/sync/interprocess_mutex.hpp>
+#include <core/parallel/mutex.hpp>
 #include <boost/interprocess/sync/interprocess_condition.hpp>
 #include <boost/interprocess/sync/scoped_lock.hpp>
 #include <boost/thread/thread_time.hpp>

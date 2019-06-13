@@ -3,12 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <unity/toolkits/recsys/train_test_split.hpp>
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <unity/toolkits/ml_data_2/sframe_index_mapping.hpp>
-#include <unity/toolkits/ml_data_2/metadata.hpp>
-#include <random/random.hpp>
-#include <sframe/sframe_iterators.hpp>
+#include <toolkits/recsys/train_test_split.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
+#include <toolkits/ml_data_2/sframe_index_mapping.hpp>
+#include <toolkits/ml_data_2/metadata.hpp>
+#include <core/random/random.hpp>
+#include <core/storage/sframe_data/sframe_iterators.hpp>
 
 namespace turi { namespace recsys {
 

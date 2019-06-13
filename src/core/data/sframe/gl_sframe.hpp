@@ -11,9 +11,9 @@
 #include <string>
 #include <iostream>
 #include <map>
-#include <flexible_type/flexible_type.hpp>
-#include <sframe/group_aggregate_value.hpp>
-#include <sframe/sframe_rows.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/sframe_data/group_aggregate_value.hpp>
+#include <core/storage/sframe_data/sframe_rows.hpp>
 #include "gl_sarray.hpp"
 namespace turi {
 class unity_sarray;

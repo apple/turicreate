@@ -10,8 +10,8 @@
 #include <string>
 #include <vector>
 
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/toolkits/neural_net/float_array.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <ml/neural_net/float_array.hpp>
 
 namespace turi {
 namespace activity_classification {

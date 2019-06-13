@@ -6,8 +6,8 @@
 #ifndef TURI_UNITY_SIMPLE_MODEL_HPP
 #define TURI_UNITY_SIMPLE_MODEL_HPP
 
-#include <unity/lib/variant.hpp>
-#include <unity/lib/extensions/model_base.hpp>
+#include <model_server/lib/variant.hpp>
+#include <model_server/lib/extensions/model_base.hpp>
 
 namespace turi {
 /**

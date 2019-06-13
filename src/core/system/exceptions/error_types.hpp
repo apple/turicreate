@@ -8,7 +8,7 @@
 #include <string>
 #include <exception>
 #include <typeinfo>
-#include <export.hpp>
+#include <core/export.hpp>
 namespace turi {
 
 /**

@@ -4,17 +4,17 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <ctime>
-#include <parallel/pthread_tools.hpp>
-#include <unity/lib/gl_sarray.hpp>
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/lib/unity_sarray.hpp>
-#include <sframe/sarray.hpp>
-#include <sframe/sarray_reader.hpp>
-#include <sframe/sarray_reader_buffer.hpp>
-#include <unity/lib/image_util.hpp>
-#include <sframe_query_engine/planning/planner.hpp>
-#include <unity/lib/visualization/histogram.hpp>
-#include <unity/lib/visualization/item_frequency.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <core/storage/sframe_interface/unity_sarray.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
+#include <core/storage/sframe_data/sarray_reader.hpp>
+#include <core/storage/sframe_data/sarray_reader_buffer.hpp>
+#include <model_server/lib/image_util.hpp>
+#include <core/storage/query_engine/planning/planner.hpp>
+#include <visualization/server/histogram.hpp>
+#include <visualization/server/item_frequency.hpp>
 
 namespace turi {
 

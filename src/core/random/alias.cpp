@@ -4,11 +4,11 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <timer/timer.hpp>
-#include <random/random.hpp>
+#include <core/random/random.hpp>
 #include <vector>
 #include <string>
 #include <utility>
-#include <random/alias.hpp>
+#include <core/random/alias.hpp>
 
 namespace turi {
 namespace random {

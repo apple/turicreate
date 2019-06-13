@@ -5,15 +5,15 @@
  */
 #include <vector>
 #include <map>
-#include <sframe/dataframe.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <parallel/lambda_omp.hpp>
+#include <core/storage/sframe_data/dataframe.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/parallel/lambda_omp.hpp>
 #include <boost/config/warning_disable.hpp>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
-#include <fileio/general_fstream.hpp>
+#include <core/storage/fileio/general_fstream.hpp>
 namespace turi {
 /**************************************************************************/
 /*                                                                        */

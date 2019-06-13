@@ -7,9 +7,9 @@
 #define TURI_UNITY_SARRAY_BUILDER_HPP
 
 #include <vector>
-#include <sframe/sarray.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
 #include <boost/circular_buffer.hpp>
-#include <unity/lib/api/unity_sarray_builder_interface.hpp>
+#include <model_server/lib/api/unity_sarray_builder_interface.hpp>
 
 namespace turi {
 

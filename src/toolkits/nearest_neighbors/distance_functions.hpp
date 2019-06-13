@@ -10,10 +10,10 @@
 #include <Eigen/SparseCore>
 #include <Eigen/Core>
 #include <memory>
-#include <util/logit_math.hpp>
-#include <unity/toolkits/util/algorithmic_utils.hpp>
-#include <flexible_type/flexible_type_base_types.hpp>
-#include <unity/lib/toolkit_function_macros.hpp>
+#include <core/util/logit_math.hpp>
+#include <toolkits/util/algorithmic_utils.hpp>
+#include <core/data/flexible_type/flexible_type_base_types.hpp>
+#include <model_server/lib/toolkit_function_macros.hpp>
 #include <boost/algorithm/string.hpp>
 
 namespace turi {

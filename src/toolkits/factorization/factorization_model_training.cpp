@@ -3,11 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <unity/toolkits/factorization/factorization_model_sgd_interface.hpp>
-#include <unity/toolkits/sgd/basic_sgd_solver.hpp>
-#include <unity/toolkits/factorization/ranking_sgd_solver_implicit.hpp>
-#include <unity/toolkits/factorization/ranking_sgd_solver_explicit.hpp>
-#include <unity/toolkits/factorization/model_factory.hpp>
+#include <toolkits/factorization/factorization_model_sgd_interface.hpp>
+#include <toolkits/sgd/basic_sgd_solver.hpp>
+#include <toolkits/factorization/ranking_sgd_solver_implicit.hpp>
+#include <toolkits/factorization/ranking_sgd_solver_explicit.hpp>
+#include <toolkits/factorization/model_factory.hpp>
 
 namespace turi { namespace factorization {
 

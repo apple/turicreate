@@ -6,9 +6,9 @@
 #ifndef TURI_GL_VECTOR_H_
 #define TURI_GL_VECTOR_H_
 
-#include <generics/vector_internals.hpp>
-#include <generics/vector_serialization.hpp>
-#include <generics/is_memmovable.hpp>
+#include <core/generics/vector_internals.hpp>
+#include <core/generics/vector_serialization.hpp>
+#include <core/generics/is_memmovable.hpp>
 #include <algorithm>
 
 namespace turi {

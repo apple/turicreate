@@ -3,10 +3,10 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <sframe/join_impl.hpp>
-#include <cppipc/server/cancel_ops.hpp>
-#include <util/cityhash_tc.hpp>
-#include <sframe/sframe_constants.hpp>
+#include <core/storage/sframe_data/join_impl.hpp>
+#include <core/system/cppipc/server/cancel_ops.hpp>
+#include <core/util/cityhash_tc.hpp>
+#include <core/storage/sframe_data/sframe_constants.hpp>
 
 namespace turi {
 namespace join_impl {

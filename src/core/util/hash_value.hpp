@@ -6,9 +6,9 @@
 #ifndef TURI_HASH_VALUE_H_
 #define TURI_HASH_VALUE_H_
 
-#include <util/cityhash_tc.hpp>
-#include <util/bitops.hpp>
-#include <serialization/serialization_includes.hpp>
+#include <core/util/cityhash_tc.hpp>
+#include <core/util/bitops.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
 
 namespace turi {
 /**

@@ -8,10 +8,10 @@
 #include <cxxabi.h>
 #include <typeinfo>
 #include <string>
-#include <cppipc/ipc_object_base.hpp>
-#include <cppipc/client/object_proxy.hpp>
-#include <cppipc/server/comm_server.hpp>
-#include <cppipc/registration_macros.hpp>
+#include <core/system/cppipc/ipc_object_base.hpp>
+#include <core/system/cppipc/client/object_proxy.hpp>
+#include <core/system/cppipc/server/comm_server.hpp>
+#include <core/system/cppipc/registration_macros.hpp>
 #endif
 
-#include <cppipc/magic_macros.hpp>
+#include <core/system/cppipc/magic_macros.hpp>

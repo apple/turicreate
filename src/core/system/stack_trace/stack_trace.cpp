@@ -4,12 +4,12 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <stack_trace/stack_trace.hpp>
+#include <core/system/stack_trace/stack_trace.hpp>
 
-#include <stack_trace/llvm_lib.hpp>
-#include <util/basic_types.hpp>
-#include <util/fs_util.hpp>
-#include <util/string_util.hpp>
+#include <core/system/stack_trace/llvm_lib.hpp>
+#include <core/util/basic_types.hpp>
+#include <core/util/fs_util.hpp>
+#include <core/util/string_util.hpp>
 
 using std::max;
 using std::vector;

@@ -11,10 +11,10 @@
 #include <memory>
 #include <map>
 #include <unordered_map>
-#include <util/mutable_queue.hpp>
-#include <lazy_eval/lazy_eval_operation.hpp>
-#include <logger/logger.hpp>
-#include <logger/assertions.hpp>
+#include <core/util/mutable_queue.hpp>
+#include <core/storage/lazy_eval/lazy_eval_operation.hpp>
+#include <core/logging/logger.hpp>
+#include <core/logging/assertions.hpp>
 namespace turi {
 
 template <typename T>

@@ -4,8 +4,8 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <timer/timer.hpp>
-#include <fileio/general_fstream.hpp>
-#include <fileio/cache_stream.hpp>
+#include <core/storage/fileio/general_fstream.hpp>
+#include <core/storage/fileio/cache_stream.hpp>
 using namespace turi;
 using namespace fileio;
 size_t KBYTES = 1024*128;

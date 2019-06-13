@@ -3,8 +3,8 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <unity/toolkits/prototype/sparse_nn.hpp>
-#include <util/fast_top_k.hpp>
+#include <toolkits/prototype/sparse_nn.hpp>
+#include <core/util/fast_top_k.hpp>
 
 namespace turi {
 namespace prototype {

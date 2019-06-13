@@ -4,10 +4,10 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <algorithm>
-#include <parallel/atomic.hpp>
-#include <timer/timer.hpp>
-#include <parallel/pthread_tools.hpp>
-#include <sframe/unfair_lock.hpp>
+#include <core/parallel/atomic.hpp>
+#include <core/system/platform/timer//timer.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/storage/sframe_data/unfair_lock.hpp>
 namespace turi {
 namespace {
 // Some magic to ensure that keys are created at program startup =========>

@@ -3,10 +3,10 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <table_printer/table_printer.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
 #include <timer/timer.hpp>
-#include <random/random.hpp>
-#include <parallel/lambda_omp.hpp>
+#include <core/random/random.hpp>
+#include <core/parallel/lambda_omp.hpp>
 
 using namespace turi;
 

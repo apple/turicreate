@@ -3,29 +3,29 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <unity/lib/unity_sframe.hpp>
-#include <unity/lib/gl_sarray.hpp>
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/lib/unity_global.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
-#include <flexible_type/flexible_type.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <model_server/lib/unity_global.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 
-#include <sframe/algorithm.hpp>
-#include <sframe/sarray_reader.hpp>
+#include <core/storage/sframe_data/algorithm.hpp>
+#include <core/storage/sframe_data/sarray_reader.hpp>
 
 // Toolkits
-#include <optimization/optimization_interface.hpp>
-#include <unity/toolkits/supervised_learning/xgboost.hpp>
-#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
-#include <unity/toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
-#include <unity/toolkits/supervised_learning/classifier_evaluations.hpp>
-#include <unity/toolkits/supervised_learning/automatic_model_creation.hpp>
+#include <ml/optimization/optimization_interface.hpp>
+#include <toolkits/supervised_learning/xgboost.hpp>
+#include <toolkits/supervised_learning/supervised_learning.hpp>
+#include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <toolkits/supervised_learning/classifier_evaluations.hpp>
+#include <toolkits/supervised_learning/automatic_model_creation.hpp>
 
 // ML Data
-#include <ml_data/ml_data_iterator.hpp>
+#include <ml/ml_data/ml_data_iterator.hpp>
 
 // Evaluation
-#include <unity/toolkits/evaluation/metrics.hpp>
+#include <toolkits/evaluation/metrics.hpp>
 
 namespace turi {
 namespace supervised {

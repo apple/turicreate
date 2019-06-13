@@ -1,7 +1,7 @@
-#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
+#include <toolkits/coreml_export/mlmodel_wrapper.hpp>
 
-#include <unity/toolkits/coreml_export/coreml_export_utils.hpp>
-#include <unity/toolkits/coreml_export/mlmodel_include.hpp>
+#include <toolkits/coreml_export/coreml_export_utils.hpp>
+#include <toolkits/coreml_export/mlmodel_include.hpp>
 
 namespace turi {
 namespace coreml {

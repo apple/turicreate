@@ -7,8 +7,8 @@
 #define TURI_DISTRIBUTED_SO_UTILS
 
 #include<string>
-#include<logger/logger.hpp>
-#include<logger/assertions.hpp>
+#include<core/logging/logger.hpp>
+#include<core/logging/assertions.hpp>
 
 namespace turi {
 /**

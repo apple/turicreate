@@ -7,30 +7,30 @@
 #define TURI_SUPERVISED_LEARNING_H_
 
 // SFrame
-#include <sframe/sarray.hpp>
-#include <sframe/sframe.hpp>
-#include <unity/lib/gl_sarray.hpp>
-#include <unity/lib/gl_sframe.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
 
 // Interfaces
-#include <unity/lib/extensions/ml_model.hpp>
+#include <model_server/lib/extensions/ml_model.hpp>
 
 // ML-Data Utils
-#include <ml_data/ml_data.hpp>
-#include <ml_data/ml_data_iterator.hpp>
+#include <ml/ml_data/ml_data.hpp>
+#include <ml/ml_data/ml_data_iterator.hpp>
 
 // Types
-#include <unity/lib/variant.hpp>
-#include <unity/lib/unity_base_types.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
-#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
+#include <model_server/lib/variant.hpp>
+#include <model_server/lib/unity_base_types.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
+#include <toolkits/coreml_export/mlmodel_wrapper.hpp>
 
 #include <Eigen/Core>
 #include <Eigen/SparseCore>
 
-#include <export.hpp>
+#include <core/export.hpp>
 
-#include <unity/lib/toolkit_class_macros.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
 
 // TODO: List of todo's for this file
 //------------------------------------------------------------------------------

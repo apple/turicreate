@@ -6,9 +6,9 @@
 #ifndef TURI_ML2_METADATA_H_
 #define TURI_ML2_METADATA_H_
 
-#include <unity/toolkits/ml_data_2/ml_data_column_modes.hpp>
-#include <unity/toolkits/ml_data_2/data_storage/internal_metadata.hpp>
-#include "export.hpp"
+#include <toolkits/ml_data_2/ml_data_column_modes.hpp>
+#include <toolkits/ml_data_2/data_storage/internal_metadata.hpp>
+#include <core/export.hpp>
 
 namespace turi {
 
@@ -475,7 +475,7 @@ class EXPORT ml_metadata {
 }}
 
 // Include the implementations of the above inline functions.
-#include <unity/toolkits/ml_data_2/metadata_impl.hpp>
+#include <toolkits/ml_data_2/metadata_impl.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Implement serialization for

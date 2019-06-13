@@ -7,15 +7,15 @@
 #include <boost/bind.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 #include <boost/algorithm/string.hpp>
-#include <logger/logger.hpp>
-#include <cppipc/server/comm_server.hpp>
-#include <cppipc/server/dispatch.hpp>
-#include <cppipc/common/status_types.hpp>
-#include <cppipc/common/message_types.hpp>
-#include <cppipc/common/object_factory_impl.hpp>
-#include <nanosockets/socket_errors.hpp>
-#include <nanosockets/async_reply_socket.hpp>
-#include <nanosockets/publish_socket.hpp>
+#include <core/logging/logger.hpp>
+#include <core/system/cppipc/server/comm_server.hpp>
+#include <core/system/cppipc/server/dispatch.hpp>
+#include <core/system/cppipc/common/status_types.hpp>
+#include <core/system/cppipc/common/message_types.hpp>
+#include <core/system/cppipc/common/object_factory_impl.hpp>
+#include <core/system/nanosockets/socket_errors.hpp>
+#include <core/system/nanosockets/async_reply_socket.hpp>
+#include <core/system/nanosockets/publish_socket.hpp>
 
 
 namespace cppipc {

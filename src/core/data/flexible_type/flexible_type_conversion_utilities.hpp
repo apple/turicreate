@@ -11,9 +11,9 @@
 #include <unordered_map>
 #include <tuple>
 #include <type_traits>
-#include <util/code_optimization.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <flexible_type/type_traits.hpp>
+#include <core/util/code_optimization.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/type_traits.hpp>
 
 namespace turi {
 

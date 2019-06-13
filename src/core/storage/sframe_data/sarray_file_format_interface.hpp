@@ -12,12 +12,12 @@
 #include <string>
 #include <sstream>
 #include <map>
-#include <fileio/general_fstream.hpp>
+#include <core/storage/fileio/general_fstream.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
-#include <sframe/sarray_index_file.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <sframe/sframe_rows.hpp>
+#include <core/storage/sframe_data/sarray_index_file.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/sframe_data/sframe_rows.hpp>
 namespace turi {
 
 /**

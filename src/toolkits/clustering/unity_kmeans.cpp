@@ -4,21 +4,21 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 // Data structures
-#include <flexible_type/flexible_type_base_types.hpp>
-#include <unity/lib/unity_sframe.hpp>
-#include <sframe/sframe.hpp>
+#include <core/data/flexible_type/flexible_type_base_types.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
 
 // ML-Data Utils
 
 // Toolkits
-#include <unity/lib/toolkit_util.hpp>
-#include <unity/lib/toolkit_function_macros.hpp>
-#include <unity/lib/toolkit_function_specification.hpp>
-#include <unity/toolkits/clustering/unity_kmeans.hpp>
-#include <unity/toolkits/clustering/kmeans.hpp>
+#include <model_server/lib/toolkit_util.hpp>
+#include <model_server/lib/toolkit_function_macros.hpp>
+#include <model_server/lib/toolkit_function_specification.hpp>
+#include <toolkits/clustering/unity_kmeans.hpp>
+#include <toolkits/clustering/kmeans.hpp>
 
 // Miscellaneous
-#include <export.hpp>
+#include <core/export.hpp>
 
 namespace turi {
 namespace kmeans {

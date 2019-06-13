@@ -5,7 +5,7 @@
  */
 #include <cmath>
 #include <string>
-#include <unity/toolkits/factorization/loss_model_profiles.hpp>
+#include <toolkits/factorization/loss_model_profiles.hpp>
 
 namespace turi { namespace factorization {
 

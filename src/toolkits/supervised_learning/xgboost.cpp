@@ -14,8 +14,8 @@
 #undef MAX
 #endif
 
-#include <unity/toolkits/supervised_learning/xgboost.hpp>
-#include <unity/toolkits/supervised_learning/xgboost_iterator.hpp>
+#include <toolkits/supervised_learning/xgboost.hpp>
+#include <toolkits/supervised_learning/xgboost_iterator.hpp>
 
 #include <limits>
 #include <sstream>
@@ -23,26 +23,26 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/path.hpp>
 
-#include <logger/logger.hpp>
+#include <core/logging/logger.hpp>
 #include <timer/timer.hpp>
-#include <fileio/temp_files.hpp>
-#include <fileio/sanitize_url.hpp>
+#include <core/storage/fileio/temp_files.hpp>
+#include <core/storage/fileio/sanitize_url.hpp>
 
 // CoreML
-#include <unity/toolkits/coreml_export/xgboost_exporter.hpp>
+#include <toolkits/coreml_export/xgboost_exporter.hpp>
 
 
 // sframe
-#include <sframe/algorithm.hpp>
-#include <unity/lib/unity_sarray.hpp>
+#include <core/storage/sframe_data/algorithm.hpp>
+#include <core/storage/sframe_interface/unity_sarray.hpp>
 
 // xgboost
 #include <xgboost/src/learner/learner-inl.hpp>
 #include <xgboost/src/io/simple_dmatrix-inl.hpp>
 
 // Toolkits
-#include <unity/toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
-#include <unity/toolkits/evaluation/metrics.hpp>
+#include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <toolkits/evaluation/metrics.hpp>
 
 namespace turi {
 namespace supervised {

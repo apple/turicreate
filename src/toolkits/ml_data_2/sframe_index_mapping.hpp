@@ -8,9 +8,9 @@
 
 #include <vector>
 #include <memory>
-#include <sframe/sframe.hpp>
-#include <unity/toolkits/ml_data_2/metadata.hpp>
-#include <unity/toolkits/ml_data_2/indexing/column_indexer.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <toolkits/ml_data_2/metadata.hpp>
+#include <toolkits/ml_data_2/indexing/column_indexer.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
 //

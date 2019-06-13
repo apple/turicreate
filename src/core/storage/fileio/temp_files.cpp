@@ -21,19 +21,19 @@
 #include <string>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
-#include <parallel/mutex.hpp>
-#include <logger/logger.hpp>
-#include <logger/assertions.hpp>
-#include <fileio/fileio_constants.hpp>
-#include <fileio/fs_utils.hpp>
-#include <util/syserr_reporting.hpp>
+#include <core/parallel/mutex.hpp>
+#include <core/logging/logger.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/storage/fileio/fileio_constants.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
+#include <core/util/syserr_reporting.hpp>
 #include <process/process_util.hpp>
 #include <network/net_util.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
-#include <export.hpp>
+#include <core/export.hpp>
 
 namespace turi {
 

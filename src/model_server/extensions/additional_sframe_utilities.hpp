@@ -5,7 +5,7 @@
  */
 #ifndef TURI_UNITY_EXTENSIONS_ADDITIONAL_SFRAME_UTILITIES_HPP
 #define TURI_UNITY_EXTENSIONS_ADDITIONAL_SFRAME_UTILITIES_HPP
-#include <unity/lib/gl_sarray.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
 
 void sframe_load_to_numpy(turi::gl_sframe input, size_t outptr_addr,
                      std::vector<size_t> outstrides,

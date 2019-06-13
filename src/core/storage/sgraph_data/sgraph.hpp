@@ -6,9 +6,9 @@
 #ifndef TURI_SGRAPH_SGRAPH_HPP
 #define TURI_SGRAPH_SGRAPH_HPP
 #include <memory>
-#include <flexible_type/flexible_type.hpp>
-#include <sgraph/sgraph_constants.hpp>
-#include <sframe/sframe.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/sgraph_data/sgraph_constants.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
 #include <sparsehash/sparse_hash_map>
 
 namespace turi {

@@ -8,10 +8,10 @@
 
 #include <vector>
 #include <memory>
-#include <sframe/sframe.hpp>
-#include <ml_data/metadata.hpp>
-#include <ml_data/ml_data_entry.hpp>
-#include <ml_data/ml_data_column_modes.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <ml/ml_data/metadata.hpp>
+#include <ml/ml_data/ml_data_entry.hpp>
+#include <ml/ml_data/ml_data_column_modes.hpp>
 
 #include <Eigen/SparseCore>
 #include <Eigen/Core>
@@ -613,6 +613,6 @@ BEGIN_OUT_OF_PLACE_LOAD(arc, std::shared_ptr<sarray<turi::ml_data_internal::row_
 
 // A few includes for convenience.
 
-#include <ml_data/ml_data_iterator.hpp>
+#include <ml/ml_data/ml_data_iterator.hpp>
 
 #endif

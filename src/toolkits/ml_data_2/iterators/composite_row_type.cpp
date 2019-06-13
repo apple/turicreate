@@ -4,9 +4,9 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <vector>
-#include <logger/assertions.hpp>
-#include <unity/toolkits/ml_data_2/iterators/composite_row_type.hpp>
-#include <unity/toolkits/ml_data_2/side_features.hpp>
+#include <core/logging/assertions.hpp>
+#include <toolkits/ml_data_2/iterators/composite_row_type.hpp>
+#include <toolkits/ml_data_2/side_features.hpp>
 
 namespace turi { namespace v2 {
 

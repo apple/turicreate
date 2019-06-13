@@ -13,8 +13,8 @@
 #include <string>
 #include <vector>
 
-#include <unity/toolkits/neural_net/float_array.hpp>
-#include <unity/toolkits/neural_net/weight_init.hpp>
+#include <ml/neural_net/float_array.hpp>
+#include <ml/neural_net/weight_init.hpp>
 
 // Forward declare CoreML::Specification::NeuralNetwork in lieu of including
 // problematic protocol buffer headers.

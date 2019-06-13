@@ -6,16 +6,16 @@
 #ifndef TURI_NEWTON_METHOD_H_
 #define TURI_NEWTON_METHOD_H_
 
-#include <optimization/optimization_interface.hpp>
-#include <flexible_type/flexible_type.hpp>
+#include <ml/optimization/optimization_interface.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
 
-#include <optimization/utils.hpp>
-#include <optimization/optimization_interface.hpp>
-#include <optimization/regularizer_interface.hpp>
-#include <optimization/line_search-inl.hpp>
-#include <table_printer/table_printer.hpp>
+#include <ml/optimization/utils.hpp>
+#include <ml/optimization/optimization_interface.hpp>
+#include <ml/optimization/regularizer_interface.hpp>
+#include <ml/optimization/line_search-inl.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
 
 // TODO: List of todo's for this file
 //------------------------------------------------------------------------------

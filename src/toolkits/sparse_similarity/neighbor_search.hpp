@@ -6,13 +6,13 @@
 #ifndef TURI_SPARSE_SIMILARITY_NEIGHBOR_SEARCH_H
 #define TURI_SPARSE_SIMILARITY_NEIGHBOR_SEARCH_H
 
-#include <sframe/sarray.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
 #include <vector>
-#include <parallel/pthread_tools.hpp>
-#include <util/try_finally.hpp>
-#include <util/dense_bitset.hpp>
-#include <unity/toolkits/sparse_similarity/similarities.hpp>
-#include <unity/toolkits/sparse_similarity/item_processing.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/util/try_finally.hpp>
+#include <core/util/dense_bitset.hpp>
+#include <toolkits/sparse_similarity/similarities.hpp>
+#include <toolkits/sparse_similarity/item_processing.hpp>
 
 namespace turi { namespace sparse_sim {
 

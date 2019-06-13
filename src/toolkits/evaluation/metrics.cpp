@@ -3,22 +3,22 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <sframe/sarray.hpp>
-#include <sframe/sframe.hpp>
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/lib/gl_sarray.hpp>
-#include <unity/toolkits/util/precision_recall.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <toolkits/util/precision_recall.hpp>
 
 // ML-Data
-#include <ml_data/column_indexer.hpp>
+#include <ml/ml_data/column_indexer.hpp>
 
 // Evaluation
-#include <unity/toolkits/util/indexed_sframe_tools.hpp>
-#include <unity/toolkits/evaluation/evaluation_constants.hpp>
-#include <unity/toolkits/evaluation/metrics.hpp>
-#include <unity/toolkits/object_detection/od_data_iterator.hpp>
-#include <unity/toolkits/object_detection/od_evaluation.hpp>
-#include <unity/toolkits/supervised_learning/classifier_evaluations.hpp>
+#include <toolkits/util/indexed_sframe_tools.hpp>
+#include <toolkits/evaluation/evaluation_constants.hpp>
+#include <toolkits/evaluation/metrics.hpp>
+#include <toolkits/object_detection/od_data_iterator.hpp>
+#include <toolkits/object_detection/od_evaluation.hpp>
+#include <toolkits/supervised_learning/classifier_evaluations.hpp>
 
 #include <map>
 #include <algorithm>

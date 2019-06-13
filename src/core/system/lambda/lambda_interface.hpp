@@ -5,10 +5,10 @@
  */
 #ifndef TURI_LAMBDA_LAMBDA_INTERFACE_HPP
 #define TURI_LAMBDA_LAMBDA_INTERFACE_HPP
-#include <flexible_type/flexible_type.hpp>
-#include <cppipc/cppipc.hpp>
-#include <sframe/sframe_rows.hpp>
-#include <cppipc/magic_macros.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/system/cppipc/cppipc.hpp>
+#include <core/storage/sframe_data/sframe_rows.hpp>
+#include <core/system/cppipc/magic_macros.hpp>
 
 namespace turi {
 

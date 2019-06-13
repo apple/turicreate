@@ -5,11 +5,11 @@
  */
 #ifndef TURI_SFRAME_SARRAY_V2_TYPE_ENCODING_HPP
 #define TURI_SFRAME_SARRAY_V2_TYPE_ENCODING_HPP
-#include <flexible_type/flexible_type.hpp>
-#include <sframe/sarray_v2_block_types.hpp>
-#include <util/basic_types.hpp>
-#include <util/dense_bitset.hpp>
-#include <sframe/integer_pack.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/sframe_data/sarray_v2_block_types.hpp>
+#include <core/util/basic_types.hpp>
+#include <core/util/dense_bitset.hpp>
+#include <core/storage/sframe_data/integer_pack.hpp>
 namespace turi {
 
 

@@ -6,12 +6,12 @@
 #ifndef TURI_FACTORIZATION_MODEL_CREATION_FACTORY_H_
 #define TURI_FACTORIZATION_MODEL_CREATION_FACTORY_H_
 
-#include <unity/toolkits/factorization/factorization_model_sgd_interface.hpp>
-#include <unity/toolkits/factorization/factorization_model_impl.hpp>
-#include <unity/toolkits/sgd/basic_sgd_solver.hpp>
-#include <unity/toolkits/sgd/sgd_interface.hpp>
-#include <unity/toolkits/factorization/ranking_sgd_solver_explicit.hpp>
-#include <unity/toolkits/factorization/ranking_sgd_solver_implicit.hpp>
+#include <toolkits/factorization/factorization_model_sgd_interface.hpp>
+#include <toolkits/factorization/factorization_model_impl.hpp>
+#include <toolkits/sgd/basic_sgd_solver.hpp>
+#include <toolkits/sgd/sgd_interface.hpp>
+#include <toolkits/factorization/ranking_sgd_solver_explicit.hpp>
+#include <toolkits/factorization/ranking_sgd_solver_implicit.hpp>
 
 #include <string>
 #include <cstdlib>

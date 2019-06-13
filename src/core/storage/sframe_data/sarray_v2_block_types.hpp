@@ -7,7 +7,7 @@
 #define TURI_SFRAME_SARRAY_V2_BLOCK_TYPES_HPP
 #include <stdint.h>
 #include <tuple>
-#include <serialization/serializable_pod.hpp>
+#include <core/storage/serialization/serializable_pod.hpp>
 namespace turi {
 
 

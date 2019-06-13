@@ -6,7 +6,7 @@
 #ifndef TURI_TESTING_DATA_GENERATORS_H_
 #define TURI_TESTING_DATA_GENERATORS_H_
 
-#include <sframe/sframe.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
 #include <Eigen/Core>
 #include <map>
 #include <string>

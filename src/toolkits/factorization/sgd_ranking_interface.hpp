@@ -6,7 +6,7 @@
 #ifndef TURI_SGD_SGD_INTERFACE_BASE_H_
 #define TURI_SGD_SGD_INTERFACE_BASE_H_
 
-#include <unity/toolkits/sgd/sgd_interface.hpp>
+#include <toolkits/sgd/sgd_interface.hpp>
 
 namespace turi { namespace sgd {
 

@@ -7,8 +7,8 @@
 #define TURI_LOGIT_MATH_H_
 
 
-#include <util/code_optimization.hpp>
-#include <logger/assertions.hpp>
+#include <core/util/code_optimization.hpp>
+#include <core/logging/assertions.hpp>
 #include <cmath>
 
 

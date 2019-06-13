@@ -5,12 +5,12 @@
  */
 #include <string>
 #include <vector>
-#include <logger/logger.hpp>
-#include <timer/timer.hpp>
-#include <sframe/sframe.hpp>
-#include <sframe/group_aggregate_value.hpp>
-#include <sframe/groupby_aggregate_impl.hpp>
-#include <sframe/groupby_aggregate.hpp>
+#include <core/logging/logger.hpp>
+#include <core/system/platform/timer//timer.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_data/group_aggregate_value.hpp>
+#include <core/storage/sframe_data/groupby_aggregate_impl.hpp>
+#include <core/storage/sframe_data/groupby_aggregate.hpp>
 
 namespace turi {
 

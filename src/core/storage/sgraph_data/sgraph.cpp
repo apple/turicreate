@@ -3,15 +3,15 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <sgraph/sgraph.hpp>
-#include <sgraph/hilbert_parallel_for.hpp>
-#include <sframe/shuffle.hpp>
-#include <sframe/algorithm.hpp>
-#include <sframe/sarray_sorted_buffer.hpp>
-#include <sframe/sarray_reader_buffer.hpp>
-#include <sframe/sframe_saving.hpp>
+#include <core/storage/sgraph_data/sgraph.hpp>
+#include <core/storage/sgraph_data/hilbert_parallel_for.hpp>
+#include <core/storage/sframe_data/shuffle.hpp>
+#include <core/storage/sframe_data/algorithm.hpp>
+#include <core/storage/sframe_data/sarray_sorted_buffer.hpp>
+#include <core/storage/sframe_data/sarray_reader_buffer.hpp>
+#include <core/storage/sframe_data/sframe_saving.hpp>
 #include <atomic>
-#include <timer/timer.hpp>
+#include <core/system/platform/timer//timer.hpp>
 #include <sparsehash/sparse_hash_set>
 
 /**

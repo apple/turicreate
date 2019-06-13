@@ -8,8 +8,8 @@
 #include <utility>
 #include <cstdint>
 #include <cstddef>
-#include <logger/assertions.hpp>
-#include <util/bitops.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/util/bitops.hpp>
 namespace turi {
 
 

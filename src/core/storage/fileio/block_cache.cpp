@@ -3,16 +3,16 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <fileio/block_cache.hpp>
-#include <fileio/fs_utils.hpp>
-#include <fileio/general_fstream.hpp>
-#include <fileio/temp_files.hpp>
-#include <logger/logger.hpp>
-#include <logger/assertions.hpp>
-#include <util/md5.hpp>
-#include <util/cityhash_tc.hpp>
-#include <parallel/pthread_tools.hpp>
-#include <parallel/atomic.hpp>
+#include <core/storage/fileio/block_cache.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
+#include <core/storage/fileio/general_fstream.hpp>
+#include <core/storage/fileio/temp_files.hpp>
+#include <core/logging/logger.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/util/md5.hpp>
+#include <core/util/cityhash_tc.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/parallel/atomic.hpp>
 #include <mutex>
 namespace turi {
 constexpr size_t block_cache::KEY_LOCK_SIZE;

@@ -3,7 +3,7 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <table_printer/table_element_printers.hpp>
+#include <core/logging/table_printer/table_element_printers.hpp>
 #include <sstream>
 
 // The implementations of the specific element printers and recorders

@@ -15,7 +15,7 @@
  */
 #ifndef _INT128_TYPES_H_
 #define _INT128_TYPES_H_
-#include <serialization/is_pod.hpp>
+#include <core/storage/serialization/is_pod.hpp>
 #include <boost/type_traits/is_scalar.hpp>
 #include <type_traits>
 #include <cstdint>

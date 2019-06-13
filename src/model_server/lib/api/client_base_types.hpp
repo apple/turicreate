@@ -10,10 +10,10 @@
  * This file is a meta-header which includes all the types necessary
  * for the client library.
  */
-#include <flexible_type/flexible_type.hpp>
-#include <sframe/dataframe.hpp>
-#include <unity/lib/variant.hpp>
-#include <unity/lib/api/unity_graph_interface.hpp>
-#include <unity/lib/extensions/model_base.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/sframe_data/dataframe.hpp>
+#include <model_server/lib/variant.hpp>
+#include <model_server/lib/api/unity_graph_interface.hpp>
+#include <model_server/lib/extensions/model_base.hpp>
 
 #endif // TURI_UNITY_CLIENT_BASE_TYPES

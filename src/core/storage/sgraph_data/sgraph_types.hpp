@@ -6,7 +6,7 @@
 #ifndef TURI_SGRAPH_SGRAPH_TYPES_HPP
 #define TURI_SGRAPH_SGRAPH_TYPES_HPP
 
-#include<flexible_type/flexible_type.hpp>
+#include<core/data/flexible_type/flexible_type.hpp>
 
 namespace turi {
 

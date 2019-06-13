@@ -3,10 +3,10 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <logger/assertions.hpp>
-#include <sframe/sframe_rows.hpp>
-#include <sframe/sarray_v2_block_types.hpp>
-#include <sframe/sarray_v2_type_encoding.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/storage/sframe_data/sframe_rows.hpp>
+#include <core/storage/sframe_data/sarray_v2_block_types.hpp>
+#include <core/storage/sframe_data/sarray_v2_type_encoding.hpp>
 
 namespace turi {
 

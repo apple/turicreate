@@ -12,7 +12,7 @@ from libcpp.set cimport set as stdset
 from libcpp.pair cimport pair
 
 #### Define flexible type base types ####
-# From "<flexible_type/flexible_type_base_types.hpp>" namespace "turi":
+# From "<core/data/flexible_type/flexible_type_base_types.hpp>" namespace "turi":
 ctypedef long long flex_int
 ctypedef double flex_float
 ctypedef pair[long long,int] pflex_date_time
@@ -23,7 +23,7 @@ ctypedef vector[pair[flexible_type, flexible_type]] flex_dict
 
 
 ####Flex_image externs
-cdef extern from "<image/image_type.hpp>" namespace "turi":
+cdef extern from "<core/data/image/image_type.hpp>" namespace "turi":
    cdef cppclass flex_image:
         flex_image()
         flex_image(char* image_data, size_t height, size_t width, size_t channels, \
@@ -37,7 +37,7 @@ cdef extern from "<image/image_type.hpp>" namespace "turi":
         char m_version
 
 #### Externs from flexible_type.hpp
-cdef extern from "<flexible_type/flexible_type.hpp>" namespace "turi":
+cdef extern from "<core/data/flexible_type/flexible_type.hpp>" namespace "turi":
 
     cdef enum flex_type_enum:
         INTEGER         "turi::flex_type_enum::INTEGER"  = 0

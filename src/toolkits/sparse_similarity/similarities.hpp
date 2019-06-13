@@ -6,7 +6,7 @@
 #ifndef TURI_UNITY_ITEM_SIMILARITY_LOOKUP_AGGREGATORS_H_
 #define TURI_UNITY_ITEM_SIMILARITY_LOOKUP_AGGREGATORS_H_
 
-#include <flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 
 namespace turi { namespace sparse_sim {
 

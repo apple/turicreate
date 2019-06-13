@@ -5,8 +5,8 @@
 #include <algorithm>
 #include <ctime>
 #include <sstream>
-#include <fileio/set_curl_options.hpp>
-#include <fileio/get_s3_endpoint.hpp>
+#include <core/storage/fileio/set_curl_options.hpp>
+#include <core/storage/fileio/get_s3_endpoint.hpp>
 extern "C" {
 #include <errno.h>
 #include <curl/curl.h>
@@ -17,7 +17,7 @@ extern "C" {
 }
 #include "io.h"
 #include "./s3_filesys.h"
-#include <logger/assertions.hpp>
+#include <core/logging/assertions.hpp>
 #include <boost/algorithm/string.hpp>
 
 using turi::fileio::set_curl_options;

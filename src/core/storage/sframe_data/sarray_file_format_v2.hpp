@@ -9,21 +9,21 @@
 #include <memory>
 #include <typeinfo>
 #include <map>
-#include <parallel/mutex.hpp>
+#include <core/parallel/mutex.hpp>
 #include <boost/algorithm/string/predicate.hpp>
-#include <logger/logger.hpp>
-#include <random/random.hpp>
-#include <util/dense_bitset.hpp>
-#include <sframe/sarray_file_format_interface.hpp>
-#include <sframe/sarray_index_file.hpp>
-#include <fileio/general_fstream.hpp>
-#include <fileio/temp_files.hpp>
-#include <serialization/serialization_includes.hpp>
-#include <sframe/sframe_constants.hpp>
-#include <sframe/sarray_v2_block_manager.hpp>
-#include <sframe/sarray_v2_block_writer.hpp>
-#include <sframe/sarray_v2_encoded_block.hpp>
-#include <cppipc/server/cancel_ops.hpp>
+#include <core/logging/logger.hpp>
+#include <core/random/random.hpp>
+#include <core/util/dense_bitset.hpp>
+#include <core/storage/sframe_data/sarray_file_format_interface.hpp>
+#include <core/storage/sframe_data/sarray_index_file.hpp>
+#include <core/storage/fileio/general_fstream.hpp>
+#include <core/storage/fileio/temp_files.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
+#include <core/storage/sframe_data/sframe_constants.hpp>
+#include <core/storage/sframe_data/sarray_v2_block_manager.hpp>
+#include <core/storage/sframe_data/sarray_v2_block_writer.hpp>
+#include <core/storage/sframe_data/sarray_v2_encoded_block.hpp>
+#include <core/system/cppipc/server/cancel_ops.hpp>
 namespace turi {
 
 

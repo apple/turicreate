@@ -5,8 +5,8 @@
  */
 #ifndef TURI_UNITY_SWRITER_BASE_HPP
 #define TURI_UNITY_SWRITER_BASE_HPP
-#include <flexible_type/flexible_type.hpp>
-#include <sframe/siterable.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/sframe_data/siterable.hpp>
 namespace turi {
 
 

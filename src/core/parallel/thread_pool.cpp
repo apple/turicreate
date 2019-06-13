@@ -4,10 +4,10 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <mutex>
-#include <parallel/thread_pool.hpp>
-#include <logger/assertions.hpp>
-#include <parallel/pthread_tools.hpp>
-#include <platform/config/apple_config.hpp>
+#include <core/parallel/thread_pool.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/system/platform/config/apple_config.hpp>
 
 namespace turi {
 

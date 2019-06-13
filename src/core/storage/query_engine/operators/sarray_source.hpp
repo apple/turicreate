@@ -6,14 +6,14 @@
 #ifndef TURI_SFRAME_QUERY_MANAGER_SARRAY_SOURCE_HPP
 #define TURI_SFRAME_QUERY_MANAGER_SARRAY_SOURCE_HPP
 #include <sstream>
-#include <serialization/serialization_includes.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <sframe_query_engine/operators/operator.hpp>
-#include <sframe_query_engine/execution/query_context.hpp>
-#include <sframe_query_engine/planning/planner_node.hpp>
-#include <sframe_query_engine/operators/operator_properties.hpp>
-#include <fileio/fs_utils.hpp>
-#include <sframe/sarray.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/query_engine/operators/operator.hpp>
+#include <core/storage/query_engine/execution/query_context.hpp>
+#include <core/storage/query_engine/planning/planner_node.hpp>
+#include <core/storage/query_engine/operators/operator_properties.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
 
 namespace turi {
 namespace query_eval {

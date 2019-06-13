@@ -8,9 +8,9 @@
 #include <string>
 #include <vector>
 #include <set>
-#include <nanosockets/zmq_msg_vector.hpp>
-#include <parallel/mutex.hpp>
-#include <export.hpp>
+#include <core/system/nanosockets/zmq_msg_vector.hpp>
+#include <core/parallel/mutex.hpp>
+#include <core/export.hpp>
 
 namespace turi {
 namespace nanosockets {

@@ -17,7 +17,7 @@ from .cy_variant cimport variant_type
 from .cy_variant cimport variant_map_type
 from .cy_unity_base_types cimport *
 
-cdef extern from "<unity/lib/unity_global.hpp>" namespace "turi":
+cdef extern from "<model_server/lib/unity_global.hpp>" namespace "turi":
     cdef struct toolkit_function_response_type:
         bint success
         string message
@@ -86,7 +86,7 @@ cdef extern from "<unity/lib/unity_global.hpp>" namespace "turi":
 
         string get_turicreate_object_type(const string& url) except +
 
-cdef extern from "<unity/lib/unity_global_singleton.hpp>" namespace "turi":
+cdef extern from "<model_server/lib/unity_global_singleton.hpp>" namespace "turi":
         shared_ptr[unity_global] get_unity_global_singleton()
 
 ctypedef shared_ptr[unity_global] unity_global_ptr
@@ -155,7 +155,7 @@ cdef class UnityGlobalProxy:
 
     cpdef get_turicreate_object_type(self, url)
 
-cdef extern from "<unity/lib/api/function_closure_info.hpp>" namespace "turi":
+cdef extern from "<model_server/lib/api/function_closure_info.hpp>" namespace "turi":
     cdef struct function_closure_info:
         string native_fn_name
         vector[pair[ssize_t, shared_ptr[variant_type]]]  arguments
@@ -164,5 +164,5 @@ cdef bint is_function_closure_info(object) except *
 
 cdef function_closure_info make_function_closure_info(object) except *
 
-cdef extern from "<unity/lib/api/client_base_types.hpp>" namespace "turi":
+cdef extern from "<model_server/lib/api/client_base_types.hpp>" namespace "turi":
     void variant_set_closure "turi::variant_set_value<turi::function_closure_info>" (variant_type& v, const function_closure_info& f)

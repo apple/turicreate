@@ -11,7 +11,7 @@
 #include <cstdio>
 #include <string>
 #include <thread>
-#include <platform/parallel/pthread_tools.hpp>
+#include <core/parallel/pthread_tools.hpp>
 
 #include <process/process.hpp>
 

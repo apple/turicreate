@@ -3,10 +3,10 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <cppipc/server/comm_server.hpp>
-#include <cppipc/client/comm_client.hpp>
-#include <cppipc/common/ipc_deserializer.hpp>
-#include <export.hpp>
+#include <core/system/cppipc/server/comm_server.hpp>
+#include <core/system/cppipc/client/comm_client.hpp>
+#include <core/system/cppipc/common/ipc_deserializer.hpp>
+#include <core/export.hpp>
 namespace cppipc {
 namespace detail {
 static __thread comm_server* thlocal_server = NULL;

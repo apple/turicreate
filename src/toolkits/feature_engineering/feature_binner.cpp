@@ -7,13 +7,13 @@
 #include <string>
 #include <cmath>
 #include <cfloat>
-#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
 
-#include <unity/toolkits/feature_engineering/transform_utils.hpp>
-#include <unity/toolkits/feature_engineering/feature_binner.hpp>
-#include <unity/toolkits/feature_engineering/topk_indexer.hpp>
-#include <sketches/quantile_sketch.hpp>
+#include <toolkits/feature_engineering/transform_utils.hpp>
+#include <toolkits/feature_engineering/feature_binner.hpp>
+#include <toolkits/feature_engineering/topk_indexer.hpp>
+#include <ml/sketches/quantile_sketch.hpp>
 
 namespace turi {
 namespace sdk_model {

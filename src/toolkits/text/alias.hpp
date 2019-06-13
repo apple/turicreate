@@ -7,11 +7,11 @@
 #define TURI_TEXT_ALIAS_H_
 
 #include <vector>
-#include <random/alias.hpp>
-#include <unity/toolkits/util/spmat.hpp>
-#include <unity/toolkits/text/topic_model.hpp>
-#include <export.hpp>
-#include <unity/toolkits/text/topic_model.hpp>
+#include <core/random/alias.hpp>
+#include <toolkits/util/spmat.hpp>
+#include <toolkits/text/topic_model.hpp>
+#include <core/export.hpp>
+#include <toolkits/text/topic_model.hpp>
 
 /**
 TODO:

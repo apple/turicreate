@@ -10,8 +10,8 @@
 #include <string>
 #include <memory>
 #include <map>
-#include <fileio/fs_utils.hpp>
-#include <fileio/general_fstream.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
+#include <core/storage/fileio/general_fstream.hpp>
 namespace turi {
 
 /**

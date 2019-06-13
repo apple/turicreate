@@ -7,8 +7,8 @@
 #define TURI_TOOLKIT_FUNCTION_REGISTRY_HPP
 #include <map>
 #include <string>
-#include <unity/lib/toolkit_function_specification.hpp>
-#include <unity/lib/api/function_closure_info.hpp>
+#include <model_server/lib/toolkit_function_specification.hpp>
+#include <model_server/lib/api/function_closure_info.hpp>
 namespace turi {
 
 /**

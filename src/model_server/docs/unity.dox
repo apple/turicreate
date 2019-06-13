@@ -112,11 +112,11 @@ the convention, the file is called counter_interface.hpp
   that would be fantastic
 
 \code
-/// This is in src/unity/lib/counter_interface.hpp
+/// This is in src/model_server/lib/counter_interface.hpp
 #ifndef TURI_COUNTER_INTERFACE_HPP
 #define TURI_COUNTER_INTERFACE_HPP
-#include <cppipc/cppipc.hpp>
-#include <cppipc/magic_macros.hpp>
+#include <core/system/cppipc/cppipc.hpp>
+#include <core/system/cppipc/magic_macros.hpp>
 
 namespace turi {
 
@@ -132,7 +132,7 @@ GENERATE_INTERFACE_AND_PROXY(counter_base, counter_proxy,
 
 The implementation header is in in counter.hpp. (it must inherit from counter_base)
 \code
-/// This is in src/unity/lib/counter.hpp
+/// This is in src/model_server/lib/counter.hpp
 #ifndef TURI_COUNTER_HPP
 #define TURI_COUNTER_HPP
 #include <unity/lib/counter_interface.hpp>
@@ -156,7 +156,7 @@ While the hpp/cpp split is not strictly necessary (especially for such a
 simple class, it is still good practice.
 
 \code
-/// This is in src/unity/lib/counter.cpp
+/// This is in src/model_server/lib/counter.cpp
 #ifndef TURI_COUNTER_HPP
 #define TURI_COUNTER_HPP
 #include <unity/lib/counter.hpp>
@@ -187,7 +187,7 @@ for the unity_server) and look for a sequence of calls to
                                             return new turi::counter();
                                           });
 \endcode
-Remember you have to include src/unity/lib/counter.hpp at the top of
+Remember you have to include src/model_server/lib/counter.hpp at the top of
 unity_server.cpp.
 
 Done!. Thats it to create a counter object and expose it via CPPIPC. Next, we
@@ -205,11 +205,11 @@ your functions take interesting types (like maps and vectors).
   translators for. The Cython documentation (http://docs.cython.org) is an
   crucial resource (as poorly organized as it is).
 
-All the Cython classes are implemented in src/unity/python/turicreate/cython.
+All the Cython classes are implemented in src/python/turicreate/cython.
 To expose the counter object, first create a counter.pxd file (definition).
 
 \code{.py}
-# This is in src/unity/python/turicreate/cython/counter.pxd
+# This is in src/python/turicreate/cython/counter.pxd
 cdef extern from "<unity/lib/counter_interface.hpp>" namespace 'turi':
     cdef cppclass counter_proxy:
         int get() except +
@@ -224,7 +224,7 @@ It is also at this point, we can switch from C++ conventions to Python
 conventions.
 
 \code{.py}
-# Continuing on in src/unity/python/turicreate/cython/counter.pxd
+# Continuing on in src/python/turicreate/cython/counter.pxd
 cdef class Counter:
     # the wrapped proxy object
     cdef counter_proxy* thisptr
@@ -239,7 +239,7 @@ cdef class Counter:
 This new Counter class needs an implementation in counter.pyx
 
 \code{.py}
-# In src/unity/python/turicreate/cython/counter.pyx
+# In src/python/turicreate/cython/counter.pyx
 from .ipc cimport PyCommClient
 
 cdef class Counter:
@@ -376,7 +376,7 @@ std::vector<toolkit_specification> get_registration() {
 
 A demo_addone.hpp should also be created which exposes the get_registration()
 function.
-Finally, the unity_server binary (in src/unity/server/unity_server.cpp) must
+Finally, the unity_server binary (in src/server/unity_server.cpp) must
 register the toolkit. (Search for a collection of register_toolkit calls)
 \code
 g_toolkits->register_toolkit(turi::demo_addone::get_registration());

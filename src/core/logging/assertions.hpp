@@ -57,14 +57,14 @@
 #include <cassert>
 #include <cmath>
 #include <sstream>
-#include <logger/logger.hpp>
-#include <logger/fail_method.hpp>
-#include <logger/backtrace.hpp>
+#include <core/logging/logger.hpp>
+#include <core/logging/fail_method.hpp>
+#include <core/logging/backtrace.hpp>
 
 #include <boost/typeof/typeof.hpp>
 
-#include <util/code_optimization.hpp>
-#include <util/sys_util.hpp>
+#include <core/util/code_optimization.hpp>
+#include <core/util/sys_util.hpp>
 
 extern void __print_back_trace();
 

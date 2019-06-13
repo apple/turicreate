@@ -6,15 +6,15 @@
 #ifndef TURI_DML_DATA_ITERATOR_H_
 #define TURI_DML_DATA_ITERATOR_H_
 
-#include <logger/assertions.hpp>
-#include <ml_data/data_storage/ml_data_row_translation.hpp>
-#include <ml_data/data_storage/ml_data_block_manager.hpp>
-#include <ml_data/ml_data.hpp>
-#include <ml_data/row_reference.hpp>
-#include <util/code_optimization.hpp>
+#include <core/logging/assertions.hpp>
+#include <ml/ml_data/data_storage/ml_data_row_translation.hpp>
+#include <ml/ml_data/data_storage/ml_data_block_manager.hpp>
+#include <ml/ml_data/ml_data.hpp>
+#include <ml/ml_data/row_reference.hpp>
+#include <core/util/code_optimization.hpp>
 
 // SArray and Flex type
-#include <sframe/sarray.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
 
 #include <Eigen/SparseCore>
 #include <Eigen/Core>

@@ -4,7 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <unity/toolkits/object_detection/object_detector.hpp>
+#include <toolkits/object_detection/object_detector.hpp>
 
 #include <algorithm>
 #include <array>
@@ -16,12 +16,12 @@
 #include <utility>
 #include <vector>
 
-#include <logger/assertions.hpp>
-#include <logger/logger.hpp>
-#include <random/random.hpp>
-#include <unity/toolkits/coreml_export/neural_net_models_exporter.hpp>
-#include <unity/toolkits/object_detection/od_evaluation.hpp>
-#include <unity/toolkits/object_detection/od_yolo.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/logging/logger.hpp>
+#include <core/random/random.hpp>
+#include <toolkits/coreml_export/neural_net_models_exporter.hpp>
+#include <toolkits/object_detection/od_evaluation.hpp>
+#include <toolkits/object_detection/od_yolo.hpp>
 
 using turi::coreml::MLModelWrapper;
 using turi::neural_net::compute_context;

@@ -7,11 +7,11 @@
 #include <sstream>
 #include <boost/algorithm/string.hpp>
 #include <boost/integer_traits.hpp>
-#include <util/md5.hpp>
-#include <util/sys_util.hpp>
-#include <globals/globals.hpp>
-#include <logger/logger.hpp>
-#include <export.hpp>
+#include <core/util/md5.hpp>
+#include <core/util/sys_util.hpp>
+#include <core/globals/globals.hpp>
+#include <core/logging/logger.hpp>
+#include <core/export.hpp>
 
 extern "C" {
 #include <nanomsg/nn.h>

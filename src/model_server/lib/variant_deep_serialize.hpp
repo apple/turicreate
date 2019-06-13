@@ -6,7 +6,7 @@
 #ifndef TURI_VARIANT_DEEP_SERIALIZE_H_
 #define TURI_VARIANT_DEEP_SERIALIZE_H_
 
-#include <unity/lib/variant.hpp>
+#include <model_server/lib/variant.hpp>
 
 namespace turi {
 

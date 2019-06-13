@@ -6,11 +6,11 @@
 #ifndef __TC_ITEM_FREQUENCY
 #define __TC_ITEM_FREQUENCY
 
-#include <unity/lib/gl_sarray.hpp>
-#include <sframe/groupby_aggregate_operators.hpp>
-#include <unity/lib/visualization/item_frequency.hpp>
-#include <unity/lib/visualization/plot.hpp>
-#include <unity/lib/visualization/vega_spec.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <core/storage/sframe_data/groupby_aggregate_operators.hpp>
+#include <visualization/server/item_frequency.hpp>
+#include <visualization/server/plot.hpp>
+#include <visualization/server/vega_spec.hpp>
 
 #include "transformation.hpp"
 

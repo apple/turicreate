@@ -8,7 +8,7 @@
 
 
 #include <cstdlib>
-#include <parallel/pthread_h.h>
+#include <core/parallel/pthread_h.h>
 #include <semaphore.h>
 #include <sched.h>
 #include <signal.h>
@@ -18,9 +18,9 @@
 #include <queue>
 #include <iostream>
 #include <boost/function.hpp>
-#include <logger/assertions.hpp>
-#include <parallel/atomic_ops.hpp>
-#include <util/branch_hints.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/parallel/atomic_ops.hpp>
+#include <core/util/branch_hints.hpp>
 #include <boost/unordered_map.hpp>
 #undef _POSIX_SPIN_LOCKS
 #define _POSIX_SPIN_LOCKS -1
@@ -29,8 +29,8 @@
 typedef long suseconds_t;
 #endif
 
-#include <parallel/mutex.hpp>
-#include <util/any.hpp>
+#include <core/parallel/mutex.hpp>
+#include <core/util/any.hpp>
 
 
 namespace turi {

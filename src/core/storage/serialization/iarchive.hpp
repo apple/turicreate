@@ -4,7 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #ifndef TURI_SERIALIZE_HPP
-#include <serialization/serialize.hpp>
+#include <core/storage/serialization/serialize.hpp>
 
 #else
 
@@ -13,10 +13,10 @@
 #define TURI_IARCHIVE_HPP
 
 #include <iostream>
-#include <logger/assertions.hpp>
-#include <serialization/is_pod.hpp>
-#include <serialization/has_load.hpp>
-#include <serialization/dir_archive.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/storage/serialization/is_pod.hpp>
+#include <core/storage/serialization/has_load.hpp>
+#include <core/storage/serialization/dir_archive.hpp>
 namespace turi {
 
   /**
@@ -55,7 +55,7 @@ namespace turi {
    * object is closed or is destroyed.
    *
    * To use this class, include
-   * serialization/serialization_includes.hpp
+   * core/storage/serialization/serialization_includes.hpp
    */
   class iarchive {
   public:

@@ -9,29 +9,29 @@
 #include <cross_platform/windows_wrapper.hpp>
 #endif
 
-#include <util/syserr_reporting.hpp>
-#include <image/io.hpp>
-#include <logger/logger.hpp>
+#include <core/util/syserr_reporting.hpp>
+#include <core/data/image/io.hpp>
+#include <core/logging/logger.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/searching/boyer_moore.hpp>
 #include <boost/filesystem/path.hpp>
-#include <parallel/lambda_omp.hpp>
-#include <fileio/temp_files.hpp>
-#include <fileio/fs_utils.hpp>
+#include <core/parallel/lambda_omp.hpp>
+#include <core/storage/fileio/temp_files.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
 #ifdef TC_HAS_PYTHON
-#include <lambda/lambda_master.hpp>
+#include <core/system/lambda/lambda_master.hpp>
 #endif
-#include <unity/lib/version.hpp>
-#include <unity/lib/unity_global.hpp>
+#include <model_server/lib/version.hpp>
+#include <model_server/lib/unity_global.hpp>
 #include <perf/memory_info.hpp>
-#include <globals/globals.hpp>
-#include <unity/lib/unity_sgraph.hpp>
-#include <unity/lib/unity_sarray.hpp>
-#include <unity/lib/unity_sframe.hpp>
-#include <unity/lib/sdk_registration_function_types.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
-#include <lazy_eval/lazy_eval_operation_dag.hpp>
+#include <core/globals/globals.hpp>
+#include <core/storage/sframe_interface/unity_sgraph.hpp>
+#include <core/storage/sframe_interface/unity_sarray.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
+#include <model_server/lib/sdk_registration_function_types.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
+#include <core/storage/lazy_eval/lazy_eval_operation_dag.hpp>
 
 namespace turi {
 

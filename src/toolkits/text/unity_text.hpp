@@ -6,8 +6,8 @@
 #ifndef TURI_UNITY_TEXT_H
 #define TURI_UNITY_TEXT_H
 
-#include <unity/lib/toolkit_function_specification.hpp>
-#include <unity/lib/variant.hpp>
+#include <model_server/lib/toolkit_function_specification.hpp>
+#include <model_server/lib/variant.hpp>
 
 namespace turi {
 namespace text {

@@ -1,5 +1,5 @@
-#include <optimization/lbfgs.hpp>
-#include <table_printer/table_printer.hpp>
+#include <ml/optimization/lbfgs.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
 
 namespace turi {
 namespace optimization {

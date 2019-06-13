@@ -3,19 +3,19 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <unity/lib/extensions/option_manager.hpp>
-#include <unity/lib/unity_sframe.hpp>
-#include <unity/toolkits/recsys/models/popularity.hpp>
-#include <unity/toolkits/ml_data_2/metadata.hpp>
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <unity/toolkits/ml_data_2/ml_data_iterators.hpp>
-#include <unity/toolkits/util/indexed_sframe_tools.hpp>
-#include <unity/toolkits/util/sframe_utils.hpp>
-#include <unity/toolkits/ml_data_2/sframe_index_mapping.hpp>
-#include <unity/toolkits/nearest_neighbors/nearest_neighbors.hpp>
-#include <unity/toolkits/nearest_neighbors/ball_tree_neighbors.hpp>
+#include <model_server/lib/extensions/option_manager.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
+#include <toolkits/recsys/models/popularity.hpp>
+#include <toolkits/ml_data_2/metadata.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
+#include <toolkits/ml_data_2/ml_data_iterators.hpp>
+#include <toolkits/util/indexed_sframe_tools.hpp>
+#include <toolkits/util/sframe_utils.hpp>
+#include <toolkits/ml_data_2/sframe_index_mapping.hpp>
+#include <toolkits/nearest_neighbors/nearest_neighbors.hpp>
+#include <toolkits/nearest_neighbors/ball_tree_neighbors.hpp>
 
-#include <random/random.hpp>
+#include <core/random/random.hpp>
 #include <memory>
 #include <tuple>
 

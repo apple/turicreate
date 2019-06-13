@@ -2,7 +2,7 @@
 
 #import <Foundation/Foundation.h>
 #include <string>
-#include <platform/config/apple_config.hpp>
+#include <core/system/platform/config/apple_config.hpp>
 
 @interface DummyThread : NSObject {}
 @end

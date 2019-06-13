@@ -7,8 +7,8 @@
 #define TURI_FLEXIBLE_TYPE_STRING_PARSER_HPP
 #include <boost/algorithm/string.hpp>
 #include <boost/spirit/include/qi.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <flexible_type/string_escape.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/string_escape.hpp>
 
 /*
  * Must of this is obtained from

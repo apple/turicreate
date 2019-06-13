@@ -1,20 +1,20 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <string>
 #include <random>
 #include <set>
 #include <sstream>
 #include <vector>
 #include <algorithm>
-#include <util/cityhash_tc.hpp>
+#include <core/util/cityhash_tc.hpp>
 
 // Eigen
 #include <Eigen/Core>
 #include <Eigen/SparseCore>
 
 // Constraints
-#include <optimization/constraints-inl.hpp>
+#include <ml/optimization/constraints-inl.hpp>
 
 
 using namespace turi;

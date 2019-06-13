@@ -4,13 +4,13 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <unity/toolkits/feature_engineering/dimension_reduction.hpp>
-#include <unity/toolkits/feature_engineering/transform_utils.hpp>
+#include <toolkits/feature_engineering/dimension_reduction.hpp>
+#include <toolkits/feature_engineering/transform_utils.hpp>
 
-#include <unity/lib/variant_deep_serialize.hpp>
-#include <random/random.hpp>
-#include <unity/toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
-#include <table_printer/table_printer.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
+#include <core/random/random.hpp>
+#include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
 #include <sstream>
 
 namespace turi {

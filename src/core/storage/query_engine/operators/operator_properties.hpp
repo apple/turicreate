@@ -6,11 +6,11 @@
 #ifndef TURI_SFRAME_QUERY_ENGINE_INFER_OPERATOR_FIELD_H_
 #define TURI_SFRAME_QUERY_ENGINE_INFER_OPERATOR_FIELD_H_
 
-#include <logger/assertions.hpp>
+#include <core/logging/assertions.hpp>
 #include <memory>
 #include <vector>
 #include <string>
-#include <flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 
 namespace turi { namespace query_eval {
 

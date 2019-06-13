@@ -9,8 +9,8 @@
 
 #include <vector>
 
-#include <unity/lib/variant.hpp>
-#include <unity/toolkits/neural_net/image_augmentation.hpp>
+#include <model_server/lib/variant.hpp>
+#include <ml/neural_net/image_augmentation.hpp>
 
 namespace turi {
 namespace object_detection {

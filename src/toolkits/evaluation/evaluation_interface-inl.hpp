@@ -6,8 +6,8 @@
 #ifndef TURI_EVAL_INTERFACE_H_
 #define TURI_EVAL_INTERFACE_H_
 // Types
-#include <unity/lib/unity_sframe.hpp>
-#include <unity/lib/variant.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
+#include <model_server/lib/variant.hpp>
 #include <unordered_map>
 
 #ifdef __clang__

@@ -7,17 +7,17 @@
 #define TURI_CLASS_LINEAR_SVM_H_
 
 // ML-Data Utils
-#include <ml_data/ml_data.hpp>
-#include <unity/lib/gl_sframe.hpp>
+#include <ml/ml_data/ml_data.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
 
 // Toolkits
-#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
-#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
+#include <toolkits/supervised_learning/supervised_learning.hpp>
+#include <toolkits/coreml_export/mlmodel_wrapper.hpp>
 
 // Optimization Interface
-#include <optimization/optimization_interface.hpp>
+#include <ml/optimization/optimization_interface.hpp>
 
-#include <export.hpp>
+#include <core/export.hpp>
 
 namespace turi {
 namespace supervised {

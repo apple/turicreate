@@ -6,16 +6,16 @@
 #ifndef TURI_GENERAL_TESTING_UTILS_H_
 #define TURI_GENERAL_TESTING_UTILS_H_
 
-#include <parallel/pthread_tools.hpp>
-#include <util/cityhash_tc.hpp>
-#include <util/try_finally.hpp>
-#include <random/random.hpp>
-#include <serialization/serialization_includes.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/util/cityhash_tc.hpp>
+#include <core/util/try_finally.hpp>
+#include <core/random/random.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
 #include <vector>
 #include <string>
 #include <locale>
 
-#include <parallel/mutex.hpp>
+#include <core/parallel/mutex.hpp>
 #include <sys/types.h>
 #include <unistd.h>
 #include <boost/filesystem.hpp>

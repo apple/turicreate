@@ -7,11 +7,11 @@
 #define TURI_ML_DATA_ROW_TYPES_H_
 
 #include <vector>
-#include <unity/toolkits/ml_data_2/ml_data_entry.hpp>
-#include <unity/toolkits/ml_data_2/metadata.hpp>
+#include <toolkits/ml_data_2/ml_data_entry.hpp>
+#include <toolkits/ml_data_2/metadata.hpp>
 #include <Eigen/Core>
 #include <Eigen/SparseCore>
-#include <flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 
 namespace turi { namespace v2 {
 

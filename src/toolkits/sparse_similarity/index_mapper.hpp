@@ -7,7 +7,7 @@
 #define TURI_UNITY_VECTOR_INDEX_MAPPER_H_
 
 #include <vector>
-#include <util/dense_bitset.hpp>
+#include <core/util/dense_bitset.hpp>
 
 namespace turi {
 

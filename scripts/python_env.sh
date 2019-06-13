@@ -36,9 +36,9 @@ export PIP_EXECUTABLE=$ROOT_DIR/$PYTHON_SCRIPTS/pip
 export TURI_ROOT=$ROOT_DIR
 export TURI_BUILD_ROOT=$ROOT_DIR/$BUILD_TYPE
 if [ -z "$PYTHONPATH" ]; then
-        export PYTHONPATH="$TURI_BUILD_ROOT/src/unity/python"
+        export PYTHONPATH="$TURI_BUILD_ROOT/src/python"
 else
-        export PYTHONPATH="$TURI_BUILD_ROOT/src/unity/python:$PYTHONPATH"
+        export PYTHONPATH="$TURI_BUILD_ROOT/src/python:$PYTHONPATH"
         export OLD_PYTHON_ENV_PYTHONPATH=$PYTHONPATH
 fi
 

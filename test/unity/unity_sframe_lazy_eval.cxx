@@ -5,12 +5,12 @@
  */
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <iostream>
-#include <fileio/temp_files.hpp>
-#include <unity/lib/unity_sframe.hpp>
-#include <sframe/dataframe.hpp>
-#include <sframe/algorithm.hpp>
+#include <core/storage/fileio/temp_files.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
+#include <core/storage/sframe_data/dataframe.hpp>
+#include <core/storage/sframe_data/algorithm.hpp>
 using namespace turi;
 
 struct unity_sframe_lazy_eval_test {

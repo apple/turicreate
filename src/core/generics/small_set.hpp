@@ -12,8 +12,8 @@
 #include <iterator>
 #include <algorithm>
 
-#include <serialization/iarchive.hpp>
-#include <serialization/oarchive.hpp>
+#include <core/storage/serialization/iarchive.hpp>
+#include <core/storage/serialization/oarchive.hpp>
 
 namespace turi {
 

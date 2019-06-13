@@ -5,11 +5,11 @@
  */
 #include<memory>
 #include<vector>
-#include<sframe/sarray.hpp>
-#include<sframe/sframe.hpp>
-#include<sframe/sframe_config.hpp>
-#include<parallel/mutex.hpp>
-#include<sframe_query_engine/algorithm/sort_comparator.hpp>
+#include<core/storage/sframe_data/sarray.hpp>
+#include<core/storage/sframe_data/sframe.hpp>
+#include<core/storage/sframe_data/sframe_config.hpp>
+#include<core/parallel/mutex.hpp>
+#include<core/storage/query_engine/algorithm/sort_comparator.hpp>
 
 namespace turi {
 namespace query_eval {

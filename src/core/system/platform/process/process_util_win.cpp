@@ -6,7 +6,7 @@
 #include <cross_platform/windows_wrapper.hpp>
 #include <tlhelp32.h>
 #include <process/process_util.hpp>
-#include <logger/logger.hpp>
+#include <core/logging/logger.hpp>
 
 namespace turi {
 

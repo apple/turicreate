@@ -8,9 +8,9 @@
 #include <string>
 #include <cstddef>
 #include <memory>
-#include <fileio/fs_utils.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
 #include <boost/interprocess/interprocess_fwd.hpp>
-#include <logger/logger.hpp>
+#include <core/logging/logger.hpp>
 namespace turi {
 namespace shmipc {
 

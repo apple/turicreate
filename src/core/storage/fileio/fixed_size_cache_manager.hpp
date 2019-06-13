@@ -8,12 +8,12 @@
 
 #include <vector>
 #include <string>
-#include <parallel/pthread_tools.hpp>
+#include <core/parallel/pthread_tools.hpp>
 #include <unordered_map>
-#include <parallel/atomic.hpp>
-#include <fileio/temp_files.hpp>
-#include <fileio/general_fstream_sink.hpp>
-#include <fileio/fileio_constants.hpp>
+#include <core/parallel/atomic.hpp>
+#include <core/storage/fileio/temp_files.hpp>
+#include <core/storage/fileio/general_fstream_sink.hpp>
+#include <core/storage/fileio/fileio_constants.hpp>
 
 namespace turi {
 namespace fileio {

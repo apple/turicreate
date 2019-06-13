@@ -7,7 +7,7 @@
 #define TURI_SFRAME_SHUFFLE_HPP
 
 #include <vector>
-#include <sframe/sframe.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
 
 namespace turi {
 

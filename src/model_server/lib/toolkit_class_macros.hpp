@@ -6,12 +6,12 @@
 #ifndef TURI_UNITY_TOOLKIT_CLASS_MACROS_HPP
 #define TURI_UNITY_TOOLKIT_CLASS_MACROS_HPP
 #include <string>
-#include <unity/lib/toolkit_util.hpp>
-#include <unity/lib/toolkit_function_specification.hpp>
-#include <unity/lib/toolkit_class_specification.hpp>
-#include <unity/lib/toolkit_function_wrapper_impl.hpp>
-#include <unity/lib/toolkit_class_wrapper_impl.hpp>
-#include <unity/lib/extensions/model_base.hpp>
+#include <model_server/lib/toolkit_util.hpp>
+#include <model_server/lib/toolkit_function_specification.hpp>
+#include <model_server/lib/toolkit_class_specification.hpp>
+#include <model_server/lib/toolkit_function_wrapper_impl.hpp>
+#include <model_server/lib/toolkit_class_wrapper_impl.hpp>
+#include <model_server/lib/extensions/model_base.hpp>
 
 /**
  * \defgroup group_gl_class_ffi Class Extension Interface
@@ -26,7 +26,7 @@
  * Example:
  * \code
  *  // class must inherit from model_base
- *  #include <turicreate/sdk/toolkit_class_macros.hpp>
+ *  #include <model_server/lib/toolkit_class_macros.hpp>
  *  using namespace turi;
  *
  *  class example: public model_base {

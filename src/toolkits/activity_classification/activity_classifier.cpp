@@ -4,19 +4,19 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <unity/toolkits/activity_classification/activity_classifier.hpp>
+#include <toolkits/activity_classification/activity_classifier.hpp>
 
 #include <algorithm>
 #include <functional>
 #include <numeric>
 #include <random>
 
-#include <logger/assertions.hpp>
-#include <logger/logger.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
-#include <unity/toolkits/coreml_export/neural_net_models_exporter.hpp>
-#include <unity/toolkits/evaluation/metrics.hpp>
-#include <util/string_util.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/logging/logger.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
+#include <toolkits/coreml_export/neural_net_models_exporter.hpp>
+#include <toolkits/evaluation/metrics.hpp>
+#include <core/util/string_util.hpp>
 
 
 namespace turi {

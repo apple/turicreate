@@ -7,8 +7,8 @@
 #define TURI_SYMMETRIC_ARRAY_H_
 
 #include <vector>
-#include <serialization/serialization_includes.hpp>
-#include <logger/assertions.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
+#include <core/logging/assertions.hpp>
 
 namespace turi {
 

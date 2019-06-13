@@ -6,9 +6,9 @@
 #include <string>
 #include <boost/date_time/local_time/local_time.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <logger/assertions.hpp>
-#include <image/image_util_impl.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/data/image/image_util_impl.hpp>
 
 // contains some of the bigger functions I do not want to inline
 namespace turi {

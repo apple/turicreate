@@ -6,8 +6,8 @@
 #ifndef CPPIPC_COMMON_AUTHENTICATION_TOKEN_HPP
 #define CPPIPC_COMMON_AUTHENTICATION_TOKEN_HPP
 #include <string>
-#include <cppipc/common/message_types.hpp>
-#include <cppipc/common/authentication_base.hpp>
+#include <core/system/cppipc/common/message_types.hpp>
+#include <core/system/cppipc/common/authentication_base.hpp>
 namespace cppipc {
 /**
  *

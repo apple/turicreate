@@ -4,9 +4,9 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <util/string_util.hpp>
+#include <core/util/string_util.hpp>
 
-#include <util/basic_types.hpp>
+#include <core/util/basic_types.hpp>
 
 #include <string>
 using std::max;

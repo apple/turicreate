@@ -8,9 +8,9 @@
 #include <map>
 #include <vector>
 #include <algorithm>
-#include <parallel/mutex.hpp>
-#include <sframe/sframe.hpp>
-#include <flexible_type/flexible_type.hpp>
+#include <core/parallel/mutex.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 namespace turi {
 
 

@@ -7,7 +7,7 @@
 #define TURI_SFRAME_QUERY_ENGINE_OPERATORS_QUERY_CONTEXT_HPP
 #include <memory>
 #include <vector>
-#include <sframe/sframe_rows.hpp>
+#include <core/storage/sframe_data/sframe_rows.hpp>
 namespace turi {
 namespace query_eval {
 class executor_node;

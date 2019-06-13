@@ -15,20 +15,20 @@
 #include <signal.h>
 #endif
 #include <Eigen/Core>
-#include <globals/globals.hpp>
-#include <globals/global_constants.hpp>
-#include <sframe/sframe_constants.hpp>
-#include <sframe/sframe_config.hpp>
-#include <fileio/file_download_cache.hpp>
-#include <fileio/fixed_size_cache_manager.hpp>
-#include <fileio/temp_files.hpp>
-#include <fileio/block_cache.hpp>
-#include <parallel/thread_pool.hpp>
-#include <logger/logger.hpp>
-#include <logger/log_rotate.hpp>
+#include <core/globals/globals.hpp>
+#include <core/globals/global_constants.hpp>
+#include <core/storage/sframe_data/sframe_constants.hpp>
+#include <core/storage/sframe_data/sframe_config.hpp>
+#include <core/storage/fileio/file_download_cache.hpp>
+#include <core/storage/fileio/fixed_size_cache_manager.hpp>
+#include <core/storage/fileio/temp_files.hpp>
+#include <core/storage/fileio/block_cache.hpp>
+#include <core/parallel/thread_pool.hpp>
+#include <core/logging/logger.hpp>
+#include <core/logging/log_rotate.hpp>
 #ifdef TC_HAS_PYTHON
-#include <lambda/lambda_master.hpp>
-#include <lambda/graph_pylambda_master.hpp>
+#include <core/system/lambda/lambda_master.hpp>
+#include <core/system/lambda/graph_pylambda_master.hpp>
 #endif
 #include <minipsutil/minipsutil.h>
 

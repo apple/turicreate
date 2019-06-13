@@ -1,10 +1,10 @@
 #ifndef __TC_PLOT_HPP_
 #define __TC_PLOT_HPP_
 
-#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/lib/toolkit_function_macros.hpp>
-#include <unity/lib/visualization/transformation.hpp>
-#include <unity/lib/extensions/model_base.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
+#include <model_server/lib/toolkit_function_macros.hpp>
+#include <visualization/server/transformation.hpp>
+#include <model_server/lib/extensions/model_base.hpp>
 #include <string>
 #include <capi/TuriCreate.h>
 

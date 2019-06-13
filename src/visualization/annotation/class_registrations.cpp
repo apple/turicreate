@@ -1,7 +1,7 @@
-#include <unity/lib/annotation/class_registrations.hpp>
+#include <visualization/annotation/class_registrations.hpp>
 
-#include <unity/lib/annotation/annotation_base.hpp>
-#include <unity/lib/annotation/image_classification.hpp>
+#include <visualization/annotation/annotation_base.hpp>
+#include <visualization/annotation/image_classification.hpp>
 
 namespace turi {
 namespace annotate {

@@ -2,16 +2,16 @@
 #include <memory>
 
 #include "plot.hpp"
-#include <unity/lib/visualization/dark_mode.hpp>
-#include <unity/lib/visualization/process_wrapper.hpp>
-#include <unity/lib/visualization/thread.hpp>
-#include <unity/lib/visualization/transformation.hpp>
-#include <unity/lib/visualization/vega_data.hpp>
-#include <unity/lib/visualization/vega_spec.hpp>
-#include <unity/lib/visualization/histogram.hpp>
-#include <unity/lib/visualization/item_frequency.hpp>
-#include <unity/lib/visualization/summary_view.hpp>
-#include <unity/lib/visualization/vega_spec/config.h>
+#include <visualization/server/dark_mode.hpp>
+#include <visualization/server/process_wrapper.hpp>
+#include <visualization/server/thread.hpp>
+#include <visualization/server/transformation.hpp>
+#include <visualization/server/vega_data.hpp>
+#include <visualization/server/vega_spec.hpp>
+#include <visualization/server/histogram.hpp>
+#include <visualization/server/item_frequency.hpp>
+#include <visualization/server/summary_view.hpp>
+#include <visualization/server/vega_spec/config.h>
 #include <sstream>
 
 namespace turi{

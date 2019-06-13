@@ -9,7 +9,7 @@
 #include <string>
 #include <utility>
 #include <memory>
-#include <sframe/group_aggregate_value.hpp>
+#include <core/storage/sframe_data/group_aggregate_value.hpp>
 
 namespace turi {
 class sframe;

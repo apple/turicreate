@@ -10,10 +10,10 @@
 #include <cstdlib>
 #include <cstring>
 #include <stdint.h>
-#include <logger/logger.hpp>
-#include <serialization/serialization_includes.hpp>
-#include <parallel/atomic_ops.hpp>
-#include <util/bitops.hpp>
+#include <core/logging/logger.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
+#include <core/parallel/atomic_ops.hpp>
+#include <core/util/bitops.hpp>
 
 namespace turi {
 

@@ -6,14 +6,14 @@
 #ifndef TURI_ML2_DATA_UNIQUE_COLUMN_INDEXER_H_
 #define TURI_ML2_DATA_UNIQUE_COLUMN_INDEXER_H_
 
-#include <flexible_type/flexible_type.hpp>
-#include <util/hash_value.hpp>
-#include <logger/assertions.hpp>
-#include <util/bitops.hpp>
-#include <serialization/serialization_includes.hpp>
-#include <generics/hopscotch_map.hpp>
-#include <parallel/pthread_tools.hpp>
-#include <unity/toolkits/ml_data_2/indexing/column_indexer.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/util/hash_value.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/util/bitops.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
+#include <core/generics/hopscotch_map.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <toolkits/ml_data_2/indexing/column_indexer.hpp>
 
 namespace turi { namespace v2 { namespace ml_data_internal {
 

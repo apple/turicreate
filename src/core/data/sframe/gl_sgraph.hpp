@@ -10,8 +10,8 @@
 #include <cstddef>
 #include <string>
 #include <iostream>
-#include <flexible_type/flexible_type.hpp>
-#include <unity/lib/sgraph_triple_apply_typedefs.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <model_server/lib/sgraph_triple_apply_typedefs.hpp>
 #include "gl_gframe.hpp"
 
 namespace turi {

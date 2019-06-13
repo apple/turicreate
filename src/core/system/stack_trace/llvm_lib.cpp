@@ -4,9 +4,9 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <stack_trace/llvm_lib.hpp>
+#include <core/system/stack_trace/llvm_lib.hpp>
 
-#include <util/basic_types.hpp>
+#include <core/util/basic_types.hpp>
 
 using std::make_shared;
 using std::shared_ptr;

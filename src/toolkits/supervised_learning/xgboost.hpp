@@ -6,22 +6,22 @@
 #ifndef TURI_XGBOOST_H_
 #define TURI_XGBOOST_H_
 // SFrame
-#include <sframe/sarray.hpp>
-#include <sframe/sframe.hpp>
-#include <unity/lib/gl_sarray.hpp>
-#include <unity/lib/gl_sframe.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
 
 // ML-Data
-#include <ml_data/ml_data.hpp>
+#include <ml/ml_data/ml_data.hpp>
 
 // Utils
 #include <timer/timer.hpp>
-#include <table_printer/table_printer.hpp>
-#include <export.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
+#include <core/export.hpp>
 
 // Toolkits
-#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
-#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
+#include <toolkits/supervised_learning/supervised_learning.hpp>
+#include <toolkits/coreml_export/mlmodel_wrapper.hpp>
 
 // Forward delcare
 namespace xgboost {

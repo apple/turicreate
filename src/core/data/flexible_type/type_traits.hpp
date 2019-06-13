@@ -6,8 +6,8 @@
 #include <unordered_map>
 #include <vector>
 #include <tuple>
-#include <generics/gl_vector.hpp>
-#include <generics/gl_string.hpp>
+#include <core/generics/gl_vector.hpp>
+#include <core/generics/gl_string.hpp>
 
 
 namespace turi {

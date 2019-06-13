@@ -8,9 +8,9 @@
 #include <unordered_set>
 #include <algorithm>
 #include <map>
-#include <flexible_type/flexible_type.hpp>
-#include <unity/toolkits/util/precision_recall.hpp>
-#include <unity/toolkits/util/algorithmic_utils.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <toolkits/util/precision_recall.hpp>
+#include <toolkits/util/algorithmic_utils.hpp>
 
 namespace turi { namespace recsys {
 

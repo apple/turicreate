@@ -12,16 +12,16 @@
 #include <string>
 #include <map>
 #include <algorithm>
-#include <util/branch_hints.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <serialization/serialization_includes.hpp>
-#include <unity/toolkits/ml_data_2/ml_data_iterators.hpp>
-#include <unity/toolkits/factorization/factorization_model.hpp>
-#include <unity/toolkits/factorization/factors_to_sframe.hpp>
-#include <unity/toolkits/recsys/recsys_model_base.hpp>
-#include <util/fast_top_k.hpp>
+#include <core/util/branch_hints.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
+#include <toolkits/ml_data_2/ml_data_iterators.hpp>
+#include <toolkits/factorization/factorization_model.hpp>
+#include <toolkits/factorization/factors_to_sframe.hpp>
+#include <model_server/lib/extensions/model_base.hpp>
+#include <core/util/fast_top_k.hpp>
 
 namespace turi { namespace factorization {
 
@@ -726,11 +726,6 @@ public:
       size_t top_k,
       const std::shared_ptr<v2::ml_data_side_features>& known_side_features) const {
 
-    static constexpr size_t USER_COLUMN_INDEX = recsys::recsys_model_base::USER_COLUMN_INDEX;
-#ifndef NDEBUG
-    static constexpr size_t ITEM_COLUMN_INDEX = recsys::recsys_model_base::ITEM_COLUMN_INDEX;
-#endif
-
     DASSERT_GE(query_row.size(), 2);
     DASSERT_EQ(query_row[USER_COLUMN_INDEX].column_index, USER_COLUMN_INDEX);
     DASSERT_EQ(query_row[ITEM_COLUMN_INDEX].column_index, ITEM_COLUMN_INDEX);
@@ -770,8 +765,6 @@ public:
       size_t user,
       size_t top_k) const GL_HOT {
 
-    static constexpr size_t USER_COLUMN_INDEX = recsys::recsys_model_base::USER_COLUMN_INDEX;
-    static constexpr size_t ITEM_COLUMN_INDEX = recsys::recsys_model_base::ITEM_COLUMN_INDEX;
 
     size_t items_offset = index_offsets[ITEM_COLUMN_INDEX];
     size_t num_items    = index_sizes[ITEM_COLUMN_INDEX];
@@ -833,8 +826,6 @@ public:
           std::vector<v2::ml_data_entry>&& x,
           size_t top_k,
           const std::shared_ptr<v2::ml_data_side_features>& known_side_features) const {
-
-    static constexpr size_t ITEM_COLUMN_INDEX = recsys::recsys_model_base::ITEM_COLUMN_INDEX;
 
     size_t thread_idx = thread::thread_id();
 

@@ -7,7 +7,7 @@
 #ifndef TURI_STRING_UTIL_H_
 #define TURI_STRING_UTIL_H_
 
-#include <util/basic_types.hpp>
+#include <core/util/basic_types.hpp>
 
 #include <string>
 #include <sstream>

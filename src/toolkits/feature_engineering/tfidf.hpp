@@ -6,13 +6,13 @@
 #ifndef _TFIDF_H_
 #define _TFIDF_H_
 
-#include <export.hpp>
+#include <core/export.hpp>
 #include <string>
 #include <unordered_map>
 
-#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/toolkits/feature_engineering/transformer_base.hpp>
-#include <unity/toolkits/feature_engineering/topk_indexer.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
+#include <toolkits/feature_engineering/transformer_base.hpp>
+#include <toolkits/feature_engineering/topk_indexer.hpp>
 
 namespace turi {
 namespace sdk_model {

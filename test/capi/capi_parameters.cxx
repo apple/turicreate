@@ -6,7 +6,7 @@
 
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 
 #include <capi/TuriCreate.h>
 #include <vector>

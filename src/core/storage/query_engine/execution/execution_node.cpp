@@ -3,12 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <sframe/sframe_rows.hpp>
-#include <sframe/sframe_config.hpp>
-#include <globals/globals.hpp>
-#include <sframe_query_engine/execution/query_context.hpp>
-#include <sframe_query_engine/execution/execution_node.hpp>
-#include <cppipc/cppipc.hpp>
+#include <core/storage/sframe_data/sframe_rows.hpp>
+#include <core/storage/sframe_data/sframe_config.hpp>
+#include <core/globals/globals.hpp>
+#include <core/storage/query_engine/execution/query_context.hpp>
+#include <core/storage/query_engine/execution/execution_node.hpp>
+#include <core/system/cppipc/cppipc.hpp>
 
 namespace turi {
 namespace query_eval {

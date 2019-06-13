@@ -7,10 +7,9 @@
 #ifndef TURI_BASIC_TYPES_H_
 #define TURI_BASIC_TYPES_H_
 
-#include <logger/assertions.hpp>
+#include <core/logging/assertions.hpp>
 
 #include <boost/optional.hpp>
-#include <boost/variant.hpp>
 #include <boost/variant/get.hpp>
 
 #include <set>

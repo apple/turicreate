@@ -21,7 +21,7 @@ from .cy_unity cimport make_function_closure_info
 
 ctypedef map[string, unity_sarray_base_ptr] gl_error_map
 
-cdef extern from "<unity/lib/unity_sframe.hpp>" namespace "turi":
+cdef extern from "<core/storage/sframe_interface/unity_sframe.hpp>" namespace "turi":
    cdef cppclass unity_sframe nogil:
         unity_sframe() except +
         void construct_from_dataframe(const gl_dataframe&) except +

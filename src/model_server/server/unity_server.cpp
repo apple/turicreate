@@ -9,17 +9,17 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
-#include <cppipc/cppipc.hpp>
-#include <cppipc/common/authentication_token_method.hpp>
-#include <logger/logger.hpp>
-#include <logger/log_rotate.hpp>
-#include <unity/lib/unity_global.hpp>
-#include <unity/lib/unity_global_singleton.hpp>
-#include <unity/lib/toolkit_class_registry.hpp>
-#include <unity/lib/toolkit_function_registry.hpp>
-#include <startup_teardown/startup_teardown.hpp>
+#include <core/system/cppipc/cppipc.hpp>
+#include <core/system/cppipc/common/authentication_token_method.hpp>
+#include <core/logging/logger.hpp>
+#include <core/logging/log_rotate.hpp>
+#include <model_server/lib/unity_global.hpp>
+#include <model_server/lib/unity_global_singleton.hpp>
+#include <model_server/lib/toolkit_class_registry.hpp>
+#include <model_server/lib/toolkit_function_registry.hpp>
+#include <core/system/startup_teardown/startup_teardown.hpp>
 #ifdef TC_HAS_PYTHON
-#include <lambda/lambda_master.hpp>
+#include <core/system/lambda/lambda_master.hpp>
 #endif
 
 #include "unity_server.hpp"

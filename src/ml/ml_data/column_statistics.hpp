@@ -6,11 +6,11 @@
 #ifndef TURI_DML_DATA_COLUMN_STATISTICS_H_
 #define TURI_DML_DATA_COLUMN_STATISTICS_H_
 
-#include <flexible_type/flexible_type.hpp>
-#include <logger/assertions.hpp>
-#include <serialization/serialization_includes.hpp>
-#include <ml_data/ml_data_column_modes.hpp>
-#include <parallel/pthread_tools.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
+#include <ml/ml_data/ml_data_column_modes.hpp>
+#include <core/parallel/pthread_tools.hpp>
 #include <boost/thread/lock_algorithms.hpp>
 #include <set>
 

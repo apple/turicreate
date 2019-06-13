@@ -5,8 +5,8 @@
  */
 #ifndef TURI_SFRAME_GROUPBY_AGGREGATE_OPERATORS_HPP
 #define TURI_SFRAME_GROUPBY_AGGREGATE_OPERATORS_HPP
-#include <sframe/group_aggregate_value.hpp>
-#include <sketches/streaming_quantile_sketch.hpp>
+#include <core/storage/sframe_data/group_aggregate_value.hpp>
+#include <ml/sketches/streaming_quantile_sketch.hpp>
 namespace turi {
 
 

@@ -3,14 +3,14 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <lambda/pylambda_worker.hpp>
-#include <cppipc/server/comm_server.hpp>
-#include <lambda/pylambda.hpp>
+#include <core/system/lambda/pylambda_worker.hpp>
+#include <core/system/cppipc/server/comm_server.hpp>
+#include <core/system/lambda/pylambda.hpp>
 #include <shmipc/shmipc.hpp>
-#include <lambda/graph_pylambda.hpp>
-#include <logger/logger.hpp>
+#include <core/system/lambda/graph_pylambda.hpp>
+#include <core/logging/logger.hpp>
 #include <process/process_util.hpp>
-#include <util/try_finally.hpp>
+#include <core/util/try_finally.hpp>
 
 namespace turi { namespace lambda {
 

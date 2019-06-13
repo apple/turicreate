@@ -22,9 +22,9 @@
 #include <boost/fusion/functional/invocation/invoke.hpp>
 #include <boost/type_traits.hpp>
 #include <boost/type_traits/function_traits.hpp>
-#include <unity/lib/toolkit_function_invocation.hpp>
-#include <unity/lib/toolkit_function_specification.hpp>
-#include <unity/lib/toolkit_util.hpp>
+#include <model_server/lib/toolkit_function_invocation.hpp>
+#include <model_server/lib/toolkit_function_specification.hpp>
+#include <model_server/lib/toolkit_util.hpp>
 namespace turi {
 namespace toolkit_function_wrapper_impl {
 

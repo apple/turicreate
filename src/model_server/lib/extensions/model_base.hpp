@@ -12,13 +12,13 @@
 #include <utility>
 #include <vector>
 
-#include <export.hpp>
+#include <core/export.hpp>
 
-#include <cppipc/ipc_object_base.hpp>
-#include <cppipc/magic_macros.hpp>
-#include <serialization/serialization_includes.hpp>
-#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/lib/variant.hpp>
+#include <core/system/cppipc/ipc_object_base.hpp>
+#include <core/system/cppipc/magic_macros.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
+#include <model_server/lib/variant.hpp>
 
 namespace turi {
 

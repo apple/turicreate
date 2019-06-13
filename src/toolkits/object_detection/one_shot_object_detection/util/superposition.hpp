@@ -6,10 +6,10 @@
 
 #include <boost/gil/gil_all.hpp>
 
-#include <image/image_type.hpp>
+#include <core/data/image/image_type.hpp>
 
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/toolkits/object_detection/one_shot_object_detection/util/parameter_sampler.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <toolkits/object_detection/one_shot_object_detection/util/parameter_sampler.hpp>
 
 namespace turi {
 namespace one_shot_object_detection {

@@ -8,13 +8,13 @@
 
 #include <vector>
 #include <memory>
-#include <sframe/sframe.hpp>
-#include <unity/lib/extensions/option_manager.hpp>
-#include <unity/toolkits/ml_data_2/metadata.hpp>
-#include <unity/toolkits/ml_data_2/ml_data_entry.hpp>
-#include <unity/toolkits/ml_data_2/ml_data_column_modes.hpp>
-#include <unity/toolkits/ml_data_2/data_storage/ml_data_row_format.hpp>
-#include <unity/toolkits/ml_data_2/side_features.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <model_server/lib/extensions/option_manager.hpp>
+#include <toolkits/ml_data_2/metadata.hpp>
+#include <toolkits/ml_data_2/ml_data_entry.hpp>
+#include <toolkits/ml_data_2/ml_data_column_modes.hpp>
+#include <toolkits/ml_data_2/data_storage/ml_data_row_format.hpp>
+#include <toolkits/ml_data_2/side_features.hpp>
 
 #include <Eigen/SparseCore>
 #include <Eigen/Core>

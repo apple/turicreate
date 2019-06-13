@@ -18,7 +18,7 @@
 
 #include <string>
 #include <vector>
-#include <util/syserr_reporting.hpp>
+#include <core/util/syserr_reporting.hpp>
 
 #ifdef _WIN32
 #include <cross_platform/windows_wrapper.hpp>

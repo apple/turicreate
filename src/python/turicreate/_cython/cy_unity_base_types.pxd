@@ -15,35 +15,35 @@ cdef extern from "<memory>" namespace 'std':
         void reset()
         void reset(T*)
 
-cdef extern from "<unity/lib/api/unity_sframe_interface.hpp>" namespace "turi":
+cdef extern from "<model_server/lib/api/unity_sframe_interface.hpp>" namespace "turi":
     cdef cppclass unity_sframe_base:
         pass
 
-cdef extern from "<unity/lib/api/unity_sarray_interface.hpp>" namespace "turi":
+cdef extern from "<model_server/lib/api/unity_sarray_interface.hpp>" namespace "turi":
     cdef cppclass unity_sarray_base:
         pass
 
-cdef extern from "<unity/lib/api/unity_graph_interface.hpp>" namespace "turi":
+cdef extern from "<model_server/lib/api/unity_graph_interface.hpp>" namespace "turi":
     cdef cppclass unity_sgraph_base:
         pass
 
-cdef extern from "<unity/lib/api/unity_sketch_interface.hpp>" namespace "turi":
+cdef extern from "<model_server/lib/api/unity_sketch_interface.hpp>" namespace "turi":
     cdef cppclass unity_sketch_base:
         pass
 
-cdef extern from "<unity/lib/extensions/model_base.hpp>" namespace "turi":
+cdef extern from "<model_server/lib/extensions/model_base.hpp>" namespace "turi":
     cdef cppclass model_base:
         pass
 
-cdef extern from "<unity/lib/api/unity_global_interface.hpp>" namespace "turi":
+cdef extern from "<model_server/lib/api/unity_global_interface.hpp>" namespace "turi":
     cdef cppclass unity_global_base:
         pass
 
-cdef extern from "<unity/lib/api/unity_sarray_builder_interface.hpp>" namespace "turi":
+cdef extern from "<model_server/lib/api/unity_sarray_builder_interface.hpp>" namespace "turi":
     cdef cppclass unity_sarray_builder_base:
         pass
 
-cdef extern from "<unity/lib/api/unity_sframe_builder_interface.hpp>" namespace "turi":
+cdef extern from "<model_server/lib/api/unity_sframe_builder_interface.hpp>" namespace "turi":
     cdef cppclass unity_sframe_builder_base:
         pass
 

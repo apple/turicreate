@@ -8,7 +8,7 @@
 
 #include <iterator>
 #include <type_traits>
-#include <sframe/siterable.hpp>
+#include <core/storage/sframe_data/siterable.hpp>
 namespace turi {
 namespace sframe_impl {
 

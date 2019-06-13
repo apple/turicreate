@@ -10,7 +10,7 @@
 #include <map>
 #include <cmath>
 #include <set>
-#include <generics/value_container_mapper.hpp>
+#include <core/generics/value_container_mapper.hpp>
 
 
 namespace turi {

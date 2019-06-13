@@ -7,23 +7,23 @@
 #include <algorithm>
 #include <iostream>
 #include <cmath>
-#include <parallel/pthread_tools.hpp>
-#include <unity/lib/unity_sarray.hpp>
-#include <unity/lib/flex_dict_view.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
-#include <unity/toolkits/text/topic_model.hpp>
-#include <unity/toolkits/text/cgs.hpp>
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <unity/toolkits/ml_data_2/ml_data_iterators.hpp>
-#include <unity/toolkits/ml_data_2/sframe_index_mapping.hpp>
-#include <unity/toolkits/util/indexed_sframe_tools.hpp>
-#include <unity/toolkits/ml_data_2/metadata.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/storage/sframe_interface/unity_sarray.hpp>
+#include <model_server/lib/flex_dict_view.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
+#include <toolkits/text/topic_model.hpp>
+#include <toolkits/text/cgs.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
+#include <toolkits/ml_data_2/ml_data_iterators.hpp>
+#include <toolkits/ml_data_2/sframe_index_mapping.hpp>
+#include <toolkits/util/indexed_sframe_tools.hpp>
+#include <toolkits/ml_data_2/metadata.hpp>
 
-#include <logger/assertions.hpp>
-#include <table_printer/table_printer.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
 #include <timer/timer.hpp>
 #include <Eigen/Core>
-#include <parallel/atomic.hpp>
+#include <core/parallel/atomic.hpp>
 
 namespace turi {
 namespace text {

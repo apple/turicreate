@@ -9,7 +9,7 @@
 
 #include <iterator>
 #include <type_traits>
-#include <sframe/swriter_base.hpp>
+#include <core/storage/sframe_data/swriter_base.hpp>
 namespace turi {
 namespace sframe_impl {
 

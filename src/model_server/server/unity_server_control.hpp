@@ -6,8 +6,8 @@
 #ifndef TURI_UNITY_SERVER_CONTROL_H
 #define TURI_UNITY_SERVER_CONTROL_H
 
-#include <unity/server/unity_server.hpp>
-#include <unity/server/unity_server_options.hpp>
+#include <model_server/server/unity_server.hpp>
+#include <model_server/server/unity_server_options.hpp>
 
 namespace turi {
   void start_server(const unity_server_options& server_options,

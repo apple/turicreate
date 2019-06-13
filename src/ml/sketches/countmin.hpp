@@ -8,10 +8,10 @@
 #include <cmath>
 #include <cstdint>
 #include <functional>
-#include <random/random.hpp>
-#include <util/cityhash_tc.hpp>
-#include <logger/assertions.hpp>
-#include <serialization/serialization_includes.hpp>
+#include <core/random/random.hpp>
+#include <core/util/cityhash_tc.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
 namespace turi {
 namespace sketches {
 

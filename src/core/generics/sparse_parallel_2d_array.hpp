@@ -6,11 +6,11 @@
 #ifndef TURI_2D_SPARSE_PARALLEL_ARRAY
 #define TURI_2D_SPARSE_PARALLEL_ARRAY
 
-#include <util/bitops.hpp>
-#include <util/cityhash_tc.hpp>
-#include <parallel/pthread_tools.hpp>
-#include <parallel/atomic.hpp>
-#include <parallel/lambda_omp.hpp>
+#include <core/util/bitops.hpp>
+#include <core/util/cityhash_tc.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/parallel/atomic.hpp>
+#include <core/parallel/lambda_omp.hpp>
 #include <sparsehash/dense_hash_set>
 
 namespace turi {

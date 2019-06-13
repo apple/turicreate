@@ -9,10 +9,10 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include <export.hpp>
+#include <core/export.hpp>
 
-#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/toolkits/feature_engineering/transformer_base.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
+#include <toolkits/feature_engineering/transformer_base.hpp>
 
 namespace turi {
 namespace sdk_model {

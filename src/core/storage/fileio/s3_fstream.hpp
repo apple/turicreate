@@ -6,7 +6,7 @@
 #include <fstream>
 #include <memory>
 #include <boost/iostreams/stream.hpp>
-#include <fileio/read_caching_device.hpp>
+#include <core/storage/fileio/read_caching_device.hpp>
 namespace dmlc {
 namespace io {
 class S3FileSystem;

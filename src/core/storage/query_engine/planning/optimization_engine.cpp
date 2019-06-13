@@ -3,16 +3,16 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <flexible_type/flexible_type.hpp>
-#include <sframe_query_engine/planning/optimization_engine.hpp>
-#include <sframe_query_engine/operators/all_operators.hpp>
-#include <sframe_query_engine/planning/optimization_node_info.hpp>
-#include <sframe_query_engine/operators/operator_properties.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/query_engine/planning/optimization_engine.hpp>
+#include <core/storage/query_engine/operators/all_operators.hpp>
+#include <core/storage/query_engine/planning/optimization_node_info.hpp>
+#include <core/storage/query_engine/operators/operator_properties.hpp>
 
-#include <sframe_query_engine/planning/optimizations/optimization_transforms.hpp>
-#include <sframe_query_engine/query_engine_lock.hpp>
+#include <core/storage/query_engine/planning/optimizations/optimization_transforms.hpp>
+#include <core/storage/query_engine/query_engine_lock.hpp>
 
-#include <util/sys_util.hpp>
+#include <core/util/sys_util.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Test chaining transforms

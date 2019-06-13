@@ -9,8 +9,8 @@
 #include <iostream>
 #include <fstream>
 #include <boost/iostreams/stream.hpp>
-#include <fileio/union_fstream.hpp>
-#include <fileio/fileio_constants.hpp>
+#include <core/storage/fileio/union_fstream.hpp>
+#include <core/storage/fileio/fileio_constants.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
 namespace turi {
 namespace fileio_impl {

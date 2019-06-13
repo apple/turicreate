@@ -6,9 +6,9 @@
 #ifndef TURI_SGRAPH_SGRAPH_TRIPLE_APPLY
 #define TURI_SGRAPH_SGRAPH_TRIPLE_APPLY
 
-#include<flexible_type/flexible_type.hpp>
-#include<sgraph/sgraph.hpp>
-#include<sgraph/sgraph_compute_vertex_block.hpp>
+#include<core/data/flexible_type/flexible_type.hpp>
+#include<core/storage/sgraph_data/sgraph.hpp>
+#include<core/storage/sgraph_data/sgraph_compute_vertex_block.hpp>
 
 namespace turi {
 

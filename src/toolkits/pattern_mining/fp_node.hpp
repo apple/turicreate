@@ -13,11 +13,11 @@
 #include <memory>
 #include <algorithm>
 
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/lib/gl_sarray.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
 
-#include <unity/toolkits/feature_engineering/topk_indexer.hpp>
-#include <unity/toolkits/feature_engineering/statistics_tracker.hpp>
+#include <toolkits/feature_engineering/topk_indexer.hpp>
+#include <toolkits/feature_engineering/statistics_tracker.hpp>
 
 namespace turi{
 namespace pattern_mining {

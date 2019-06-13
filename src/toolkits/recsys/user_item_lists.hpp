@@ -6,8 +6,8 @@
 #ifndef TURI_RECSYS_USER_ITEM_LISTS_H_
 #define TURI_RECSYS_USER_ITEM_LISTS_H_
 
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <sframe/sframe.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
 #include <memory>
 #include <vector>
 

@@ -1,16 +1,16 @@
 #ifndef TURI_ANNOTATIONS_IMAGE_CLASSIFICATION_HPP
 #define TURI_ANNOTATIONS_IMAGE_CLASSIFICATION_HPP
 
-#include <export.hpp>
+#include <core/export.hpp>
 
 #include <chrono>
 #include <future>
 #include <iostream>
 #include <thread>
 
-#include <unity/lib/annotation/annotation_base.hpp>
-#include <unity/lib/variant.hpp>
-#include <unity/toolkits/nearest_neighbors/unity_nearest_neighbors.hpp>
+#include <visualization/annotation/annotation_base.hpp>
+#include <model_server/lib/variant.hpp>
+#include <toolkits/nearest_neighbors/unity_nearest_neighbors.hpp>
 
 #include "build/format/cpp/annotate.pb.h"
 #include "build/format/cpp/data.pb.h"

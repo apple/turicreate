@@ -7,8 +7,8 @@
 #define TURI_SERIALIZE_ITERATOR_HPP
 
 #include <iterator>
-#include <serialization/oarchive.hpp>
-#include <serialization/iarchive.hpp>
+#include <core/storage/serialization/oarchive.hpp>
+#include <core/storage/serialization/iarchive.hpp>
 
 namespace turi {
 

@@ -7,8 +7,8 @@
 #define TURI_LSH_FAMILY_H_
 
 #include <memory>
-#include <unity/toolkits/nearest_neighbors/nearest_neighbors.hpp>
-#include <unity/toolkits/nearest_neighbors/hash_map_container.hpp>
+#include <toolkits/nearest_neighbors/nearest_neighbors.hpp>
+#include <toolkits/nearest_neighbors/hash_map_container.hpp>
 
 namespace turi {
 namespace nearest_neighbors {

@@ -4,13 +4,13 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <string>
-#include <sframe_query_engine/operators/operator_properties.hpp>
-#include <sframe_query_engine/operators/operator_properties.hpp>
-#include <sframe_query_engine/operators/all_operators.hpp>
-#include <sframe_query_engine/planning/planner_node.hpp>
-#include <sframe_query_engine/query_engine_lock.hpp>
-#include <dot_graph_printer/dot_graph.hpp>
-#include <logger/assertions.hpp>
+#include <core/storage/query_engine/operators/operator_properties.hpp>
+#include <core/storage/query_engine/operators/operator_properties.hpp>
+#include <core/storage/query_engine/operators/all_operators.hpp>
+#include <core/storage/query_engine/planning/planner_node.hpp>
+#include <core/storage/query_engine/query_engine_lock.hpp>
+#include <core/util/dot_graph_printer/dot_graph.hpp>
+#include <core/logging/assertions.hpp>
 
 namespace turi {
 namespace query_eval {

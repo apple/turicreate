@@ -1,7 +1,7 @@
-#include <unity/toolkits/recsys/models/factorization_models.hpp>
-#include <unity/toolkits/recsys/models/itemcf.hpp>
-#include <unity/toolkits/recsys/models/item_content_recommender.hpp>
-#include <unity/toolkits/recsys/models/popularity.hpp>
+#include <toolkits/recsys/models/factorization_models.hpp>
+#include <toolkits/recsys/models/itemcf.hpp>
+#include <toolkits/recsys/models/item_content_recommender.hpp>
+#include <toolkits/recsys/models/popularity.hpp>
 
 
 namespace turi { namespace recsys {

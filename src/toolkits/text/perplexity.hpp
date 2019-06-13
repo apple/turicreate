@@ -6,7 +6,7 @@
 #ifndef TURI_TEXT_PERPLEXITY_H_
 #define TURI_TEXT_PERPLEXITY_H_
 
-#include <unity/lib/unity_sarray.hpp>
+#include <core/storage/sframe_interface/unity_sarray.hpp>
 
 namespace turi {
 namespace text {

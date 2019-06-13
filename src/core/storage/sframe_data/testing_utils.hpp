@@ -6,8 +6,8 @@
 #ifndef TURI_SFRAME_TESTING_UTILS_H_
 #define TURI_SFRAME_TESTING_UTILS_H_
 
-#include <sframe/sframe.hpp>
-#include <parallel/pthread_tools.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/parallel/pthread_tools.hpp>
 #include <vector>
 #include <string>
 #include <locale>

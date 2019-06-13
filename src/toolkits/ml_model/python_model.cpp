@@ -6,9 +6,9 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/lib/extensions/model_base.hpp>
-#include <fileio/temp_files.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
+#include <model_server/lib/extensions/model_base.hpp>
+#include <core/storage/fileio/temp_files.hpp>
 
 
 namespace turi {

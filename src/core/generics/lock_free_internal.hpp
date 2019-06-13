@@ -6,7 +6,7 @@
 #ifndef TURI_UTIL_LOCK_FREE_INTERNAL_HPP
 #define TURI_UTIL_LOCK_FREE_INTERNAL_HPP
 
-#include <generics/integer_selector.hpp>
+#include <core/generics/integer_selector.hpp>
 
 namespace turi {
 namespace lock_free_internal {

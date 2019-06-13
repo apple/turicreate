@@ -1,8 +1,8 @@
 #ifndef _TC_SUMMARY_VIEW
 #define _TC_SUMMARY_VIEW
 
-#include <flexible_type/flexible_type.hpp>
-#include <parallel/lambda_omp.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/parallel/lambda_omp.hpp>
 
 #include "transformation.hpp"
 

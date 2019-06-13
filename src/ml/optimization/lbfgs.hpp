@@ -6,14 +6,14 @@
 #ifndef TURI_LBFGS_2_H_
 #define TURI_LBFGS_2_H_
 
-#include <optimization/optimization_interface.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <sframe/sframe.hpp>
+#include <ml/optimization/optimization_interface.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
 
-#include <optimization/utils.hpp>
-#include <optimization/optimization_interface.hpp>
-#include <optimization/regularizer_interface.hpp>
-#include <optimization/line_search-inl.hpp>
+#include <ml/optimization/utils.hpp>
+#include <ml/optimization/optimization_interface.hpp>
+#include <ml/optimization/regularizer_interface.hpp>
+#include <ml/optimization/line_search-inl.hpp>
 #include <Eigen/Core>
 
 typedef Eigen::VectorXd DenseVector;

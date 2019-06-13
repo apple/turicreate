@@ -6,8 +6,8 @@
 #ifndef COREML_EXPORT_UTILS_HPP
 #define COREML_EXPORT_UTILS_HPP
 #include <memory>
-#include <unity/toolkits/coreml_export/mlmodel_include.hpp>
-#include <flexible_type/flexible_type.hpp>
+#include <toolkits/coreml_export/mlmodel_include.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 
 namespace turi {
 

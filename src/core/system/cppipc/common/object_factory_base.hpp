@@ -8,7 +8,7 @@
 #include <map>
 #include <string>
 #include <typeinfo>
-#include <cppipc/cppipc.hpp>
+#include <core/system/cppipc/cppipc.hpp>
 namespace cppipc {
 
 

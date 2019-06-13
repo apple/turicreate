@@ -4,9 +4,9 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <sstream>
-#include <sframe/sframe.hpp>
-#include <sframe/sarray_v2_block_manager.hpp>
-#include <sframe/sarray_v2_block_types.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_data/sarray_v2_block_manager.hpp>
+#include <core/storage/sframe_data/sarray_v2_block_types.hpp>
 namespace turi {
 namespace sframe_saving_impl {
 void advance_column_blocks_to_next_block(

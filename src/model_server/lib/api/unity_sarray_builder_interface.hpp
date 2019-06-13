@@ -6,8 +6,8 @@
 #ifndef TURI_UNITY_SARRAY_BUILDER_INTERFACE_HPP
 #define TURI_UNITY_SARRAY_BUILDER_INTERFACE_HPP
 #include <vector>
-#include <flexible_type/flexible_type.hpp>
-#include <cppipc/magic_macros.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/system/cppipc/magic_macros.hpp>
 
 namespace turi {
 
@@ -25,4 +25,4 @@ GENERATE_INTERFACE_AND_PROXY(unity_sarray_builder_base, unity_sarray_builder_pro
 } // namespace turi
 
 #endif //TURI_UNITY_SARRAY_BUILDER_INTERFACE_HPP
-#include <unity/lib/api/unity_sarray_interface.hpp>
+#include <model_server/lib/api/unity_sarray_interface.hpp>

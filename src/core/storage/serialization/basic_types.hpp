@@ -11,8 +11,8 @@
 #define ARCHIVE_BASIC_TYPES_HPP
 
 #include <string>
-#include <serialization/serializable_pod.hpp>
-#include <logger/assertions.hpp>
+#include <core/storage/serialization/serializable_pod.hpp>
+#include <core/logging/assertions.hpp>
 #include <cstdint>
 
 namespace turi {

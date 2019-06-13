@@ -28,15 +28,15 @@ make_extension(json SOURCES
 )
 
 #----------------------------
-make_extension(xgboost_extension SOURCES ../toolkits/supervised_learning/xgboost_extension.cpp)
-make_extension(coreml_extension SOURCES ../toolkits/coreml_export/coreml_extension.cpp)
+make_extension(xgboost_extension SOURCES ${CMAKE_SOURCE_DIR}/src/toolkits/supervised_learning/xgboost_extension.cpp)
+make_extension(coreml_extension SOURCES ${CMAKE_SOURCE_DIR}/src/toolkits/coreml_export/coreml_extension.cpp)
 
 #----------------------------
 make_extension(content_interpretation_extensions SOURCES
-  ../toolkits/feature_engineering/content_interpretation_extensions.cpp)
+  ${CMAKE_SOURCE_DIR}/src/toolkits/feature_engineering/content_interpretation_extensions.cpp)
 
 make_extension(dictionary_transformation_extensions SOURCES
-  ../toolkits/feature_engineering/transform_to_flat_dict_extensions.cpp)
+  ${CMAKE_SOURCE_DIR}/src/toolkits/feature_engineering/transform_to_flat_dict_extensions.cpp)
 
 #----------------------------
 # make_extension(timeseries

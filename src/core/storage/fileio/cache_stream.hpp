@@ -6,8 +6,8 @@
 #ifndef TURI_FILEIO_CACHE_STREAM_HPP
 #define TURI_FILEIO_CACHE_STREAM_HPP
 
-#include<fileio/cache_stream_source.hpp>
-#include<fileio/cache_stream_sink.hpp>
+#include<core/storage/fileio/cache_stream_source.hpp>
+#include<core/storage/fileio/cache_stream_sink.hpp>
 
 namespace turi {
 namespace fileio{

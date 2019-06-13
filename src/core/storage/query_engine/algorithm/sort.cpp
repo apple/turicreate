@@ -5,21 +5,21 @@
  */
 #include <functional>
 #include <algorithm>
-#include <util/dense_bitset.hpp>
-#include <parallel/thread_pool.hpp>
-#include <parallel/lambda_omp.hpp>
-#include <random/random.hpp>
-#include <sframe/sarray.hpp>
-#include <sframe/sframe.hpp>
-#include <sframe/sframe_config.hpp>
-#include <sketches/quantile_sketch.hpp>
-#include <sketches/streaming_quantile_sketch.hpp>
-#include <sframe_query_engine/planning/planner_node.hpp>
-#include <sframe_query_engine/planning/planner.hpp>
-#include <sframe_query_engine/operators/project.hpp>
-#include <sframe_query_engine/operators/union.hpp>
-#include <sframe_query_engine/algorithm/sort_and_merge.hpp>
-#include <sframe_query_engine/algorithm/sort_comparator.hpp>
+#include <core/util/dense_bitset.hpp>
+#include <core/parallel/thread_pool.hpp>
+#include <core/parallel/lambda_omp.hpp>
+#include <core/random/random.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_data/sframe_config.hpp>
+#include <ml/sketches/quantile_sketch.hpp>
+#include <ml/sketches/streaming_quantile_sketch.hpp>
+#include <core/storage/query_engine/planning/planner_node.hpp>
+#include <core/storage/query_engine/planning/planner.hpp>
+#include <core/storage/query_engine/operators/project.hpp>
+#include <core/storage/query_engine/operators/union.hpp>
+#include <core/storage/query_engine/algorithm/sort_and_merge.hpp>
+#include <core/storage/query_engine/algorithm/sort_comparator.hpp>
 
 namespace turi {
 

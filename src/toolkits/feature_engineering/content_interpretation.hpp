@@ -6,8 +6,8 @@
 #ifndef TURI_UNITY_TOOLKITS_CONTENT_INTERPRETATION_H
 #define TURI_UNITY_TOOLKITS_CONTENT_INTERPRETATION_H
 
-#include <unity/lib/gl_sarray.hpp>
-#include <flexible_type/flexible_type.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 
 namespace turi { namespace feature_engineering {
 

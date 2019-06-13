@@ -5,9 +5,9 @@
  */
 #include <string>
 #include <vector>
-#include <unity/lib/toolkit_function_macros.hpp>
-#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/lib/extensions/model_base.hpp>
+#include <model_server/lib/toolkit_function_macros.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
+#include <model_server/lib/extensions/model_base.hpp>
 
 using namespace turi;
 

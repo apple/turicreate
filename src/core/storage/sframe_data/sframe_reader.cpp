@@ -3,10 +3,10 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <logger/logger.hpp>
-#include <sframe/sframe.hpp>
-#include <sframe/sframe_index_file.hpp>
-#include <sframe/sframe_reader.hpp>
+#include <core/logging/logger.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_data/sframe_index_file.hpp>
+#include <core/storage/sframe_data/sframe_reader.hpp>
 
 namespace turi {
 

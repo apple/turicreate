@@ -5,17 +5,17 @@
  */
 #include <string>
 #include <vector>
-#include <logger/logger.hpp>
-#include <timer/timer.hpp>
-#include <sframe_query_engine/planning/planner_node.hpp>
-#include <sframe_query_engine/planning/planner.hpp>
-#include <sframe_query_engine/operators/operator_properties.hpp>
-#include <sframe_query_engine/operators/project.hpp>
-#include <sframe_query_engine/algorithm/groupby_aggregate.hpp>
-#include <sframe/group_aggregate_value.hpp>
-#include <sframe/groupby_aggregate_impl.hpp>
-#include <sframe/sframe_config.hpp>
-#include <sframe/groupby_aggregate.hpp>
+#include <core/logging/logger.hpp>
+#include <core/system/platform/timer//timer.hpp>
+#include <core/storage/query_engine/planning/planner_node.hpp>
+#include <core/storage/query_engine/planning/planner.hpp>
+#include <core/storage/query_engine/operators/operator_properties.hpp>
+#include <core/storage/query_engine/operators/project.hpp>
+#include <core/storage/query_engine/algorithm/groupby_aggregate.hpp>
+#include <core/storage/sframe_data/group_aggregate_value.hpp>
+#include <core/storage/sframe_data/groupby_aggregate_impl.hpp>
+#include <core/storage/sframe_data/sframe_config.hpp>
+#include <core/storage/sframe_data/groupby_aggregate.hpp>
 
 namespace turi {
 namespace query_eval {

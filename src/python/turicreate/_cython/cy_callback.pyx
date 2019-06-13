@@ -12,7 +12,7 @@ if sys.version_info.major == 2:
 elif sys.version_info.major == 3:
     import pickle as py_pickle
 
-cdef extern from "<lambda/python_callbacks.hpp>" namespace "turi::python":
+cdef extern from "<core/system/lambda/python_callbacks.hpp>" namespace "turi::python":
     cdef struct python_exception_info:
         string exception_pickle
         string exception_string

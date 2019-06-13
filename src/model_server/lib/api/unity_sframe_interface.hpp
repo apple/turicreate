@@ -8,11 +8,11 @@
 #include <memory>
 #include <vector>
 #include <string>
-#include <flexible_type/flexible_type.hpp>
-#include <sframe/dataframe.hpp>
-#include <unity/lib/options_map.hpp>
-#include <cppipc/magic_macros.hpp>
-#include <unity/lib/api/unity_sarray_interface.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/sframe_data/dataframe.hpp>
+#include <model_server/lib/options_map.hpp>
+#include <core/system/cppipc/magic_macros.hpp>
+#include <model_server/lib/api/unity_sarray_interface.hpp>
 
 namespace turi {
 

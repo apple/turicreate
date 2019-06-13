@@ -4,9 +4,9 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <fstream>
-#include <fileio/fs_utils.hpp>
-#include <fileio/temp_files.hpp>
-#include <fileio/fileio_constants.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
+#include <core/storage/fileio/temp_files.hpp>
+#include <core/storage/fileio/fileio_constants.hpp>
 #include <process/process_util.hpp>
 #include <boost/filesystem.hpp>
 

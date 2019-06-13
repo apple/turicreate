@@ -11,10 +11,10 @@
 #include "vega_data.hpp"
 #include "vega_spec.hpp"
 
-#include <parallel/lambda_omp.hpp>
-#include <unity/lib/visualization/escape.hpp>
-#include <unity/lib/visualization/plot.hpp>
-#include <unity/lib/visualization/transformation.hpp>
+#include <core/parallel/lambda_omp.hpp>
+#include <visualization/server/escape.hpp>
+#include <visualization/server/plot.hpp>
+#include <visualization/server/transformation.hpp>
 
 #include <cmath>
 #include <thread>

@@ -3,15 +3,15 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <unity/toolkits/graph_analytics/graph_coloring.hpp>
-#include <unity/lib/toolkit_function_macros.hpp>
-#include <unity/lib/toolkit_util.hpp>
-#include <unity/lib/simple_model.hpp>
-#include <unity/lib/unity_sgraph.hpp>
-#include <sgraph/sgraph_compute.hpp>
-#include <sframe/algorithm.hpp>
-#include <table_printer/table_printer.hpp>
-#include <export.hpp>
+#include <toolkits/graph_analytics/graph_coloring.hpp>
+#include <model_server/lib/toolkit_function_macros.hpp>
+#include <model_server/lib/toolkit_util.hpp>
+#include <model_server/lib/simple_model.hpp>
+#include <core/storage/sframe_interface/unity_sgraph.hpp>
+#include <core/storage/sgraph_data/sgraph_compute.hpp>
+#include <core/storage/sframe_data/algorithm.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
+#include <core/export.hpp>
 
 namespace turi {
 namespace graph_coloring {

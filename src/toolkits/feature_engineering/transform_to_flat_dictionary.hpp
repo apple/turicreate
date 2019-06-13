@@ -7,10 +7,10 @@
 #define TURI_UNITY_TOOLKITS_TRANSFORM_TO_FLAT_DICT_HPP
 
 #include <string>
-#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/toolkits/feature_engineering/dict_transform_utils.hpp>
-#include <export.hpp>
-#include <unity/toolkits/feature_engineering/transformer_base.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
+#include <toolkits/feature_engineering/dict_transform_utils.hpp>
+#include <core/export.hpp>
+#include <toolkits/feature_engineering/transformer_base.hpp>
 
 namespace turi {
 namespace sdk_model {

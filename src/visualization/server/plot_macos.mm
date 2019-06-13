@@ -5,7 +5,7 @@
  */
 
 #include "plot.hpp"
-#import <vega_renderer/VegaRenderer.h>
+#import <visualization/vega_renderer/VegaRenderer.h>
 #import <Foundation/Foundation.h>
 
 namespace turi {

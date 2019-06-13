@@ -10,7 +10,7 @@
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 
-#include <unity/toolkits/neural_net/float_array.hpp>
+#include <ml/neural_net/float_array.hpp>
 
 #import "mps_layers.h"
 #import "mps_weight.h"

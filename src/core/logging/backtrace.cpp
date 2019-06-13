@@ -12,7 +12,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <cxxabi.h>
-#include <parallel/pthread_tools.hpp>
+#include <core/parallel/pthread_tools.hpp>
 
 /** Code from http://mykospark.net/2009/09/runtime-backtrace-in-c-with-name-demangling/ */
 std::string demangle(const char* symbol) {

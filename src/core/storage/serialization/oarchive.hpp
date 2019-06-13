@@ -5,7 +5,7 @@
  */
 // This file should not be included directly. use serialize.hpp
 #ifndef TURI_SERIALIZE_HPP
-#include <serialization/serialize.hpp>
+#include <core/storage/serialization/serialize.hpp>
 
 #else
 
@@ -14,10 +14,10 @@
 
 #include <iostream>
 #include <string>
-#include <logger/assertions.hpp>
-#include <serialization/is_pod.hpp>
-#include <serialization/has_save.hpp>
-#include <util/branch_hints.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/storage/serialization/is_pod.hpp>
+#include <core/storage/serialization/has_save.hpp>
+#include <core/util/branch_hints.hpp>
 namespace turi {
   class dir_archive;
   /**
@@ -75,7 +75,7 @@ namespace turi {
    * and the entire buffer allocated length is oarc.len.
    *
    * To use this class, include
-   * serialization/serialization_includes.hpp
+   * core/storage/serialization/serialization_includes.hpp
    */
   class oarchive{
   public:

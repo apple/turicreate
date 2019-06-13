@@ -6,10 +6,10 @@
 #include <boost/bind.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/range/adaptor/reversed.hpp>
-#include <cppipc/client/comm_client.hpp>
-#include <cppipc/common/object_factory_proxy.hpp>
+#include <core/system/cppipc/client/comm_client.hpp>
+#include <core/system/cppipc/common/object_factory_proxy.hpp>
 #include <minipsutil/minipsutil.h>
-#include <export.hpp>
+#include <core/export.hpp>
 
 namespace cppipc {
 

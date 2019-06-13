@@ -5,7 +5,7 @@
  */
 #ifndef CPPIPC_SERVER_DISPATCH_HPP
 #define CPPIPC_SERVER_DISPATCH_HPP
-#include <serialization/serialization_includes.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
 
 namespace cppipc {
 class comm_server;

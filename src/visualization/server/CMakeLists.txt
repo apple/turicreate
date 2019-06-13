@@ -1,5 +1,3 @@
-project(unity)
-
 # HACK HACK HACK
 # columnwise_summary.cpp should be in this file, not the parent directory,
 # but including it here for some reason causes linker errors
@@ -15,6 +13,7 @@ make_library(visualization OBJECT
     batch_size.cpp
     boxes_and_whiskers.cpp
     categorical_heatmap.cpp
+    columnwise_summary.cpp
     dark_mode.cpp
     escape.cpp
     groupby.cpp

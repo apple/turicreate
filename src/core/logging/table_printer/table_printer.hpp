@@ -6,17 +6,17 @@
 #ifndef TURI_TABLE_PRINTER_H_
 #define TURI_TABLE_PRINTER_H_
 
-#include <logger/logger.hpp>
-#include <logger/assertions.hpp>
+#include <core/logging/logger.hpp>
+#include <core/logging/assertions.hpp>
 #include <timer/timer.hpp>
-#include <parallel/pthread_tools.hpp>
-#include <sframe/sframe.hpp>
-#include <parallel/atomic.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/parallel/atomic.hpp>
 #include <sstream>
 #include <vector>
 
-#include <util/code_optimization.hpp>
-#include <table_printer/table_element_printers.hpp>
+#include <core/util/code_optimization.hpp>
+#include <core/logging/table_printer/table_element_printers.hpp>
 
 namespace turi {
 

@@ -4,14 +4,14 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 // SFrame and Flex type
-#include <unity/lib/flex_dict_view.hpp>
-#include <sframe/sframe.hpp>
-#include <sframe/sframe_iterators.hpp>
+#include <model_server/lib/flex_dict_view.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_data/sframe_iterators.hpp>
 
 // Indexer and SFrame Index mapping
-#include <unity/toolkits/ml_data_2/indexing/column_indexer.hpp>
-#include <unity/toolkits/ml_data_2/sframe_index_mapping.hpp>
-#include <util/try_finally.hpp>
+#include <toolkits/ml_data_2/indexing/column_indexer.hpp>
+#include <toolkits/ml_data_2/sframe_index_mapping.hpp>
+#include <core/util/try_finally.hpp>
 
 using namespace turi::v2::ml_data_internal;
 

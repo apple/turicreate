@@ -4,9 +4,9 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <boost/algorithm/string.hpp>
-#include <fileio/general_fstream_sink.hpp>
-#include <fileio/sanitize_url.hpp>
-#include <logger/logger.hpp>
+#include <core/storage/fileio/general_fstream_sink.hpp>
+#include <core/storage/fileio/sanitize_url.hpp>
+#include <core/logging/logger.hpp>
 namespace turi {
 namespace fileio_impl {
 

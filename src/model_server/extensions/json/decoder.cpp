@@ -6,11 +6,11 @@
 #include "decoder.hpp"
 #include "types.hpp"
 
-#include <logger/assertions.hpp>
-#include <logger/logger.hpp>
-#include <unity/lib/gl_sarray.hpp>
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/lib/gl_sgraph.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/logging/logger.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <core/data/sframe/gl_sgraph.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/archive/iterators/binary_from_base64.hpp>

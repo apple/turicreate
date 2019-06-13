@@ -7,12 +7,12 @@
 #define TURI_SFRAME_QUERY_MANAGER_SFRAME_SOURCE_HPP
 
 #include <sstream>
-#include <flexible_type/flexible_type.hpp>
-#include <sframe_query_engine/operators/operator.hpp>
-#include <sframe_query_engine/operators/sarray_source.hpp>
-#include <sframe_query_engine/execution/query_context.hpp>
-#include <sframe_query_engine/operators/operator_properties.hpp>
-#include <sframe/sframe.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/query_engine/operators/operator.hpp>
+#include <core/storage/query_engine/operators/sarray_source.hpp>
+#include <core/storage/query_engine/execution/query_context.hpp>
+#include <core/storage/query_engine/operators/operator_properties.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
 
 namespace turi {
 namespace query_eval {

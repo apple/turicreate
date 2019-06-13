@@ -1,4 +1,4 @@
-#include <unity/toolkits/clustering/kmeans.hpp>
+#include <toolkits/clustering/kmeans.hpp>
 
 namespace turi { namespace kmeans {
 

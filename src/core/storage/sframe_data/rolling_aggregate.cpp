@@ -4,10 +4,10 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <algorithm>
-#include <flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 #include <boost/circular_buffer.hpp>
 #include <boost/algorithm/string.hpp>
-#include <sframe/rolling_aggregate.hpp>
+#include <core/storage/sframe_data/rolling_aggregate.hpp>
 
 namespace turi {
 namespace rolling_aggregate {

@@ -8,11 +8,11 @@
 #include <boost/program_options.hpp>
 #include <regex>
 #include <boost/algorithm/string.hpp>
-#include <globals/globals.hpp>
-#include <fileio/fs_utils.hpp>
-#include <fileio/sanitize_url.hpp>
-#include <fileio/general_fstream.hpp>
-#include <fileio/s3_api.hpp>
+#include <core/globals/globals.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
+#include <core/storage/fileio/sanitize_url.hpp>
+#include <core/storage/fileio/general_fstream.hpp>
+#include <core/storage/fileio/s3_api.hpp>
 
 namespace po = boost::program_options;      
 

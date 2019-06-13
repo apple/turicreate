@@ -8,7 +8,7 @@
 
 #include <vector>
 #include <map>
-#include <random/alias.hpp>
+#include <core/random/alias.hpp>
 #include <Eigen/Core>
 
 

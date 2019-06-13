@@ -8,10 +8,10 @@
 #define TURI_ONE_SHOT_OBJECT_DETECTOR_H_
 
 #include <map>
-#include <unity/lib/extensions/ml_model.hpp>
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
-#include <unity/toolkits/object_detection/object_detector.hpp>
+#include <model_server/lib/extensions/ml_model.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <toolkits/coreml_export/mlmodel_wrapper.hpp>
+#include <toolkits/object_detection/object_detector.hpp>
 
 namespace turi {
 namespace one_shot_object_detection {

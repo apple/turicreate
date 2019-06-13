@@ -10,10 +10,10 @@
 #include <cstdlib>
 #include <cassert>
 
-#include <serialization/iarchive.hpp>
-#include <serialization/oarchive.hpp>
-#include <serialization/vector.hpp>
-#include <serialization/map.hpp>
+#include <core/storage/serialization/iarchive.hpp>
+#include <core/storage/serialization/oarchive.hpp>
+#include <core/storage/serialization/vector.hpp>
+#include <core/storage/serialization/map.hpp>
 
 namespace turi {
   /**

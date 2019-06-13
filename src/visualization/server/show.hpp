@@ -6,9 +6,9 @@
 #ifndef __SHOW_HPP
 #define __SHOW_HPP
 
-#include <unity/lib/gl_sarray.hpp>
-#include <unity/lib/toolkit_function_specification.hpp>
-#include <unity/lib/visualization/plot.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <model_server/lib/toolkit_function_specification.hpp>
+#include <visualization/server/plot.hpp>
 
 namespace turi {
   namespace visualization {

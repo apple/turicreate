@@ -5,12 +5,12 @@
  */
 #ifndef TURI_SFRAME_QUERY_MANAGER_LAMBDA_TRANSFORM_HPP
 #define TURI_SFRAME_QUERY_MANAGER_LAMBDA_TRANSFORM_HPP
-#include <flexible_type/flexible_type.hpp>
-#include <sframe_query_engine/operators/operator.hpp>
-#include <sframe_query_engine/execution/query_context.hpp>
-#include <sframe_query_engine/operators/operator_properties.hpp>
-#include <lambda/pylambda_function.hpp>
-#include <exceptions/error_types.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/query_engine/operators/operator.hpp>
+#include <core/storage/query_engine/execution/query_context.hpp>
+#include <core/storage/query_engine/operators/operator_properties.hpp>
+#include <core/system/lambda/pylambda_function.hpp>
+#include <core/system/exceptions/error_types.hpp>
 namespace turi {
 namespace query_eval {
 

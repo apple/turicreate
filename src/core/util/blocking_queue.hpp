@@ -10,8 +10,8 @@
 
 #include <list>
 #include <deque>
-#include <parallel/pthread_tools.hpp>
-#include <random/random.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/random/random.hpp>
 
 namespace turi {
 

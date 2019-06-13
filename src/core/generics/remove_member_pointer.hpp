@@ -27,7 +27,7 @@
 #include <boost/mpl/aux_/lambda_support.hpp>
 
 // should be the last #include
-#include <generics/type_trait_def.hpp>
+#include <core/generics/type_trait_def.hpp>
 
 namespace boost {
 
@@ -3053,7 +3053,7 @@ BOOST_TT_AUX_TYPE_TRAIT_DEF1(remove_member_pointer,T, typename detail::rem_mem_p
 
 } // namespace boost
 
-#include <generics/type_trait_undef.hpp>
+#include <core/generics/type_trait_undef.hpp>
 
 #endif // BOOST_TT_REMOVE_MEMBER_POINTER_HPP_INCLUDED
 

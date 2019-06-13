@@ -4,11 +4,11 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <unity/toolkits/coreml_export/neural_net_models_exporter.hpp>
+#include <toolkits/coreml_export/neural_net_models_exporter.hpp>
 
-#include <logger/assertions.hpp>
-#include <unity/toolkits/coreml_export/mlmodel_include.hpp>
-#include <util/string_util.hpp>
+#include <core/logging/assertions.hpp>
+#include <toolkits/coreml_export/mlmodel_include.hpp>
+#include <core/util/string_util.hpp>
 
 using CoreML::Specification::ArrayFeatureType;
 using CoreML::Specification::FeatureDescription;

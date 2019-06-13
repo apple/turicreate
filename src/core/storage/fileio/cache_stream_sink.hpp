@@ -9,8 +9,8 @@
 #include <iostream>
 #include <memory>
 #include <boost/iostreams/stream.hpp>
-#include <fileio/general_fstream_sink.hpp>
-#include <fileio/fixed_size_cache_manager.hpp>
+#include <core/storage/fileio/general_fstream_sink.hpp>
+#include <core/storage/fileio/fixed_size_cache_manager.hpp>
 
 namespace turi {
 namespace fileio_impl {

@@ -3,11 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <ml_data/data_storage/internal_metadata.hpp>
-#include <ml_data/ml_data_column_modes.hpp>
-#include <ml_data/metadata.hpp>
-#include <unity/lib/variant.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
+#include <ml/ml_data/data_storage/internal_metadata.hpp>
+#include <ml/ml_data/ml_data_column_modes.hpp>
+#include <ml/ml_data/metadata.hpp>
+#include <model_server/lib/variant.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
 
 namespace turi { namespace ml_data_internal {
 

@@ -14,7 +14,7 @@ from libcpp.map cimport map
 from libcpp.vector cimport vector
 from libcpp.string cimport string
 
-cdef extern from "<unity/lib/api/client_base_types.hpp>" namespace "turi":
+cdef extern from "<model_server/lib/api/client_base_types.hpp>" namespace "turi":
     cdef cppclass variant_type:
         variant_type()
         int which()

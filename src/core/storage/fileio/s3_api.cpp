@@ -18,12 +18,12 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/tokenizer.hpp>
-#include <logger/logger.hpp>
-#include <fileio/s3_api.hpp>
-#include <fileio/fs_utils.hpp>
-#include <fileio/general_fstream.hpp>
-#include <fileio/get_s3_endpoint.hpp>
-#include <cppipc/server/cancel_ops.hpp>
+#include <core/logging/logger.hpp>
+#include <core/storage/fileio/s3_api.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
+#include <core/storage/fileio/general_fstream.hpp>
+#include <core/storage/fileio/get_s3_endpoint.hpp>
+#include <core/system/cppipc/server/cancel_ops.hpp>
 
 #include <aws/core/Aws.h>
 #include <aws/core/auth/AWSCredentialsProvider.h>

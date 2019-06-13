@@ -5,7 +5,7 @@
  */
 #ifndef BLOOM_FILTER_HPP
 #define BLOOM_FILTER_HPP
-#include <util/dense_bitset.hpp>
+#include <core/util/dense_bitset.hpp>
 
 template <size_t len, size_t probes>
 class fixed_bloom_filter {

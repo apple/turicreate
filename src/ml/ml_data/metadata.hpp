@@ -6,8 +6,8 @@
 #ifndef TURI_DML_METADATA_H_
 #define TURI_DML_METADATA_H_
 
-#include <ml_data/ml_data_column_modes.hpp>
-#include <ml_data/data_storage/internal_metadata.hpp>
+#include <ml/ml_data/ml_data_column_modes.hpp>
+#include <ml/ml_data/data_storage/internal_metadata.hpp>
 
 namespace turi {
 
@@ -426,7 +426,7 @@ class ml_metadata {
 }
 
 // Include the implementations of the above inline functions.
-#include <ml_data/metadata_impl.hpp>
+#include <ml/ml_data/metadata_impl.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Implement serialization for

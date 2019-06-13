@@ -7,7 +7,7 @@
 #include <cstring>
 #include <cstdint>
 #include <string>
-#include <util/md5.hpp>
+#include <core/util/md5.hpp>
 namespace turi {
 // source from wikipedia: https://en.wikipedia.org/wiki/MD5#Algorithm
 

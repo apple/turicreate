@@ -6,9 +6,9 @@
 #ifndef TURI_FACTORIZATION_LOSS_MODEL_PROFILES_H_
 #define TURI_FACTORIZATION_LOSS_MODEL_PROFILES_H_
 
-#include <logger/assertions.hpp>
-#include <util/logit_math.hpp>
-#include <util/code_optimization.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/util/logit_math.hpp>
+#include <core/util/code_optimization.hpp>
 #include <cmath>
 #include <memory>
 #include <string>

@@ -6,9 +6,9 @@
 #include <unordered_set>
 #include <cmath>
 
-#include <util/hash_value.hpp>
-#include <sframe/groupby_aggregate.hpp>
-#include <unity/extensions/timeseries/timeseries.hpp>
+#include <core/util/hash_value.hpp>
+#include <core/storage/sframe_data/groupby_aggregate.hpp>
+#include <model_server/extensions/timeseries/timeseries.hpp>
 
 using namespace turi;
 

@@ -9,7 +9,7 @@
 #include <boost/concept/requires.hpp>
 #include <boost/concept_check.hpp>
 #include <sstream>
-#include <serialization/serialize.hpp>
+#include <core/storage/serialization/serialize.hpp>
 namespace turi {
 
   /**

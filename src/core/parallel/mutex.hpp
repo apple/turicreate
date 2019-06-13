@@ -6,8 +6,8 @@
 #ifndef TURI_MUTEX_HPP
 #define TURI_MUTEX_HPP
 
-#include <parallel/pthread_h.h>
-#include <logger/assertions.hpp>
+#include <core/parallel/pthread_h.h>
+#include <core/logging/assertions.hpp>
 #include <mutex>
 
 namespace turi {

@@ -6,12 +6,12 @@
 #ifndef TURI_SFRAME_QUERY_OPTIMIZATION_GENERALIZED_UNION_PROJECT_TRANSFORMS_HPP_
 #define TURI_SFRAME_QUERY_OPTIMIZATION_GENERALIZED_UNION_PROJECT_TRANSFORMS_HPP_
 
-#include <sframe_query_engine/planning/optimizations/optimization_transforms.hpp>
-#include <sframe_query_engine/planning/optimization_engine.hpp>
-#include <sframe_query_engine/operators/all_operators.hpp>
-#include <sframe_query_engine/planning/optimization_node_info.hpp>
-#include <sframe_query_engine/operators/operator_properties.hpp>
-#include <flexible_type/flexible_type.hpp>
+#include <core/storage/query_engine/planning/optimizations/optimization_transforms.hpp>
+#include <core/storage/query_engine/planning/optimization_engine.hpp>
+#include <core/storage/query_engine/operators/all_operators.hpp>
+#include <core/storage/query_engine/planning/optimization_node_info.hpp>
+#include <core/storage/query_engine/operators/operator_properties.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 
 #include <array>
 

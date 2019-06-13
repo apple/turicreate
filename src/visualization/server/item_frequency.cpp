@@ -3,10 +3,10 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <unity/lib/visualization/batch_size.hpp>
-#include <unity/lib/visualization/escape.hpp>
-#include <unity/lib/visualization/item_frequency.hpp>
-#include <unity/lib/visualization/vega_spec.hpp>
+#include <visualization/server/batch_size.hpp>
+#include <visualization/server/escape.hpp>
+#include <visualization/server/item_frequency.hpp>
+#include <visualization/server/vega_spec.hpp>
 
 #include <string>
 

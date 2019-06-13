@@ -6,9 +6,9 @@
 #ifndef TURI_XGBOOST_ITERATOR_H_
 #define TURI_XGBOOST_ITERATOR_H_
 
-#include <ml_data/ml_data.hpp>
+#include <ml/ml_data/ml_data.hpp>
 #include <xgboost/src/learner/dmatrix.h>
-#include <unity/toolkits/supervised_learning/xgboost.hpp>
+#include <toolkits/supervised_learning/xgboost.hpp>
 
 namespace turi {
 namespace supervised {

@@ -14,14 +14,15 @@
 #include <algorithm>
 #include <iterator>
 #include <atomic>
+#include <core/parallel/mutex.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/lock_guard.hpp>
-#include <nanosockets/socket_errors.hpp>
-#include <nanosockets/async_reply_socket.hpp>
-#include <nanosockets/publish_socket.hpp>
-#include <cppipc/common/status_types.hpp>
-#include <cppipc/server/dispatch.hpp>
-#include <cppipc/server/cancel_ops.hpp>
+#include <core/system/nanosockets/socket_errors.hpp>
+#include <core/system/nanosockets/async_reply_socket.hpp>
+#include <core/system/nanosockets/publish_socket.hpp>
+#include <core/system/cppipc/common/status_types.hpp>
+#include <core/system/cppipc/server/dispatch.hpp>
+#include <core/system/cppipc/server/cancel_ops.hpp>
 
 
 namespace cppipc {
@@ -282,7 +283,7 @@ class EXPORT comm_server {
    * \li \b COMM_SERVER_INFO Used for Comm Server informational messages.
    * \li \b COMM_SERVER_ERROR Used for Comm Server error messages.
    *
-   * These status strings are defined in \ref cppipc/common/status_types.hpp
+   * These status strings are defined in \ref core/system/cppipc/common/status_types.hpp
    */
   void report_status(std::string status_type, std::string message);
 
@@ -400,7 +401,7 @@ class EXPORT comm_server {
 } // cppipc
 
 
-#include <cppipc/server/dispatch_impl.hpp>
+#include <core/system/cppipc/server/dispatch_impl.hpp>
 
 namespace cppipc {
 template <typename MemFn>

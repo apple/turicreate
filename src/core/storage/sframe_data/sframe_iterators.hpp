@@ -7,8 +7,8 @@
 #define TURI_SFRAME_ITERATORS_H_
 
 #include <vector>
-#include <sframe/sframe.hpp>
-#include <logger/assertions.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/logging/assertions.hpp>
 
 namespace turi {
 

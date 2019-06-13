@@ -15,15 +15,15 @@
 #include <Eigen/Core>
 #include <Eigen/Dense>
 
-#include <image/image_util_impl.hpp>
+#include <core/data/image/image_util_impl.hpp>
 
-#include <unity/lib/image_util.hpp>
-#include <unity/toolkits/object_detection/object_detector.hpp>
-#include <unity/toolkits/object_detection/one_shot_object_detection/one_shot_object_detector.hpp>
-#include <unity/toolkits/object_detection/one_shot_object_detection/util/color_convert.hpp>
-#include <unity/toolkits/object_detection/one_shot_object_detection/util/mapping_function.hpp>
-#include <unity/toolkits/object_detection/one_shot_object_detection/util/parameter_sampler.hpp>
-#include <unity/toolkits/object_detection/one_shot_object_detection/util/superposition.hpp>
+#include <model_server/lib/image_util.hpp>
+#include <toolkits/object_detection/object_detector.hpp>
+#include <toolkits/object_detection/one_shot_object_detection/one_shot_object_detector.hpp>
+#include <toolkits/object_detection/one_shot_object_detection/util/color_convert.hpp>
+#include <toolkits/object_detection/one_shot_object_detection/util/mapping_function.hpp>
+#include <toolkits/object_detection/one_shot_object_detection/util/parameter_sampler.hpp>
+#include <toolkits/object_detection/one_shot_object_detection/util/superposition.hpp>
 
 namespace turi {
 namespace one_shot_object_detection {

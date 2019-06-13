@@ -10,18 +10,18 @@
 #include <boost/random.hpp>
 #include <boost/integer_traits.hpp>
 
-#include <parallel/pthread_tools.hpp>
-#include <logger/assertions.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/logging/assertions.hpp>
 #include <timer/timer.hpp>
 
-#include <random/random.hpp>
+#include <core/random/random.hpp>
 
 #ifdef _WIN32
 #include <cross_platform/windows_wrapper.hpp>
 #include <Wincrypt.h>
 #endif
 
-#include <util/syserr_reporting.hpp>
+#include <core/util/syserr_reporting.hpp>
 
 namespace turi {
   namespace random {

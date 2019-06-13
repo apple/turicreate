@@ -6,9 +6,9 @@
 #ifndef TURI_UNITY_EVALUATION_H
 #define TURI_UNITY_EVALUATION_H
 
-#include <unity/lib/toolkit_function_specification.hpp>
-#include <unity/lib/toolkit_util.hpp>
-#include <unity/lib/unity_base_types.hpp>
+#include <model_server/lib/toolkit_function_specification.hpp>
+#include <model_server/lib/toolkit_util.hpp>
+#include <model_server/lib/unity_base_types.hpp>
 
 namespace turi {
 namespace evaluation {

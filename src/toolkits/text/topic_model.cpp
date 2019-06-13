@@ -6,21 +6,21 @@
 #include <fstream>
 #include <algorithm>
 #include <iostream>
-#include <parallel/pthread_tools.hpp>
-#include <unity/lib/unity_sarray.hpp>
-#include <sframe/sframe_iterators.hpp>
-#include <unity/toolkits/util/sframe_utils.hpp>
-#include <unity/lib/flex_dict_view.hpp>
-#include <unity/toolkits/text/topic_model.hpp>
-#include <unity/toolkits/text/cgs.hpp>
-#include <logger/assertions.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/storage/sframe_interface/unity_sarray.hpp>
+#include <core/storage/sframe_data/sframe_iterators.hpp>
+#include <toolkits/util/sframe_utils.hpp>
+#include <model_server/lib/flex_dict_view.hpp>
+#include <toolkits/text/topic_model.hpp>
+#include <toolkits/text/cgs.hpp>
+#include <core/logging/assertions.hpp>
 #include <timer/timer.hpp>
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <unity/toolkits/ml_data_2/ml_data_iterators.hpp>
-#include <unity/toolkits/ml_data_2/sframe_index_mapping.hpp>
-#include <unity/toolkits/util/indexed_sframe_tools.hpp>
-#include <unity/toolkits/ml_data_2/metadata.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
+#include <toolkits/ml_data_2/ml_data_iterators.hpp>
+#include <toolkits/ml_data_2/sframe_index_mapping.hpp>
+#include <toolkits/util/indexed_sframe_tools.hpp>
+#include <toolkits/ml_data_2/metadata.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
 #include <Eigen/Core>
 
 /**

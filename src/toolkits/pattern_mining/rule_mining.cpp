@@ -4,9 +4,9 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <limits>
-#include <unity/toolkits/pattern_mining/rule_mining.hpp>
+#include <toolkits/pattern_mining/rule_mining.hpp>
 
-#include <util/basic_types.hpp>
+#include <core/util/basic_types.hpp>
 
 namespace turi {
 namespace pattern_mining {

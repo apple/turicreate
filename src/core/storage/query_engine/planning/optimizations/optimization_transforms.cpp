@@ -3,13 +3,13 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <sframe_query_engine/planning/optimization_engine.hpp>
-#include <sframe_query_engine/planning/optimizations/union_transforms.hpp>
-#include <sframe_query_engine/planning/optimizations/project_transforms.hpp>
-#include <sframe_query_engine/planning/optimizations/append_transforms.hpp>
-#include <sframe_query_engine/planning/optimizations/logical_filter_transforms.hpp>
-#include <sframe_query_engine/planning/optimizations/general_union_project_transforms.hpp>
-#include <sframe_query_engine/planning/optimizations/source_transforms.hpp>
+#include <core/storage/query_engine/planning/optimization_engine.hpp>
+#include <core/storage/query_engine/planning/optimizations/union_transforms.hpp>
+#include <core/storage/query_engine/planning/optimizations/project_transforms.hpp>
+#include <core/storage/query_engine/planning/optimizations/append_transforms.hpp>
+#include <core/storage/query_engine/planning/optimizations/logical_filter_transforms.hpp>
+#include <core/storage/query_engine/planning/optimizations/general_union_project_transforms.hpp>
+#include <core/storage/query_engine/planning/optimizations/source_transforms.hpp>
 
 namespace turi {
 namespace query_eval {

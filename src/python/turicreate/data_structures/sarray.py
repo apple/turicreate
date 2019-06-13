@@ -1869,7 +1869,7 @@ class SArray(object):
 
         .. code-block:: c++
 
-            #include <turicreate/sdk/toolkit_function_macros.hpp>
+            #include <model_server/lib/toolkit_function_macros.hpp>
             #include <cmath>
 
             using namespace turi;

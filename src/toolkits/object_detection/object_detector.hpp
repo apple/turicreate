@@ -11,15 +11,15 @@
 #include <map>
 #include <memory>
 
-#include <table_printer/table_printer.hpp>
-#include <unity/lib/extensions/ml_model.hpp>
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
-#include <unity/toolkits/neural_net/compute_context.hpp>
-#include <unity/toolkits/neural_net/image_augmentation.hpp>
-#include <unity/toolkits/neural_net/model_backend.hpp>
-#include <unity/toolkits/neural_net/model_spec.hpp>
-#include <unity/toolkits/object_detection/od_data_iterator.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
+#include <model_server/lib/extensions/ml_model.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <toolkits/coreml_export/mlmodel_wrapper.hpp>
+#include <ml/neural_net/compute_context.hpp>
+#include <ml/neural_net/image_augmentation.hpp>
+#include <ml/neural_net/model_backend.hpp>
+#include <ml/neural_net/model_spec.hpp>
+#include <toolkits/object_detection/od_data_iterator.hpp>
 
 namespace turi {
 namespace object_detection {

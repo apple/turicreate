@@ -7,7 +7,7 @@
 #define CPPIPC_SERVER_CONSOLE_CANCEL_HANDLER_HPP
 #include <atomic>
 #include <iostream>
-#include <export.hpp>
+#include <core/export.hpp>
 /**
  * \ingroup cppipc
  *

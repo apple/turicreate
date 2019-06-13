@@ -3,10 +3,10 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <sframe/group_aggregate_value.hpp>
-#include <sframe/groupby_aggregate_operators.hpp>
+#include <core/storage/sframe_data/group_aggregate_value.hpp>
+#include <core/storage/sframe_data/groupby_aggregate_operators.hpp>
 #include <boost/algorithm/string.hpp>
-#include <flexible_type/flexible_type_spirit_parser.hpp>
+#include <core/data/flexible_type/flexible_type_spirit_parser.hpp>
 
 namespace turi {
 

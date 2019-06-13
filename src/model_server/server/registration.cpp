@@ -3,50 +3,52 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <unity/server/registration.hpp>
+#include <model_server/server/registration.hpp>
 
-#include <unity/lib/simple_model.hpp>
-#include <unity/lib/unity_sarray.hpp>
-#include <unity/lib/unity_sarray_builder.hpp>
-#include <unity/lib/unity_sframe.hpp>
-#include <unity/lib/unity_sframe_builder.hpp>
-#include <unity/lib/unity_sgraph.hpp>
-#include <unity/lib/unity_sketch.hpp>
+#include <model_server/lib/simple_model.hpp>
+#include <core/storage/sframe_interface/unity_sarray.hpp>
+#include <core/storage/sframe_interface/unity_sarray_builder.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
+#include <core/storage/sframe_interface/unity_sframe_builder.hpp>
+#include <core/storage/sframe_interface/unity_sgraph.hpp>
+#include <ml/sketches/unity_sketch.hpp>
 
-#include <unity/lib/extensions/ml_model.hpp>
+#include <model_server/lib/extensions/ml_model.hpp>
 
-#include <unity/lib/annotation/class_registrations.hpp>
-#include <unity/lib/visualization/show.hpp>
+#include <visualization/annotation/class_registrations.hpp>
+#include <visualization/server/show.hpp>
 
-#include <unity/toolkits/activity_classification/class_registrations.hpp>
-#include <unity/toolkits/object_detection/class_registrations.hpp>
-#include <unity/toolkits/object_detection/one_shot_object_detection/class_registrations.hpp>
-#include <unity/toolkits/drawing_classifier/class_registrations.hpp>
+#include <toolkits/activity_classification/class_registrations.hpp>
+#include <toolkits/object_detection/class_registrations.hpp>
+#include <toolkits/object_detection/one_shot_object_detection/class_registrations.hpp>
+#include <toolkits/drawing_classifier/class_registrations.hpp>
 
-#include <unity/toolkits/evaluation/metrics.hpp>
-#include <unity/toolkits/evaluation/unity_evaluation.hpp>
+#include <toolkits/evaluation/metrics.hpp>
+#include <toolkits/evaluation/unity_evaluation.hpp>
 
-#include <unity/toolkits/graph_analytics/include.hpp>
-#include <unity/toolkits/image/image_fn_export.hpp>
+#include <toolkits/graph_analytics/include.hpp>
+#include <core/export.hpp>
+#include <model_server/lib/extensions/model_base.hpp>
 
-#include <unity/toolkits/ml_model/python_model.hpp>
+#include <toolkits/ml_model/python_model.hpp>
+#include <toolkits/image/image_fn_export.hpp>
 
-#include <unity/toolkits/nearest_neighbors/distances.hpp>
-#include <unity/toolkits/nearest_neighbors/unity_nearest_neighbors.hpp>
-#include <unity/toolkits/text/unity_text.hpp>
-#include <unity/toolkits/recsys/recsys_model_base.hpp>
-#include <unity/toolkits/clustering/unity_kmeans.hpp>
+#include <toolkits/nearest_neighbors/distances.hpp>
+#include <toolkits/nearest_neighbors/unity_nearest_neighbors.hpp>
+#include <toolkits/text/unity_text.hpp>
+#include <toolkits/recsys/recsys_model_base.hpp>
+#include <toolkits/clustering/unity_kmeans.hpp>
 
-#include <unity/toolkits/nearest_neighbors/class_registrations.hpp>
-#include <unity/toolkits/recsys/class_registrations.hpp>
-#include <unity/toolkits/text/class_registrations.hpp>
-#include <unity/toolkits/supervised_learning/class_registrations.hpp>
-#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
-#include <unity/toolkits/feature_engineering/class_registrations.hpp>
-#include <unity/toolkits/pattern_mining/class_registrations.hpp>
-#include <unity/toolkits/clustering/class_registrations.hpp>
-#include <unity/toolkits/util/class_registrations.hpp>
-#include <unity/toolkits/prototype/class_registrations.hpp>
+#include <toolkits/nearest_neighbors/class_registrations.hpp>
+#include <toolkits/recsys/class_registrations.hpp>
+#include <toolkits/text/class_registrations.hpp>
+#include <toolkits/supervised_learning/class_registrations.hpp>
+#include <toolkits/supervised_learning/supervised_learning.hpp>
+#include <toolkits/feature_engineering/class_registrations.hpp>
+#include <toolkits/pattern_mining/class_registrations.hpp>
+#include <toolkits/clustering/class_registrations.hpp>
+#include <toolkits/util/class_registrations.hpp>
+#include <toolkits/prototype/class_registrations.hpp>
 
 #include <toolkits/image_deep_feature_extractor/class_registrations.hpp>
 

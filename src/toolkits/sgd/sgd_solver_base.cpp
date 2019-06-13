@@ -8,12 +8,12 @@
 #include <tuple>
 #include <vector>
 #include <limits>
-#include <util/code_optimization.hpp>
-#include <unity/toolkits/sgd/sgd_solver_base.hpp>
-#include <logger/assertions.hpp>
-#include <table_printer/table_printer.hpp>
+#include <core/util/code_optimization.hpp>
+#include <toolkits/sgd/sgd_solver_base.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
 
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
 
 namespace turi { namespace sgd {
 

@@ -9,31 +9,31 @@
 // Types
 #include <Eigen/Core>
 #include <Eigen/SparseCore>
-#include <sframe/sframe.hpp>
-#include <unity/lib/gl_sarray.hpp>
-#include <parallel/atomic.hpp>
-#include <parallel/pthread_tools.hpp>
-#include <parallel/lambda_omp.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <generics/symmetric_2d_array.hpp>
-#include <globals/globals.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <core/parallel/atomic.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/parallel/lambda_omp.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/generics/symmetric_2d_array.hpp>
+#include <core/globals/globals.hpp>
 
 // ML Data utils
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <unity/toolkits/ml_data_2/ml_data_iterators.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
+#include <toolkits/ml_data_2/ml_data_iterators.hpp>
 
 // Interfaces
-#include <unity/lib/extensions/ml_model.hpp>
-#include <unity/lib/extensions/option_manager.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
-#include <globals/globals.hpp>
-#include <unity/toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <model_server/lib/extensions/ml_model.hpp>
+#include <model_server/lib/extensions/option_manager.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
+#include <core/globals/globals.hpp>
+#include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
 
 // Miscellaneous
-#include <unity/lib/toolkit_util.hpp>
-#include <unity/lib/unity_sframe.hpp>
-#include <table_printer/table_printer.hpp>
-#include <export.hpp>
+#include <model_server/lib/toolkit_util.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
+#include <core/export.hpp>
 
 
 namespace turi {

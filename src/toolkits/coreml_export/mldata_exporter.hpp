@@ -6,8 +6,8 @@
 #ifndef COREML_MLDATA_EXPORTER_HPP
 #define COREML_MLDATA_EXPORTER_HPP
 
-#include <unity/toolkits/coreml_export/mlmodel_include.hpp>
-#include <ml_data/metadata.hpp>
+#include <toolkits/coreml_export/mlmodel_include.hpp>
+#include <ml/ml_data/metadata.hpp>
 
 namespace turi {
 

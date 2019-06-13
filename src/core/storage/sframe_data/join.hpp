@@ -7,9 +7,9 @@
 #include <vector>
 #include <cstdio>
 #include <boost/algorithm/string.hpp>
-#include <sframe/sframe_constants.hpp>
-#include <sframe/sframe.hpp>
-#include <sframe/join_impl.hpp>
+#include <core/storage/sframe_data/sframe_constants.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_data/join_impl.hpp>
 
 namespace turi {
 

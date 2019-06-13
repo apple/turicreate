@@ -12,8 +12,8 @@
 #include <boost/circular_buffer.hpp>
 #include <vector>
 #include <memory>
-#include <flexible_type/flexible_type.hpp>
-#include <sframe/sarray_v2_block_types.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/sframe_data/sarray_v2_block_types.hpp>
 namespace turi {
 
 

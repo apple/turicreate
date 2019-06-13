@@ -7,7 +7,7 @@
 #define TURI_CITYHASH_GL_H_
 
 #include <vector>
-#include <util/code_optimization.hpp>
+#include <core/util/code_optimization.hpp>
 
 // Copyright (c) 2011 Google, Inc.
 //

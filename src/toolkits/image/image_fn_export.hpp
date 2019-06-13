@@ -6,7 +6,7 @@
 #ifndef IMAGE_FN_EXPORT_HPP
 #define IMAGE_FN_EXPORT_HPP
 
-#include <unity/lib/toolkit_function_specification.hpp>
+#include <model_server/lib/toolkit_function_specification.hpp>
 
 namespace turi{
 

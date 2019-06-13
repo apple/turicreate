@@ -6,7 +6,7 @@
 #ifndef TURI_ML2_METADATA_IMPL_H_
 #define TURI_ML2_METADATA_IMPL_H_
 
-#include <unity/toolkits/ml_data_2/side_features.hpp>
+#include <toolkits/ml_data_2/side_features.hpp>
 
 namespace turi { namespace v2 {
 

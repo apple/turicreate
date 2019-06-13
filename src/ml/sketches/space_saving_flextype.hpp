@@ -7,8 +7,8 @@
 #define TURI_SKETCHES_SPACE_SAVING_SKETCH_FLEXTYPE_HPP
 
 #include <vector>
-#include <sketches/space_saving.hpp>
-#include <flexible_type/flexible_type.hpp>
+#include <ml/sketches/space_saving.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 
 namespace turi {
 namespace sketches {

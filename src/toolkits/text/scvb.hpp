@@ -7,24 +7,24 @@
 #define TURI_TEXT_SCVB_H_
 
 // SFrame
-#include <sframe/sarray.hpp>
-#include <sframe/sframe.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
 
 // Other
-#include <fileio/temp_files.hpp>
+#include <core/storage/fileio/temp_files.hpp>
 #include <thread>
 #include <iostream>
 
 // Types
-#include <unity/lib/variant.hpp>
-#include <unity/lib/unity_base_types.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <util/hash_value.hpp>
-#include <unity/lib/flex_dict_view.hpp>
+#include <model_server/lib/variant.hpp>
+#include <model_server/lib/unity_base_types.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/util/hash_value.hpp>
+#include <model_server/lib/flex_dict_view.hpp>
 
 // External
 #include <Eigen/Core>
-#include <random/random.hpp>
+#include <core/random/random.hpp>
 
 namespace turi {
 

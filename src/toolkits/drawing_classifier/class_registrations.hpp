@@ -6,7 +6,7 @@
 #ifndef TURI_DRAWING_REGISTRATION_H_
 #define TURI_DRAWING_REGISTRATION_H_
 
-#include <unity/lib/toolkit_function_macros.hpp>
+#include <model_server/lib/toolkit_function_macros.hpp>
 
 namespace turi {
 namespace drawing_classifier {

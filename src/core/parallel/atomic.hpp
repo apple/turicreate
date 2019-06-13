@@ -9,8 +9,8 @@
 #include <stdint.h>
 #include <type_traits>
 
-#include <serialization/serialization_includes.hpp>
-#include <parallel/atomic_ops.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
+#include <core/parallel/atomic_ops.hpp>
 
 namespace turi {
 namespace turi_impl {

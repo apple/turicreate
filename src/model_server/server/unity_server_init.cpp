@@ -4,17 +4,17 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <boost/filesystem.hpp>
-#include <unity/lib/unity_global.hpp>
-#include <unity/lib/unity_global_singleton.hpp>
-#include <unity/server/unity_server_init.hpp>
-#include <unity/server/registration.hpp>
-#include <unity/lib/unity_sarray.hpp>
-#include <unity/lib/unity_sarray_builder.hpp>
-#include <unity/lib/unity_sframe.hpp>
-#include <unity/lib/unity_sframe_builder.hpp>
-#include <unity/lib/unity_sgraph.hpp>
-#include <unity/lib/unity_sketch.hpp>
-#include <unity/lib/simple_model.hpp>
+#include <model_server/lib/unity_global.hpp>
+#include <model_server/lib/unity_global_singleton.hpp>
+#include <model_server/server/unity_server_init.hpp>
+#include <model_server/server/registration.hpp>
+#include <core/storage/sframe_interface/unity_sarray.hpp>
+#include <core/storage/sframe_interface/unity_sarray_builder.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
+#include <core/storage/sframe_interface/unity_sframe_builder.hpp>
+#include <core/storage/sframe_interface/unity_sgraph.hpp>
+#include <ml/sketches/unity_sketch.hpp>
+#include <model_server/lib/simple_model.hpp>
 #
 namespace turi {
 unity_server_initializer::~unity_server_initializer() {}

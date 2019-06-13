@@ -9,11 +9,11 @@
 #include <map>
 #include <vector>
 #include <type_traits>
-#include <util/code_optimization.hpp>
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <unity/toolkits/ml_data_2/ml_data_iterators.hpp>
-#include <unity/toolkits/sgd/sgd_solver_base.hpp>
-#include <unity/toolkits/factorization/loss_model_profiles.hpp>
+#include <core/util/code_optimization.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
+#include <toolkits/ml_data_2/ml_data_iterators.hpp>
+#include <toolkits/sgd/sgd_solver_base.hpp>
+#include <toolkits/factorization/loss_model_profiles.hpp>
 
 namespace turi { namespace factorization {
 

@@ -8,8 +8,8 @@
 
 
 // Toolkits
-#include <unity/toolkits/nearest_neighbors/nearest_neighbors.hpp>
-#include <unity/toolkits/nearest_neighbors/lsh_family.hpp>
+#include <toolkits/nearest_neighbors/nearest_neighbors.hpp>
+#include <toolkits/nearest_neighbors/lsh_family.hpp>
 
 namespace turi {
 namespace nearest_neighbors {

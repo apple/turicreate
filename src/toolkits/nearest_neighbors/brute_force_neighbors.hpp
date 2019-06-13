@@ -7,12 +7,12 @@
 #define TURI_BRUTE_FORCE_NEIGHBORS_H_
 
 // Types
-#include <parallel/atomic.hpp>
+#include <core/parallel/atomic.hpp>
 
 // ML-Data Utils
 
 // Toolkits
-#include <unity/toolkits/nearest_neighbors/nearest_neighbors.hpp>
+#include <toolkits/nearest_neighbors/nearest_neighbors.hpp>
 
 namespace turi {
 namespace nearest_neighbors {

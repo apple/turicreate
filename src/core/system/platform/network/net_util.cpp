@@ -18,9 +18,9 @@
 #include <iphlpapi.h>
 #endif
 
-#include <logger/assertions.hpp>
+#include <core/logging/assertions.hpp>
 #include <network/net_util.hpp>
-#include "export.hpp"
+#include <core/export.hpp>
 
 #define NUM_VM_MAC_ADDRS 8
 #define MAC_PREFIX_SIZE 3

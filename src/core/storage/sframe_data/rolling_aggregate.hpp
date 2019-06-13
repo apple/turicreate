@@ -6,9 +6,9 @@
 #ifndef TURI_SFRAME_ROLLING_AGGREGATE_HPP
 #define TURI_SFRAME_ROLLING_AGGREGATE_HPP
 
-#include <flexible_type/flexible_type.hpp>
-#include <sframe/sarray.hpp>
-#include <sframe/groupby_aggregate_operators.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
+#include <core/storage/sframe_data/groupby_aggregate_operators.hpp>
 
 namespace turi {
 

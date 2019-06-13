@@ -7,12 +7,12 @@
 #define ML_DATA_ROW_SLICING_UTILITIES_H_
 
 #include <vector>
-#include <unity/toolkits/ml_data_2/metadata.hpp>
-#include <flexible_type/flexible_type.hpp>
+#include <toolkits/ml_data_2/metadata.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 #include <Eigen/Core>
 #include <Eigen/SparseCore>
-#include <unity/lib/variant.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
+#include <model_server/lib/variant.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
 
 namespace turi { namespace v2 {
 

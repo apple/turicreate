@@ -6,14 +6,14 @@
 #ifndef TURI_UNITY_SPARSE_SIMILARITY_ITEM_STATISTICS_H
 #define TURI_UNITY_SPARSE_SIMILARITY_ITEM_STATISTICS_H
 
-#include <unity/toolkits/sparse_similarity/similarities.hpp>
-#include <unity/toolkits/sparse_similarity/utilities.hpp>
-#include <parallel/pthread_tools.hpp>
-#include <util/dense_bitset.hpp>
-#include <parallel/atomic_ops.hpp>
-#include <table_printer/table_printer.hpp>
-#include <sframe/sarray.hpp>
-#include <flexible_type/flexible_type.hpp>
+#include <toolkits/sparse_similarity/similarities.hpp>
+#include <toolkits/sparse_similarity/utilities.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/util/dense_bitset.hpp>
+#include <core/parallel/atomic_ops.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 #include <map>
 #include <vector>
 #include <string>

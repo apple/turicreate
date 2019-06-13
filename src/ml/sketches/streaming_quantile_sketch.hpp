@@ -6,9 +6,9 @@
 #ifndef TURI_SKETCH_STREAMING_QUANTILE_SKETCH_HPP
 #define TURI_SKETCH_STREAMING_QUANTILE_SKETCH_HPP
 #include <vector>
-#include <sketches/quantile_sketch.hpp>
-#include <logger/assertions.hpp>
-#include <serialization/serialization_includes.hpp>
+#include <ml/sketches/quantile_sketch.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
 namespace turi {
 namespace sketches {
 

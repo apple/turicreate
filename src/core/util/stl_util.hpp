@@ -32,12 +32,12 @@
 #include <sstream>
 #include <iostream>
 #include <iomanip>
-#include <logger/assertions.hpp>
+#include <core/logging/assertions.hpp>
 #include <boost/exception/detail/is_output_streamable.hpp>
 
-// #include <serialization/serialize.hpp>
-// #include <serialization/set.hpp>
-// #include <serialization/map.hpp>
+// #include <core/storage/serialization/serialize.hpp>
+// #include <core/storage/serialization/set.hpp>
+// #include <core/storage/serialization/map.hpp>
 
 namespace turi {
 

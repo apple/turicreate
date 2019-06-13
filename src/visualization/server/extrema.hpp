@@ -7,7 +7,7 @@
 #ifndef __TC_VIS_EXTREMA
 #define __TC_VIS_EXTREMA
 
-#include "../gl_sarray.hpp"
+#include <core/data/sframe/gl_sframe.hpp>
 
 #include <ostream>
 

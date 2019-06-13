@@ -535,7 +535,7 @@ def ext_import(soname, module_subpath=""):
     .. code-block:: c++
 
         #include <cmath>
-        #include <turicreate/sdk/toolkit_function_macros.hpp>
+        #include <model_server/lib/toolkit_function_macros.hpp>
         double square_root(double a) {
           return sqrt(a);
         }

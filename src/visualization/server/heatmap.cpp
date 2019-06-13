@@ -10,9 +10,9 @@
 #include "vega_data.hpp"
 #include "vega_spec.hpp"
 
-#include <parallel/lambda_omp.hpp>
-#include <unity/lib/visualization/batch_size.hpp>
-#include <unity/lib/visualization/transformation.hpp>
+#include <core/parallel/lambda_omp.hpp>
+#include <visualization/server/batch_size.hpp>
+#include <visualization/server/transformation.hpp>
 
 #include <cmath>
 #include <thread>

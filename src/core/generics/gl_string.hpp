@@ -6,10 +6,10 @@
 #ifndef TURI_GL_STRING_H_
 #define TURI_GL_STRING_H_
 
-#include <generics/vector_internals.hpp>
-#include <generics/string_internals.hpp>
-#include <util/cityhash_tc.hpp>
-#include <generics/is_memmovable.hpp>
+#include <core/generics/vector_internals.hpp>
+#include <core/generics/string_internals.hpp>
+#include <core/util/cityhash_tc.hpp>
+#include <core/generics/is_memmovable.hpp>
 #include <algorithm>
 
 namespace turi {
@@ -1020,7 +1020,7 @@ gl_string operator+(gl_string&& lhs, char rhs) {
 ////////////////////////////////////////////////////////////////////////////////
 // Conversion routines to gl_strings
 
-#include <generics/string_conversion_internals.hpp>
+#include <core/generics/string_conversion_internals.hpp>
 
 namespace turi {
 
@@ -1063,7 +1063,7 @@ static inline gl_string to_gl_string(long double val)  {
 ////////////////////////////////////////////////////////////////////////////////
 }
 
-#include <generics/string_stream_internals.hpp>
+#include <core/generics/string_stream_internals.hpp>
 
 namespace turi {
 
@@ -1151,6 +1151,6 @@ struct is_memmovable<gl_string> {
 
 }
 
-#include <generics/string_serialization.hpp>
+#include <core/generics/string_serialization.hpp>
 
 #endif

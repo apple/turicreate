@@ -3,11 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <logger/logger.hpp>
+#include <core/logging/logger.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <boost/iostreams/device/array.hpp>
-#include <fileio/cache_stream_source.hpp>
-#include <fileio/fixed_size_cache_manager.hpp>
+#include <core/storage/fileio/cache_stream_source.hpp>
+#include <core/storage/fileio/fixed_size_cache_manager.hpp>
 
 namespace turi {
 namespace fileio_impl {

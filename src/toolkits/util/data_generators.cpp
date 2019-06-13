@@ -3,9 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <unity/toolkits/util/data_generators.hpp>
-#include <sframe/testing_utils.hpp>
-#include <random/random.hpp>
+#include <toolkits/util/data_generators.hpp>
+#include <core/storage/sframe_data/testing_utils.hpp>
+#include <core/random/random.hpp>
 #include <Eigen/Core>
 
 namespace turi { namespace recsys {

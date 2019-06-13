@@ -27,10 +27,10 @@ if PY_MAJOR_VERSION == 2:
 elif PY_MAJOR_VERSION >= 3:
    import pickle as py_pickle
 
-cdef extern from "<util/cityhash_tc.hpp>" namespace "turi":
+cdef extern from "<core/util/cityhash_tc.hpp>" namespace "turi":
     size_t hash64(const string&)
 
-cdef extern from "<sframe/sframe_rows.hpp>" namespace "turi":
+cdef extern from "<core/storage/sframe_data/sframe_rows.hpp>" namespace "turi":
 
     cdef struct row "sframe_rows::row":
         const flexible_type& at "operator[]"(size_t col)
@@ -42,7 +42,7 @@ cdef extern from "<sframe/sframe_rows.hpp>" namespace "turi":
         size_t num_rows()
 
 
-cdef extern from "<lambda/pylambda.hpp>" namespace "turi::lambda":
+cdef extern from "<core/system/lambda/pylambda.hpp>" namespace "turi::lambda":
 
     cdef struct lambda_call_data:
         flex_type_enum output_enum_type
@@ -471,7 +471,7 @@ set_pylambda_evaluation_functions(&eval_functions)
 ################################################################################
 # Stuff like this.
 
-cdef extern from "<lambda/pylambda_worker.hpp>" namespace "turi::lambda":
+cdef extern from "<core/system/lambda/pylambda_worker.hpp>" namespace "turi::lambda":
     int pylambda_worker_main(const string& root_path, const string& server_address, int loglevel)
 
 

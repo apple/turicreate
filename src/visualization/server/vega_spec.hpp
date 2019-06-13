@@ -6,7 +6,7 @@
 #ifndef __TC_VEGA_SPEC
 #define __TC_VEGA_SPEC
 
-#include <flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 
 #include <string>
 #include <sstream>

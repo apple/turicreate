@@ -3,9 +3,9 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <unity/lib/variant.hpp>
-#include <unity/lib/unity_global_singleton.hpp>
-#include <unity/lib/unity_global.hpp>
+#include <model_server/lib/variant.hpp>
+#include <model_server/lib/unity_global_singleton.hpp>
+#include <model_server/lib/unity_global.hpp>
 
 namespace turi {
 namespace variant_converter_impl {

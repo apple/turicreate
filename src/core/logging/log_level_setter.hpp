@@ -10,7 +10,7 @@
 #ifndef TURI_LOG_LEVEL_SETTER_HPP
 #define TURI_LOG_LEVEL_SETTER_HPP
 
-#include <logger/logger.hpp>
+#include <core/logging/logger.hpp>
 
 /**
  * \ingroup turilogger

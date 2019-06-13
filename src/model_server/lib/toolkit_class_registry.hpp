@@ -5,7 +5,7 @@
  */
 #ifndef TURI_UNITY_TOOLKIT_CLASS_REGISTRY_HPP
 #define TURI_UNITY_TOOLKIT_CLASS_REGISTRY_HPP
-#include <unity/lib/toolkit_class_specification.hpp>
+#include <model_server/lib/toolkit_class_specification.hpp>
 
 namespace turi {
 class model_base;

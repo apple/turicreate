@@ -11,8 +11,8 @@
 #include <cmath>
 #include <set>
 
-#include <util/code_optimization.hpp>
-#include <util/cityhash_tc.hpp>
+#include <core/util/code_optimization.hpp>
+#include <core/util/cityhash_tc.hpp>
 
 namespace turi { namespace vc_internal {
 

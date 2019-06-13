@@ -7,7 +7,7 @@
 #define TURI_BALL_TREE_NEIGHBORS_H_
 
 // Toolkits
-#include <unity/toolkits/nearest_neighbors/nearest_neighbors.hpp>
+#include <toolkits/nearest_neighbors/nearest_neighbors.hpp>
 
 // Miscellaneous
 #include <Eigen/SparseCore>

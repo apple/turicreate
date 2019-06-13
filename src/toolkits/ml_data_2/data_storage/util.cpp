@@ -3,8 +3,8 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <unity/toolkits/ml_data_2/data_storage/util.hpp>
-#include <unity/toolkits/ml_data_2/data_storage/ml_data_row_format.hpp>
+#include <toolkits/ml_data_2/data_storage/util.hpp>
+#include <toolkits/ml_data_2/data_storage/ml_data_row_format.hpp>
 
 namespace turi { namespace v2 { namespace ml_data_internal {
 

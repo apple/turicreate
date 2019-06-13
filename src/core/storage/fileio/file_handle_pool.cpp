@@ -7,10 +7,10 @@
 #define TURI_FILEIO_FILE_HANDLE_POOL_CPP
 
 #include <boost/algorithm/string.hpp>
-#include <fileio/file_ownership_handle.hpp>
-#include <fileio/file_handle_pool.hpp>
-#include <fileio/sanitize_url.hpp>
-#include <export.hpp>
+#include <core/storage/fileio/file_ownership_handle.hpp>
+#include <core/storage/fileio/file_handle_pool.hpp>
+#include <core/storage/fileio/sanitize_url.hpp>
+#include <core/export.hpp>
 
 namespace turi {
 namespace fileio {

@@ -6,8 +6,8 @@
 #ifndef TURI_SGRAPH_SGRAPH_SYNCHRONIZE_HPP
 #define TURI_SGRAPH_SGRAPH_SYNCHRONIZE_HPP
 
-#include<sgraph/sgraph_synchronize_interface.hpp>
-#include<logger/assertions.hpp>
+#include<core/storage/sgraph_data/sgraph_synchronize_interface.hpp>
+#include<core/logging/assertions.hpp>
 
 namespace turi {
 /**

@@ -8,8 +8,8 @@
 #include <cmath>
 #include <cstdint>
 #include <functional>
-#include <util/cityhash_tc.hpp>
-#include <logger/assertions.hpp>
+#include <core/util/cityhash_tc.hpp>
+#include <core/logging/assertions.hpp>
 namespace turi {
 namespace sketches {
 /**

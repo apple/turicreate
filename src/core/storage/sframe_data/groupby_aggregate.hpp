@@ -11,9 +11,9 @@
 #include <cstdint>
 #include <functional>
 #include <unordered_set>
-#include <sframe/sframe.hpp>
-#include <sframe/sframe_constants.hpp>
-#include <sframe/group_aggregate_value.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_data/sframe_constants.hpp>
+#include <core/storage/sframe_data/group_aggregate_value.hpp>
 
 namespace turi {
 

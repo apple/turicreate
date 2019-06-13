@@ -5,9 +5,9 @@
  */
 #include <vector>
 #include <string>
-#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
-#include <unity/toolkits/feature_engineering/sample_transformer.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
+#include <toolkits/feature_engineering/sample_transformer.hpp>
 
 namespace turi {
 namespace sdk_model {

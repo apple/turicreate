@@ -5,11 +5,11 @@
  */
 #include <unordered_set>
 #include <queue>
-#include <sframe/groupby_aggregate_impl.hpp>
-#include <sframe/sarray_reader_buffer.hpp>
-#include <parallel/lambda_omp.hpp>
-#include <util/cityhash_tc.hpp>
-#include <sframe/groupby_aggregate.hpp>
+#include <core/storage/sframe_data/groupby_aggregate_impl.hpp>
+#include <core/storage/sframe_data/sarray_reader_buffer.hpp>
+#include <core/parallel/lambda_omp.hpp>
+#include <core/util/cityhash_tc.hpp>
+#include <core/storage/sframe_data/groupby_aggregate.hpp>
 
 namespace turi {
 namespace groupby_aggregate_impl {

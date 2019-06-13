@@ -3,11 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <sgraph/sgraph_fast_triple_apply.hpp>
-#include <sgraph/sgraph_constants.hpp>
-#include <sgraph/hilbert_parallel_for.hpp>
-#include <parallel/pthread_tools.hpp>
-#include <util/cityhash_tc.hpp>
+#include <core/storage/sgraph_data/sgraph_fast_triple_apply.hpp>
+#include <core/storage/sgraph_data/sgraph_constants.hpp>
+#include <core/storage/sgraph_data/hilbert_parallel_for.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/util/cityhash_tc.hpp>
 
 namespace turi {
 namespace sgraph_compute {

@@ -32,8 +32,8 @@
 #include <boost/functional/hash.hpp>
 
 
-#include <logger/assertions.hpp>
-#include <serialization/serialization_includes.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
 
 namespace turi {
   /**

@@ -1,6 +1,6 @@
 project(unity)
 
-# We depend on the open source src/unity/python/turicreate
+# We depend on the open source src/python/turicreate
 # to fill
 #  - INSTALLATION_BINARY_FILES
 #  - INSTALLATION_EXTENSIONS
@@ -12,13 +12,15 @@ if(UNIX AND NOT APPLE)
 endif()
 
 set(INSTALLATION_BINARY_FILES)
-set(INSTALLATION_EXTENSIONS)
+
 # add the propretary extensions
-get_property(EXTENSIONS_LIST DIRECTORY "../../extensions" PROPERTY EXTENSIONS_LIST)
+get_property(EXTENSIONS_LIST DIRECTORY "${CMAKE_SOURCE_DIR}/src/model_server/extensions" PROPERTY EXTENSIONS_LIST)
+
 foreach(loop_var ${EXTENSIONS_LIST})
   message(STATUS "Copying Extension to turicreate python directory ${loop_var}")
   list(APPEND INSTALLATION_EXTENSIONS ${loop_var})
 endforeach()
+
 
 make_copy_target(copy_unity_shared
   FILES
@@ -29,7 +31,7 @@ add_dependencies(copy_unity_shared unity_shared)
 make_copy_target(release_binaries
         TARGETS
         ${INSTALLATION_EXTENSIONS}
-        FILES
+         FILES
         ${INSTALLATION_BINARY_FILES}
         ${INSTALLATION_SYSTEM_BINARY_FILES}
         )
@@ -51,11 +53,11 @@ if (APPLE)
   make_copy_target(
     visualization_client_app
     FILES
-    ${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vega_3.2.1.js
-    ${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vg2png
-    ${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vg2svg
+    ${CMAKE_SOURCE_DIR}/src/python/turicreate/visualization/vega_3.2.1.js
+    ${CMAKE_SOURCE_DIR}/src/python/turicreate/visualization/vg2png
+    ${CMAKE_SOURCE_DIR}/src/python/turicreate/visualization/vg2svg
     DIRECTORIES
-    "${CMAKE_BINARY_DIR}/src/visualization/${CMAKE_BUILD_TYPE}/Turi Create Visualization.app"
+    "${CMAKE_BINARY_DIR}/src/visualization/client/${CMAKE_BUILD_TYPE}/Turi Create Visualization.app"
   )
   add_dependencies(visualization_client_app visualization_client)
 elseif(LINUX)
@@ -63,13 +65,13 @@ elseif(LINUX)
     visualization_client_app ALL
     DEPENDS visualization_client
     COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/Turi Create Visualization"
-    COMMAND cp -a "${CMAKE_BINARY_DIR}/src/visualization/TcViz/*" "${CMAKE_CURRENT_BINARY_DIR}/Turi Create Visualization"
+    COMMAND cp -a "${CMAKE_BINARY_DIR}/src/visualization/client/TcViz/*" "${CMAKE_CURRENT_BINARY_DIR}/Turi Create Visualization"
   )
   add_custom_target(
     visualization_vega ALL
     DEPENDS visualization_client
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vega_3.2.1.js" "${CMAKE_CURRENT_BINARY_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vg2png" "${CMAKE_CURRENT_BINARY_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vg2svg" "${CMAKE_CURRENT_BINARY_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_SOURCE_DIR}/src/python/turicreate/visualization/vega_3.2.1.js" "${CMAKE_CURRENT_BINARY_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_SOURCE_DIR}/src/python/turicreate/visualization/vg2png" "${CMAKE_CURRENT_BINARY_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_SOURCE_DIR}/src/python/turicreate/visualization/vg2svg" "${CMAKE_CURRENT_BINARY_DIR}"
   )
 endif()

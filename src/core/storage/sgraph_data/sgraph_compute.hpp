@@ -7,9 +7,9 @@
 #define TURI_SGRAPH_SGRAPH_COMPUTE_HPP
 
 
-#include <sgraph/sgraph_engine.hpp>
-#include <sgraph/sgraph_vertex_apply.hpp>
-#include <sgraph/sgraph_edge_apply.hpp>
-#include <sgraph/sgraph_triple_apply.hpp>
+#include <core/storage/sgraph_data/sgraph_engine.hpp>
+#include <core/storage/sgraph_data/sgraph_vertex_apply.hpp>
+#include <core/storage/sgraph_data/sgraph_edge_apply.hpp>
+#include <core/storage/sgraph_data/sgraph_triple_apply.hpp>
 
 #endif // TURI_SGRAPH_SGRAPH_COMPUTE_HPP

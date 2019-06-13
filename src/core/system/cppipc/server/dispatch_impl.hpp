@@ -12,15 +12,15 @@
 #include <boost/type_traits.hpp>
 #include <boost/function_types/function_type.hpp>
 #include <boost/function_types/parameter_types.hpp>
-#include <serialization/iarchive.hpp>
-#include <serialization/oarchive.hpp>
-#include <generics/remove_member_pointer.hpp>
-#include <cppipc/ipc_object_base.hpp>
-#include <cppipc/util/generics/member_function_return_type.hpp>
-#include <cppipc/util/generics/tuple.hpp>
-#include <cppipc/server/dispatch.hpp>
-#include <cppipc/server/comm_server.hpp>
-#include <cppipc/common/ipc_deserializer.hpp>
+#include <core/storage/serialization/iarchive.hpp>
+#include <core/storage/serialization/oarchive.hpp>
+#include <core/generics/remove_member_pointer.hpp>
+#include <core/system/cppipc/ipc_object_base.hpp>
+#include <core/system/cppipc/util/generics/member_function_return_type.hpp>
+#include <core/system/cppipc/util/generics/tuple.hpp>
+#include <core/system/cppipc/server/dispatch.hpp>
+#include <core/system/cppipc/server/comm_server.hpp>
+#include <core/system/cppipc/common/ipc_deserializer.hpp>
 
 namespace cppipc {
 

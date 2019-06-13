@@ -8,12 +8,12 @@
 
 #include <string>
 #include <map>
-#include <unity/lib/variant.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <logger/assertions.hpp>
-#include <serialization/serialization_includes.hpp>
-#include <unity/toolkits/ml_data_2/ml_data_column_modes.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
+#include <model_server/lib/variant.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
+#include <toolkits/ml_data_2/ml_data_column_modes.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
 #include <functional>
 
 namespace turi { namespace v2 { namespace ml_data_internal {

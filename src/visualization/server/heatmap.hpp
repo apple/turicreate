@@ -7,11 +7,11 @@
 #ifndef __TC_VIS_HEATMAP
 #define __TC_VIS_HEATMAP
 
-#include <unity/lib/gl_sframe.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
 
 #include "extrema.hpp"
 #include "groupby.hpp"
-#include <unity/lib/visualization/plot.hpp>
+#include <visualization/server/plot.hpp>
 
 namespace turi {
 namespace visualization {

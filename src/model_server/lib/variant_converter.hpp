@@ -17,10 +17,10 @@
 #include <boost/mpl/count.hpp>
 #include <boost/mpl/transform.hpp>
 #include <boost/fusion/algorithm/iteration/for_each.hpp>
-#include <unity/lib/variant.hpp>
-#include <unity/lib/unity_global_singleton.hpp>
-#include <flexible_type/flexible_type_converter.hpp>
-#include <unity/lib/api/function_closure_info.hpp>
+#include <model_server/lib/variant.hpp>
+#include <model_server/lib/unity_global_singleton.hpp>
+#include <core/data/flexible_type/flexible_type_converter.hpp>
+#include <model_server/lib/api/function_closure_info.hpp>
 namespace turi {
 
 // forward declarations

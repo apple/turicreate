@@ -3,16 +3,16 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <sframe/sframe_compact.hpp>
-#include <sframe/sframe.hpp>
-#include <sframe/sframe_index_file.hpp>
-#include <sframe/sarray_index_file.hpp>
-#include <sframe/sarray_v2_block_manager.hpp>
-#include <sframe/sarray_v2_block_writer.hpp>
-#include <sframe/sarray_v2_block_types.hpp>
-#include <sframe/sframe_saving_impl.hpp>
-#include <fileio/fs_utils.hpp>
-#include <logger/assertions.hpp>
+#include <core/storage/sframe_data/sframe_compact.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_data/sframe_index_file.hpp>
+#include <core/storage/sframe_data/sarray_index_file.hpp>
+#include <core/storage/sframe_data/sarray_v2_block_manager.hpp>
+#include <core/storage/sframe_data/sarray_v2_block_writer.hpp>
+#include <core/storage/sframe_data/sarray_v2_block_types.hpp>
+#include <core/storage/sframe_data/sframe_saving_impl.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
+#include <core/logging/assertions.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>

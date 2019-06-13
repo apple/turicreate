@@ -7,8 +7,8 @@
 #ifndef TURI_OBJECT_DETECTION_OD_YOLO_H_
 #define TURI_OBJECT_DETECTION_OD_YOLO_H_
 
-#include <unity/toolkits/neural_net/image_augmentation.hpp>
-#include <unity/toolkits/neural_net/model_spec.hpp>
+#include <ml/neural_net/image_augmentation.hpp>
+#include <ml/neural_net/model_spec.hpp>
 
 namespace turi {
 namespace object_detection {

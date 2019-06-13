@@ -1,20 +1,20 @@
-#include <unity/toolkits/supervised_learning/automatic_model_creation.hpp>
+#include <toolkits/supervised_learning/automatic_model_creation.hpp>
 
 #include <algorithm>
 #include <memory>
 #include <string>
 #include <vector>
 
-#include <unity/lib/api/unity_sframe_interface.hpp>
-#include <unity/lib/unity_sframe.hpp>
-#include <unity/toolkits/supervised_learning/boosted_trees.hpp>
-#include <unity/toolkits/supervised_learning/decision_tree.hpp>
-#include <unity/toolkits/supervised_learning/linear_regression.hpp>
-#include <unity/toolkits/supervised_learning/linear_svm.hpp>
-#include <unity/toolkits/supervised_learning/logistic_regression.hpp>
-#include <unity/toolkits/supervised_learning/random_forest.hpp>
-#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
-#include <unity/toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <model_server/lib/api/unity_sframe_interface.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
+#include <toolkits/supervised_learning/boosted_trees.hpp>
+#include <toolkits/supervised_learning/decision_tree.hpp>
+#include <toolkits/supervised_learning/linear_regression.hpp>
+#include <toolkits/supervised_learning/linear_svm.hpp>
+#include <toolkits/supervised_learning/logistic_regression.hpp>
+#include <toolkits/supervised_learning/random_forest.hpp>
+#include <toolkits/supervised_learning/supervised_learning.hpp>
+#include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
 
 
 namespace turi {

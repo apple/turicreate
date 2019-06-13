@@ -7,7 +7,7 @@
 #include <unordered_set>
 #include <unordered_map>
 
-#include <sframe/sframe.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
 
 //TODO: What happens if a join key (or part of one) is NULL?
 enum join_type_t {INNER_JOIN = 0, LEFT_JOIN, RIGHT_JOIN, FULL_JOIN};

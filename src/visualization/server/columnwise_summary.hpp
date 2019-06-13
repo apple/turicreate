@@ -6,14 +6,14 @@
 #ifndef __TC_COLUMN_SUMMARY
 #define __TC_COLUMN_SUMMARY
 
-#include <unity/lib/visualization/process_wrapper.hpp>
-#include <unity/lib/visualization/histogram.hpp>
-#include <unity/lib/visualization/item_frequency.hpp>
-#include <unity/lib/visualization/transformation.hpp>
-#include <unity/lib/visualization/thread.hpp>
-#include <unity/lib/visualization/summary_view.hpp>
-#include <unity/lib/visualization/vega_data.hpp>
-#include <unity/lib/visualization/vega_spec.hpp>
+#include <visualization/server/process_wrapper.hpp>
+#include <visualization/server/histogram.hpp>
+#include <visualization/server/item_frequency.hpp>
+#include <visualization/server/transformation.hpp>
+#include <visualization/server/thread.hpp>
+#include <visualization/server/summary_view.hpp>
+#include <visualization/server/vega_data.hpp>
+#include <visualization/server/vega_spec.hpp>
 
 namespace turi {
   class unity_sframe_base;

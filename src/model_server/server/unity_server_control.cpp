@@ -3,17 +3,17 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <logger/logger.hpp>
-#include <logger/assertions.hpp>
+#include <core/logging/logger.hpp>
+#include <core/logging/assertions.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include <unity/server/unity_server.hpp>
-#include <unity/server/unity_server_options.hpp>
-#include <unity/server/unity_server_init.hpp>
-#include <unity/server/unity_server_control.hpp>
-#include <parallel/mutex.hpp>
+#include <model_server/server/unity_server.hpp>
+#include <model_server/server/unity_server_options.hpp>
+#include <model_server/server/unity_server_init.hpp>
+#include <model_server/server/unity_server_control.hpp>
+#include <core/parallel/mutex.hpp>
 #include <mutex>
 
 namespace turi {

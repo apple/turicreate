@@ -7,16 +7,16 @@
 #include <deque>
 #include <iomanip>
 #include <boost/algorithm/string.hpp>
-#include <parallel/pthread_tools.hpp>
-#include <unity/lib/gl_sarray.hpp>
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/lib/unity_sframe.hpp>
-#include <sframe/sframe.hpp>
-#include <sframe/sframe_reader.hpp>
-#include <sframe/sframe_reader_buffer.hpp>
-#include <sframe/dataframe.hpp>
-#include <sframe_query_engine/planning/planner.hpp>
-#include <table_printer/table_printer.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_data/sframe_reader.hpp>
+#include <core/storage/sframe_data/sframe_reader_buffer.hpp>
+#include <core/storage/sframe_data/dataframe.hpp>
+#include <core/storage/query_engine/planning/planner.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
 
 namespace turi {
 

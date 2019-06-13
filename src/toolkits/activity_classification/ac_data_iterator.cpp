@@ -4,7 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <unity/toolkits/activity_classification/ac_data_iterator.hpp>
+#include <toolkits/activity_classification/ac_data_iterator.hpp>
 
 #include <time.h>
 
@@ -12,10 +12,10 @@
 #include <iomanip>
 #include <sstream>
 
-#include <logger/assertions.hpp>
-#include <logger/logger.hpp>
-#include <random/random.hpp>
-#include <util/sys_util.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/logging/logger.hpp>
+#include <core/random/random.hpp>
+#include <core/util/sys_util.hpp>
 
 namespace turi {
 namespace activity_classification {

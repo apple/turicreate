@@ -3,11 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <logger/logger.hpp>
-#include <sgraph/sgraph_io.hpp>
-#include <sgraph/sgraph.hpp>
-#include <sframe/sframe_io.hpp>
-#include <json/json_include.hpp>
+#include <core/logging/logger.hpp>
+#include <core/storage/sgraph_data/sgraph_io.hpp>
+#include <core/storage/sgraph_data/sgraph.hpp>
+#include <core/storage/sframe_data/sframe_io.hpp>
+#include <core/data/json/json_include.hpp>
 
 namespace turi {
 

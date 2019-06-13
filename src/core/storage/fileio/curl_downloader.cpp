@@ -5,14 +5,14 @@
  */
 #include <tuple>
 #include <iostream>
-#include <logger/logger.hpp>
-#include <fileio/curl_downloader.hpp>
-#include <fileio/temp_files.hpp>
+#include <core/logging/logger.hpp>
+#include <core/storage/fileio/curl_downloader.hpp>
+#include <core/storage/fileio/temp_files.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
-#include <cppipc/server/cancel_ops.hpp>
-#include <fileio/set_curl_options.hpp>
+#include <core/system/cppipc/server/cancel_ops.hpp>
+#include <core/storage/fileio/set_curl_options.hpp>
 
 #ifndef TC_NO_CURL
 extern "C" {

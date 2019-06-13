@@ -8,8 +8,8 @@
 
 #include <vector>
 
-#include <unity/lib/toolkit_function_specification.hpp>
-#include <unity/lib/variant.hpp>
+#include <model_server/lib/toolkit_function_specification.hpp>
+#include <model_server/lib/variant.hpp>
 
 namespace turi {
 namespace nearest_neighbors {

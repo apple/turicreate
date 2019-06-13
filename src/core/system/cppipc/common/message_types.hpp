@@ -9,10 +9,10 @@
 #include <exception>
 #include <sstream>
 #include <map>
-#include <nanosockets/zmq_msg_vector.hpp>
+#include <core/system/nanosockets/zmq_msg_vector.hpp>
 #include <typeinfo>
-#include <exceptions/error_types.hpp>
-#include <export.hpp>
+#include <core/system/exceptions/error_types.hpp>
+#include <core/export.hpp>
 namespace cppipc {
 namespace nanosockets = turi::nanosockets;
 /**

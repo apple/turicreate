@@ -6,9 +6,9 @@
 #ifndef TURI_FACTORIZATION_FACTORS_TO_SFRAME_H_
 #define TURI_FACTORIZATION_FACTORS_TO_SFRAME_H_
 
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <unity/lib/unity_sframe.hpp>
-#include <sframe/sframe.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
 #include <string>
 
 namespace turi { namespace factorization {

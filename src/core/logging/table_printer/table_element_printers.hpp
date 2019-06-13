@@ -6,10 +6,10 @@
 #ifndef TURI_TABLE_ELEMENT_PRINTERS_H_
 #define TURI_TABLE_ELEMENT_PRINTERS_H_
 
-#include <flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 #include <type_traits>
 #include <atomic>
-#include <parallel/atomic.hpp>
+#include <core/parallel/atomic.hpp>
 
 namespace turi {
 

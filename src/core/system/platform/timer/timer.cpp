@@ -7,7 +7,7 @@
 #include <signal.h>
 #include <sys/time.h>
 #include <boost/bind.hpp>
-#include <parallel/pthread_tools.hpp>
+#include <core/parallel/pthread_tools.hpp>
 #include <timer/timer.hpp>
 
 std::ostream&  operator<<(std::ostream& out, const turi::timer& t) {

@@ -8,7 +8,7 @@
 #define TURI_UNITY_TOOLKIT_UTIL_HPP
 #include <vector>
 #include <utility>
-#include <unity/lib/variant.hpp>
+#include <model_server/lib/variant.hpp>
 
 /*
  * This contains a collection of useful utility function for toolkit

@@ -12,9 +12,9 @@
 #include <climits>
 #include <mutex>
 #include <set>
-#include <logger/logger.hpp>
+#include <core/logging/logger.hpp>
 #include <boost/filesystem.hpp>
-#include <parallel/mutex.hpp>
+#include <core/parallel/mutex.hpp>
 
 namespace fs = boost::filesystem;
 

@@ -3,18 +3,18 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <unity/lib/image_util.hpp>
+#include <model_server/lib/image_util.hpp>
 
 #include <algorithm>
 #include <string>
 
-#include <image/image_util_impl.hpp>
-#include <sframe/sframe_iterators.hpp>
-#include <sframe/sframe.hpp>
-#include <unity/lib/unity_sframe.hpp>
-#include <fileio/sanitize_url.hpp>
-#include <sframe_query_engine/util/aggregates.hpp>
-#include <unity/lib/toolkit_function_macros.hpp>
+#include <core/data/image/image_util_impl.hpp>
+#include <core/storage/sframe_data/sframe_iterators.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
+#include <core/storage/fileio/sanitize_url.hpp>
+#include <core/storage/query_engine/util/aggregates.hpp>
+#include <model_server/lib/toolkit_function_macros.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/path.hpp>
 

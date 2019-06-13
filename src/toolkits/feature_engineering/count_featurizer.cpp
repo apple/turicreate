@@ -6,12 +6,12 @@
 #include <vector>
 #include <string>
 #include <limits>
-#include <util/cityhash_tc.hpp>
-#include <random/random.hpp>
-#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
-#include <unity/toolkits/feature_engineering/transform_utils.hpp>
-#include <unity/toolkits/feature_engineering/count_featurizer.hpp>
+#include <core/util/cityhash_tc.hpp>
+#include <core/random/random.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
+#include <toolkits/feature_engineering/transform_utils.hpp>
+#include <toolkits/feature_engineering/count_featurizer.hpp>
 
 namespace turi {
 namespace sdk_model {

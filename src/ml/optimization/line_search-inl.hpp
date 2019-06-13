@@ -7,13 +7,13 @@
 #define TURI_LINE_SEARCH_H_
 
 // Types
-#include <flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 
 // Optimization
-#include <optimization/optimization_interface.hpp>
-#include <optimization/regularizer_interface.hpp>
+#include <ml/optimization/optimization_interface.hpp>
+#include <ml/optimization/regularizer_interface.hpp>
 #include <Eigen/Core>
-#include <logger/assertions.hpp>
+#include <core/logging/assertions.hpp>
 
 // TODO: List of todo's for this file
 //------------------------------------------------------------------------------

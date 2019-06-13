@@ -14,7 +14,7 @@
 #include <string>
 #include <vector>
 
-#include <serialization/serialization_includes.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
 
 namespace turi {
 namespace neural_net {

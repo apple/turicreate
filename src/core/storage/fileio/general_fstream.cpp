@@ -4,10 +4,10 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <iostream>
-#include <logger/logger.hpp>
+#include <core/logging/logger.hpp>
 #include <boost/algorithm/string.hpp>
-#include <fileio/sanitize_url.hpp>
-#include <fileio/general_fstream.hpp>
+#include <core/storage/fileio/sanitize_url.hpp>
+#include <core/storage/fileio/general_fstream.hpp>
 
 namespace turi {
 

@@ -5,9 +5,9 @@
  */
 #ifndef TURI_QUADRATIC_FEATURES_H_
 #define TURI_QUADRATIC_FEATURES_H_
-#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/toolkits/feature_engineering/transformer_base.hpp>
-#include <export.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
+#include <toolkits/feature_engineering/transformer_base.hpp>
+#include <core/export.hpp>
 
 namespace turi{
 namespace sdk_model{

@@ -5,9 +5,9 @@
  */
 #ifndef DEFERRED_RWLOCK_HPP
 #define DEFERRED_RWLOCK_HPP
-#include <parallel/pthread_tools.hpp>
-#include <parallel/queued_rwlock.hpp>
-#include <logger/assertions.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/parallel/queued_rwlock.hpp>
+#include <core/logging/assertions.hpp>
 namespace turi {
 /**
  * \ingroup threading

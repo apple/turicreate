@@ -5,7 +5,7 @@
  */
 #ifndef TURI_UNITY_CONNECTED_COMPONENT
 #define TURI_UNITY_CONNECTED_COMPONENT
-#include <unity/lib/toolkit_function_specification.hpp>
+#include <model_server/lib/toolkit_function_specification.hpp>
 
 namespace turi {
 namespace connected_component {

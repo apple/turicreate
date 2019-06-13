@@ -11,7 +11,7 @@ from libcpp.string cimport string
 from libcpp.pair cimport pair
 from .cy_unity_base_types cimport *
 
-cdef extern from "<unity/lib/unity_sketch.hpp>" namespace "turi":
+cdef extern from "<ml/sketches/unity_sketch.hpp>" namespace "turi":
     cdef cppclass unity_sketch nogil:
         unity_sketch() except +
         void construct_from_sarray(unity_sarray_base_ptr, bint, vector[flexible_type]) except +

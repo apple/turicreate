@@ -4,25 +4,25 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 // Data structures
-#include <flexible_type/flexible_type_base_types.hpp>
-#include <unity/lib/unity_sframe.hpp>
-#include <sframe/sframe.hpp>
-#include <unity/lib/variant.hpp>
-#include <unity/lib/unity_global.hpp>
+#include <core/data/flexible_type/flexible_type_base_types.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <model_server/lib/variant.hpp>
+#include <model_server/lib/unity_global.hpp>
 
 // Toolkits
-#include <unity/lib/toolkit_util.hpp>
-#include <unity/lib/toolkit_class_registry.hpp>
-#include <unity/lib/toolkit_function_macros.hpp>
-#include <unity/lib/toolkit_function_specification.hpp>
-#include <unity/toolkits/nearest_neighbors/unity_nearest_neighbors.hpp>
-#include <unity/toolkits/nearest_neighbors/nearest_neighbors.hpp>
-#include <unity/toolkits/nearest_neighbors/brute_force_neighbors.hpp>
-#include <unity/toolkits/nearest_neighbors/ball_tree_neighbors.hpp>
-#include <unity/toolkits/nearest_neighbors/lsh_neighbors.hpp>
+#include <model_server/lib/toolkit_util.hpp>
+#include <model_server/lib/toolkit_class_registry.hpp>
+#include <model_server/lib/toolkit_function_macros.hpp>
+#include <model_server/lib/toolkit_function_specification.hpp>
+#include <toolkits/nearest_neighbors/unity_nearest_neighbors.hpp>
+#include <toolkits/nearest_neighbors/nearest_neighbors.hpp>
+#include <toolkits/nearest_neighbors/brute_force_neighbors.hpp>
+#include <toolkits/nearest_neighbors/ball_tree_neighbors.hpp>
+#include <toolkits/nearest_neighbors/lsh_neighbors.hpp>
 
 // Miscellaneous
-#include <export.hpp>
+#include <core/export.hpp>
 
 namespace turi {
 namespace nearest_neighbors {

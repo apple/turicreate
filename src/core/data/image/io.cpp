@@ -3,10 +3,10 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <image/image_type.hpp>
-#include <image/io.hpp>
-#include <image/io_impl.hpp>
-#include <fileio/general_fstream.hpp>
+#include <core/data/image/image_type.hpp>
+#include <core/data/image/io.hpp>
+#include <core/data/image/io_impl.hpp>
+#include <core/storage/fileio/general_fstream.hpp>
 #include <boost/mpl/vector.hpp>
 #include <boost/algorithm/string.hpp>
 #include <stdio.h>

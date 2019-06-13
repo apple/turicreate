@@ -7,9 +7,9 @@
 #define TURI_SFRAME_READER_BUFFER
 #include <memory>
 #include <vector>
-#include <flexible_type/flexible_type.hpp>
-#include <sframe/sframe.hpp>
-#include <sframe/sframe_constants.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_data/sframe_constants.hpp>
 namespace turi {
 class sframe;
 

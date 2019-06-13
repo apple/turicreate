@@ -6,8 +6,8 @@
 #ifndef TURI_SFRAME_IO_HPP
 #define TURI_SFRAME_IO_HPP
 
-#include<flexible_type/flexible_type.hpp>
-#include<serialization/oarchive.hpp>
+#include<core/data/flexible_type/flexible_type.hpp>
+#include<core/storage/serialization/oarchive.hpp>
 
 class JSONNode;
 

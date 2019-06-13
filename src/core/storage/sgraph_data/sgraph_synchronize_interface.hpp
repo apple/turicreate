@@ -6,7 +6,7 @@
 #ifndef TURI_SGRAPH_SGRAPH_SYNCHRONIZE_INTERFACE_HPP
 #define TURI_SGRAPH_SGRAPH_SYNCHRONIZE_INTERFACE_HPP
 
-#include<sgraph/sgraph_types.hpp>
+#include<core/storage/sgraph_data/sgraph_types.hpp>
 
 namespace turi {
 

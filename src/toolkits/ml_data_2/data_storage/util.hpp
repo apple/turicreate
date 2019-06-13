@@ -6,8 +6,8 @@
 #ifndef TURI_ML2_DATA_STORAGE_UTIL_H_
 #define TURI_ML2_DATA_STORAGE_UTIL_H_
 
-#include <unity/toolkits/ml_data_2/metadata.hpp>
-#include <sframe/sarray.hpp>
+#include <toolkits/ml_data_2/metadata.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
 
 namespace turi { namespace v2 { namespace ml_data_internal {
 

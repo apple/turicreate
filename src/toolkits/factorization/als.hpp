@@ -8,12 +8,12 @@
 
 #include <Eigen/Cholesky>
 // ML-Data & options manager
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <unity/lib/extensions/option_manager.hpp>
-#include <table_printer/table_printer.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
+#include <model_server/lib/extensions/option_manager.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
 
 // Factorization model impl
-#include <unity/toolkits/factorization/factorization_model_impl.hpp>
+#include <toolkits/factorization/factorization_model_impl.hpp>
 #include <algorithm>
 
 
