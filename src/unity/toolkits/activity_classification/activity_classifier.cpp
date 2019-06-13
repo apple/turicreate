@@ -107,38 +107,6 @@ float cumulative_chunk_accuracy(size_t prediction_window, size_t num_classes,
   return cumulative_per_batch_accuracy;
 }
 
-// Randomly split an SFrame into two SFrames based on the `session_id` such
-// that one split contains data for a `fraction` of the sessions while the
-// second split contains all data for the rest of the sessions.
-std::tuple<gl_sframe, gl_sframe> random_split_by_session(gl_sframe data, std::string session_id_column_name, float fraction, size_t seed) {
-  if (std::find(data.column_names().begin(), data.column_names().end(),
-                  session_id_column_name) == data.column_names().end()) {
-    log_and_throw("Input dataset must contain a column called " +
-                  session_id_column_name);
-  }
-
-  if (fraction < 0.f || fraction > 1.f) {
-    log_and_throw("Fraction specified must be between 0 and 1");
-  }
-  // Create a random binary filter (boolean SArray), using the same probability
-  // across all lines that belong to the same session. In expectancy - the
-  // desired fraction of the sessions will go to the training set. Since boolean
-  // filters preserve order - there is no need to re-sort the lines within each
-  // session. The boolean filter is a pseudorandom function of the session_id
-  // and the global seed above, allowing the train-test split to vary across
-  // runs using the same dataset.
-  auto random_session_pick = [fraction](size_t session_id_hash) {
-    std::default_random_engine generator(session_id_hash);
-    std::uniform_real_distribution<float> dis(0.f, 1.f);
-    return dis(generator) < fraction;
-  };
-
-  gl_sarray chosen_filter = data[session_id_column_name].hash(seed).apply(random_session_pick, flex_type_enum::INTEGER);
-  gl_sframe train = data[chosen_filter];
-  gl_sframe val =  data[1-chosen_filter];
-
-  return std::make_tuple(train,val);
-}
 
 struct result {
     shared_float_array loss_info;
@@ -268,6 +236,41 @@ std::tuple<float, float> activity_classifier::compute_validation_metrics(
   return std::make_tuple(average_val_accuracy, average_val_loss);
 }
 
+// Randomly split an SFrame into two SFrames based on the `session_id` such
+// that one split contains data for a `fraction` of the sessions while the
+// second split contains all data for the rest of the sessions.
+std::tuple<gl_sframe, gl_sframe> activity_classifier::random_split_by_session(
+    gl_sframe data, std::string session_id_column_name, float fraction,
+    size_t seed) const {
+  if (std::find(data.column_names().begin(), data.column_names().end(),
+                session_id_column_name) == data.column_names().end()) {
+    log_and_throw("Input dataset must contain a column called " +
+                  session_id_column_name);
+  }
+
+  if (fraction < 0.f || fraction > 1.f) {
+    log_and_throw("Fraction specified must be between 0 and 1");
+  }
+  // Create a random binary filter (boolean SArray), using the same probability
+  // across all lines that belong to the same session. In expectancy - the
+  // desired fraction of the sessions will go to the training set. Since boolean
+  // filters preserve order - there is no need to re-sort the lines within each
+  // session. The boolean filter is a pseudorandom function of the session_id
+  // and the global seed above, allowing the train-test split to vary across
+  // runs using the same dataset.
+  auto random_session_pick = [fraction](size_t session_id_hash) {
+    std::default_random_engine generator(session_id_hash);
+    std::uniform_real_distribution<float> dis(0.f, 1.f);
+    return dis(generator) < fraction;
+  };
+
+  gl_sarray chosen_filter = data[session_id_column_name].hash(seed).apply(
+      random_session_pick, flex_type_enum::INTEGER);
+  gl_sframe train = data[chosen_filter];
+  gl_sframe val = data[1 - chosen_filter];
+
+  return std::make_tuple(train, val);
+}
 
 void activity_classifier::init_table_printer(bool has_validation) {
   if (has_validation) {
