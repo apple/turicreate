@@ -5,9 +5,9 @@
 #include <string>
 #include <unordered_map>
 
-#include <logger/logger.hpp>
-#include <unity/toolkits/neural_net/float_array.hpp>
-#include <unity/toolkits/neural_net/mps_command_queue.hpp>
+#include <core/logging/logger.hpp>
+#include <ml/neural_net/float_array.hpp>
+#include <ml/neural_net/mps_command_queue.hpp>
 
 #import "mps_cnnmodule.h"
 #import "mps_device_manager.h"

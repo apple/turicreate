@@ -4,16 +4,16 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <unity/toolkits/neural_net/model_spec.hpp>
+#include <ml/neural_net/model_spec.hpp>
 
 #include <algorithm>
 #include <fstream>
 #include <memory>
 #include <vector>
 
-#include <logger/assertions.hpp>
-#include <logger/logger.hpp>
-#include <unity/toolkits/coreml_export/mlmodel_include.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/logging/logger.hpp>
+#include <toolkits/coreml_export/mlmodel_include.hpp>
 
 namespace turi {
 namespace neural_net {

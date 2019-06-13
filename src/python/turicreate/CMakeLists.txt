@@ -12,23 +12,46 @@ if(UNIX AND NOT APPLE)
 endif()
 
 set(INSTALLATION_BINARY_FILES)
-set(INSTALLATION_EXTENSIONS)
-# add the propretary extensions
-get_property(EXTENSIONS_LIST DIRECTORY "../../extensions" PROPERTY EXTENSIONS_LIST)
-foreach(loop_var ${EXTENSIONS_LIST})
-  message(STATUS "Copying Extension to turicreate python directory ${loop_var}")
-  list(APPEND INSTALLATION_EXTENSIONS ${loop_var})
-endforeach()
+
+set(_python_sources 
+  ${_TC_COMMON_OBJECTS}
+  "$<TARGET_OBJECTS:pylambda_worker>"
+  "$<TARGET_OBJECTS:python_callbacks>"
+  )
+
+if(APPLE AND HAS_MLCUSTOMMODEL)
+  set(_python_sources
+    ${_python_sources}
+    "$<TARGET_OBJECTS:objcapi>"
+  )
+endif()
+
+
+
+make_library(
+  turi_create 
+  SOURCES
+  ${_python_sources}
+  REQUIRES
+  ${_TC_COMMON_REQUIREMENTS}
+  SHARED
+  SHARED_ALL_DEFINED
+  DEAD_STRIP
+)
+
+  
+
+
+
+
 
 make_copy_target(copy_unity_shared
   FILES
-  $<TARGET_FILE:unity_shared>
+  $<TARGET_FILE:turi_create>
 )
 add_dependencies(copy_unity_shared unity_shared)
 
-make_copy_target(release_binaries
-        TARGETS
-        ${INSTALLATION_EXTENSIONS}
+make_copy_target(release_binarieS
         FILES
         ${INSTALLATION_BINARY_FILES}
         ${INSTALLATION_SYSTEM_BINARY_FILES}

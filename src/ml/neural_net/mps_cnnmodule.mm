@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <iostream>
 
-#include <logger/assertions.hpp>
+#include <core/logging/assertions.hpp>
 
 #import "mps_device_manager.h"
 

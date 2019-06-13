@@ -4,7 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#import <unity/toolkits/neural_net/TCMPSImageAugmenting.h>
+#import <ml/neural_net/TCMPSImageAugmenting.h>
 
 #include <math.h>
 

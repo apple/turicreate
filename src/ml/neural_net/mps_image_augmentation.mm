@@ -4,11 +4,11 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <unity/toolkits/neural_net/mps_image_augmentation.hpp>
+#include <ml/neural_net/mps_image_augmentation.hpp>
 
-#include <logger/assertions.hpp>
-#include <platform/parallel/lambda_omp.hpp>
-#include <random/random.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/system/platform/parallel/lambda_omp.hpp>
+#include <core/random/random.hpp>
 
 #import <Accelerate/Accelerate.h>
 

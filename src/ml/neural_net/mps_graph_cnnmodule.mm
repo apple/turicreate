@@ -1,6 +1,6 @@
 #include "mps_graph_cnnmodule.h"
 
-#include <logger/logger.hpp>
+#include <core/logging/logger.hpp>
 
 #import "mps_device_manager.h"
 

@@ -4,10 +4,10 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <unity/toolkits/neural_net/compute_context.hpp>
+#include <ml/neural_net/compute_context.hpp>
 
 #if defined(HAS_MPS) && !defined(TC_BUILD_IOS)
-#include <unity/toolkits/neural_net/mps_compute_context.hpp>
+#include <ml/neural_net/mps_compute_context.hpp>
 #endif
 
 namespace turi {

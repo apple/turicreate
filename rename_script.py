@@ -2,8 +2,12 @@ import re
 import os
 from os.path import join, normpath, relpath
 
+# To generate, do:
+#
+# git diff -l 1000000000 --stat=1000000 --minimal HEAD~1 > diffs.txt
 
-expr = r'^\s*(?P<prefix>[\w_-/]*){(?P<src>[\w_-/]*) => (?P<dest>[\w_-/]*)}(?P<suffix>[\w_-/\.]*)\s*|'
+
+expr = r'^\s*(?P<prefix>[\w_\-/]*){(?P<src>[\w_\-/]*) => (?P<dest>[\w_\-/]*)}(?P<suffix>[\w_\-/\.]*)\s*|'
 
 for line in open('diffs.txt').readlines():
 

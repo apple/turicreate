@@ -1,0 +1,9 @@
+subdirs(
+  cppipc 
+  exceptions
+  fault
+  lambda
+  nanosockets
+  platform
+  startup_teardown
+  )

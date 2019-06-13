@@ -13,6 +13,7 @@ make_library(visualization OBJECT
     batch_size.cpp
     boxes_and_whiskers.cpp
     categorical_heatmap.cpp
+    columnwise_summary.cpp
     dark_mode.cpp
     escape.cpp
     groupby.cpp

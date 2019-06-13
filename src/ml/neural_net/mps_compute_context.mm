@@ -4,14 +4,14 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <unity/toolkits/neural_net/mps_compute_context.hpp>
+#include <ml/neural_net/mps_compute_context.hpp>
 
-#import <unity/toolkits/neural_net/mps_device_manager.h>
+#import <ml/neural_net/mps_device_manager.h>
 
-#include <logger/logger.hpp>
-#include <unity/toolkits/neural_net/mps_cnnmodule.h>
-#include <unity/toolkits/neural_net/mps_graph_cnnmodule.h>
-#include <unity/toolkits/neural_net/mps_image_augmentation.hpp>
+#include <core/logging/logger.hpp>
+#include <ml/neural_net/mps_cnnmodule.h>
+#include <ml/neural_net/mps_graph_cnnmodule.h>
+#include <ml/neural_net/mps_image_augmentation.hpp>
 
 namespace turi {
 namespace neural_net {

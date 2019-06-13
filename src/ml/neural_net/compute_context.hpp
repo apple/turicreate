@@ -9,8 +9,8 @@
 
 #include <memory>
 
-#include <unity/toolkits/neural_net/image_augmentation.hpp>
-#include <unity/toolkits/neural_net/model_backend.hpp>
+#include <ml/neural_net/image_augmentation.hpp>
+#include <ml/neural_net/model_backend.hpp>
 
 namespace turi {
 namespace neural_net {

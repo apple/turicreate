@@ -5,5 +5,6 @@ subdirs(
   toolkits
   capi
   visualization
+  python
 )
 

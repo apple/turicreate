@@ -7,10 +7,10 @@
 #ifndef TURI_NEURAL_NET_CORE_IMAGE_AUGMENTATION_HPP_
 #define TURI_NEURAL_NET_CORE_IMAGE_AUGMENTATION_HPP_
 
-#include <unity/toolkits/neural_net/image_augmentation.hpp>
+#include <ml/neural_net/image_augmentation.hpp>
 
 #import <CoreImage/CoreImage.h>
-#import <unity/toolkits/neural_net/TCMPSImageAugmenting.h>
+#import <ml/neural_net/TCMPSImageAugmenting.h>
 
 namespace turi {
 namespace neural_net {

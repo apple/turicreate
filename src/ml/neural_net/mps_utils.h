@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 
-#include <unity/toolkits/neural_net/float_array.hpp>
+#include <ml/neural_net/float_array.hpp>
 
 namespace turi {
 namespace neural_net {
