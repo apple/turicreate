@@ -26,20 +26,18 @@ void flexible_type_fail(bool);
 
 #ifdef NDEBUG
 //  ---- RELEASE MODE ---
-#ifdef TURI_COMPILE_EXTRA_OPTIMIZATION
-  // also enable all the inline and flatten attributes
-  #define FLEX_ALWAYS_INLINE __attribute__((always_inline))
-  #define FLEX_ALWAYS_INLINE_FLATTEN __attribute__((always_inline,flatten))
-#else
-  #define FLEX_ALWAYS_INLINE
-  #define FLEX_ALWAYS_INLINE_FLATTEN
-#endif
+// enable all the inline and flatten attributes
+#define FLEX_ALWAYS_INLINE __attribute__((always_inline))
+#define FLEX_ALWAYS_INLINE_FLATTEN __attribute__((always_inline,flatten))
+#define FLEX_TYPE_DASSERT(param)
 
 #else
 //  ---- DEBUG MODE ---
 // disable the always_inline and flatten attributes
 #define FLEX_ALWAYS_INLINE
 #define FLEX_ALWAYS_INLINE_FLATTEN
+#define FLEX_TYPE_DASSERT(param) FLEX_TYPE_ASSERT(param)
+
 #endif
 
 namespace turi {
@@ -1477,26 +1475,26 @@ inline FLEX_ALWAYS_INLINE_FLATTEN flexible_type& flexible_type::set_date_time_fr
 // flex_date_time
 template <>
 inline FLEX_ALWAYS_INLINE flex_date_time& flexible_type::mutable_get<flex_date_time>() {
-  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::DATETIME);
+  FLEX_TYPE_DASSERT(get_type() == flex_type_enum::DATETIME);
   return val.dtval;
 }
 
 template <>
 inline FLEX_ALWAYS_INLINE const flex_date_time& flexible_type::get<flex_date_time>() const {
-  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::DATETIME);
+  FLEX_TYPE_DASSERT(get_type() == flex_type_enum::DATETIME);
   return val.dtval;
 }
 
 // INTEGER
 template <>
 inline FLEX_ALWAYS_INLINE flex_int& flexible_type::mutable_get<flex_int>() {
-  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::INTEGER);
+  FLEX_TYPE_DASSERT(get_type() == flex_type_enum::INTEGER);
   return val.intval;
 }
 
 template <>
 inline FLEX_ALWAYS_INLINE const flex_int& flexible_type::get<flex_int>() const {
-  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::INTEGER);
+  FLEX_TYPE_DASSERT(get_type() == flex_type_enum::INTEGER);
   return val.intval;
 }
 
@@ -1513,14 +1511,14 @@ inline FLEX_ALWAYS_INLINE const flex_int& flexible_type::reinterpret_get<flex_in
 // flex_float
 template <>
 inline FLEX_ALWAYS_INLINE flex_float& flexible_type::mutable_get<flex_float>() {
-  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::FLOAT);
+  FLEX_TYPE_DASSERT(get_type() == flex_type_enum::FLOAT);
   return val.dblval;
 }
 
 
 template <>
 inline FLEX_ALWAYS_INLINE const flex_float& flexible_type::get<flex_float>() const {
-  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::FLOAT);
+  FLEX_TYPE_DASSERT(get_type() == flex_type_enum::FLOAT);
   return val.dblval;
 }
 
@@ -1538,14 +1536,14 @@ inline FLEX_ALWAYS_INLINE const flex_float& flexible_type::reinterpret_get<flex_
 // STRING
 template <>
 inline FLEX_ALWAYS_INLINE flex_string& flexible_type::mutable_get<flex_string>() {
-  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::STRING);
+  FLEX_TYPE_DASSERT(get_type() == flex_type_enum::STRING);
   ensure_unique();
   return val.strval->second;
 }
 
 template <>
 inline FLEX_ALWAYS_INLINE const flex_string& flexible_type::get<flex_string>() const {
-  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::STRING);
+  FLEX_TYPE_DASSERT(get_type() == flex_type_enum::STRING);
   return val.strval->second;
 }
 
@@ -1553,7 +1551,7 @@ inline FLEX_ALWAYS_INLINE const flex_string& flexible_type::get<flex_string>() c
 // VECTOR
 template <>
 inline FLEX_ALWAYS_INLINE flex_vec& flexible_type::mutable_get<flex_vec>() {
-  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::VECTOR);
+  FLEX_TYPE_DASSERT(get_type() == flex_type_enum::VECTOR);
   ensure_unique();
   return val.vecval->second;
 }
@@ -1561,7 +1559,7 @@ inline FLEX_ALWAYS_INLINE flex_vec& flexible_type::mutable_get<flex_vec>() {
 
 template <>
 inline FLEX_ALWAYS_INLINE const flex_vec& flexible_type::get<flex_vec>() const {
-  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::VECTOR);
+  FLEX_TYPE_DASSERT(get_type() == flex_type_enum::VECTOR);
   return val.vecval->second;
 }
 
@@ -1569,7 +1567,7 @@ inline FLEX_ALWAYS_INLINE const flex_vec& flexible_type::get<flex_vec>() const {
 // ND_VECTOR
 template <>
 inline FLEX_ALWAYS_INLINE flex_nd_vec& flexible_type::mutable_get<flex_nd_vec>() {
-  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::ND_VECTOR);
+  FLEX_TYPE_DASSERT(get_type() == flex_type_enum::ND_VECTOR);
   ensure_unique();
   return val.ndvecval->second;
 }
@@ -1577,15 +1575,15 @@ inline FLEX_ALWAYS_INLINE flex_nd_vec& flexible_type::mutable_get<flex_nd_vec>()
 
 template <>
 inline FLEX_ALWAYS_INLINE const flex_nd_vec& flexible_type::get<flex_nd_vec>() const {
-  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::ND_VECTOR);
+  FLEX_TYPE_DASSERT(get_type() == flex_type_enum::ND_VECTOR);
   return val.ndvecval->second;
 }
 
 
-// LIST
+// DICT
 template <>
 inline FLEX_ALWAYS_INLINE flex_list& flexible_type::mutable_get<flex_list>() {
-  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::LIST);
+  FLEX_TYPE_DASSERT(get_type() == flex_type_enum::LIST);
   ensure_unique();
   return val.recval->second;
 }
@@ -1593,7 +1591,7 @@ inline FLEX_ALWAYS_INLINE flex_list& flexible_type::mutable_get<flex_list>() {
 
 template <>
 inline FLEX_ALWAYS_INLINE const flex_list& flexible_type::get<flex_list>() const {
-  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::LIST);
+  FLEX_TYPE_DASSERT(get_type() == flex_type_enum::LIST);
   return val.recval->second;
 }
 
@@ -1601,7 +1599,7 @@ inline FLEX_ALWAYS_INLINE const flex_list& flexible_type::get<flex_list>() const
 // DICT
 template <>
 inline FLEX_ALWAYS_INLINE flex_dict& flexible_type::mutable_get<flex_dict>() {
-  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::DICT);
+  FLEX_TYPE_DASSERT(get_type() == flex_type_enum::DICT);
   ensure_unique();
   return val.dictval->second;
 }
@@ -1609,7 +1607,7 @@ inline FLEX_ALWAYS_INLINE flex_dict& flexible_type::mutable_get<flex_dict>() {
 
 template <>
 inline FLEX_ALWAYS_INLINE const flex_dict& flexible_type::get<flex_dict>() const {
-  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::DICT);
+  FLEX_TYPE_DASSERT(get_type() == flex_type_enum::DICT);
   return val.dictval->second;
 }
 
@@ -1617,14 +1615,14 @@ inline FLEX_ALWAYS_INLINE const flex_dict& flexible_type::get<flex_dict>() const
 // IMAGE
 template <>
 inline FLEX_ALWAYS_INLINE flex_image& flexible_type::mutable_get<flex_image>() {
-  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::IMAGE);
+  FLEX_TYPE_DASSERT(get_type() == flex_type_enum::IMAGE);
   ensure_unique();
   return val.imgval->second;
 }
 
 template <>
 inline FLEX_ALWAYS_INLINE const flex_image& flexible_type::get<flex_image>() const {
-  FLEX_TYPE_ASSERT(get_type() == flex_type_enum::IMAGE);
+  FLEX_TYPE_DASSERT(get_type() == flex_type_enum::IMAGE);
   return val.imgval->second;
 }
 
