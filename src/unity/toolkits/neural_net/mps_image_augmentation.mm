@@ -187,6 +187,8 @@ mps_image_augmenter::mps_image_augmenter(
     const options& opts, std::function<float(float,float)> rng_fn):
   opts_(opts) {
 
+  @autoreleasepool {
+
   NSDictionary *contextOptions = @{
 
     // Assume for now that we can keep the GPU busy with the actual NN training.
@@ -284,10 +286,14 @@ mps_image_augmenter::mps_image_augmenter(
   [augmentations addObject:[[TCMPSResizeAugmenter alloc] initWithSize:outputSize]];
 
   augmentations_ = augmentations;
+
+  }
 }
 
 mps_image_augmenter::result mps_image_augmenter::prepare_images(
     std::vector<labeled_image> source_batch) {
+
+  @autoreleasepool {
 
   const size_t n = opts_.batch_size;
   const size_t h = opts_.output_height;
@@ -308,6 +314,7 @@ mps_image_augmenter::result mps_image_augmenter::prepare_images(
 
   // Define the work to perform for each image.
   auto apply_augmentations_for_image = [&](size_t i) {
+    @autoreleasepool {
     
     const labeled_image& source = source_batch[i];
 
@@ -323,6 +330,8 @@ mps_image_augmenter::result mps_image_augmenter::prepare_images(
     float* float_out = result_array.data() + i * result_array_stride;
     convert_from_core_image(labeledImage, context_, w, h, float_out,
                             result_array_stride, &res.annotations_batch[i]);
+
+    }
   };
 
   // Distribute work across threads, each writing into different regions of
@@ -333,6 +342,8 @@ mps_image_augmenter::result mps_image_augmenter::prepare_images(
   res.image_batch = shared_float_array::wrap(std::move(result_array),
                                              { n, h, w, c});
   return res;
+
+  }
 }
 
 }  // neural_net
