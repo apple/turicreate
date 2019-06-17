@@ -4,7 +4,7 @@ One-Shot object detection is the task of learning to detect from as few as one e
 
 Given an image and a one-shot detector trained on category 'stop sign', the output prediction will look like:
 
-![Stop Sign vector and prediction images](images/stop_sign_sample.png) 
+![Stop Sign vector and prediction images](images/stop_sign_sample.jpg) 
 
 
 #### Introductory Example
@@ -56,7 +56,7 @@ augmented_images.explore()
 
 Some examples of synthetic training data generated:
 
-![Sample augmented images](images/augmented_images_collage.png)
+![Sample augmented images](images/augmented_images_collage.jpg)
 
 *Note: In order to view the exact augmented images used to train the model, the same seed should be used which was used to train the model.*
 
@@ -74,7 +74,7 @@ test_data.explore()
 
 Examples of test image predictions:
 
-![Sample prediction image - 1 and 2](images/sample_prediction_images_1_2.png)
+![Sample prediction image - 1 and 2](images/sample_prediction_images_1_2.jpg)
 
 
 #### How it works
