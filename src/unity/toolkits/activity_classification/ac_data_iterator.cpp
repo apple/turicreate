@@ -36,7 +36,6 @@ static std::map<std::string,size_t> generate_column_index_map(const std::vector<
  *  Find the statistical mode (majority value) of a given vector.
  *
  * \param[in] input_vec a vector for which the mode will be calculated
-
  * \return    The most frequent value within the given vector.
  */
 
@@ -112,7 +111,7 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
     gl_sframe_writer output_writer(output_column_names, output_column_types, 1);
 
     if (verbose) {
-      logprogress_stream << "Using sequences of size " + std::to_string( predictions_in_chunk * prediction_window ) + " for model creation."
+      logprogress_stream << "Using sequences of size 1000 for model creation."
                          << std::endl;
     }
 
@@ -300,6 +299,7 @@ simple_data_iterator::preprocessed_data simple_data_iterator::preprocess_data(
   return result;
 }
 
+size_t sample = 0;
 
 simple_data_iterator::simple_data_iterator(const parameters &params)
     : data_(preprocess_data(params)),
@@ -307,7 +307,7 @@ simple_data_iterator::simple_data_iterator(const parameters &params)
       num_predictions_per_chunk_(params.predictions_in_chunk),
       range_iterator_(data_.chunks.range_iterator()),
       next_row_(range_iterator_.begin()), end_of_rows_(range_iterator_.end()),
-      sample_offset_(0), sample_in_row_(0), training(params.verbose) {}
+      sample_in_row_(0), training(params.verbose) {}
 
 const flex_list& simple_data_iterator::feature_names() const {
   return data_.feature_names;
@@ -372,7 +372,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     if (sample_in_row_ == 0 &&
         static_cast<size_t>(chunk_length) > num_samples_per_prediction_ &&
         training) {
-      sample_in_row_ = sample_offset_ * 10;
+      sample_in_row_ = std::rand() % (num_samples_per_prediction_ - 1);
     }
 
     // Stores the start of next instance
@@ -381,7 +381,6 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     // End keeps track of the start of next instance if the last instance is
     // smaller
     size_t end = std::min(jump, static_cast<size_t>(chunk_length));
-    //std::cout << sample_offset_ << '\t' << sample_in_row_ << '\t' << end <<'\n';
 
     // Copy the feature values (converting from double to float).
     const flex_vec& feature_vec = row[features_column_index].get<flex_vec>();
@@ -389,13 +388,6 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     std::copy(feature_vec.begin() + sample_in_row_ * num_features,
               feature_vec.begin() + end * num_features, features_out);
     features_out += num_features * num_samples_per_chunk;
-    // std::cout << features_out << " " < features.data() <<'\n';
-    // for (std::vector<char>::const_iterator i = feature_vec.begin() + sample_in_row_ * num_features; i != feature_vec.begin() + end * num_features; ++i) {
-    //   std::cout << *i << ' ';
-    // }
-
-    // std::cout <<'\n';
-    
 
     if (data_.has_target) {
 
@@ -418,24 +410,13 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     batch_info.emplace_back();
     batch_info.back().session_id = row[session_id_column_index];
     batch_info.back().num_samples = end - sample_in_row_;
+
     sample_in_row_ = end;
 
-    if ( sample_in_row_ >= static_cast<size_t>(chunk_length)) {
-      if (training) {
-        sample_in_row_ = 0;
-        ++sample_offset_;
-        if (sample_offset_ == 4) {
-          ++next_row_;
-          sample_offset_ = 0;
-        }
-      }
-      else {
-        ++next_row_;
-        sample_in_row_ = 0;
-      }
-      
+    if (sample_in_row_ >= static_cast<size_t>(chunk_length)) {
+      ++next_row_;
+      sample_in_row_ = 0;
     }
-
   }
 
   // Wrap the buffers as float_array values.
