@@ -52,7 +52,7 @@ augmented_images = tc.one_shot_object_detector.util.preview_synthetic_training_d
 augmented_images.explore()
 ```
 
-![Explore augmented images](images/augmented_images_explore.png)
+![Explore augmented images](images/augmented_images_explore.jpg)
 
 Some examples of synthetic training data generated:
 
@@ -70,7 +70,7 @@ test_data['image_pred'] = tc.object_detector.util.draw_bounding_boxes(test_data[
 test_data.explore()
 ```
 
-![Prediction test data](images/test_data_explore.png)
+![Prediction test data](images/test_data_explore.jpg)
 
 Examples of test image predictions:
 
