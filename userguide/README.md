@@ -63,6 +63,7 @@ Using these toolkits, you can tackle a number of common scenarios:
 * [Sound classification](sound_classifier/README.md)
 * [Image similarity](image_similarity/README.md)
 * [Object detection](object_detection/README.md)
+* [One Shot object detection](one_shot_object_detection/README.md)
 * [Style transfer](style_transfer/README.md)
 * [Activity classifier](activity_classifier/README.md)
 * [Text classifier](text_classifier/README.md)
