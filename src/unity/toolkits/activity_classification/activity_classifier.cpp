@@ -85,6 +85,7 @@ size_t count_correct_predictions(size_t num_classes, const shared_float_array& o
   return num_correct_predictions;
 }
 
+
 float cumulative_chunk_accuracy(size_t prediction_window, size_t num_classes,
                                 const shared_float_array &output,
                                 const data_iterator::batch &batch) {

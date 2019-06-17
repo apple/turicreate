@@ -168,7 +168,7 @@ class EXPORT activity_classifier: public ml_model_base {
   REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::random_split_by_session,
                                  "data", "session_id_column_name", "fraction",
                                  "seed");
-  register_defaults("random_split_by_session", {{"fraction", 0.9}});
+  register_defaults("random_split_by_session", {{"fraction", 0.9}, {"seed", 1}});
   REGISTER_CLASS_MEMBER_DOCSTRING(
       activity_classifier::random_split_by_session,
       "----------\n"
