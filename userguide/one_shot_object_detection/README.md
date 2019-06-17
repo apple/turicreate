@@ -24,14 +24,15 @@ test_data = tc.SFrame({'image':[tc.Image('stop_sign_photo1.png'),
                                 tc.Image('stop_sign_photo2.png')],
                         'label':['stop_sign', 'stop_sign']})
 
-# Create a model. This step may take several hours.                                      
+# Create a model. This step may take several hours                                      
 model = tc.one_shot_object_detector.create(starter_images, 'label')
 
-# Save predictions on the test set as a column in the SFrame
+# Save predictions on the test set as a column of the test data SFrame
 test_data['predictions'] = model.predict(test_data)
 
 # Draw prediction bounding boxes on the test images
-test_data['image_pred'] = tc.object_detector.util.draw_bounding_boxes(test_data['image'], test_data['predictions']) 
+test_data['image_with_predictions'] = \
+	tc.object_detector.util.draw_bounding_boxes(test_data['image'], test_data['predictions']) 
 
 # Evaluate the model and save the results in a dictionary
 metrics = model.evaluate(test_data)
@@ -47,7 +48,8 @@ Previewing the synthetic images generated for training is useful to gauge the ki
 
 
 ```python
-augmented_images = tc.one_shot_object_detector.util.preview_synthetic_training_data(starter_images, 'label')
+augmented_images = \
+	tc.one_shot_object_detector.util.preview_synthetic_training_data(starter_images, 'label')
 
 augmented_images.explore()
 ```
@@ -65,7 +67,8 @@ To visualize the predictions made on the test set:
 
 
 ```python
-test_data['image_pred'] = tc.object_detector.util.draw_bounding_boxes(test_data['image'], test_data['predictions'])
+test_data['image_with_predictions'] = \
+	tc.object_detector.util.draw_bounding_boxes(test_data['image'], test_data['predictions'])
 
 test_data.explore()
 ```
@@ -112,7 +115,8 @@ model = tc.one_shot_object_detector.create(starter_images, 'label', backgrounds 
 To view the synthetic images generated with your custom background images:
 
 ```python
-augmented_images = tc.one_shot_object_detector.util.preview_synthetic_training_data(starter_images, 'label', my_backgrounds)
+augmented_images = \
+	tc.one_shot_object_detector.util.preview_synthetic_training_data(starter_images, 'label', my_backgrounds)
 
 augmented_images.explore()
 ```
