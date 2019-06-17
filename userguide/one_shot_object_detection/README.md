@@ -82,14 +82,14 @@ Examples of test image predictions:
 
 #### How it works
 
-To begin training for one-shot object detector, a set of synthetic training data needs to be generated using the provided starter training image(s). These images are augmented with operations: horizontal flip, vertical flip, yaw, pitch, roll, blur, noise and lightening perturbations. These operations are applied on a set of background images. The background images may be provided by the user. If no background images are provided, a set of default background images are downloaded and used.
+To begin training for one-shot object detector, a set of synthetic training data needs to be generated using the provided starter training image(s). These images are augmented by applying yaw, pitch, and roll rotations. These operations are applied on a set of background images. The background images may be provided by the user. If no background images are provided, a set of default background images are automatically downloaded and used.
 
-To learn more about the training implementation details, refer to the Object Detector: How it Works (https://apple.github.io/turicreate/docs/userguide/object_detection/how-it-works.html) chapter.
+To learn more about the training implementation details, refer to the [Object Detector: How it Works](https://apple.github.io/turicreate/docs/userguide/object_detection/how-it-works.html) chapter.
 
 
 #### Deployment to CoreML
 
-To learn more about deploying One-Shot to CoreML details, refer to the Object Detector: Deployment to Core ML (https://apple.github.io/turicreate/docs/userguide/object_detection/export-coreml.html) chapter.
+To learn more about deploying One-Shot to CoreML details, refer to the [Object Detector: Deployment to Core ML](https://apple.github.io/turicreate/docs/userguide/object_detection/export-coreml.html) chapter.
 
 
 #### Advanced Usage
