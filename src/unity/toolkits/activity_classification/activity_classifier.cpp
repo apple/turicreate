@@ -242,7 +242,7 @@ std::tuple<float, float> activity_classifier::compute_validation_metrics(
 // second split contains all data for the rest of the sessions.
 std::tuple<gl_sframe, gl_sframe> activity_classifier::random_split_by_session(
     gl_sframe data, std::string session_id_column_name, float fraction,
-    size_t seed) const {
+    size_t seed) {
   if (std::find(data.column_names().begin(), data.column_names().end(),
                 session_id_column_name) == data.column_names().end()) {
     log_and_throw("Input dataset must contain a column called " +

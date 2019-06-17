@@ -6,6 +6,7 @@
 
 #include <unity/toolkits/activity_classification/class_registrations.hpp>
 
+#include <unity/lib/extensions/ml_model.hpp>
 #include <unity/lib/toolkit_class_macros.hpp>
 #include <unity/lib/toolkit_function_macros.hpp>
 #include <unity/toolkits/activity_classification/ac_data_iterator.hpp>
@@ -17,6 +18,25 @@ namespace activity_classification {
 BEGIN_FUNCTION_REGISTRATION
 REGISTER_FUNCTION(_activity_classifier_prepare_data , "data" , "features" , "session_id" , "prediction_window" , "predictions_in_chunk" , "target")
 REGISTER_FUNCTION(_activity_classifier_prepare_data_verbose , "data" , "features" , "session_id" , "prediction_window" , "predictions_in_chunk" , "target")
+REGISTER_FUNCTION(activity_classifier::random_split_by_session, "data",
+                  "session_id_column_name", "fraction", "seed");
+REGISTER_DOCSTRING(
+    activity_classifier::random_split_by_session,
+    "----------\n"
+    "data : SFrame\n"
+    "    Dataset of new observations. Must include columns with the same\n"
+    "    names as the features used for model training.\n"
+    "session_id_column_name : string\n"
+    "    Name of the column that contains a unique ID for each session.\n"
+    "fraction : float, optional\n"
+    "   The dataset is randomly split into two datasets where one contains\n"
+    "   data for a fraction of the sessions while the second contains the\n"
+    "   rest of the sessions. The value can vary between 0 to 1.\n"
+    "seed : int\n"
+    "   Seed value is used as a base to generate a random number. If you "
+    "provide\n"
+    "   same seed value before generating random data it will produce the "
+    "same data.\n");
 END_FUNCTION_REGISTRATION
 
 BEGIN_CLASS_REGISTRATION

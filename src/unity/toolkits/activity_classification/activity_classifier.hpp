@@ -38,9 +38,9 @@ class EXPORT activity_classifier: public ml_model_base {
   variant_map_type evaluate(gl_sframe data, std::string metric);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
       std::string filename);
-  std::tuple<gl_sframe, gl_sframe> random_split_by_session(
+  static std::tuple<gl_sframe, gl_sframe> random_split_by_session(
       gl_sframe data, std::string session_id_column_name, float fraction,
-      size_t seed) const;
+      size_t seed);
   void import_from_custom_model(variant_map_type model_data, size_t version);
 
   BEGIN_CLASS_MEMBER_REGISTRATION("activity_classifier")
@@ -165,27 +165,6 @@ class EXPORT activity_classifier: public ml_model_base {
       "                           ROC curve\n"
   );
 
-  REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::random_split_by_session,
-                                 "data", "session_id_column_name", "fraction",
-                                 "seed");
-  register_defaults("random_split_by_session", {{"fraction", 0.9}, {"seed", 1}});
-  REGISTER_CLASS_MEMBER_DOCSTRING(
-      activity_classifier::random_split_by_session,
-      "----------\n"
-      "data : SFrame\n"
-      "    Dataset of new observations. Must include columns with the same\n"
-      "    names as the features used for model training.\n"
-      "session_id_column_name : string\n"
-      "    Name of the column that contains a unique ID for each session.\n"
-      "fraction : float, optional\n"
-      "   The dataset is randomly split into two datasets where one contains\n"
-      "   data for a fraction of the sessions while the second contains the\n"
-      "   rest of the sessions. The value can vary between 0 to 1.\n"
-      "seed : int\n"
-      "   Seed value is used as a base to generate a random number. If you "
-      "provide\n"
-      "   same seed value before generating random data it will produce the "
-      "same data.\n");
   REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::export_to_coreml,
                                  "filename");
 
