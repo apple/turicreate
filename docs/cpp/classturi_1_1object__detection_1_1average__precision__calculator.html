@@ -121,27 +121,27 @@ $(document).ready(function(){initNavTree('classturi_1_1object__detection_1_1aver
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a7fc8a94b668951c3a7a75553a6debb01"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1object__detection_1_1average__precision__calculator.html#a7fc8a94b668951c3a7a75553a6debb01">average_precision_calculator</a> (size_t num_classes, std::vector&lt; float &gt; iou_thresholds)</td></tr>
-<tr class="separator:a7fc8a94b668951c3a7a75553a6debb01"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c366845ed808becd2a9abcca99aca72"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1object__detection_1_1average__precision__calculator.html#a1c366845ed808becd2a9abcca99aca72">average_precision_calculator</a> (<a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a> class_labels, std::vector&lt; float &gt; iou_thresholds)</td></tr>
+<tr class="separator:a1c366845ed808becd2a9abcca99aca72"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6740ab481b23fadd6e0cb0fbc8776817"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1object__detection_1_1average__precision__calculator.html#a6740ab481b23fadd6e0cb0fbc8776817">add_row</a> (const std::vector&lt; <a class="el" href="structturi_1_1neural__net_1_1image__annotation.html">neural_net::image_annotation</a> &gt; &amp;predictions, const std::vector&lt; <a class="el" href="structturi_1_1neural__net_1_1image__annotation.html">neural_net::image_annotation</a> &gt; &amp;ground_truth)</td></tr>
 <tr class="separator:a6740ab481b23fadd6e0cb0fbc8776817"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a92c3e01b5c09dc6c120500cf90fbf9c4"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::map&lt; float, float &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1object__detection_1_1average__precision__calculator.html#a92c3e01b5c09dc6c120500cf90fbf9c4">evaluate</a> ()</td></tr>
-<tr class="separator:a92c3e01b5c09dc6c120500cf90fbf9c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98a499f9e3352eec775531a2c6fc5ea1"><td class="memItemLeft" align="right" valign="top">variant_map_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1object__detection_1_1average__precision__calculator.html#a98a499f9e3352eec775531a2c6fc5ea1">evaluate</a> ()</td></tr>
+<tr class="separator:a98a499f9e3352eec775531a2c6fc5ea1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Helper class for computing AP and mAP metrics. </p>
 
-<p>Definition at line <a class="el" href="od__evaluation_8hpp_source.html#l00033">33</a> of file <a class="el" href="od__evaluation_8hpp_source.html">od_evaluation.hpp</a>.</p>
+<p>Definition at line <a class="el" href="od__evaluation_8hpp_source.html#l00034">34</a> of file <a class="el" href="od__evaluation_8hpp_source.html">od_evaluation.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a7fc8a94b668951c3a7a75553a6debb01"></a>
+<a class="anchor" id="a1c366845ed808becd2a9abcca99aca72"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">turi::object_detection::average_precision_calculator::average_precision_calculator </td>
           <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>num_classes</em>, </td>
+          <td class="paramtype"><a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a>&#160;</td>
+          <td class="paramname"><em>class_labels</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -158,7 +158,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">num_classes</td><td>The number of class labels. Each prediction and ground truth annotation must have a nonnegative identifier smaller than this value. </td></tr>
+    <tr><td class="paramname">class_labels</td><td>Each prediction and ground truth annotation must have a nonnegative identifier indexing into this list. </td></tr>
     <tr><td class="paramname">iou_thresholds</td><td>The IOU (intersection over union) thresholds at which to compute the average precisions. This threshold determines whether a predicted bounding box and a ground truth bounding box are considered to match. </td></tr>
   </table>
   </dd>
@@ -194,12 +194,12 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a92c3e01b5c09dc6c120500cf90fbf9c4"></a>
+<a class="anchor" id="a98a499f9e3352eec775531a2c6fc5ea1"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;std::map&lt;float,float&gt; &gt; turi::object_detection::average_precision_calculator::evaluate </td>
+          <td class="memname">variant_map_type turi::object_detection::average_precision_calculator::evaluate </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -207,8 +207,12 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Computes the average precision for each combination of class and requested IOU threshold.</p>
-<dl class="section return"><dt>Returns</dt><dd>A vector, indexed by class identifier, of maps associating IOU threshold to average precision.</dd></dl>
-<p>Each value is the average precision for a specific class label with a specific IOU threshold. This metric can be interpreted as the area under the precision-recall curve. </p>
+<dl class="section return"><dt>Returns</dt><dd>A map of evaluation results keyed by metric.</dd></dl>
+<p>The average precision can be interpreted as the area under the precision-recall curve.</p>
+<p>average_precision_50 is a dictionary mapping class label to the average precision for that class label at 50% IOU.</p>
+<p>average_precision is a dictionary mapping class label to the average precision for that class label, average across IOU thresholds from 50% to 95%.</p>
+<p>mean_average_precision_50 is the mean across class labels of the average_precision_50 values.</p>
+<p>mean_average_precision is the mean across class labels of the average_precision values. </p>
 
 </div>
 </div>

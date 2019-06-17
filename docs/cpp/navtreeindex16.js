@@ -1,5 +1,8 @@
 var NAVTREEINDEX16 =
 {
+"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__classifier.html#a44ff9c3dfbaabb66b4542a3eaea57699":[3,0,2,35,0,0,29],
+"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__classifier.html#a4f2f4577859044317f2a74285ce833fd":[3,0,2,35,0,0,12],
+"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__classifier.html#a5378b16868ea5536d6f6a7f3b35e3889":[3,0,2,35,0,0,34],
 "classturi_1_1supervised_1_1xgboost_1_1boosted__trees__classifier.html#a54cc93ecfb9ea8ebf1ceba59a4ff07ec":[3,0,2,35,0,0,27],
 "classturi_1_1supervised_1_1xgboost_1_1boosted__trees__classifier.html#a575e38efe7bb9c9f00c032bdd829a5dc":[3,0,2,35,0,0,55],
 "classturi_1_1supervised_1_1xgboost_1_1boosted__trees__classifier.html#a5c1790359d7599151516731515667a0b":[3,0,2,35,0,0,31],
@@ -246,8 +249,5 @@ var NAVTREEINDEX16 =
 "classturi_1_1supervised_1_1xgboost_1_1random__forest__classifier.html#ac3618ba3e97a78b936b1757f56c942eb":[3,0,2,35,0,2,50],
 "classturi_1_1supervised_1_1xgboost_1_1random__forest__classifier.html#ac3d2ee32fc69539990fcbb1234f2f173":[3,0,2,35,0,2,68],
 "classturi_1_1supervised_1_1xgboost_1_1random__forest__classifier.html#ac3f1e140dce279466a427f0bb8de3cc7":[3,0,2,35,0,2,4],
-"classturi_1_1supervised_1_1xgboost_1_1random__forest__classifier.html#ac80230851af5ab9e01bd61d113bbcffb":[3,0,2,35,0,2,36],
-"classturi_1_1supervised_1_1xgboost_1_1random__forest__classifier.html#aca1d7cccf562841ac8e24e7b9c532ca4":[3,0,2,35,0,2,17],
-"classturi_1_1supervised_1_1xgboost_1_1random__forest__classifier.html#acc33dcb80a41fd65e24c8fe4eb54e2e7":[3,0,2,35,0,2,70],
-"classturi_1_1supervised_1_1xgboost_1_1random__forest__classifier.html#acca5f3d025ba23f9c4cb8338519ce729":[3,0,2,35,0,2,38]
+"classturi_1_1supervised_1_1xgboost_1_1random__forest__classifier.html#ac80230851af5ab9e01bd61d113bbcffb":[3,0,2,35,0,2,36]
 };

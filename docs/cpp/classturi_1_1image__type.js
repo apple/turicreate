@@ -2,6 +2,8 @@ var classturi_1_1image__type =
 [
     [ "image_type", "classturi_1_1image__type.html#a7a210f127161084a4764bcbc03ba475c", null ],
     [ "image_type", "classturi_1_1image__type.html#a8d51ab5bb7a279669c921525e2ef7ab5", null ],
+    [ "image_type", "classturi_1_1image__type.html#a2b3bf9ebbe27f826a8d02cd4d7de8c26", null ],
+    [ "image_type", "classturi_1_1image__type.html#abfd6ea14f0a46db252a5c21e37a0a74b", null ],
     [ "get_image_data", "classturi_1_1image__type.html#a64ac3b3b3d00356a21b69fcc3717ba8b", null ],
     [ "is_decoded", "classturi_1_1image__type.html#a90f635665fe19145d8b7fa2886695f7c", null ],
     [ "load", "classturi_1_1image__type.html#a51462fce0b9bbfcc8cf109060ccd9101", null ],

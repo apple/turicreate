@@ -1,5 +1,7 @@
 var NAVTREEINDEX7 =
 {
+"classturi_1_1ml__data.html#afb59cbec74175ad3cdf33937ebfcab70":[1,11,3,1],
+"classturi_1_1ml__data__internal_1_1column__indexer.html":[1,11,0],
 "classturi_1_1ml__data__internal_1_1column__indexer.html#a046b086e8f618ba64bd16ca1647cdb7f":[1,11,0,9],
 "classturi_1_1ml__data__internal_1_1column__indexer.html#a05ac9131ff74272f7dd570e32ad1a0c1":[1,11,0,4],
 "classturi_1_1ml__data__internal_1_1column__indexer.html#a15c743c8797902d577282aaf41664073":[1,11,0,15],
@@ -247,7 +249,5 @@ var NAVTREEINDEX7 =
 "classturi_1_1nearest__neighbors_1_1lsh__euclidean.html":[3,0,2,18,6],
 "classturi_1_1nearest__neighbors_1_1lsh__jaccard.html":[3,0,2,18,7],
 "classturi_1_1nearest__neighbors_1_1lsh__manhattan.html":[3,0,2,18,8],
-"classturi_1_1nearest__neighbors_1_1lsh__neighbors.html":[3,0,2,18,9],
-"classturi_1_1nearest__neighbors_1_1lsh__neighbors.html#a1744ace3fc84857ea50b0911f6993722":[3,0,2,18,9,0],
-"classturi_1_1nearest__neighbors_1_1lsh__neighbors.html#a346afff24665e6a42899b18ac970036f":[3,0,2,18,9,4]
+"classturi_1_1nearest__neighbors_1_1lsh__neighbors.html":[3,0,2,18,9]
 };

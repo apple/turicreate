@@ -1,5 +1,8 @@
 var NAVTREEINDEX20 =
 {
+"classturi_1_1v2_1_1ml__data__internal_1_1column__statistics.html":[3,0,2,41,0,3],
+"classturi_1_1v2_1_1ml__data__internal_1_1column__statistics.html#a1b94a370a5308a5eeb490f24f892cf57":[3,0,2,41,0,3,1],
+"classturi_1_1v2_1_1ml__data__internal_1_1column__statistics.html#a4e6e44b8d77dc5b191249349b20de2ea":[3,0,2,41,0,3,6],
 "classturi_1_1v2_1_1ml__data__internal_1_1column__statistics.html#a5e7cccbb01de2a3b59d54796e40d99f9":[3,0,2,41,0,3,10],
 "classturi_1_1v2_1_1ml__data__internal_1_1column__statistics.html#a6c9199f93feaa5358680f38eeb6393b0":[3,0,2,41,0,3,12],
 "classturi_1_1v2_1_1ml__data__internal_1_1column__statistics.html#a7f7ad9189d19f4ac18fda979fad76b9b":[3,0,2,41,0,3,11],
@@ -200,6 +203,7 @@ var NAVTREEINDEX20 =
 "client__base__types_8hpp_source.html":[4,0,27,1,1,0],
 "clustering_2include_8hpp_source.html":[4,0,27,4,1,1],
 "code__optimization_8hpp_source.html":[4,0,28,10],
+"color__convert_8hpp_source.html":[4,0,27,4,13,0,0,0],
 "column__unique__indexer_8hpp_source.html":[4,0,27,4,9,1,1],
 "columnwise__summary_8hpp_source.html":[4,0,27,1,3,3],
 "comma__escape__string_8hpp_source.html":[4,0,19,1],
@@ -245,9 +249,5 @@ var NAVTREEINDEX20 =
 "data__preparation_8hpp_source.html":[4,0,27,4,3,1],
 "dataframe_8hpp_source.html":[4,0,19,4],
 "decision__tree_8hpp_source.html":[4,0,27,4,19,4],
-"decoder_8hpp_source.html":[4,0,27,0,0,0],
-"deferred__rwlock_8hpp_source.html":[4,0,16,4,2],
-"degree__count_8hpp_source.html":[4,0,27,4,7,1],
-"dense__bitset_8hpp_source.html":[4,0,28,11],
-"dict__transform__utils_8hpp_source.html":[4,0,27,4,6,6]
+"decoder_8hpp_source.html":[4,0,27,0,0,0]
 };

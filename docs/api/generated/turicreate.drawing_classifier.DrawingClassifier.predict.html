@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.drawing_classifier.DrawingClassifier.predict &mdash; Turi Create API 5.5 documentation</title>
+  <title>turicreate.drawing_classifier.DrawingClassifier.predict &mdash; Turi Create API 5.6 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 5.6 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -126,14 +126,14 @@
 <h1>turicreate.drawing_classifier.DrawingClassifier.predict<a class="headerlink" href="#turicreate-drawing-classifier-drawingclassifier-predict" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.drawing_classifier.DrawingClassifier.predict">
-<code class="descclassname">DrawingClassifier.</code><code class="descname">predict</code><span class="sig-paren">(</span><em>self</em>, <em>data</em>, <em>output_type='class'</em>, <em>batch_size=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.drawing_classifier.DrawingClassifier.predict" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">DrawingClassifier.</code><code class="descname">predict</code><span class="sig-paren">(</span><em>self</em>, <em>data</em>, <em>output_type='class'</em>, <em>batch_size=256</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.drawing_classifier.DrawingClassifier.predict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Predict on an SFrame or SArray of drawings, or on a single drawing.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame | SArray | tc.Image | list</span></dt>
+<dt><strong>data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame | SArray | tc.Image</span></dt>
 <dd><p class="first last">The drawing(s) on which to perform drawing classification.
 If dataset is an SFrame, it must have a column with the same name
 as the feature column during training. Additional columns are
@@ -210,7 +210,7 @@ prediction.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Apr 29, 2019.
+      Last updated on Jun 03, 2019.
     </p>
   </div>
 </footer>
@@ -228,7 +228,7 @@ prediction.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.5',
+            VERSION:'5.6',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.drawing_classifier.DrawingClassifier.predict_topk &mdash; Turi Create API 5.5 documentation</title>
+  <title>turicreate.drawing_classifier.DrawingClassifier.predict_topk &mdash; Turi Create API 5.6 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 5.6 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -126,7 +126,7 @@
 <h1>turicreate.drawing_classifier.DrawingClassifier.predict_topk<a class="headerlink" href="#turicreate-drawing-classifier-drawingclassifier-predict-topk" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.drawing_classifier.DrawingClassifier.predict_topk">
-<code class="descclassname">DrawingClassifier.</code><code class="descname">predict_topk</code><span class="sig-paren">(</span><em>self</em>, <em>dataset</em>, <em>output_type='probability'</em>, <em>k=3</em>, <em>batch_size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.drawing_classifier.DrawingClassifier.predict_topk" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">DrawingClassifier.</code><code class="descname">predict_topk</code><span class="sig-paren">(</span><em>self</em>, <em>dataset</em>, <em>output_type='probability'</em>, <em>k=3</em>, <em>batch_size=256</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.drawing_classifier.DrawingClassifier.predict_topk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return top-k predictions for the <code class="docutils literal"><span class="pre">dataset</span></code>, using the trained model.
 Predictions are returned as an SFrame with three columns: <cite>id</cite>,
 <cite>class</cite>, and <cite>probability</cite> or <cite>rank</cite>, depending on the <code class="docutils literal"><span class="pre">output_type</span></code>
@@ -136,7 +136,7 @@ parameter.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame | SArray | turicreate.Image | list</span></dt>
+<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame | SArray | turicreate.Image</span></dt>
 <dd><p class="first last">Drawings to be classified.
 If dataset is an SFrame, it must include columns with the same
 names as the features used for model training, but does not require
@@ -182,7 +182,7 @@ performance.</p>
 </div>
 <p class="rubric">Examples</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pred</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">predict_topk</span><span class="p">(</span><span class="n">validation_data</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pred</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
 <span class="go">+----+-------+-------------------+</span>
 <span class="go">| id | class |   probability     |</span>
 <span class="go">+----+-------+-------------------+</span>
@@ -214,7 +214,7 @@ performance.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Apr 29, 2019.
+      Last updated on Jun 03, 2019.
     </p>
   </div>
 </footer>
@@ -232,7 +232,7 @@ performance.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.5',
+            VERSION:'5.6',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

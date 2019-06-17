@@ -1189,7 +1189,7 @@
                                 <section class="normal markdown-section">
                                 
                                 <h1 id="deploying-to-core-ml"><a name="deploying-to-core-ml" class="plugin-anchor" href="#deploying-to-core-ml"><i class="fa fa-link" aria-hidden="true"></i></a>Deploying to Core ML</h1><p>Drawing Classifier models created in Turi Create can easily be deployed to
-Core ML.</p><p>You can export to Core ML in Turi Create 5.4 as follows:</p><pre><code class="lang-python">model.export_coreml(<span class="hljs-string">&quot;MySquareTriangleClassifier.mlmodel&quot;</span>)</code></pre>
+Core ML.</p><p>You can export to Core ML in Turi Create 5.4 or higher as follows:</p><pre><code class="lang-python">model.export_coreml(<span class="hljs-string">&quot;MySquareTriangleClassifier.mlmodel&quot;</span>)</code></pre>
 <p>The Core ML Model should look like the following:</p><p><img alt="Xcode view of MySquareTriangleClassifier.mlmodel" src="images/xcode_drawing_classifier.png"></p><p>Drag and drop <code>MySquareTriangleClassifier.mlmodel</code> into your Xcode project and
 add it to your app by ticking the appropriate Target Membership check box.</p><h3 id="inference"><a name="inference" class="plugin-anchor" href="#inference"><i class="fa fa-link" aria-hidden="true"></i></a>Inference</h3><p>Making a prediction at inference time on device is easy! In this section, we go
 over your workflow depending on what input you may have in your app at inference
@@ -1197,10 +1197,23 @@ time.</p><h4 id="using-bitmap-input"><a name="using-bitmap-input" class="plugin-
 the drawing you want to classify, you can use the Vision framework to consume
 the exported Core ML model. Note that the image you provide to the Vision API
 must be a Grayscale Image.</p><pre><code class="lang-swift"><span class="hljs-keyword">let</span> model = <span class="hljs-keyword">try</span> <span class="hljs-type">VNCoreMLModel</span>(<span class="hljs-keyword">for</span>: <span class="hljs-type">MySquareTriangleClassifier</span>().model)
+<span class="hljs-keyword">let</span> request = <span class="hljs-type">VNCoreMLRequest</span>(model: model!, completionHandler: { [] request, error <span class="hljs-keyword">in</span>
+        processClassifications(<span class="hljs-keyword">for</span>: request, error: error)
+    })
 
-<span class="hljs-keyword">let</span> request = <span class="hljs-type">VNCoreMLRequest</span>(model: model, completionHandler: { [<span class="hljs-keyword">weak</span> <span class="hljs-keyword">self</span>] request, error <span class="hljs-keyword">in</span>
-    <span class="hljs-keyword">self</span>?.processClassifications(<span class="hljs-keyword">for</span>: request, error: error)
-})</code></pre>
+<span class="hljs-keyword">let</span> grayscaleImage! = <span class="hljs-type">UIImage</span>(named: bitmapFilename)
+<span class="hljs-keyword">let</span> handler = <span class="hljs-type">VNImageRequestHandler</span>(cgImage: grayscaleImage.cgImage!, options: [:])
+
+<span class="hljs-keyword">try</span>? handler.perform([request])
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">processClassifications</span><span class="hljs-params">(<span class="hljs-keyword">for</span> request: VNRequest, error: error)</span></span> {
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">let</span> sortedResults = request.results! <span class="hljs-keyword">as</span>? [<span class="hljs-type">VNClassificationObservation</span>] {
+        <span class="hljs-keyword">for</span> result <span class="hljs-keyword">in</span> sortedResults {
+            <span class="hljs-built_in">print</span>(result.identifier, result.confidence)
+        }
+    }
+}
+</code></pre>
 <h4 id="using-stroke-based-drawing-input"><a name="using-stroke-based-drawing-input" class="plugin-anchor" href="#using-stroke-based-drawing-input"><i class="fa fa-link" aria-hidden="true"></i></a>Using Stroke-Based Drawing Input</h4><p>On the other hand, if you have access to raw stroke-based drawing data at 
 inference time, you will first have to convert it to a Grayscale Bitmap and then
 use the Vision framework so the Core ML model can consume images at inference 
@@ -1260,12 +1273,33 @@ class using the methods that the following Drawing class exposes.</p><pre><code 
         drawing.add(new_stroke)
         stroke.removeAllObjects()
     }
-}
-</code></pre>
-<p>Once your stroke-based drawing is a member of the above Drawing class, call the 
-<code>rasterize</code> function on it to build a 28x28 grayscale bitmap. 
-The Core ML model can then run inference on this bitmap via the Vision framework
-as described above under &quot;Using Bitmap Input&quot;.</p><p>The code snippet containing <code>rasterize</code> and its helper, 
+}</code></pre>
+<p>The Drawing class can be used in the following way.</p><pre><code class="lang-swift"><span class="hljs-keyword">let</span> example_drawing = [
+            [
+                [<span class="hljs-string">&quot;x&quot;</span>: <span class="hljs-number">1.0</span>, <span class="hljs-string">&quot;y&quot;</span>: <span class="hljs-number">2.0</span>],
+                [<span class="hljs-string">&quot;x&quot;</span>: <span class="hljs-number">2.0</span>, <span class="hljs-string">&quot;y&quot;</span>: <span class="hljs-number">2.0</span>],
+                [<span class="hljs-string">&quot;x&quot;</span>: <span class="hljs-number">3.0</span>, <span class="hljs-string">&quot;y&quot;</span>: <span class="hljs-number">2.0</span>],
+                [<span class="hljs-string">&quot;x&quot;</span>: <span class="hljs-number">4.0</span>, <span class="hljs-string">&quot;y&quot;</span>: <span class="hljs-number">2.0</span>],
+                [<span class="hljs-string">&quot;x&quot;</span>: <span class="hljs-number">5.0</span>, <span class="hljs-string">&quot;y&quot;</span>: <span class="hljs-number">2.0</span>]
+            ],
+            [
+                [<span class="hljs-string">&quot;x&quot;</span>: <span class="hljs-number">10.0</span>, <span class="hljs-string">&quot;y&quot;</span>: <span class="hljs-number">10.0</span>],
+                [<span class="hljs-string">&quot;x&quot;</span>: <span class="hljs-number">10.5</span>, <span class="hljs-string">&quot;y&quot;</span>: <span class="hljs-number">10.5</span>],
+                [<span class="hljs-string">&quot;x&quot;</span>: <span class="hljs-number">11.0</span>, <span class="hljs-string">&quot;y&quot;</span>: <span class="hljs-number">11.0</span>],
+                [<span class="hljs-string">&quot;x&quot;</span>: <span class="hljs-number">12.5</span>, <span class="hljs-string">&quot;y&quot;</span>: <span class="hljs-number">12.5</span>],
+                [<span class="hljs-string">&quot;x&quot;</span>: <span class="hljs-number">15.0</span>, <span class="hljs-string">&quot;y&quot;</span>: <span class="hljs-number">15.0</span>]
+            ]
+        ]
+
+<span class="hljs-keyword">let</span> myDrawing = <span class="hljs-type">Drawing</span>()
+<span class="hljs-keyword">for</span> stroke <span class="hljs-keyword">in</span> example_drawing {
+    <span class="hljs-keyword">for</span> point <span class="hljs-keyword">in</span> stroke {
+        myDrawing.add(point: <span class="hljs-type">CGPoint</span>(x: point[<span class="hljs-string">&quot;x&quot;</span>]!, y: point[<span class="hljs-string">&quot;y&quot;</span>]!))
+    }
+    myDrawing.endStroke()
+}</code></pre>
+<p>Each drawing is a set of strokes and each stroke is a set of points. Here, example_drawing is a drawing with two strokes and each stroke with different number of points. The drawing data can also be collected as streaming points using touch events, mouse events etc using the Drawing class.</p><p>Once your stroke-based drawing is a member of the above Drawing class, call the 
+<code>rasterize</code> function on it to build a 28x28 grayscale bitmap.</p><p>The code snippet containing <code>rasterize</code> and its helper, 
 <code>normalize</code> are provided below.</p><pre><code class="lang-swift">
 <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">normalize</span><span class="hljs-params">(drawing D:Drawing)</span></span> -&gt; <span class="hljs-type">Drawing</span> {
     <span class="hljs-keyword">let</span> new_drawing = <span class="hljs-type">Drawing</span>()
@@ -1320,7 +1354,28 @@ as described above under &quot;Using Bitmap Input&quot;.</p><p>The code snippet 
     final_bitmap_context?.draw(intermediate_image!, <span class="hljs-keyword">in</span>: final_rect)
     <span class="hljs-keyword">return</span> (final_bitmap_context?.makeImage())!
 }</code></pre>
+<p>The Core ML model can then run inference on this bitmap via the Vision framework
+as described above under &quot;Using Bitmap Input&quot;.</p><pre><code class="lang-swift"><span class="hljs-keyword">let</span> model = <span class="hljs-keyword">try</span> <span class="hljs-type">VNCoreMLModel</span>(<span class="hljs-keyword">for</span>: <span class="hljs-type">MySquareTriangleClassifier</span>().model)
+<span class="hljs-keyword">let</span> request = <span class="hljs-type">VNCoreMLRequest</span>(model: model!, completionHandler: { [] request, error <span class="hljs-keyword">in</span>
+        processClassifications(<span class="hljs-keyword">for</span>: request, error: error)
+    })
 
+<span class="hljs-keyword">let</span> main_image: <span class="hljs-type">CGImage</span> = rasterize(drawing: myDrawing)
+<span class="hljs-keyword">let</span> handler = <span class="hljs-type">VNImageRequestHandler</span>(cgImage: main_image)        
+
+<span class="hljs-keyword">try</span>? handler.perform([request])
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">processClassifications</span><span class="hljs-params">(<span class="hljs-keyword">for</span> request: VNRequest, error: error)</span></span> {
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">let</span> sortedResults = request.results! <span class="hljs-keyword">as</span>? [<span class="hljs-type">VNClassificationObservation</span>] {
+        <span class="hljs-keyword">for</span> result <span class="hljs-keyword">in</span> sortedResults {
+            <span class="hljs-built_in">print</span>(result.identifier, result.confidence)
+        }
+    }
+}</code></pre>
+<p>Through a simple drag and drop process, you can incorporate the model into Xcode. The Swift code snippets are provided to take either bitmap or stroke-based drawing as input and consume the model in an iOS app.</p><p>Refer to the <a href="https://developer.apple.com/documentation/vision/classifying_images_with_vision_and_core_ml" target="_blank">Core ML sample application
+</a>
+for more details on using image classifiers in Core ML and Vision
+frameworks for iOS and macOS.</p>
                                 
                                 </section>
                             
@@ -1363,7 +1418,7 @@ as described above under &quot;Using Bitmap Input&quot;.</p><p>The code snippet 
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Deployment to Core ML","level":"1.3.3.3","depth":3,"next":{"title":"Advanced Usage","level":"1.3.3.4","depth":3,"path":"drawing_classifier/advanced-usage.md","ref":"drawing_classifier/advanced-usage.md","articles":[]},"previous":{"title":"Data Preparation","level":"1.3.3.2","depth":3,"path":"drawing_classifier/data-preparation.md","ref":"drawing_classifier/data-preparation.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"drawing_classifier/export-coreml.md","mtime":"2019-04-30T00:18:58.935Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2019-04-30T00:21:03.451Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Deployment to Core ML","level":"1.3.3.3","depth":3,"next":{"title":"Advanced Usage","level":"1.3.3.4","depth":3,"path":"drawing_classifier/advanced-usage.md","ref":"drawing_classifier/advanced-usage.md","articles":[]},"previous":{"title":"Data Preparation","level":"1.3.3.2","depth":3,"path":"drawing_classifier/data-preparation.md","ref":"drawing_classifier/data-preparation.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"drawing_classifier/export-coreml.md","mtime":"2019-06-17T21:03:52.446Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2019-06-17T21:08:04.346Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

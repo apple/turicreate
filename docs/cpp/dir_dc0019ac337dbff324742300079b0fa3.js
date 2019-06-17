@@ -17,6 +17,7 @@ var dir_dc0019ac337dbff324742300079b0fa3 =
     ] ],
     [ "convolve.hpp", "convolve_8hpp.html", "convolve_8hpp" ],
     [ "kernel.hpp", "kernel_8hpp.html", "kernel_8hpp" ],
+    [ "perspective_projection.hpp", "perspective__projection_8hpp_source.html", null ],
     [ "pixel_numeric_operations.hpp", "pixel__numeric__operations_8hpp.html", "pixel__numeric__operations_8hpp" ],
     [ "resample.hpp", "resample_8hpp.html", "resample_8hpp" ],
     [ "sampler.hpp", "sampler_8hpp.html", "sampler_8hpp" ]

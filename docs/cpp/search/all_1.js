@@ -126,7 +126,7 @@ var searchData=
   ['available_5ftoolkit_5ffunctions',['available_toolkit_functions',['../classturi_1_1toolkit__function__registry.html#a7d4ad5cbae089170ba28da8137f38190',1,'turi::toolkit_function_registry']]],
   ['average',['average',['../classturi_1_1groupby__operators_1_1average.html',1,'turi::groupby_operators']]],
   ['average_5fprecision',['average_precision',['../group__toolkit__util.html#gaf922f0d9f423d65ce03ecd08c32e8b48',1,'turi::recsys']]],
-  ['average_5fprecision_5fcalculator',['average_precision_calculator',['../classturi_1_1object__detection_1_1average__precision__calculator.html#a7fc8a94b668951c3a7a75553a6debb01',1,'turi::object_detection::average_precision_calculator']]],
+  ['average_5fprecision_5fcalculator',['average_precision_calculator',['../classturi_1_1object__detection_1_1average__precision__calculator.html#a1c366845ed808becd2a9abcca99aca72',1,'turi::object_detection::average_precision_calculator']]],
   ['average_5fprecision_5fcalculator',['average_precision_calculator',['../classturi_1_1object__detection_1_1average__precision__calculator.html',1,'turi::object_detection']]],
   ['avg',['AVG',['../namespaceturi_1_1aggregate.html#a9201475dd6d9c2e8a5c7431d579ff1e8',1,'turi::aggregate']]]
 ];

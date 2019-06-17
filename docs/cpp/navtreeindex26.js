@@ -1,5 +1,16 @@
 var NAVTREEINDEX26 =
 {
+"string__serialization_8hpp_source.html":[4,0,6,19],
+"string__stream__internals_8hpp_source.html":[4,0,6,20],
+"string__util_8hpp_source.html":[4,0,28,28],
+"structboost_1_1gil_1_1bilinear__sampler.html":[3,0,0,0,1],
+"structboost_1_1gil_1_1channel__assigns__t.html":[3,0,0,0,2],
+"structboost_1_1gil_1_1channel__divides__scalar__t.html":[3,0,0,0,3],
+"structboost_1_1gil_1_1channel__divides__t.html":[3,0,0,0,4],
+"structboost_1_1gil_1_1channel__halves__t.html":[3,0,0,0,5],
+"structboost_1_1gil_1_1channel__minus__scalar__t.html":[3,0,0,0,6],
+"structboost_1_1gil_1_1channel__minus__t.html":[3,0,0,0,7],
+"structboost_1_1gil_1_1channel__multiplies__scalar__t.html":[3,0,0,0,8],
 "structboost_1_1gil_1_1channel__multiplies__t.html":[3,0,0,0,9],
 "structboost_1_1gil_1_1channel__plus__scalar__t.html":[3,0,0,0,10],
 "structboost_1_1gil_1_1channel__plus__t.html":[3,0,0,0,11],
@@ -238,16 +249,5 @@ var NAVTREEINDEX26 =
 "structturi_1_1groupby__aggregate__impl_1_1group__descriptor.html":[3,0,2,11,1],
 "structturi_1_1groupby__aggregate__impl_1_1group__descriptor.html#ac57529cc6d2e2bf9bee46c5cb48f04b9":[3,0,2,11,1,1],
 "structturi_1_1groupby__aggregate__impl_1_1group__descriptor.html#acf7138264a4560a8de5f9e995363a35d":[3,0,2,11,1,0],
-"structturi_1_1groupby__aggregate__impl_1_1groupby__element.html":[3,0,2,11,2],
-"structturi_1_1groupby__aggregate__impl_1_1groupby__element.html#a0953d37e50db427e48a37421bbb2e862":[3,0,2,11,2,6],
-"structturi_1_1groupby__aggregate__impl_1_1groupby__element.html#a0e20c8ad2624b0448923250055f011ef":[3,0,2,11,2,5],
-"structturi_1_1groupby__aggregate__impl_1_1groupby__element.html#a1b2945604b2b54eef1592dd53a357954":[3,0,2,11,2,3],
-"structturi_1_1groupby__aggregate__impl_1_1groupby__element.html#a1f5f451a2a5d1239c7bd3968bddc809f":[3,0,2,11,2,8],
-"structturi_1_1groupby__aggregate__impl_1_1groupby__element.html#a2fd3554dceaa9354d828874d5014f327":[3,0,2,11,2,10],
-"structturi_1_1groupby__aggregate__impl_1_1groupby__element.html#a3fcfaa649b90bef59936399b8f4cc34a":[3,0,2,11,2,1],
-"structturi_1_1groupby__aggregate__impl_1_1groupby__element.html#a66c913b2acdc53e06c7bf893157a654e":[3,0,2,11,2,11],
-"structturi_1_1groupby__aggregate__impl_1_1groupby__element.html#a69a35fa48235fb0390209e4d9133c7fa":[3,0,2,11,2,0],
-"structturi_1_1groupby__aggregate__impl_1_1groupby__element.html#a950da2ed3bfb95fcfd41d3628fd2ad3d":[3,0,2,11,2,2],
-"structturi_1_1groupby__aggregate__impl_1_1groupby__element.html#abb30f181d3dfdef9c874efd63597d00a":[3,0,2,11,2,7],
-"structturi_1_1groupby__aggregate__impl_1_1groupby__element.html#ac4120d92f06683f45605693921246131":[3,0,2,11,2,4]
+"structturi_1_1groupby__aggregate__impl_1_1groupby__element.html":[3,0,2,11,2]
 };

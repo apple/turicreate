@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.visualization.set_target &mdash; Turi Create API 5.5 documentation</title>
+  <title>turicreate.visualization.set_target &mdash; Turi Create API 5.6 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 5.5 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 5.6 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -127,8 +127,8 @@
 <dl class="function">
 <dt id="turicreate.visualization.set_target">
 <code class="descclassname">turicreate.visualization.</code><code class="descname">set_target</code><span class="sig-paren">(</span><em>target='auto'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.visualization.set_target" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the target for visualizations launched with the <cite>show</cite> method. If
-unset, or if target is not provided, defaults to ‘auto’.</p>
+<dd><p>Sets the target for visualizations launched with the <cite>show</cite> or <cite>explore</cite>
+methods. If unset, or if target is not provided, defaults to ‘auto’.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -143,6 +143,7 @@ Possible values are:
 </div></blockquote>
 <ul class="last simple">
 <li>‘gui’: always launch a native GUI window.</li>
+<li>‘none’: prevent all visualizations from being displayed.</li>
 </ul>
 </dd>
 </dl>
@@ -169,7 +170,7 @@ and Linux.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Apr 29, 2019.
+      Last updated on Jun 03, 2019.
     </p>
   </div>
 </footer>
@@ -187,7 +188,7 @@ and Linux.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.5',
+            VERSION:'5.6',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false
