@@ -54,7 +54,7 @@ script:
 
   # Remove style transfer unit test due to out-of-memory error.
   # Remove some additional tests temporarily to get under the two-hour timeout.
-  - rm src/unity/python/turicreate/test/test_style_transfer.py src/unity/python/turicreate/test/test_object_detector.py
+  - rm src/unity/python/turicreate/test/test_style_transfer.py src/unity/python/turicreate/test/test_object_detector.py src/unity/python/turicreate/test/test_one_shot_object_detector.py
 
   # Build the wheel
   - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=3 --debug --skip_cpp_test --skip_doc
