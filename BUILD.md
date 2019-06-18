@@ -102,12 +102,12 @@ If `Ninja` is chosen as the generator in the previous step, you should use comma
 
     cd debug/
     # check ninja -h for more info
-    ninja -j 4
+    ninja
 
 will perform up to 4 build tasks in parallel. When building in release mode,
 Turi Create does require a large amount of memory to compile with the
 heaviest toolkit requiring 1GB of RAM. Where K is the amount of memory you
-have on your machine in GB, we recommend not exceeding `-j K`. Note that
+have on your machine in GB, we recommend not exceeding `make -j K`. Note that
 if you are using ninja, it uses parallelism by default, and builds all targets
 directly from the `debug/` or  `release/` directories.
 
