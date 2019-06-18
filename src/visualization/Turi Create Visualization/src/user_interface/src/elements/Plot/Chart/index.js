@@ -40,20 +40,8 @@ class TcPlot extends Component {
             }
 
             var prevData = $this.vegaView.data("source_2");
-
-            for(var y = 0; y < newData.length; y++ ){
-                if(newData[y]["a"] != null){
-                    for(var x = 0; x < prevData.length; x++ ){
-                        if(prevData[x]["a"] === newData[y]["a"]){
-                            changeSet = changeSet.remove(prevData[x]);
-                        }
-                    }
-                }else{
-                    if(prevData.length > 0){
-                        changeSet = changeSet.remove(prevData);
-                        break;
-                    }
-                }
+            if(prevData.length > 0){
+                changeSet = changeSet.remove(prevData);
             }
 
             changeSet = changeSet.insert(newData);
@@ -93,8 +81,8 @@ class TcPlot extends Component {
                                 .run();
         this.vegaLoading = false;
         vegaTooltip.vega(this.vegaView, this.bubbleOpts);
-        
-        if(window.navigator.platform === 'MacIntel'){
+       
+        if(window.navigator.platform === 'MacIntel' && !window.tcvizBrowserMode){
             window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'ready'});
         }
     }

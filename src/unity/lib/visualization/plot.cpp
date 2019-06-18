@@ -1,6 +1,10 @@
 #include <iostream>
 #include <memory>
 
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp>
+
 #include "plot.hpp"
 #include <unity/lib/visualization/dark_mode.hpp>
 #include <unity/lib/visualization/process_wrapper.hpp>
@@ -10,12 +14,24 @@
 #include <unity/lib/visualization/vega_spec.hpp>
 #include <unity/lib/visualization/histogram.hpp>
 #include <unity/lib/visualization/item_frequency.hpp>
+#include <unity/lib/visualization/server.hpp>
 #include <unity/lib/visualization/summary_view.hpp>
 #include <unity/lib/visualization/vega_spec/config.h>
 #include <sstream>
 
 namespace turi{
   namespace visualization{
+    Plot::Plot() {
+      // make UUID for plot
+      static auto uuid_generator = boost::uuids::random_generator();
+      auto uuid = uuid_generator();
+      m_id = boost::lexical_cast<std::string>(uuid);
+    }
+
+    const std::string& Plot::get_id() const {
+      return m_id;
+    }
+
     void Plot::show(const std::string& path_to_client, tc_plot_variation variation) {
 
       std::shared_ptr<Plot> self = std::make_shared<Plot>(*this);
@@ -41,7 +57,7 @@ namespace turi{
       });
     }
 
-    void Plot::materialize() {
+    void Plot::materialize() const {
       do {
         m_transformer->get()->vega_column_data();
       } while(!m_transformer->eof());
@@ -56,13 +72,13 @@ namespace turi{
       return m_transformer->get_percent_complete();
     }
 
-    std::string Plot::get_next_data() {
+    std::string Plot::get_next_data() const {
       vega_data vd;
       vd << m_transformer->get()->vega_column_data();
       return vd.get_data_spec(get_percent_complete());
     }
 
-    std::string Plot::get_data() {
+    std::string Plot::get_data() const {
       this->materialize();
       DASSERT_TRUE(m_transformer->eof());
       vega_data vd;
@@ -71,7 +87,7 @@ namespace turi{
     }
 
     std::string Plot::get_spec(tc_plot_variation variation,
-                               bool include_data) {
+                               bool include_data) const {
       // Replace config from predefined config (maintained separately so we don't
       // have to repeat the same config in each file, and we can make sure it stays
       // consistent across the different plots)
@@ -162,6 +178,10 @@ namespace turi{
         {"{{height}}", height},
         {"{{pre_filled_data_values}}", data},
       });
+    }
+
+    std::string Plot::get_url() const {
+      return WebServer::get_url_for_plot(*this);
     }
   }
 
