@@ -308,7 +308,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
 
         # Make one step of parameter update. Trainer needs to know the
         # batch size of data to normalize the gradient by 1/batch_size.
-        trainer.step(train_batch.data[0].shape[0])
+        trainer.step(train_batch.data[0].shape[0], ignore_stale_grad=True)
         # calculate training metrics
         train_loss = loss.mean().asscalar()
 

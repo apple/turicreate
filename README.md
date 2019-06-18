@@ -79,7 +79,7 @@ System Requirements
 
 Turi Create requires:
 
-* Python 2.7, 3.5, 3.6
+* Python 2.7, 3.5, 3.6, 3.7 (macOS only)
 * x86\_64 architecture
 * At least 4 GB of RAM
 
@@ -109,8 +109,8 @@ source ~/venv/bin/activate
 ```
 Alternatively, if you are using [Anaconda](https://www.anaconda.com/what-is-anaconda/), you may use its virtual environment:
 ```shell
-conda create -n venv python=2.7 anaconda
-source activate venv
+conda create -n virtual_environment_name anaconda
+conda activate virtual_environment_name
 ```
 
 To install `Turi Create` within your virtual environment:
