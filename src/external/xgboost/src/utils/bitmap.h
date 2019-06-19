@@ -13,8 +13,8 @@
 #include "./omp.h"
 
 // GLC parallel lambda premitive 
-#include <parallel/lambda_omp.hpp>
-#include <parallel/pthread_tools.hpp>
+#include <core/parallel/lambda_omp.hpp>
+#include <core/parallel/pthread_tools.hpp>
 
 namespace xgboost {
 namespace utils {

@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <stdlib.h>
 #include <vector>
 #include <string>
@@ -9,17 +9,17 @@
 #include <random>
 
 // ML-Data Utils
-#include <unity/toolkits/ml_data_1/ml_data.hpp>
-#include <unity/toolkits/ml_data_1/metadata.hpp>
-#include <unity/toolkits/ml_data_1/sframe_index_mapping.hpp>
+#include <toolkits/ml_data_1/ml_data.hpp>
+#include <toolkits/ml_data_1/metadata.hpp>
+#include <toolkits/ml_data_1/sframe_index_mapping.hpp>
 
 // Optimization Interface
-#include <optimization/optimization_interface.hpp>
-#include <optimization/utils.hpp>
+#include <ml/optimization/optimization_interface.hpp>
+#include <ml/optimization/utils.hpp>
 
 // Models
-#include <unity/toolkits/supervised_learning/linear_regression.hpp>
-#include <sframe/testing_utils.hpp>
+#include <toolkits/supervised_learning/linear_regression.hpp>
+#include <core/storage/sframe_data/testing_utils.hpp>
 
 #include <cfenv>
 

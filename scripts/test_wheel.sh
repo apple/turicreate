@@ -83,7 +83,7 @@ PYTHON="$PWD/deps/env/bin/python"
 PYTHON_MAJOR_VERSION=$(${PYTHON} -c 'import sys; print(sys.version_info.major)')
 PYTHON_MINOR_VERSION=$(${PYTHON} -c 'import sys; print(sys.version_info.minor)')
 PYTHON_VERSION="python${PYTHON_MAJOR_VERSION}.${PYTHON_MINOR_VERSION}"
-cp -a src/unity/python/turicreate/test deps/env/lib/${PYTHON_VERSION}/site-packages/turicreate/
+cp -a src/python/turicreate/test deps/env/lib/${PYTHON_VERSION}/site-packages/turicreate/
 cd deps/env/lib/${PYTHON_VERSION}/site-packages/turicreate/test
 
 # run tests

@@ -1,8 +1,8 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <random/random.hpp>
-#include <random/alias.hpp>
-#include <parallel/thread_pool.hpp>
+#include <core/random/random.hpp>
+#include <core/random/alias.hpp>
+#include <core/parallel/thread_pool.hpp>
 #include <cmath>
 #include <iostream>
 #include <vector>

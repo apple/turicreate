@@ -7,7 +7,7 @@
 #define TESTING_GENERATE_SPARSE_DATA_H
 
 #include <vector>
-#include <random/random.hpp>
+#include <core/random/random.hpp>
 
 using namespace turi;
 

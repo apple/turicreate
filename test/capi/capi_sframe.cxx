@@ -6,17 +6,17 @@
 
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/lib/gl_sarray.hpp>
+#include <core/util/test_macros.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
 #include <capi/TuriCreate.h>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <vector>
 #include <iostream>
 #include <ctime>
-#include <unity/toolkits/util/random_sframe_generation.hpp>
-#include <fileio/fileio_constants.hpp>
-#include <util/fs_util.hpp>
+#include <toolkits/util/random_sframe_generation.hpp>
+#include <core/storage/fileio/fileio_constants.hpp>
+#include <core/util/fs_util.hpp>
 #include "capi_utils.hpp"
 
 BOOST_AUTO_TEST_CASE(test_sframe_allocation) {

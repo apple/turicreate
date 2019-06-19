@@ -6,8 +6,8 @@
 #include <set>
 #include <sstream>
 #include <string>
-#include <util/cityhash_tc.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/cityhash_tc.hpp>
+#include <core/util/test_macros.hpp>
 #include <vector>
 
 // Eigen
@@ -15,20 +15,20 @@
 #include <Eigen/SparseCore>
 
 // SFrame and Flex type
-#include <random/random.hpp>
-#include <unity/lib/flex_dict_view.hpp>
+#include <core/random/random.hpp>
+#include <model_server/lib/flex_dict_view.hpp>
 
 // ML-Data Utils
-#include <ml_data/metadata.hpp>
-#include <ml_data/ml_data.hpp>
-#include <ml_data/ml_data_entry.hpp>
+#include <ml/ml_data/metadata.hpp>
+#include <ml/ml_data/ml_data.hpp>
+#include <ml/ml_data/ml_data_entry.hpp>
 
 // Testing utils common to all of ml_data_iterator
-#include <sframe/testing_utils.hpp>
-#include <ml_data/testing_utils.hpp>
-#include <util/testing_utils.hpp>
+#include <core/storage/sframe_data/testing_utils.hpp>
+#include <ml/ml_data/testing_utils.hpp>
+#include <core/util/testing_utils.hpp>
 
-#include <globals/globals.hpp>
+#include <core/globals/globals.hpp>
 
 using namespace turi;
 

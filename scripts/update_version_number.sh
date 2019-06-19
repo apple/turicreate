@@ -43,11 +43,11 @@ fi
 
 set_version() {
   # set the engine version string
-  cd ${WORKSPACE}/src/unity/lib
+  cd ${WORKSPACE}/src/model_server/lib
   # C++, replace "1.8"//{{VERSION_STRING}} with "new_version_string"//{{VERSION_STRING}}"
   sed -i '' -e "s/\".*\"\/\/#{{VERSION_STRING}}/\"${VERSION_NUMBER}\"\/\/#{{VERSION_STRING}}/g" version_number.hpp
   # Python, replace '1.8'#{{VERSION_STRING}}' with 'new_version_string'#{{VERSION_STRING}}
-  cd ${WORKSPACE}/src/unity/python/
+  cd ${WORKSPACE}/src/python/
   sed -i '' -e "s/'.*'#{{VERSION_STRING}}/'${VERSION_NUMBER}'#{{VERSION_STRING}}/g" turicreate/version_info.py setup.py
 }
 

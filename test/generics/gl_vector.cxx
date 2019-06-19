@@ -5,7 +5,7 @@
  */
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <iostream>
 #include <typeinfo>       // operator typeid
 #include <cstddef>
@@ -14,11 +14,11 @@
 #include <type_traits>
 #include <iterator>
 
-#include <generics/is_memmovable.hpp>
-#include <generics/gl_vector.hpp>
-#include <generics/gl_string.hpp>
-#include <util/basic_types.hpp>
-#include <util/testing_utils.hpp>
+#include <core/generics/is_memmovable.hpp>
+#include <core/generics/gl_vector.hpp>
+#include <core/generics/gl_string.hpp>
+#include <core/util/basic_types.hpp>
+#include <core/util/testing_utils.hpp>
 
 using namespace turi;
 

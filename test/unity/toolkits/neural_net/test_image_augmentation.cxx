@@ -6,14 +6,14 @@
 
 #define BOOST_TEST_MODULE test_image_augmentation
 
-#include <unity/toolkits/neural_net/image_augmentation.hpp>
+#include <ml/neural_net/image_augmentation.hpp>
 
 #include <algorithm>
 #include <vector>
 
 #include <boost/test/unit_test.hpp>
-#include <image/image_type.hpp>
-#include <util/test_macros.hpp>
+#include <core/data/image/image_type.hpp>
+#include <core/util/test_macros.hpp>
 
 namespace turi {
 namespace neural_net {

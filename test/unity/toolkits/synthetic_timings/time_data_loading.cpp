@@ -5,14 +5,14 @@
  */
 #include <vector>
 #include <string>
-#include <random/random.hpp>
+#include <core/random/random.hpp>
 #include <unity/server/toolkits/recsys/data.hpp>
 #include <unity/server/toolkits/recsys/models.hpp>
 #include <unity/server/toolkits/recsys/models/itemcf.hpp>
 #include <unity/server/toolkits/recsys/data_generators.hpp>
 #include <timer/timer.hpp>
 #include <numerics/armadillo.hpp>
-#include <sframe/sframe.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
 
 const bool use_strings = false;
 

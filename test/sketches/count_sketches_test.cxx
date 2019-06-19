@@ -1,15 +1,15 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <string>
 #include <iostream>
 #include <vector>
 #include <cmath>
 #include <map>
 #include <unordered_map>
-#include <sketches/countsketch.hpp>
-#include <sketches/countmin.hpp>
-#include <random/random.hpp>
+#include <ml/sketches/countsketch.hpp>
+#include <ml/sketches/countmin.hpp>
+#include <core/random/random.hpp>
 #include <timer/timer.hpp>
 
 struct countsketch_test {

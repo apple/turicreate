@@ -8,10 +8,10 @@
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>
 #include <capi/impl/capi_initialization_internal.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <unity/lib/unity_sarray.hpp>
-#include <unity/lib/gl_sarray.hpp>
-#include <export.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/sframe_interface/unity_sarray.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <core/export.hpp>
 #include <sstream>
 
 

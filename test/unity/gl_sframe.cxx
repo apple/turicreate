@@ -5,16 +5,16 @@
  */
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <boost/range/combine.hpp>
-#include <unity/lib/gl_sarray.hpp>
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/lib/unity_sframe.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/filesystem.hpp>
-#include <parallel/lambda_omp.hpp>
-#include <sframe/sframe.hpp>
-#include <sframe/testing_utils.hpp>
+#include <core/parallel/lambda_omp.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_data/testing_utils.hpp>
 
 using namespace turi;
 

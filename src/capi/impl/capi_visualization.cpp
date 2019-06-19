@@ -8,9 +8,9 @@
 #include <capi/impl/capi_error_handling.hpp>
 #include <capi/impl/capi_initialization_internal.hpp>
 #include <capi/impl/capi_wrapper_structs.hpp>
-#include <export.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <unity/lib/visualization/show.hpp>
+#include <core/export.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <visualization/server/show.hpp>
 
 static turi::flexible_type optional_str(const char *str) {
     if (str == nullptr) {
