@@ -143,8 +143,8 @@ build_dylib_macos_10_14:
   artifacts:
     expire_in: 1 day
     paths:
-      - release/src/objc/libAudioPreprocessing.dylib
-      - release/src/objc/libRecommender.dylib
+      - release/src/deployment/libAudioPreprocessing.dylib
+      - release/src/deployment/libRecommender.dylib
 
 build_dylib_ios_12:
   tags:
@@ -161,8 +161,8 @@ build_dylib_ios_12:
   artifacts:
     expire_in: 1 day
     paths:
-      - release/src/objc/libAudioPreprocessing.dylib
-      - release/src/objc/libRecommender.dylib
+      - release/src/deployment/libAudioPreprocessing.dylib
+      - release/src/deployment/libRecommender.dylib
 
 test_cpp_linux:
   tags:
@@ -451,7 +451,7 @@ collect_artifacts:
     - build_wheel_mac_10_14_python35
     - build_wheel_mac_10_14_python36
   script:
-    - mv release/src/objc/*.dylib target/
+    - mv release/src/deployment/*.dylib target/
     - rmdir -p release || find release
   artifacts:
     expire_in: 2 weeks

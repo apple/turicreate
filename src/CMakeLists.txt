@@ -1,7 +1,7 @@
 subdirs(capi
 core
 external
-objc
+deployment
 ml
 model_server
 toolkits
