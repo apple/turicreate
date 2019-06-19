@@ -111,7 +111,7 @@ void
 handle_request(
     http::request<Body, http::basic_fields<Allocator>>&& req,
     Send&& send,
-    const WebServer::plot_map& m_plots)
+    const WebServer::plot_map& plots)
 {
     // Returns a bad request response
     auto const bad_request =
@@ -187,10 +187,10 @@ handle_request(
         if (req_target.find("/spec/") == 0) {
             const size_t spec_url_length = sizeof("/spec/") - 1;
             std::string plot_id = req_target.substr(spec_url_length).to_string();
-            if (m_plots->find(plot_id) == m_plots->end()) {
+            if (plots.find(plot_id) == plots.end()) {
                 return server_error("Expected plot " + plot_id + " was not found");
             }
-            const Plot& plot = m_plots->at(plot_id);
+            const Plot& plot = plots.at(plot_id);
 
             // For now, force light mode, until we have dark mode
             // support for all visualizations and the web app itself.
@@ -205,10 +205,10 @@ handle_request(
         if (req_target.find("/data/") == 0) {
             const size_t data_url_length = sizeof("/data/") - 1;
             std::string plot_id = req_target.substr(data_url_length).to_string();
-            if (m_plots->find(plot_id) == m_plots->end()) {
+            if (plots.find(plot_id) == plots.end()) {
                 return server_error("Expected plot " + plot_id + " was not found");
             }
-            const Plot& plot = m_plots->at(plot_id);
+            const Plot& plot = plots.at(plot_id);
             std::string plot_data = plot.get_next_data();
             return respond(plot_data, "application/json");
         }
@@ -575,7 +575,7 @@ std::string WebServer::add_plot(const Plot& plot) {
 
     // add to dictionary with UUID
     const std::string& uuid_str = plot.get_id();
-    (*m_plots)[uuid_str] = plot;
+    m_plots[uuid_str] = plot;
 
     // return formatted URL
     std::string port_str = std::to_string(m_impl->m_port);

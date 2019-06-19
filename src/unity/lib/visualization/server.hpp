@@ -7,13 +7,14 @@
 #include <unity/lib/visualization/plot.hpp>
 
 #include <memory>
+#include <unordered_map>
 
 namespace turi {
 namespace visualization {
 
     class WebServer {
     public:
-        typedef std::shared_ptr<std::unordered_map<std::string, Plot>> plot_map;
+        typedef std::unordered_map< std::string, Plot > plot_map;
 
         static WebServer& get_instance();
         ~WebServer();
@@ -26,7 +27,7 @@ namespace visualization {
         WebServer();
 
         class Impl;
-        plot_map m_plots = std::make_shared<std::unordered_map<std::string, Plot>>();
+        plot_map m_plots;
         std::unique_ptr<Impl> m_impl;
 
         std::string add_plot(const Plot& plot);
