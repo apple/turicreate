@@ -108,7 +108,7 @@ class flexible_type_parser {
 
  private:
   std::shared_ptr<flexible_type_parser_impl<const char*, decltype(boost::spirit::iso8859_1::space)> > parser;
-  std::shared_ptr<flexible_type_parser_impl<const char*, decltype(boost::spirit::qi::eoi)> > non_space_parser;
+  std::shared_ptr<flexible_type_parser_impl<const char*, decltype(!boost::spirit::qi::eps)> > non_space_parser;
   bool delimiter_has_space(const std::string& separator);
   bool m_delimiter_has_space;
 };
