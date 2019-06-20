@@ -1952,8 +1952,12 @@ class capi_test_sarray {
     tc_release(result);
 
     /* will use the optimizer to fuse 2 identical seq */
-    result = tc_binary_op_ss(col1, "/", col1, &error);
+    tc_sarray* col3 = tc_sarray_create_from_sequence(1, 5, &error);
     CAPI_CHECK_ERROR(error);
+
+    result = tc_binary_op_ss(col1, "/", col3, &error);
+    CAPI_CHECK_ERROR(error);
+
 
     for (size_t i = 0; i < 4; ++i) {
       tc_flexible_type* ft = tc_sarray_extract_element(result, i, &error);
