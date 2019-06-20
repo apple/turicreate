@@ -1,16 +1,16 @@
 #ifndef __TC_TEST_ANNOTATION_UTILS
 #define __TC_TEST_ANNOTATION_UTILS
 
-#include <image/image_type.hpp>
-#include <sframe/testing_utils.hpp>
-#include <util/testing_utils.hpp>
+#include <core/data/image/image_type.hpp>
+#include <core/storage/sframe_data/testing_utils.hpp>
+#include <core/util/testing_utils.hpp>
 
-#include <flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 
-#include <unity/lib/unity_sarray.hpp>
-#include <unity/lib/unity_sframe.hpp>
+#include <core/storage/sframe_interface/unity_sarray.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
 
-#include <unity/lib/gl_sarray.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
 
 namespace annotation_testing {
 

@@ -1,10 +1,10 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <string>
 #include <iostream>
 #include <shmipc/shmipc.hpp>
-#include <parallel/pthread_tools.hpp>
+#include <core/parallel/pthread_tools.hpp>
 using namespace turi;
 // 16 byte buffer 
 const size_t BUFFER_SIZE = 16;

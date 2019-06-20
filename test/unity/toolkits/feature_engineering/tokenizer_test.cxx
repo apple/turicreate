@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <stdlib.h>
 #include <vector>
 #include <string>
@@ -11,11 +11,11 @@
 #include <iostream>
 #include <algorithm>
 
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/lib/gl_sarray.hpp>
-#include <unity/lib/variant_deep_serialize.hpp>
-#include <unity/toolkits/feature_engineering/tokenizer.hpp>
-#include <unity/lib/unity_sframe.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
+#include <toolkits/feature_engineering/tokenizer.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
 
 #include <cfenv>
 

@@ -1,41 +1,18 @@
-project(Turi)
+subdirs(capi
+core
+external
+deployment
+ml
+model_server
+toolkits
+visualization)
 
-if(${TC_BUILD_CAPI}) 
-  message("Building C API.")
-  subdirs(capi)
-else()
-  message("Skipping build of C APIs.")
+
+if(${TC_BUILD_PYTHON})
+  subdirs(python)
+
+  include_directories(${PYTHON_INCLUDE_DIRS})
+  message("Python library = ${PYTHON_LIBRARIES}")
+
 endif()
 
-subdirs(
-  cppipc
-  dot_graph_printer
-  exceptions
-  external
-  fileio
-  flexible_type
-  generics
-  globals
-  image
-  lambda
-  logger
-  ml_data
-  nanosockets
-  objc
-  optimization
-  platform
-  random
-  serialization
-  sframe
-  sframe_query_engine
-  sgraph
-  sketches
-  stack_trace
-  startup_teardown
-  table_printer
-  unity
-  util
-  vega_renderer
-  visualization
-  toolkits
-  )

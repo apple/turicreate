@@ -6,11 +6,11 @@
 
 #define BOOST_TEST_MODULE test_od_data_iterator
 
-#include <unity/toolkits/object_detection/od_data_iterator.hpp>
+#include <toolkits/object_detection/od_data_iterator.hpp>
 
 #include <boost/test/unit_test.hpp>
-#include <unity/lib/image_util.hpp>
-#include <util/test_macros.hpp>
+#include <model_server/lib/image_util.hpp>
+#include <core/util/test_macros.hpp>
 
 namespace turi {
 namespace object_detection {

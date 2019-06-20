@@ -1,16 +1,16 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/fs_util.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/fs_util.hpp>
+#include <core/util/test_macros.hpp>
 #include <string>
 #include <stdio.h>
-#include <fileio/general_fstream.hpp>
-#include <fileio/hdfs.hpp>
-#include <fileio/fs_utils.hpp>
-#include <fileio/file_ownership_handle.hpp>
-#include <fileio/file_handle_pool.hpp>
-#include <fileio/fixed_size_cache_manager.hpp>
-#include <logger/logger.hpp>
+#include <core/storage/fileio/general_fstream.hpp>
+#include <core/storage/fileio/hdfs.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
+#include <core/storage/fileio/file_ownership_handle.hpp>
+#include <core/storage/fileio/file_handle_pool.hpp>
+#include <core/storage/fileio/fixed_size_cache_manager.hpp>
+#include <core/logging/logger.hpp>
 #include <boost/filesystem.hpp>
 
 namespace fs = boost::filesystem;

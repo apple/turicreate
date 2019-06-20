@@ -10,7 +10,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include <capi/TuriCreate.h>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 
 #include "capi_utils.hpp"
 

@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <string>
 #include <random>
 #include <set>
@@ -8,11 +8,11 @@
 #include <vector>
 #include <array>
 #include <algorithm>
-#include <util/cityhash_tc.hpp>
+#include <core/util/cityhash_tc.hpp>
 
 // SFrame and Flex type
-#include <table_printer/table_printer.hpp>
-#include <sframe/testing_utils.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
+#include <core/storage/sframe_data/testing_utils.hpp>
 
 using namespace turi;
 

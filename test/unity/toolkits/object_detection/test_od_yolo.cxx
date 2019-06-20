@@ -6,15 +6,15 @@
 
 #define BOOST_TEST_MODULE test_od_yolo
 
-#include <unity/toolkits/object_detection/od_yolo.hpp>
+#include <toolkits/object_detection/od_yolo.hpp>
 
 #include <algorithm>
 #include <cmath>
 
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
-#include <unity/toolkits/coreml_export/mlmodel_include.hpp>
-#include <unity/toolkits/neural_net/model_spec.hpp>
+#include <core/util/test_macros.hpp>
+#include <toolkits/coreml_export/mlmodel_include.hpp>
+#include <ml/neural_net/model_spec.hpp>
 
 namespace turi {
 namespace object_detection {

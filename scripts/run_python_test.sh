@@ -34,7 +34,7 @@ pop_ld_library_path() {
   export LD_LIBRARY_PATH=$OLD_LIBRARY_PATH
 }
 push_ld_library_path
-cd $TURI_BUILD_ROOT/src/unity/python
+cd $TURI_BUILD_ROOT/src/python
 make -j4
 pop_ld_library_path
 

@@ -3,7 +3,7 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <flexible_type/flexible_type_spirit_parser.hpp>
+#include <core/data/flexible_type/flexible_type_spirit_parser.hpp>
 using namespace turi;
 using namespace boost::spirit;
 

@@ -1,15 +1,15 @@
 #define BOOST_TEST_MODULE image_classification_annotation_tests
-#include <unity/lib/annotation/image_classification.hpp>
+#include <visualization/annotation/image_classification.hpp>
 
-#include <unity/lib/gl_sarray.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
 
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 
-#include <sframe/testing_utils.hpp>
-#include <util/testing_utils.hpp>
+#include <core/storage/sframe_data/testing_utils.hpp>
+#include <core/util/testing_utils.hpp>
 
-#include <image/image_type.hpp>
+#include <core/data/image/image_type.hpp>
 
 #include "utils.cpp"
 

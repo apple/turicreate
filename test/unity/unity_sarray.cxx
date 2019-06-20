@@ -5,15 +5,15 @@
  */
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <iostream>
 
 
 #include <unistd.h>
 
-#include <fileio/temp_files.hpp>
-#include <unity/lib/unity_sarray.hpp>
-#include <sframe/sframe_config.hpp>
+#include <core/storage/fileio/temp_files.hpp>
+#include <core/storage/sframe_interface/unity_sarray.hpp>
+#include <core/storage/sframe_data/sframe_config.hpp>
 using namespace turi;
 
 struct unity_sarray_test {

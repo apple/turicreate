@@ -1,7 +1,7 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
-#include <fileio/s3_api.hpp>
+#include <core/util/test_macros.hpp>
+#include <core/storage/fileio/s3_api.hpp>
 BOOST_TEST_DONT_PRINT_LOG_VALUE(turi::s3url)
 using namespace turi;
 struct s3api_test {

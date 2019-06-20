@@ -1,16 +1,16 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <iostream>
 
 
 #include <unistd.h>
 #include <timer/timer.hpp>
-#include <unity/lib/unity_sarray.hpp>
-#include <unity/lib/flex_dict_view.hpp>
-#include <unity/toolkits/text/topic_model.hpp>
-#include <unity/toolkits/text/cgs.hpp>
-#include <unity/toolkits/text/alias.hpp>
+#include <core/storage/sframe_interface/unity_sarray.hpp>
+#include <model_server/lib/flex_dict_view.hpp>
+#include <toolkits/text/topic_model.hpp>
+#include <toolkits/text/cgs.hpp>
+#include <toolkits/text/alias.hpp>
 
 using namespace turi;
 using namespace text;

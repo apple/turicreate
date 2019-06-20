@@ -11,8 +11,8 @@ build. This means that the build itself, and the products of the build, take pla
 overwritten on the next build. Make changes in the `src/` directory, and run build commands to produce output.
 
 * `src/`: source code of Turi Create
-* `src/unity/python`: the Python module source code
-* `src/unity/python/turicreate/test`: Python unit tests for Turi Create
+* `src/python`: the Python module source code
+* `src/python/turicreate/test`: Python unit tests for Turi Create
 * `src/external`: source drops of 3rd party source dependencies
 * `deps/`: build dependencies and environment
 * `debug/`, `release/`: build output directories for debug and release builds respectively
@@ -120,7 +120,7 @@ Running Unit Tests
 ### Running Python unit tests
 From the repo root:
 
-    cd debug/src/unity/python/turicreate/test
+    cd debug/src/python/turicreate/test
     pytest
 
 
