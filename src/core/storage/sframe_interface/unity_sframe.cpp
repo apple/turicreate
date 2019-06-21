@@ -7,6 +7,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/date_time/local_time/local_time.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/optional.hpp>
 #include <core/storage/sframe_interface/unity_sframe.hpp>
 #include <core/storage/sframe_data/sframe.hpp>
 #include <core/storage/sframe_data/sframe_saving.hpp>
@@ -53,7 +54,6 @@
 #include <boost/archive/iterators/base64_from_binary.hpp>
 #include <boost/archive/iterators/transform_width.hpp>
 #include <core/logging/logger.hpp>
-#include <core/util/basic_types.hpp>
 
 #ifdef TC_HAS_PYTHON
 #include <core/system/lambda/pylambda_function.hpp>
@@ -382,7 +382,7 @@ size_t unity_sframe::column_index(const std::string &name) {
   Dlog_func_entry();
 
   auto it = std::find(m_column_names.begin(), m_column_names.end(), name);
-  if(it == m_column_names.end()) {
+  if(it == m_column_names.end()) { 
     log_and_throw(std::string("Column '") + name + "' not found.");;
   }
   return std::distance(m_column_names.begin(), it);
@@ -2012,7 +2012,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
       std::string column_name;
 
       enum MethodType {GetRows = 0, GetAccordion = 1};
-      auto response = NONE<MethodType>();
+      auto response = boost::optional<MethodType>();
 
       auto sa = gl_sarray(std::vector<flexible_type>(1, input)).astype(flex_type_enum::DICT);
       flex_dict dict = sa[0].get<flex_dict>();
@@ -2021,9 +2021,9 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
         const auto& value = pair.second;
         if (key == "method") {
           if(value.get<flex_string>() == "get_rows"){
-            response = SOME(GetRows);
+            response = boost::optional<MethodType>(GetRows);
           }else if(value.get<flex_string>() == "get_accordion"){
-            response = SOME(GetAccordion);
+            response = boost::optional<MethodType>(GetAccordion);
           }
         } else if (key == "start") {
           start = value.get<flex_int>();
