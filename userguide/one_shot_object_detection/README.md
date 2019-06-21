@@ -56,7 +56,7 @@ synthetic_images.explore()
 
 ![Explore synthetic images](images/synthetic_images_explore.jpg)
 
-Some examples of synthetic training data generated:
+Some examples of synthetic training data:
 
 ![Sample synthetic images](images/synthetic_images_collage.jpg)
 
@@ -112,5 +112,3 @@ synthetic_images = \
 
 synthetic_images.explore()
 ```
-
-*Note: In order to view the exact synthetic images used to train the model, the same seed should be used which was used to train the model.*
