@@ -22,6 +22,7 @@ if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
       mps_layer_helper.m
       mps_layer_conv_data_loader.m
       mps_layer_conv_padding.m
+      mps_layer_fully_connected_data_loader.m
       mps_networks.mm
       mps_trainer.mm
       mps_lstm_helper.mm
