@@ -170,7 +170,7 @@ JSExportAs(translate,
 - (void)dealloc;
 - (NSDictionary<NSAttributedStringKey, id> *)textAttributes;
 + (CGAffineTransform)flipYAxisWithHeight:(double)height;
-+ (CGColorRef)colorFromString:(NSString *)string;
++ (CGColorRef)newColorFromString:(NSString *)string;
 @end
 
 @protocol VegaCGCanvasInterface <JSExport>

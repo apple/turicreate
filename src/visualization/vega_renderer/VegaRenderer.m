@@ -33,7 +33,13 @@
 
 @end
 
-@implementation VegaRenderer
+@implementation VegaRenderer {
+    CGImageRef _image;
+}
+
+- (void)dealloc {
+    CGImageRelease(_image);
+}
 
 -(instancetype) initWithSpec:(NSString *)spec {
     return [self initWithSpec:spec context:[[NSGraphicsContext currentContext] CGContext]];
@@ -112,6 +118,9 @@
     // Make sure we don't have any extra properties on the dictionary
     // backing the JSValue. If we do, it means we missed some property
     // implementations on the JSExport protocol for this type.
+    if (self.vegaCanvas == nil) {
+        return nil;
+    }
     JSValue *jsVegaCanvas = [JSValue valueWithObject:self.vegaCanvas inContext:self.context];
     NSDictionary *jsVegaCanvasExtraProps = jsVegaCanvas.toDictionary;
     if (jsVegaCanvasExtraProps.count > 0) {
@@ -151,10 +160,10 @@
     CGContextScaleCTM(bitmapContext, scaleFactor, scaleFactor);
     CGLayerRef layer = self.vegaContext.layer;
     CGContextDrawLayerAtPoint(bitmapContext, CGPointMake(0, 0), layer);
-    CGImageRef bitmapImage = CGBitmapContextCreateImage(bitmapContext);
+    _image = CGBitmapContextCreateImage(bitmapContext);
     CGColorSpaceRelease(colorSpace);
     CGContextRelease(bitmapContext);
-    return bitmapImage;
+    return _image;
 }
 
 + (NSString*)vg2canvasJS {
