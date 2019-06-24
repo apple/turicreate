@@ -252,9 +252,21 @@ def create(style_dataset, content_dataset, style_feature=None,
         keys = list(net_params)
         for k in keys:
             mps_net_params[k] = net_params[k].data().asnumpy()
-        print(mps_net_params)
 
-        # TODO: Create MPS Graph
+        mps_config = {
+            'mode': _MpsGraphMode.Train,
+            'use_sgd': True,
+            'st_include_network': True,
+            'st_include_loss': True,
+            'st_vgg16_content_loss_layer': params['vgg16_content_loss_layer'],
+            'st_lr': params['lr'],
+            'st_content_loss_mult': params['content_loss_mult'],
+            'st_style_loss_mult': params['style_loss_mult'],
+            'st_finetune_all_params': params['finetune_all_params']
+        }
+
+        # TODO: Create MPS Graph Object
+        
     else:
         if verbose:
             # Estimate memory usage (based on experiments)
