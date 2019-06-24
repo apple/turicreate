@@ -21,6 +21,13 @@ import turicreate as _tc
 import numpy as _np
 import math as _math
 import six as _six
+from .._mps_utils import (use_mps as _use_mps,
+                          mps_device_memory_limit as _mps_device_memory_limit,
+                          MpsGraphAPI as _MpsGraphAPI,
+                          MpsGraphNetworkType as _MpsGraphNetworkType,
+                          MpsGraphMode as _MpsGraphMode,
+                          mps_to_mxnet as _mps_to_mxnet,
+                          mxnet_to_mps as _mxnet_to_mps)
 
 
 def _vgg16_data_prep(batch):
@@ -216,7 +223,7 @@ def create(style_dataset, content_dataset, style_feature=None,
     vgg_model.load_params(vgg_model_path, ctx=ctx, ignore_extra=True)
     vgg_model.hybridize()
 
-    # TRAINER
+     # TRAINER
     from mxnet import gluon as _gluon
     from ._model import gram_matrix as _gram_matrix
 
@@ -233,173 +240,188 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     cuda_gpus = _mxnet_utils.get_gpus_in_use(max_devices=params['batch_size'])
     num_mxnet_gpus = len(cuda_gpus)
+    use_mps = _use_mps() and num_mxnet_gpus == 0
+    
+    if use_mps:
+        transformer.batch_size = 1
+        transformer.forward(_mx.nd.uniform(0, 1, (1, 3) + input_shape), _mx.nd.array([0]))
+        
+        net_params = transformer.collect_params()
+        mps_net_params = {}
 
-    if verbose:
-        # Estimate memory usage (based on experiments)
-        cuda_mem_req = 260 + batch_size_each * 880 + num_styles * 1.4
+        keys = list(net_params)
+        for k in keys:
+            mps_net_params[k] = net_params[k].data().asnumpy()
+        print(mps_net_params)
 
-        _tkutl._print_neural_compute_device(cuda_gpus=cuda_gpus, use_mps=False,
-                                            cuda_mem_req=cuda_mem_req, has_mps_impl=False)
-    #
-    # Pre-compute gram matrices for style images
-    #
-    if verbose:
-        print('Analyzing visual features of the style images')
-
-    style_images_loader = _SFrameSTIter(style_dataset, batch_size, shuffle=False, num_epochs=1,
-                                        feature_column=style_feature, input_shape=input_shape,
-                                        loader_type='stretch',
-                                        sequential=params['sequential_image_processing'])
-    num_layers = len(params['style_loss_mult'])
-    gram_chunks = [[] for _ in range(num_layers)]
-    for s_batch in style_images_loader:
-        s_data = _gluon.utils.split_and_load(s_batch.data[0], ctx_list=ctx, batch_axis=0)
-        for s in s_data:
-            vgg16_s = _vgg16_data_prep(s)
-            ret = vgg_model(vgg16_s)
-            grams = [_gram_matrix(x) for x in ret]
-            for i, gram in enumerate(grams):
-                if gram.context != _mx.cpu(0):
-                    gram = gram.as_in_context(_mx.cpu(0))
-                gram_chunks[i].append(gram)
-    del style_images_loader
-
-    grams = [
-        # The concatenated styles may be padded, so we slice overflow
-        _mx.nd.concat(*chunks, dim=0)[:num_styles]
-        for chunks in gram_chunks
-    ]
-
-    # A context->grams look-up table, where all the gram matrices have been
-    # distributed
-    ctx_grams = {}
-    if ctx[0] == _mx.cpu(0):
-        ctx_grams[_mx.cpu(0)] = grams
+        # TODO: Create MPS Graph
     else:
-        for ctx0 in ctx:
-            ctx_grams[ctx0] = [gram.as_in_context(ctx0) for gram in grams]
+        if verbose:
+            # Estimate memory usage (based on experiments)
+            cuda_mem_req = 260 + batch_size_each * 880 + num_styles * 1.4
 
-    #
-    # Training loop
-    #
+            _tkutl._print_neural_compute_device(cuda_gpus=cuda_gpus, use_mps=False,
+                                                cuda_mem_req=cuda_mem_req, has_mps_impl=False)
+        #
+        # Pre-compute gram matrices for style images
+        #
+        if verbose:
+            print('Analyzing visual features of the style images')
 
-    vgg_content_loss_layer = params['vgg16_content_loss_layer']
-    rs = _np.random.RandomState(1234)
-    while iterations < max_iterations:
-        content_images_loader.reset()
-        for c_batch in content_images_loader:
-            c_data = _gluon.utils.split_and_load(c_batch.data[0], ctx_list=ctx, batch_axis=0)
+        style_images_loader = _SFrameSTIter(style_dataset, batch_size, shuffle=False, num_epochs=1,
+                                            feature_column=style_feature, input_shape=input_shape,
+                                            loader_type='stretch',
+                                            sequential=params['sequential_image_processing'])
+        num_layers = len(params['style_loss_mult'])
+        gram_chunks = [[] for _ in range(num_layers)]
+        for s_batch in style_images_loader:
+            s_data = _gluon.utils.split_and_load(s_batch.data[0], ctx_list=ctx, batch_axis=0)
+            for s in s_data:
+                vgg16_s = _vgg16_data_prep(s)
+                ret = vgg_model(vgg16_s)
+                grams = [_gram_matrix(x) for x in ret]
+                for i, gram in enumerate(grams):
+                    if gram.context != _mx.cpu(0):
+                        gram = gram.as_in_context(_mx.cpu(0))
+                    gram_chunks[i].append(gram)
+        del style_images_loader
 
-            Ls = []
-            curr_content_loss = []
-            curr_style_loss = []
-            with _mx.autograd.record():
-                for c in c_data:
-                    # Randomize styles to train
-                    indices = _mx.nd.array(rs.randint(num_styles, size=batch_size_each),
-                                           dtype=_np.int64, ctx=c.context)
+        grams = [
+            # The concatenated styles may be padded, so we slice overflow
+            _mx.nd.concat(*chunks, dim=0)[:num_styles]
+            for chunks in gram_chunks
+        ]
 
-                    # Generate pastiche
-                    p = transformer(c, indices)
+        # A context->grams look-up table, where all the gram matrices have been
+        # distributed
+        ctx_grams = {}
+        if ctx[0] == _mx.cpu(0):
+            ctx_grams[_mx.cpu(0)] = grams
+        else:
+            for ctx0 in ctx:
+                ctx_grams[ctx0] = [gram.as_in_context(ctx0) for gram in grams]
 
-                    # mean subtraction
-                    vgg16_p = _vgg16_data_prep(p)
-                    vgg16_c = _vgg16_data_prep(c)
+        #
+        # Training loop
+        #
 
-                    # vgg forward
-                    p_vgg_outputs = vgg_model(vgg16_p)
+        vgg_content_loss_layer = params['vgg16_content_loss_layer']
+        rs = _np.random.RandomState(1234)
+        while iterations < max_iterations:
+            content_images_loader.reset()
+            for c_batch in content_images_loader:
+                c_data = _gluon.utils.split_and_load(c_batch.data[0], ctx_list=ctx, batch_axis=0)
 
-                    c_vgg_outputs = vgg_model(vgg16_c)
-                    c_content_layer = c_vgg_outputs[vgg_content_loss_layer]
-                    p_content_layer = p_vgg_outputs[vgg_content_loss_layer]
+                Ls = []
+                curr_content_loss = []
+                curr_style_loss = []
+                with _mx.autograd.record():
+                    for c in c_data:
+                        # Randomize styles to train
+                        indices = _mx.nd.array(rs.randint(num_styles, size=batch_size_each),
+                                               dtype=_np.int64, ctx=c.context)
 
-                    # Calculate Loss
-                    # Style Loss between style image and stylized image
-                    # Ls = sum of L2 norm of gram matrix of vgg16's conv layers
-                    style_losses = []
-                    for gram, p_vgg_output, style_loss_mult in zip(ctx_grams[c.context], p_vgg_outputs, _style_loss_mult):
-                        gram_s_vgg = gram[indices]
-                        gram_p_vgg = _gram_matrix(p_vgg_output)
+                        # Generate pastiche
+                        p = transformer(c, indices)
 
-                        style_losses.append(style_loss_mult * mse_loss(gram_s_vgg, gram_p_vgg))
+                        # mean subtraction
+                        vgg16_p = _vgg16_data_prep(p)
+                        vgg16_c = _vgg16_data_prep(c)
 
-                    style_loss = _mx.nd.add_n(*style_losses)
+                        # vgg forward
+                        p_vgg_outputs = vgg_model(vgg16_p)
 
-                    # Content Loss between content image and stylized image
-                    # Lc = L2 norm at a single layer in vgg16
-                    content_loss = _content_loss_mult * mse_loss(c_content_layer,
-                                                                 p_content_layer)
+                        c_vgg_outputs = vgg_model(vgg16_c)
+                        c_content_layer = c_vgg_outputs[vgg_content_loss_layer]
+                        p_content_layer = p_vgg_outputs[vgg_content_loss_layer]
 
-                    curr_content_loss.append(content_loss)
-                    curr_style_loss.append(style_loss)
-                    # Divide loss by large number to get into a more legible
-                    # range
-                    total_loss = (content_loss + style_loss) / 10000.0
-                    Ls.append(total_loss)
-                for L in Ls:
-                    L.backward()
+                        # Calculate Loss
+                        # Style Loss between style image and stylized image
+                        # Ls = sum of L2 norm of gram matrix of vgg16's conv layers
+                        style_losses = []
+                        for gram, p_vgg_output, style_loss_mult in zip(ctx_grams[c.context], p_vgg_outputs, _style_loss_mult):
+                            gram_s_vgg = gram[indices]
+                            gram_p_vgg = _gram_matrix(p_vgg_output)
 
-            cur_loss = _np.mean([L.asnumpy()[0] for L in Ls])
+                            style_losses.append(style_loss_mult * mse_loss(gram_s_vgg, gram_p_vgg))
 
-            if smoothed_loss is None:
-                smoothed_loss = cur_loss
-            else:
-                smoothed_loss = 0.9 * smoothed_loss + 0.1 * cur_loss
-            iterations += 1
-            trainer.step(batch_size)
+                        style_loss = _mx.nd.add_n(*style_losses)
 
-            if verbose and iterations == 1:
-                # Print progress table header
-                column_names = ['Iteration', 'Loss', 'Elapsed Time']
-                num_columns = len(column_names)
-                column_width = max(map(lambda x: len(x), column_names)) + 2
-                hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
-                print(hr)
-                print(('| {:<{width}}' * num_columns + '|').format(*column_names, width=column_width-1))
-                print(hr)
+                        # Content Loss between content image and stylized image
+                        # Lc = L2 norm at a single layer in vgg16
+                        content_loss = _content_loss_mult * mse_loss(c_content_layer,
+                                                                     p_content_layer)
 
-            cur_time = _time.time()
-            if verbose and (cur_time > last_time + 10 or iterations == max_iterations):
-                # Print progress table row
-                elapsed_time = cur_time - start_time
-                print("| {cur_iter:<{width}}| {loss:<{width}.3f}| {time:<{width}.1f}|".format(
-                    cur_iter = iterations, loss = smoothed_loss,
-                    time = elapsed_time , width = column_width-1))
-                if params['print_loss_breakdown']:
-                    print_content_loss = _np.mean([L.asnumpy()[0] for L in curr_content_loss])
-                    print_style_loss = _np.mean([L.asnumpy()[0] for L in curr_style_loss])
-                    print('Total Loss: {:6.3f} | Content Loss: {:6.3f} | Style Loss: {:6.3f}'.format(cur_loss, print_content_loss, print_style_loss))
-                last_time = cur_time
-            if iterations == max_iterations:
-                print(hr)
-                break
+                        curr_content_loss.append(content_loss)
+                        curr_style_loss.append(style_loss)
+                        # Divide loss by large number to get into a more legible
+                        # range
+                        total_loss = (content_loss + style_loss) / 10000.0
+                        Ls.append(total_loss)
+                    for L in Ls:
+                        L.backward()
 
-    training_time = _time.time() - start_time
-    style_sa = style_dataset[style_feature]
-    idx_column = _tc.SArray(range(0, style_sa.shape[0]))
-    style_sframe = _tc.SFrame({"style": idx_column, style_feature: style_sa})
+                cur_loss = _np.mean([L.asnumpy()[0] for L in Ls])
 
-    # Save the model state
-    state = {
-        '_model': transformer,
-        '_training_time_as_string': _seconds_as_string(training_time),
-        'batch_size': batch_size,
-        'num_styles': num_styles,
-        'model': model,
-        'input_image_shape': input_shape,
-        'styles': style_sframe,
-        'num_content_images': len(content_dataset),
-        'training_time': training_time,
-        'max_iterations': max_iterations,
-        'training_iterations': iterations,
-        'training_epochs': content_images_loader.cur_epoch,
-        'style_feature': style_feature,
-        'content_feature': content_feature,
-        "_index_column": "style",
-        'training_loss': smoothed_loss,
-    }
+                if smoothed_loss is None:
+                    smoothed_loss = cur_loss
+                else:
+                    smoothed_loss = 0.9 * smoothed_loss + 0.1 * cur_loss
+                iterations += 1
+                trainer.step(batch_size)
 
-    return StyleTransfer(state)
+                if verbose and iterations == 1:
+                    # Print progress table header
+                    column_names = ['Iteration', 'Loss', 'Elapsed Time']
+                    num_columns = len(column_names)
+                    column_width = max(map(lambda x: len(x), column_names)) + 2
+                    hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
+                    print(hr)
+                    print(('| {:<{width}}' * num_columns + '|').format(*column_names, width=column_width-1))
+                    print(hr)
+
+                cur_time = _time.time()
+                if verbose and (cur_time > last_time + 10 or iterations == max_iterations):
+                    # Print progress table row
+                    elapsed_time = cur_time - start_time
+                    print("| {cur_iter:<{width}}| {loss:<{width}.3f}| {time:<{width}.1f}|".format(
+                        cur_iter = iterations, loss = smoothed_loss,
+                        time = elapsed_time , width = column_width-1))
+                    if params['print_loss_breakdown']:
+                        print_content_loss = _np.mean([L.asnumpy()[0] for L in curr_content_loss])
+                        print_style_loss = _np.mean([L.asnumpy()[0] for L in curr_style_loss])
+                        print('Total Loss: {:6.3f} | Content Loss: {:6.3f} | Style Loss: {:6.3f}'.format(cur_loss, print_content_loss, print_style_loss))
+                    last_time = cur_time
+                if iterations == max_iterations:
+                    print(hr)
+                    break
+
+        training_time = _time.time() - start_time
+        style_sa = style_dataset[style_feature]
+        idx_column = _tc.SArray(range(0, style_sa.shape[0]))
+        style_sframe = _tc.SFrame({"style": idx_column, style_feature: style_sa})
+
+        # Save the model state
+        state = {
+            '_model': transformer,
+            '_training_time_as_string': _seconds_as_string(training_time),
+            'batch_size': batch_size,
+            'num_styles': num_styles,
+            'model': model,
+            'input_image_shape': input_shape,
+            'styles': style_sframe,
+            'num_content_images': len(content_dataset),
+            'training_time': training_time,
+            'max_iterations': max_iterations,
+            'training_iterations': iterations,
+            'training_epochs': content_images_loader.cur_epoch,
+            'style_feature': style_feature,
+            'content_feature': content_feature,
+            "_index_column": "style",
+            'training_loss': smoothed_loss,
+        }
+
+        return StyleTransfer(state)
 
 
 def _raise_error_if_not_training_sframe(dataset, context_column):
