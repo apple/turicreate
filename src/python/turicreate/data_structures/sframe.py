@@ -4408,7 +4408,7 @@ class SFrame(object):
         if column_name not in existing_columns:
             raise KeyError("Column '" + column_name + "' not in SFrame.")
 
-        existing_type = self.column_types()[self.column_names().index(column_name)]
+        existing_type = self[column_name].dtype
 
         if type(values) is not SArray:
             # If we were given a single element, try to put in list and convert
