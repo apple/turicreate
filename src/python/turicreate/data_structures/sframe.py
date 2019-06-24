@@ -4408,17 +4408,24 @@ class SFrame(object):
         if column_name not in existing_columns:
             raise KeyError("Column '" + column_name + "' not in SFrame.")
 
+        existing_type = self.column_types()[self.column_names().index(column_name)]
+
         if type(values) is not SArray:
             # If we were given a single element, try to put in list and convert
             # to SArray
             if not _is_non_string_iterable(values):
                 values = [values]
-            values = SArray(values)
+
+            # if all vals are None, cast the sarray to existing type
+            # this will enable filter_by(None, column_name) to remove missing vals
+            if all(val is None for val in values):
+                values = SArray(values, existing_type)
+            else:
+                values = SArray(values)
 
         value_sf = SFrame()
         value_sf.add_column(values, column_name, inplace=True)
 
-        existing_type = self.column_types()[self.column_names().index(column_name)]
         given_type = value_sf.column_types()[0]
         if given_type != existing_type:
             raise TypeError("Type of given values does not match type of column '" +
