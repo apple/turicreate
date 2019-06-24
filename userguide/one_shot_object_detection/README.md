@@ -44,9 +44,11 @@ model.save('mymodel.model')
 model.export_coreml('MyCustomOneShotDetector.mlmodel')
 ```
 
+
 Visualizing predictions made on the test set:
 
 ![Prediction test data](images/test_data_explore.jpg)
+
 
 Examples of test image predictions:
 
@@ -79,9 +81,11 @@ Some examples of synthetic training data:
 To learn more about the training implementation details, refer to the [Object Detector: How it Works](https://apple.github.io/turicreate/docs/userguide/object_detection/how-it-works.html) chapter.
 
 
+
 #### Deployment to CoreML
 
 To learn more about deploying One-Shot to CoreML details, refer to the [Object Detector: Deployment to Core ML](https://apple.github.io/turicreate/docs/userguide/object_detection/export-coreml.html) chapter.
+
 
 
 #### Advanced Usage
