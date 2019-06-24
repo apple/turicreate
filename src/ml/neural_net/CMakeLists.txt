@@ -19,6 +19,7 @@ if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
       mps_utils.mm
       mps_graph_cnnmodule.mm
       mps_layers.mm
+      mps_layer_instance_norm_data_loader.m
       mps_networks.mm
       mps_trainer.mm
       mps_lstm_helper.mm
