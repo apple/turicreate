@@ -2,26 +2,26 @@
 
 @implementation StyleTransferModel
 
-- (id) initWithParameters:(NSString *)name
-                inputNode:(MPSNNImageNode *)inputNode
-                   device:(id<MTLDevice> _Nonnull)dev
-                cmd_queue:(id<MTLCommandQueue> _Nonnull)cmd_q
-              initWeights:(struct weights*)w {
+- (id _Nonnull) initWithParameters:(NSString * _Nullable)name
+                         inputNode:(MPSNNImageNode * _Nonnull)inputNode
+                            device:(id<MTLDevice> _Nonnull)dev
+                         cmd_queue:(id<MTLCommandQueue> _Nonnull)cmd_q
+                       initWeights:(struct weights* _Nonnull)w {
   @autoreleasepool {
     self = [super init];
     return self;
   }
 }
 
-- (MPSNNImageNode *) forwardPass {
+- (MPSNNImageNode * _Nullable) forwardPass {
   return nil;
 }
 
-- (MPSNNImageNode *) backwardPass:(MPSNNImageNode *) inputNode {
+- (MPSNNImageNode * _Nullable) backwardPass:(MPSNNImageNode * _Nonnull) inputNode {
   return nil;
 }
 
-- (MPSCNNNeuronSigmoid *) finalNode {
+- (MPSCNNNeuronSigmoid * _Nullable) finalNode {
   return nil;
 }
 

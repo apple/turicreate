@@ -12,15 +12,15 @@ API_AVAILABLE(macos(10.14))
 @interface StyleTransferModel : NSObject
 {}
 
-- (id) initWithParameters:(NSString *)name
-                inputNode:(MPSNNImageNode *)inputNode
-                   device:(id<MTLDevice> _Nonnull)dev
-                cmd_queue:(id<MTLCommandQueue> _Nonnull)cmd_q
-              initWeights:(struct weights*)w;
+- (id _Nonnull) initWithParameters:(NSString * _Nullable)name
+                         inputNode:(MPSNNImageNode * _Nonnull)inputNode
+                            device:(id<MTLDevice> _Nonnull)dev
+                         cmd_queue:(id<MTLCommandQueue> _Nonnull)cmd_q
+                       initWeights:(struct weights* _Nonnull)w;
 
-- (MPSNNImageNode *) forwardPass;
-- (MPSNNImageNode *) backwardPass:(MPSNNImageNode *) inputNode;
-- (MPSCNNNeuronSigmoid *) finalNode;
+- (MPSNNImageNode * _Nullable) forwardPass;
+- (MPSNNImageNode * _Nullable) backwardPass:(MPSNNImageNode * _Nonnull) inputNode;
+- (MPSCNNNeuronSigmoid * _Nullable) finalNode;
 
 @end
 
