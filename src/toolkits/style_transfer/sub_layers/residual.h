@@ -1,5 +1,5 @@
-#ifndef TURI_STYLE_TRANSFER_H_
-#define TURI_STYLE_TRANSFER_H_
+#ifndef TURI_STYLE_TRANSFER_RESIDUAL_H_
+#define TURI_STYLE_TRANSFER_RESIDUAL_H_
 
 #include <toolkits/style_transfer/utils.h>
 
@@ -9,8 +9,7 @@
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h> 
 
 API_AVAILABLE(macos(10.14))
-@interface StyleTransferModel : NSObject
-{}
+@interface Residual : NSObject
 
 - (id _Nonnull) initWithParameters:(NSString * _Nullable)name
                          inputNode:(MPSNNImageNode * _Nonnull)inputNode
@@ -20,7 +19,7 @@ API_AVAILABLE(macos(10.14))
 
 - (MPSNNImageNode * _Nullable) forwardPass;
 - (MPSNNImageNode * _Nullable) backwardPass:(MPSNNImageNode * _Nonnull) inputNode;
-- (MPSCNNNeuronSigmoid * _Nullable) finalNode;
+- (MPSCNNAdd * _Nullable) finalNode;
 
 @end
 

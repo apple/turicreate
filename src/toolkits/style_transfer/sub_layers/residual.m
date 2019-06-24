@@ -1,6 +1,6 @@
-#include <toolkits/style_transfer/style_transfer.h>
+#include <toolkits/style_transfer/sub_layers/residual.h>
 
-@implementation StyleTransferModel
+@implementation Residual
 
 - (id _Nonnull) initWithParameters:(NSString * _Nullable)name
                          inputNode:(MPSNNImageNode * _Nonnull)inputNode
@@ -21,7 +21,7 @@
   return nil;
 }
 
-- (MPSCNNNeuronSigmoid * _Nullable) finalNode {
+- (MPSCNNAdd * _Nullable) finalNode {
   return nil;
 }
 

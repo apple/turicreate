@@ -1,6 +1,6 @@
-#include <toolkits/style_transfer/style_transfer.h>
+#include <toolkits/style_transfer/sub_layers/decoding.h>
 
-@implementation StyleTransferModel
+@implementation Decoding
 
 - (id _Nonnull) initWithParameters:(NSString * _Nullable)name
                          inputNode:(MPSNNImageNode * _Nonnull)inputNode
@@ -21,7 +21,7 @@
   return nil;
 }
 
-- (MPSCNNNeuronSigmoid * _Nullable) finalNode {
+- (MPSCNNNeuronReLU * _Nullable) finalNode {
   return nil;
 }
 
