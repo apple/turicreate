@@ -17,6 +17,7 @@ prototype
 recsys
 sgd
 sparse_similarity
+style_transfer
 supervised_learning
 text
 util)
