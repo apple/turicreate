@@ -606,6 +606,13 @@ class unity_sframe : public unity_sframe_base {
   std::vector<size_t> _convert_column_names_to_indices(const std::vector<std::string> &column_names);
 
   /**
+   * a cell is considered to be nan iff it contains nan.
+   * it will be passed to lambda, so declare it as static,
+   * otherwise this pointer needs to be captured.
+   */
+  static inline bool _contains_nan(const flexible_type& cell);
+
+  /**
    * Generate a new column name
    *
    * New column name is in the form of X1, X2, X3 ....
@@ -621,6 +628,8 @@ class unity_sframe : public unity_sframe_base {
    */
   std::string generate_next_column_name();
 };
+
+
 
 }
 
