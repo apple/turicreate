@@ -733,10 +733,6 @@ void activity_classifier::perform_training_iteration() {
     result result_batch;
     result_batch.data_info = training_data_iterator_->next_batch(batch_size);
 
-    // std::cout<< result_batch.data_info.features << "\n";
-    // std::cout << result_batch.data_info.labels << "\n";
-    // std::cout << result_batch.data_info.weights << "\n";
-
     // Submit the batch to the neural net model.
     std::map<std::string, shared_float_array> results = training_model_->train(
         { { "input",   result_batch.data_info.features },
