@@ -2,17 +2,17 @@
 
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <string>
 #include <iostream>
 #include <set>
 #include <cmath>
 #include <unordered_map>
-#include <flexible_type/flexible_type.hpp>
-#include <sketches/space_saving.hpp>
-#include <sketches/space_saving_flextype.hpp>
-#include <random/random.hpp>
-#include <util/cityhash_tc.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <ml/sketches/space_saving.hpp>
+#include <ml/sketches/space_saving_flextype.hpp>
+#include <core/random/random.hpp>
+#include <core/util/cityhash_tc.hpp>
 
 using namespace turi;
 using namespace turi::sketches;

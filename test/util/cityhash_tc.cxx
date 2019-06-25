@@ -5,16 +5,16 @@
  */
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <string>
 #include <random>
 #include <set>
 #include <sstream>
 #include <vector>
 #include <algorithm>
-#include <util/cityhash_tc.hpp>
-#include <util/hash_value.hpp>
-#include <util/sys_util.hpp>
+#include <core/util/cityhash_tc.hpp>
+#include <core/util/hash_value.hpp>
+#include <core/util/sys_util.hpp>
 
 using namespace turi;
 

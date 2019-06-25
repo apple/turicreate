@@ -7,12 +7,12 @@
 #define TURI_CAPI_WRAPPER_STRUCTS_HPP_
 
 #include <capi/TuriCreate.h>
-#include <unity/lib/variant.hpp>
-#include <unity/lib/variant_converter.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <unity/lib/extensions/model_base.hpp>
-#include <unity/lib/gl_sarray.hpp>
-#include <unity/lib/gl_sframe.hpp>
+#include <model_server/lib/variant.hpp>
+#include <model_server/lib/variant_converter.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <model_server/lib/extensions/model_base.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
 #include <utility>
 
 struct capi_struct_type_info {

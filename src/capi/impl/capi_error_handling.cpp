@@ -7,7 +7,7 @@
 #include <capi/impl/capi_error_handling.hpp>
 #include <capi/impl/capi_initialization_internal.hpp>
 #include <string>
-#include <export.hpp>
+#include <core/export.hpp>
 
 // These
 extern "C" {

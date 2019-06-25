@@ -6,9 +6,9 @@
 #ifndef SFRAME_QUERY_ENGINE_TEST_UTIL_CHECK_NODE
 #define SFRAME_QUERY_ENGINE_TEST_UTIL_CHECK_NODE
 
-#include <sframe_query_engine/execution/execution_node.hpp>
-#include<flexible_type/flexible_type.hpp>
-#include <util/test_macros.hpp>
+#include <core/storage/query_engine/execution/execution_node.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/util/test_macros.hpp>
 
 namespace turi {
 namespace query_eval {

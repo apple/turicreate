@@ -1,9 +1,9 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
-#include <logger/logger.hpp>
-#include <sframe/integer_pack.hpp>
-#include <serialization/serialization_includes.hpp>
+#include <core/util/test_macros.hpp>
+#include <core/logging/logger.hpp>
+#include <core/storage/sframe_data/integer_pack.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
 using namespace turi;
 using namespace integer_pack;
 struct integer_pack_test {

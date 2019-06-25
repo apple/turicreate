@@ -1,9 +1,9 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <string>
 #include <iostream>
-#include <cppipc/cppipc.hpp>
+#include <core/system/cppipc/cppipc.hpp>
 #include <thread>
 #include <chrono>
 

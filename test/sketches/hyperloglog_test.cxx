@@ -1,10 +1,10 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <string>
 #include <iostream>
-#include <sketches/hyperloglog.hpp>
-#include <random/random.hpp>
+#include <ml/sketches/hyperloglog.hpp>
+#include <core/random/random.hpp>
 struct hyperloglog_test {
   void random_integer_length_test(size_t len, 
                                   size_t random_range,

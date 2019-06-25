@@ -1,5 +1,0 @@
-/**
- * \defgroup sketching Sketching Datastructures and Algorithms
- * Fast bounded memory, one pass data structure for approximating various 
- * statistics.
- */

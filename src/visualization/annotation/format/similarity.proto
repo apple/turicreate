@@ -1,0 +1,11 @@
+syntax = "proto3";
+option optimize_for = LITE_RUNTIME;
+
+import public "data.proto";
+
+package TuriCreate.Annotation.Specification;
+
+message Similarity {
+  int64 rowIndex = 1;
+  repeated Datum data = 2;
+}

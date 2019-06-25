@@ -1,11 +1,11 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <iostream>
-#include <lambda/worker_pool.hpp>
-#include <parallel/lambda_omp.hpp>
-#include <fileio/fs_utils.hpp>
-#include <nanosockets/socket_config.hpp>
+#include <core/system/lambda/worker_pool.hpp>
+#include <core/parallel/lambda_omp.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
+#include <core/system/nanosockets/socket_config.hpp>
 #include "dummy_worker_interface.hpp"
 
 using namespace turi;

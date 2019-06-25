@@ -28,7 +28,7 @@ Currently, the C++ API is not packaged for easy consumption outside of the Turi 
 * `-DHASH_FOR_UINT128_DEFINED` - set this if your compiler toolchain supports `unsigned __int128`.
 * `-DHASH_FOR_INT128_DEFINED` - set this if your compiler toolchain supports `__int128`.
 * `-lunity_shared` to link against `libunity_shared.so`.
-* `<PATH_TO_TC>/turicreate/release/src/unity/libunity.a` to statically link libunity.a into your project. Note that this is needed in addition to the dynamic library listed above.
+* `<PATH_TO_TC>/turicreate/release/src/model_server/libunity.a` to statically link libunity.a into your project. Note that this is needed in addition to the dynamic library listed above.
 
 ##### Example: make predictions in C++ from a model trained in Python
 
@@ -93,11 +93,11 @@ In C++, the equivalent code would be (minus the CSV parsing):
 #include <iostream>
 
 // Turi Create includes
-#include <logger/assertions.hpp>
-#include <logger/logger.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/logging/logger.hpp>
 #include <unity/lib/unity_global.hpp>
 #include <unity/server/registration.hpp>
-#include <unity/toolkits/supervised_learning/boosted_trees.hpp>
+#include <toolkits/supervised_learning/boosted_trees.hpp>
 
 int main(int argc, char **argv) {
   // set up registry of named functions and models
@@ -151,7 +151,7 @@ int main(int argc, char **argv) {
       // input data - 1 row per prediction
       rows,
 
-      // output type - see https://github.com/apple/turicreate/blob/3490286b27ff5d79cb90d09fe026d5671ce990c7/src/unity/toolkits/supervised_learning/supervised_learning.hpp#L47
+      // output type - see https://github.com/apple/turicreate/blob/3490286b27ff5d79cb90d09fe026d5671ce990c7/src/toolkits/supervised_learning/supervised_learning.hpp#L47
       "probability",
 
       // missing value action - see https://github.com/apple/turicreate/blob/3490286b27ff5d79cb90d09fe026d5671ce990c7/src/ml_data/ml_data_column_modes.hpp#L27
@@ -194,7 +194,7 @@ cd release/src/unity
 make -j8
 
 # And assuming predict.cpp is in a sibling directory of turicreate, run:
-c++ -std=c++11 -stdlib=libc++ -I../turicreate/src -I../turicreate/src/external -I../turicreate/src/platform -I../turicreate/deps/local/include -I../turicreate/src/external/armadillo/include -DHASH_FOR_UINT128_DEFINED -DHASH_FOR_INT128_DEFINED -L../turicreate/release/src/unity -lunity_shared predict.cpp ../turicreate/release/src/unity/libunity.a
+c++ -std=c++11 -stdlib=libc++ -I../turicreate/src -I../turicreate/src/external -I../turicreate/src/platform -I../turicreate/deps/local/include -I../turicreate/src/external/armadillo/include -DHASH_FOR_UINT128_DEFINED -DHASH_FOR_INT128_DEFINED -L../turicreate/release/src/unity -lunity_shared predict.cpp ../turicreate/release/src/model_server/libunity.a
 LD_LIBRARY_PATH=../turicreate/release/src/unity ./a.out
 ```
 

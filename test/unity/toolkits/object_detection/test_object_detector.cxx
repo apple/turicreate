@@ -6,7 +6,7 @@
 
 #define BOOST_TEST_MODULE test_object_detector
 
-#include <unity/toolkits/object_detection/object_detector.hpp>
+#include <toolkits/object_detection/object_detector.hpp>
 
 #include <array>
 #include <deque>
@@ -14,7 +14,7 @@
 #include <vector>
 
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 
 namespace turi {
 namespace object_detection {

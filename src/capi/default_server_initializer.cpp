@@ -4,7 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <unity/server/unity_server_control.hpp>
+#include <model_server/server/unity_server_control.hpp>
 #include <capi/impl/capi_initialization.hpp>
 
 namespace turi {

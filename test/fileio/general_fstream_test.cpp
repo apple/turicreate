@@ -4,9 +4,9 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <iostream>
-#include <fileio/general_fstream.hpp>
-#include <logger/logger.hpp>
-#include <logger/assertions.hpp>
+#include <core/storage/fileio/general_fstream.hpp>
+#include <core/logging/logger.hpp>
+#include <core/logging/assertions.hpp>
 
 /**
  * Test the general_fstream.

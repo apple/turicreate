@@ -1,10 +1,10 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <string>
 #include <iostream>
-#include <cppipc/server/dispatch.hpp>
-#include <cppipc/server/dispatch_impl.hpp>
+#include <core/system/cppipc/server/dispatch.hpp>
+#include <core/system/cppipc/server/dispatch_impl.hpp>
 struct test {
   size_t a;
   std::string add(size_t c) {

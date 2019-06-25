@@ -80,6 +80,7 @@ def build_bitmap_sframe():
                               _image_data_size = np_pixel_data.size)
             bitmaps_list.append(bitmap)
             labels_list.append(class_name)
+
     sf = tc.SFrame({"drawing": bitmaps_list, "label": labels_list})
     sf.save(os.path.join(sframes_dir, "bitmap_square_triangle.sframe"))
 

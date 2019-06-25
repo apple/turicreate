@@ -7,22 +7,22 @@ const bool enable_expensive_tests = false;
 
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <vector>
 #include <string>
 #include <functional>
 
-#include <random/random.hpp>
+#include <core/random/random.hpp>
 
-#include <sframe/sframe_iterators.hpp>
-#include <unity/toolkits/recsys/models/linear_models/linear_model.hpp>
-#include <unity/toolkits/recsys/models/linear_models/factorization_model.hpp>
-#include <unity/toolkits/recsys/models/linear_models/matrix_factorization.hpp>
-#include <unity/toolkits/util/data_generators.hpp>
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <unity/toolkits/ml_data_2/ml_data_iterator.hpp>
-#include <sframe/testing_utils.hpp>
-#include <util/testing_utils.hpp>
+#include <core/storage/sframe_data/sframe_iterators.hpp>
+#include <toolkits/recsys/models/linear_models/linear_model.hpp>
+#include <toolkits/recsys/models/linear_models/factorization_model.hpp>
+#include <toolkits/recsys/models/linear_models/matrix_factorization.hpp>
+#include <toolkits/util/data_generators.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
+#include <toolkits/ml_data_2/ml_data_iterator.hpp>
+#include <core/storage/sframe_data/testing_utils.hpp>
+#include <core/util/testing_utils.hpp>
 
 
 #include <cfenv>

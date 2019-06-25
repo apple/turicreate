@@ -1,12 +1,12 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
-#include <sframe_query_engine/planning/planner.hpp>
-#include <sframe_query_engine/planning/planner_node.hpp>
-#include <sframe_query_engine/operators/all_operators.hpp>
-#include <sframe_query_engine/util/aggregates.hpp>
-#include <sframe_query_engine/operators/operator_transformations.hpp>
-#include <sframe/sarray.hpp>
+#include <core/util/test_macros.hpp>
+#include <core/storage/query_engine/planning/planner.hpp>
+#include <core/storage/query_engine/planning/planner_node.hpp>
+#include <core/storage/query_engine/operators/all_operators.hpp>
+#include <core/storage/query_engine/util/aggregates.hpp>
+#include <core/storage/query_engine/operators/operator_transformations.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
 
 #define ENABLE_HISTORY_TRACKING_OPTIMIZATION true
 

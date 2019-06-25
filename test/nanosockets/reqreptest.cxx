@@ -5,13 +5,13 @@
  */
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <string>
 #include <iostream>
-#include <nanosockets/async_request_socket.hpp>
-#include <nanosockets/async_reply_socket.hpp>
-#include <nanosockets/publish_socket.hpp>
-#include <nanosockets/subscribe_socket.hpp>
+#include <core/system/nanosockets/async_request_socket.hpp>
+#include <core/system/nanosockets/async_reply_socket.hpp>
+#include <core/system/nanosockets/publish_socket.hpp>
+#include <core/system/nanosockets/subscribe_socket.hpp>
 using namespace turi;
 using namespace nanosockets; 
 

@@ -6,7 +6,7 @@
 #ifndef TURI_SGRAPH_TEST_DEGREE_COUNT_HPP
 #define TURI_SGRAPH_TEST_DEGREE_COUNT_HPP
 
-#include <sgraph/sgraph.hpp>
+#include <core/storage/sgraph_data/sgraph.hpp>
 #include "sgraph_test_util.hpp"
 
 using namespace turi;

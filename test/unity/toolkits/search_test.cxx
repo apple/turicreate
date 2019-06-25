@@ -1,17 +1,17 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <vector>
 #include <set>
 #include <string>
 #include <random>
 
-#include <sframe/testing_utils.hpp>
-#include <unity/lib/unity_sframe.hpp>
-#include <unity/toolkits/search/search_indexer.hpp>
-#include <unity/toolkits/search/sframe_to_sarray.hpp>
-#include <unity/toolkits/search/testing_utils.hpp>
-#include <util/testing_utils.hpp>
+#include <core/storage/sframe_data/testing_utils.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
+#include <toolkits/search/search_indexer.hpp>
+#include <toolkits/search/sframe_to_sarray.hpp>
+#include <toolkits/search/testing_utils.hpp>
+#include <core/util/testing_utils.hpp>
 
 
 using namespace turi::sdk_model::search;
