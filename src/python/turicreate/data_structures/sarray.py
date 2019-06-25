@@ -355,6 +355,11 @@ class SArray(object):
                 self.__proxy__ = data.astype(dtype).__proxy__
         else:
             self.__proxy__ = UnitySArrayProxy()
+
+            ## data transfromation from generator to list
+            if sys.version_info.major >= 3 and isinstance(data, (filter, map)):
+                data = list(data)
+
             # we need to perform type inference
             if dtype is None:
                 if HAS_PANDAS and isinstance(data, pandas.Series):
@@ -398,8 +403,6 @@ class SArray(object):
                       (sys.version_info.major < 3 and isinstance(data, unicode))):
                     # if it is a file, we default to string
                     dtype = str
-                elif sys.version_info.major >= 3 and isinstance(data, (filter, map)):
-                    data = list(data)
                 elif isinstance(data, array.array):
                     dtype = pytype_from_array_typecode(data.typecode)
                 elif isinstance(data, collections.Sequence):
