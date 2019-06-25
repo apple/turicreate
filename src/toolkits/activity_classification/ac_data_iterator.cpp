@@ -41,7 +41,7 @@ static std::map<std::string,size_t> generate_column_index_map(const std::vector<
 
 static double vec_mode(flex_vec::const_iterator first,
                        flex_vec::const_iterator last) {
-  std::vector<int> histogram;
+  std::vector<size_t> histogram;
   for (flex_vec::const_iterator i = first; i < last; ++i) {
     size_t value = static_cast<size_t>(*i);
 
