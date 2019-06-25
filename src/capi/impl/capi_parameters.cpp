@@ -7,11 +7,11 @@
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>
 #include <capi/impl/capi_initialization_internal.hpp>
-#include <sframe/sframe.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <unity/lib/unity_sframe.hpp>
-#include <export.hpp> 
-#include <unity/lib/toolkit_util.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
+#include <core/export.hpp>
+#include <model_server/lib/toolkit_util.hpp>
 
 
 /******************************************************************************/

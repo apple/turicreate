@@ -6,8 +6,8 @@
 #ifndef TEST_TEST_OBJECT_BASE_HPP
 #define TEST_TEST_OBJECT_BASE_HPP
 #include <string>
-#include <cppipc/cppipc.hpp>
-#include <cppipc/magic_macros.hpp>
+#include <core/system/cppipc/cppipc.hpp>
+#include <core/system/cppipc/magic_macros.hpp>
 GENERATE_INTERFACE_AND_PROXY(test_object_base,  test_object_proxy, 
                               (std::string, ping, (std::string))
                               (std::string, return_big_object, (size_t))

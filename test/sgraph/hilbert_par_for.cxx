@@ -1,9 +1,9 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <set>
 #include <vector>
-#include <sgraph/hilbert_parallel_for.hpp>
+#include <core/storage/sgraph_data/hilbert_parallel_for.hpp>
 
 using namespace turi;
 

@@ -5,14 +5,14 @@
  */
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <iostream>
 
 
 #include <unistd.h>
 
-#include <unity/lib/unity_sarray.hpp>
-#include <unity/lib/flex_dict_view.hpp>
+#include <core/storage/sframe_interface/unity_sarray.hpp>
+#include <model_server/lib/flex_dict_view.hpp>
 using namespace turi;
 
 struct flex_dict_test {

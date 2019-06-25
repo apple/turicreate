@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <stdlib.h>
 #include <vector>
 #include <string>
@@ -9,12 +9,12 @@
 #include <cfenv>
 #include <cmath>
 
-#include <ml_data/ml_data.hpp>
-#include <optimization/optimization_interface.hpp>
-#include <optimization/utils.hpp>
-#include <unity/toolkits/supervised_learning/logistic_regression.hpp>
-#include <unity/toolkits/supervised_learning/logistic_regression_opt_interface.hpp>
-#include <sframe/testing_utils.hpp>
+#include <ml/ml_data/ml_data.hpp>
+#include <ml/optimization/optimization_interface.hpp>
+#include <ml/optimization/utils.hpp>
+#include <toolkits/supervised_learning/logistic_regression.hpp>
+#include <toolkits/supervised_learning/logistic_regression_opt_interface.hpp>
+#include <core/storage/sframe_data/testing_utils.hpp>
 
 
 using namespace turi;

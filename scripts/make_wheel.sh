@@ -181,14 +181,11 @@ build_source() {
 
   push_ld_library_path
 
-  # Make clean
-  cd ${WORKSPACE}/${build_type}/src/unity/python
-  make clean_python
-  # Make unity
-  cd ${WORKSPACE}/${build_type}/src/unity
+  # make src/
+  cd ${WORKSPACE}/${build_type}/src
   make -j${NUM_PROCS}
 
-  # make test
+  # make test/
   if [[ -z $SKIP_TEST ]]; then
     if [[ -z $SKIP_CPP_TEST ]]; then
       cd ${WORKSPACE}/test
@@ -225,7 +222,7 @@ unit_test() {
 mac_patch_rpath() {
   echo -e "\n\n\n================= Patching Mac RPath ================\n\n\n"
   # on mac we need to do a little work to fix up RPaths
-  cd ${WORKSPACE}/${build_type}/src/unity/python
+  cd ${WORKSPACE}/${build_type}/src/python
   # - look for all files
   # - run 'file' on it
   # - look for binary files (shared libraries, executables)
@@ -271,11 +268,11 @@ package_wheel() {
     mac_patch_rpath
   fi
   echo -e "\n\n\n================= Packaging Wheel  ================\n\n\n"
-  cd ${WORKSPACE}/${build_type}/src/unity/python
+  cd ${WORKSPACE}/${build_type}/src/python
 
   # strip binaries
   if [[ ! $OSTYPE == darwin* ]]; then
-    cd ${WORKSPACE}/${build_type}/src/unity/python/turicreate
+    cd ${WORKSPACE}/${build_type}/src/python/turicreate
     BINARY_LIST=`find . -type f -exec file {} \; | grep x86 | cut -d: -f 1`
     echo "Stripping binaries: $BINARY_LIST"
 
@@ -297,7 +294,7 @@ package_wheel() {
     cd ..
   fi
 
-  cd ${WORKSPACE}/${build_type}/src/unity/python
+  cd ${WORKSPACE}/${build_type}/src/python
   dist_type="bdist_wheel"
 
   VERSION_NUMBER=`${PYTHON_EXECUTABLE} -c "from turicreate.version_info import version; print(version)"`
@@ -305,7 +302,7 @@ package_wheel() {
 
   cd ${WORKSPACE}
 
-  WHEEL_PATH=`ls ${WORKSPACE}/${build_type}/src/unity/python/dist/turicreate-${VERSION_NUMBER}*.whl`
+  WHEEL_PATH=`ls ${WORKSPACE}/${build_type}/src/python/dist/turicreate-${VERSION_NUMBER}*.whl`
   if [[ $OSTYPE == darwin* ]]; then
     # Change the platform tag embedded in the file name
     temp=`echo $WHEEL_PATH | perl -ne 'print m/(^.*-).*$/'`
@@ -325,7 +322,7 @@ package_wheel() {
   else
     # Don't pick up -manylinux1 wheels, since those may have been created by a later step from a previous build.
     # Ignore those for now by selecting only -linux wheels.
-    WHEEL_PATH=`ls ${WORKSPACE}/${build_type}/src/unity/python/dist/turicreate-${VERSION_NUMBER}*-linux*.whl`
+    WHEEL_PATH=`ls ${WORKSPACE}/${build_type}/src/python/dist/turicreate-${VERSION_NUMBER}*-linux*.whl`
   fi
 
   # Set Python Language Version Number
@@ -370,7 +367,7 @@ generate_docs() {
   rm -rf pydocs
   mkdir -p pydocs
   cd pydocs
-  cp -R ${WORKSPACE}/src/unity/python/doc/* .
+  cp -R ${WORKSPACE}/src/python/doc/* .
   make clean SPHINXBUILD=${SPHINXBUILD}
   make html SPHINXBUILD=${SPHINXBUILD} || true
   tar -czf ${TARGET_DIR}/turicreate_python_sphinx_docs.tar.gz *
@@ -378,7 +375,7 @@ generate_docs() {
 
 set_build_number() {
   # set the build number
-  cd ${WORKSPACE}/${build_type}/src/unity/python/
+  cd ${WORKSPACE}/${build_type}/src/python/
   sed -i -e "s/'.*'#{{BUILD_NUMBER}}/'${BUILD_NUMBER}'#{{BUILD_NUMBER}}/g" turicreate/version_info.py
 }
 
@@ -390,7 +387,7 @@ set_git_SHA() {
     GIT_SHA = "NA"
   fi
 
-  cd ${WORKSPACE}/${build_type}/src/unity/python/
+  cd ${WORKSPACE}/${build_type}/src/python/
   sed -i -e "s/'.*'#{{GIT_SHA}}/'${GIT_SHA}'#{{GIT_SHA}}/g" turicreate/version_info.py
 }
 

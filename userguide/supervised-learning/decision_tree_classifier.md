@@ -13,7 +13,7 @@ In this example, we will use the [Mushrooms dataset](https://archive.ics.uci.edu
 import turicreate as tc
 
 # Load the data
-data =  tc.SFrame.read_csv('https://raw.githubusercontent.com/apple/turicreate/master/src/unity/python/turicreate/test/mushroom.csv')
+data =  tc.SFrame.read_csv('https://raw.githubusercontent.com/apple/turicreate/master/src/python/turicreate/test/mushroom.csv')
 
 # Label 'c' is edible
 data['label'] = data['label'] == 'c'

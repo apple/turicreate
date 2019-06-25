@@ -11,8 +11,8 @@ build. This means that the build itself, and the products of the build, take pla
 overwritten on the next build. Make changes in the `src/` directory, and run build commands to produce output.
 
 * `src/`: source code of Turi Create
-* `src/unity/python`: the Python module source code
-* `src/unity/python/turicreate/test`: Python unit tests for Turi Create
+* `src/python`: the Python module source code
+* `src/python/turicreate/test`: Python unit tests for Turi Create
 * `src/external`: source drops of 3rd party source dependencies
 * `deps/`: build dependencies and environment
 * `debug/`, `release/`: build output directories for debug and release builds respectively
@@ -39,7 +39,10 @@ You will need:
 
 * On macOS, [Xcode](https://itunes.apple.com/us/app/xcode/id497799835) with command line tools (tested with Xcode 9 and later)
 * On Linux:
-  * A C++ compiler toolchain with C++11 support (provided by `build-essential` on Ubuntu)
+  * A C++ compiler toolchain with C++11 support (`gcc` >= 4.8 or `clang` >= 3.3)
+  * `git` (typically provided by the `git` package)
+  * `patch` (typically provided by `patch` package)
+  * `rsync` (typically provided by `rsync` package)
   * blas and lapack development libraries (typically provided by the `liblapack-dev` package)
   * `pyfpe.h` (typically provided by the `libpython2.7-dev` package for Python 2.7, or `libpython3.6-dev` for Python 3.6)
   * `gif_lib.h` (typically provided by the `libgif-dev` package)
@@ -117,7 +120,7 @@ Running Unit Tests
 ### Running Python unit tests
 From the repo root:
 
-    cd debug/src/unity/python/turicreate/test
+    cd debug/src/python/turicreate/test
     pytest
 
 

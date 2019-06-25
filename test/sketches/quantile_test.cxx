@@ -1,12 +1,12 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <string>
 #include <cassert>
 #include <iostream>
-#include <sketches/quantile_sketch.hpp>
-#include <sketches/streaming_quantile_sketch.hpp>
-#include <random/random.hpp>
+#include <ml/sketches/quantile_sketch.hpp>
+#include <ml/sketches/streaming_quantile_sketch.hpp>
+#include <core/random/random.hpp>
 struct quantile_sketch_test {
   static constexpr double epsilon = 0.01;
   typedef turi::sketches::quantile_sketch<double> sketch_type;

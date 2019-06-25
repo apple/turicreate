@@ -2,21 +2,21 @@
 #define BOOST_TEST_MODULE test_evaluation
 
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
-#include <unity/lib/unity_sarray.hpp>
-#include <unity/lib/unity_sframe.hpp>
-#include <sframe/sframe.hpp>
+#include <core/util/test_macros.hpp>
+#include <core/storage/sframe_interface/unity_sarray.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
 
 #include <vector>
 #include <string>
-#include <random/random.hpp>
+#include <core/random/random.hpp>
 
-#include <sframe/testing_utils.hpp>
-#include <util/testing_utils.hpp>
-#include <unity/toolkits/recsys/models.hpp>
-#include <unity/toolkits/evaluation/metrics.hpp>
-#include <sframe/testing_utils.hpp>
-#include <util/testing_utils.hpp>
+#include <core/storage/sframe_data/testing_utils.hpp>
+#include <core/util/testing_utils.hpp>
+#include <toolkits/recsys/models.hpp>
+#include <toolkits/evaluation/metrics.hpp>
+#include <core/storage/sframe_data/testing_utils.hpp>
+#include <core/util/testing_utils.hpp>
 
 
 namespace turi {

@@ -6,7 +6,7 @@
 
 #define BOOST_TEST_MODULE vega_example_tests
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include "base_fixture.hpp"
 
 using namespace vega_renderer::test_utils;

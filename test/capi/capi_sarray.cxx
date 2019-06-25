@@ -6,16 +6,16 @@
 
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 
 #include <capi/TuriCreate.h>
 #include <vector>
 #include "capi_utils.hpp"
 
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/lib/gl_sarray.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
 #include <capi/impl/capi_wrapper_structs.hpp>
-#include <fileio/fileio_constants.hpp>
+#include <core/storage/fileio/fileio_constants.hpp>
 #include <iostream>
 
 class capi_test_sarray {

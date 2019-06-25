@@ -1,19 +1,19 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <iostream>
 #include <typeinfo>
 #include <boost/filesystem.hpp>
-#include <sframe/sframe.hpp>
-#include <sframe/algorithm.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <sframe/parallel_csv_parser.hpp>
-#include <sframe/csv_line_tokenizer.hpp>
-#include <sframe/csv_writer.hpp>
-#include <random/random.hpp>
-#include <sframe/groupby_aggregate.hpp>
-#include <sframe/groupby_aggregate_operators.hpp>
-#include <sframe/sframe_saving.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_data/algorithm.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/sframe_data/parallel_csv_parser.hpp>
+#include <core/storage/sframe_data/csv_line_tokenizer.hpp>
+#include <core/storage/sframe_data/csv_writer.hpp>
+#include <core/random/random.hpp>
+#include <core/storage/sframe_data/groupby_aggregate.hpp>
+#include <core/storage/sframe_data/groupby_aggregate_operators.hpp>
+#include <core/storage/sframe_data/sframe_saving.hpp>
 
 BOOST_TEST_DONT_PRINT_LOG_VALUE(std::vector<double>)
 BOOST_TEST_DONT_PRINT_LOG_VALUE(std::vector<std::string>)

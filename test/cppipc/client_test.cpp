@@ -3,8 +3,8 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <cppipc/cppipc.hpp>
-#include <cppipc/common/object_factory_base.hpp>
+#include <core/system/cppipc/cppipc.hpp>
+#include <core/system/cppipc/common/object_factory_base.hpp>
 #include "test_object_base.hpp"
 
 int main(int argc, char** argv) {

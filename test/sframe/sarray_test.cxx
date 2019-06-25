@@ -1,10 +1,10 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
-#include <sframe/sarray.hpp>
-#include <sframe/sarray_v2_encoded_block.hpp>
-#include <sframe/algorithm.hpp>
-#include <fileio/temp_files.hpp>
+#include <core/util/test_macros.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
+#include <core/storage/sframe_data/sarray_v2_encoded_block.hpp>
+#include <core/storage/sframe_data/algorithm.hpp>
+#include <core/storage/fileio/temp_files.hpp>
 
 using namespace turi;
 

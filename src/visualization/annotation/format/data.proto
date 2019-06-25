@@ -1,0 +1,45 @@
+syntax = "proto3";
+option optimize_for = LITE_RUNTIME;
+
+package TuriCreate.Annotation.Specification;
+
+message ImageDatum {
+  int32 width = 1;
+  int32 height = 2;
+  int32 channels = 3;
+
+
+  enum Format {
+    JPG = 0;
+    PNG = 1;
+    RAW_ARRAY = 2;
+    UNDEFINED = 3;
+  };
+
+  Format type = 4;
+  string imgData = 10; // base64 encoded
+}
+
+message TextDatum { string text = 1; }
+
+message Datum {
+  int64 rowIndex = 1;
+
+  repeated ImageDatum images = 10;
+  repeated TextDatum text = 20;
+}
+
+message DataGetter {
+  enum GetterType {
+    DATA = 0;
+    ANNOTATIONS = 1;
+    SIMILARITY = 2;
+  }
+
+  GetterType type = 1;
+
+  int32 start = 2;
+  int32 end = 3;
+}
+
+message Data { repeated Datum data = 1; }

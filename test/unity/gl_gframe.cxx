@@ -5,11 +5,11 @@
  */
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <boost/range/combine.hpp>
-#include <unity/lib/gl_gframe.hpp>
-#include <unity/lib/gl_sgraph.hpp>
-#include <unity/lib/gl_sframe.hpp>
+#include <core/data/sframe/gl_gframe.hpp>
+#include <core/data/sframe/gl_sgraph.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
 
 using namespace turi;
 

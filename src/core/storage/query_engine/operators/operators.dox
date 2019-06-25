@@ -1,0 +1,175 @@
+
+/**
+ *
+\ingroup sframe_query_engine
+\addtogroup operators Logical Operators
+
+All the available query plan operators are defined in here.
+
+Introduction
+------------
+
+There are 2 parts to an operator.
+1: How to execute the operator (a specialization of operator_impl)
+2: The logical node in the graph (\ref planner_node)
+
+First, to define a new operator, add to the enum in `operator_properties` and define
+your new new operator as a class `operator_impl<enum>` (the operator itself
+is just a specialization of the `operator_impl` class around the enum)
+
+There are no constraints on the constructor or destructor of the class, or what
+members the class should have. The class should contain enough information to
+perform the execute() method.
+
+The functions which must be implemented are
+ - attributes(): describes the attributes of the operator.
+ - name(): a printable name of the operator
+ - execute(): which reads elements from its inputs, and generates output
+Optionally:
+ - print(): Makes a human readable description of the operator.
+            Defaults to just name()
+
+A couple of routines to convert back of forth between planner_node and the
+operator implementation:
+
+    operator_impl<enum>::make_planner_node(...)
+    operator_impl<enum>::plan_to_operator(...)
+
+Additionally the following static methods must be provided
+
+    operator_impl<enum>::infer_type(...)
+
+A length inference routine:
+
+    operator_impl<enum>::infer_length(...)
+
+Example
+-------
+To give an example, to implement a transform operator
+(see the source in transform.hpp). The example here defines a simplified version
+that only transforms a single column of \ref flexible_type.
+
+The class is:
+
+\code
+template<>
+class operator_impl<planner_node_type::TRANSFORM_NODE> : public query_operator {
+\endcode
+
+To define a transform, we define constructor to accept a generic function. We
+need to know the actual output type of the function ahead of time.
+
+\code
+  inline operator_impl(const std::function<flexible_type(flexible_type)>& f,
+                       flex_type_enum output_type) {
+      : m_transform_fn(f), m_output_type(output_type)
+  { }
+
+  inline std::shared_ptr<query_operator> clone() const {
+    return std::make_shared<operator_impl>(*this);
+  }
+\endcode
+
+We next define the name of the operator, as well as the attributes. Since
+transform takes 1 input and returns 1 output, we just return LINEAR.
+
+\code
+  static std::string name() { return "transform";  }
+
+  static query_operator_attributes attributes() {
+    query_operator_attributes ret;
+    ret.attribute_bitfield = query_operator_attributes::LINEAR;
+    ret.num_inputs = 1;
+    return ret;
+  }
+\endcode
+
+Execute is a little subtle. It takes a \ref query_context, reads from it
+writing to an output buffer (also provided by the query_context) and calls
+emit() to write the output buffer out.
+
+\code
+inline void execute(query_context& context) {
+    while(1) {
+      // gets the next batch of rows from the 0'th input stream. Since this
+      // operator only takes 1 input stream (unlike say... a binary transform
+      // like '+' which would take 2 input streams.
+      // rows here is a shared pointer to a \ref sframe_rows object
+      auto rows = context.get_next(0);
+      // when rows returns a null pointer, we are done
+      if (rows == nullptr) break;
+
+      // get the next output buffer and resize to fit
+      auto output = context.get_output_buffer();
+      output->resize(1, rows->num_rows());
+
+      // iterate through the input set of rows
+      // writing to the output set of rows
+      auto iter = rows->cbegin();
+      auto output_iter = output->begin();
+      while(iter != rows->cend()) {
+        auto outval = m_transform_fn((*iter[0]));
+        (*output_iter)[0] = outval;
+        ++output_iter;
+        ++iter;
+      }
+      // emit and loop for the next batch
+      // This will actually perform a user mode context switch to the
+      // next operator in the sequence.
+      context.emit(output);
+    }
+  }
+\endcode
+
+We need converters between \ref planner_node and this operator. The
+\ref planner_node really just stores a bunch of information in a generic map->any
+and we have to figure out our own schema in it. A bunch of assertions checks
+are removed for readability.
+
+\code
+  static std::shared_ptr<planner_node> make_planner_node(
+      std::shared_ptr<planner_node> source,
+      std::function<flexible_type(flexible_type)>fn,
+      flex_type_enum output_type) {
+    return planner_node::make_shared(planner_node_type::TRANSFORM_NODE,
+                                     {{"output_type", (int)(output_type)},
+                                     {{"function", any(fn)}},
+                                     {source});
+  }
+
+  static std::shared_ptr<query_operator> from_planner_node(
+      std::shared_ptr<planner_node> pnode) {
+    typedef std::function<flexible_type(flexible_type)> transform_type;
+    transform_type fn;
+    flex_type_enum output_type =
+        (flex_type_enum)(flex_int)(pnode->operator_parameters["output_type"]);
+    fn = pnode->any_operator_parameters["function"].as<transform_type>();
+    // call my own constructor
+    return std::make_shared<operator_impl>(fn, output_type);
+  }
+\endcode
+
+To guide the graph verification and planning process of the logical graph,
+a couple of methods around type or length inference has to be provided.
+\code
+  static std::vector<flex_type_enum> infer_type(std::shared_ptr<planner_node> pnode) {
+    // we know our output type since we set it in ahead of time
+    return {(flex_type_enum)(int)(pnode->operator_parameters["output_type"])};
+  }
+
+  static int64_t infer_length(std::shared_ptr<planner_node> pnode) {
+    // The length of our output is the length of our input.
+    // So we recursively call the infer_planner_node_length on the input node.
+    return infer_planner_node_length(pnode->inputs[0]);
+  }
+
+\endcode
+
+Finally, for convenience, we might typedef the whole class to something
+easier to read
+
+\code
+typedef operator_impl<planner_node_type::TRANSFORM_NODE> op_transform;
+\endcode
+
+ */

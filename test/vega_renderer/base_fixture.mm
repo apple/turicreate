@@ -8,7 +8,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include <boost/algorithm/string/replace.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 
 #import <vega_renderer/VegaRenderer.h>
 #import "vega_webkit_renderer.hpp"
