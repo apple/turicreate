@@ -61,6 +61,19 @@ static double vec_mode(flex_vec::const_iterator first,
   return std::distance(histogram.begin(), majority);
 }
 
+/**
+ * Write the aggregated data of the current chunk as a single new vector in the converted SFrame,
+ * and init all aggregation vectors to begin a new chunk.
+ *
+ * \param[in,out]   curr_chunk_features     A vector with the aggregated features data (flattened row-major) of the current chunk.
+ * \param[in,out]   curr_chunk_targets      A vector with the aggregated target data (flattened row-major) of the current chunk - after subsampling by predicion_window.
+ * \param[in,out]   curr_window_targets     A vector with the aggregate raw target data (flattened row-major) of the current precdiction window, in case it was not finalized yet.
+ * \param[in,out]   output_writer           A gl_sframe_writer object, which is used to write the converted SFrame.
+ * \param[in]       curr_session_id         The current session id - may be integer or string.
+ * \param[in]       chunk_size              The constant sequence length which is used for training and predicion.
+ * \param[in]       predictions_in_chunk    The numer of prediction windows in each chunks. This is also the number of target values per chunk.
+ * \param[in]       use_target              A bool indicating whether the user's dataset includes a target column.
+ */
 static void finalize_chunk(flex_vec&            curr_chunk_features,
                            flex_vec&            curr_chunk_targets,
                            flex_vec&            curr_window_targets,
