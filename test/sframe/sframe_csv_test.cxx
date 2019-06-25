@@ -1,18 +1,18 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <iostream>
 #include <typeinfo>
 #include <boost/filesystem.hpp>
-#include <sframe/sframe.hpp>
-#include <sframe/algorithm.hpp>
-#include <sframe/csv_writer.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <flexible_type/string_escape.hpp>
-#include <sframe/parallel_csv_parser.hpp>
-#include <sframe/csv_line_tokenizer.hpp>
-#include <flexible_type/string_escape.hpp>
-#include <random/random.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_data/algorithm.hpp>
+#include <core/storage/sframe_data/csv_writer.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/string_escape.hpp>
+#include <core/storage/sframe_data/parallel_csv_parser.hpp>
+#include <core/storage/sframe_data/csv_line_tokenizer.hpp>
+#include <core/data/flexible_type/string_escape.hpp>
+#include <core/random/random.hpp>
 
 using namespace turi;
 struct csv_test {
@@ -861,7 +861,18 @@ struct sframe_test  {
      for (auto& row: data.values) row = permute(row, permute_order);
      return data;
    }
+    csv_test test_mismatched_square_brackets() {
+      csv_test ret;
+      std::stringstream strm;
+      strm << "a\n"
+           << "[hello\n";
+      ret.file = strm.str();
+      ret.tokenizer.delimiter = "\t";
+      ret.values.push_back({"[hello"});
 
+      ret.types = {{"a", flex_type_enum::STRING}};
+      return ret;
+    }
    sframe validate_file(const csv_test& data, 
                         std::string filename) {
      csv_line_tokenizer tokenizer = data.tokenizer;
@@ -982,6 +993,7 @@ struct sframe_test  {
      evaluate(single_string_column());
      evaluate(test_missing_tab_values());
      evaluate(tab_delimited_csv_with_list());
+     evaluate(test_mismatched_square_brackets());
    }
 
 

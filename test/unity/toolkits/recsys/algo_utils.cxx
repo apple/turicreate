@@ -22,16 +22,16 @@
 
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <vector>
 #include <string>
 #include <set>
 #include <iostream>
 #include <sstream>
 
-#include <random/random.hpp>
+#include <core/random/random.hpp>
 
-#include <unity/toolkits/util/algorithmic_utils.hpp>
+#include <toolkits/util/algorithmic_utils.hpp>
 
 
 using namespace turi;

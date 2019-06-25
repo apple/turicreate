@@ -8,9 +8,9 @@
 #include <capi/impl/capi_error_handling.hpp>
 #include <capi/impl/capi_initialization_internal.hpp>
 #include <capi/impl/capi_wrapper_structs.hpp>
-#include <platform/export.hpp>
-#include <unity/lib/unity_global.hpp>
-#include <unity/lib/unity_global_singleton.hpp>
+#include <core/export.hpp>
+#include <model_server/lib/unity_global.hpp>
+#include <model_server/lib/unity_global_singleton.hpp>
 
 EXPORT tc_variant* tc_function_call(
     const char* function_name, const tc_parameters* arguments,

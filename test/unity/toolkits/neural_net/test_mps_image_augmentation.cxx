@@ -6,14 +6,14 @@
 
 #define BOOST_TEST_MODULE test_mps_image_augmentation
 
-#include <unity/toolkits/neural_net/mps_compute_context.hpp>
+#include <ml/neural_net/mps_compute_context.hpp>
 
 #include <tuple>
 
 #include <boost/test/unit_test.hpp>
-#include <image/image_type.hpp>
-#include <unity/lib/image_util.hpp>
-#include <util/test_macros.hpp>
+#include <core/data/image/image_type.hpp>
+#include <model_server/lib/image_util.hpp>
+#include <core/util/test_macros.hpp>
 
 namespace turi {
 namespace neural_net {

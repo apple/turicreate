@@ -6,12 +6,12 @@
 
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 
 #include <capi/TuriCreate.h>
 #include "capi_utils.hpp"
-#include <unity/lib/visualization/plot.hpp>
-#include <unity/lib/visualization/show.hpp>
+#include <visualization/server/plot.hpp>
+#include <visualization/server/show.hpp>
 
 #include <random>
 

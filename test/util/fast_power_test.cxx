@@ -5,16 +5,16 @@
  */
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <vector>
 #include <cmath>
 
 #include <iostream>
-#include <logger/logger.hpp>
-#include <logger/assertions.hpp>
-#include <util/bitops.hpp>
-#include <util/cityhash_tc.hpp>
-#include <util/fast_integer_power.hpp>
+#include <core/logging/logger.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/util/bitops.hpp>
+#include <core/util/cityhash_tc.hpp>
+#include <core/util/fast_integer_power.hpp>
 
 using namespace turi;
 using namespace std;

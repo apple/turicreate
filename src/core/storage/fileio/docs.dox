@@ -1,0 +1,13 @@
+/**
+
+\defgroup fileio File IO Library
+\brief The fileio library provides a collection of generic libraries to unify access to
+HDFS, S3, local filesystem and in-memory filesystem.
+
+The two key objects
+everybody should care about is \ref turi::general_ifstream and \ref turi::general_ofstream.
+Almost everything else is implementation detail. boost::stream is used liberally
+to provide compatibility.
+
+Generally,
+*/

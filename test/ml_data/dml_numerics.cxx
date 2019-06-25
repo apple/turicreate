@@ -1,13 +1,13 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <string>
 #include <random>
 #include <set>
 #include <sstream>
 #include <vector>
 #include <algorithm>
-#include <util/cityhash_tc.hpp>
+#include <core/util/cityhash_tc.hpp>
 #include <cmath>
 
 // Eigen
@@ -15,17 +15,17 @@
 #include <Eigen/SparseCore>
 
 // SFrame and Flex type
-#include <unity/lib/flex_dict_view.hpp>
+#include <model_server/lib/flex_dict_view.hpp>
 
 // ML-Data Utils
-#include <ml_data/ml_data.hpp>
-#include <sframe/sframe_iterators.hpp>
+#include <ml/ml_data/ml_data.hpp>
+#include <core/storage/sframe_data/sframe_iterators.hpp>
 
-#include <sframe/testing_utils.hpp>
-#include <ml_data/testing_utils.hpp>
-#include <util/testing_utils.hpp>
+#include <core/storage/sframe_data/testing_utils.hpp>
+#include <ml/ml_data/testing_utils.hpp>
+#include <core/util/testing_utils.hpp>
 
-#include <globals/globals.hpp>
+#include <core/globals/globals.hpp>
 
 
 typedef Eigen::Matrix<double,Eigen::Dynamic,1>  DenseVector;

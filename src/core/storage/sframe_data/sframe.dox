@@ -1,0 +1,10 @@
+/**
+ * \defgroup sframe_physical SFrame : Physical
+ *
+ * The SFrame Physical Format describes how SFrames are laid out on disk.
+ * The actual format is a bit ... complicated since it really grew organically.
+ * Hence unfortunately, the documentation is the code itself.
+ *
+ * For a user of the SFrame, the main collection of objects that matter is
+ * in \ref sframe_main.
+ */

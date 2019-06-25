@@ -1,11 +1,11 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #
 #include <Eigen/Core>
 #include <Eigen/SparseCore>
 
-#include <serialization/serialization_includes.hpp>
+#include <core/storage/serialization/serialization_includes.hpp>
 
 using namespace turi;
 using namespace Eigen;

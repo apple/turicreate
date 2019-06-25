@@ -1,27 +1,27 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <string>
 #include <random>
 #include <set>
 #include <sstream>
 #include <vector>
 #include <algorithm>
-#include <util/cityhash_tc.hpp>
+#include <core/util/cityhash_tc.hpp>
 
 // Eigen
 #include <Eigen/Core>
 #include <Eigen/SparseCore>
 
 // Optimization Interface
-#include <optimization/optimization_interface.hpp>
+#include <ml/optimization/optimization_interface.hpp>
 
 // Solvers
-#include <optimization/utils.hpp>
-#include <optimization/newton_method-inl.hpp>
-#include <optimization/gradient_descent-inl.hpp>
-#include <optimization/accelerated_gradient-inl.hpp>
-#include <optimization/lbfgs.hpp>
+#include <ml/optimization/utils.hpp>
+#include <ml/optimization/newton_method-inl.hpp>
+#include <ml/optimization/gradient_descent-inl.hpp>
+#include <ml/optimization/accelerated_gradient-inl.hpp>
+#include <ml/optimization/lbfgs.hpp>
 
 
 using namespace turi;

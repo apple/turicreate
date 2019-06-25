@@ -6,9 +6,9 @@
 #include <vector>
 #include <string>
 #include <timer/timer.hpp>
-#include <util/fast_integer_power.hpp>
-#include <util/cityhash_tc.hpp>
-#include <random/random.hpp>
+#include <core/util/fast_integer_power.hpp>
+#include <core/util/cityhash_tc.hpp>
+#include <core/random/random.hpp>
 
 using namespace turi;
 

@@ -1,12 +1,12 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <iostream>
 
-#include <parallel/pthread_tools.hpp>
-#include <parallel/thread_pool.hpp>
-#include <parallel/atomic.hpp>
-#include <logger/assertions.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/parallel/thread_pool.hpp>
+#include <core/parallel/atomic.hpp>
+#include <core/logging/assertions.hpp>
 #include <timer/timer.hpp>
 #include <boost/bind.hpp>
 #include <thread>

@@ -138,13 +138,13 @@ build_dylib_macos_10_14:
   script:
     - source scripts/use_ccache.sh
     - ./configure --no-visualization --no-python --release-opt-for-size
-    - cd release/src/objc
+    - cd release/src/deployment
     - make -j8
   artifacts:
     expire_in: 1 day
     paths:
-      - release/src/objc/libAudioPreprocessing.dylib
-      - release/src/objc/libRecommender.dylib
+      - release/src/deployment/libAudioPreprocessing.dylib
+      - release/src/deployment/libRecommender.dylib
 
 build_dylib_ios_12:
   tags:
@@ -156,13 +156,13 @@ build_dylib_ios_12:
   script:
     - source scripts/use_ccache.sh
     - ./configure --no-visualization --no-python --release-opt-for-size --target-ios
-    - cd release/src/objc
+    - cd release/src/deployment
     - make -j8
   artifacts:
     expire_in: 1 day
     paths:
-      - release/src/objc/libAudioPreprocessing.dylib
-      - release/src/objc/libRecommender.dylib
+      - release/src/deployment/libAudioPreprocessing.dylib
+      - release/src/deployment/libRecommender.dylib
 
 test_cpp_linux:
   tags:
@@ -197,7 +197,7 @@ test_cpp_mac_10_13:
     - make -j8
     - export LD_LIBRARY_PATH=`pwd`/deps/local/lib:`pwd`/deps/local/lib64:$LD_LIBRARY_PATH
     - export PATH=`pwd`/deps/local/bin:$PATH
-    - export LD_LIBRARY_PATH=`pwd`/src/unity:`pwd`/src/unity/python/turicreate:$LD_LIBRARY_PATH
+    - export LD_LIBRARY_PATH=`pwd`/src/unity:`pwd`/src/python/turicreate:$LD_LIBRARY_PATH
     - python ../../scripts/run_cpp_tests.py -j 2
 
 test_cpp_mac_10_14:
@@ -216,7 +216,7 @@ test_cpp_mac_10_14:
     - make -j8
     - export LD_LIBRARY_PATH=`pwd`/deps/local/lib:`pwd`/deps/local/lib64:$LD_LIBRARY_PATH
     - export PATH=`pwd`/deps/local/bin:$PATH
-    - export LD_LIBRARY_PATH=`pwd`/src/unity:`pwd`/src/unity/python/turicreate:$LD_LIBRARY_PATH
+    - export LD_LIBRARY_PATH=`pwd`/src/unity:`pwd`/src/python/turicreate:$LD_LIBRARY_PATH
     - python ../../scripts/run_cpp_tests.py -j 2
 
 test_python_linux_python27:
@@ -451,7 +451,7 @@ collect_artifacts:
     - build_wheel_mac_10_14_python35
     - build_wheel_mac_10_14_python36
   script:
-    - mv release/src/objc/*.dylib target/
+    - mv release/src/deployment/*.dylib target/
     - rmdir -p release || find release
   artifacts:
     expire_in: 2 weeks

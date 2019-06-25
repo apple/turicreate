@@ -1,14 +1,14 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <stdlib.h>
 #include <vector>
 #include <string>
 #include <functional>
 #include <random>
-#include <unity/lib/gl_sarray.hpp>
-#include <unity/toolkits/feature_engineering/content_interpretation.cpp>
-#include <flexible_type/flexible_type.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <toolkits/feature_engineering/content_interpretation.cpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 
 using namespace turi;
 using namespace turi::feature_engineering;

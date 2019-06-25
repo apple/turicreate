@@ -1,9 +1,9 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
-#include <cppipc/cppipc.hpp>
-#include <cppipc/common/authentication_token_method.hpp>
-#include <fileio/temp_files.hpp>
+#include <core/util/test_macros.hpp>
+#include <core/system/cppipc/cppipc.hpp>
+#include <core/system/cppipc/common/authentication_token_method.hpp>
+#include <core/storage/fileio/temp_files.hpp>
 #include <thread>
 #include <chrono>
 #include "test_object_base.hpp"

@@ -11,8 +11,8 @@ build. This means that the build itself, and the products of the build, take pla
 overwritten on the next build. Make changes in the `src/` directory, and run build commands to produce output.
 
 * `src/`: source code of Turi Create
-* `src/unity/python`: the Python module source code
-* `src/unity/python/turicreate/test`: Python unit tests for Turi Create
+* `src/python`: the Python module source code
+* `src/python/turicreate/test`: Python unit tests for Turi Create
 * `src/external`: source drops of 3rd party source dependencies
 * `deps/`: build dependencies and environment
 * `debug/`, `release/`: build output directories for debug and release builds respectively
@@ -71,7 +71,7 @@ If you don't already have it, you can install it with:
 
 Note that you may need to do a system-wide install with `sudo`; this depends on your Python environment and whether your `pip` binary requires sudo permissions. Alternately, you could try `pip install --user` to force a user-local installation if `pip install` gives permission denied errors.
 
-Optionally, set a [generator](https://cmake.org/cmake/help/v3.0/manual/cmake-generators.7.html) for CMake before running `./configure`. Ninja can speed up incremental builds, but is not required.
+Optionally, set a [generator](https://cmake.org/cmake/help/v3.0/manual/cmake-generators.7.html) for CMake **BEFORE** running `./configure`. Ninja can speed up incremental builds, but is not required.
 
     # Optional: set a generator
     # The default is "Unix Makefiles"
@@ -98,6 +98,12 @@ process. For instance:
     cd debug/src/unity
     make -j 4
 
+If `Ninja` is chosen as the generator in the previous step, you should use command listed below instead:
+
+    cd debug/
+    # check ninja -h for more info
+    ninja
+
 will perform up to 4 build tasks in parallel. When building in release mode,
 Turi Create does require a large amount of memory to compile with the
 heaviest toolkit requiring 1GB of RAM. Where K is the amount of memory you
@@ -110,7 +116,7 @@ used for the build:
 
     source <repo root>/scripts/python_env.sh debug
 
-or 
+or
 
     source <repo root>/scripts/python_env.sh release
 
@@ -120,7 +126,7 @@ Running Unit Tests
 ### Running Python unit tests
 From the repo root:
 
-    cd debug/src/unity/python/turicreate/test
+    cd debug/src/python/turicreate/test
     pytest
 
 

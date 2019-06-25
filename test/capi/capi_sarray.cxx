@@ -6,16 +6,16 @@
 
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 
 #include <capi/TuriCreate.h>
 #include <vector>
 #include "capi_utils.hpp"
 
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/lib/gl_sarray.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
 #include <capi/impl/capi_wrapper_structs.hpp>
-#include <fileio/fileio_constants.hpp>
+#include <core/storage/fileio/fileio_constants.hpp>
 #include <iostream>
 
 class capi_test_sarray {
@@ -66,7 +66,7 @@ class capi_test_sarray {
       CAPI_CHECK_ERROR(error);
 
       tc_sarray_save(sa_sv, out_name.c_str(), &error);
-    
+
       CAPI_CHECK_ERROR(error);
 
       tc_release(sa_sv);
@@ -1917,6 +1917,58 @@ class capi_test_sarray {
     tc_release(fl);
   }
 
+  void test_range_sequence_division() {
+    /*
+     * 5/29/19, 12:12 PM Alejandro Isaza:
+     * Summary:
+     * Creating two columns with `tc_v1_sarray_create_from_sequence` and
+     dividing them gives invalid results.
+
+     * Results:
+     * The result columns is [1, 1, 1, 1], expected it to be [0, 0, 0, 0].
+     **/
+
+    tc_error* error = nullptr;
+    tc_sarray* col1 = tc_sarray_create_from_sequence(1, 5, &error);
+    CAPI_CHECK_ERROR(error);
+    tc_sarray* col2 = tc_sarray_create_from_sequence(2, 6, &error);
+    CAPI_CHECK_ERROR(error);
+
+    tc_sarray* result = tc_binary_op_ss(col1, "/", col2, &error);
+    CAPI_CHECK_ERROR(error);
+
+    using turi::flex_float;
+    for (size_t i = 0; i < 4; ++i) {
+      tc_flexible_type* ft = tc_sarray_extract_element(result, i, &error);
+      CAPI_CHECK_ERROR(error);
+      TS_ASSERT(tc_ft_type(ft) == tc_ft_type_enum::FT_TYPE_FLOAT);
+      flex_float result = tc_ft_double(ft, &error);
+      CAPI_CHECK_ERROR(error);
+
+      /* std::cout << tc_ft_type(ft) << " " << result << std::endl; */
+      TS_ASSERT_EQUALS(result, static_cast<flex_float>(i + 1) / (i + 2));
+    }
+
+    tc_release(result);
+
+    /* will use the optimizer to fuse 2 identical seq */
+    tc_sarray* col3 = tc_sarray_create_from_sequence(1, 5, &error);
+    CAPI_CHECK_ERROR(error);
+
+    result = tc_binary_op_ss(col1, "/", col3, &error);
+    CAPI_CHECK_ERROR(error);
+
+
+    for (size_t i = 0; i < 4; ++i) {
+      tc_flexible_type* ft = tc_sarray_extract_element(result, i, &error);
+      CAPI_CHECK_ERROR(error);
+      TS_ASSERT(tc_ft_type(ft) == tc_ft_type_enum::FT_TYPE_FLOAT);
+      turi::flex_int result = tc_ft_int64(ft, &error);
+      CAPI_CHECK_ERROR(error);
+
+      TS_ASSERT_EQUALS(result, 1);
+    }
+  }
 };
 
 
@@ -2061,6 +2113,10 @@ BOOST_AUTO_TEST_CASE(test_tc_sarray_materialize) {
 }
 BOOST_AUTO_TEST_CASE(test_sc_sarray_apply) {
   capi_test_sarray::test_tc_sarray_apply();
+}
+
+BOOST_AUTO_TEST_CASE(test_range_sequence_division) {
+  capi_test_sarray::test_range_sequence_division();
 }
 
 BOOST_AUTO_TEST_SUITE_END()

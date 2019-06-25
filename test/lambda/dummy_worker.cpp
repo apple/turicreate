@@ -3,10 +3,10 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <cppipc/cppipc.hpp>
+#include <core/system/cppipc/cppipc.hpp>
 #include <process/process_util.hpp>
 #include "dummy_worker_interface.hpp"
-#include <nanosockets/socket_config.hpp>
+#include <core/system/nanosockets/socket_config.hpp>
 #include <thread>
 
 using namespace turi;

@@ -10,15 +10,15 @@
 #include <string>
 #include <functional>
 
-#include <random/random.hpp>
+#include <core/random/random.hpp>
 
-#include <unity/toolkits/recsys/models/factorization_models.hpp>
-#include <unity/toolkits/util/data_generators.hpp>
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <unity/toolkits/ml_data_2/ml_data_iterators.hpp>
-#include <sframe/testing_utils.hpp>
-#include <util/testing_utils.hpp>
-#include <unity/lib/variant.hpp>
+#include <toolkits/recsys/models/factorization_models.hpp>
+#include <toolkits/util/data_generators.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
+#include <toolkits/ml_data_2/ml_data_iterators.hpp>
+#include <core/storage/sframe_data/testing_utils.hpp>
+#include <core/util/testing_utils.hpp>
+#include <model_server/lib/variant.hpp>
 
 
 #include <cfenv>
