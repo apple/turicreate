@@ -45,11 +45,6 @@ model.export_coreml('MyCustomOneShotDetector.mlmodel')
 ```
 
 
-Visualizing predictions made on the test set:
-
-![Prediction test data](images/test_data_explore.jpg)
-
-
 Examples of test image predictions:
 
 ![Sample prediction image - 1 and 2](images/sample_prediction_images_1_2.jpg)
