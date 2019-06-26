@@ -32,6 +32,8 @@ env:
     - CXX=g++-5
 
 script:
+  - free -m
+
   # Set cache size to 4G (defaults to 512M)
   - ccache -M 4G
   - ccache -s
@@ -57,7 +59,7 @@ script:
   - rm src/python/turicreate/test/test_style_transfer.py src/python/turicreate/test/test_object_detector.py src/python/turicreate/test/test_one_shot_object_detector.py
 
   # Build the wheel
-  - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=3 --debug --skip_cpp_test --skip_doc
+  - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=1 --debug --skip_cpp_test --skip_doc
 
   # See the changes in ccache
   - ccache -s
