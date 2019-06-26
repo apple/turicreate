@@ -21,6 +21,11 @@ namespace activity_classification {
 class EXPORT activity_classifier: public ml_model_base {
 
  public:
+  
+  static std::tuple<gl_sframe, gl_sframe> random_split_by_session(
+      gl_sframe data, std::string session_id_column_name, float fraction,
+      size_t seed);
+
   // ml_model_base interface
 
   void init_options(const std::map<std::string, flexible_type>& opts) override;
@@ -39,9 +44,6 @@ class EXPORT activity_classifier: public ml_model_base {
   variant_map_type evaluate(gl_sframe data, std::string metric);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
       std::string filename);
-  static std::tuple<gl_sframe, gl_sframe> random_split_by_session(
-      gl_sframe data, std::string session_id_column_name, float fraction,
-      size_t seed);
   void import_from_custom_model(variant_map_type model_data, size_t version);
 
   BEGIN_CLASS_MEMBER_REGISTRATION("activity_classifier")

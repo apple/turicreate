@@ -17,8 +17,7 @@ namespace activity_classification {
 BEGIN_FUNCTION_REGISTRATION
 REGISTER_FUNCTION(_activity_classifier_prepare_data , "data" , "features" , "session_id" , "prediction_window" , "predictions_in_chunk" , "target")
 REGISTER_FUNCTION(_activity_classifier_prepare_data_verbose , "data" , "features" , "session_id" , "prediction_window" , "predictions_in_chunk" , "target")
-REGISTER_FUNCTION(activity_classifier::random_split_by_session, "data",
-                  "session_id_column_name", "fraction", "seed");
+REGISTER_NAMED_FUNCTION("activity_classifier.random_split_by_session", activity_classifier::random_split_by_session, "data","session_id_column_name", "fraction", "seed");
 REGISTER_DOCSTRING(
     activity_classifier::random_split_by_session,
     "----------\n"
