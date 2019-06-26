@@ -102,7 +102,9 @@ synthetic_images = \
 synthetic_images.explore()
 ```
 
-To learn more about the training implementation details, refer to the [Object Detector: How it Works](https://apple.github.io/turicreate/docs/userguide/object_detection/how-it-works.html) chapter.
+**Stage 2: Train the Object Detector model**
+
+To learn about the training implementation details, refer to the [Object Detector: How it Works](https://apple.github.io/turicreate/docs/userguide/object_detection/how-it-works.html) chapter.
 
 
 
