@@ -34,6 +34,7 @@ import datetime
 import warnings
 import numbers
 import six
+import types
 
 __all__ = ['SArray']
 
@@ -357,7 +358,7 @@ class SArray(object):
             self.__proxy__ = UnitySArrayProxy()
 
             ## data transfromation from generator to list
-            if sys.version_info.major >= 3 and isinstance(data, (filter, map)):
+            if (isinstance(data, types.GeneratorType)) or (sys.version_info.major >= 3 and isinstance(data, (filter, map))):
                 data = list(data)
 
             # we need to perform type inference
