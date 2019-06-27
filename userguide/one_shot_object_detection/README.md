@@ -1,6 +1,6 @@
 # One-Shot Object Detection
 
-One-Shot object detection (OSOD) is the task of detecting an object from as few as **one** example per category. Unlike the [Object Detector](https://apple.github.io/turicreate/docs/userguide/object_detection) which requires many varied examples of objects in the real world, the One-Shot detector only requires a single canonical example of an object to train the classifier on and perform predictions for that category in the wild. It is best suited for 2D objects or when there isn't much expected variance in the examples, such as playing cards, logos, road signs, and clapperboards. One-Shot detector is not suitable for 3D objects such as faces, animals, and cars which is a task better suited for the regular Object Detector. 
+One-Shot object detection (OSOD) is the task of detecting an object from as few as **one** example per category. Unlike the [Object Detector](https://apple.github.io/turicreate/docs/userguide/object_detection) which requires many varied examples of objects in the real world, the One-Shot detector only requires a single canonical example of an object to train the classifier on and perform predictions for that category in the wild. It is best suited for 2D objects or when there isn't much expected variance in the examples, such as playing cards, logos, road signs, and clapperboards. One-Shot detector is not suitable for 3D objects such as faces, animals, and cars which is a task better suited for the regular [Object Detector](https://apple.github.io/turicreate/docs/userguide/object_detection). 
 
 
 #### Introductory Example
@@ -32,7 +32,7 @@ test_data['predictions'] = model.predict(test_data)
 
 # Draw prediction bounding boxes on the test images
 test_data['image_with_predictions'] = \
-	tc.object_detector.util.draw_bounding_boxes(test_data['image'], test_data['predictions']) 
+	tc.one_shot_object_detector.util.draw_bounding_boxes(test_data['image'], test_data['predictions']) 
 
 # To visualize the predictions made on the test set
 test_data.explore()
