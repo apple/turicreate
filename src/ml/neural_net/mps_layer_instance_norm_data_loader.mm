@@ -1,5 +1,5 @@
 #include <ml/neural_net/mps_layer_instance_norm_data_loader.h>
-#include <ml/neural_net/mps_layer_helper.h>
+#include <ml/neural_net/mps_weight.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -143,10 +143,10 @@ numberFeatureChannels:(int)numberFeatureChannels
   NSUInteger t2 = [adamBeta timeStep];
 
     for (MPSCNNInstanceNormalizationGradientState *instanceNormalizationState in instanceNormalizationStateBatch) {
-      MPSVector *gradientWeightsVector = [[MPSVector alloc] initWithBuffer:nonnull_cast_a(instanceNormalizationState.gradientForGamma)
+      MPSVector *gradientWeightsVector = [[MPSVector alloc] initWithBuffer:nonnull_cast(instanceNormalizationState.gradientForGamma)
                                                                 descriptor:vDesc];
 
-      MPSVector *inputWeightsVector = [[MPSVector alloc] initWithBuffer:nonnull_cast_a(instanceNormalizationState.gamma)
+      MPSVector *inputWeightsVector = [[MPSVector alloc] initWithBuffer:nonnull_cast(instanceNormalizationState.gamma)
                                                              descriptor:vDesc];
       adamGamma.timeStep = t1;
       [adamGamma encodeToCommandBuffer:commandBuffer
@@ -156,10 +156,10 @@ numberFeatureChannels:(int)numberFeatureChannels
                    inputVelocityVector:mGammaVelocityVector
                     resultValuesVector:mGammaVector];
 
-      MPSVector *gradientBiasesVector = [[MPSVector alloc] initWithBuffer:nonnull_cast_a(instanceNormalizationState.gradientForBeta)
+      MPSVector *gradientBiasesVector = [[MPSVector alloc] initWithBuffer:nonnull_cast(instanceNormalizationState.gradientForBeta)
                                                                descriptor:vDesc];
 
-      MPSVector *inputBiasesVector = [[MPSVector alloc] initWithBuffer:nonnull_cast_a(instanceNormalizationState.beta)
+      MPSVector *inputBiasesVector = [[MPSVector alloc] initWithBuffer:nonnull_cast(instanceNormalizationState.beta)
                                                             descriptor:vDesc];
       adamBeta.timeStep = t2;
       [adamBeta encodeToCommandBuffer:commandBuffer
@@ -180,11 +180,11 @@ numberFeatureChannels:(int)numberFeatureChannels
 
   [blit synchronizeResource:mBetaMomentumBuffer];
   [blit synchronizeResource:mBetaVelocityBuffer];
-  [blit synchronizeResource:nonnull_cast_a(mState.beta)];
+  [blit synchronizeResource:nonnull_cast(mState.beta)];
 
   [blit synchronizeResource:mGammaMomentumBuffer];
   [blit synchronizeResource:mGammaVelocityBuffer];
-  [blit synchronizeResource:nonnull_cast_a(mState.gamma)];
+  [blit synchronizeResource:nonnull_cast(mState.gamma)];
 
   [blit synchronizeResource:mMovingMeanBuffer];
   [blit synchronizeResource:mMovingVarianceBuffer];
