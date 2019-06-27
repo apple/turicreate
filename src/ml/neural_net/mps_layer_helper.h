@@ -36,6 +36,15 @@ API_AVAILABLE(macos(10.14))
                                          device:(id<MTLDevice>)dev
                                       cmd_queue:(id<MTLCommandQueue>) cmd_q;
 
++ (MPSCNNInstanceNormalizationNode *) createInstanceNormalization:(MPSNNImageNode *)inputNode
+                                                         channels:(NSUInteger)channels
+                                                           styles:(NSUInteger)styles
+                                                            gamma:(float **)gamma
+                                                             beta:(float **)beta
+                                                            label:(NSString *)label
+                                                           device:(id<MTLDevice> _Nonnull)dev
+                                                        cmd_queue:(id<MTLCommandQueue> _Nonnull) cmd_q;
+
 @end
 
 NS_ASSUME_NONNULL_END
