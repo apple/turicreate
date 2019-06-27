@@ -34,8 +34,8 @@ env:
 script:
   - free -m
 
-  # Set cache size to 4G (defaults to 512M)
-  - ccache -M 4G
+  # Set cache size to 2G (defaults to 512M)
+  - ccache -M 2G
   - ccache -s
 
   # Download and install cmake
