@@ -4247,7 +4247,6 @@ class SArray(object):
         rows: 3
         [1, 3, 6, 10, 15]
         """
-        from .. import extensions
         agg_op = "__builtin__cum_sum__"
         return SArray(_proxy = self.__proxy__.builtin_cumulative_aggregate(agg_op))
 
@@ -4279,7 +4278,6 @@ class SArray(object):
         rows: 3
         [1, 1.5, 2, 2.5, 3]
         """
-        from .. import extensions
         agg_op = "__builtin__cum_avg__"
         return SArray(_proxy = self.__proxy__.builtin_cumulative_aggregate(agg_op))
 
@@ -4308,7 +4306,6 @@ class SArray(object):
         rows: 3
         [1, 1, 1, 1, 0]
         """
-        from .. import extensions
         agg_op = "__builtin__cum_min__"
         return SArray(_proxy = self.__proxy__.builtin_cumulative_aggregate(agg_op))
 
@@ -4337,7 +4334,6 @@ class SArray(object):
         rows: 3
         [1, 1, 3, 4, 4]
         """
-        from .. import extensions
         agg_op = "__builtin__cum_max__"
         return SArray(_proxy = self.__proxy__.builtin_cumulative_aggregate(agg_op))
 
@@ -4366,7 +4362,6 @@ class SArray(object):
         rows: 3
         [0.0, 0.5, 0.816496580927726, 1.118033988749895, 1.4142135623730951]
         """
-        from .. import extensions
         agg_op = "__builtin__cum_std__"
         return SArray(_proxy = self.__proxy__.builtin_cumulative_aggregate(agg_op))
 
@@ -4395,7 +4390,6 @@ class SArray(object):
         rows: 3
         [0.0, 0.25, 0.6666666666666666, 1.25, 2.0]
         """
-        from .. import extensions
         agg_op = "__builtin__cum_var__"
         return SArray(_proxy = self.__proxy__.builtin_cumulative_aggregate(agg_op))
 
