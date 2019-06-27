@@ -12,8 +12,8 @@
                                        outputFeatureChannels:(NSNumber *)outputFeatureChannels
                                                  inputHeight:(NSNumber *)inputHeight
                                                   inputWidth:(NSNumber *)inputWidth
-                                                     weights:(float *)weights
-                                                      biases:(float *)biases
+                                                     weights:(NSArray *)weights
+                                                      biases:(NSArray *)biases
                                                        label:(NSString *)label
                                                updateWeights:(bool)updateWeights
                                                       device:(id<MTLDevice>)dev
@@ -46,8 +46,8 @@
                                            strideHeight:(NSNumber *)strideHeight
                                            paddingWidth:(NSNumber *)paddingWidth
                                           paddingHeight:(NSNumber *)paddingHeight
-                                                weights:(float *)weights
-                                                 biases:(float *)biases
+                                                weights:(NSArray *)weights
+                                                 biases:(NSArray *)biases
                                                   label:(NSString *)label
                                           updateWeights:(bool)updateWeights
                                                  device:(id<MTLDevice>)dev
