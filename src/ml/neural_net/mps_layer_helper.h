@@ -1,42 +1,41 @@
-#ifndef mps_layer_helper_h
-#define mps_layer_helper_h
-
 #import <Accelerate/Accelerate.h>
 #import <Foundation/Foundation.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 #import <Metal/Metal.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 API_AVAILABLE(macos(10.14))
 @interface TCMPSLayerHelper: NSObject
 
-+ (MPSCNNFullyConnectedNode * _Nonnull) createFullyConnected:(MPSNNImageNode * _Nonnull)inputNode
-                                        inputFeatureChannels:(int)inputFeatureChannels
-                                       outputFeatureChannels:(int)outputFeatureChannels
-                                                 inputHeight:(int)inputHeight
-                                                  inputWidth:(int)inputWidth
-                                                     weights:(float * _Nonnull)weights
-                                                      biases:(float * _Nonnull)biases
-                                                       label:(NSString * _Nonnull)label
++ (MPSCNNFullyConnectedNode * _Nullable) createFullyConnected:(MPSNNImageNode *)inputNode
+                                        inputFeatureChannels:(NSNumber *)inputFeatureChannels
+                                       outputFeatureChannels:(NSNumber *)outputFeatureChannels
+                                                 inputHeight:(NSNumber *)inputHeight
+                                                  inputWidth:(NSNumber *)inputWidth
+                                                     weights:(float *)weights
+                                                      biases:(float *)biases
+                                                       label:(NSString *)label
                                                updateWeights:(bool)updateWeights
-                                                      device:(id<MTLDevice> _Nonnull)dev
-                                                   cmd_queue:(id<MTLCommandQueue> _Nonnull) cmd_q;
+                                                      device:(id<MTLDevice>)dev
+                                                   cmd_queue:(id<MTLCommandQueue>) cmd_q;
 
-+ (MPSCNNConvolutionNode *_Nonnull) createConvolutional:(MPSNNImageNode * _Nonnull)inputNode
-                                            kernelWidth:(int)kernelWidth
-                                           kernelHeight:(int)kernelHeight
-                                   inputFeatureChannels:(int)inputFeatureChannels
-                                  outputFeatureChannels:(int)outputFeatureChannels
-                                            strideWidth:(int)strideWidth
-                                           strideHeight:(int)strideHeight
-                                           paddingWidth:(int)paddingWidth
-                                          paddingHeight:(int)paddingHeight
-                                                weights:(float * _Nonnull)weights
-                                                 biases:(float * _Nonnull)biases
-                                                  label:(NSString * _Nonnull)label
++ (MPSCNNConvolutionNode *_Nullable) createConvolutional:(MPSNNImageNode *)inputNode
+                                            kernelWidth:(NSNumber *)kernelWidth
+                                           kernelHeight:(NSNumber *)kernelHeight
+                                   inputFeatureChannels:(NSNumber *)inputFeatureChannels
+                                  outputFeatureChannels:(NSNumber *)outputFeatureChannels
+                                            strideWidth:(NSNumber *)strideWidth
+                                           strideHeight:(NSNumber *)strideHeight
+                                           paddingWidth:(NSNumber *)paddingWidth
+                                          paddingHeight:(NSNumber *)paddingHeight
+                                                weights:(float *)weights
+                                                 biases:(float *)biases
+                                                  label:(NSString *)label
                                           updateWeights:(bool)updateWeights
-                                                 device:(id<MTLDevice> _Nonnull)dev
-                                              cmd_queue:(id<MTLCommandQueue> _Nonnull) cmd_q;
+                                                 device:(id<MTLDevice>)dev
+                                              cmd_queue:(id<MTLCommandQueue>) cmd_q;
 
 @end
 
-#endif
+NS_ASSUME_NONNULL_END
