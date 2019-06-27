@@ -1,14 +1,7 @@
 #include <ml/neural_net/mps_layer_instance_norm_data_loader.h>
+#include <ml/neural_net/mps_layer_helper.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#define nonnull_cast_a(_a)                                                       \
-  ({                                                                           \
-    __typeof__(*(_a)) *__nullable a = (__typeof__(*(a)) *__nullable)(_a);      \
-    assert((a) != NULL);                                                       \
-    /*return*/ ((__typeof__(*(a)) *__nonnull)(a));                             \
-  })
-
 
 @implementation InstanceNormDataLoader
 
