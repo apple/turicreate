@@ -1887,6 +1887,28 @@ class SFrameTest(unittest.TestCase):
         res = sf_none.filter_by(None, "strings", exclude=True)
         self.__assert_join_results_equal(res, sf)
 
+        # by generator, filter, map, range
+        res = sf.filter_by(range(10), "ints")
+        self.assertEqual(len(res), 9)
+        self.assertEqual(res["ints"][0], 1)
+        res = sf.filter_by(range(10), "ints", exclude=True)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res["ints"][0], 10)
+
+        res = sf.filter_by(map(lambda x : x - 5., self.float_data), "floats")
+        self.assertEqual(len(res), 5)
+        self.assertEqual(res["floats"][0], self.float_data[0])
+        res = sf.filter_by(map(lambda x : x - 5., self.float_data), "floats", exclude=True)
+        self.assertEqual(len(res), 5)
+        self.assertEqual(res["floats"][0], self.float_data[5])
+
+        res = sf.filter_by(filter(lambda x : len(x) > 1, self.string_data), "strings")
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res["strings"][0], self.string_data[-1])
+        res = sf.filter_by(filter(lambda x : len(x) > 1, self.string_data), "strings", exclude=True)
+        self.assertEqual(len(res), 9)
+        self.assertEqual(res["strings"][0], self.string_data[0])
+
         # Normal cases
         res = sf.filter_by(SArray(self.int_data), "ints")
         self.__assert_join_results_equal(res, sf)
