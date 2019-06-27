@@ -1,22 +1,20 @@
 #include <ml/neural_net/mps_layer_helper.h>
 #include <ml/neural_net/mps_weight.h>
-
-#include <ml/neural_net/mps_layer_fully_connected_data_loader.h>
 #include <ml/neural_net/mps_layer_conv_padding.h>
 
 @implementation TCMPSLayerHelper
 
-+ (MPSCNNFullyConnectedNode * _Nullable) createFullyConnected:(MPSNNImageNode *)inputNode
-                                        inputFeatureChannels:(NSUInteger)inputFeatureChannels
-                                       outputFeatureChannels:(NSUInteger)outputFeatureChannels
-                                                 inputHeight:(NSUInteger)inputHeight
-                                                  inputWidth:(NSUInteger)inputWidth
-                                                     weights:(float *)weights
-                                                      biases:(float *)biases
-                                                       label:(NSString *)label
-                                               updateWeights:(bool)updateWeights
-                                                      device:(id<MTLDevice>)dev
-                                                   cmd_queue:(id<MTLCommandQueue>) cmd_q {
++ (MPSCNNFullyConnectedNode *) createFullyConnected:(MPSNNImageNode *)inputNode
+                               inputFeatureChannels:(NSUInteger)inputFeatureChannels
+                              outputFeatureChannels:(NSUInteger)outputFeatureChannels
+                                        inputHeight:(NSUInteger)inputHeight
+                                         inputWidth:(NSUInteger)inputWidth
+                                            weights:(float *)weights
+                                             biases:(float *)biases
+                                              label:(NSString *)label
+                                      updateWeights:(bool)updateWeights
+                                             device:(id<MTLDevice>)dev
+                                          cmd_queue:(id<MTLCommandQueue>) cmd_q {
   
   turi::neural_net::OptimizerOptions optimizerOptions;
 
@@ -42,24 +40,24 @@
   return FullyConnectedNode;
 }
 
-+ (MPSCNNConvolutionNode *_Nullable) createConvolutional:(MPSNNImageNode *)inputNode
-                                            kernelWidth:(NSUInteger)kernelWidth
-                                           kernelHeight:(NSUInteger)kernelHeight
-                                   inputFeatureChannels:(NSUInteger)inputFeatureChannels
-                                  outputFeatureChannels:(NSUInteger)outputFeatureChannels
-                                            strideWidth:(NSUInteger)strideWidth
-                                           strideHeight:(NSUInteger)strideHeight
-                                           paddingWidth:(NSUInteger)paddingWidth
-                                          paddingHeight:(NSUInteger)paddingHeight
-                                                weights:(float *)weights
-                                                 biases:(float *)biases
-                                                  label:(NSString *)label
-                                          updateWeights:(bool)updateWeights
-                                                 device:(id<MTLDevice>)dev
-                                              cmd_queue:(id<MTLCommandQueue>) cmd_q {
++ (MPSCNNConvolutionNode *) createConvolutional:(MPSNNImageNode *)inputNode
+                                    kernelWidth:(NSUInteger)kernelWidth
+                                   kernelHeight:(NSUInteger)kernelHeight
+                           inputFeatureChannels:(NSUInteger)inputFeatureChannels
+                          outputFeatureChannels:(NSUInteger)outputFeatureChannels
+                                    strideWidth:(NSUInteger)strideWidth
+                                   strideHeight:(NSUInteger)strideHeight
+                                   paddingWidth:(NSUInteger)paddingWidth
+                                  paddingHeight:(NSUInteger)paddingHeight
+                                        weights:(float *)weights
+                                         biases:(float *)biases
+                                          label:(NSString *)label
+                                  updateWeights:(bool)updateWeights
+                                         device:(id<MTLDevice>)dev
+                                      cmd_queue:(id<MTLCommandQueue>) cmd_q {
 
   turi::neural_net::OptimizerOptions optimizerOptions;
-  
+
   TCMPSConvolutionWeights *ConvDataLoad = [[TCMPSConvolutionWeights alloc] initWithKernelWidth:kernelWidth
                                                                                  kernelHeight:kernelHeight
                                                                           inputFeatureChannels:inputFeatureChannels
