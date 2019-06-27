@@ -6,14 +6,14 @@
 #include <toolkits/image_deep_feature_extractor/mlmodel_image_feature_extractor.hpp>
 
 #include <boost/filesystem.hpp>
-#include <fileio/fileio_constants.hpp>
-#include <fileio/curl_downloader.hpp>
-#include <fileio/fs_utils.hpp>
-#include <logger/logger.hpp>
-#include <parallel/lambda_omp.hpp>
-#include <table_printer/table_printer.hpp>
-#include <unity/lib/image_util.hpp>
-#include <unity/toolkits/coreml_export/mlmodel_include.hpp>
+#include <core/storage/fileio/fileio_constants.hpp>
+#include <core/storage/fileio/curl_downloader.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
+#include <core/logging/logger.hpp>
+#include <core/parallel/lambda_omp.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
+#include <model_server/lib/image_util.hpp>
+#include <toolkits/coreml_export/mlmodel_include.hpp>
 
 #import <CoreML/CoreML.h>
 #include <memory>

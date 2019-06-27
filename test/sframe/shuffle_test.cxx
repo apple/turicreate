@@ -1,8 +1,8 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
-#include <sframe/shuffle.hpp>
-#include <sframe/algorithm.hpp>
+#include <core/util/test_macros.hpp>
+#include <core/storage/sframe_data/shuffle.hpp>
+#include <core/storage/sframe_data/algorithm.hpp>
 #include <timer/timer.hpp>
 
 using namespace turi;

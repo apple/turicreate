@@ -6,8 +6,8 @@
 #ifndef IMAGE_FEATURE_EXTRACTOR_HPP
 #define IMAGE_FEATURE_EXTRACTOR_HPP
 
-#include <unity/lib/gl_sarray.hpp>
-#include <unity/toolkits/coreml_export/mlmodel_include.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <toolkits/coreml_export/mlmodel_include.hpp>
 
 namespace turi {
 namespace image_deep_feature_extractor {

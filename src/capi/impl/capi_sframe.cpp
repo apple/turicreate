@@ -8,10 +8,10 @@
 #include <sstream>
 #include <string>
 
-#include <export.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <unity/lib/gl_sarray.hpp>
-#include <unity/lib/gl_sframe.hpp>
+#include <core/export.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
 
 extern "C" {
 

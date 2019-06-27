@@ -1,12 +1,12 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
-#include <fileio/temp_files.hpp>
-#include <sframe/sarray_v2_block_manager.hpp>
-#include <sframe/sarray_file_format_v2.hpp>
-#include <sframe/sarray_index_file.hpp>
+#include <core/util/test_macros.hpp>
+#include <core/storage/fileio/temp_files.hpp>
+#include <core/storage/sframe_data/sarray_v2_block_manager.hpp>
+#include <core/storage/sframe_data/sarray_file_format_v2.hpp>
+#include <core/storage/sframe_data/sarray_index_file.hpp>
 #include <timer/timer.hpp>
-#include <random/random.hpp>
+#include <core/random/random.hpp>
 
 using namespace turi;
 

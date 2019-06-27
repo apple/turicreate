@@ -5,15 +5,15 @@
  */
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <vector>
 #include <iostream>
 #include <typeinfo>       // operator typeid
 
 
-#include <flexible_type/flexible_type.hpp>
-#include <flexible_type/flexible_type_converter.hpp>
-#include <flexible_type/flexible_type_spirit_parser.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/flexible_type_converter.hpp>
+#include <core/data/flexible_type/flexible_type_spirit_parser.hpp>
 
 
 using namespace turi;

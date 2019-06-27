@@ -5,16 +5,16 @@
  */
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <vector>
 #include <string>
-#include <random/random.hpp>
-#include <sframe/testing_utils.hpp>
-#include <util/testing_utils.hpp>
+#include <core/random/random.hpp>
+#include <core/storage/sframe_data/testing_utils.hpp>
+#include <core/util/testing_utils.hpp>
 
-#include <unity/toolkits/sparse_similarity/sparse_similarity_lookup.hpp>
-#include <unity/toolkits/sparse_similarity/similarities.hpp>
-#include <util/cityhash_tc.hpp>
+#include <toolkits/sparse_similarity/sparse_similarity_lookup.hpp>
+#include <toolkits/sparse_similarity/similarities.hpp>
+#include <core/util/cityhash_tc.hpp>
 
 #include "generate_sparse_data.hpp"
 

@@ -37,6 +37,7 @@ This is the User Guide for Turi Create
         * [Advanced Usage](object_detection/advanced-usage.md)
         * [Deployment to Core ML](object_detection/export-coreml.md)
         * [How it works](object_detection/how-it-works.md)
+    * [One Shot object detection](one_shot_object_detection/README.md)
     * [Style transfer](style_transfer/README.md)
         * [How it works](style_transfer/how-it-works.md)
         * [Deployment to Core ML](style_transfer/export-coreml.md)

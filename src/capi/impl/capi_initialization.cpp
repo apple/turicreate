@@ -5,13 +5,13 @@
  */
 
 #include <capi/TuriCreate.h>
-#include <unity/server/unity_server_control.hpp>
-#include <unity/server/unity_server_options.hpp>
-#include <unity/server/unity_server.hpp>
+#include <model_server/server/unity_server_control.hpp>
+#include <model_server/server/unity_server_options.hpp>
+#include <model_server/server/unity_server.hpp>
 #include <capi/impl/capi_initialization.hpp>
 #include <capi/impl/capi_initialization_internal.hpp>
 #include <capi/impl/capi_error_handling.hpp>
-#include <globals/globals.hpp>
+#include <core/globals/globals.hpp>
 
 // All the functions related to the initialization of the server.
 namespace turi {

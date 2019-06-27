@@ -1,8 +1,8 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
-#include <unity/lib/gl_sarray.hpp>
-#include <unity/lib/gl_sframe.hpp>
+#include <core/util/test_macros.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
 #include <unity/extensions/timeseries/timeseries.hpp>
 #include <unity/extensions/timeseries/registration.hpp>
 

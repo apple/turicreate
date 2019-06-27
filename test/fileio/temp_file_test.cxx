@@ -2,9 +2,9 @@
 #include <boost/test/unit_test.hpp>
 #include <iostream>
 #include <fstream>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <string>
-#include <fileio/temp_files.hpp>
+#include <core/storage/fileio/temp_files.hpp>
 
 using namespace turi;
 

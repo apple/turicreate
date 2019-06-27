@@ -1,14 +1,14 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <vector>
 #include <set>
 #include <string>
 #include <random>
 
-#include <sframe/testing_utils.hpp>
-#include <util/testing_utils.hpp>
-#include <unity/toolkits/clustering/kmeans.hpp>
+#include <core/storage/sframe_data/testing_utils.hpp>
+#include <core/util/testing_utils.hpp>
+#include <toolkits/clustering/kmeans.hpp>
 
 using namespace turi;
 

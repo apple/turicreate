@@ -8,12 +8,12 @@
 
 #include <vector>
 #include <string>
-#include <random/random.hpp>
-#include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <unity/toolkits/recsys/models.hpp>
-#include <unity/toolkits/util/data_generators.hpp>
-#include <sframe/testing_utils.hpp>
-#include <util/testing_utils.hpp>
+#include <core/random/random.hpp>
+#include <toolkits/ml_data_2/ml_data.hpp>
+#include <toolkits/recsys/models.hpp>
+#include <toolkits/util/data_generators.hpp>
+#include <core/storage/sframe_data/testing_utils.hpp>
+#include <core/util/testing_utils.hpp>
 #include <timer/timer.hpp>
 
 using namespace turi;

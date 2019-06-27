@@ -6,7 +6,7 @@
 #ifndef TURI_TEST_LAMBDA_DUMMY_WORKER_INTERFACE
 #define TURI_TEST_LAMBDA_DUMMY_WORKER_INTERFACE
 
-#include <cppipc/cppipc.hpp>
+#include <core/system/cppipc/cppipc.hpp>
 
 GENERATE_INTERFACE_AND_PROXY(dummy_worker_interface, dummy_worker_proxy,
       (std::string, echo, (const std::string&))

@@ -1,11 +1,11 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <string>
 #include <set>
-#include <fileio/block_cache.hpp>
-#include <fileio/temp_files.hpp>
-#include <random/random.hpp>
+#include <core/storage/fileio/block_cache.hpp>
+#include <core/storage/fileio/temp_files.hpp>
+#include <core/random/random.hpp>
 
 using namespace turi;
 
