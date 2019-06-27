@@ -96,8 +96,8 @@ def _raise_error_if_not_detection_sframe(dataset, feature, annotations, require_
 
 
 def create(dataset, annotations=None, feature=None, model='darknet-yolo',
-           grid_shape=[13, 13], classes=None, batch_size=0, 
-           max_iterations=0, verbose=True, **kwargs):
+           classes=None, batch_size=0, max_iterations=0,
+           verbose=True, grid_shape=[13, 13], **kwargs):
     """
     Create a :class:`ObjectDetector` model.
 
@@ -226,6 +226,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
             (8.0, 16.0), (8.0, 8.0), (16.0, 8.0),
             (16.0, 32.0), (16.0, 16.0), (32.0, 16.0),
         ],
+        'grid_shape': grid_shape,
         'aug_resize': 0,
         'aug_rand_crop': 0.9,
         'aug_rand_pad': 0.9,
