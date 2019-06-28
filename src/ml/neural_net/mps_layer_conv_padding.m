@@ -6,10 +6,10 @@
   return YES;
 }
 
-- (id) initWithParams:(NSUInteger)paddingWidth
-        paddingHeight:(NSUInteger)paddingHeight
-          strideWidth:(NSUInteger)strideWidth
-         strideHeight:(NSUInteger)strideHeight {
+- (instancetype) initWithParams:(NSUInteger)paddingWidth
+                  paddingHeight:(NSUInteger)paddingHeight
+                    strideWidth:(NSUInteger)strideWidth
+                   strideHeight:(NSUInteger)strideHeight {
   
   self = [self init];
 

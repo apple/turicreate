@@ -13,10 +13,10 @@ API_AVAILABLE(macos(10.14))
 
 @property (class, readonly) BOOL supportsSecureCoding;
 
-- (id) initWithParams:(NSUInteger)paddingWidth
-        paddingHeight:(NSUInteger)paddingHeight
-          strideWidth:(NSUInteger)strideWidth
-         strideHeight:(NSUInteger)strideHeight;
+- (instancetype) initWithParams:(NSUInteger)paddingWidth
+                  paddingHeight:(NSUInteger)paddingHeight
+                    strideWidth:(NSUInteger)strideWidth
+                   strideHeight:(NSUInteger)strideHeight;
 
 - (nullable instancetype)initWithCoder:(NSCoder *)coder;
 
