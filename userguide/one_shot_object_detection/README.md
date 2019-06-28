@@ -3,7 +3,7 @@
 One-Shot object detection (OSOD) is the task of detecting an object from as few as **one** example per category. Unlike the [Object Detector](https://apple.github.io/turicreate/docs/userguide/object_detection) which requires many varied examples of objects in the real world, the One-Shot detector only requires a single canonical example of an object to train the classifier on and perform predictions for that category in the wild. It is best suited for 2D objects or when there isn't much expected variance in the examples, such as playing cards, logos, road signs, and clapperboards. One-Shot detector is not suitable for 3D objects such as faces, animals, and cars which is a task better suited for the regular [Object Detector](https://apple.github.io/turicreate/docs/userguide/object_detection). 
 
 
-#### Introductory Example
+## Introductory Example
 
 Given a starter image (*left*), a one-shot detector trained on this starter image will produce instance predictions on a test image (*right*) which may look like this:
 
@@ -50,7 +50,7 @@ Examples of test image predictions:
 ![Sample prediction image - 1 and 2](images/sample_prediction_images_1_2.jpg)
 
 
-#### How it works
+## How it works
 
 In this section, we will go into detail on what happens under the hood of the `create` method. An OSOD model is trained in two steps: First, we use the starter images to generate synthetic data and annotations, and second, we train an object detector.
 
@@ -65,13 +65,13 @@ To learn about the training implementation details, refer to the [Object Detecto
 
 
 
-#### Deployment to CoreML
+## Deployment to CoreML
 
 To learn more about deploying One-Shot to CoreML details, refer to the [Object Detector: Deployment to Core ML](https://apple.github.io/turicreate/docs/userguide/object_detection/export-coreml.html) chapter.
 
 
 
-#### Advanced Usage
+## Advanced Usage
 
 **Background Images**
 
