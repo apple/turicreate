@@ -11,7 +11,7 @@
 #include <core/storage/query_engine/operators/operator_properties.hpp>
 #include <core/system/lambda/pylambda_function.hpp>
 #include <core/system/exceptions/error_types.hpp>
-#include <util/coro.hpp>
+#include <core/util/coro.hpp>
 namespace turi {
 namespace query_eval {
 

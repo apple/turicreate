@@ -1,5 +1,5 @@
-#ifndef RAMPUDDLE_PUDDLE_CORO_HPP
-#define RAMPUDDLE_PUDDLE_CORO_HPP
+#ifndef TURI_CORO_HPP
+#define TURI_CORO_HPP
 /**
  * \internal
  * \file

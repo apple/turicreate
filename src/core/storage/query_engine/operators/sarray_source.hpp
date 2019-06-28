@@ -14,7 +14,7 @@
 #include <core/storage/query_engine/operators/operator_properties.hpp>
 #include <core/storage/fileio/fs_utils.hpp>
 #include <core/storage/sframe_data/sarray.hpp>
-#include <util/coro.hpp>
+#include <core/util/coro.hpp>
 
 namespace turi {
 namespace query_eval {

@@ -13,7 +13,7 @@
 #include <core/storage/query_engine/execution/query_context.hpp>
 #include <core/storage/query_engine/operators/operator_properties.hpp>
 #include <core/storage/sframe_data/sframe.hpp>
-#include <util/coro.hpp>
+#include <core/util/coro.hpp>
 
 namespace turi {
 namespace query_eval {

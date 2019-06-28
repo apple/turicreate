@@ -9,7 +9,7 @@
 #include <core/storage/sframe_data/sarray_v2_type_encoding.hpp>
 #include <core/util/dense_bitset.hpp>
 #include <core/storage/sframe_data/integer_pack.hpp>
-#include <util/coro.hpp>
+#include <core/util/coro.hpp>
 
 namespace turi {
 namespace v2_block_impl {
@@ -1033,19 +1033,19 @@ size_t typed_decode_stream::read(const std::pair<flexible_type*, size_t>& decode
   if (perform_type_decoding) {
     if (num_types == 1) {
       if (decodebuffer.first && column_type == flex_type_enum::UNDEFINED) {
-        for (size_t i = 0;i < decodebuffer.second; ++i) {
-          decodebuffer.first[i] = FLEX_UNDEFINED;
+        for (size_t idx = 0;idx < decodebuffer.second; ++idx) {
+          decodebuffer.first[idx] = FLEX_UNDEFINED;
         }
       } else {
-        for (size_t i = 0;i < decodebuffer.second; ++i) {
-          decodebuffer.first[i] = flexible_type();
+        for (size_t idx = 0;idx < decodebuffer.second; ++idx) {
+          decodebuffer.first[idx] = flexible_type();
         }
       }
     } else if (num_types == 2) {
       if (skip) {
         size_t effective_skip = 0;
         // compute the effective skip
-        for (i = 0;i < skip; ++i) {
+        for (size_t idx = 0;idx < skip; ++idx) {
           effective_skip += !undefined_bitmap.get(last_id);
           ++last_id;
         }
@@ -1160,11 +1160,11 @@ size_t typed_decode_stream::pad_retbuf_with_undefined_positions(const std::pair<
   // fill the ret buffer with the appropriate undefined values
   // in the right positions
   if (num_undefined && decodebuffer.first) {
-    for (size_t i = 0;i < decodebuffer.second; ++i) {
+    for (size_t idx = 0;idx < decodebuffer.second; ++idx) {
       if (undefined_bitmap.get(last_id)) {
-        decodebuffer.first[i] = FLEX_UNDEFINED;
+        decodebuffer.first[idx] = FLEX_UNDEFINED;
       } else {
-        decodebuffer.first[i] = flexible_type();
+        decodebuffer.first[idx] = flexible_type();
         ++nvals;
       }
       ++last_id;

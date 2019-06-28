@@ -11,7 +11,7 @@
 #include <core/storage/query_engine/operators/operator.hpp>
 #include <core/storage/query_engine/execution/query_context.hpp>
 #include <core/storage/query_engine/operators/operator_properties.hpp>
-#include <util/coro.hpp>
+#include <core/util/coro.hpp>
 #include <iostream>
 
 namespace turi {
