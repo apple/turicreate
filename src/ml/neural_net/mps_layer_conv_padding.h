@@ -1,6 +1,3 @@
-#ifndef mps_layer_conv_padding_h
-#define mps_layer_conv_padding_h
-
 #import <Accelerate/Accelerate.h>
 #import <Foundation/Foundation.h>
 #import <Metal/Metal.h>
@@ -8,23 +5,22 @@
 
 API_AVAILABLE(macos(10.14))
 @interface ConvolutionPadding : NSObject <MPSNNPadding>
-{
-  int mPaddingWidth;
-  int mPaddingHeight;
-  int mStrideWidth;
-  int mStrideHeight;
-}
+
+@property (nonatomic) NSUInteger paddingWidth;
+@property (nonatomic) NSUInteger paddingHeight;
+@property (nonatomic) NSUInteger strideWidth;
+@property (nonatomic) NSUInteger strideHeight;
 
 @property (class, readonly) BOOL supportsSecureCoding;
 
-- (id) initWithParams:(int)paddingWidth
-        paddingHeight:(int)paddingHeight
-          strideWidth:(int)strideWidth
-         strideHeight:(int)strideHeight;
+- (id) initWithParams:(NSUInteger)paddingWidth
+        paddingHeight:(NSUInteger)paddingHeight
+          strideWidth:(NSUInteger)strideWidth
+         strideHeight:(NSUInteger)strideHeight;
 
 - (nullable instancetype)initWithCoder:(NSCoder *)coder;
 
-- (MPSNNPaddingMethod) paddingMethod;
+- (MPSNNPaddingMethod)paddingMethod;
 - (void)encodeWithCoder:(NSCoder *)coder;
 - (MPSImageDescriptor *)destinationImageDescriptorForSourceImages:(NSArray<MPSImage *> *)sourceImages 
                                                      sourceStates:(NSArray<MPSState *> *)sourceStates 
@@ -32,5 +28,3 @@ API_AVAILABLE(macos(10.14))
                                               suggestedDescriptor:(MPSImageDescriptor *)inDescriptor;
 
 @end
-
-#endif

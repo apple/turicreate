@@ -3,31 +3,31 @@
 @implementation ConvolutionPadding
 
 + (BOOL) supportsSecureCoding {
-  return true;
+  return YES;
 }
 
-- (id) initWithParams:(int)paddingWidth
-        paddingHeight:(int)paddingHeight
-          strideWidth:(int)strideWidth
-         strideHeight:(int)strideHeight {
-  @autoreleasepool {
-    self = [self init];
-    mPaddingWidth = paddingWidth;
-    mPaddingHeight = paddingHeight;
-    mStrideWidth = strideWidth;
-    mStrideHeight = strideHeight;
-    return self;
+- (id) initWithParams:(NSUInteger)paddingWidth
+        paddingHeight:(NSUInteger)paddingHeight
+          strideWidth:(NSUInteger)strideWidth
+         strideHeight:(NSUInteger)strideHeight {
+  
+  self = [self init];
+
+  if (self) {
+    _paddingWidth = paddingWidth;
+    _paddingHeight = paddingHeight;
+    _strideWidth = strideWidth;
+    _strideHeight = strideHeight;
   }
+
+  return self;
 }
 
 - (nullable instancetype)initWithCoder:(NSCoder *)coder {
-  @autoreleasepool {
-    self = [self init];
-    return self;
-  }
+  return self;
 }
 
-- (MPSNNPaddingMethod) paddingMethod {
+- (MPSNNPaddingMethod)paddingMethod {
   return MPSNNPaddingMethodCustom;
 }
 
@@ -36,17 +36,17 @@
                                                         forKernel:(MPSKernel *)kernel
                                               suggestedDescriptor:(MPSImageDescriptor *)inDescriptor {
   MPSCNNConvolution *layer = (MPSCNNConvolution *) kernel;
-  
+
   MPSOffset pad;
-  pad.x = (int) ((layer.kernelWidth/2) - mPaddingWidth);
-  pad.y = (int) ((layer.kernelHeight/2) - mPaddingHeight);
+  pad.x = (int) ((layer.kernelWidth/2) - _paddingWidth);
+  pad.y = (int) ((layer.kernelHeight/2) - _paddingHeight);
   pad.z = 0;
   
   layer.offset = pad;
   layer.edgeMode = MPSImageEdgeModeZero;
   
-  inDescriptor.width += (mPaddingWidth * 2)/mStrideWidth;
-  inDescriptor.height += (mPaddingHeight * 2)/mStrideHeight;
+  inDescriptor.width += (_paddingWidth * 2)/_strideWidth;
+  inDescriptor.height += (_paddingHeight * 2)/_strideHeight;
   
   return inDescriptor;
 }
