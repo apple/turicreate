@@ -22,7 +22,6 @@ API_AVAILABLE(macos(10.14))
 
 @end
 
-
 @interface MPSCNNConvolutionNode (TCMPSLayerHelper)                                   
 + (MPSCNNConvolutionNode *) createConvolutional:(MPSNNImageNode *)inputNode
                                     kernelWidth:(NSUInteger)kernelWidth
