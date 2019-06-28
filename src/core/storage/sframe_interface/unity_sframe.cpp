@@ -1558,7 +1558,8 @@ bool unity_sframe::_contains_nan(const flexible_type& cell) {
       const auto& nd_arr = cell.get<flex_nd_vec>();
       auto idx = flex_nd_vec::index_range_type(nd_arr.shape().size(), 0);
       do {
-        std::isnan(nd_arr[nd_arr.fast_index(idx)]);
+        if (std::isnan(nd_arr[nd_arr.fast_index(idx)]))
+          return true;
       } while (nd_arr.increment_index(idx));
       break;
     }
