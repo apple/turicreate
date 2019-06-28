@@ -13,6 +13,8 @@
 #include <core/storage/serialization/serialization_includes.hpp>
 #include <core/data/flexible_type/ndarray.hpp>
 #include <core/data/image/image_type.hpp>
+#include <boost/pool/singleton_pool.hpp>
+#include <core/parallel/atomic.hpp>
 
 namespace turi {
 
@@ -844,6 +846,38 @@ static inline std::ostream& operator<<(std::ostream& out, const flex_type_enum e
   out << (int)e;
   return out;
 }
+
+// A simple reference counted container to hold the values that do not natively 
+// fit in 12 bytes.  The wrapper for these types is held in a memory pool to 
+// enable fast allocation and deallocation of many different types. 
+template <typename T> 
+  struct ft_shared_value {
+
+    // Reference count starts off with one count
+    atomic<size_t> ref_count = 1;
+
+    // Payload value
+    T value;
+    
+    // Overload new operator and delete operator to use the pool.
+    static void * operator new(size_t size);
+
+    static void operator delete(void *p);
+
+  };
+    
+template <typename T> 
+void * ft_shared_value<T>::operator new(size_t size) {
+
+  DASSERT_EQ(size, sizeof(ft_shared_value<T>));
+
+  return boost::singleton_pool<void, sizeof(ft_shared_value<T>)>::malloc();
+} 
+  
+template <typename T> void ft_shared_value<T>::operator delete(void *p) {  
+  boost::singleton_pool<void, sizeof(ft_shared_value<T>)>::free(p); 
+}
+
 
 } // namespace turi
 

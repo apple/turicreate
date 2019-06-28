@@ -473,7 +473,7 @@ void flexible_type::erase(const flexible_type& index) {
   ensure_unique();
   switch(get_type()) {
    case flex_type_enum::DICT: {
-     flex_dict& value = val.dictval->second;
+     flex_dict& value = val.dictval->value;
      for(auto iter = value.begin(); iter != value.end(); iter++) {
        if ((*iter).first == index) {
          value.erase(iter);
