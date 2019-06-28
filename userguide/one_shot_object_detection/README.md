@@ -75,7 +75,7 @@ To learn more about deploying One-Shot to CoreML details, refer to the [Object D
 
 ## Advanced Usage
 
-# Background Images
+### Background Images
 
 You can preview the synthetic images the toolkit generates by calling the `preview_synthetic_training_data` utility. This helps you understand data the model would be trained on:  
 
