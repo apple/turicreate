@@ -635,6 +635,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto_split) {
   auto create_iterator_impl = [&](gl_sframe data,
                                   std::vector<std::string> class_labels,
                                   bool repeat) {
+    // The train data is smaller than the original dataset
     TS_ASSERT(test_num_examples > data.size());
     TS_ASSERT(class_labels.empty());  // Should infer class labels from data.
     TS_ASSERT(repeat);
@@ -708,6 +709,9 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto_split) {
     result["mean_average_precision"] = 0.80f;
     return result;
   };
+
+  // The two evaluation calls are performed for train data as well as validation
+  // data.
   model.perform_evaluation_calls_.resize(2, perform_evaluation_impl);
 
   // Create an arbitrary SFrame with test_num_examples rows, since
