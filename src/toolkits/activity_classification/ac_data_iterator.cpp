@@ -132,152 +132,147 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
                                                         const int &predictions_in_chunk,
                                                         const std::string &target,
                                                         bool verbose) {
+#ifndef NDEBUG
+  DASSERT_TRUE(features.size() > 0);
+  DASSERT_TRUE(prediction_window > 0);
+  DASSERT_TRUE(predictions_in_chunk > 0);
+  DASSERT_TRUE(data.contains_column(session_id));
+  for (auto &feat : features) {
+    DASSERT_TRUE(data.contains_column(feat));
+  }
+#endif
 
-    DASSERT_TRUE(features.size() > 0);
-    DASSERT_TRUE(prediction_window > 0);
-    DASSERT_TRUE(predictions_in_chunk > 0);
-    DASSERT_TRUE(data.contains_column(session_id));
-    for (TURI_ATTRIBUTE_UNUSED_NDEBUG auto &feat : features) {
-        DASSERT_TRUE(data.contains_column(feat));
-    }
+  bool use_target = (target != "");
+  DASSERT_TRUE(!use_target || data.contains_column(target));
 
-    bool use_target = (target != "");
-    if (use_target) {
-        DASSERT_TRUE(data.contains_column(target));
-    }
+  if (verbose) {
+    logprogress_stream << "Pre-processing " << data.size() << " samples..."
+                       << std::endl;
+  }
 
-    if (verbose) {
-        logprogress_stream << "Pre-processing " << data.size() << " samples..." << std::endl;
-    }
+  size_t chunk_size = prediction_window * predictions_in_chunk;
+  size_t feature_size = chunk_size * features.size();
 
-    int chunk_size = prediction_window * predictions_in_chunk;
-    int feature_size = chunk_size * features.size();
+  // Build a dict pf the column order by column name, to later access within the
+  // iterator
+  auto column_index_map = generate_column_index_map(data.column_names());
 
-    // Build a dict pf the column order by column name, to later access within the iterator
-    auto column_index_map = generate_column_index_map(data.column_names());
+  flex_vec curr_chunk_targets;
+  flex_vec curr_chunk_features;
+  curr_chunk_features.reserve(feature_size);
+  flex_vec curr_window_targets;
+  flexible_type last_session_id = data[session_id][0];
 
-    flex_vec curr_chunk_targets;
-    flex_vec curr_chunk_features;
-    curr_chunk_features.reserve(feature_size);
-    flex_vec curr_window_targets;
-    flexible_type last_session_id = data[session_id][0];
+  size_t number_of_sessions = 0;
 
-    size_t number_of_sessions = 0;
+  // Prepare an output SFrame writer, that will write a new SFrame in the
+  // converted batch-processing ready format.
+  std::vector<std::string> output_column_names = {"features", "chunk_len",
+                                                  "session_id"};
+  std::vector<flex_type_enum> output_column_types = {flex_type_enum::VECTOR,
+                                                     flex_type_enum::INTEGER,
+                                                     data[session_id].dtype()};
+  if (use_target) {
+    curr_chunk_targets.reserve(predictions_in_chunk);
+    curr_window_targets.reserve(prediction_window);
+    output_column_names.insert(output_column_names.end(),
+                               {"target", "weights"});
+    output_column_types.insert(
+        output_column_types.end(),
+        {flex_type_enum::VECTOR, flex_type_enum::VECTOR});
+  }
+  gl_sframe_writer output_writer(output_column_names, output_column_types, 1);
 
-    // Prepare an output SFrame writer, that will write a new SFrame in the converted batch-processing
-    // ready format.
-    std::vector<std::string> output_column_names = {"features", "chunk_len", "session_id"};
-    std::vector<flex_type_enum> output_column_types = {flex_type_enum::VECTOR, flex_type_enum::INTEGER,
-                                                        data[session_id].dtype()};
-    if (use_target) {
-        curr_chunk_targets.reserve(predictions_in_chunk);
-        curr_window_targets.reserve(prediction_window);
-        output_column_names.insert(output_column_names.end(), {"target", "weights"});
-        output_column_types.insert(output_column_types.end(), {flex_type_enum::VECTOR, flex_type_enum::VECTOR});
-    }
-    gl_sframe_writer output_writer(output_column_names, output_column_types, 1);
+  if (verbose) {
+    logprogress_stream << "Using sequences of size " << chunk_size
+                       << " for model creation." << std::endl;
+  }
 
-    if (verbose) {
-      logprogress_stream << "Using sequences of size " << chunk_size << " for model creation." << std::endl;
-    }
+  time_t last_print_time = time(0);
+  size_t processed_lines = 0;
 
-    time_t last_print_time = time(0);
-    size_t processed_lines = 0;
+  // Iterate over the user data. The features and targets are aggregated, and
+  // handled whenever a the ending of a prediction_window, chunk or session is
+  // reached.
+  for (const auto &line : data.range_iterator()) {
+    auto curr_session_id = line[column_index_map[session_id]];
 
-    // Iterate over the user data. The features and targets are aggregated, and handled
-    // whenever a the ending of a prediction_window, chunk or session is reached.
-    for (const auto& line: data.range_iterator()) {
-
-        auto curr_session_id = line[column_index_map[session_id]];
-
-        // Check if a new session has started
-        if (curr_session_id != last_session_id) {
-
-            // Finalize the last chunk of the previous session
-            if (curr_chunk_features.size() > 0) {
-                finalize_chunk(curr_chunk_features,
-                               curr_chunk_targets,
-                               curr_window_targets,
-                               last_session_id,
-                               output_writer,
-                               chunk_size,
-                               feature_size,
-                               predictions_in_chunk,
-                               use_target);
-            }
-
-            last_session_id = curr_session_id;
-            number_of_sessions++;
-        }
-
-        for (const auto feature_name : features) {
-            curr_chunk_features.push_back(line[column_index_map[feature_name]]);
-        }
-
-        // If target column exists, the targets are aggregated for the duration
-        // of prediction_window.
-        // Each prediction_window subsampled into a single target value, by selecting
-        // the most frequent value (statistical mode) within the window.
-        if (use_target) {
-            curr_window_targets.push_back(line[column_index_map[target]]);
-
-            if (curr_window_targets.size() == static_cast<size_t>(prediction_window)) {
-                auto target_val = vec_mode(curr_window_targets.begin(), curr_window_targets.end());
-                curr_chunk_targets.push_back(target_val);
-                curr_window_targets.clear();
-            }
-        }
-        // Check if the aggregated chunk data has reached the maximal chunk length, and finalize
-        // the chunk processing.
-        if (curr_chunk_features.size() == static_cast<size_t>(feature_size)) {
-            finalize_chunk(curr_chunk_features,
-                           curr_chunk_targets,
-                           curr_window_targets,
-                           curr_session_id,
-                           output_writer,
-                           chunk_size,
-                           feature_size,
-                           predictions_in_chunk,
-                           use_target);
-        }
-
-        time_t now = time(0);
-        if (verbose && difftime(now, last_print_time) > 10) {
-            logprogress_stream << "Pre-processing: " << std::setw(3) << (100 * processed_lines / data.size()) << "% complete"  << std::endl;
-            last_print_time = now;
-        }
-
-        processed_lines += 1;
-    }
-
-    // Handle the tail of the data - the last few lines of the last chunk, which needs to be finalized.
-    if (curr_chunk_features.size() > 0) {
-        finalize_chunk(curr_chunk_features,
-                       curr_chunk_targets,
-                       curr_window_targets,
-                       last_session_id,
-                       output_writer,
-                       chunk_size,
-                       feature_size,
-                       predictions_in_chunk,
+    // Check if a new session has started
+    if (curr_session_id != last_session_id) {
+      // Finalize the last chunk of the previous session
+      if (curr_chunk_features.size() > 0) {
+        finalize_chunk(curr_chunk_features, curr_chunk_targets,
+                       curr_window_targets, last_session_id, output_writer,
+                       chunk_size, feature_size, predictions_in_chunk,
                        use_target);
+      }
+
+      last_session_id = curr_session_id;
+      number_of_sessions++;
     }
 
-    // Update the count of the last session in the dataset
-    number_of_sessions++;
-
-
-    if (verbose) {
-        logprogress_stream << "Processed a total of " << number_of_sessions << " sessions." << std::endl;
+    for (const auto feature_name : features) {
+      curr_chunk_features.push_back(line[column_index_map[feature_name]]);
     }
-    gl_sframe converted_sframe = output_writer.close();
-    converted_sframe.materialize();
 
-    variant_map_type result_dict;
-    result_dict["converted_data"] = converted_sframe;
-    result_dict["num_of_sessions"] = number_of_sessions;
+    // If target column exists, the targets are aggregated for the duration
+    // of prediction_window.
+    // Each prediction_window subsampled into a single target value, by
+    // selecting the most frequent value (statistical mode) within the window.
+    if (use_target) {
+      curr_window_targets.push_back(line[column_index_map[target]]);
 
-    return result_dict;
+      if (curr_window_targets.size() ==
+          static_cast<size_t>(prediction_window)) {
+        auto target_val =
+            vec_mode(curr_window_targets.begin(), curr_window_targets.end());
+        curr_chunk_targets.push_back(target_val);
+        curr_window_targets.clear();
+      }
+    }
+    // Check if the aggregated chunk data has reached the maximal chunk length,
+    // and finalize the chunk processing.
+    if (curr_chunk_features.size() == static_cast<size_t>(feature_size)) {
+      finalize_chunk(curr_chunk_features, curr_chunk_targets,
+                     curr_window_targets, curr_session_id, output_writer,
+                     chunk_size, feature_size, predictions_in_chunk,
+                     use_target);
+    }
+
+    time_t now = time(0);
+    if (verbose && difftime(now, last_print_time) > 10) {
+      logprogress_stream << "Pre-processing: " << std::setw(3)
+                         << (100 * processed_lines / data.size())
+                         << "% complete" << std::endl;
+      last_print_time = now;
+    }
+
+    processed_lines += 1;
+  }
+
+  // Handle the tail of the data - the last few lines of the last chunk, which
+  // needs to be finalized.
+  if (curr_chunk_features.size() > 0) {
+    finalize_chunk(curr_chunk_features, curr_chunk_targets, curr_window_targets,
+                   last_session_id, output_writer, chunk_size, feature_size,
+                   predictions_in_chunk, use_target);
+  }
+
+  // Update the count of the last session in the dataset
+  number_of_sessions++;
+
+  if (verbose) {
+    logprogress_stream << "Processed a total of " << number_of_sessions
+                       << " sessions." << std::endl;
+  }
+  gl_sframe converted_sframe = output_writer.close();
+  converted_sframe.materialize();
+
+  variant_map_type result_dict;
+  result_dict["converted_data"] = converted_sframe;
+  result_dict["num_of_sessions"] = number_of_sessions;
+
+  return result_dict;
 }
 
 variant_map_type _activity_classifier_prepare_data_aug_impl(const gl_sframe &data,
@@ -287,144 +282,147 @@ variant_map_type _activity_classifier_prepare_data_aug_impl(const gl_sframe &dat
                                                         const int &predictions_in_chunk,
                                                         const std::string &target,
                                                         bool verbose) {
+#ifndef NDEBUG
+  DASSERT_TRUE(features.size() > 0);
+  DASSERT_TRUE(prediction_window > 0);
+  DASSERT_TRUE(predictions_in_chunk > 0);
+  DASSERT_TRUE(data.contains_column(session_id));
+  for (auto &feat : features) {
+    DASSERT_TRUE(data.contains_column(feat));
+  }
+#endif
 
-    DASSERT_TRUE(features.size() > 0);
-    DASSERT_TRUE(prediction_window > 0);
-    DASSERT_TRUE(predictions_in_chunk > 0);
-    DASSERT_TRUE(data.contains_column(session_id));
-    for (TURI_ATTRIBUTE_UNUSED_NDEBUG auto &feat : features) {
-        DASSERT_TRUE(data.contains_column(feat));
-    }
+  bool use_target = (target != "");
+  DASSERT_TRUE(!use_target || data.contains_column(target));
 
-    bool use_target = (target != "");
-    if (use_target) {
-        DASSERT_TRUE(data.contains_column(target));
-    }
+  if (verbose) {
+    logprogress_stream << "Pre-processing " << data.size() << " samples..."
+                       << std::endl;
+  }
 
-    if (verbose) {
-        logprogress_stream << "Pre-processing " << data.size() << " samples..." << std::endl;
-    }
+  // Build a dict of the column order by column name, to later access within
+  // the iterator
+  auto column_index_map = generate_column_index_map(data.column_names());
+  size_t chunk_length = prediction_window * predictions_in_chunk;
 
-    // Build a dict of the column order by column name, to later access within
-    // the iterator
-    auto column_index_map = generate_column_index_map(data.column_names());
-    int chunk_length = prediction_window * predictions_in_chunk;
-    
-    flex_vec curr_chunk_targets;
-    flex_vec curr_chunk_features;
+  flex_vec curr_chunk_targets;
+  flex_vec curr_chunk_features;
 
-    flexible_type last_session_id = data[session_id][0];
-    size_t number_of_sessions = 0;
+  flexible_type last_session_id = data[session_id][0];
+  size_t number_of_sessions = 0;
 
-    // Prepare an output SFrame writer, that will write a new SFrame in the converted batch-processing
-    // ready format.
-    std::vector<std::string> output_column_names = {"features", "chunk_len", "session_id"};
-    std::vector<flex_type_enum> output_column_types = {flex_type_enum::VECTOR, flex_type_enum::INTEGER,
-                                                        data[session_id].dtype()};
-    if (use_target) {
-      output_column_names.insert(output_column_names.end(), {"target"});
-      output_column_types.insert(output_column_types.end(),
-                                 {flex_type_enum::VECTOR});
-    }
+  // Prepare an output SFrame writer, that will write a new SFrame in the
+  // converted batch-processing ready format.
+  std::vector<std::string> output_column_names = {"features", "chunk_len",
+                                                  "session_id"};
+  std::vector<flex_type_enum> output_column_types = {flex_type_enum::VECTOR,
+                                                     flex_type_enum::INTEGER,
+                                                     data[session_id].dtype()};
+  if (use_target) {
+    output_column_names.insert(output_column_names.end(), {"target"});
+    output_column_types.insert(output_column_types.end(),
+                               {flex_type_enum::VECTOR});
+  }
 
-    gl_sframe_writer output_writer(output_column_names, output_column_types, 1);
+  gl_sframe_writer output_writer(output_column_names, output_column_types, 1);
 
-    if (verbose) {
-      logprogress_stream << "Using sequences of size " << chunk_length << " for model creation." << std::endl;
-    }
+  if (verbose) {
+    logprogress_stream << "Using sequences of size " << chunk_length
+                       << " for model creation." << std::endl;
+  }
 
-    time_t last_print_time = time(0);
-    size_t processed_lines = 0;
-    int feature_size;
+  time_t last_print_time = time(0);
+  size_t processed_lines = 0;
+  int feature_size;
 
-    // Iterate over the user data. The features and targets are aggregated, and
-    // handled whenever a the ending of a session is reached.
-    int chunk_size = 0;
-    for (const auto& line: data.range_iterator()) {
+  // Iterate over the user data. The features and targets are aggregated, and
+  // handled whenever a the ending of a session is reached.
+  int chunk_size = 0;
+  for (const auto &line : data.range_iterator()) {
+    auto curr_session_id = line[column_index_map[session_id]];
 
-      auto curr_session_id = line[column_index_map[session_id]];
+    if (curr_session_id != last_session_id) {
+      feature_size = chunk_size * features.size();
 
-      if (curr_session_id != last_session_id) {
-
-        feature_size = chunk_size * features.size();
-
-        // Write the aggregated data of the current chunk (which includes all
-        // the samples in the current session) as a single new vector in the
-        // converted SFrame, and init all aggregation vectors to begin a new
-        // chunk.
-        if (curr_chunk_features.size() > 0) {
-          if (use_target) {
-            output_writer.write({curr_chunk_features, chunk_size,
-                                 last_session_id, curr_chunk_targets},
-                                0);
-          } else {
-            output_writer.write(
-                {curr_chunk_features, chunk_size, last_session_id}, 0);
-          }
-          curr_chunk_features.clear();
-          curr_chunk_targets.clear();
-        }
-
-        chunk_size = 0;
-        last_session_id = curr_session_id;
-        number_of_sessions++;
-      }
-
-        chunk_size += 1;
-
-        for (const auto feature_name : features) {
-          curr_chunk_features.push_back(line[column_index_map[feature_name]]);
-        }
-
-        // If target column exists, the targets are aggregated for the duration
-        // of prediction_window.
-        // Each prediction_window subsampled into a single target value, by selecting
-        // the most frequent value (statistical mode) within the window.
+      // Write the aggregated data of the current chunk (which includes all
+      // the samples in the current session) as a single new vector in the
+      // converted SFrame, and init all aggregation vectors to begin a new
+      // chunk.
+      if (curr_chunk_features.size() > 0) {
         if (use_target) {
-          curr_chunk_targets.push_back(line[column_index_map[target]]);
+          output_writer.write({curr_chunk_features, chunk_size, last_session_id,
+                               curr_chunk_targets},
+                              0);
+        } else {
+          output_writer.write(
+              {curr_chunk_features, chunk_size, last_session_id}, 0);
         }
-
-        time_t now = time(0);
-        if (verbose && difftime(now, last_print_time) > 10) {
-            logprogress_stream << "Pre-processing: " << std::setw(3) << (100 * processed_lines / data.size()) << "% complete"  << std::endl;
-            last_print_time = now;
-        }
-
-        processed_lines += 1;
-    }
-
-    // Handle the last session, which needs to be aggregated and written in the
-    // converted sframe.
-    feature_size = chunk_size * features.size();
-
-    if (curr_chunk_features.size() > 0) {
-      if (use_target) {
-        output_writer.write({curr_chunk_features, chunk_size, last_session_id,
-                             curr_chunk_targets},
-                            0);
-      } else {
-        output_writer.write({curr_chunk_features, chunk_size, last_session_id},
-                            0);
+        curr_chunk_features.clear();
+        curr_chunk_targets.clear();
       }
-      curr_chunk_features.clear();
-      curr_chunk_targets.clear();
+
+      chunk_size = 0;
+      last_session_id = curr_session_id;
+      number_of_sessions++;
     }
 
-    // Update the count of the last session in the dataset
-    number_of_sessions++;
+    chunk_size += 1;
 
-
-    if (verbose) {
-        logprogress_stream << "Processed a total of " << number_of_sessions << " sessions." << std::endl;
+    for (const auto feature_name : features) {
+      curr_chunk_features.push_back(line[column_index_map[feature_name]]);
     }
-    gl_sframe converted_sframe = output_writer.close();
-    converted_sframe.materialize();
 
-    variant_map_type result_dict;
-    result_dict["converted_data"] = converted_sframe;
-    result_dict["num_of_sessions"] = number_of_sessions;
+    // If target column exists, the targets are aggregated for the duration
+    // of prediction_window.
+    // Each prediction_window subsampled into a single target value, by
+    // selecting the most frequent value (statistical mode) within the window.
+    if (use_target) {
+      curr_chunk_targets.push_back(line[column_index_map[target]]);
+    }
 
-    return result_dict;
+    time_t now = time(0);
+    if (verbose && difftime(now, last_print_time) > 10) {
+      logprogress_stream << "Pre-processing: " << std::setw(3)
+                         << (100 * processed_lines / data.size())
+                         << "% complete" << std::endl;
+      last_print_time = now;
+    }
+
+    processed_lines += 1;
+  }
+
+  // Handle the last session, which needs to be aggregated and written in the
+  // converted sframe.
+  feature_size = chunk_size * features.size();
+
+  if (curr_chunk_features.size() > 0) {
+    if (use_target) {
+      output_writer.write({curr_chunk_features, chunk_size, last_session_id,
+                           curr_chunk_targets},
+                          0);
+    } else {
+      output_writer.write({curr_chunk_features, chunk_size, last_session_id},
+                          0);
+    }
+    curr_chunk_features.clear();
+    curr_chunk_targets.clear();
+  }
+
+  // Update the count of the last session in the dataset
+  number_of_sessions++;
+
+  if (verbose) {
+    logprogress_stream << "Processed a total of " << number_of_sessions
+                       << " sessions." << std::endl;
+  }
+  gl_sframe converted_sframe = output_writer.close();
+  converted_sframe.materialize();
+
+  variant_map_type result_dict;
+  result_dict["converted_data"] = converted_sframe;
+  result_dict["num_of_sessions"] = number_of_sessions;
+
+  return result_dict;
 }
 
 }  // namespace
@@ -503,7 +501,7 @@ simple_data_iterator::preprocessed_data simple_data_iterator::preprocess_data(
       data, feature_column_names, params.session_id_column_name,
       static_cast<int>(params.prediction_window),
       static_cast<int>(params.predictions_in_chunk), params.target_column_name,
-      /* verbose */ params.verbose);
+      /* verbose */ params.is_train);
 
   preprocessed_data result;
   result.chunks = variant_get_value<gl_sframe>(result_map.at("converted_data"));
@@ -524,8 +522,11 @@ simple_data_iterator::simple_data_iterator(const parameters &params)
       num_samples_per_prediction_(params.prediction_window),
       num_predictions_per_chunk_(params.predictions_in_chunk),
       range_iterator_(data_.chunks.range_iterator()),
-      next_row_(range_iterator_.begin()), end_of_rows_(range_iterator_.end()),
-      sample_in_row_(0), training(params.verbose) {}
+      next_row_(range_iterator_.begin()),
+      end_of_rows_(range_iterator_.end()),
+      sample_in_row_(0),
+      is_train_(params.is_train),
+      has_data_augmentation_(params.has_data_augmentation) {}
 
 const flex_list& simple_data_iterator::feature_names() const {
   return data_.feature_names;
@@ -589,7 +590,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     // Only for training, we introduce a random offset
     if (sample_in_row_ == 0 &&
         static_cast<size_t>(chunk_length) > num_samples_per_prediction_ &&
-        training) {
+        is_train_ && has_data_augmentation_) {
       sample_in_row_ = std::rand() % (num_samples_per_prediction_ - 1);
     }
 
@@ -664,4 +665,4 @@ void simple_data_iterator::reset() {
 }
 
 }  //activity_classification
-}  //turi
+}  // namespace turi

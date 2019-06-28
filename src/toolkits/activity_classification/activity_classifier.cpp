@@ -286,12 +286,11 @@ void activity_classifier::init_table_printer(bool has_validation) {
   }
 }
 
-void activity_classifier::train(gl_sframe data, const std::string& target_column_name,
-                                const std::string& session_id_column_name,
-                                variant_type validation_data,
-                                const std::map<std::string, flexible_type>& opts)
-{
-
+void activity_classifier::train(
+    gl_sframe data, const std::string& target_column_name,
+    const std::string& session_id_column_name, variant_type validation_data,
+    bool has_data_augmentation,
+    const std::map<std::string, flexible_type>& opts) {
   gl_sframe train_data;
   gl_sframe val_data;
   std::tie(train_data, val_data) =
@@ -300,7 +299,7 @@ void activity_classifier::train(gl_sframe data, const std::string& target_column
   // Instantiate the training dependencies: data iterator, compute context,
   // backend NN model.
   init_train(std::move(train_data), target_column_name, session_id_column_name,
-             std::move(val_data), opts);
+             std::move(val_data), has_data_augmentation, opts);
 
   // Perform all the iterations at once.
   flex_int max_iterations = read_state<flex_int>("max_iterations");
@@ -346,8 +345,6 @@ void activity_classifier::train(gl_sframe data, const std::string& target_column
   add_or_update_state(state_update);
 }
 
-
-
 gl_sarray activity_classifier::predict(gl_sframe data,
                                        std::string output_type) {
   if (output_type.empty()) {
@@ -359,7 +356,8 @@ gl_sarray activity_classifier::predict(gl_sframe data,
 
   // Bind the data to a data iterator.
   std::unique_ptr<data_iterator> data_it =
-      create_iterator(data, /* requires_labels */ false, /* is_train */ false);
+      create_iterator(data, /* requires_labels */ false, /* is_train */ false,
+                      /* has_data_augmentation */ false);
 
   // Accumulate the class probabilities for each prediction window.
   gl_sframe raw_preds_per_window = perform_inference(data_it.get());
@@ -404,7 +402,8 @@ gl_sframe activity_classifier::predict_per_window(gl_sframe data,
 
   // Bind the data to a data iterator.
   std::unique_ptr<data_iterator> data_it =
-      create_iterator(data, /* requires_labels */ false, /* is_train */ false);
+      create_iterator(data, /* requires_labels */ false, /* is_train */ false,
+                      /* has_data_augmentation */ false);
 
   // Accumulate the class probabilities for each prediction window.
   gl_sframe raw_preds_per_window = perform_inference(data_it.get());
@@ -579,10 +578,9 @@ void activity_classifier::import_from_custom_model(
   nn_spec_->update_params(nn_params);
 }
 
-std::unique_ptr<data_iterator>
-activity_classifier::create_iterator(gl_sframe data, bool requires_labels,
-                                     bool is_train) const {
-
+std::unique_ptr<data_iterator> activity_classifier::create_iterator(
+    gl_sframe data, bool requires_labels, bool is_train,
+    bool has_data_augmentation) const {
   data_iterator::parameters data_params;
   data_params.data = std::move(data);
 
@@ -590,10 +588,11 @@ activity_classifier::create_iterator(gl_sframe data, bool requires_labels,
     data_params.class_labels = read_state<flex_list>("classes");
   }
 
-  data_params.verbose = is_train;
+  data_params.is_train = is_train;
   if (requires_labels) {
     data_params.target_column_name = read_state<flex_string>("target");
   }
+  data_params.has_data_augmentation = has_data_augmentation;
   data_params.session_id_column_name = read_state<flex_string>("session_id");
   flex_list features = read_state<flex_list>("features");
   data_params.feature_column_names =
@@ -718,8 +717,7 @@ activity_classifier::init_data(gl_sframe data, variant_type validation_data,
 void activity_classifier::init_train(
     gl_sframe data, std::string target_column_name,
     std::string session_id_column_name, gl_sframe validation_data,
-    std::map<std::string, flexible_type> opts) {
-
+    bool has_data_augmentation, std::map<std::string, flexible_type> opts) {
   // Begin printing progress.
   // TODO: Make progress printing optional.
   init_table_printer(!validation_data.empty());
@@ -744,14 +742,16 @@ void activity_classifier::init_train(
 
   // Bind the data to a data iterator.
   training_data_iterator_ =
-      create_iterator(data, /* requires_labels */ true, /* is_train */ true);
+      create_iterator(data, /* requires_labels */ true, /* is_train */ true,
+                      has_data_augmentation);
 
   add_or_update_state({{"classes", training_data_iterator_->class_labels()}});
 
   // Bind the validation data to a data iterator.
   if (!validation_data.empty()) {
     validation_data_iterator_ = create_iterator(
-        validation_data, /* requires_labels */ true, /* is_train */ false);
+        validation_data, /* requires_labels */ true, /* is_train */ false,
+        /* has_data_augmentation */ false);
   } else {
     validation_data_iterator_ = nullptr;
   }

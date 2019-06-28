@@ -32,7 +32,7 @@ class EXPORT activity_classifier: public ml_model_base {
 
   void train(gl_sframe data, const std::string& target_column_name,
              const std::string& session_id_column_name,
-             variant_type validation_data,
+             variant_type validation_data, bool has_data_augmentation,
              const std::map<std::string, flexible_type>& opts);
   gl_sarray predict(gl_sframe data, std::string output_type);
   gl_sframe predict_per_window(gl_sframe data, std::string output_type);
@@ -174,9 +174,9 @@ class EXPORT activity_classifier: public ml_model_base {
   // Override points allowing subclasses to inject dependencies
 
   // Factory for data_iterator
-  virtual std::unique_ptr<data_iterator> create_iterator(gl_sframe data,
-                                                         bool requires_labels,
-                                                         bool is_train) const;
+  virtual std::unique_ptr<data_iterator> create_iterator(
+      gl_sframe data, bool requires_labels, bool is_train,
+      bool has_data_augmentation) const;
 
   // Factory for compute_context
   virtual std::unique_ptr<neural_net::compute_context> create_compute_context()
@@ -193,7 +193,7 @@ class EXPORT activity_classifier: public ml_model_base {
   // TODO: Expose via forthcoming C-API checkpointing mechanism?
   virtual void init_train(gl_sframe data, std::string target_column_name,
                           std::string session_id_column_name,
-                          gl_sframe validation_data,
+                          gl_sframe validation_data, bool has_data_augmentation,
                           std::map<std::string, flexible_type> opts);
   virtual void perform_training_iteration();
 

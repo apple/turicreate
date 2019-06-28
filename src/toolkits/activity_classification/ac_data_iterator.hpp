@@ -44,7 +44,7 @@ public:
 
     /**
      * Each group of this many consecutive samples from the same session are
-     * assumed to have the same class label. 
+     * assumed to have the same class label.
      */
     size_t prediction_window = 100;
 
@@ -62,7 +62,10 @@ public:
     flex_list class_labels;
 
     /**  Generates verbose output when set to true. */
-    bool verbose;
+    bool is_train;
+
+    /** Augments training data when set to true*/
+    bool has_data_augmentation;
   };
 
   /** Defines the output of a data_iterator. */
@@ -180,7 +183,8 @@ private:
   gl_sframe_range::iterator next_row_;
   gl_sframe_range::iterator end_of_rows_;
   size_t sample_in_row_;
-  bool training;
+  bool is_train_;
+  bool has_data_augmentation_;
 };
 
 /**
