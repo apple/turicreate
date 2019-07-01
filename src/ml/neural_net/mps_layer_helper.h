@@ -5,9 +5,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-API_AVAILABLE(macos(10.14))
-@interface TCMPSLayerHelper: NSObject
-
+API_AVAILABLE(macos(10.14))  
+@interface MPSCNNFullyConnectedNode (TCMPSLayerHelper)
 + (MPSCNNFullyConnectedNode *) createFullyConnected:(MPSNNImageNode *)inputNode
                                inputFeatureChannels:(NSUInteger)inputFeatureChannels
                               outputFeatureChannels:(NSUInteger)outputFeatureChannels
@@ -16,10 +15,14 @@ API_AVAILABLE(macos(10.14))
                                             weights:(float *)weights
                                              biases:(float *)biases
                                               label:(NSString *)label
-                                      updateWeights:(bool)updateWeights
+                                      updateWeights:(BOOL)updateWeights
                                              device:(id<MTLDevice>)dev
-                                          cmd_queue:(id<MTLCommandQueue>) cmd_q;
+                                          cmd_queue:(id<MTLCommandQueue>)cmd_q
+                                          API_AVAILABLE(macosx(10.14));
 
+@end
+
+@interface MPSCNNConvolutionNode (TCMPSLayerHelper)                                   
 + (MPSCNNConvolutionNode *) createConvolutional:(MPSNNImageNode *)inputNode
                                     kernelWidth:(NSUInteger)kernelWidth
                                    kernelHeight:(NSUInteger)kernelHeight
@@ -32,9 +35,10 @@ API_AVAILABLE(macos(10.14))
                                         weights:(float *)weights
                                          biases:(float *)biases
                                           label:(NSString *)label
-                                  updateWeights:(bool)updateWeights
+                                  updateWeights:(BOOL)updateWeights
                                          device:(id<MTLDevice>)dev
-                                      cmd_queue:(id<MTLCommandQueue>) cmd_q;
+                                      cmd_queue:(id<MTLCommandQueue>)cmd_q
+                                      API_AVAILABLE(macosx(10.14));
 
 + (MPSCNNInstanceNormalizationNode *) createInstanceNormalization:(MPSNNImageNode *)inputNode
                                                          channels:(NSUInteger)channels
@@ -43,8 +47,8 @@ API_AVAILABLE(macos(10.14))
                                                              beta:(float * _Nonnull * _Nonnull)beta
                                                             label:(NSString *)label
                                                            device:(id<MTLDevice>)dev
-                                                        cmd_queue:(id<MTLCommandQueue>) cmd_q;
-
+                                                        cmd_queue:(id<MTLCommandQueue>)cmd_q
+                                                        API_AVAILABLE(macosx(10.14));
 @end
 
 NS_ASSUME_NONNULL_END
