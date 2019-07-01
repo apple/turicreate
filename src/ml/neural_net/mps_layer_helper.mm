@@ -1,6 +1,6 @@
 #include <ml/neural_net/mps_layer_helper.h>
 #include <ml/neural_net/mps_weight.h>
-#include <ml/neural_net/mps_layer_conv_padding.h>
+#import <ml/neural_net/mps_layer_conv_padding.h>
 
 @implementation MPSCNNFullyConnectedNode (TCMPSLayerHelper)
 + (MPSCNNFullyConnectedNode *) createFullyConnected:(MPSNNImageNode *)inputNode
@@ -82,11 +82,11 @@
     [MPSCNNConvolutionNode nodeWithSource:inputNode
                                   weights:convDataLoad];
 
-  ConvolutionPadding* padding = 
-    [[ConvolutionPadding alloc] initWithParams:paddingWidth
-                                 paddingHeight:paddingHeight
-                                   strideWidth:strideWidth
-                                  strideHeight:strideHeight];
+  TCMPSConvolutionPadding* padding = 
+    [[TCMPSConvolutionPadding alloc] initWithParams:paddingWidth
+                                      paddingHeight:paddingHeight
+                                        strideWidth:strideWidth
+                                       strideHeight:strideHeight];
 
   convNode.paddingPolicy = padding;
   

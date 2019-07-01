@@ -4,7 +4,7 @@
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 
 API_AVAILABLE(macos(10.14))
-@interface ConvolutionPadding : NSObject <MPSNNPadding>
+@interface TCMPSConvolutionPadding : NSObject <MPSNNPadding>
 
 @property (nonatomic) NSUInteger paddingWidth;
 @property (nonatomic) NSUInteger paddingHeight;

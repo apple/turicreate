@@ -1,6 +1,6 @@
-#include <ml/neural_net/mps_layer_conv_padding.h>
+#import <ml/neural_net/mps_layer_conv_padding.h>
 
-@implementation ConvolutionPadding
+@implementation TCMPSConvolutionPadding
 
 + (BOOL) supportsSecureCoding {
   return YES;
