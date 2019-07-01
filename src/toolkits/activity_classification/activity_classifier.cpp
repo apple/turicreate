@@ -67,7 +67,7 @@ float_array_map get_inference_config(size_t prediction_window) {
 }
 
 size_t count_correct_predictions(size_t num_classes, const shared_float_array& output_chunk,
-    const shared_float_array& label_chunk, size_t num_predictions) {
+    const shared_float_array& label_chunk, size_t num_predictions, size_t prediction_window) {
 
   const float* output_ptr = output_chunk.data();
   const float* truth_ptr = label_chunk.data();
@@ -94,10 +94,11 @@ float cumulative_chunk_accuracy(size_t prediction_window, size_t num_classes,
   for (size_t i = 0; i < batch.batch_info.size(); ++i){
 
     const shared_float_array& output_chunk = output[i];
-    const shared_float_array& label_chunk = batch.labels[i];
+    const shared_float_array& label_chunk = batch.ground_truth[i];
     data_iterator::batch::chunk_info info = batch.batch_info[i];
-    size_t num_predictions = (info.num_samples + prediction_window - 1) / prediction_window;
-    size_t num_correct_predictions = count_correct_predictions(num_classes, output_chunk, label_chunk, num_predictions);
+    std::cout << info.num_samples << "\t";
+    //size_t num_predictions = (info.num_samples + prediction_window - 1) / prediction_window;
+    size_t num_correct_predictions = count_correct_predictions(num_classes, output_chunk, label_chunk, info.num_samples, prediction_window);
 
 
     cumulative_per_batch_accuracy += static_cast<float>(num_correct_predictions) / num_predictions;
@@ -867,7 +868,7 @@ void activity_classifier::perform_training_iteration() {
     std::map<std::string, shared_float_array> results = training_model_->train(
         { { "input",   result_batch.data_info.features },
           { "labels",  result_batch.data_info.labels   },
-          { "weights", result_batch.data_info.weights  }, });
+          { "weights", result_batch.data_info.weights  } });
     result_batch.loss_info = results.at("loss");
     result_batch.output_info = results.at("output");
 

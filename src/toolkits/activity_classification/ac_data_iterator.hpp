@@ -108,6 +108,8 @@ public:
      */
     neural_net::shared_float_array weights;
 
+    neural_net::shared_float_array ground_truth;
+
     /**
      * Metadata for each valid (non-padded) row in the batch.
      *
