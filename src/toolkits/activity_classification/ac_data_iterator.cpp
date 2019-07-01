@@ -333,16 +333,14 @@ variant_map_type _activity_classifier_prepare_data_aug_impl(const gl_sframe &dat
 
   time_t last_print_time = time(0);
   size_t processed_lines = 0;
-  int feature_size;
 
   // Iterate over the user data. The features and targets are aggregated, and
   // handled whenever a the ending of a session is reached.
-  int chunk_size = 0;
+  size_t chunk_size = 0;
   for (const auto &line : data.range_iterator()) {
     auto curr_session_id = line[column_index_map[session_id]];
 
     if (curr_session_id != last_session_id) {
-      feature_size = chunk_size * features.size();
 
       // Write the aggregated data of the current chunk (which includes all
       // the samples in the current session) as a single new vector in the
@@ -387,13 +385,9 @@ variant_map_type _activity_classifier_prepare_data_aug_impl(const gl_sframe &dat
                          << "% complete" << std::endl;
       last_print_time = now;
     }
-
     processed_lines += 1;
   }
 
-  // Handle the last session, which needs to be aggregated and written in the
-  // converted sframe.
-  feature_size = chunk_size * features.size();
 
   if (curr_chunk_features.size() > 0) {
     if (use_target) {
@@ -526,7 +520,7 @@ simple_data_iterator::simple_data_iterator(const parameters &params)
       end_of_rows_(range_iterator_.end()),
       sample_in_row_(0),
       is_train_(params.is_train),
-      has_data_augmentation_(params.has_data_augmentation) {}
+      use_data_augmentation_(params.use_data_augmentation) {}
 
 const flex_list& simple_data_iterator::feature_names() const {
   return data_.feature_names;
@@ -590,7 +584,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     // Only for training, we introduce a random offset
     if (sample_in_row_ == 0 &&
         static_cast<size_t>(chunk_length) > num_samples_per_prediction_ &&
-        is_train_ && has_data_augmentation_) {
+        is_train_ && use_data_augmentation_) {
       sample_in_row_ = std::rand() % (num_samples_per_prediction_ - 1);
     }
 

@@ -32,7 +32,7 @@ class EXPORT activity_classifier: public ml_model_base {
 
   void train(gl_sframe data, const std::string& target_column_name,
              const std::string& session_id_column_name,
-             variant_type validation_data, bool has_data_augmentation,
+             variant_type validation_data,
              const std::map<std::string, flexible_type>& opts);
   gl_sarray predict(gl_sframe data, std::string output_type);
   gl_sframe predict_per_window(gl_sframe data, std::string output_type);
@@ -193,7 +193,7 @@ class EXPORT activity_classifier: public ml_model_base {
   // TODO: Expose via forthcoming C-API checkpointing mechanism?
   virtual void init_train(gl_sframe data, std::string target_column_name,
                           std::string session_id_column_name,
-                          gl_sframe validation_data, bool has_data_augmentation,
+                          gl_sframe validation_data,
                           std::map<std::string, flexible_type> opts);
   virtual void perform_training_iteration();
 
