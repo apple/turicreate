@@ -33,7 +33,7 @@
 
 /*
 *
-* Due to the specifities of the MPS api, we modify the kernel and imageDescriptor directly
+* Due to the specificities of the MPS API, we modify the kernel and imageDescriptor directly
 *
 * Since the callee is `MPS` we don't worry about the fact that we directly modify the objects
 * passed into this method
@@ -58,6 +58,7 @@
   
   return inDescriptor;
 }
+
 
 - (void)encodeWithCoder:(NSCoder *)coder {}
 

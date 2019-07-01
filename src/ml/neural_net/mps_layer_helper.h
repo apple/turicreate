@@ -5,7 +5,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-API_AVAILABLE(macos(10.14))  
 @interface MPSCNNFullyConnectedNode (TCMPSLayerHelper)
 + (MPSCNNFullyConnectedNode *) createFullyConnected:(MPSNNImageNode *)inputNode
                                inputFeatureChannels:(NSUInteger)inputFeatureChannels
