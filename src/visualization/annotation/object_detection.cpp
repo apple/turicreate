@@ -1,19 +1,19 @@
 #include <functional>
 
-#include <unity/lib/annotation/object_detection.hpp>
-#include <unity/lib/annotation/utils.hpp>
+#include <visualization/annotation/object_detection.hpp>
+#include <visualization/annotation/utils.hpp>
 
 #include <boost/archive/iterators/base64_from_binary.hpp>
 #include <boost/archive/iterators/binary_from_base64.hpp>
 #include <boost/archive/iterators/remove_whitespace.hpp>
 #include <boost/archive/iterators/transform_width.hpp>
 
-#include <sframe/group_aggregate_value.hpp>
-#include <sframe/groupby_aggregate_operators.hpp>
+#include <storage/sframe_data/group_aggregate_value.hpp>
+#include <storage/sframe_data/groupby_aggregate_operators.hpp>
 
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/lib/image_util.hpp>
-#include <unity/lib/unity_sarray_builder.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <model_server/lib/image_util.hpp>
+#include <core/storage/sframe_interface/unity_sarray_builder.hpp>
 
 namespace turi {
 namespace annotate {
