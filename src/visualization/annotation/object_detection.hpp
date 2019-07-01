@@ -1,8 +1,9 @@
 #ifndef TURI_ANNOTATIONS_OBJECT_DETECTION_HPP
 #define TURI_ANNOTATIONS_OBJECT_DETECTION_HPP
 
-#include <chrono>
 #include <export.hpp>
+
+#include <chrono>
 #include <future>
 #include <iostream>
 #include <thread>
@@ -16,6 +17,7 @@
 
 namespace turi {
 namespace annotate {
+
 class ObjectDetection : public AnnotationBase {
 public:
   ObjectDetection() : AnnotationBase(){};
@@ -37,6 +39,9 @@ public:
 
   void background_work() override;
 
+  annotate_spec::Similarity get_similar_items(size_t index,
+                                              size_t k = 7) override;
+
   BEGIN_CLASS_MEMBER_REGISTRATION("ObjectDetection");
   IMPORT_BASE_CLASS_REGISTRATION(AnnotationBase);
   END_CLASS_MEMBER_REGISTRATION
@@ -44,6 +49,11 @@ private:
   flex_dict _parse_bounding_boxes(annotate_spec::Label label);
   void _addAnnotationToSFrame(size_t index, flex_list label);
 };
+
+std::shared_ptr<ObjectDetection>
+create_object_detection_annotation(const std::shared_ptr<unity_sframe> &data,
+                                   const std::vector<std::string> &data_columns,
+                                   const std::string &annotation_column);
 
 } // namespace annotate
 } // namespace turi

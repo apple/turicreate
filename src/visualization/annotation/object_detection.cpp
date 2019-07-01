@@ -315,5 +315,20 @@ void ObjectDetection::background_work() {
   // TODO: implement `background_work` used with Image Saliency for OD
 }
 
+annotate_spec::Similarity ObjectDetection::get_similar_items(size_t index,
+                                                             size_t k) {
+  annotate_spec::Similarity similar;
+  // TODO: implement `get_similar_items` used with Image Saliency for OD
+  return similar;
+}
+
+std::shared_ptr<ObjectDetection>
+create_object_detection_annotation(const std::shared_ptr<unity_sframe> &data,
+                                   const std::vector<std::string> &data_columns,
+                                   const std::string &annotation_column) {
+  return std::make_shared<ObjectDetection>(data, data_columns,
+                                           annotation_column);
+}
+
 } // namespace annotate
 } // namespace turi
