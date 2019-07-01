@@ -8,8 +8,8 @@
 #include <boost/archive/iterators/remove_whitespace.hpp>
 #include <boost/archive/iterators/transform_width.hpp>
 
-#include <storage/sframe_data/group_aggregate_value.hpp>
-#include <storage/sframe_data/groupby_aggregate_operators.hpp>
+#include <core/storage/sframe_data/group_aggregate_value.hpp>
+#include <core/storage/sframe_data/groupby_aggregate_operators.hpp>
 
 #include <core/data/sframe/gl_sframe.hpp>
 #include <model_server/lib/image_util.hpp>
