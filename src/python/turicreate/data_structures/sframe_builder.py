@@ -58,7 +58,7 @@ class SFrameBuilder(object):
 
     >>> sb.append_multiple([[2,2.0,"2"],[3,3.0,"3"]])
 
-    >>> sb.close()
+    >>> new_sf = sb.close()
     Columns:
             X1      int
             X2      float
