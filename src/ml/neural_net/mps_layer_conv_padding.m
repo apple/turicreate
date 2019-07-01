@@ -3,7 +3,7 @@
 @implementation TCMPSConvolutionPadding
 
 + (BOOL) supportsSecureCoding {
-  return YES;
+  return NO;
 }
 
 - (instancetype) initWithParams:(NSUInteger)paddingWidth
