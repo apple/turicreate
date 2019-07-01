@@ -847,6 +847,8 @@ static inline std::ostream& operator<<(std::ostream& out, const flex_type_enum e
   return out;
 }
 
+namespace flexible_type_impl { 
+
 // A simple reference counted container to hold the values that do not natively 
 // fit in 12 bytes.  The wrapper for these types is held in a memory pool to 
 // enable fast allocation and deallocation of many different types. 
@@ -864,28 +866,48 @@ template <typename T> struct ft_shared_value {
     GL_HOT_INLINE_FLATTEN static void operator delete(void *p);
 
   };
+  
+static constexpr size_t __ft_memory_pool_index(size_t size) { 
+  return (size - 16) / 8;
+}
 
+static constexpr size_t __ft_num_memory_pools = 8;
+
+// Need to put this into a separate memory pool container.
+extern boost::pool<>* __ft_memory_pools;
+    
+// Initialize the flexible type memory pools 
+void __init_ft_memory_pools(); 
 
 // Static cache for the per-type memory pools
-template <typename T> boost::pool<>& __ft_allocation_pool() { 
-  static boost::pool<> _ft_pool(sizeof(ft_shared_value<T>));
+template <typename T> static inline boost::pool<>& __ft_allocation_pool() {
+  if(UNLIKELY(__ft_memory_pools == nullptr) ) {
+    __init_ft_memory_pools();
+  }
 
-  return _ft_pool;
+  static_assert(sizeof(T) >= 16, "Size of shared flexible type too small.");
+
+  static constexpr size_t index = __ft_memory_pool_index(sizeof(T));
+
+  static_assert(index < __ft_num_memory_pools, "Size of shared flexible type too large.");
+
+  return __ft_memory_pools[index];
 }
 
 template <typename T> 
-void * ft_shared_value<T>::operator new(size_t size) {
+EXPORT void * ft_shared_value<T>::operator new(size_t size) {
 
   DASSERT_EQ(size, sizeof(ft_shared_value<T>));
 
   return __ft_allocation_pool<T>().malloc();
-} 
-  
+}
+ 
 template <typename T> 
-void ft_shared_value<T>::operator delete(void *p) {  
+EXPORT void ft_shared_value<T>::operator delete(void *p) {  
   __ft_allocation_pool<T>().free(p);
 }
 
+} // namespace flexible_type_impl
 
 } // namespace turi
 

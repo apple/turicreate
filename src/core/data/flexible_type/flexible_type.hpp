@@ -1233,12 +1233,12 @@ class flexible_type {
     union_type(){};
     flex_int intval;
     flex_float dblval;
-    ft_shared_value<flex_string>* strval;
-    ft_shared_value<flex_vec>* vecval;
-    ft_shared_value<flex_nd_vec>* ndvecval;
-    ft_shared_value<flex_list>* recval;
-    ft_shared_value<flex_dict>* dictval;
-    ft_shared_value<flex_image>* imgval;
+    flexible_type_impl::ft_shared_value<flex_string>* strval;
+    flexible_type_impl::ft_shared_value<flex_vec>* vecval;
+    flexible_type_impl::ft_shared_value<flex_nd_vec>* ndvecval;
+    flexible_type_impl::ft_shared_value<flex_list>* recval;
+    flexible_type_impl::ft_shared_value<flex_dict>* dictval;
+    flexible_type_impl::ft_shared_value<flex_image>* imgval;
     flex_date_time dtval;
 
     struct {
@@ -1256,7 +1256,7 @@ class flexible_type {
        else {
          union_type prev;
          prev = val;
-         val.strval = new ft_shared_value<flex_string>(*(val.strval));
+         val.strval = new flexible_type_impl::ft_shared_value<flex_string>(*(val.strval));
          val.strval->ref_count = 1;
          decref(prev, flex_type_enum::STRING);
        }
@@ -1266,7 +1266,7 @@ class flexible_type {
        else {
          union_type prev;
          prev = val;
-         val.vecval = new ft_shared_value<flex_vec>(*(val.vecval));
+         val.vecval = new flexible_type_impl::ft_shared_value<flex_vec>(*(val.vecval));
          val.vecval->ref_count = 1;
          decref(prev, flex_type_enum::VECTOR);
        }
@@ -1276,7 +1276,7 @@ class flexible_type {
        else {
          union_type prev;
          prev = val;
-         val.ndvecval = new ft_shared_value<flex_nd_vec>(*(val.ndvecval));
+         val.ndvecval = new flexible_type_impl::ft_shared_value<flex_nd_vec>(*(val.ndvecval));
          val.ndvecval->ref_count = 1;
          decref(prev, flex_type_enum::ND_VECTOR);
        }
@@ -1286,7 +1286,7 @@ class flexible_type {
        else {
          union_type prev;
          prev = val;
-         val.recval = new ft_shared_value<flex_list>(*(val.recval));
+         val.recval = new flexible_type_impl::ft_shared_value<flex_list>(*(val.recval));
          val.recval->ref_count = 1;
          decref(prev, flex_type_enum::LIST);
        }
@@ -1296,7 +1296,7 @@ class flexible_type {
        else {
          union_type prev;
          prev = val;
-         val.dictval = new ft_shared_value<flex_dict>(*(val.dictval));
+         val.dictval = new flexible_type_impl::ft_shared_value<flex_dict>(*(val.dictval));
          val.dictval->ref_count = 1;
          decref(prev, flex_type_enum::DICT);
        }
@@ -1306,7 +1306,7 @@ class flexible_type {
        else {
          union_type prev;
          prev = val;
-         val.imgval = new ft_shared_value<flex_image>(*(val.imgval));
+         val.imgval = new flexible_type_impl::ft_shared_value<flex_image>(*(val.imgval));
          val.imgval->ref_count = 1;
          decref(prev, flex_type_enum::IMAGE);
        }
@@ -1784,30 +1784,30 @@ inline FLEX_ALWAYS_INLINE_FLATTEN void flexible_type::reset(flex_type_enum targe
   // construct the new type
   switch(get_type()) {
    case flex_type_enum::STRING:
-     val.strval = new ft_shared_value<flex_string>;
+     val.strval = new flexible_type_impl::ft_shared_value<flex_string>;
      val.strval->ref_count = 1;
      break;
    case flex_type_enum::VECTOR:
-     val.vecval = new ft_shared_value<flex_vec>;
+     val.vecval = new flexible_type_impl::ft_shared_value<flex_vec>;
      val.vecval->ref_count = 1;
      break;
    case flex_type_enum::ND_VECTOR:
-     val.ndvecval = new ft_shared_value<flex_nd_vec>;
+     val.ndvecval = new flexible_type_impl::ft_shared_value<flex_nd_vec>;
      val.ndvecval->ref_count = 1;
      break;
    case flex_type_enum::LIST:
-     val.recval = new ft_shared_value<flex_list>;
+     val.recval = new flexible_type_impl::ft_shared_value<flex_list>;
      val.recval->ref_count = 1;
      break;
    case flex_type_enum::DICT:
-     val.dictval = new ft_shared_value<flex_dict>;
+     val.dictval = new flexible_type_impl::ft_shared_value<flex_dict>;
      val.dictval->ref_count = 1;
      break;
    case flex_type_enum::DATETIME:
      new (&val.dtval) flex_date_time(0,0); // placement new to create flex_date_time
      break;
    case flex_type_enum::IMAGE:
-     val.imgval = new ft_shared_value<flex_image>;
+     val.imgval = new flexible_type_impl::ft_shared_value<flex_image>;
      val.imgval->ref_count = 1;
      break;
    default:
