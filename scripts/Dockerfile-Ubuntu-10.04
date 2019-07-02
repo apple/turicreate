@@ -49,6 +49,7 @@ RUN apt-get update && \
                rsync \
                git \
                file \
+               libffi-dev \
                xz-utils && \
     ln -s /usr/bin/gcc-4.8 /usr/bin/gcc && \
     ln -s /usr/bin/g++-4.8 /usr/bin/g++ && \
@@ -168,10 +169,8 @@ ENV CXX="clang++"
 WORKDIR /build
 
 # Set ccache size to 4GB
-CMD mkdir -p $CCACHE_DIR
-CMD ccache -s
-CMD ccache -M 4G
+RUN mkdir -p $CCACHE_DIR
+RUN ccache -M 4G
 
 # Clean up now-unnecessary paths in image
-CMD apt-get clean
-CMD rm -rf /src
+RUN rm -rf /src
