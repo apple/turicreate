@@ -119,6 +119,17 @@ RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enab
     ldconfig && \
     rm -rf /src/Python-3.6.8*
 
+# Install Python 3.7 from source
+WORKDIR /src
+RUN curl -O https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz
+RUN tar xf Python-3.7.3.tgz
+WORKDIR /src/Python-3.7.3
+RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enable-loadable-sqlite-extensions && \
+    make -j4 --quiet && \
+    make install && \
+    ldconfig && \
+    rm -rf /src/Python-3.7.3*
+
 # Install pip and virtualenv
 WORKDIR /src
 RUN curl -O https://bootstrap.pypa.io/get-pip.py
@@ -128,6 +139,8 @@ RUN python3.5 get-pip.py
 RUN pip3.5 install virtualenv
 RUN python3.6 get-pip.py
 RUN pip3.6 install virtualenv
+RUN python3.7 get-pip.py
+RUN pip3.7 install virtualenv
 RUN rm -rf /src/get-pip.py
 
 # Install llvm 8.0.0 from source with clang (no libc++)
