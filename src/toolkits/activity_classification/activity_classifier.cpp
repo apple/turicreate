@@ -67,19 +67,21 @@ float_array_map get_inference_config(size_t prediction_window) {
 }
 
 size_t count_correct_predictions(size_t num_classes, const shared_float_array& output_chunk,
-    const shared_float_array& label_chunk, size_t num_predictions, size_t prediction_window) {
+    const shared_float_array& label_chunk, size_t num_samples, size_t prediction_window) {
 
   const float* output_ptr = output_chunk.data();
   const float* truth_ptr = label_chunk.data();
+  
   size_t num_correct_predictions = 0;
 
-  for (size_t i = 0; i < num_predictions; i++) {
-
+  for (size_t i = 0; i < num_samples; i+=prediction_window) {
     size_t prediction = std::max_element(output_ptr, output_ptr + num_classes) - output_ptr;
-    if (prediction == *truth_ptr) {
-      num_correct_predictions += 1;
+    for (size_t j = 0; j < std::min(prediction_window, num_samples-i); j++) {
+      if (prediction == *truth_ptr) {
+        num_correct_predictions += 1;
+      }
+      truth_ptr++;
     }
-    truth_ptr++;
     output_ptr += num_classes;
   }
   return num_correct_predictions;
@@ -96,12 +98,9 @@ float cumulative_chunk_accuracy(size_t prediction_window, size_t num_classes,
     const shared_float_array& output_chunk = output[i];
     const shared_float_array& label_chunk = batch.ground_truth[i];
     data_iterator::batch::chunk_info info = batch.batch_info[i];
-    std::cout << info.num_samples << "\t";
     //size_t num_predictions = (info.num_samples + prediction_window - 1) / prediction_window;
     size_t num_correct_predictions = count_correct_predictions(num_classes, output_chunk, label_chunk, info.num_samples, prediction_window);
-
-
-    cumulative_per_batch_accuracy += static_cast<float>(num_correct_predictions) / num_predictions;
+    cumulative_per_batch_accuracy += static_cast<float>(num_correct_predictions) / info.num_samples ;
 
   }
 
@@ -349,6 +348,7 @@ void activity_classifier::train(
   }
 
   add_or_update_state(state_update);
+
 }
 
 gl_sarray activity_classifier::predict(gl_sframe data,
