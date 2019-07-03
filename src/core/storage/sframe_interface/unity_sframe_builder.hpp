@@ -26,7 +26,7 @@ namespace turi {
  * side.
  *
  * The unity_sframe_builder is designed to append values until \ref close is
- * called, which returns the SArray. No "reopening" is allowed, and no
+ * called, which returns the SFrame. No "reopening" is allowed, and no
  * operations in that instance of unity_sframe_builder will work after close is
  * called.
  *

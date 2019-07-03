@@ -50,6 +50,39 @@ class SFrameBuilderTest(unittest.TestCase):
         sf = sb.close()
         _assert_sframe_equal(sf, self.sf_all_types)
 
+        ## mismatched input size
+        sb = SFrameBuilder(self.all_types)
+        with self.assertRaises(RuntimeError):
+            sb.append(sf_data[0][:-2])
+
+        sb = SFrameBuilder(self.all_types)
+        with self.assertRaises(RuntimeError):
+            extra_data = list(sf_data[0])
+            extra_data.append(10)
+            sb.append(extra_data)
+
+        sb = SFrameBuilder(self.all_types)
+        sf_data_extra = list(zip(*(self.all_type_cols + [self.int_data])))
+        with self.assertRaises(RuntimeError):
+            sb.append_multiple(sf_data_extra)
+
+        sb = SFrameBuilder(self.all_types)
+        sf_data_missing = sf_data[:-2]
+        with self.assertRaises(RuntimeError):
+            sb.append(sf_data_missing)
+
+        ## type cannot be converted to target type
+        sb = SFrameBuilder(self.all_types)
+        # maks sure we replace the type int to str
+        assert(type(self.all_type_cols[0][0]) is int)
+        sf_data_wrong_type = list(zip(self.string_data, *self.all_type_cols[1:]))
+        with self.assertRaises(TypeError):
+            sb.append_multiple(sf_data_wrong_type[0])
+
+        sb = SFrameBuilder(self.all_types)
+        with self.assertRaises(TypeError):
+            sb.append_multiple(sf_data_wrong_type)
+
     def test_history(self):
         from ..data_structures.sframe_builder import SFrameBuilder
         sb = SFrameBuilder([int,float], history_size=10)

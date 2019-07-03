@@ -783,7 +783,8 @@ class StyleTransfer(_CustomModel):
             A tuple (defaults to (256, 256)) will bind the coreml model to a fixed shape.
 
         include_flexible_shape: bool
-            A boolean value indicating whether flexible_shape should be included or not.
+            Allows the size of the input image to be flexible. Any input image were the
+            height and width are at least 64 will be accepted by the Core ML Model.
 
         See Also
         --------
