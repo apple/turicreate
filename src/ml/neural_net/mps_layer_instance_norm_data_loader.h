@@ -6,68 +6,50 @@
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h> 
 
-typedef struct{
-  int size;
-  float beta1;
-  float beta2;
-  float epsilon;
-  float lr_t;
-} params_t;
+NS_ASSUME_NONNULL_BEGIN
 
 API_AVAILABLE(macos(10.14))
-@interface InstanceNormDataLoader: NSObject <MPSCNNInstanceNormalizationDataSource> {
-  NSString *mName;
-  NSUInteger mNumberOfFeatureChannels;
+@interface InstanceNormDataLoader: NSObject <MPSCNNInstanceNormalizationDataSource>
 
-  int mStyles;  
-  int mCurrentStyle;  
+@property (nonatomic) float **gamma_weights;
+@property (nonatomic) float **beta_weights;
 
-  float **mGamma;
-  float **mBeta;
+@property (nonatomic) NSString *name;
+@property (nonatomic) NSUInteger numberOfFeatureChannels;
+@property (nonatomic) NSUInteger styles;
+@property (nonatomic) NSUInteger currentStyle;
 
-  float beta1;
-  float beta2;
-  float epsilon;
-  float learning_rate;
+@property (nonatomic) id<MTLBuffer> gammaBuffer;
+@property (nonatomic) id<MTLBuffer> betaBuffer;
 
-  id<MTLBuffer>mGammaBuffer;
-  id<MTLBuffer>mBetaBuffer;
+@property (nonatomic) MPSVector *gammaVector;
+@property (nonatomic) MPSVector *betaVector;
+@property (nonatomic) MPSVector *gammaMomentumVector;
+@property (nonatomic) MPSVector *gammaVelocityVector;
+@property (nonatomic) MPSVector *betaMomentumVector;
+@property (nonatomic) MPSVector *betaVelocityVector;
 
-  id<MTLBuffer> mGammaMomentumBuffer;
-  id<MTLBuffer> mGammaVelocityBuffer;
-  id<MTLBuffer> mBetaMomentumBuffer;
-  id<MTLBuffer> mBetaVelocityBuffer;
-  id<MTLBuffer> mMovingMeanBuffer;
-  id<MTLBuffer> mMovingVarianceBuffer;
+@property (nonatomic) id<MTLBuffer> gammaMomentumBuffer;
+@property (nonatomic) id<MTLBuffer> gammaVelocityBuffer;
+@property (nonatomic) id<MTLBuffer> betaMomentumBuffer;
+@property (nonatomic) id<MTLBuffer> betaVelocityBuffer;
+@property (nonatomic) id<MTLBuffer> movingMeanBuffer;
+@property (nonatomic) id<MTLBuffer> movingVarianceBuffer;
 
-  MPSCNNNormalizationMeanAndVarianceState *mMeanVarianceState;
+@property (nonatomic) MPSVectorDescriptor *vDesc;
+@property (nonatomic) MPSCNNNormalizationGammaAndBetaState *state;
+@property (nonatomic) id<MTLCommandQueue> cq;
 
-  MPSVector *mGammaVector;
-  MPSVector *mBetaVector;
-  MPSVector *mGammaMomentumVector;
-  MPSVector *mGammaVelocityVector;
-  MPSVector *mBetaMomentumVector;
-  MPSVector *mBetaVelocityVector;
-
-  MPSVectorDescriptor *vDesc;
-
-  MPSCNNNormalizationGammaAndBetaState *mState;
-
-  MPSNNOptimizerAdam *adamGamma;
-  MPSNNOptimizerAdam *adamBeta;
-
-  id<MTLComputePipelineState> runningUpdatePipelineState;
-
-  id<MTLCommandQueue> mCq;
-}
+@property (nonatomic) MPSNNOptimizerAdam *adamGamma;
+@property (nonatomic) MPSNNOptimizerAdam *adamBeta;
 
 - (id) initWithParams:(NSString *)name
-     gammaWeights:(float **)gammaWeights
-      betaWeights:(float **)betaWeights
-numberFeatureChannels:(int)numberFeatureChannels
-         styles:(int)styles
-         device:(id<MTLDevice> _Nonnull)dev
-      cmd_queue:(id<MTLCommandQueue> _Nonnull) cmd_q;
+         gammaWeights:(float **)gammaWeights
+          betaWeights:(float **)betaWeights
+numberFeatureChannels:(NSUInteger)numberFeatureChannels
+               styles:(NSUInteger)styles
+               device:(id<MTLDevice> _Nonnull)dev
+            cmd_queue:(id<MTLCommandQueue> _Nonnull) cmd_q;
 
 - (void) updateNumberOfStyles:(int)styles;
 - (void) updateCurrentStyle:(int)style;
@@ -90,3 +72,5 @@ numberFeatureChannels:(int)numberFeatureChannels
 @end
 
 #endif
+
+NS_ASSUME_NONNULL_END
