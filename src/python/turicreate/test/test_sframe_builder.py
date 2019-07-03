@@ -62,7 +62,7 @@ class SFrameBuilderTest(unittest.TestCase):
             sb.append(extra_data)
 
         sb = SFrameBuilder(self.all_types)
-        sf_data_extra = list(zip(*self.all_type_cols, self.int_data))
+        sf_data_extra = list(zip(*(self.all_type_cols + [self.int_data])))
         with self.assertRaises(RuntimeError):
             sb.append_multiple(sf_data_extra)
 
