@@ -98,11 +98,11 @@
 + (MPSCNNInstanceNormalizationNode *) createInstanceNormalization:(MPSNNImageNode *)inputNode
                                                          channels:(NSUInteger)channels
                                                            styles:(NSUInteger)styles
-                                                            gamma:(float * _Nonnull * _Nonnull)gamma
-                                                             beta:(float * _Nonnull * _Nonnull)beta
+                                                            gamma:(float **)gamma
+                                                             beta:(float **)beta
                                                             label:(NSString *)label
-                                                           device:(id<MTLDevice> _Nonnull)dev
-                                                        cmd_queue:(id<MTLCommandQueue> _Nonnull) cmd_q {
+                                                           device:(id<MTLDevice>)dev
+                                                        cmd_queue:(id<MTLCommandQueue>) cmd_q {
 
   TCMPSInstanceNormDataLoader *InstNormDataLoad = [[TCMPSInstanceNormDataLoader alloc] initWithParams:label
                                                                                          gammaWeights:gamma

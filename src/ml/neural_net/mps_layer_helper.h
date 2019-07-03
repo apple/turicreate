@@ -42,8 +42,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (MPSCNNInstanceNormalizationNode *) createInstanceNormalization:(MPSNNImageNode *)inputNode
                                                          channels:(NSUInteger)channels
                                                            styles:(NSUInteger)styles
-                                                            gamma:(float * _Nonnull * _Nonnull)gamma
-                                                             beta:(float * _Nonnull * _Nonnull)beta
+                                                            gamma:(float **)gamma
+                                                             beta:(float **)beta
                                                             label:(NSString *)label
                                                            device:(id<MTLDevice>)dev
                                                         cmd_queue:(id<MTLCommandQueue>)cmd_q
