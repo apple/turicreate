@@ -104,14 +104,14 @@
                                                            device:(id<MTLDevice> _Nonnull)dev
                                                         cmd_queue:(id<MTLCommandQueue> _Nonnull) cmd_q {
 
-  InstanceNormDataLoader *InstNormDataLoad = [[InstanceNormDataLoader alloc] initWithParams:label
-                                                                               gammaWeights:gamma
-                                                                                betaWeights:beta
-                                                                      numberFeatureChannels:channels
-                                                                                     styles:styles
-                                                                                     device:dev
-                                                                                  cmd_queue:cmd_q];
-                            
+  TCMPSInstanceNormDataLoader *InstNormDataLoad = [[TCMPSInstanceNormDataLoader alloc] initWithParams:label
+                                                                                         gammaWeights:gamma
+                                                                                          betaWeights:beta
+                                                                                numberFeatureChannels:channels
+                                                                                               styles:styles
+                                                                                               device:dev
+                                                                                            cmd_queue:cmd_q];
+                                      
   MPSCNNInstanceNormalizationNode *instNormNode =  [MPSCNNInstanceNormalizationNode nodeWithSource:inputNode
                                                                                         dataSource:InstNormDataLoad];
   return instNormNode;

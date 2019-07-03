@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-@implementation InstanceNormDataLoader
+@implementation TCMPSInstanceNormDataLoader
 
 - (instancetype) initWithParams:(NSString *)name
                    gammaWeights:(float **)gammaWeights

@@ -6,7 +6,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 API_AVAILABLE(macos(10.14))
-@interface InstanceNormDataLoader: NSObject <MPSCNNInstanceNormalizationDataSource>
+@interface TCMPSInstanceNormDataLoader: NSObject <MPSCNNInstanceNormalizationDataSource>
 
 @property (nonatomic) float **gamma_weights;
 @property (nonatomic) float **beta_weights;
