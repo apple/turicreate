@@ -4,7 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <unity/lib/visualization/plot.hpp>
+#include <visualization/server/plot.hpp>
 
 #include <memory>
 #include <unordered_map>

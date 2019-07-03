@@ -7,11 +7,11 @@
 // Server impl code adapted from Beast example in
 // boost/beast/example/http/server/async/http_server_async.cpp
 
-#include <fileio/fs_utils.hpp>
-#include <fileio/general_fstream.hpp>
-#include <globals/globals.hpp>
-#include <logger/logger.hpp>
-#include <unity/lib/visualization/server.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
+#include <core/storage/fileio/general_fstream.hpp>
+#include <core/globals/globals.hpp>
+#include <core/logging/logger.hpp>
+#include <visualization/server/server.hpp>
 
 #include <boost/asio/bind_executor.hpp>
 #include <boost/asio/ip/tcp.hpp>
