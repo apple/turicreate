@@ -34,6 +34,7 @@ import datetime
 import warnings
 import numbers
 import six
+import types
 
 __all__ = ['SArray']
 
@@ -95,8 +96,9 @@ class SArray(object):
 
     Parameters
     ----------
-    data : list | numpy.ndarray | pandas.Series | string
-        The input data. If this is a list, numpy.ndarray, or pandas.Series,
+    data : list | numpy.ndarray | pandas.Series | string | generator | map | range | filter
+        The input data. If this is a list or can generate a list from map,
+        filter, and generator, numpy.ndarray, or pandas.Series,
         the data in the list is converted and stored in an SArray.
         Alternatively if this is a string, it is interpreted as a path (or
         url) to a text file. Each line of the text file is loaded as a
@@ -141,6 +143,38 @@ class SArray(object):
     >>> sa = SArray(data=pd.Series([1,2,3,4,5]), dtype=int)
     or:
     >>> sa = SArray(pd.Series([1,2,3,4,5]), int)
+
+    Construct an SArray from range (xrange for py2):
+    .. warning::
+        if no step is provided from range, SArray.from_sequence is preferred in terms of performance.
+
+    >>> sa = SArray(data=range(1, 100, 2), dtype=int)
+    or:
+    >>> sa = SArray(data=range(1, 100, 2))
+
+    Construct an SArray from map:
+
+    >>> sa = SArray(data=map(lambda x : x**2, [1, 2, 3]), dtype=int)
+    or:
+    >>> sa = SArray(data=map(lambda x : x**2, [1, 2, 3]))
+
+    Construct an SArray from filter:
+
+    >>> sa = SArray(data=filter(lambda x : x > 2, [1, 2, 3]), dtype=int)
+    or:
+    >>> sa = SArray(data=filter(lambda x : x > 2, [1, 2, 3]))
+
+    Construct an SArray from generator:
+
+    def gen():
+        x = 0
+        while x < 10:
+            yield x
+            x += 1
+
+    >>> sa = SArray(data=gen(), dtype=int)
+    or:
+    >>> sa = SArray(data=gen())
 
     If the type is not specified, automatic inference is attempted:
 
@@ -335,12 +369,21 @@ class SArray(object):
 
     __slots__ = ["__proxy__", "_getitem_cache"]
 
+    # assume obj is aready an iterable
+    @classmethod
+    def _is_iterable_required_to_listify(cls, obj):
+        # In Python 3, str implements '__iter__'.
+        return (isinstance(obj, types.GeneratorType) or
+                (sys.version_info.major < 3 and isinstance(obj, six.moves.xrange)) or
+                sys.version_info.major >= 3 and isinstance(obj, (range, filter, map)))
+
+
     def __init__(self, data=[], dtype=None, ignore_cast_failure=False, _proxy=None):
         """
         __init__(data=list(), dtype=None, ignore_cast_failure=False)
 
         Construct a new SArray. The source of data includes: list,
-        numpy.ndarray, pandas.Series, and urls.
+        range, generators, map, filter, numpy.ndarray, pandas.Series, and urls.
         """
 
         if dtype is not None and type(dtype) != type:
@@ -355,6 +398,11 @@ class SArray(object):
                 self.__proxy__ = data.astype(dtype).__proxy__
         else:
             self.__proxy__ = UnitySArrayProxy()
+
+            ## data transfromation from generator and other iterable to list
+            if self._is_iterable_required_to_listify(data):
+                data = list(data)
+
             # we need to perform type inference
             if dtype is None:
                 if HAS_PANDAS and isinstance(data, pandas.Series):
@@ -398,8 +446,6 @@ class SArray(object):
                       (sys.version_info.major < 3 and isinstance(data, unicode))):
                     # if it is a file, we default to string
                     dtype = str
-                elif sys.version_info.major >= 3 and isinstance(data, (filter, map)):
-                    data = list(data)
                 elif isinstance(data, array.array):
                     dtype = pytype_from_array_typecode(data.typecode)
                 elif isinstance(data, collections.Sequence):
@@ -4241,7 +4287,6 @@ class SArray(object):
         rows: 3
         [1, 3, 6, 10, 15]
         """
-        from .. import extensions
         agg_op = "__builtin__cum_sum__"
         return SArray(_proxy = self.__proxy__.builtin_cumulative_aggregate(agg_op))
 
@@ -4273,7 +4318,6 @@ class SArray(object):
         rows: 3
         [1, 1.5, 2, 2.5, 3]
         """
-        from .. import extensions
         agg_op = "__builtin__cum_avg__"
         return SArray(_proxy = self.__proxy__.builtin_cumulative_aggregate(agg_op))
 
@@ -4302,7 +4346,6 @@ class SArray(object):
         rows: 3
         [1, 1, 1, 1, 0]
         """
-        from .. import extensions
         agg_op = "__builtin__cum_min__"
         return SArray(_proxy = self.__proxy__.builtin_cumulative_aggregate(agg_op))
 
@@ -4331,7 +4374,6 @@ class SArray(object):
         rows: 3
         [1, 1, 3, 4, 4]
         """
-        from .. import extensions
         agg_op = "__builtin__cum_max__"
         return SArray(_proxy = self.__proxy__.builtin_cumulative_aggregate(agg_op))
 
@@ -4360,7 +4402,6 @@ class SArray(object):
         rows: 3
         [0.0, 0.5, 0.816496580927726, 1.118033988749895, 1.4142135623730951]
         """
-        from .. import extensions
         agg_op = "__builtin__cum_std__"
         return SArray(_proxy = self.__proxy__.builtin_cumulative_aggregate(agg_op))
 
@@ -4389,7 +4430,6 @@ class SArray(object):
         rows: 3
         [0.0, 0.25, 0.6666666666666666, 1.25, 2.0]
         """
-        from .. import extensions
         agg_op = "__builtin__cum_var__"
         return SArray(_proxy = self.__proxy__.builtin_cumulative_aggregate(agg_op))
 
