@@ -5,6 +5,39 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ * TCMPSInstanceNormDataLoader
+ *
+ * SUMMARY
+ * -------
+ * This class override is used by the MPS api to populate the
+ * MPSCNNInstanceNormalizationNode node with data. There are a few key methods
+ * on this class that the MPS api calls. These are listed below
+ *
+ * KEY METHODS 
+ * -----------
+ *
+ * - beta, gamma
+ *        These methods return the current values for beta and gamma in the
+ *        instanceNorm layer. These methods both call checkpointWithCommandQueue
+ *        to synchronize the GPU and the CPU weights before returning their
+ *        respective values.
+ *
+ * - checkpointWithCommandQueue
+ *        Given a command_queue on a Metal Device we can synchronize resources
+ *        from that command_queue. For beta and gamma those might be their
+ *        respective values on the GPU, but for training we would also need
+ *        momentum and velocity vectors. We therefore synchronize those as well.
+ *
+ * - updateGammaAndBetaWithCommandBuffer
+ *        MPS calls this method and we need to update the gamma and the beta
+ *        weights ourselves. To do this we have an adams optimizer for both the
+ *        gamma and the beta values. For each value in the batch we don't want
+ *        to increment the adam optimizer;s time step as the learning rate would
+ *        be affected. So we store the timestep at the beginning of each batch
+ *        and use it across the batch. This `Hack` makes the behavior of the
+ *        weight updates, very similar to the behavior we see in MxNet.
+ */
 API_AVAILABLE(macos(10.14))
 @interface TCMPSInstanceNormDataLoader: NSObject <MPSCNNInstanceNormalizationDataSource>
 
