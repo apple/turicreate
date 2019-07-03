@@ -49,7 +49,7 @@ RUN apt-get update && \
                rsync \
                git \
                file \
-               libffi-dev \
+               pkg-config \
                xz-utils && \
     ln -s /usr/bin/gcc-4.8 /usr/bin/gcc && \
     ln -s /usr/bin/g++-4.8 /usr/bin/g++ && \
@@ -86,8 +86,19 @@ RUN tar xf cmake-3.13.4-Linux-x86_64.tar.gz && \
     rm -rf /opt/cmake-3.13.4-Linux-x86_64.tar.gz
 ENV PATH="/opt/cmake-3.13.4-Linux-x86_64/bin:${PATH}"
 
-# Install Python 2.7 from source
+# Install libffi from source
 RUN mkdir -p /src
+WORKDIR /src
+RUN curl -O ftp://sourceware.org/pub/libffi/libffi-3.2.1.tar.gz
+RUN tar xf libffi-3.2.1.tar.gz
+WORKDIR /src/libffi-3.2.1
+RUN ./configure --prefix=/usr/local && \
+    make -j4 --quiet && \
+    make install && \
+    ldconfig && \
+    rm -rf /src/libffi-3.2.1*
+
+# Install Python 2.7 from source
 WORKDIR /src
 RUN curl -O https://www.python.org/ftp/python/2.7.15/Python-2.7.15.tgz
 RUN tar xf Python-2.7.15.tgz
