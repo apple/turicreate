@@ -1,6 +1,3 @@
-#ifndef mps_layer_instance_norm_data_loader_h
-#define mps_layer_instance_norm_data_loader_h
-
 #import <Accelerate/Accelerate.h>
 #import <Foundation/Foundation.h>
 #import <Metal/Metal.h>
@@ -43,17 +40,17 @@ API_AVAILABLE(macos(10.14))
 @property (nonatomic) MPSNNOptimizerAdam *adamGamma;
 @property (nonatomic) MPSNNOptimizerAdam *adamBeta;
 
-- (id) initWithParams:(NSString *)name
-         gammaWeights:(float **)gammaWeights
-          betaWeights:(float **)betaWeights
-numberFeatureChannels:(NSUInteger)numberFeatureChannels
-               styles:(NSUInteger)styles
-               device:(id<MTLDevice> _Nonnull)dev
-            cmd_queue:(id<MTLCommandQueue> _Nonnull) cmd_q;
+- (instancetype) initWithParams:(NSString *)name
+                   gammaWeights:(float **)gammaWeights
+                    betaWeights:(float **)betaWeights
+          numberFeatureChannels:(NSUInteger)numberFeatureChannels
+                         styles:(NSUInteger)styles
+                         device:(id<MTLDevice> _Nonnull)dev
+                      cmd_queue:(id<MTLCommandQueue> _Nonnull) cmd_q;
 
-- (void) updateNumberOfStyles:(int)styles;
-- (void) updateCurrentStyle:(int)style;
-- (int) getCurrentStyle;
+- (void) updateNumberOfStyles:(NSUInteger)styles;
+- (void) updateCurrentStyle:(NSUInteger)style;
+- (NSUInteger) getCurrentStyle;
 
 - (void) loadBeta:(float **)beta;
 - (float *) beta;
@@ -70,7 +67,5 @@ numberFeatureChannels:(NSUInteger)numberFeatureChannels
 - (id) copyWithZone:(nullable NSZone *) zone;
 
 @end
-
-#endif
 
 NS_ASSUME_NONNULL_END

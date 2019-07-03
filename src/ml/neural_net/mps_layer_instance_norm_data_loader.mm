@@ -5,13 +5,13 @@
 
 @implementation InstanceNormDataLoader
 
-- (id) initWithParams:(NSString *)name
-         gammaWeights:(float **)gammaWeights
-          betaWeights:(float **)betaWeights
-numberFeatureChannels:(NSUInteger)numberFeatureChannels
-               styles:(NSUInteger)styles
-               device:(id<MTLDevice> _Nonnull)dev 
-            cmd_queue:(id<MTLCommandQueue> _Nonnull) cmd_q {
+- (instancetype) initWithParams:(NSString *)name
+                   gammaWeights:(float **)gammaWeights
+                    betaWeights:(float **)betaWeights
+          numberFeatureChannels:(NSUInteger)numberFeatureChannels
+                         styles:(NSUInteger)styles
+                         device:(id<MTLDevice> _Nonnull)dev 
+                      cmd_queue:(id<MTLCommandQueue> _Nonnull) cmd_q {
   self = [self init];
     
   if (self) {
