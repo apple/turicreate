@@ -22,6 +22,7 @@
 #include <toolkits/coreml_export/neural_net_models_exporter.hpp>
 #include <toolkits/object_detection/od_evaluation.hpp>
 #include <toolkits/object_detection/od_yolo.hpp>
+#include <toolkits/supervised_learning/automatic_model_creation.hpp>
 
 using turi::coreml::MLModelWrapper;
 using turi::neural_net::compute_context;
@@ -273,6 +274,9 @@ void object_detector::train(gl_sframe data,
   training_table_printer_.reset(new table_printer(
       {{ "Iteration", 12}, {"Loss", 12}, {"Elapsed Time", 12}}));
 
+  gl_sframe val_data;
+  std::tie(data, val_data) = supervised::create_validation_data(data, validation_data); 
+
   // Instantiate the training dependencies: data iterator, image augmenter,
   // backend NN model.
   init_train(std::move(data), std::move(annotations_column_name),
@@ -305,10 +309,6 @@ void object_detector::train(gl_sframe data,
   nn_spec_->update_params(trained_weights);
 
   // Compute training and validation metrics.
-  gl_sframe val_data;
-  if (variant_is<gl_sframe>(validation_data)) {
-    val_data = variant_get_value<gl_sframe>(validation_data);
-  }
   update_model_metrics(data, val_data);
 }
 
