@@ -220,7 +220,6 @@ class DrawingClassifierTest(unittest.TestCase):
                 preds = model.predict(sf[self.feature], output_type="probability")
                 assert (preds.dtype == float)
 
-
     def test_evaluate_without_ground_truth(self):
         for index in range(len(self.trains)):
             model = self.models[index]
@@ -229,9 +228,7 @@ class DrawingClassifierTest(unittest.TestCase):
             with self.assertRaises(_ToolkitError):
                 model.evaluate(sf_without_ground_truth)
 
-    @pytest.mark.xfail(reason='Fails, see https://github.com/apple/turicreate/issues/1973')
     def test_evaluate_with_ground_truth(self):
-
         all_metrics = ["accuracy", "auc", "precision", "recall",
                        "f1_score", "log_loss", "confusion_matrix", "roc_curve"]
         for index in range(len(self.models)):
