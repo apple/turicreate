@@ -13,13 +13,13 @@ RUN apt-get update
 # Upgrade all possible packages
 RUN apt-get -y upgrade
 
-# Install Python 3.6 with apt, as well as
+# Install Python 3.6 and 3.7 with apt, as well as
 # turicreate and upstream dependencies
-RUN apt-get -y install python3.6 python3.6-distutils libgomp1 lsb-release
+RUN apt-get -y install python3.6 python3.6-distutils python3.7 python3.7-distutils libgomp1 lsb-release
 
-# Install build-essential (needed by numpy==1.11.1, which tries to
-# build itself from source on 3.6)
-RUN apt-get -y install build-essential libpython3.6-dev
+# Install build-essential (needed by numpy, which tries to
+# build itself from source on 3.6 and above)
+RUN apt-get -y install build-essential libpython3.6-dev libpython3.7-dev
 RUN ln -s /usr/include/locale.h /usr/include/xlocale.h
 
 # Install pip and virtualenv
@@ -27,3 +27,5 @@ ADD https://bootstrap.pypa.io/get-pip.py /src/get-pip.py
 WORKDIR /src
 RUN python3.6 get-pip.py
 RUN pip3.6 install virtualenv
+RUN python3.7 get-pip.py
+RUN pip3.7 install virtualenv

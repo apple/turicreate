@@ -35,7 +35,7 @@ if [[ -z "${UBUNTU_VERSION}" ]]; then
 fi
 
 # The build image version that will be used for building
-TC_BUILD_IMAGE_VERSION="1.0.0"
+TC_BUILD_IMAGE_VERSION="1.0.1"
 
 # The base image name - using Gitlab CI registry
 TC_BUILD_IMAGE="registry.gitlab.com/zach_nation/turicreate/build-image-${UBUNTU_VERSION}:${TC_BUILD_IMAGE_VERSION}"
