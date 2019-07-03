@@ -279,8 +279,9 @@ variant_map_type _activity_classifier_prepare_data_aug_impl(
     const gl_sframe &data, const std::vector<std::string> &features,
     const std::string &session_id, int prediction_window,
     int predictions_in_chunk, const std::string &target, bool verbose) {
+
 #ifndef NDEBUG
-  DASSERT_GT(features.size(), 0)
+  DASSERT_GT(features.size(), 0);
   DASSERT_TRUE(prediction_window > 0);
   DASSERT_TRUE(predictions_in_chunk > 0);
   DASSERT_TRUE(data.contains_column(session_id));
