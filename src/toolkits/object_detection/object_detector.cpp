@@ -53,10 +53,6 @@ constexpr size_t MEMORY_REQUIRED_FOR_DEFAULT_BATCH_SIZE = 4294967296;
 // We assume RGB input.
 constexpr int NUM_INPUT_CHANNELS = 3;
 
-// Annotated and predicted bounding boxes are defined relative to a
-// GRID_SIZE x GRID_SIZE grid laid over the image.
-constexpr int GRID_SIZE = 13;
-
 // The spatial reduction depends on the input size of the pre-trained model
 // (relative to the grid size).
 // TODO: When we support alternative base models, we will have to generalize.
@@ -130,13 +126,15 @@ float_array_map get_prediction_config() {
   return config;
 }
 
-image_augmenter::options get_augmentation_options(flex_int batch_size) {
+image_augmenter::options get_augmentation_options(flex_int batch_size,
+                                                  flex_int grid_height,
+                                                  flex_int grid_width) {
   image_augmenter::options opts;
 
   // Specify the fixed image size expected by the neural network.
   opts.batch_size = static_cast<size_t>(batch_size);
-  opts.output_width = GRID_SIZE * SPATIAL_REDUCTION;
-  opts.output_height = GRID_SIZE * SPATIAL_REDUCTION;
+  opts.output_height = static_cast<size_t>(grid_height * SPATIAL_REDUCTION);
+  opts.output_width = static_cast<size_t>(grid_width * SPATIAL_REDUCTION);
 
   // Apply random crops.
   opts.crop_prob = 0.9f;
@@ -205,6 +203,20 @@ void object_detector::init_options(
       FLEX_UNDEFINED,
       1,
       std::numeric_limits<int>::max());
+  options.create_integer_option(
+      /* name          */ "grid_height",
+      /* description   */
+      "Height of the grid of features computed for each image",
+      /* default_value */ 13,
+      /* lower_bound   */ 1,
+      /* upper_bound   */ std::numeric_limits<int>::max());
+  options.create_integer_option(
+      /* name          */ "grid_width",
+      /* description   */
+      "Width of the grid of features computed for each image",
+      /* default_value */ 13,
+      /* lower_bound   */ 1,
+      /* upper_bound   */ std::numeric_limits<int>::max());
 
   // Validate user-provided options.
   options.set_options(opts);
@@ -347,6 +359,8 @@ variant_map_type object_detector::perform_evaluation(gl_sframe data,
   std::string annotations_column_name = read_state<flex_string>("annotations");
   flex_list class_labels = read_state<flex_list>("classes");
   size_t batch_size = static_cast<size_t>(options.value("batch_size"));
+  size_t grid_height = static_cast<size_t>(options.value("grid_height"));
+  size_t grid_width = static_cast<size_t>(options.value("grid_width"));
   float iou_threshold =
       read_state<flex_float>("non_maximum_suppression_threshold");
 
@@ -365,8 +379,8 @@ variant_map_type object_detector::perform_evaluation(gl_sframe data,
   // augmentations, just resize the input images to the desired shape.
   image_augmenter::options augmenter_opts;
   augmenter_opts.batch_size = batch_size;
-  augmenter_opts.output_width = GRID_SIZE * SPATIAL_REDUCTION;
-  augmenter_opts.output_height = GRID_SIZE * SPATIAL_REDUCTION;
+  augmenter_opts.output_height = grid_height * SPATIAL_REDUCTION;
+  augmenter_opts.output_width = grid_width * SPATIAL_REDUCTION;
   std::unique_ptr<image_augmenter> augmenter =
       ctx->create_image_augmenter(augmenter_opts);
 
@@ -375,15 +389,15 @@ variant_map_type object_detector::perform_evaluation(gl_sframe data,
   int num_outputs_per_anchor = 5 + static_cast<int>(class_labels.size());
   int num_output_channels = num_outputs_per_anchor * anchor_boxes().size();
   std::unique_ptr<model_backend> model = ctx->create_object_detector(
-      /* n */     options.value("batch_size"),
-      /* c_in */  NUM_INPUT_CHANNELS,
-      /* h_in */  GRID_SIZE * SPATIAL_REDUCTION,
-      /* w_in */  GRID_SIZE * SPATIAL_REDUCTION,
-      /* c_out */ num_output_channels,
-      /* h_out */ GRID_SIZE,
-      /* w_out */ GRID_SIZE,
-      get_prediction_config(),
-      get_model_params());
+      /* n       */ options.value("batch_size"),
+      /* c_in    */ NUM_INPUT_CHANNELS,
+      /* h_in    */ grid_height * SPATIAL_REDUCTION,
+      /* w_in    */ grid_width * SPATIAL_REDUCTION,
+      /* c_out   */ num_output_channels,
+      /* h_out   */ grid_height,
+      /* w_out   */ grid_width,
+      /* config  */ get_prediction_config(),
+      /* weights */ get_model_params());
 
   // Initialize the metric calculator
   average_precision_calculator calculator(class_labels);
@@ -562,6 +576,9 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
   // Initialize the result with the learned layers from the model_backend.
   model_spec yolo_nn_spec(nn_spec_->get_coreml_spec());
 
+  size_t grid_height = static_cast<size_t>(options.value("grid_height"));
+  size_t grid_width = static_cast<size_t>(options.value("grid_width"));
+
   std::string coordinates_str = "coordinates";
   std::string confidence_str = "confidence";
 
@@ -584,8 +601,8 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
 
   // Add the layers that convert to intelligible predictions.
   add_yolo(&yolo_nn_spec, coordinates_str, confidence_str, "conv8_fwd",
-           anchor_boxes(), read_state<flex_int>("num_classes"),
-           GRID_SIZE, GRID_SIZE);
+           anchor_boxes(), read_state<flex_int>("num_classes"), grid_height,
+           grid_width);
 
   // Compute the string representation of the list of class labels.
   flex_string class_labels_str;
@@ -619,14 +636,12 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
   // TODO: Should we also be adding the non-user-defined keys, such as
   // "version" and "shortDescription", or is that up to the frontend?
 
-  std::shared_ptr<MLModelWrapper> model_wrapper =
-      export_object_detector_model(yolo_nn_spec,
-                                   GRID_SIZE * SPATIAL_REDUCTION,
-                                   GRID_SIZE * SPATIAL_REDUCTION,
-                                   class_labels.size(),
-                                   GRID_SIZE*GRID_SIZE * anchor_boxes().size(),
-                                   std::move(user_defined_metadata), std::move(class_labels),
-                                   std::move(opts));
+  std::shared_ptr<MLModelWrapper> model_wrapper = export_object_detector_model(
+      yolo_nn_spec, grid_width * SPATIAL_REDUCTION,
+      grid_height * SPATIAL_REDUCTION, class_labels.size(),
+      grid_height * grid_width * anchor_boxes().size(),
+      std::move(user_defined_metadata), std::move(class_labels),
+      std::move(opts));
 
   if (!filename.empty()) {
     model_wrapper->save(filename);
@@ -661,13 +676,9 @@ void object_detector::init_train(gl_sframe data,
                                  std::map<std::string, flexible_type> opts) {
   // Record the relevant column names upfront, for use in create_iterator. Also
   // values fixed by this version of the toolkit.
-  std::array<flex_int, 3> input_image_shape =  // Using CoreML CHW format.
-      {{3, GRID_SIZE * SPATIAL_REDUCTION, GRID_SIZE * SPATIAL_REDUCTION}};
   add_or_update_state({
       { "annotations", annotations_column_name },
       { "feature", image_column_name },
-      { "input_image_shape", flex_list(input_image_shape.begin(),
-                                       input_image_shape.end()) },
       { "model", "darknet-yolo" },
       { "non_maximum_suppression_threshold",
         DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD },
@@ -700,37 +711,44 @@ void object_detector::init_train(gl_sframe data,
   init_options(opts);
 
   // Set additional model fields.
+  flex_int grid_height = options.value("grid_height");
+  flex_int grid_width = options.value("grid_width");
+  std::array<flex_int, 3> input_image_shape =  // Using CoreML CHW format.
+      {{3, grid_height * SPATIAL_REDUCTION, grid_width * SPATIAL_REDUCTION}};
   const std::vector<std::string>& classes =
       training_data_iterator_->class_labels();
   add_or_update_state({
-      { "classes", flex_list(classes.begin(), classes.end()) },
-      { "num_bounding_boxes", training_data_iterator_->num_instances() },
-      { "num_classes", training_data_iterator_->class_labels().size() },
-      { "num_examples", data.size() },
-      { "training_epochs", 0 },
-      { "training_iterations", 0 },
+      {"classes", flex_list(classes.begin(), classes.end())},
+      {"input_image_shape",
+       flex_list(input_image_shape.begin(), input_image_shape.end())},
+      {"num_bounding_boxes", training_data_iterator_->num_instances()},
+      {"num_classes", training_data_iterator_->class_labels().size()},
+      {"num_examples", data.size()},
+      {"training_epochs", 0},
+      {"training_iterations", 0},
   });
   // TODO: The original Python implementation also exposed "anchors",
   // "non_maximum_suppression_threshold", and "training_time".
 
   // Instantiate the data augmenter.
   training_data_augmenter_ = training_compute_context_->create_image_augmenter(
-      get_augmentation_options(options.value("batch_size")));
+      get_augmentation_options(options.value("batch_size"), grid_height,
+                               grid_width));
 
   // Instantiate the NN backend.
   int num_outputs_per_anchor =  // 4 bbox coords + 1 conf + one-hot class labels
       5 + static_cast<int>(training_data_iterator_->class_labels().size());
   int num_output_channels = num_outputs_per_anchor * anchor_boxes().size();
   training_model_ = training_compute_context_->create_object_detector(
-      /* n */     options.value("batch_size"),
-      /* c_in */  NUM_INPUT_CHANNELS,
-      /* h_in */  GRID_SIZE * SPATIAL_REDUCTION,
-      /* w_in */  GRID_SIZE * SPATIAL_REDUCTION,
-      /* c_out */ num_output_channels,
-      /* h_out */ GRID_SIZE,
-      /* w_out */ GRID_SIZE,
-      get_training_config(),
-      get_model_params());
+      /* n       */ options.value("batch_size"),
+      /* c_in    */ NUM_INPUT_CHANNELS,
+      /* h_in    */ grid_height * SPATIAL_REDUCTION,
+      /* w_in    */ grid_width * SPATIAL_REDUCTION,
+      /* c_out   */ num_output_channels,
+      /* h_out   */ grid_height,
+      /* w_out   */ grid_width,
+      /* config  */ get_training_config(),
+      /* weights */ get_model_params());
 
   // Print the header last, after any logging triggered by initialization above.
   if (training_table_printer_) {
@@ -826,9 +844,11 @@ shared_float_array object_detector::prepare_label_batch(
 
   // Allocate a float buffer of sufficient size.
   size_t batch_size = static_cast<size_t>(options.value("batch_size"));
+  size_t grid_height = static_cast<size_t>(options.value("grid_height"));
+  size_t grid_width = static_cast<size_t>(options.value("grid_width"));
   size_t num_classes = training_data_iterator_->class_labels().size();
   size_t num_channels = anchor_boxes().size() * (5 + num_classes);  // C
-  size_t batch_stride = GRID_SIZE * GRID_SIZE * num_channels;  // H * W * C
+  size_t batch_stride = grid_height * grid_width * num_channels;    // H * W * C
   std::vector<float> result(batch_size * batch_stride);  // NHWC
 
   // Write the structured annotations into the float buffer.
@@ -837,8 +857,7 @@ shared_float_array object_detector::prepare_label_batch(
     annotations_batch.resize(batch_size);
   }
   for (const std::vector<image_annotation>& annotations : annotations_batch) {
-
-    convert_annotations_to_yolo(annotations, GRID_SIZE, GRID_SIZE,
+    convert_annotations_to_yolo(annotations, grid_height, grid_width,
                                 anchor_boxes().size(), num_classes, result_out);
 
     result_out += batch_stride;
@@ -847,7 +866,7 @@ shared_float_array object_detector::prepare_label_batch(
   // Wrap the resulting buffer and return it.
   return shared_float_array::wrap(
       std::move(result),
-      { annotations_batch.size(), GRID_SIZE, GRID_SIZE, num_channels });
+      {annotations_batch.size(), grid_height, grid_width, num_channels});
 }
 
 flex_int object_detector::get_max_iterations() const {
