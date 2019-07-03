@@ -101,16 +101,16 @@ numberFeatureChannels:(NSUInteger)numberFeatureChannels
   return self;
 }
 
-- (void) updateNumberOfStyles:(int)styles {
+- (void) updateNumberOfStyles:(NSUInteger)styles {
   _currentStyle = 0;
   _styles = styles;
 }
 
-- (void) updateCurrentStyle:(int)style {
+- (void) updateCurrentStyle:(NSUInteger)style {
   _currentStyle = style;
 }
 
-- (int) getCurrentStyle {
+- (NSUInteger) getCurrentStyle {
   return _currentStyle;
 }
 
