@@ -92,7 +92,8 @@ public:
     /**
      * An array with shape: (requested_batch_size, 1, predictions_in_chunk, 1)
      *
-     * Each row is the sequence of class label (indices) from one chunk.
+     * Each row is the sequence of class label (indices) from one chunk 
+     * (labels picked after majority voting).
      *
      * If no target was specified, then this value is default constructed.
      */
@@ -108,6 +109,13 @@ public:
      */
     neural_net::shared_float_array weights;
 
+
+    /**
+     * An array with shape: (requested_batch_size, 
+     * 1, prediction_window * predictions_in_chunk, 1)
+     *
+     * Each row is the sequence of raw class labels (indices) corresponding every feature.
+     */
     neural_net::shared_float_array ground_truth;
 
     /**

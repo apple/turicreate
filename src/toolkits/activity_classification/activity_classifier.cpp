@@ -868,7 +868,7 @@ void activity_classifier::perform_training_iteration() {
     std::map<std::string, shared_float_array> results = training_model_->train(
         { { "input",   result_batch.data_info.features },
           { "labels",  result_batch.data_info.labels   },
-          { "weights", result_batch.data_info.weights  } });
+          { "weights", result_batch.data_info.weights  }, });
     result_batch.loss_info = results.at("loss");
     result_batch.output_info = results.at("output");
 
