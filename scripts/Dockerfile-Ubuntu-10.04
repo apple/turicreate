@@ -49,6 +49,7 @@ RUN apt-get update && \
                rsync \
                git \
                file \
+               pkg-config \
                xz-utils && \
     ln -s /usr/bin/gcc-4.8 /usr/bin/gcc && \
     ln -s /usr/bin/g++-4.8 /usr/bin/g++ && \
@@ -85,8 +86,19 @@ RUN tar xf cmake-3.13.4-Linux-x86_64.tar.gz && \
     rm -rf /opt/cmake-3.13.4-Linux-x86_64.tar.gz
 ENV PATH="/opt/cmake-3.13.4-Linux-x86_64/bin:${PATH}"
 
-# Install Python 2.7 from source
+# Install libffi from source
 RUN mkdir -p /src
+WORKDIR /src
+RUN curl -O ftp://sourceware.org/pub/libffi/libffi-3.2.1.tar.gz
+RUN tar xf libffi-3.2.1.tar.gz
+WORKDIR /src/libffi-3.2.1
+RUN ./configure --prefix=/usr/local && \
+    make -j4 --quiet && \
+    make install && \
+    ldconfig && \
+    rm -rf /src/libffi-3.2.1*
+
+# Install Python 2.7 from source
 WORKDIR /src
 RUN curl -O https://www.python.org/ftp/python/2.7.15/Python-2.7.15.tgz
 RUN tar xf Python-2.7.15.tgz
@@ -119,6 +131,17 @@ RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enab
     ldconfig && \
     rm -rf /src/Python-3.6.8*
 
+# Install Python 3.7 from source
+WORKDIR /src
+RUN curl -O https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz
+RUN tar xf Python-3.7.3.tgz
+WORKDIR /src/Python-3.7.3
+RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enable-loadable-sqlite-extensions && \
+    make -j4 --quiet && \
+    make install && \
+    ldconfig && \
+    rm -rf /src/Python-3.7.3*
+
 # Install pip and virtualenv
 WORKDIR /src
 RUN curl -O https://bootstrap.pypa.io/get-pip.py
@@ -128,6 +151,8 @@ RUN python3.5 get-pip.py
 RUN pip3.5 install virtualenv
 RUN python3.6 get-pip.py
 RUN pip3.6 install virtualenv
+RUN python3.7 get-pip.py
+RUN pip3.7 install virtualenv
 RUN rm -rf /src/get-pip.py
 
 # Install llvm 8.0.0 from source with clang (no libc++)
@@ -155,10 +180,8 @@ ENV CXX="clang++"
 WORKDIR /build
 
 # Set ccache size to 4GB
-CMD mkdir -p $CCACHE_DIR
-CMD ccache -s
-CMD ccache -M 4G
+RUN mkdir -p $CCACHE_DIR
+RUN ccache -M 4G
 
 # Clean up now-unnecessary paths in image
-CMD apt-get clean
-CMD rm -rf /src
+RUN rm -rf /src
