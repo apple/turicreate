@@ -745,8 +745,8 @@ void activity_classifier::init_train(
                        {"features", flex_list(feature_column_names.begin(),
                                               feature_column_names.end())}});
 
-  bool use_data_augmentation = read_state<bool>("use_data_augmentation");
   // Bind the data to a data iterator.
+  bool use_data_augmentation = read_state<bool>("use_data_augmentation");
   training_data_iterator_ =
       create_iterator(data, /* requires_labels */ true, /* is_train */ true,
                       use_data_augmentation);

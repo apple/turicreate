@@ -62,10 +62,10 @@ public:
     flex_list class_labels;
 
     /**  Set to true, when the data is used for training. */
-    bool is_train;
+    bool is_train = false;
 
     /** Augments training data when set to true*/
-    bool use_data_augmentation;
+    bool use_data_augmentation = false;
   };
 
   /** Defines the output of a data_iterator. */
@@ -182,9 +182,9 @@ private:
   gl_sframe_range range_iterator_;
   gl_sframe_range::iterator next_row_;
   gl_sframe_range::iterator end_of_rows_;
-  size_t sample_in_row_;
-  bool is_train_;
-  bool use_data_augmentation_;
+  size_t sample_in_row_ = 0;
+  bool is_train_ = false;
+  bool use_data_augmentation_ = false;
 };
 
 /**

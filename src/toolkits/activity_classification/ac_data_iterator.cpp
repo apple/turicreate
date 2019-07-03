@@ -132,18 +132,18 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
                                                         const int &predictions_in_chunk,
                                                         const std::string &target,
                                                         bool verbose) {
-#ifndef NDEBUG
   DASSERT_TRUE(features.size() > 0);
   DASSERT_TRUE(prediction_window > 0);
   DASSERT_TRUE(predictions_in_chunk > 0);
   DASSERT_TRUE(data.contains_column(session_id));
-  for (auto &feat : features) {
+  for (TURI_ATTRIBUTE_UNUSED_NDEBUG auto &feat : features) {
     DASSERT_TRUE(data.contains_column(feat));
   }
-#endif
 
   bool use_target = (target != "");
-  DASSERT_TRUE(!use_target || data.contains_column(target));
+  if (use_target) {
+    DASSERT_TRUE(data.contains_column(target));
+  }
 
   if (verbose) {
     logprogress_stream << "Pre-processing " << data.size() << " samples..."
@@ -275,15 +275,12 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
   return result_dict;
 }
 
-variant_map_type _activity_classifier_prepare_data_aug_impl(const gl_sframe &data,
-                                                        const std::vector<std::string> &features,
-                                                        const std::string &session_id,
-                                                        const int &prediction_window,
-                                                        const int &predictions_in_chunk,
-                                                        const std::string &target,
-                                                        bool verbose) {
+variant_map_type _activity_classifier_prepare_data_aug_impl(
+    const gl_sframe &data, const std::vector<std::string> &features,
+    const std::string &session_id, int prediction_window,
+    int predictions_in_chunk, const std::string &target, bool verbose) {
 #ifndef NDEBUG
-  DASSERT_TRUE(features.size() > 0);
+  DASSERT_GT(features.size(), 0)
   DASSERT_TRUE(prediction_window > 0);
   DASSERT_TRUE(predictions_in_chunk > 0);
   DASSERT_TRUE(data.contains_column(session_id));
@@ -319,9 +316,8 @@ variant_map_type _activity_classifier_prepare_data_aug_impl(const gl_sframe &dat
                                                      flex_type_enum::INTEGER,
                                                      data[session_id].dtype()};
   if (use_target) {
-    output_column_names.insert(output_column_names.end(), {"target"});
-    output_column_types.insert(output_column_types.end(),
-                               {flex_type_enum::VECTOR});
+    output_column_names.push_back("target");
+    output_column_types.push_back(flex_type_enum::VECTOR);
   }
 
   gl_sframe_writer output_writer(output_column_names, output_column_types, 1);
@@ -335,10 +331,10 @@ variant_map_type _activity_classifier_prepare_data_aug_impl(const gl_sframe &dat
   size_t processed_lines = 0;
 
   // Iterate over the user data. The features and targets are aggregated, and
-  // handled whenever a the ending of a session is reached.
+  // handled whenever at the ending of a session is reached.
   size_t chunk_size = 0;
   for (const auto &line : data.range_iterator()) {
-    auto curr_session_id = line[column_index_map[session_id]];
+    flexible_type curr_session_id = line[column_index_map[session_id]];
 
     if (curr_session_id != last_session_id) {
 
@@ -366,14 +362,10 @@ variant_map_type _activity_classifier_prepare_data_aug_impl(const gl_sframe &dat
 
     chunk_size += 1;
 
-    for (const auto feature_name : features) {
+    for (const std::string &feature_name : features) {
       curr_chunk_features.push_back(line[column_index_map[feature_name]]);
     }
 
-    // If target column exists, the targets are aggregated for the duration
-    // of prediction_window.
-    // Each prediction_window subsampled into a single target value, by
-    // selecting the most frequent value (statistical mode) within the window.
     if (use_target) {
       curr_chunk_targets.push_back(line[column_index_map[target]]);
     }
@@ -509,8 +501,6 @@ simple_data_iterator::preprocessed_data simple_data_iterator::preprocess_data(
   return result;
 }
 
-size_t sample = 0;
-
 simple_data_iterator::simple_data_iterator(const parameters &params)
     : data_(preprocess_data(params)),
       num_samples_per_prediction_(params.prediction_window),
@@ -579,7 +569,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
     const sframe_rows::row& row = *next_row_;
 
-    const flex_int &chunk_length = row[chunk_len_column_index].get<flex_int>();
+    flex_int chunk_length = row[chunk_len_column_index].get<flex_int>();
 
     // Only for training, we introduce a random offset
     if (sample_in_row_ == 0 &&
