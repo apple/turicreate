@@ -40,25 +40,26 @@ static std::map<std::string,size_t> generate_column_index_map(const std::vector<
  * \return    The most frequent value within the given vector.
  */
 
-static double vec_mode(const flex_vec& input_vec) {
-    std::vector<int> histogram;
-    for (size_t i = 0; i < input_vec.size(); ++i) {
-        size_t value = static_cast<size_t>(input_vec[i]);
+static double vec_mode(flex_vec::const_iterator first,
+                       flex_vec::const_iterator last) {
+  std::vector<int> histogram;
+  for (flex_vec::const_iterator i = first; i < last; ++i) {
+    size_t value = static_cast<size_t>(*i);
 
-        // Each value should be in the index of a class label
-        DASSERT_EQ(static_cast<double>(static_cast<size_t>(input_vec[i])), input_vec[i]);
+    // Each value should be in the index of a class label
+    DASSERT_EQ(static_cast<double>(static_cast<size_t>(*i)), *i);
 
-        if(histogram.size() < (value + 1)){
-          histogram.resize(value + 1);
-        }
-
-        histogram[value]++;
+    if (histogram.size() < (value + 1)) {
+      histogram.resize(value + 1);
     }
 
-    auto majority = std::max_element(histogram.begin(), histogram.end());
+    histogram[value]++;
+  }
 
-    // return index to mode majority value
-    return std::distance(histogram.begin(), majority);
+  auto majority = std::max_element(histogram.begin(), histogram.end());
+
+  // return index to mode majority value
+  return std::distance(histogram.begin(), majority);
 }
 
 /**
@@ -97,7 +98,7 @@ static void finalize_chunk(flex_vec&            curr_chunk_features,
 
     if (use_target) {
         if (curr_window_targets.size() > 0) {
-            curr_chunk_targets.push_back(vec_mode(curr_window_targets));
+            curr_chunk_targets.push_back(vec_mode(curr_window_targets.begin(), curr_window_targets.end()));
             curr_window_targets.clear();
         }
 
@@ -222,7 +223,7 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
             curr_window_targets.push_back(line[column_index_map[target]]);
 
             if (curr_window_targets.size() == static_cast<size_t>(prediction_window)) {
-                auto target_val = vec_mode(curr_window_targets);
+                auto target_val = vec_mode(curr_window_targets.begin(), curr_window_targets.end());
                 curr_chunk_targets.push_back(target_val);
                 curr_window_targets.clear();
             }
