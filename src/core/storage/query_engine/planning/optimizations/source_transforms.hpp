@@ -135,8 +135,8 @@ class opt_merge_all_same_sarrays : public opt_transform {
           // Use this as the key since any range nodes with the same
           // begin and end indices can be merged.
           id.ptr_key = int(planner_node_type::RANGE_NODE);
-          id.begin_index = sn->p("begin_index");
-          id.end_index = sn->p("end_index");
+          id.begin_index = sn->p("start") + sn->p("begin_index");
+          id.end_index = sn->p("start") + sn->p("end_index");
 
           source_out out;
           out.src_node = sn;

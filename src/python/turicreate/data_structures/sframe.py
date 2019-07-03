@@ -4361,7 +4361,8 @@ class SFrame(object):
 
         Parameters
         ----------
-        values : SArray | list | numpy.ndarray | pandas.Series | str
+        values : SArray | list | numpy.ndarray | pandas.Series | str | map
+        | generator | filter | None | range
             The values to use to filter the SFrame.  The resulting SFrame will
             only include rows that have one of these values in the given
             column.
@@ -4400,6 +4401,35 @@ class SFrame(object):
         |     cow     | 3  | jimbob |
         +-------------+----+--------+
         [2 rows x 3 columns]
+
+        >>> sf.filter_by(None, 'name', exclude=True)
+        +-------------+----+--------+
+        | animal_type | id |  name  |
+        +-------------+----+--------+
+        |     dog     | 1  |  bob   |
+        |     cat     | 2  |  jim   |
+        |     cow     | 3  | jimbob |
+        |    horse    | 4  | bobjim |
+        +-------------+----+--------+
+        [4 rows x 3 columns]
+
+        >>> sf.filter_by(filter(lambda x : len(x) > 3, sf['name']), 'name', exclude=True)
+        +-------------+----+--------+
+        | animal_type | id |  name  |
+        +-------------+----+--------+
+        |     dog     | 1  |  bob   |
+        |     cat     | 2  |  jim   |
+        +-------------+----+--------+
+        [2 rows x 3 columns]
+
+        >>> sf.filter_by(range(3), 'id', exclude=True)
+        +-------------+----+--------+
+        | animal_type | id |  name  |
+        +-------------+----+--------+
+        |     cow     | 3  | jimbob |
+        |    horse    | 4  | bobjim |
+        +-------------+----+--------+
+        [2 rows x 3 columns]
         """
         if type(column_name) is not str:
             raise TypeError("Must pass a str as column_name")
@@ -4408,21 +4438,37 @@ class SFrame(object):
         if column_name not in existing_columns:
             raise KeyError("Column '" + column_name + "' not in SFrame.")
 
+        existing_type = self[column_name].dtype
+
         if type(values) is not SArray:
             # If we were given a single element, try to put in list and convert
             # to SArray
             if not _is_non_string_iterable(values):
                 values = [values]
-            values = SArray(values)
+            else:
+                # is iterable
+                # if `values` is a map/filter/generator, then we need to convert it to list
+                # so we can repeatedly iterate through the iterable object through `all`.
+                # true that, we don't cover use defined iterators.
+                # I find it's too hard to check whether an iterable can be used repeatedly.
+                # just let em not use.
+                if SArray._is_iterable_required_to_listify(values):
+                    values = list(values)
+
+            # if all vals are None, cast the sarray to existing type
+            # this will enable filter_by(None, column_name) to remove missing vals
+            if all(val is None for val in values):
+                values = SArray(values, existing_type)
+            else:
+                values = SArray(values)
 
         value_sf = SFrame()
         value_sf.add_column(values, column_name, inplace=True)
 
-        existing_type = self.column_types()[self.column_names().index(column_name)]
         given_type = value_sf.column_types()[0]
         if given_type != existing_type:
-            raise TypeError("Type of given values does not match type of column '" +
-                column_name + "' in SFrame.")
+            raise TypeError(("Type of given values ({0}) does not match type of column '" +
+                column_name + "' ({1}) in SFrame.").format(given_type, existing_type))
 
         # Make sure the values list has unique values, or else join will not
         # filter.

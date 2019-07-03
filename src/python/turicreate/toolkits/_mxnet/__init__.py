@@ -22,7 +22,7 @@ class _MXNetWrapper(object):
             not_yet_supported_version = (1, 2, 0)
             recommended_version_str = '1.1.0'
             if not (lowest_version <= version_tuple < not_yet_supported_version):
-                print('WARNING: You are using MXNet', _mx.__version__, 'which may result in breaking behavior.')
+                print('WARNING: You are using MXNet', mxnet.__version__, 'which may result in breaking behavior.')
                 print('         To fix this, please install the currently recommended version:')
                 print()
                 print('             pip uninstall -y mxnet && pip install mxnet==%s' % recommended_version_str)

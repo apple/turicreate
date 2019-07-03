@@ -43,12 +43,16 @@ important that the input to the model be 15,600 elements of one channel
 data at a 16k sample rate.
 
 In order get predictions from your model, you will need to chuck your
-data into the correct size. Below is an example of doing that:
+data into the correct size. You will also need to import both `CoreML`
+and `AVFoundation`.
+
+Below is an example of doing that:
 ```swift
 // Read wav file
 var wav_file:AVAudioFile!
 do {
-   wav_file = try AVAudioFile(forReading:audioFilename)
+   let fileUrl = URL(fileReferenceLiteralResourceName: "<path to wav file>")
+   wav_file = try AVAudioFile(forReading:fileUrl)
 } catch {
    fatalError("Could not open wav file.")
 }
@@ -56,7 +60,8 @@ do {
 print("wav file length: \(wav_file.length)")
 assert(wav_file.fileFormat.sampleRate==16000.0, "Sample rate is not right!")
 
-let buffer = AVAudioPCMBuffer(pcmFormat: wav_file.processingFormat, frameCapacity: UInt32(wav_file.length))
+let buffer = AVAudioPCMBuffer(pcmFormat: wav_file.processingFormat,
+                              frameCapacity: UInt32(wav_file.length))
 do {
    try wav_file.read(into:buffer!)
 } catch{
@@ -68,7 +73,9 @@ guard let bufferData = try buffer?.floatChannelData else {
 
 // Chunk data and set to CoreML model
 let windowSize = 15600
-guard let audioData = try? MLMultiArray(shape:[windowSize as NSNumber], dataType:MLMultiArrayDataType.float32) else {
+guard let audioData = try? MLMultiArray(shape:[windowSize as NSNumber],
+                                        dataType:MLMultiArrayDataType.float32)
+                                        else {
    fatalError("Can not create MLMultiArray")
 }
 
@@ -80,12 +87,12 @@ for windowIndex in 0..<Int(windowNumber) {
    for i in 0...windowSize {
       audioData[i] = NSNumber.init(value: bufferData[0][offset + i])
    }
-   let modelInput = modelInput(audio: audioData)
+   let modelInput = my_sound_classifierInput(audio: audioData)
 
    guard let modelOutput = try? model.prediction(input: modelInput) else {
       fatalError("Error calling predict")
    }
-   results.append(modelOutput.labelProbability)
+   results.append(modelOutput.categoryProbability)
 }
 ```
 
@@ -110,6 +117,6 @@ for (label, sum) in prob_sums {
 }
 
 let most_probable_label = max_sum_label
-let probability = max_sum / Float(results.count)
+let probability = max_sum / Double(results.count)
 print("\(most_probable_label) predicted, with probability: \(probability)")
 ```

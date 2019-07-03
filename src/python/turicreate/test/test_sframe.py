@@ -1847,6 +1847,68 @@ class SFrameTest(unittest.TestCase):
         sf.add_column(SArray(self.float_data), "floats", inplace=True)
         sf.add_column(SArray(self.string_data), "strings", inplace=True)
 
+        # filter by None should take no effect on data set without missing val
+        res = sf.filter_by(None, "ints", exclude=True)
+        self.__assert_join_results_equal(res, sf)
+        res = sf.filter_by(None, "floats", exclude=True)
+        self.__assert_join_results_equal(res, sf)
+        res = sf.filter_by(None, "strings", exclude=True)
+        self.__assert_join_results_equal(res, sf)
+
+        res = sf.filter_by(None, "ints")
+        self.assertEqual(len(res), 0)
+        res = sf.filter_by(None, "strings")
+        self.assertEqual(len(res), 0)
+
+        # private use only
+        def __build_data_list_with_none(data_lst):
+            data_lst.insert(len(data_lst) // 2, None)
+            data_lst.insert(0, None)
+            data_lst.append(None)
+            return data_lst
+
+        sf_none = SFrame()
+        sf_none.add_column(SArray(__build_data_list_with_none(self.int_data[:])), "ints", inplace=True)
+        sf_none.add_column(SArray(__build_data_list_with_none(self.float_data[:])), "floats", inplace=True)
+        sf_none.add_column(SArray(__build_data_list_with_none(self.string_data[:])), "strings", inplace=True)
+
+        res = sf_none.filter_by(None, "ints")
+        self.assertEqual(len(res), 3)
+        res = sf_none.filter_by(None, "ints", exclude=True)
+        self.__assert_join_results_equal(res, sf)
+
+        res = sf_none.filter_by(None, "floats")
+        self.assertEqual(len(res), 3)
+        res = sf_none.filter_by(None, "floats", exclude=True)
+        self.__assert_join_results_equal(res, sf)
+
+        res = sf_none.filter_by(None, "strings")
+        self.assertEqual(len(res), 3)
+        res = sf_none.filter_by(None, "strings", exclude=True)
+        self.__assert_join_results_equal(res, sf)
+
+        # by generator, filter, map, range
+        res = sf.filter_by(range(10), "ints")
+        self.assertEqual(len(res), 9)
+        self.assertEqual(res["ints"][0], 1)
+        res = sf.filter_by(range(10), "ints", exclude=True)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res["ints"][0], 10)
+
+        res = sf.filter_by(map(lambda x : x - 5., self.float_data), "floats")
+        self.assertEqual(len(res), 5)
+        self.assertEqual(res["floats"][0], self.float_data[0])
+        res = sf.filter_by(map(lambda x : x - 5., self.float_data), "floats", exclude=True)
+        self.assertEqual(len(res), 5)
+        self.assertEqual(res["floats"][0], self.float_data[5])
+
+        res = sf.filter_by(filter(lambda x : len(x) > 1, self.string_data), "strings")
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res["strings"][0], self.string_data[-1])
+        res = sf.filter_by(filter(lambda x : len(x) > 1, self.string_data), "strings", exclude=True)
+        self.assertEqual(len(res), 9)
+        self.assertEqual(res["strings"][0], self.string_data[0])
+
         # Normal cases
         res = sf.filter_by(SArray(self.int_data), "ints")
         self.__assert_join_results_equal(res, sf)

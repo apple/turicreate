@@ -539,6 +539,13 @@ sframe::iterator sframe::get_output_iterator(size_t segmentid) {
   return sframe::iterator(
       [=](const std::vector<flexible_type>& val)->void{
         // check that all the types match up
+        if (UNLIKELY(val.size() != ctypes.size())) {
+          std::stringstream ss;
+          ss << "Can not write to SFrame, got the wrong number of columns. "
+             << "Expected: " << ctypes.size() << " columns. Got: " << val.size()
+             << " columns.";
+          log_and_throw(ss.str());
+        }
         bool badtype = false;
         for (size_t i = 0;i < val.size(); ++i) {
           if (val[i].get_type() != flex_type_enum::UNDEFINED &&
@@ -576,10 +583,11 @@ sframe::iterator sframe::get_output_iterator(size_t segmentid) {
       [=](std::vector<flexible_type>&& val)->void{
         // check that all the types match up
         // but with this one we can modify val directly
-        if (val.size() != ctypes.size()) {
+        if (UNLIKELY(val.size() != ctypes.size())) {
           std::stringstream ss;
-          ss << "Write to sframe with row size mismatch. "
-             << "Expected: " << ctypes.size() << " Actual: " << val.size();
+          ss << "Can not write to SFrame, got the wrong number of columns. "
+             << "Expected: " << ctypes.size() << " columns. Got: " << val.size()
+             << " columns.";
           log_and_throw(ss.str());
         }
 
