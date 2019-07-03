@@ -281,6 +281,143 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
     return result_dict;
 }
 
+variant_map_type _activity_classifier_prepare_data_aug_impl(
+    const gl_sframe &data, const std::vector<std::string> &features,
+    const std::string &session_id, int prediction_window,
+    int predictions_in_chunk, const std::string &target, bool verbose) {
+
+#ifndef NDEBUG
+  DASSERT_GT(features.size(), 0);
+  DASSERT_TRUE(prediction_window > 0);
+  DASSERT_TRUE(predictions_in_chunk > 0);
+  DASSERT_TRUE(data.contains_column(session_id));
+  for (auto &feat : features) {
+    DASSERT_TRUE(data.contains_column(feat));
+  }
+#endif
+
+  bool use_target = (target != "");
+  DASSERT_TRUE(!use_target || data.contains_column(target));
+
+  if (verbose) {
+    logprogress_stream << "Pre-processing " << data.size() << " samples..."
+                       << std::endl;
+  }
+
+  // Build a dict of the column order by column name, to later access within
+  // the iterator
+  auto column_index_map = generate_column_index_map(data.column_names());
+  size_t chunk_length = prediction_window * predictions_in_chunk;
+
+  flex_vec curr_chunk_targets;
+  flex_vec curr_chunk_features;
+
+  flexible_type last_session_id = data[session_id][0];
+  size_t number_of_sessions = 0;
+
+  // Prepare an output SFrame writer, that will write a new SFrame in the
+  // converted batch-processing ready format.
+  std::vector<std::string> output_column_names = {"features", "chunk_len",
+                                                  "session_id"};
+  std::vector<flex_type_enum> output_column_types = {flex_type_enum::VECTOR,
+                                                     flex_type_enum::INTEGER,
+                                                     data[session_id].dtype()};
+  if (use_target) {
+    output_column_names.push_back("target");
+    output_column_types.push_back(flex_type_enum::VECTOR);
+  }
+
+  gl_sframe_writer output_writer(output_column_names, output_column_types, 1);
+
+  if (verbose) {
+    logprogress_stream << "Using sequences of size " << chunk_length
+                       << " for model creation." << std::endl;
+  }
+
+  time_t last_print_time = time(0);
+  size_t processed_lines = 0;
+
+  // Iterate over the user data. The features and targets are aggregated, and
+  // handled whenever at the ending of a session is reached.
+  size_t chunk_size = 0;
+  for (const auto &line : data.range_iterator()) {
+    flexible_type curr_session_id = line[column_index_map[session_id]];
+
+    if (curr_session_id != last_session_id) {
+
+      // Write the aggregated data of the current chunk (which includes all
+      // the samples in the current session) as a single new vector in the
+      // converted SFrame, and init all aggregation vectors to begin a new
+      // chunk.
+      if (curr_chunk_features.size() > 0) {
+        if (use_target) {
+          output_writer.write({curr_chunk_features, chunk_size, last_session_id,
+                               curr_chunk_targets},
+                              0);
+        } else {
+          output_writer.write(
+              {curr_chunk_features, chunk_size, last_session_id}, 0);
+        }
+        curr_chunk_features.clear();
+        curr_chunk_targets.clear();
+      }
+
+      chunk_size = 0;
+      last_session_id = curr_session_id;
+      number_of_sessions++;
+    }
+
+    chunk_size += 1;
+
+    for (const std::string &feature_name : features) {
+      curr_chunk_features.push_back(line[column_index_map[feature_name]]);
+    }
+
+    if (use_target) {
+      curr_chunk_targets.push_back(line[column_index_map[target]]);
+    }
+
+    time_t now = time(0);
+    if (verbose && difftime(now, last_print_time) > 10) {
+      logprogress_stream << "Pre-processing: " << std::setw(3)
+                         << (100 * processed_lines / data.size())
+                         << "% complete" << std::endl;
+      last_print_time = now;
+    }
+    processed_lines += 1;
+  }
+
+
+  if (curr_chunk_features.size() > 0) {
+    if (use_target) {
+      output_writer.write({curr_chunk_features, chunk_size, last_session_id,
+                           curr_chunk_targets},
+                          0);
+    } else {
+      output_writer.write({curr_chunk_features, chunk_size, last_session_id},
+                          0);
+    }
+    curr_chunk_features.clear();
+    curr_chunk_targets.clear();
+  }
+
+  // Update the count of the last session in the dataset
+  number_of_sessions++;
+
+  if (verbose) {
+    logprogress_stream << "Processed a total of " << number_of_sessions
+                       << " sessions." << std::endl;
+  }
+  gl_sframe converted_sframe = output_writer.close();
+  converted_sframe.materialize();
+
+  variant_map_type result_dict;
+  result_dict["converted_data"] = converted_sframe;
+  result_dict["num_of_sessions"] = number_of_sessions;
+
+  return result_dict;
+}
+
 }  // namespace
 
 variant_map_type _activity_classifier_prepare_data( const gl_sframe &data,
@@ -352,14 +489,12 @@ simple_data_iterator::preprocessed_data simple_data_iterator::preprocess_data(
   }
 
   // Chunk the data, so that each row of the resulting SFrame corresponds to a
-  // sequence of up to predictions_in_chunk prediction windows (from the same
-  // session), each comprising up to prediction_window rows from the original
-  // SFrame.
-  variant_map_type result_map = _activity_classifier_prepare_data_impl(
+  // all samples in a session from the original SFrame.
+  variant_map_type result_map = _activity_classifier_prepare_data_aug_impl(
       data, feature_column_names, params.session_id_column_name,
       static_cast<int>(params.prediction_window),
       static_cast<int>(params.predictions_in_chunk), params.target_column_name,
-      /* verbose */ params.verbose);
+      /* verbose */ params.is_train);
 
   preprocessed_data result;
   result.chunks = variant_get_value<gl_sframe>(result_map.at("converted_data"));
@@ -373,14 +508,16 @@ simple_data_iterator::preprocessed_data simple_data_iterator::preprocess_data(
   return result;
 }
 
-simple_data_iterator::simple_data_iterator(const parameters& params)
-  : data_(preprocess_data(params)),
-    num_samples_per_prediction_(params.prediction_window),
-    num_predictions_per_chunk_(params.predictions_in_chunk),
-    range_iterator_(data_.chunks.range_iterator()),
-    next_row_(range_iterator_.begin()),
-    end_of_rows_(range_iterator_.end())
-{}
+simple_data_iterator::simple_data_iterator(const parameters &params)
+    : data_(preprocess_data(params)),
+      num_samples_per_prediction_(params.prediction_window),
+      num_predictions_per_chunk_(params.predictions_in_chunk),
+      range_iterator_(data_.chunks.range_iterator()),
+      next_row_(range_iterator_.begin()),
+      end_of_rows_(range_iterator_.end()),
+      sample_in_row_(0),
+      is_train_(params.is_train),
+      use_data_augmentation_(params.use_data_augmentation) {}
 
 const flex_list& simple_data_iterator::feature_names() const {
   return data_.feature_names;
@@ -400,6 +537,7 @@ bool simple_data_iterator::has_next_batch() const {
 
 data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
+
   size_t num_samples_per_chunk =
       num_samples_per_prediction_ * num_predictions_per_chunk_;
   size_t num_features = data_.feature_names.size();
@@ -411,10 +549,9 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
   size_t chunk_len_column_index = data_.chunks.column_index("chunk_len");
   size_t session_id_column_index = data_.chunks.column_index("session_id");
   size_t labels_column_index = 0;
-  size_t weights_column_index = 0;
+
   if (data_.has_target) {
     labels_column_index = data_.chunks.column_index("target");
-    weights_column_index = data_.chunks.column_index("weights");
   }
 
   // Allocate buffers for the resulting batch data.
@@ -426,39 +563,70 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     labels.resize(labels_size, 0.f);
     weights.resize(labels_size, 0.f);
   }
+  std::vector<batch::chunk_info> batch_info;
+  batch_info.reserve(batch_size);
 
   // Iterate through SFrame rows until filling the batch or reaching the end of
   // the data.
   float* features_out = features.data();
   float* labels_out = labels.data();
   float* weights_out = weights.data();
-  std::vector<batch::chunk_info> batch_info;
-  batch_info.reserve(batch_size);
+
   while (batch_info.size() < batch_size && next_row_ != end_of_rows_) {
 
     const sframe_rows::row& row = *next_row_;
 
+    flex_int chunk_length = row[chunk_len_column_index].get<flex_int>();
+
+    // Only for training, we introduce a random offset
+    if (sample_in_row_ == 0 &&
+        static_cast<size_t>(chunk_length) > num_samples_per_prediction_ &&
+        is_train_ && use_data_augmentation_) {
+      sample_in_row_ = std::rand() % (num_samples_per_prediction_ - 1);
+    }
+
+    // Stores the start of next instance
+    size_t jump = sample_in_row_ + num_samples_per_chunk;
+
+    // End keeps track of the start of next instance if the last instance is
+    // smaller
+    size_t end = std::min(jump, static_cast<size_t>(chunk_length));
+
     // Copy the feature values (converting from double to float).
     const flex_vec& feature_vec = row[features_column_index].get<flex_vec>();
-    ASSERT_EQ(feature_vec.size(), features_stride);
-    features_out = std::copy(feature_vec.begin(), feature_vec.end(),
-                             features_out);
+
+    std::copy(feature_vec.begin() + sample_in_row_ * num_features,
+              feature_vec.begin() + end * num_features, features_out);
+    features_out += num_features * num_samples_per_chunk;
 
     if (data_.has_target) {
 
-      // Also copy the labels and weights.
-      const flex_vec& target_vec = row[labels_column_index].get<flex_vec>();
-      const flex_vec& weight_vec = row[weights_column_index].get<flex_vec>();
-      labels_out = std::copy(target_vec.begin(), target_vec.end(), labels_out);
-      weights_out = std::copy(weight_vec.begin(), weight_vec.end(),
-                              weights_out);
+      const flex_vec &label_vec = row[labels_column_index].get<flex_vec>();
+
+      // The label is picked using majority voting for every prediction_window
+      for (size_t i = sample_in_row_; i < end;
+           i += num_samples_per_prediction_) {
+        size_t window_end = std::min(i + num_samples_per_prediction_, end);
+        double label =
+            vec_mode(label_vec.begin() + i, label_vec.begin() + window_end);
+        labels_out[(i - sample_in_row_) / num_samples_per_prediction_] =
+            static_cast<float>(label);
+        weights_out[(i - sample_in_row_) / num_samples_per_prediction_] = 1.f;
+      }
+      labels_out += num_predictions_per_chunk_;
+      weights_out += num_predictions_per_chunk_;
     }
 
     batch_info.emplace_back();
     batch_info.back().session_id = row[session_id_column_index];
-    batch_info.back().num_samples = row[chunk_len_column_index];
+    batch_info.back().num_samples = end - sample_in_row_;
 
-    ++next_row_;
+    sample_in_row_ = end;
+
+    if (sample_in_row_ >= static_cast<size_t>(chunk_length)) {
+      ++next_row_;
+      sample_in_row_ = 0;
+    }
   }
 
   // Wrap the buffers as float_array values.
@@ -488,4 +656,4 @@ void simple_data_iterator::reset() {
 }
 
 }  //activity_classification
-}  //turi
+}  // namespace turi

@@ -61,8 +61,11 @@ public:
      */
     flex_list class_labels;
 
-    /**  Generates verbose output when set to true. */
-    bool verbose;
+    /**  Set to true, when the data is used for training. */
+    bool is_train = false;
+
+    /** Augments training data when set to true*/
+    bool use_data_augmentation = false;
   };
 
   /** Defines the output of a data_iterator. */
@@ -79,7 +82,7 @@ public:
     };
 
     /**
-     * An array with shape: (requested_batch_size,
+     * An array with shape: (requested_batch_size, 
      * 1, prediction_window * predictions_in_chunk, num_feature_columns)
      *
      * Each row is a chunk of feature values from one session.
@@ -179,6 +182,9 @@ private:
   gl_sframe_range range_iterator_;
   gl_sframe_range::iterator next_row_;
   gl_sframe_range::iterator end_of_rows_;
+  size_t sample_in_row_ = 0;
+  bool is_train_ = false;
+  bool use_data_augmentation_ = false;
 };
 
 /**
