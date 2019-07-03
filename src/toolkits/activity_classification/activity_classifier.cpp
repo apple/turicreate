@@ -200,7 +200,7 @@ void activity_classifier::init_options(
       "use_data_augmentation",
       "Data augmentation helps use prediction window started with random "
       "offset."
-      " If set to True, the trained model used augmented data.",
+      " If set to True, the trained model uses augmented data.",
       false);
 
   // Validate user-provided options.

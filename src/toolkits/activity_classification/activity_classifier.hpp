@@ -176,7 +176,7 @@ class EXPORT activity_classifier: public ml_model_base {
   // Factory for data_iterator
   virtual std::unique_ptr<data_iterator> create_iterator(
       gl_sframe data, bool requires_labels, bool is_train,
-      bool has_data_augmentation) const;
+      bool use_data_augmentation) const;
 
   // Factory for compute_context
   virtual std::unique_ptr<neural_net::compute_context> create_compute_context()
