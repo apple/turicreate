@@ -22,10 +22,7 @@ AnnotationBase::AnnotationBase(const std::shared_ptr<unity_sframe> &data,
   /* Copy as so not to mutate the sframe passed into the function */
   m_data = std::static_pointer_cast<unity_sframe>(
       m_data->copy_range(0, 1, m_data->size()));
-
-  this->_addAnnotationColumn();
   this->_addIndexColumn();
-  this->_checkDataSet();
 }
 
 void AnnotationBase::annotate(const std::string &path_to_client) {
@@ -98,25 +95,6 @@ std::shared_ptr<annotation_global> AnnotationBase::get_annotation_registry() {
 
 size_t AnnotationBase::size() { return m_data->size(); }
 
-void AnnotationBase::_addAnnotationColumn() {
-  std::vector<std::string> column_names = m_data->column_names();
-
-  if (m_annotation_column == "") {
-    m_annotation_column = "annotations";
-  }
-
-  if (!(std::find(column_names.begin(), column_names.end(),
-                  m_annotation_column) != column_names.end())) {
-    std::shared_ptr<unity_sarray> empty_annotation_sarray =
-        std::make_shared<unity_sarray>();
-
-    empty_annotation_sarray->construct_from_const(
-        FLEX_UNDEFINED, m_data->size(), flex_type_enum::STRING);
-
-    m_data->add_column(empty_annotation_sarray, m_annotation_column);
-  }
-}
-
 void AnnotationBase::_addIndexColumn() {
   std::vector<flexible_type> indicies;
 
@@ -131,30 +109,6 @@ void AnnotationBase::_addIndexColumn() {
                                                  flex_type_enum::INTEGER);
 
   m_data->add_column(empty_annotation_sarray, "__idx");
-}
-
-void AnnotationBase::_checkDataSet() {
-  size_t image_column_index = m_data->column_index(m_data_columns.at(0));
-  flex_type_enum image_column_dtype = m_data->dtype().at(image_column_index);
-
-  if (image_column_dtype != flex_type_enum::IMAGE) {
-    std_log_and_throw(std::invalid_argument, "Image column \"" +
-                                                 m_data_columns.at(0) +
-                                                 "\" not of image type.");
-  }
-
-  size_t annotation_column_index = m_data->column_index(m_annotation_column);
-  flex_type_enum annotation_column_dtype =
-      m_data->dtype().at(annotation_column_index);
-
-  if (!(annotation_column_dtype == flex_type_enum::STRING ||
-        annotation_column_dtype == flex_type_enum::INTEGER)) {
-    std_log_and_throw(std::invalid_argument,
-                      "Annotation column \"" + m_data_columns.at(0) +
-                          "\" of type \'" +
-                          flex_type_enum_to_name(annotation_column_dtype) +
-                          "\' not of 'string' or 'integer' type.");
-  }
 }
 
 void AnnotationBase::_reshapeIndicies(size_t &start, size_t &end) {
