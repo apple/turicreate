@@ -38,9 +38,7 @@ typedef std::map<std::string, std::string> pairs_type;
 using namespace turi::visualization;
 
 // Report a failure
-void
-fail(boost::system::error_code ec, char const* what)
-{
+void fail(boost::system::error_code ec, char const* what) {
     logstream(LOG_ERROR) << "Web server error: " << what << ": " << ec.message() << std::endl;
 }
 
@@ -49,8 +47,7 @@ fail(boost::system::error_code ec, char const* what)
 // boost/spirit/example/qi/key_value_sequence.cpp
 template <typename Iterator>
 struct url_query_string 
-    : qi::grammar<Iterator, pairs_type()>
-{
+    : qi::grammar<Iterator, pairs_type()> {
     url_query_string()
         : url_query_string::base_type(query)
     {
@@ -65,12 +62,10 @@ struct url_query_string
     qi::rule<Iterator, std::string()> key, value;
 };
 
-// Mime type from file extension
+// MIME type from file extension
 // Adapted from Beast example in
 // beast/example/http/server/fast/http_server_fast.cpp
-boost::beast::string_view
-mime_type(boost::beast::string_view path)
-{
+boost::beast::string_view mime_type(boost::beast::string_view path) {
     using boost::beast::iequals;
     auto const ext = [&path]
     {
@@ -107,12 +102,10 @@ mime_type(boost::beast::string_view path)
 template<
     class Body, class Allocator,
     class Send>
-void
-handle_request(
+void handle_request(
     http::request<Body, http::basic_fields<Allocator>>&& req,
     Send&& send,
-    const WebServer::plot_map& plots)
-{
+    const WebServer::plot_map& plots) {
     // Returns a bad request response
     auto const bad_request =
     [&req](boost::beast::string_view why)
@@ -250,8 +243,7 @@ class session : public std::enable_shared_from_this<session>
 private:
     // This is the C++11 equivalent of a generic lambda.
     // The function object is used to send an HTTP message.
-    struct send_lambda
-    {
+    struct send_lambda {
         session& self_;
 
         explicit
@@ -261,9 +253,7 @@ private:
         }
 
         template<bool isRequest, class Body, class Fields>
-        void
-        operator()(http::message<isRequest, Body, Fields>&& msg) const
-        {
+        void operator()(http::message<isRequest, Body, Fields>&& msg) const {
             // The lifetime of the message has to extend
             // for the duration of the async operation so
             // we use a shared_ptr to manage it.
@@ -300,27 +290,20 @@ private:
 
 public:
     // Take ownership of the socket
-    explicit
-    session(
+    explicit session(
         tcp::socket socket,
         const WebServer::plot_map& plots)
         : socket_(std::move(socket))
         , strand_(socket_.get_executor())
         , lambda_(*this)
-        , m_plots(plots)
-    {
-    }
+        , m_plots(plots) { }
 
     // Start the asynchronous operation
-    void
-    run()
-    {
+    void run() {
         do_read();
     }
 
-    void
-    do_read()
-    {
+    void do_read() {
         // Make the request empty before reading,
         // otherwise the operation behavior is undefined.
         req_ = {};
@@ -336,11 +319,9 @@ public:
                     std::placeholders::_2)));
     }
 
-    void
-    on_read(
+    void on_read(
         boost::system::error_code ec,
-        std::size_t bytes_transferred)
-    {
+        std::size_t bytes_transferred) {
         boost::ignore_unused(bytes_transferred);
 
         // This means they closed the connection
@@ -354,12 +335,10 @@ public:
         handle_request(std::move(req_), lambda_, m_plots);
     }
 
-    void
-    on_write(
+    void on_write(
         boost::system::error_code ec,
         std::size_t bytes_transferred,
-        bool close)
-    {
+        bool close) {
         boost::ignore_unused(bytes_transferred);
 
         if(ec)
@@ -379,9 +358,7 @@ public:
         do_read();
     }
 
-    void
-    do_close()
-    {
+    void do_close() {
         // Send a TCP shutdown
         boost::system::error_code ec;
         socket_.shutdown(tcp::socket::shutdown_send, ec);
@@ -393,8 +370,7 @@ public:
 //------------------------------------------------------------------------------
 
 // Accepts incoming connections and launches the sessions
-class listener : public std::enable_shared_from_this<listener>
-{
+class listener : public std::enable_shared_from_this<listener> {
 private:
     tcp::acceptor acceptor_;
     tcp::socket socket_;
@@ -407,8 +383,7 @@ public:
         const WebServer::plot_map& plots)
         : acceptor_(ioc)
         , socket_(ioc)
-        , m_plots(plots)
-    {
+        , m_plots(plots) {
         boost::system::error_code ec;
 
         // Open the acceptor
@@ -446,17 +421,13 @@ public:
     }
 
     // Start accepting incoming connections
-    void
-    run()
-    {
+    void run() {
         if(! acceptor_.is_open())
             return;
         do_accept();
     }
 
-    void
-    do_accept()
-    {
+    void do_accept() {
         acceptor_.async_accept(
             socket_,
             std::bind(
@@ -465,9 +436,7 @@ public:
                 std::placeholders::_1));
     }
 
-    void
-    on_accept(boost::system::error_code ec)
-    {
+    void on_accept(boost::system::error_code ec) {
         if(ec)
         {
             fail(ec, "accept");
