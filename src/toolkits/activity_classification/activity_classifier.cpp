@@ -96,9 +96,8 @@ float cumulative_chunk_accuracy(size_t prediction_window, size_t num_classes,
   for (size_t i = 0; i < batch.batch_info.size(); ++i){
 
     const shared_float_array& output_chunk = output[i];
-    const shared_float_array& label_chunk = batch.ground_truth[i];
+    const shared_float_array& label_chunk = batch.labels_per_row[i];
     data_iterator::batch::chunk_info info = batch.batch_info[i];
-    //size_t num_predictions = (info.num_samples + prediction_window - 1) / prediction_window;
     size_t num_correct_predictions = count_correct_predictions(num_classes, output_chunk, label_chunk, info.num_samples, prediction_window);
     cumulative_per_batch_accuracy += static_cast<float>(num_correct_predictions) / info.num_samples ;
 

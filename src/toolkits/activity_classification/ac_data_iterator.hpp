@@ -114,9 +114,9 @@ public:
      * An array with shape: (requested_batch_size, 
      * 1, prediction_window * predictions_in_chunk, 1)
      *
-     * Each row is the sequence of raw class labels (indices) corresponding every feature.
+     * Each row is the sequence of raw class labels (indices) for each individual sample.
      */
-    neural_net::shared_float_array ground_truth;
+    neural_net::shared_float_array labels_per_row;
 
     /**
      * Metadata for each valid (non-padded) row in the batch.
