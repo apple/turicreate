@@ -558,10 +558,14 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
   std::vector<float> features(features_size, 0.f);
   std::vector<float> labels;
   std::vector<float> weights;
+  std::vector<float> labels_per_row;
   if (data_.has_target) {
     size_t labels_size = batch_size * num_predictions_per_chunk_;
+    size_t labels_per_row_size = batch_size * num_samples_per_chunk;
     labels.resize(labels_size, 0.f);
     weights.resize(labels_size, 0.f);
+    labels_per_row.resize(labels_per_row_size, 0.f);
+
   }
   std::vector<batch::chunk_info> batch_info;
   batch_info.reserve(batch_size);
@@ -571,6 +575,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
   float* features_out = features.data();
   float* labels_out = labels.data();
   float* weights_out = weights.data();
+  float* labels_per_row_out = labels_per_row.data();
 
   while (batch_info.size() < batch_size && next_row_ != end_of_rows_) {
 
@@ -602,6 +607,8 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     if (data_.has_target) {
 
       const flex_vec &label_vec = row[labels_column_index].get<flex_vec>();
+      std::copy(label_vec.begin() + sample_in_row_, label_vec.begin() + end, labels_per_row_out);
+      labels_per_row_out += num_samples_per_chunk;
 
       // The label is picked using majority voting for every prediction_window
       for (size_t i = sample_in_row_; i < end;
@@ -639,7 +646,10 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
         std::move(labels), { batch_size, 1, num_predictions_per_chunk_, 1 });
     result.weights = shared_float_array::wrap(
         std::move(weights), { batch_size, 1, num_predictions_per_chunk_, 1 });
+    result.labels_per_row = shared_float_array::wrap( 
+        std::move(labels_per_row), { batch_size, 1, num_samples_per_chunk, 1 });
   }
+
   result.batch_info = std::move(batch_info);
 
   return result;
