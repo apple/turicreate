@@ -728,9 +728,7 @@ class DrawingClassifier(_CustomModel):
             hclusterSort,
             l2Dist
         )
-
-        evaluation_result = {k: ret[k] for k in ['accuracy', 'f1_score', 'precision',
-                                                 'recall', 'auc', 'roc_curve', 'confusion_matrix']}
+        evaluation_result = {k: ret[k] for k in metrics}
         evaluation_result['num_test_examples'] = len(dataset)
         for k in ['num_classes', 'num_examples', 'training_loss', 'training_time', 'max_iterations']:
             evaluation_result[k] = getattr(self, k)

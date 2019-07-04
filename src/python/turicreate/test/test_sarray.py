@@ -73,25 +73,37 @@ class SArrayTest(unittest.TestCase):
             else:
                 self.assertAlmostEqual(l[i], _data[i])
 
+    def __test_creation_raw(self, data, dtype, expected):
+        s = SArray(data, dtype)
+        self.__test_equal(s, expected, dtype)
+
+    def __test_creation_pd(self, data, dtype, expected):
+        s = SArray(pd.Series(data), dtype)
+        self.__test_equal(s, expected, dtype)
+
     def __test_creation(self, data, dtype, expected):
         """
         Create sarray from data with dtype, and test it equals to
         expected.
         """
-        s = SArray(data, dtype)
-        self.__test_equal(s, expected, dtype)
-        s = SArray(pd.Series(data), dtype)
-        self.__test_equal(s, expected, dtype)
+        self.__test_creation_raw(data, dtype, expected)
+        self.__test_creation_pd(data, dtype, expected)
+
+    def __test_creation_type_inference_raw(self, data, expected_dtype, expected):
+        s = SArray(data)
+        self.__test_equal(s, expected, expected_dtype)
+
+    def __test_creation_type_inference_pd(self, data, expected_dtype, expected):
+        s = SArray(pd.Series(data))
+        self.__test_equal(s, expected, expected_dtype)
 
     def __test_creation_type_inference(self, data, expected_dtype, expected):
         """
         Create sarray from data with dtype, and test it equals to
         expected.
         """
-        s = SArray(data)
-        self.__test_equal(s, expected, expected_dtype)
-        s = SArray(pd.Series(data))
-        self.__test_equal(s, expected, expected_dtype)
+        self.__test_creation_type_inference_raw(data, expected_dtype, expected)
+        self.__test_creation_type_inference_pd(data, expected_dtype, expected)
 
     def test_creation(self):
         self.__test_creation(self.int_data, int, self.int_data)
@@ -117,6 +129,37 @@ class SArrayTest(unittest.TestCase):
 
         self.__test_creation(self.dict_data, dict, self.dict_data)
 
+        # test with map/filter type
+        self.__test_creation_raw(map(lambda x: x + 10, self.int_data),
+                                 int,
+                                 [x + 10 for x in self.int_data])
+        self.__test_creation_raw(map(lambda x: x * 10, self.int_data),
+                                 float,
+                                 [float(x) * 10 for x in self.int_data])
+        self.__test_creation_raw(map(lambda x: x * 10, self.string_data),
+                                 str,
+                                 [x * 10 for x in self.string_data])
+
+        self.__test_creation_raw(filter(lambda x: x < 5, self.int_data),
+                                 int,
+                                 list(filter(lambda x: x < 5, self.int_data)))
+        self.__test_creation_raw(filter(lambda x: x > 5, self.float_data),
+                                 float,
+                                 list(filter(lambda x: x > 5, self.float_data)))
+        self.__test_creation_raw(filter(lambda x: len(x) > 3, self.string_data),
+                                 str,
+                                 list(filter(lambda x: len(x) > 3, self.string_data)))
+
+        self.__test_creation_pd(map(lambda x: x + 10, self.int_data),
+                                int,
+                                [x + 10 for x in self.int_data])
+        self.__test_creation_pd(map(lambda x: x * 10, self.int_data),
+                                float,
+                                [float(x) * 10 for x in self.int_data])
+        self.__test_creation_pd(map(lambda x: x * 10, self.string_data),
+                                str,
+                                [x * 10 for x in self.string_data])
+
         # test with type inference
         self.__test_creation_type_inference(self.int_data, int, self.int_data)
         self.__test_creation_type_inference(self.float_data, float, self.float_data)
@@ -132,6 +175,57 @@ class SArrayTest(unittest.TestCase):
                                             self.np_matrix_data)
         self.__test_creation_type_inference([np.bool_(True),np.bool_(False)],int,[1,0])
         self.__test_creation((1,2,3,4), int, [1,2,3,4])
+
+        self.__test_creation_type_inference_raw(map(lambda x: x + 10, self.int_data),
+                                                int,
+                                                [x + 10 for x in self.int_data])
+        self.__test_creation_type_inference_raw(map(lambda x: x * 10, self.float_data),
+                                                float,
+                                                [x * 10 for x in self.float_data])
+        self.__test_creation_type_inference_raw(map(lambda x: x * 10, self.string_data),
+                                                str,
+                                                [x * 10 for x in self.string_data])
+
+        self.__test_creation_type_inference_pd(map(lambda x: x + 10, self.int_data),
+                                               int,
+                                               [x + 10 for x in self.int_data])
+        self.__test_creation_type_inference_pd(map(lambda x: x * 10, self.float_data),
+                                               float,
+                                               [float(x) * 10 for x in self.float_data])
+        self.__test_creation_type_inference_pd(map(lambda x: x * 10, self.string_data),
+                                               str,
+                                               [x * 10 for x in self.string_data])
+
+        self.__test_creation_type_inference_raw(filter(lambda x: x < 5, self.int_data),
+                                                int,
+                                                list(filter(lambda x: x < 5, self.int_data)))
+        self.__test_creation_type_inference_raw(filter(lambda x: x > 5, self.float_data),
+                                                float,
+                                                list(filter(lambda x: x > 5, self.float_data)))
+        self.__test_creation_type_inference_raw(filter(lambda x: len(x) > 3, self.string_data),
+                                                str,
+                                                list(filter(lambda x: len(x) > 3, self.string_data)))
+
+        # genertors
+        def __generator_parrot(data):
+            for ii in data:
+                yield ii
+
+        self.__test_creation_raw(__generator_parrot(self.int_data), int, self.int_data)
+        self.__test_creation_raw(__generator_parrot(self.float_data), float, self.float_data)
+        self.__test_creation_raw(__generator_parrot(self.string_data), str, self.string_data)
+
+        self.__test_creation_pd(__generator_parrot(self.int_data), int, self.int_data)
+        self.__test_creation_pd(__generator_parrot(self.float_data), float, self.float_data)
+        self.__test_creation_pd(__generator_parrot(self.string_data), str, self.string_data)
+
+        self.__test_creation_type_inference_raw(__generator_parrot(self.int_data), int, self.int_data)
+        self.__test_creation_type_inference_raw(__generator_parrot(self.float_data), float, self.float_data)
+        self.__test_creation_type_inference_raw(__generator_parrot(self.string_data), str, self.string_data)
+
+        self.__test_creation_type_inference_pd(__generator_parrot(self.int_data), int, self.int_data)
+        self.__test_creation_type_inference_pd(__generator_parrot(self.float_data), float, self.float_data)
+        self.__test_creation_type_inference_pd(__generator_parrot(self.string_data), str, self.string_data)
 
         # Test numpy types, which are not compatible with the pd.Series path in
         # __test_creation and __test_creation_type_inference

@@ -28,6 +28,8 @@ ImageClassification::ImageClassification(
     const std::vector<std::string> &data_columns,
     const std::string &annotation_column)
     : AnnotationBase(data, data_columns, annotation_column) {
+  this->addAnnotationColumn();
+  this->checkDataSet();
   this->_createFeaturesExtractor();
 }
 
@@ -464,6 +466,49 @@ annotate_spec::MetaData ImageClassification::metaData() {
   }
 
   return meta_data;
+}
+
+void ImageClassification::addAnnotationColumn() {
+  std::vector<std::string> column_names = m_data->column_names();
+
+  if (m_annotation_column == "") {
+    m_annotation_column = "annotations";
+  }
+
+  if (!(std::find(column_names.begin(), column_names.end(),
+                  m_annotation_column) != column_names.end())) {
+    std::shared_ptr<unity_sarray> empty_annotation_sarray =
+        std::make_shared<unity_sarray>();
+
+    empty_annotation_sarray->construct_from_const(
+        FLEX_UNDEFINED, m_data->size(), flex_type_enum::STRING);
+
+    m_data->add_column(empty_annotation_sarray, m_annotation_column);
+  }
+}
+
+void ImageClassification::checkDataSet() {
+  size_t image_column_index = m_data->column_index(m_data_columns.at(0));
+  flex_type_enum image_column_dtype = m_data->dtype().at(image_column_index);
+
+  if (image_column_dtype != flex_type_enum::IMAGE) {
+    std_log_and_throw(std::invalid_argument, "Image column \"" +
+                                                 m_data_columns.at(0) +
+                                                 "\" not of image type.");
+  }
+
+  size_t annotation_column_index = m_data->column_index(m_annotation_column);
+  flex_type_enum annotation_column_dtype =
+      m_data->dtype().at(annotation_column_index);
+
+  if (!(annotation_column_dtype == flex_type_enum::STRING ||
+        annotation_column_dtype == flex_type_enum::INTEGER)) {
+    std_log_and_throw(std::invalid_argument,
+                      "Annotation column \"" + m_data_columns.at(0) +
+                          "\" of type \'" +
+                          flex_type_enum_to_name(annotation_column_dtype) +
+                          "\' not of 'string' or 'integer' type.");
+  }
 }
 
 void ImageClassification::_createFeaturesExtractor() {

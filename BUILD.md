@@ -89,13 +89,13 @@ Then, run `./configure` (optionally with command line arguments to control what 
     ./configure
 
 Running `./configure` will create two sub-directories, `release/` and
-`debug/` . cd into `src/unity` under either of these directories and running make will build the
+`debug/` . cd into `src/` under either of these directories and running make will build the
 release or the debug versions respectively.
 
 We recommend using make’s parallel build feature to accelerate the compilation
 process. For instance:
 
-    cd debug/src/unity
+    cd debug/src
     make -j 4
 
 If `Ninja` is chosen as the generator in the previous step, you should use command listed below instead:

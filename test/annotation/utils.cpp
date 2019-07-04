@@ -32,13 +32,32 @@ turi::flex_string random_string() {
                                           "0123456789";
 
   std::string randomString("");
-  size_t lengthString = rand() % MAX_LENGTH_STRING;
+  size_t lengthString = rand() % MAX_LENGTH_STRING + 1;
 
   for (size_t i = 0; i < lengthString; ++i) {
     randomString += allowedcharacters[rand() % (sizeof(allowedcharacters) - 1)];
   }
 
   return randomString;
+}
+
+turi::flex_list random_bounding_box() {
+  turi::flex_list annotation_list;
+
+  size_t num_annotations = (int)(rand() % 10);
+
+  for (size_t x = 0; x < num_annotations; x++) {
+    turi::flex_dict bounds = {{"height", (int)(rand() % 256) + 1},
+                              {"width", (int)(rand() % 256) + 1},
+                              {"x", (int)(rand() % 256) + 1},
+                              {"y", (int)(rand() % 256) + 1}};
+
+    turi::flex_dict annotation_dict = {{"label", random_string()},
+                                       {"coordinates", bounds}};
+    annotation_list.push_back(annotation_dict);
+  }
+
+  return annotation_list;
 }
 
 std::shared_ptr<turi::unity_sarray> random_image_sarray(size_t length) {
@@ -57,7 +76,7 @@ std::shared_ptr<turi::unity_sarray> random_string_sarray(size_t length,
                                                          bool fill_na) {
   std::vector<turi::flexible_type> annotation_column_data;
   for (size_t x = 0; x < length; x++) {
-    if (rand() % 20 > 15) {
+    if (rand() % 20 > 15 && fill_na) {
       annotation_column_data.push_back("");
     } else {
       annotation_column_data.push_back(random_string());
@@ -71,12 +90,45 @@ std::shared_ptr<turi::unity_sarray> random_string_sarray(size_t length,
   return sa;
 }
 
+std::shared_ptr<turi::unity_sarray> random_bounding_box_sarray(size_t length,
+                                                               bool fill_na) {
+  std::vector<turi::flexible_type> annotation_column_data;
+  for (size_t x = 0; x < length; x++) {
+    if (rand() % 20 > 15 && fill_na) {
+      annotation_column_data.push_back(turi::flex_undefined());
+    } else {
+      annotation_column_data.push_back(random_bounding_box());
+    }
+  }
+
+  std::shared_ptr<turi::unity_sarray> sa =
+      std::make_shared<turi::unity_sarray>();
+  sa->construct_from_vector(annotation_column_data, turi::flex_type_enum::LIST);
+  return sa;
+}
+
 std::shared_ptr<turi::unity_sframe>
 random_sframe(size_t length, std::string image_column_name,
               std::string annotation_column_name, bool fill_na) {
   std::shared_ptr<turi::unity_sarray> image_sa = random_image_sarray(length);
   std::shared_ptr<turi::unity_sarray> string_sa =
       random_string_sarray(length, fill_na);
+
+  std::shared_ptr<turi::unity_sframe> annotate_sf =
+      std::make_shared<turi::unity_sframe>();
+
+  annotate_sf->add_column(image_sa, image_column_name);
+  annotate_sf->add_column(string_sa, annotation_column_name);
+
+  return annotate_sf;
+}
+
+std::shared_ptr<turi::unity_sframe>
+random_od_sframe(size_t length, std::string image_column_name,
+                 std::string annotation_column_name, bool fill_na) {
+  std::shared_ptr<turi::unity_sarray> image_sa = random_image_sarray(length);
+  std::shared_ptr<turi::unity_sarray> string_sa =
+      random_bounding_box_sarray(length, fill_na);
 
   std::shared_ptr<turi::unity_sframe> annotate_sf =
       std::make_shared<turi::unity_sframe>();
