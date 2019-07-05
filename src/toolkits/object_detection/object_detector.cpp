@@ -24,6 +24,29 @@
 #include <toolkits/object_detection/od_yolo.hpp>
 #include <toolkits/supervised_learning/automatic_model_creation.hpp>
 
+#ifdef __APPLE__
+
+#include <os/log.h>
+
+static const os_log_t& _get_os_log_object() {
+  static_assert(std::is_trivially_destructible<os_log_t>::value,
+                "static variables should never de-initialize");
+  static os_log_t log_object = os_log_create("com.apple.turi",
+                                             "object_detector");
+  return log_object;
+}
+
+#define _os_log_integer(key, value)                                            \
+    os_log_info(_get_os_log_object(),                                          \
+                "event: %lu, key: %s, value: %ld",                             \
+                1ul, (key), static_cast<long>(value))
+
+#else  // #ifdef __APPLE__
+
+#define _os_log_integer(...)
+
+#endif  // #ifdef __APPLE__
+
 using turi::coreml::MLModelWrapper;
 using turi::neural_net::compute_context;
 using turi::neural_net::deferred_float_array;
@@ -251,6 +274,7 @@ void object_detector::init_options(
 
     options.set_option("batch_size", batch_size);
   }
+  _os_log_integer("batch_size", options.value("batch_size"));
 
   // Configure targeted number of iterations automatically if not set.
   if (options.value("max_iterations") == FLEX_UNDEFINED) {
@@ -262,6 +286,7 @@ void object_detector::init_options(
 
     options.set_option("max_iterations", max_iterations);
   }
+  _os_log_integer("max_iterations", options.value("max_iterations"));
 
   // Write model fields.
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
