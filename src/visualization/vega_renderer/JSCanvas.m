@@ -18,6 +18,7 @@
     NSMutableArray *_colorStops;
 }
 - (instancetype)initWithX0:(double)x0 y0:(double)y0 x1:(double)x1 y1:(double)y1 {
+    self = [super init];
     _x0 = x0;
     _y0 = y0;
     _x1 = x1;
@@ -26,7 +27,7 @@
     return self;
 }
 - (void)addColorStopWithOffset:(double)offset color:(NSString *)color {
-    CGColorRef cgcolor = [VegaCGContext colorFromString:color];
+    CGColorRef cgcolor = [VegaCGContext newColorFromString:color];
     [_colorStops addObject:@[@(offset), (__bridge_transfer id)cgcolor]];
 }
 - (void)fillWithContext:(CGContextRef)context {
@@ -233,10 +234,10 @@
     assert(_nsFont != nil);
     CGColorRef color = nil;
     if (_fillStyle == nil) {
-        color = [self.class colorFromR:0 G:0 B:0 A:255];
+        color = [self.class newColorFromR:0 G:0 B:0 A:255];
     } else {
         assert([_fillStyle isKindOfClass:NSString.class]);
-        color = [self.class colorFromString:_fillStyle];
+        color = [self.class newColorFromString:_fillStyle];
     }
     assert(color != nil);
     NSColor *nsColor = [NSColor colorWithCGColor:color];
@@ -370,7 +371,7 @@
     return _strokeStyle;
 }
 
-+ (CGColorRef) colorFromR:(unsigned int) r
++ (CGColorRef) newColorFromR:(unsigned int) r
                         G:(unsigned int) g
                         B:(unsigned int) b
                         A:(unsigned int) a {
@@ -390,7 +391,7 @@
     return ret;
 }
 
-+ (CGColorRef) colorFromString:(NSString *)str {
++ (CGColorRef) newColorFromString:(NSString *)str {
     assert(str != nil);
     if ([str characterAtIndex:0] == '#') {
         str = [str substringFromIndex:1];
@@ -425,7 +426,7 @@
         [[NSScanner scannerWithString:gs] scanHexInt:&g];
         [[NSScanner scannerWithString:bs] scanHexInt:&b];
         [[NSScanner scannerWithString:as] scanHexInt:&a];
-        return [self.class colorFromR:r G:g B:b A:a];
+        return [self.class newColorFromR:r G:g B:b A:a];
     } else if ([[str substringToIndex:4] isEqualToString:@"rgb("]) {
         // parse as RGB integers like rgb(r,g,b)
         str = [str stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceCharacterSet];
@@ -436,7 +437,7 @@
         [[NSScanner scannerWithString:components[0]] scanInt:&r];
         [[NSScanner scannerWithString:components[1]] scanInt:&g];
         [[NSScanner scannerWithString:components[2]] scanInt:&b];
-        return [self.class colorFromR:r G:g B:b A:255];
+        return [self.class newColorFromR:r G:g B:b A:255];
     } else if ([[str substringToIndex:5] isEqualToString:@"rgba("]) {
         // parse as RGBA integers like rgb(r,g,b,a)
         str = [str stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceCharacterSet];
@@ -449,9 +450,9 @@
         [[NSScanner scannerWithString:components[1]] scanInt:&g];
         [[NSScanner scannerWithString:components[2]] scanInt:&b];
         [[NSScanner scannerWithString:components[3]] scanDouble:&a];
-        return [self.class colorFromR:r G:g B:b A:(a*255.0)];
+        return [self.class newColorFromR:r G:g B:b A:(a*255.0)];
     } else {
-        return [self.class colorFromString:[[VegaCGColorMap map] objectForKey:str]];
+        return [self.class newColorFromString:[[VegaCGColorMap map] objectForKey:str]];
     }
 }
 
@@ -461,7 +462,7 @@
     assert(args != nil);
     assert(args.count == 1);
     _strokeStyle = strokeStyle;
-    CGColorRef color = [self.class colorFromString:_strokeStyle];
+    CGColorRef color = [self.class newColorFromString:_strokeStyle];
     assert(color != nil);
     CGContextSetStrokeColorWithColor(self.context, color);
     CGColorRelease(color);
@@ -628,7 +629,7 @@
         [gradient fillWithContext:self.context];
     } else {
         assert([_fillStyle isKindOfClass:NSString.class]);
-        CGColorRef color = [self.class colorFromString:_fillStyle];
+        CGColorRef color = [self.class newColorFromString:_fillStyle];
         CGContextSetFillColorWithColor(self.context, color);
         CGColorRelease(color);
         CGContextFillPath(self.context);
