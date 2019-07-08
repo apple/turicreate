@@ -588,6 +588,11 @@
     CFRelease(line);
 }
 
+- (void)fillRectWithX:(double)x y:(double)y width:(double)width height:(double)height {
+    [self rectWithX:x y:y width:width height:height];
+    [self fill];
+}
+
 - (void)rectWithX:(double)x y:(double)y width:(double)width height:(double)height {
     CGContextAddRect(self.context, CGRectMake(x, y, width, height));
 }

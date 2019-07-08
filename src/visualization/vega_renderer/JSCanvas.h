@@ -119,6 +119,12 @@ JSExportAs(fillText,
            x:(double)x
            y:(double)y
            );
+JSExportAs(fillRect,
+            - (void)fillRectWithX:(double)x
+            y:(double)y
+            width:(double)width
+            height:(double)height
+            );
 JSExportAs(lineTo,
            - (void)lineToX:(double)x
            y:(double)y
