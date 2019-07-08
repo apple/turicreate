@@ -3,15 +3,49 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+@interface TCMPSInstanceNormDataLoader () {
+  float *_gamma_weights;
+  float *_beta_weights;
+  
+  NSString *_name;
+  NSUInteger _styles;
+
+  id<MTLBuffer> _gammaBuffer;
+  id<MTLBuffer> _betaBuffer;
+
+  MPSVector *_gammaVector;
+  MPSVector *_betaVector;
+  MPSVector *_gammaMomentumVector;
+  MPSVector *_gammaVelocityVector;
+  MPSVector *_betaMomentumVector;
+  MPSVector *_betaVelocityVector;
+
+  id<MTLBuffer> _gammaMomentumBuffer;
+  id<MTLBuffer> _gammaVelocityBuffer;
+  id<MTLBuffer> _betaMomentumBuffer;
+  id<MTLBuffer> _betaVelocityBuffer;
+  id<MTLBuffer> _movingMeanBuffer;
+  id<MTLBuffer> _movingVarianceBuffer;
+
+  MPSVectorDescriptor *_vDesc;
+  MPSCNNNormalizationGammaAndBetaState *_state;
+
+  id<MTLCommandQueue> _cq;
+  MPSNNOptimizerAdam *_adamGamma;
+  MPSNNOptimizerAdam *_adamBeta;
+}
+
+@end
+
 @implementation TCMPSInstanceNormDataLoader
 
 - (instancetype) initWithParams:(NSString *)name
-                   gammaWeights:(float **)gammaWeights
-                    betaWeights:(float **)betaWeights
+                   gammaWeights:(float *)gammaWeights
+                    betaWeights:(float *)betaWeights
           numberFeatureChannels:(NSUInteger)numberFeatureChannels
                          styles:(NSUInteger)styles
-                         device:(id<MTLDevice> _Nonnull)dev 
-                      cmd_queue:(id<MTLCommandQueue> _Nonnull) cmd_q {
+                         device:(id<MTLDevice>)dev 
+                      cmd_queue:(id<MTLCommandQueue>) cmd_q {
   self = [self init];
     
   if (self) {
@@ -21,7 +55,8 @@
     _styles = styles;
     
     _currentStyle = 0;  
-  
+    
+    // TODO: refactor to account for multiple styles
     _gamma_weights = gammaWeights;
     _beta_weights = betaWeights;
 
@@ -37,11 +72,11 @@
     _vDesc = [MPSVectorDescriptor vectorDescriptorWithLength:_numberOfFeatureChannels
                                                    dataType:(MPSDataTypeFloat32)];
 
-    _gammaBuffer = [dev newBufferWithBytes:_gamma_weights[0]
+    _gammaBuffer = [dev newBufferWithBytes:_gamma_weights
                                     length:sizeof(float) * _numberOfFeatureChannels
                                    options:MTLResourceStorageModeManaged];
 
-    _betaBuffer = [dev newBufferWithBytes:_beta_weights[0]
+    _betaBuffer = [dev newBufferWithBytes:_beta_weights
                                    length:sizeof(float) * _numberOfFeatureChannels
                                   options:MTLResourceStorageModeManaged];
 
@@ -101,20 +136,11 @@
   return self;
 }
 
-- (void) updateNumberOfStyles:(NSUInteger)styles {
-  _currentStyle = 0;
-  _styles = styles;
-}
-
 - (void) updateCurrentStyle:(NSUInteger)style {
   _currentStyle = style;
 }
 
-- (NSUInteger) getCurrentStyle {
-  return _currentStyle;
-}
-
-- (void) loadBeta:(float **)beta {
+- (void) loadBeta:(float *)beta {
   _beta_weights = beta;
 }
 
@@ -123,7 +149,7 @@
   return (float *) [[_betaVector data] contents];
 }
 
-- (void) loadGamma:(float **)gamma {
+- (void) loadGamma:(float *)gamma {
   _gamma_weights = gamma;
 }
 

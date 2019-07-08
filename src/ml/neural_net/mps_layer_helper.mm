@@ -98,8 +98,8 @@
 + (MPSCNNInstanceNormalizationNode *) createInstanceNormalization:(MPSNNImageNode *)inputNode
                                                          channels:(NSUInteger)channels
                                                            styles:(NSUInteger)styles
-                                                            gamma:(float **)gamma
-                                                             beta:(float **)beta
+                                                            gamma:(float *)gamma
+                                                             beta:(float *)beta
                                                             label:(NSString *)label
                                                            device:(id<MTLDevice>)dev
                                                         cmd_queue:(id<MTLCommandQueue>) cmd_q {
