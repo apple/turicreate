@@ -79,7 +79,7 @@ BOOST_AUTO_TEST_CASE(testCategoricalHistogram) {
 BOOST_AUTO_TEST_CASE(testSimpleThemedBarChart) {
   this->run_test_spec(examples_turicreate_simple_themed_bar_chart_vl_json,
                       examples_turicreate_simple_themed_bar_chart_vl_json_len,
-                      "simple_themed_barchart");
+                      "simple_themed_bar_chart");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
