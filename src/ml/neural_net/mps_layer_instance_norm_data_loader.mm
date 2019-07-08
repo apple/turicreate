@@ -1,7 +1,5 @@
 #include <ml/neural_net/mps_layer_instance_norm_data_loader.h>
 #include <ml/neural_net/mps_weight.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 @interface TCMPSInstanceNormDataLoader () {
   float *_gamma_weights;
@@ -61,7 +59,7 @@
 
     memcpy(_gamma_weights, gammaWeights, numberFeatureChannels * styles * sizeof(float));
     memcpy(_beta_weights, betaWeights, numberFeatureChannels * styles * sizeof(float));
-    
+
     _cq = cmd_q;
 
     float *zeros_ptr = (float*) calloc(_numberOfFeatureChannels, sizeof(float));
