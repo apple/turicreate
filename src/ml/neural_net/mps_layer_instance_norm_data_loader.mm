@@ -61,7 +61,7 @@
 
     memcpy(_gamma_weights, gammaWeights, numberFeatureChannels * styles * sizeof(float));
     memcpy(_beta_weights, betaWeights, numberFeatureChannels * styles * sizeof(float));
-
+    
     _cq = cmd_q;
 
     float *zeros_ptr = (float*) calloc(_numberOfFeatureChannels, sizeof(float));
@@ -134,8 +134,16 @@
 
     _state = [[MPSCNNNormalizationGammaAndBetaState alloc] initWithGamma:_gammaBuffer
                                                                     beta:_betaBuffer];
+    
+    free(zeros_ptr);
+    free(ones_ptr);
   }
   return self;
+}
+
+-(void)dealloc {
+  free(_gamma_weights);
+  free(_beta_weights);
 }
 
 - (void) updateCurrentStyle:(NSUInteger)style {
