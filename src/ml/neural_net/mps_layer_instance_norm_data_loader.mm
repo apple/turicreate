@@ -56,9 +56,11 @@
     
     _currentStyle = 0;  
     
-    // TODO: refactor to account for multiple styles
-    _gamma_weights = gammaWeights;
-    _beta_weights = betaWeights;
+    _gamma_weights = (float *) malloc(numberFeatureChannels * styles * sizeof(float));
+    _beta_weights = (float *) malloc(numberFeatureChannels * styles * sizeof(float));
+
+    memcpy(_gamma_weights, gammaWeights, numberFeatureChannels * styles * sizeof(float));
+    memcpy(_beta_weights, betaWeights, numberFeatureChannels * styles * sizeof(float));
 
     _cq = cmd_q;
 
