@@ -4,6 +4,7 @@ if(APPLE AND NOT TC_BUILD_IOS)
 
     # sets XCTest_LIBRARIES
     include(FindXCTest)
+    include_directories(${XCTest_INCLUDE_DIRS})
 
     find_library( WEBKIT WebKit )
     message( STATUS "WebKit found at ${WEBKIT}")

@@ -1,0 +1,182 @@
+{
+    "mark": "bar",
+    "encoding": {
+      "x": {
+        "field": "a",
+        "type": "ordinal"
+      },
+      "y": {
+        "field": "b",
+        "type": "quantitative"
+      },
+      "color": {
+        "condition": {
+          "value": "#A7A7AD",
+          "test": "datum.a === null"
+        }
+      }
+    },
+    "$schema": "https://vega.github.io/schema/vega-lite/v3.json",
+    "data": {
+      "values": [
+        {
+          "a": "A",
+          "b": 20
+        },
+        {
+          "a": "B",
+          "b": 34
+        },
+        {
+          "a": "C",
+          "b": 55
+        },
+        {
+          "a": "D",
+          "b": 19
+        },
+        {
+          "a": "E",
+          "b": 40
+        },
+        {
+          "a": "F",
+          "b": 34
+        },
+        {
+          "a": "G",
+          "b": 91
+        },
+        {
+          "a": "H",
+          "b": 78
+        },
+        {
+          "a": "I",
+          "b": 25
+        },
+        {
+          "a": null,
+          "b": 60
+        }
+      ]
+    },
+    "config": {
+      "legend": {
+        "symbolBaseFillColor": "#fff",
+        "offset": 24
+      },
+      "range": {
+        "ramp": {
+          "scheme": "viridis",
+          "extent": [
+            0,
+            1
+          ]
+        },
+        "turi16": [
+          "#308BEF",
+          "#AFD3FD",
+          "#4DC960",
+          "#AEE395",
+          "#FF9500",
+          "#FBD397",
+          "#EF5C53",
+          "#FF9DA8",
+          "#A34FCD",
+          "#E9AEFF",
+          "#00A39B",
+          "#42D3C6",
+          "#98685E",
+          "#CCB1A0",
+          "#AC9A06",
+          "#EEDB41"
+        ],
+        "heatmap": {
+          "scheme": "viridis",
+          "extent": [
+            0,
+            1
+          ]
+        },
+        "category": [
+          "#308BEF",
+          "#4DC960",
+          "#FF9500",
+          "#EF5C53",
+          "#A34FCD",
+          "#00A39B",
+          "#98685E",
+          "#EEDB41"
+        ],
+        "ordinal": {
+          "scheme": "viridis",
+          "extent": [
+            0,
+            1
+          ]
+        }
+      },
+      "circle": {
+        "size": 50
+      },
+      "title": {
+        "color": "#fff",
+        "fontSize": 14,
+        "offset": 16
+      },
+      "point": {
+        "size": 50
+      },
+      "text": {
+        "fill": "#fff"
+      },
+      "mark": {
+        "color": "#308BEF"
+      },
+      "square": {
+        "size": 50
+      },
+      "view": {
+        "stroke": "#484856"
+      },
+      "scale": {
+        "rangeStep": 20,
+        "bandPaddingInner": 0.20000000000000001
+      },
+      "axis": {
+        "tickColor": "#484856",
+        "labelSeparation": 4,
+        "domain": false,
+        "gridColor": "#484856",
+        "titlePadding": 8
+      },
+      "background": "#23232B",
+      "area": {
+        "opacity": 0.40000000000000002
+      },
+      "style": {
+        "lineMarker": {
+          "fill": "white",
+          "stroke": "#308BEF"
+        },
+        "crosshair": {
+          "strokeDash": [
+            2,
+            2
+          ],
+          "stroke": "#666"
+        },
+        "guide-title": {
+          "fill": "#fff",
+          "fontSize": 12,
+          "fontWeight": 600
+        },
+        "guide-label": {
+          "fill": "#fff",
+          "fontSize": 11
+        }
+      }
+    }
+  }
+  
