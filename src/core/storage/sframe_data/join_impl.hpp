@@ -134,8 +134,7 @@ class hash_join_executor {
   std::vector<std::string> _output_column_names;
   std::vector<flex_type_enum> _output_column_types;
   bool _reverse_output_column_order;
-  std::unordered_map<size_t, std::string> _changed_dup_names;
-  std::unordered_map<size_t, size_t> _reverse_to_origin;
+  std::unordered_map<size_t, size_t> _reverse_to_original;
   bool _frames_partitioned;
   std::map<std::string, std::string> _alter_names_right;
 

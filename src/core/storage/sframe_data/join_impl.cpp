@@ -178,11 +178,15 @@ hash_join_executor::hash_join_executor(const sframe &left,
   /*
    * using names from sframe: unique and non-empty
    * the new names in result sframe should have no confilict
+   *
+   * this is order dependent; doing in reverse will result in
+   * different result.
+   *
    * since _alter_name_right only applies to original order,
    * we have to obtain the original construction
    **/
 
-  /* get orginal left sframe's column names */
+  // get orginal left sframe's column names
   auto col_names_original_order = left.column_names();
   _output_column_names = left.column_names();
   _output_column_types = left.column_types();
@@ -191,7 +195,7 @@ hash_join_executor::hash_join_executor(const sframe &left,
       std::make_move_iterator(col_names_original_order.begin()),
       std::make_move_iterator(col_names_original_order.end())};
 
-  /* get orginal right sframe's column names */
+  // get orginal right sframe's column names
   col_names_original_order = right.column_names();
   // check the original right sframe columns
   for (auto& name : col_names_original_order) {
@@ -201,7 +205,11 @@ hash_join_executor::hash_join_executor(const sframe &left,
 
     if (new_table.count(name)) {
       if (_alter_names_right.count(name)) {
-        /* user defined resolution */
+        /*
+         * user defined resolution shall not have any conflict with
+         * all col names visited so far; but can be the same to col
+         * names haven't seen so far.
+         **/
         auto itr = _alter_names_right.find(name);
         if (new_table.insert(itr->second).second) {
           std::stringstream ss;
@@ -209,15 +217,16 @@ hash_join_executor::hash_join_executor(const sframe &left,
           log_and_throw(ss.str());
         }
       } else {
-        /* default collision resolv. see SFrame::generate_valid_column_name */
         _output_column_types.push_back(right.column_type(right.column_index(name)));
+        // default collision resolv. see SFrame::generate_valid_column_name.
+        // if SFrame::generate_valid_column_name changes, this will break.
         name.append(".1", 2);
         _output_column_names.push_back(name);
         new_table.insert(std::move(name));
       }
     } else {
       _output_column_names.push_back(name);
-       _output_column_types.push_back(right.column_type(right.column_index(name)));
+      _output_column_types.push_back(right.column_type(right.column_index(name)));
       new_table.insert(std::move(name));
     }
   }
@@ -238,25 +247,22 @@ hash_join_executor::hash_join_executor(const sframe &left,
 void hash_join_executor::init_result_frame(sframe &result_frame) {
   // Check which of the right frame's column names changed
   if (_reverse_output_column_order) {
-    std::vector<std::string> res_column_names;
-    std::vector<flex_type_enum> res_column_types;
-
-    res_column_names.resize(_output_column_names.size());
-    res_column_types.resize(_output_column_types.size());
+    std::vector<std::string> res_column_names(_output_column_names.size());
+    std::vector<flex_type_enum> res_column_types(_output_column_types.size());
 
     auto& original_left_to_right = _right_to_left_join_positions;
 
-    /* put the join key in the right pos  */
+    /* put the join keys into the first part  */
     for (auto ii = 0U; ii < _right_frame.num_columns(); ii++) {
       auto itr = original_left_to_right.find(ii);
       if (itr != original_left_to_right.end()) {
         res_column_names[itr->second] = _output_column_names[itr->first];
         res_column_types[itr->second] = _output_column_types[itr->first];
-        _reverse_to_origin.emplace(itr->second, itr->first);
+        _reverse_to_original.emplace(itr->second, itr->first);
       }
     }
 
-    /* put right part of original order to left part of reverse */
+    /* put right part of array in origianl order to first part of reverse ordered array */
     size_t ii = 0;
     for (auto col_idx = _right_frame.num_columns(); col_idx < _output_column_names.size(); col_idx++) {
       /* skip join_keys */
@@ -265,7 +271,7 @@ void hash_join_executor::init_result_frame(sframe &result_frame) {
       }
       res_column_names[ii] = _output_column_names[col_idx];
       res_column_types[ii] = _output_column_types[col_idx];
-      _reverse_to_origin.emplace(ii, col_idx);
+      _reverse_to_original.emplace(ii, col_idx);
     }
 
     /* put the rest */
@@ -275,12 +281,12 @@ void hash_join_executor::init_result_frame(sframe &result_frame) {
         while (!res_column_names[ii].empty()) {
           ii++;
         }
-      res_column_names[ii] = _output_column_names[col_idx];
-      res_column_types[ii] = _output_column_types[col_idx];
-        _reverse_to_origin.emplace(ii, col_idx);
+        res_column_names[ii] = _output_column_names[col_idx];
+        res_column_types[ii] = _output_column_types[col_idx];
+        _reverse_to_original.emplace(ii, col_idx);
       }
     }
-    DASSERT_EQ(_reverse_to_origin.size(), _output_column_names.size());
+    DASSERT_EQ(_reverse_to_original.size(), _output_column_names.size());
 
     std::set<std::string> unique_names(std::begin(res_column_names),
                                        std::end(res_column_names));
@@ -468,9 +474,9 @@ sframe hash_join_executor::grace_hash_join() {
     std::vector<std::shared_ptr<sarray<flexible_type>>> swapped_columns(result_frame.num_columns());
     std::vector<std::string> swapped_names(result_frame.num_columns());
 
-    for (auto& entry : _reverse_to_origin) {
+    for (auto& entry : _reverse_to_original) {
       swapped_columns[entry.second] = result_frame.select_column(entry.first);
-      swapped_names[entry.first] = _right_frame.column_name(entry.first);
+      swapped_names[entry.first] = result_frame.column_name(entry.first);
     }
 
     sframe swapped_result_frame(swapped_columns, swapped_names, false);
