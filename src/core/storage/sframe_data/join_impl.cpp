@@ -164,7 +164,6 @@ hash_join_executor::hash_join_executor(const sframe &left,
   ASSERT_EQ(_left_join_positions.size(), _right_join_positions.size());
 
   /* handy script for reverse lookup */
-  decltype(_right_to_left_join_positions) left_to_right_join_positions;
   for(size_t i = 0; i < _left_join_positions.size(); ++i) {
     auto ret = _right_to_left_join_positions.emplace(_right_join_positions[i],
                                                      _left_join_positions[i]);
@@ -262,8 +261,9 @@ void hash_join_executor::init_result_frame(sframe &result_frame) {
       }
     }
 
-    /* put right part of array in origianl order to first part of reverse ordered array */
+    /* put user provide right part to left part of reverse ordered vector */
     size_t ii = 0;
+    /* _right_frame is the user defined left_frame */
     for (auto col_idx = _right_frame.num_columns(); col_idx < _output_column_names.size(); col_idx++) {
       /* skip join_keys */
       while (!res_column_names[ii].empty()) {
@@ -274,8 +274,8 @@ void hash_join_executor::init_result_frame(sframe &result_frame) {
       _reverse_to_original.emplace(ii, col_idx);
     }
 
-    /* put the rest */
-    for (auto col_idx = 0U; col_idx < _right_frame.size(); col_idx++) {
+    /* put the rest from the user defined left frame */
+    for (auto col_idx = 0U; col_idx < _right_frame.num_columns(); col_idx++) {
       /* skip join_keys */
       if (!original_left_to_right.count(col_idx)) {
         while (!res_column_names[ii].empty()) {
@@ -476,7 +476,7 @@ sframe hash_join_executor::grace_hash_join() {
 
     for (auto& entry : _reverse_to_original) {
       swapped_columns[entry.second] = result_frame.select_column(entry.first);
-      swapped_names[entry.first] = result_frame.column_name(entry.first);
+      swapped_names[entry.second] = result_frame.column_name(entry.first);
     }
 
     sframe swapped_result_frame(swapped_columns, swapped_names, false);

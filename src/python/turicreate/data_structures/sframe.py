@@ -722,8 +722,6 @@ class SFrame(object):
         """
         # emit metrics for num_rows, num_columns, and type (local://, s3, hdfs, http)
 
-        import pdb
-        pdb.set_trace()
         if (_proxy):
             self.__proxy__ = _proxy
         else:
@@ -4218,7 +4216,7 @@ class SFrame(object):
                                                                   group_output_columns,
                                                                   group_ops))
 
-    def join(self, right, on=None, how='inner', alter_name=None:
+    def join(self, right, on=None, how='inner', alter_name=None):
         """
         Merge two SFrames. Merges the current (left) SFrame with the given
         (right) SFrame using a SQL-style equi-join operation by columns.
@@ -4364,7 +4362,7 @@ class SFrame(object):
             raise TypeError("Must pass a str, list, or dict of join keys")
 
         with cython_context():
-            if alter_name is None
+            if alter_name is None:
                 return SFrame(_proxy=self.__proxy__.join(right.__proxy__, how, join_keys))
             if type(alter_name) is dict:
                 left_names = self.column_names()
