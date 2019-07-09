@@ -8,25 +8,25 @@
   NSString *_name;
   NSUInteger _styles;
 
-  id<MTLBuffer> _gammaBuffer;
-  id<MTLBuffer> _betaBuffer;
+  NSMutableArray<MPSVector *> *_gammaVectorArray;
+  NSMutableArray<MPSVector *> *_betaVectorArray;
+  NSMutableArray<MPSVector *> *_gammaMomentumVectorArray;
+  NSMutableArray<MPSVector *> *_gammaVelocityVectorArray;
+  NSMutableArray<MPSVector *> *_betaMomentumVectorArray;
+  NSMutableArray<MPSVector *> *_betaVelocityVectorArray;
 
-  MPSVector *_gammaVector;
-  MPSVector *_betaVector;
-  MPSVector *_gammaMomentumVector;
-  MPSVector *_gammaVelocityVector;
-  MPSVector *_betaMomentumVector;
-  MPSVector *_betaVelocityVector;
+  NSMutableArray<id<MTLBuffer>> *_gammaBufferArray;
+  NSMutableArray<id<MTLBuffer>> *_betaBufferArray;
 
-  id<MTLBuffer> _gammaMomentumBuffer;
-  id<MTLBuffer> _gammaVelocityBuffer;
-  id<MTLBuffer> _betaMomentumBuffer;
-  id<MTLBuffer> _betaVelocityBuffer;
-  id<MTLBuffer> _movingMeanBuffer;
-  id<MTLBuffer> _movingVarianceBuffer;
+  NSMutableArray<id<MTLBuffer>> *_movingMeanBufferArray;
+  NSMutableArray<id<MTLBuffer>> *_movingVarianceBufferArray;
+  NSMutableArray<id<MTLBuffer>> *_gammaMomentumBufferArray;
+  NSMutableArray<id<MTLBuffer>> *_gammaVelocityBufferArray;
+  NSMutableArray<id<MTLBuffer>> *_betaMomentumBufferArray;
+  NSMutableArray<id<MTLBuffer>> *_betaVelocityBufferArray;
 
   MPSVectorDescriptor *_vDesc;
-  MPSCNNNormalizationGammaAndBetaState *_state;
+  NSMutableArray<MPSCNNNormalizationGammaAndBetaState *> *stateArray;
 
   id<MTLCommandQueue> _cq;
   MPSNNOptimizerAdam *_adamGamma;
@@ -69,69 +69,116 @@
       ones_ptr[x] = 1.0f;
     }
 
-    _vDesc = [MPSVectorDescriptor vectorDescriptorWithLength:_numberOfFeatureChannels
-                                                   dataType:(MPSDataTypeFloat32)];
-
-    _gammaBuffer = [dev newBufferWithBytes:_gamma_weights
-                                    length:sizeof(float) * _numberOfFeatureChannels
-                                   options:MTLResourceStorageModeManaged];
-
-    _betaBuffer = [dev newBufferWithBytes:_beta_weights
-                                   length:sizeof(float) * _numberOfFeatureChannels
-                                  options:MTLResourceStorageModeManaged];
-
-
-    _gammaMomentumBuffer = [dev newBufferWithBytes:zeros_ptr
-                                            length:sizeof(float) * _numberOfFeatureChannels
-                                           options:MTLResourceStorageModeManaged];
-
-    _gammaVelocityBuffer = [dev newBufferWithBytes:zeros_ptr
-                                            length:sizeof(float) * _numberOfFeatureChannels
-                                           options:MTLResourceStorageModeManaged];
-
-    _betaMomentumBuffer = [dev newBufferWithBytes:zeros_ptr
-                                           length:sizeof(float) * _numberOfFeatureChannels
-                                          options:MTLResourceStorageModeManaged];
-
-    _betaVelocityBuffer = [dev newBufferWithBytes:zeros_ptr
-                                           length:sizeof(float) * _numberOfFeatureChannels
-                                          options:MTLResourceStorageModeManaged];
-
-    _movingMeanBuffer = [dev newBufferWithBytes:zeros_ptr
-                                         length:sizeof(float) * _numberOfFeatureChannels
-                                        options:MTLResourceStorageModeManaged];
-
-    _movingVarianceBuffer = [dev newBufferWithBytes:ones_ptr
-                                             length:sizeof(float) * _numberOfFeatureChannels
-                                            options:MTLResourceStorageModeManaged];
-    
     _adamGamma = [[MPSNNOptimizerAdam alloc] initWithDevice:dev
                                               learningRate:0.001f];
         
     _adamBeta = [[MPSNNOptimizerAdam alloc] initWithDevice:dev
                                              learningRate:0.001f];
-      
-    _gammaVector = [[MPSVector alloc] initWithBuffer:_gammaBuffer
-                                          descriptor:_vDesc];
 
-    _gammaMomentumVector = [[MPSVector alloc] initWithBuffer:_gammaMomentumBuffer
-                                                  descriptor:_vDesc];
+    _vDesc = [MPSVectorDescriptor vectorDescriptorWithLength:_numberOfFeatureChannels
+                                                   dataType:(MPSDataTypeFloat32)];
 
-    _gammaVelocityVector = [[MPSVector alloc] initWithBuffer:_gammaVelocityBuffer
-                                                  descriptor:_vDesc];
+    _gammaVectorArray = [[NSMutableArray alloc] init];
+    _betaVectorArray = [[NSMutableArray alloc] init];
+    _gammaMomentumVectorArray = [[NSMutableArray alloc] init];
+    _gammaVelocityVectorArray = [[NSMutableArray alloc] init];
+    _betaMomentumVectorArray = [[NSMutableArray alloc] init];
+    _betaVelocityVectorArray = [[NSMutableArray alloc] init];
 
-    _betaVector = [[MPSVector alloc] initWithBuffer:_betaBuffer
-                                         descriptor:_vDesc];
+    _gammaBufferArray = [[NSMutableArray alloc] init];
+    _betaBufferArray = [[NSMutableArray alloc] init];
 
-    _betaMomentumVector = [[MPSVector alloc] initWithBuffer:_betaMomentumBuffer
-                                                 descriptor:_vDesc];
+    _movingMeanBufferArray = [[NSMutableArray alloc] init];
+    _movingVarianceBufferArray = [[NSMutableArray alloc] init];
+    _gammaMomentumBufferArray = [[NSMutableArray alloc] init];
+    _gammaVelocityBufferArray = [[NSMutableArray alloc] init];
+    _betaMomentumBufferArray = [[NSMutableArray alloc] init];
+    _betaVelocityBufferArray = [[NSMutableArray alloc] init];
 
-    _betaVelocityVector = [[MPSVector alloc] initWithBuffer:_betaVelocityBuffer
-                                                 descriptor:_vDesc];
+    for (size_t index = 0; index < styles; index ++){
+      id<MTLBuffer> gammaBuffer = [dev newBufferWithBytes:_gamma_weights
+                                                   length:sizeof(float) * _numberOfFeatureChannels
+                                                  options:MTLResourceStorageModeManaged];
 
+      [_gammaBufferArray addObject:gammaBuffer];
 
-    _state = [[MPSCNNNormalizationGammaAndBetaState alloc] initWithGamma:_gammaBuffer
-                                                                    beta:_betaBuffer];
+      id<MTLBuffer> betaBuffer = [dev newBufferWithBytes:_beta_weights
+                                                  length:sizeof(float) * _numberOfFeatureChannels
+                                                 options:MTLResourceStorageModeManaged];
+
+      [_betaBufferArray addObject:betaBuffer];
+
+      id<MTLBuffer> gammaMomentumBuffer = [dev newBufferWithBytes:zeros_ptr
+                                                           length:sizeof(float) * _numberOfFeatureChannels
+                                                          options:MTLResourceStorageModeManaged];
+
+      [_gammaMomentumBufferArray addObject:gammaMomentumBuffer];
+
+      id<MTLBuffer> gammaVelocityBuffer = [dev newBufferWithBytes:zeros_ptr
+                                                           length:sizeof(float) * _numberOfFeatureChannels
+                                                          options:MTLResourceStorageModeManaged];
+
+      [_gammaVelocityBufferArray addObject:gammaVelocityBuffer];
+
+      id<MTLBuffer> betaMomentumBuffer = [dev newBufferWithBytes:zeros_ptr
+                                                          length:sizeof(float) * _numberOfFeatureChannels
+                                                         options:MTLResourceStorageModeManaged];
+
+      [_betaMomentumBufferArray addObject:betaMomentumBuffer];
+
+      id<MTLBuffer> betaVelocityBuffer = [dev newBufferWithBytes:zeros_ptr
+                                                          length:sizeof(float) * _numberOfFeatureChannels
+                                                         options:MTLResourceStorageModeManaged];
+
+      [_betaVelocityBufferArray addObject:betaVelocityBuffer];
+
+      id<MTLBuffer> movingMeanBuffer = [dev newBufferWithBytes:zeros_ptr
+                                                        length:sizeof(float) * _numberOfFeatureChannels
+                                                       options:MTLResourceStorageModeManaged];
+
+      [_movingMeanBufferArray addObject:movingMeanBuffer];
+
+      id<MTLBuffer> movingVarianceBuffer = [dev newBufferWithBytes:ones_ptr
+                                                            length:sizeof(float) * _numberOfFeatureChannels
+                                                           options:MTLResourceStorageModeManaged];
+
+      [_movingVarianceBufferArray addObject:movingVarianceBuffer];
+
+      MPSVector *gammaVector = [[MPSVector alloc] initWithBuffer:gammaBuffer
+                                                      descriptor:_vDesc];
+
+      [_gammaVectorArray addObject:gammaVector];
+
+      MPSVector *gammaMomentumVector = [[MPSVector alloc] initWithBuffer:gammaMomentumBuffer
+                                                              descriptor:_vDesc];
+
+      [_gammaMomentumVectorArray addObject:gammaMomentumVector];
+
+      MPSVector *gammaVelocityVector = [[MPSVector alloc] initWithBuffer:gammaVelocityBuffer
+                                                              descriptor:_vDesc];
+
+      [_gammaVelocityVectorArray addObject:gammaVelocityVector];
+
+      MPSVector *betaVector = [[MPSVector alloc] initWithBuffer:betaBuffer
+                                                     descriptor:_vDesc];
+
+      [_betaVectorArray addObject:betaVector];
+
+      MPSVector *betaMomentumVector = [[MPSVector alloc] initWithBuffer:betaMomentumBuffer
+                                                             descriptor:_vDesc];
+
+      [_betaMomentumVectorArray addObject:betaMomentumVector];
+
+      MPSVector *betaVelocityVector = [[MPSVector alloc] initWithBuffer:betaVelocityBuffer
+                                                             descriptor:_vDesc];
+      [_betaVelocityVectorArray addObject:betaVelocityVector];
+
+      MPSCNNNormalizationGammaAndBetaState* state = [[MPSCNNNormalizationGammaAndBetaState alloc] 
+                                                          initWithGamma:gammaBuffer
+                                                                   beta:betaBuffer];
+
+      [stateArray addObject:state];
+    }
     
     free(zeros_ptr);
     free(ones_ptr);
@@ -154,7 +201,7 @@
 
 - (float *) beta {
   [self checkpointWithCommandQueue:_cq];
-  return (float *) [[_betaVector data] contents];
+  return (float *) [[[_betaVectorArray objectAtIndex: _currentStyle] data] contents];
 }
 
 - (void) loadGamma:(float *)gamma {
@@ -163,7 +210,7 @@
 
 - (float *) gamma {
   [self checkpointWithCommandQueue:_cq];
-  return (float*) [[_gammaVector data] contents];
+  return (float*) [[[_gammaVectorArray objectAtIndex: _currentStyle] data] contents];
 }
 
 - (MPSCNNNormalizationGammaAndBetaState *)updateGammaAndBetaWithCommandBuffer:(id<MTLCommandBuffer>)commandBuffer 
@@ -182,9 +229,9 @@
       [_adamGamma encodeToCommandBuffer:commandBuffer
                     inputGradientVector:gradientWeightsVector
                       inputValuesVector:inputWeightsVector
-                    inputMomentumVector:_gammaMomentumVector
-                    inputVelocityVector:_gammaVelocityVector
-                     resultValuesVector:_gammaVector];
+                    inputMomentumVector:_gammaMomentumVectorArray[_currentStyle]
+                    inputVelocityVector:_gammaVelocityVectorArray[_currentStyle]
+                     resultValuesVector:_gammaVectorArray[_currentStyle]];
 
       MPSVector *gradientBiasesVector = [[MPSVector alloc] initWithBuffer:nonnull_cast(instanceNormalizationState.gradientForBeta)
                                                                descriptor:_vDesc];
@@ -195,29 +242,31 @@
       [_adamBeta encodeToCommandBuffer:commandBuffer
                    inputGradientVector:gradientBiasesVector
                      inputValuesVector:inputBiasesVector
-                   inputMomentumVector:_betaMomentumVector
-                   inputVelocityVector:_betaVelocityVector
-                    resultValuesVector:_betaVector];
+                   inputMomentumVector:_betaMomentumVectorArray[_currentStyle]
+                   inputVelocityVector:_betaVelocityVectorArray[_currentStyle]
+                    resultValuesVector:_betaVectorArray[_currentStyle]];
 
   }
 
-    return _state;
+    return stateArray[_currentStyle];
 }
 
 - (void)checkpointWithCommandQueue:(nonnull id<MTLCommandQueue>)commandQueue {
   id<MTLCommandBuffer> commandBuffer = [commandQueue commandBuffer];
   id<MTLBlitCommandEncoder> blit = commandBuffer.blitCommandEncoder;
 
-  [blit synchronizeResource:_betaMomentumBuffer];
-  [blit synchronizeResource:_betaVelocityBuffer];
-  [blit synchronizeResource:nonnull_cast(_state.beta)];
+  for (size_t index = 0; index < _styles; index ++){
+    [blit synchronizeResource:_betaMomentumBufferArray[index]];
+    [blit synchronizeResource:_betaVelocityBufferArray[index]];
+    [blit synchronizeResource:nonnull_cast(stateArray[index].beta)];
 
-  [blit synchronizeResource:_gammaMomentumBuffer];
-  [blit synchronizeResource:_gammaVelocityBuffer];
-  [blit synchronizeResource:nonnull_cast(_state.gamma)];
+    [blit synchronizeResource:_gammaMomentumBufferArray[index]];
+    [blit synchronizeResource:_gammaVelocityBufferArray[index]];
+    [blit synchronizeResource:nonnull_cast(stateArray[index].gamma)];
 
-  [blit synchronizeResource:_movingMeanBuffer];
-  [blit synchronizeResource:_movingVarianceBuffer];
+    [blit synchronizeResource:_movingMeanBufferArray[index]];
+    [blit synchronizeResource:_movingVarianceBufferArray[index]];
+  }
 
   [blit endEncoding];
 
