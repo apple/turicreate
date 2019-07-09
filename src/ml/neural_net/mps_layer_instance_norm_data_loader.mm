@@ -2,8 +2,8 @@
 #include <ml/neural_net/mps_weight.h>
 
 @interface TCMPSInstanceNormDataLoader () {
-  float *_gamma_weights;
-  float *_beta_weights;
+  NSMutableData *_gamma_weights;
+  NSMutableData *_beta_weights;
   
   NSString *_name;
   NSUInteger _styles;
@@ -54,11 +54,11 @@
     
     _currentStyle = 0;  
     
-    _gamma_weights = (float *) malloc(numberFeatureChannels * styles * sizeof(float));
-    _beta_weights = (float *) malloc(numberFeatureChannels * styles * sizeof(float));
+    _gamma_weights = [NSMutableData dataWithLength:numberFeatureChannels * styles * sizeof(float)];
+    _beta_weights = [NSMutableData dataWithLength:numberFeatureChannels * styles * sizeof(float)];
 
-    memcpy(_gamma_weights, gammaWeights, numberFeatureChannels * styles * sizeof(float));
-    memcpy(_beta_weights, betaWeights, numberFeatureChannels * styles * sizeof(float));
+    memcpy(_gamma_weights.mutableBytes, gammaWeights, numberFeatureChannels * styles * sizeof(float));
+    memcpy(_beta_weights.mutableBytes, betaWeights, numberFeatureChannels * styles * sizeof(float));
 
     _cq = cmd_q;
 
@@ -96,13 +96,13 @@
     _betaVelocityBufferArray = [[NSMutableArray alloc] init];
 
     for (size_t index = 0; index < styles; index ++){
-      id<MTLBuffer> gammaBuffer = [dev newBufferWithBytes:_gamma_weights
+      id<MTLBuffer> gammaBuffer = [dev newBufferWithBytes:_gamma_weights.mutableBytes
                                                    length:sizeof(float) * _numberOfFeatureChannels
                                                   options:MTLResourceStorageModeManaged];
 
       [_gammaBufferArray addObject:gammaBuffer];
 
-      id<MTLBuffer> betaBuffer = [dev newBufferWithBytes:_beta_weights
+      id<MTLBuffer> betaBuffer = [dev newBufferWithBytes:_beta_weights.mutableBytes
                                                   length:sizeof(float) * _numberOfFeatureChannels
                                                  options:MTLResourceStorageModeManaged];
 
@@ -186,17 +186,12 @@
   return self;
 }
 
--(void)dealloc {
-  free(_gamma_weights);
-  free(_beta_weights);
-}
-
 - (void) updateCurrentStyle:(NSUInteger)style {
   _currentStyle = style;
 }
 
 - (void) loadBeta:(float *)beta {
-  _beta_weights = beta;
+  memcpy(_beta_weights.mutableBytes, beta, _numberOfFeatureChannels * _styles * sizeof(float));
 }
 
 - (float *) beta {
@@ -205,7 +200,7 @@
 }
 
 - (void) loadGamma:(float *)gamma {
-  _gamma_weights = gamma;
+  memcpy(_gamma_weights.mutableBytes, gamma, _numberOfFeatureChannels * _styles * sizeof(float));
 }
 
 - (float *) gamma {

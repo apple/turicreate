@@ -52,8 +52,6 @@ API_AVAILABLE(macos(10.14))
                          device:(id<MTLDevice>)dev
                       cmd_queue:(id<MTLCommandQueue>) cmd_q;
 
--(void)dealloc;
-
 - (void) updateCurrentStyle:(NSUInteger)style;
 
 - (void) loadBeta:(float *)beta;
