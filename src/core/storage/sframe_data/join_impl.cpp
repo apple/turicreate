@@ -210,11 +210,14 @@ hash_join_executor::hash_join_executor(const sframe &left,
          * names haven't seen so far.
          **/
         auto itr = _alter_names_right.find(name);
-        if (new_table.insert(itr->second).second) {
+        if (!new_table.insert(itr->second).second) {
           std::stringstream ss;
           ss << "user provided column name { " << itr->second << " } conflicts with table name used in SFrame";
           log_and_throw(ss.str());
         }
+        _output_column_types.push_back(right.column_type(right.column_index(name)));
+        _output_column_names.push_back(itr->second);
+        new_table.insert(itr->second);
       } else {
         _output_column_types.push_back(right.column_type(right.column_index(name)));
         // default collision resolv. see SFrame::generate_valid_column_name.

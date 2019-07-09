@@ -4367,7 +4367,7 @@ class SFrame(object):
             if type(alter_name) is dict:
                 left_names = self.column_names()
                 right_names = right.column_names()
-                for k, v in alter_name:
+                for (k, v) in alter_name.items():
                     if k not in right_names or k in join_keys:
                         raise KeyError("Redundant key %s for collision resolution" % k)
                     if k != v and v in left_names:
