@@ -12,6 +12,9 @@ namespace turi {
 namespace join_impl {
 
 /****************** join_hash_table **********************/
+
+const join_hash_table::value_type join_hash_table::empty_vt = {};
+
 bool join_hash_table::add_row(const std::vector<flexible_type> &row) {
 
   size_t the_hash_key = compute_hash_from_row(row, _hash_positions);
@@ -137,6 +140,7 @@ hash_join_executor::hash_join_executor(const sframe &left,
                                        const std::vector<size_t> &left_join_positions,
                                        const std::vector<size_t> &right_join_positions,
                                        join_type_t join_type,
+                                       const std::map<std::string,std::string>& alter_names_right,
                                        size_t max_buffer_size) :
     _left_frame(left),
     _right_frame(right),
@@ -146,7 +150,8 @@ hash_join_executor::hash_join_executor(const sframe &left,
     _left_join(false),
     _right_join(false),
     _reverse_output_column_order(false),
-    _frames_partitioned(false) {
+    _frames_partitioned(false),
+    _alter_names_right(alter_names_right) {
 
 
   if(join_type == LEFT_JOIN || join_type == FULL_JOIN) {
@@ -156,67 +161,145 @@ hash_join_executor::hash_join_executor(const sframe &left,
     _right_join = true;
   }
 
+  ASSERT_EQ(_left_join_positions.size(), _right_join_positions.size());
+
+  /* handy script for reverse lookup */
+  decltype(_right_to_left_join_positions) left_to_right_join_positions;
+  for(size_t i = 0; i < _left_join_positions.size(); ++i) {
+    auto ret = _right_to_left_join_positions.emplace(_right_join_positions[i],
+                                                     _left_join_positions[i]);
+    ASSERT_TRUE(ret.second);
+
+    ret = _left_to_right_join_positions.emplace(_left_join_positions[i],
+                                                _right_join_positions[i]);
+    ASSERT_TRUE(ret.second);
+  }
+
+  /*
+   * using names from sframe: unique and non-empty
+   * the new names in result sframe should have no confilict
+   * since _alter_name_right only applies to original order,
+   * we have to obtain the original construction
+   **/
+
+  /* get orginal left sframe's column names */
+  auto col_names_original_order = left.column_names();
+  _output_column_names = left.column_names();
+  _output_column_types = left.column_types();
+
+  std::set<std::string> new_table = {
+      std::make_move_iterator(col_names_original_order.begin()),
+      std::make_move_iterator(col_names_original_order.end())};
+
+  /* get orginal right sframe's column names */
+  col_names_original_order = right.column_names();
+  // check the original right sframe columns
+  for (auto& name : col_names_original_order) {
+    // skip join_keys
+    if (_right_to_left_join_positions.count(right.column_index(name)))
+      continue;
+
+    if (new_table.count(name)) {
+      if (_alter_names_right.count(name)) {
+        /* user defined resolution */
+        auto itr = _alter_names_right.find(name);
+        if (new_table.insert(itr->second).second) {
+          std::stringstream ss;
+          ss << "user provided column name { " << itr->second << " } conflicts with table name used in SFrame";
+          log_and_throw(ss.str());
+        }
+      } else {
+        /* default collision resolv. see SFrame::generate_valid_column_name */
+        _output_column_types.push_back(right.column_type(right.column_index(name)));
+        name.append(".1", 2);
+        _output_column_names.push_back(name);
+        new_table.insert(std::move(name));
+      }
+    } else {
+      _output_column_names.push_back(name);
+       _output_column_types.push_back(right.column_type(right.column_index(name)));
+      new_table.insert(std::move(name));
+    }
+  }
+
   // Left should always be smaller than right
-  if(get_num_cells(right) < get_num_cells(left)) {
+  if (get_num_cells(right) < get_num_cells(left)) {
     _reverse_output_column_order = true;
     std::swap(_left_frame, _right_frame);
     std::swap(_left_join_positions, _right_join_positions);
+    std::swap(_right_to_left_join_positions, _left_to_right_join_positions);
     if(_left_join != _right_join) {
       _left_join = !_left_join;
       _right_join = !_right_join;
     }
   }
-
-  ASSERT_EQ(_left_join_positions.size(), _right_join_positions.size());
-
-  for(size_t i = 0; i < _left_join_positions.size(); ++i) {
-    auto ret = _right_to_left_join_positions.insert(
-        std::make_pair(
-          _right_join_positions[i],
-          _left_join_positions[i]));
-    ASSERT_TRUE(ret.second);
-  }
 }
 
 void hash_join_executor::init_result_frame(sframe &result_frame) {
-  std::vector<std::string> res_column_names;
-  std::vector<flex_type_enum> res_column_types;
-
-  res_column_names = _left_frame.column_names();
-  res_column_types = _left_frame.column_types();
-
-  for(size_t i = 0; i < _right_frame.num_columns(); ++i) {
-    // If this isn't one of the columns that's part of the join key, it
-    // belongs in the result set.
-    if(_right_to_left_join_positions.find(i) ==
-        _right_to_left_join_positions.end()) {
-      res_column_names.push_back(_right_frame.column_name(i));
-      res_column_types.push_back(_right_frame.column_type(i));
-    }
-  }
-
-  size_t num_segments = std::max({_left_frame.num_segments(),
-                                  _right_frame.num_segments(),
-                                  thread::cpu_count() * std::max<size_t>(1,
-                                    log2(thread::cpu_count()))});
-  // Will throw if the SFrame is not in the state we expect
-  result_frame.open_for_write(res_column_names,
-                              res_column_types,
-                              "",
-                              num_segments,
-                              false);
-
   // Check which of the right frame's column names changed
-  if(_reverse_output_column_order) {
-    for(size_t i = _left_frame.num_columns(), cnt = 0; i < result_frame.num_columns(); ++cnt) {
-      if(_right_to_left_join_positions.find(cnt) == _right_to_left_join_positions.end()) {
-        if((result_frame.column_name(i).size() != _right_frame.column_name(cnt).size())) {
-          // Save the original name of any columns that were changed
-          _changed_dup_names.insert(std::make_pair(i, _right_frame.column_name(cnt)));
-        }
-        ++i;
+  if (_reverse_output_column_order) {
+    std::vector<std::string> res_column_names;
+    std::vector<flex_type_enum> res_column_types;
+
+    res_column_names.resize(_output_column_names.size());
+    res_column_types.resize(_output_column_types.size());
+
+    auto& original_left_to_right = _right_to_left_join_positions;
+
+    /* put the join key in the right pos  */
+    for (auto ii = 0U; ii < _right_frame.num_columns(); ii++) {
+      auto itr = original_left_to_right.find(ii);
+      if (itr != original_left_to_right.end()) {
+        res_column_names[itr->second] = _output_column_names[itr->first];
+        res_column_types[itr->second] = _output_column_types[itr->first];
+        _reverse_to_origin.emplace(itr->second, itr->first);
       }
     }
+
+    /* put right part of original order to left part of reverse */
+    size_t ii = 0;
+    for (auto col_idx = _right_frame.num_columns(); col_idx < _output_column_names.size(); col_idx++) {
+      /* skip join_keys */
+      while (!res_column_names[ii].empty()) {
+        ii++;
+      }
+      res_column_names[ii] = _output_column_names[col_idx];
+      res_column_types[ii] = _output_column_types[col_idx];
+      _reverse_to_origin.emplace(ii, col_idx);
+    }
+
+    /* put the rest */
+    for (auto col_idx = 0U; col_idx < _right_frame.size(); col_idx++) {
+      /* skip join_keys */
+      if (!original_left_to_right.count(col_idx)) {
+        while (!res_column_names[ii].empty()) {
+          ii++;
+        }
+      res_column_names[ii] = _output_column_names[col_idx];
+      res_column_types[ii] = _output_column_types[col_idx];
+        _reverse_to_origin.emplace(ii, col_idx);
+      }
+    }
+    DASSERT_EQ(_reverse_to_origin.size(), _output_column_names.size());
+
+    std::set<std::string> unique_names(std::begin(res_column_names),
+                                       std::end(res_column_names));
+    DASSERT_EQ(unique_names.size(), res_column_names.size());
+
+    size_t num_segments = std::max(
+        {_left_frame.num_segments(), _right_frame.num_segments(),
+         thread::cpu_count() * std::max<size_t>(1, log2(thread::cpu_count()))});
+    // Will throw if the SFrame is not in the state we expect
+    result_frame.open_for_write(res_column_names, res_column_types, "",
+                                num_segments, false);
+
+  } else {
+    size_t num_segments = std::max(
+        {_left_frame.num_segments(), _right_frame.num_segments(),
+         thread::cpu_count() * std::max<size_t>(1, log2(thread::cpu_count()))});
+    // Will throw if the SFrame is not in the state we expect
+    result_frame.open_for_write(_output_column_names, _output_column_types, "",
+                                num_segments, false);
   }
 }
 
@@ -382,51 +465,14 @@ sframe hash_join_executor::grace_hash_join() {
   // If we swapped the join order for performance reasons, we need to make the
   // columns appear in the order the user was expecting.  This code does this.
   if(_reverse_output_column_order) {
-    size_t cur_column_idx = 0;
     std::vector<std::shared_ptr<sarray<flexible_type>>> swapped_columns(result_frame.num_columns());
     std::vector<std::string> swapped_names(result_frame.num_columns());
 
-    // Make sure join positions are in the expected place
-    auto it = _right_to_left_join_positions.begin();
-    std::unordered_set<size_t> left_pos_set;
-    for(; it != _right_to_left_join_positions.end(); ++it) {
-      swapped_columns[it->first] = result_frame.select_column(it->second);
-      swapped_names[it->first] = _right_frame.column_name(it->first);
-      left_pos_set.insert(it->second);
+    for (auto& entry : _reverse_to_origin) {
+      swapped_columns[entry.second] = result_frame.select_column(entry.first);
+      swapped_names[entry.first] = _right_frame.column_name(entry.first);
     }
 
-    // Fill in the user-defined left frame's columns
-    for(size_t i = _left_frame.num_columns(); i < result_frame.num_columns(); ++i) {
-      while(swapped_columns[cur_column_idx].use_count() != 0) {
-        ++cur_column_idx;
-      }
-      swapped_columns[cur_column_idx] = result_frame.select_column(i);
-
-      // Sometimes there are duplicate names in both frames, which get renamed.
-      // It is expected that the renamed one (name.1) comes after the one that
-      // wasn't renamed.  This is an extra step we take to keep the result
-      // looking normal.
-      auto orig_name_entry = _changed_dup_names.find(i);
-      if(orig_name_entry == _changed_dup_names.end()) {
-        swapped_names[cur_column_idx] = result_frame.column_name(i);
-      } else {
-        swapped_names[cur_column_idx] = orig_name_entry->second;
-      }
-      ++cur_column_idx;
-    }
-
-    // Fill in the rest
-    for(size_t i = 0; i < _left_frame.num_columns(); ++i) {
-      // Check if this was a join position
-      if(left_pos_set.find(i) == left_pos_set.end()) {
-        while(swapped_columns[cur_column_idx].use_count() != 0) {
-          ++cur_column_idx;
-        }
-        swapped_columns[cur_column_idx] = result_frame.select_column(i);
-        swapped_names[cur_column_idx] = result_frame.column_name(i);
-        ++cur_column_idx;
-      }
-    }
     sframe swapped_result_frame(swapped_columns, swapped_names, false);
     return swapped_result_frame;
   }
@@ -607,7 +653,7 @@ std::shared_ptr<sframe> hash_join_executor::grace_partition_frame(
 size_t compute_hash_from_row(const std::vector<flexible_type> &row,
                              const std::vector<size_t> &positions) {
   size_t ret = 0;
-  for(const auto &i : positions) {
+  for(auto i : positions) {
     ret = hash64_combine(ret, row[i].hash());
   }
 

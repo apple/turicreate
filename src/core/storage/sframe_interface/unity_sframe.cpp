@@ -1201,20 +1201,19 @@ std::shared_ptr<unity_sframe_base> unity_sframe::groupby_aggregate(
 }
 
 
-std::shared_ptr<unity_sframe_base> unity_sframe::join(
+std::shared_ptr<unity_sframe_base> unity_sframe::join_with_custom_name(
     std::shared_ptr<unity_sframe_base> right,
     const std::string join_type,
-    std::map<std::string,std::string> join_keys) {
+    const std::map<std::string,std::string>& join_keys,
+    const std::map<std::string,std::string>& alternative_names) {
   log_func_entry();
   std::shared_ptr<unity_sframe> ret(new unity_sframe());
   std::shared_ptr<unity_sframe> us_right = std::static_pointer_cast<unity_sframe>(right);
 
   auto sframe_ptr = get_underlying_sframe();
   auto right_sframe_ptr = us_right->get_underlying_sframe();
-  sframe joined_sf = turi::join(*sframe_ptr,
-                                    *right_sframe_ptr,
-                                    join_type,
-                                    join_keys);
+  sframe joined_sf = turi::join(*sframe_ptr, *right_sframe_ptr, join_type,
+                                join_keys, alternative_names);
   ret->construct_from_sframe(joined_sf);
   return ret;
 }

@@ -28,7 +28,8 @@ namespace turi {
 sframe join(sframe& sf_left,
             sframe& sf_right,
             std::string join_type,
-            const std::map<std::string,std::string> join_columns,
+            const std::map<std::string, std::string>& join_columns,
+            const std::map<std::string, std::string>& alternative_names,
             size_t max_buffer_size = SFRAME_JOIN_BUFFER_NUM_CELLS);
 
 } // end of turicreate
