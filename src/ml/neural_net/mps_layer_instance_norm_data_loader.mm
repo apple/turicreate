@@ -15,9 +15,6 @@
   NSMutableArray<MPSVector *> *_betaMomentumVectorArray;
   NSMutableArray<MPSVector *> *_betaVelocityVectorArray;
 
-  NSMutableArray<id<MTLBuffer>> *_gammaBufferArray;
-  NSMutableArray<id<MTLBuffer>> *_betaBufferArray;
-
   NSMutableArray<id<MTLBuffer>> *_movingMeanBufferArray;
   NSMutableArray<id<MTLBuffer>> *_movingVarianceBufferArray;
   NSMutableArray<id<MTLBuffer>> *_gammaMomentumBufferArray;
@@ -57,8 +54,8 @@
     _gamma_weights = [NSMutableData dataWithLength:numberFeatureChannels * styles * sizeof(float)];
     _beta_weights = [NSMutableData dataWithLength:numberFeatureChannels * styles * sizeof(float)];
 
-    memcpy(_gamma_weights.mutableBytes, gammaWeights, numberFeatureChannels * styles * sizeof(float));
-    memcpy(_beta_weights.mutableBytes, betaWeights, numberFeatureChannels * styles * sizeof(float));
+    _gamma_weights = [NSMutableData dataWithBytes:gammaWeights length:numberFeatureChannels * styles * sizeof(float)];
+    _beta_weights = [NSMutableData dataWithBytes:betaWeights length:numberFeatureChannels * styles * sizeof(float)];
 
     _cq = cmd_q;
 
@@ -85,9 +82,6 @@
     _betaMomentumVectorArray = [[NSMutableArray alloc] init];
     _betaVelocityVectorArray = [[NSMutableArray alloc] init];
 
-    _gammaBufferArray = [[NSMutableArray alloc] init];
-    _betaBufferArray = [[NSMutableArray alloc] init];
-
     _movingMeanBufferArray = [[NSMutableArray alloc] init];
     _movingVarianceBufferArray = [[NSMutableArray alloc] init];
     _gammaMomentumBufferArray = [[NSMutableArray alloc] init];
@@ -95,18 +89,14 @@
     _betaMomentumBufferArray = [[NSMutableArray alloc] init];
     _betaVelocityBufferArray = [[NSMutableArray alloc] init];
 
-    for (size_t index = 0; index < styles; index ++){
+    for (NSUInteger index = 0; index < styles; index ++) {
       id<MTLBuffer> gammaBuffer = [dev newBufferWithBytes:_gamma_weights.mutableBytes
                                                    length:sizeof(float) * _numberOfFeatureChannels
                                                   options:MTLResourceStorageModeManaged];
 
-      [_gammaBufferArray addObject:gammaBuffer];
-
       id<MTLBuffer> betaBuffer = [dev newBufferWithBytes:_beta_weights.mutableBytes
                                                   length:sizeof(float) * _numberOfFeatureChannels
                                                  options:MTLResourceStorageModeManaged];
-
-      [_betaBufferArray addObject:betaBuffer];
 
       id<MTLBuffer> gammaMomentumBuffer = [dev newBufferWithBytes:zeros_ptr
                                                            length:sizeof(float) * _numberOfFeatureChannels
