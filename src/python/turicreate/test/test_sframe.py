@@ -1993,8 +1993,6 @@ class SFrameTest(unittest.TestCase):
             return data_lst
 
         sf_none = SFrame()
-        expected_.add_column(SArray([1,3,None]), 'car_id', inplace=True)
-        expected_.add_column(SArray([1,3,None]), 'car_id', inplace=True)
         sf_none.add_column(SArray(__build_data_list_with_none(self.int_data[:])), "ints", inplace=True)
         sf_none.add_column(SArray(__build_data_list_with_none(self.float_data[:])), "floats", inplace=True)
         sf_none.add_column(SArray(__build_data_list_with_none(self.string_data[:])), "strings", inplace=True)
