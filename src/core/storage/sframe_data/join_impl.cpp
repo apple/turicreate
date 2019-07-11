@@ -255,7 +255,7 @@ void hash_join_executor::init_result_frame(sframe &result_frame) {
     auto& original_left_to_right = _right_to_left_join_positions;
 
     /* put the join keys into the first part  */
-    for (auto ii = 0U; ii < _right_frame.num_columns(); ii++) {
+    for (size_t ii = 0; ii < _right_frame.num_columns(); ii++) {
       auto itr = original_left_to_right.find(ii);
       if (itr != original_left_to_right.end()) {
         res_column_names[itr->second] = _output_column_names[itr->first];
@@ -267,7 +267,7 @@ void hash_join_executor::init_result_frame(sframe &result_frame) {
     /* put user provide right part to left part of reverse ordered vector */
     size_t ii = 0;
     /* _right_frame is the user defined left_frame */
-    for (auto col_idx = _right_frame.num_columns(); col_idx < _output_column_names.size(); col_idx++) {
+    for (size_t col_idx = _right_frame.num_columns(); col_idx < _output_column_names.size(); col_idx++) {
       /* skip join_keys */
       while (!res_column_names[ii].empty()) {
         ii++;
@@ -278,7 +278,7 @@ void hash_join_executor::init_result_frame(sframe &result_frame) {
     }
 
     /* put the rest from the user defined left frame */
-    for (auto col_idx = 0U; col_idx < _right_frame.num_columns(); col_idx++) {
+    for (size_t col_idx = 0U; col_idx < _right_frame.num_columns(); col_idx++) {
       /* skip join_keys */
       if (!original_left_to_right.count(col_idx)) {
         while (!res_column_names[ii].empty()) {
