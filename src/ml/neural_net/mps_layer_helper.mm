@@ -1,6 +1,8 @@
 #include <ml/neural_net/mps_layer_helper.h>
 #include <ml/neural_net/mps_weight.h>
+
 #import <ml/neural_net/mps_layer_conv_padding.h>
+#import <ml/neural_net/mps_layer_instance_norm_data_loader.h>
 
 @implementation MPSCNNFullyConnectedNode (TCMPSLayerHelper)
 + (MPSCNNFullyConnectedNode *) createFullyConnected:(MPSNNImageNode *)inputNode
@@ -92,4 +94,27 @@
   
 	return convNode;
 }
+
++ (MPSCNNInstanceNormalizationNode *) createInstanceNormalization:(MPSNNImageNode *)inputNode
+                                                         channels:(NSUInteger)channels
+                                                           styles:(NSUInteger)styles
+                                                            gamma:(float *)gamma
+                                                             beta:(float *)beta
+                                                            label:(NSString *)label
+                                                           device:(id<MTLDevice>)dev
+                                                        cmd_queue:(id<MTLCommandQueue>) cmd_q {
+
+  TCMPSInstanceNormDataLoader *InstNormDataLoad = [[TCMPSInstanceNormDataLoader alloc] initWithParams:label
+                                                                                         gammaWeights:gamma
+                                                                                          betaWeights:beta
+                                                                                numberFeatureChannels:channels
+                                                                                               styles:styles
+                                                                                               device:dev
+                                                                                            cmd_queue:cmd_q];
+                                      
+  MPSCNNInstanceNormalizationNode *instNormNode =  [MPSCNNInstanceNormalizationNode nodeWithSource:inputNode
+                                                                                        dataSource:InstNormDataLoad];
+  return instNormNode;
+}
+
 @end

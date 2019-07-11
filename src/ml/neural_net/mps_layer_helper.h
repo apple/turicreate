@@ -38,6 +38,16 @@ NS_ASSUME_NONNULL_BEGIN
                                          device:(id<MTLDevice>)dev
                                       cmd_queue:(id<MTLCommandQueue>)cmd_q
                                       API_AVAILABLE(macosx(10.14));
+
++ (MPSCNNInstanceNormalizationNode *) createInstanceNormalization:(MPSNNImageNode *)inputNode
+                                                         channels:(NSUInteger)channels
+                                                           styles:(NSUInteger)styles
+                                                            gamma:(float *)gamma
+                                                             beta:(float *)beta
+                                                            label:(NSString *)label
+                                                           device:(id<MTLDevice>)dev
+                                                        cmd_queue:(id<MTLCommandQueue>)cmd_q
+                                                        API_AVAILABLE(macosx(10.14));
 @end
 
 NS_ASSUME_NONNULL_END
