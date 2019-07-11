@@ -15,10 +15,10 @@ namespace {
 
 std::uniform_real_distribution<float> uniform_distribution_for_xavier(
     size_t fan_in, size_t fan_out)
-  {
-  float magnitude = std::sqrt(3.f / (0.5f * fan_in 0.5f * fan_out));
+{
+  float magnitude = std::sqrt(3.f / (0.5f * fan_in + 0.5f * fan_out));
   return std::uniform_real_distribution<float>(-magnitude, magnitude);
-  }
+}
 
 }  // namespace
 
