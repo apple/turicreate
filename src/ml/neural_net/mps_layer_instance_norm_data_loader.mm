@@ -213,16 +213,18 @@ API_AVAILABLE(macos(10.14))
   id<MTLBlitCommandEncoder> blit = commandBuffer.blitCommandEncoder;
 
   for (size_t index = 0; index < _styles; index ++) {
-    [blit synchronizeResource:[[style_props objectAtIndex: index] betaMomentumBuffer]];
-    [blit synchronizeResource:[[style_props objectAtIndex: index] betaVelocityBuffer]];
-    [blit synchronizeResource:nonnull_cast([[style_props objectAtIndex: index] state].beta)];
+    TCMPSInstanceNormDataLoaderProps *style_property = [style_props objectAtIndex: index];
 
-    [blit synchronizeResource:[[style_props objectAtIndex: index] gammaMomentumBuffer]];
-    [blit synchronizeResource:[[style_props objectAtIndex: index] gammaVelocityBuffer]];
-    [blit synchronizeResource:nonnull_cast([[style_props objectAtIndex: index] state].gamma)];
+    [blit synchronizeResource:[style_property betaMomentumBuffer]];
+    [blit synchronizeResource:[style_property betaVelocityBuffer]];
+    [blit synchronizeResource:nonnull_cast([style_property state].beta)];
 
-    [blit synchronizeResource:[[style_props objectAtIndex: index] movingMeanBuffer]];
-    [blit synchronizeResource:[[style_props objectAtIndex: index] movingVarianceBuffer]];
+    [blit synchronizeResource:[style_property gammaMomentumBuffer]];
+    [blit synchronizeResource:[style_property gammaVelocityBuffer]];
+    [blit synchronizeResource:nonnull_cast([style_property state].gamma)];
+
+    [blit synchronizeResource:[style_property movingMeanBuffer]];
+    [blit synchronizeResource:[style_property movingVarianceBuffer]];
   }
 
   [blit endEncoding];
