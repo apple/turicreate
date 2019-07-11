@@ -213,7 +213,10 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
 
     // Start an iteration through the entire SFrame.
     range_iterator_(data_.range_iterator()),
-    next_row_(range_iterator_.begin())
+    next_row_(range_iterator_.begin()),
+
+    // Initialize random number generator.
+    random_engine_(params.random_seed)
 {}
 
 std::vector<labeled_image> simple_data_iterator::next_batch(size_t batch_size) {
@@ -238,13 +241,16 @@ std::vector<labeled_image> simple_data_iterator::next_batch(size_t batch_size) {
         // wall-clock time of this function. SFrame should either provide an
         // optimized implementation, or we should implement an approach that
         // amortizes the cost across calls.
-        // TODO: Avoid traversing the data in gl_sframe::apply by instead
-        // generating a gl_sarray from a sequence of the desired length and
-        // hashing each element.
-        auto rng = [](const sframe_rows::row&) {
-          return random::rand();
+        gl_sarray indices = gl_sarray::from_sequence(0, data_.size());
+        std::uniform_int_distribution<uint64_t> dist(0);  // 0 to max uint64_t
+        uint64_t random_mask = dist(random_engine_);
+        auto randomize_indices = [random_mask](const flexible_type& x) {
+          uint64_t masked_index = random_mask ^ x.to<uint64_t>();
+          return flexible_type(hash64(masked_index));
         };
-        data_.add_column(data_.apply(rng, flex_type_enum::INTEGER),
+        data_.add_column(indices.apply(randomize_indices,
+                                       flex_type_enum::INTEGER,
+                                       /* skip_undefined */ false),
                          "_random_order");
         data_ = data_.sort("_random_order");
         data_.remove_column("_random_order");

@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/** Facilitates the injection of Turi (C++) random number generators. */
+/** Facilitates the injection of C++ random number generators. */
 typedef CGFloat (^TCMPSUniformRandomNumberGenerator)(CGFloat lowerBound,
                                                      CGFloat upperBound);
 
@@ -54,7 +54,8 @@ API_AVAILABLE(macos(10.13))
 API_AVAILABLE(macos(10.13))
 @protocol TCMPSImageAugmenting <NSObject>
 
-- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source;
+- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source
+                                     generator:(TCMPSUniformRandomNumberGenerator)uniform;
 
 @end
 
@@ -66,7 +67,8 @@ API_AVAILABLE(macos(10.13))
 
 - (instancetype)initWithSize:(CGSize)size;
 
-- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source;
+- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source
+                                     generator:(TCMPSUniformRandomNumberGenerator)uniform;
 
 @end
 
@@ -76,9 +78,8 @@ API_AVAILABLE(macos(10.13))
 
 @property(nonatomic) CGFloat skipProbability;
 
-- (instancetype)initWithRNG:(TCMPSUniformRandomNumberGenerator)rng;
-
-- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source;
+- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source
+                                     generator:(TCMPSUniformRandomNumberGenerator)uniform;
 
 @end
 
@@ -97,10 +98,8 @@ API_AVAILABLE(macos(10.13))
 @property(nonatomic) NSUInteger maxAttempts;
 @property(nonatomic) CGFloat minEjectCoverage;
 
-- (instancetype)initWithRNG:(TCMPSUniformRandomNumberGenerator)rng;
-
-- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source;
-
+- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source
+                                     generator:(TCMPSUniformRandomNumberGenerator)uniform;
 @end
 
 /** Augmenter that possibly applies random padding. */
@@ -116,9 +115,8 @@ API_AVAILABLE(macos(10.13))
 @property(nonatomic) CGFloat maxAreaFraction;
 @property(nonatomic) NSUInteger maxAttempts;
 
-- (instancetype)initWithRNG:(TCMPSUniformRandomNumberGenerator)rng;
-
-- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source;
+- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source
+                                     generator:(TCMPSUniformRandomNumberGenerator)uniform;
 
 @end
 
@@ -132,9 +130,8 @@ API_AVAILABLE(macos(10.13))
 @property(nonatomic) CGFloat maxContrastProportion;
 @property(nonatomic) CGFloat maxSaturationProportion;
 
-- (instancetype)initWithRNG:(TCMPSUniformRandomNumberGenerator)rng;
-
-- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source;
+- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source
+                                     generator:(TCMPSUniformRandomNumberGenerator)uniform;
 
 @end
 
@@ -145,9 +142,8 @@ API_AVAILABLE(macos(10.13))
 // Multiplied by pi to obtain maximum angular change in radians.
 @property(nonatomic) CGFloat maxHueAdjust;
 
-- (instancetype)initWithRNG:(TCMPSUniformRandomNumberGenerator)rng;
-
-- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source;
+- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source
+                                     generator:(TCMPSUniformRandomNumberGenerator)uniform;
 
 @end
 

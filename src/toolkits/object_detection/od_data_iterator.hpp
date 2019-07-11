@@ -7,6 +7,7 @@
 #ifndef TURI_OBJECT_DETECTION_OD_DATA_ITERATOR_HPP_
 #define TURI_OBJECT_DETECTION_OD_DATA_ITERATOR_HPP_
 
+#include <random>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -77,6 +78,9 @@ public:
 
     /** Whether to shuffle the data on subsequent traversals. */
     bool shuffle = true;
+
+    /** Determines results of shuffle operations if enabled. */
+    int random_seed = 0;
   };
 
   virtual ~data_iterator() = default;
@@ -155,6 +159,7 @@ private:
 
   gl_sframe_range range_iterator_;
   gl_sframe_range::iterator next_row_;
+  std::default_random_engine random_engine_;
 };
 
 }  // object_detection

@@ -8,31 +8,40 @@
 
 #include <cmath>
 
-#include <core/random/random.hpp>
-
 namespace turi {
 namespace neural_net {
 
-xavier_weight_initializer::xavier_weight_initializer(size_t fan_in,
-                                                     size_t fan_out)
-{
-  magnitude_ = std::sqrt(3.f / (0.5f * fan_in + 0.5f * fan_out));
-}
+namespace {
 
-void xavier_weight_initializer::operator()(float* first_weight,
-                                           float* last_weight) const
-{
-  for (float* w = first_weight; w != last_weight; ++w) {
-    *w = random::fast_uniform(-magnitude_, magnitude_);
+std::uniform_real_distribution<float> uniform_distribution_for_xavier(
+    size_t fan_in, size_t fan_out)
+  {
+  float magnitude = std::sqrt(3.f / (0.5f * fan_in 0.5f * fan_out));
+  return std::uniform_real_distribution<float>(-magnitude, magnitude);
   }
-}
 
-// static
-lstm_weight_initializers lstm_weight_initializers::create_with_xavier_method(
-    size_t input_size, size_t state_size)
-{
-  xavier_weight_initializer i2h_init_fn(input_size, state_size);
-  xavier_weight_initializer h2h_init_fn(state_size, state_size);
+}  // namespace
+
+xavier_weight_initializer::xavier_weight_initializer(
+    size_t fan_in, size_t fan_out, std::mt19937* random_engine)
+    : dist_(uniform_distribution_for_xavier(fan_in, fan_out)),
+      random_engine_(*random_engine)
+{}
+
+  void xavier_weight_initializer::operator()(float* first_weight,
+                                           float* last_weight)
+  {
+    for (float* w = first_weight; w != last_weight; ++w) {
+    *w = dist_(random_engine_);
+    }
+  }
+
+  // static
+  lstm_weight_initializers lstm_weight_initializers::create_with_xavier_method(
+    size_t input_size, size_t state_size, std::mt19937* random_engine)
+  {
+  xavier_weight_initializer i2h_init_fn(input_size, state_size, random_engine);
+  xavier_weight_initializer h2h_init_fn(state_size, state_size, random_engine);
 
   lstm_weight_initializers result;
 
