@@ -329,11 +329,11 @@ cdef class UnitySFrameProxy:
 
         return create_proxy_wrapper_from_existing_proxy(proxy)
 
-    cpdef drop_missing_values(self, _columns, bint is_all, bint split):
+    cpdef drop_missing_values(self, _columns, bint is_all, bint split, bint recursive):
         cdef vector[string] columns = to_vector_of_strings(_columns)
         cdef cpplist[unity_sframe_base_ptr] sf_array
         with nogil:
-            sf_array = self.thisptr.drop_missing_values(columns, is_all, split)
+            sf_array = self.thisptr.drop_missing_values(columns, is_all, split, recursive)
         assert sf_array.size() == 2
         cdef unity_sframe_base_ptr proxy_first = (sf_array.front())
         cdef unity_sframe_base_ptr proxy_second

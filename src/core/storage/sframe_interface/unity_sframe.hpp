@@ -527,10 +527,15 @@ class unity_sframe : public unity_sframe_base {
    * SFrame with missing values dropped, and the second consisting of all the
    * rows removed.
    *
+   * If 'recursive' is true, the `nan`element check will be perfromed in
+   * a recursive manner to check each unit in a container-like flexible-typed
+   * cell in SFrame.
+   *
    * Throws if the column names are not in this SFrame, or if too many are given.
    */
-  std::list<std::shared_ptr<unity_sframe_base>>
-      drop_missing_values(const std::vector<std::string> &column_names, bool all, bool split);
+  std::list<std::shared_ptr<unity_sframe_base>> drop_missing_values(
+      const std::vector<std::string>& column_names, bool all, bool split,
+      bool recursive);
 
   dataframe_t to_dataframe();
 

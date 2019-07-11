@@ -69,7 +69,7 @@ GENERATE_INTERFACE_AND_PROXY(unity_sframe_base, unity_sframe_proxy,
       (std::shared_ptr<unity_sarray_base>, pack_columns, (const std::vector<std::string>&)(const std::vector<std::string>&)(flex_type_enum)(const flexible_type&))
       (std::shared_ptr<unity_sframe_base>, stack,  (const std::string&)(const std::vector<std::string>&)(const std::vector<flex_type_enum>&)(bool))
       (std::shared_ptr<unity_sframe_base>, copy_range, (size_t)(size_t)(size_t))
-      (std::list<std::shared_ptr<unity_sframe_base>>, drop_missing_values, (const std::vector<std::string>&)(bool)(bool))
+      (std::list<std::shared_ptr<unity_sframe_base>>, drop_missing_values, (const std::vector<std::string>&)(bool)(bool)(bool))
       (dataframe_t, to_dataframe, )
       (void, delete_on_close, )
       (void, explore, (const std::string&)(const std::string&))
