@@ -35,10 +35,9 @@ class EXPORT activity_classifier: public ml_model_base {
 
   // Interface exposed via Unity server
 
-  void train(gl_sframe data, const std::string& target_column_name,
-             const std::string& session_id_column_name,
-             variant_type validation_data,
-             const std::map<std::string, flexible_type>& opts);
+  void train(gl_sframe data, std::string target_column_name,
+             std::string session_id_column_name, variant_type validation_data,
+             std::map<std::string, flexible_type> opts);
   gl_sarray predict(gl_sframe data, std::string output_type);
   gl_sframe predict_per_window(gl_sframe data, std::string output_type);
   variant_map_type evaluate(gl_sframe data, std::string metric);
@@ -198,7 +197,7 @@ class EXPORT activity_classifier: public ml_model_base {
   // TODO: Expose via forthcoming C-API checkpointing mechanism?
   virtual void init_train(gl_sframe data, std::string target_column_name,
                           std::string session_id_column_name,
-                          gl_sframe validation_data,
+                          variant_type validation_data,
                           std::map<std::string, flexible_type> opts);
   virtual void perform_training_iteration();
 
@@ -228,6 +227,8 @@ class EXPORT activity_classifier: public ml_model_base {
 
   // Primary dependencies for training. These should be nonnull while training
   // is in progress.
+  gl_sframe training_data_;  // TODO: Avoid storing gl_sframe AND data_iterator.
+  gl_sframe validation_data_;
   std::unique_ptr<data_iterator> training_data_iterator_;
   std::unique_ptr<data_iterator> validation_data_iterator_;
   std::unique_ptr<neural_net::compute_context> training_compute_context_;

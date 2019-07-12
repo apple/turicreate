@@ -173,6 +173,9 @@ public:
     /** The H dimension of the resulting float array. */
     size_t output_height = 0;
 
+    /** Seed for all pseudo-random number generation used by augmentation. */
+    int random_seed = 0;
+
     /** The probability of applying (attempting) a random crop. */
     float crop_prob = 0.f;
     crop_options crop_opts;

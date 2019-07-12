@@ -168,9 +168,22 @@ void activity_classifier::init_options(
       "offset."
       " If set to True, the trained model uses augmented data.",
       false);
+  options.create_integer_option(
+      "random_seed",
+      "Seed for random weight initialization and sampling during training",
+      FLEX_UNDEFINED,
+      std::numeric_limits<int>::min(),
+      std::numeric_limits<int>::max());
 
   // Validate user-provided options.
   options.set_options(opts);
+
+  // Choose a random seed if not set.
+  if (options.value("random_seed") == FLEX_UNDEFINED) {
+    std::random_device random_device;
+    int random_seed = static_cast<int>(random_device());
+    options.set_option("random_seed", random_seed);
+  }
 
   // Write model fields.
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
@@ -295,18 +308,14 @@ void activity_classifier::init_table_printer(bool has_validation) {
 }
 
 void activity_classifier::train(
-    gl_sframe data, const std::string& target_column_name,
-    const std::string& session_id_column_name, variant_type validation_data,
-    const std::map<std::string, flexible_type>& opts) {
-  gl_sframe train_data;
-  gl_sframe val_data;
-  std::tie(train_data, val_data) =
-      init_data(data, validation_data, session_id_column_name);
-
+    gl_sframe data, std::string target_column_name,
+    std::string session_id_column_name, variant_type validation_data,
+    std::map<std::string, flexible_type> opts)
+{
   // Instantiate the training dependencies: data iterator, compute context,
   // backend NN model.
-  init_train(std::move(train_data), target_column_name, session_id_column_name,
-             std::move(val_data), opts);
+  init_train(data, target_column_name, session_id_column_name, validation_data,
+             opts);
 
   // Perform all the iterations at once.
   flex_int max_iterations = read_state<flex_int>("max_iterations");
@@ -327,9 +336,9 @@ void activity_classifier::train(
 
   // Update the state with recall, precision and confusion matrix for training
   // data
-  gl_sarray train_predictions = predict(train_data, "probability_vector");
+  gl_sarray train_predictions = predict(training_data_, "probability_vector");
   variant_map_type train_metric = evaluation::compute_classifier_metrics(
-      train_data, target_column_name, "report", train_predictions,
+      training_data_, target_column_name, "report", train_predictions,
       {{"classes", read_state<flex_list>("classes")}});
 
   for (auto &p : train_metric) {
@@ -338,10 +347,10 @@ void activity_classifier::train(
 
   // Update the state with recall, precision and confusion matrix for validation
   // data
-  if (!val_data.empty()) {
-    gl_sarray val_predictions = predict(val_data, "probability_vector");
+  if (!validation_data_.empty()) {
+    gl_sarray val_predictions = predict(validation_data_, "probability_vector");
     variant_map_type val_metric = evaluation::compute_classifier_metrics(
-        val_data, target_column_name, "report", val_predictions,
+        validation_data_, target_column_name, "report", val_predictions,
         {{"classes", read_state<flex_list>("classes")}});
 
     for (auto &p : val_metric) {
@@ -600,13 +609,14 @@ std::unique_ptr<data_iterator> activity_classifier::create_iterator(
   if (requires_labels) {
     data_params.target_column_name = read_state<flex_string>("target");
   }
-  data_params.use_data_augmentation = use_data_augmentation;
   data_params.session_id_column_name = read_state<flex_string>("session_id");
   flex_list features = read_state<flex_list>("features");
   data_params.feature_column_names =
       std::vector<std::string>(features.begin(), features.end());
   data_params.prediction_window = read_state<flex_int>("prediction_window");
   data_params.predictions_in_chunk = NUM_PREDICTIONS_PER_CHUNK;
+  data_params.use_data_augmentation = use_data_augmentation;
+  data_params.random_seed = read_state<int>("random_seed");
   return std::unique_ptr<data_iterator>(new simple_data_iterator(data_params));
 }
 
@@ -626,6 +636,10 @@ std::unique_ptr<model_spec> activity_classifier::init_model() const
   size_t prediction_window = read_state<flex_int>("prediction_window");
   const flex_list &features_list = read_state<flex_list>("features");
 
+  // Initialize a random number generator for weight initialization.
+  std::seed_seq seed_seq = { read_state<int>("random_seed") };
+  std::mt19937 random_engine(seed_seq);
+
   result->add_channel_concat(
       "features",
       std::vector<std::string>(features_list.begin(), features_list.end()));
@@ -643,7 +657,8 @@ std::unique_ptr<model_spec> activity_classifier::init_model() const
       /* padding */ padding_type::VALID,
       /* weight_init_fn */
       xavier_weight_initializer(num_features * prediction_window,
-                                NUM_CONV_FILTERS * prediction_window),
+                                NUM_CONV_FILTERS * prediction_window,
+                                &random_engine),
       /* bias_init_fn */ zero_weight_initializer());
   result->add_relu("relu1", "conv");
 
@@ -660,7 +675,7 @@ std::unique_ptr<model_spec> activity_classifier::init_model() const
       /* output_vector_size */  LSTM_HIDDEN_SIZE,
       /* cell_clip_threshold */ LSTM_CELL_CLIP_THRESHOLD,
       /* initializers */  lstm_weight_initializers::create_with_xavier_method(
-          NUM_CONV_FILTERS, LSTM_HIDDEN_SIZE));
+          NUM_CONV_FILTERS, LSTM_HIDDEN_SIZE, &random_engine));
   result->add_channel_concat("stateOut",{"hiddenOut","cellOut"});
   result->add_inner_product(
       /* name */ "dense0",
@@ -668,7 +683,8 @@ std::unique_ptr<model_spec> activity_classifier::init_model() const
       /* num_output_channels */ FULLY_CONNECTED_HIDDEN_SIZE,
       /* num_input_channels */ LSTM_HIDDEN_SIZE,
       /* weight_init_fn */
-      xavier_weight_initializer(LSTM_HIDDEN_SIZE, FULLY_CONNECTED_HIDDEN_SIZE),
+      xavier_weight_initializer(LSTM_HIDDEN_SIZE, FULLY_CONNECTED_HIDDEN_SIZE,
+                                &random_engine),
       /* bias_init_fn */ zero_weight_initializer());
   result->add_batchnorm("bn", "dense0", FULLY_CONNECTED_HIDDEN_SIZE, 0.001f);
   result->add_relu("relu6", "bn");
@@ -678,7 +694,7 @@ std::unique_ptr<model_spec> activity_classifier::init_model() const
       /* num_output_channels */ num_classes,
       /* num_input_channels */  FULLY_CONNECTED_HIDDEN_SIZE,
       /* weight_init_fn */      xavier_weight_initializer(
-          FULLY_CONNECTED_HIDDEN_SIZE, num_classes),
+          FULLY_CONNECTED_HIDDEN_SIZE, num_classes, &random_engine),
       /* bias_init_fn */        zero_weight_initializer());
   result->add_softmax(target + "Probability", "dense1");
 
@@ -701,16 +717,18 @@ activity_classifier::init_data(gl_sframe data, variant_type validation_data,
   }
   else if ((variant_is<flex_string>(validation_data)) && (variant_get_value<flex_string>(validation_data)=="auto")) {
     gl_sarray unique_session = data[session_id_column_name].unique();
+    size_t seed = read_state<size_t>("random_seed");
     if (unique_session.size() >= 200000) {
       // TODO: Expose seed parameter publicly.
       float p = 10000.0 / unique_session.size();
       std::tie(train_data, val_data) =
-          random_split_by_session(data, session_id_column_name, p, 1);
+          random_split_by_session(data, session_id_column_name, p, seed);
     } else if (unique_session.size() >= 200) {
-      std::tie(train_data, val_data) = random_split_by_session(data, session_id_column_name, 0.95, 1);
+      std::tie(train_data, val_data) =
+          random_split_by_session(data, session_id_column_name, 0.95, seed);
     } else if (unique_session.size() >= 50) {
       std::tie(train_data, val_data) =
-          random_split_by_session(data, session_id_column_name, 0.90, 1);
+          random_split_by_session(data, session_id_column_name, 0.90, seed);
     } else {
       train_data = data;
       std::cout << "The dataset has less than the minimum of 50 sessions required for train-validation split. "
@@ -724,12 +742,9 @@ activity_classifier::init_data(gl_sframe data, variant_type validation_data,
 
 void activity_classifier::init_train(
     gl_sframe data, std::string target_column_name,
-    std::string session_id_column_name, gl_sframe validation_data,
-    std::map<std::string, flexible_type> opts) {
-  // Begin printing progress.
-  // TODO: Make progress printing optional.
-  init_table_printer(!validation_data.empty());
-
+    std::string session_id_column_name, variant_type validation_data,
+    std::map<std::string, flexible_type> opts)
+{
   // Extract feature names from options.
   std::vector<std::string> feature_column_names;
   auto features_it = opts.find("features");
@@ -741,7 +756,24 @@ void activity_classifier::init_train(
     // Don't pass "features" to init_options, which doesn't recognize it.
     opts.erase(features_it);
   }
+
+  // Read user-specified options.
   init_options(opts);
+
+  // Choose a random seed if not set.
+  if (read_state<flexible_type>("random_seed") == FLEX_UNDEFINED) {
+    std::random_device random_device;
+    int random_seed = static_cast<int>(random_device());
+    add_or_update_state({{"random_seed", random_seed}});
+  }
+
+  // Perform validation split if necessary.
+  std::tie(training_data_, validation_data_) =
+      init_data(data, validation_data, session_id_column_name);
+
+  // Begin printing progress.
+  // TODO: Make progress printing optional.
+  init_table_printer(!validation_data_.empty());
 
   add_or_update_state({{"session_id", session_id_column_name},
                        {"target", target_column_name},
@@ -751,15 +783,15 @@ void activity_classifier::init_train(
   // Bind the data to a data iterator.
   bool use_data_augmentation = read_state<bool>("use_data_augmentation");
   training_data_iterator_ =
-      create_iterator(data, /* requires_labels */ true, /* is_train */ true,
-                      use_data_augmentation);
+      create_iterator(training_data_, /* requires_labels */ true,
+                      /* is_train */ true, use_data_augmentation);
 
   add_or_update_state({{"classes", training_data_iterator_->class_labels()}});
 
   // Bind the validation data to a data iterator.
-  if (!validation_data.empty()) {
+  if (!validation_data_.empty()) {
     validation_data_iterator_ = create_iterator(
-        validation_data, /* requires_labels */ true, /* is_train */ false,
+        validation_data_, /* requires_labels */ true, /* is_train */ false,
         /* use_data_augmentation */ false);
   } else {
     validation_data_iterator_ = nullptr;

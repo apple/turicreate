@@ -6,9 +6,10 @@
 
 #include <ml/neural_net/mps_image_augmentation.hpp>
 
+#include <random>
+
 #include <core/logging/assertions.hpp>
 #include <core/parallel/lambda_omp.hpp>
-#include <core/random/random.hpp>
 
 #import <Accelerate/Accelerate.h>
 
@@ -181,11 +182,66 @@ void convert_from_core_image(TCMPSLabeledImage *source, CIContext *context,
       source.annotations, CGSizeMake(output_width, output_height));
 }
 
+NSArray<TCMPSUniformRandomNumberGenerator> *create_rng_batch(
+    size_t size, int random_seed)
+{
+  NSMutableArray<TCMPSUniformRandomNumberGenerator> *result =
+      [[NSMutableArray alloc] initWithCapacity:(NSUInteger)size];
+
+  // Create `size` random number generators
+  for (size_t i = 0; i < size; ++i) {
+    // Seed each rng with a combination of the user's seed and the index of the
+    // rng in the batch.
+    std::seed_seq seed_seq = {random_seed, static_cast<int>(i)};
+    __block std::mt19937 engine(seed_seq);
+
+    // Wrap the random engine in a block yielding uniformly distributed values.
+    TCMPSUniformRandomNumberGenerator uniform =
+        ^(CGFloat lower, CGFloat upper) {
+      std::uniform_real_distribution<CGFloat> dist(lower, upper);
+      return dist(engine);
+    };
+    [result addObject:uniform];
+  }
+  return result;
+}
+
+NSArray<TCMPSUniformRandomNumberGenerator> *create_rng_batch(
+    size_t size,
+    const std::function<float(float lower_bound, float upper_bound)>& rng)
+{
+  // Create an Objective-C wrapper around the provided function yielding
+  // uniformly distributed values.
+  TCMPSUniformRandomNumberGenerator uniform = ^(CGFloat lower, CGFloat upper) {
+    return static_cast<CGFloat>(rng(lower, upper));
+  };
+
+  // Return an array with `size` copies of the block.
+  NSMutableArray<TCMPSUniformRandomNumberGenerator> *result =
+      [[NSMutableArray alloc] initWithCapacity:(NSUInteger)size];
+  for (size_t i = 0; i < size; ++i) {
+    [result addObject:uniform];
+  }
+  return result;
+}
+
 }  // namespace
 
+mps_image_augmenter::mps_image_augmenter(const options& opts)
+    : mps_image_augmenter(opts, create_rng_batch(opts.batch_size,
+                                                 opts.random_seed))
+{}
+
 mps_image_augmenter::mps_image_augmenter(
-    const options& opts, std::function<float(float,float)> rng_fn):
-  opts_(opts) {
+    const options& opts,
+    std::function<float(float lower_bound, float upper_bound)> rng)
+    : mps_image_augmenter(opts, create_rng_batch(opts.batch_size, rng))
+{}
+
+mps_image_augmenter::mps_image_augmenter(
+    const options& opts, NSArray<TCMPSUniformRandomNumberGenerator> *rng_batch)
+    : opts_(opts), rng_batch_(rng_batch)
+{
 
   @autoreleasepool {
 
@@ -201,26 +257,11 @@ mps_image_augmenter::mps_image_augmenter(
 
   NSMutableArray<id <TCMPSImageAugmenting>> *augmentations =
       [[NSMutableArray alloc] init];
-  TCMPSUniformRandomNumberGenerator rngBlock;
-  if (rng_fn) {
-    rngBlock = ^(CGFloat lower, CGFloat upper) {
-      return static_cast<CGFloat>(rng_fn(lower, upper));
-    };
-  } else {
-    rngBlock = ^(CGFloat lower, CGFloat upper) {
-      if (lower < upper) {
-        return turi::random::fast_uniform(lower, upper);
-      } else {
-        return lower;
-      }
-    };
-  }
 
   if (opts.crop_prob > 0.f) {
 
     // Enable random crops.
-    TCMPSRandomCropAugmenter *cropAug =
-        [[TCMPSRandomCropAugmenter alloc] initWithRNG:rngBlock];
+    TCMPSRandomCropAugmenter *cropAug = [[TCMPSRandomCropAugmenter alloc] init];
     cropAug.skipProbability = 1.f - opts.crop_prob;
     cropAug.minAspectRatio = opts.crop_opts.min_aspect_ratio;
     cropAug.maxAspectRatio = opts.crop_opts.max_aspect_ratio;
@@ -236,8 +277,7 @@ mps_image_augmenter::mps_image_augmenter(
   if (opts.pad_prob > 0.f) {
 
     // Enable random padding.
-    TCMPSRandomPadAugmenter *padAug =
-        [[TCMPSRandomPadAugmenter alloc] initWithRNG:rngBlock];
+    TCMPSRandomPadAugmenter *padAug = [[TCMPSRandomPadAugmenter alloc] init];
     padAug.skipProbability = 1.f - opts.pad_prob;
     padAug.minAspectRatio = opts.pad_opts.min_aspect_ratio;
     padAug.maxAspectRatio = opts.pad_opts.max_aspect_ratio;
@@ -252,7 +292,7 @@ mps_image_augmenter::mps_image_augmenter(
 
     // Enable mirror images.
     TCMPSHorizontalFlipAugmenter *horizontalFlipAug =
-        [[TCMPSHorizontalFlipAugmenter alloc] initWithRNG:rngBlock];
+        [[TCMPSHorizontalFlipAugmenter alloc] init];
     horizontalFlipAug.skipProbability = 1.f - opts.horizontal_flip_prob;
     [augmentations addObject:horizontalFlipAug];
   }
@@ -263,7 +303,7 @@ mps_image_augmenter::mps_image_augmenter(
 
     // Enable color controls.
     TCMPSColorControlAugmenter *colorAug =
-        [[TCMPSColorControlAugmenter alloc] initWithRNG:rngBlock];
+        [[TCMPSColorControlAugmenter alloc] init];
     colorAug.maxBrightnessDelta = opts.brightness_max_jitter;
     colorAug.maxContrastProportion = opts.contrast_max_jitter;
     colorAug.maxSaturationProportion = opts.saturation_max_jitter;
@@ -273,8 +313,7 @@ mps_image_augmenter::mps_image_augmenter(
   if (opts.hue_max_jitter > 0.f) {
 
     // Enable color rotation.
-    TCMPSHueAdjustAugmenter *hueAug =
-        [[TCMPSHueAdjustAugmenter alloc] initWithRNG:rngBlock];
+    TCMPSHueAdjustAugmenter *hueAug = [[TCMPSHueAdjustAugmenter alloc] init];
     hueAug.maxHueAdjust = opts.hue_max_jitter;
     [augmentations addObject:hueAug];
   }
@@ -321,8 +360,12 @@ mps_image_augmenter::result mps_image_augmenter::prepare_images(
     TCMPSLabeledImage *labeledImage = convert_to_core_image(source);
 
     // Apply all augmentations.
+    // For image i, use the random number generator at `rng_batch_[i]`, to
+    // ensure that no two threads executing this lambda are using the same
+    // random engine.
     for (id <TCMPSImageAugmenting> aug : augmentations_) {
-      labeledImage = [aug imageAugmentedFromImage:labeledImage];
+      labeledImage = [aug imageAugmentedFromImage:labeledImage
+                                        generator:rng_batch_[i]];
     }
 
     // Convert from CIImage to float array.

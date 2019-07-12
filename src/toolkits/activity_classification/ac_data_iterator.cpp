@@ -517,7 +517,9 @@ simple_data_iterator::simple_data_iterator(const parameters &params)
       end_of_rows_(range_iterator_.end()),
       sample_in_row_(0),
       is_train_(params.is_train),
-      use_data_augmentation_(params.use_data_augmentation) {}
+      use_data_augmentation_(params.use_data_augmentation),
+      random_engine_(params.random_seed)
+{}
 
 const flex_list& simple_data_iterator::feature_names() const {
   return data_.feature_names;
@@ -587,7 +589,9 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     if (sample_in_row_ == 0 &&
         static_cast<size_t>(chunk_length) > num_samples_per_prediction_ &&
         is_train_ && use_data_augmentation_) {
-      sample_in_row_ = std::rand() % (num_samples_per_prediction_ - 1);
+      std::uniform_int_distribution<size_t> dist(
+          0, num_samples_per_prediction_ - 1);
+      sample_in_row_ = dist(random_engine_);
     }
 
     // Stores the start of next instance

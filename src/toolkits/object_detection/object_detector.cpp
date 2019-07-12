@@ -13,6 +13,7 @@
 #include <iostream>
 #include <limits>
 #include <queue>
+#include <random>
 #include <utility>
 #include <vector>
 
@@ -209,10 +210,6 @@ flex_int estimate_max_iterations(flex_int num_instances, flex_int batch_size) {
 void object_detector::init_options(
     const std::map<std::string, flexible_type>& opts) {
 
-  // The default values for some options request automatic configuration from
-  // the training data.
-  ASSERT_TRUE(training_data_iterator_ != nullptr);
-
   // Define options.
   options.create_integer_option(
       "batch_size",
@@ -240,10 +237,21 @@ void object_detector::init_options(
       /* default_value */ 13,
       /* lower_bound   */ 1,
       /* upper_bound   */ std::numeric_limits<int>::max());
+  options.create_integer_option(
+      "random_seed",
+      "Seed for random weight initialization and sampling during training",
+      FLEX_UNDEFINED,
+      std::numeric_limits<int>::min(),
+      std::numeric_limits<int>::max());
 
   // Validate user-provided options.
   options.set_options(opts);
 
+  // Write model fields.
+  add_or_update_state(flexmap_to_varmap(options.current_option_values()));
+}
+
+void object_detector::infer_derived_options() {
   // Report to the user what GPU(s) is being used.
   std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
   if (gpu_names.empty()) {
@@ -260,7 +268,7 @@ void object_detector::init_options(
   }
 
   // Configure the batch size automatically if not set.
-  if (options.value("batch_size") == FLEX_UNDEFINED) {
+  if (read_state<flexible_type>("batch_size") == FLEX_UNDEFINED) {
 
     flex_int batch_size = DEFAULT_BATCH_SIZE;
     size_t memory_budget = training_compute_context_->memory_budget();
@@ -272,24 +280,21 @@ void object_detector::init_options(
 
     logprogress_stream << "Setting 'batch_size' to " << batch_size;
 
-    options.set_option("batch_size", batch_size);
+    add_or_update_state({{"batch_size", batch_size}});
   }
-  _os_log_integer("batch_size", options.value("batch_size"));
+  _os_log_integer("batch_size", read_state<flex_int>("batch_size"));
 
   // Configure targeted number of iterations automatically if not set.
-  if (options.value("max_iterations") == FLEX_UNDEFINED) {
+  if (read_state<flexible_type>("max_iterations") == FLEX_UNDEFINED) {
     flex_int max_iterations = estimate_max_iterations(
         static_cast<flex_int>(training_data_iterator_->num_instances()),
-        options.value("batch_size"));
+        read_state<flex_int>("batch_size"));
 
     logprogress_stream << "Setting 'max_iterations' to " << max_iterations;
 
-    options.set_option("max_iterations", max_iterations);
+    add_or_update_state({{"max_iterations", max_iterations}});
   }
-  _os_log_integer("max_iterations", options.value("max_iterations"));
-
-  // Write model fields.
-  add_or_update_state(flexmap_to_varmap(options.current_option_values()));
+  _os_log_integer("max_iterations", read_state<flex_int>("max_iterations"));
 }
 
 size_t object_detector::get_version() const {
@@ -304,20 +309,17 @@ void object_detector::train(gl_sframe data,
                             std::string annotations_column_name,
                             std::string image_column_name,
                             variant_type validation_data,
-                            std::map<std::string, flexible_type> opts) {
-
+                            std::map<std::string, flexible_type> opts)
+{
   // Begin printing progress.
   // TODO: Make progress printing optional.
   training_table_printer_.reset(new table_printer(
       {{ "Iteration", 12}, {"Loss", 12}, {"Elapsed Time", 12}}));
 
-  gl_sframe val_data;
-  std::tie(data, val_data) = supervised::create_validation_data(data, validation_data); 
-
   // Instantiate the training dependencies: data iterator, image augmenter,
   // backend NN model.
-  init_train(std::move(data), std::move(annotations_column_name),
-             std::move(image_column_name), std::move(opts));
+  init_train(data, annotations_column_name, image_column_name, validation_data,
+             opts);
 
   // Perform all the iterations at once.
   while (get_training_iterations() < get_max_iterations()) {
@@ -346,7 +348,7 @@ void object_detector::train(gl_sframe data,
   nn_spec_->update_params(trained_weights);
 
   // Compute training and validation metrics.
-  update_model_metrics(data, val_data);
+  update_model_metrics(training_data_, validation_data_);
 }
 
 variant_map_type object_detector::evaluate(
@@ -383,9 +385,9 @@ variant_map_type object_detector::perform_evaluation(gl_sframe data,
   std::string image_column_name = read_state<flex_string>("feature");
   std::string annotations_column_name = read_state<flex_string>("annotations");
   flex_list class_labels = read_state<flex_list>("classes");
-  size_t batch_size = static_cast<size_t>(options.value("batch_size"));
-  size_t grid_height = static_cast<size_t>(options.value("grid_height"));
-  size_t grid_width = static_cast<size_t>(options.value("grid_width"));
+  size_t batch_size = read_state<size_t>("batch_size");
+  size_t grid_height = read_state<size_t>("grid_height");
+  size_t grid_width = read_state<size_t>("grid_width");
   float iou_threshold =
       read_state<flex_float>("non_maximum_suppression_threshold");
 
@@ -414,7 +416,7 @@ variant_map_type object_detector::perform_evaluation(gl_sframe data,
   int num_outputs_per_anchor = 5 + static_cast<int>(class_labels.size());
   int num_output_channels = num_outputs_per_anchor * anchor_boxes().size();
   std::unique_ptr<model_backend> model = ctx->create_object_detector(
-      /* n       */ options.value("batch_size"),
+      /* n       */ read_state<int>("batch_size"),
       /* c_in    */ NUM_INPUT_CHANNELS,
       /* h_in    */ grid_height * SPATIAL_REDUCTION,
       /* w_in    */ grid_width * SPATIAL_REDUCTION,
@@ -534,10 +536,14 @@ std::unique_ptr<model_spec> object_detector::init_model(
                   + pretrained_mlmodel_path);
   }
 
+  // Initialize a random number generator for weight initialization.
+  std::seed_seq seed_seq = { read_state<int>("random_seed") };
+  std::mt19937 random_engine(seed_seq);
+
   // Append conv7, initialized using the Xavier method (with base magnitude 3).
   // The conv7 weights have shape [1024, 1024, 3, 3], so fan in and fan out are
   // both 1024*3*3.
-  xavier_weight_initializer conv7_init_fn(1024*3*3, 1024*3*3);
+  xavier_weight_initializer conv7_init_fn(1024*3*3, 1024*3*3, &random_engine);
   nn_spec->add_convolution(/* name */                "conv7_fwd",
                            /* input */               "leakyrelu6_fwd",
                            /* num_output_channels */ 1024,
@@ -565,9 +571,11 @@ std::unique_ptr<model_spec> object_detector::init_model(
   const size_t num_classes = training_data_iterator_->class_labels().size();
   const size_t num_predictions = 5 + num_classes;  // Per anchor box
   const size_t conv8_c_out = anchor_boxes().size() * num_predictions;
-  auto conv8_weight_init_fn = [](float* w, float* w_end) {
+  auto conv8_weight_init_fn = [&random_engine](float* w, float* w_end) {
+    std::uniform_real_distribution<float> dist(-CONV8_MAGNITUDE,
+                                               CONV8_MAGNITUDE);
     while (w != w_end) {
-      *w++ = random::fast_uniform(-CONV8_MAGNITUDE, CONV8_MAGNITUDE);
+      *w++ = dist(random_engine);
     }
   };
   auto conv8_bias_init_fn = [num_predictions](float* w, float* w_end) {
@@ -601,8 +609,8 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
   // Initialize the result with the learned layers from the model_backend.
   model_spec yolo_nn_spec(nn_spec_->get_coreml_spec());
 
-  size_t grid_height = static_cast<size_t>(options.value("grid_height"));
-  size_t grid_width = static_cast<size_t>(options.value("grid_width"));
+  size_t grid_height = read_state<size_t>("grid_height");
+  size_t grid_width = read_state<size_t>("grid_width");
 
   std::string coordinates_str = "coordinates";
   std::string confidence_str = "confidence";
@@ -695,10 +703,35 @@ std::unique_ptr<compute_context> object_detector::create_compute_context() const
   return compute_context::create();
 }
 
-void object_detector::init_train(gl_sframe data,
-                                 std::string annotations_column_name,
-                                 std::string image_column_name,
-                                 std::map<std::string, flexible_type> opts) {
+void object_detector::init_train(
+    gl_sframe data, std::string annotations_column_name,
+    std::string image_column_name, variant_type validation_data,
+    std::map<std::string, flexible_type> opts)
+{
+  // Extract 'mlmodel_path' from the options, to avoid storing it as a model
+  // field.
+  auto mlmodel_path_iter = opts.find("mlmodel_path");
+  if (mlmodel_path_iter == opts.end()) {
+    log_and_throw("Expected option \"mlmodel_path\" not found.");
+  }
+  const std::string mlmodel_path = mlmodel_path_iter->second;
+  opts.erase(mlmodel_path_iter);
+
+  // Read options from user.
+  init_options(opts);
+
+  // Choose a random seed if not set.
+  if (read_state<flexible_type>("random_seed") == FLEX_UNDEFINED) {
+    std::random_device random_device;
+    int random_seed = static_cast<int>(random_device());
+    add_or_update_state({{"random_seed", random_seed}});
+  }
+
+  // Perform random validation split if necessary.
+  std::tie(training_data_, validation_data_) =
+      supervised::create_validation_data(data, validation_data,
+                                         read_state<int>("random_seed"));
+
   // Record the relevant column names upfront, for use in create_iterator. Also
   // values fixed by this version of the toolkit.
   add_or_update_state({
@@ -711,7 +744,7 @@ void object_detector::init_train(gl_sframe data,
 
   // Bind the data to a data iterator.
   training_data_iterator_ = create_iterator(
-      data, /* expected class_labels */ {}, /* repeat */ true);
+      training_data_, /* expected class_labels */ {}, /* repeat */ true);
 
   // Instantiate the compute context.
   training_compute_context_ = create_compute_context();
@@ -719,25 +752,18 @@ void object_detector::init_train(gl_sframe data,
     log_and_throw("No neural network compute context provided");
   }
 
-  // Extract 'mlmodel_path' from the options, to avoid storing it as a model
-  // field.
-  auto mlmodel_path_iter = opts.find("mlmodel_path");
-  if (mlmodel_path_iter == opts.end()) {
-    log_and_throw("Expected option \"mlmodel_path\" not found.");
-  }
-  const std::string mlmodel_path = mlmodel_path_iter->second;
-  opts.erase(mlmodel_path_iter);
+  // Infer values for unspecified options. Note that this depends on training
+  // data statistics and the compute context, initialized above.
+  infer_derived_options();
 
-  // Load the pre-trained model from the provided path.
+  // Load the pre-trained model from the provided path. The final layers are
+  // initialized randomly using the random seed above, using the number of
+  // classes observed by the training_data_iterator_ above.
   nn_spec_ = init_model(mlmodel_path);
 
-  // Validate options, and infer values for unspecified options. Note that this
-  // depends on training data statistics in the general case.
-  init_options(opts);
-
   // Set additional model fields.
-  flex_int grid_height = options.value("grid_height");
-  flex_int grid_width = options.value("grid_width");
+  flex_int grid_height = read_state<flex_int>("grid_height");
+  flex_int grid_width = read_state<flex_int>("grid_width");
   std::array<flex_int, 3> input_image_shape =  // Using CoreML CHW format.
       {{3, grid_height * SPATIAL_REDUCTION, grid_width * SPATIAL_REDUCTION}};
   const std::vector<std::string>& classes =
@@ -757,7 +783,7 @@ void object_detector::init_train(gl_sframe data,
 
   // Instantiate the data augmenter.
   training_data_augmenter_ = training_compute_context_->create_image_augmenter(
-      get_augmentation_options(options.value("batch_size"), grid_height,
+      get_augmentation_options(read_state<flex_int>("batch_size"), grid_height,
                                grid_width));
 
   // Instantiate the NN backend.
@@ -765,7 +791,7 @@ void object_detector::init_train(gl_sframe data,
       5 + static_cast<int>(training_data_iterator_->class_labels().size());
   int num_output_channels = num_outputs_per_anchor * anchor_boxes().size();
   training_model_ = training_compute_context_->create_object_detector(
-      /* n       */ options.value("batch_size"),
+      /* n       */ read_state<int>("batch_size"),
       /* c_in    */ NUM_INPUT_CHANNELS,
       /* h_in    */ grid_height * SPATIAL_REDUCTION,
       /* w_in    */ grid_width * SPATIAL_REDUCTION,
@@ -868,9 +894,9 @@ shared_float_array object_detector::prepare_label_batch(
     std::vector<std::vector<image_annotation>> annotations_batch) const {
 
   // Allocate a float buffer of sufficient size.
-  size_t batch_size = static_cast<size_t>(options.value("batch_size"));
-  size_t grid_height = static_cast<size_t>(options.value("grid_height"));
-  size_t grid_width = static_cast<size_t>(options.value("grid_width"));
+  size_t batch_size = read_state<size_t>("batch_size");
+  size_t grid_height = read_state<size_t>("grid_height");
+  size_t grid_width = read_state<size_t>("grid_width");
   size_t num_classes = training_data_iterator_->class_labels().size();
   size_t num_channels = anchor_boxes().size() * (5 + num_classes);  // C
   size_t batch_stride = grid_height * grid_width * num_channels;    // H * W * C
