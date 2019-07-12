@@ -8,7 +8,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 API_AVAILABLE(macos(10.14))
-@interface TCMPSStyleTransferEncodingNode : NSObject 
+@interface TCMPSStyleTransferResidualNode : NSObject 
 
 @property (nonatomic) MPSNNImageNode *m_output;
 
@@ -16,7 +16,7 @@ API_AVAILABLE(macos(10.14))
                           inputNode:(MPSNNImageNode *)inputNode
                              device:(id<MTLDevice>)dev
                           cmd_queue:(id<MTLCommandQueue>)cmd_q
-                         descriptor:(TCMPSEncodingDescriptor *)descriptor
+                         descriptor:(TCMPSResidualDescriptor *)descriptor
                         initWeights:(NSDictionary<NSString *, NSData *> *) weights;
 
 - (MPSNNImageNode *) backwardPass:(MPSNNImageNode *) inputNode;
