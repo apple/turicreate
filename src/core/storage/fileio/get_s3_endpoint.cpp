@@ -56,9 +56,16 @@ std::vector<std::string> get_s3_endpoints() {
 }
 
 std::string get_region_name_from_endpoint(std::string endpoint) {
+  if (S3_REGION.size())
+    return S3_REGION;
+  // try to infer from endpoint
   auto iter = AWS_S3_ENDPOINT_TO_REGION.find(endpoint);
-  if (iter != AWS_S3_ENDPOINT_TO_REGION.end()) return iter->second;
-  else return "";
+  if (iter != AWS_S3_ENDPOINT_TO_REGION.end()) {
+    return iter->second;
+  } else {
+    // use default region which aws provides with
+    return "";
+  }
 }
 
 std::string get_bucket_path(const std::string& bucket) {
