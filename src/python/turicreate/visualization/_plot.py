@@ -99,11 +99,12 @@ class Plot(object):
     >>> plt.save('vega_spec.json', False)
 
     """
-    def __init__(self, _proxy=None):
-        if (_proxy):
-            self.__proxy__ = _proxy
+    def __init__(self, vega_spec=None, _proxy=None):
+        if vega_spec is not None:
+            import turicreate as tc
+            self.__proxy__ = tc.extensions.plot_from_vega_spec(vega_spec)
         else:
-            self.__proxy__ = None
+            self.__proxy__ = _proxy
 
     def show(self):
         """

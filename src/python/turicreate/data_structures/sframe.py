@@ -4582,7 +4582,7 @@ class SFrame(object):
 
         >>> plt.show()
         """
-        return Plot(self.__proxy__.plot())
+        return Plot(_proxy=self.__proxy__.plot())
 
     def pack_columns(self, column_names=None, column_name_prefix=None, dtype=list,
                      fill_na=None, remove_prefix=True, new_column_name=None):
