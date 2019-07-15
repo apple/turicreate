@@ -7,11 +7,13 @@ if [[ -z $VIRTUALENV ]]; then
   VIRTUALENV=virtualenv
 fi
 
+
 if [[ -z $PYTHON_EXECUTABLE ]]; then
-  PYTHON_EXECUTABLE=`which python`
+  $VIRTUALENV `pwd`/deps/env
+else
+  $VIRTUALENV --python=${PYTHON_EXECUTABLE} `pwd`/deps/env
 fi
 
-$VIRTUALENV --python=${PYTHON_EXECUTABLE} `pwd`/deps/env
 source deps/env/bin/activate
 
 PYTHON="${PWD}/deps/env/bin/python"
