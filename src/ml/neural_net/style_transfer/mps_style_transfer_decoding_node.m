@@ -32,8 +32,8 @@
                                           strideHeight:descriptor.conv.strideHeight
                                           paddingWidth:descriptor.conv.paddingWidth
                                          paddingHeight:descriptor.conv.paddingHeight
-                                               weights:(float *)weights[[NSString stringWithFormat:@"%@/%@", name, @"decoding_conv_weights"]].bytes
-                                                biases:(float *)weights[[NSString stringWithFormat:@"%@/%@", name, @"decoding_conv_biases"]].bytes
+                                               weights:weights[[NSString stringWithFormat:@"%@/%@", name, @"decoding_conv_weights"]]
+                                                biases:weights[[NSString stringWithFormat:@"%@/%@", name, @"decoding_conv_biases"]]
                                                  label:descriptor.conv.label
                                          updateWeights:descriptor.conv.updateWeights
                                                 device:dev
@@ -42,8 +42,8 @@
     _instNorm = [MPSCNNConvolutionNode createInstanceNormalization:[_conv resultImage]
                                                           channels:descriptor.inst.channels
                                                             styles:descriptor.inst.styles
-                                                             gamma:(float *)weights[[NSString stringWithFormat:@"%@/%@", name, @"decoding_inst_gamma"]].bytes
-                                                              beta:(float *)weights[[NSString stringWithFormat:@"%@/%@", name, @"decoding_inst_beta"]].bytes
+                                                             gamma:weights[[NSString stringWithFormat:@"%@/%@", name, @"decoding_inst_gamma"]]
+                                                              beta:weights[[NSString stringWithFormat:@"%@/%@", name, @"decoding_inst_beta"]]
                                                              label:descriptor.inst.label
                                                             device:dev
                                                           cmdQueue:cmdQ];
@@ -57,7 +57,7 @@
 }
 
 - (MPSNNImageNode *) backwardPass:(MPSNNImageNode *) inputNode {
-	MPSNNGradientFilterNode* reluGrad = [_relu gradientFilterWithSource: inputNode];
+  MPSNNGradientFilterNode* reluGrad = [_relu gradientFilterWithSource: inputNode];
   MPSNNGradientFilterNode* instNormGrad = [_instNorm gradientFilterWithSource: [reluGrad resultImage]];
   MPSNNGradientFilterNode* convGrad = [_conv gradientFilterWithSource: [instNormGrad resultImage]];
   MPSNNGradientFilterNode* upsampleGrad = [_upsample gradientFilterWithSource: [convGrad resultImage]];

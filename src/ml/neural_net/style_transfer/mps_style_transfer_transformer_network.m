@@ -114,8 +114,8 @@
                                           strideHeight:descriptor.conv.strideHeight
                                           paddingWidth:descriptor.conv.paddingWidth
                                          paddingHeight:descriptor.conv.paddingHeight
-                                               weights:(float *)((NSData *)weights[@"transformer_conv"][@"weights"]).bytes
-                                                biases:(float *)((NSData *)weights[@"transformer_conv"][@"biases"]).bytes
+                                               weights:((NSData *)weights[@"transformer_conv"][@"weights"])
+                                                biases:((NSData *)weights[@"transformer_conv"][@"biases"])
                                                  label:descriptor.conv.label
                                          updateWeights:descriptor.conv.updateWeights
                                                 device:dev
@@ -124,8 +124,8 @@
     _instNorm = [MPSCNNConvolutionNode createInstanceNormalization:[_conv resultImage]
                                                           channels:descriptor.inst.channels
                                                             styles:descriptor.inst.styles
-                                                             gamma:(float *)((NSData *)weights[@"transformer_inst"][@"weights"]).bytes
-                                                              beta:(float *)((NSData *)weights[@"transformer_inst"][@"biases"]).bytes
+                                                             gamma:(NSData *)weights[@"transformer_inst"][@"weights"]
+                                                              beta:(NSData *)weights[@"transformer_inst"][@"biases"]
                                                              label:descriptor.inst.label
                                                             device:dev
                                                           cmdQueue:cmdQ];

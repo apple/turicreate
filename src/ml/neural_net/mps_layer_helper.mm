@@ -10,8 +10,8 @@
                               outputFeatureChannels:(NSUInteger)outputFeatureChannels
                                         inputHeight:(NSUInteger)inputHeight
                                          inputWidth:(NSUInteger)inputWidth
-                                            weights:(float *)weights
-                                             biases:(float *)biases
+                                            weights:(NSData *)weights
+                                             biases:(NSData *)biases
                                               label:(NSString *)label
                                       updateWeights:(BOOL)updateWeights
                                              device:(id<MTLDevice>)dev
@@ -32,8 +32,8 @@
                                   kernelParamsBinaryName:[label UTF8String]
                                                   device:dev
                                                cmd_queue:cmdQ
-                                         init_weight_ptr:weights
-                                           init_bias_ptr:biases
+                                         init_weight_ptr:(float *)weights.bytes
+                                           init_bias_ptr:(float *)biases.bytes
                                         optimizerOptions:optimizerOptions];
         
   MPSCNNFullyConnectedNode* fullyConnectedNode = 
@@ -54,8 +54,8 @@
                                    strideHeight:(NSUInteger)strideHeight
                                    paddingWidth:(NSUInteger)paddingWidth
                                   paddingHeight:(NSUInteger)paddingHeight
-                                        weights:(float *)weights
-                                         biases:(float *)biases
+                                        weights:(NSData *)weights
+                                         biases:(NSData *)biases
                                           label:(NSString *)label
                                   updateWeights:(BOOL)updateWeights
                                          device:(id<MTLDevice>)dev
@@ -76,8 +76,8 @@
                                   kernelParamsBinaryName:[label UTF8String]
                                                   device:dev
                                                cmd_queue:cmdQ
-                                         init_weight_ptr:weights
-                                           init_bias_ptr:biases
+                                         init_weight_ptr:(float *)weights.bytes
+                                           init_bias_ptr:(float *)biases.bytes
                                         optimizerOptions:optimizerOptions];
 
   MPSCNNConvolutionNode*  convNode =
@@ -98,15 +98,15 @@
 + (MPSCNNInstanceNormalizationNode *) createInstanceNormalization:(MPSNNImageNode *)inputNode
                                                          channels:(NSUInteger)channels
                                                            styles:(NSUInteger)styles
-                                                            gamma:(float *)gamma
-                                                             beta:(float *)beta
+                                                            gamma:(NSData *)gamma
+                                                             beta:(NSData *)beta
                                                             label:(NSString *)label
                                                            device:(id<MTLDevice>)dev
                                                          cmdQueue:(id<MTLCommandQueue>) cmdQ {
 
   TCMPSInstanceNormDataLoader *InstNormDataLoad = [[TCMPSInstanceNormDataLoader alloc] initWithParams:label
-                                                                                         gammaWeights:gamma
-                                                                                          betaWeights:beta
+                                                                                         gammaWeights:(float *)gamma.bytes
+                                                                                          betaWeights:(float *)beta.bytes
                                                                                 numberFeatureChannels:channels
                                                                                                styles:styles
                                                                                                device:dev
