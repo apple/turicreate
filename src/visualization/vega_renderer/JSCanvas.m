@@ -166,9 +166,9 @@
     }
 }
 
-- (VegaCGFontProperties *)parseFontString {
+- (VegaCGFontProperties *)parseFontString:(NSString*)fontStr {
     VegaCGFontProperties *props = [[VegaCGFontProperties alloc] init];
-    props.cssFontString = self.font;
+    props.cssFontString = fontStr;
     props.fontFamily = nil;
     props.fontSize = nil;
     props.fontVariant = nil;
@@ -176,7 +176,7 @@
     props.fontStyle = nil;
     props.lineHeight = nil;
 
-    NSArray<NSString *> *elements = [self.font componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    NSArray<NSString *> *elements = [fontStr componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     for (size_t i=0; i<elements.count; i++) {
         NSString *element = elements[i];
         if ([element isEqualToString:@"normal"]) {
@@ -249,8 +249,7 @@
 }
 
 - (void)setFont:(NSString *)fontStr {
-    _font = fontStr;
-    VegaCGFontProperties *fontProperties = [self parseFontString];
+    VegaCGFontProperties *fontProperties = [self parseFontString:fontStr];
 
     // TODO - allow other font properties
     // for now, make sure we don't need to handle them
@@ -268,32 +267,41 @@
 
     assert(fontSize > 0 && fontSize < 1000);
 
-    NSFont *font;
+    NSFont *newFont;
     if (fontProperties.fontFamily == nil) {
-        font = [NSFont systemFontOfSize:fontSize];
+        newFont = [NSFont systemFontOfSize:fontSize];
     } else {
         NSFontManager *fontManager = [NSFontManager sharedFontManager];
         NSArray<NSString *> *possibleFontFamilies = [fontProperties.fontFamily componentsSeparatedByString:@","];
         for (NSString * __strong possibleFontFamily in possibleFontFamilies) {
             possibleFontFamily = [possibleFontFamily stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-            font = [NSFont fontWithName:possibleFontFamily size:fontSize];
-            if (font != nil && fontProperties.fontWeight != nil) {
+            newFont = [NSFont fontWithName:possibleFontFamily size:fontSize];
+            if (newFont != nil && fontProperties.fontWeight != nil) {
                 if ([fontProperties.fontWeight isEqualToString:@"bold"]) {
-                    font = [fontManager convertFont:font toHaveTrait:NSBoldFontMask];
-                    assert(font != nil);
+                    newFont = [fontManager convertFont:newFont toHaveTrait:NSBoldFontMask];
+                    assert(newFont != nil);
                 } else {
                     // unexpected font weight
                     assert(false);
                 }
             }
-            if (font != nil) {
+            if (newFont != nil) {
                 break;
             }
         }
     }
-    assert(font != nil);
-    _nsFont = font;
+
+    if(newFont == nil) {
+        newFont = [NSFont systemFontOfSize:fontSize];
+        // TODO should we be updating _font to reflect the system font we've fallen back to?
+        NSLog(@"The specified font: '%@' is unavailable. Falling back to '%@'.", fontStr, [newFont displayName]);
+    } else {
+        _font = fontStr;
+    }
+    assert(newFont != nil);
+    _nsFont = newFont;
 }
+
 - (NSString *)font {
     return _font;
 }

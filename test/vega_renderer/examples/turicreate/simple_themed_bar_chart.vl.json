@@ -169,6 +169,7 @@
         },
         "guide-title": {
           "fill": "#fff",
+          "font": "not-a-font",
           "fontSize": 12,
           "fontWeight": 600
         },
