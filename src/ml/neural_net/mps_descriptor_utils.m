@@ -1,4 +1,4 @@
-#import <ml/neural_net/style_transfer/mps_style_transfer_utils.h>
+#import <ml/neural_net/mps_descriptor_utils.h>
 
 @implementation TCMPSConvolutionDescriptor
 @end
