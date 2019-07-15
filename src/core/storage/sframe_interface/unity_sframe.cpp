@@ -2050,8 +2050,8 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
           std::runtime_error, "Unsupported case (should be either GetRows or GetAccordion).");
         ASSERT_UNREACHABLE();
       }
+#     pragma GCC diagnostic pop
     }
-#pragma GCC diagnostic pop
   });
 }
 
