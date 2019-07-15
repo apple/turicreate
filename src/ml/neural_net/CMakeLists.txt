@@ -29,6 +29,11 @@ if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
       mps_graph_layers.mm
       mps_weight.mm
       mps_device_manager.m
+      mps_descriptor_utils.m
+      style_transfer/mps_style_transfer_encoding_node.m
+      style_transfer/mps_style_transfer_residual_node.m
+      style_transfer/mps_style_transfer_decoding_node.m
+      style_transfer/mps_style_transfer_transformer_network.m
     REQUIRES
       unity_core
       ${ACCELERATE}
