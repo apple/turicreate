@@ -1,6 +1,7 @@
 #include <toolkits/supervised_learning/automatic_model_creation.hpp>
 
 #include <algorithm>
+#include <ctime>
 #include <memory>
 #include <string>
 #include <vector>
@@ -275,9 +276,9 @@ std::shared_ptr<supervised_learning_model_base> create_automatic_regression_mode
   return *std::min_element(models.begin(), models.end(), compare_rmse);
 }
 
-std::pair<gl_sframe, gl_sframe> create_validation_data(gl_sframe data, const variant_type& _validation_data) {
-
-
+std::pair<gl_sframe, gl_sframe> create_validation_data(
+    gl_sframe data, const variant_type& _validation_data, int random_seed)
+{
   if(variant_is<flex_string>(_validation_data)
       && variant_get_value<flex_string>(_validation_data) == "auto") {
 
@@ -288,13 +289,13 @@ std::pair<gl_sframe, gl_sframe> create_validation_data(gl_sframe data, const var
                          << data.size() << " datapoints." << std::endl;
 
       double p = 10000.0 / data.size();
-      return data.random_split(1.0 - p);
+      return data.random_split(1.0 - p, random_seed);
     } else if(data.size() >= 200) {
       logprogress_stream << "Automatically generating validation set from 5% of the data." << std::endl;
-      return data.random_split(0.95);
+      return data.random_split(0.95, random_seed);
     } else if(data.size() >= 50) {
       logprogress_stream << "Automatically generating validation set from 10% of the data." << std::endl;
-      return data.random_split(0.9);
+      return data.random_split(0.9, random_seed);
     } else {
       logprogress_stream << "Skipping automatic creation of validation set; training set has fewer than 50 points." << std::endl;
       return {data, gl_sframe()};
@@ -305,7 +306,18 @@ std::pair<gl_sframe, gl_sframe> create_validation_data(gl_sframe data, const var
   } else {
     log_and_throw("Validation data parameter must be either \"auto\", an empty SFrame "
         "(no validation info is computed), or an SFrame with the same schema as the training data.");
+  }
 }
+
+std::pair<gl_sframe, gl_sframe> create_validation_data(
+    gl_sframe data, const variant_type& _validation_data)
+{
+  // For now, mimic the behavior of gl_sframe::random_split when no seed is
+  // provided.
+  // TODO: Should this ultimately use std::random_device instead?
+  int random_seed = static_cast<int>(time(nullptr));
+  return create_validation_data(std::move(data), _validation_data, random_seed);
 }
+
 }  // namespace supervised
 }  // namespace turi

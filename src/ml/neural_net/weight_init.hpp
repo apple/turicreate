@@ -8,6 +8,7 @@
 #define UNITY_TOOLKITS_NEURAL_NET_WEIGHT_INIT_HPP_
 
 #include <functional>
+#include <random>
 
 namespace turi {
 namespace neural_net {
@@ -29,18 +30,22 @@ public:
    *
    * \param fan_in The number of inputs that affect each output from the layer
    * \param fan_out The number of outputs affected by each input to the layer
+   * \param random_engine The random number generator to use, which must remain
+   *     valid for the lifetime of this instance.
    */
-  xavier_weight_initializer(size_t fan_in, size_t fan_out);
+  xavier_weight_initializer(size_t fan_in, size_t fan_out,
+                            std::mt19937* random_engine);
 
   /**
    * Initializes each value in uniformly at random in the range [-c,c], where
    * c = sqrt(3 / (0.5 * fan_in + 0.5 * fan_out).
    */
-  void operator()(float* first_weight, float* last_weight) const;
+  void operator()(float* first_weight, float* last_weight);
 
 private:
 
-  float magnitude_;
+  std::uniform_real_distribution<float> dist_;
+  std::mt19937& random_engine_;
 };
 
 struct zero_weight_initializer {
@@ -53,7 +58,7 @@ struct zero_weight_initializer {
 struct lstm_weight_initializers {
 
   static lstm_weight_initializers create_with_xavier_method(
-      size_t input_size, size_t state_size);
+      size_t input_size, size_t state_size, std::mt19937* random_engine);
 
   // Initializers for matrices applied to sequence input
   weight_initializer input_gate_weight_fn;

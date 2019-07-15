@@ -11,12 +11,12 @@ NS_ASSUME_NONNULL_BEGIN
                               outputFeatureChannels:(NSUInteger)outputFeatureChannels
                                         inputHeight:(NSUInteger)inputHeight
                                          inputWidth:(NSUInteger)inputWidth
-                                            weights:(float *)weights
-                                             biases:(float *)biases
+                                            weights:(NSData *)weights
+                                             biases:(NSData *)biases
                                               label:(NSString *)label
                                       updateWeights:(BOOL)updateWeights
                                              device:(id<MTLDevice>)dev
-                                          cmd_queue:(id<MTLCommandQueue>)cmd_q
+                                           cmdQueue:(id<MTLCommandQueue>)cmdQ
                                           API_AVAILABLE(macosx(10.14));
 
 @end
@@ -31,22 +31,22 @@ NS_ASSUME_NONNULL_BEGIN
                                    strideHeight:(NSUInteger)strideHeight
                                    paddingWidth:(NSUInteger)paddingWidth
                                   paddingHeight:(NSUInteger)paddingHeight
-                                        weights:(float *)weights
-                                         biases:(float *)biases
+                                        weights:(NSData *)weights
+                                         biases:(NSData *)biases
                                           label:(NSString *)label
                                   updateWeights:(BOOL)updateWeights
                                          device:(id<MTLDevice>)dev
-                                      cmd_queue:(id<MTLCommandQueue>)cmd_q
+                                       cmdQueue:(id<MTLCommandQueue>)cmdQ
                                       API_AVAILABLE(macosx(10.14));
 
 + (MPSCNNInstanceNormalizationNode *) createInstanceNormalization:(MPSNNImageNode *)inputNode
                                                          channels:(NSUInteger)channels
                                                            styles:(NSUInteger)styles
-                                                            gamma:(float *)gamma
-                                                             beta:(float *)beta
+                                                            gamma:(NSData *)gamma
+                                                             beta:(NSData *)beta
                                                             label:(NSString *)label
                                                            device:(id<MTLDevice>)dev
-                                                        cmd_queue:(id<MTLCommandQueue>)cmd_q
+                                                         cmdQueue:(id<MTLCommandQueue>)cmdQ
                                                         API_AVAILABLE(macosx(10.14));
 @end
 

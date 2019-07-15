@@ -7,6 +7,7 @@
 #ifndef TURI_ACTIVITY_CLASSIFICATION_AC_DATA_ITERATOR_HPP_
 #define TURI_ACTIVITY_CLASSIFICATION_AC_DATA_ITERATOR_HPP_
 
+#include <random>
 #include <string>
 #include <vector>
 
@@ -66,6 +67,9 @@ public:
 
     /** Augments training data when set to true*/
     bool use_data_augmentation = false;
+
+    /** Determines results of data augmentation if enabled. */
+    int random_seed = 0;
   };
 
   /** Defines the output of a data_iterator. */
@@ -195,6 +199,7 @@ private:
   size_t sample_in_row_ = 0;
   bool is_train_ = false;
   bool use_data_augmentation_ = false;
+  std::default_random_engine random_engine_;
 };
 
 /**

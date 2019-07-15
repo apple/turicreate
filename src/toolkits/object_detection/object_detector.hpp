@@ -127,6 +127,7 @@ class EXPORT object_detector: public ml_model_base {
 
   virtual void init_train(gl_sframe data, std::string annotations_column_name,
                           std::string image_column_name,
+                          variant_type validation_data,
                           std::map<std::string, flexible_type> opts);
   virtual void perform_training_iteration();
 
@@ -150,6 +151,9 @@ class EXPORT object_detector: public ml_model_base {
   flex_int get_max_iterations() const;
   flex_int get_training_iterations() const;
 
+  // Sets certain user options heuristically (from the data).
+  void infer_derived_options();
+
   // Waits until the number of pending patches is at most `max_pending`.
   void wait_for_training_batches(size_t max_pending = 0);
 
@@ -161,6 +165,8 @@ class EXPORT object_detector: public ml_model_base {
 
   // Primary dependencies for training. These should be nonnull while training
   // is in progress.
+  gl_sframe training_data_;  // TODO: Avoid storing gl_sframe AND data_iterator.
+  gl_sframe validation_data_;
   std::unique_ptr<neural_net::compute_context> training_compute_context_;
   std::unique_ptr<data_iterator> training_data_iterator_;
   std::unique_ptr<neural_net::image_augmenter> training_data_augmenter_;
