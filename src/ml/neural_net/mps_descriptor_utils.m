@@ -21,10 +21,10 @@
 @implementation TCMPSDecodingDescriptor
 @end
 
-@implementation TCMPSBlock1Descriptor
+@implementation TCMPSVgg16Block1Descriptor
 @end
 
-@implementation TCMPSBlock2Descriptor
+@implementation TCMPSVgg16Block2Descriptor
 @end
 
 @implementation TCMPSVgg16Descriptor

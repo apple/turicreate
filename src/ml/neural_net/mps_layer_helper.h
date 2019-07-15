@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
                                               label:(NSString *)label
                                       updateWeights:(BOOL)updateWeights
                                              device:(id<MTLDevice>)dev
-                                          cmd_queue:(id<MTLCommandQueue>)cmd_q
+                                           cmdQueue:(id<MTLCommandQueue>)cmdQ
                                           API_AVAILABLE(macosx(10.14));
 
 @end
@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
                                           label:(NSString *)label
                                   updateWeights:(BOOL)updateWeights
                                          device:(id<MTLDevice>)dev
-                                      cmd_queue:(id<MTLCommandQueue>)cmd_q
+                                       cmdQueue:(id<MTLCommandQueue>)cmdQ
                                       API_AVAILABLE(macosx(10.14));
 
 + (MPSCNNInstanceNormalizationNode *) createInstanceNormalization:(MPSNNImageNode *)inputNode
@@ -46,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
                                                              beta:(float *)beta
                                                             label:(NSString *)label
                                                            device:(id<MTLDevice>)dev
-                                                        cmd_queue:(id<MTLCommandQueue>)cmd_q
+                                                         cmdQueue:(id<MTLCommandQueue>)cmdQ
                                                         API_AVAILABLE(macosx(10.14));
 @end
 

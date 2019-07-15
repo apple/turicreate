@@ -15,7 +15,7 @@
                                               label:(NSString *)label
                                       updateWeights:(BOOL)updateWeights
                                              device:(id<MTLDevice>)dev
-                                          cmd_queue:(id<MTLCommandQueue>) cmd_q {
+                                           cmdQueue:(id<MTLCommandQueue>)cmdQ {
   
   turi::neural_net::OptimizerOptions optimizerOptions;
 
@@ -31,7 +31,7 @@
                                                  neuronB:0.0f
                                   kernelParamsBinaryName:[label UTF8String]
                                                   device:dev
-                                               cmd_queue:cmd_q
+                                               cmd_queue:cmdQ
                                          init_weight_ptr:weights
                                            init_bias_ptr:biases
                                         optimizerOptions:optimizerOptions];
@@ -59,7 +59,7 @@
                                           label:(NSString *)label
                                   updateWeights:(BOOL)updateWeights
                                          device:(id<MTLDevice>)dev
-                                      cmd_queue:(id<MTLCommandQueue>) cmd_q {
+                                       cmdQueue:(id<MTLCommandQueue>)cmdQ {
   
   turi::neural_net::OptimizerOptions optimizerOptions;
 
@@ -75,7 +75,7 @@
                                                  neuronB:0.0f
                                   kernelParamsBinaryName:[label UTF8String]
                                                   device:dev
-                                               cmd_queue:cmd_q
+                                               cmd_queue:cmdQ
                                          init_weight_ptr:weights
                                            init_bias_ptr:biases
                                         optimizerOptions:optimizerOptions];
@@ -102,7 +102,7 @@
                                                              beta:(float *)beta
                                                             label:(NSString *)label
                                                            device:(id<MTLDevice>)dev
-                                                        cmd_queue:(id<MTLCommandQueue>) cmd_q {
+                                                         cmdQueue:(id<MTLCommandQueue>) cmdQ {
 
   TCMPSInstanceNormDataLoader *InstNormDataLoad = [[TCMPSInstanceNormDataLoader alloc] initWithParams:label
                                                                                          gammaWeights:gamma
@@ -110,7 +110,7 @@
                                                                                 numberFeatureChannels:channels
                                                                                                styles:styles
                                                                                                device:dev
-                                                                                            cmd_queue:cmd_q];
+                                                                                            cmd_queue:cmdQ];
                                       
   MPSCNNInstanceNormalizationNode *instNormNode =  [MPSCNNInstanceNormalizationNode nodeWithSource:inputNode
                                                                                         dataSource:InstNormDataLoad];

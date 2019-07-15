@@ -15,7 +15,7 @@ API_AVAILABLE(macos(10.14))
 - (instancetype) initWithParameters:(NSString *)name
                           inputNode:(MPSNNImageNode *)inputNode
                              device:(id<MTLDevice>)dev
-                          cmd_queue:(id<MTLCommandQueue>)cmdQ
+                           cmdQueue:(id<MTLCommandQueue>)cmdQ
                          descriptor:(TCMPSResidualDescriptor *)descriptor
                         initWeights:(NSDictionary<NSString *, NSData *> *) weights;
 

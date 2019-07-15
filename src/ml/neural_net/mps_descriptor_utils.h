@@ -37,10 +37,10 @@
 @end
 
 @interface TCMPSResidualDescriptor:NSObject
-@property (nonatomic) TCMPSConvolutionDescriptor* conv_1;
-@property (nonatomic) TCMPSConvolutionDescriptor* conv_2;
-@property (nonatomic) TCMPSInstanceNormalizationDescriptor* inst_1;
-@property (nonatomic) TCMPSInstanceNormalizationDescriptor* inst_2;
+@property (nonatomic) TCMPSConvolutionDescriptor* conv1;
+@property (nonatomic) TCMPSConvolutionDescriptor* conv2;
+@property (nonatomic) TCMPSInstanceNormalizationDescriptor* inst1;
+@property (nonatomic) TCMPSInstanceNormalizationDescriptor* inst2;
 @end
 
 @interface TCMPSDecodingDescriptor:NSObject
@@ -49,39 +49,39 @@
 @property (nonatomic) TCMPSUpsamplingDescriptor* upsample;
 @end
 
-@interface TCMPSBlock1Descriptor:NSObject
-@property (nonatomic) TCMPSConvolutionDescriptor* conv_1;
-@property (nonatomic) TCMPSConvolutionDescriptor* conv_2;
+@interface TCMPSVgg16Block1Descriptor:NSObject
+@property (nonatomic) TCMPSConvolutionDescriptor* conv1;
+@property (nonatomic) TCMPSConvolutionDescriptor* conv2;
 @property (nonatomic) TCMPSPoolingDescriptor* pooling;
 @end
 
-@interface TCMPSBlock2Descriptor:NSObject
-@property (nonatomic) TCMPSConvolutionDescriptor* conv_1;
-@property (nonatomic) TCMPSConvolutionDescriptor* conv_2;
-@property (nonatomic) TCMPSConvolutionDescriptor* conv_3;
+@interface TCMPSVgg16Block2Descriptor:NSObject
+@property (nonatomic) TCMPSConvolutionDescriptor* conv1;
+@property (nonatomic) TCMPSConvolutionDescriptor* conv2;
+@property (nonatomic) TCMPSConvolutionDescriptor* conv3;
 @property (nonatomic) TCMPSPoolingDescriptor* pooling;
 @end
 
 @interface TCMPSVgg16Descriptor:NSObject
-@property (nonatomic) TCMPSBlock1Descriptor* block_1;
-@property (nonatomic) TCMPSBlock1Descriptor* block_2;
-@property (nonatomic) TCMPSBlock2Descriptor* block_3;
-@property (nonatomic) TCMPSBlock2Descriptor* block_4;
+@property (nonatomic) TCMPSVgg16Block1Descriptor* block1;
+@property (nonatomic) TCMPSVgg16Block1Descriptor* block2;
+@property (nonatomic) TCMPSVgg16Block2Descriptor* block3;
+@property (nonatomic) TCMPSVgg16Block2Descriptor* block4;
 @end
 
 @interface TCMPSTransformerDescriptor:NSObject
-@property (nonatomic) TCMPSEncodingDescriptor* encode_1;
-@property (nonatomic) TCMPSEncodingDescriptor* encode_2;
-@property (nonatomic) TCMPSEncodingDescriptor* encode_3;
+@property (nonatomic) TCMPSEncodingDescriptor* encode1;
+@property (nonatomic) TCMPSEncodingDescriptor* encode2;
+@property (nonatomic) TCMPSEncodingDescriptor* encode3;
 
-@property (nonatomic) TCMPSResidualDescriptor* residual_1;
-@property (nonatomic) TCMPSResidualDescriptor* residual_2;
-@property (nonatomic) TCMPSResidualDescriptor* residual_3;
-@property (nonatomic) TCMPSResidualDescriptor* residual_4;
-@property (nonatomic) TCMPSResidualDescriptor* residual_5;
+@property (nonatomic) TCMPSResidualDescriptor* residual1;
+@property (nonatomic) TCMPSResidualDescriptor* residual2;
+@property (nonatomic) TCMPSResidualDescriptor* residual3;
+@property (nonatomic) TCMPSResidualDescriptor* residual4;
+@property (nonatomic) TCMPSResidualDescriptor* residual5;
 
-@property (nonatomic) TCMPSDecodingDescriptor* decode_1;
-@property (nonatomic) TCMPSDecodingDescriptor* decode_2;
+@property (nonatomic) TCMPSDecodingDescriptor* decode1;
+@property (nonatomic) TCMPSDecodingDescriptor* decode2;
 
 @property (nonatomic) TCMPSConvolutionDescriptor* conv;
 @property (nonatomic) TCMPSInstanceNormalizationDescriptor* inst;
