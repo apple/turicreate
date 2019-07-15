@@ -250,6 +250,9 @@ def set_runtime_config(name, value):
     - *TURI_S3_ENDPOINT*: The S3 Endpoint to connect to. If not specified AWS
       S3 is assumed.
 
+    - *TURI_S3_REGION*: The S3 Region to connect to. If not specified AWS
+      S3 region is assumed.
+
     **SSL Configuration**
 
     - *TURI_FILEIO_ALTERNATIVE_SSL_CERT_FILE*: The location of an SSL
