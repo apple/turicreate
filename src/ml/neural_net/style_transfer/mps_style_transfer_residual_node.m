@@ -17,7 +17,7 @@
 - (instancetype) initWithParameters:(NSString *)name
                           inputNode:(MPSNNImageNode *)inputNode
                              device:(id<MTLDevice>)dev
-                          cmd_queue:(id<MTLCommandQueue>)cmd_q
+                          cmd_queue:(id<MTLCommandQueue>)cmdQ
                          descriptor:(TCMPSResidualDescriptor *)descriptor
                         initWeights:(NSDictionary<NSString *, NSData *> *) weights {
   self = [super init];
@@ -37,7 +37,7 @@
                                                  label:descriptor.conv_1.label
                                          updateWeights:descriptor.conv_1.updateWeights
                                                 device:dev
-                                             cmd_queue:cmd_q];
+                                             cmd_queue:cmdQ];
 
     instNorm1 = [MPSCNNConvolutionNode createInstanceNormalization:[conv1 resultImage]
                                                           channels:descriptor.inst_1.channels
@@ -46,7 +46,7 @@
                                                               beta:(float *)weights[[NSString stringWithFormat:@"%@/%@", name, @"residual_inst_1_beta"]].bytes
                                                              label:descriptor.inst_1.label
                                                             device:dev
-                                                         cmd_queue:cmd_q];
+                                                         cmd_queue:cmdQ];
 
     relu1 = [MPSCNNNeuronReLUNNode nodeWithSource:[instNorm1 resultImage]];
 
@@ -64,7 +64,7 @@
                                                  label:descriptor.conv_2.label
                                          updateWeights:descriptor.conv_2.updateWeights
                                                 device:dev
-                                             cmd_queue:cmd_q];
+                                             cmd_queue:cmdQ];
 
     instNorm2 = [MPSCNNConvolutionNode createInstanceNormalization:[conv2 resultImage]
                                                           channels:descriptor.inst_2.channels
@@ -73,7 +73,7 @@
                                                               beta:(float *)weights[[NSString stringWithFormat:@"%@/%@", name, @"residual_inst_2_beta"]].bytes
                                                              label:descriptor.inst_2.label
                                                             device:dev
-                                                         cmd_queue:cmd_q];
+                                                         cmd_queue:cmdQ];
 
     add = [MPSNNAdditionNode nodeWithSources:@[inputNode, [instNorm2 resultImage]]];
 

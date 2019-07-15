@@ -14,7 +14,7 @@
 - (instancetype) initWithParameters:(NSString *)name
                           inputNode:(MPSNNImageNode *)inputNode
                              device:(id<MTLDevice>)dev
-                          cmd_queue:(id<MTLCommandQueue>)cmd_q
+                          cmd_queue:(id<MTLCommandQueue>)cmdQ
                          descriptor:(TCMPSDecodingDescriptor *)descriptor
                         initWeights:(NSDictionary<NSString *, NSData *> *) weights {
   self = [super init];
@@ -38,7 +38,7 @@
                                                 label:descriptor.conv.label
                                         updateWeights:descriptor.conv.updateWeights
                                                device:dev
-                                            cmd_queue:cmd_q];
+                                            cmd_queue:cmdQ];
 
     instNorm = [MPSCNNConvolutionNode createInstanceNormalization:[conv resultImage]
                                                          channels:descriptor.inst.channels
@@ -47,7 +47,7 @@
                                                              beta:(float *)weights[[NSString stringWithFormat:@"%@/%@", name, @"decoding_inst_beta"]].bytes
                                                             label:descriptor.inst.label
                                                            device:dev
-                                                        cmd_queue:cmd_q];
+                                                        cmd_queue:cmdQ];
 
     relu = [MPSCNNNeuronReLUNNode nodeWithSource: [instNorm resultImage]];
 
