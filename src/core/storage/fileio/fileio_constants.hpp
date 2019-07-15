@@ -87,6 +87,12 @@ extern std::string S3_ENDPOINT;
 
 /**
  * \ingroup fileio
+ * The S3 connection region; if empty string, region will be guessed by endpoint.
+ */
+extern std::string S3_REGION;
+
+/**
+ * \ingroup fileio
  * The number of GPUs.
  */
 extern int64_t NUM_GPUS;
