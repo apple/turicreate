@@ -3,14 +3,14 @@
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h> 
 
-#include <ml/neural_net/style_transfer/mps_style_transfer_utils.h>
+#import <ml/neural_net/style_transfer/mps_style_transfer_utils.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 API_AVAILABLE(macos(10.14))
 @interface TCMPSStyleTransferResidualNode : NSObject 
 
-@property (nonatomic) MPSNNImageNode *m_output;
+@property (nonatomic) MPSNNImageNode *output;
 
 - (instancetype) initWithParameters:(NSString *)name
                           inputNode:(MPSNNImageNode *)inputNode
