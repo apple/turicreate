@@ -33,7 +33,8 @@ function print_help {
   echo "  --no-capi                         Skip building the C API."
   echo
   echo "  --with-python (default)           Build python components."
-  echo "  --no-python"
+  echo "  --python PYTHON_EXE               Manually set the python executable to use."
+  echo "  --no-python                       Build only C++ / C-API components."
   echo
   echo "  --with-visualization (default)    Build Turi Create visualization client."
   echo "  --no-visualization"
@@ -103,7 +104,7 @@ function install_python_toolchain {
   echo "Using virtualenv at $VIRTUALENV."
 
   pushd ${TURI_HOME}
-  VIRTUALENV=${VIRTUALENV} ./scripts/install_python_toolchain.sh
+  VIRTUALENV=${VIRTUALENV} PYTHON_EXECUTABLE=${python_exe} ./scripts/install_python_toolchain.sh
   popd
 }
 
@@ -113,6 +114,7 @@ python_only=0
 default_yes=0
 
 with_python=1
+python_exe=`which python`
 
 with_system_cmake=1
 with_ccache=1
@@ -155,6 +157,8 @@ while [ $# -gt 0 ]
     --no-capi)              with_capi=0;;
 
     --with-python)          with_python=1;;
+    --python=*)             python_exe=${1##--python=} ;;
+    --python)               shift; python_exe="$1";;
     --no-python)            with_python=0;;
 
     --with-extra-opt-flags) with_extra_opt_flags=1;;
@@ -176,6 +180,7 @@ while [ $# -gt 0 ]
 
     -D)                     CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -D $2"; shift ;;
 
+    --virtualenv=*)         VIRTUALENV="${1##--virtualenv=}";;
     --virtualenv)           VIRTUALENV="$2"; shift ;;
     *) unknown_option $1 ;;
   esac
