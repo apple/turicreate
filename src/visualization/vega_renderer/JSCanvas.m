@@ -60,6 +60,69 @@
 @end
 
 @implementation VegaCGFontProperties
+- (instancetype)initWithString:(NSString*)fontStr {
+    self = [super init];
+    _cssFontString = fontStr;
+    _fontFamily = nil;
+    _fontSize = nil;
+    _fontVariant = nil;
+    _fontWeight = nil;
+    _fontStyle = nil;
+    _lineHeight = nil;
+
+    NSArray<NSString *> *elements = [fontStr componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    for (size_t i=0; i<elements.count; i++) {
+        NSString *element = elements[i];
+        if ([element isEqualToString:@"normal"]) {
+            continue;
+        }
+        if ([element isEqualToString:@"italic"] ||
+            [element isEqualToString:@"oblique"]) {
+            _fontStyle = element;
+            continue;
+        }
+        if ([element isEqualToString:@"small-caps"]) {
+            _fontVariant = element;
+            continue;
+        }
+        if ([element isEqualToString:@"bold"] ||
+            [element isEqualToString:@"bolder"] ||
+            [element isEqualToString:@"lighter"] ||
+            [element isEqualToString:@"100"] ||
+            [element isEqualToString:@"200"] ||
+            [element isEqualToString:@"300"] ||
+            [element isEqualToString:@"400"] ||
+            [element isEqualToString:@"500"] ||
+            [element isEqualToString:@"600"] ||
+            [element isEqualToString:@"700"] ||
+            [element isEqualToString:@"800"] ||
+            [element isEqualToString:@"900"]) {
+            _fontWeight = element;
+            continue;
+        }
+        if (_fontSize == nil) {
+            NSArray<NSString *> *parts = [element componentsSeparatedByString:@"/"];
+            _fontSize = parts[0];
+            if (parts.count > 1) {
+                _lineHeight = parts[1];
+                assert(parts.count == 2);
+            }
+            continue;
+        }
+        _fontFamily = element;
+        if (i < elements.count - 1) {
+            NSArray<NSString *> *remainingElements = [elements subarrayWithRange:NSMakeRange(i+1, elements.count-(i+1))];
+            _fontFamily = [_fontFamily stringByAppendingString:[@" " stringByAppendingString:[remainingElements componentsJoinedByString:@" "]]];
+        }
+        break;
+    }
+
+    if ([_fontFamily isEqualToString:@"sans-serif"]) {
+        _fontFamily = @"Helvetica";
+    }
+
+    return self;
+}
 @end
 
 @implementation VegaCGImage
@@ -166,70 +229,6 @@
     }
 }
 
-- (VegaCGFontProperties *)parseFontString:(NSString*)fontStr {
-    VegaCGFontProperties *props = [[VegaCGFontProperties alloc] init];
-    props.cssFontString = fontStr;
-    props.fontFamily = nil;
-    props.fontSize = nil;
-    props.fontVariant = nil;
-    props.fontWeight = nil;
-    props.fontStyle = nil;
-    props.lineHeight = nil;
-
-    NSArray<NSString *> *elements = [fontStr componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    for (size_t i=0; i<elements.count; i++) {
-        NSString *element = elements[i];
-        if ([element isEqualToString:@"normal"]) {
-            continue;
-        }
-        if ([element isEqualToString:@"italic"] ||
-            [element isEqualToString:@"oblique"]) {
-            props.fontStyle = element;
-            continue;
-        }
-        if ([element isEqualToString:@"small-caps"]) {
-            props.fontVariant = element;
-            continue;
-        }
-        if ([element isEqualToString:@"bold"] ||
-            [element isEqualToString:@"bolder"] ||
-            [element isEqualToString:@"lighter"] ||
-            [element isEqualToString:@"100"] ||
-            [element isEqualToString:@"200"] ||
-            [element isEqualToString:@"300"] ||
-            [element isEqualToString:@"400"] ||
-            [element isEqualToString:@"500"] ||
-            [element isEqualToString:@"600"] ||
-            [element isEqualToString:@"700"] ||
-            [element isEqualToString:@"800"] ||
-            [element isEqualToString:@"900"]) {
-            props.fontWeight = element;
-            continue;
-        }
-        if (props.fontSize == nil) {
-            NSArray<NSString *> *parts = [element componentsSeparatedByString:@"/"];
-            props.fontSize = parts[0];
-            if (parts.count > 1) {
-                props.lineHeight = parts[1];
-                assert(parts.count == 2);
-            }
-            continue;
-        }
-        props.fontFamily = element;
-        if (i < elements.count - 1) {
-            NSArray<NSString *> *remainingElements = [elements subarrayWithRange:NSMakeRange(i+1, elements.count-(i+1))];
-            props.fontFamily = [props.fontFamily stringByAppendingString:[@" " stringByAppendingString:[remainingElements componentsJoinedByString:@" "]]];
-        }
-        break;
-    }
-
-    if ([props.fontFamily isEqualToString:@"sans-serif"]) {
-        props.fontFamily = @"Helvetica";
-    }
-
-    return props;
-}
-
 - (NSDictionary<NSAttributedStringKey, id> *)textAttributes {
     assert(_nsFont != nil);
     CGColorRef color = nil;
@@ -249,7 +248,7 @@
 }
 
 - (void)setFont:(NSString *)fontStr {
-    VegaCGFontProperties *fontProperties = [self parseFontString:fontStr];
+    VegaCGFontProperties *fontProperties = [[VegaCGFontProperties alloc] initWithString:fontStr];
 
     // TODO - allow other font properties
     // for now, make sure we don't need to handle them
