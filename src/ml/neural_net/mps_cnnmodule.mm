@@ -168,6 +168,12 @@ float_array_map mps_cnn_module::perform_batch(const float_array_map &inputs,
 
       // Schedule the actual weight update.
       network_->GpuUpdate(commandBuffer);
+
+    } else {
+
+      // If we don't pass the loss gradient to a backward pass, decrement the
+      // read count to allow MPS to deallocate it.
+      MPSImageBatchIncrementReadCount(topGrad, -1);
     }
   }
 
