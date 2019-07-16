@@ -629,7 +629,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto_split) {
   // The following callbacks capture by reference so that they can transfer
   // ownership of the mocks created above.
   auto create_iterator_impl = [&](data_iterator::parameters iterator_params) { 
-
+    // The train data is smaller than the original dataset
     TS_ASSERT(test_num_examples > iterator_params.data.size());
     TS_ASSERT(iterator_params.class_labels.empty());  // Should infer class labels from data. 
     TS_ASSERT(iterator_params.repeat); 

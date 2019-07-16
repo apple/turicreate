@@ -224,19 +224,19 @@ void object_detector::init_options(
       1,
       std::numeric_limits<int>::max());
   options.create_integer_option(
-      /* name          */ "grid_height",
-      /* description   */
+      /* name             */ "grid_height",
+      /* description      */
       "Height of the grid of features computed for each image",
-      /* default_value */ 13,
-      /* lower_bound   */ 1,
-      /* upper_bound   */ std::numeric_limits<int>::max());
+      /* default_value    */ 13,
+      /* lower_bound      */ 1,
+      /* upper_bound      */ std::numeric_limits<int>::max());
   options.create_integer_option(
-      /* name          */ "grid_width",
-      /* description   */
+      /* name             */ "grid_width",
+      /* description      */
       "Width of the grid of features computed for each image",
-      /* default_value */ 13,
-      /* lower_bound   */ 1,
-      /* upper_bound   */ std::numeric_limits<int>::max());
+      /* default_value    */ 13,
+      /* lower_bound      */ 1,
+      /* upper_bound      */ std::numeric_limits<int>::max());
   options.create_integer_option(
       "random_seed",
       "Seed for random weight initialization and sampling during training",
@@ -244,26 +244,26 @@ void object_detector::init_options(
       std::numeric_limits<int>::min(),
       std::numeric_limits<int>::max());
   options.create_categorical_option(
-      /* name          */"annotation_scale",
-      /* description   */
+      /* name              */"annotation_scale",
+      /* description       */
       "Defines annotations scale: pixel or normalized",
-      /* default_value */ "pixel",
-      /* allowed_values*/ {flexible_type("pixel"), flexible_type("normalized")},
-      /*allowed_overwrite*/ false);
+      /* default_value     */ "pixel",
+      /* allowed_values    */ {flexible_type("pixel"), flexible_type("normalized")},
+      /* allowed_overwrite */ false);
   options.create_categorical_option(
-      /* name          */"image_origin",
-      /* description   */
+      /* name              */"image_origin",
+      /* description       */
       "Defines image origin: top_left or bottom_left",
-      /* default_value */ "top_left",
-      /* allowed_values*/ {flexible_type("top_left"), flexible_type("bottom_left")},
-      /*allowed_overwrite*/ false);
+      /* default_value     */ "top_left",
+      /* allowed_values    */ {flexible_type("top_left"), flexible_type("bottom_left")},
+      /* allowed_overwrite */ false);
   options.create_categorical_option(
-      /* name          */"annotation_position",
-      /* description   */
+      /* name              */"annotation_position",
+      /* description       */
       "Defines annotations position: center, top_left or bottom_left",
-      /* default_value */ "center",
-      /* allowed_values*/ {flexible_type("center"), flexible_type("top_left"), flexible_type("bottom_left")},
-      /*allowed_overwrite*/ false);
+      /* default_value     */ "center",
+      /* allowed_values    */ {flexible_type("center"), flexible_type("top_left"), flexible_type("bottom_left")},
+      /* allowed_overwrite */ false);
  
   // Validate user-provided options.
   options.set_options(opts);
