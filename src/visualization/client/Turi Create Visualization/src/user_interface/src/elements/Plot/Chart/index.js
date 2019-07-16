@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import './index.css';
 
 var vega = require('vega');
+var vl = require('vega-lite');
 var vegaTooltip = require('vega-tooltip');
 
 class TcPlot extends Component {
@@ -62,8 +63,20 @@ class TcPlot extends Component {
 
     addSpec(spec){
         this.bubbleOpts = {
-        showAllFields: true,
+            showAllFields: true,
         };
+
+        if (typeof(spec) === 'string') {
+            spec = JSON.parse(spec);
+        }
+        // If size is not specified, default to our default window size, 720x550
+        if (!spec.width && !spec.height) {
+            spec.width = 720;
+            spec.height = 550;
+        }
+        if (spec['$schema'].startsWith('https://vega.github.io/schema/vega-lite/')) {
+            spec = vl.compile(spec).spec;
+        }
 
         this.vega_json = spec;
         this.vega_json.autosize = {"type": "fit", "resize": true, "contains": "padding"};

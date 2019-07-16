@@ -3043,7 +3043,7 @@ class SArray(object):
         if ylabel is None:
             ylabel = ""
 
-        return Plot(self.__proxy__.plot(title, xlabel, ylabel))
+        return Plot(_proxy=self.__proxy__.plot(title, xlabel, ylabel))
 
     def item_length(self):
         """
