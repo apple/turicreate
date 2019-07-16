@@ -244,21 +244,21 @@ void object_detector::init_options(
       std::numeric_limits<int>::min(),
       std::numeric_limits<int>::max());
   options.create_categorical_option(
-      /* name              */"annotation_scale",
+      /* name              */ "annotation_scale",
       /* description       */
       "Defines annotations scale: pixel or normalized",
       /* default_value     */ "pixel",
       /* allowed_values    */ {flexible_type("pixel"), flexible_type("normalized")},
       /* allowed_overwrite */ false);
   options.create_categorical_option(
-      /* name              */"image_origin",
+      /* name              */ "image_origin",
       /* description       */
       "Defines image origin: top_left or bottom_left",
       /* default_value     */ "top_left",
       /* allowed_values    */ {flexible_type("top_left"), flexible_type("bottom_left")},
       /* allowed_overwrite */ false);
   options.create_categorical_option(
-      /* name              */"annotation_position",
+      /* name              */ "annotation_position",
       /* description       */
       "Defines annotations position: center, top_left or bottom_left",
       /* default_value     */ "center",
