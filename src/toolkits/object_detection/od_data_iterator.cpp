@@ -50,7 +50,10 @@ gl_sframe get_data(const data_iterator::parameters& params) {
 std::vector<image_annotation> parse_annotations(
     const flex_list& flex_annotations,
     size_t image_width, size_t image_height,
-    const std::unordered_map<std::string, int>& class_to_index_map) {
+    const std::unordered_map<std::string, int>& class_to_index_map,
+    const data_iterator::image_origin_enum image_origin_, 
+    const data_iterator::annotation_scale_enum annotation_scale_, 
+    const data_iterator::annotation_origin_enum annotation_origin_) {
 
   std::vector<image_annotation> result;
   result.reserve(flex_annotations.size());
@@ -110,14 +113,67 @@ std::vector<image_annotation> parse_annotations(
     // instances we report will actually equal the number of image_annotation
     // values.
     if (has_label && has_x && has_y && annotation.bounding_box.area() > 0.f) {
+      
+      if (annotation_scale_ == data_iterator::annotation_scale_enum::NORMALIZED) {
+        image_height = 1;
+        image_width = 1; 
+      }
+      
+      switch (image_origin_) {
 
-      // Use x and y fields to store upper-left corner, not center.
-      annotation.bounding_box.x -= annotation.bounding_box.width / 2.f;
-      annotation.bounding_box.y -= annotation.bounding_box.height / 2.f;
+          case data_iterator::image_origin_enum::TOP_LEFT:
+
+              switch(annotation_origin_) {
+
+                  case data_iterator::annotation_origin_enum::CENTER:
+                      annotation.bounding_box.x -= annotation.bounding_box.width / 2.f;
+                      annotation.bounding_box.y -= annotation.bounding_box.height / 2.f;
+                      break;
+
+                  case data_iterator::annotation_origin_enum::TOP_LEFT:
+                      // Nothing to be done
+                      break;
+
+                  case data_iterator::annotation_origin_enum::BOTTOM_LEFT:
+                      annotation.bounding_box.y -= annotation.bounding_box.height;
+                      break;
+
+              }
+              break;
+
+          case data_iterator::image_origin_enum::BOTTOM_LEFT:
+
+              switch(annotation_origin_) {
+
+                  case data_iterator::annotation_origin_enum::CENTER:
+                      annotation.bounding_box.x -= annotation.bounding_box.width / 2.f;
+                      annotation.bounding_box.y -= annotation.bounding_box.height / 2.f;
+                      annotation.bounding_box.y = image_height - annotation.bounding_box.y;
+                      break;
+
+                  case data_iterator::annotation_origin_enum::TOP_LEFT:
+                      annotation.bounding_box.y = image_height - annotation.bounding_box.y;
+                      break;
+
+                  case data_iterator::annotation_origin_enum::BOTTOM_LEFT:
+                      annotation.bounding_box.y = image_height - annotation.bounding_box.height - annotation.bounding_box.y;
+                      break;
+                
+              }
+              break;
+      }
 
       // Translate to normalized coordinates.
-      annotation.bounding_box.normalize(image_width, image_height);
+      switch (annotation_scale_) {
+          case data_iterator::annotation_scale_enum::NORMALIZED:
+              // Nothing to be done
+              break;
 
+          case data_iterator::annotation_scale_enum::PIXEL:
+              annotation.bounding_box.normalize(image_width, image_height);
+              break;
+      }
+      
       // Add this annotation if we still have a valid bounding box.
       if (annotation.bounding_box.area() > 0.f) {
 
@@ -202,6 +258,10 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
                        : data_.column_index(params.predictions_column_name)),
     image_index_(data_.column_index(params.image_column_name)),
 
+    image_origin_(params.image_origin),
+    annotation_scale_(params.annotation_scale),
+    annotation_origin_(params.annotation_origin),
+
     // Whether to traverse the SFrame more than once, and whether to shuffle.
     repeat_(params.repeat),
     shuffle_(params.shuffle),
@@ -217,6 +277,7 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
 
     // Initialize random number generator.
     random_engine_(params.random_seed)
+
 {}
 
 std::vector<labeled_image> simple_data_iterator::next_batch(size_t batch_size) {
@@ -273,12 +334,14 @@ std::vector<labeled_image> simple_data_iterator::next_batch(size_t batch_size) {
 
     result[i].annotations = parse_annotations(
         raw_annotations, result[i].image.m_width, result[i].image.m_height,
-        annotation_properties_.class_to_index_map);
+        annotation_properties_.class_to_index_map, image_origin_, annotation_scale_, 
+        annotation_origin_);
 
     if (raw_predictions != FLEX_UNDEFINED) {
       result[i].predictions = parse_annotations(
           raw_predictions, result[i].image.m_width, result[i].image.m_height,
-          annotation_properties_.class_to_index_map);
+          annotation_properties_.class_to_index_map, image_origin_, annotation_scale_, 
+        annotation_origin_);
     }
   }
 

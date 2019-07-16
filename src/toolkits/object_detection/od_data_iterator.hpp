@@ -25,6 +25,23 @@ namespace object_detection {
  */
 class data_iterator {
 public:
+  
+  enum class image_origin_enum {
+    TOP_LEFT,
+    BOTTOM_LEFT
+  };
+
+  enum class annotation_scale_enum {
+    PIXEL,
+    NORMALIZED
+  };
+
+  enum class annotation_origin_enum {
+    CENTER,
+    TOP_LEFT,
+    BOTTOM_LEFT
+  };
+  
 
   /**
    * Defines the inputs to a data_iterator factory function.
@@ -70,6 +87,10 @@ public:
      * \TODO: This should be a flex_list to accomodate integer labels!
      */
     std::vector<std::string> class_labels;
+
+    image_origin_enum image_origin = image_origin_enum::TOP_LEFT;
+    annotation_scale_enum annotation_scale = annotation_scale_enum::PIXEL;
+    annotation_origin_enum annotation_origin = annotation_origin_enum::CENTER;
 
     /**
      * Whether to traverse the data more than once.
@@ -152,8 +173,15 @@ private:
   const size_t annotations_index_;
   const ssize_t predictions_index_;
   const size_t image_index_;
+
+  const image_origin_enum image_origin_;
+  const annotation_scale_enum annotation_scale_;
+  const annotation_origin_enum annotation_origin_;
+
   const bool repeat_;
   const bool shuffle_;
+
+  
 
   const annotation_properties annotation_properties_;
 

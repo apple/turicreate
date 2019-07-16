@@ -243,8 +243,26 @@ void object_detector::init_options(
       FLEX_UNDEFINED,
       std::numeric_limits<int>::min(),
       std::numeric_limits<int>::max());
-
-  // Validate user-provided options.
+  options.create_string_option(
+      /* name          */"annotation_scale",
+      /* description   */
+      "Defines annotations scale: pixel or normalized",
+      /* default_value */ "pixel",
+      /*allowed_overwrite*/ true);
+  options.create_string_option(
+      /* name          */"image_origin",
+      /* description   */
+      "Defines image origin: top_left or bottom_left",
+      /* default_value */ "top_left",
+      /*allowed_overwrite*/ true);
+  options.create_string_option(
+      /* name          */"annotation_origin",
+      /* description   */
+      "Defines annotations origin: center, top_left or bottom_left",
+      /* default_value */ "center",
+      /*allowed_overwrite*/ true);
+ 
+   // Validate user-provided options.
   options.set_options(opts);
 
   // Write model fields.
@@ -392,9 +410,21 @@ variant_map_type object_detector::perform_evaluation(gl_sframe data,
       read_state<flex_float>("non_maximum_suppression_threshold");
 
   // Bind the data to a data iterator.
-  std::unique_ptr<data_iterator> data_iter = create_iterator(
-      data, std::vector<std::string>(class_labels.begin(), class_labels.end()),
-      /* repeat */ false);
+  data_iterator::parameters iterator_params;
+  iterator_params.data = std::move(data);
+  iterator_params.annotations_column_name =
+  read_state<flex_string>("annotations");
+  iterator_params.image_column_name = read_state<flex_string>("feature");
+  std::vector<std::string> v (class_labels.begin(), class_labels.end());
+  iterator_params.class_labels = std::move(v); 
+  iterator_params.repeat = false;
+
+  // F TODO: Fix this:
+  iterator_params.image_origin = data_iterator::image_origin_enum::TOP_LEFT; //read_state<flex_string>("image_origin");
+  iterator_params.annotation_scale = data_iterator::annotation_scale_enum::PIXEL; //read_state<flex_string>("annotation_scale");
+  iterator_params.annotation_origin = data_iterator::annotation_origin_enum::CENTER; //read_state<flex_string>("annotation_origin");
+
+  std::unique_ptr<data_iterator> data_iter = create_iterator(iterator_params);
 
   // Instantiate the compute context.
   std::unique_ptr<compute_context> ctx = create_compute_context();
@@ -684,18 +714,10 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
 }
 
 std::unique_ptr<data_iterator> object_detector::create_iterator(
-    gl_sframe data, std::vector<std::string> class_labels, bool repeat) const
+    data_iterator::parameters iterator_params) const
 {
-  data_iterator::parameters iterator_params;
-  iterator_params.data = std::move(data);
-  iterator_params.annotations_column_name =
-      read_state<flex_string>("annotations");
-  iterator_params.image_column_name = read_state<flex_string>("feature");
-  iterator_params.class_labels = std::move(class_labels);
-  iterator_params.repeat = repeat;
-
-  return std::unique_ptr<data_iterator>(
-      new simple_data_iterator(iterator_params));
+    return std::unique_ptr<data_iterator>(
+        new simple_data_iterator(iterator_params));
 }
 
 std::unique_ptr<compute_context> object_detector::create_compute_context() const
@@ -743,8 +765,21 @@ void object_detector::init_train(
   });
 
   // Bind the data to a data iterator.
-  training_data_iterator_ = create_iterator(
-      training_data_, /* expected class_labels */ {}, /* repeat */ true);
+  data_iterator::parameters iterator_params;
+  iterator_params.data = std::move(training_data_);
+  iterator_params.annotations_column_name =
+  read_state<flex_string>("annotations");
+  iterator_params.image_column_name = read_state<flex_string>("feature");
+  std::vector<std::string> v = {};
+  iterator_params.class_labels = std::move(v);
+  iterator_params.repeat = true;  
+  
+  //F TODO: Fix this:
+  iterator_params.image_origin = data_iterator::image_origin_enum::TOP_LEFT; //read_state<flex_string>("image_origin");
+  iterator_params.annotation_scale = data_iterator::annotation_scale_enum::PIXEL; //read_state<flex_string>("annotation_scale");
+  iterator_params.annotation_origin = data_iterator::annotation_origin_enum::CENTER; //read_state<flex_string>("annotation_origin");
+
+  training_data_iterator_ = create_iterator(iterator_params);
 
   // Instantiate the compute context.
   training_compute_context_ = create_compute_context();
