@@ -2014,6 +2014,11 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
       enum MethodType {GetRows = 0, GetAccordion = 1};
       auto response = boost::optional<MethodType>();
 
+      // It appears that GCC falsely assumes the payload part of the response 
+      // variable may be uninitialized; this fixes that.
+#     pragma GCC diagnostic push
+#     pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+      
       auto sa = gl_sarray(std::vector<flexible_type>(1, input)).astype(flex_type_enum::DICT);
       flex_dict dict = sa[0].get<flex_dict>();
       for (const auto& pair : dict) {
@@ -2045,6 +2050,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
           std::runtime_error, "Unsupported case (should be either GetRows or GetAccordion).");
         ASSERT_UNREACHABLE();
       }
+#     pragma GCC diagnostic pop
     }
   });
 }
