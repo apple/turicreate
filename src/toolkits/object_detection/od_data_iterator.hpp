@@ -26,17 +26,20 @@ namespace object_detection {
 class data_iterator {
 public:
   
+  /* Enumerate possible values for image origin */
   enum class image_origin_enum {
     TOP_LEFT,
     BOTTOM_LEFT
   };
 
+  /* Enumerate possible values for the annotation scale */
   enum class annotation_scale_enum {
     PIXEL,
     NORMALIZED
   };
 
-  enum class annotation_origin_enum {
+  /* Enumerate possible values for the annotation position */
+  enum class annotation_position_enum {
     CENTER,
     TOP_LEFT,
     BOTTOM_LEFT
@@ -90,7 +93,7 @@ public:
 
     image_origin_enum image_origin = image_origin_enum::TOP_LEFT;
     annotation_scale_enum annotation_scale = annotation_scale_enum::PIXEL;
-    annotation_origin_enum annotation_origin = annotation_origin_enum::CENTER;
+    annotation_position_enum annotation_position = annotation_position_enum::CENTER;
 
     /**
      * Whether to traverse the data more than once.
@@ -174,9 +177,9 @@ private:
   const ssize_t predictions_index_;
   const size_t image_index_;
 
-  const image_origin_enum image_origin_;
-  const annotation_scale_enum annotation_scale_;
-  const annotation_origin_enum annotation_origin_;
+  image_origin_enum image_origin_;
+  annotation_scale_enum annotation_scale_;
+  annotation_position_enum annotation_position_;
 
   const bool repeat_;
   const bool shuffle_;

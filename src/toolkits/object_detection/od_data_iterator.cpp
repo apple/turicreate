@@ -15,6 +15,9 @@ namespace {
 using neural_net::image_annotation;
 using neural_net::labeled_image;
 using neural_net::shared_float_array;
+using image_origin_enum = data_iterator::image_origin_enum;
+using annotation_scale_enum = data_iterator::annotation_scale_enum;
+using annotation_position_enum = data_iterator::annotation_position_enum;
 
 flex_image get_image(const flexible_type& image_feature) {
   if (image_feature.get_type() == flex_type_enum::STRING) {
@@ -51,9 +54,9 @@ std::vector<image_annotation> parse_annotations(
     const flex_list& flex_annotations,
     size_t image_width, size_t image_height,
     const std::unordered_map<std::string, int>& class_to_index_map,
-    const data_iterator::image_origin_enum image_origin_, 
-    const data_iterator::annotation_scale_enum annotation_scale_, 
-    const data_iterator::annotation_origin_enum annotation_origin_) {
+    image_origin_enum image_origin_, 
+    annotation_scale_enum annotation_scale_, 
+    annotation_position_enum annotation_position_) {
 
   std::vector<image_annotation> result;
   result.reserve(flex_annotations.size());
@@ -114,48 +117,49 @@ std::vector<image_annotation> parse_annotations(
     // values.
     if (has_label && has_x && has_y && annotation.bounding_box.area() > 0.f) {
       
-      if (annotation_scale_ == data_iterator::annotation_scale_enum::NORMALIZED) {
+      // If the annotations are normalised, they will range between 0 and 1  
+      if (annotation_scale_ == annotation_scale_enum::NORMALIZED) {
         image_height = 1;
         image_width = 1; 
       }
       
       switch (image_origin_) {
 
-          case data_iterator::image_origin_enum::TOP_LEFT:
+          case image_origin_enum::TOP_LEFT:
 
-              switch(annotation_origin_) {
+              switch(annotation_position_) {
 
-                  case data_iterator::annotation_origin_enum::CENTER:
+                  case annotation_position_enum::CENTER:
                       annotation.bounding_box.x -= annotation.bounding_box.width / 2.f;
                       annotation.bounding_box.y -= annotation.bounding_box.height / 2.f;
                       break;
 
-                  case data_iterator::annotation_origin_enum::TOP_LEFT:
+                  case annotation_position_enum::TOP_LEFT:
                       // Nothing to be done
                       break;
 
-                  case data_iterator::annotation_origin_enum::BOTTOM_LEFT:
+                  case annotation_position_enum::BOTTOM_LEFT:
                       annotation.bounding_box.y -= annotation.bounding_box.height;
                       break;
 
               }
               break;
 
-          case data_iterator::image_origin_enum::BOTTOM_LEFT:
+          case image_origin_enum::BOTTOM_LEFT:
 
-              switch(annotation_origin_) {
+              switch(annotation_position_) {
 
-                  case data_iterator::annotation_origin_enum::CENTER:
+                  case annotation_position_enum::CENTER:
                       annotation.bounding_box.x -= annotation.bounding_box.width / 2.f;
                       annotation.bounding_box.y -= annotation.bounding_box.height / 2.f;
                       annotation.bounding_box.y = image_height - annotation.bounding_box.y;
                       break;
 
-                  case data_iterator::annotation_origin_enum::TOP_LEFT:
+                  case annotation_position_enum::TOP_LEFT:
                       annotation.bounding_box.y = image_height - annotation.bounding_box.y;
                       break;
 
-                  case data_iterator::annotation_origin_enum::BOTTOM_LEFT:
+                  case annotation_position_enum::BOTTOM_LEFT:
                       annotation.bounding_box.y = image_height - annotation.bounding_box.height - annotation.bounding_box.y;
                       break;
                 
@@ -165,11 +169,11 @@ std::vector<image_annotation> parse_annotations(
 
       // Translate to normalized coordinates.
       switch (annotation_scale_) {
-          case data_iterator::annotation_scale_enum::NORMALIZED:
+          case annotation_scale_enum::NORMALIZED:
               // Nothing to be done
               break;
 
-          case data_iterator::annotation_scale_enum::PIXEL:
+          case annotation_scale_enum::PIXEL:
               annotation.bounding_box.normalize(image_width, image_height);
               break;
       }
@@ -260,7 +264,7 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
 
     image_origin_(params.image_origin),
     annotation_scale_(params.annotation_scale),
-    annotation_origin_(params.annotation_origin),
+    annotation_position_(params.annotation_position),
 
     // Whether to traverse the SFrame more than once, and whether to shuffle.
     repeat_(params.repeat),
@@ -335,13 +339,13 @@ std::vector<labeled_image> simple_data_iterator::next_batch(size_t batch_size) {
     result[i].annotations = parse_annotations(
         raw_annotations, result[i].image.m_width, result[i].image.m_height,
         annotation_properties_.class_to_index_map, image_origin_, annotation_scale_, 
-        annotation_origin_);
+        annotation_position_);
 
     if (raw_predictions != FLEX_UNDEFINED) {
       result[i].predictions = parse_annotations(
           raw_predictions, result[i].image.m_width, result[i].image.m_height,
           annotation_properties_.class_to_index_map, image_origin_, annotation_scale_, 
-        annotation_origin_);
+        annotation_position_);
     }
   }
 
