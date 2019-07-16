@@ -251,7 +251,10 @@ def set_runtime_config(name, value):
       S3 is assumed.
 
     - *TURI_S3_REGION*: The S3 Region to connect to. If not specified AWS
-      S3 region is assumed.
+      S3 region is first inferred by looking up the url from a rudimentary
+      static table of commonly used url-region mappings on our side. If no
+      url is matched, no region information is set and AWS will do the
+      best guess for the region.
 
     **SSL Configuration**
 
