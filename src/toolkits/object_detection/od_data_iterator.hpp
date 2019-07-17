@@ -45,7 +45,6 @@ public:
     BOTTOM_LEFT
   };
 
-
   /**
    * Defines the inputs to a data_iterator factory function.
    */
@@ -183,8 +182,6 @@ private:
 
   const bool repeat_;
   const bool shuffle_;
-
-
 
   const annotation_properties annotation_properties_;
 
