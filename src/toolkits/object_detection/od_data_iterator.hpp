@@ -25,9 +25,9 @@ namespace object_detection {
  */
 class data_iterator {
 public:
-  
+
   /* Enumerate possible values for image origin */
-  enum class image_origin_enum {
+  enum class annotation_origin_enum {
     TOP_LEFT,
     BOTTOM_LEFT
   };
@@ -44,7 +44,7 @@ public:
     TOP_LEFT,
     BOTTOM_LEFT
   };
-  
+
 
   /**
    * Defines the inputs to a data_iterator factory function.
@@ -91,7 +91,7 @@ public:
      */
     std::vector<std::string> class_labels;
 
-    image_origin_enum image_origin = image_origin_enum::TOP_LEFT;
+    annotation_origin_enum annotation_origin = annotation_origin_enum::TOP_LEFT;
     annotation_scale_enum annotation_scale = annotation_scale_enum::PIXEL;
     annotation_position_enum annotation_position = annotation_position_enum::CENTER;
 
@@ -177,14 +177,14 @@ private:
   const ssize_t predictions_index_;
   const size_t image_index_;
 
-  image_origin_enum image_origin_;
+  annotation_origin_enum annotation_origin_;
   annotation_scale_enum annotation_scale_;
   annotation_position_enum annotation_position_;
 
   const bool repeat_;
   const bool shuffle_;
 
-  
+
 
   const annotation_properties annotation_properties_;
 

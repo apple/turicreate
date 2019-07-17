@@ -212,7 +212,7 @@ class test_object_detector: public object_detector {
 public:
   using create_iterator_call =
       std::function<std::unique_ptr<data_iterator>(
-        data_iterator::parameters iterator_params)>; 
+        data_iterator::parameters iterator_params)>;
 
   using create_compute_context_call =
       std::function<std::unique_ptr<compute_context>()>;
@@ -228,7 +228,7 @@ public:
     TS_ASSERT(create_compute_context_calls_.empty());
     TS_ASSERT(init_model_calls_.empty());
   }
-  
+
   std::unique_ptr<data_iterator> create_iterator(
       data_iterator::parameters iterator_params) const override {
 
@@ -236,7 +236,7 @@ public:
     create_iterator_call expected_call =
         std::move(create_iterator_calls_.front());
     create_iterator_calls_.pop_front();
-    return expected_call(iterator_params); 
+    return expected_call(iterator_params);
   }
 
   std::unique_ptr<compute_context> create_compute_context() const override {
@@ -398,8 +398,8 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
   // ownership of the mocks created above.
   auto create_iterator_impl = [&](data_iterator::parameters iterator_params) {
 
-    TS_ASSERT(iterator_params.class_labels.empty());  // Should infer class labels from data. 
-    TS_ASSERT(iterator_params.repeat); 
+    TS_ASSERT(iterator_params.class_labels.empty());  // Should infer class labels from data.
+    TS_ASSERT(iterator_params.repeat);
 
     return std::move(mock_iterator);
   };
@@ -628,11 +628,11 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto_split) {
 
   // The following callbacks capture by reference so that they can transfer
   // ownership of the mocks created above.
-  auto create_iterator_impl = [&](data_iterator::parameters iterator_params) { 
+  auto create_iterator_impl = [&](data_iterator::parameters iterator_params) {
     // The train data is smaller than the original dataset
     TS_ASSERT(test_num_examples > iterator_params.data.size());
-    TS_ASSERT(iterator_params.class_labels.empty());  // Should infer class labels from data. 
-    TS_ASSERT(iterator_params.repeat); 
+    TS_ASSERT(iterator_params.class_labels.empty());  // Should infer class labels from data.
+    TS_ASSERT(iterator_params.repeat);
 
     return std::move(mock_iterator);
   };
@@ -712,9 +712,6 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto_split) {
   // object_detector uses the number of rows to compute num_examples, which is
   // used as a normalizer.
   gl_sframe data({{"ignored", gl_sarray::from_sequence(0, test_num_examples)}});
-
-  data_iterator::parameters iterator_params; 
-  iterator_params.data = std::move(data);  
 
   // Now, actually invoke object_detector::train. This will trigger all the
   // assertions registered above.

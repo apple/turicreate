@@ -91,7 +91,7 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator) {
       TS_ASSERT_EQUALS(example.image.m_height, IMAGE_HEIGHT);
       TS_ASSERT_EQUALS(example.image.m_width, IMAGE_WIDTH);
       TS_ASSERT_EQUALS(example.image.m_channels, 3);
-      
+
       // The first byte of the first pixel should contain the row index.
       flex_image image = image_util::decode_image(example.image);
       TS_ASSERT_EQUALS(static_cast<size_t>(image.get_image_data()[0]),
@@ -122,10 +122,10 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator) {
 
 BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_different_coordinate_systems) {
 
-  auto create_data_opts = [](const std::string image_origin,
+  auto create_data_opts = [](const std::string annotation_origin,
                          const std::string annotation_scale,
                          const std::string annotation_position,
-                         float x, float y, float w, float h) {  
+                         float x, float y, float w, float h) {
 
     data_iterator::parameters result;
 
@@ -142,13 +142,13 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_different_coordinate_systems
                            static_cast<int>(Format::RAW_ARRAY));
 
     // Setting input for Image Origin
-    if (image_origin == "top_left") {
-        result.image_origin = data_iterator::image_origin_enum::TOP_LEFT;
+    if (annotation_origin == "top_left") {
+        result.annotation_origin = data_iterator::annotation_origin_enum::TOP_LEFT;
     }
-    if (image_origin == "bottom_left") {
-        result.image_origin = data_iterator::image_origin_enum::BOTTOM_LEFT;
+    if (annotation_origin == "bottom_left") {
+        result.annotation_origin = data_iterator::annotation_origin_enum::BOTTOM_LEFT;
     }
-    
+
     // Setting input for Annotation Scale
     if (annotation_scale == "pixel") {
         result.annotation_scale = data_iterator::annotation_scale_enum::PIXEL;
@@ -156,7 +156,7 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_different_coordinate_systems
     if (annotation_scale == "normalized") {
         result.annotation_scale = data_iterator::annotation_scale_enum::NORMALIZED;
     }
-    
+
     // Setting input for Annotation Position
     if (annotation_position == "center") {
         result.annotation_position = data_iterator::annotation_position_enum::CENTER;
@@ -167,7 +167,7 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_different_coordinate_systems
     if (annotation_position == "bottom_left") {
         result.annotation_position = data_iterator::annotation_position_enum::BOTTOM_LEFT;
     }
-    
+
     // Each image has one annotation, with the label "foo" and a bounding box
     // with height and width 16. As the row index increases, the box moves to
     // the right until eventually resetting to the left and moving down.
@@ -179,7 +179,7 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_different_coordinate_systems
                                       {"width", w},
                                       {"height", h}      })},
         }));
-     
+
     result.annotations_column_name = "test_annotations";
     result.image_column_name = "test_image";
     result.data =  gl_sframe({

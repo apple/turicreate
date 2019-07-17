@@ -251,7 +251,7 @@ void object_detector::init_options(
       /* allowed_values    */ {flexible_type("pixel"), flexible_type("normalized")},
       /* allowed_overwrite */ false);
   options.create_categorical_option(
-      /* name              */ "image_origin",
+      /* name              */ "annotation_origin",
       /* description       */
       "Defines image origin: top_left or bottom_left",
       /* default_value     */ "top_left",
@@ -264,7 +264,7 @@ void object_detector::init_options(
       /* default_value     */ "center",
       /* allowed_values    */ {flexible_type("center"), flexible_type("top_left"), flexible_type("bottom_left")},
       /* allowed_overwrite */ false);
- 
+
   // Validate user-provided options.
   options.set_options(opts);
 
@@ -715,23 +715,23 @@ std::unique_ptr<data_iterator> object_detector::create_iterator(
   iterator_params.class_labels = std::move(class_labels);
   iterator_params.repeat = repeat;
 
-  std::string image_origin = read_state<flex_string>("image_origin");
+  std::string annotation_origin = read_state<flex_string>("annotation_origin");
   std::string annotation_scale = read_state<flex_string>("annotation_scale");
   std::string annotation_position = read_state<flex_string>("annotation_position");
 
   // Setting input for Image Origin
-  if (image_origin == "top_left") {
-      iterator_params.image_origin = data_iterator::image_origin_enum::TOP_LEFT;
+  if (annotation_origin == "top_left") {
+      iterator_params.annotation_origin = data_iterator::annotation_origin_enum::TOP_LEFT;
   }
-  if (image_origin == "bottom_left") {
-      iterator_params.image_origin = data_iterator::image_origin_enum::BOTTOM_LEFT;
+  else if (annotation_origin == "bottom_left") {
+      iterator_params.annotation_origin = data_iterator::annotation_origin_enum::BOTTOM_LEFT;
   }
 
   // Setting input for Annotation Scale
   if (annotation_scale == "pixel") {
       iterator_params.annotation_scale = data_iterator::annotation_scale_enum::PIXEL;
   }
-  if (annotation_scale == "normalized") {
+  else if (annotation_scale == "normalized") {
       iterator_params.annotation_scale = data_iterator::annotation_scale_enum::NORMALIZED;
   }
 
@@ -739,10 +739,10 @@ std::unique_ptr<data_iterator> object_detector::create_iterator(
   if (annotation_position == "center") {
       iterator_params.annotation_position = data_iterator::annotation_position_enum::CENTER;
   }
-  if (annotation_position == "top_left") {
+  else if (annotation_position == "top_left") {
       iterator_params.annotation_position = data_iterator::annotation_position_enum::TOP_LEFT;
   }
-  if (annotation_position == "bottom_left") {
+  else if (annotation_position == "bottom_left") {
       iterator_params.annotation_position = data_iterator::annotation_position_enum::BOTTOM_LEFT;
   }
 
