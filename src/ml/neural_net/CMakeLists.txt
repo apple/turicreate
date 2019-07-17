@@ -34,6 +34,9 @@ if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
       style_transfer/mps_style_transfer_residual_node.m
       style_transfer/mps_style_transfer_decoding_node.m
       style_transfer/mps_style_transfer_transformer_network.m
+      style_transfer/mps_style_transfer_vgg_16_block_1_node.m
+      style_transfer/mps_style_transfer_vgg_16_block_2_node.m
+      style_transfer/mps_style_transfer_vgg_16_network.m
     REQUIRES
       unity_core
       ${ACCELERATE}
