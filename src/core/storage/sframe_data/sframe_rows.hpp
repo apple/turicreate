@@ -426,7 +426,7 @@ class sframe_rows {
     }
     iterator(iterator&& other) {
       m_source = std::move(other.m_source);
-      m_row = std::move(other.m_row);
+      m_row.copy_reference(other.m_row);
     }
     iterator& operator=(const iterator& other) {
       m_source = other.m_source;
@@ -435,7 +435,7 @@ class sframe_rows {
     }
     iterator& operator=(iterator&& other) {
       m_source = std::move(other.m_source);
-      m_row = std::move(other.m_row);
+      m_row.copy_reference(other.m_row);
       return *this;
     }
     explicit iterator(sframe_rows* source, size_t current_row_number = 0):
