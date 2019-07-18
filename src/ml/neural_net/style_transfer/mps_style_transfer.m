@@ -9,23 +9,27 @@
 
 @implementation TCMPSStyleTransfer
 - (instancetype) initWithParameters:(NSDictionary<NSString *, NSData *> *)weights {
-	self = [super init];
-	if (self) {
-
-	}
-	return self;
+  self = [super init];
+  if (self) {
+    _batch_size = 6;
+    _content_loss_multiplier = [NSNumber numberWithFloat:1.0];
+    _style_loss_multiplier = [NSNumber numberWithFloat:1e-4];
+    _finetune_all_params = YES;
+    _pretrained_weights = NO;
+  }
+  return self;
 }
 
 - (NSDictionary<NSString *, NSData *> *)exportWeights {
-	// TODO: export weights
-	NSDictionary<NSString *, NSData *> *weights;
-	return weights;
+  // TODO: export weights
+  NSDictionary<NSString *, NSData *> *weights;
+  return weights;
 }
 
 - (NSDictionary<NSString *, NSData *> *)predict:(NSDictionary<NSString *, NSData *> *)inputs {
-	// TODO: export weights
-	NSDictionary<NSString *, NSData *> *weights;
-	return weights;
+  // TODO: export weights
+  NSDictionary<NSString *, NSData *> *weights;
+  return weights;
 }
 
 - (void) setLearningRate:(NSNumber *)lr {
@@ -33,9 +37,9 @@
 }
 
 - (NSDictionary<NSString *, NSData *> *) train:(NSDictionary<NSString *, NSData *> *)inputs {
-	// TODO: export weights
-	NSDictionary<NSString *, NSData *> *weights;
-	return weights;
+  // TODO: export weights
+  NSDictionary<NSString *, NSData *> *weights;
+  return weights;
 }
 
 @end
