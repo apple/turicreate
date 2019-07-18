@@ -46,7 +46,7 @@ struct general_fstream_test {
 
     void test_caching_url() {
       std::string fname = "cache://" + temp_file_path;
-      logstream(LOG_INFO) << "Test on url: " << fname  << std::endl;      
+      logstream(LOG_INFO) << "Test on url: " << fname  << std::endl;
       TS_ASSERT_EQUALS(helper_test_basic_read_write(fname), 0);
       TS_ASSERT_EQUALS(helper_test_seek(fname), 0);
 
@@ -195,7 +195,7 @@ struct general_fstream_test {
 
       delete_path(temp_file_path.c_str());
       TS_ASSERT_EQUALS(
-        (int)turi::fileio::get_file_status(temp_file_path.c_str()),
+        (int)turi::fileio::get_file_status(temp_file_path.c_str()).first,
         (int)turi::fileio::file_status::MISSING);
 
       {
@@ -215,7 +215,7 @@ struct general_fstream_test {
       }
 
       TS_ASSERT_EQUALS(
-        (int)turi::fileio::get_file_status(temp_file_path.c_str()),
+        (int)turi::fileio::get_file_status(temp_file_path.c_str()).first,
         (int)turi::fileio::file_status::REGULAR_FILE);
 
       {
@@ -227,7 +227,7 @@ struct general_fstream_test {
 
       // the file should be gone
       TS_ASSERT_EQUALS(
-        (int)turi::fileio::get_file_status(temp_file_path.c_str()),
+        (int)turi::fileio::get_file_status(temp_file_path.c_str()).first,
         (int)turi::fileio::file_status::MISSING);
     }
 };

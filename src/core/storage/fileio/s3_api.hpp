@@ -10,6 +10,7 @@
 #include <future>
 #include <memory>
 #include <vector>
+#include <core/storage/fileio/fs_utils.hpp>
 
 namespace turi {
 
@@ -130,10 +131,9 @@ list_objects_response list_directory(std::string s3_url,
  * Returns a pair of (exists, is_directory). If exists is false,
  * is_directory should be ignored
  */
-std::pair<bool, bool> is_directory(std::string s3_url,
-                                   std::string proxy = "");
-
-
+using turi::fileio::file_status;
+std::pair<file_status, list_objects_response> is_directory(
+    std::string s3_url, std::string proxy = "");
 
 /**
  * \ingroup fileio
@@ -178,7 +178,7 @@ std::string sanitize_s3_url(const std::string& url);
  *
  * Returns true on success, false on failure.
  */
-bool parse_s3url(std::string url, s3url& ret);
+bool parse_s3url(std::string url, s3url& ret, std::string& err_msg);
 
 /**
  * \ingroup fileio

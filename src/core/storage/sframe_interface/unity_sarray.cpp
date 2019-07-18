@@ -146,26 +146,28 @@ void unity_sarray::construct_from_sarray_index(std::string index) {
   clear();
   auto status = fileio::get_file_status(index);
 
-
-  if (fileio::is_web_protocol(index)) {
+  if ((status.first == fileio::file_status::FS_UNAVAILABLE ||
+      status.first == fileio::file_status::MISSING) && fileio::is_web_protocol(index)) {
     // if it is a web protocol, we cannot be certain what type of file it is.
     // HEURISTIC:
     //   assume it is a "directory" and try to load dir_archive.ini
     if (fileio::try_to_open_file(index + "/dir_archive.ini")) {
-      status = fileio::file_status::DIRECTORY;
+      status.first = fileio::file_status::DIRECTORY;
+      status.second.clear();
     } else {
-      status = fileio::file_status::REGULAR_FILE;
+      status.first = fileio::file_status::REGULAR_FILE;
+      status.second.clear();
     }
   }
 
-  if (status == fileio::file_status::MISSING) {
+  if (status.first == fileio::file_status::MISSING) {
     // missing file. fail quick
-    log_and_throw_io_failure(sanitize_url(index) + " not found.");
-  } if (status == fileio::file_status::REGULAR_FILE) {
+    log_and_throw_io_failure(sanitize_url(index) + " not found. Err: " + status.second);
+  } if (status.first == fileio::file_status::REGULAR_FILE) {
     // its a regular file, load it normally
     auto sarray_ptr = std::make_shared<sarray<flexible_type>>(index);
     construct_from_sarray(sarray_ptr);
-  } else if (status == fileio::file_status::DIRECTORY) {
+  } else if (status.first == fileio::file_status::DIRECTORY) {
     // its a directory, open the directory and verify that it contains an
     // sarray and then load it if it does
     dir_archive dirarc;
@@ -179,6 +181,10 @@ void unity_sarray::construct_from_sarray_index(std::string index) {
     auto sarray_ptr = std::make_shared<sarray<flexible_type>>(prefix + ".sidx");
     construct_from_sarray(sarray_ptr);
     dirarc.close();
+  } else if(status.first == fileio::file_status::FS_UNAVAILABLE) {
+    log_and_throw_io_failure(
+        "Cannot read from filesystem. Check log for details. Internal Error: " +
+        status.second);
   }
 }
 
@@ -312,23 +318,27 @@ void unity_sarray::construct_from_json_record_files(std::string url) {
 }
 
 void unity_sarray::construct_from_autodetect(std::string url, flex_type_enum type) {
+  clear();
   auto status = fileio::get_file_status(url);
 
-  if (fileio::is_web_protocol(url)) {
+  if ((status.first == fileio::file_status::FS_UNAVAILABLE ||
+      status.first == fileio::file_status::MISSING) && fileio::is_web_protocol(fileio::get_protocol(url))) {
     // if it is a web protocol, we cannot be certain what type of file it is.
     // HEURISTIC:
     //   assume it is a "directory" and try to load dir_archive.ini
     if (fileio::try_to_open_file(url + "/dir_archive.ini")) {
-      status = fileio::file_status::DIRECTORY;
+      status.first = fileio::file_status::DIRECTORY;
+      status.second.clear();
     } else {
-      status = fileio::file_status::REGULAR_FILE;
+      status.first = fileio::file_status::REGULAR_FILE;
+      status.second.clear();
     }
   }
 
-  if (status == fileio::file_status::MISSING) {
+  if (status.first == fileio::file_status::MISSING) {
     // missing file. might be a glob. try again using construct_from_file
     construct_from_files(url, type);
-  } else if (status == fileio::file_status::DIRECTORY) {
+  } else if (status.first == fileio::file_status::DIRECTORY) {
     // it is a directory. first see if it is a directory holding an sarray
     bool is_directory_archive = fileio::try_to_open_file(url + "/dir_archive.ini");
     if (is_directory_archive) {
@@ -336,13 +346,17 @@ void unity_sarray::construct_from_autodetect(std::string url, flex_type_enum typ
     } else {
       construct_from_files(url, type);
     }
-  } else {
+  } else if (status.first == fileio::file_status::REGULAR_FILE) {
     // its a regular file. This is the tricky case
     if (boost::ends_with(url, ".sidx")) {
       construct_from_sarray_index(url);
     } else {
       construct_from_files(url, type);
     }
+  } else if(status.first == fileio::file_status::FS_UNAVAILABLE) {
+    log_and_throw_io_failure(
+        "Cannot read from filesystem. Check log for details. Internal Error: " +
+        status.second);
   }
 }
 

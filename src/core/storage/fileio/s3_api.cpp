@@ -19,24 +19,27 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/tokenizer.hpp>
 #include <core/logging/logger.hpp>
+#include <core/logging/assertions.hpp>
 #include <core/storage/fileio/s3_api.hpp>
 #include <core/storage/fileio/fs_utils.hpp>
 #include <core/storage/fileio/general_fstream.hpp>
 #include <core/storage/fileio/get_s3_endpoint.hpp>
 #include <core/system/cppipc/server/cancel_ops.hpp>
 
+/* aws */
 #include <aws/core/Aws.h>
-#include <aws/core/auth/AWSCredentialsProvider.h>
 #include <aws/s3/S3Client.h>
 #include <aws/s3/model/ListObjectsV2Request.h>
 #include <aws/s3/model/ListObjectsV2Result.h>
 #include <aws/s3/model/DeleteObjectRequest.h>
 #include <aws/s3/model/DeleteObjectsRequest.h>
 #include <aws/s3/model/Delete.h>
+#include <aws/core/auth/AWSCredentialsProvider.h>
 
 using namespace Aws;
 using namespace Aws::S3;
 using namespace turi::fileio;
+
 namespace turi {
 namespace {
 
@@ -129,18 +132,23 @@ std::string string_from_s3url(const s3url& parsed_url) {
  *
  * Returns true on success, false on failure.
  */
-bool parse_s3url(std::string url, s3url& ret) {
+bool parse_s3url(std::string url, s3url& ret, std::string& err_msg) {
   // must begin with s3://
   if (!boost::algorithm::starts_with(url, "s3://")) {
+    err_msg = url + " doesn't start with 's3://'";
     return false;
   }
   // strip the s3://
   url = url.substr(5);
+  err_msg.clear();
 
   // Extract the access key ID and secret key
+  std::stringstream ss;
   size_t splitpos = url.find(':');
   if (splitpos == std::string::npos) {
-    logstream(LOG_WARNING) << "Cannot find AWS_ACCESS_KEY_ID in the s3 url." << std::endl;
+    ss << "Cannot find AWS_ACCESS_KEY_ID in the s3 url." << __LINE__ << " at " << __FILE__;
+    err_msg = ss.str();
+    logstream(LOG_WARNING) << err_msg << std::endl;
     return false;
   } else {
     ret.access_key_id = url.substr(0, splitpos);
@@ -149,7 +157,9 @@ bool parse_s3url(std::string url, s3url& ret) {
   // Extract the secret key
   splitpos = url.find(':');
   if (splitpos == std::string::npos) {
-    logstream(LOG_WARNING) << "Cannot find SECRET_AWS_ACCESS_KEY in the s3 url." << std::endl;
+    ss << "Cannot find SECRET_AWS_ACCESS_KEY in the s3 url." << __LINE__ << " at " << __FILE__;
+    err_msg = ss.str();
+    logstream(LOG_WARNING) << err_msg << std::endl;
     return false;
   } else {
     ret.secret_key= url.substr(0, splitpos);
@@ -163,21 +173,31 @@ bool parse_s3url(std::string url, s3url& ret) {
   tokenizer tokens(url, sep);
   tokenizer::iterator iter = tokens.begin();
   if (iter == tokens.end()) {
+    ss << "missing endpoint or bucket or object key in " << url << __FILE__ << "at" << __LINE__;
+    err_msg = ss.str();
     return false;
   }
 
-  // Parse endpoints
-  if (std::regex_match (*iter, std::regex("(.*)(com)"))) {
-    ret.endpoint = *iter;
-    ++iter;
+  // Parse endpoints; since we support private cloud settings
+  // url can be tricky
+  if (iter->empty()) {
+    err_msg = "missing endpoint in " + url;
+    return false;
   }
+
+  ret.endpoint = *iter;
+  ++iter;
 
   // Parse bucket name
   if (iter == tokens.end()) {
+    ss << "missing bucket name in " << url << " " << __FILE__ << " at " << __LINE__ ;
+    err_msg = ss.str();
     return false;
   }
   if (!bucket_name_valid(*iter)) {
-    logstream(LOG_WARNING) << "Invalid bucket name: " << *iter << std::endl;
+    ss << '\'' << url << '\'' << " has invalid bucket name: " << *iter;
+    err_msg = ss.str();
+    logstream(LOG_WARNING) << err_msg << std::endl;
     return false;
   }
   ret.bucket = *iter;
@@ -188,6 +208,7 @@ bool parse_s3url(std::string url, s3url& ret) {
     // no object key
     return true;
   }
+
   ret.object_name = *iter;
   ++iter;
   while(iter != tokens.end()) {
@@ -400,7 +421,6 @@ std::string delete_object_impl(s3url parsed_url,
     // credentials
     Aws::Auth::AWSCredentials credentials(parsed_url.access_key_id.c_str(), parsed_url.secret_key.c_str());
 
-
     // s3 client config
     Aws::Client::ClientConfiguration clientConfiguration;
     if (turi::fileio::insecure_ssl_cert_checks()) {
@@ -412,6 +432,7 @@ std::string delete_object_impl(s3url parsed_url,
     } else {
       clientConfiguration.endpointOverride = parsed_url.endpoint.c_str();
     }
+
     clientConfiguration.proxyHost = proxy.c_str();
     clientConfiguration.requestTimeoutMs = 5 * 60000;
     clientConfiguration.connectTimeoutMs = 20000;
@@ -428,9 +449,10 @@ std::string delete_object_impl(s3url parsed_url,
     if(!outcome.IsSuccess())
     {
         std::stringstream stream;
-        stream << "Error while deleting object, exception: " <<
-                outcome.GetError().GetExceptionName() <<
-                ", msg: " << outcome.GetError().GetMessage() << std::endl;
+        stream << "Error while deleting object, exception: "
+               << outcome.GetError().GetExceptionName()
+               << ", msg: " << outcome.GetError().GetMessage() << ". "
+               << __FILE__ << ":" << __LINE__ << std::endl;
         ret = stream.str();
     }
 
@@ -543,9 +565,10 @@ list_objects_response list_objects(std::string url,
                                    std::string proxy) {
   s3url parsed_url;
   list_objects_response ret;
-  bool success = parse_s3url(url, parsed_url);
+  std::string err_msg;
+  bool success = parse_s3url(url, parsed_url, err_msg);
   if (!success) {
-    ret.error = "Malformed URL";
+    ret.error = err_msg;
     return ret;
   }
 
@@ -557,62 +580,68 @@ list_objects_response list_objects(std::string url,
     ++current_endpoint;
   } while (boost::algorithm::icontains(ret.error, "PermanentRedirect") &&
          current_endpoint < endpoints.size());
+
   return ret;
 }
 
 
-std::pair<bool, bool> is_directory(std::string url,
-                                   std::string proxy) {
+std::pair<file_status, list_objects_response>
+is_directory(std::string url, std::string proxy) {
   s3url parsed_url;
   list_objects_response ret;
-  bool success = parse_s3url(url, parsed_url);
+  std::string err_msg;
+  bool success = parse_s3url(url, parsed_url, err_msg);
   if (!success) {
-    return {false, false};
+    ret.error = std::move(err_msg);
+    return {file_status::MISSING, ret};
   }
   // if there are no "/"'s it is just a top level bucket
 
   list_objects_response response = list_objects(url, proxy);
   // an error occured
   if (!response.error.empty()) {
-    return {false, false};
+    return {file_status::MISSING, response};
   }
+
   // its a top level bucket name
   if (parsed_url.object_name.empty()) {
-    return {true, true};
+    return {file_status::DIRECTORY, response};
   }
+
   // is a directory
   for (auto dir: response.directories) {
     if (dir == url) {
-      return {true, true};
+      return {file_status::DIRECTORY, response};
     }
   }
+
   // is an object
   for (auto object: response.objects) {
     if (object == url) {
-      return {true, false};
+      return {file_status::REGULAR_FILE, response};
     }
   }
+
   // is not found
-  return {false, false};
+  return {file_status::MISSING, response};
 }
 
-
-list_objects_response list_directory(std::string url,
-                                     std::string proxy) {
+list_objects_response list_directory(std::string url, std::string proxy) {
   s3url parsed_url;
   list_objects_response ret;
-  bool success = parse_s3url(url, parsed_url);
+  std::string err_msg;
+  bool success = parse_s3url(url, parsed_url, err_msg);
   if (!success) {
-    ret.error = "Malformed URL";
+    ret.error = err_msg;
     return ret;
   }
   // normalize the URL so it doesn't matter if you put strange "/"s at the end
   url = string_from_s3url(parsed_url);
-  std::pair<bool, bool> isdir = is_directory(url, proxy);
+  auto isdir = is_directory(url, proxy);
   // if not found.
-  if (isdir.first == false) return ret;
+  if (isdir.first == file_status::MISSING) return isdir.second;
   // if its a directory
-  if (isdir.second) {
+  if (isdir.first == file_status::DIRECTORY) {
     // if there are no "/"'s it is a top level bucket and we don't need
     // to mess with prefixes to get the contents
     if (!parsed_url.object_name.empty()) {
@@ -630,6 +659,7 @@ list_objects_response list_directory(std::string url,
   } else {
     ret.objects.push_back(url);
   }
+
   return ret;
 }
 
@@ -637,41 +667,42 @@ list_objects_response list_directory(std::string url,
 std::string delete_object(std::string url,
                           std::string proxy) {
   s3url parsed_url;
-  std::string ret;
-  bool success = parse_s3url(url, parsed_url);
+  std::string err_msg;
+
+  bool success = parse_s3url(url, parsed_url, err_msg);
   if (!success) {
-    ret = "Malformed URL";
-    return ret;
+    return err_msg;
   }
   // try all endpoints
   size_t current_endpoint = 0;
   auto endpoints = get_s3_endpoints();
   do {
-    ret = delete_object_impl(parsed_url, proxy, endpoints[current_endpoint]);
+    err_msg = delete_object_impl(parsed_url, proxy, endpoints[current_endpoint]);
     ++current_endpoint;
-  } while (boost::algorithm::icontains(ret , "PermanentRedirect") &&
+  } while (boost::algorithm::icontains(err_msg , "PermanentRedirect") &&
          current_endpoint < endpoints.size());
-  return ret;
+
+  return err_msg;
 }
 
 std::string delete_prefix(std::string url,
                           std::string proxy) {
   s3url parsed_url;
-  std::string ret;
-  bool success = parse_s3url(url, parsed_url);
+  std::string err_msg;
+  bool success = parse_s3url(url, parsed_url, err_msg);
   if (!success) {
-    ret = "Malformed URL";
-    return ret;
+    return err_msg;
   }
   // try all endpoints
   size_t current_endpoint = 0;
   auto endpoints = get_s3_endpoints();
   do {
-    ret = delete_prefix_impl(parsed_url, proxy, endpoints[current_endpoint]);
+    err_msg = delete_prefix_impl(parsed_url, proxy, endpoints[current_endpoint]);
     ++current_endpoint;
-  } while (boost::algorithm::icontains(ret , "PermanentRedirect") &&
+  } while (boost::algorithm::icontains(err_msg, "PermanentRedirect") &&
          current_endpoint < endpoints.size());
-  return ret;
+
+  return err_msg;
 }
 
 
@@ -703,7 +734,10 @@ std::string sanitize_s3_url_aggressive(std::string url) {
 
 std::string sanitize_s3_url(const std::string& url) {
   s3url parsed_url;
-  if ( parse_s3url(url, parsed_url) ) {
+  std::string err_msg;
+  auto ret = parse_s3url(url, parsed_url, err_msg);
+  DASSERT_EQ(ret, err_msg.empty());
+  if (err_msg.empty()) {
     if (parsed_url.endpoint.empty())
       return "s3://" + parsed_url.bucket + "/" + parsed_url.object_name;
     else
@@ -722,7 +756,7 @@ std::string get_s3_error_code(const std::string& msg) {
   // User friendly error codes, return immediately.
   for (const auto& ec : errorcodes) {
     if (boost::algorithm::icontains(msg, ec)) {
-      return ec;
+      return msg;
     }
   }
 
@@ -742,7 +776,7 @@ std::string get_s3_file_last_modified(const std::string& url){
   if (response.error.empty() && response.objects_last_modified.size() == 1) {
     return response.objects_last_modified[0];
   } else if (!response.error.empty()) {
-    logstream(LOG_WARNING) << "List object error: " << response.error << std::endl;
+    logstream(LOG_WARNING) << "List object error: " << response.error << " " << __FILE__ << " at " << __LINE__ << std::endl;
     throw(response.error);
   }
   return "";

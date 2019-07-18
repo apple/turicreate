@@ -18,12 +18,12 @@ void set_curl_options(void* ecurl) {
   using turi::fileio::get_alternative_ssl_cert_file;
   using turi::fileio::insecure_ssl_cert_checks;
   if (!get_alternative_ssl_cert_dir().empty()) {
-    if (get_file_status(get_alternative_ssl_cert_file()) == file_status::DIRECTORY) {
+    if (get_file_status(get_alternative_ssl_cert_file()).first == file_status::DIRECTORY) {
       ASSERT_EQ(curl_easy_setopt((CURL*)ecurl, CURLOPT_CAPATH, get_alternative_ssl_cert_dir().c_str()), CURLE_OK);
     }
   }
   if (!get_alternative_ssl_cert_file().empty()) {
-    if (get_file_status(get_alternative_ssl_cert_file()) == file_status::REGULAR_FILE) {
+    if (get_file_status(get_alternative_ssl_cert_file()).first == file_status::REGULAR_FILE) {
       ASSERT_EQ(curl_easy_setopt((CURL*)ecurl, CURLOPT_CAINFO, get_alternative_ssl_cert_file().c_str()), CURLE_OK);
     }
   }
