@@ -324,14 +324,17 @@
 
 #endif
 
-#define log_and_throw(message)                                      \
-  do {                                                              \
-    auto throw_error = [&]() GL_COLD_NOINLINE_ERROR {  \
-      logstream(LOG_ERROR) << (message) << std::endl;               \
-      throw(std::string(message));                                  \
-    };                                                              \
-    throw_error();                                                  \
-  } while(0)
+#define log_and_throw(message)                                            \
+  do {                                                                    \
+    auto throw_error = [&]() GL_COLD_NOINLINE_ERROR {                     \
+      std::stringstream _turi_ss;                                         \
+      _turi_ss << (message) << ",from " << __FILE__ << " at " << __LINE__ \
+               << std::endl;                                              \
+      logstream(LOG_ERROR) << _turi_ss.str();                             \
+      throw(std::runtime_error(_turi_ss.str()));                          \
+    };                                                                    \
+    throw_error();                                                        \
+  } while (0)
 
 #define std_log_and_throw(key_type, message)          \
   do {                                                \
