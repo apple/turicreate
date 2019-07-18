@@ -117,8 +117,8 @@ std::vector<image_annotation> parse_annotations(
     // values.
     if (has_label && has_x && has_y && annotation.bounding_box.area() > 0.f) {
 
-      float annotation_image_height;
-      float annotation_image_width;
+      float annotation_image_height = 0;
+      float annotation_image_width = 0;
       switch (annotation_scale) {
 
           case annotation_scale_enum::PIXEL:
