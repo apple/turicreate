@@ -41,7 +41,7 @@ $PIP install --upgrade "pip>=8.1"
 # numba (a dependency of resampy) doesn't fail on Python 3.5. This can
 # be removed once numba publishes a Python 3.5 wheel for their most
 # recent version.
-$PIP install numpy==1.11.1
+$PIP install numpy==1.16.4
 
 $PIP install -r scripts/requirements.txt
 
