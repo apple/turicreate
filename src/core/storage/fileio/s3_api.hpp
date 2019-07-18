@@ -35,6 +35,12 @@ struct s3url {
            object_name == other.object_name &&
            endpoint == other.endpoint;
   }
+
+  friend std::ostream& operator<<(std::ostream& os, const s3url& url) {
+    os << "bucket:" << url.bucket << ",object_name:" << url.object_name
+       << ",endpoint:" << url.endpoint;
+    return os;
+  }
 };
 
 
@@ -203,8 +209,6 @@ void set_download_timeout(long timeout);
  * If the message does not contain error code, return the message itself.
  */
 std::string get_s3_error_code(const std::string& msg);
-
-
 } // namespace turi
 
 

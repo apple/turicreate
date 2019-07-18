@@ -146,7 +146,7 @@ EXPORT std::pair<file_status, std::string> get_file_status(const std::string& pa
       // get the HDFS object
       auto& hdfs = turi::hdfs::get_hdfs(host, std::stoi(port));
       // fail we we are unable to construct the HDFS object
-      if (!hdfs.good()) return std::make_pair(file_status::FS_UNAVAILABLE, "unable to construct through" + path);
+      if (!hdfs.good()) return std::make_pair(file_status::FS_UNAVAILABLE, "unable to construct through:" + path);
       // we are good. Use the HDFS accessors to figure out what to return
       if (!hdfs.path_exists(hdfspath)) return {file_status::MISSING, "hdfs path doesn't exist in " + hdfspath};
       else if (hdfs.is_directory(hdfspath)) return {file_status::DIRECTORY, ""};

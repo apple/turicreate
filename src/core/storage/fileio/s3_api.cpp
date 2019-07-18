@@ -146,7 +146,7 @@ bool parse_s3url(std::string url, s3url& ret, std::string& err_msg) {
   std::stringstream ss;
   size_t splitpos = url.find(':');
   if (splitpos == std::string::npos) {
-    ss << "Cannot find AWS_ACCESS_KEY_ID in the s3 url." << __LINE__ << " at " << __FILE__;
+    ss << "Cannot find AWS_ACCESS_KEY_ID in the s3 url." << __FILE__ << " at " << __LINE__;
     err_msg = ss.str();
     logstream(LOG_WARNING) << err_msg << std::endl;
     return false;
@@ -178,24 +178,22 @@ bool parse_s3url(std::string url, s3url& ret, std::string& err_msg) {
     return false;
   }
 
+  auto original_url = sanitize_url(url);
   // Parse endpoints; since we support private cloud settings
-  // url can be tricky
-  if (iter->empty()) {
-    err_msg = "missing endpoint in " + url;
-    return false;
+  // url can be tricky; region (.*)com is not sufficient
+  if (std::regex_match(*iter, std::regex("(.*)\\.(com|net)"))) {
+    ret.endpoint = *iter;
+    ++iter;
   }
-
-  ret.endpoint = *iter;
-  ++iter;
 
   // Parse bucket name
   if (iter == tokens.end()) {
-    ss << "missing bucket name in " << url << " " << __FILE__ << " at " << __LINE__ ;
+    ss << "missing bucket name in " << original_url << " in " << __FILE__ << " at " << __LINE__ ;
     err_msg = ss.str();
     return false;
   }
   if (!bucket_name_valid(*iter)) {
-    ss << '\'' << url << '\'' << " has invalid bucket name: " << *iter;
+    ss << '\'' << original_url << '\'' << " has invalid bucket name: " << *iter;
     err_msg = ss.str();
     logstream(LOG_WARNING) << err_msg << std::endl;
     return false;
@@ -384,11 +382,15 @@ list_objects_response list_objects_impl(s3url parsed_url,
         }
         else
         {
-            std::stringstream stream;
-            stream << "Error while listing Objects, exception: " <<
-                    outcome.GetError().GetExceptionName() <<
-                    ", msg: " << outcome.GetError().GetMessage() << std::endl;
-            ret.error = stream.str();
+            std::stringstream ss;
+            ss << '(' << parsed_url
+               << ".proxy:" << clientConfiguration.proxyHost << ".region:"
+               << clientConfiguration.region << ')'
+               << " Error while listing Objects, exception: "
+               << outcome.GetError().GetExceptionName()
+               << ".Error msg from aws: " << outcome.GetError().GetMessage()
+               << " in " << __FILE__ << ":" << __LINE__ << std::endl;
+            ret.error = ss.str();
         }
 
     } while (moreResults);
@@ -448,12 +450,13 @@ std::string delete_object_impl(s3url parsed_url,
     auto outcome = client.DeleteObject(request);
     if(!outcome.IsSuccess())
     {
-        std::stringstream stream;
-        stream << "Error while deleting object, exception: "
-               << outcome.GetError().GetExceptionName()
-               << ", msg: " << outcome.GetError().GetMessage() << ". "
-               << __FILE__ << ":" << __LINE__ << std::endl;
-        ret = stream.str();
+      std::stringstream ss;
+      ss << '(' << parsed_url << ".proxy:" << clientConfiguration.proxyHost
+         << ".region:" << clientConfiguration.region << ')'
+         << " Error while deleting Objects, exception: "
+         << outcome.GetError().GetExceptionName()
+         << ".Error msg from aws: " << outcome.GetError().GetMessage() << " in "
+         << __FILE__ << ":" << __LINE__ << std::endl;
     }
 
     Aws::ShutdownAPI(options);
@@ -531,11 +534,15 @@ std::string delete_prefix_impl(s3url parsed_url,
         }
         else
         {
-            std::stringstream stream;
-            stream << "Error while listing Objects, exception: " <<
-                    outcome.GetError().GetExceptionName() <<
-                    ", msg: " << outcome.GetError().GetMessage() << std::endl;
-            ret = stream.str();
+            std::stringstream ss;
+            ss << '(' << parsed_url
+               << ".proxy:" << clientConfiguration.proxyHost
+               << ".region:" << clientConfiguration.region << ')'
+               << " Error while listing Objects, exception: "
+               << outcome.GetError().GetExceptionName()
+               << ".Error msg from aws: " << outcome.GetError().GetMessage()
+               << " in " << __FILE__ << ":" << __LINE__ << std::endl;
+            ret = ss.str();
         }
 
     } while (moreResults);
@@ -549,11 +556,14 @@ std::string delete_prefix_impl(s3url parsed_url,
         auto outcome = client.DeleteObjects(delRequest);
         if (!outcome.IsSuccess())
         {
-            std::stringstream stream;
-            stream << "Error while deleting Objects, exception: " <<
-                    outcome.GetError().GetExceptionName() <<
-                    ", msg: " << outcome.GetError().GetMessage() << std::endl;
-            ret = stream.str();
+          std::stringstream ss;
+          ss << '(' << parsed_url << ",proxy:" << clientConfiguration.proxyHost
+             << ".region:" << clientConfiguration.region << ')'
+             << " Error while deleting Objects, exception: "
+             << outcome.GetError().GetExceptionName()
+             << ".Error msg from aws: " << outcome.GetError().GetMessage()
+             << " in " << __FILE__ << ":" << __LINE__ << std::endl;
+          ret = ss.str();
         }
     }
 
