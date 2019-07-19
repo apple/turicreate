@@ -87,11 +87,11 @@ size_t count_correct_predictions(size_t num_classes, const shared_float_array& o
   return num_correct_predictions;
 }
 
-float cumulative_chunk_accuracy(size_t prediction_window, size_t num_classes,
-                                const shared_float_array &output,
-                                const data_iterator::batch &batch) {
-
-  float cumulative_per_batch_accuracy = 0.f;
+std::tuple<size_t, size_t> cumulative_chunk_accuracy(
+    size_t prediction_window, size_t num_classes,
+    const shared_float_array& output, const data_iterator::batch& batch) {
+  size_t num_correct = 0;
+  size_t num_samples = 0;
 
   for (size_t i = 0; i < batch.batch_info.size(); ++i){
 
@@ -99,11 +99,11 @@ float cumulative_chunk_accuracy(size_t prediction_window, size_t num_classes,
     const shared_float_array& label_chunk = batch.labels_per_row[i];
     data_iterator::batch::chunk_info info = batch.batch_info[i];
     size_t num_correct_predictions = count_correct_predictions(num_classes, output_chunk, label_chunk, info.num_samples, prediction_window);
-    cumulative_per_batch_accuracy += static_cast<float>(num_correct_predictions) / info.num_samples ;
-
+    num_correct += num_correct_predictions;
+    num_samples += info.num_samples;
   }
 
-  return cumulative_per_batch_accuracy;
+  return std::make_tuple(num_correct, num_samples);
 }
 
 struct result {
@@ -232,7 +232,8 @@ std::tuple<float, float> activity_classifier::compute_validation_metrics(
 
   float cumulative_val_loss = 0.f;
   size_t val_size = 0;
-  float cumulative_val_accuracy = 0.f;
+  size_t val_num_correct = 0;
+  size_t val_num_samples = 0;
   validation_data_iterator_->reset();
 
   // To support double buffering, use a queue of pending inference results.
@@ -246,8 +247,13 @@ std::tuple<float, float> activity_classifier::compute_validation_metrics(
       result batch = pending_batches.front();
       pending_batches.pop();
 
-      cumulative_val_accuracy += cumulative_chunk_accuracy(prediction_window, num_classes, batch.output_info, batch.data_info);
-
+      size_t batch_num_correct = 0;
+      size_t batch_num_samples = 0;
+      std::tie(batch_num_correct, batch_num_samples) =
+          cumulative_chunk_accuracy(prediction_window, num_classes,
+                                    batch.output_info, batch.data_info);
+      val_num_correct += batch_num_correct;
+      val_num_samples += batch_num_samples;
       float val_loss = std::accumulate(batch.loss_info.data(), batch.loss_info.data() + batch.loss_info.size(),
                                      0.f, std::plus<float>());
       cumulative_val_loss += val_loss;
@@ -282,8 +288,8 @@ std::tuple<float, float> activity_classifier::compute_validation_metrics(
   }
   // Process all remaining batches.
   pop_until_size(0);
-
-  float average_val_accuracy = cumulative_val_accuracy / val_size;
+  float average_val_accuracy =
+      static_cast<float>(val_num_correct) / val_num_samples;
   float average_val_loss = cumulative_val_loss / val_size;
 
   return std::make_tuple(average_val_accuracy, average_val_loss);
@@ -859,8 +865,9 @@ void activity_classifier::perform_training_iteration() {
   const size_t iteration_idx = read_state<flex_int>("training_iterations");
 
   float cumulative_batch_loss = 0.f;
-  float cumulative_batch_accuracy = 0.f;
   size_t num_batches = 0;
+  size_t train_num_correct = 0;
+  size_t train_num_samples = 0;
   size_t num_classes = read_state<size_t>("num_classes");
   size_t prediction_window = read_state<size_t>("prediction_window");
 
@@ -876,8 +883,13 @@ void activity_classifier::perform_training_iteration() {
       result batch = pending_batches.front();
       pending_batches.pop();
 
-      cumulative_batch_accuracy += cumulative_chunk_accuracy(prediction_window, num_classes, batch.output_info,
-                                    batch.data_info ) / batch.data_info.batch_info.size();
+      size_t batch_num_correct = 0;
+      size_t batch_num_samples = 0;
+      std::tie(batch_num_correct, batch_num_samples) =
+          cumulative_chunk_accuracy(prediction_window, num_classes,
+                                    batch.output_info, batch.data_info);
+      train_num_correct += batch_num_correct;
+      train_num_samples += batch_num_samples;
 
       float batch_loss = std::accumulate(batch.loss_info.data(),
                                          batch.loss_info.data() + batch.loss_info.size(),
@@ -914,9 +926,9 @@ void activity_classifier::perform_training_iteration() {
   }
   // Process all remaining batches.
   pop_until_size(0);
-
   float average_batch_loss = cumulative_batch_loss / num_batches;
-  float average_batch_accuracy = cumulative_batch_accuracy / num_batches;
+  float average_batch_accuracy =
+      static_cast<float>(train_num_correct) / train_num_samples;
   float average_val_accuracy;
   float average_val_loss;
 
