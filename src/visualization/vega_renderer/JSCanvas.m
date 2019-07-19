@@ -281,8 +281,48 @@
                 if ([fontProperties.fontWeight isEqualToString:@"bold"]) {
                     font = [fontManager convertFont:font toHaveTrait:NSBoldFontMask];
                     assert(font != nil);
+                } else if (fontProperties.fontWeight.length == 3 &&
+                           [[fontProperties.fontWeight substringFromIndex:1] isEqualToString:@"00"]) {
+                    NSString *weightString = [fontProperties.fontWeight substringToIndex:1];
+                    NSInteger weightInt = weightString.intValue;
+                    NSFontWeight weight = NSFontWeightRegular;
+                    switch (weightInt) {
+                        case 1:
+                            weight = NSFontWeightUltraLight;
+                            break;
+                        case 2:
+                            weight = NSFontWeightThin;
+                            break;
+                        case 3:
+                            weight = NSFontWeightLight;
+                            break;
+                        case 4:
+                            weight = NSFontWeightRegular;
+                            break;
+                        case 5:
+                            weight = NSFontWeightMedium;
+                            break;
+                        case 6:
+                            weight = NSFontWeightSemibold;
+                            break;
+                        case 7:
+                            weight = NSFontWeightBold;
+                            break;
+                        case 8:
+                            weight = NSFontWeightHeavy;
+                            break;
+                        case 9:
+                            weight = NSFontWeightBlack;
+                            break;
+                        default:
+                            NSLog(@"Encountered unexpected font weight %@", fontProperties.fontWeight);
+                            assert(false);
+                    }
+                    font = [fontManager fontWithFamily:font.familyName traits:[fontManager traitsOfFont:font] weight:weight size:font.pointSize];
+                    assert(font != nil);
                 } else {
                     // unexpected font weight
+                    NSLog(@"Encountered unexpected font weight %@", fontProperties.fontWeight);
                     assert(false);
                 }
             }
@@ -627,6 +667,19 @@
     NSArray *args = [JSContext currentArguments];
     (void)args;
     assert(args != nil);
+
+    // TODO - this seems like a giant hack.
+    // It appears Vega 5.4.0 is calling the `fill([path [, fillRule]])` API
+    // instead of `fillRect(x,y,width,height)` and expecting the same behavior.
+    // Passing through that call instead of failing here.
+    if (args.count == 4) {
+        double x = ((NSNumber *)args[0]).doubleValue;
+        double y = ((NSNumber *)args[1]).doubleValue;
+        double width = ((NSNumber *)args[2]).doubleValue;
+        double height = ((NSNumber *)args[3]).doubleValue;
+        [self fillRectWithX:x y:y width:width height:height];
+        return;
+    }
     assert(args.count == 0);
     CGPathRef currentPath = CGContextCopyPath(self.context);
     if ([_fillStyle isKindOfClass:VegaCGLinearGradient.class]) {
