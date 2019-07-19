@@ -5,6 +5,7 @@
  */
 #import "VegaRenderer.h"
 #import "JSCanvas.h"
+#import "JSDocument.h"
 
 #import <AppKit/AppKit.h>
 #import <JavaScriptCore/JavaScriptCore.h>
@@ -67,33 +68,20 @@
             NSLog(@"JS console error: %@", message);
             assert(false);
         };
-
+        
         // set up error handling
         self.context.exceptionHandler = ^(JSContext *context, JSValue *exception) {
             NSLog(@"Unhandled exception: %@", [exception toString]);
             NSLog(@"In context: %@", [context debugDescription]);
+            NSLog(@"Stacktrace: %@", [exception objectForKeyedSubscript:@"stack"]);
             assert(false);
         };
 
-        JSValue *require = [JSValue valueWithObject:^(NSString *module) {
-            if ([module isEqualToString:@"canvas"]) {
-                JSValue *canvas2 = [JSValue valueWithObject:^(double width, double height) {
-                    weakSelf.vegaCanvas = [[VegaCGCanvas alloc] initWithWidth:width height:height context:parentContext];
-                    return weakSelf.vegaCanvas;
-                } inContext:weakSelf.context];
-                canvas2[@"Image"] = [JSValue valueWithObject:^() {
-                    assert([[JSContext currentArguments] count] == 0);
-                    return [[VegaCGImage alloc] init];
-                } inContext:weakSelf.context];
-                return canvas2;
-            }
+        VegaCGCanvas* vegaCanvas = [[VegaCGCanvas alloc] initWithContext:parentContext];
+        weakSelf.vegaCanvas = vegaCanvas;
 
-            // fall through if we don't know what module it is
-            NSLog(@"Called require with unknown module %@", module);
-            return [JSValue valueWithNullInContext:weakSelf.context];
-        } inContext:self.context];
-
-        [self.context setObject:require forKeyedSubscript:@"require"];
+        VegaJSDocument* document = [[VegaJSDocument alloc] initWithCanvas:vegaCanvas];
+        self.context[@"document"] = document;
 
         [self.context evaluateScript:[VegaRenderer vegaJS]];
         [self.context evaluateScript:[VegaRenderer vegaliteJS]];

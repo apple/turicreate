@@ -17,6 +17,8 @@
 #ifndef Canvas_h
 #define Canvas_h
 
+#import "VegaHTMLElement.h"
+
 #import <CoreGraphics/CoreGraphics.h>
 #import <Foundation/Foundation.h>
 #import <JavaScriptCore/JavaScriptCore.h>
@@ -172,29 +174,22 @@ JSExportAs(translate,
 @property CGLayerRef layer;
 @property double width;
 @property double height;
-- (instancetype)initWithWidth:(double)width
-                       height:(double)height
-                      context:(CGContextRef)parentContext;
+- (instancetype)initWithContext:(CGContextRef)parentContext;
 - (void)dealloc;
 - (NSDictionary<NSAttributedStringKey, id> *)textAttributes;
 + (CGAffineTransform)flipYAxisWithHeight:(double)height;
 + (CGColorRef)newColorFromString:(NSString *)string;
 @end
 
-@protocol VegaCGCanvasInterface <JSExport>
+@protocol VegaCGCanvasInterface <JSExport, VegaHTMLElement>
 - (VegaCGContext *)getContext:(NSString *)type;
 @property double width;
 @property double height;
 @end
 
 @interface VegaCGCanvas : NSObject<VegaCGCanvasInterface>
-
 @property VegaCGContext *context;
-
-- (instancetype)initWithWidth:(double)width
-                       height:(double)height
-                      context:(CGContextRef)parentContext;
-
+- (instancetype)initWithContext:(CGContextRef)parentContext;
 @end
 
 

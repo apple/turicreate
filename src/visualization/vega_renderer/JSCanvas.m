@@ -172,18 +172,21 @@
 }
 
 - (void)resizeWithWidth:(double)width height:(double)height {
-    if (width > 0 && height > 0) {
+    // This is a hack to ensure that neither width or height is ever zero as this causes
+    // CGLayerCreateWithContext(...) to crash. This can occur when width and height are
+    // set one at a time in subsequent calls. A more faithful rendering context implementation
+    // would wait until both are set before creating the layer.
+    width = MAX(1, width);
+    height = MAX(1, height);
 
-        // Because we are about to create a new layer, set up other relevant
-        // instance properties so they are in the right state.
-        _currentTransform = CGAffineTransformIdentity;
-        assert(self != nil);
-        CGLayerRef layer = CGLayerCreateWithContext(_parentContext, CGSizeMake(width, height), nil);
-        self.layer = layer;
-        CGLayerRelease(layer);
-        CGContextConcatCTM(self.context, [self.class flipYAxisWithHeight:height]);
-
-    }
+    // Because we are about to create a new layer, set up other relevant
+    // instance properties so they are in the right state.
+    _currentTransform = CGAffineTransformIdentity;
+    assert(self != nil);
+    CGLayerRef layer = CGLayerCreateWithContext(_parentContext, CGSizeMake(width, height), nil);
+    self.layer = layer;
+    CGLayerRelease(layer);
+    CGContextConcatCTM(self.context, [self.class flipYAxisWithHeight:height]);
 }
 
 - (double)width {
@@ -202,14 +205,10 @@
     [self resizeWithWidth:self.width height:height];
 }
 
-- (instancetype)initWithWidth:(double)width
-                       height:(double)height
-                      context:(CGContextRef)parentContext {
+- (instancetype)initWithContext:(CGContextRef)parentContext {
     self = [super init];
     _layer = nil;
     _parentContext = parentContext;
-    [self resizeWithWidth:width height:height];
-    assert(CFGetRetainCount(_layer) == 1);
     return self;
 }
 
@@ -631,10 +630,6 @@
 }
 
 - (void)fill {
-    NSArray *args = [JSContext currentArguments];
-    (void)args;
-    assert(args != nil);
-    assert(args.count == 0);
     CGPathRef currentPath = CGContextCopyPath(self.context);
     if ([_fillStyle isKindOfClass:VegaCGLinearGradient.class]) {
         VegaCGLinearGradient *gradient = _fillStyle;
@@ -658,11 +653,9 @@
 
 @implementation VegaCGCanvas
 
-- (instancetype)initWithWidth:(double)width
-                       height:(double)height
-                      context:(CGContextRef)parentContext {
+- (instancetype)initWithContext:(CGContextRef)parentContext {
     self = [super init];
-    self.context = [[VegaCGContext alloc] initWithWidth:width height:height context:parentContext];
+    self.context = [[VegaCGContext alloc] initWithContext:parentContext];
     return self;
 }
 
