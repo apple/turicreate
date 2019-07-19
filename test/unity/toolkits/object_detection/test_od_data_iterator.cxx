@@ -117,6 +117,122 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator) {
   batch = data_source.next_batch(BATCH_SIZE);
   TS_ASSERT_EQUALS(batch.size(), BATCH_SIZE);
   assert_batch(batch, 0);
+
+}
+
+BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_different_coordinate_systems) {
+
+  auto create_data_opts = [](const std::string annotation_origin,
+                         const std::string annotation_scale,
+                         const std::string annotation_position,
+                         float x, float y, float w, float h) {
+
+    data_iterator::parameters result;
+
+    flex_list images(1);
+    flex_list annotations(1);
+    std::vector<unsigned char> buffer(IMAGE_HEIGHT * IMAGE_WIDTH * 3);
+
+    // Each pixel has R, G, and B value equal to the row index (modulo 256).
+    std::fill(buffer.begin(), buffer.end(),
+              static_cast<unsigned char>(0 % 256));
+    images[0] = flex_image(reinterpret_cast<char*>(buffer.data()), IMAGE_HEIGHT,
+                           IMAGE_WIDTH, 3, buffer.size(),
+                           IMAGE_TYPE_CURRENT_VERSION,
+                           static_cast<int>(Format::RAW_ARRAY));
+
+    // Setting input for Image Origin
+    if (annotation_origin == "top_left") {
+        result.annotation_origin = data_iterator::annotation_origin_enum::TOP_LEFT;
+    }
+    if (annotation_origin == "bottom_left") {
+        result.annotation_origin = data_iterator::annotation_origin_enum::BOTTOM_LEFT;
+    }
+
+    // Setting input for Annotation Scale
+    if (annotation_scale == "pixel") {
+        result.annotation_scale = data_iterator::annotation_scale_enum::PIXEL;
+    }
+    if (annotation_scale == "normalized") {
+        result.annotation_scale = data_iterator::annotation_scale_enum::NORMALIZED;
+    }
+
+    // Setting input for Annotation Position
+    if (annotation_position == "center") {
+        result.annotation_position = data_iterator::annotation_position_enum::CENTER;
+    }
+    if (annotation_position == "top_left") {
+        result.annotation_position = data_iterator::annotation_position_enum::TOP_LEFT;
+    }
+    if (annotation_position == "bottom_left") {
+        result.annotation_position = data_iterator::annotation_position_enum::BOTTOM_LEFT;
+    }
+
+    // Each image has one annotation, with the label "foo" and a bounding box
+    // with height and width 16. As the row index increases, the box moves to
+    // the right until eventually resetting to the left and moving down.
+    annotations[0] = flex_list();
+    annotations[0].push_back(flex_dict({
+          {"label", "foo"},
+          {"coordinates", flex_dict({ {"x", x},
+                                      {"y", y},
+                                      {"width", w},
+                                      {"height", h}      })},
+        }));
+
+    result.annotations_column_name = "test_annotations";
+    result.image_column_name = "test_image";
+    result.data =  gl_sframe({
+        {"test_image", gl_sarray(images)},
+        {"test_annotations", gl_sarray(annotations)},
+    });
+
+    result.shuffle = false;
+
+    simple_data_iterator data_source(result);
+    std::vector<labeled_image> batch = data_source.next_batch(1);
+    const labeled_image& example = batch[0];
+
+    return example;
+
+  };
+
+  // Case 1 | Input: ('top_left', 'pixel', 'center') → Output: ('top_left', 'normalized', 'top_left')
+  const labeled_image& case1_example = create_data_opts("top_left", "pixel", "center", 28, 18, 16, 16);
+  TS_ASSERT_EQUALS(case1_example.annotations[0].bounding_box,
+                      image_box(static_cast<float>(20) / IMAGE_WIDTH,
+                                 static_cast<float>(10) / IMAGE_HEIGHT,
+                                 16.f / IMAGE_WIDTH,
+                                 16.f / IMAGE_HEIGHT
+                                 ));
+
+  // Case 2 | Input: ('bottom_left', 'pixel', 'bottom_left') → Output: ('top_left', 'normalized', 'top_left')
+  const labeled_image& case2_example = create_data_opts("bottom_left", "pixel", "bottom_left", 20, 38, 16, 16);
+  TS_ASSERT_EQUALS(case2_example.annotations[0].bounding_box,
+                      image_box(static_cast<float>(20) / IMAGE_WIDTH,
+                                 static_cast<float>(10) / IMAGE_HEIGHT,
+                                 16.f / IMAGE_WIDTH,
+                                 16.f / IMAGE_HEIGHT
+                                 ));
+
+  // Case 3 | Input: ('bottom_left', 'normalized', 'bottom_left') → Output: ('top_left', 'normalized', 'top_left')
+  const labeled_image& case3_example = create_data_opts("bottom_left", "normalized", "bottom_left", 20./IMAGE_WIDTH, 38./IMAGE_HEIGHT, 16./IMAGE_WIDTH, 16./IMAGE_HEIGHT);
+  TS_ASSERT_EQUALS(case3_example.annotations[0].bounding_box,
+                      image_box(static_cast<float>(20) / IMAGE_WIDTH,
+                                 static_cast<float>(10) / IMAGE_HEIGHT,
+                                 16.f / IMAGE_WIDTH,
+                                 16.f / IMAGE_HEIGHT
+                                 ));
+
+  // Case 4 | Input: ('top_left', 'pixel', 'top_left') → Output: ('top_left', 'normalized', 'top_left')
+  const labeled_image& case4_example = create_data_opts("top_left", "pixel", "top_left", 20, 10, 16, 16);
+  TS_ASSERT_EQUALS(case4_example.annotations[0].bounding_box,
+                      image_box(static_cast<float>(20) / IMAGE_WIDTH,
+                                 static_cast<float>(10) / IMAGE_HEIGHT,
+                                 16.f / IMAGE_WIDTH,
+                                 16.f / IMAGE_HEIGHT
+                                 ));
+
 }
 
 BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_expected_classes) {

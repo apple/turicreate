@@ -15,6 +15,9 @@ namespace {
 using neural_net::image_annotation;
 using neural_net::labeled_image;
 using neural_net::shared_float_array;
+using annotation_origin_enum = data_iterator::annotation_origin_enum;
+using annotation_scale_enum = data_iterator::annotation_scale_enum;
+using annotation_position_enum = data_iterator::annotation_position_enum;
 
 flex_image get_image(const flexible_type& image_feature) {
   if (image_feature.get_type() == flex_type_enum::STRING) {
@@ -50,7 +53,10 @@ gl_sframe get_data(const data_iterator::parameters& params) {
 std::vector<image_annotation> parse_annotations(
     const flex_list& flex_annotations,
     size_t image_width, size_t image_height,
-    const std::unordered_map<std::string, int>& class_to_index_map) {
+    const std::unordered_map<std::string, int>& class_to_index_map,
+    annotation_origin_enum annotation_origin,
+    annotation_scale_enum annotation_scale,
+    annotation_position_enum annotation_position) {
 
   std::vector<image_annotation> result;
   result.reserve(flex_annotations.size());
@@ -111,12 +117,76 @@ std::vector<image_annotation> parse_annotations(
     // values.
     if (has_label && has_x && has_y && annotation.bounding_box.area() > 0.f) {
 
-      // Use x and y fields to store upper-left corner, not center.
-      annotation.bounding_box.x -= annotation.bounding_box.width / 2.f;
-      annotation.bounding_box.y -= annotation.bounding_box.height / 2.f;
+      float annotation_image_height = 0;
+      float annotation_image_width = 0;
+      switch (annotation_scale) {
+
+          case annotation_scale_enum::PIXEL:
+              annotation_image_height = static_cast<float>(image_height);
+              annotation_image_width = static_cast<float>(image_width);
+              break;
+
+          case annotation_scale_enum::NORMALIZED:
+              // If the annotations are normalised, they will range between 0 and 1
+              annotation_image_height = 1.f;
+              annotation_image_width = 1.f;
+              break;
+      }
+
+      switch (annotation_origin) {
+
+          case annotation_origin_enum::TOP_LEFT:
+
+              switch(annotation_position) {
+
+                  case annotation_position_enum::CENTER:
+                      annotation.bounding_box.x -= annotation.bounding_box.width / 2.f;
+                      annotation.bounding_box.y -= annotation.bounding_box.height / 2.f;
+                      break;
+
+                  case annotation_position_enum::TOP_LEFT:
+                      // Nothing to be done
+                      break;
+
+                  case annotation_position_enum::BOTTOM_LEFT:
+                      annotation.bounding_box.y -= annotation.bounding_box.height;
+                      break;
+
+              }
+              break;
+
+          case annotation_origin_enum::BOTTOM_LEFT:
+
+              switch(annotation_position) {
+
+                  case annotation_position_enum::CENTER:
+                      annotation.bounding_box.x -= annotation.bounding_box.width / 2.f;
+                      annotation.bounding_box.y -= annotation.bounding_box.height / 2.f;
+                      annotation.bounding_box.y = annotation_image_height - annotation.bounding_box.y;
+                      break;
+
+                  case annotation_position_enum::TOP_LEFT:
+                      annotation.bounding_box.y = annotation_image_height - annotation.bounding_box.y;
+                      break;
+
+                  case annotation_position_enum::BOTTOM_LEFT:
+                      annotation.bounding_box.y = annotation_image_height - annotation.bounding_box.height - annotation.bounding_box.y;
+                      break;
+
+              }
+              break;
+      }
 
       // Translate to normalized coordinates.
-      annotation.bounding_box.normalize(image_width, image_height);
+      switch (annotation_scale) {
+          case annotation_scale_enum::NORMALIZED:
+              // Nothing to be done
+              break;
+
+          case annotation_scale_enum::PIXEL:
+              annotation.bounding_box.normalize(annotation_image_width, annotation_image_height);
+              break;
+      }
 
       // Add this annotation if we still have a valid bounding box.
       if (annotation.bounding_box.area() > 0.f) {
@@ -202,6 +272,10 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
                        : data_.column_index(params.predictions_column_name)),
     image_index_(data_.column_index(params.image_column_name)),
 
+    annotation_origin_(params.annotation_origin),
+    annotation_scale_(params.annotation_scale),
+    annotation_position_(params.annotation_position),
+
     // Whether to traverse the SFrame more than once, and whether to shuffle.
     repeat_(params.repeat),
     shuffle_(params.shuffle),
@@ -213,7 +287,11 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
 
     // Start an iteration through the entire SFrame.
     range_iterator_(data_.range_iterator()),
-    next_row_(range_iterator_.begin())
+    next_row_(range_iterator_.begin()),
+
+    // Initialize random number generator.
+    random_engine_(params.random_seed)
+
 {}
 
 std::vector<labeled_image> simple_data_iterator::next_batch(size_t batch_size) {
@@ -238,13 +316,16 @@ std::vector<labeled_image> simple_data_iterator::next_batch(size_t batch_size) {
         // wall-clock time of this function. SFrame should either provide an
         // optimized implementation, or we should implement an approach that
         // amortizes the cost across calls.
-        // TODO: Avoid traversing the data in gl_sframe::apply by instead
-        // generating a gl_sarray from a sequence of the desired length and
-        // hashing each element.
-        auto rng = [](const sframe_rows::row&) {
-          return random::rand();
+        gl_sarray indices = gl_sarray::from_sequence(0, data_.size());
+        std::uniform_int_distribution<uint64_t> dist(0);  // 0 to max uint64_t
+        uint64_t random_mask = dist(random_engine_);
+        auto randomize_indices = [random_mask](const flexible_type& x) {
+          uint64_t masked_index = random_mask ^ x.to<uint64_t>();
+          return flexible_type(hash64(masked_index));
         };
-        data_.add_column(data_.apply(rng, flex_type_enum::INTEGER),
+        data_.add_column(indices.apply(randomize_indices,
+                                       flex_type_enum::INTEGER,
+                                       /* skip_undefined */ false),
                          "_random_order");
         data_ = data_.sort("_random_order");
         data_.remove_column("_random_order");
@@ -267,12 +348,14 @@ std::vector<labeled_image> simple_data_iterator::next_batch(size_t batch_size) {
 
     result[i].annotations = parse_annotations(
         raw_annotations, result[i].image.m_width, result[i].image.m_height,
-        annotation_properties_.class_to_index_map);
+        annotation_properties_.class_to_index_map, annotation_origin_, annotation_scale_,
+        annotation_position_);
 
     if (raw_predictions != FLEX_UNDEFINED) {
       result[i].predictions = parse_annotations(
           raw_predictions, result[i].image.m_width, result[i].image.m_height,
-          annotation_properties_.class_to_index_map);
+          annotation_properties_.class_to_index_map, annotation_origin_, annotation_scale_,
+          annotation_position_);
     }
   }
 

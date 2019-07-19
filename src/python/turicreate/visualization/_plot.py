@@ -99,11 +99,12 @@ class Plot(object):
     >>> plt.save('vega_spec.json', False)
 
     """
-    def __init__(self, _proxy=None):
-        if (_proxy):
-            self.__proxy__ = _proxy
+    def __init__(self, vega_spec=None, _proxy=None):
+        if vega_spec is not None:
+            import turicreate as tc
+            self.__proxy__ = tc.extensions.plot_from_vega_spec(vega_spec)
         else:
-            self.__proxy__ = None
+            self.__proxy__ = _proxy
 
     def show(self):
         """
@@ -300,8 +301,8 @@ class Plot(object):
 
         vega_html = '<html lang="en"> \
                         <head> \
-                            <script src="https://cdnjs.cloudflare.com/ajax/libs/vega/3.0.8/vega.js"></script> \
-                            <script src="https://cdnjs.cloudflare.com/ajax/libs/vega-embed/3.0.0-rc7/vega-embed.js"></script> \
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/vega/5.4.0/vega.js"></script> \
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/vega-embed/4.0.0/vega-embed.js"></script> \
                             <script src="https://cdnjs.cloudflare.com/ajax/libs/vega-tooltip/0.5.1/vega-tooltip.min.js"></script> \
                             <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/vega-tooltip/0.5.1/vega-tooltip.min.css"> \
                             <style> \

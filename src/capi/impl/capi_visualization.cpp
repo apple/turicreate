@@ -72,6 +72,19 @@ EXPORT tc_plot* tc_plot_create_sframe_summary(const tc_sframe* sf,
   ERROR_HANDLE_END(error, NULL);
 }
 
+EXPORT tc_plot* tc_plot_create_from_vega(const char* vega_spec,
+                                  const tc_parameters* params,
+                                  tc_error** error) {
+  ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
+
+  CHECK_NOT_NULL(error, vega_spec, "vega_spec", NULL);
+
+  return new_tc_plot(std::make_shared<turi::visualization::Plot>(vega_spec));
+
+  ERROR_HANDLE_END(error, NULL);
+}
+
 EXPORT tc_flexible_type* tc_plot_get_vega_spec(const tc_plot* plot,
                                                tc_plot_variation variation,
                                                const tc_parameters*,

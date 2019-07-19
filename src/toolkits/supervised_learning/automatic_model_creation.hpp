@@ -26,7 +26,12 @@ std::shared_ptr<supervised_learning_model_base> create_automatic_regression_mode
     const std::map<std::string, flexible_type>& options);
 
 std::pair<gl_sframe, gl_sframe> create_validation_data(
+    gl_sframe data, const variant_type& validation_data, int random_seed);
+
+std::pair<gl_sframe, gl_sframe> create_validation_data(
     gl_sframe data, const variant_type& validation_data);
-}}
+
+}  // namespace supervised
+}  // namespace turi
 
 #endif

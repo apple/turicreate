@@ -29,6 +29,11 @@ namespace visualization {
  * by doing the following:
  * 1. Strips all newlines.
  */
+std::string make_format_string(const std::string& raw_str) {
+  std::string ret = raw_str;
+  boost::replace_all(ret, "\n", "");
+  return ret;
+}
 std::string make_format_string(unsigned char *raw_format_str_ptr,
                                       size_t raw_format_str_len) {
   auto raw_format_str = std::string(

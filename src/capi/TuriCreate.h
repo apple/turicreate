@@ -878,6 +878,11 @@ tc_plot* tc_plot_create_2d(const tc_sarray* sa_x,
                            const tc_parameters* params,
                            tc_error** error);
 
+// Plot object from Vega or Vega-Lite JSON spec
+tc_plot* tc_plot_create_from_vega(const char* vega_spec,
+                                  const tc_parameters* params,
+                                  tc_error** error);
+
 // returns true if no further computation can be done on this stream
 // (should probably be used as a loop condition)
 bool tc_plot_finished_streaming(const tc_plot* plot, const tc_parameters *params, tc_error** error);

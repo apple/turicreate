@@ -5,7 +5,8 @@
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
-#include "plot.hpp"
+#include <core/logging/logger.hpp>
+#include <visualization/server/plot.hpp>
 #include <visualization/server/dark_mode.hpp>
 #include <visualization/server/process_wrapper.hpp>
 #include <visualization/server/thread.hpp>
@@ -21,14 +22,32 @@
 
 namespace turi{
   namespace visualization{
-    Plot::Plot() {
-      // make UUID for plot
-      static auto uuid_generator = boost::uuids::random_generator();
-      auto uuid = uuid_generator();
-      m_id = boost::lexical_cast<std::string>(uuid);
+
+    Plot::Plot() { }
+
+    Plot::Plot(const std::string& vega_spec) {
+      // This constructor removes newlines from the vega spec passed in.
+      // In order to delineate messages between frontend and backend,
+      // the newline character is used as a separator.
+      m_vega_spec = make_format_string(vega_spec);
     }
 
+    Plot::Plot(const std::string& vega_spec, std::shared_ptr<transformation_base> transformer, double size_array) :
+      m_vega_spec(vega_spec),
+      m_size_array(size_array),
+      m_transformer(transformer) {
+        // This constructor expects builtin TC format strings
+        // that already have their newlines removed.
+        DASSERT_EQ(m_vega_spec.find("\n"), std::string::npos);
+      }
+
     const std::string& Plot::get_id() const {
+      static auto uuid_generator = boost::uuids::random_generator();
+      if (m_id == "") {
+        // make UUID for plot
+        auto uuid = uuid_generator();
+        m_id = boost::lexical_cast<std::string>(uuid);
+      }
       return m_id;
     }
 
@@ -44,7 +63,7 @@ namespace turi{
         ew << "{\"vega_spec\": " << self->get_spec(variation, true /* include_data */) << "}\n";
 
         // If the plot is done rendering, we can skip sending data_spec after vega_spec.
-        while(!self->m_transformer->eof() && ew.good()) {
+        while(self->m_transformer && !self->m_transformer->eof() && ew.good()) {
           vega_data vd;
 
           vd << self->m_transformer->get()->vega_column_data();
@@ -58,27 +77,41 @@ namespace turi{
     }
 
     void Plot::materialize() const {
-      do {
-        m_transformer->get()->vega_column_data();
-      } while(!m_transformer->eof());
+      if(m_transformer) {
+        do {
+          m_transformer->get()->vega_column_data();
+        } while(!m_transformer->eof());
+      }
       DASSERT_EQ(get_percent_complete(), 1.0);
     }
 
     bool Plot::finished_streaming() const {
-      return m_transformer->eof();
+      if (m_transformer) {
+        return m_transformer->eof();
+      }
+      return true;
     }
 
     double Plot::get_percent_complete() const {
-      return m_transformer->get_percent_complete();
+      if (m_transformer) {
+        return m_transformer->get_percent_complete();
+      }
+      return 100.0;
     }
 
     std::string Plot::get_next_data() const {
+      if (!m_transformer) {
+        log_and_throw("There is no data transformer applied to this Plot.");
+      }
       vega_data vd;
       vd << m_transformer->get()->vega_column_data();
       return vd.get_data_spec(get_percent_complete());
     }
 
     std::string Plot::get_data() const {
+      if (!m_transformer) {
+        log_and_throw("There is no data transformer applied to this Plot.");
+      }
       this->materialize();
       DASSERT_TRUE(m_transformer->eof());
       vega_data vd;
@@ -155,7 +188,7 @@ namespace turi{
       }
 
       // Override for data inclusion
-      if (include_data) {
+      if (include_data && m_transformer) {
         data = ", \"values\": [" + m_transformer->get()->vega_column_data() + "]";
       }
 
@@ -182,6 +215,10 @@ namespace turi{
 
     std::string Plot::get_url() const {
       return WebServer::get_url_for_plot(*this);
+    }
+
+    std::shared_ptr<Plot> plot_from_vega_spec(const std::string& vega_spec) {
+      return std::make_shared<Plot>(vega_spec);
     }
   }
 

@@ -5,6 +5,7 @@
  */
 #import "VegaRenderer.h"
 #import "JSCanvas.h"
+#import "JSDocument.h"
 
 #import <AppKit/AppKit.h>
 #import <JavaScriptCore/JavaScriptCore.h>
@@ -51,7 +52,7 @@
 
 @end
 
-@implementation VegaRenderer
+@implementation VegaRenderer 
 
 -(instancetype) initWithSpec:(NSString *)spec {
     return [self initWithSpec:spec context:[[NSGraphicsContext currentContext] CGContext]];
@@ -85,34 +86,21 @@
             NSArray *message = [JSContext currentArguments];
             NSLog(@"JS console error: %@", message);
         };
-
+        
         // set up error handling
         self.context.exceptionHandler = ^(JSContext *context, JSValue *exception) {
             NSLog(@"Unhandled exception: %@", [exception toString]);
             NSLog(@"In context: %@", [context debugDescription]);
             NSLog(@"Line %@, column %@", [exception objectForKeyedSubscript:@"line"], [exception objectForKeyedSubscript:@"column"]);
-            NSLog(@"Call stack: %@", [exception objectForKeyedSubscript:@"stack"]);
+            NSLog(@"Stacktrace: %@", [exception objectForKeyedSubscript:@"stack"]);
             assert(false);
         };
 
-        // set up enough of document.createElement to get a canvas object
-        self.context[@"document"] = [JSValue valueWithObject:@{
-            @"createElement": [JSValue valueWithObject:^(NSString * type) {
-                if ([type isEqualToString:@"canvas"]) {
-                    // TODO - can we have more than one of these floating around?
-                    // If so, we'll need to refactor so we don't have a single reference in the instance.
-                    if (weakSelf.vegaCanvas == nil) {
-                        weakSelf.vegaCanvas = [[VegaCGCanvas alloc] initWithWidth:100 height:100 context:parentContext];
-                    }
-                    return [JSValue valueWithObject:weakSelf.vegaCanvas inContext:weakSelf.context];
-                }
-                assert(false);
-                return [JSValue valueWithNullInContext:weakSelf.context];
-            } inContext:weakSelf.context]
-        } inContext:self.context];
-        
-        /*
-        */
+        VegaCGCanvas* vegaCanvas = [[VegaCGCanvas alloc] initWithContext:parentContext];
+        weakSelf.vegaCanvas = vegaCanvas;
+
+        VegaJSDocument* document = [[VegaJSDocument alloc] initWithCanvas:vegaCanvas];
+        self.context[@"document"] = document;
 
         // set up Image type
         self.context[@"Image"] = [JSValue valueWithObject:^() {
@@ -121,18 +109,10 @@
         } inContext:self.context];
 
         JSValue *require = [JSValue valueWithObject:^(NSString *module) {
-            /*
-            if ([module isEqualToString:@"canvas"]) {
-                assert(weakSelf.context[@"canvas"] != nil);
-                return weakSelf.context[@"canvas"];
-            }
-            */
-
             // fall through if we don't know what module it is
             NSLog(@"Called require with unknown module %@", module);
             return [JSValue valueWithNullInContext:weakSelf.context];
         } inContext:self.context];
-
         [self.context setObject:require forKeyedSubscript:@"require"];
 
         [self.context evaluateScript:[VegaRenderer vegaJS]];

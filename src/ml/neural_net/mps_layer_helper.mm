@@ -1,6 +1,14 @@
+/* Copyright © 2018 Apple Inc. All rights reserved.
+ *
+ * Use of this source code is governed by a BSD-3-clause license that can
+ * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ */
+
 #include <ml/neural_net/mps_layer_helper.h>
 #include <ml/neural_net/mps_weight.h>
+
 #import <ml/neural_net/mps_layer_conv_padding.h>
+#import <ml/neural_net/mps_layer_instance_norm_data_loader.h>
 
 @implementation MPSCNNFullyConnectedNode (TCMPSLayerHelper)
 + (MPSCNNFullyConnectedNode *) createFullyConnected:(MPSNNImageNode *)inputNode
@@ -8,12 +16,12 @@
                               outputFeatureChannels:(NSUInteger)outputFeatureChannels
                                         inputHeight:(NSUInteger)inputHeight
                                          inputWidth:(NSUInteger)inputWidth
-                                            weights:(float *)weights
-                                             biases:(float *)biases
+                                            weights:(NSData *)weights
+                                             biases:(NSData *)biases
                                               label:(NSString *)label
                                       updateWeights:(BOOL)updateWeights
                                              device:(id<MTLDevice>)dev
-                                          cmd_queue:(id<MTLCommandQueue>) cmd_q {
+                                           cmdQueue:(id<MTLCommandQueue>)cmdQ {
   
   turi::neural_net::OptimizerOptions optimizerOptions;
 
@@ -29,9 +37,9 @@
                                                  neuronB:0.0f
                                   kernelParamsBinaryName:[label UTF8String]
                                                   device:dev
-                                               cmd_queue:cmd_q
-                                         init_weight_ptr:weights
-                                           init_bias_ptr:biases
+                                               cmd_queue:cmdQ
+                                         init_weight_ptr:(float *)weights.bytes
+                                           init_bias_ptr:(float *)biases.bytes
                                         optimizerOptions:optimizerOptions];
         
   MPSCNNFullyConnectedNode* fullyConnectedNode = 
@@ -52,12 +60,12 @@
                                    strideHeight:(NSUInteger)strideHeight
                                    paddingWidth:(NSUInteger)paddingWidth
                                   paddingHeight:(NSUInteger)paddingHeight
-                                        weights:(float *)weights
-                                         biases:(float *)biases
+                                        weights:(NSData *)weights
+                                         biases:(NSData *)biases
                                           label:(NSString *)label
                                   updateWeights:(BOOL)updateWeights
                                          device:(id<MTLDevice>)dev
-                                      cmd_queue:(id<MTLCommandQueue>) cmd_q {
+                                       cmdQueue:(id<MTLCommandQueue>)cmdQ {
   
   turi::neural_net::OptimizerOptions optimizerOptions;
 
@@ -73,9 +81,9 @@
                                                  neuronB:0.0f
                                   kernelParamsBinaryName:[label UTF8String]
                                                   device:dev
-                                               cmd_queue:cmd_q
-                                         init_weight_ptr:weights
-                                           init_bias_ptr:biases
+                                               cmd_queue:cmdQ
+                                         init_weight_ptr:(float *)weights.bytes
+                                           init_bias_ptr:(float *)biases.bytes
                                         optimizerOptions:optimizerOptions];
 
   MPSCNNConvolutionNode*  convNode =
@@ -92,4 +100,27 @@
   
 	return convNode;
 }
+
++ (MPSCNNInstanceNormalizationNode *) createInstanceNormalization:(MPSNNImageNode *)inputNode
+                                                         channels:(NSUInteger)channels
+                                                           styles:(NSUInteger)styles
+                                                            gamma:(NSData *)gamma
+                                                             beta:(NSData *)beta
+                                                            label:(NSString *)label
+                                                           device:(id<MTLDevice>)dev
+                                                         cmdQueue:(id<MTLCommandQueue>) cmdQ {
+
+  TCMPSInstanceNormDataLoader *InstNormDataLoad = [[TCMPSInstanceNormDataLoader alloc] initWithParams:label
+                                                                                         gammaWeights:(float *)gamma.bytes
+                                                                                          betaWeights:(float *)beta.bytes
+                                                                                numberFeatureChannels:channels
+                                                                                               styles:styles
+                                                                                               device:dev
+                                                                                            cmd_queue:cmdQ];
+                                      
+  MPSCNNInstanceNormalizationNode *instNormNode =  [MPSCNNInstanceNormalizationNode nodeWithSource:inputNode
+                                                                                        dataSource:InstNormDataLoad];
+  return instNormNode;
+}
+
 @end

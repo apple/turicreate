@@ -212,7 +212,7 @@ class test_object_detector: public object_detector {
 public:
   using create_iterator_call =
       std::function<std::unique_ptr<data_iterator>(
-          gl_sframe data, std::vector<std::string> class_labels, bool repeat)>;
+        data_iterator::parameters iterator_params)>;
 
   using create_compute_context_call =
       std::function<std::unique_ptr<compute_context>()>;
@@ -230,14 +230,13 @@ public:
   }
 
   std::unique_ptr<data_iterator> create_iterator(
-      gl_sframe data, std::vector<std::string> class_labels,
-      bool repeat) const override {
+      data_iterator::parameters iterator_params) const override {
 
     TS_ASSERT(!create_iterator_calls_.empty());
     create_iterator_call expected_call =
         std::move(create_iterator_calls_.front());
     create_iterator_calls_.pop_front();
-    return expected_call(data, std::move(class_labels), repeat);
+    return expected_call(iterator_params);
   }
 
   std::unique_ptr<compute_context> create_compute_context() const override {
@@ -397,16 +396,14 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
 
   // The following callbacks capture by reference so that they can transfer
   // ownership of the mocks created above.
+  auto create_iterator_impl = [&](data_iterator::parameters iterator_params) {
 
-  auto create_iterator_impl = [&](gl_sframe data,
-                                  std::vector<std::string> class_labels,
-                                  bool repeat) {
-
-    TS_ASSERT(class_labels.empty());  // Should infer class labels from data.
-    TS_ASSERT(repeat);
+    TS_ASSERT(iterator_params.class_labels.empty());  // Should infer class labels from data.
+    TS_ASSERT(iterator_params.repeat);
 
     return std::move(mock_iterator);
   };
+
   model.create_iterator_calls_.push_back(create_iterator_impl);
 
   auto create_augmenter_impl = [&](const image_augmenter::options& opts) {
@@ -631,14 +628,11 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto_split) {
 
   // The following callbacks capture by reference so that they can transfer
   // ownership of the mocks created above.
-
-  auto create_iterator_impl = [&](gl_sframe data,
-                                  std::vector<std::string> class_labels,
-                                  bool repeat) {
+  auto create_iterator_impl = [&](data_iterator::parameters iterator_params) {
     // The train data is smaller than the original dataset
-    TS_ASSERT(test_num_examples > data.size());
-    TS_ASSERT(class_labels.empty());  // Should infer class labels from data.
-    TS_ASSERT(repeat);
+    TS_ASSERT(test_num_examples > iterator_params.data.size());
+    TS_ASSERT(iterator_params.class_labels.empty());  // Should infer class labels from data.
+    TS_ASSERT(iterator_params.repeat);
 
     return std::move(mock_iterator);
   };

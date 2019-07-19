@@ -36,8 +36,9 @@
   return self;
 }
 
-- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source {
-
+- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source
+                                     generator:(TCMPSUniformRandomNumberGenerator)uniform
+{
   TCMPSLabeledImage *result = [TCMPSLabeledImage new];
 
   // Determine the affine transform to apply.
@@ -77,27 +78,21 @@
 
 @end
 
-@interface TCMPSHorizontalFlipAugmenter ()
-
-@property(nonatomic) TCMPSUniformRandomNumberGenerator random;
-
-@end
-
 @implementation TCMPSHorizontalFlipAugmenter
 
-- (instancetype)initWithRNG:(TCMPSUniformRandomNumberGenerator)rng {
-
+- (instancetype)init
+{
   self = [super init];
   if (self) {
-    _random = rng;
     _skipProbability = 0.5f;
   }
   return self;
 }
 
-- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source {
-
-  if (self.random(0.f, 1.f) < self.skipProbability) {
+- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source
+                                     generator:(TCMPSUniformRandomNumberGenerator)uniform
+{
+  if (uniform(0.f, 1.f) < self.skipProbability) {
     return source;
   }
 
@@ -126,19 +121,12 @@
 
 @end
 
-@interface TCMPSRandomCropAugmenter ()
-
-@property(nonatomic) TCMPSUniformRandomNumberGenerator random;
-
-@end
-
 @implementation TCMPSRandomCropAugmenter
 
-- (instancetype)initWithRNG:(TCMPSUniformRandomNumberGenerator)rng {
-
+- (instancetype)init
+{
   self = [super init];
   if (self) {
-    _random = rng;
     _skipProbability = 0.1f;
     _minAspectRatio = 0.8f;
     _maxAspectRatio = 1.25f;
@@ -151,9 +139,10 @@
   return self;
 }
 
-- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source {
-
-  if (self.random(0.f, 1.f) < self.skipProbability) {
+- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source
+                                     generator:(TCMPSUniformRandomNumberGenerator)uniform
+{
+  if (uniform(0.f, 1.f) < self.skipProbability) {
     return source;
   }
 
@@ -165,7 +154,7 @@
   for (NSUInteger i = 0; i < self.maxAttempts; ++i) {
 
     // Randomly sample an aspect ratio.
-    CGFloat aspectRatio = self.random(self.minAspectRatio, self.maxAspectRatio);
+    CGFloat aspectRatio = uniform(self.minAspectRatio, self.maxAspectRatio);
 
     // Next we'll sample a height (which combined with the now known aspect
     // ratio, determines the size and area). But first we must compute the range
@@ -203,12 +192,12 @@
     }
 
     CGRect cropRect;
-    cropRect.size.height = self.random(minHeight, maxHeight);
+    cropRect.size.height = uniform(minHeight, maxHeight);
     cropRect.size.width = cropRect.size.height * aspectRatio;
 
     // Sample a position for the crop, constrained to lie within the image.
-    cropRect.origin.x = self.random(0.f, imageWidth - cropRect.size.width);
-    cropRect.origin.y = self.random(0.f, imageHeight - cropRect.size.height);
+    cropRect.origin.x = uniform(0.f, imageWidth - cropRect.size.width);
+    cropRect.origin.y = uniform(0.f, imageHeight - cropRect.size.height);
 
     // Compensate for the image bound's origin.
     cropRect.origin.x += source.bounds.origin.x;
@@ -277,19 +266,12 @@
 
 @end
 
-@interface TCMPSRandomPadAugmenter ()
-
-@property(nonatomic) TCMPSUniformRandomNumberGenerator random;
-
-@end
-
 @implementation TCMPSRandomPadAugmenter
 
-- (instancetype)initWithRNG:(TCMPSUniformRandomNumberGenerator)rng {
-
+- (instancetype)init
+{
   self = [super init];
   if (self) {
-    _random = rng;
     _skipProbability = 0.1f;
     _minAspectRatio = 0.8f;
     _maxAspectRatio = 1.25f;
@@ -300,9 +282,10 @@
   return self;
 }
 
-- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source {
-
-  if (self.random(0.f, 1.f) < self.skipProbability) {
+- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source
+                                     generator:(TCMPSUniformRandomNumberGenerator)uniform
+{
+  if (uniform(0.f, 1.f) < self.skipProbability) {
     return source;
   }
 
@@ -318,7 +301,7 @@
   while (minHeight >= maxHeight && numAttempts++ < self.maxAttempts) {
 
     // Randomly sample an aspect ratio.
-    aspectRatio = self.random(self.minAspectRatio, self.maxAspectRatio);
+    aspectRatio = uniform(self.minAspectRatio, self.maxAspectRatio);
 
     // The padded height must be at least as large as the original height.
     // h' >= h
@@ -351,12 +334,12 @@
 
   // Sample a final size, given the sampled aspect ratio and range of heights.
   CGSize paddedSize;
-  paddedSize.height = self.random(minHeight, maxHeight);
+  paddedSize.height = uniform(minHeight, maxHeight);
   paddedSize.width = paddedSize.height * aspectRatio;
 
   // Sample the offset of the source image inside the padded image.
-  CGFloat xOffset = self.random(0.f, paddedSize.width - imageWidth);
-  CGFloat yOffset = self.random(0.f, paddedSize.height - imageHeight);
+  CGFloat xOffset = uniform(0.f, paddedSize.width - imageWidth);
+  CGFloat yOffset = uniform(0.f, paddedSize.height - imageHeight);
 
   // Pad the image by compositing the source image over a gray background and
   // cropping to the desired bounds.
@@ -383,18 +366,12 @@
 
 @end
 
-@interface TCMPSColorControlAugmenter ()
-
-@property(nonatomic) TCMPSUniformRandomNumberGenerator random;
-
-@end
-
 @implementation TCMPSColorControlAugmenter
 
-- (instancetype)initWithRNG:(TCMPSUniformRandomNumberGenerator)rng {
+- (instancetype)init
+{
   self = [super init];
   if (self) {
-    _random = rng;
     _maxBrightnessDelta = 0.05f;
     _maxContrastProportion = 0.05f;
     _maxSaturationProportion = 0.05f;
@@ -402,27 +379,28 @@
   return self;
 }
 
-- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source {
-
+- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source
+                                     generator:(TCMPSUniformRandomNumberGenerator)uniform
+{
   // Sample a random adjustment to brightness.
   CGFloat brightnessDelta = 0.0f;
   if (self.maxBrightnessDelta > 0.f) {
-    brightnessDelta += self.random(-self.maxBrightnessDelta,
-                                   self.maxBrightnessDelta);
+    brightnessDelta += uniform(-self.maxBrightnessDelta,
+                               self.maxBrightnessDelta);
   }
 
   // Sample a random adjustment to contrast.
   CGFloat contrastProportion = 1.0f;
   if (self.maxContrastProportion > 0.f) {
-    contrastProportion += self.random(-self.maxContrastProportion,
-                                      self.maxContrastProportion);
+    contrastProportion += uniform(-self.maxContrastProportion,
+                                  self.maxContrastProportion);
   }
 
   // Sample a random adjustment to saturation.
   CGFloat saturationProportion = 1.0f;
   if (self.maxSaturationProportion > 0.f) {
-    saturationProportion += self.random(-self.maxSaturationProportion,
-                                        self.maxSaturationProportion);
+    saturationProportion += uniform(-self.maxSaturationProportion,
+                                    self.maxSaturationProportion);
   }
 
   TCMPSLabeledImage *result = [TCMPSLabeledImage new];
@@ -445,29 +423,24 @@
 
 @end
 
-@interface TCMPSHueAdjustAugmenter ()
-
-@property(nonatomic) TCMPSUniformRandomNumberGenerator random;
-
-@end
-
 @implementation TCMPSHueAdjustAugmenter
 
-- (instancetype)initWithRNG:(TCMPSUniformRandomNumberGenerator)rng {
+- (instancetype)init
+{
   self = [super init];
   if (self) {
-    _random = rng;
     _maxHueAdjust = 0.05f;
   }
   return self;
 }
 
-- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source {
-
+- (TCMPSLabeledImage *)imageAugmentedFromImage:(TCMPSLabeledImage *)source
+                                     generator:(TCMPSUniformRandomNumberGenerator)uniform
+{
   // Sample a random rotation around the color wheel.
   CGFloat hueAdjust = 0.0f;
   if (self.maxHueAdjust > 0.f) {
-    hueAdjust += M_PI * self.random(-self.maxHueAdjust, self.maxHueAdjust);
+    hueAdjust += M_PI * uniform(-self.maxHueAdjust, self.maxHueAdjust);
   }
 
   TCMPSLabeledImage *result = [TCMPSLabeledImage new];

@@ -1,3 +1,4 @@
+#include "plot.hpp"
 #include "show.hpp"
 #include "scatter.hpp"
 #include "heatmap.hpp"
@@ -16,6 +17,7 @@ namespace turi {
     REGISTER_FUNCTION(plot_columnwise_summary, "sf");
     REGISTER_FUNCTION(plot_histogram, "sa", "xlabel", "ylabel", "title");
     REGISTER_FUNCTION(plot_item_frequency, "sa", "xlabel", "ylabel", "title");
+    REGISTER_FUNCTION(plot_from_vega_spec, "vega_spec");
     END_FUNCTION_REGISTRATION
   }
 }

@@ -78,7 +78,7 @@ def plot(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
     """
     title = _get_title(title)
     plt_ref = tc.extensions.plot(x, y, xlabel, ylabel, title)
-    return Plot(plt_ref)
+    return Plot(_proxy=plt_ref)
 
 def show(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
     """
@@ -190,7 +190,7 @@ def scatter(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAUL
     title = _get_title(title)
     plt_ref = tc.extensions.plot_scatter(x, y,
       xlabel, ylabel,title)
-    return Plot(plt_ref)
+    return Plot(_proxy=plt_ref)
 
 def categorical_heatmap(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
     """
@@ -239,7 +239,7 @@ def categorical_heatmap(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=
     title = _get_title(title)
     plt_ref = tc.extensions.plot_categorical_heatmap(x, y,
       xlabel, ylabel, title)
-    return Plot(plt_ref)
+    return Plot(_proxy=plt_ref)
 
 def heatmap(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
     """
@@ -287,7 +287,7 @@ def heatmap(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAUL
     title = _get_title(title)
     plt_ref = tc.extensions.plot_heatmap(x, y,
       xlabel, ylabel, title)
-    return Plot(plt_ref)
+    return Plot(_proxy=plt_ref)
 
 def box_plot(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
     """
@@ -334,7 +334,7 @@ def box_plot(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAU
     title = _get_title(title)
     plt_ref = tc.extensions.plot_boxes_and_whiskers(x, y,
       xlabel, ylabel, title)
-    return Plot(plt_ref)
+    return Plot(_proxy=plt_ref)
 
 def columnwise_summary(sf):
     """
@@ -366,7 +366,7 @@ def columnwise_summary(sf):
         raise ValueError("turicreate.visualization.columnwise_summary " +
             "supports SFrame")
     plt_ref = tc.extensions.plot_columnwise_summary(sf)
-    return Plot(plt_ref)
+    return Plot(_proxy=plt_ref)
 
 def histogram(sa, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
     """
@@ -408,7 +408,7 @@ def histogram(sa, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAUL
     title = _get_title(title)
     plt_ref = tc.extensions.plot_histogram(sa,
       xlabel, ylabel, title)
-    return Plot(plt_ref)
+    return Plot(_proxy=plt_ref)
 
 def item_frequency(sa, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
     """
@@ -450,4 +450,4 @@ def item_frequency(sa, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_D
     title = _get_title(title)
     plt_ref = tc.extensions.plot_item_frequency(sa,
       xlabel, ylabel, title)
-    return Plot(plt_ref)
+    return Plot(_proxy=plt_ref)

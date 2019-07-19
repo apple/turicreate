@@ -187,8 +187,8 @@ void initialize_globals_from_environment(std::string root_path);
  */
 #define REGISTER_GLOBAL(type, varname, runtime_modifiable)          \
   static auto __ ## varname ## __register__ ## instance =           \
-      ::turi::globals::register_global                          \
-                       <type>("TURI_" #varname,                 \
+      ::turi::globals::register_global                              \
+                       <type>("TURI_" #varname,                     \
                               (type*)(&varname),                    \
                               runtime_modifiable);
 
@@ -226,8 +226,8 @@ void initialize_globals_from_environment(std::string root_path);
  */
 #define REGISTER_GLOBAL_WITH_CHECKS(type, varname, runtime_modifiable, lambda) \
   static auto __ ## varname ## __register__ ## instance =                      \
-      ::turi::globals::register_global                                     \
-                       <type>("TURI_" #varname,                            \
+      ::turi::globals::register_global                                         \
+                       <type>("TURI_" #varname,                                \
                               (type*)(&varname),                               \
                               runtime_modifiable,                              \
                               lambda);

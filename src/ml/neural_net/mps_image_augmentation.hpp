@@ -22,20 +22,27 @@ namespace neural_net {
 class API_AVAILABLE(macos(10.13)) mps_image_augmenter: public image_augmenter {
 public:
 
-  // Uses turi::random::fast_uniform for a random number generator if one is not
-  // provided.
-  explicit mps_image_augmenter(
+  explicit mps_image_augmenter(const options& opts);
+
+  // Variant constructor allowing injection of the random number generator,
+  // largely for testing.
+  mps_image_augmenter(
       const options& opts,
-      std::function<float(float lower_bound, float upper_bound)> rng = nullptr);
+      std::function<float(float lower_bound, float upper_bound)> rng);
 
   const options& get_options() const override { return opts_; }
 
   result prepare_images(std::vector<labeled_image> source_batch) override;
 
 private:
+
+  mps_image_augmenter(const options& opts,
+                      NSArray<TCMPSUniformRandomNumberGenerator> *rng_batch);
+
   options opts_;
-  CIContext *context_ = nullptr;
-  NSArray<id <TCMPSImageAugmenting>> *augmentations_ = nullptr;
+  CIContext *context_ = nil;
+  NSArray<id <TCMPSImageAugmenting>> *augmentations_ = nil;
+  NSArray<TCMPSUniformRandomNumberGenerator> *rng_batch_ = nil;
 };
 
 }  // neural_net
