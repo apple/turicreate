@@ -16,7 +16,8 @@
     if([element isEqualToString:@"canvas"]){
         return _canvas;
     } else {
-        NSLog(@"warning: creating elements of type '%@' is not supported", element);
+        NSLog(@"creating elements of type '%@' is not supported", element);
+        assert(false);
     }
     return nil;
 }
