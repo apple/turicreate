@@ -243,13 +243,12 @@ std::tuple<float, float> activity_classifier::compute_validation_metrics(
 
     while (pending_batches.size() > remaining) {
 
-      size_t batch_num_correct = 0;
-      size_t batch_num_samples = 0;
-
       // Pop one batch from the queue.
       result batch = pending_batches.front();
       pending_batches.pop();
 
+      size_t batch_num_correct = 0;
+      size_t batch_num_samples = 0;
       std::tie(batch_num_correct, batch_num_samples) =
           cumulative_chunk_accuracy(prediction_window, num_classes,
                                     batch.output_info, batch.data_info);
@@ -867,9 +866,7 @@ void activity_classifier::perform_training_iteration() {
 
   float cumulative_batch_loss = 0.f;
   size_t num_batches = 0;
-  size_t batch_num_correct = 0;
   size_t train_num_correct = 0;
-  size_t batch_num_samples = 0;
   size_t train_num_samples = 0;
   size_t num_classes = read_state<size_t>("num_classes");
   size_t prediction_window = read_state<size_t>("prediction_window");
@@ -886,6 +883,8 @@ void activity_classifier::perform_training_iteration() {
       result batch = pending_batches.front();
       pending_batches.pop();
 
+      size_t batch_num_correct = 0;
+      size_t batch_num_samples = 0;
       std::tie(batch_num_correct, batch_num_samples) =
           cumulative_chunk_accuracy(prediction_window, num_classes,
                                     batch.output_info, batch.data_info);
