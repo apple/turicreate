@@ -33,7 +33,6 @@ namespace query_eval {
 
 
 class query_context;
-struct source_executor;
 
 /**
  * \ingroup sframe_query_engine
@@ -230,6 +229,8 @@ class execution_node  : public std::enable_shared_from_this<execution_node> {
   /**
    * Internal utility function what pulls the next batch of rows from a input
    * to this node.
+   * This reads *exactly* one block.
+   * If skip is true, nullptr is always returned.
    */
   std::shared_ptr<sframe_rows> get_next_from_input(size_t input_id, bool skip);
 
@@ -241,8 +242,7 @@ class execution_node  : public std::enable_shared_from_this<execution_node> {
   /// The operator implementation
   std::shared_ptr<query_operator> m_operator;
 
-  /// The coroutine running the actual function
-  std::shared_ptr<source_executor> m_source;
+  std::shared_ptr<query_context> m_context;
 
   /**
    * The inputs to this execution node:
@@ -266,9 +266,10 @@ class execution_node  : public std::enable_shared_from_this<execution_node> {
   /// exception handling
   bool m_exception_occured = false;
   std::exception_ptr m_exception;
+  bool supports_skipping;
+  bool is_linear_operator;
 
   friend class query_context;
-  friend struct source_executor;
 };
 
 /// \}

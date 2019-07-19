@@ -37,7 +37,6 @@ struct operator_impl<planner_node_type::SARRAY_SOURCE_NODE> : public query_opera
   size_t start = 0;
   size_t block_size = 0;
   bool skip_next_block = false;
-  emit_state state;
   size_t end;
   std::shared_ptr<sframe_rows>  rows;
 
@@ -72,21 +71,20 @@ struct operator_impl<planner_node_type::SARRAY_SOURCE_NODE> : public query_opera
     if (!m_reader) m_reader = m_source->get_reader();
     start = m_begin_index;
     block_size = context.block_size();
-    skip_next_block = false;
-    state = context.initial_state();
+    skip_next_block = context.should_skip();
 
     while (start != m_end_index) {
       rows = context.get_output_buffer();
       end = std::min(start + block_size, m_end_index);
       if (skip_next_block == false) {
         m_reader->read_rows(start, end, *rows);
-        state = context.emit(rows);
+        context.emit(rows);
         CORO_YIELD();
       } else {
-        state = context.emit(nullptr);
+        context.emit(nullptr);
         CORO_YIELD();
       }
-      skip_next_block = state == emit_state::SKIP_NEXT_BLOCK;
+      skip_next_block = context.should_skip();
       start = end;
     }
     CORO_END

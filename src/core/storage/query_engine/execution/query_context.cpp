@@ -13,14 +13,10 @@ namespace query_eval {
 query_context::query_context() {
   m_buffers = std::make_shared<sframe_rows>();
 }
-query_context::query_context(std::function<std::shared_ptr<sframe_rows>(size_t, bool)> callback_on_get_input,
-                             std::function<emit_state(const std::shared_ptr<sframe_rows>&)> callback_on_emit,
-                            size_t max_buffer_size,
-                            emit_state initial_state)
+query_context::query_context(execution_node* exec_node,
+                            size_t max_buffer_size)
     : m_max_buffer_size(max_buffer_size),
-    m_callback_on_get_input(callback_on_get_input),
-    m_callback_on_emit(callback_on_emit),
-    m_initial_state(initial_state){
+    m_exec_node(exec_node) {
   m_buffers = std::make_shared<sframe_rows>();
 }
 
@@ -28,21 +24,21 @@ std::shared_ptr<sframe_rows> query_context::get_output_buffer() {
   return m_buffers;
 }
 
-emit_state query_context::initial_state() const {
-  return m_initial_state;
+void query_context::emit(const std::shared_ptr<sframe_rows>& rows) {
+  m_exec_node->add_operator_output(rows);
 }
 
-emit_state query_context::emit(const std::shared_ptr<sframe_rows>& rows) {
-  return m_callback_on_emit(m_buffers);
-}
 std::shared_ptr<const sframe_rows> query_context::get_next(size_t input_number) {
-  return std::const_pointer_cast<const sframe_rows>(m_callback_on_get_input(input_number, false));
+  return m_exec_node->get_next_from_input(input_number, false);
 }
 
 void query_context::skip_next(size_t input_number) {
-  m_callback_on_get_input(input_number, true);
+  m_exec_node->get_next_from_input(input_number, true);
 }
 
+bool query_context::should_skip() {
+  return m_exec_node->m_skip_next_block;
+}
 
 query_context::~query_context() { }
 
