@@ -664,23 +664,6 @@
 }
 
 - (void)fill {
-    NSArray *args = [JSContext currentArguments];
-    (void)args;
-    assert(args != nil);
-
-    // TODO - this seems like a giant hack.
-    // It appears Vega 5.4.0 is calling the `fill([path [, fillRule]])` API
-    // instead of `fillRect(x,y,width,height)` and expecting the same behavior.
-    // Passing through that call instead of failing here.
-    if (args.count == 4) {
-        double x = ((NSNumber *)args[0]).doubleValue;
-        double y = ((NSNumber *)args[1]).doubleValue;
-        double width = ((NSNumber *)args[2]).doubleValue;
-        double height = ((NSNumber *)args[3]).doubleValue;
-        [self fillRectWithX:x y:y width:width height:height];
-        return;
-    }
-    assert(args.count == 0);
     CGPathRef currentPath = CGContextCopyPath(self.context);
     if ([_fillStyle isKindOfClass:VegaCGLinearGradient.class]) {
         VegaCGLinearGradient *gradient = _fillStyle;
