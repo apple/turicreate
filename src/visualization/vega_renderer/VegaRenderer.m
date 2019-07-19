@@ -66,7 +66,6 @@
     // Initialize the JSContext first, so we can populate
     // the scene graph and get the width & height from spec
     self.context = [[JSContext alloc] init];
-    self.vegaCanvas = nil;
 
     __unsafe_unretained typeof(self) weakSelf = self;
 
@@ -107,13 +106,6 @@
             assert([[JSContext currentArguments] count] == 0);
             return [[VegaCGImage alloc] init];
         } inContext:self.context];
-
-        JSValue *require = [JSValue valueWithObject:^(NSString *module) {
-            // fall through if we don't know what module it is
-            NSLog(@"Called require with unknown module %@", module);
-            return [JSValue valueWithNullInContext:weakSelf.context];
-        } inContext:self.context];
-        [self.context setObject:require forKeyedSubscript:@"require"];
 
         [self.context evaluateScript:[VegaRenderer vegaJS]];
         [self.context evaluateScript:[VegaRenderer vegaliteJS]];
