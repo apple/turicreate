@@ -382,7 +382,7 @@ endif()
 # seems different clang distributions have quite different warning arguments
 check_cxx_compiler_flag("-Wno-unknown-warning-option" __no_unknown_warning_option)
 if(${__no_unknown_warning_option})
-  add_compile_options(-Wno-unknown-warning-option)
+  set(CPP11_FLAGS "${CPP11_FLAGS} -Wno-unknown-warning-option")
 endif()
  
 if (${TC_STACK_DISPLAY})
