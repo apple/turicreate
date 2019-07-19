@@ -29,6 +29,8 @@
 @property NSString *fontWeight;
 @property NSString *fontVariant;
 @property NSString *lineHeight;
+
+- (instancetype)initWithString:(NSString*)font;
 @end
 
 @protocol VegaCGGradientInterface<JSExport>
