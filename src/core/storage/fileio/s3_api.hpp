@@ -233,8 +233,8 @@ std::ostream& reportS3Error(std::ostream& ss, const s3url& parsed_url,
   ss << '(' << parsed_url << ", proxy:" << config.proxyHost
      << ", region:" << config.region << ')'
      << " Error while performing " << S3Operation::toString(operation)
-     << ", exception: " << outcome.GetError().GetExceptionName()
-     << ". Error msg from AWS: " << outcome.GetError().GetMessage();
+     << ". Error Name: " << outcome.GetError().GetExceptionName()
+     << ". Error Message: " << outcome.GetError().GetMessage();
   return ss;
 }
 
