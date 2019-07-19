@@ -33,13 +33,7 @@
 
 @end
 
-@implementation VegaRenderer {
-    CGImageRef _image;
-}
-
-- (void)dealloc {
-    CGImageRelease(_image);
-}
+@implementation VegaRenderer 
 
 -(instancetype) initWithSpec:(NSString *)spec {
     return [self initWithSpec:spec context:[[NSGraphicsContext currentContext] CGContext]];
@@ -160,10 +154,10 @@
     CGContextScaleCTM(bitmapContext, scaleFactor, scaleFactor);
     CGLayerRef layer = self.vegaContext.layer;
     CGContextDrawLayerAtPoint(bitmapContext, CGPointMake(0, 0), layer);
-    _image = CGBitmapContextCreateImage(bitmapContext);
+    CGImageRef image = CGBitmapContextCreateImage(bitmapContext);
     CGColorSpaceRelease(colorSpace);
     CGContextRelease(bitmapContext);
-    return _image;
+    return image;
 }
 
 + (NSString*)vg2canvasJS {
