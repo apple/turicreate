@@ -28,7 +28,6 @@
 
 /* aws */
 #include <aws/core/Aws.h>
-#include <aws/s3/S3Client.h>
 #include <aws/s3/model/ListObjectsV2Request.h>
 #include <aws/s3/model/ListObjectsV2Result.h>
 #include <aws/s3/model/DeleteObjectRequest.h>
@@ -63,7 +62,6 @@ namespace {
  *   underscores are fine too
  */
 bool bucket_name_valid(const std::string& bucket_name) {
-
   // rule 1
   if (bucket_name.size() < 3 || bucket_name.size() > 63) {
     return false;
@@ -124,6 +122,9 @@ std::string string_from_s3url(const s3url& parsed_url) {
 }
 
 } // anonymous namespace
+
+const std::vector<std::string> S3Operation::_enum_to_str = {
+    "DeleteObjects", "ListObjects", "HeadObjects"};
 
 /**
  * This splits a URL of the form
@@ -383,13 +384,9 @@ list_objects_response list_objects_impl(s3url parsed_url,
         else
         {
             std::stringstream ss;
-            ss << '(' << parsed_url
-               << ".proxy:" << clientConfiguration.proxyHost << ".region:"
-               << clientConfiguration.region << ')'
-               << " Error while listing Objects, exception: "
-               << outcome.GetError().GetExceptionName()
-               << ".Error msg from aws: " << outcome.GetError().GetMessage()
-               << " in " << __FILE__ << ":" << __LINE__ << std::endl;
+            reportS3ErrorDetailed(ss, parsed_url, S3Operation::List,
+                                  clientConfiguration, outcome)
+                << std::endl;
             ret.error = ss.str();
         }
 
@@ -451,12 +448,9 @@ std::string delete_object_impl(s3url parsed_url,
     if(!outcome.IsSuccess())
     {
       std::stringstream ss;
-      ss << '(' << parsed_url << ".proxy:" << clientConfiguration.proxyHost
-         << ".region:" << clientConfiguration.region << ')'
-         << " Error while deleting Objects, exception: "
-         << outcome.GetError().GetExceptionName()
-         << ".Error msg from aws: " << outcome.GetError().GetMessage() << " in "
-         << __FILE__ << ":" << __LINE__ << std::endl;
+      reportS3ErrorDetailed(ss, parsed_url, S3Operation::Delete,
+                            clientConfiguration, outcome) << std::endl;
+      ret = ss.str();
     }
 
     Aws::ShutdownAPI(options);
@@ -535,13 +529,9 @@ std::string delete_prefix_impl(s3url parsed_url,
         else
         {
             std::stringstream ss;
-            ss << '(' << parsed_url
-               << ".proxy:" << clientConfiguration.proxyHost
-               << ".region:" << clientConfiguration.region << ')'
-               << " Error while listing Objects, exception: "
-               << outcome.GetError().GetExceptionName()
-               << ".Error msg from aws: " << outcome.GetError().GetMessage()
-               << " in " << __FILE__ << ":" << __LINE__ << std::endl;
+            reportS3ErrorDetailed(ss, parsed_url, S3Operation::List,
+                                  clientConfiguration, outcome)
+                << std::endl;
             ret = ss.str();
         }
 
@@ -557,12 +547,9 @@ std::string delete_prefix_impl(s3url parsed_url,
         if (!outcome.IsSuccess())
         {
           std::stringstream ss;
-          ss << '(' << parsed_url << ",proxy:" << clientConfiguration.proxyHost
-             << ".region:" << clientConfiguration.region << ')'
-             << " Error while deleting Objects, exception: "
-             << outcome.GetError().GetExceptionName()
-             << ".Error msg from aws: " << outcome.GetError().GetMessage()
-             << " in " << __FILE__ << ":" << __LINE__ << std::endl;
+          reportS3ErrorDetailed(ss, parsed_url, S3Operation::Delete,
+                                clientConfiguration, outcome)
+              << std::endl;
           ret = ss.str();
         }
     }

@@ -11,6 +11,7 @@
 #include <memory>
 #include <vector>
 #include <core/storage/fileio/fs_utils.hpp>
+#include <aws/s3/S3Client.h>
 
 namespace turi {
 
@@ -37,8 +38,8 @@ struct s3url {
   }
 
   friend std::ostream& operator<<(std::ostream& os, const s3url& url) {
-    os << "bucket:" << url.bucket << ",object_name:" << url.object_name
-       << ",endpoint:" << url.endpoint;
+    os << "bucket:" << url.bucket << ", object_name:" << url.object_name
+       << ", endpoint:" << url.endpoint;
     return os;
   }
 };
@@ -209,7 +210,38 @@ void set_download_timeout(long timeout);
  * If the message does not contain error code, return the message itself.
  */
 std::string get_s3_error_code(const std::string& msg);
-} // namespace turi
 
+struct S3Operation {
+  enum ops_enum {
+    Delete,
+    List,
+    HEAD,
+  };
+
+  static std::string toString(ops_enum operation) {
+    return _enum_to_str.at(operation);
+  }
+
+  static const std::vector<std::string> _enum_to_str;
+};
+
+template <class Response>
+std::ostream& reportS3Error(std::ostream& ss, const s3url& parsed_url,
+                            S3Operation::ops_enum operation,
+                            const Aws::Client::ClientConfiguration& config,
+                            const Response& outcome) {
+  ss << '(' << parsed_url << ", proxy:" << config.proxyHost
+     << ", region:" << config.region << ')'
+     << " Error while performing " << S3Operation::toString(operation)
+     << ", exception: " << outcome.GetError().GetExceptionName()
+     << ". Error msg from AWS: " << outcome.GetError().GetMessage();
+  return ss;
+}
+
+#define reportS3ErrorDetailed(ss, parsed_url, operation, config, outcome) \
+  reportS3Error(ss, parsed_url, operation, config, outcome)               \
+      << " in " << __FILE__ << " at " << __LINE__
+
+}  // namespace turi
 
 #endif
