@@ -7,7 +7,7 @@
 
 @implementation VegaJSDocument;
 - (instancetype)initWithCanvas:(VegaCGCanvas*)canvas {
-    self = [super init]
+    self = [super init];
     _canvas = canvas;
     return self;
 }
