@@ -623,14 +623,6 @@
 }
 
 - (void)fill {
-    NSArray *args = [JSContext currentArguments];
-    (void)args;
-    assert(args != nil);
-    if(args.count > 0) {
-        // Vega occasionally makes calls to fill with four arguments when zero are expected.
-        // Might have intended to call fillRect instead.
-        NSLog(@"warning: 'fill' called with %lu arguments when none were expected", args.count);
-    }
     CGPathRef currentPath = CGContextCopyPath(self.context);
     if ([_fillStyle isKindOfClass:VegaCGLinearGradient.class]) {
         VegaCGLinearGradient *gradient = _fillStyle;
