@@ -278,8 +278,48 @@
                 if ([fontProperties.fontWeight isEqualToString:@"bold"]) {
                     newFont = [fontManager convertFont:newFont toHaveTrait:NSBoldFontMask];
                     assert(newFont != nil);
+                } else if (fontProperties.fontWeight.length == 3 &&
+                           [[fontProperties.fontWeight substringFromIndex:1] isEqualToString:@"00"]) {
+                    NSString *weightString = [fontProperties.fontWeight substringToIndex:1];
+                    NSInteger weightInt = weightString.intValue;
+                    NSFontWeight weight = NSFontWeightRegular;
+                    switch (weightInt) {
+                        case 1:
+                            weight = NSFontWeightUltraLight;
+                            break;
+                        case 2:
+                            weight = NSFontWeightThin;
+                            break;
+                        case 3:
+                            weight = NSFontWeightLight;
+                            break;
+                        case 4:
+                            weight = NSFontWeightRegular;
+                            break;
+                        case 5:
+                            weight = NSFontWeightMedium;
+                            break;
+                        case 6:
+                            weight = NSFontWeightSemibold;
+                            break;
+                        case 7:
+                            weight = NSFontWeightBold;
+                            break;
+                        case 8:
+                            weight = NSFontWeightHeavy;
+                            break;
+                        case 9:
+                            weight = NSFontWeightBlack;
+                            break;
+                        default:
+                            NSLog(@"Encountered unexpected font weight %@", fontProperties.fontWeight);
+                            assert(false);
+                    }
+                    newFont = [fontManager fontWithFamily:newFont.familyName traits:[fontManager traitsOfFont:newFont] weight:weight size:newFont.pointSize];
+                    assert(newFont != nil);
                 } else {
                     // unexpected font weight
+                    NSLog(@"Encountered unexpected font weight %@", fontProperties.fontWeight);
                     assert(false);
                 }
             }

@@ -30,21 +30,28 @@ if(APPLE AND NOT TC_BUILD_IOS)
    ##
    ## Preprocessed JavaScript artifacts
    ##
+   set(JS_FILE_EXT "js")
+   if (CMAKE_BUILD_TYPE STREQUAL "Release")
+      set(JS_FILE_EXT "min.js")
+   endif()
    add_custom_command(
       OUTPUT
-         ${CMAKE_CURRENT_BINARY_DIR}/vega-4.4.0.min.js.h
-         ${CMAKE_CURRENT_BINARY_DIR}/vega-lite-3.0.0-rc10.min.js.h
+         ${CMAKE_CURRENT_BINARY_DIR}/vega-5.4.0.${JS_FILE_EXT}.h
+         ${CMAKE_CURRENT_BINARY_DIR}/vega-lite-3.3.0.${JS_FILE_EXT}.h
       COMMENT "Running xxd to generate headers from JavaScript artifacts"
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-      COMMAND xxd -i vega-4.4.0.min.js ${CMAKE_CURRENT_BINARY_DIR}/vega-4.4.0.min.js.h
-      COMMAND xxd -i vega-lite-3.0.0-rc10.min.js ${CMAKE_CURRENT_BINARY_DIR}/vega-lite-3.0.0-rc10.min.js.h
+      COMMAND xxd -i vega-5.4.0.${JS_FILE_EXT} ${CMAKE_CURRENT_BINARY_DIR}/vega-5.4.0.${JS_FILE_EXT}.h
+      COMMAND xxd -i vega-lite-3.3.0.${JS_FILE_EXT} ${CMAKE_CURRENT_BINARY_DIR}/vega-lite-3.3.0.${JS_FILE_EXT}.h
+      DEPENDS
+         ${CMAKE_CURRENT_SOURCE_DIR}/vega-5.4.0.${JS_FILE_EXT}
+         ${CMAKE_CURRENT_SOURCE_DIR}/vega-lite-3.3.0.${JS_FILE_EXT}
       VERBATIM
    )
    add_custom_target(
       preprocessed_javascript
       DEPENDS
-         ${CMAKE_CURRENT_BINARY_DIR}/vega-4.4.0.min.js.h
-         ${CMAKE_CURRENT_BINARY_DIR}/vega-lite-3.0.0-rc10.min.js.h
+         ${CMAKE_CURRENT_BINARY_DIR}/vega-5.4.0.${JS_FILE_EXT}.h
+         ${CMAKE_CURRENT_BINARY_DIR}/vega-lite-3.3.0.${JS_FILE_EXT}.h
    )
 
    ##

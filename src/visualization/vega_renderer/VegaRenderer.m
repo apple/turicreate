@@ -15,15 +15,33 @@
 #define IDENT(x) x
 #define PATH(x,y) QUOTE(IDENT(x)IDENT(y))
 
-#define VEGA_JS_H PATH(OBJROOT,/vega-4.4.0.min.js.h)
-#import VEGA_JS_H
-#define vega_js vega_4_4_0_min_js
-#define vega_js_size vega_4_4_0_min_js_len
+#ifdef NDEBUG
 
-#define VEGALITE_JS_H PATH(OBJROOT,/vega-lite-3.0.0-rc10.min.js.h)
+// release mode, use minified JS
+#define VEGA_JS_H PATH(OBJROOT,/vega-5.4.0.min.js.h)
+#import VEGA_JS_H
+#define vega_js vega_5_4_0_min_js
+#define vega_js_size vega_5_4_0_min_js_len
+
+#define VEGALITE_JS_H PATH(OBJROOT,/vega-lite-3.3.0.min.js.h)
 #import VEGALITE_JS_H
-#define vegalite_js vega_lite_3_0_0_rc10_min_js
-#define vegalite_js_size vega_lite_3_0_0_rc10_min_js_len
+#define vegalite_js vega_lite_3_3_0_min_js
+#define vegalite_js_size vega_lite_3_3_0_min_js_len
+
+#else
+
+// debug mode, use unminified JS
+#define VEGA_JS_H PATH(OBJROOT,/vega-5.4.0.js.h)
+#import VEGA_JS_H
+#define vega_js vega_5_4_0_js
+#define vega_js_size vega_5_4_0_js_len
+
+#define VEGALITE_JS_H PATH(OBJROOT,/vega-lite-3.3.0.js.h)
+#import VEGALITE_JS_H
+#define vegalite_js vega_lite_3_3_0_js
+#define vegalite_js_size vega_lite_3_3_0_js_len
+
+#endif
 
 @interface VegaRenderer ()
 
@@ -66,13 +84,13 @@
         self.context[@"console"][@"error"] = ^() {
             NSArray *message = [JSContext currentArguments];
             NSLog(@"JS console error: %@", message);
-            assert(false);
         };
         
         // set up error handling
         self.context.exceptionHandler = ^(JSContext *context, JSValue *exception) {
             NSLog(@"Unhandled exception: %@", [exception toString]);
             NSLog(@"In context: %@", [context debugDescription]);
+            NSLog(@"Line %@, column %@", [exception objectForKeyedSubscript:@"line"], [exception objectForKeyedSubscript:@"column"]);
             NSLog(@"Stacktrace: %@", [exception objectForKeyedSubscript:@"stack"]);
             assert(false);
         };
@@ -82,6 +100,12 @@
 
         VegaJSDocument* document = [[VegaJSDocument alloc] initWithCanvas:vegaCanvas];
         self.context[@"document"] = document;
+
+        // set up Image type
+        self.context[@"Image"] = [JSValue valueWithObject:^() {
+            assert([[JSContext currentArguments] count] == 0);
+            return [[VegaCGImage alloc] init];
+        } inContext:self.context];
 
         [self.context evaluateScript:[VegaRenderer vegaJS]];
         [self.context evaluateScript:[VegaRenderer vegaliteJS]];
