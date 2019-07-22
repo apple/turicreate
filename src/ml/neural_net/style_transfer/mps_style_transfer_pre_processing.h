@@ -14,23 +14,16 @@
 NS_ASSUME_NONNULL_BEGIN
 
 API_AVAILABLE(macos(10.14))
-@interface TCMPSVgg16Network : NSObject 
-
-@property (nonatomic) MPSNNImageNode *reluOut1;
-@property (nonatomic) MPSNNImageNode *reluOut2;
-@property (nonatomic) MPSNNImageNode *reluOut3;
-@property (nonatomic) MPSNNImageNode *reluOut4;
+@interface TCMPSStyleTransferPreProcessing : NSObject 
 
 @property (nonatomic) MPSNNImageNode *output;
 
 - (instancetype) initWithParameters:(NSString *)name
                           inputNode:(MPSNNImageNode *)inputNode
-                             device:(id<MTLDevice>)dev
-                           cmdQueue:(id<MTLCommandQueue>)cmdQ
-                         descriptor:(TCMPSVgg16Descriptor *)descriptor
-                        initWeights:(NSDictionary<NSString *, NSDictionary *> *) weights;
+                         scaleNode:(MPSNNImageNode *)scaleNode
+                          meanNode:(MPSNNImageNode *)meanNode;
 
-- (MPSNNImageNode * _Nullable) backwardPass:(MPSNNImageNode *) inputNode;
+- (MPSNNImageNode *) backwardPass:(MPSNNImageNode *) inputNode;
 
 @end
 

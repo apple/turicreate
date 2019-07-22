@@ -16,13 +16,13 @@ NS_ASSUME_NONNULL_BEGIN
 API_AVAILABLE(macos(10.14))
 @interface TCMPSStyleTransfer : NSObject
 
-@property (nonatomic) NSUInteger batch_size;
-@property (nonatomic) NSNumber *content_loss_multiplier;
-@property (nonatomic) NSNumber *style_loss_multiplier;
-@property (nonatomic) BOOL finetune_all_params;
-@property (nonatomic) BOOL pretrained_weights;
+@property (nonatomic) NSUInteger batchSize;
+@property (nonatomic) NSNumber *contentLossMultiplier;
+@property (nonatomic) NSNumber *styleLossMultiplier;
+@property (nonatomic) BOOL finetuneAllParams;
 
-- (instancetype) initWithParameters:(NSDictionary<NSString *, NSData *> *)weights;
+- (instancetype) initWithParameters:(NSDictionary<NSString *, NSData *> *)weights
+                          numStyles:(NSUInteger)numStyles;
 
 - (NSDictionary<NSString *, NSData *> *)exportWeights;
 - (NSDictionary<NSString *, NSData *> *)predict:(NSDictionary<NSString *, NSData *> *)inputs;

@@ -216,6 +216,10 @@ def create(style_dataset, content_dataset, style_feature=None,
     vgg_model.load_params(vgg_model_path, ctx=ctx, ignore_extra=True)
     vgg_model.hybridize()
 
+    print(vgg_model.collect_params())
+
+    return None
+
     # TRAINER
     from mxnet import gluon as _gluon
     from ._model import gram_matrix as _gram_matrix

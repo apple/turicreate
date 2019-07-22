@@ -37,8 +37,8 @@
                                            strideHeight:descriptor.conv1.strideHeight
                                            paddingWidth:descriptor.conv1.paddingWidth
                                           paddingHeight:descriptor.conv1.paddingHeight
-                                                weights:weights[[NSString stringWithFormat:@"%@/%@", name, @"residual_conv_1_weights"]]
-                                                 biases:weights[[NSString stringWithFormat:@"%@/%@", name, @"residual_conv_1_biases"]]
+                                                weights:weights[[NSString stringWithFormat:@"%@%@", name, @"residual_conv_1_weights"]]
+                                                 biases:weights[[NSString stringWithFormat:@"%@%@", name, @"residual_conv_1_biases"]]
                                                   label:descriptor.conv1.label
                                           updateWeights:descriptor.conv1.updateWeights
                                                  device:dev
@@ -47,8 +47,8 @@
     _instNorm1 = [MPSCNNConvolutionNode createInstanceNormalization:[_conv1 resultImage]
                                                            channels:descriptor.inst1.channels
                                                              styles:descriptor.inst1.styles
-                                                              gamma:weights[[NSString stringWithFormat:@"%@/%@", name, @"residual_inst_1_gamma"]]
-                                                               beta:weights[[NSString stringWithFormat:@"%@/%@", name, @"residual_inst_1_beta"]]
+                                                              gamma:weights[[NSString stringWithFormat:@"%@%@", name, @"residual_inst_1_gamma"]]
+                                                               beta:weights[[NSString stringWithFormat:@"%@%@", name, @"residual_inst_1_beta"]]
                                                               label:descriptor.inst1.label
                                                              device:dev
                                                            cmdQueue:cmdQ];
@@ -64,8 +64,8 @@
                                            strideHeight:descriptor.conv2.strideHeight
                                            paddingWidth:descriptor.conv2.paddingWidth
                                           paddingHeight:descriptor.conv2.paddingHeight
-                                                weights:weights[[NSString stringWithFormat:@"%@/%@", name, @"residual_conv_2_weights"]]
-                                                 biases:weights[[NSString stringWithFormat:@"%@/%@", name, @"residual_conv_2_biases"]]
+                                                weights:weights[[NSString stringWithFormat:@"%@%@", name, @"residual_conv_2_weights"]]
+                                                 biases:weights[[NSString stringWithFormat:@"%@%@", name, @"residual_conv_2_biases"]]
                                                   label:descriptor.conv2.label
                                           updateWeights:descriptor.conv2.updateWeights
                                                  device:dev
@@ -74,8 +74,8 @@
     _instNorm2 = [MPSCNNConvolutionNode createInstanceNormalization:[_conv2 resultImage]
                                                            channels:descriptor.inst2.channels
                                                              styles:descriptor.inst2.styles
-                                                              gamma:weights[[NSString stringWithFormat:@"%@/%@", name, @"residual_inst_2_gamma"]]
-                                                               beta:weights[[NSString stringWithFormat:@"%@/%@", name, @"residual_inst_2_beta"]]
+                                                              gamma:weights[[NSString stringWithFormat:@"%@%@", name, @"residual_inst_2_gamma"]]
+                                                               beta:weights[[NSString stringWithFormat:@"%@%@", name, @"residual_inst_2_beta"]]
                                                               label:descriptor.inst2.label
                                                              device:dev
                                                            cmdQueue:cmdQ]; 
