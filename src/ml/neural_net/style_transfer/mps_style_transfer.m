@@ -4,10 +4,12 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#import <ml/neural_net/style_transfer/mps_style_transfer.h>
-#import <ml/neural_net/style_transfer/mps_style_transfer_utils.h>
+#import <ml/neural_net/mps_device_manager.h>
 #import <ml/neural_net/mps_layer_helper.h>
 #import <ml/neural_net/mps_node_handle.h>
+
+#import <ml/neural_net/style_transfer/mps_style_transfer.h>
+#import <ml/neural_net/style_transfer/mps_style_transfer_utils.h>
 
 #import <ml/neural_net/style_transfer/mps_style_transfer_transformer_network.h>
 #import <ml/neural_net/style_transfer/mps_style_transfer_vgg_16_network.h>
@@ -74,9 +76,10 @@
                                                                                    tuneAllWeights:_finetuneAllParams];
     TCMPSVgg16Descriptor *vgg16Desc = [TCMPSStyleTransfer defineVGG16Descriptor:numStyles];
 
-    
-    // TODO: Add dev and commandQueue
-    
+    // Allocate a _dev and _commandQueue
+    _dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
+    _commandQueue = [_dev newCommandQueue];
+
     NSDictionary<NSString *, NSDictionary *> *transformerWeights = [TCMPSStyleTransfer defineTransformerWeights:weights];
     NSDictionary<NSString *, NSDictionary *> *vgg16Weights = [TCMPSStyleTransfer defineVGG16:weights];
 
