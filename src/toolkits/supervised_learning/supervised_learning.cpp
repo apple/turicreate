@@ -1069,26 +1069,29 @@ void supervised_learning_model_base::api_train(
 
   this->train();
 
-  // Add in all the fields for the evaluation into the training statistics.
-  variant_map_type state_update;
+  if(!get_option_value("disable_posttrain_evaluation")) {
 
-  {
-    auto ret = this->api_evaluate(data, "auto", "report");
+    // Add in all the fields for the evaluation into the training statistics.
+    variant_map_type state_update;
 
-    for (auto& p : ret) {
-      state_update["training_" + p.first] = p.second;
+    {
+      auto ret = this->api_evaluate(data, "auto", "report");
+
+      for (auto& p : ret) {
+        state_update["training_" + p.first] = p.second;
+      }
     }
-  }
 
-  if(validation_data.size() != 0) {
-    auto ret = this->api_evaluate(validation_data, "auto", "report");
+    if(validation_data.size() != 0) {
+      auto ret = this->api_evaluate(validation_data, "auto", "report");
 
-    for (auto& p : ret) {
-      state_update["validation_" + p.first] = p.second;
+      for (auto& p : ret) {
+        state_update["validation_" + p.first] = p.second;
+      }
     }
-  }
 
-  add_or_update_state(state_update);
+    add_or_update_state(state_update);
+  }
 }
 
 /**

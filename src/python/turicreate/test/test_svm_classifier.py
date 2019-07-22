@@ -125,6 +125,7 @@ class SVMClassifierTest(unittest.TestCase):
          'training_recall': lambda x: x > 0,
          'training_report_by_class': lambda x: len(x) > 0,
          'validation_data': lambda x: isinstance(x, tc.SFrame) and len(x) == 0,
+         'disable_posttrain_evaluation' : lambda x: x == False,
             }
         self.fields_ans = self.get_ans.keys()
 
