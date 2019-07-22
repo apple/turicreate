@@ -80,6 +80,12 @@ void init_random_forest_common_options(option_manager &options){
       "auto",
       false);
 
+  options.create_boolean_option(
+      "disable_posttrain_evaluation",
+      "Disable automatic computation of an evaluation report following training.",
+      false,
+      false);
+
   /// Model checkpointing
   options.create_string_option(
       "model_checkpoint_path",

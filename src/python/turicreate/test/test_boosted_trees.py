@@ -766,6 +766,24 @@ class BoostedTreesClassifierTest(unittest.TestCase):
                                   **self.param)
         y = self.model.predict(test)
 
+    def test_metric_none(self):
+        # Make sure that when passing in the reported_evaluation_metric as none, the model still works.
+        #
+
+        simple_data = self.data
+        simple_train, simple_test = simple_data.random_split(0.8, seed=1)
+
+        model = tc.boosted_trees_classifier.create(train, target='label', disable_posttrain_evaluation = True)
+
+        # These fields should not be present.
+        self.assertTrue("training_accuracy" not in model.list_fields())
+        self.assertTrue("training_confusion_matrix" not in model.list_fields())
+
+        # None of these should error out.
+        model.evaluate(simple_test)
+        model.predict(simple_test)
+
+
 class TestStringTarget(unittest.TestCase):
 
     def test_cat(self):
