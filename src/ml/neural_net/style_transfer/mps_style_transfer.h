@@ -13,7 +13,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-API_AVAILABLE(macos(10.14))
+API_AVAILABLE(macos(10.15))
 @interface TCMPSStyleTransfer : NSObject
 
 @property (nonatomic) NSUInteger batchSize;

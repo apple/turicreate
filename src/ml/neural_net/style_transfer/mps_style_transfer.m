@@ -34,6 +34,9 @@
 @property (nonatomic) MPSNNImageNode *styleScaleNode;
 @property (nonatomic) MPSNNImageNode *styleMeanNode;
 
+@property (nonatomic) MPSNNGraph *trainingGraph;
+@property (nonatomic) MPSNNGraph *inferenceGraph;
+
 @property (nonatomic) id<MTLDevice> dev;
 @property (nonatomic) id<MTLCommandQueue> commandQueue;
 @end
@@ -51,15 +54,15 @@
     _finetuneAllParams = YES;
 
     // Create the loss descriptors for the style and content images
-    MPSCNNLossDescriptor *style_desc = [MPSCNNLossDescriptor cnnLossDescriptorWithType:MPSCNNLossTypeMeanSquaredError
+    MPSCNNLossDescriptor *styleDesc = [MPSCNNLossDescriptor cnnLossDescriptorWithType:MPSCNNLossTypeMeanSquaredError
                                                                          reductionType:MPSCNNReductionTypeMean];
 
-    style_desc.weight = 0.5 * [_styleLossMultiplier floatValue];
+    styleDesc.weight = 0.5 * [_styleLossMultiplier floatValue];
 
-    MPSCNNLossDescriptor *content_desc = [MPSCNNLossDescriptor cnnLossDescriptorWithType:MPSCNNLossTypeMeanSquaredError
+    MPSCNNLossDescriptor *contentDesc = [MPSCNNLossDescriptor cnnLossDescriptorWithType:MPSCNNLossTypeMeanSquaredError
                                                                            reductionType:MPSCNNReductionTypeMean];
 
-    content_desc.weight = 0.5 * [_contentLossMultiplier floatValue];
+    contentDesc.weight = 0.5 * [_contentLossMultiplier floatValue];
 
     // Create Proper Input Nodes
     _contentNode = [MPSNNImageNode nodeWithHandle: [[TCMPSGraphNodeHandle alloc] initWithLabel:@"contentImage"]];
@@ -91,7 +94,7 @@
                                                                   initWeights:transformerWeights];
 
     _contentPreProcess = [[TCMPSStyleTransferPreProcessing alloc] initWithParameters:@"Content_Pre_Processing"
-                                                                           inputNode:[_model forwardPass]
+                                                                           inputNode:_model.forwardPass
                                                                            scaleNode:_contentScaleNode
                                                                             meanNode:_contenMeanNode];
     
@@ -125,6 +128,106 @@
                                                            cmdQueue:_commandQueue
                                                          descriptor:vgg16Desc
                                                         initWeights:vgg16Weights];
+
+    NSUInteger DEFAULT_IMAGE_SIZE = 256;
+
+    NSUInteger gramScaling1 = (DEFAULT_IMAGE_SIZE * DEFAULT_IMAGE_SIZE);
+    NSUInteger gramScaling2 = ((DEFAULT_IMAGE_SIZE/2) * (DEFAULT_IMAGE_SIZE/2));
+    NSUInteger gramScaling3 = ((DEFAULT_IMAGE_SIZE/4) * (DEFAULT_IMAGE_SIZE/4));
+    NSUInteger gramScaling4 = ((DEFAULT_IMAGE_SIZE/8) * (DEFAULT_IMAGE_SIZE/8));
+
+    MPSNNGramMatrixCalculationNode *gramMatrixStyleLossFirstReLU
+      = [MPSNNGramMatrixCalculationNode nodeWithSource:_styleVggLoss.reluOut1
+                                                 alpha:(1.0/gramScaling1)];
+
+    MPSNNGramMatrixCalculationNode *gramMatrixContentVggFirstReLU
+      = [MPSNNGramMatrixCalculationNode nodeWithSource:_contentVgg.reluOut1
+                                                 alpha:(1.0/gramScaling1)];
+
+    MPSNNForwardLossNode *styleLossNode1 
+      = [MPSNNForwardLossNode nodeWithSource:gramMatrixContentVggFirstReLU.resultImage
+                                      labels:gramMatrixStyleLossFirstReLU.resultImage
+                              lossDescriptor:styleDesc];
+
+    MPSNNGramMatrixCalculationNode *gramMatrixStyleLossSecondReLU
+      = [MPSNNGramMatrixCalculationNode nodeWithSource:_styleVggLoss.reluOut2
+                                                 alpha:(1.0/gramScaling2)];
+
+    MPSNNGramMatrixCalculationNode *gramMatrixContentVggSecondReLU
+      = [MPSNNGramMatrixCalculationNode nodeWithSource:_contentVgg.reluOut2
+                                                 alpha:(1.0/gramScaling2)];
+
+    MPSNNForwardLossNode *styleLossNode2
+      = [MPSNNForwardLossNode nodeWithSource:gramMatrixContentVggSecondReLU.resultImage
+                                      labels:gramMatrixStyleLossSecondReLU.resultImage
+                              lossDescriptor:styleDesc];
+
+    MPSNNGramMatrixCalculationNode *gramMatrixStyleLossThirdReLU
+      = [MPSNNGramMatrixCalculationNode nodeWithSource:_styleVggLoss.reluOut3
+                                                 alpha:(1.0/gramScaling3)];
+
+    MPSNNGramMatrixCalculationNode *gramMatrixContentVggThirdReLU
+      = [MPSNNGramMatrixCalculationNode nodeWithSource:_contentVgg.reluOut3
+                                                 alpha:(1.0/gramScaling3)];
+
+    MPSNNForwardLossNode *styleLossNode3
+      = [MPSNNForwardLossNode nodeWithSource:gramMatrixContentVggThirdReLU.resultImage
+                                      labels:gramMatrixStyleLossThirdReLU.resultImage
+                              lossDescriptor:styleDesc];
+
+    MPSNNGramMatrixCalculationNode *gramMatrixStyleLossFourthReLU
+      = [MPSNNGramMatrixCalculationNode nodeWithSource:_styleVggLoss.reluOut4
+                                                 alpha:(1.0/gramScaling4)];
+
+    MPSNNGramMatrixCalculationNode *gramMatrixContentVggFourthReLU
+      = [MPSNNGramMatrixCalculationNode nodeWithSource:_contentVgg.reluOut4
+                                                 alpha:(1.0/gramScaling4)];
+
+    MPSNNForwardLossNode *styleLossNode4 
+      = [MPSNNForwardLossNode nodeWithSource:gramMatrixContentVggFourthReLU.resultImage
+                                      labels:gramMatrixStyleLossFourthReLU.resultImage
+                              lossDescriptor:styleDesc];
+
+    MPSNNForwardLossNode *contentLossNode
+      = [MPSNNForwardLossNode nodeWithSource:_contentVgg.reluOut3
+                                      labels:_contentVggLoss.reluOut3
+                              lossDescriptor:contentDesc];
+
+     MPSNNAdditionNode* addLossStyle1Style2
+      = [MPSNNAdditionNode nodeWithSources:@[styleLossNode1.resultImage,
+                                             styleLossNode2.resultImage]];
+
+    MPSNNAdditionNode* addLossStyle3Style4
+      = [MPSNNAdditionNode nodeWithSources:@[styleLossNode3.resultImage,
+                                             styleLossNode4.resultImage]];
+
+    MPSNNAdditionNode* addTotalStyleLoss 
+      = [MPSNNAdditionNode nodeWithSources:@[addLossStyle1Style2.resultImage,
+                                             addLossStyle3Style4.resultImage]];
+
+    MPSNNAdditionNode* totalLoss
+      = [MPSNNAdditionNode nodeWithSources:@[addTotalStyleLoss.resultImage,
+                                             contentLossNode.resultImage]];
+
+    MPSNNInitialGradientNode *initialGradient
+      = [MPSNNInitialGradientNode nodeWithSource:totalLoss.resultImage];
+
+    BOOL resultsAreNeeded[] = { YES, YES };
+
+    NSArray<MPSNNFilterNode*>* lastNodes 
+      = [initialGradient trainingGraphWithSourceGradient:initialGradient.resultImage
+                                             nodeHandler: nil];
+
+    _trainingGraph = [MPSNNGraph graphWithDevice:_dev
+                                    resultImages:@[lastNodes[0].resultImage, lastNodes[1].resultImage]
+                                resultsAreNeeded:&resultsAreNeeded[0]];
+
+    _inferenceGraph = [MPSNNGraph graphWithDevice:_dev
+                                      resultImage:_model.forwardPass
+                              resultImageIsNeeded:YES];
+
+    _trainingGraph.format = MPSImageFeatureChannelFormatFloat32;
+    _inferenceGraph.format = MPSImageFeatureChannelFormatFloat32;
   }
   return self;
 }
