@@ -31,7 +31,7 @@ API_AVAILABLE(macos(10.14))
                         initWeights:(NSDictionary<NSString *, NSDictionary *> *) weights;
 
 - (MPSNNImageNode * _Nullable) backwardPass:(MPSNNImageNode *) inputNode;
-
+- (void)setLearningRate:(float)lr;
 @end
 
 NS_ASSUME_NONNULL_END

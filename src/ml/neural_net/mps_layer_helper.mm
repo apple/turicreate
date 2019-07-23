@@ -5,10 +5,9 @@
  */
 
 #include <ml/neural_net/mps_layer_helper.h>
-#include <ml/neural_net/mps_weight.h>
-
 #import <ml/neural_net/mps_layer_conv_padding.h>
 #import <ml/neural_net/mps_layer_instance_norm_data_loader.h>
+#include <ml/neural_net/mps_weight.h>
 
 @implementation MPSCNNFullyConnectedNode (TCMPSLayerHelper)
 + (MPSCNNFullyConnectedNode *) createFullyConnected:(MPSNNImageNode *)inputNode
@@ -100,7 +99,9 @@
   
 	return convNode;
 }
+@end
 
+@implementation MPSCNNInstanceNormalizationNode (TCMPSLayerHelper)
 + (MPSCNNInstanceNormalizationNode *) createInstanceNormalization:(MPSNNImageNode *)inputNode
                                                          channels:(NSUInteger)channels
                                                            styles:(NSUInteger)styles

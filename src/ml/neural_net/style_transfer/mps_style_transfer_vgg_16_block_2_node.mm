@@ -4,24 +4,28 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#import <ml/neural_net/style_transfer/mps_style_transfer_vgg_16_block_1_node.h>
+#import <ml/neural_net/style_transfer/mps_style_transfer_vgg_16_block_2_node.h>
 #import <ml/neural_net/mps_layer_helper.h>
 
-@interface TCMPSVgg16Block1 ()
+#include <ml/neural_net/mps_weight.h>
+
+@interface TCMPSVgg16Block2 ()
 @property (nonatomic) MPSCNNConvolutionNode *conv1;
 @property (nonatomic) MPSCNNNeuronReLUNNode *relu1;
 @property (nonatomic) MPSCNNConvolutionNode *conv2;
 @property (nonatomic) MPSCNNNeuronReLUNNode *relu2;
+@property (nonatomic) MPSCNNConvolutionNode *conv3;
+@property (nonatomic) MPSCNNNeuronReLUNNode *relu3;
 @property (nonatomic) MPSCNNPoolingAverageNode *pooling;
 @end
 
-@implementation TCMPSVgg16Block1 : NSObject
+@implementation TCMPSVgg16Block2 : NSObject
 
 - (instancetype) initWithParameters:(NSString *)name
                           inputNode:(MPSNNImageNode *)inputNode
                              device:(id<MTLDevice>)dev
                            cmdQueue:(id<MTLCommandQueue>)cmdQ
-                         descriptor:(TCMPSVgg16Block1Descriptor *)descriptor
+                         descriptor:(TCMPSVgg16Block2Descriptor *)descriptor
                         initWeights:(NSDictionary<NSString *, NSData *> *) weights {
   self = [super init];
   if (self) {
@@ -34,8 +38,8 @@
                                            strideHeight:descriptor.conv1.strideHeight
                                            paddingWidth:descriptor.conv1.paddingWidth
                                           paddingHeight:descriptor.conv1.paddingHeight
-                                                weights:weights[[NSString stringWithFormat:@"%@%@", name, @"block_1_conv_1_weights"]]
-                                                 biases:weights[[NSString stringWithFormat:@"%@%@", name, @"block_1_conv_1_biases"]]
+                                                weights:weights[[NSString stringWithFormat:@"%@%@", name, @"block_2_conv_1_weights"]]
+                                                 biases:weights[[NSString stringWithFormat:@"%@%@", name, @"block_2_conv_1_biases"]]
                                                   label:descriptor.conv1.label
                                           updateWeights:descriptor.conv1.updateWeights
                                                  device:dev
@@ -52,8 +56,8 @@
                                            strideHeight:descriptor.conv2.strideHeight
                                            paddingWidth:descriptor.conv2.paddingWidth
                                           paddingHeight:descriptor.conv2.paddingHeight
-                                                weights:weights[[NSString stringWithFormat:@"%@%@", name, @"block_1_conv_2_weights"]]
-                                                 biases:weights[[NSString stringWithFormat:@"%@%@", name, @"block_1_conv_2_biases"]]
+                                                weights:weights[[NSString stringWithFormat:@"%@%@", name, @"block_2_conv_2_weights"]]
+                                                 biases:weights[[NSString stringWithFormat:@"%@%@", name, @"block_2_conv_2_biases"]]
                                                   label:descriptor.conv2.label
                                           updateWeights:descriptor.conv2.updateWeights
                                                  device:dev
@@ -61,14 +65,32 @@
 
     _relu2 = [MPSCNNNeuronReLUNNode nodeWithSource: [_conv2 resultImage]];
 
-    _pooling = [[MPSCNNPoolingAverageNode alloc] initWithSource:[_relu2 resultImage]
+    _conv3 = [MPSCNNConvolutionNode createConvolutional:[_relu2 resultImage]
+                                            kernelWidth:descriptor.conv2.kernelWidth
+                                           kernelHeight:descriptor.conv2.kernelHeight
+                                   inputFeatureChannels:descriptor.conv2.inputFeatureChannels
+                                  outputFeatureChannels:descriptor.conv2.outputFeatureChannels
+                                            strideWidth:descriptor.conv2.strideWidth
+                                           strideHeight:descriptor.conv2.strideHeight
+                                           paddingWidth:descriptor.conv2.paddingWidth
+                                          paddingHeight:descriptor.conv2.paddingHeight
+                                                weights:weights[[NSString stringWithFormat:@"%@%@", name, @"block_2_conv_2_weights"]]
+                                                 biases:weights[[NSString stringWithFormat:@"%@%@", name, @"block_2_conv_2_biases"]]
+                                                  label:descriptor.conv2.label
+                                          updateWeights:descriptor.conv2.updateWeights
+                                                 device:dev
+                                               cmdQueue:cmdQ];
+
+    _relu3 = [MPSCNNNeuronReLUNNode nodeWithSource: [_conv3 resultImage]];
+
+    _pooling = [[MPSCNNPoolingAverageNode alloc] initWithSource:[_relu3 resultImage]
                                                     kernelWidth:descriptor.pooling.kernelSize
                                                    kernelHeight:descriptor.pooling.kernelSize 
                                                 strideInPixelsX:descriptor.pooling.strideSize
                                                 strideInPixelsY:descriptor.pooling.strideSize];
 
     _output = [_pooling resultImage];
-    _features = [_relu2 resultImage];
+    _features = [_relu3 resultImage];
   }
   return self;
 }
@@ -81,6 +103,12 @@
   MPSNNGradientFilterNode* conv1Grad = [_conv1 gradientFilterWithSource: [relu1Grad resultImage]];
 
   return [conv1Grad resultImage];
+}
+
+- (void)setLearningRate:(float)lr {
+  [[_conv1 weights] setLearningRate:lr];
+  [[_conv2 weights] setLearningRate:lr];
+  [[_conv3 weights] setLearningRate:lr];
 }
 
 @end

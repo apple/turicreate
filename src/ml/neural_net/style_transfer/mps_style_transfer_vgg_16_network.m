@@ -73,4 +73,11 @@
   return block1Grad;
 }
 
+- (void)setLearningRate:(float)lr {
+  [_block1 setLearningRate:lr];
+  [_block2 setLearningRate:lr];
+  [_block3 setLearningRate:lr];
+  [_block4 setLearningRate:lr];
+}
+
 @end

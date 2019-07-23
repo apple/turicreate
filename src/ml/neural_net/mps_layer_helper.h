@@ -11,20 +11,29 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MPSCNNFullyConnectedNode (TCMPSLayerHelper)
-+ (MPSCNNFullyConnectedNode *) createFullyConnected:(MPSNNImageNode *)inputNode
-                               inputFeatureChannels:(NSUInteger)inputFeatureChannels
-                              outputFeatureChannels:(NSUInteger)outputFeatureChannels
-                                        inputHeight:(NSUInteger)inputHeight
-                                         inputWidth:(NSUInteger)inputWidth
-                                            weights:(NSData *)weights
-                                             biases:(NSData *)biases
-                                              label:(NSString *)label
-                                      updateWeights:(BOOL)updateWeights
-                                             device:(id<MTLDevice>)dev
-                                           cmdQueue:(id<MTLCommandQueue>)cmdQ
-                                          API_AVAILABLE(macosx(10.14));
+@class TCMPSConvolutionWeights;
 
+@interface MPSCNNFullyConnectedNode(TCMPSLayerProperty)
+@property (nonatomic, retain) TCMPSConvolutionWeights *weights API_AVAILABLE(macosx(10.14));
+@end
+
+@interface MPSCNNFullyConnectedNode (TCMPSLayerHelper)
++ (TCMPSConvolutionWeights *) createFullyConnected:(MPSNNImageNode *)inputNode
+                              inputFeatureChannels:(NSUInteger)inputFeatureChannels
+                             outputFeatureChannels:(NSUInteger)outputFeatureChannels
+                                       inputHeight:(NSUInteger)inputHeight
+                                        inputWidth:(NSUInteger)inputWidth
+                                           weights:(NSData *)weights
+                                            biases:(NSData *)biases
+                                             label:(NSString *)label
+                                     updateWeights:(BOOL)updateWeights
+                                            device:(id<MTLDevice>)dev
+                                          cmdQueue:(id<MTLCommandQueue>)cmdQ
+                                         API_AVAILABLE(macosx(10.14));
+@end
+
+@interface MPSCNNConvolutionNode(TCMPSLayerProperty)
+@property (nonatomic, retain) TCMPSConvolutionWeights *weights API_AVAILABLE(macosx(10.14));
 @end
 
 @interface MPSCNNConvolutionNode (TCMPSLayerHelper)                                   
@@ -44,7 +53,13 @@ NS_ASSUME_NONNULL_BEGIN
                                          device:(id<MTLDevice>)dev
                                        cmdQueue:(id<MTLCommandQueue>)cmdQ
                                       API_AVAILABLE(macosx(10.14));
+@end
 
+@interface MPSCNNInstanceNormalizationNode(TCMPSLayerProperty)
+@property (nonatomic, retain) TCMPSConvolutionWeights *weights API_AVAILABLE(macosx(10.14));
+@end
+
+@interface MPSCNNInstanceNormalizationNode (TCMPSLayerHelper)
 + (MPSCNNInstanceNormalizationNode *) createInstanceNormalization:(MPSNNImageNode *)inputNode
                                                          channels:(NSUInteger)channels
                                                            styles:(NSUInteger)styles

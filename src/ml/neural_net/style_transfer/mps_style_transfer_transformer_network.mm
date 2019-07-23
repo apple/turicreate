@@ -10,6 +10,8 @@
 #import <ml/neural_net/style_transfer/mps_style_transfer_transformer_network.h>
 #import <ml/neural_net/mps_layer_helper.h>
 
+#include <ml/neural_net/mps_weight.h>
+
 @interface TCMPSStyleTransferTransformerNetwork ()
 @property (nonatomic) TCMPSStyleTransferEncodingNode *encoding1;
 @property (nonatomic) TCMPSStyleTransferEncodingNode *encoding2;
@@ -127,14 +129,14 @@
                                                 device:dev
                                               cmdQueue:cmdQ];
 
-    _instNorm = [MPSCNNConvolutionNode createInstanceNormalization:[_conv resultImage]
-                                                          channels:descriptor.inst.channels
-                                                            styles:descriptor.inst.styles
-                                                             gamma:(NSData *)weights[@"transformer_inst"][@"weights"]
-                                                              beta:(NSData *)weights[@"transformer_inst"][@"biases"]
-                                                             label:descriptor.inst.label
-                                                            device:dev
-                                                          cmdQueue:cmdQ];
+    _instNorm = [MPSCNNInstanceNormalizationNode createInstanceNormalization:[_conv resultImage]
+                                                                    channels:descriptor.inst.channels
+                                                                      styles:descriptor.inst.styles
+                                                                       gamma:(NSData *)weights[@"transformer_inst"][@"weights"]
+                                                                        beta:(NSData *)weights[@"transformer_inst"][@"biases"]
+                                                                       label:descriptor.inst.label
+                                                                      device:dev
+                                                                    cmdQueue:cmdQ];
 
     _sigmoid = [MPSCNNNeuronSigmoidNode nodeWithSource:[_instNorm resultImage]];
     
@@ -163,6 +165,21 @@
   MPSNNImageNode* encoding1Grad = [_encoding1 backwardPass:encoding2Grad];
   
   return encoding1Grad;
+}
+
+- (void)setLearningRate:(float)lr {
+  [_encoding1 setLearningRate:lr];
+  [_encoding2 setLearningRate:lr];
+  [_encoding3 setLearningRate:lr];
+  [_residual1 setLearningRate:lr];
+  [_residual2 setLearningRate:lr];
+  [_residual3 setLearningRate:lr];
+  [_residual4 setLearningRate:lr];
+  [_residual5 setLearningRate:lr];
+  [_decoding1 setLearningRate:lr];
+  [_decoding2 setLearningRate:lr];
+  [[_conv weights] setLearningRate:lr];
+  [[_instNorm weights] setLearningRate:lr];
 }
 
 @end

@@ -7,6 +7,8 @@
 #import <ml/neural_net/style_transfer/mps_style_transfer_residual_node.h>
 #import <ml/neural_net/mps_layer_helper.h>
 
+#include <ml/neural_net/mps_weight.h>
+
 @interface TCMPSStyleTransferResidualNode ()
 @property (nonatomic) MPSCNNConvolutionNode *conv1;
 @property (nonatomic) MPSCNNInstanceNormalizationNode *instNorm1;
@@ -44,14 +46,14 @@
                                                  device:dev
                                                cmdQueue:cmdQ];
 
-    _instNorm1 = [MPSCNNConvolutionNode createInstanceNormalization:[_conv1 resultImage]
-                                                           channels:descriptor.inst1.channels
-                                                             styles:descriptor.inst1.styles
-                                                              gamma:weights[[NSString stringWithFormat:@"%@%@", name, @"residual_inst_1_gamma"]]
-                                                               beta:weights[[NSString stringWithFormat:@"%@%@", name, @"residual_inst_1_beta"]]
-                                                              label:descriptor.inst1.label
-                                                             device:dev
-                                                           cmdQueue:cmdQ];
+    _instNorm1 = [MPSCNNInstanceNormalizationNode createInstanceNormalization:[_conv1 resultImage]
+                                                                     channels:descriptor.inst1.channels
+                                                                       styles:descriptor.inst1.styles
+                                                                        gamma:weights[[NSString stringWithFormat:@"%@%@", name, @"residual_inst_1_gamma"]]
+                                                                         beta:weights[[NSString stringWithFormat:@"%@%@", name, @"residual_inst_1_beta"]]
+                                                                        label:descriptor.inst1.label
+                                                                       device:dev
+                                                                     cmdQueue:cmdQ];
 
     _relu1 = [MPSCNNNeuronReLUNNode nodeWithSource:[_instNorm1 resultImage]];
 
@@ -71,14 +73,14 @@
                                                  device:dev
                                                cmdQueue:cmdQ];
 
-    _instNorm2 = [MPSCNNConvolutionNode createInstanceNormalization:[_conv2 resultImage]
-                                                           channels:descriptor.inst2.channels
-                                                             styles:descriptor.inst2.styles
-                                                              gamma:weights[[NSString stringWithFormat:@"%@%@", name, @"residual_inst_2_gamma"]]
-                                                               beta:weights[[NSString stringWithFormat:@"%@%@", name, @"residual_inst_2_beta"]]
-                                                              label:descriptor.inst2.label
-                                                             device:dev
-                                                           cmdQueue:cmdQ]; 
+    _instNorm2 = [MPSCNNInstanceNormalizationNode createInstanceNormalization:[_conv2 resultImage]
+                                                                     channels:descriptor.inst2.channels
+                                                                       styles:descriptor.inst2.styles
+                                                                        gamma:weights[[NSString stringWithFormat:@"%@%@", name, @"residual_inst_2_gamma"]]
+                                                                         beta:weights[[NSString stringWithFormat:@"%@%@", name, @"residual_inst_2_beta"]]
+                                                                        label:descriptor.inst2.label
+                                                                       device:dev
+                                                                     cmdQueue:cmdQ]; 
 
     _add = [MPSNNAdditionNode nodeWithSources:@[inputNode, [_instNorm2 resultImage]]];
 
@@ -97,6 +99,13 @@
   MPSNNGradientFilterNode* conv1Grad = [_conv1 gradientFilterWithSource: [inst1Grad resultImage]];
 
   return [conv1Grad resultImage];
+}
+
+- (void)setLearningRate:(float)lr {
+  [[_conv1 weights] setLearningRate:lr];
+  [[_instNorm1 weights] setLearningRate:lr];
+  [[_conv2 weights] setLearningRate:lr];
+  [[_instNorm2 weights] setLearningRate:lr];
 }
 
 @end

@@ -258,30 +258,44 @@
                       numberOfImages:1
                                usage:MTLTextureUsageShaderWrite | MTLTextureUsageShaderRead];
 
+  // TODO: populate content Image
   MPSImage *contentImage = [[MPSImage alloc] initWithDevice:_dev imageDescriptor:imgDesc];
+
   id<MTLCommandBuffer> cb = [_commandQueue commandBuffer];
 
   NSMutableArray *intermediateImages = [[NSMutableArray alloc] initWithArray:@[]];
   NSMutableArray *destinationStates = [[NSMutableArray alloc] initWithArray:@[]];
 
-  MPSImageBatch *ret =  [_inferenceGraph encodeBatchToCommandBuffer:cb
+  MPSImageBatch *stylizedImages =  [_inferenceGraph encodeBatchToCommandBuffer:cb
                                                        sourceImages:@[@[contentImage]]
                                                        sourceStates:nil
                                                  intermediateImages:intermediateImages
                                                   destinationStates:destinationStates];
 
-  for (MPSImage *image in ret) {
+  for (MPSImage *image in stylizedImages) {
     [image synchronizeOnCommandBuffer:cb];  
   }
 
+  [cb commit];
+  [cb waitUntilCompleted];
 
+  NSMutableDictionary<NSString *, NSData *> *imagesOut;
 
-  NSDictionary<NSString *, NSData *> *weights;
-  return weights;
+  for (MPSImage *image in stylizedImages) {
+    NSMutableData* styleData = [NSMutableData dataWithLength:(NSUInteger)sizeof(float) * WIDTH * HEIGHT * CHANNELS];
+    [image readBytes:styleData.mutableBytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
+    NSString* key = [NSString stringWithFormat:@"%@%lu", @"image", [stylizedImages indexOfObject:image]];
+    imagesOut[key] = styleData;
+  }
+
+  return [imagesOut copy];
 }
 
 - (void) setLearningRate:(NSNumber *)lr {
-
+  [_model setLearningRate:[lr floatValue]];
+  [_contentVgg setLearningRate:[lr floatValue]];
+  [_styleVggLoss setLearningRate:[lr floatValue]];
+  [_contentVggLoss setLearningRate:[lr floatValue]];
 }
 
 - (NSDictionary<NSString *, NSData *> *) train:(NSDictionary<NSString *, NSData *> *)inputs {
@@ -343,7 +357,7 @@
   [cb waitUntilCompleted];
 
   // TODO: export stylized image
-  // TODO: make sure the handle of thhe intermediate image is "totalLossValue"
+  // TODO: make sure the handle of the intermediate image is "totalLossValue"
   MPSImage* lossImage = [[intermediateImages objectAtIndex:0] firstObject];
   NSMutableData* lossValue = [NSMutableData dataWithLength:(NSUInteger)sizeof(float)];
   [lossImage readBytes:lossValue.mutableBytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
