@@ -235,6 +235,7 @@
 - (NSDictionary<NSString *, NSData *> *)exportWeights {
   // TODO: export weights
   NSDictionary<NSString *, NSData *> *weights;
+
   return weights;
 }
 
@@ -249,9 +250,42 @@
 }
 
 - (NSDictionary<NSString *, NSData *> *) train:(NSDictionary<NSString *, NSData *> *)inputs {
-  // TODO: export weights
-  NSDictionary<NSString *, NSData *> *weights;
-  return weights;
+  // TODO: populate MPSImage values
+  
+  MPSImage *contentImage;
+  MPSImage *contentMean;
+  MPSImage *contentMultiplication;
+
+  MPSImage *syleImage;
+  MPSImage *styleMean;
+  MPSImage *styleMultiplication;
+
+  id<MTLCommandBuffer> cb = [_commandQueue commandBuffer];
+
+  NSMutableArray *intermediateImages = [[NSMutableArray alloc] initWithArray:@[]];
+  NSMutableArray *destinationStates = [[NSMutableArray alloc] initWithArray:@[]];
+
+  MPSImageBatch *ret =  [_trainingGraph encodeBatchToCommandBuffer:cb
+                                                      sourceImages:@[@[contentImage], @[contentMultiplication], @[contentMean], @[syleImage], @[styleMultiplication], @[styleMean]]
+                                                      sourceStates:nil
+                                                intermediateImages:intermediateImages
+                                                 destinationStates:destinationStates];
+
+  for (MPSImage *image in ret) {
+    [image synchronizeOnCommandBuffer:cb];  
+  }
+
+  [cb commit];
+  [cb waitUntilCompleted];
+
+  MPSImage* lossImage = [[intermediateImages objectAtIndex:0] firstObject];
+  NSMutableData* lossValue = [NSMutableData dataWithLength:(NSUInteger)sizeof(float)];
+  [lossImage readBytes:lossValue.mutableBytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
+
+  NSMutableDictionary<NSString *, NSData *> *lossDict;
+  lossDict[@"lossValue"] = [NSData dataWithData:lossValue];
+
+  return [lossDict copy];
 }
 
 @end
