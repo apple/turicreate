@@ -19,4 +19,6 @@
 
 + (NSDictionary<NSString *, NSDictionary *> *)defineTransformerWeights:(NSDictionary<NSString *, NSData *> *)weights;
 + (NSDictionary<NSString *, NSDictionary *> *)defineVGG16:(NSDictionary<NSString *, NSData *> *)weights;
++ (void)populateMean:(NSMutableData *)data;
++ (void)populateMultiplication:(NSMutableData *)data;
 @end

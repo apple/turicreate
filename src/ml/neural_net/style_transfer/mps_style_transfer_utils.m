@@ -496,4 +496,24 @@
   return [vgg16Weight copy];
 }
 
++ (void)populateMean:(NSMutableData *)data {
+  NSUInteger dataSize = (data.length)/sizeof(float);
+  NSAssert((dataSize) % 3 == 0, @"Data must follow a 3 channel format");
+  float meanWeights[3] = { 123.68, 116.779, 103.939 };
+  for(NSUInteger x = 0; x < (dataSize/3); x++){
+    for(NSUInteger c = 0;c < 3;c++){
+      NSUInteger offset = x * 3;
+      NSUInteger index = offset + c;
+      ((float *)data.mutableBytes)[index] = meanWeights[c];
+    }
+  }
+}
+
++ (void)populateMultiplication:(NSMutableData *)data {
+  NSUInteger dataSize = (data.length)/sizeof(float);
+  NSAssert((dataSize) % 3 == 0, @"Data must follow a 3 channel format");
+  for(NSUInteger x = 0; x < dataSize; x++)
+    ((float *)data.mutableBytes)[x] = 255.0;
+}
+
 @end
