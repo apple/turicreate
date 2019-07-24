@@ -151,16 +151,13 @@ gl_sframe augment_data(const gl_sframe &data,
   parallel_for(0, nsegments, [&](size_t segment_id){
     auto segment_start = (segment_id * backgrounds.size()) / nsegments;
     auto segment_end   = ((segment_id+1) * backgrounds.size()) / nsegments;
-    for (size_t background_image_index = segment_start;
-                background_image_index < segment_end;
-                background_image_index++){
+    for (const auto& background_ft: backgrounds.range_iterator(segment_start, segment_end)) {
       for (const auto& row: data.range_iterator()) {
         flex_image object = row[image_column_index].to<flex_image>();
         std::string label = row[target_column_index].to<flex_string>();
         if (!(object.is_decoded())) {
           decode_image_inplace(object);
         }
-        auto background_ft = backgrounds[background_image_index];
         flex_image flex_background = background_ft.to<flex_image>();
         if (!(flex_background.is_decoded())) {
           decode_image_inplace(flex_background);
