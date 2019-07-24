@@ -240,26 +240,37 @@
 - (NSDictionary<NSString *, NSData *> *)exportWeights {
   // TODO: export weights
   NSDictionary<NSString *, NSData *> *weights;
-  
+
   return weights;
 }
 
 - (NSDictionary<NSString *, NSData *> *)predict:(NSDictionary<NSString *, NSData *> *)inputs {
-  // TODO: populate UPDATE WEIGHT HEIGHT AND CHANNELS
-  const NSUInteger WIDTH = 256;
-  const NSUInteger HEIGHT = 256;
-  const NSUInteger CHANNELS = 3;
+  NSUInteger contentWidth;
+  NSUInteger contentHeight;
+  NSUInteger contentChannels;
+
+  [inputs[@"contentWidth"] getBytes:&contentWidth length:sizeof(contentWidth)];
+  [inputs[@"contentHeight"] getBytes:&contentHeight length:sizeof(contentHeight)];
+  [inputs[@"contentChannels"] getBytes:&contentChannels length:sizeof(contentChannels)];
 
   MPSImageDescriptor *imgDesc = [MPSImageDescriptor
     imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat32
-                               width:WIDTH
-                              height:HEIGHT
-                     featureChannels:CHANNELS
+                               width:contentWidth
+                              height:contentHeight
+                     featureChannels:contentChannels
                       numberOfImages:1
                                usage:MTLTextureUsageShaderWrite | MTLTextureUsageShaderRead];
 
-  // TODO: populate content Image
-  MPSImage *contentImage = [[MPSImage alloc] initWithDevice:_dev imageDescriptor:imgDesc];
+  NSMutableArray<MPSImage *> *contentImageArray;
+
+  for (NSUInteger index = 0; index < _batchSize; index++) {
+    NSString* key = [NSString stringWithFormat:@"%@%lu", @"contentImage", index];
+    MPSImage *contentImage = [[MPSImage alloc] initWithDevice:_dev imageDescriptor:imgDesc];
+    [contentImage writeBytes:inputs[key].bytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
+    [contentImageArray addObject:contentImage];
+  }
+
+  MPSImageBatch *contentImageBatch = [contentImageArray copy];  
 
   id<MTLCommandBuffer> cb = [_commandQueue commandBuffer];
 
@@ -267,7 +278,7 @@
   NSMutableArray *destinationStates = [[NSMutableArray alloc] initWithArray:@[]];
 
   MPSImageBatch *stylizedImages =  [_inferenceGraph encodeBatchToCommandBuffer:cb
-                                                       sourceImages:@[@[contentImage]]
+                                                       sourceImages:@[contentImageBatch]
                                                        sourceStates:nil
                                                  intermediateImages:intermediateImages
                                                   destinationStates:destinationStates];
@@ -282,9 +293,9 @@
   NSMutableDictionary<NSString *, NSData *> *imagesOut;
 
   for (MPSImage *image in stylizedImages) {
-    NSMutableData* styleData = [NSMutableData dataWithLength:(NSUInteger)sizeof(float) * WIDTH * HEIGHT * CHANNELS];
+    NSMutableData* styleData = [NSMutableData dataWithLength:(NSUInteger)sizeof(float) * contentWidth * contentHeight * contentChannels];
     [image readBytes:styleData.mutableBytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
-    NSString* key = [NSString stringWithFormat:@"%@%lu", @"image", [stylizedImages indexOfObject:image]];
+    NSString* key = [NSString stringWithFormat:@"%@%lu", @"stylizedImage", [stylizedImages indexOfObject:image]];
     imagesOut[key] = styleData;
   }
 
