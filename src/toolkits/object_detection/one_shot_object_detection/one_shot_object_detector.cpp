@@ -146,12 +146,13 @@ gl_sframe augment_data(const gl_sframe &data,
   size_t segment_size = backgrounds.size()/nsegments;
   std::mutex counter_lock;
   size_t augmented_counter = 0; // read and write protected by counter_lock mutex
-  std::mutex segment_locks[nsegments];
-
+  
   parallel_for(0, nsegments, [&](size_t segment_id){
     auto segment_start = segment_id * segment_size;
     auto segment_end = (segment_id+1) * segment_size;
-    parallel_for(segment_start, segment_end, [&](size_t background_image_index){
+    for (size_t background_image_index = segment_start;
+                background_image_index < segment_end;
+                background_image_index++){
       for (const auto& row: data.range_iterator()) {
         flex_image object = row[column_index_map[image_column_name]].to<flex_image>();
         std::string label = row[column_index_map[target_column_name]].to<flex_string>();
@@ -190,12 +191,10 @@ gl_sframe augment_data(const gl_sframe &data,
           background_channels * background_width // row length in bytes
           );
         flex_image synthetic_image = create_synthetic_image(starter_image_view, background_view, parameter_sampler, object);
-        segment_locks[segment_id].lock();
         output_writer.write({
           synthetic_image,
           annotation
         }, segment_id);
-        segment_locks[segment_id].unlock();
         counter_lock.lock();
         augmented_counter++;
         counter_lock.unlock();
@@ -216,7 +215,7 @@ gl_sframe augment_data(const gl_sframe &data,
           }
         }
       }
-    });
+    };
   });
   if (verbose) {
     table.print_footer();
