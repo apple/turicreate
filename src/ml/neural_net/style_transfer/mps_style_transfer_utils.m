@@ -326,10 +326,148 @@
 
   return transformerDesc;
 }
+/*
+  self.conv1_1 = _nn.Conv2D(in_channels=3, channels=64, kernel_size=3, padding=1)
+  self.conv1_2 = _nn.Conv2D(in_channels=64, channels=64, kernel_size=3, padding=1)
+
+  self.conv2_1 = _nn.Conv2D(in_channels=64, channels=128, kernel_size=3, padding=1)
+  self.conv2_2 = _nn.Conv2D(in_channels=128, channels=128, kernel_size=3, padding=1)
+
+  self.conv3_1 = _nn.Conv2D(in_channels=128, channels=256, kernel_size=3, padding=1)
+  self.conv3_2 = _nn.Conv2D(in_channels=256, channels=256, kernel_size=3, padding=1)
+  self.conv3_3 = _nn.Conv2D(in_channels=256, channels=256, kernel_size=3, padding=1)
+
+  self.conv4_1 = _nn.Conv2D(in_channels=256, channels=512, kernel_size=3, padding=1)
+  self.conv4_2 = _nn.Conv2D(in_channels=512, channels=512, kernel_size=3, padding=1)
+  self.conv4_3 = _nn.Conv2D(in_channels=512, channels=512, kernel_size=3, padding=1)
+*/
 
 + (TCMPSVgg16Descriptor *) defineVGG16Descriptor:(NSUInteger)numStyles {
-  TCMPSVgg16Descriptor* temp;
-  return temp;
+  TCMPSVgg16Descriptor* vgg16Desc;
+
+  vgg16Desc.block1.conv1.kernelWidth = 3;
+  vgg16Desc.block1.conv1.kernelHeight = 3;
+  vgg16Desc.block1.conv1.inputFeatureChannels = 3;
+  vgg16Desc.block1.conv1.outputFeatureChannels = 64;
+  vgg16Desc.block1.conv1.strideWidth = 1;
+  vgg16Desc.block1.conv1.strideHeight = 1;
+  vgg16Desc.block1.conv1.paddingWidth = 1;
+  vgg16Desc.block1.conv1.paddingHeight = 1;
+  vgg16Desc.block1.conv1.label = @"vgg16_block_1_conv_1";
+  vgg16Desc.block1.conv1.updateWeights = NO;
+
+  vgg16Desc.block1.conv2.kernelWidth = 3;
+  vgg16Desc.block1.conv2.kernelHeight = 3;
+  vgg16Desc.block1.conv2.inputFeatureChannels = 64;
+  vgg16Desc.block1.conv2.outputFeatureChannels = 64;
+  vgg16Desc.block1.conv2.strideWidth = 1;
+  vgg16Desc.block1.conv2.strideHeight = 1;
+  vgg16Desc.block1.conv2.paddingWidth = 1;
+  vgg16Desc.block1.conv2.paddingHeight = 1;
+  vgg16Desc.block1.conv2.label = @"vgg16_block_1_conv_2";
+  vgg16Desc.block1.conv2.updateWeights = NO;
+
+  vgg16Desc.block1.pooling.kernelSize = 2;
+  vgg16Desc.block1.pooling.strideSize = 2;
+
+  vgg16Desc.block2.conv1.kernelWidth = 3;
+  vgg16Desc.block2.conv1.kernelHeight = 3;
+  vgg16Desc.block2.conv1.inputFeatureChannels = 64;
+  vgg16Desc.block2.conv1.outputFeatureChannels = 128;
+  vgg16Desc.block2.conv1.strideWidth = 1;
+  vgg16Desc.block2.conv1.strideHeight = 1;
+  vgg16Desc.block2.conv1.paddingWidth = 1;
+  vgg16Desc.block2.conv1.paddingHeight = 1;
+  vgg16Desc.block2.conv1.label = @"vgg16_block_2_conv_1";
+  vgg16Desc.block2.conv1.updateWeights = NO;
+
+  vgg16Desc.block2.conv2.kernelWidth = 3;
+  vgg16Desc.block2.conv2.kernelHeight = 3;
+  vgg16Desc.block2.conv2.inputFeatureChannels = 128;
+  vgg16Desc.block2.conv2.outputFeatureChannels = 128;
+  vgg16Desc.block2.conv2.strideWidth = 1;
+  vgg16Desc.block2.conv2.strideHeight = 1;
+  vgg16Desc.block2.conv2.paddingWidth = 1;
+  vgg16Desc.block2.conv2.paddingHeight = 1;
+  vgg16Desc.block2.conv2.label = @"vgg16_block_2_conv_2";
+  vgg16Desc.block2.conv2.updateWeights = NO;
+
+  vgg16Desc.block2.pooling.kernelSize = 2;
+  vgg16Desc.block2.pooling.strideSize = 2;
+
+  vgg16Desc.block3.conv1.kernelWidth = 3;
+  vgg16Desc.block3.conv1.kernelHeight = 3;
+  vgg16Desc.block3.conv1.inputFeatureChannels = 128;
+  vgg16Desc.block3.conv1.outputFeatureChannels = 256;
+  vgg16Desc.block3.conv1.strideWidth = 1;
+  vgg16Desc.block3.conv1.strideHeight = 1;
+  vgg16Desc.block3.conv1.paddingWidth = 1;
+  vgg16Desc.block3.conv1.paddingHeight = 1;
+  vgg16Desc.block3.conv1.label = @"vgg16_block_3_conv_1";
+  vgg16Desc.block3.conv1.updateWeights = NO;
+
+  vgg16Desc.block3.conv2.kernelWidth = 3;
+  vgg16Desc.block3.conv2.kernelHeight = 3;
+  vgg16Desc.block3.conv2.inputFeatureChannels = 256;
+  vgg16Desc.block3.conv2.outputFeatureChannels = 256;
+  vgg16Desc.block3.conv2.strideWidth = 1;
+  vgg16Desc.block3.conv2.strideHeight = 1;
+  vgg16Desc.block3.conv2.paddingWidth = 1;
+  vgg16Desc.block3.conv2.paddingHeight = 1;
+  vgg16Desc.block3.conv2.label = @"vgg16_block_3_conv_2";
+  vgg16Desc.block3.conv2.updateWeights = NO;
+
+  vgg16Desc.block3.conv3.kernelWidth = 3;
+  vgg16Desc.block3.conv3.kernelHeight = 3;
+  vgg16Desc.block3.conv3.inputFeatureChannels = 256;
+  vgg16Desc.block3.conv3.outputFeatureChannels = 256;
+  vgg16Desc.block3.conv3.strideWidth = 1;
+  vgg16Desc.block3.conv3.strideHeight = 1;
+  vgg16Desc.block3.conv3.paddingWidth = 1;
+  vgg16Desc.block3.conv3.paddingHeight = 1;
+  vgg16Desc.block3.conv3.label = @"vgg16_block_3_conv_3";
+  vgg16Desc.block3.conv3.updateWeights = NO;
+
+  vgg16Desc.block3.pooling.kernelSize = 2;
+  vgg16Desc.block3.pooling.strideSize = 2;
+
+  vgg16Desc.block4.conv1.kernelWidth = 3;
+  vgg16Desc.block4.conv1.kernelHeight = 3;
+  vgg16Desc.block4.conv1.inputFeatureChannels = 256;
+  vgg16Desc.block4.conv1.outputFeatureChannels = 512;
+  vgg16Desc.block4.conv1.strideWidth = 1;
+  vgg16Desc.block4.conv1.strideHeight = 1;
+  vgg16Desc.block4.conv1.paddingWidth = 1;
+  vgg16Desc.block4.conv1.paddingHeight = 1;
+  vgg16Desc.block4.conv1.label = @"vgg16_block_4_conv_1";
+  vgg16Desc.block4.conv1.updateWeights = NO;
+
+  vgg16Desc.block4.conv2.kernelWidth = 3;
+  vgg16Desc.block4.conv2.kernelHeight = 3;
+  vgg16Desc.block4.conv2.inputFeatureChannels = 256;
+  vgg16Desc.block4.conv2.outputFeatureChannels = 512;
+  vgg16Desc.block4.conv2.strideWidth = 1;
+  vgg16Desc.block4.conv2.strideHeight = 1;
+  vgg16Desc.block4.conv2.paddingWidth = 1;
+  vgg16Desc.block4.conv2.paddingHeight = 1;
+  vgg16Desc.block4.conv2.label = @"vgg16_block_4_conv_2";
+  vgg16Desc.block4.conv2.updateWeights = NO;
+
+  vgg16Desc.block4.conv3.kernelWidth = 3;
+  vgg16Desc.block4.conv3.kernelHeight = 3;
+  vgg16Desc.block4.conv3.inputFeatureChannels = 256;
+  vgg16Desc.block4.conv3.outputFeatureChannels = 512;
+  vgg16Desc.block4.conv3.strideWidth = 1;
+  vgg16Desc.block4.conv3.strideHeight = 1;
+  vgg16Desc.block4.conv3.paddingWidth = 1;
+  vgg16Desc.block4.conv3.paddingHeight = 1;
+  vgg16Desc.block4.conv3.label = @"vgg16_block_4_conv_3";
+  vgg16Desc.block4.conv3.updateWeights = NO;
+
+  vgg16Desc.block4.pooling.kernelSize = 2;
+  vgg16Desc.block4.pooling.strideSize = 2;
+
+  return vgg16Desc;
 }
 
 + (NSDictionary<NSString *, NSDictionary *> *)defineTransformerWeights:(NSDictionary<NSString *, NSData *> *)weights {
