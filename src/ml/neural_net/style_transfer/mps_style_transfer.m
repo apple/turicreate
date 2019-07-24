@@ -249,9 +249,9 @@
   NSUInteger contentHeight;
   NSUInteger contentChannels;
 
-  [inputs[@"contentWidth"] getBytes:&contentWidth length:sizeof(contentWidth)];
-  [inputs[@"contentHeight"] getBytes:&contentHeight length:sizeof(contentHeight)];
-  [inputs[@"contentChannels"] getBytes:&contentChannels length:sizeof(contentChannels)];
+  [inputs[@"imageWidth"] getBytes:&contentWidth length:sizeof(contentWidth)];
+  [inputs[@"imageHeight"] getBytes:&contentHeight length:sizeof(contentHeight)];
+  [inputs[@"imageChannels"] getBytes:&contentChannels length:sizeof(contentChannels)];
 
   MPSImageDescriptor *imgDesc = [MPSImageDescriptor
     imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat32
@@ -310,44 +310,76 @@
 }
 
 - (NSDictionary<NSString *, NSData *> *) train:(NSDictionary<NSString *, NSData *> *)inputs {
-  // TODO: populate UPDATE WEIGHT HEIGHT AND CHANNELS
-  const NSUInteger WIDTH = 256;
-  const NSUInteger HEIGHT = 256;
-  const NSUInteger CHANNELS = 3;
+  NSUInteger inputWidth;
+  NSUInteger inputHeight;
+  NSUInteger inputChannels;
 
-  const NSUInteger IMAGE_SIZE = WIDTH * HEIGHT * CHANNELS;
+  [inputs[@"imageWidth"] getBytes:&inputWidth length:sizeof(inputWidth)];
+  [inputs[@"imageHeight"] getBytes:&inputHeight length:sizeof(inputHeight)];
+  [inputs[@"imageChannels"] getBytes:&inputChannels length:sizeof(inputChannels)];
 
-  NSMutableData* mean = [NSMutableData dataWithCapacity:(NSUInteger)sizeof(float) * IMAGE_SIZE];
-  NSMutableData* multiplication = [NSMutableData dataWithCapacity:(NSUInteger)sizeof(float) * IMAGE_SIZE];
+  NSUInteger imageSize = inputWidth * inputHeight * inputChannels;
+
+  NSMutableData* mean = [NSMutableData dataWithCapacity:(NSUInteger)sizeof(float) * imageSize];
+  NSMutableData* multiplication = [NSMutableData dataWithCapacity:(NSUInteger)sizeof(float) * imageSize];
   
   MPSImageDescriptor *imgDesc = [MPSImageDescriptor
     imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat32
-                               width:WIDTH
-                              height:HEIGHT
-                     featureChannels:CHANNELS
+                               width:inputWidth
+                              height:inputHeight
+                     featureChannels:inputChannels
                       numberOfImages:1
                                usage:MTLTextureUsageShaderWrite | MTLTextureUsageShaderRead];
 
   [TCMPSStyleTransfer populateMean:mean];
   [TCMPSStyleTransfer populateMultiplication:multiplication];
 
-  // TODO: populate contentImage
-  MPSImage *contentImage = [[MPSImage alloc] initWithDevice:_dev imageDescriptor:imgDesc];
+  NSMutableArray<MPSImage *> *contentImageArray;
+  NSMutableArray<MPSImage *> *contentMeanArray;
+  NSMutableArray<MPSImage *> *contentMultiplicationArray;
+
+  NSMutableArray<MPSImage *> *styleImageArray;
+  NSMutableArray<MPSImage *> *styleMeanArray;
+  NSMutableArray<MPSImage *> *styleMultiplicationArray;
+
+  for (NSUInteger index = 0; index < _batchSize; index++) {
+    // TODO: populate contentImage
+    NSString* contentKey = [NSString stringWithFormat:@"%@%lu", @"contentImage", index];
+    NSString* styleKey = [NSString stringWithFormat:@"%@%lu", @"styleImage", index];
+    
+    MPSImage *contentImage = [[MPSImage alloc] initWithDevice:_dev imageDescriptor:imgDesc];
+    [contentImage writeBytes:inputs[contentKey].bytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
+    [contentImageArray addObject:contentImage];
+
+    MPSImage *contentMean = [[MPSImage alloc] initWithDevice:_dev imageDescriptor:imgDesc];
+    [contentMean writeBytes:mean.bytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
+    [contentMeanArray addObject:contentMean];
+
+    MPSImage *contentMultiplication = [[MPSImage alloc] initWithDevice:_dev imageDescriptor:imgDesc];
+    [contentMultiplication writeBytes:multiplication.bytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0]; 
+    [contentMultiplicationArray addObject:contentMultiplication];
+
+    MPSImage *syleImage = [[MPSImage alloc] initWithDevice:_dev imageDescriptor:imgDesc];
+    [syleImage writeBytes:inputs[styleKey].bytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
+    [styleImageArray addObject:syleImage];
+
+    MPSImage *styleMean = [[MPSImage alloc] initWithDevice:_dev imageDescriptor:imgDesc];
+    [styleMean writeBytes:mean.bytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
+    [styleMeanArray addObject:styleMean];
+
+    MPSImage *styleMultiplication = [[MPSImage alloc] initWithDevice:_dev imageDescriptor:imgDesc];
+    [styleMultiplication writeBytes:multiplication.bytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
+    [styleMultiplicationArray addObject:styleMultiplication];
+  }
   
-  MPSImage *contentMean = [[MPSImage alloc] initWithDevice:_dev imageDescriptor:imgDesc];
-  [contentMean writeBytes:mean.bytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0]; 
+  MPSImageBatch *contentImageBatch = [contentImageArray copy];  
+  MPSImageBatch *contentMeanBatch = [contentMeanArray copy];  
+  MPSImageBatch *contentMultiplicationBatch = [contentMultiplicationArray copy];  
 
-  MPSImage *contentMultiplication = [[MPSImage alloc] initWithDevice:_dev imageDescriptor:imgDesc];
-  [contentMean writeBytes:multiplication.bytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0]; 
-
-  // TODO: populate styleImage
-  MPSImage *syleImage = [[MPSImage alloc] initWithDevice:_dev imageDescriptor:imgDesc];
-
-  MPSImage *styleMean = [[MPSImage alloc] initWithDevice:_dev imageDescriptor:imgDesc];
-  [styleMean writeBytes:mean.bytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
-
-  MPSImage *styleMultiplication = [[MPSImage alloc] initWithDevice:_dev imageDescriptor:imgDesc];
-  [styleMultiplication writeBytes:multiplication.bytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
+  MPSImageBatch *styleImageBatch = [styleImageArray copy];  
+  MPSImageBatch *styleMeanBatch = [styleMeanArray copy];  
+  MPSImageBatch *styleMultiplicationBatch = [styleMultiplicationArray copy];  
+  
 
   id<MTLCommandBuffer> cb = [_commandQueue commandBuffer];
 
@@ -355,7 +387,7 @@
   NSMutableArray *destinationStates = [[NSMutableArray alloc] initWithArray:@[]];
 
   MPSImageBatch *ret =  [_trainingGraph encodeBatchToCommandBuffer:cb
-                                                      sourceImages:@[@[contentImage], @[contentMultiplication], @[contentMean], @[syleImage], @[styleMultiplication], @[styleMean]]
+                                                      sourceImages:@[contentImageBatch, contentMultiplicationBatch, contentMeanBatch, styleImageBatch, styleMultiplicationBatch, styleMeanBatch]
                                                       sourceStates:nil
                                                 intermediateImages:intermediateImages
                                                  destinationStates:destinationStates];
@@ -367,8 +399,7 @@
   [cb commit];
   [cb waitUntilCompleted];
 
-  // TODO: export stylized image
-  // TODO: make sure the handle of the intermediate image is "totalLossValue"
+  // TODO: Handle batched loss
   MPSImage* lossImage = [[intermediateImages objectAtIndex:0] firstObject];
   NSMutableData* lossValue = [NSMutableData dataWithLength:(NSUInteger)sizeof(float)];
   [lossImage readBytes:lossValue.mutableBytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
