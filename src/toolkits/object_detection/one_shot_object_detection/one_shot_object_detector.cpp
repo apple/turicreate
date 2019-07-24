@@ -9,6 +9,8 @@
 #include <limits>
 #include <vector>
 #include <random>
+#include <thread>
+#include <mutex>
 
 #include <boost/gil/gil_all.hpp>
 
@@ -123,6 +125,18 @@ boost::gil::rgba8_image_t::view_t create_starter_image_view(flex_image &object_i
   return starter_image_view;
 }
 
+// gl_sarray augment_starter_image() {
+
+// }
+
+// gl_sarray create_all_augmented_images() {
+
+// }
+
+// gl_sarray create_all_annotations() {
+
+// }
+
 gl_sframe augment_data(const gl_sframe &data,
                        const std::string& image_column_name,
                        const std::string& target_column_name,
@@ -133,85 +147,97 @@ gl_sframe augment_data(const gl_sframe &data,
   size_t total_augmented_rows = data.size() * backgrounds_size;
   table_printer table( { {"Images Augmented", 0}, {"Elapsed Time", 0}, {"Percent Complete", 0} } );
   if (verbose) {
-    logprogress_stream << "Augmenting input images using " << backgrounds.size() << " background images." << std::endl;
+    logprogress_stream << "Augmenting input images using " << backgrounds_size << " background images." << std::endl;
     table.print_header();
   }
-
+  std::vector<std::string> output_column_names = {"image", "annotation"};
+  std::vector<flex_type_enum> output_column_types = {flex_type_enum::IMAGE, flex_type_enum::DICT};
+  gl_sframe_writer output_writer(output_column_names, output_column_types);  
   auto column_index_map = generate_column_index_map(data.column_names());
-  std::vector<flexible_type> annotations;
-  std::vector<flexible_type> images;
-  int input_row_index = -1;
-  for (const auto& row: data.range_iterator()) {
-    input_row_index++;
-    flex_image object = row[column_index_map[image_column_name]].to<flex_image>();
-    std::string label = row[column_index_map[target_column_name]].to<flex_string>();
-    if (!(object.is_decoded())) {
-      decode_image_inplace(object);
-    }
-    int row_number = -1;
-    for (const auto& background_ft: backgrounds.range_iterator()) {
-      row_number++;
-      flex_image flex_background = background_ft.to<flex_image>();
-      if (!(flex_background.is_decoded())) {
-        decode_image_inplace(flex_background);
+  size_t nsegments = output_writer.num_segments();
+  size_t segment_size = backgrounds.size()/nsegments;
+  // std::vector<std::unique_ptr<std::mutex>> mutexes;
+  std::mutex counter_lock;
+  size_t augmented_counter = 0; // read and write protected by counter_lock mutex
+  std::mutex segment_locks[nsegments];
+
+  parallel_for(0, nsegments, [&](size_t segment_id){
+    auto segment_start = segment_id * segment_size;
+    auto segment_end = (segment_id+1) * segment_size;
+    parallel_for(segment_start, segment_end, [&](size_t background_image_index){
+      for (const auto& row: data.range_iterator()) {
+        flex_image object = row[column_index_map[image_column_name]].to<flex_image>();
+        std::string label = row[column_index_map[target_column_name]].to<flex_string>();
+        if (!(object.is_decoded())) {
+          decode_image_inplace(object);
+        }
+        auto background_ft = backgrounds[background_image_index];
+        flex_image flex_background = background_ft.to<flex_image>();
+        if (!(flex_background.is_decoded())) {
+          decode_image_inplace(flex_background);
+        }
+        size_t background_width = flex_background.m_width;
+        size_t background_height = flex_background.m_height;
+        size_t background_channels = flex_background.m_channels;
+
+        ParameterSampler parameter_sampler = ParameterSampler(
+                                                background_width,
+                                                background_height,
+                                                (background_width-object.m_width)/2,
+                                                (background_height-object.m_height)/2);
+
+        flex_dict annotation = build_annotation(parameter_sampler, label,
+                                                object.m_width, object.m_height,
+                                                seed+background_image_index);
+
+        DASSERT_TRUE(flex_background.get_image_data() != nullptr);
+        DASSERT_TRUE(object.is_decoded());
+        DASSERT_TRUE(flex_background.is_decoded());
+
+        boost::gil::rgba8_image_t::view_t starter_image_view = create_starter_image_view(object);
+
+        boost::gil::rgb8_image_t::view_t background_view = interleaved_view(
+          background_width,
+          background_height,
+          (boost::gil::rgb8_pixel_t*)(flex_background.get_image_data()),
+          background_channels * background_width // row length in bytes
+          );
+        flex_image synthetic_image = create_synthetic_image(starter_image_view, background_view, parameter_sampler, object);
+        segment_locks[segment_id].lock();
+        output_writer.write({
+          synthetic_image,
+          annotation
+        }, segment_id);
+        segment_locks[segment_id].unlock();
+        counter_lock.lock();
+        augmented_counter++;
+        counter_lock.unlock();
+        if (verbose) {
+          std::ostringstream d;
+          // For pretty printing, floor percent done
+          // resolution to the nearest .25% interval.  Do this by multiplying by
+          // 400, then do integer division by the total size, then float divide
+          // by 4.0
+          counter_lock.lock();
+          int augmented_rows_completed = augmented_counter;
+          counter_lock.unlock();
+          if (augmented_rows_completed % 100 == 0) {
+            d << augmented_rows_completed * 400 / total_augmented_rows / 4.0 << '%';
+            table.print_progress_row(augmented_rows_completed,
+                                      augmented_rows_completed,
+                                      progress_time(), d.str());
+          }
+        }
       }
-      size_t background_width = flex_background.m_width;
-      size_t background_height = flex_background.m_height;
-      size_t background_channels = flex_background.m_channels;
-
-      ParameterSampler parameter_sampler = ParameterSampler(
-                                              background_width,
-                                              background_height,
-                                              (background_width-object.m_width)/2,
-                                              (background_height-object.m_height)/2);
-
-      flex_dict annotation = build_annotation(parameter_sampler, label,
-                                              object.m_width, object.m_height,
-                                              seed+row_number);
-
-      DASSERT_TRUE(flex_background.get_image_data() != nullptr);
-      DASSERT_TRUE(object.is_decoded());
-      DASSERT_TRUE(flex_background.is_decoded());
-
-      boost::gil::rgba8_image_t::view_t starter_image_view = create_starter_image_view(object);
-
-      boost::gil::rgb8_image_t::view_t background_view = interleaved_view(
-        background_width,
-        background_height,
-        (boost::gil::rgb8_pixel_t*)(flex_background.get_image_data()),
-        background_channels * background_width // row length in bytes
-        );
-
-      images.push_back(
-        create_synthetic_image(starter_image_view, background_view, parameter_sampler, object)
-      );
-      annotations.push_back(annotation);
-
-      if (verbose) {
-        std::ostringstream d;
-        // For pretty printing, floor percent done
-        // resolution to the nearest .25% interval.  Do this by multiplying by
-        // 400, then do integer division by the total size, then float divide
-        // by 4.0
-        int augmented_rows_completed = (input_row_index * backgrounds_size) + row_number;
-        d << augmented_rows_completed * 400 / total_augmented_rows / 4.0 << '%';
-        table.print_progress_row(augmented_rows_completed,
-                                  augmented_rows_completed,
-                                  progress_time(), d.str());
-      }
-    }
-  }
+    });
+  });
   if (verbose) {
     table.print_footer();
   }
+  
+  gl_sframe synthetic_sframe = output_writer.close();
+  return synthetic_sframe;
 
-
-  const std::map<std::string, std::vector<flexible_type> >& augmented_data = {
-    {target_column_name, annotations},
-    {image_column_name, images}
-  };
-  gl_sframe augmented_data_out = gl_sframe(augmented_data);
-  return augmented_data_out;
 }
 
 } // data_augmentation
