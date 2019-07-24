@@ -12,6 +12,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class TCMPSConvolutionWeights;
+@class TCMPSInstanceNormDataLoader;
 
 @interface MPSCNNFullyConnectedNode(TCMPSLayerProperty)
 @property (nonatomic, retain) TCMPSConvolutionWeights *weights API_AVAILABLE(macosx(10.14));
@@ -56,7 +57,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface MPSCNNInstanceNormalizationNode(TCMPSLayerProperty)
-@property (nonatomic, retain) TCMPSConvolutionWeights *weights API_AVAILABLE(macosx(10.14));
+@property (nonatomic, retain) TCMPSInstanceNormDataLoader *weights API_AVAILABLE(macosx(10.14));
 @end
 
 @interface MPSCNNInstanceNormalizationNode (TCMPSLayerHelper)

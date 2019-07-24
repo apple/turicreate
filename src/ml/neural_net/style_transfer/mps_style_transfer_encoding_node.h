@@ -27,6 +27,7 @@ API_AVAILABLE(macos(10.14))
 
 - (MPSNNImageNode *) backwardPass:(MPSNNImageNode *) inputNode;
 - (void)setLearningRate:(float)lr;
+- (NSDictionary<NSString *, NSData *> *)exportWeights;
 @end
 
 NS_ASSUME_NONNULL_END

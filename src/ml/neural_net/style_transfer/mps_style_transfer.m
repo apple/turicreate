@@ -238,10 +238,7 @@
 }
  
 - (NSDictionary<NSString *, NSData *> *)exportWeights {
-  // TODO: export weights
-  NSDictionary<NSString *, NSData *> *weights;
-
-  return weights;
+  return [_model exportWeights];
 }
 
 - (NSDictionary<NSString *, NSData *> *)predict:(NSDictionary<NSString *, NSData *> *)inputs {

@@ -8,6 +8,7 @@
 #import <ml/neural_net/mps_layer_helper.h>
 
 #include <ml/neural_net/mps_weight.h>
+#import <ml/neural_net/mps_layer_instance_norm_data_loader.h>
 
 @interface TCMPSStyleTransferEncodingNode ()
 @property (nonatomic) MPSCNNConvolutionNode *conv;
@@ -67,11 +68,34 @@
   return [convGrad resultImage];
 }
 
-
 - (void)setLearningRate:(float)lr {
   [[_conv weights] setLearningRate:lr];
   [[_instNorm weights] setLearningRate:lr];
 }
 
+- (NSDictionary<NSString *, NSData *> *)exportWeights {
+  NSMutableDictionary<NSString *, NSData *> *weights;
+
+  NSUInteger convWeightSize = (NSUInteger)([[_conv weights] weight_size] * sizeof(float));
+
+  NSMutableData* convDataWeight = [NSMutableData dataWithCapacity:convWeightSize];
+
+  memcpy(convDataWeight.mutableBytes, [[_conv weights] weights], convWeightSize);
+
+  weights[@"conv_weights"] = convDataWeight;
+
+  NSUInteger instNormSize = (NSUInteger)([[_instNorm weights] numberOfFeatureChannels] * sizeof(float));
+
+  NSMutableData* instNormDataGamma = [NSMutableData dataWithCapacity:instNormSize];
+  NSMutableData* instNormDataBeta = [NSMutableData dataWithCapacity:instNormSize];
+
+  memcpy(instNormDataGamma.mutableBytes, [[_instNorm weights] gamma], instNormSize);
+  memcpy(instNormDataBeta.mutableBytes, [[_instNorm weights] beta], instNormSize);
+
+  weights[@"inst_gamma"] = instNormDataGamma;
+  weights[@"inst_beta"] = instNormDataBeta;
+  
+  return [weights copy];
+}
 
 @end

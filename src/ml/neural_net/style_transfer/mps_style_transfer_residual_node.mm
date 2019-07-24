@@ -8,6 +8,7 @@
 #import <ml/neural_net/mps_layer_helper.h>
 
 #include <ml/neural_net/mps_weight.h>
+#import <ml/neural_net/mps_layer_instance_norm_data_loader.h>
 
 @interface TCMPSStyleTransferResidualNode ()
 @property (nonatomic) MPSCNNConvolutionNode *conv1;
@@ -106,6 +107,50 @@
   [[_instNorm1 weights] setLearningRate:lr];
   [[_conv2 weights] setLearningRate:lr];
   [[_instNorm2 weights] setLearningRate:lr];
+}
+
+- (NSDictionary<NSString *, NSData *> *)exportWeights {
+  NSMutableDictionary<NSString *, NSData *> *weights;
+
+  NSUInteger conv1WeightSize = (NSUInteger)([[_conv1 weights] weight_size] * sizeof(float));
+
+  NSMutableData* conv1DataWeight = [NSMutableData dataWithCapacity:conv1WeightSize];
+
+  memcpy(conv1DataWeight.mutableBytes, [[_conv1 weights] weights], conv1WeightSize);
+
+  weights[@"conv_1_weights"] = conv1DataWeight;
+
+  NSUInteger conv2WeightSize = (NSUInteger)([[_conv2 weights] weight_size] * sizeof(float));
+
+  NSMutableData* conv2DataWeight = [NSMutableData dataWithCapacity:conv2WeightSize];
+
+  memcpy(conv2DataWeight.mutableBytes, [[_conv2 weights] weights], conv2WeightSize);
+
+  weights[@"conv_2_weights"] = conv2DataWeight;
+
+  NSUInteger instNorm1Size = (NSUInteger)([[_instNorm1 weights] numberOfFeatureChannels] * sizeof(float));
+
+  NSMutableData* instNorm1DataGamma = [NSMutableData dataWithCapacity:instNorm1Size];
+  NSMutableData* instNorm1DataBeta = [NSMutableData dataWithCapacity:instNorm1Size];
+
+  memcpy(instNorm1DataGamma.mutableBytes, [[_instNorm1 weights] gamma], instNorm1Size);
+  memcpy(instNorm1DataBeta.mutableBytes, [[_instNorm1 weights] beta], instNorm1Size);
+
+  weights[@"inst_1_gamma"] = instNorm1DataGamma;
+  weights[@"inst_1_beta"] = instNorm1DataBeta;
+  
+  NSUInteger instNorm2Size = (NSUInteger)([[_instNorm2 weights] numberOfFeatureChannels] * sizeof(float));
+
+  NSMutableData* instNorm2DataGamma = [NSMutableData dataWithCapacity:instNorm2Size];
+  NSMutableData* instNorm2DataBeta = [NSMutableData dataWithCapacity:instNorm2Size];
+
+  memcpy(instNorm2DataGamma.mutableBytes, [[_instNorm2 weights] gamma], instNorm2Size);
+  memcpy(instNorm2DataBeta.mutableBytes, [[_instNorm2 weights] beta], instNorm2Size);
+
+  weights[@"inst_2_gamma"] = instNorm2DataGamma;
+  weights[@"inst_2_beta"] = instNorm2DataBeta;
+  
+  return [weights copy];
 }
 
 @end

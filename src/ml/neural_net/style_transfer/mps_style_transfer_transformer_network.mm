@@ -11,6 +11,7 @@
 #import <ml/neural_net/mps_layer_helper.h>
 
 #include <ml/neural_net/mps_weight.h>
+#import <ml/neural_net/mps_layer_instance_norm_data_loader.h>
 
 @interface TCMPSStyleTransferTransformerNetwork ()
 @property (nonatomic) TCMPSStyleTransferEncodingNode *encoding1;
@@ -180,6 +181,106 @@
   [_decoding2 setLearningRate:lr];
   [[_conv weights] setLearningRate:lr];
   [[_instNorm weights] setLearningRate:lr];
+}
+
+- (NSDictionary<NSString *, NSData *> *)exportWeights {
+  NSMutableDictionary<NSString *, NSData *> *weights;
+
+  NSDictionary<NSString *, NSData *> * encode1Weights = [_encoding1 exportWeights];
+
+  weights[@"transformer_conv0_weight"] = encode1Weights[@"conv_weights"];
+  weights[@"transformer_instancenorm0_gamma"] = encode1Weights[@"inst_gamma"];
+  weights[@"transformer_instancenorm0_beta"] = encode1Weights[@"inst_beta"];
+
+  NSDictionary<NSString *, NSData *> * encode2Weights = [_encoding2 exportWeights];
+
+  weights[@"transformer_conv1_weight"] = encode2Weights[@"conv_weights"];
+  weights[@"transformer_instancenorm1_gamma"] = encode2Weights[@"inst_gamma"];
+  weights[@"transformer_instancenorm1_beta"] = encode2Weights[@"inst_beta"];
+
+  NSDictionary<NSString *, NSData *> * encode3Weights = [_encoding3 exportWeights];
+
+  weights[@"transformer_conv2_weight"] = encode3Weights[@"conv_weights"];
+  weights[@"transformer_instancenorm2_gamma"] = encode3Weights[@"inst_gamma"];
+  weights[@"transformer_instancenorm2_beta"] = encode3Weights[@"inst_beta"];
+
+  NSDictionary<NSString *, NSData *> * residual1Weights = [_residual1 exportWeights];
+
+  weights[@"transformer_residualblock0_conv0_weight"] = residual1Weights[@"conv_1_weights"];
+  weights[@"transformer_residualblock0_instancenorm0_gamma"] = residual1Weights[@"inst_1_gamma"];
+  weights[@"transformer_residualblock0_instancenorm0_beta"] = residual1Weights[@"inst_1_beta"];
+  weights[@"transformer_residualblock0_conv1_weight"] = residual1Weights[@"conv_2_weights"];
+  weights[@"transformer_residualblock0_instancenorm1_gamma"] = residual1Weights[@"inst_2_gamma"];
+  weights[@"transformer_residualblock0_instancenorm1_beta"] = residual1Weights[@"inst_2_beta"];
+
+  NSDictionary<NSString *, NSData *> * residual2Weights = [_residual2 exportWeights];
+  
+  weights[@"transformer_residualblock1_conv0_weight"] = residual2Weights[@"conv_1_weights"];
+  weights[@"transformer_residualblock1_instancenorm0_gamma"] = residual2Weights[@"inst_1_gamma"];
+  weights[@"transformer_residualblock1_instancenorm0_beta"] = residual2Weights[@"inst_1_beta"];
+  weights[@"transformer_residualblock1_conv1_weight"] = residual2Weights[@"conv_2_weights"];
+  weights[@"transformer_residualblock1_instancenorm1_gamma"] = residual2Weights[@"inst_2_gamma"];
+  weights[@"transformer_residualblock1_instancenorm1_beta"] = residual2Weights[@"inst_2_beta"];
+
+  NSDictionary<NSString *, NSData *> * residual3Weights = [_residual3 exportWeights];
+  
+  weights[@"transformer_residualblock2_conv0_weight"] = residual3Weights[@"conv_1_weights"];
+  weights[@"transformer_residualblock2_instancenorm0_gamma"] = residual3Weights[@"inst_1_gamma"];
+  weights[@"transformer_residualblock2_instancenorm0_beta"] = residual3Weights[@"inst_1_beta"];
+  weights[@"transformer_residualblock2_conv1_weight"] = residual3Weights[@"conv_2_weights"];
+  weights[@"transformer_residualblock2_instancenorm1_gamma"] = residual3Weights[@"inst_2_gamma"];
+  weights[@"transformer_residualblock2_instancenorm1_beta"] = residual3Weights[@"inst_2_beta"];
+
+  NSDictionary<NSString *, NSData *> * residual4Weights = [_residual4 exportWeights];
+  
+  weights[@"transformer_residualblock3_conv0_weight"] = residual4Weights[@"conv_1_weights"];
+  weights[@"transformer_residualblock3_instancenorm0_gamma"] = residual4Weights[@"inst_1_gamma"];
+  weights[@"transformer_residualblock3_instancenorm0_beta"] = residual4Weights[@"inst_1_beta"];
+  weights[@"transformer_residualblock3_conv1_weight"] = residual4Weights[@"conv_2_weights"];
+  weights[@"transformer_residualblock3_instancenorm1_gamma"] = residual4Weights[@"inst_2_gamma"];
+  weights[@"transformer_residualblock3_instancenorm1_beta"] = residual4Weights[@"inst_2_beta"];
+
+  NSDictionary<NSString *, NSData *> * residual5Weights = [_residual5 exportWeights];
+  
+  weights[@"transformer_residualblock4_conv0_weight"] = residual5Weights[@"conv_1_weights"];
+  weights[@"transformer_residualblock4_instancenorm0_gamma"] = residual5Weights[@"inst_1_gamma"];
+  weights[@"transformer_residualblock4_instancenorm0_beta"] = residual5Weights[@"inst_1_beta"];
+  weights[@"transformer_residualblock4_conv1_weight"] = residual5Weights[@"conv_2_weights"];
+  weights[@"transformer_residualblock4_instancenorm1_gamma"] = residual5Weights[@"inst_2_gamma"];
+  weights[@"transformer_residualblock4_instancenorm1_beta"] = residual5Weights[@"inst_2_beta"];
+
+  NSDictionary<NSString *, NSData *> * decode1Weights = [_decoding1 exportWeights];
+
+  weights[@"transformer_conv3_weight"] = decode1Weights[@"conv_weights"];
+  weights[@"transformer_instancenorm3_gamma"] = decode1Weights[@"inst_gamma"];
+  weights[@"transformer_instancenorm3_beta"] = decode1Weights[@"inst_beta"];
+
+  NSDictionary<NSString *, NSData *> * decode2Weights = [_decoding2 exportWeights];
+
+  weights[@"transformer_conv4_weight"] = decode2Weights[@"conv_weights"];
+  weights[@"transformer_instancenorm4_gamma"] = decode2Weights[@"inst_gamma"];
+  weights[@"transformer_instancenorm4_beta"] = decode2Weights[@"inst_beta"];
+
+  NSUInteger convWeightSize = (NSUInteger)([[_conv weights] weight_size] * sizeof(float));
+
+  NSMutableData* convDataWeight = [NSMutableData dataWithCapacity:convWeightSize];
+
+  memcpy(convDataWeight.mutableBytes, [[_conv weights] weights], convWeightSize);
+
+  weights[@"transformer_conv5_weight"] = convDataWeight;
+
+  NSUInteger instNormSize = (NSUInteger)([[_instNorm weights] numberOfFeatureChannels] * sizeof(float));
+
+  NSMutableData* instNormDataGamma = [NSMutableData dataWithCapacity:instNormSize];
+  NSMutableData* instNormDataBeta = [NSMutableData dataWithCapacity:instNormSize];
+
+  memcpy(instNormDataGamma.mutableBytes, [[_instNorm weights] gamma], instNormSize);
+  memcpy(instNormDataBeta.mutableBytes, [[_instNorm weights] beta], instNormSize);
+
+  weights[@"transformer_instancenorm5_gamma"] = instNormDataGamma;
+  weights[@"transformer_instancenorm5_beta"] = instNormDataBeta;
+
+  return [weights copy];
 }
 
 @end
