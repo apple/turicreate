@@ -125,18 +125,6 @@ boost::gil::rgba8_image_t::view_t create_starter_image_view(flex_image &object_i
   return starter_image_view;
 }
 
-// gl_sarray augment_starter_image() {
-
-// }
-
-// gl_sarray create_all_augmented_images() {
-
-// }
-
-// gl_sarray create_all_annotations() {
-
-// }
-
 gl_sframe augment_data(const gl_sframe &data,
                        const std::string& image_column_name,
                        const std::string& target_column_name,
@@ -156,7 +144,6 @@ gl_sframe augment_data(const gl_sframe &data,
   auto column_index_map = generate_column_index_map(data.column_names());
   size_t nsegments = output_writer.num_segments();
   size_t segment_size = backgrounds.size()/nsegments;
-  // std::vector<std::unique_ptr<std::mutex>> mutexes;
   std::mutex counter_lock;
   size_t augmented_counter = 0; // read and write protected by counter_lock mutex
   std::mutex segment_locks[nsegments];
