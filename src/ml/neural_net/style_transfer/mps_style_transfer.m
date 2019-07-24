@@ -399,13 +399,22 @@
   [cb commit];
   [cb waitUntilCompleted];
 
-  // TODO: Handle batched loss
-  MPSImage* lossImage = [[intermediateImages objectAtIndex:0] firstObject];
-  NSMutableData* lossValue = [NSMutableData dataWithLength:(NSUInteger)sizeof(float)];
-  [lossImage readBytes:lossValue.mutableBytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
+  // AAAK: What about overflow?
+  float lossValue = 0.0f;
+  MPSImageBatch *outBatch = [intermediateImages objectAtIndex:0];
+  for (NSUInteger index = 0; index < _batchSize; index++) {
+    float loss;
+    MPSImage* lossImage = outBatch[index];
+    [lossImage readBytes:&loss dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
+    lossValue += loss;
+  }
+  lossValue /= _batchSize;
+
+  NSMutableData * lossData = [NSMutableData dataWithCapacity:0];
+  [lossData appendBytes:&lossValue length:sizeof(float)];
 
   NSMutableDictionary<NSString *, NSData *> *lossDict;
-  lossDict[@"loss"] = [NSData dataWithData:lossValue];
+  lossDict[@"loss"] = [NSData dataWithData:lossData];
 
   return [lossDict copy];
 }
