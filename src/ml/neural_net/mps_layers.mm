@@ -634,8 +634,12 @@ void DropOutLayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q
   float fKeepProb = (float)iparams[0] / 100.0;
   int nSeed = iparams[1];
 
-
-  if (nSeed == -1){
+  if (config.count("random_seed") > 0) {
+    static_assert(sizeof(float) == sizeof(int),
+                  "Passing random seed assumes float and int have same size.");
+    float float_seed = get_array_map_scalar(config, "random_seed", 0.f);
+    nSeed = *reinterpret_cast<int*>(&float_seed);
+  } else if (nSeed == -1){
       srand((unsigned)time(0));
       nSeed = std::rand();
   }
