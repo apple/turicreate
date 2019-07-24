@@ -9,8 +9,7 @@
 #include <limits>
 #include <vector>
 #include <random>
-#include <thread>
-#include <mutex>
+#include <atomic>
 
 #include <boost/gil/gil_all.hpp>
 
@@ -142,20 +141,22 @@ gl_sframe augment_data(const gl_sframe &data,
   std::vector<flex_type_enum> output_column_types = {flex_type_enum::IMAGE, flex_type_enum::DICT};
   gl_sframe_writer output_writer(output_column_names, output_column_types);  
   auto column_index_map = generate_column_index_map(data.column_names());
+  size_t image_column_index = column_index_map[image_column_name];
+  size_t target_column_index = column_index_map[target_column_name];
+  DASSERT_EQ(data[image_column_name].dtype(), flex_type_enum::IMAGE);
+  DASSERT_EQ(data[target_column_name].dtype(), flex_type_enum::STRING);
   size_t nsegments = output_writer.num_segments();
-  size_t segment_size = backgrounds.size()/nsegments;
-  std::mutex counter_lock;
-  size_t augmented_counter = 0; // read and write protected by counter_lock mutex
-  
+  std::atomic<size_t> augmented_counter(0);
+
   parallel_for(0, nsegments, [&](size_t segment_id){
-    auto segment_start = segment_id * segment_size;
-    auto segment_end = (segment_id+1) * segment_size;
+    auto segment_start = (segment_id * backgrounds.size()) / nsegments;
+    auto segment_end   = ((segment_id+1) * backgrounds.size()) / nsegments;
     for (size_t background_image_index = segment_start;
                 background_image_index < segment_end;
                 background_image_index++){
       for (const auto& row: data.range_iterator()) {
-        flex_image object = row[column_index_map[image_column_name]].to<flex_image>();
-        std::string label = row[column_index_map[target_column_name]].to<flex_string>();
+        flex_image object = row[image_column_index].to<flex_image>();
+        std::string label = row[target_column_index].to<flex_string>();
         if (!(object.is_decoded())) {
           decode_image_inplace(object);
         }
@@ -195,18 +196,14 @@ gl_sframe augment_data(const gl_sframe &data,
           synthetic_image,
           annotation
         }, segment_id);
-        counter_lock.lock();
         augmented_counter++;
-        counter_lock.unlock();
         if (verbose) {
           std::ostringstream d;
           // For pretty printing, floor percent done
           // resolution to the nearest .25% interval.  Do this by multiplying by
           // 400, then do integer division by the total size, then float divide
           // by 4.0
-          counter_lock.lock();
           int augmented_rows_completed = augmented_counter;
-          counter_lock.unlock();
           if (augmented_rows_completed % 100 == 0) {
             d << augmented_rows_completed * 400 / total_augmented_rows / 4.0 << '%';
             table.print_progress_row(augmented_rows_completed,
