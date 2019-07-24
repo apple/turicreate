@@ -151,7 +151,9 @@ gl_sframe augment_data(const gl_sframe &data,
   parallel_for(0, nsegments, [&](size_t segment_id){
     auto segment_start = (segment_id * backgrounds.size()) / nsegments;
     auto segment_end   = ((segment_id+1) * backgrounds.size()) / nsegments;
+    size_t row_number=segment_start;
     for (const auto& background_ft: backgrounds.range_iterator(segment_start, segment_end)) {
+      row_number++;
       for (const auto& row: data.range_iterator()) {
         flex_image object = row[image_column_index].to<flex_image>();
         std::string label = row[target_column_index].to<flex_string>();
@@ -174,7 +176,7 @@ gl_sframe augment_data(const gl_sframe &data,
 
         flex_dict annotation = build_annotation(parameter_sampler, label,
                                                 object.m_width, object.m_height,
-                                                seed+background_image_index);
+                                                seed+row_number);
 
         DASSERT_TRUE(flex_background.get_image_data() != nullptr);
         DASSERT_TRUE(object.is_decoded());
