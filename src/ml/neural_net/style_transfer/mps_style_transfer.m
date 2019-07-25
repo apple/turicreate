@@ -4,16 +4,16 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#import <ml/neural_net/mps_device_manager.h>
-#import <ml/neural_net/mps_layer_helper.h>
-#import <ml/neural_net/mps_node_handle.h>
-
 #import <ml/neural_net/style_transfer/mps_style_transfer.h>
 #import <ml/neural_net/style_transfer/mps_style_transfer_utils.h>
 
 #import <ml/neural_net/style_transfer/mps_style_transfer_transformer_network.h>
 #import <ml/neural_net/style_transfer/mps_style_transfer_vgg_16_network.h>
 #import <ml/neural_net/style_transfer/mps_style_transfer_pre_processing.h>
+
+#import <ml/neural_net/mps_device_manager.h>
+#import <ml/neural_net/mps_layer_helper.h>
+#import <ml/neural_net/mps_node_handle.h>
 
 @interface TCMPSStyleTransfer()
 @property (nonatomic) TCMPSStyleTransferTransformerNetwork *model;
