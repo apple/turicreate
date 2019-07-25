@@ -623,12 +623,13 @@
   NSUInteger dataSize = (data.length)/sizeof(float);
   NSAssert((dataSize) % 3 == 0, @"Data must follow a 3 channel format");
   float meanWeights[3] = { 123.68, 116.779, 103.939 };
-  for(NSUInteger x = 0; x < (dataSize/3); x++){
-    for(NSUInteger c = 0;c < 3;c++){
-      NSUInteger offset = x * 3;
-      NSUInteger index = offset + c;
-      ((float *)data.mutableBytes)[index] = meanWeights[c];
-    }
+  float* ptr = (float*) data.mutableBytes;
+  float* end = ptr + dataSize;
+  while (ptr < end) {
+    ptr[0] = meanWeights[0];
+    ptr[1] = meanWeights[1];
+    ptr[2] = meanWeights[2];
+    ptr += 3;
   }
 }
 
