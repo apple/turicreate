@@ -329,7 +329,7 @@ void object_detector::save_impl(oarchive& oarc) const {
 
 void object_detector::load_version(iarchive& iarc, size_t version) {
   nn_spec_.reset(new model_spec);
-  _load_version(iarc, version, *nn_spec_, state);
+  _load_version(iarc, version, *nn_spec_, state, anchor_boxes());
 }
 
 void object_detector::train(gl_sframe data,

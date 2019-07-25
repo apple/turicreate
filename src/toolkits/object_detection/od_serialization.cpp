@@ -15,24 +15,9 @@ using padding_type = model_spec::padding_type;
 using turi::neural_net::float_array_map;
 using turi::neural_net::xavier_weight_initializer;
 
-namespace {
 
-// Each bounding box is evaluated relative to a list of pre-defined sizes.
-const std::vector<std::pair<float, float>>& anchor_boxes() {
-  static const std::vector<std::pair<float, float>>* const default_boxes =
-      new std::vector<std::pair<float, float>>({
-          {1.f, 2.f}, {1.f, 1.f}, {2.f, 1.f},
-          {2.f, 4.f}, {2.f, 2.f}, {4.f, 2.f},
-          {4.f, 8.f}, {4.f, 4.f}, {8.f, 4.f},
-          {8.f, 16.f}, {8.f, 8.f}, {16.f, 8.f},
-          {16.f, 32.f}, {16.f, 16.f}, {32.f, 16.f},
-      });
-  return *default_boxes;
-};
-
-}  // namespace
-
-void _save_impl(oarchive& oarc, const neural_net::model_spec& nn_spec_, const std::map<std::string, variant_type>& state) {
+void _save_impl(oarchive& oarc, const neural_net::model_spec& nn_spec_,
+	const std::map<std::string, variant_type>& state) {
 
   // Save model attributes.
   variant_deep_save(state, oarc);
@@ -42,7 +27,8 @@ void _save_impl(oarchive& oarc, const neural_net::model_spec& nn_spec_, const st
 
 }
 
-void _load_version(iarchive& iarc, size_t version, neural_net::model_spec& nn_spec_, std::map<std::string, variant_type>& state) {
+void _load_version(iarchive& iarc, size_t version, neural_net::model_spec& nn_spec_,
+	std::map<std::string, variant_type>& state, const std::vector<std::pair<float, float>>& anchor_boxes) {
   
   // Load model attributes.
   variant_deep_load(state, iarc);
@@ -50,12 +36,13 @@ void _load_version(iarchive& iarc, size_t version, neural_net::model_spec& nn_sp
   // Load neural net weights.
   float_array_map nn_params;
   iarc >> nn_params;
-  init_darknet_yolo(nn_spec_,state);
+  init_darknet_yolo(nn_spec_, state, anchor_boxes);
   nn_spec_.update_params(nn_params);
 
 }
 
-void init_darknet_yolo(neural_net::model_spec& nn_spec, const std::map<std::string, variant_type>& state) { 
+void init_darknet_yolo(neural_net::model_spec& nn_spec, const std::map<std::string,
+	variant_type>& state, const std::vector<std::pair<float, float>>& anchor_boxes) {
 
   // Initialize a random number generator for weight initialization.
   std::seed_seq seed_seq = { variant_get_value<int>(state.at("random_seed")) };
@@ -146,7 +133,7 @@ void init_darknet_yolo(neural_net::model_spec& nn_spec, const std::map<std::stri
   static constexpr float CONV8_MAGNITUDE = 0.00005f;
   const size_t num_classes = variant_get_value<size_t>(state.at("num_classes"));
   const size_t num_predictions = 5 + num_classes;  // Per anchor box
-  const size_t conv8_c_out = anchor_boxes().size() * num_predictions;
+  const size_t conv8_c_out = anchor_boxes.size() * num_predictions;
   auto conv8_weight_init_fn = [&random_engine](float* w, float* w_end) {
     std::uniform_real_distribution<float> dist(-CONV8_MAGNITUDE,
                                                CONV8_MAGNITUDE);
