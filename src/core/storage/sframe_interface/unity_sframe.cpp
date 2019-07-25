@@ -382,7 +382,7 @@ size_t unity_sframe::column_index(const std::string &name) {
   Dlog_func_entry();
 
   auto it = std::find(m_column_names.begin(), m_column_names.end(), name);
-  if(it == m_column_names.end()) { 
+  if(it == m_column_names.end()) {
     log_and_throw(std::string("Column '") + name + "' not found.");;
   }
   return std::distance(m_column_names.begin(), it);
@@ -1528,8 +1528,51 @@ unity_sframe::copy_range(size_t start, size_t step, size_t end) {
   return ret;
 }
 
+bool unity_sframe::_contains_nan(const flexible_type& cell) {
+  switch (cell.get_type()) {
+    case flex_type_enum::VECTOR:
+      for (auto cc : cell.get<flex_vec>()) {
+        if (std::isnan(cc)) {
+          return true;
+        }
+      }
+      break;
+    case flex_type_enum::LIST:
+      for (auto& cc : cell.get<flex_list>()) {
+        // recursive call
+        if (_contains_nan(cc)) {
+          return true;
+        }
+      }
+      break;
+    case flex_type_enum::DICT:
+      for (auto& cc : cell.get<flex_dict>()) {
+        // recursive call on key,val pair
+        if (_contains_nan(cc.first) || _contains_nan(cc.second)) {
+          return true;
+        }
+      }
+      break;
+    case flex_type_enum::ND_VECTOR: {
+      // enfore const to use no bound check operator[]
+      const auto& nd_arr = cell.get<flex_nd_vec>();
+      auto idx = flex_nd_vec::index_range_type(nd_arr.shape().size(), 0);
+      do {
+        if (std::isnan(nd_arr[nd_arr.fast_index(idx)]))
+          return true;
+      } while (nd_arr.increment_index(idx));
+      break;
+    }
+    default:
+      // non-container type case.
+      return cell.is_na();
+  }
+
+  return false;
+}
+
 std::list<std::shared_ptr<unity_sframe_base>> unity_sframe::drop_missing_values(
-    const std::vector<std::string> &column_names, bool all, bool split) {
+    const std::vector<std::string> &column_names, bool all, bool split, bool recursive) {
   log_func_entry();
 
   // Error checking
@@ -1542,23 +1585,49 @@ std::list<std::shared_ptr<unity_sframe_base>> unity_sframe::drop_missing_values(
 
   std::function<flexible_type(const sframe_rows::row&)> filter_fn;
   if (all) {
-    filter_fn = [column_indices](const sframe_rows::row& row)->flexible_type {
-                                  size_t num_missing_values = 0;
-                                  for(const auto &i : column_indices) {
-                                    if(row[i].is_na()) {
-                                      ++num_missing_values;
-                                    }
-                                  }
-                                  return (num_missing_values != column_indices.size());
-                                };
+    // for perf, I choose not to use std::function to wrap _contains_nan or is_nan
+    if (recursive) {
+      filter_fn =
+          [column_indices](const sframe_rows::row& row) -> flexible_type {
+        size_t num_missing_values = 0;
+        for (const auto& i : column_indices) {
+          if (_contains_nan(row[i])) {
+            ++num_missing_values;
+          }
+        }
+        return (num_missing_values != column_indices.size());
+      };
+
+    } else {
+      filter_fn =
+          [column_indices](const sframe_rows::row& row) -> flexible_type {
+        size_t num_missing_values = 0;
+        for (const auto& i : column_indices) {
+          if (row[i].is_na()) {
+            ++num_missing_values;
+          }
+        }
+        return (num_missing_values != column_indices.size());
+      };
+    }
   } else {
-    filter_fn = [column_indices](const sframe_rows::row& row)->flexible_type {
-                                  for(const auto &i : column_indices) {
-                                    if (row[i].is_na())
-                                      return false;
-                                  }
-                                  return true;
-                                };
+    if (recursive) {
+      filter_fn =
+          [column_indices](const sframe_rows::row& row) -> flexible_type {
+        for (const auto& i : column_indices) {
+          if (_contains_nan(row[i])) return false;
+        }
+        return true;
+      };
+    } else {
+      filter_fn =
+          [column_indices](const sframe_rows::row& row) -> flexible_type {
+        for (const auto& i : column_indices) {
+          if (row[i].is_na()) return false;
+        }
+        return true;
+      };
+    }
   }
   auto filter_sarray = std::static_pointer_cast<unity_sarray>(
     transform_lambda(filter_fn, flex_type_enum::INTEGER, 0));

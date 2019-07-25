@@ -922,14 +922,14 @@ gl_sframe gl_sframe::sort(const std::vector<std::pair<std::string, bool>>& colum
   return get_proxy()->sort(keys, order);
 }
 gl_sframe gl_sframe::dropna(const std::vector<std::string>& columns,
-                            std::string how) const {
-  auto ret = get_proxy()->drop_missing_values(columns, how == "all", false);
+                            std::string how, bool recursive) const {
+  auto ret = get_proxy()->drop_missing_values(columns, how == "all", false, recursive);
   ASSERT_EQ(ret.size(), 2);
   return *(ret.begin());
 }
 std::pair<gl_sframe, gl_sframe> gl_sframe::dropna_split(const std::vector<std::string>& columns,
-                                                        std::string how) const {
-  auto ret = get_proxy()->drop_missing_values(columns, how == "all", false);
+                                                        std::string how, bool recursive) const {
+  auto ret = get_proxy()->drop_missing_values(columns, how == "all", false, recursive);
   ASSERT_EQ(ret.size(), 2);
   return {*(ret.begin()), *(ret.rbegin())};
 }
