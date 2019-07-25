@@ -695,7 +695,9 @@
 
 - (instancetype)initWithContext:(CGContextRef)parentContext {
     self = [super initWithTagName:@"canvas"];
-    self.context = [[VegaCGContext alloc] initWithContext:parentContext];
+    if(self) {
+        self.context = [[VegaCGContext alloc] initWithContext:parentContext];
+    }
     return self;
 }
 

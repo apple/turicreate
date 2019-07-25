@@ -11,8 +11,10 @@
 
 - (instancetype)initWithCanvas:(VegaCGCanvas*)canvas {
     self = [super init];
-    self.body = [[VegaHTMLElement alloc] init];
-    _canvas = canvas;
+    if(self) {
+        self.body = [[VegaHTMLElement alloc] init];
+        _canvas = canvas;
+    }
     return self;
 };
 

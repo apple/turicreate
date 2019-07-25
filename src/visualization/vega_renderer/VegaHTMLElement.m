@@ -8,7 +8,9 @@
 
 - (instancetype) init {
     self = [super init];
-    self.cursor = [[NSString alloc] init];
+    if(self) {
+        self.cursor = [[NSString alloc] init];
+    }
     return self;
 }
 
@@ -22,14 +24,18 @@
 
 - (instancetype)init {
     self = [super init];
-    self.style = [[VegaCSSStyleDeclaration alloc] init];
-    self.childNodes = [[NSMutableArray alloc] init];
+    if(self) {
+        self.style = [[VegaCSSStyleDeclaration alloc] init];
+        self.childNodes = [[NSMutableArray alloc] init];
+    }
     return self;
 }
 
 - (instancetype)initWithTagName:(NSString*)tag {
     self = [self init];
-    self.tagName = tag;
+    if(self) {
+        self.tagName = tag;
+    }
     return self; 
 }
 
