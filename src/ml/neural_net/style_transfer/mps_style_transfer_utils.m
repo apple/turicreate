@@ -6,6 +6,21 @@
 
 #import <ml/neural_net/style_transfer/mps_style_transfer_utils.h>
 
+/**
+ * Transformer Descriptor
+ *    Encode 1
+ *    Encode 2
+ *    Encode 3
+ *
+ *    Residual 1
+ *    Residual 2
+ *    Residual 3
+ *    Residual 4
+ *    Residual 5
+ *
+ *    Decode 1
+ *    Decode 2
+ */
 @implementation TCMPSStyleTransfer (TCMPSStyleTransferUtils)
 
 + (TCMPSTransformerDescriptor *) defineTransformerDescriptor:(NSUInteger)numStyles
@@ -327,6 +342,9 @@
   return transformerDesc;
 }
 
+/**
+ *
+ */
 + (TCMPSVgg16Descriptor *) defineVGG16Descriptor:(NSUInteger)numStyles {
   TCMPSVgg16Descriptor* vgg16Desc  = [[TCMPSVgg16Descriptor alloc] init];
 
@@ -619,13 +637,6 @@
   return [vgg16Weight copy];
 }
 
-/**
- * populateMean
- *
- * SUMMARY
- * -------
- * This function 
- */
 + (void) populateMean:(NSMutableData *)data {
   NSUInteger dataSize = (data.length)/sizeof(float);
   NSAssert((dataSize) % 3 == 0, @"Data must follow a 3 channel format");
@@ -640,13 +651,6 @@
   }
 }
 
-/**
- * populateMultiplication
- *
- * SUMMARY
- * -------
- * This function 
- */
 + (void) populateMultiplication:(NSMutableData *)data {
   NSUInteger dataSize = (data.length)/sizeof(float);
   NSAssert((dataSize) % 3 == 0, @"Data must follow a 3 channel format");

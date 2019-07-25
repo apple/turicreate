@@ -392,7 +392,7 @@
   }
   lossValue /= _batchSize;
 
-  NSMutableData * lossData = [NSMutableData dataWithLength:0];
+  NSMutableData * lossData = [NSMutableData data];
   [lossData appendBytes:&lossValue length:sizeof(float)];
 
   NSMutableDictionary<NSString *, NSData *> *lossDict = [[NSMutableDictionary alloc] init];

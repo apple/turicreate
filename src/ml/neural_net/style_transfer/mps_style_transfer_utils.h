@@ -19,6 +19,27 @@
 
 + (NSDictionary<NSString *, NSDictionary *> *) defineTransformerWeights:(NSDictionary<NSString *, NSData *> *)weights;
 + (NSDictionary<NSString *, NSDictionary *> *) defineVGG16:(NSDictionary<NSString *, NSData *> *)weights;
+
+/**
+ * populateMean
+ *
+ * SUMMARY
+ * -------
+ * This function populates the MPSImage used in the pre-processing of the Neural 
+ * Network. Each channel in the Style Transfer network is weighted differently
+ * and these channel weights take care of that.
+ *
+ */
 + (void) populateMean:(NSMutableData *)data;
+
+/**
+ * populateMultiplication
+ *
+ * SUMMARY
+ * -------
+ * This function populates the MPSImage used in the pre-processing of the Neural
+ * Network. The images coming out of the neural network are of values ranging 
+ * from 0-1. The preprocessor takes those values and scales them up to 0-255.
+ */
 + (void) populateMultiplication:(NSMutableData *)data;
 @end
