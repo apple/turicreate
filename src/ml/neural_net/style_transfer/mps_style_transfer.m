@@ -49,9 +49,9 @@
     // Set Default parameters values
 
     _batchSize = 6;
-    _contentLossMultiplier = [NSNumber numberWithFloat:1.0];
-    _styleLossMultiplier = [NSNumber numberWithFloat:1e-4];
-    _finetuneAllParams = YES;
+    _contentLossMultiplier = 1.0;
+    _styleLossMultiplier = 1e-4;
+    _updateAllParams = YES;
     _imgWidth = 256;
     _imgHeight = 256;
 
@@ -59,12 +59,12 @@
     MPSCNNLossDescriptor *styleDesc = [MPSCNNLossDescriptor cnnLossDescriptorWithType:MPSCNNLossTypeMeanSquaredError
                                                                          reductionType:MPSCNNReductionTypeMean];
 
-    styleDesc.weight = 0.5 * [_styleLossMultiplier floatValue];
+    styleDesc.weight = 0.5 * _styleLossMultiplier;
 
     MPSCNNLossDescriptor *contentDesc = [MPSCNNLossDescriptor cnnLossDescriptorWithType:MPSCNNLossTypeMeanSquaredError
                                                                            reductionType:MPSCNNReductionTypeMean];
 
-    contentDesc.weight = 0.5 * [_contentLossMultiplier floatValue];
+    contentDesc.weight = 0.5 * _contentLossMultiplier;
 
     // Create Proper Input Nodes
     _contentNode = [MPSNNImageNode nodeWithHandle: [[TCMPSGraphNodeHandle alloc] initWithLabel:@"contentImage"]];
@@ -78,7 +78,7 @@
 
     // Create the Descriptors for the Transformer and VGG16 Networks
     TCMPSTransformerDescriptor *transformerDesc = [TCMPSStyleTransfer defineTransformerDescriptor:numStyles
-                                                                                   tuneAllWeights:_finetuneAllParams];
+                                                                                   tuneAllWeights:_updateAllParams];
     TCMPSVgg16Descriptor *vgg16Desc = [TCMPSStyleTransfer defineVGG16Descriptor:numStyles];
 
     // Allocate a _dev and _commandQueue

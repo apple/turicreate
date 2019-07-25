@@ -14,11 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 @class TCMPSConvolutionWeights;
 @class TCMPSInstanceNormDataLoader;
 
-@interface MPSCNNFullyConnectedNode(TCMPSLayerProperty)
-@property (nonatomic, strong) TCMPSConvolutionWeights *weights API_AVAILABLE(macosx(10.14));
-@end
-
 @interface MPSCNNFullyConnectedNode (TCMPSLayerHelper)
+@property (nonatomic) TCMPSConvolutionWeights *weights API_AVAILABLE(macosx(10.14));
 + (TCMPSConvolutionWeights *) createFullyConnected:(MPSNNImageNode *)inputNode
                               inputFeatureChannels:(NSUInteger)inputFeatureChannels
                              outputFeatureChannels:(NSUInteger)outputFeatureChannels
@@ -33,11 +30,8 @@ NS_ASSUME_NONNULL_BEGIN
                                          API_AVAILABLE(macosx(10.14));
 @end
 
-@interface MPSCNNConvolutionNode(TCMPSLayerProperty)
-@property (nonatomic, strong) TCMPSConvolutionWeights *weights API_AVAILABLE(macosx(10.14));
-@end
-
-@interface MPSCNNConvolutionNode (TCMPSLayerHelper)                                   
+@interface MPSCNNConvolutionNode (TCMPSLayerHelper)
+@property (nonatomic) TCMPSConvolutionWeights *weights API_AVAILABLE(macosx(10.14));
 + (MPSCNNConvolutionNode *) createConvolutional:(MPSNNImageNode *)inputNode
                                     kernelWidth:(NSUInteger)kernelWidth
                                    kernelHeight:(NSUInteger)kernelHeight
@@ -56,11 +50,8 @@ NS_ASSUME_NONNULL_BEGIN
                                       API_AVAILABLE(macosx(10.14));
 @end
 
-@interface MPSCNNInstanceNormalizationNode(TCMPSLayerProperty)
-@property (nonatomic, strong) TCMPSInstanceNormDataLoader *weights API_AVAILABLE(macosx(10.14));
-@end
-
 @interface MPSCNNInstanceNormalizationNode (TCMPSLayerHelper)
+@property (nonatomic) TCMPSInstanceNormDataLoader *weights API_AVAILABLE(macosx(10.14));
 + (MPSCNNInstanceNormalizationNode *) createInstanceNormalization:(MPSNNImageNode *)inputNode
                                                          channels:(NSUInteger)channels
                                                            styles:(NSUInteger)styles

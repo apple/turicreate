@@ -619,6 +619,13 @@
   return [vgg16Weight copy];
 }
 
+/**
+ * populateMean
+ *
+ * SUMMARY
+ * -------
+ * This function 
+ */
 + (void) populateMean:(NSMutableData *)data {
   NSUInteger dataSize = (data.length)/sizeof(float);
   NSAssert((dataSize) % 3 == 0, @"Data must follow a 3 channel format");
@@ -633,6 +640,13 @@
   }
 }
 
+/**
+ * populateMultiplication
+ *
+ * SUMMARY
+ * -------
+ * This function 
+ */
 + (void) populateMultiplication:(NSMutableData *)data {
   NSUInteger dataSize = (data.length)/sizeof(float);
   NSAssert((dataSize) % 3 == 0, @"Data must follow a 3 channel format");

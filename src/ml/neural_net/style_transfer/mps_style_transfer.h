@@ -17,9 +17,9 @@ API_AVAILABLE(macos(10.15))
 @interface TCMPSStyleTransfer : NSObject
 
 @property (nonatomic) NSUInteger batchSize;
-@property (nonatomic) NSNumber *contentLossMultiplier;
-@property (nonatomic) NSNumber *styleLossMultiplier;
-@property (nonatomic) BOOL finetuneAllParams;
+@property (nonatomic) float contentLossMultiplier;
+@property (nonatomic) float styleLossMultiplier;
+@property (nonatomic) BOOL updateAllParams;
 @property (nonatomic) NSUInteger imgWidth;
 @property (nonatomic) NSUInteger imgHeight;
 
