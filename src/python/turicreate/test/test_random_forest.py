@@ -97,6 +97,7 @@ class RandomForestRegressionTest(unittest.TestCase):
            'model_checkpoint_path': lambda x: x is None,
            'resume_from_checkpoint': lambda x: x is None,
            'validation_data': lambda x: isinstance(x, tc.SFrame) and len(x) == len(self.dtest),
+           'disable_posttrain_evaluation' : lambda x: x == False,
            }
         self.metrics = ["rmse", "max_error"]
         self.fields_ans = self.get_ans.keys()

@@ -84,6 +84,7 @@ class DecisionTreeRegressionTest(unittest.TestCase):
              'random_seed': lambda x: x is None,
              'progress': lambda x: isinstance(x, tc.SFrame) or (x is None),
              'metric': lambda x: x == 'auto',
+             'disable_posttrain_evaluation' : lambda x: x == False,
              }
         self.metrics = ["rmse", "max_error"]
         self.fields_ans = self.get_ans.keys()
