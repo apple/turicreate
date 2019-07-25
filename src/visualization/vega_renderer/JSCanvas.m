@@ -694,13 +694,12 @@
 @implementation VegaCGCanvas
 
 - (instancetype)initWithContext:(CGContextRef)parentContext {
-    self = [super init];
+    self = [super initWithTagName:@"canvas"];
     self.context = [[VegaCGContext alloc] initWithContext:parentContext];
     return self;
 }
 
 - (VegaCGContext *)getContext:(NSString *)type {
-    (void)type;
     assert([type isEqualToString:@"2d"]); // no other types handled
     return self.context;
 }

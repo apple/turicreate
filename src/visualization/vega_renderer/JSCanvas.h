@@ -181,13 +181,13 @@ JSExportAs(translate,
 + (CGColorRef)newColorFromString:(NSString *)string;
 @end
 
-@protocol VegaCGCanvasInterface <JSExport, VegaHTMLElement>
+@protocol VegaCGCanvasInterface <JSExport>
 - (VegaCGContext *)getContext:(NSString *)type;
 @property double width;
 @property double height;
 @end
 
-@interface VegaCGCanvas : NSObject<VegaCGCanvasInterface>
+@interface VegaCGCanvas : VegaHTMLElement<VegaCGCanvasInterface>
 @property VegaCGContext *context;
 - (instancetype)initWithContext:(CGContextRef)parentContext;
 @end
