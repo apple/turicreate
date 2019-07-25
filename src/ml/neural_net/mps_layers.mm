@@ -119,11 +119,11 @@ imageForCommandBuffer:(__nonnull id<MTLCommandBuffer>)cmdBuf
   return &_bias[0];
 };
 
-- (size_t)weight_size {
+- (size_t)weightSize {
   return _weight.size();
 }
 
-- (size_t)bias_size {
+- (size_t)biasSize {
   return _bias.size();
 }
 
@@ -327,7 +327,7 @@ float_array_map ConvLayer::Export() const {
                                                    {c_out, c_in, k_h, k_w});
 
       std::string bias_key = name + "_bias";
-      size_t bias_size = [weight bias_size];
+      size_t bias_size = [weight biasSize];
       table[bias_key] = shared_float_array::copy(
           reinterpret_cast<float*>([weight biasTerms]), {bias_size});
   }
@@ -352,9 +352,9 @@ void ConvLayer::Update(MPSUpdater *_Nonnull updater, int lid) {
       (MPSCNNConvolutionGradientState *)state[0];
   float *g_w = (float *)ADVANCE_PTR(cnn_state.gradientForWeights.contents, 0);
   float *g_b = (float *)ADVANCE_PTR(cnn_state.gradientForBiases.contents, 0);
-  updater->Update((float *)[weight weights], g_w, [weight weight_size], lid, 0);
+  updater->Update((float *)[weight weights], g_w, [weight weightSize], lid, 0);
   if (use_bias) {
-    updater->Update((float *)[weight biasTerms], g_b, [weight bias_size], lid,
+    updater->Update((float *)[weight biasTerms], g_b, [weight biasSize], lid,
                     1);
   }
   [op_forward reloadWeightsAndBiasesFromDataSource];

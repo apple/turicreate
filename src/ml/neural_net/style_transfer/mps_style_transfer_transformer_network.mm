@@ -262,7 +262,7 @@
   weights[@"transformer_instancenorm4_gamma"] = decode2Weights[@"inst_gamma"];
   weights[@"transformer_instancenorm4_beta"] = decode2Weights[@"inst_beta"];
 
-  NSUInteger convWeightSize = (NSUInteger)([[_conv weights] weight_size] * sizeof(float));
+  NSUInteger convWeightSize = (NSUInteger)([[_conv weights] weightSize] * sizeof(float));
 
   NSMutableData* convDataWeight = [NSMutableData dataWithLength:convWeightSize];
 

@@ -82,7 +82,7 @@
 - (NSDictionary<NSString *, NSData *> *) exportWeights {
   NSMutableDictionary<NSString *, NSData *> *weights = [[NSMutableDictionary alloc] init];;
 
-  NSUInteger convWeightSize = (NSUInteger)([[_conv weights] weight_size] * sizeof(float));
+  NSUInteger convWeightSize = (NSUInteger)([[_conv weights] weightSize] * sizeof(float));
 
   NSMutableData* convDataWeight = [NSMutableData dataWithLength:convWeightSize];
 

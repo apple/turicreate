@@ -309,10 +309,10 @@ NS_ASSUME_NONNULL_END
   _optimizerOptions.learningRate = lr;
 }
 
-- (size_t)weight_size{
+- (size_t)weightSize{
     return sizeWeights / sizeof(float);
 }
-- (size_t)bias_size{
+- (size_t)biasSize{
     return sizeBias / sizeof(float);
 }
 
