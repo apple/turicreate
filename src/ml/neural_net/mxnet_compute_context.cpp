@@ -42,30 +42,30 @@ py::array_t<double> add_arrays(py::array_t<double> input1, py::array_t<double> i
     return result;
 }
 
-int import_modules() {
+// int import_modules() {
 	
-	py::module calc = py::module::import("py_mod.calc");
-	py::object result = calc.attr("add")(1, 2);
-	int n = result.cast<int>();
-	
-	return n;
-}
-
-// int import_obj(){
-// 	std::cout << "hey";
 // 	py::module calc = py::module::import("py_mod.calc");
-// 	py::object res = calc.attr("tran")();
-// 	int n = res.cast<int>();
+// 	py::object result = calc.attr("add")(1, 2);
+// 	int n = result.cast<int>();
+	
 // 	return n;
-
 // }
+
+py::array_t<double> import_obj(){
+	std::cout << "hey";
+	py::module calc = py::module::import("py_mod.calc");
+	py::object res = calc.attr("tran")();
+	py::array_t<double> n = res.cast<py::array_t<double>>();
+	return n;
+
+}
 
 PYBIND11_MODULE(libtcmxnet, m) {
 	
     m.doc() = "pybind11 example module";
     m.def("add_arrays", &add_arrays, "Add two NumPy arrays");
-    m.def("import_modules", &import_modules, "Calc");
-    // m.def("import_obj", &import_obj, "ghjjk");
+    // m.def("import_modules", &import_modules, "Calc");
+    m.def("import_obj", &import_obj, "ghjjk");
 }
 
 

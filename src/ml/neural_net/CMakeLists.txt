@@ -51,14 +51,14 @@ else()
   set(additional_unity_neural_net_requirements "")
 endif()
 
-
 include_directories(${CMAKE_SOURCE_DIR}/deps/src/pybind11-2.3.0)
 
-# TODO: a backend wrapping MXNet.
 make_library(tcmxnet SHARED
-      SOURCES
-      mxnet_compute_context.cpp
-      REQUIRES)
+  SOURCES
+  mxnet_compute_context.cpp
+)
+
+file(RENAME libtcmxnet.dylib libtcmxnet.so)
 
 make_library(unity_neural_net OBJECT
   SOURCES

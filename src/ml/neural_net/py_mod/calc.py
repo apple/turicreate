@@ -1,4 +1,4 @@
-import numpy as _np
+# import numpy as _np
 
 # class NumpyObject:
 # 	def __init__(self):
@@ -7,9 +7,11 @@ import numpy as _np
 # 	def transform_it(self):
 # 		return self.arr/2
 
-def add(i, j):
-	return i+j
+# def add(i, j):
+# 	return i+j
+
+import numpy as np
 
 def tran():
-	return _np.arange(5)/2
+	return np.arange(5)/2
 
