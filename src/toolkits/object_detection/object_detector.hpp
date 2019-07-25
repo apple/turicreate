@@ -123,8 +123,6 @@ class EXPORT object_detector: public ml_model_base {
   // spec), given the path to a mlmodel file containing the pretrained weights.
   virtual std::unique_ptr<neural_net::model_spec> init_model(
       const std::string& pretrained_mlmodel_path) const;
-  virtual std::unique_ptr<neural_net::model_spec> init_darknet_yolo() const;
-
 
   // Support for iterative training.
   // TODO: Expose via forthcoming C-API checkpointing mechanism?
