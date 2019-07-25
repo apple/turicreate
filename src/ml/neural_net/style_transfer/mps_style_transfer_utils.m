@@ -1,4 +1,4 @@
-/* Copyright © 2018 Apple Inc. All rights reserved.
+/* Copyright © 2019 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
@@ -10,7 +10,7 @@
 
 + (TCMPSTransformerDescriptor *) defineTransformerDescriptor:(NSUInteger)numStyles
                                               tuneAllWeights:(BOOL)tuneAllWeights {
-  TCMPSTransformerDescriptor* transformerDesc;
+  TCMPSTransformerDescriptor* transformerDesc = [[TCMPSTransformerDescriptor alloc] init];
 
   // Encoding 1 Convolution
 
@@ -326,24 +326,9 @@
 
   return transformerDesc;
 }
-/*
-  self.conv1_1 = _nn.Conv2D(in_channels=3, channels=64, kernel_size=3, padding=1)
-  self.conv1_2 = _nn.Conv2D(in_channels=64, channels=64, kernel_size=3, padding=1)
-
-  self.conv2_1 = _nn.Conv2D(in_channels=64, channels=128, kernel_size=3, padding=1)
-  self.conv2_2 = _nn.Conv2D(in_channels=128, channels=128, kernel_size=3, padding=1)
-
-  self.conv3_1 = _nn.Conv2D(in_channels=128, channels=256, kernel_size=3, padding=1)
-  self.conv3_2 = _nn.Conv2D(in_channels=256, channels=256, kernel_size=3, padding=1)
-  self.conv3_3 = _nn.Conv2D(in_channels=256, channels=256, kernel_size=3, padding=1)
-
-  self.conv4_1 = _nn.Conv2D(in_channels=256, channels=512, kernel_size=3, padding=1)
-  self.conv4_2 = _nn.Conv2D(in_channels=512, channels=512, kernel_size=3, padding=1)
-  self.conv4_3 = _nn.Conv2D(in_channels=512, channels=512, kernel_size=3, padding=1)
-*/
 
 + (TCMPSVgg16Descriptor *) defineVGG16Descriptor:(NSUInteger)numStyles {
-  TCMPSVgg16Descriptor* vgg16Desc;
+  TCMPSVgg16Descriptor* vgg16Desc  = [[TCMPSVgg16Descriptor alloc] init];
 
   vgg16Desc.block1.conv1.kernelWidth = 3;
   vgg16Desc.block1.conv1.kernelHeight = 3;
@@ -470,24 +455,24 @@
   return vgg16Desc;
 }
 
-+ (NSDictionary<NSString *, NSDictionary *> *)defineTransformerWeights:(NSDictionary<NSString *, NSData *> *)weights {
-  NSMutableDictionary<NSString *, NSDictionary *> *transformerWeight;
++ (NSDictionary<NSString *, NSDictionary *> *) defineTransformerWeights:(NSDictionary<NSString *, NSData *> *)weights {
+  NSMutableDictionary<NSString *, NSDictionary *> *transformerWeight = [[NSMutableDictionary alloc] init];
 
-  NSMutableDictionary<NSString *, NSData *> *transformerWeightEncode1;
-  NSMutableDictionary<NSString *, NSData *> *transformerWeightEncode2;
-  NSMutableDictionary<NSString *, NSData *> *transformerWeightEncode3;
+  NSMutableDictionary<NSString *, NSData *> *transformerWeightEncode1 = [[NSMutableDictionary alloc] init];
+  NSMutableDictionary<NSString *, NSData *> *transformerWeightEncode2 = [[NSMutableDictionary alloc] init];
+  NSMutableDictionary<NSString *, NSData *> *transformerWeightEncode3 = [[NSMutableDictionary alloc] init];
 
-  NSMutableDictionary<NSString *, NSData *> *transformerWeightResidual1;
-  NSMutableDictionary<NSString *, NSData *> *transformerWeightResidual2;
-  NSMutableDictionary<NSString *, NSData *> *transformerWeightResidual3;
-  NSMutableDictionary<NSString *, NSData *> *transformerWeightResidual4;
-  NSMutableDictionary<NSString *, NSData *> *transformerWeightResidual5;
+  NSMutableDictionary<NSString *, NSData *> *transformerWeightResidual1 = [[NSMutableDictionary alloc] init];
+  NSMutableDictionary<NSString *, NSData *> *transformerWeightResidual2 = [[NSMutableDictionary alloc] init];
+  NSMutableDictionary<NSString *, NSData *> *transformerWeightResidual3 = [[NSMutableDictionary alloc] init];
+  NSMutableDictionary<NSString *, NSData *> *transformerWeightResidual4 = [[NSMutableDictionary alloc] init];
+  NSMutableDictionary<NSString *, NSData *> *transformerWeightResidual5 = [[NSMutableDictionary alloc] init];
 
-  NSMutableDictionary<NSString *, NSData *> *transformerWeightDecode1;
-  NSMutableDictionary<NSString *, NSData *> *transformerWeightDecode2;
+  NSMutableDictionary<NSString *, NSData *> *transformerWeightDecode1 = [[NSMutableDictionary alloc] init];
+  NSMutableDictionary<NSString *, NSData *> *transformerWeightDecode2 = [[NSMutableDictionary alloc] init];
 
-  NSMutableDictionary<NSString *, NSData *> *transformerWeightConv;
-  NSMutableDictionary<NSString *, NSData *> *transformerWeightInst;
+  NSMutableDictionary<NSString *, NSData *> *transformerWeightConv = [[NSMutableDictionary alloc] init];
+  NSMutableDictionary<NSString *, NSData *> *transformerWeightInst = [[NSMutableDictionary alloc] init];
 
   transformerWeightEncode1[@"transformer_encode_1encoding_conv_weights"] = weights[@"transformer_conv0_weight"];
   transformerWeightEncode1[@"transformer_encode_1encoding_conv_biases"] = NULL;
@@ -592,12 +577,12 @@
 }
 
 + (NSDictionary<NSString *, NSDictionary *> *)defineVGG16:(NSDictionary<NSString *, NSData *> *)weights {
-  NSMutableDictionary<NSString *, NSDictionary *> *vgg16Weight;
+  NSMutableDictionary<NSString *, NSDictionary *> *vgg16Weight = [[NSMutableDictionary alloc] init];
 
-  NSMutableDictionary<NSString *, NSData *> *vgg16WeightBlock1;
-  NSMutableDictionary<NSString *, NSData *> *vgg16WeightBlock2;
-  NSMutableDictionary<NSString *, NSData *> *vgg16WeightBlock3;
-  NSMutableDictionary<NSString *, NSData *> *vgg16WeightBlock4;
+  NSMutableDictionary<NSString *, NSData *> *vgg16WeightBlock1 = [[NSMutableDictionary alloc] init];
+  NSMutableDictionary<NSString *, NSData *> *vgg16WeightBlock2 = [[NSMutableDictionary alloc] init];
+  NSMutableDictionary<NSString *, NSData *> *vgg16WeightBlock3 = [[NSMutableDictionary alloc] init];
+  NSMutableDictionary<NSString *, NSData *> *vgg16WeightBlock4 = [[NSMutableDictionary alloc] init];
 
   vgg16WeightBlock1[@"vgg_block_1block_1_conv_1_weights"] = weights[@"vgg16_conv0_weight"];
   vgg16WeightBlock1[@"vgg_block_1block_1_conv_1_biases"] = weights[@"vgg16_conv0_bias"];
@@ -634,7 +619,7 @@
   return [vgg16Weight copy];
 }
 
-+ (void)populateMean:(NSMutableData *)data {
++ (void) populateMean:(NSMutableData *)data {
   NSUInteger dataSize = (data.length)/sizeof(float);
   NSAssert((dataSize) % 3 == 0, @"Data must follow a 3 channel format");
   float meanWeights[3] = { 123.68, 116.779, 103.939 };
@@ -647,7 +632,7 @@
   }
 }
 
-+ (void)populateMultiplication:(NSMutableData *)data {
++ (void) populateMultiplication:(NSMutableData *)data {
   NSUInteger dataSize = (data.length)/sizeof(float);
   NSAssert((dataSize) % 3 == 0, @"Data must follow a 3 channel format");
   for(NSUInteger x = 0; x < dataSize; x++)

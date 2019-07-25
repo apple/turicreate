@@ -1,14 +1,14 @@
-/* Copyright © 2018 Apple Inc. All rights reserved.
+/* Copyright © 2019 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
 #import <ml/neural_net/style_transfer/mps_style_transfer_residual_node.h>
-#import <ml/neural_net/mps_layer_helper.h>
 
-#include <ml/neural_net/mps_weight.h>
+#import <ml/neural_net/mps_layer_helper.h>
 #import <ml/neural_net/mps_layer_instance_norm_data_loader.h>
+#import <ml/neural_net/mps_weight.h>
 
 @interface TCMPSStyleTransferResidualNode ()
 @property (nonatomic) MPSCNNConvolutionNode *conv1;
@@ -102,19 +102,19 @@
   return [conv1Grad resultImage];
 }
 
-- (void)setLearningRate:(float)lr {
+- (void) setLearningRate:(float)lr {
   [[_conv1 weights] setLearningRate:lr];
   [[_instNorm1 weights] setLearningRate:lr];
   [[_conv2 weights] setLearningRate:lr];
   [[_instNorm2 weights] setLearningRate:lr];
 }
 
-- (NSDictionary<NSString *, NSData *> *)exportWeights {
-  NSMutableDictionary<NSString *, NSData *> *weights;
+- (NSDictionary<NSString *, NSData *> *) exportWeights {
+  NSMutableDictionary<NSString *, NSData *> *weights = [[NSMutableDictionary alloc] init];;
 
   NSUInteger conv1WeightSize = (NSUInteger)([[_conv1 weights] weight_size] * sizeof(float));
 
-  NSMutableData* conv1DataWeight = [NSMutableData dataWithCapacity:conv1WeightSize];
+  NSMutableData* conv1DataWeight = [NSMutableData dataWithLength:conv1WeightSize];
 
   memcpy(conv1DataWeight.mutableBytes, [[_conv1 weights] weights], conv1WeightSize);
 
@@ -122,7 +122,7 @@
 
   NSUInteger conv2WeightSize = (NSUInteger)([[_conv2 weights] weight_size] * sizeof(float));
 
-  NSMutableData* conv2DataWeight = [NSMutableData dataWithCapacity:conv2WeightSize];
+  NSMutableData* conv2DataWeight = [NSMutableData dataWithLength:conv2WeightSize];
 
   memcpy(conv2DataWeight.mutableBytes, [[_conv2 weights] weights], conv2WeightSize);
 
@@ -130,19 +130,19 @@
 
   NSUInteger instNorm1Size = (NSUInteger)([[_instNorm1 weights] numberOfFeatureChannels] * sizeof(float));
 
-  NSMutableData* instNorm1DataGamma = [NSMutableData dataWithCapacity:instNorm1Size];
-  NSMutableData* instNorm1DataBeta = [NSMutableData dataWithCapacity:instNorm1Size];
+  NSMutableData* instNorm1DataGamma = [NSMutableData dataWithLength:instNorm1Size];
+  NSMutableData* instNorm1DataBeta = [NSMutableData dataWithLength:instNorm1Size];
 
   memcpy(instNorm1DataGamma.mutableBytes, [[_instNorm1 weights] gamma], instNorm1Size);
   memcpy(instNorm1DataBeta.mutableBytes, [[_instNorm1 weights] beta], instNorm1Size);
 
   weights[@"inst_1_gamma"] = instNorm1DataGamma;
   weights[@"inst_1_beta"] = instNorm1DataBeta;
-  
+
   NSUInteger instNorm2Size = (NSUInteger)([[_instNorm2 weights] numberOfFeatureChannels] * sizeof(float));
 
-  NSMutableData* instNorm2DataGamma = [NSMutableData dataWithCapacity:instNorm2Size];
-  NSMutableData* instNorm2DataBeta = [NSMutableData dataWithCapacity:instNorm2Size];
+  NSMutableData* instNorm2DataGamma = [NSMutableData dataWithLength:instNorm2Size];
+  NSMutableData* instNorm2DataBeta = [NSMutableData dataWithLength:instNorm2Size];
 
   memcpy(instNorm2DataGamma.mutableBytes, [[_instNorm2 weights] gamma], instNorm2Size);
   memcpy(instNorm2DataBeta.mutableBytes, [[_instNorm2 weights] beta], instNorm2Size);

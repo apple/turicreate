@@ -1,4 +1,4 @@
-/* Copyright © 2018 Apple Inc. All rights reserved.
+/* Copyright © 2019 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class TCMPSInstanceNormDataLoader;
 
 @interface MPSCNNFullyConnectedNode(TCMPSLayerProperty)
-@property (nonatomic, retain) TCMPSConvolutionWeights *weights API_AVAILABLE(macosx(10.14));
+@property (nonatomic, strong) TCMPSConvolutionWeights *weights API_AVAILABLE(macosx(10.14));
 @end
 
 @interface MPSCNNFullyConnectedNode (TCMPSLayerHelper)
@@ -34,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface MPSCNNConvolutionNode(TCMPSLayerProperty)
-@property (nonatomic, retain) TCMPSConvolutionWeights *weights API_AVAILABLE(macosx(10.14));
+@property (nonatomic, strong) TCMPSConvolutionWeights *weights API_AVAILABLE(macosx(10.14));
 @end
 
 @interface MPSCNNConvolutionNode (TCMPSLayerHelper)                                   
@@ -57,7 +57,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface MPSCNNInstanceNormalizationNode(TCMPSLayerProperty)
-@property (nonatomic, retain) TCMPSInstanceNormDataLoader *weights API_AVAILABLE(macosx(10.14));
+@property (nonatomic, strong) TCMPSInstanceNormDataLoader *weights API_AVAILABLE(macosx(10.14));
 @end
 
 @interface MPSCNNInstanceNormalizationNode (TCMPSLayerHelper)

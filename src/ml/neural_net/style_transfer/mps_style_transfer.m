@@ -1,4 +1,4 @@
-/* Copyright © 2018 Apple Inc. All rights reserved.
+/* Copyright © 2019 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
@@ -52,6 +52,8 @@
     _contentLossMultiplier = [NSNumber numberWithFloat:1.0];
     _styleLossMultiplier = [NSNumber numberWithFloat:1e-4];
     _finetuneAllParams = YES;
+    _imgWidth = 256;
+    _imgHeight = 256;
 
     // Create the loss descriptors for the style and content images
     MPSCNNLossDescriptor *styleDesc = [MPSCNNLossDescriptor cnnLossDescriptorWithType:MPSCNNLossTypeMeanSquaredError
@@ -237,28 +239,20 @@
   return self;
 }
  
-- (NSDictionary<NSString *, NSData *> *)exportWeights {
+- (NSDictionary<NSString *, NSData *> *) exportWeights {
   return [_model exportWeights];
 }
 
-- (NSDictionary<NSString *, NSData *> *)predict:(NSDictionary<NSString *, NSData *> *)inputs {
-  NSUInteger contentWidth;
-  NSUInteger contentHeight;
-  NSUInteger contentChannels;
-
-  [inputs[@"imageWidth"] getBytes:&contentWidth length:sizeof(contentWidth)];
-  [inputs[@"imageHeight"] getBytes:&contentHeight length:sizeof(contentHeight)];
-  [inputs[@"imageChannels"] getBytes:&contentChannels length:sizeof(contentChannels)];
-
+- (NSDictionary<NSString *, NSData *> *) predict:(NSDictionary<NSString *, NSData *> *)inputs {
   MPSImageDescriptor *imgDesc = [MPSImageDescriptor
     imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat32
-                               width:contentWidth
-                              height:contentHeight
-                     featureChannels:contentChannels
+                               width:_imgWidth
+                              height:_imgHeight
+                     featureChannels:3
                       numberOfImages:1
                                usage:MTLTextureUsageShaderWrite | MTLTextureUsageShaderRead];
 
-  NSMutableArray<MPSImage *> *contentImageArray;
+  NSMutableArray<MPSImage *> *contentImageArray = [[NSMutableArray alloc] init];
 
   for (NSUInteger index = 0; index < _batchSize; index++) {
     NSString* key = [NSString stringWithFormat:@"%@%lu", @"contentImage", index];
@@ -271,8 +265,8 @@
 
   id<MTLCommandBuffer> cb = [_commandQueue commandBuffer];
 
-  NSMutableArray *intermediateImages = [[NSMutableArray alloc] initWithArray:@[]];
-  NSMutableArray *destinationStates = [[NSMutableArray alloc] initWithArray:@[]];
+  NSMutableArray *intermediateImages = [[NSMutableArray alloc] init];
+  NSMutableArray *destinationStates = [[NSMutableArray alloc] init];
 
   MPSImageBatch *stylizedImages =  [_inferenceGraph encodeBatchToCommandBuffer:cb
                                                        sourceImages:@[contentImageBatch]
@@ -287,10 +281,10 @@
   [cb commit];
   [cb waitUntilCompleted];
 
-  NSMutableDictionary<NSString *, NSData *> *imagesOut;
+  NSMutableDictionary<NSString *, NSData *> *imagesOut = [[NSMutableDictionary alloc] init];;
 
   for (MPSImage *image in stylizedImages) {
-    NSMutableData* styleData = [NSMutableData dataWithLength:(NSUInteger)sizeof(float) * contentWidth * contentHeight * contentChannels];
+    NSMutableData* styleData = [NSMutableData dataWithLength:(NSUInteger)sizeof(float) * _imgWidth * _imgHeight * 3];
     [image readBytes:styleData.mutableBytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
     NSString* key = [NSString stringWithFormat:@"%@%lu", @"stylizedImage", [stylizedImages indexOfObject:image]];
     imagesOut[key] = styleData;
@@ -299,48 +293,39 @@
   return [imagesOut copy];
 }
 
-- (void) setLearningRate:(NSNumber *)lr {
-  [_model setLearningRate:[lr floatValue]];
-  [_contentVgg setLearningRate:[lr floatValue]];
-  [_styleVggLoss setLearningRate:[lr floatValue]];
-  [_contentVggLoss setLearningRate:[lr floatValue]];
+- (void) setLearningRate:(float)lr {
+  [_model setLearningRate:lr];
+  [_contentVgg setLearningRate:lr];
+  [_styleVggLoss setLearningRate:lr];
+  [_contentVggLoss setLearningRate:lr];
 }
 
 - (NSDictionary<NSString *, NSData *> *) train:(NSDictionary<NSString *, NSData *> *)inputs {
-  NSUInteger inputWidth;
-  NSUInteger inputHeight;
-  NSUInteger inputChannels;
+  NSUInteger imageSize = _imgWidth * _imgHeight * 3;
 
-  [inputs[@"imageWidth"] getBytes:&inputWidth length:sizeof(inputWidth)];
-  [inputs[@"imageHeight"] getBytes:&inputHeight length:sizeof(inputHeight)];
-  [inputs[@"imageChannels"] getBytes:&inputChannels length:sizeof(inputChannels)];
-
-  NSUInteger imageSize = inputWidth * inputHeight * inputChannels;
-
-  NSMutableData* mean = [NSMutableData dataWithCapacity:(NSUInteger)sizeof(float) * imageSize];
-  NSMutableData* multiplication = [NSMutableData dataWithCapacity:(NSUInteger)sizeof(float) * imageSize];
+  NSMutableData* mean = [NSMutableData dataWithLength:(NSUInteger)sizeof(float) * imageSize];
+  NSMutableData* multiplication = [NSMutableData dataWithLength:(NSUInteger)sizeof(float) * imageSize];
   
   MPSImageDescriptor *imgDesc = [MPSImageDescriptor
     imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat32
-                               width:inputWidth
-                              height:inputHeight
-                     featureChannels:inputChannels
+                               width:_imgWidth
+                              height:_imgHeight
+                     featureChannels:3
                       numberOfImages:1
                                usage:MTLTextureUsageShaderWrite | MTLTextureUsageShaderRead];
 
   [TCMPSStyleTransfer populateMean:mean];
   [TCMPSStyleTransfer populateMultiplication:multiplication];
 
-  NSMutableArray<MPSImage *> *contentImageArray;
-  NSMutableArray<MPSImage *> *contentMeanArray;
-  NSMutableArray<MPSImage *> *contentMultiplicationArray;
+  NSMutableArray<MPSImage *> *contentImageArray = [[NSMutableArray alloc] init];
+  NSMutableArray<MPSImage *> *contentMeanArray = [[NSMutableArray alloc] init];
+  NSMutableArray<MPSImage *> *contentMultiplicationArray = [[NSMutableArray alloc] init];
 
-  NSMutableArray<MPSImage *> *styleImageArray;
-  NSMutableArray<MPSImage *> *styleMeanArray;
-  NSMutableArray<MPSImage *> *styleMultiplicationArray;
+  NSMutableArray<MPSImage *> *styleImageArray = [[NSMutableArray alloc] init];
+  NSMutableArray<MPSImage *> *styleMeanArray = [[NSMutableArray alloc] init];
+  NSMutableArray<MPSImage *> *styleMultiplicationArray = [[NSMutableArray alloc] init];
 
   for (NSUInteger index = 0; index < _batchSize; index++) {
-    // TODO: populate contentImage
     NSString* contentKey = [NSString stringWithFormat:@"%@%lu", @"contentImage", index];
     NSString* styleKey = [NSString stringWithFormat:@"%@%lu", @"styleImage", index];
     
@@ -380,8 +365,8 @@
 
   id<MTLCommandBuffer> cb = [_commandQueue commandBuffer];
 
-  NSMutableArray *intermediateImages = [[NSMutableArray alloc] initWithArray:@[]];
-  NSMutableArray *destinationStates = [[NSMutableArray alloc] initWithArray:@[]];
+  NSMutableArray *intermediateImages = [[NSMutableArray alloc] init];
+  NSMutableArray *destinationStates = [[NSMutableArray alloc] init];
 
   MPSImageBatch *ret =  [_trainingGraph encodeBatchToCommandBuffer:cb
                                                       sourceImages:@[contentImageBatch, contentMultiplicationBatch, contentMeanBatch, styleImageBatch, styleMultiplicationBatch, styleMeanBatch]
@@ -393,24 +378,24 @@
     [image synchronizeOnCommandBuffer:cb];  
   }
 
+  // TODO: make train asynchronous
   [cb commit];
   [cb waitUntilCompleted];
 
   // AAAK: What about overflow?
   float lossValue = 0.0f;
   MPSImageBatch *outBatch = [intermediateImages objectAtIndex:0];
-  for (NSUInteger index = 0; index < _batchSize; index++) {
+  for (MPSImage *lossImage in outBatch) {
     float loss;
-    MPSImage* lossImage = outBatch[index];
     [lossImage readBytes:&loss dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
     lossValue += loss;
   }
   lossValue /= _batchSize;
 
-  NSMutableData * lossData = [NSMutableData dataWithCapacity:0];
+  NSMutableData * lossData = [NSMutableData dataWithLength:0];
   [lossData appendBytes:&lossValue length:sizeof(float)];
 
-  NSMutableDictionary<NSString *, NSData *> *lossDict;
+  NSMutableDictionary<NSString *, NSData *> *lossDict = [[NSMutableDictionary alloc] init];
   lossDict[@"loss"] = [NSData dataWithData:lossData];
 
   return [lossDict copy];

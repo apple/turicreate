@@ -1,13 +1,13 @@
-/* Copyright © 2018 Apple Inc. All rights reserved.
+/* Copyright © 2019 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
 #import <ml/neural_net/style_transfer/mps_style_transfer_vgg_16_block_2_node.h>
-#import <ml/neural_net/mps_layer_helper.h>
 
-#include <ml/neural_net/mps_weight.h>
+#import <ml/neural_net/mps_layer_helper.h>
+#import <ml/neural_net/mps_weight.h>
 
 @interface TCMPSVgg16Block2 ()
 @property (nonatomic) MPSCNNConvolutionNode *conv1;
@@ -105,7 +105,7 @@
   return [conv1Grad resultImage];
 }
 
-- (void)setLearningRate:(float)lr {
+- (void) setLearningRate:(float)lr {
   [[_conv1 weights] setLearningRate:lr];
   [[_conv2 weights] setLearningRate:lr];
   [[_conv3 weights] setLearningRate:lr];

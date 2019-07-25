@@ -1,4 +1,4 @@
-/* Copyright © 2018 Apple Inc. All rights reserved.
+/* Copyright © 2019 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
@@ -20,13 +20,15 @@ API_AVAILABLE(macos(10.15))
 @property (nonatomic) NSNumber *contentLossMultiplier;
 @property (nonatomic) NSNumber *styleLossMultiplier;
 @property (nonatomic) BOOL finetuneAllParams;
+@property (nonatomic) NSUInteger imgWidth;
+@property (nonatomic) NSUInteger imgHeight;
 
 - (instancetype) initWithParameters:(NSDictionary<NSString *, NSData *> *)weights
                           numStyles:(NSUInteger)numStyles;
 
-- (NSDictionary<NSString *, NSData *> *)exportWeights;
-- (NSDictionary<NSString *, NSData *> *)predict:(NSDictionary<NSString *, NSData *> *)inputs;
-- (void) setLearningRate:(NSNumber *) lr;
+- (NSDictionary<NSString *, NSData *> *) exportWeights;
+- (NSDictionary<NSString *, NSData *> *) predict:(NSDictionary<NSString *, NSData *> *)inputs;
+- (void) setLearningRate:(float)lr;
 - (NSDictionary<NSString *, NSData *> *) train:(NSDictionary<NSString *, NSData *> *)inputs;
 
 @end
