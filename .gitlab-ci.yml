@@ -12,8 +12,8 @@ build_wheel_debug_linux_python27:
   tags:
     - docker
   services:
-    - docker:dind
-  image: docker:stable
+    - docker:18.09-dind
+  image: docker:18.09
   stage: build
   variables:
     DOCKER_HOST: tcp://docker:2375/
@@ -30,8 +30,8 @@ build_wheel_linux_python27:
   tags:
     - docker
   services:
-    - docker:dind
-  image: docker:stable
+    - docker:18.09-dind
+  image: docker:18.09
   stage: build
   variables:
     DOCKER_HOST: tcp://docker:2375/
@@ -48,8 +48,8 @@ build_wheel_linux_python35:
   tags:
     - docker
   services:
-    - docker:dind
-  image: docker:stable
+    - docker:18.09-dind
+  image: docker:18.09
   stage: build
   variables:
     DOCKER_HOST: tcp://docker:2375/
@@ -66,8 +66,8 @@ build_wheel_linux_python36:
   tags:
     - docker
   services:
-    - docker:dind
-  image: docker:stable
+    - docker:18.09-dind
+  image: docker:18.09
   stage: build
   variables:
     DOCKER_HOST: tcp://docker:2375/
@@ -168,8 +168,8 @@ test_cpp_linux:
   tags:
     - docker
   services:
-    - docker:dind
-  image: docker:stable
+    - docker:18.09-dind
+  image: docker:18.09
   stage: test
   variables:
     DOCKER_HOST: tcp://docker:2375/
@@ -223,8 +223,8 @@ test_python_linux_python27:
   tags:
     - docker
   services:
-    - docker:dind
-  image: docker:stable
+    - docker:18.09-dind
+  image: docker:18.09
   stage: test
   variables:
     DOCKER_HOST: tcp://docker:2375/
@@ -244,8 +244,8 @@ test_python_linux_python35:
   tags:
     - docker
   services:
-    - docker:dind
-  image: docker:stable
+    - docker:18.09-dind
+  image: docker:18.09
   stage: test
   variables:
     DOCKER_HOST: tcp://docker:2375/
@@ -265,8 +265,8 @@ test_python_linux_python36:
   tags:
     - docker
   services:
-    - docker:dind
-  image: docker:stable
+    - docker:18.09-dind
+  image: docker:18.09
   stage: test
   variables:
     DOCKER_HOST: tcp://docker:2375/
@@ -359,8 +359,8 @@ scenario_tests_linux_python27:
   tags:
     - docker
   services:
-    - docker:dind
-  image: docker:stable
+    - docker:18.09-dind
+  image: docker:18.09
   stage: test
   variables:
     DOCKER_HOST: tcp://docker:2375/
@@ -376,8 +376,8 @@ scenario_tests_linux_python35:
   tags:
     - docker
   services:
-    - docker:dind
-  image: docker:stable
+    - docker:18.09-dind
+  image: docker:18.09
   stage: test
   variables:
     DOCKER_HOST: tcp://docker:2375/
@@ -393,8 +393,8 @@ scenario_tests_linux_python36:
   tags:
     - docker
   services:
-    - docker:dind
-  image: docker:stable
+    - docker:18.09-dind
+  image: docker:18.09
   stage: test
   variables:
     DOCKER_HOST: tcp://docker:2375/
@@ -438,7 +438,7 @@ collect_artifacts:
   tags:
     - docker
   services:
-    - docker:dind
+    - docker:18.09-dind
   image: alpine:latest
   stage: collect_artifacts
   dependencies:

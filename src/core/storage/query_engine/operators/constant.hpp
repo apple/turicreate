@@ -10,6 +10,7 @@
 #include <core/storage/query_engine/operators/operator.hpp>
 #include <core/storage/query_engine/execution/query_context.hpp>
 #include <core/storage/query_engine/operators/operator_properties.hpp>
+#include <core/util/coro.hpp>
 namespace turi {
 namespace query_eval {
 
@@ -26,6 +27,11 @@ namespace query_eval {
 template <>
 struct operator_impl<planner_node_type::CONSTANT_NODE> : public query_operator {
  public:
+
+  DECL_CORO_STATE(execute);
+  std::shared_ptr<sframe_rows>  retbuf;
+  size_t i;
+  size_t len;
 
   planner_node_type type() const { return planner_node_type::CONSTANT_NODE; }
 
@@ -51,17 +57,23 @@ struct operator_impl<planner_node_type::CONSTANT_NODE> : public query_operator {
     return std::make_shared<operator_impl>(m_value, m_len);
   }
 
+  inline bool coro_running() const {
+    return CORO_RUNNING(execute);
+  }
   inline void execute(query_context& context) {
-    size_t i = 0;
+    CORO_BEGIN(execute)
+    i = 0;
     while(i < m_len) {
-      auto ret = context.get_output_buffer();
-      size_t len = std::min(m_len - i, context.block_size());
+      retbuf = context.get_output_buffer();
+      len = std::min(m_len - i, context.block_size());
 
-      ret->resize(1, len);
-      for (auto& value: *(ret->get_columns()[0])) value = m_value;
-      context.emit(ret);
+      retbuf->resize(1, len);
+      for (auto& value: *(retbuf->get_columns()[0])) value = m_value;
+      context.emit(retbuf);
+      CORO_YIELD();
       i += len;
     }
+    CORO_END
   }
 
   static std::shared_ptr<planner_node> make_planner_node(const flexible_type& val,

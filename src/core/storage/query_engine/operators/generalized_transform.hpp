@@ -11,6 +11,7 @@
 #include <core/storage/query_engine/operators/operator.hpp>
 #include <core/storage/query_engine/execution/query_context.hpp>
 #include <core/storage/query_engine/operators/operator_properties.hpp>
+#include <core/util/coro.hpp>
 namespace turi {
 namespace query_eval {
 
@@ -30,6 +31,8 @@ typedef std::function<void (const sframe_rows::row&,
 template<>
 class operator_impl<planner_node_type::GENERALIZED_TRANSFORM_NODE> : public query_operator {
  public:
+  DECL_CORO_STATE(execute);
+
   planner_node_type type() const { return planner_node_type::GENERALIZED_TRANSFORM_NODE; }
 
   static std::string name() { return "generalized_transform";  }
@@ -53,28 +56,35 @@ class operator_impl<planner_node_type::GENERALIZED_TRANSFORM_NODE> : public quer
     return std::make_shared<operator_impl>(*this);
   }
 
+  inline bool coro_running() const {
+    return CORO_RUNNING(execute);
+  }
   inline void execute(query_context& context) {
+    CORO_BEGIN(execute)
     if (m_random_seed != -1){
       random::get_source().seed(m_random_seed + thread::thread_id());
     }
-    std::vector<flexible_type> ret;
     while(1) {
-      auto rows = context.get_next(0);
-      if (rows == nullptr)
-        break;
-      auto output = context.get_output_buffer();
-      output->resize(m_output_types.size(), rows->num_rows());
+      {
+        auto rows = context.get_next(0);
+        if (rows == nullptr)
+          break;
+        auto output = context.get_output_buffer();
+        output->resize(m_output_types.size(), rows->num_rows());
 
-      auto iter = rows->cbegin();
-      auto output_iter = output->begin();
-      while(iter != rows->cend()) {
-        m_transform_fn((*iter), (*output_iter));
-        ++output_iter;
-        ++iter;
+        auto iter = rows->cbegin();
+        auto output_iter = output->begin();
+        while(iter != rows->cend()) {
+          m_transform_fn((*iter), (*output_iter));
+          ++output_iter;
+          ++iter;
+        }
+        output->type_check_inplace(m_output_types);
+        context.emit(output);
       }
-      output->type_check_inplace(m_output_types);
-      context.emit(output);
+      CORO_YIELD();
     }
+    CORO_END
   }
 
   static std::shared_ptr<planner_node> make_planner_node(

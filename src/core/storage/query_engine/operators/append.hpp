@@ -11,6 +11,7 @@
 #include <core/storage/query_engine/operators/operator.hpp>
 #include <core/storage/query_engine/execution/query_context.hpp>
 #include <core/storage/query_engine/operators/operator_properties.hpp>
+#include <core/util/coro.hpp>
 
 namespace turi {
 
@@ -27,9 +28,18 @@ namespace query_eval {
 template<>
 class operator_impl<planner_node_type::APPEND_NODE> : public query_operator {
  public:
+  DECL_CORO_STATE(execute);
+
+
+  // state
+  std::shared_ptr<sframe_rows> out;
+  size_t outidx;
+  size_t input;
+  std::shared_ptr<const sframe_rows> input_rows;
+  sframe_rows::const_iterator row_iter_begin;
+  sframe_rows::const_iterator row_iter_end;
 
   planner_node_type type() const { return planner_node_type::APPEND_NODE; }
-
   static std::string name() { return "append"; }
 
   inline operator_impl() { };
@@ -46,12 +56,16 @@ class operator_impl<planner_node_type::APPEND_NODE> : public query_operator {
     return std::make_shared<operator_impl>();
   }
 
+  inline bool coro_running() const {
+    return CORO_RUNNING(execute);
+  }
+
   inline void execute(query_context& context) {
-    std::shared_ptr<sframe_rows> out;
-    size_t outidx = 0;
-    for (size_t input = 0; input < 2; ++input) {
+    CORO_BEGIN(execute)
+    outidx = 0;
+    for (input = 0; input < 2; ++input) {
       // read some input
-      auto input_rows = context.get_next(input);
+      input_rows = context.get_next(input);
       if (input_rows != nullptr && out == nullptr) {
         // we have input, but we don't have an output buffer. Make one
         out = context.get_output_buffer();
@@ -60,16 +74,20 @@ class operator_impl<planner_node_type::APPEND_NODE> : public query_operator {
       }
       // keep looping over this input
       while(input_rows != nullptr) {
-        for (const auto& row: *input_rows) {
-          (*out)[outidx] = row;
+        row_iter_begin = input_rows->cbegin();
+        row_iter_end = input_rows->cend();
+        while(row_iter_begin != row_iter_end) {
+          (*out)[outidx] = *row_iter_begin;
           ++outidx;
           // output buffer is full. give it away and acquire a new one
           if (outidx == context.block_size()) {
             context.emit(out);
+            CORO_YIELD();
             out = context.get_output_buffer();
             out->resize(input_rows->num_columns(), context.block_size());
             outidx = 0;
           }
+          ++row_iter_begin;
         }
         input_rows = context.get_next(input);
       }
@@ -77,7 +95,9 @@ class operator_impl<planner_node_type::APPEND_NODE> : public query_operator {
     if (outidx && out) {
       out->resize(out->num_columns(), outidx);
       context.emit(out);
+      CORO_YIELD();
     }
+    CORO_END
   }
 
   ////////////////////////////////////////////////////////////////////////////////

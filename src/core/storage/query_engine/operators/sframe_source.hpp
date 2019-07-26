@@ -13,6 +13,7 @@
 #include <core/storage/query_engine/execution/query_context.hpp>
 #include <core/storage/query_engine/operators/operator_properties.hpp>
 #include <core/storage/sframe_data/sframe.hpp>
+#include <core/util/coro.hpp>
 
 namespace turi {
 namespace query_eval {
@@ -29,6 +30,12 @@ namespace query_eval {
 template <>
 struct operator_impl<planner_node_type::SFRAME_SOURCE_NODE> : public query_operator {
  public:
+  DECL_CORO_STATE(execute);
+  size_t start = 0;
+  std::shared_ptr<sframe_rows> rows;
+  size_t block_size = 0;
+  bool skip_next_block = false;
+  size_t end = 0;
 
   planner_node_type type() const { return planner_node_type::SFRAME_SOURCE_NODE; }
 
@@ -53,26 +60,31 @@ struct operator_impl<planner_node_type::SFRAME_SOURCE_NODE> : public query_opera
     return std::make_shared<operator_impl>(m_source);
   }
 
+  inline bool coro_running() const {
+    return CORO_RUNNING(execute);
+  }
   inline void execute(query_context& context) {
+    CORO_BEGIN(execute)
     if (!m_reader) m_reader = m_source.get_reader();
-    auto start = m_begin_index;
-    std::shared_ptr<sframe_rows> rows;
-    auto block_size = context.block_size();
-    bool skip_next_block = false;
-    emit_state state = context.initial_state();
+    start = m_begin_index;
+    block_size = context.block_size();
+    skip_next_block = context.should_skip();
 
     while (start != m_end_index) {
-      auto rows = context.get_output_buffer();
-      auto end = std::min(start + block_size, m_end_index);
+      rows = context.get_output_buffer();
+      end = std::min(start + block_size, m_end_index);
       if (skip_next_block == false) {
         m_reader->read_rows(start, end, *rows);
-        state = context.emit(rows);
+        context.emit(rows);
+        CORO_YIELD();
       } else {
-        state = context.emit(nullptr);
+        context.emit(nullptr);
+        CORO_YIELD();
       }
-      skip_next_block = state == emit_state::SKIP_NEXT_BLOCK;
+      skip_next_block = context.should_skip();
       start = end;
     }
+    CORO_END
   }
 
   static std::shared_ptr<planner_node> make_planner_node(

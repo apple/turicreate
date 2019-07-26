@@ -16,8 +16,6 @@
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/util/buffer_pool.hpp>
 #include <core/storage/sframe_data/sarray_v2_block_types.hpp>
-#include <core/storage/sframe_data/sarray_v2_type_encoding.hpp>
-
 
 // forward declaration for LZ4. required here annoyingly since I have a template
 // function here which calls it
