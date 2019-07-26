@@ -5,20 +5,30 @@
  */
 #import "JSDocument.h"
 
-@implementation VegaJSDocument;
+@implementation VegaJSDocument 
+
+@synthesize body;
+
 - (instancetype)initWithCanvas:(VegaCGCanvas*)canvas {
     self = [super init];
-    _canvas = canvas;
+    if(self) {
+        self.body = [[VegaHTMLElement alloc] init];
+        _canvas = canvas;
+    }
     return self;
-}
+};
 
-- (NSObject<VegaHTMLElement>*)createElementWithString:(NSString*)element {
+- (VegaHTMLElement*)createElementWithString:(NSString*)element {
+
     if([element isEqualToString:@"canvas"]){
         return _canvas;
+    } else if([element isEqualToString:@"div"]) {
+        return [[VegaHTMLElement alloc] initWithTagName:@"div"];
     } else {
         NSLog(@"creating elements of type '%@' is not supported", element);
         assert(false);
     }
     return nil;
 }
+
 @end

@@ -7,12 +7,18 @@
 #import "JSCanvas.h"
 
 @protocol VegaJSDocumentInterface<JSExport>
+
+@property VegaHTMLElement* body;
+
 JSExportAs(createElement,
-           -(NSObject<VegaHTMLElement>*)createElementWithString:(NSString*)element
+           -(VegaHTMLElement*)createElementWithString:(NSString*)element
            );
+
 @end
 
 @interface VegaJSDocument : NSObject<VegaJSDocumentInterface>
+
 -(instancetype)initWithCanvas:(VegaCGCanvas*)vegaCanvas;
 @property VegaCGCanvas* canvas;
+
 @end
