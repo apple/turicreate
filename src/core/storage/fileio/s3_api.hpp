@@ -38,8 +38,8 @@ struct s3url {
   }
 
   friend std::ostream& operator<<(std::ostream& os, const s3url& url) {
-    os << "bucket:" << url.bucket << ", object_name:" << url.object_name
-       << ", endpoint:" << url.endpoint;
+    os << "bucket: " << url.bucket << ", object_name: " << url.object_name
+       << ", endpoint: " << url.endpoint;
     return os;
   }
 };
@@ -230,8 +230,8 @@ std::ostream& reportS3Error(std::ostream& ss, const s3url& parsed_url,
                             S3Operation::ops_enum operation,
                             const Aws::Client::ClientConfiguration& config,
                             const Response& outcome) {
-  ss << '(' << parsed_url << ", proxy:" << config.proxyHost
-     << ", region:" << config.region << ')'
+  ss << '(' << parsed_url << ", proxy: " << config.proxyHost
+     << ", region: " << config.region << ')'
      << " Error while performing " << S3Operation::toString(operation)
      << ". Error Name: " << outcome.GetError().GetExceptionName()
      << ". Error Message: " << outcome.GetError().GetMessage();
