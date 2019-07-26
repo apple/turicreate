@@ -734,7 +734,7 @@ std::string sanitize_s3_url(const std::string& url) {
   std::string err_msg;
   auto ret = parse_s3url(url, parsed_url, err_msg);
   DASSERT_EQ(ret, err_msg.empty());
-  if (err_msg.empty()) {
+  if (ret) {
     if (parsed_url.endpoint.empty())
       return "s3://" + parsed_url.bucket + "/" + parsed_url.object_name;
     else
