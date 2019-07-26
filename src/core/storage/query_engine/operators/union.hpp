@@ -10,6 +10,7 @@
 #include <core/storage/query_engine/operators/operator.hpp>
 #include <core/storage/query_engine/execution/query_context.hpp>
 #include <core/storage/query_engine/operators/operator_properties.hpp>
+#include <core/util/coro.hpp>
 
 namespace turi {
 namespace query_eval {
@@ -27,6 +28,8 @@ namespace query_eval {
 template <>
 struct operator_impl<planner_node_type::UNION_NODE> : public query_operator {
  public:
+  DECL_CORO_STATE(execute);
+  std::vector<std::shared_ptr<const sframe_rows> > input_v;
 
   planner_node_type type() const { return planner_node_type::UNION_NODE; }
 
@@ -45,10 +48,16 @@ struct operator_impl<planner_node_type::UNION_NODE> : public query_operator {
     return std::make_shared<operator_impl>(*this);
   }
 
+  inline bool coro_running() const {
+    return CORO_RUNNING(execute);
+  }
   inline void execute(query_context& context) {
-    std::vector<std::shared_ptr<const sframe_rows> > input_v(num_inputs);
+
+    CORO_BEGIN(execute)
+    input_v.resize(num_inputs);
 
     while(1) {
+      {
       bool all_null = true, any_null = false;
       for(size_t i = 0; i < num_inputs; ++i) {
         input_v[i] = context.get_next(i);
@@ -73,7 +82,10 @@ struct operator_impl<planner_node_type::UNION_NODE> : public query_operator {
       }
 
       context.emit(out);
+      }
+      CORO_YIELD();
     }
+    CORO_END
   }
 
  private:

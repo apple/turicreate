@@ -2971,6 +2971,52 @@ class SFrameTest(unittest.TestCase):
         self.__test_equal(test_split[0], self.employees_sf[0:5].to_dataframe())
         self.__test_equal(test_split[1], self.employees_sf[5:6].to_dataframe())
 
+        # test recursively removing nan
+        test_sf = SFrame({'array':SArray([[1,1],[2,np.nan],[3,3],[4,4],[5,5],[6,np.nan],[7,7],[8, np.nan]], np.ndarray),
+                          'lists':SArray([[1], None, [], [4], [5, 5], [6, np.nan], [7], None], list),
+                          'dicts':SArray([{1:2},{2:3},{3:4},{},{5:None},{6:7},{7:[7,[7,np.nan]]},None], dict)})
+
+        # non-recursive dropna
+        self.__test_equal(test_sf.dropna(how='any'),
+                          test_sf[0:1].append(test_sf[2:7]).to_dataframe())
+        test_split = test_sf.dropna_split()
+        self.__test_equal(test_split[0], test_sf[0:1].append(test_sf[2:7]).to_dataframe())
+
+        self.__test_equal(test_sf.dropna(how='all'), test_sf.to_dataframe());
+        test_split = test_sf.dropna_split(how='all')
+        self.assertEqual(len(test_split[1]), 0)
+
+        # recursive dropna
+        self.__test_equal(test_sf.dropna(recursive=True),
+            pd.DataFrame({'array':[[1,1],[3,3],[4,4]],'lists':[[1],[],[4]],'dicts':[{1:2},{3:4},{}]}))
+        test_split = test_sf.dropna_split(recursive=True)
+        self.__test_equal(test_split[0], test_sf[0:1].append(test_sf[2:4]).to_dataframe())
+        # nan is not comparable, so we don't check the nan part
+        # self.__test_equal(test_split[1], test_sf[1:2].append(test_sf[4:8]).to_dataframe())
+
+        # the 'all' case
+        self.__test_equal(test_sf.dropna(how='all', recursive=True), test_sf[0:7].to_dataframe())
+        test_split = test_sf.dropna_split(how='all', recursive=True)
+        self.__test_equal(test_split[0], test_sf[0:7].to_dataframe())
+
+        # test 'split' cases
+        self.__test_equal(test_sf.dropna('array', recursive=True),
+                          test_sf[0:1].append(test_sf[2:5]).append(test_sf[6:7]).to_dataframe())
+        test_split = test_sf.dropna_split('array', recursive=True)
+        self.__test_equal(test_split[0],
+                          test_sf[0:1].append(test_sf[2:5]).append(test_sf[6:7]).to_dataframe())
+
+        self.__test_equal(test_sf.dropna('lists', recursive=True),
+                          test_sf[0:1].append(test_sf[2:5]).append(test_sf[6:7]).to_dataframe())
+        test_split = test_sf.dropna_split('lists', recursive=True)
+        self.__test_equal(test_split[0],
+                          test_sf[0:1].append(test_sf[2:5]).append(test_sf[6:7]).to_dataframe())
+
+        self.__test_equal(test_sf.dropna('dicts', recursive=True),
+                          test_sf[0:4].append(test_sf[5:6]).to_dataframe())
+        test_split = test_sf.dropna_split('dicts', recursive=True)
+        self.__test_equal(test_split[0],
+                          test_sf[0:4].append(test_sf[5:6]).to_dataframe())
 
         # create some other test sframe
         test_sf = SFrame({'ints':SArray([None,None,3,4,None], int),

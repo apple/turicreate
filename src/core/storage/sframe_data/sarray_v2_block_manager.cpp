@@ -12,6 +12,7 @@ extern "C" {
 #include <core/storage/sframe_data/sarray_v2_block_manager.hpp>
 #include <core/storage/sframe_data/sarray_index_file.hpp>
 #include <core/storage/sframe_data/sframe_constants.hpp>
+#include <core/storage/sframe_data/sarray_v2_type_encoding.hpp>
 #include <core/storage/sframe_data/unfair_lock.hpp>
 
 namespace turi {

@@ -41,7 +41,7 @@ def _load_data(self, num_examples = 1000, num_features = 3, max_num_sessions = 4
 
     random_labels = [random.randint(0, self.num_labels - 1) for i in range(self.num_examples)]
 
-    self.data = tc.util.generate_random_sframe(column_codes='r' * self.num_features, num_rows=self.num_examples)
+    self.data = tc.util.generate_random_sframe(column_codes='r' * self.num_features, num_rows=self.num_examples, random_seed=42)
     self.data[self.session_id] = random_session_ids
     self.data[self.target] = random_labels
 

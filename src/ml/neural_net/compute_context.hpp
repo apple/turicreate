@@ -23,9 +23,37 @@ namespace neural_net {
 class compute_context {
 public:
 
+  /** Function that yields a compute context. */
+  using factory = std::function<std::unique_ptr<compute_context>()>;
+
   /**
-   * Creates a compute context using a backend appropriate to the current
-   * platform and hardware.
+   * To solve for layering/dependency issues, we allow compute_context::factory
+   * values to be defined at runtime. Instantiating this class, preferably at
+   * static init time, adjusts the behavior of the create() function below.
+   */
+  class registration {
+  public:
+    // Registers `factory_fn` at the given priority.
+    registration(int priority, factory factory_fn);
+
+    // Removes the registration. In practice, simplest just not to deallocate...
+    ~registration();
+
+    int priority() const { return priority_; }
+    std::unique_ptr<compute_context> create_context() const {
+      return factory_fn_();
+    }
+
+  private:
+    int priority_;
+    factory factory_fn_;
+  };
+
+  /**
+   * Requests a compute_context from each registered compute_context::factory,
+   * in ascending order by "priority", until one returns non-nil. Factories
+   * should be registered so that this function yields a backend appropriate to
+   * the current platform and hardware.
    */
   static std::unique_ptr<compute_context> create();
 

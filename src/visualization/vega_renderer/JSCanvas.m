@@ -60,6 +60,69 @@
 @end
 
 @implementation VegaCGFontProperties
+- (instancetype)initWithString:(NSString*)fontStr {
+    self = [super init];
+    _cssFontString = fontStr;
+    _fontFamily = nil;
+    _fontSize = nil;
+    _fontVariant = nil;
+    _fontWeight = nil;
+    _fontStyle = nil;
+    _lineHeight = nil;
+
+    NSArray<NSString *> *elements = [fontStr componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    for (size_t i=0; i<elements.count; i++) {
+        NSString *element = elements[i];
+        if ([element isEqualToString:@"normal"]) {
+            continue;
+        }
+        if ([element isEqualToString:@"italic"] ||
+            [element isEqualToString:@"oblique"]) {
+            _fontStyle = element;
+            continue;
+        }
+        if ([element isEqualToString:@"small-caps"]) {
+            _fontVariant = element;
+            continue;
+        }
+        if ([element isEqualToString:@"bold"] ||
+            [element isEqualToString:@"bolder"] ||
+            [element isEqualToString:@"lighter"] ||
+            [element isEqualToString:@"100"] ||
+            [element isEqualToString:@"200"] ||
+            [element isEqualToString:@"300"] ||
+            [element isEqualToString:@"400"] ||
+            [element isEqualToString:@"500"] ||
+            [element isEqualToString:@"600"] ||
+            [element isEqualToString:@"700"] ||
+            [element isEqualToString:@"800"] ||
+            [element isEqualToString:@"900"]) {
+            _fontWeight = element;
+            continue;
+        }
+        if (_fontSize == nil) {
+            NSArray<NSString *> *parts = [element componentsSeparatedByString:@"/"];
+            _fontSize = parts[0];
+            if (parts.count > 1) {
+                _lineHeight = parts[1];
+                assert(parts.count == 2);
+            }
+            continue;
+        }
+        _fontFamily = element;
+        if (i < elements.count - 1) {
+            NSArray<NSString *> *remainingElements = [elements subarrayWithRange:NSMakeRange(i+1, elements.count-(i+1))];
+            _fontFamily = [_fontFamily stringByAppendingString:[@" " stringByAppendingString:[remainingElements componentsJoinedByString:@" "]]];
+        }
+        break;
+    }
+
+    if ([_fontFamily isEqualToString:@"sans-serif"]) {
+        _fontFamily = @"Helvetica";
+    }
+
+    return self;
+}
 @end
 
 @implementation VegaCGImage
@@ -109,18 +172,21 @@
 }
 
 - (void)resizeWithWidth:(double)width height:(double)height {
-    if (width > 0 && height > 0) {
+    // This is a hack to ensure that neither width or height is ever zero as this causes
+    // CGLayerCreateWithContext(...) to crash. This can occur when width and height are
+    // set one at a time in subsequent calls. A more faithful rendering context implementation
+    // would wait until both are set before creating the layer.
+    width = MAX(1, width);
+    height = MAX(1, height);
 
-        // Because we are about to create a new layer, set up other relevant
-        // instance properties so they are in the right state.
-        _currentTransform = CGAffineTransformIdentity;
-        assert(self != nil);
-        CGLayerRef layer = CGLayerCreateWithContext(_parentContext, CGSizeMake(width, height), nil);
-        self.layer = layer;
-        CGLayerRelease(layer);
-        CGContextConcatCTM(self.context, [self.class flipYAxisWithHeight:height]);
-
-    }
+    // Because we are about to create a new layer, set up other relevant
+    // instance properties so they are in the right state.
+    _currentTransform = CGAffineTransformIdentity;
+    assert(self != nil);
+    CGLayerRef layer = CGLayerCreateWithContext(_parentContext, CGSizeMake(width, height), nil);
+    self.layer = layer;
+    CGLayerRelease(layer);
+    CGContextConcatCTM(self.context, [self.class flipYAxisWithHeight:height]);
 }
 
 - (double)width {
@@ -139,14 +205,10 @@
     [self resizeWithWidth:self.width height:height];
 }
 
-- (instancetype)initWithWidth:(double)width
-                       height:(double)height
-                      context:(CGContextRef)parentContext {
+- (instancetype)initWithContext:(CGContextRef)parentContext {
     self = [super init];
     _layer = nil;
     _parentContext = parentContext;
-    [self resizeWithWidth:width height:height];
-    assert(CFGetRetainCount(_layer) == 1);
     return self;
 }
 
@@ -164,70 +226,6 @@
     if (![_fillStyle isKindOfClass:NSString.class]) {
         assert([_fillStyle isKindOfClass:VegaCGLinearGradient.class]);
     }
-}
-
-- (VegaCGFontProperties *)parseFontString {
-    VegaCGFontProperties *props = [[VegaCGFontProperties alloc] init];
-    props.cssFontString = self.font;
-    props.fontFamily = nil;
-    props.fontSize = nil;
-    props.fontVariant = nil;
-    props.fontWeight = nil;
-    props.fontStyle = nil;
-    props.lineHeight = nil;
-
-    NSArray<NSString *> *elements = [self.font componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    for (size_t i=0; i<elements.count; i++) {
-        NSString *element = elements[i];
-        if ([element isEqualToString:@"normal"]) {
-            continue;
-        }
-        if ([element isEqualToString:@"italic"] ||
-            [element isEqualToString:@"oblique"]) {
-            props.fontStyle = element;
-            continue;
-        }
-        if ([element isEqualToString:@"small-caps"]) {
-            props.fontVariant = element;
-            continue;
-        }
-        if ([element isEqualToString:@"bold"] ||
-            [element isEqualToString:@"bolder"] ||
-            [element isEqualToString:@"lighter"] ||
-            [element isEqualToString:@"100"] ||
-            [element isEqualToString:@"200"] ||
-            [element isEqualToString:@"300"] ||
-            [element isEqualToString:@"400"] ||
-            [element isEqualToString:@"500"] ||
-            [element isEqualToString:@"600"] ||
-            [element isEqualToString:@"700"] ||
-            [element isEqualToString:@"800"] ||
-            [element isEqualToString:@"900"]) {
-            props.fontWeight = element;
-            continue;
-        }
-        if (props.fontSize == nil) {
-            NSArray<NSString *> *parts = [element componentsSeparatedByString:@"/"];
-            props.fontSize = parts[0];
-            if (parts.count > 1) {
-                props.lineHeight = parts[1];
-                assert(parts.count == 2);
-            }
-            continue;
-        }
-        props.fontFamily = element;
-        if (i < elements.count - 1) {
-            NSArray<NSString *> *remainingElements = [elements subarrayWithRange:NSMakeRange(i+1, elements.count-(i+1))];
-            props.fontFamily = [props.fontFamily stringByAppendingString:[@" " stringByAppendingString:[remainingElements componentsJoinedByString:@" "]]];
-        }
-        break;
-    }
-
-    if ([props.fontFamily isEqualToString:@"sans-serif"]) {
-        props.fontFamily = @"Helvetica";
-    }
-
-    return props;
 }
 
 - (NSDictionary<NSAttributedStringKey, id> *)textAttributes {
@@ -249,8 +247,7 @@
 }
 
 - (void)setFont:(NSString *)fontStr {
-    _font = fontStr;
-    VegaCGFontProperties *fontProperties = [self parseFontString];
+    VegaCGFontProperties *fontProperties = [[VegaCGFontProperties alloc] initWithString:fontStr];
 
     // TODO - allow other font properties
     // for now, make sure we don't need to handle them
@@ -268,32 +265,81 @@
 
     assert(fontSize > 0 && fontSize < 1000);
 
-    NSFont *font;
+    NSFont *newFont;
     if (fontProperties.fontFamily == nil) {
-        font = [NSFont systemFontOfSize:fontSize];
+        newFont = [NSFont systemFontOfSize:fontSize];
     } else {
         NSFontManager *fontManager = [NSFontManager sharedFontManager];
         NSArray<NSString *> *possibleFontFamilies = [fontProperties.fontFamily componentsSeparatedByString:@","];
         for (NSString * __strong possibleFontFamily in possibleFontFamilies) {
             possibleFontFamily = [possibleFontFamily stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-            font = [NSFont fontWithName:possibleFontFamily size:fontSize];
-            if (font != nil && fontProperties.fontWeight != nil) {
+            newFont = [NSFont fontWithName:possibleFontFamily size:fontSize];
+            if (newFont != nil && fontProperties.fontWeight != nil) {
                 if ([fontProperties.fontWeight isEqualToString:@"bold"]) {
-                    font = [fontManager convertFont:font toHaveTrait:NSBoldFontMask];
-                    assert(font != nil);
+                    newFont = [fontManager convertFont:newFont toHaveTrait:NSBoldFontMask];
+                    assert(newFont != nil);
+                } else if (fontProperties.fontWeight.length == 3 &&
+                           [[fontProperties.fontWeight substringFromIndex:1] isEqualToString:@"00"]) {
+                    NSString *weightString = [fontProperties.fontWeight substringToIndex:1];
+                    NSInteger weightInt = weightString.intValue;
+                    NSFontWeight weight = NSFontWeightRegular;
+                    switch (weightInt) {
+                        case 1:
+                            weight = NSFontWeightUltraLight;
+                            break;
+                        case 2:
+                            weight = NSFontWeightThin;
+                            break;
+                        case 3:
+                            weight = NSFontWeightLight;
+                            break;
+                        case 4:
+                            weight = NSFontWeightRegular;
+                            break;
+                        case 5:
+                            weight = NSFontWeightMedium;
+                            break;
+                        case 6:
+                            weight = NSFontWeightSemibold;
+                            break;
+                        case 7:
+                            weight = NSFontWeightBold;
+                            break;
+                        case 8:
+                            weight = NSFontWeightHeavy;
+                            break;
+                        case 9:
+                            weight = NSFontWeightBlack;
+                            break;
+                        default:
+                            NSLog(@"Encountered unexpected font weight %@", fontProperties.fontWeight);
+                            assert(false);
+                    }
+                    newFont = [fontManager fontWithFamily:newFont.familyName traits:[fontManager traitsOfFont:newFont] weight:weight size:newFont.pointSize];
+                    assert(newFont != nil);
                 } else {
                     // unexpected font weight
+                    NSLog(@"Encountered unexpected font weight %@", fontProperties.fontWeight);
                     assert(false);
                 }
             }
-            if (font != nil) {
+            if (newFont != nil) {
                 break;
             }
         }
     }
-    assert(font != nil);
-    _nsFont = font;
+
+    if(newFont == nil) {
+        newFont = [NSFont systemFontOfSize:fontSize];
+        // TODO should we be updating _font to reflect the system font we've fallen back to?
+        NSLog(@"The specified font: '%@' is unavailable. Falling back to '%@'.", fontStr, [newFont displayName]);
+    } else {
+        _font = fontStr;
+    }
+    assert(newFont != nil);
+    _nsFont = newFont;
 }
+
 - (NSString *)font {
     return _font;
 }
@@ -624,10 +670,6 @@
 }
 
 - (void)fill {
-    NSArray *args = [JSContext currentArguments];
-    (void)args;
-    assert(args != nil);
-    assert(args.count == 0);
     CGPathRef currentPath = CGContextCopyPath(self.context);
     if ([_fillStyle isKindOfClass:VegaCGLinearGradient.class]) {
         VegaCGLinearGradient *gradient = _fillStyle;
@@ -651,11 +693,9 @@
 
 @implementation VegaCGCanvas
 
-- (instancetype)initWithWidth:(double)width
-                       height:(double)height
-                      context:(CGContextRef)parentContext {
+- (instancetype)initWithContext:(CGContextRef)parentContext {
     self = [super init];
-    self.context = [[VegaCGContext alloc] initWithWidth:width height:height context:parentContext];
+    self.context = [[VegaCGContext alloc] initWithContext:parentContext];
     return self;
 }
 

@@ -368,7 +368,7 @@ void ImageClassification::cast_annotations() {
 
   std::vector<std::string> annotation_column_name = {m_annotation_column};
   std::list<std::shared_ptr<unity_sframe_base>> dropped_missing =
-      copy_data->drop_missing_values(annotation_column_name, false, false);
+      copy_data->drop_missing_values(annotation_column_name, false, false, false);
 
   std::shared_ptr<unity_sframe> filtered_sframe =
       std::static_pointer_cast<unity_sframe>(dropped_missing.front());

@@ -16,6 +16,19 @@
 namespace turi {
 namespace neural_net {
 
+namespace {
+
+std::unique_ptr<compute_context> create_mps_compute_context() {
+  return std::unique_ptr<compute_context>(new mps_compute_context);
+}
+
+// At static-init time, register create_mps_compute_context().
+// TODO: Codify priority levels?
+static auto* mps_registration = new compute_context::registration(
+    /* priority */ 0, &create_mps_compute_context);
+
+}  // namespace
+
 mps_compute_context::mps_compute_context(
     std::unique_ptr<mps_command_queue> command_queue)
   : command_queue_(std::move(command_queue))
