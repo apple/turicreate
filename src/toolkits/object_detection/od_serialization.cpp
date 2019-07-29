@@ -47,7 +47,7 @@ void init_darknet_yolo(neural_net::model_spec& nn_spec, const size_t num_classes
 
   // Initialize a random number generator for weight initialization.
   std::seed_seq seed_seq = { rand() };
-  std::mt19937 random_engine(seed_seq); //TODO: make zero init
+  std::mt19937 random_engine(seed_seq);
 
   int num_features = 3;
 
@@ -100,7 +100,6 @@ void init_darknet_yolo(neural_net::model_spec& nn_spec, const size_t num_classes
 
   // Append conv8.
   static constexpr float CONV8_MAGNITUDE = 0.00005f;
-  //const size_t num_classes = variant_get_value<size_t>(state.at("num_classes"));
   const size_t num_predictions = 5 + num_classes;  // Per anchor box
   const size_t conv8_c_out = anchor_boxes.size() * num_predictions;
   auto conv8_weight_init_fn = [&random_engine](float* w, float* w_end) {
