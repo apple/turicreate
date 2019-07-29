@@ -189,7 +189,8 @@ bool parse_s3url(std::string url, s3url& ret, std::string& err_msg) {
 
   // Parse bucket name
   if (iter == tokens.end()) {
-    ss << "missing bucket name in " << original_url << " in " << __FILE__ << " at " << __LINE__ ;
+    ss << "missing bucket name in " << '\'' << original_url << '\'' << " in "
+       << __FILE__ << " at " << __LINE__;
     err_msg = ss.str();
     return false;
   }
