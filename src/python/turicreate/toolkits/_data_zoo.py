@@ -19,8 +19,8 @@ DATA_URL_ROOT = 'https://docs-assets.developer.apple.com/turicreate/data/'
 
 class OneShotObjectDetectorBackgroundData(object):
     def __init__(self):
-        self.source_tar_filename = "one_shot_backgrounds.sarray.tar"
-        self.destination_tar_filename = "one_shot_backgrounds.sarray.tar"
+        self.source_tar_filename = "one_shot_backgrounds_small.sarray.tar"
+        self.destination_tar_filename = "one_shot_backgrounds_small.sarray.tar"
         self.sarray_url = _urlparse.urljoin(
             DATA_URL_ROOT, self.source_tar_filename)
         self.sarray_url_md5_pairs = [
