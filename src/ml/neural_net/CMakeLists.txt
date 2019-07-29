@@ -57,8 +57,7 @@ make_library(tcmxnet SHARED
   SOURCES
   mxnet_compute_context.cpp
 )
-
-file(RENAME libtcmxnet.dylib libtcmxnet.so)
+set_target_properties(tcmxnet PROPERTIES SUFFIX ".so")
 
 make_library(unity_neural_net OBJECT
   SOURCES
