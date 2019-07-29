@@ -148,13 +148,18 @@ gl_sframe augment_data(const gl_sframe &data,
   size_t nsegments = output_writer.num_segments();
   std::atomic<size_t> augmented_counter(0);
 
+  /* Split all backgrounds into as many chunks as there are cores available
+   * (= nsegments), and create augmented images in parallel.
+   */
   parallel_for(0, nsegments, [&](size_t segment_id){
-    auto segment_start = (segment_id * backgrounds.size()) / nsegments;
-    auto segment_end   = ((segment_id+1) * backgrounds.size()) / nsegments;
+    size_t segment_start = (segment_id * backgrounds.size()) / nsegments;
+    size_t segment_end   = ((segment_id+1) * backgrounds.size()) / nsegments;
     size_t row_number=segment_start;
     for (const auto& background_ft: backgrounds.range_iterator(segment_start, segment_end)) {
       row_number++;
       for (const auto& row: data.range_iterator()) {
+        // go through all the starter images and create augmented images for
+        // all starter images and the respective chunk of background images
         flex_image object = row[image_column_index].to<flex_image>();
         std::string label = row[target_column_index].to<flex_string>();
         if (!(object.is_decoded())) {
@@ -174,6 +179,7 @@ gl_sframe augment_data(const gl_sframe &data,
                                                 (background_width-object.m_width)/2,
                                                 (background_height-object.m_height)/2);
 
+        // construct annotation dictionary from parameters
         flex_dict annotation = build_annotation(parameter_sampler, label,
                                                 object.m_width, object.m_height,
                                                 seed+row_number);
@@ -191,6 +197,9 @@ gl_sframe augment_data(const gl_sframe &data,
           background_channels * background_width // row length in bytes
           );
         flex_image synthetic_image = create_synthetic_image(starter_image_view, background_view, parameter_sampler, object);
+        encode_image_inplace(synthetic_image);
+        // write the synthetically generated image and the constructed
+        // annotation to output SFrame.
         output_writer.write({
           synthetic_image,
           annotation
@@ -219,7 +228,6 @@ gl_sframe augment_data(const gl_sframe &data,
   
   gl_sframe synthetic_sframe = output_writer.close();
   return synthetic_sframe;
-
 }
 
 } // data_augmentation
