@@ -70,26 +70,31 @@ BOOST_AUTO_TEST_CASE(test_init_darknet_yolo) {
 
 BOOST_AUTO_TEST_CASE(test_save_load) {
 
-	dir_archive archive_write;
-	archive_write.open_directory_for_write("save_load_tests");
-	turi::oarchive oarc(archive_write);
+	// Create Test Model
 	neural_net::model_spec nn_spec_1;
 	std::map<std::string, variant_type> state1 = {{"num_classes", 10}, {"model", "darknet_yolo"}, {"max_iterations", 5}};
 	init_darknet_yolo(nn_spec_1, variant_get_value<size_t>(state1.at("num_classes")), anchor_boxes);
+
+	// Save it
+	dir_archive archive_write;
+	archive_write.open_directory_for_write("serialized_save_load_tests");
+	turi::oarchive oarc(archive_write);
 	_save_impl(oarc, nn_spec_1, state1);
-	const CoreML::Specification::NeuralNetwork& nn_saved = nn_spec_1.get_coreml_spec();
 	archive_write.close();
 
+	// Load it
 	dir_archive archive_read;
-	archive_read.open_directory_for_read("save_load_tests");
+	archive_read.open_directory_for_read("serialized_save_load_tests");
 	turi::iarchive iarc(archive_read);
 	size_t version = 1;
 	neural_net::model_spec nn_spec_2;
 	std::map<std::string, variant_type> state2 = {{"num_classes", 10}, {"model", "darknet_yolo"}, {"max_iterations", 5}};
 	_load_version(iarc, version, nn_spec_2, state2, anchor_boxes);
-	const CoreML::Specification::NeuralNetwork& nn_loaded = nn_spec_2.get_coreml_spec();
 	archive_read.close();
 
+	// Compare saved and loaded models
+	const CoreML::Specification::NeuralNetwork& nn_saved = nn_spec_1.get_coreml_spec();
+	const CoreML::Specification::NeuralNetwork& nn_loaded = nn_spec_2.get_coreml_spec();
 	TS_ASSERT(nn_saved.SerializeAsString() == nn_loaded.SerializeAsString());
 
 }
