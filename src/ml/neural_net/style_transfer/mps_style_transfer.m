@@ -240,7 +240,7 @@
 }
  
 - (NSDictionary<NSString *, NSData *> *) exportWeights {
-  return [_model exportWeights];
+  return [_model exportWeights:@"transformer_"];
 }
 
 - (NSDictionary<NSString *, NSData *> *) predict:(NSDictionary<NSString *, NSData *> *)inputs {

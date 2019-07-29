@@ -79,28 +79,30 @@
   [[_instNorm weights] setLearningRate:lr];
 }
 
-- (NSDictionary<NSString *, NSData *> *) exportWeights {
-  NSMutableDictionary<NSString *, NSData *> *weights = [[NSMutableDictionary alloc] init];;
+- (NSDictionary<NSString *, NSData *> *)exportWeights:(NSString *)prefix {
+  NSMutableDictionary<NSString *, NSData *> *weights = [[NSMutableDictionary alloc] init];
 
   NSUInteger convWeightSize = (NSUInteger)([[_conv weights] weightSize] * sizeof(float));
-
   NSMutableData* convDataWeight = [NSMutableData dataWithLength:convWeightSize];
-
   memcpy(convDataWeight.mutableBytes, [[_conv weights] weights], convWeightSize);
 
-  weights[@"conv_weights"] = convDataWeight;
+  NSString* convWeight = [NSString stringWithFormat:@"%@%@", prefix, @"conv_weights"];
+
+  weights[convWeight] = convDataWeight;
 
   NSUInteger instNormSize = (NSUInteger)([[_instNorm weights] numberOfFeatureChannels] * sizeof(float));
-
   NSMutableData* instNormDataGamma = [NSMutableData dataWithLength:instNormSize];
   NSMutableData* instNormDataBeta = [NSMutableData dataWithLength:instNormSize];
 
   memcpy(instNormDataGamma.mutableBytes, [[_instNorm weights] gamma], instNormSize);
   memcpy(instNormDataBeta.mutableBytes, [[_instNorm weights] beta], instNormSize);
 
-  weights[@"inst_gamma"] = instNormDataGamma;
-  weights[@"inst_beta"] = instNormDataBeta;
-  
+  NSString* instNormGamma = [NSString stringWithFormat:@"%@%@", prefix, @"inst_gamma"];
+  NSString* instNormBeta = [NSString stringWithFormat:@"%@%@", prefix, @"inst_beta"];
+
+  weights[instNormGamma] = instNormDataGamma;
+  weights[instNormBeta] = instNormDataBeta;
+
   return [weights copy];
 }
 
