@@ -5556,7 +5556,7 @@ class SFrame(object):
         with cython_context():
             return SFrame(_proxy=self.__proxy__.sort(sort_column_names, sort_column_orders))
 
-    def dropna(self, columns=None, how='any'):
+    def dropna(self, columns=None, how='any', recursive=False):
         """
         Remove missing values from an SFrame. A missing value is either ``None``
         or ``NaN``.  If ``how`` is 'any', a row will be removed if any of the
@@ -5577,6 +5577,11 @@ class SFrame(object):
             Specifies whether a row should be dropped if at least one column
             has missing values, or if all columns have missing values.  'any' is
             default.
+
+        recursive: bool
+            By default is False. If this flag is set to True, then `nan` check will
+            be performed on each element of a sframe cell in a DFS manner if the cell
+            has a nested structure, such as dict, list.
 
         Returns
         -------
@@ -5631,9 +5636,9 @@ class SFrame(object):
         (columns, all_behavior) = self.__dropna_errchk(columns, how)
 
         with cython_context():
-            return SFrame(_proxy=self.__proxy__.drop_missing_values(columns, all_behavior, False))
+            return SFrame(_proxy=self.__proxy__.drop_missing_values(columns, all_behavior, False, recursive))
 
-    def dropna_split(self, columns=None, how='any'):
+    def dropna_split(self, columns=None, how='any', recursive=False):
         """
         Split rows with missing values from this SFrame. This function has the
         same functionality as :py:func:`~turicreate.SFrame.dropna`, but returns a
@@ -5651,6 +5656,12 @@ class SFrame(object):
             Specifies whether a row should be dropped if at least one column
             has missing values, or if all columns have missing values.  'any' is
             default.
+
+        recursive: bool
+            By default is False. If this flag is set to True, then `nan` check will
+            be performed on each element of a sframe cell in a recursive manner if the cell
+            has a nested structure, such as dict, list.
+
 
         Returns
         -------
@@ -5692,7 +5703,7 @@ class SFrame(object):
 
         (columns, all_behavior) = self.__dropna_errchk(columns, how)
 
-        sframe_tuple = self.__proxy__.drop_missing_values(columns, all_behavior, True)
+        sframe_tuple = self.__proxy__.drop_missing_values(columns, all_behavior, True, recursive)
 
         if len(sframe_tuple) != 2:
             raise RuntimeError("Did not return two SFrames!")

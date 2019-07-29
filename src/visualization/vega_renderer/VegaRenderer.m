@@ -100,6 +100,9 @@
 
         VegaJSDocument* document = [[VegaJSDocument alloc] initWithCanvas:vegaCanvas];
         self.context[@"document"] = document;
+        
+        // set up an element to contain Vega's canvas, referenced in vg2canvasJS
+        self.context[@"container"] = [[VegaHTMLElement alloc] initWithTagName:@"div"];
 
         // set up Image type
         self.context[@"Image"] = [JSValue valueWithObject:^() {
@@ -185,7 +188,7 @@
     "    logLevel: vega.Warn,"
     "    renderer: 'canvas'"
     "  })"
-    "  .initialize()"
+    "  .initialize(container)"
     "  .runAsync()"
     "  .then(view => {"
     "    view.toCanvas().then(canvas => {"

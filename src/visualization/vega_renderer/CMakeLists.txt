@@ -13,6 +13,7 @@ if(APPLE AND NOT TC_BUILD_IOS)
    set( VEGA_RENDERER_SOURCES
       JSCanvas.m
       JSDocument.m
+      VegaHTMLElement.m
       VegaRenderer.m
       colors.m
    )
