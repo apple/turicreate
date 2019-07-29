@@ -24,7 +24,7 @@ class OneShotObjectDetectorBackgroundData(object):
         self.sarray_url = _urlparse.urljoin(
             DATA_URL_ROOT, self.source_tar_filename)
         self.sarray_url_md5_pairs = [
-            (self.sarray_url, "08830e90771897c1cd187a07cdcb52b4")
+            (self.sarray_url, "3b05b64d453d68406c48696585df9fbb")
             ]
 
     def get_backgrounds_path(self):
