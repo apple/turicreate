@@ -16,10 +16,6 @@
 + (TCMPSTransformerDescriptor *) defineTransformerDescriptor:(NSUInteger)numStyles
                                               tuneAllWeights:(BOOL)tuneAllWeights;
 + (TCMPSVgg16Descriptor *) defineVGG16Descriptor:(NSUInteger)numStyles;
-
-+ (NSDictionary<NSString *, NSDictionary *> *) defineTransformerWeights:(NSDictionary<NSString *, NSData *> *)weights;
-+ (NSDictionary<NSString *, NSDictionary *> *) defineVGG16:(NSDictionary<NSString *, NSData *> *)weights;
-
 /**
  * populateMean
  *

@@ -74,7 +74,6 @@
     _styleNode = [MPSNNImageNode nodeWithHandle: [[TCMPSGraphNodeHandle alloc] initWithLabel:@"styleImage"]];
     _styleScaleNode = [MPSNNImageNode nodeWithHandle: [[TCMPSGraphNodeHandle alloc] initWithLabel:@"styleScaleImage"]];
     _styleMeanNode = [MPSNNImageNode nodeWithHandle: [[TCMPSGraphNodeHandle alloc] initWithLabel:@"styleMeanImage"]];
-    
 
     // Create the Descriptors for the Transformer and VGG16 Networks
     TCMPSTransformerDescriptor *transformerDesc = [TCMPSStyleTransfer defineTransformerDescriptor:numStyles
@@ -85,15 +84,12 @@
     _dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
     _commandQueue = [_dev newCommandQueue];
 
-    NSDictionary<NSString *, NSDictionary *> *transformerWeights = [TCMPSStyleTransfer defineTransformerWeights:weights];
-    NSDictionary<NSString *, NSDictionary *> *vgg16Weights = [TCMPSStyleTransfer defineVGG16:weights];
-
     _model = [[TCMPSStyleTransferTransformerNetwork alloc] initWithParameters:@"Transformer"
                                                                     inputNode:_contentNode
                                                                        device:_dev
                                                                      cmdQueue:_commandQueue
                                                                    descriptor:transformerDesc
-                                                                  initWeights:transformerWeights];
+                                                                  initWeights:weights];
 
     _contentPreProcess = [[TCMPSStyleTransferPreProcessing alloc] initWithParameters:@"Content_Pre_Processing"
                                                                            inputNode:_model.forwardPass
@@ -105,7 +101,7 @@
                                                          device:_dev
                                                        cmdQueue:_commandQueue
                                                      descriptor:vgg16Desc
-                                                    initWeights:vgg16Weights];
+                                                    initWeights:weights];
 
     _stylePreProcessLoss = [[TCMPSStyleTransferPreProcessing alloc] initWithParameters:@"Style_Pre_Processing"
                                                                              inputNode:_styleNode
@@ -117,7 +113,7 @@
                                                            device:_dev
                                                          cmdQueue:_commandQueue
                                                        descriptor:vgg16Desc
-                                                      initWeights:vgg16Weights];
+                                                      initWeights:weights];
 
     _contentPreProcessLoss = [[TCMPSStyleTransferPreProcessing alloc] initWithParameters:@"Content_Loss_Pre_Processing"
                                                                                inputNode:_contentNode
@@ -129,7 +125,7 @@
                                                              device:_dev
                                                            cmdQueue:_commandQueue
                                                          descriptor:vgg16Desc
-                                                        initWeights:vgg16Weights];
+                                                        initWeights:weights];
 
     NSUInteger DEFAULT_IMAGE_SIZE = 256;
 

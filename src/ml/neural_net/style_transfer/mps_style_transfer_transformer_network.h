@@ -23,7 +23,7 @@ API_AVAILABLE(macos(10.14))
                              device:(id<MTLDevice>)dev
                            cmdQueue:(id<MTLCommandQueue>)cmdQ
                          descriptor:(TCMPSTransformerDescriptor *)descriptor
-                        initWeights:(NSDictionary<NSString *, NSDictionary *> *) weights;
+                        initWeights:(NSDictionary<NSString *, NSData *> *) weights;
 
 - (MPSNNImageNode * _Nullable) backwardPass:(MPSNNImageNode *) inputNode;
 - (void) setLearningRate:(float)lr;

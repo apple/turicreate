@@ -41,8 +41,8 @@
                                           strideHeight:descriptor.conv.strideHeight
                                           paddingWidth:descriptor.conv.paddingWidth
                                          paddingHeight:descriptor.conv.paddingHeight
-                                               weights:weights[[NSString stringWithFormat:@"%@%@", name, @"decoding_conv_weights"]]
-                                                biases:weights[[NSString stringWithFormat:@"%@%@", name, @"decoding_conv_biases"]]
+                                               weights:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_weights"]]
+                                                biases:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_biases"]]
                                                  label:descriptor.conv.label
                                          updateWeights:descriptor.conv.updateWeights
                                                 device:dev
@@ -51,8 +51,8 @@
     _instNorm = [MPSCNNInstanceNormalizationNode createInstanceNormalization:[_conv resultImage]
                                                                     channels:descriptor.inst.channels
                                                                       styles:descriptor.inst.styles
-                                                                       gamma:weights[[NSString stringWithFormat:@"%@%@", name, @"decoding_inst_gamma"]]
-                                                                        beta:weights[[NSString stringWithFormat:@"%@%@", name, @"decoding_inst_beta"]]
+                                                                       gamma:weights[[NSString stringWithFormat:@"%@%@", name, @"inst_gamma"]]
+                                                                        beta:weights[[NSString stringWithFormat:@"%@%@", name, @"inst_beta"]]
                                                                        label:descriptor.inst.label
                                                                       device:dev
                                                                     cmdQueue:cmdQ];

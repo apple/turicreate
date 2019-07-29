@@ -40,81 +40,80 @@
                              device:(id<MTLDevice>)dev
                            cmdQueue:(id<MTLCommandQueue>)cmdQ
                          descriptor:(TCMPSTransformerDescriptor *)descriptor
-                        initWeights:(NSDictionary<NSString *, NSDictionary *> *) weights {
+                        initWeights:(NSDictionary<NSString *, NSData *> *) weights {
   self = [super init];
   
   if (self) {
-    _encoding1 = [[TCMPSStyleTransferEncodingNode alloc] initWithParameters:@"transformer_encode_1"
+    _encoding1 = [[TCMPSStyleTransferEncodingNode alloc] initWithParameters:@"transformer_encode_1_"
                                                                   inputNode:inputNode
                                                                      device:dev
                                                                    cmdQueue:cmdQ
                                                                  descriptor:descriptor.encode1
-                                                                initWeights:weights[@"transformer_encode_1"]];
+                                                                initWeights:weights];
 
-    _encoding2 = [[TCMPSStyleTransferEncodingNode alloc] initWithParameters:@"transformer_encode_2"
+    _encoding2 = [[TCMPSStyleTransferEncodingNode alloc] initWithParameters:@"transformer_encode_2_"
                                                                   inputNode:[_encoding1 output]
                                                                      device:dev
                                                                    cmdQueue:cmdQ
                                                                  descriptor:descriptor.encode2
-                                                                initWeights:weights[@"transformer_encode_2"]];
+                                                                initWeights:weights];
 
-    _encoding3 = [[TCMPSStyleTransferEncodingNode alloc] initWithParameters:@"transformer_encode_3"
+    _encoding3 = [[TCMPSStyleTransferEncodingNode alloc] initWithParameters:@"transformer_encode_3_"
                                                                   inputNode:[_encoding2 output]
                                                                      device:dev
                                                                    cmdQueue:cmdQ
                                                                  descriptor:descriptor.encode3
-                                                                initWeights:weights[@"transformer_encode_3"]];
+                                                                initWeights:weights];
 
-    _residual1 = [[TCMPSStyleTransferResidualNode alloc] initWithParameters:@"transformer_residual_1"
+    _residual1 = [[TCMPSStyleTransferResidualNode alloc] initWithParameters:@"transformer_residual_1_"
                                                                   inputNode:[_encoding3 output]
                                                                      device:dev
                                                                    cmdQueue:cmdQ
                                                                  descriptor:descriptor.residual1
-                                                                initWeights:weights[@"transformer_residual_1"]];
+                                                                initWeights:weights];
 
-    _residual2 = [[TCMPSStyleTransferResidualNode alloc] initWithParameters:@"transformer_residual_2"
+    _residual2 = [[TCMPSStyleTransferResidualNode alloc] initWithParameters:@"transformer_residual_2_"
                                                                   inputNode:[_residual1 output]
                                                                      device:dev
                                                                    cmdQueue:cmdQ
                                                                  descriptor:descriptor.residual2
-                                                                initWeights:weights[@"transformer_residual_2"]];
+                                                                initWeights:weights];
 
-    _residual3 = [[TCMPSStyleTransferResidualNode alloc] initWithParameters:@"transformer_residual_3"
+    _residual3 = [[TCMPSStyleTransferResidualNode alloc] initWithParameters:@"transformer_residual_3_"
                                                                   inputNode:[_residual2 output]
                                                                      device:dev
                                                                    cmdQueue:cmdQ
                                                                  descriptor:descriptor.residual3
-                                                                initWeights:weights[@"transformer_residual_3"]];
+                                                                initWeights:weights];
 
-    _residual4 = [[TCMPSStyleTransferResidualNode alloc] initWithParameters:@"transformer_residual_4"
+    _residual4 = [[TCMPSStyleTransferResidualNode alloc] initWithParameters:@"transformer_residual_4_"
                                                                   inputNode:[_residual3 output]
                                                                      device:dev
                                                                    cmdQueue:cmdQ
                                                                  descriptor:descriptor.residual4
-                                                                initWeights:weights[@"transformer_residual_4"]];
+                                                                initWeights:weights];
 
-    _residual5 = [[TCMPSStyleTransferResidualNode alloc] initWithParameters:@"transformer_residual_5"
+    _residual5 = [[TCMPSStyleTransferResidualNode alloc] initWithParameters:@"transformer_residual_5_"
                                                                   inputNode:[_residual4 output]
                                                                      device:dev
                                                                    cmdQueue:cmdQ
                                                                  descriptor:descriptor.residual5
-                                                                initWeights:weights[@"transformer_residual_5"]];
+                                                                initWeights:weights];
 
-    _decoding1 = [[TCMPSStyleTransferDecodingNode alloc] initWithParameters:@"transformer_decoding_1"
+    _decoding1 = [[TCMPSStyleTransferDecodingNode alloc] initWithParameters:@"transformer_decoding_1_"
                                                                  inputNode:[_residual5 output]
                                                                     device:dev
                                                                   cmdQueue:cmdQ
                                                                 descriptor:descriptor.decode1
-                                                               initWeights:weights[@"transformer_decoding_1"]];
+                                                               initWeights:weights];
 
-    _decoding2 = [[TCMPSStyleTransferDecodingNode alloc] initWithParameters:@"transformer_decoding_2"
+    _decoding2 = [[TCMPSStyleTransferDecodingNode alloc] initWithParameters:@"transformer_decoding_2_"
                                                                   inputNode:[_decoding1 output]
                                                                      device:dev
                                                                    cmdQueue:cmdQ
                                                                  descriptor:descriptor.decode2
-                                                                initWeights:weights[@"transformer_decoding_2"]];
+                                                                initWeights:weights];
 
-    
     _conv = [MPSCNNConvolutionNode createConvolutional:[_decoding2 output]
                                            kernelWidth:descriptor.conv.kernelWidth
                                           kernelHeight:descriptor.conv.kernelHeight
@@ -124,8 +123,8 @@
                                           strideHeight:descriptor.conv.strideHeight
                                           paddingWidth:descriptor.conv.paddingWidth
                                          paddingHeight:descriptor.conv.paddingHeight
-                                               weights:((NSData *)weights[@"transformer_conv"][@"weights"])
-                                                biases:((NSData *)weights[@"transformer_conv"][@"biases"])
+                                               weights:weights[@"transformer_conv5_weight"]
+                                                biases:weights[@"transformer_conv5_bias"]
                                                  label:descriptor.conv.label
                                          updateWeights:descriptor.conv.updateWeights
                                                 device:dev
@@ -134,8 +133,8 @@
     _instNorm = [MPSCNNInstanceNormalizationNode createInstanceNormalization:[_conv resultImage]
                                                                     channels:descriptor.inst.channels
                                                                       styles:descriptor.inst.styles
-                                                                       gamma:(NSData *)weights[@"transformer_inst"][@"weights"]
-                                                                        beta:(NSData *)weights[@"transformer_inst"][@"biases"]
+                                                                       gamma:weights[@"transformer_instancenorm5_gamma"]
+                                                                        beta:weights[@"transformer_instancenorm5_beta"]
                                                                        label:descriptor.inst.label
                                                                       device:dev
                                                                     cmdQueue:cmdQ];
