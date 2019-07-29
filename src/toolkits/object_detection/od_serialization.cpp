@@ -6,6 +6,7 @@
 
 #include <toolkits/object_detection/od_serialization.hpp>
 #include <cstdio>
+#include <stdlib.h>
 
 namespace turi {
 namespace object_detection {
@@ -36,7 +37,6 @@ void _load_version(iarchive& iarc, size_t version, neural_net::model_spec& nn_sp
   // Load neural net weights.
   float_array_map nn_params;
   iarc >> nn_params;
-  //init_darknet_yolo(nn_spec_, state, anchor_boxes);
   init_darknet_yolo(nn_spec_, variant_get_value<size_t>(state.at("num_classes")), anchor_boxes);
   nn_spec_.update_params(nn_params);
 
@@ -46,7 +46,7 @@ void init_darknet_yolo(neural_net::model_spec& nn_spec, const size_t num_classes
 	const std::vector<std::pair<float, float>>& anchor_boxes) {
 
   // Initialize a random number generator for weight initialization.
-  std::seed_seq seed_seq = { 0 };
+  std::seed_seq seed_seq = { rand() };
   std::mt19937 random_engine(seed_seq); //TODO: make zero init
 
   int num_features = 3;

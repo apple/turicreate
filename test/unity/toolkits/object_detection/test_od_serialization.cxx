@@ -8,8 +8,6 @@
 
 #include <toolkits/object_detection/od_serialization.hpp>
 #include <cstdio>
-
-//maybe
 #include <boost/test/unit_test.hpp>
 #include <core/util/test_macros.hpp>
 #include <toolkits/coreml_export/mlmodel_include.hpp>
@@ -19,15 +17,15 @@ namespace turi {
 namespace object_detection {
 namespace {
 
-BOOST_AUTO_TEST_CASE(test_init_darknet_yolo) {
+const std::vector<std::pair<float, float>> anchor_boxes = {
+	  {1.f, 2.f}, {1.f, 1.f}, {2.f, 1.f},
+	  {2.f, 4.f}, {2.f, 2.f}, {4.f, 2.f},
+	  {4.f, 8.f}, {4.f, 4.f}, {8.f, 4.f},
+	  {8.f, 16.f}, {8.f, 8.f}, {16.f, 8.f},
+	  {16.f, 32.f}, {16.f, 16.f}, {32.f, 16.f},
+};
 
-	const std::vector<std::pair<float, float>> anchor_boxes = {
-      {1.f, 2.f}, {1.f, 1.f}, {2.f, 1.f},
-      {2.f, 4.f}, {2.f, 2.f}, {4.f, 2.f},
-      {4.f, 8.f}, {4.f, 4.f}, {8.f, 4.f},
-      {8.f, 16.f}, {8.f, 8.f}, {16.f, 8.f},
-      {16.f, 32.f}, {16.f, 16.f}, {32.f, 16.f},
-	};
+BOOST_AUTO_TEST_CASE(test_init_darknet_yolo) {
 
 	neural_net::model_spec nn_spec;
 	const size_t num_classes = 10;
@@ -67,6 +65,32 @@ BOOST_AUTO_TEST_CASE(test_init_darknet_yolo) {
 		num_features = x.second;
 
 	}
+
+}
+
+BOOST_AUTO_TEST_CASE(test_save_load) {
+
+	dir_archive archive_write;
+	archive_write.open_directory_for_write("save_load_tests");
+	turi::oarchive oarc(archive_write);
+	neural_net::model_spec nn_spec_1;
+	std::map<std::string, variant_type> state1 = {{"num_classes", 10}, {"model", "darknet_yolo"}, {"max_iterations", 5}};
+	init_darknet_yolo(nn_spec_1, variant_get_value<size_t>(state1.at("num_classes")), anchor_boxes);
+	_save_impl(oarc, nn_spec_1, state1);
+	const CoreML::Specification::NeuralNetwork& nn_saved = nn_spec_1.get_coreml_spec();
+	archive_write.close();
+
+	dir_archive archive_read;
+	archive_read.open_directory_for_read("save_load_tests");
+	turi::iarchive iarc(archive_read);
+	size_t version = 1;
+	neural_net::model_spec nn_spec_2;
+	std::map<std::string, variant_type> state2 = {{"num_classes", 10}, {"model", "darknet_yolo"}, {"max_iterations", 5}};
+	_load_version(iarc, version, nn_spec_2, state2, anchor_boxes);
+	const CoreML::Specification::NeuralNetwork& nn_loaded = nn_spec_2.get_coreml_spec();
+	archive_read.close();
+
+	TS_ASSERT(nn_saved.SerializeAsString() == nn_loaded.SerializeAsString());
 
 }
 
