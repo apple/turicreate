@@ -193,7 +193,7 @@ test_cpp_mac_10_13:
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - (test -d debug && test -d release) || ./configure --no-python
-    - cd release/test
+    - cd debug/test
     - make -j8
     - export LD_LIBRARY_PATH=`pwd`/deps/local/lib:`pwd`/deps/local/lib64:$LD_LIBRARY_PATH
     - export PATH=`pwd`/deps/local/bin:$PATH
@@ -212,7 +212,7 @@ test_cpp_mac_10_14:
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - (test -d debug && test -d release) || ./configure
-    - cd release/test
+    - cd debug/test
     - make -j8
     - export LD_LIBRARY_PATH=`pwd`/deps/local/lib:`pwd`/deps/local/lib64:$LD_LIBRARY_PATH
     - export PATH=`pwd`/deps/local/bin:$PATH
