@@ -4274,7 +4274,8 @@ class SFrame(object):
 
             * if a dict is given, the dict key should be obtained from column names from the right
             sframe. The dict value should be user preferred column name to resolve the name collision
-            instead of resolving by the default behavior. If dict value will cause potential name confict
+            instead of resolving by the default behavior. In general, dict key should not be any value
+            from the right sframe column names. If dict value will cause potential name confict
             after an attempt to resolve, exception will be thrown.
 
         Returns
@@ -4370,8 +4371,9 @@ class SFrame(object):
                 for (k, v) in alter_name.items():
                     if k not in right_names or k in join_keys:
                         raise KeyError("Redundant key %s for collision resolution" % k)
-                    if k != v and v in left_names:
-                        # if v in right_names, things are more complicated and will be handled by proxy
+                    if k == v:
+                        raise ValueError("Key %s should not be equal to value" % k)
+                    if v in left_names or v in right_names:
                         raise ValueError("Value %s will cause further collision" % v)
                 return SFrame(_proxy=self.__proxy__.join_with_custom_name(right.__proxy__, how, join_keys, alter_name))
 

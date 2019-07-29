@@ -1849,19 +1849,28 @@ class SFrameTest(unittest.TestCase):
         res = employees_.join(departments_, on=join_keys_, how='outer', alter_name={'car_id': 'X', 'bed_id': 'Y'})
         self.__assert_join_results_equal(res, expected_)
 
-        ## nasty
-        expected_ = SFrame()
-        expected_.add_column(SArray(['A','C','F']), 'last_name', inplace=True)
-        expected_.add_column(SArray([31,33,34]), 'dep_id', inplace=True)
-        expected_.add_column(SArray([1,3,None]), 'org_id', inplace=True)
-        expected_.add_column(SArray([1,3,None]), 'bed_id', inplace=True)
-        expected_.add_column(SArray(['Sales','Engineering', None]), 'dep_name', inplace=True)
-        expected_.add_column(SArray([1,3,5]), 'car_id', inplace=True)
-        expected_.add_column(SArray([1,3,None]), 'X', inplace=True)
+        ## error cases
+        with self.assertRaises(KeyError):
+            res = employees_.join(departments_, on=join_keys_, how='right', alter_name={
+                'some_id': 'car_id', 'bed_id': 'car_id'})
 
-        ## take name from behind
-        res = employees_.join(departments_, on=join_keys_, how='right', alter_name={'car_id': 'X', 'bed_id': 'car_id'})
-        self.__assert_join_results_equal(res, expected_)
+        with self.assertRaises(ValueError):
+            res = employees_.join(departments_, on=join_keys_, how='right', alter_name={
+            'car_id': 'car_id', 'bed_id': 'car_id'})
+
+        ## resolution order is not independent
+        with self.assertRaises(ValueError):
+            res = employees_.join(departments_, on=join_keys_, how='right', alter_name={
+                'car_id': 'X', 'bed_id': 'car_id'})
+
+        with self.assertRaises(ValueError):
+            res = employees_.join(departments_, on=join_keys_, how='right', alter_name={
+                'car_id': 'bed_id', 'bed_id': 'car_id'})
+
+        ## duplicate values
+        with self.assertRaises(RuntimeError):
+            res = employees_.join(departments_, on=join_keys_, how='right', alter_name={
+                'car_id': 'X', 'bed_id': 'X'})
 
     def test_big_composite_join(self):
         # Create a semi large SFrame with composite primary key (letter, number)

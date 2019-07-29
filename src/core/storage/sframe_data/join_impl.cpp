@@ -196,6 +196,40 @@ hash_join_executor::hash_join_executor(const sframe &left,
 
   // get orginal right sframe's column names
   col_names_original_order = right.column_names();
+
+  /* check the name resolution is order dependent or not.
+   * resolution {A -> B} is order dependent iff
+   * 1. A belongs to right.column_names()
+   * 2. B is not equal to keys from right.column_names()
+   * 3. B should be unique to other B'
+  */
+  std::set<std::string> unique_names_from_right = {
+      std::begin(col_names_original_order), std::end(col_names_original_order)};
+
+  std::set<std::string> unique_names_from_user;
+  for (auto& entry : _alter_names_right) {
+    if (unique_names_from_right.count(entry.first) == 0) {
+          std::stringstream ss;
+          ss << "user provided column name { " << entry.first
+             << " } is not found in right SFrame.";
+          log_and_throw(ss.str());
+    }
+
+    if (!unique_names_from_user.insert(entry.second).second) {
+          std::stringstream ss;
+          ss << "user provided resolution name { " << entry.second
+             << " } duplicates with other resolution name.";
+          log_and_throw(ss.str());
+    }
+
+    if (unique_names_from_right.count(entry.second)) {
+          std::stringstream ss;
+          ss << "user provided resolution name { " << entry.second
+             << " } is not allowed to be same with any name in right SFrame.";
+          log_and_throw(ss.str());
+    }
+  }
+
   // check the original right sframe columns
   for (auto& name : col_names_original_order) {
     // skip join_keys
