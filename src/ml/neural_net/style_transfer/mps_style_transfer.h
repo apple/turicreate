@@ -13,6 +13,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+#ifdef DHAS_MACOS_10_15
+
 API_AVAILABLE(macos(10.15))
 @interface TCMPSStyleTransfer : NSObject
 
@@ -32,5 +34,7 @@ API_AVAILABLE(macos(10.15))
 - (NSDictionary<NSString *, NSData *> *) train:(NSDictionary<NSString *, NSData *> *)inputs;
 
 @end
+
+#endif
 
 NS_ASSUME_NONNULL_END
