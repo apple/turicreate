@@ -10,6 +10,7 @@
 #include <core/storage/fileio/get_s3_endpoint.hpp>
 #include <core/storage/fileio/get_s3_endpoint.hpp>
 #include <core/storage/fileio/fileio_constants.hpp>
+#include <core/system/platform/process/process_util.hpp>
 
 namespace turi {
 namespace fileio {
@@ -58,6 +59,11 @@ std::vector<std::string> get_s3_endpoints() {
 std::string get_region_name_from_endpoint(std::string endpoint) {
   if (S3_REGION.size())
     return S3_REGION;
+
+  boost::optional<std::string> aws_default_region = getenv_str("AWS_DEFAULT_REGION");
+  if (aws_default_region) {
+    return *std::move(aws_default_region);
+  }
   // try to infer from endpoint
   auto iter = AWS_S3_ENDPOINT_TO_REGION.find(endpoint);
   if (iter != AWS_S3_ENDPOINT_TO_REGION.end()) {
