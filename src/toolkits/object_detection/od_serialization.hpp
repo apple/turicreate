@@ -14,10 +14,10 @@
 namespace turi {
 namespace object_detection {
 
-void _save_impl(oarchive& oarc, const neural_net::model_spec& nn_spec_,
+void _save_impl(oarchive& oarc, const neural_net::model_spec& nn_spec,
 	const std::map<std::string, variant_type>& state);
 
-void _load_version(iarchive& iarc, size_t version, neural_net::model_spec& nn_spec_,
+void _load_version(iarchive& iarc, size_t version, neural_net::model_spec& nn_spec,
 	std::map<std::string, variant_type>& state, const std::vector<std::pair<float, float>>& anchor_boxes);
 
 void init_darknet_yolo(neural_net::model_spec& nn_spec, const size_t num_classes,
