@@ -375,5 +375,76 @@ def display_table_in_notebook(sf):
     image_key = [x[0] for x in image_columns]
     image_column_formatter = dict.fromkeys(image_key , image_formatter)
 
-    with pd.option_context('display.max_rows', None, 'display.max_columns', None):
-        display(HTML(sf.to_dataframe(explore=True).to_html(formatters=image_column_formatter, escape=False)))
+    with pd.option_context('display.max_rows', None, 'display.max_columns', None, 'display.max_colwidth', -1):
+        df = sf.to_dataframe()
+        html_string =  '<html lang="en">                           \
+                          <head>                                   \
+                            <style>                                \
+                              .sframe {                            \
+                                font-size: 12px;                   \
+                                font-family: HelveticaNeue;        \
+                                border: 1px solid silver;          \
+                              }                                    \
+                              .sframe thead th {                   \
+                                background: #F7F7F7;               \
+                                font-family: HelveticaNeue-Medium; \
+                                font-size: 14px;                   \
+                                line-height: 16.8px;               \
+                                padding-top: 16px;                 \
+                                padding-bottom: 16px;              \
+                                padding-left: 10px;                \
+                                padding-right: 38px;               \
+                                border-top: 1px solid #E9E9E9;     \
+                                border-bottom: 1px solid #E9E9E9;  \
+                                white-space: nowrap;               \
+                                overflow: hidden;                  \
+                                text-overflow:ellipsis;            \
+                                text-align:center;                 \
+                                font-weight:normal;                \
+                              }                                    \
+                              .sframe tbody th {                   \
+                                background: #FFFFFF;               \
+                                text-align:left;                   \
+                                font-weight:normal;                \
+                                border-right: 1px solid #E9E9E9;   \
+                              }                                    \
+                              .sframe td {                         \
+                                background: #FFFFFF;               \
+                                padding-left: 10px;                \
+                                padding-right: 38px;               \
+                                padding-top: 14px;                 \
+                                padding-bottom: 14px;              \
+                                border-bottom: 1px solid #E9E9E9;  \
+                                max-height: 0px;                   \
+                                transition: max-height 5s ease-out;\
+                                vertical-align: middle;            \
+                                font-family: HelveticaNeue;        \
+                                font-size: 12px;                   \
+                                line-height: 16.8px;               \
+                                background: #FFFFFF;               \
+                              }                                    \
+                              .sframe tr {                         \
+                                padding-left: 10px;                \
+                                padding-right: 38px;               \
+                                padding-top: 14px;                 \
+                                padding-bottom: 14px;              \
+                                border-bottom: 1px solid #E9E9E9;  \
+                                max-height: 0px;                   \
+                                transition: max-height 5s ease-out;\
+                                vertical-align: middle;            \
+                                font-family: HelveticaNeue;        \
+                                font-size: 12px;                   \
+                                line-height: 16.8px;               \
+                                background: #FFFFFF;               \
+                              }                                    \
+                              .sframe tr:hover {                   \
+                                background: silver;                \
+                              },                                   \
+                            </style>                               \
+                          </head>                                  \
+                          <body>                                   \
+                            '+df.to_html(formatters=image_column_formatter, escape=False, classes='sframe')+'\
+                          </body>                                  \
+                        </html>'
+
+        display(HTML(html_string))

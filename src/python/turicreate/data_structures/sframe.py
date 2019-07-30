@@ -2373,7 +2373,7 @@ class SFrame(object):
         """
         return SFrame(_proxy=self.__proxy__.head(n))
 
-    def to_dataframe(self, explore=False):
+    def to_dataframe(self):
         """
         Convert this SFrame to pandas.DataFrame.
 
@@ -2392,8 +2392,7 @@ class SFrame(object):
         df = pandas.DataFrame()
         for i in range(self.num_columns()):
             column_name = self.column_names()[i]
-            if(self.column_types()[i] == _Image and explore):
-                pandas.set_option('display.max_colwidth', -1)
+            if(self.column_types()[i] == _Image):
                 df[column_name] = [_image_resize(x[column_name])._to_pil_image() for x in self.select_columns([column_name])]
             else:
                 df[column_name] = list(self[column_name])
