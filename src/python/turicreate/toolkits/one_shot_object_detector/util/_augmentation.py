@@ -39,7 +39,12 @@ def preview_synthetic_training_data(data,
     out : SFrame
         An SFrame of sythetically generated annotated training data.
     """
+
     dataset_to_augment, image_column_name, target_column_name = check_one_shot_input(data, target)
+    original_dataset_size = len(dataset_to_augment)
+    dataset_to_augment = dataset_to_augment.dropna(columns=image_column_name)
+    if original_dataset_size != len(dataset_to_augment):
+        print("Dropping " + str(original_dataset_size - len(dataset_to_augment)) + " rows for missing features in the training dataset.")
     one_shot_model = _extensions.one_shot_object_detector()
     seed = kwargs["seed"] if "seed" in kwargs else _random.randint(0, 2**32 - 1)
     if backgrounds is None:
