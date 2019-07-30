@@ -60,6 +60,8 @@ API_AVAILABLE(macos(10.14))
 
 - (void) updateCurrentStyle:(NSUInteger)style;
 
+- (void) setLearningRate:(float)lr;
+
 - (void) loadBeta:(float *)beta;
 - (float *) beta;
 
