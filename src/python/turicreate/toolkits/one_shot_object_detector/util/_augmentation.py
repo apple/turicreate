@@ -9,6 +9,8 @@ import tarfile as _tarfile
 import turicreate as _tc
 from turicreate import extensions as _extensions
 from turicreate.toolkits.one_shot_object_detector.util._error_handling import check_one_shot_input
+from turicreate.toolkits._main import ToolkitError as _ToolkitError
+
 from turicreate.toolkits import _data_zoo
 
 def preview_synthetic_training_data(data,
@@ -41,10 +43,8 @@ def preview_synthetic_training_data(data,
     """
 
     dataset_to_augment, image_column_name, target_column_name = check_one_shot_input(data, target)
-    original_dataset_size = len(dataset_to_augment)
-    dataset_to_augment = dataset_to_augment.dropna(columns=image_column_name)
-    if original_dataset_size != len(dataset_to_augment):
-        print("Dropping " + str(original_dataset_size - len(dataset_to_augment)) + " rows for missing features in the training dataset.")
+    if any(img is None for img in data[image_column_name]):
+        raise _ToolkitError("Missing value (None) encountered in column " + image_column_name + ". Use the SFrame's dropna function to drop rows with 'None' values in them.")
     one_shot_model = _extensions.one_shot_object_detector()
     seed = kwargs["seed"] if "seed" in kwargs else _random.randint(0, 2**32 - 1)
     if backgrounds is None:
