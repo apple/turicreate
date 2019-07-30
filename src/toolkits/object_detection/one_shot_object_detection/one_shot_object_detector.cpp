@@ -124,6 +124,44 @@ boost::gil::rgba8_image_t::view_t create_starter_image_view(flex_image &object_i
   return starter_image_view;
 }
 
+std::pair<flex_image,flex_dict> create_synthetic_image_from_background_and_starter(
+  flex_image starter,
+  const flex_image &background,
+  std::string label,
+  size_t seed,
+  size_t row_number) {
+  if (!(starter.is_decoded())) {
+    decode_image_inplace(starter);
+  }
+
+  ParameterSampler parameter_sampler = ParameterSampler(
+                                          background.m_width,
+                                          background.m_height,
+                                          (background.m_width-starter.m_width)/2,
+                                          (background.m_height-starter.m_height)/2);
+
+  // construct annotation dictionary from parameters
+  flex_dict annotation = build_annotation(parameter_sampler, label,
+                                          starter.m_width, starter.m_height,
+                                          seed+row_number);
+
+  DASSERT_TRUE(background.get_image_data() != nullptr);
+  DASSERT_TRUE(starter.is_decoded());
+  DASSERT_TRUE(background.is_decoded());
+
+  boost::gil::rgba8_image_t::view_t starter_image_view = create_starter_image_view(starter);
+
+  boost::gil::rgb8_image_t::view_t background_view = interleaved_view(
+    background.m_width,
+    background.m_height,
+    (boost::gil::rgb8_pixel_t*)(background.get_image_data()),
+    background.m_channels * background.m_width // row length in bytes
+    );
+  flex_image synthetic_image = create_synthetic_image(starter_image_view, background_view, parameter_sampler, starter);
+  encode_image_inplace(synthetic_image);
+  return std::make_pair(synthetic_image, annotation);
+}
+
 gl_sframe augment_data(const gl_sframe &data,
                        const std::string& image_column_name,
                        const std::string& target_column_name,
@@ -157,47 +195,19 @@ gl_sframe augment_data(const gl_sframe &data,
     size_t row_number=segment_start;
     for (const auto& background_ft: backgrounds.range_iterator(segment_start, segment_end)) {
       row_number++;
+      flex_image flex_background = background_ft.to<flex_image>();
+      if (!(flex_background.is_decoded())) {
+        decode_image_inplace(flex_background);
+      }
       for (const auto& row: data.range_iterator()) {
         // go through all the starter images and create augmented images for
         // all starter images and the respective chunk of background images
         flex_image object = row[image_column_index].to<flex_image>();
         std::string label = row[target_column_index].to<flex_string>();
-        if (!(object.is_decoded())) {
-          decode_image_inplace(object);
-        }
-        flex_image flex_background = background_ft.to<flex_image>();
-        if (!(flex_background.is_decoded())) {
-          decode_image_inplace(flex_background);
-        }
-        size_t background_width = flex_background.m_width;
-        size_t background_height = flex_background.m_height;
-        size_t background_channels = flex_background.m_channels;
-
-        ParameterSampler parameter_sampler = ParameterSampler(
-                                                background_width,
-                                                background_height,
-                                                (background_width-object.m_width)/2,
-                                                (background_height-object.m_height)/2);
-
-        // construct annotation dictionary from parameters
-        flex_dict annotation = build_annotation(parameter_sampler, label,
-                                                object.m_width, object.m_height,
-                                                seed+row_number);
-
-        DASSERT_TRUE(flex_background.get_image_data() != nullptr);
-        DASSERT_TRUE(object.is_decoded());
-        DASSERT_TRUE(flex_background.is_decoded());
-
-        boost::gil::rgba8_image_t::view_t starter_image_view = create_starter_image_view(object);
-
-        boost::gil::rgb8_image_t::view_t background_view = interleaved_view(
-          background_width,
-          background_height,
-          (boost::gil::rgb8_pixel_t*)(flex_background.get_image_data()),
-          background_channels * background_width // row length in bytes
-          );
-        flex_image synthetic_image = create_synthetic_image(starter_image_view, background_view, parameter_sampler, object);
-        encode_image_inplace(synthetic_image);
+        std::pair<flex_image,flex_dict> synthetic_row = create_synthetic_image_from_background_and_starter(
+          object, flex_background, label, seed, row_number);
+        flex_image synthetic_image = synthetic_row.first;
+        flex_dict annotation = synthetic_row.second;
         // write the synthetically generated image and the constructed
         // annotation to output SFrame.
         output_writer.write({
