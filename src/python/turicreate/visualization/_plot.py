@@ -374,7 +374,6 @@ def display_table_in_notebook(sf):
     image_columns = filter(lambda a: a[1], zipped_image_columns)
     image_key = [x[0] for x in image_columns]
     image_column_formatter = dict.fromkeys(image_key , image_formatter)
-    print(image_column_formatter)
 
     with pd.option_context('display.max_rows', None, 'display.max_columns', None):
         display(HTML(sf.to_dataframe(explore=True).to_html(formatters=image_column_formatter, escape=False)))
