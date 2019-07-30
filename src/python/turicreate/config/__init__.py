@@ -250,11 +250,11 @@ def set_runtime_config(name, value):
     - *TURI_S3_ENDPOINT*: The S3 Endpoint to connect to. If not specified AWS
       S3 is assumed.
 
-    - *TURI_S3_REGION*: The S3 Region to connect to. If not specified AWS
-      S3 region is first inferred by looking up the url from a rudimentary
-      static table of commonly used url-region mappings on our side. If no
-      url is matched, no region information is set and AWS will do the
-      best guess for the region.
+    - *TURI_S3_REGION*: The S3 Region to connect to. If this environment variable
+      if not set, `AWS_DEFAULT_REGION` will be loaded if available. Otherwise,
+      S3 region is then inferred by looking up the commonly used url-to-region mappings
+      in our codebase. If no url is matched, no region information is set and AWS will
+      do the best guess for the region.
 
     **SSL Configuration**
 
