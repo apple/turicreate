@@ -201,14 +201,7 @@ def _start_process(process_input, extended_sframe, evaluation):
 
   return proc
 
-def _image_conversion(image):
-  result = {
-    "width": image.width,
-    "height": image.height,
-    "column": "image",
-    "format": "png"
-  }
-
+def _image_resize(image):
   # resize with decode=False will produce a PNG encoded image
   # (even starting with a decoded image)
   # this behavior is enforced in test/unity/image_util.cxx:test_resize
@@ -230,5 +223,15 @@ def _image_conversion(image):
   image = _tc.image_analysis.resize(image, width=int(width), height=int(height), decode=False)
   assert(image._format_enum == 1) # png
 
-  result["data"] = _base64.b64encode(image._image_data)
+  return image
+
+def _image_conversion(image):
+  result = {
+    "width": image.width,
+    "height": image.height,
+    "column": "image",
+    "format": "png"
+  }
+
+  result["data"] = _base64.b64encode(_image_resize(image)._image_data)
   return result
