@@ -1,4 +1,4 @@
-/* Copyright © 2018 Apple Inc. All rights reserved.
+/* Copyright © 2019 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
@@ -27,11 +27,11 @@ API_AVAILABLE(macos(10.14))
                           inputNode:(MPSNNImageNode *)inputNode
                              device:(id<MTLDevice>)dev
                            cmdQueue:(id<MTLCommandQueue>)cmdQ
-                         descriptor:(TCMPSVgg16Block2Descriptor *)descriptor
-                        initWeights:(NSDictionary<NSString *, NSDictionary *> *) weights;
+                         descriptor:(TCMPSVgg16Descriptor *)descriptor
+                        initWeights:(NSDictionary<NSString *, NSData *> *) weights;
 
 - (MPSNNImageNode * _Nullable) backwardPass:(MPSNNImageNode *) inputNode;
-
+- (void) setLearningRate:(float)lr;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -72,8 +72,6 @@ def make_unity_server_env():
             num_workers = min(2, num_cpus)
         env['MXNET_CPU_WORKER_NTHREADS'] = str(num_workers)
 
-    ## set local to be c standard so that unity_server will run ##
-    env['LC_ALL']='C'
     # add certificate file
     if 'TURI_FILEIO_ALTERNATIVE_SSL_CERT_FILE' not in env and \
             'TURI_FILEIO_ALTERNATIVE_SSL_CERT_DIR' not in env:

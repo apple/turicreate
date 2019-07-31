@@ -1,16 +1,16 @@
-/* Copyright © 2018 Apple Inc. All rights reserved.
+/* Copyright © 2019 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <ml/neural_net/mps_layer_helper.h>
-#include <ml/neural_net/mps_weight.h>
-
+#import <ml/neural_net/mps_layer_helper.h>
 #import <ml/neural_net/mps_layer_conv_padding.h>
 #import <ml/neural_net/mps_layer_instance_norm_data_loader.h>
+#import <ml/neural_net/mps_weight.h>
 
 @implementation MPSCNNFullyConnectedNode (TCMPSLayerHelper)
+@dynamic weights;
 + (MPSCNNFullyConnectedNode *) createFullyConnected:(MPSNNImageNode *)inputNode
                                inputFeatureChannels:(NSUInteger)inputFeatureChannels
                               outputFeatureChannels:(NSUInteger)outputFeatureChannels
@@ -45,12 +45,15 @@
   MPSCNNFullyConnectedNode* fullyConnectedNode = 
     [MPSCNNFullyConnectedNode nodeWithSource:inputNode
                                      weights:fullyConnectedDataLoad];
+
+  fullyConnectedNode.weights = fullyConnectedDataLoad;
   
   return fullyConnectedNode;
 }
 @end
 
 @implementation MPSCNNConvolutionNode (TCMPSLayerHelper)
+@dynamic weights;
 + (MPSCNNConvolutionNode *) createConvolutional:(MPSNNImageNode *)inputNode
                                     kernelWidth:(NSUInteger)kernelWidth
                                    kernelHeight:(NSUInteger)kernelHeight
@@ -97,10 +100,15 @@
                                        strideHeight:strideHeight];
 
   convNode.paddingPolicy = padding;
+
+  convNode.weights = convDataLoad;
   
 	return convNode;
 }
+@end
 
+@implementation MPSCNNInstanceNormalizationNode (TCMPSLayerHelper)
+@dynamic weights;
 + (MPSCNNInstanceNormalizationNode *) createInstanceNormalization:(MPSNNImageNode *)inputNode
                                                          channels:(NSUInteger)channels
                                                            styles:(NSUInteger)styles
@@ -110,7 +118,7 @@
                                                            device:(id<MTLDevice>)dev
                                                          cmdQueue:(id<MTLCommandQueue>) cmdQ {
 
-  TCMPSInstanceNormDataLoader *InstNormDataLoad = [[TCMPSInstanceNormDataLoader alloc] initWithParams:label
+  TCMPSInstanceNormDataLoader *instNormDataLoad = [[TCMPSInstanceNormDataLoader alloc] initWithParams:label
                                                                                          gammaWeights:(float *)gamma.bytes
                                                                                           betaWeights:(float *)beta.bytes
                                                                                 numberFeatureChannels:channels
@@ -119,7 +127,10 @@
                                                                                             cmd_queue:cmdQ];
                                       
   MPSCNNInstanceNormalizationNode *instNormNode =  [MPSCNNInstanceNormalizationNode nodeWithSource:inputNode
-                                                                                        dataSource:InstNormDataLoad];
+                                                                                        dataSource:instNormDataLoad];
+
+  instNormNode.weights = instNormDataLoad;
+
   return instNormNode;
 }
 
