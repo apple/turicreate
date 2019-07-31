@@ -3,7 +3,7 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-
+#ifdef DHAS_MACOS_10_15
 #import <ml/neural_net/style_transfer/mps_style_transfer_utils.h>
 
 /**
@@ -495,3 +495,4 @@
 }
 
 @end
+#endif
