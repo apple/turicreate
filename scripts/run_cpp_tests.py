@@ -56,11 +56,11 @@ if __name__ == '__main__':
 
     # make tests if needed
     run_in_docker(['bash', 'configure', '--no-python'])
-    run_in_docker(['make', '-j%d' % args.j], '/build/release/test')
+    run_in_docker(['bash', '-c', 'make -j%d 2>&1 | grep -v \'ld: warning: direct access\'' % args.j], '/build/debug/test')
 
     # run tests
     # TODO pass through other arguments
-    run_in_docker(['python', '/build/scripts/run_cpp_tests.py', '-j%d' % args.j], '/build/release/test')
+    run_in_docker(['python', '/build/scripts/run_cpp_tests.py', '-j%d' % args.j], '/build/debug/test')
 
     # exit if successful (if failed, it will have thrown above)
     sys.exit(0)
