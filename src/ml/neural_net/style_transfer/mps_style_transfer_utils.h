@@ -12,7 +12,7 @@
 #import <ml/neural_net/style_transfer/mps_style_transfer.h>
 #import <ml/neural_net/mps_descriptor_utils.h>
 
-#ifdef DHAS_MACOS_10_15
+#ifdef HAS_MACOS_10_15
 
 @interface TCMPSStyleTransfer (TCMPSStyleTransferUtils)
 + (TCMPSTransformerDescriptor *) defineTransformerDescriptor:(NSUInteger)numStyles
@@ -42,4 +42,4 @@
 + (void) populateMultiplication:(NSMutableData *)data;
 @end
 
-#endif
+#endif // #ifdef HAS_MACOS_10_15

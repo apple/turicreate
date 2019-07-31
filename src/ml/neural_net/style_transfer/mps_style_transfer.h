@@ -13,7 +13,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-#ifdef DHAS_MACOS_10_15
+#ifdef HAS_MACOS_10_15
 
 API_AVAILABLE(macos(10.15))
 @interface TCMPSStyleTransfer : NSObject
@@ -35,6 +35,6 @@ API_AVAILABLE(macos(10.15))
 
 @end
 
-#endif
+#endif // #ifdef HAS_MACOS_10_15
 
 NS_ASSUME_NONNULL_END
