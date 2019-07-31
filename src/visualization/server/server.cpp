@@ -46,7 +46,7 @@ void fail(boost::system::error_code ec, char const* what) {
 // URL parsing code adapted from Spirit example in
 // boost/spirit/example/qi/key_value_sequence.cpp
 template <typename Iterator>
-struct url_query_string 
+struct url_query_string
     : qi::grammar<Iterator, pairs_type()> {
     url_query_string()
         : url_query_string::base_type(query)
@@ -145,7 +145,7 @@ void handle_request(
         return send(std::move(res));
     };
 
-    // Make sure we can handle the method= 
+    // Make sure we can handle the method=
     if( req.method() != http::verb::get &&
         req.method() != http::verb::head)
         return send(bad_request("Unknown HTTP-method"));
@@ -214,8 +214,8 @@ void handle_request(
         if (query_pos != std::string::npos) {
             possible_file_path = possible_file_path.substr(0, query_pos);
         }
-        turi::fileio::file_status possible_file_status = turi::fileio::get_file_status(possible_file_path);
-        if (possible_file_status == turi::fileio::file_status::REGULAR_FILE) {
+        auto possible_file_status = turi::fileio::get_file_status(possible_file_path);
+        if (possible_file_status.first == turi::fileio::file_status::REGULAR_FILE) {
             // we can serve a file from this path
             turi::general_ifstream stream(possible_file_path);
             std::string file_contents{ std::istreambuf_iterator<char>(stream), std::istreambuf_iterator<char>() };
@@ -224,7 +224,11 @@ void handle_request(
         }
 
         // did not match any expected URL
-        logstream(LOG_ERROR) << "WebServer: unrecognized destination requested in URL:  " << req_target << std::endl;
+        logstream(LOG_ERROR)
+            << "WebServer: unrecognized destination requested in URL:  "
+            << req_target << ". Err:" << possible_file_status.second
+            << std::endl;
+
         return send(not_found(req_target));
 
     } catch (const std::exception& e) {
@@ -486,7 +490,7 @@ class WebServer::Impl {
 public:
     unsigned short m_port;
     const static size_t NUM_THREADS = 6; // handle requests on 6 threads - TODO optimize this number
-    boost::asio::io_context m_ioc{NUM_THREADS}; 
+    boost::asio::io_context m_ioc{NUM_THREADS};
     std::vector<std::thread> m_threads; // listener threads
     std::shared_ptr<listener> m_listener = nullptr;
 

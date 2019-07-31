@@ -101,26 +101,33 @@ void unity_sframe::construct_from_sframe_index(std::string location) {
   clear();
 
   auto status = fileio::get_file_status(location);
-  if (fileio::is_web_protocol(fileio::get_protocol(location))) {
+
+  if ((status.first == fileio::file_status::FS_UNAVAILABLE ||
+       status.first == fileio::file_status::MISSING) &&
+      fileio::is_web_protocol(fileio::get_protocol(location))) {
     // if it is a web protocol, we cannot be certain what type of file it is.
     // HEURISTIC:
     //   assume it is a "directory" and try to load dir_archive.ini
     //   if we can open it, it is a regular file. Otherwise not.
     if (fileio::try_to_open_file(location + "/dir_archive.ini")) {
-      status = fileio::file_status::DIRECTORY;
-    } else {
-      status = fileio::file_status::REGULAR_FILE;
+      status.first = fileio::file_status::DIRECTORY;
+      status.second.clear();
+    }
+    else {
+      status.first = fileio::file_status::REGULAR_FILE;
+      status.second.clear();
     }
   }
 
-  if (status == fileio::file_status::MISSING) {
+  if (status.first == fileio::file_status::MISSING) {
     // missing file. fail quick
-    log_and_throw_io_failure(sanitize_url(location) + " not found.");
-  } if (status == fileio::file_status::REGULAR_FILE) {
+    log_and_throw_io_failure(sanitize_url(location) +
+                             " not found. ErrMsg: " + status.second);
+  } if (status.first == fileio::file_status::REGULAR_FILE) {
     // its a regular file, load it normally
     auto sframe_ptr = std::make_shared<sframe>(location);
     this->set_sframe(sframe_ptr);
-  } else if (status == fileio::file_status::DIRECTORY) {
+  } else if (status.first == fileio::file_status::DIRECTORY) {
     // its a directory, open the directory and verify that it contains an
     // sarray and then load it if it does
     dir_archive dirarc;
@@ -134,8 +141,10 @@ void unity_sframe::construct_from_sframe_index(std::string location) {
     auto sframe_ptr = std::make_shared<sframe>(prefix + ".frame_idx");
     this->set_sframe(sframe_ptr);
     dirarc.close();
-  } else if(status == fileio::file_status::FS_UNAVAILABLE) {
-    log_and_throw_io_failure("Cannot read from filesystem. Check log for details.");
+  } else if(status.first == fileio::file_status::FS_UNAVAILABLE) {
+    log_and_throw_io_failure(
+        "Cannot read from filesystem. Check log for details. ErrMsg: " +
+        status.second);
   }
 }
 

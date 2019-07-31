@@ -36,7 +36,7 @@ bool block_cache::write(const std::string& key, const std::string& value) {
   try {
 
     // if file already exists fail
-    if (fileio::get_file_status(filename) != fileio::file_status::MISSING) {
+    if (fileio::get_file_status(filename).first != fileio::file_status::MISSING) {
       return false;
     }
 
@@ -136,7 +136,7 @@ int64_t block_cache::read(const std::string& key,
   // not in cache. open it
   if (read_stream == nullptr) {
     try {
-      if (fileio::get_file_status(filename) == fileio::file_status::REGULAR_FILE) {
+      if (fileio::get_file_status(filename).first == fileio::file_status::REGULAR_FILE) {
         read_stream = std::make_shared<general_ifstream>(filename);
       }
     } catch (...) {

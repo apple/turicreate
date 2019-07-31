@@ -616,7 +616,7 @@ class SFrameTest(unittest.TestCase):
         glob_sf = SFrame.read_csv(os.path.join(csv_dir, "foo.*2.csv"))
         self.assertEqual(glob_sf.num_rows(), 100)
 
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(IOError):
             SFrame.read_csv("missingdirectory")
 
         with self.assertRaises(ValueError):

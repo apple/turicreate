@@ -206,7 +206,7 @@ static void create_current_process_temp_directory(std::string path) {
   bool success = true;
 
   try {
-    if (fileio::get_file_status(path) != fileio::file_status::DIRECTORY) {
+    if (fileio::get_file_status(path).first != fileio::file_status::DIRECTORY) {
       success = fileio::create_directory(path);
       if(success)
         get_temp_info().process_temp_directories.insert(path);
