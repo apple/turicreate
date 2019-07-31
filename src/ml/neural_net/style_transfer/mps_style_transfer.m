@@ -4,6 +4,8 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#ifdef HAS_MACOS_10_15
+
 #import <ml/neural_net/style_transfer/mps_style_transfer.h>
 #import <ml/neural_net/style_transfer/mps_style_transfer_utils.h>
 
@@ -398,3 +400,5 @@
 }
 
 @end
+
+#endif // #ifdef HAS_MACOS_10_15
