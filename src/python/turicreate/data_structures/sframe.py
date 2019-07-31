@@ -4369,7 +4369,7 @@ class SFrame(object):
                 left_names = self.column_names()
                 right_names = right.column_names()
                 for (k, v) in alter_name.items():
-                    if k not in right_names or k in join_keys:
+                    if (k not in right_names) or (k in join_keys):
                         raise KeyError("Redundant key %s for collision resolution" % k)
                     if k == v:
                         raise ValueError("Key %s should not be equal to value" % k)

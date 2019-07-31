@@ -207,7 +207,7 @@ hash_join_executor::hash_join_executor(const sframe &left,
       std::begin(col_names_original_order), std::end(col_names_original_order)};
 
   std::set<std::string> unique_names_from_user;
-  for (auto& entry : _alter_names_right) {
+  for (const auto& entry : _alter_names_right) {
     if (unique_names_from_right.count(entry.first) == 0) {
           std::stringstream ss;
           ss << "user provided column name { " << entry.first
@@ -286,7 +286,7 @@ void hash_join_executor::init_result_frame(sframe &result_frame) {
     std::vector<std::string> res_column_names(_output_column_names.size());
     std::vector<flex_type_enum> res_column_types(_output_column_types.size());
 
-    auto& original_left_to_right = _right_to_left_join_positions;
+    const auto& original_left_to_right = _right_to_left_join_positions;
 
     /* put the join keys into the first part  */
     for (size_t ii = 0; ii < _right_frame.num_columns(); ii++) {
@@ -511,7 +511,7 @@ sframe hash_join_executor::grace_hash_join() {
     std::vector<std::shared_ptr<sarray<flexible_type>>> swapped_columns(result_frame.num_columns());
     std::vector<std::string> swapped_names(result_frame.num_columns());
 
-    for (auto& entry : _reverse_to_original) {
+    for (const auto& entry : _reverse_to_original) {
       swapped_columns[entry.second] = result_frame.select_column(entry.first);
       swapped_names[entry.second] = result_frame.column_name(entry.first);
     }
