@@ -198,10 +198,10 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
 
     if feature is None:
         feature = _tkutl._find_only_image_column(dataset)
-        if any(img is None for img in dataset[feature]):
-            raise _ToolkitError("Missing value (None) encountered in column " + feature + ". Use the SFrame's dropna function to drop rows with 'None' values in them.")
         if verbose:
             print("Using '%s' as feature column" % feature)
+    if any(img is None for img in dataset[feature]):
+            raise _ToolkitError("Missing value (None) encountered in column " + feature + ". Use the SFrame's dropna function to drop rows with 'None' values in them.")
     if annotations is None:
         annotations = _tkutl._find_only_column_of_type(dataset,
                                                        target_type=[list, dict],
