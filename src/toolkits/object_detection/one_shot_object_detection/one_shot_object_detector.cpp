@@ -106,7 +106,7 @@ static std::map<std::string,size_t> generate_column_index_map(
     return index_map;
 }
 
-boost::gil::rgba8_image_t::view_t create_starter_image_view(flex_image &object_input) {
+boost::gil::rgba8_image_t::view_t create_starter_image_view(const flex_image &object_input) {
   DASSERT_TRUE(object_input.is_decoded());
   flex_image object = image_util::resize_image(object_input,
                                                object_input.m_width,
@@ -125,14 +125,14 @@ boost::gil::rgba8_image_t::view_t create_starter_image_view(flex_image &object_i
 }
 
 std::pair<flex_image,flex_dict> create_synthetic_image_from_background_and_starter(
-  flex_image starter,
+  const flex_image &starter,
   const flex_image &background,
   std::string label,
   size_t seed,
   size_t row_number) {
-  if (!(starter.is_decoded())) {
-    decode_image_inplace(starter);
-  }
+  // if (!(starter.is_decoded())) {
+  //   decode_image_inplace(starter);
+  // }
 
   ParameterSampler parameter_sampler = ParameterSampler(
                                           background.m_width,
@@ -185,6 +185,12 @@ gl_sframe augment_data(const gl_sframe &data,
   DASSERT_EQ(data[target_column_name].dtype(), flex_type_enum::STRING);
   size_t nsegments = output_writer.num_segments();
   std::atomic<size_t> augmented_counter(0);
+  gl_sframe decompressed_data = gl_sframe(data);
+  decompressed_data[image_column_name] = decompressed_data[image_column_name].apply(
+    [&](flexible_type starter_ft){
+      flex_image starter = image_util::decode_image(starter_ft.to<flex_image>());
+      return starter;
+  }, flex_type_enum::IMAGE);
 
   /* Split all backgrounds into as many chunks as there are cores available
    * (= nsegments), and create augmented images in parallel.
@@ -195,11 +201,11 @@ gl_sframe augment_data(const gl_sframe &data,
     size_t row_number=segment_start;
     for (const auto& background_ft: backgrounds.range_iterator(segment_start, segment_end)) {
       row_number++;
-      flex_image flex_background = background_ft.to<flex_image>();
+      flex_image flex_background = image_util::decode_image(background_ft.to<flex_image>());
       if (!(flex_background.is_decoded())) {
         decode_image_inplace(flex_background);
       }
-      for (const auto& row: data.range_iterator()) {
+      for (const auto& row: decompressed_data.range_iterator()) {
         // go through all the starter images and create augmented images for
         // all starter images and the respective chunk of background images
         flex_image object = row[image_column_index].to<flex_image>();
