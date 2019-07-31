@@ -2385,11 +2385,17 @@ class SFrame(object):
         out : pandas.DataFrame
             The dataframe which contains all rows of SFrame
         """
+
+        from ..toolkits.image_classifier._evaluation import _image_resize
+
         assert HAS_PANDAS, 'pandas is not installed.'
         df = pandas.DataFrame()
         for i in range(self.num_columns()):
             column_name = self.column_names()[i]
-            df[column_name] = list(self[column_name])
+            if(self.column_types()[i] == _Image):
+                df[column_name] = [_image_resize(x[column_name])._to_pil_image() for x in self.select_columns([column_name])]
+            else:
+                df[column_name] = list(self[column_name])
             if len(df[column_name]) == 0:
                 df[column_name] = df[column_name].astype(self.column_types()[i])
         return df
@@ -4527,10 +4533,18 @@ class SFrame(object):
 
 
         # Suppress visualization output if 'none' target is set
-        from ..visualization._plot import _target
+        from ..visualization._plot import _target, display_table_in_notebook
         if _target == 'none':
             return
+        try:
+            if _target == 'auto' and \
+                get_ipython().__class__.__name__ == "ZMQInteractiveShell":
+                display_table_in_notebook(self)
+                return
+        except NameError:
+            pass
 
+        # Launch interactive GUI window
         path_to_client = _get_client_app_path()
 
         if title is None:
