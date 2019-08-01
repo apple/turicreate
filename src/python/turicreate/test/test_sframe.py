@@ -1852,7 +1852,7 @@ class SFrameTest(unittest.TestCase):
         ## error cases
         with self.assertRaises(KeyError):
             res = employees_.join(departments_, on=join_keys_, how='right', alter_name={
-                'some_id': 'car_id', 'bed_id': 'car_id'})
+                'some_id': 'car_id', 'bed_id': 'Y'})
 
         with self.assertRaises(ValueError):
             res = employees_.join(departments_, on=join_keys_, how='right', alter_name={
