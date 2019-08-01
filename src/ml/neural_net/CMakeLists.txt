@@ -23,6 +23,7 @@ if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
       mps_layer_instance_norm_data_loader.mm
       mps_layer_conv_padding.m
       mps_networks.mm
+      mps_node_handle.m
       mps_trainer.mm
       mps_lstm_helper.mm
       mps_cnnmodule.mm
@@ -30,12 +31,15 @@ if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
       mps_weight.mm
       mps_device_manager.m
       mps_descriptor_utils.m
-      style_transfer/mps_style_transfer_encoding_node.m
-      style_transfer/mps_style_transfer_residual_node.m
-      style_transfer/mps_style_transfer_decoding_node.m
-      style_transfer/mps_style_transfer_transformer_network.m
-      style_transfer/mps_style_transfer_vgg_16_block_1_node.m
-      style_transfer/mps_style_transfer_vgg_16_block_2_node.m
+      style_transfer/mps_style_transfer.m
+      style_transfer/mps_style_transfer_utils.m
+      style_transfer/mps_style_transfer_encoding_node.mm
+      style_transfer/mps_style_transfer_residual_node.mm
+      style_transfer/mps_style_transfer_decoding_node.mm
+      style_transfer/mps_style_transfer_transformer_network.mm
+      style_transfer/mps_style_transfer_pre_processing.m
+      style_transfer/mps_style_transfer_vgg_16_block_1_node.mm
+      style_transfer/mps_style_transfer_vgg_16_block_2_node.mm
       style_transfer/mps_style_transfer_vgg_16_network.m
     REQUIRES
       unity_core
