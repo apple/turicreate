@@ -34,7 +34,8 @@ def _vgg16_data_prep(batch):
 
 def create(style_dataset, content_dataset, style_feature=None,
         content_feature=None, max_iterations=None, model='resnet-16',
-        verbose=True, batch_size = 6, **kwargs):
+        verbose=True, batch_size = 6, checkpoint=False,
+        checkpoint_prefix="style_transfer", checkpoint_increment=1000, **kwargs):
     """
     Create a :class:`StyleTransfer` model.
 
@@ -110,6 +111,14 @@ def create(style_dataset, content_dataset, style_feature=None,
         raise _ToolkitError("content_dataset SFrame cannot be empty")
     if(batch_size < 1):
         raise _ToolkitError("'batch_size' must be greater than or equal to 1")
+    if not isinstance(checkpoint, bool):
+        raise _ToolkitError("'checkpoint' must be of type bool")
+    if not isinstance(checkpoint_prefix, _six.string_types):
+        raise _ToolkitError("'checkpoint_prefix' must be of type string")
+    if not isinstance(checkpoint_increment, int):
+        raise _ToolkitError("'checkpoint_increment' must be of type integer")
+    if checkpoint_increment < 0:
+        raise _ToolkitError("'checkpoint_increment' must be greater than or equal to 1")
 
     from ._sframe_loader import SFrameSTIter as _SFrameSTIter
     import mxnet as _mx
@@ -279,6 +288,10 @@ def create(style_dataset, content_dataset, style_feature=None,
         for ctx0 in ctx:
             ctx_grams[ctx0] = [gram.as_in_context(ctx0) for gram in grams]
 
+    style_sa = style_dataset[style_feature]
+    idx_column = _tc.SArray(range(0, style_sa.shape[0]))
+    style_sframe = _tc.SFrame({"style": idx_column, style_feature: style_sa})
+
     #
     # Training loop
     #
@@ -346,6 +359,31 @@ def create(style_dataset, content_dataset, style_feature=None,
             else:
                 smoothed_loss = 0.9 * smoothed_loss + 0.1 * cur_loss
             iterations += 1
+
+            if checkpoint and iterations % checkpoint_increment == 0:
+                checkpoint_filename = checkpoint_prefix + "-" + str(iterations) + ".model"
+                training_time = _time.time() - start_time
+                state = {
+                    '_model': transformer,
+                    '_training_time_as_string': _seconds_as_string(training_time),
+                    'batch_size': batch_size,
+                    'num_styles': num_styles,
+                    'model': model,
+                    'input_image_shape': input_shape,
+                    'styles': style_sframe,
+                    'num_content_images': len(content_dataset),
+                    'training_time': training_time,
+                    'max_iterations': max_iterations,
+                    'training_iterations': iterations,
+                    'training_epochs': content_images_loader.cur_epoch,
+                    'style_feature': style_feature,
+                    'content_feature': content_feature,
+                    "_index_column": "style",
+                    'training_loss': smoothed_loss,
+                }
+                st_model = StyleTransfer(state)
+                st_model.save(checkpoint_filename)
+
             trainer.step(batch_size)
 
             if verbose and iterations == 1:
@@ -375,9 +413,6 @@ def create(style_dataset, content_dataset, style_feature=None,
                 break
 
     training_time = _time.time() - start_time
-    style_sa = style_dataset[style_feature]
-    idx_column = _tc.SArray(range(0, style_sa.shape[0]))
-    style_sframe = _tc.SFrame({"style": idx_column, style_feature: style_sa})
 
     # Save the model state
     state = {
