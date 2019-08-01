@@ -14,20 +14,17 @@
 NS_ASSUME_NONNULL_BEGIN
 
 API_AVAILABLE(macos(10.14))
-@interface TCMPSStyleTransferTransformerNetwork : NSObject 
+@interface TCMPSStyleTransferPreProcessing : NSObject 
 
-@property (nonatomic) MPSNNImageNode *forwardPass;
+@property (nonatomic) MPSNNImageNode *output;
 
 - (instancetype) initWithParameters:(NSString *)name
                           inputNode:(MPSNNImageNode *)inputNode
-                             device:(id<MTLDevice>)dev
-                           cmdQueue:(id<MTLCommandQueue>)cmdQ
-                         descriptor:(TCMPSTransformerDescriptor *)descriptor
-                        initWeights:(NSDictionary<NSString *, NSData *> *) weights;
+                          scaleNode:(MPSNNImageNode *)scaleNode
+                           meanNode:(MPSNNImageNode *)meanNode;
 
-- (MPSNNImageNode * _Nullable) backwardPass:(MPSNNImageNode *) inputNode;
-- (void) setLearningRate:(float)lr;
-- (NSDictionary<NSString *, NSData *> *) exportWeights:(NSString *) prefix;
+- (MPSNNImageNode *) backwardPass:(MPSNNImageNode *) inputNode;
+
 @end
 
 NS_ASSUME_NONNULL_END

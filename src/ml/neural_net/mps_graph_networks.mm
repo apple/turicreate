@@ -1,15 +1,6 @@
 #include "mps_graph_networks.h"
 #include "mps_graph_layers.h"
-
-@interface TCMPSGraphNodeHandle : NSObject <MPSHandle>
-+ (nullable instancetype)handleWithLabel:(NSString *)label;
-- (nullable instancetype)initWithLabel:(NSString *)label;
-- (NSString *)label;
-- (BOOL)isEqual:(id)what;
-- (nullable instancetype)initWithCoder:(NSCoder *)aDecoder;
-- (void)encodeWithCoder:(NSCoder *)aCoder;
-+ (BOOL)supportsSecureCoding;
-@end
+#include "mps_node_handle.h"
 
 namespace turi {
 namespace neural_net {
@@ -142,47 +133,3 @@ float_array_map MPSGraphNetwork::Export() const {
 
 }  // namespace neural_net
 }  // namespace turi
-
-@implementation TCMPSGraphNodeHandle {
-  NSString *_label;
-}
-
-+ (instancetype)handleWithLabel:(NSString *)label {
-  return [[self alloc] initWithLabel:label];
-}
-
-- (instancetype)initWithLabel:(NSString *)label {
-  self = [super init];
-  if (nil == self)
-    return self;
-  _label = label;
-  return self;
-}
-
-- (NSString *)label {
-  return _label;
-}
-
-- (BOOL)isEqual:(id)what {
-  return [_label isEqual:((TCMPSGraphNodeHandle *)what).label];
-}
-
-- (instancetype)initWithCoder:(NSCoder *)aDecoder {
-  self = [super init];
-  if (nil == self)
-    return self;
-
-  _label =
-      [aDecoder decodeObjectOfClass:NSString.class forKey:@"TCMPSGraphNodeHandleLabel"];
-  return self;
-}
-
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-  [aCoder encodeObject:_label forKey:@"TCMPSGraphNodeHandleLabel"];
-}
-
-+ (BOOL)supportsSecureCoding {
-  return YES;
-}
-
-@end

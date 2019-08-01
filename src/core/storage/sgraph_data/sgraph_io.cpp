@@ -56,10 +56,11 @@ namespace turi {
   }
 
   void save_sgraph_to_csv(const sgraph& g, std::string targetdir) {
-    switch (fileio::get_file_status(targetdir)) {
+    auto status = fileio::get_file_status(targetdir);
+    switch (status.first) {
      case fileio::file_status::MISSING:
        if (!fileio::create_directory(targetdir)) {
-          log_and_throw_io_failure("Unable to create directory.");
+          log_and_throw_io_failure("Unable to create directory. " + status.second);
        }
        break;
      case fileio::file_status::DIRECTORY:
@@ -68,10 +69,12 @@ namespace turi {
        log_and_throw_io_failure("Cannot save to regular file. Must be a directory.");
        break;
      case fileio::file_status::FS_UNAVAILABLE:
-       log_and_throw_io_failure("Error: status = FS_UNAVAILABLE");
+       log_and_throw_io_failure("Error: " + status.second);
        break;
      default:
-       log_and_throw_io_failure("Error: unknown");
+       std::stringstream ss;
+       ss << "Error: Unknown. " << __FILE__ << " at " << __LINE__;
+       log_and_throw_io_failure(ss.str());
     }
     // Write vertices
     sframe vertices = g.get_vertices();
@@ -122,7 +125,9 @@ namespace turi {
     std::string edge_file_name = targetdir + "/edges.csv";
     general_ofstream e_fout(edge_file_name);
     if (!e_fout.good()) {
-      log_and_throw_io_failure("Fail to write.");
+       std::stringstream ss;
+       ss << "Fail to write to file: " + edge_file_name << ". "<< __FILE__ << " at " << __LINE__;
+      log_and_throw_io_failure(ss.str());
     }
 
     std::vector<std::string> edge_fields = edges.column_names();
@@ -142,7 +147,7 @@ namespace turi {
         if (bytes_written == buflen) {
           delete[] buf;
           e_fout.close();
-          log_and_throw_io_failure("Row size exceeds max buffer.");
+          log_and_throw_io_failure("Row size exceeds max buffer for " + edge_file_name);
         }
         e_fout.write(buf, bytes_written);
       }
@@ -150,7 +155,7 @@ namespace turi {
     }
     if (!e_fout.good()) {
       delete[] buf;
-      log_and_throw_io_failure("Fail to write.");
+      log_and_throw_io_failure("Fail to write to " + edge_file_name);
     }
     delete[] buf;
     e_fout.close();

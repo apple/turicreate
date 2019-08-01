@@ -154,6 +154,11 @@ API_AVAILABLE(macos(10.14))
   return self;
 }
 
+- (void) setLearningRate:(float)lr {
+  [_adamGamma setLearningRate:lr];
+  [_adamBeta setLearningRate:lr];
+}
+
 - (void) updateCurrentStyle:(NSUInteger)style {
   _currentStyle = style;
 }

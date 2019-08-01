@@ -10,3 +10,5 @@ make_boost_test(test_od_yolo.cxx
 )
 
 make_boost_test(test_od_evaluation.cxx REQUIRES unity_shared_for_testing)
+
+make_boost_test(test_od_serialization.cxx REQUIRES unity_shared_for_testing)

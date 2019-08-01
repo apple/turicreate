@@ -1261,8 +1261,9 @@ std::map<std::string, std::shared_ptr<sarray<flexible_type>>> parse_csvs_to_sfra
       frame.close();
       return {};
     } else {
-      log_and_throw(std::string("No files corresponding to the specified path (") +
-                    sanitize_url(url) + std::string(")."));
+      log_and_throw_io_failure(
+          std::string("No files corresponding to the specified path (") +
+          sanitize_url(url) + std::string(")."));
     }
   }
   // get CSV info from first file

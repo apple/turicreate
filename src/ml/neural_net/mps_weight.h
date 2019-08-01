@@ -89,8 +89,8 @@ API_AVAILABLE(macos(10.14))
 - (MPSCNNConvolutionDescriptor *__nonnull)descriptor;
 - (void *__nonnull)weights;
 - (float *__nullable)biasTerms;
-- (size_t)weight_size;
-- (size_t)bias_size;
+- (size_t)weightSize;
+- (size_t)biasSize;
 - (void)loadWeight:(float *__nullable)src;
 - (void)loadBias:(float *__nullable)src;
 - (BOOL)load;
