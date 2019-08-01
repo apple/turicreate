@@ -224,19 +224,21 @@ gl_sframe one_shot_object_detector::augment(
     const gl_sframe& data, const std::string& image_column_name,
     const std::string& target_column_name, gl_sarray& backgrounds,
     std::map<std::string, flexible_type>& options) {
-  gl_sarray small_backgrounds = backgrounds.apply(
-      [](const flexible_type& bg) {
-        flex_image background = bg.get<flex_image>();
-        return image_util::resize_image(bg, background.m_width / 2,
-                                        background.m_height / 2,
-                                        background.m_channels);
-      },
-      flex_type_enum::IMAGE);
+  if (!(options["user_provided"])) {
+    backgrounds = backgrounds.apply(
+        [](const flexible_type& bg) {
+          flex_image background = bg.get<flex_image>();
+          return image_util::resize_image(bg, background.m_width / 2,
+                                          background.m_height / 2,
+                                          background.m_channels);
+        },
+        flex_type_enum::IMAGE);
+  }
   // TODO: Automatically infer the image column name, or throw error if you
   // can't This should just happen on the Python side.
   gl_sframe augmented_data = data_augmentation::augment_data(
-      data, image_column_name, target_column_name, small_backgrounds,
-      options["seed"], options["verbose"]);
+      data, image_column_name, target_column_name, backgrounds, options["seed"],
+      options["verbose"]);
   // TODO: Call object_detector::train from here once we incorporate mxnet into
   // the C++ Object Detector.
   return augmented_data;

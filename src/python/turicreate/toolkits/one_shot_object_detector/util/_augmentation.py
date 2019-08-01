@@ -42,7 +42,9 @@ def preview_synthetic_training_data(data,
     dataset_to_augment, image_column_name, target_column_name = check_one_shot_input(data, target)
     one_shot_model = _extensions.one_shot_object_detector()
     seed = kwargs["seed"] if "seed" in kwargs else _random.randint(0, 2**32 - 1)
+    user_provided = True
     if backgrounds is None:
+        user_provided = False
         backgrounds_downloader = _data_zoo.OneShotObjectDetectorBackgroundData()
         backgrounds_tar_path = backgrounds_downloader.get_backgrounds_path()
         backgrounds_tar = _tarfile.open(backgrounds_tar_path)
@@ -52,6 +54,7 @@ def preview_synthetic_training_data(data,
     # {'mlmodel_path':'darknet.mlmodel', 'max_iterations' : 25}
     options_for_augmentation = {
         "seed": seed,
+        "user_provided": user_provided,
         "verbose": verbose
     }
     augmented_data = one_shot_model.augment(dataset_to_augment,
