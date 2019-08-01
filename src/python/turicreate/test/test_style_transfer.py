@@ -82,24 +82,35 @@ class StyleTransferTest(unittest.TestCase):
                                               max_iterations=0,
                                               model=self.pre_trained_model)
 
+    def test_create_with_missing_style_value(self):
+        style_with_none = self.style_sf.append(tc.SFrame({self.style_feature: tc.SArray([None], dtype=tc.Image)}))
+        with self.assertRaises(_ToolkitError):
+            tc.style_transfer.create(style_with_none, self.content_sf, style_feature=self.style_feature,
+                                 max_iterations=0)
 
-    @pytest.mark.xfail(raises=_ToolkitError)
+    def test_create_with_missing_content_value(self):
+        content_with_none = self.content_sf.append(tc.SFrame({self.content_feature: tc.SArray([None], dtype=tc.Image)}))
+        with self.assertRaises(_ToolkitError):
+            tc.style_transfer.create(self.style_sf, content_with_none, style_feature=self.style_feature,
+                                 max_iterations=0)
+
     def test_create_with_missing_style_feature(self):
-        tc.style_transfer.create(self.style_sf, self.content_sf, style_feature='wrong_feature',
+        with self.assertRaises(_ToolkitError):
+            tc.style_transfer.create(self.style_sf, self.content_sf, style_feature='wrong_feature',
                                  max_iterations=0)
 
-    @pytest.mark.xfail(raises=_ToolkitError)
     def test_create_with_missing_content_feature(self):
-        tc.style_transfer.create(self.style_sf, self.content_sf, content_feature='wrong_feature',
+        with self.assertRaises(_ToolkitError):
+            tc.style_transfer.create(self.style_sf, self.content_sf, content_feature='wrong_feature',
                                  max_iterations=0)
 
-    @pytest.mark.xfail(raises=_ToolkitError)
     def test_create_with_empty_style_dataset(self):
-        tc.style_transfer.create(self.style_sf[:0], self.content_sf, max_iterations=0)
+        with self.assertRaises(_ToolkitError):
+            tc.style_transfer.create(self.style_sf[:0], self.content_sf, max_iterations=0)
 
-    @pytest.mark.xfail(raises=_ToolkitError)
     def test_create_with_empty_content_dataset(self):
-        tc.style_transfer.create(self.style_sf, self.content_sf[:0], max_iterations=0)
+        with self.assertRaises(_ToolkitError):
+            tc.style_transfer.create(self.style_sf, self.content_sf[:0], max_iterations=0)
 
     def _get_invalid_style_cases(self):
         style_cases = []

@@ -200,8 +200,6 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         feature = _tkutl._find_only_image_column(dataset)
         if verbose:
             print("Using '%s' as feature column" % feature)
-    if any(img is None for img in dataset[feature]):
-            raise _ToolkitError("Missing value (None) encountered in column " + feature + ". Use the SFrame's dropna function to drop rows with 'None' values in them.")
     if annotations is None:
         annotations = _tkutl._find_only_column_of_type(dataset,
                                                        target_type=[list, dict],
@@ -212,6 +210,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
 
     _raise_error_if_not_detection_sframe(dataset, feature, annotations,
                                          require_annotations=True)
+    if any(img is None for img in dataset[feature]):
+            raise _ToolkitError("Missing value (None) encountered in column " + feature + ". Use the SFrame's dropna function to drop rows with 'None' values in them.")
     is_annotations_list = dataset[annotations].dtype == list
 
     _tkutl._check_categorical_option_type('model', model,

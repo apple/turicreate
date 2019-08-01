@@ -117,19 +117,20 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     if style_feature is None:
         style_feature = _tkutl._find_only_image_column(style_dataset)
-    if any(img is None for img in style_dataset[style_feature]):
-            raise _ToolkitError("Missing value (None) encountered in column " + style_feature + " in style_dataset. Use the SFrame's dropna function to drop rows with 'None' values in them.")
+    
     if content_feature is None:
         content_feature = _tkutl._find_only_image_column(content_dataset)
-    if any(img is None for img in content_dataset[content_feature]):
-        raise _ToolkitError("Missing value (None) encountered in column " + content_feature + " in content_dataset. Use the SFrame's dropna function to drop rows with 'None' values in them.")
     if verbose:
         print("Using '{}' in style_dataset as feature column and using "
               "'{}' in content_dataset as feature column".format(style_feature, content_feature))
 
     _raise_error_if_not_training_sframe(style_dataset, style_feature)
     _raise_error_if_not_training_sframe(content_dataset, content_feature)
-
+    if any(img is None for img in style_dataset[style_feature]):
+        raise _ToolkitError("Missing value (None) encountered in column " + style_feature + " in style_dataset. Use the SFrame's dropna function to drop rows with 'None' values in them.")
+    if any(img is None for img in content_dataset[content_feature]):
+        raise _ToolkitError("Missing value (None) encountered in column " + content_feature + " in content_dataset. Use the SFrame's dropna function to drop rows with 'None' values in them.")
+        
     params = {
         'batch_size': batch_size,
         'vgg16_content_loss_layer': 2,  # conv3_3 layer

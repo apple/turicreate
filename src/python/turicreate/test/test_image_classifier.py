@@ -112,6 +112,11 @@ class ImageClassifierTest(unittest.TestCase):
         for a, b in zip(list1, list2):
              self.assertAlmostEqual(a, b, delta = tol)
 
+    def test_create_with_missing_value(self):
+        data_with_none = data.append(tc.SFrame({self.feature: tc.SArray([None], dtype=tc.Image), self.target: [data[self.target][0]]}))
+        with self.assertRaises(_ToolkitError):
+            tc.image_classifier.create(data_with_none, feature=self.feature, target=self.target)
+
     def test_create_with_missing_feature(self):
         with self.assertRaises(_ToolkitError):
             tc.image_classifier.create(data, feature='wrong_feature', target=self.target)
