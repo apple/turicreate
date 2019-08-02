@@ -123,7 +123,6 @@ create_synthetic_image_from_background_and_starter(const flex_image &starter,
                                                    std::string label,
                                                    size_t seed,
                                                    size_t row_number) {
-  
   ParameterSampler parameter_sampler =
       ParameterSampler(background.m_width, background.m_height,
                        (background.m_width - starter.m_width) / 2,
@@ -220,11 +219,9 @@ gl_sframe augment_data(const gl_sframe &data,
           // 400, then do integer division by the total size, then float divide
           // by 4.0
           if (augmented_counter % 100 == 0) {
-            d << augmented_counter * 400 / total_augmented_rows / 4.0
-              << '%';
-            table.print_progress_row(augmented_counter,
-                                     augmented_counter, progress_time(),
-                                     d.str());
+            d << augmented_counter * 400 / total_augmented_rows / 4.0 << '%';
+            table.print_progress_row(augmented_counter, augmented_counter,
+                                     progress_time(), d.str());
           }
         }
       }
