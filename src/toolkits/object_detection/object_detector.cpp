@@ -379,8 +379,8 @@ void object_detector::train(gl_sframe data,
 }
 
 variant_map_type object_detector::evaluate(
-    gl_sframe data, std::string metric,
-    std::map<std::string, flexible_type> opts) {
+    gl_sframe data, std::string metric) {
+
   std::vector<std::string> metrics;
   static constexpr char AP[] = "average_precision";
   static constexpr char MAP[] = "mean_average_precision";

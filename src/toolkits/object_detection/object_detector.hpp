@@ -39,8 +39,7 @@ class EXPORT object_detector: public ml_model_base {
   void train(gl_sframe data, std::string annotations_column_name,
              std::string image_column_name, variant_type validation_data,
              std::map<std::string, flexible_type> opts);
-  variant_map_type evaluate(gl_sframe data, std::string metric,
-                            std::map<std::string, flexible_type> opts);
+  variant_map_type evaluate(gl_sframe data, std::string metric);
   gl_sarray predict(gl_sframe data);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
       std::string filename, std::map<std::string, flexible_type> opts);
@@ -74,11 +73,9 @@ class EXPORT object_detector: public ml_model_base {
       "    be determined based on the amount of data you provide.\n"
   );
 
-  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::evaluate, "data", "metric",
-                                 "options");
+  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::evaluate, "data", "metric");
   register_defaults("evaluate",
-      {{"metric", std::string("auto")},
-       {"options", to_variant(std::map<std::string, flexible_type>())}});
+      {{"metric", std::string("auto")}});
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::predict, "data");
   register_defaults("predict", {{"data", to_variant(gl_sarray())}});
