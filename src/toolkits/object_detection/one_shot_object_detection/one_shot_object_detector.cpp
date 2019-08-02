@@ -123,10 +123,7 @@ create_synthetic_image_from_background_and_starter(const flex_image &starter,
                                                    std::string label,
                                                    size_t seed,
                                                    size_t row_number) {
-  // if (!(starter.is_decoded())) {
-  //   decode_image_inplace(starter);
-  // }
-
+  
   ParameterSampler parameter_sampler =
       ParameterSampler(background.m_width, background.m_height,
                        (background.m_width - starter.m_width) / 2,
@@ -202,9 +199,6 @@ gl_sframe augment_data(const gl_sframe &data,
       row_number++;
       flex_image flex_background =
           image_util::decode_image(background_ft.to<flex_image>());
-      if (!(flex_background.is_decoded())) {
-        decode_image_inplace(flex_background);
-      }
       for (const auto &row : decompressed_data.range_iterator()) {
         // go through all the starter images and create augmented images for
         // all starter images and the respective chunk of background images
@@ -225,12 +219,11 @@ gl_sframe augment_data(const gl_sframe &data,
           // resolution to the nearest .25% interval.  Do this by multiplying by
           // 400, then do integer division by the total size, then float divide
           // by 4.0
-          int augmented_rows_completed = augmented_counter;
-          if (augmented_rows_completed % 100 == 0) {
-            d << augmented_rows_completed * 400 / total_augmented_rows / 4.0
+          if (augmented_counter % 100 == 0) {
+            d << augmented_counter * 400 / total_augmented_rows / 4.0
               << '%';
-            table.print_progress_row(augmented_rows_completed,
-                                     augmented_rows_completed, progress_time(),
+            table.print_progress_row(augmented_counter,
+                                     augmented_counter, progress_time(),
                                      d.str());
           }
         }
