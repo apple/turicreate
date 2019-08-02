@@ -225,7 +225,7 @@ gl_sframe augment_data(const gl_sframe &data,
           }
         }
       }
-    };
+    }
   });
   if (verbose) {
     table.print_footer();
