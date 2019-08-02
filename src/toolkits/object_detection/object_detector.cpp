@@ -381,33 +381,30 @@ void object_detector::train(gl_sframe data,
 variant_map_type object_detector::evaluate(
     gl_sframe data, std::string metric,
     std::map<std::string, flexible_type> opts) {
-
   std::vector<std::string> metrics;
   static constexpr char AP[] = "average_precision";
   static constexpr char MAP[] = "mean_average_precision";
   static constexpr char AP50[] = "average_precision_50";
   static constexpr char MAP50[] = "mean_average_precision_50";
-  std::vector<std::string> all_metrics = {AP,MAP,AP50,MAP50};
-  if (std::find(all_metrics.begin(), all_metrics.end(), metric) != all_metrics.end()) {
+  std::vector<std::string> all_metrics = {AP, MAP, AP50, MAP50};
+  if (std::find(all_metrics.begin(), all_metrics.end(), metric) !=
+      all_metrics.end()) {
     metrics = {metric};
-  }
-  else if (metric == "auto") {
-    metrics = {AP50,MAP50};
-  }
-  else if (metric == "all" || metric == "report") {
+  } else if (metric == "auto") {
+    metrics = {AP50, MAP50};
+  } else if (metric == "all" || metric == "report") {
     metrics = all_metrics;
-  }
-  else {
+  } else {
     log_and_throw("Metric " + metric + " not supported");
   }
 
   flex_list class_labels = read_state<flex_list>("classes");
-  
+
   // Initialize the metric calculator
   average_precision_calculator calculator(class_labels);
 
-
-  auto consumer = [&](const std::vector<image_annotation>& predicted_row, const std::vector<image_annotation>& groundtruth_row) {
+  auto consumer = [&](const std::vector<image_annotation>& predicted_row,
+                      const std::vector<image_annotation>& groundtruth_row) {
     calculator.add_row(predicted_row, groundtruth_row);
   };
 
@@ -431,34 +428,37 @@ variant_map_type object_detector::evaluate(
   if (std::find(metrics.begin(), metrics.end(), MAP) == metrics.end()) {
     result_map.erase(MAP);
   }
-  
-  return result_map;
 
+  return result_map;
 }
 
 gl_sarray object_detector::predict(gl_sframe data) {
-
   gl_sarray_writer result(flex_type_enum::LIST, 1);
 
-  auto consumer = [&](const std::vector<image_annotation>& predicted_row, const std::vector<image_annotation>& groundtruth_row) {
-
+  auto consumer = [&](const std::vector<image_annotation>& predicted_row,
+                      const std::vector<image_annotation>& groundtruth_row) {
     // Convert predicted_row to flex_type list to call gl_sarray_writer
     flex_list predicted_row_ft;
-    for(auto const& each_row: predicted_row) {
-      flex_list fl = {each_row.bounding_box.x, each_row.bounding_box.y, each_row.bounding_box.width, each_row.bounding_box.height};
-      auto sa = flex_list({flex_dict{{"confidence", each_row.confidence},{"bounding_box", fl},{"identifier", each_row.identifier}}});
+    for (auto const& each_row : predicted_row) {
+      flex_list fl = {each_row.bounding_box.x, each_row.bounding_box.y,
+                      each_row.bounding_box.width,
+                      each_row.bounding_box.height};
+      auto sa = flex_list({flex_dict{{"confidence", each_row.confidence},
+                                     {"bounding_box", fl},
+                                     {"identifier", each_row.identifier}}});
       predicted_row_ft.push_back(sa);
     }
     result.write(predicted_row_ft, 0);
   };
-  
+
   perform_predict(data, consumer);
 
   return result.close();
 }
 
-void object_detector::perform_predict(
-    gl_sframe data, std::function<void(const std::vector<image_annotation>&, const std::vector<image_annotation>&)> consumer) { 
+void object_detector::perform_predict(gl_sframe data,
+    std::function<void(const std::vector<image_annotation>&,
+    const std::vector<image_annotation>&)> consumer) {
 
   std::string image_column_name = read_state<flex_string>("feature");
   std::string annotations_column_name = read_state<flex_string>("annotations");
@@ -509,15 +509,12 @@ void object_detector::perform_predict(
 
   // Helper function to process results until the queue reaches a given size.
   auto pop_until_size = [&](size_t remaining) {
-
     while (pending_batches.size() > remaining) {
-
       // Pop one batch from the queue.
       image_augmenter::result batch = pending_batches.front();
       pending_batches.pop();
 
       for (size_t i = 0; i < batch.annotations_batch.size(); ++i) {
-
         // For this row (corresponding to one image), extract the prediction.
         shared_float_array raw_prediction = batch.image_batch[i];
 
@@ -530,8 +527,7 @@ void object_detector::perform_predict(
         predicted_annotations = apply_non_maximum_suppression(
             std::move(predicted_annotations), iou_threshold);
 
-        consumer(predicted_annotations, batch.annotations_batch[i]);        
-
+        consumer(predicted_annotations, batch.annotations_batch[i]);
       }
     }
   };
@@ -539,7 +535,6 @@ void object_detector::perform_predict(
   // Iterate through the data once.
   std::vector<labeled_image> input_batch = data_iter->next_batch(batch_size);
   while (!input_batch.empty()) {
-
     // Wait until we have just one asynchronous batch outstanding. The work
     // below should be concurrent with the neural net inference for that batch.
     pop_until_size(1);
@@ -570,7 +565,6 @@ void object_detector::perform_predict(
 
   // Process all remaining batches.
   pop_until_size(0);
-  
 }
 
 // TODO: Should accept model_backend as an optional argument to avoid
