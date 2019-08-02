@@ -41,6 +41,7 @@ class EXPORT object_detector: public ml_model_base {
              std::map<std::string, flexible_type> opts);
   variant_map_type evaluate(gl_sframe data, std::string metric,
                             std::map<std::string, flexible_type> opts);
+  gl_sarray predict(gl_sframe data);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
       std::string filename, std::map<std::string, flexible_type> opts);
 
@@ -78,6 +79,10 @@ class EXPORT object_detector: public ml_model_base {
   register_defaults("evaluate",
       {{"metric", std::string("auto")},
        {"options", to_variant(std::map<std::string, flexible_type>())}});
+
+  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::predict, "data");
+  register_defaults("predict",
+      {{"data", to_variant(gl_sarray())}});
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::export_to_coreml, "filename",
     "options");
@@ -136,6 +141,9 @@ class EXPORT object_detector: public ml_model_base {
 
   virtual variant_map_type perform_evaluation(gl_sframe data,
                                               std::string metric);
+
+  void perform_predict(gl_sframe data,
+                                              std::function<void(const std::vector<neural_net::image_annotation>&, const std::vector<neural_net::image_annotation>&)> consumer);
 
   // Utility code
 
