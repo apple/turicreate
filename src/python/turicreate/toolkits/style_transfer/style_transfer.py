@@ -110,7 +110,7 @@ def create(style_dataset, content_dataset, style_feature=None,
         raise _ToolkitError("content_dataset SFrame cannot be empty")
     if(batch_size < 1):
         raise _ToolkitError("'batch_size' must be greater than or equal to 1")
-    if max_iterations is not None and (type(max_iterations)==str or max_iterations<0):
+    if max_iterations is not None and (type(max_iterations)==str or type(max_iterations)==float or max_iterations<0):
         raise _ToolkitError("'max_iterations' must be an integer greater than or equal to 0")
 
     from ._sframe_loader import SFrameSTIter as _SFrameSTIter

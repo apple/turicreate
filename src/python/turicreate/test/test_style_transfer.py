@@ -109,6 +109,10 @@ class StyleTransferTest(unittest.TestCase):
         with self.assertRaises(_ToolkitError):
             tc.style_transfer.create(self.style_sf[:1], self.content_sf[:1], max_iterations=-1)
 
+    def test_create_with_incorrect_max_iterations_format_float(self):
+        with self.assertRaises(_ToolkitError):
+            tc.style_transfer.create(self.style_sf[:1], self.content_sf[:1], max_iterations=1.25)
+
     def _get_invalid_style_cases(self):
         style_cases = []
         # when style is an empty list
