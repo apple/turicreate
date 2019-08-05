@@ -157,3 +157,9 @@ Data:
 |  3    |  Height: 642 Width: 642  |
 +-------+--------------------------+
 ```
+
+#### Advanced Usage
+
+Refer to the following chapters for:
+* [Advanced parameters](advanced-usage.md) avaliable on the style transfer model.
+* [Technical details](how-it-works.md) on how the style transfer model works.
