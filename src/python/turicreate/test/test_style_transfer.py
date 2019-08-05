@@ -104,7 +104,7 @@ class StyleTransferTest(unittest.TestCase):
     def test_create_with_incorrect_max_iterations_format_string(self):
         with self.assertRaises(_ToolkitError):
             tc.style_transfer.create(self.style_sf[:1], self.content_sf[:1], max_iterations='dummy_string')
-    
+
     def test_create_with_incorrect_max_iterations_format_negative(self):
         with self.assertRaises(_ToolkitError):
             tc.style_transfer.create(self.style_sf[:1], self.content_sf[:1], max_iterations=-1)
