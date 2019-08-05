@@ -126,10 +126,8 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     _raise_error_if_not_training_sframe(style_dataset, style_feature)
     _raise_error_if_not_training_sframe(content_dataset, content_feature)
-    if any(img is None for img in style_dataset[style_feature]):
-        raise _ToolkitError("Missing value (None) encountered in column " + style_feature + " in style_dataset. Use the SFrame's dropna function to drop rows with 'None' values in them.")
-    if any(img is None for img in content_dataset[content_feature]):
-        raise _ToolkitError("Missing value (None) encountered in column " + content_feature + " in content_dataset. Use the SFrame's dropna function to drop rows with 'None' values in them.")
+    _tkutl._handle_missing_values(style_dataset, style_feature, 'style_dataset')
+    _tkutl._handle_missing_values(content_dataset, content_feature, 'content_dataset')
         
     params = {
         'batch_size': batch_size,

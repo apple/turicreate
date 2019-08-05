@@ -199,11 +199,9 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         raise TypeError("Unrecognized type for 'validation_set'."
             + validation_set_corrective_string)
 
-    if any(img is None for img in dataset[feature]):
-        raise _ToolkitError("Missing value (None) encountered in column " + feature + " in the training dataset. Use the SFrame's dropna function to drop rows with 'None' values in them.")
+    _tkutl._handle_missing_values(dataset, feature, 'training_dataset')
     if len(validation_dataset) > 0:
-        if any(img is None for img in validation_dataset[feature]):
-            raise _ToolkitError("Missing value (None) encountered in column " + feature + " in the validation dataset. Use the SFrame's dropna function to drop rows with 'None' values in them.")
+        _tkutl._handle_missing_values(dataset, feature, 'validation_set')
 
     train_loader = _SFrameClassifierIter(dataset, batch_size,
                  feature_column=feature,

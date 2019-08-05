@@ -8,6 +8,7 @@ import random as _random
 import tarfile as _tarfile
 import turicreate as _tc
 from turicreate import extensions as _extensions
+import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits.one_shot_object_detector.util._error_handling import check_one_shot_input
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 
@@ -43,8 +44,7 @@ def preview_synthetic_training_data(data,
     """
 
     dataset_to_augment, image_column_name, target_column_name = check_one_shot_input(data, target)
-    if any(img is None for img in data[image_column_name]):
-        raise _ToolkitError("Missing value (None) encountered in column " + image_column_name + ". Use the SFrame's dropna function to drop rows with 'None' values in them.")
+    _tkutl._handle_missing_values(dataset_to_augment, image_column_name, 'dataset')
     one_shot_model = _extensions.one_shot_object_detector()
     seed = kwargs["seed"] if "seed" in kwargs else _random.randint(0, 2**32 - 1)
     if backgrounds is None:

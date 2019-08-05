@@ -250,8 +250,7 @@ def create(dataset, target, feature=None, model = 'resnet-50',
 
     if feature is None:
         feature = _tkutl._find_only_image_column(dataset)
-    if any(img is None for img in dataset[feature]):
-        raise _ToolkitError("Missing value (None) encountered in column " + feature + " in the training dataset. Use the SFrame's dropna function to drop rows with 'None' values in them.")
+    _tkutl._handle_missing_values(dataset, feature, 'training_dataset')
     feature_extractor = _image_feature_extractor._create_feature_extractor(model)
 
     # Extract features
@@ -260,8 +259,7 @@ def create(dataset, target, feature=None, model = 'resnet-50',
         '__image_features__': feature_extractor.extract_features(dataset, feature, verbose=verbose, batch_size=batch_size),
         })
     if isinstance(validation_set, _tc.SFrame):
-        if any(img is None for img in validation_set[feature]):
-            raise _ToolkitError("Missing value (None) encountered in column " + feature + " in the validation dataset. Use the SFrame's dropna function to drop rows with 'None' values in them.")
+        _tkutl._handle_missing_values(dataset, feature, 'validation_set')
         extracted_features_validation = _tc.SFrame({
             target: validation_set[target],
             '__image_features__': feature_extractor.extract_features(validation_set, feature, verbose=verbose, batch_size=batch_size),
