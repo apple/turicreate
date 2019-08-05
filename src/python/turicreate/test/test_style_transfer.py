@@ -79,27 +79,35 @@ class StyleTransferTest(unittest.TestCase):
                                               self.content_sf,
                                               style_feature=self.style_feature,
                                               content_feature=self.content_feature,
-                                              max_iterations=0,
+                                              max_iterations=1,
                                               model=self.pre_trained_model)
 
 
     @pytest.mark.xfail(raises=_ToolkitError)
     def test_create_with_missing_style_feature(self):
         tc.style_transfer.create(self.style_sf, self.content_sf, style_feature='wrong_feature',
-                                 max_iterations=0)
+                                 max_iterations=1)
 
     @pytest.mark.xfail(raises=_ToolkitError)
     def test_create_with_missing_content_feature(self):
         tc.style_transfer.create(self.style_sf, self.content_sf, content_feature='wrong_feature',
-                                 max_iterations=0)
+                                 max_iterations=1)
 
     @pytest.mark.xfail(raises=_ToolkitError)
     def test_create_with_empty_style_dataset(self):
-        tc.style_transfer.create(self.style_sf[:0], self.content_sf, max_iterations=0)
+        tc.style_transfer.create(self.style_sf[:0], self.content_sf, max_iterations=1)
 
     @pytest.mark.xfail(raises=_ToolkitError)
     def test_create_with_empty_content_dataset(self):
-        tc.style_transfer.create(self.style_sf, self.content_sf[:0], max_iterations=0)
+        tc.style_transfer.create(self.style_sf, self.content_sf[:0], max_iterations=1)
+
+    def test_create_with_incorrect_max_iterations_format_string(self):
+        with self.assertRaises(_ToolkitError):
+            tc.style_transfer.create(self.style_sf[:1], self.content_sf[:1], max_iterations='dummy_string')
+    
+    def test_create_with_incorrect_max_iterations_format_negative(self):
+        with self.assertRaises(_ToolkitError):
+            tc.style_transfer.create(self.style_sf[:1], self.content_sf[:1], max_iterations=-1)
 
     def _get_invalid_style_cases(self):
         style_cases = []
