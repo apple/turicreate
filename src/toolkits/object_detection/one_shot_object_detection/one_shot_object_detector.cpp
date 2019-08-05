@@ -211,17 +211,19 @@ gl_sframe augment_data(const gl_sframe &data,
         // write the synthetically generated image and the constructed
         // annotation to output SFrame.
         output_writer.write({synthetic_image, annotation}, segment_id);
-        augmented_counter.fetch_add(1, std::memory_order_relaxed);
+        size_t augmented_rows_completed = augmented_counter.fetch_add(1);
         if (verbose) {
           std::ostringstream d;
           // For pretty printing, floor percent done
           // resolution to the nearest .25% interval.  Do this by multiplying by
           // 400, then do integer division by the total size, then float divide
           // by 4.0
-          if (augmented_counter % 100 == 0) {
-            d << augmented_counter * 400 / total_augmented_rows / 4.0 << '%';
-            table.print_progress_row(augmented_counter, augmented_counter,
-                                     progress_time(), d.str());
+          if (augmented_rows_completed % 100 == 0) {
+            d << augmented_rows_completed * 400 / total_augmented_rows / 4.0
+              << '%';
+            table.print_progress_row(augmented_rows_completed,
+                                     augmented_rows_completed, progress_time(),
+                                     d.str());
           }
         }
       }
