@@ -224,16 +224,6 @@ gl_sframe one_shot_object_detector::augment(
     const gl_sframe& data, const std::string& image_column_name,
     const std::string& target_column_name, gl_sarray& backgrounds,
     std::map<std::string, flexible_type>& options) {
-  if (!(options["user_provided"])) {
-    backgrounds = backgrounds.apply(
-        [](const flexible_type& bg) {
-          flex_image background = bg.get<flex_image>();
-          return image_util::resize_image(bg, background.m_width / 2,
-                                          background.m_height / 2,
-                                          background.m_channels);
-        },
-        flex_type_enum::IMAGE);
-  }
   // TODO: Automatically infer the image column name, or throw error if you
   // can't This should just happen on the Python side.
   gl_sframe augmented_data = data_augmentation::augment_data(

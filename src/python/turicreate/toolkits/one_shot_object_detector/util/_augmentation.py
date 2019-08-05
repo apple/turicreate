@@ -50,11 +50,16 @@ def preview_synthetic_training_data(data,
         backgrounds_tar = _tarfile.open(backgrounds_tar_path)
         backgrounds_tar.extractall()
         backgrounds = _tc.SArray("one_shot_backgrounds.sarray")
+        backgrounds = backgrounds.apply(lambda im: _tc.image_analysis.resize(
+            im,
+            int(im.width/2),
+            int(im.height/2),
+            im.channels
+            ))
     # Option arguments to pass in to C++ Object Detector, if we use it:
     # {'mlmodel_path':'darknet.mlmodel', 'max_iterations' : 25}
     options_for_augmentation = {
         "seed": seed,
-        "user_provided": user_provided,
         "verbose": verbose
     }
     augmented_data = one_shot_model.augment(dataset_to_augment,
