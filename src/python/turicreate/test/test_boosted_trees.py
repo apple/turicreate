@@ -102,6 +102,7 @@ class BoostedTreesRegressionTest(unittest.TestCase):
                 'model_checkpoint_interval': lambda x: x == 5,
                 'model_checkpoint_path': lambda x: x is None,
                 'resume_from_checkpoint': lambda x: x is None,
+                'disable_posttrain_evaluation' : lambda x: x == False,
                 }
 
         self.metrics = ["rmse", "max_error"]
@@ -409,6 +410,7 @@ def binary_classification_integer_target(cls):
             'validation_recall': lambda x: x > 0,
             'validation_report_by_class': lambda x: len(x) > 0,
             'validation_roc_curve': lambda x: len(x) > 0,
+            'disable_posttrain_evaluation' : lambda x: x == False,
             }
     cls.fields_ans = cls.get_ans.keys()
 
@@ -765,6 +767,26 @@ class BoostedTreesClassifierTest(unittest.TestCase):
         model = tc.boosted_trees_classifier.create(train, target='label',
                                   **self.param)
         y = self.model.predict(test)
+
+    def test_metric_none(self):
+        # Make sure that when passing in the reported_evaluation_metric as none, the model still works.
+        #
+
+        simple_data = self.data
+        simple_train, simple_test = simple_data.random_split(0.8, seed=1)
+
+        model = tc.boosted_trees_classifier.create(simple_train, target='label', disable_posttrain_evaluation = True)
+
+        # These fields should not be present.
+        self.assertTrue("training_confusion_matrix" not in model._list_fields())
+        self.assertTrue("training_precision" not in model._list_fields())
+        self.assertTrue("training_recall" not in model._list_fields())
+        self.assertTrue("training_report_by_class" not in model._list_fields())
+
+        # None of these should error out.
+        model.evaluate(simple_test)
+        model.predict(simple_test)
+
 
 class TestStringTarget(unittest.TestCase):
 

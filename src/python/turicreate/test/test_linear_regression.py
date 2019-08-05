@@ -123,6 +123,7 @@ class LinearRegressionTest(unittest.TestCase):
                 'training_time': lambda x: x >= 0,
                 'training_max_error': lambda x: x > 0,
                 'validation_data': lambda x: isinstance(x, tc.SFrame) and len(x) == 0,
+                'disable_posttrain_evaluation' : lambda x: x == False,
                 }
         self.fields_ans = self.get_ans.keys()
 
