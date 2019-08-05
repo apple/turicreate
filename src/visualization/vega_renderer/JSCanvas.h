@@ -66,7 +66,7 @@ JSExportAs(addColorStop,
 @protocol VegaCGContextInterface <JSExport>
 
 // properties
-@property id fillStyle;
+@property JSValue * fillStyle;
 @property double globalAlpha;
 @property NSString * lineCap;
 @property NSString * lineJoin;
@@ -79,7 +79,7 @@ JSExportAs(addColorStop,
 @property double lineDashOffset;
 
 // utilities
-- (VegaCGTextMetrics *)measureText:(NSString *)text;
+- (JSValue *)measureText:(NSString *)text;
 
 // save/restore context state
 - (void)save;
@@ -112,7 +112,7 @@ JSExportAs(clearRect,
 - (void)clip;
 - (void)closePath;
 JSExportAs(createLinearGradient,
-           - (VegaCGLinearGradient *)createLinearGradientWithX0:(double)x0
+           - (JSValue *)createLinearGradientWithX0:(double)x0
            y0:(double)y0
            x1:(double)x1
            y1:(double)y1
