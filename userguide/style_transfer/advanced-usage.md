@@ -19,7 +19,8 @@ model = tc.style_transfer.create(styles, content, _advanced_parameters={"style_l
 
 #### finetune_all_params
 
-There are two different approaches to updating parameters in the style transfer network.
+There are two different approaches to updating parameters in the style transfer 
+network.
 
 - Only update the instance normalization layers (`finetune_all_params: False`)
 - Update both the convolutional and instance normalization layers. (`finetune_all_params: True`)
@@ -65,7 +66,8 @@ convergence is heavily determined by the style images chosen, further user
 experimentation is required.
 
 
-When `finetune_all_params` is `False`, `pretrained_weights` is required to be `True` else the model won't converge.
+When `finetune_all_params` is `False`, `pretrained_weights` is required to be 
+`True` else the model won't converge.
 
 An example of setting the `pretrained_weights` flag is show below:
 
@@ -77,7 +79,12 @@ See [how-it-works](advanced-usage.md) for the paper from which these weights wer
 
 #### Checkpointing
 
-To assist with the qualatative nature of training the style transfer network, a checkpointing feature is exposed in the advanced parameters section. Rather than create multiple training loops for training models with different iterations, simply set the `checkpoint` flag to true and a turicreate model is saved with the prefix specified by `checkpoint_prefix` parameter every nth iteration which is specified by the `checkpoint_increment` parameter.
+To assist with the qualatative nature of training the style transfer network, a 
+checkpointing feature is exposed in the advanced parameters section. Rather than
+create multiple training loops for training models with different iterations, 
+simply set the `checkpoint` flag to true and a turicreate model is saved with 
+the prefix specified by `checkpoint_prefix` parameter every nth iteration which 
+is specified by the `checkpoint_increment` parameter.
 
 An example of using the checkpointing feature is show below:
 
