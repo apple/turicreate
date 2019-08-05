@@ -1681,18 +1681,41 @@ std::shared_ptr<unity_sarray_base> unity_sarray::vector_operator(
 
 std::shared_ptr<unity_sarray_base> unity_sarray::drop_missing_values() {
   log_func_entry();
-  auto filterfn = [&](const flexible_type& f)->flexible_type {
-    return !f.is_na();
-  };
-
-  auto filtered_out =
-      std::static_pointer_cast<unity_sarray>(
-          transform_lambda(filterfn,
-                           flex_type_enum::INTEGER,
-                           false,
-                           0));
-  return logical_filter(filtered_out);
+  return logical_filter(missing_mask(false, false) );
 }
+
+std::shared_ptr<unity_sarray_base> unity_sarray::missing_mask(
+    bool recursive, bool missing_is_true) {
+
+    flex_type_enum src_dtype = dtype();
+
+    std::function<flexible_type(const flexible_type&)> filter_fn;
+
+    if(recursive && (
+          src_dtype == flex_type_enum::VECTOR
+          || src_dtype == flex_type_enum::LIST
+          || src_dtype == flex_type_enum::DICT
+          || src_dtype == flex_type_enum::ND_VECTOR) ) {
+
+      if(missing_is_true) {
+        filter_fn = [](const flexible_type& v) -> flexible_type { return v.contains_na(); };
+      } else {
+        filter_fn = [](const flexible_type& v) -> flexible_type { return !v.contains_na(); };
+      }
+    } else {
+      if(missing_is_true) {
+        filter_fn = [](const flexible_type& v) -> flexible_type { return v.is_na(); };
+      } else {
+        filter_fn = [](const flexible_type& v) -> flexible_type { return !v.is_na(); };
+      }
+    }
+
+    return transform_lambda(filter_fn,
+                            flex_type_enum::INTEGER,
+                            false,
+                            0);
+}
+
 
 std::shared_ptr<unity_sarray_base>
 unity_sarray::fill_missing_values(flexible_type default_value) {

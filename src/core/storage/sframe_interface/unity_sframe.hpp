@@ -164,6 +164,16 @@ class unity_sframe : public unity_sframe_base {
   std::vector<flex_type_enum> dtype() override;
 
   /**
+   * Returns the dtype of a particular column.
+   */
+  flex_type_enum dtype(size_t column_index);
+
+  /**
+   * Returns the dtype of a particular column.
+   */
+  flex_type_enum dtype(const std::string& column_name);
+
+  /**
    * Returns an array containing the name of each column. The length
    * of the return array is equal to num_columns(). If the sframe is empty,
    * this returns an empty array.
@@ -217,6 +227,12 @@ class unity_sframe : public unity_sframe_base {
   std::shared_ptr<unity_sarray_base> select_column(const std::string &name) override;
 
   /**
+   * Returns an SArray with the column that corresponds to index idx.  Throws an
+   * exception if the name is not in the current SFrame.
+   */
+  std::shared_ptr<unity_sarray_base> select_column(size_t idx);
+
+  /**
    * Returns a new SFrame which is filtered by a given logical column.
    * The index array must be the same length as the current array. An output
    * array is returned containing only the elements in the current where are the
@@ -229,6 +245,11 @@ class unity_sframe : public unity_sframe_base {
    * exception if ANY of the names given are not in the current SFrame.
    */
   std::shared_ptr<unity_sframe_base> select_columns(const std::vector<std::string> &names) override;
+
+  /**
+   * Returns an lazy sframe with the columns given by the indices.
+   */
+  std::shared_ptr<unity_sframe_base> select_columns(const std::vector<size_t>& indices);
 
   /**
    * Mutates the current SFrame by adding the given column.
@@ -613,14 +634,7 @@ class unity_sframe : public unity_sframe_base {
    *
    * Throw if column_names has duplication, or some column name does not exist.
    */
-  std::vector<size_t> _convert_column_names_to_indices(const std::vector<std::string> &column_names);
-
-  /**
-   * a cell is considered to be nan iff it contains nan.
-   * it will be passed to lambda, so declare it as static,
-   * otherwise this pointer needs to be captured.
-   */
-  static inline bool _contains_nan(const flexible_type& cell);
+  std::vector<size_t> _convert_column_names_to_indices(const std::vector<std::string>& column_names);
 
   /**
    * Generate a new column name
