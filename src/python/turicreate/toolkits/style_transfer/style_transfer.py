@@ -34,8 +34,7 @@ def _vgg16_data_prep(batch):
 
 def create(style_dataset, content_dataset, style_feature=None,
         content_feature=None, max_iterations=None, model='resnet-16',
-        verbose=True, batch_size = 6, checkpoint=False,
-        checkpoint_prefix="style_transfer", checkpoint_increment=1000, **kwargs):
+        verbose=True, batch_size = 6, **kwargs):
     """
     Create a :class:`StyleTransfer` model.
 
@@ -111,14 +110,6 @@ def create(style_dataset, content_dataset, style_feature=None,
         raise _ToolkitError("content_dataset SFrame cannot be empty")
     if(batch_size < 1):
         raise _ToolkitError("'batch_size' must be greater than or equal to 1")
-    if not isinstance(checkpoint, bool):
-        raise _ToolkitError("'checkpoint' must be of type bool")
-    if not isinstance(checkpoint_prefix, _six.string_types):
-        raise _ToolkitError("'checkpoint_prefix' must be of type string")
-    if not isinstance(checkpoint_increment, int):
-        raise _ToolkitError("'checkpoint_increment' must be of type integer")
-    if checkpoint_increment < 0:
-        raise _ToolkitError("'checkpoint_increment' must be greater than or equal to 1")
 
     from ._sframe_loader import SFrameSTIter as _SFrameSTIter
     import mxnet as _mx
@@ -164,6 +155,9 @@ def create(style_dataset, content_dataset, style_feature=None,
         'aug_pca_noise': 0.0,
         'aug_max_attempts': 20,
         'aug_inter_method': 2,
+        'checkpoint': False,
+        'checkpoint_prefix': 'style_transfer',
+        'checkpoint_increment': 1000
     }
 
     if '_advanced_parameters' in kwargs:
@@ -360,8 +354,8 @@ def create(style_dataset, content_dataset, style_feature=None,
                 smoothed_loss = 0.9 * smoothed_loss + 0.1 * cur_loss
             iterations += 1
 
-            if checkpoint and iterations % checkpoint_increment == 0:
-                checkpoint_filename = checkpoint_prefix + "-" + str(iterations) + ".model"
+            if params['checkpoint'] and iterations % params['checkpoint_increment'] == 0:
+                checkpoint_filename = params['checkpoint_prefixs'] + "-" + str(iterations) + ".model"
                 training_time = _time.time() - start_time
                 state = {
                     '_model': transformer,
