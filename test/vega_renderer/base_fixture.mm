@@ -18,9 +18,6 @@ using namespace vega_renderer::test_utils;
 #define Q(x) #x
 #define QUOTE(x) Q(x)
 
-// out of 100.0; chosen arbitrarily
-double base_fixture::acceptable_diff = 2.02;
-
 std::string base_fixture::make_format_string(unsigned char *raw_format_str_ptr,
                                                     size_t raw_format_str_len) {
   auto raw_format_str = std::string(
@@ -245,7 +242,16 @@ void base_fixture::expected_rendering(const std::string& spec,
 }
 
 void base_fixture::run_test_case_with_spec(const std::string& test_spec, const std::string& name) {
-    this->run_test_case_with_spec(test_spec, name, base_fixture::acceptable_diff);
+    // out of 100.0; chosen arbitrarily
+    double acceptable_diff;
+    if (@available(macOS 10.14, *)) {
+      acceptable_diff = 2.02;
+    } else {
+      // macOS 10.13 or earlier -- for some reason, text rendering doesn't quite line up,
+      // so the tests will give a higher diff despite looking approximately correct.
+      acceptable_diff = 3.05;
+    }
+    this->run_test_case_with_spec(test_spec, name, acceptable_diff);
 }
 
 void base_fixture::run_test_case_with_spec(const std::string& test_spec, const std::string& name,  double acceptable_diff) {
