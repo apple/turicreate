@@ -28,7 +28,7 @@ The dialog box should look like:
 If your project will be submitted to the App Store you will need to package the `libAudioPreprocessing.dylib` into a Framework in order to avoid an [iTunes Connect error](https://developer.apple.com/library/archive/technotes/tn2435/_index.html#//apple_ref/doc/uid/DTS40017543-CH1-TROUBLESHOOTING_BUNDLE_ERRORS-EMBEDDED__DYLIB_FILES). To package the framework properly, follow [these steps](https://developer.apple.com/library/archive/technotes/tn2435/_index.html#//apple_ref/doc/uid/DTS40017543-CH1-ADD_FRAMEWORK_TARGET).
 
 Now, do the following:
-* Under **Project > Build Phases**, add `libAudioPreprocessing.dylib` to **Copy Bundle Resources**.
+* Under **Project > Build Phases**, add `libAudioPreprocessing.dylib` to **Copy Bundle Resources**
 * Under **Project > General**, add `libAudioPreprocessing.dylib` to **Embedded Binaries** and to **Linked Frameworks and Libraries**
 
 _Note: if you've packaged the `.dylib` into a Framework you'll need to perform these steps using the Framework instead of the dylib._
