@@ -119,6 +119,10 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
         with self.assertRaises(_ToolkitError):
             tc.one_shot_object_detector.create(self.train[:0], target=self.target)
 
+    def test_create_with_no_background_images(self):
+        with self.assertRaises(_ToolkitError):
+            tc.one_shot_object_detector.create(self.train, target=self.target, backgrounds=tc.SArray())
+
     def test_predict(self):
         sf = self.test.head()
         pred = self.model.predict(sf.head())
