@@ -27,9 +27,13 @@ references. Here is a screenshot of what your selections on the dialog box
 should look like.
 ![libRecommender drag and drop](libRecommender-drag-drop-shot.png)
 
+If your project will be submitted to the App Store you will need to package the `libAudioPreprocessing.dylib` into a Framework in order to avoid an [iTunes Connect error](https://developer.apple.com/library/archive/technotes/tn2435/_index.html#//apple_ref/doc/uid/DTS40017543-CH1-TROUBLESHOOTING_BUNDLE_ERRORS-EMBEDDED__DYLIB_FILES). To package the framework properly, follow [these steps](https://developer.apple.com/library/archive/technotes/tn2435/_index.html#//apple_ref/doc/uid/DTS40017543-CH1-ADD_FRAMEWORK_TARGET).
+
 Now, do the following:
 * Under **Project > Build Phases**, add `libRecommender.dylib` to **Copy Bundle Resources**
 * Under **Project > General**, add `libRecommender.dylib` to **Embedded Binaries** and to **Linked Frameworks and Libraries**
+
+_Note: if you've packaged the `.dylib` into a Framework you'll need to perform these steps using the Framework instead of the dylib._
 
 Now, you are ready to start writing app code to use the recommender model you
 created in Turi Create (and exported to Core ML) in your iOS app. 
