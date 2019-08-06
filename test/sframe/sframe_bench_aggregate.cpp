@@ -104,7 +104,7 @@ static void bench_test_aggreate_count(const sframe& sf, size_t nrows, size_t nth
     log_and_throw("reps shouldn't be 0");
   }
 
-  std::cout << "=============== bench_test_aggreate_count ================"
+  std::cout << "=========== bench_test_aggreate_count summary ============"
             << std::endl;
 
   std::cout << "nrows: " << nrows << std::endl;
@@ -115,7 +115,6 @@ static void bench_test_aggreate_count(const sframe& sf, size_t nrows, size_t nth
   for (size_t ii = 0; ii < reps; ii++)
     bench_test_aggreate(sf, std::make_shared<groupby_operators::count>(), nthreads);
 
-  std::cout << "======================= summary ==========================" << std::endl;
   std::cout << "Elapsed time: " << ti.current_time() << " seconds" << std::endl;
   std::cout << "Average single pass: " << ti.current_time() / reps << " seconds" << std::endl;
   std::cout << std::endl;
@@ -149,8 +148,8 @@ static void bench_test_aggreate_count_summary(size_t nrows, size_t reps) {
 
 int main(int argc, char** argv) {
   try {
-    // 100 million rows
-    size_t nrows = 1000000 * 100;
+    // 1 million rows
+    size_t nrows = 1000000;
     turi::bench_test_aggreate_count_summary(nrows, 100);
   } catch(...) {
     logstream(LOG_ERROR) << "bench_test_aggreate_count failed. pls check log" << std::endl;
