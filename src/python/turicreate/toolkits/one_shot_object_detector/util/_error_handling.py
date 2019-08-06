@@ -10,7 +10,7 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 
 def check_one_shot_input(data, target, backgrounds):
     if backgrounds is not None and not(isinstance(backgrounds, _tc.SArray)):
-        raise TypeError("'backgrounds' must be of type SArray.")
+        raise TypeError("'backgrounds' must be None or an SArray.")
     if (isinstance(backgrounds, _tc.SArray) and len(backgrounds) == 0):
         raise _ToolkitError('Unable to train with no background images')
     if not isinstance(target, str):
