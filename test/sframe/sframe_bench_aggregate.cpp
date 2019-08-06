@@ -17,6 +17,7 @@ namespace turi {
 using row_gen_func_t = std::function<std::vector<flexible_type>(size_t)>;
 
 /* generate sframe */
+/* I need to make this a fixture */
 static sframe bench_test_sframe_generator(
     const std::vector<std::string>& column_names,
     const std::vector<flex_type_enum>& column_types, size_t nrows,
@@ -98,19 +99,10 @@ static void bench_test_aggreate(const sframe& in_sf,
   if (debug_print) out_sf.debug_print();
 }
 
-static void bench_test_aggreate_count(size_t nrows, size_t nthreads, size_t reps = 1) {
+static void bench_test_aggreate_count(const sframe& sf, size_t nrows, size_t nthreads, size_t reps = 1) {
   if (reps == 0) {
     log_and_throw("reps shouldn't be 0");
-;  }
-
-  auto binary_seq_gen = [=](size_t ii) -> std::vector<flexible_type> {
-    return {flexible_type(static_cast<flex_int>(ii < nrows / 2))};
-  };
-  sframe sf = bench_test_sframe_generator({"bin_val"}, {flex_type_enum::INTEGER},
-                                          nrows, binary_seq_gen);
-  // sf.debug_print();
-
-  DASSERT_EQ(sf.num_rows(), nrows);
+  }
 
   std::cout << "=============== bench_test_aggreate_count ================"
             << std::endl;
@@ -135,20 +127,31 @@ static void bench_test_aggreate_count(size_t nrows, size_t nthreads, size_t reps
   return;
 }
 
+static void bench_test_aggreate_count_summary(size_t nrows, size_t reps) {
+    auto binary_seq_gen = [=](size_t ii) -> std::vector<flexible_type> {
+      return {flexible_type(static_cast<flex_int>(ii < nrows / 2))};
+    };
+
+    sframe sf = bench_test_sframe_generator(
+        {"bin_val"}, {flex_type_enum::INTEGER}, nrows, binary_seq_gen);
+
+    DASSERT_EQ(sf.num_rows(), nrows);
+    // sf.debug_print();
+    size_t max_hardware_mp = turi::thread::cpu_count();
+    if (1 < max_hardware_mp) turi::bench_test_aggreate_count(sf, nrows, 1, reps);
+    if (2 < max_hardware_mp) turi::bench_test_aggreate_count(sf, nrows, 2, reps);
+    if (4 < max_hardware_mp) turi::bench_test_aggreate_count(sf, nrows, 4, reps);
+    if (8 < max_hardware_mp) turi::bench_test_aggreate_count(sf, nrows, 8, reps);
+    turi::bench_test_aggreate_count(sf, nrows, max_hardware_mp, reps);
+}
+
 };  // namespace turi
 
 int main(int argc, char** argv) {
   try {
-    // 1 million rows
-    size_t nrows = 1000000;
-    size_t reps = 100;
-    size_t max_hardware_mp = turi::thread::cpu_count();
-    if (1 < max_hardware_mp) turi::bench_test_aggreate_count(nrows, 1, reps);
-    if (2 < max_hardware_mp) turi::bench_test_aggreate_count(nrows, 2, reps);
-    if (4 < max_hardware_mp) turi::bench_test_aggreate_count(nrows, 4, reps);
-    if (8 < max_hardware_mp) turi::bench_test_aggreate_count(nrows, 8, reps);
-    turi::bench_test_aggreate_count(nrows, max_hardware_mp, reps);
-
+    // 100 million rows
+    size_t nrows = 1000000 * 100;
+    turi::bench_test_aggreate_count_summary(nrows, 100);
   } catch(...) {
     logstream(LOG_ERROR) << "bench_test_aggreate_count failed. pls check log" << std::endl;
     return -1;
