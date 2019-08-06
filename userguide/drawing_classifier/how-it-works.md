@@ -26,7 +26,7 @@ example_drawing = [
 ]
 ```
 
-When stroke-based drawing data is given as input to `turicreate.drawing_classifier.create`, a series of pre-processing steps are applied to convert the stroke-based drawings to bitmaps which is then consumed by the neural network. This data transformation can be visualized through the `turicreate.drawing_classifier.util.draw_strokes(...)` Python API as well. 
+When stroke-based drawing data is given as input to `turicreate.drawing_classifier.create`, a series of pre-processing steps are applied to convert the stroke-based drawings to bitmaps which is then consumed by the neural network. This data transformation can be visualized through the `turicreate.drawing_classifier.util.draw_strokes(...)` Python API as well. It is a known issue with models trained on Linux stroke data not generalizing well to drawings rendered on Macs and vice-versa.
 
 The data preprocessing to convert stroke-based drawings into 28x28 bitmaps 
 is three-fold:
