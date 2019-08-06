@@ -48,6 +48,9 @@ def preview_synthetic_training_data(data,
         backgrounds_tar = _tarfile.open(backgrounds_tar_path)
         backgrounds_tar.extractall()
         backgrounds = _tc.SArray("one_shot_backgrounds.sarray")
+        # We resize the background dimensions by half along each axis to reduce
+        # the disk footprint during augmentation, and also reduce the time
+        # taken to synthesize data. 
         backgrounds = backgrounds.apply(lambda im: _tc.image_analysis.resize(
             im,
             int(im.width/2),
