@@ -77,7 +77,13 @@ def create(data,
         }
     return OneShotObjectDetector(state)
 
-class OneShotObjectDetector(_CustomModel):
+class OneShotObjectDetector(_CustomModel): 
+    """
+    An trained model that is ready to use for classification, exported to
+    Core ML, or for feature extraction.
+
+    This model should not be constructed directly.
+    """
     _PYTHON_ONE_SHOT_OBJECT_DETECTOR_VERSION = 1
 
     def __init__(self, state):
