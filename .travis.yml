@@ -43,7 +43,12 @@ script:
   - tar xf cmake-3.13.4-Linux-x86_64.tar.gz
   - export PATH=${PWD}/cmake-3.13.4-Linux-x86_64/bin:${PATH}
 
-  # Use the correct virtualenv
+  # On certain Travis builds the machines contain the correct `python` and `pip`
+  # versions. Running `which python` and `which pip` points to the right path
+  # to both the `python` and `pip` programs. Running `which virtualenv` uncovers
+  # that some machines on travis have `virtualenv` installed in their current
+  # environment while others do not. To correct this running `pip install virtualenv`
+  # will ensure that the `virtualenv` the `python` and the `pip` versions all match.
   - pip install virtualenv
 
   # We sometimes get `error: No space left on device`
