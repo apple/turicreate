@@ -20,7 +20,9 @@ s3_device::s3_device(const std::string& filename, const bool write) {
   m_filename = filename;
   // split out the access key and secret key
   s3url url;
-  parse_s3url(filename, url);
+  std::string err_msg;
+  if (!parse_s3url(filename, url, err_msg))
+      log_and_throw(err_msg);
 
   m_s3fs = std::make_shared<dmlc::io::S3FileSystem>();
   m_s3fs->SetCredentials(url.access_key_id, url.secret_key);

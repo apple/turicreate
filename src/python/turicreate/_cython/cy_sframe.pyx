@@ -296,6 +296,17 @@ cdef class UnitySFrameProxy:
 
         return create_proxy_wrapper_from_existing_proxy(proxy)
 
+    cpdef join_with_custom_name(self, UnitySFrameProxy right, _how, dict _on, dict _alter_name):
+        cdef unity_sframe_base_ptr proxy
+        cdef map[string,string] on = dict_to_string_string_map(_on)
+        cdef string how = str_to_cpp(_how)
+        cdef map[string,string] alter_name = dict_to_string_string_map(_alter_name)
+
+        with nogil:
+            proxy = (self.thisptr.join_with_custom_name(right._base_ptr, how, on, alter_name))
+
+        return create_proxy_wrapper_from_existing_proxy(proxy)
+
     cpdef pack_columns(self, _column_names, _key_names, dtype, fill_na):
         cdef vector[string] column_names = to_vector_of_strings(_column_names)
         cdef vector[string] key_names = to_vector_of_strings(_key_names)

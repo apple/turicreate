@@ -87,7 +87,12 @@ extern std::string S3_ENDPOINT;
 
 /**
  * \ingroup fileio
- * The S3 connection region; if empty string, region will be guessed by endpoint.
+ * The S3 connection region; if empty string, region will be guessed by:
+ * 1. TURI_S3_REGION environment variable
+ * 2. AWS_DEFAULT_REGION environment variable
+ * 3. known region to endpoint mappings
+ * if none of above works, empty region string will be set and AWS will
+ * guess bucket region from endpoint.
  */
 extern std::string S3_REGION;
 

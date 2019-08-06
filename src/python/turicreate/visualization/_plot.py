@@ -347,3 +347,104 @@ class Plot(object):
                     </iframe> \
                 </body> \
             </html>'));
+
+def display_table_in_notebook(sf):
+    from IPython.core.display import display
+    from PIL import Image
+
+    import base64
+    from io import BytesIO
+    from IPython.display import HTML
+    from ..data_structures.image import Image as _Image
+
+    def image_formatter(im):
+        image_buffer = BytesIO()
+        im.save(image_buffer, format='PNG')
+        return "<img src=\"data:image/png;base64," + base64.b64encode(image_buffer.getvalue()) + "\"/>"
+
+    import pandas as pd
+    maximum_rows = 100
+    if len(sf) > maximum_rows:
+        import warnings
+        warnings.warn('Displaying only the first {} rows.'.format(maximum_rows))
+        sf = sf[:maximum_rows]
+    
+    check_image_column = [_Image == x for x in sf.column_types()]
+    zipped_image_columns = zip(sf.column_names(), check_image_column)
+    image_columns = filter(lambda a: a[1], zipped_image_columns)
+    image_key = [x[0] for x in image_columns]
+    image_column_formatter = dict.fromkeys(image_key , image_formatter)
+
+    with pd.option_context('display.max_rows', None, 'display.max_columns', None, 'display.max_colwidth', -1):
+        df = sf.to_dataframe()
+        html_string =  '<html lang="en">                           \
+                          <head>                                   \
+                            <style>                                \
+                              .sframe {                            \
+                                font-size: 12px;                   \
+                                font-family: HelveticaNeue;        \
+                                border: 1px solid silver;          \
+                              }                                    \
+                              .sframe thead th {                   \
+                                background: #F7F7F7;               \
+                                font-family: HelveticaNeue-Medium; \
+                                font-size: 14px;                   \
+                                line-height: 16.8px;               \
+                                padding-top: 16px;                 \
+                                padding-bottom: 16px;              \
+                                padding-left: 10px;                \
+                                padding-right: 38px;               \
+                                border-top: 1px solid #E9E9E9;     \
+                                border-bottom: 1px solid #E9E9E9;  \
+                                white-space: nowrap;               \
+                                overflow: hidden;                  \
+                                text-overflow:ellipsis;            \
+                                text-align:center;                 \
+                                font-weight:normal;                \
+                              }                                    \
+                              .sframe tbody th {                   \
+                                background: #FFFFFF;               \
+                                text-align:left;                   \
+                                font-weight:normal;                \
+                                border-right: 1px solid #E9E9E9;   \
+                              }                                    \
+                              .sframe td {                         \
+                                background: #FFFFFF;               \
+                                padding-left: 10px;                \
+                                padding-right: 38px;               \
+                                padding-top: 14px;                 \
+                                padding-bottom: 14px;              \
+                                border-bottom: 1px solid #E9E9E9;  \
+                                max-height: 0px;                   \
+                                transition: max-height 5s ease-out;\
+                                vertical-align: middle;            \
+                                font-family: HelveticaNeue;        \
+                                font-size: 12px;                   \
+                                line-height: 16.8px;               \
+                                background: #FFFFFF;               \
+                              }                                    \
+                              .sframe tr {                         \
+                                padding-left: 10px;                \
+                                padding-right: 38px;               \
+                                padding-top: 14px;                 \
+                                padding-bottom: 14px;              \
+                                border-bottom: 1px solid #E9E9E9;  \
+                                max-height: 0px;                   \
+                                transition: max-height 5s ease-out;\
+                                vertical-align: middle;            \
+                                font-family: HelveticaNeue;        \
+                                font-size: 12px;                   \
+                                line-height: 16.8px;               \
+                                background: #FFFFFF;               \
+                              }                                    \
+                              .sframe tr:hover {                   \
+                                background: silver;                \
+                              },                                   \
+                            </style>                               \
+                          </head>                                  \
+                          <body>                                   \
+                            '+df.to_html(formatters=image_column_formatter, escape=False, classes='sframe')+'\
+                          </body>                                  \
+                        </html>'
+
+        display(HTML(html_string))

@@ -97,7 +97,7 @@ static bool check_cache_file_hdfs_location(std::string val) {
 #ifdef TC_BUILD_IOS
     log_and_throw("hdfs:// URLs not supported.");
 #else
-    if (get_file_status(val) == file_status::DIRECTORY) {
+    if (get_file_status(val).first == file_status::DIRECTORY) {
       // test hdfs write permission by createing a test directory
       namespace fs = boost::filesystem;
       std::string host, port, hdfspath;

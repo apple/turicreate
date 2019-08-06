@@ -16,7 +16,7 @@ pylambda_function::pylambda_function(const std::string& lambda_str,
                                      bool delete_pickle_files_on_destruction) {
   lambda_hash = lambda::lambda_master::get_instance().make_lambda(lambda_str);
 
-  if (fileio::get_file_status(lambda_str) == fileio::file_status::DIRECTORY &&
+  if (fileio::get_file_status(lambda_str).first == fileio::file_status::DIRECTORY &&
       delete_pickle_files_on_destruction) {
      m_pickle_file_handle =
          std::make_shared<fileio::file_ownership_handle>(lambda_str,

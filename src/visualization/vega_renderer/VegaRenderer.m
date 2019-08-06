@@ -5,6 +5,7 @@
  */
 #import "VegaRenderer.h"
 #import "JSCanvas.h"
+#import "JSConsole.h"
 #import "JSDocument.h"
 
 #import <AppKit/AppKit.h>
@@ -72,28 +73,7 @@
     @autoreleasepool {
 
         // set up logging
-        [self.context evaluateScript:@"var console = {};"];
-        self.context[@"console"][@"log"] = ^() {
-            NSArray *message = [JSContext currentArguments];
-            NSLog(@"JS console log: %@", message);
-        };
-        self.context[@"console"][@"warn"] = ^() {
-            NSArray *message = [JSContext currentArguments];
-            NSLog(@"JS console warning: %@", message);
-        };
-        self.context[@"console"][@"error"] = ^() {
-            NSArray *message = [JSContext currentArguments];
-            NSLog(@"JS console error: %@", message);
-        };
-        
-        // set up error handling
-        self.context.exceptionHandler = ^(JSContext *context, JSValue *exception) {
-            NSLog(@"Unhandled exception: %@", [exception toString]);
-            NSLog(@"In context: %@", [context debugDescription]);
-            NSLog(@"Line %@, column %@", [exception objectForKeyedSubscript:@"line"], [exception objectForKeyedSubscript:@"column"]);
-            NSLog(@"Stacktrace: %@", [exception objectForKeyedSubscript:@"stack"]);
-            assert(false);
-        };
+        [JSConsole attachToJavaScriptContext:self.context];
 
         VegaCGCanvas* vegaCanvas = [[VegaCGCanvas alloc] initWithContext:parentContext];
         weakSelf.vegaCanvas = vegaCanvas;

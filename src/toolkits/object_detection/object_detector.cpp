@@ -22,6 +22,7 @@
 #include <core/random/random.hpp>
 #include <toolkits/coreml_export/neural_net_models_exporter.hpp>
 #include <toolkits/object_detection/od_evaluation.hpp>
+#include <toolkits/object_detection/od_serialization.hpp>
 #include <toolkits/object_detection/od_yolo.hpp>
 #include <toolkits/supervised_learning/automatic_model_creation.hpp>
 
@@ -322,9 +323,14 @@ size_t object_detector::get_version() const {
   return OBJECT_DETECTOR_VERSION;
 }
 
-void object_detector::save_impl(oarchive& oarc) const {}
+void object_detector::save_impl(oarchive& oarc) const {
+  _save_impl(oarc, *nn_spec_, state);
+}
 
-void object_detector::load_version(iarchive& iarc, size_t version) {}
+void object_detector::load_version(iarchive& iarc, size_t version) {
+  nn_spec_.reset(new model_spec);
+  _load_version(iarc, version, *nn_spec_, state, anchor_boxes());
+}
 
 void object_detector::train(gl_sframe data,
                             std::string annotations_column_name,

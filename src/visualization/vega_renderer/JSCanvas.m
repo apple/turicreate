@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #import "JSCanvas.h"
+#import "LogProxy.h"
 #import "colors.h"
 
 #import <AppKit/AppKit.h>
@@ -137,7 +138,7 @@
     // MUST only use these from property setter/getters
     CGLayerRef _layer;
 
-    id _fillStyle;
+    JSValue * _fillStyle;
     double _globalAlpha;
     NSString * _lineCap;
     NSString * _lineJoin;
@@ -218,13 +219,15 @@
 }
 
 // properties
-- (id)fillStyle {
+- (JSValue *)fillStyle {
+    assert([_fillStyle isKindOfClass:[JSValue class]]);
     return _fillStyle;
 }
-- (void)setFillStyle:(id)fillStyle {
-    _fillStyle = fillStyle;
-    if (![_fillStyle isKindOfClass:NSString.class]) {
-        assert([_fillStyle isKindOfClass:VegaCGLinearGradient.class]);
+- (void)setFillStyle:(JSValue *)fillStyle {
+    _fillStyle = [LogProxy tryUnwrap:fillStyle];
+    if (!_fillStyle.isString) {
+        assert(_fillStyle.isObject);
+        assert([_fillStyle.toObject isKindOfClass:VegaCGLinearGradient.class]);
     }
 }
 
@@ -234,8 +237,8 @@
     if (_fillStyle == nil) {
         color = [self.class newColorFromR:0 G:0 B:0 A:255];
     } else {
-        assert([_fillStyle isKindOfClass:NSString.class]);
-        color = [self.class newColorFromString:_fillStyle];
+        assert(_fillStyle.isString);
+        color = [self.class newColorFromString:_fillStyle.toString];
     }
     assert(color != nil);
     NSColor *nsColor = [NSColor colorWithCGColor:color];
@@ -520,11 +523,11 @@
     _textAlign = textAlign;
 }
 
-- (VegaCGTextMetrics *)measureText:(NSString *)text {
+- (JSValue *)measureText:(NSString *)text {
     NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:text attributes:self.textAttributes];
     VegaCGTextMetrics *ret = [[VegaCGTextMetrics alloc] init];
     ret.width = attrStr.size.width;
-    return ret;
+    return [LogProxy wrapObject:ret];
 }
 
 - (void)rotateWithAngle:(double)angle {
@@ -671,22 +674,24 @@
 
 - (void)fill {
     CGPathRef currentPath = CGContextCopyPath(self.context);
-    if ([_fillStyle isKindOfClass:VegaCGLinearGradient.class]) {
-        VegaCGLinearGradient *gradient = _fillStyle;
-        [gradient fillWithContext:self.context];
-    } else {
-        assert([_fillStyle isKindOfClass:NSString.class]);
-        CGColorRef color = [self.class newColorFromString:_fillStyle];
+    if (_fillStyle.isString) {
+        CGColorRef color = [self.class newColorFromString:_fillStyle.toString];
         CGContextSetFillColorWithColor(self.context, color);
         CGColorRelease(color);
         CGContextFillPath(self.context);
+    } else {
+        assert(_fillStyle.isObject);
+        assert([_fillStyle.toObject isKindOfClass:VegaCGLinearGradient.class]);
+        VegaCGLinearGradient *gradient = _fillStyle.toObject;
+        [gradient fillWithContext:self.context];
     }
     CGContextAddPath(self.context, currentPath);
     CGPathRelease(currentPath);
 }
 
-- (VegaCGLinearGradient *)createLinearGradientWithX0:(double)x0 y0:(double)y0 x1:(double)x1 y1:(double)y1 {
-    return [[VegaCGLinearGradient alloc] initWithX0:x0 y0:y0 x1:x1 y1:y1];
+- (JSValue *)createLinearGradientWithX0:(double)x0 y0:(double)y0 x1:(double)x1 y1:(double)y1 {
+    VegaCGLinearGradient *ret = [[VegaCGLinearGradient alloc] initWithX0:x0 y0:y0 x1:x1 y1:y1];
+    return [LogProxy wrapObject:ret];
 }
 
 @end

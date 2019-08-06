@@ -84,6 +84,7 @@ class DecisionTreeRegressionTest(unittest.TestCase):
              'random_seed': lambda x: x is None,
              'progress': lambda x: isinstance(x, tc.SFrame) or (x is None),
              'metric': lambda x: x == 'auto',
+             'disable_posttrain_evaluation' : lambda x: x == False,
              }
         self.metrics = ["rmse", "max_error"]
         self.fields_ans = self.get_ans.keys()
@@ -389,6 +390,7 @@ def binary_classification_integer_target(cls):
             'validation_recall': lambda x: x > 0,
             'validation_report_by_class': lambda x: len(x) > 0,
             'validation_roc_curve': lambda x: len(x) > 0,
+            'disable_posttrain_evaluation' : lambda x: x == False,
             }
     cls.fields_ans = cls.get_ans.keys()
 

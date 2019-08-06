@@ -59,6 +59,7 @@ cdef extern from "<core/storage/sframe_interface/unity_sframe.hpp>" namespace "t
         bint has_size() except +
         string query_plan_string() except +
         unity_sframe_base_ptr join(unity_sframe_base_ptr, const string, map[string, string]) except +
+        unity_sframe_base_ptr join_with_custom_name(unity_sframe_base_ptr, const string, map[string, string], map[string, string]) except +
         unity_sarray_base_ptr pack_columns(const vector[string]&, const vector[string]&, flex_type_enum , const flexible_type&) except +
         unity_sframe_base_ptr stack (const string& , const vector[string]& , const vector[flex_type_enum]&, bint) except +
         unity_sframe_base_ptr sort(const vector[string]&, const vector[int]&) except +
@@ -142,6 +143,8 @@ cdef class UnitySFrameProxy:
     cpdef query_plan_string(self)
 
     cpdef join(self, UnitySFrameProxy right, how, dict on)
+
+    cpdef join_with_custom_name(self, UnitySFrameProxy right, how, dict on, dict alter_name)
 
     cpdef pack_columns(self, columns, keys, dtype, fill_na)
 
