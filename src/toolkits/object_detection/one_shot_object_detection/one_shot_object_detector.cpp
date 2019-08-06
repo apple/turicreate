@@ -211,7 +211,7 @@ gl_sframe augment_data(const gl_sframe &data,
         // write the synthetically generated image and the constructed
         // annotation to output SFrame.
         output_writer.write({synthetic_image, annotation}, segment_id);
-        size_t augmented_rows_completed = augmented_counter.fetch_add(1);
+        size_t augmented_rows_completed = 1 + augmented_counter.fetch_add(1);
         if (verbose) {
           std::ostringstream d;
           // For pretty printing, floor percent done
