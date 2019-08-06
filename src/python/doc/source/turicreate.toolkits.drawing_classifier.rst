@@ -9,7 +9,7 @@
 drawing classifier
 ------------------
 .. autosummary::
-  :toctree: 
+  :toctree: generated/
   :nosignatures:
 
   create
@@ -18,7 +18,7 @@ drawing classifier
 utilities
 ---------
 .. autosummary::
-  :toctree: 
+  :toctree: generated/
   :nosignatures:
 
   util.draw_strokes
