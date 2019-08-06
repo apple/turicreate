@@ -123,6 +123,10 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
         with self.assertRaises(_ToolkitError):
             tc.one_shot_object_detector.create(self.train, target=self.target, backgrounds=tc.SArray())
 
+    def test_create_with_wrong_type_background_images(self):
+        with self.assertRaises(TypeError):
+            tc.one_shot_object_detector.create(self.train, target=self.target, backgrounds='wrong_backgrounds')
+
     def test_predict(self):
         sf = self.test.head()
         pred = self.model.predict(sf.head())

@@ -10,7 +10,6 @@ import turicreate as _tc
 from turicreate import extensions as _extensions
 from turicreate.toolkits.one_shot_object_detector.util._error_handling import check_one_shot_input
 from turicreate.toolkits import _data_zoo
-from turicreate.toolkits._main import ToolkitError as _ToolkitError
 
 def preview_synthetic_training_data(data,
                                     target,
@@ -40,9 +39,7 @@ def preview_synthetic_training_data(data,
     out : SFrame
         An SFrame of sythetically generated annotated training data.
     """
-    if (isinstance(backgrounds, _tc.SArray)  and len(backgrounds) == 0):
-        raise _ToolkitError('Unable to train with no background images')
-    dataset_to_augment, image_column_name, target_column_name = check_one_shot_input(data, target)
+    dataset_to_augment, image_column_name, target_column_name = check_one_shot_input(data, target, backgrounds)
     one_shot_model = _extensions.one_shot_object_detector()
     seed = kwargs["seed"] if "seed" in kwargs else _random.randint(0, 2**32 - 1)
     if backgrounds is None:
