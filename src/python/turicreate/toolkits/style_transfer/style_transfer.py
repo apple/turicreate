@@ -160,6 +160,9 @@ def create(style_dataset, content_dataset, style_feature=None,
         'aug_pca_noise': 0.0,
         'aug_max_attempts': 20,
         'aug_inter_method': 2,
+        'checkpoint': False,
+        'checkpoint_prefix': 'style_transfer',
+        'checkpoint_increment': 1000
     }
 
     if '_advanced_parameters' in kwargs:
@@ -284,6 +287,10 @@ def create(style_dataset, content_dataset, style_feature=None,
         for ctx0 in ctx:
             ctx_grams[ctx0] = [gram.as_in_context(ctx0) for gram in grams]
 
+    style_sa = style_dataset[style_feature]
+    idx_column = _tc.SArray(range(0, style_sa.shape[0]))
+    style_sframe = _tc.SFrame({"style": idx_column, style_feature: style_sa})
+
     #
     # Training loop
     #
@@ -351,6 +358,31 @@ def create(style_dataset, content_dataset, style_feature=None,
             else:
                 smoothed_loss = 0.9 * smoothed_loss + 0.1 * cur_loss
             iterations += 1
+
+            if params['checkpoint'] and iterations % params['checkpoint_increment'] == 0:
+                checkpoint_filename = params['checkpoint_prefix'] + "-" + str(iterations) + ".model"
+                training_time = _time.time() - start_time
+                state = {
+                    '_model': transformer,
+                    '_training_time_as_string': _seconds_as_string(training_time),
+                    'batch_size': batch_size,
+                    'num_styles': num_styles,
+                    'model': model,
+                    'input_image_shape': input_shape,
+                    'styles': style_sframe,
+                    'num_content_images': len(content_dataset),
+                    'training_time': training_time,
+                    'max_iterations': max_iterations,
+                    'training_iterations': iterations,
+                    'training_epochs': content_images_loader.cur_epoch,
+                    'style_feature': style_feature,
+                    'content_feature': content_feature,
+                    "_index_column": "style",
+                    'training_loss': smoothed_loss,
+                }
+                st_model = StyleTransfer(state)
+                st_model.save(checkpoint_filename)
+
             trainer.step(batch_size)
 
             if verbose and iterations == 1:
@@ -380,9 +412,6 @@ def create(style_dataset, content_dataset, style_feature=None,
                 break
 
     training_time = _time.time() - start_time
-    style_sa = style_dataset[style_feature]
-    idx_column = _tc.SArray(range(0, style_sa.shape[0]))
-    style_sframe = _tc.SFrame({"style": idx_column, style_feature: style_sa})
 
     # Save the model state
     state = {
