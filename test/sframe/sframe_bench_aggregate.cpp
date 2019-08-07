@@ -115,11 +115,9 @@ static void bench_test_aggreate_count(const sframe& sf, size_t nrows, size_t nth
   for (size_t ii = 0; ii < reps; ii++)
     bench_test_aggreate(sf, std::make_shared<groupby_operators::count>(), nthreads);
 
-  std::cout << "Elapsed time: " << ti.current_time() << " seconds" << std::endl;
-  std::cout << "Average single pass: " << ti.current_time() / reps << " seconds" << std::endl;
-  std::cout << std::endl;
   std::cout << "Elapsed time: " << ti.current_time_millis() << " ms" << std::endl;
   std::cout << "Average single pass: " << ti.current_time_millis() / reps << " ms" << std::endl;
+
   std::cout << "========================== END ==========================="
             << std::endl;
 
