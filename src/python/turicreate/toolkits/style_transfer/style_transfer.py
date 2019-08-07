@@ -355,7 +355,7 @@ def create(style_dataset, content_dataset, style_feature=None,
             iterations += 1
 
             if params['checkpoint'] and iterations % params['checkpoint_increment'] == 0:
-                checkpoint_filename = params['checkpoint_prefixs'] + "-" + str(iterations) + ".model"
+                checkpoint_filename = params['checkpoint_prefix'] + "-" + str(iterations) + ".model"
                 training_time = _time.time() - start_time
                 state = {
                     '_model': transformer,
