@@ -71,7 +71,7 @@ flex_dict build_annotation(ParameterSampler &parameter_sampler,
   float max_x = std::numeric_limits<float>::min();
   float min_y = std::numeric_limits<float>::max();
   float max_y = std::numeric_limits<float>::min();
-  for (auto corner : warped_corners) {
+  for (const auto &corner : warped_corners) {
     min_x = std::min(min_x, corner[0]);
     max_x = std::max(max_x, corner[0]);
     min_y = std::min(min_y, corner[1]);
@@ -102,13 +102,19 @@ static std::map<std::string, size_t> generate_column_index_map(
 
 boost::gil::rgba8_image_t::view_t create_starter_image_view(
     const flex_image &object_input) {
-  DASSERT_TRUE(object_input.is_decoded());
+  if (!(object_input.is_decoded())) {
+    log_and_throw("Input object starter image is not decoded.");
+  }
   flex_image object =
       image_util::resize_image(object_input, object_input.m_width,
                                object_input.m_height, 4, true)
           .to<flex_image>();
-  DASSERT_TRUE(object.is_decoded());
-  DASSERT_EQ(object.m_channels, 4);
+  if (!(object.is_decoded())) {
+    log_and_throw("Resized object starter image is not decoded.");
+  }
+  if (object.m_channels != 4) {
+    log_and_throw("Object image is not resized to be 4.");
+  }
   boost::gil::rgba8_image_t::view_t starter_image_view = interleaved_view(
       object.m_width, object.m_height,
       (boost::gil::rgba8_pixel_t *)(object.get_image_data()),
@@ -120,7 +126,7 @@ boost::gil::rgba8_image_t::view_t create_starter_image_view(
 std::pair<flex_image, flex_dict>
 create_synthetic_image_from_background_and_starter(const flex_image &starter,
                                                    const flex_image &background,
-                                                   std::string label,
+                                                   std::string &label,
                                                    size_t seed,
                                                    size_t row_number) {
   ParameterSampler parameter_sampler =
@@ -133,9 +139,15 @@ create_synthetic_image_from_background_and_starter(const flex_image &starter,
       build_annotation(parameter_sampler, label, starter.m_width,
                        starter.m_height, seed + row_number);
 
-  DASSERT_TRUE(background.get_image_data() != nullptr);
-  DASSERT_TRUE(starter.is_decoded());
-  DASSERT_TRUE(background.is_decoded());
+  if (background.get_image_data() == nullptr) {
+    log_and_throw("Background image has null image data.");
+  }
+  if (!(starter.is_decoded())) {
+    log_and_throw("Starter image is not decoded into raw format.");
+  }
+  if (!(background.is_decoded())) {
+    log_and_throw("Background image is not decoded into raw format.");
+  }
 
   boost::gil::rgba8_image_t::view_t starter_image_view =
       create_starter_image_view(starter);
@@ -172,8 +184,12 @@ gl_sframe augment_data(const gl_sframe &data,
   auto column_index_map = generate_column_index_map(data.column_names());
   size_t image_column_index = column_index_map[image_column_name];
   size_t target_column_index = column_index_map[target_column_name];
-  DASSERT_EQ(data[image_column_name].dtype(), flex_type_enum::IMAGE);
-  DASSERT_EQ(data[target_column_name].dtype(), flex_type_enum::STRING);
+  if (data[image_column_name].dtype() != flex_type_enum::IMAGE) {
+    log_and_throw("Image column name is not of type Image.");
+  }
+  if (data[target_column_name].dtype() != flex_type_enum::STRING) {
+    log_and_throw("Target column name is not of type String.");
+  }
   size_t nsegments = output_writer.num_segments();
   std::atomic<size_t> augmented_counter(0);
   gl_sframe decompressed_data = gl_sframe(data);
@@ -201,7 +217,7 @@ gl_sframe augment_data(const gl_sframe &data,
       for (const auto &row : decompressed_data.range_iterator()) {
         // go through all the starter images and create augmented images for
         // all starter images and the respective chunk of background images
-        flex_image object = row[image_column_index].to<flex_image>();
+        const flex_image &object = row[image_column_index].get<flex_image>();
         std::string label = row[target_column_index].to<flex_string>();
         std::pair<flex_image, flex_dict> synthetic_row =
             create_synthetic_image_from_background_and_starter(
@@ -210,7 +226,8 @@ gl_sframe augment_data(const gl_sframe &data,
         flex_dict annotation = synthetic_row.second;
         // write the synthetically generated image and the constructed
         // annotation to output SFrame.
-        output_writer.write({synthetic_image, annotation}, segment_id);
+        output_writer.write({std::move(synthetic_image), std::move(annotation)},
+                            segment_id);
         size_t augmented_rows_completed = 1 + augmented_counter.fetch_add(1);
         if (verbose) {
           std::ostringstream d;
