@@ -177,6 +177,9 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
         else:
             dataset, validation_set = _random_split_by_session(dataset, session_id)
 
+    for feature in features:
+        _tkutl._handle_missing_values(dataset, feature, 'training_dataset')
+
     # Encode the target column to numerical values
     use_target = target is not None
     dataset, target_map = _encode_target(dataset, target)
@@ -212,6 +215,8 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
         _tkutl._raise_error_if_sframe_empty(validation_set, 'validation_set')
         validation_set = _tkutl._toolkits_select_columns(
             validation_set, features + [session_id, target])
+        for feature in features:
+            _tkutl._handle_missing_values(dataset, feature, 'validation_set')
         validation_set = validation_set.filter_by(list(target_map.keys()), target)
         validation_set, mapping = _encode_target(validation_set, target, target_map)
         chunked_validation_set, _ = _prep_data(validation_set, features, session_id, prediction_window,

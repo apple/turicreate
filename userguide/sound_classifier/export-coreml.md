@@ -3,7 +3,7 @@
 ***Note:*** *This functionality is only available on iOS 12+ and macOS 10.14+*
 
 The Turi Create Sound Classifier Models are also available for use in
-your iOS/macOS via exporting to Core ML. The exported Core ML model
+your iOS/macOS apps via exporting to Core ML. The exported Core ML model
 will be a `PipelineClassifier` containing a model for each of the
 three stages (see the [How it works section](../sound_classifier/how-it-works.md) for more details about the stages).
 
@@ -21,13 +21,17 @@ Before you can use the model you must download
 preprocessing stage, which is implemented as a Core ML custom model.
 The `libAudioPreprocessing.dylib` file can be found on the
 [Github releases page](https://github.com/apple/turicreate/releases).
-Once you've download that file, drag and drop it into your Xcode project.
+Once you've downloaded that file, drag and drop it into your Xcode project.
 The dialog box should look like:
 ![Xcode dylib Screen Shot](xcode-dylib.png)
+
+If your project will be submitted to the App Store you will need to package the `libAudioPreprocessing.dylib` into a Framework in order to avoid an [iTunes Connect error](https://developer.apple.com/library/archive/technotes/tn2435/_index.html#//apple_ref/doc/uid/DTS40017543-CH1-TROUBLESHOOTING_BUNDLE_ERRORS-EMBEDDED__DYLIB_FILES). To package the framework properly, follow [these steps](https://developer.apple.com/library/archive/technotes/tn2435/_index.html#//apple_ref/doc/uid/DTS40017543-CH1-ADD_FRAMEWORK_TARGET).
 
 Now, do the following:
 * Under **Project > Build Phases**, add `libAudioPreprocessing.dylib` to **Copy Bundle Resources**
 * Under **Project > General**, add `libAudioPreprocessing.dylib` to **Embedded Binaries** and to **Linked Frameworks and Libraries**
+
+_Note: if you've packaged the `.dylib` into a Framework you'll need to perform these steps using the Framework instead of the dylib._
 
 
 Now you are ready to start using your model. To create an instance of

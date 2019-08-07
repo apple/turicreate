@@ -26,7 +26,6 @@ There are three aspects about this technique that are worth noting:
 During training, we employ [Transfer
 Learning](../image_classifier/how-it-works.md#transfer-learning). The 
 model uses the visual semantics of an already trained VGG-16 network to
-understand and mimic stylistic elements. It also updates only a small set of
-the parameters of the stylization network; the rest of the parameters were
+understand and mimic stylistic elements. If the `finetune_all_params` parameter is set to `False` only a small set of parameters of the stylization network are updated - the rest of the parameters were
 already trained and remain unchanged. This allows you to achieve great results
-with little data and shorter training time.
+with little data and shorter training time. If  `finetune_all_params` is set to `True`, the entire model is updated in training. For more information on advanced options in training, refer to the [Advanced Usage](../advanced-usage.md) section.

@@ -22,13 +22,9 @@
 
     if([element isEqualToString:@"canvas"]){
         return _canvas;
-    } else if([element isEqualToString:@"div"]) {
-        return [[VegaHTMLElement alloc] initWithTagName:@"div"];
     } else {
-        NSLog(@"creating elements of type '%@' is not supported", element);
-        assert(false);
+        return [[VegaHTMLElement alloc] initWithTagName:element];
     }
-    return nil;
 }
 
 @end

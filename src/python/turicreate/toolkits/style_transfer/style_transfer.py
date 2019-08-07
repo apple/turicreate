@@ -110,6 +110,8 @@ def create(style_dataset, content_dataset, style_feature=None,
         raise _ToolkitError("content_dataset SFrame cannot be empty")
     if(batch_size < 1):
         raise _ToolkitError("'batch_size' must be greater than or equal to 1")
+    if max_iterations is not None and (not isinstance(max_iterations, int) or max_iterations < 0):
+        raise _ToolkitError("'max_iterations' must be an integer greater than or equal to 0")
 
     from ._sframe_loader import SFrameSTIter as _SFrameSTIter
     import mxnet as _mx
@@ -117,6 +119,7 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     if style_feature is None:
         style_feature = _tkutl._find_only_image_column(style_dataset)
+    
     if content_feature is None:
         content_feature = _tkutl._find_only_image_column(content_dataset)
     if verbose:
@@ -125,7 +128,9 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     _raise_error_if_not_training_sframe(style_dataset, style_feature)
     _raise_error_if_not_training_sframe(content_dataset, content_feature)
-
+    _tkutl._handle_missing_values(style_dataset, style_feature, 'style_dataset')
+    _tkutl._handle_missing_values(content_dataset, content_feature, 'content_dataset')
+        
     params = {
         'batch_size': batch_size,
         'vgg16_content_loss_layer': 2,  # conv3_3 layer
@@ -176,7 +181,7 @@ def create(style_dataset, content_dataset, style_feature=None,
     input_shape = params['input_shape']
 
     iterations = 0
-    if max_iterations is None:
+    if max_iterations is None or max_iterations==0:
         max_iterations = len(style_dataset) * 10000
         if verbose:
             print('Setting max_iterations to be {}'.format(max_iterations))

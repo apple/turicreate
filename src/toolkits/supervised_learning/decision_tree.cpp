@@ -55,7 +55,14 @@ void init_decision_tree_common_options(option_manager &options){
       "Performance metric(s) to track during training iterations",
       "auto",
       false);
-}
+
+
+  options.create_boolean_option(
+      "disable_posttrain_evaluation",
+      "Disable automatic computation of an evaluation report following training.",
+      false,
+      false);
+ }
 
 /**
  * Init the XGboost options manager.

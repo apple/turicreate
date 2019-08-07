@@ -95,7 +95,7 @@ class join_hash_table {
   std::unordered_map<size_t, std::list<value_type>> _hash_table;
   // The positions in the rows that we store taht make up the hash key
   std::vector<size_t> _hash_positions;
-  value_type empty_vt;
+  const static value_type empty_vt;
 };
 
 /**
@@ -113,6 +113,7 @@ class hash_join_executor {
                      const std::vector<size_t> &left_join_positions,
                      const std::vector<size_t> &right_join_positions,
                      join_type_t join_type,
+                     const std::map<std::string,std::string>& alter_names,
                      size_t max_buffer_size);
 
   ~hash_join_executor() {}
@@ -129,9 +130,13 @@ class hash_join_executor {
   bool _left_join;
   bool _right_join;
   std::unordered_map<size_t,size_t> _right_to_left_join_positions;
+  std::unordered_map<size_t,size_t> _left_to_right_join_positions;
+  std::vector<std::string> _output_column_names;
+  std::vector<flex_type_enum> _output_column_types;
   bool _reverse_output_column_order;
-  std::unordered_map<size_t, std::string> _changed_dup_names;
+  std::unordered_map<size_t, size_t> _reverse_to_original;
   bool _frames_partitioned;
+  std::map<std::string, std::string> _alter_names_right;
 
   /**
    * Partition the left and right frames for the GRACE hash join algorithm and

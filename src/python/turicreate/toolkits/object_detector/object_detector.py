@@ -210,6 +210,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
 
     _raise_error_if_not_detection_sframe(dataset, feature, annotations,
                                          require_annotations=True)
+    _tkutl._handle_missing_values(dataset, feature, 'dataset')
     is_annotations_list = dataset[annotations].dtype == list
 
     _tkutl._check_categorical_option_type('model', model,

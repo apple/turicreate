@@ -487,34 +487,47 @@ void flexible_type::erase(const flexible_type& index) {
   }
 }
 
-bool flexible_type::is_zero() const {
-  switch(get_type()) {
-    case flex_type_enum::INTEGER:
-      return get<flex_int>() == 0;
-    case flex_type_enum::FLOAT:
-      return get<flex_float>() == 0.0;
-    case flex_type_enum::STRING:
-      return get<flex_string>().empty();
-    case flex_type_enum::VECTOR:
-      return get<flex_vec>().empty();
-    case flex_type_enum::LIST:
-      return get<flex_list>().empty();
-    case flex_type_enum::DICT:
-      return get<flex_dict>().empty();
-    case flex_type_enum::IMAGE:
-      return get<flex_image>().m_format == Format::UNDEFINED;
-    case flex_type_enum::UNDEFINED:
-      return true;
-    default:
-      log_and_throw("Unexpected type!");
-  };
-  __builtin_unreachable();
-}
+bool flexible_type::contains_na() const {
 
-bool flexible_type::is_na() const {
-  auto the_type = get_type();
-  return (the_type == flex_type_enum::UNDEFINED) ||
-          (the_type == flex_type_enum::FLOAT && std::isnan(get<flex_float>()));
+  switch (get_type()) {
+    case flex_type_enum::VECTOR:
+      for (const auto& cc : get<flex_vec>()) {
+        if (std::isnan(cc)) {
+          return true;
+        }
+      }
+      return false;
+    case flex_type_enum::LIST:
+      for (const auto& cc : get<flex_list>()) {
+        // recursive call
+        if (cc.contains_na()) {
+          return true;
+        }
+      }
+      return false;
+    case flex_type_enum::DICT:
+      for (const auto& cc : get<flex_dict>()) {
+        // recursive call on key,val pair
+        if(cc.first.contains_na() || cc.second.contains_na()) {
+          return true;
+        }
+      }
+      return false;
+    case flex_type_enum::ND_VECTOR: {
+      // enfore const to use no bound check operator[]
+      const auto& nd_arr = get<flex_nd_vec>();
+      auto idx = flex_nd_vec::index_range_type(nd_arr.shape().size(), 0);
+      do {
+        if (std::isnan(nd_arr[nd_arr.fast_index(idx)]))
+          return true;
+      } while (nd_arr.increment_index(idx));
+      return false;
+    }
+    default:
+      // non-container type case.
+      return is_na();
+  }
+
 }
 
 

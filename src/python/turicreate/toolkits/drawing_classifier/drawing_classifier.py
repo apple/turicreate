@@ -46,14 +46,6 @@ def _raise_error_if_not_drawing_classifier_input_sframe(
     if len(dataset) == 0:
         raise _ToolkitError("Input Dataset is empty!")
 
-def _drop_missing_values(dataset, feature, is_train):
-    original_dataset_size = len(dataset)
-    dataset = dataset.dropna(columns=feature)
-    if original_dataset_size != len(dataset):
-        dataset_type = "train" if is_train else "validation"
-        print("Dropping " + str(original_dataset_size - len(dataset)) + " rows for missing features in the " + dataset_type + " dataset.")
-    return dataset
-
 def create(input_dataset, target, feature=None, validation_set='auto',
             warm_start='auto', batch_size=256,
             max_iterations=100, verbose=True):
@@ -207,9 +199,9 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         raise TypeError("Unrecognized type for 'validation_set'."
             + validation_set_corrective_string)
 
-    dataset = _drop_missing_values(dataset, feature, is_train =True)
+    _tkutl._handle_missing_values(dataset, feature, 'training_dataset')
     if len(validation_dataset) > 0:
-        validation_dataset = _drop_missing_values(validation_dataset, feature, is_train=False)
+        _tkutl._handle_missing_values(dataset, feature, 'validation_set')
 
     train_loader = _SFrameClassifierIter(dataset, batch_size,
                  feature_column=feature,

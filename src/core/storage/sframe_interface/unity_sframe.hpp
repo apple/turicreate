@@ -65,7 +65,7 @@ class unity_sframe : public unity_sframe_base {
    * Constructs an Sframe using a dataframe as input.
    * Dataframe must not contain NaN values.
    */
-  void construct_from_dataframe(const dataframe_t& df);
+  void construct_from_dataframe(const dataframe_t& df) override;
 
   /**
    * Constructs an Sframe using a sframe as input.
@@ -81,7 +81,7 @@ class unity_sframe : public unity_sframe_base {
    * cleared (\ref clear()). May throw an exception on failure. If an exception
    * occurs, the contents of SArray is empty.
    */
-  void construct_from_sframe_index(std::string index_file);
+  void construct_from_sframe_index(std::string index_file) override;
 
   /**
    * Constructs an SFrame from one or more csv files.
@@ -113,7 +113,7 @@ class unity_sframe : public unity_sframe_base {
   std::map<std::string, std::shared_ptr<unity_sarray_base>> construct_from_csvs(
       std::string url,
       std::map<std::string, flexible_type> parsing_config,
-      std::map<std::string, flex_type_enum> column_type_hints);
+      std::map<std::string, flex_type_enum> column_type_hints) override;
 
   void construct_from_planner_node(std::shared_ptr<query_eval::planner_node> node,
                                    const std::vector<std::string>& column_names);
@@ -122,7 +122,7 @@ class unity_sframe : public unity_sframe_base {
    * Saves a copy of the current sframe into a directory.
    * Does not modify the current sframe.
    */
-  void save_frame(std::string target_directory);
+  void save_frame(std::string target_directory) override;
 
   /**
    * Performs an incomplete save of an existing SFrame into a directory.
@@ -131,7 +131,7 @@ class unity_sframe : public unity_sframe_base {
    *
    * Does not modify the current sframe.
    */
-  void save_frame_reference(std::string target_directory);
+  void save_frame_reference(std::string target_directory) override;
 
 
   /**
@@ -143,44 +143,54 @@ class unity_sframe : public unity_sframe_base {
   /**
    * Clears the contents of the SFrame.
    */
-  void clear();
+  void clear() override;
 
   /**
    * Returns the number of rows in the SFrame. Returns 0 if the SFrame is empty.
    */
-  size_t size();
+  size_t size() override;
 
   /**
    * Returns the number of columns in the SFrame.
    * Returns 0 if the sframe is empty.
    */
-  size_t num_columns();
+  size_t num_columns() override;
 
   /**
    * Returns an array containing the datatype of each column. The length
    * of the return array is equal to num_columns(). If the sframe is empty,
    * this returns an empty array.
    */
-  std::vector<flex_type_enum> dtype();
+  std::vector<flex_type_enum> dtype() override;
+
+  /**
+   * Returns the dtype of a particular column.
+   */
+  flex_type_enum dtype(size_t column_index);
+
+  /**
+   * Returns the dtype of a particular column.
+   */
+  flex_type_enum dtype(const std::string& column_name);
 
   /**
    * Returns an array containing the name of each column. The length
    * of the return array is equal to num_columns(). If the sframe is empty,
    * this returns an empty array.
    */
-  std::vector<std::string> column_names();
+  std::vector<std::string> column_names() override;
 
   /**
    * Returns some number of rows of the SFrame in a dataframe representation.
    * if nrows exceeds the number of rows in the SFrame ( \ref size() ), this
    * returns only \ref size() rows.
    */
-  std::shared_ptr<unity_sframe_base> head(size_t nrows);
+  std::shared_ptr<unity_sframe_base> head(size_t nrows) override;
 
   /**
    *  Returns the index of the column `name`
    */
-  size_t column_index(const std::string& name);
+  size_t column_index(const std::string& name) override;
 
   /**
    *  Returns the name of the column in position `index.`
@@ -196,25 +206,31 @@ class unity_sframe : public unity_sframe_base {
   /**
    * Same as head, returning dataframe.
    */
-  dataframe_t _head(size_t nrows);
+  dataframe_t _head(size_t nrows) override;
 
   /**
    * Returns some number of rows from the end of the SFrame in a dataframe
    * representation. If nrows exceeds the number of rows in the SFrame
    * ( \ref size() ), this returns only \ref size() rows.
    */
-  std::shared_ptr<unity_sframe_base> tail(size_t nrows);
+  std::shared_ptr<unity_sframe_base> tail(size_t nrows) override;
 
   /**
    * Same as head, returning dataframe.
    */
-  dataframe_t _tail(size_t nrows);
+  dataframe_t _tail(size_t nrows) override;
 
   /**
    * Returns an SArray with the column that corresponds to 'name'.  Throws an
    * exception if the name is not in the current SFrame.
    */
-  std::shared_ptr<unity_sarray_base> select_column(const std::string &name);
+  std::shared_ptr<unity_sarray_base> select_column(const std::string &name) override;
+
+  /**
+   * Returns an SArray with the column that corresponds to index idx.  Throws an
+   * exception if the name is not in the current SFrame.
+   */
+  std::shared_ptr<unity_sarray_base> select_column(size_t idx);
 
   /**
    * Returns a new SFrame which is filtered by a given logical column.
@@ -222,13 +238,18 @@ class unity_sframe : public unity_sframe_base {
    * array is returned containing only the elements in the current where are the
    * corresponding element in the index array evaluates to true.
    */
-  std::shared_ptr<unity_sframe_base> logical_filter(std::shared_ptr<unity_sarray_base> index);
+  std::shared_ptr<unity_sframe_base> logical_filter(std::shared_ptr<unity_sarray_base> index) override;
 
   /**
    * Returns an lazy sframe with the columns that have the given names. Throws an
    * exception if ANY of the names given are not in the current SFrame.
    */
-  std::shared_ptr<unity_sframe_base> select_columns(const std::vector<std::string> &names);
+  std::shared_ptr<unity_sframe_base> select_columns(const std::vector<std::string> &names) override;
+
+  /**
+   * Returns an lazy sframe with the columns given by the indices.
+   */
+  std::shared_ptr<unity_sframe_base> select_columns(const std::vector<size_t>& indices);
 
   /**
    * Mutates the current SFrame by adding the given column.
@@ -236,7 +257,7 @@ class unity_sframe : public unity_sframe_base {
    * Throws an exception if:
    *  - The given column has a different number of rows than the SFrame.
    */
-  void add_column(std::shared_ptr<unity_sarray_base >data, const std::string &name);
+  void add_column(std::shared_ptr<unity_sarray_base >data, const std::string &name) override;
 
   /**
    * Mutates the current SFrame by adding the given columns.
@@ -249,7 +270,7 @@ class unity_sframe : public unity_sframe_base {
    * be there. This needs to be changed.
    */
   void add_columns(std::list<std::shared_ptr<unity_sarray_base>> data_list,
-                   std::vector<std::string> name_vec);
+                   std::vector<std::string> name_vec) override;
 
   /**
    * Returns a new sarray which is a transform of each row in the sframe
@@ -258,8 +279,7 @@ class unity_sframe : public unity_sframe_base {
   std::shared_ptr<unity_sarray_base> transform(const std::string& lambda,
                                                flex_type_enum type,
                                                bool skip_undefined,
-                                               int seed);
-
+                                               int seed) override;
 
   /**
    * Returns a new sarray which is a transform of each row in the sframe
@@ -268,7 +288,7 @@ class unity_sframe : public unity_sframe_base {
   std::shared_ptr<unity_sarray_base> transform_native(const function_closure_info& lambda,
                                                       flex_type_enum type,
                                                       bool skip_undefined,
-                                                      int seed);
+                                                      int seed) override;
 
   /**
    * Returns a new sarray which is a transform of each row in the sframe
@@ -287,24 +307,24 @@ class unity_sframe : public unity_sframe_base {
                                               std::vector<std::string> output_column_names,
                                               std::vector<flex_type_enum> output_column_types,
                                               bool skip_undefined,
-                                              int seed);
+                                              int seed) override;
 
   /**
    * Set the ith column name.
    *
    * Throws an exception if index out of bound or name already exists.
    */
-  void set_column_name(size_t i, std::string name);
+  void set_column_name(size_t i, std::string name) override;
 
   /**
    * Remove the ith column.
    */
-  void remove_column(size_t i);
+  void remove_column(size_t i) override;
 
   /**
    * Swap the ith and jth columns.
    */
-  void swap_columns(size_t i, size_t j);
+  void swap_columns(size_t i, size_t j) override;
 
   /**
    * Returns the underlying shared_ptr to the sframe object.
@@ -341,7 +361,7 @@ class unity_sframe : public unity_sframe_base {
    * Note that use of pretty much any of the other data-dependent SArray
    * functions will invalidate the iterator.
    */
-  void begin_iterator();
+  void begin_iterator() override;
 
   /**
    * Obtains the next block of elements of size len from the SFrame.
@@ -355,7 +375,7 @@ class unity_sframe : public unity_sframe_base {
    * \returns The next collection of elements in the array. Returns less then
    * len elements on end of file or failure.
    */
-  std::vector< std::vector<flexible_type> > iterator_get_next(size_t len);
+  std::vector< std::vector<flexible_type> > iterator_get_next(size_t len) override;
 
   /**
    * Save the sframe to url in csv format.
@@ -381,43 +401,43 @@ class unity_sframe : public unity_sframe_base {
    *  - use_quote_char : First character if flexible_type is a string
    */
   void save_as_csv(const std::string& url,
-                   std::map<std::string, flexible_type> writing_config);
+                   std::map<std::string, flexible_type> writing_config) override;
 
   /**
    * Randomly split the sframe into two parts, with ratio = percent, and  seed = random_seed.
    *
    * Returns a list of size 2 of the unity_sframes resulting from the split.
    */
-  std::list<std::shared_ptr<unity_sframe_base>> random_split(float percent, int random_seed, bool exact=false);
+  std::list<std::shared_ptr<unity_sframe_base>> random_split(float percent, int random_seed, bool exact=false) override;
 
   /**
    * Sample the rows of sframe uniformly with ratio = percent, and seed = random_seed.
    *
    * Returns unity_sframe* containing the sampled rows.
    */
-  std::shared_ptr<unity_sframe_base> sample(float percent, int random_seed, bool exact=false);
+  std::shared_ptr<unity_sframe_base> sample(float percent, int random_seed, bool exact=false) override;
 
   /**
    * materialize the sframe, this is different from save() as this is a temporary persist of
    * all sarrays underneath the sframe to speed up some computation (for example, lambda)
    * this will NOT create a new uity_sframe.
   **/
-  void materialize();
+  void materialize() override;
 
   /**
    * Returns whether or not this sframe is materialized
    **/
-  bool is_materialized();
+  bool is_materialized() override;
 
   /**
    * Return the query plan as a string representation of a dot graph.
    */
-  std::string query_plan_string();
+  std::string query_plan_string() override;
 
   /**
    * Return true if the sframe size is known.
    */
-  bool has_size();
+  bool has_size() override;
 
   /**
    * Returns unity_sframe* where there is one row for each unique value of the
@@ -429,7 +449,7 @@ class unity_sframe : public unity_sframe_base {
       const std::vector<std::string>& key_columns,
       const std::vector<std::vector<std::string>>& group_columns,
       const std::vector<std::string>& group_output_columns,
-      const std::vector<std::string>& group_operations);
+      const std::vector<std::string>& group_operations) override;
 
   /**
    * \overload
@@ -445,14 +465,20 @@ class unity_sframe : public unity_sframe_base {
    * The "other" SFrame has to have the same number of columns with the same column names
    * and same column types as "this" SFrame
    */
-  std::shared_ptr<unity_sframe_base> append(std::shared_ptr<unity_sframe_base> other);
+  std::shared_ptr<unity_sframe_base> append(std::shared_ptr<unity_sframe_base> other) override;
 
-  std::shared_ptr<unity_sframe_base> join(std::shared_ptr<unity_sframe_base >right,
+  inline std::shared_ptr<unity_sframe_base> join(std::shared_ptr<unity_sframe_base >right,
                           const std::string join_type,
-                          std::map<std::string,std::string> join_keys);
+                          const std::map<std::string,std::string>& join_keys) override
+  { return join_with_custom_name(right, join_type, join_keys, {}); }
+
+  std::shared_ptr<unity_sframe_base> join_with_custom_name(std::shared_ptr<unity_sframe_base >right,
+                          const std::string join_type,
+                          const std::map<std::string,std::string>& join_keys,
+                          const std::map<std::string,std::string>& alternative_names) override;
 
   std::shared_ptr<unity_sframe_base> sort(const std::vector<std::string>& sort_keys,
-                          const std::vector<int>& sort_ascending);
+                          const std::vector<int>& sort_ascending) override;
 
   /**
     * Pack a subset columns of current SFrame into one dictionary column, using
@@ -474,7 +500,7 @@ class unity_sframe : public unity_sframe_base {
       const std::vector<std::string>& pack_column_names,
       const std::vector<std::string>& dict_key_names,
       flex_type_enum dtype,
-      const flexible_type& fill_na);
+      const flexible_type& fill_na) override;
 
   /**
    * Convert a dictionary column of the SFrame to two columns with first column
@@ -504,7 +530,7 @@ class unity_sframe : public unity_sframe_base {
       const std::string& column_name,
       const std::vector<std::string>& new_column_names,
       const std::vector<flex_type_enum>& new_column_types,
-      bool drop_na);
+      bool drop_na) override;
 
    /**
     * Extracts a range of rows from an SFrame as a new SFrame.
@@ -512,7 +538,7 @@ class unity_sframe : public unity_sframe_base {
     * end(exclusive) in steps of "step".
     * step must be at least 1.
     */
-  std::shared_ptr<unity_sframe_base> copy_range(size_t start, size_t step, size_t end);
+  std::shared_ptr<unity_sframe_base> copy_range(size_t start, size_t step, size_t end) override;
 
   /**
    * Returns a new SFrame with missing values dropped.
@@ -535,15 +561,15 @@ class unity_sframe : public unity_sframe_base {
    */
   std::list<std::shared_ptr<unity_sframe_base>> drop_missing_values(
       const std::vector<std::string>& column_names, bool all, bool split,
-      bool recursive);
+      bool recursive) override;
 
-  dataframe_t to_dataframe();
+  dataframe_t to_dataframe() override;
 
-  void save(oarchive& oarc) const;
+  void save(oarchive& oarc) const override;
 
-  void load(iarchive& iarc);
+  void load(iarchive& iarc) override;
 
-  void delete_on_close();
+  void delete_on_close() override;
 
   /**
    * Similar to logical filter, but return both positive and negative rows.
@@ -557,9 +583,9 @@ class unity_sframe : public unity_sframe_base {
   std::list<std::shared_ptr<unity_sframe_base>> logical_filter_split(
     std::shared_ptr<unity_sarray_base> logical_filter_array);
 
-  void explore(const std::string& path_to_client, const std::string& title);
-  void show(const std::string& path_to_client);
-  std::shared_ptr<model_base> plot();
+  void explore(const std::string& path_to_client, const std::string& title) override;
+  void show(const std::string& path_to_client) override;
+  std::shared_ptr<model_base> plot() override;
 
  private:
   /**
@@ -608,14 +634,7 @@ class unity_sframe : public unity_sframe_base {
    *
    * Throw if column_names has duplication, or some column name does not exist.
    */
-  std::vector<size_t> _convert_column_names_to_indices(const std::vector<std::string> &column_names);
-
-  /**
-   * a cell is considered to be nan iff it contains nan.
-   * it will be passed to lambda, so declare it as static,
-   * otherwise this pointer needs to be captured.
-   */
-  static inline bool _contains_nan(const flexible_type& cell);
+  std::vector<size_t> _convert_column_names_to_indices(const std::vector<std::string>& column_names);
 
   /**
    * Generate a new column name

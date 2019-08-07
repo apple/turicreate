@@ -156,6 +156,7 @@ def binary_classification_integer_target(cls):
         'training_report_by_class': lambda x: len(x) > 0,
         'training_roc_curve': lambda x: len(x) > 0,
         'validation_data': lambda x: isinstance(x, tc.SFrame) and len(x) == 0,
+        'disable_posttrain_evaluation' : lambda x: x == False,
         }
     cls.fields_ans = cls.get_ans.keys()
 
