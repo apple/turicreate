@@ -7,11 +7,9 @@
 #include <iostream>
 #include <vector>
 
-#include <external/pybind11/pybind11.h>
-#include <external/pybind11/numpy.h>
 #include <ml/neural_net/mxnet_compute_context.hpp>
-
-
+#include <pybind11/pybind11.h>
+#include <pybind11/numpy.h>
 
 namespace turi {
 namespace neural_net {

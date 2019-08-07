@@ -55,8 +55,6 @@ else()
   set(additional_unity_neural_net_requirements "")
 endif()
 
-include_directories(${CMAKE_SOURCE_DIR}/external/pybind11)
-
 make_library(tcmxnet SHARED
   SOURCES
   mxnet_compute_context.cpp
