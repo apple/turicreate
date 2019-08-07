@@ -1,8 +1,0 @@
-beautifulsoup4
-certifi==2015.04.28
-nltk==3.2
-pyscreenshot==0.4
-python-swiftclient
-python-keystoneclient
-testfixtures==4.10.0
-h5py==2.7.1

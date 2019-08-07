@@ -296,9 +296,9 @@ class StyleTransferGPUTest(unittest.TestCase):
         old_num_gpus = tc.config.get_num_gpus()
         gpu_options = set([old_num_gpus, 0, 1])
         for in_gpus in gpu_options:
+            tc.config.set_num_gpus(in_gpus)
+            model = tc.style_transfer.create(self.style_sf, self.content_sf, max_iterations=1)
             for out_gpus in gpu_options:
-                tc.config.set_num_gpus(in_gpus)
-                model = tc.style_transfer.create(self.style_sf, self.content_sf, max_iterations=1)
                 with test_util.TempDirectory() as path:
                     model.save(path)
                     tc.config.set_num_gpus(out_gpus)

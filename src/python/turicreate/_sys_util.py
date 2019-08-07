@@ -358,7 +358,7 @@ for f in server_logs:
         try:
             os.remove(f)
         except Exception:
-            pass
+            print("Could not delete: %s" % f)
 
 
 def dump_directory_structure(out = sys.stdout):

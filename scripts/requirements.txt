@@ -1,26 +1,26 @@
-coremltools==2.1.0
+coremltools==3.0b3
 scipy==1.2.1
 numpy==1.16.4
-cython==0.29.12
+cython==0.29.10
 argparse==1.2.1
-decorator==4.1.2
-mock==2.0.0
-pytest==3.2.5
-pandas==0.22.0
-pillow==5.0.0
+decorator==4.4.0
+mock==3.0.5
+pytest==4.6.3
+pandas==0.24.2
+pillow==6.0.0
 prettytable==0.7.2
-pytz==2016.3
+pytz==2019.1
 resampy==0.2.1
 requests>=2.9.1
-scikit-learn==0.17.1
-six==1.10.0
-statsmodels==0.8.0
+scikit-learn==0.20.3
+six==1.12.0
+statsmodels==0.9.0
 wheel==0.29.0
-mxnet==1.1.0
+mxnet==1.1.0; sys_platform != 'darwin'
 UISoup==2.5.7
-pyobjc==4.2.2; sys_platform == 'darwin'
-future==0.16.0
-pyOpenSSL
-ndg-httpsclient
-pyasn1
-hypothesis==3.76.0
+pyobjc==5.2; sys_platform == 'darwin'
+future==0.17.1
+pyOpenSSL==19.0.0
+ndg-httpsclient==0.5.1
+pyasn1==0.4.5
+hypothesis==4.24.3

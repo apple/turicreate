@@ -26,6 +26,7 @@ class InstallEngine(install):
         * Linux x86_64 (including WSL on Windows 10).
         * macOS 10.12+ x86_64.
         * Python 2.7, 3.5, or 3.6.
+        * Python 3.7 macOS only.
 
         Other possible causes of this error are:
 
@@ -55,6 +56,7 @@ if __name__ == '__main__':
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Scientific/Engineering",
         "Topic :: Scientific/Engineering :: Information Analysis",

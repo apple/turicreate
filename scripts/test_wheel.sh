@@ -27,6 +27,7 @@ print_help() {
   echo
   echo "  --docker-python3.6       Use docker to test on Python 3.6 in Ubuntu 18.04."
   echo
+  echo "  --docker-python3.7       Use docker to test on Python 3.7 in Ubuntu 18.04."
   exit 1
 } # end of print help
 
@@ -37,6 +38,7 @@ while [ $# -gt 0 ]
     --docker-python2.7)     USE_DOCKER=1;DOCKER_PYTHON=2.7;;
     --docker-python3.5)     USE_DOCKER=1;DOCKER_PYTHON=3.5;;
     --docker-python3.6)     USE_DOCKER=1;DOCKER_PYTHON=3.6;;
+    --docker-python3.7)     USE_DOCKER=1;DOCKER_PYTHON=3.7;;
     --help)                 print_help ;;
     *) unknown_option $1 ;;
   esac
@@ -61,7 +63,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
       -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
       ${TC_BUILD_IMAGE_1404} \
       /build/scripts/test_wheel.sh
-  elif [[ "${DOCKER_PYTHON}" == "3.6" ]]; then
+  elif [[ "${DOCKER_PYTHON}" == "3.6" ]] || [[ "${DOCKER_PYTHON}" == "3.7" ]]; then
     docker run --rm -m=8g \
       --mount type=bind,source=$WORKSPACE,target=/build,consistency=delegated \
       -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
