@@ -627,6 +627,10 @@ def _validate_data(dataset, target, features=None, validation_set='auto'):
 
     return dataset, validation_set
 
+def _handle_missing_values(dataset, feature_column_name, variable_name="dataset"):
+    if any(feat is None for feat in dataset[feature_column_name]):
+        raise ToolkitError("Missing value (None) encountered in column " + str(feature_column_name) + " in the " + variable_name + ". Use the SFrame's dropna function to drop rows with 'None' values in them.")
+
 def _validate_row_label(dataset, label=None, default_label='__id'):
     """
     Validate a row label column. If the row label is not specified, a column is

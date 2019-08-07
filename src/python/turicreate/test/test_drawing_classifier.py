@@ -92,6 +92,10 @@ class DrawingClassifierTest(unittest.TestCase):
         self.trains = [self.check_cross_sf, self.stroke_sf]
         self.models = [self.check_cross_model, self.stroke_model]
 
+    def test_create_with_missing_value_bitmap(self):
+        sf = self.check_cross_sf.append(_tc.SFrame({self.feature: _tc.SArray([None], dtype=_tc.Image), self.target: ["check"]}))
+        with self.assertRaises(_ToolkitError):
+            _tc.drawing_classifier.create(sf, self.target)
 
     def test_create_with_missing_feature(self):
         for sf in self.trains:

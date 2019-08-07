@@ -119,6 +119,7 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     if style_feature is None:
         style_feature = _tkutl._find_only_image_column(style_dataset)
+    
     if content_feature is None:
         content_feature = _tkutl._find_only_image_column(content_dataset)
     if verbose:
@@ -127,7 +128,9 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     _raise_error_if_not_training_sframe(style_dataset, style_feature)
     _raise_error_if_not_training_sframe(content_dataset, content_feature)
-
+    _tkutl._handle_missing_values(style_dataset, style_feature, 'style_dataset')
+    _tkutl._handle_missing_values(content_dataset, content_feature, 'content_dataset')
+        
     params = {
         'batch_size': batch_size,
         'vgg16_content_loss_layer': 2,  # conv3_3 layer
