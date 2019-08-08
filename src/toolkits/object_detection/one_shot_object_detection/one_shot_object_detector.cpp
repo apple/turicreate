@@ -177,7 +177,7 @@ gl_sframe augment_data(const gl_sframe &data,
                        << " background images." << std::endl;
     table.print_header();
   }
-  std::vector<std::string> output_column_names = {"image", "annotation"};
+  std::vector<std::string> output_column_names = {image_column_name, "annotation"};
   std::vector<flex_type_enum> output_column_types = {flex_type_enum::IMAGE,
                                                      flex_type_enum::DICT};
   gl_sframe_writer output_writer(output_column_names, output_column_types);
