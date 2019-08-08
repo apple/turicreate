@@ -65,7 +65,7 @@ def _get_data(feature, target):
         pil_img = _PIL_Image.fromarray(img, mode='RGB')
         image_format = FORMATS[rs.randint(len(FORMATS))]
         starter_images.append(from_pil_image(pil_img, image_format=image_format))
-        starter_target.append(i % len(_CLASSES))
+        starter_target.append(_CLASSES[i % len(_CLASSES)])
 
     train = tc.SFrame({
         feature: tc.SArray(starter_images),
