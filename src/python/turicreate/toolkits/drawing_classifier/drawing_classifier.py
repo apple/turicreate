@@ -56,7 +56,7 @@ def _drop_missing_values(dataset, feature, is_train):
 
 def create(input_dataset, target, feature=None, validation_set='auto',
             warm_start='auto', batch_size=256,
-            max_iterations=100, verbose=True):
+            max_iterations=500, verbose=True):
     """
     Create a :class:`DrawingClassifier` model.
 

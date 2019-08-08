@@ -18,6 +18,8 @@ If you specify both `max_iterations` and `num_epochs`, `max_iterations` would
 take precedence and the model would train for that number of iterations and the 
 provided value of `num_epochs` would be ignored.
 
+When training a model for a large number of classes, it may be helpful to increase `max_iterations` to allow the model more revisions of the data to learn better.
+
 ### Warm Start
 
 To boost the accuracy of the Drawing Classifier models you train, and to help
