@@ -8,4 +8,4 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 from .one_shot_object_detector import create, OneShotObjectDetector
 
-__all__ = ['create', 'OneShotObjectDetector']
+__all__ = ['create', 'OneShotObjectDetector', 'util']

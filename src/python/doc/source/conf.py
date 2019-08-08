@@ -63,7 +63,8 @@ for m in [
           'image_similarity',
           'topic_model',
           'triangle_counting',
-          'visualization'
+          'visualization',
+          'one_shot_object_detector'
           ]:
     module_name = 'turicreate.' + m
     sys.modules[module_name] = eval(module_name)
