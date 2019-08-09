@@ -439,14 +439,14 @@ gl_sarray object_detector::predict(gl_sframe data) {
                       const std::vector<image_annotation>& groundtruth_row) {
     // Convert predicted_row to flex_type list to call gl_sarray_writer
     flex_list predicted_row_ft;
-    for (auto const& each_row : predicted_row) {
-      flex_list fl = {each_row.bounding_box.x, each_row.bounding_box.y,
-                      each_row.bounding_box.width,
-                      each_row.bounding_box.height};
-      auto sa = flex_list({flex_dict{{"confidence", each_row.confidence},
-                                     {"bounding_box", fl},
-                                     {"identifier", each_row.identifier}}});
-      predicted_row_ft.push_back(sa);
+    for (const image_annotation& each_row : predicted_row) {
+      flex_dict bb_dict = {{"x", each_row.bounding_box.x}, {"y", each_row.bounding_box.y},
+                      {"width", each_row.bounding_box.width},
+                      {"height", each_row.bounding_box.height}};
+      flex_dict each_annotation = {{"confidence", each_row.confidence},
+                                     {"bounding_box", bb_dict},
+                                     {"identifier", each_row.identifier}};
+      predicted_row_ft.push_back(each_annotation);
     }
     result.write(predicted_row_ft, 0);
   };
