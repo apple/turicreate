@@ -90,6 +90,9 @@ public:
 
   virtual void checkDataSet() = 0;
 
+  /* must be called after construction */
+  virtual void splitUndefined(const std::string& column_names, bool how, bool recursive);
+
   BEGIN_BASE_CLASS_MEMBER_REGISTRATION()
 
   IMPORT_BASE_CLASS_REGISTRATION(ml_model_base);
@@ -112,6 +115,7 @@ public:
 
 protected:
   std::shared_ptr<unity_sframe> m_data;
+  std::shared_ptr<unity_sframe> m_data_na;
   const std::vector<std::string> m_data_columns;
   std::string m_annotation_column;
   std::shared_ptr<visualization::process_wrapper> m_aw;

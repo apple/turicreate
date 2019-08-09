@@ -28,9 +28,11 @@ ImageClassification::ImageClassification(
     const std::vector<std::string> &data_columns,
     const std::string &annotation_column)
     : AnnotationBase(data, data_columns, annotation_column) {
-  this->addAnnotationColumn();
-  this->checkDataSet();
-  this->_createFeaturesExtractor();
+  addAnnotationColumn();
+  checkDataSet();
+  _createFeaturesExtractor();
+  // tempaory workaround for avoiding resizing undefined images, check issue #1977
+  splitUndefined(data_columns.at(0), false, false);
 }
 
 annotate_spec::Data ImageClassification::getItems(size_t start, size_t end) {
