@@ -9,6 +9,7 @@
 #include <core/storage/query_engine/operators/operator.hpp>
 #include <core/storage/query_engine/execution/query_context.hpp>
 #include <core/storage/query_engine/operators/operator_properties.hpp>
+#include <core/util/coro.hpp>
 
 namespace turi {
 namespace query_eval {
@@ -27,6 +28,14 @@ namespace query_eval {
 template<>
 class operator_impl<planner_node_type::LOGICAL_FILTER_NODE> : public query_operator {
  public:
+  DECL_CORO_STATE(execute);
+  std::shared_ptr<const sframe_rows>  rows_left, rows_right;
+  sframe_rows::const_iterator left_iter, right_iter, out_iter;
+  std::shared_ptr<sframe_rows>  output_buffer;
+  size_t cur_output_index = 0;
+  size_t ncols = 0;
+  size_t nrows = 0;
+  bool has_data = false;
 
   planner_node_type type() const { return planner_node_type::LOGICAL_FILTER_NODE; }
 
@@ -54,18 +63,22 @@ class operator_impl<planner_node_type::LOGICAL_FILTER_NODE> : public query_opera
     return true;
   }
 
+  inline bool coro_running() const {
+    return CORO_RUNNING(execute);
+  }
   inline void execute(query_context& context) {
+    CORO_BEGIN(execute)
     // read one block
-    auto rows_left = context.get_next(0);
-    auto rows_right = context.get_next(1);
+    rows_left = context.get_next(0);
+    rows_right = context.get_next(1);
     if (rows_left == nullptr && rows_right == nullptr) return;
     ASSERT_TRUE(rows_left != nullptr && rows_right != nullptr);
 
     // set up the output shape
-    auto output_buffer = context.get_output_buffer();
-    size_t cur_output_index = 0;
-    size_t ncols = rows_left->num_columns();
-    size_t nrows = context.block_size();
+    output_buffer = context.get_output_buffer();
+    cur_output_index = 0;
+    ncols = rows_left->num_columns();
+    nrows = context.block_size();
     output_buffer->resize(ncols, nrows);
 
 
@@ -73,14 +86,15 @@ class operator_impl<planner_node_type::LOGICAL_FILTER_NODE> : public query_opera
       ASSERT_TRUE(rows_left != nullptr && rows_right != nullptr);
       ASSERT_EQ(rows_left->num_rows(), rows_right->num_rows());
 
-      auto left_iter = rows_left->cbegin();
-      auto right_iter = rows_right->cbegin();
+      left_iter = rows_left->cbegin();
+      right_iter = rows_right->cbegin();
       while(left_iter != rows_left->cend()) {
         if (!(*right_iter)[0].is_zero()) {
           (*output_buffer)[cur_output_index] = (*left_iter);
           ++cur_output_index;
           if (cur_output_index == nrows) {
             context.emit(output_buffer);
+            CORO_YIELD();
             output_buffer = context.get_output_buffer();
             output_buffer->resize(ncols, nrows);
             cur_output_index = 0;
@@ -89,7 +103,7 @@ class operator_impl<planner_node_type::LOGICAL_FILTER_NODE> : public query_opera
         ++left_iter;
         ++right_iter;
       }
-      bool has_data = false;
+      has_data = false;
       do {
         // get the binary column first
         rows_right = context.get_next(1);
@@ -108,7 +122,9 @@ class operator_impl<planner_node_type::LOGICAL_FILTER_NODE> : public query_opera
     if (cur_output_index > 0) {
       output_buffer->resize(ncols, cur_output_index);
       context.emit(output_buffer);
+      CORO_YIELD();
     }
+    CORO_END
   }
 
   static std::shared_ptr<planner_node> make_planner_node(

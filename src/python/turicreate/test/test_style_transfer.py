@@ -79,27 +79,52 @@ class StyleTransferTest(unittest.TestCase):
                                               self.content_sf,
                                               style_feature=self.style_feature,
                                               content_feature=self.content_feature,
-                                              max_iterations=0,
+                                              max_iterations=1,
                                               model=self.pre_trained_model)
 
+    def test_create_with_missing_style_value(self):
+        style_with_none = self.style_sf.append(tc.SFrame({self.style_feature: tc.SArray([None], dtype=tc.Image)}))
+        with self.assertRaises(_ToolkitError):
+            tc.style_transfer.create(style_with_none, self.content_sf, style_feature=self.style_feature,
+                                 max_iterations=0)
 
-    @pytest.mark.xfail(raises=_ToolkitError)
+    def test_create_with_missing_content_value(self):
+        content_with_none = self.content_sf.append(tc.SFrame({self.content_feature: tc.SArray([None], dtype=tc.Image)}))
+        with self.assertRaises(_ToolkitError):
+            tc.style_transfer.create(self.style_sf, content_with_none, style_feature=self.style_feature,
+                                 max_iterations=0)
+
     def test_create_with_missing_style_feature(self):
-        tc.style_transfer.create(self.style_sf, self.content_sf, style_feature='wrong_feature',
-                                 max_iterations=0)
+        with self.assertRaises(_ToolkitError):
+            tc.style_transfer.create(self.style_sf, self.content_sf, style_feature='wrong_feature',
+                                 max_iterations=1)
 
-    @pytest.mark.xfail(raises=_ToolkitError)
+
     def test_create_with_missing_content_feature(self):
-        tc.style_transfer.create(self.style_sf, self.content_sf, content_feature='wrong_feature',
-                                 max_iterations=0)
+        with self.assertRaises(_ToolkitError):
+            tc.style_transfer.create(self.style_sf, self.content_sf, content_feature='wrong_feature',
+                                 max_iterations=1)
 
-    @pytest.mark.xfail(raises=_ToolkitError)
     def test_create_with_empty_style_dataset(self):
-        tc.style_transfer.create(self.style_sf[:0], self.content_sf, max_iterations=0)
+        with self.assertRaises(_ToolkitError):
+            tc.style_transfer.create(self.style_sf[:0], self.content_sf, max_iterations=1)
 
-    @pytest.mark.xfail(raises=_ToolkitError)
     def test_create_with_empty_content_dataset(self):
-        tc.style_transfer.create(self.style_sf, self.content_sf[:0], max_iterations=0)
+        with self.assertRaises(_ToolkitError):
+            tc.style_transfer.create(self.style_sf, self.content_sf[:0], max_iterations=1)
+
+    def test_create_with_incorrect_max_iterations_format_string(self):
+        with self.assertRaises(_ToolkitError):
+            tc.style_transfer.create(self.style_sf[:1], self.content_sf[:1], max_iterations='dummy_string')
+
+    def test_create_with_incorrect_max_iterations_format_negative(self):
+        with self.assertRaises(_ToolkitError):
+            tc.style_transfer.create(self.style_sf[:1], self.content_sf[:1], max_iterations=-1)
+
+    def test_create_with_incorrect_max_iterations_format_float(self):
+        with self.assertRaises(_ToolkitError):
+            tc.style_transfer.create(self.style_sf[:1], self.content_sf[:1], max_iterations=1.25)
+
 
     def _get_invalid_style_cases(self):
         style_cases = []
@@ -271,9 +296,9 @@ class StyleTransferGPUTest(unittest.TestCase):
         old_num_gpus = tc.config.get_num_gpus()
         gpu_options = set([old_num_gpus, 0, 1])
         for in_gpus in gpu_options:
+            tc.config.set_num_gpus(in_gpus)
+            model = tc.style_transfer.create(self.style_sf, self.content_sf, max_iterations=1)
             for out_gpus in gpu_options:
-                tc.config.set_num_gpus(in_gpus)
-                model = tc.style_transfer.create(self.style_sf, self.content_sf, max_iterations=1)
                 with test_util.TempDirectory() as path:
                     model.save(path)
                     tc.config.set_num_gpus(out_gpus)

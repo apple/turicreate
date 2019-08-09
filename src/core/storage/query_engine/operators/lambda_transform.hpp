@@ -11,6 +11,7 @@
 #include <core/storage/query_engine/operators/operator_properties.hpp>
 #include <core/system/lambda/pylambda_function.hpp>
 #include <core/system/exceptions/error_types.hpp>
+#include <core/util/coro.hpp>
 namespace turi {
 namespace query_eval {
 
@@ -28,6 +29,7 @@ template<>
 class operator_impl<planner_node_type::LAMBDA_TRANSFORM_NODE> : public query_operator {
 
  public:
+  DECL_CORO_STATE(execute);
   planner_node_type type() const { return planner_node_type::LAMBDA_TRANSFORM_NODE; }
 
   static std::string name() { return "lambda_transform";  }
@@ -50,8 +52,13 @@ class operator_impl<planner_node_type::LAMBDA_TRANSFORM_NODE> : public query_ope
     return std::make_shared<operator_impl>(*this);
   }
 
+  inline bool coro_running() const {
+    return CORO_RUNNING(execute);
+  }
   inline void execute(query_context& context) {
+    CORO_BEGIN(execute)
     while(1) {
+      {
       auto rows = context.get_next(0);
       if (rows == nullptr)
         break;
@@ -73,7 +80,10 @@ class operator_impl<planner_node_type::LAMBDA_TRANSFORM_NODE> : public query_ope
         (*output)[i][0] = convert_value_to_output_type(out[i], m_output_type);
       }
       context.emit(output);
+      }
+      CORO_YIELD();
     }
+    CORO_END
   }
 
   static std::shared_ptr<planner_node> make_planner_node(

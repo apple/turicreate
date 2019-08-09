@@ -7,6 +7,7 @@
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 
 import os
+import subprocess
 import sys
 from setuptools import setup, find_packages, Extension
 from setuptools.dist import Distribution
@@ -38,14 +39,7 @@ class InstallEngine(install):
             sys.stderr.write(msg)
             sys.exit(1)
 
-        # Check correct version of Python
-        if sys.version_info.major == 2 and sys.version_info[:2] < (2, 7):
-            msg = ("Turi Create requires at least Python 2.7, please install using a supported version."
-                   + " Your current Python version is: %s" % sys.version)
-            sys.stderr.write(msg)
-            sys.exit(1)
-
-        # if OSX, verify > 10.7
+        # if OSX, verify >= 10.8
         from distutils.util import get_platform
         from pkg_resources import parse_version
         cur_platform = get_platform()
@@ -94,6 +88,7 @@ if __name__ == '__main__':
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Scientific/Engineering",
         "Topic :: Scientific/Engineering :: Information Analysis",
@@ -116,6 +111,51 @@ if __name__ == '__main__':
 
     with open(os.path.join(os.path.dirname(__file__), 'README.rst'), 'rb') as f:
         long_description = f.read().decode('utf-8')
+
+    install_requires = [
+        "coremltools==3.0b3",
+        "decorator >= 4.0.9",
+        "numpy==1.16.4",
+        "pandas >= 0.23.2",
+        "pillow >= 5.2.0",
+        "prettytable == 0.7.2",
+        "resampy == 0.2.1",
+        "requests >= 2.9.1",
+        "scipy >= 1.1.0",
+        "six >= 1.10.0",
+    ]
+
+    if sys.version_info.major == 3 and sys.version_info.minor == 7:
+        if not cur_platform.startswith("macosx"):
+            msg = (
+                "Python 3.7 is only currently supported on macOS."
+            )
+            sys.stderr.write(msg)
+            sys.exit(1)
+
+        # Determine if AVX2 is supported
+        try:
+            p1 = subprocess.Popen(['sysctl', '-a'], stdout=subprocess.PIPE)
+            p2 = subprocess.Popen(['grep', '-E', '^hw\.\w+.avx\w*: 1$'],
+                                  stdin=p1.stdout, stdout=subprocess.PIPE)
+            p1.stdout.close()
+            stdout = p2.communicate()[0]
+        except:
+            msg = (
+                "Error running: sysctl system command"
+            )
+            sys.stderr.write(msg)
+            sys.exit(1)
+        if stdout == b'':
+            msg = (
+                "Error: Python 3.7 requires AVX2 support."
+            )
+            sys.stderr.write(msg)
+            sys.exit(1)
+
+        install_requires.append("mxnet==1.5.0")
+    else:
+        install_requires.append("mxnet >= 1.1.0, < 1.2.0")
 
     setup(
         name="turicreate",
@@ -172,17 +212,5 @@ if __name__ == '__main__':
         description='Turi Create simplifies the development of custom machine learning models.',
         long_description=long_description,
         classifiers=classifiers,
-        install_requires=[
-            "decorator >= 4.0.9",
-            "prettytable == 0.7.2",
-            "requests >= 2.9.1",
-            "mxnet >= 1.1.0, < 1.2.0",
-            "coremltools==2.1.0",
-            "pillow >= 3.3.0",
-            "pandas >= 0.19.0",
-            "scipy >= 0.14.0",
-            "six >= 1.10.0",
-            "resampy == 0.2.1",
-            "numpy"
-        ],
+        install_requires=install_requires
     )

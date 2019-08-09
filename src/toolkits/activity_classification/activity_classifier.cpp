@@ -53,17 +53,27 @@ constexpr float LSTM_CELL_CLIP_THRESHOLD = 50000.f;
 // into TCMPS.
 // TODO: These should be exposed in a way that facilitates experimentation.
 // TODO: A struct instead of a map would be nice, too.
-float_array_map get_training_config(size_t prediction_window) {
+// TODO: And that should really happen before we deploy to Apple platforms where
+//       float and int don't have the same size.
+float_array_map get_training_config(size_t prediction_window,
+                                    int random_seed) {
+  static_assert(sizeof(float) == sizeof(int),
+                "Passing random seed assumes float and int have same size.");
+  float random_seed_float = *reinterpret_cast<float*>(&random_seed);
+
   return {
     { "ac_pred_window", shared_float_array::wrap(prediction_window) },
     { "ac_seq_len", shared_float_array::wrap(NUM_PREDICTIONS_PER_CHUNK) },
     { "mode", shared_float_array::wrap(0.f) },  // kLowLevelModeTrain
+    { "random_seed", shared_float_array::wrap(random_seed_float) },
   };
 }
 float_array_map get_inference_config(size_t prediction_window) {
-  float_array_map config = get_training_config(prediction_window);
-  config["mode"] = shared_float_array::wrap(1.f);  // kLowLevelModeInference
-  return config;
+  return {
+    { "ac_pred_window", shared_float_array::wrap(prediction_window) },
+    { "ac_seq_len", shared_float_array::wrap(NUM_PREDICTIONS_PER_CHUNK) },
+    { "mode", shared_float_array::wrap(1.f) },  // kLowLevelModeInference
+  };
 }
 
 size_t count_correct_predictions(size_t num_classes, const shared_float_array& output_chunk,
@@ -846,7 +856,8 @@ void activity_classifier::init_train(
       /* c_out */ read_state<flex_int>("num_classes"),
       /* h_out */ 1,
       /* w_out */ NUM_PREDICTIONS_PER_CHUNK,
-      get_training_config(read_state<flex_int>("prediction_window")),
+      get_training_config(read_state<flex_int>("prediction_window"),
+                          read_state<int>("random_seed")),
       nn_spec_->export_params_view());
 
   // Print the header last, after any logging triggered by initialization above.

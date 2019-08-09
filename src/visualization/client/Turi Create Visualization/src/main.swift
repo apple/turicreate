@@ -6,5 +6,9 @@
 import Cocoa
 
 let delegate = AppDelegate()
+NSApplication.shared.setActivationPolicy(.regular)
 NSApplication.shared.delegate = delegate
+DispatchQueue.main.async {
+    NSApplication.shared.activate(ignoringOtherApps: true)
+}
 NSApplication.shared.run()

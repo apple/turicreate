@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #import "JSCanvas.h"
+#import "LogProxy.h"
 #import "colors.h"
 
 #import <AppKit/AppKit.h>
@@ -137,7 +138,7 @@
     // MUST only use these from property setter/getters
     CGLayerRef _layer;
 
-    id _fillStyle;
+    JSValue * _fillStyle;
     double _globalAlpha;
     NSString * _lineCap;
     NSString * _lineJoin;
@@ -172,18 +173,21 @@
 }
 
 - (void)resizeWithWidth:(double)width height:(double)height {
-    if (width > 0 && height > 0) {
+    // This is a hack to ensure that neither width or height is ever zero as this causes
+    // CGLayerCreateWithContext(...) to crash. This can occur when width and height are
+    // set one at a time in subsequent calls. A more faithful rendering context implementation
+    // would wait until both are set before creating the layer.
+    width = MAX(1, width);
+    height = MAX(1, height);
 
-        // Because we are about to create a new layer, set up other relevant
-        // instance properties so they are in the right state.
-        _currentTransform = CGAffineTransformIdentity;
-        assert(self != nil);
-        CGLayerRef layer = CGLayerCreateWithContext(_parentContext, CGSizeMake(width, height), nil);
-        self.layer = layer;
-        CGLayerRelease(layer);
-        CGContextConcatCTM(self.context, [self.class flipYAxisWithHeight:height]);
-
-    }
+    // Because we are about to create a new layer, set up other relevant
+    // instance properties so they are in the right state.
+    _currentTransform = CGAffineTransformIdentity;
+    assert(self != nil);
+    CGLayerRef layer = CGLayerCreateWithContext(_parentContext, CGSizeMake(width, height), nil);
+    self.layer = layer;
+    CGLayerRelease(layer);
+    CGContextConcatCTM(self.context, [self.class flipYAxisWithHeight:height]);
 }
 
 - (double)width {
@@ -202,14 +206,10 @@
     [self resizeWithWidth:self.width height:height];
 }
 
-- (instancetype)initWithWidth:(double)width
-                       height:(double)height
-                      context:(CGContextRef)parentContext {
+- (instancetype)initWithContext:(CGContextRef)parentContext {
     self = [super init];
     _layer = nil;
     _parentContext = parentContext;
-    [self resizeWithWidth:width height:height];
-    assert(CFGetRetainCount(_layer) == 1);
     return self;
 }
 
@@ -219,13 +219,15 @@
 }
 
 // properties
-- (id)fillStyle {
+- (JSValue *)fillStyle {
+    assert([_fillStyle isKindOfClass:[JSValue class]]);
     return _fillStyle;
 }
-- (void)setFillStyle:(id)fillStyle {
-    _fillStyle = fillStyle;
-    if (![_fillStyle isKindOfClass:NSString.class]) {
-        assert([_fillStyle isKindOfClass:VegaCGLinearGradient.class]);
+- (void)setFillStyle:(JSValue *)fillStyle {
+    _fillStyle = [LogProxy tryUnwrap:fillStyle];
+    if (!_fillStyle.isString) {
+        assert(_fillStyle.isObject);
+        assert([_fillStyle.toObject isKindOfClass:VegaCGLinearGradient.class]);
     }
 }
 
@@ -235,8 +237,8 @@
     if (_fillStyle == nil) {
         color = [self.class newColorFromR:0 G:0 B:0 A:255];
     } else {
-        assert([_fillStyle isKindOfClass:NSString.class]);
-        color = [self.class newColorFromString:_fillStyle];
+        assert(_fillStyle.isString);
+        color = [self.class newColorFromString:_fillStyle.toString];
     }
     assert(color != nil);
     NSColor *nsColor = [NSColor colorWithCGColor:color];
@@ -279,8 +281,48 @@
                 if ([fontProperties.fontWeight isEqualToString:@"bold"]) {
                     newFont = [fontManager convertFont:newFont toHaveTrait:NSBoldFontMask];
                     assert(newFont != nil);
+                } else if (fontProperties.fontWeight.length == 3 &&
+                           [[fontProperties.fontWeight substringFromIndex:1] isEqualToString:@"00"]) {
+                    NSString *weightString = [fontProperties.fontWeight substringToIndex:1];
+                    NSInteger weightInt = weightString.intValue;
+                    NSFontWeight weight = NSFontWeightRegular;
+                    switch (weightInt) {
+                        case 1:
+                            weight = NSFontWeightUltraLight;
+                            break;
+                        case 2:
+                            weight = NSFontWeightThin;
+                            break;
+                        case 3:
+                            weight = NSFontWeightLight;
+                            break;
+                        case 4:
+                            weight = NSFontWeightRegular;
+                            break;
+                        case 5:
+                            weight = NSFontWeightMedium;
+                            break;
+                        case 6:
+                            weight = NSFontWeightSemibold;
+                            break;
+                        case 7:
+                            weight = NSFontWeightBold;
+                            break;
+                        case 8:
+                            weight = NSFontWeightHeavy;
+                            break;
+                        case 9:
+                            weight = NSFontWeightBlack;
+                            break;
+                        default:
+                            NSLog(@"Encountered unexpected font weight %@", fontProperties.fontWeight);
+                            assert(false);
+                    }
+                    newFont = [fontManager fontWithFamily:newFont.familyName traits:[fontManager traitsOfFont:newFont] weight:weight size:newFont.pointSize];
+                    assert(newFont != nil);
                 } else {
                     // unexpected font weight
+                    NSLog(@"Encountered unexpected font weight %@", fontProperties.fontWeight);
                     assert(false);
                 }
             }
@@ -481,11 +523,11 @@
     _textAlign = textAlign;
 }
 
-- (VegaCGTextMetrics *)measureText:(NSString *)text {
+- (JSValue *)measureText:(NSString *)text {
     NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:text attributes:self.textAttributes];
     VegaCGTextMetrics *ret = [[VegaCGTextMetrics alloc] init];
     ret.width = attrStr.size.width;
-    return ret;
+    return [LogProxy wrapObject:ret];
 }
 
 - (void)rotateWithAngle:(double)angle {
@@ -631,43 +673,40 @@
 }
 
 - (void)fill {
-    NSArray *args = [JSContext currentArguments];
-    (void)args;
-    assert(args != nil);
-    assert(args.count == 0);
     CGPathRef currentPath = CGContextCopyPath(self.context);
-    if ([_fillStyle isKindOfClass:VegaCGLinearGradient.class]) {
-        VegaCGLinearGradient *gradient = _fillStyle;
-        [gradient fillWithContext:self.context];
-    } else {
-        assert([_fillStyle isKindOfClass:NSString.class]);
-        CGColorRef color = [self.class newColorFromString:_fillStyle];
+    if (_fillStyle.isString) {
+        CGColorRef color = [self.class newColorFromString:_fillStyle.toString];
         CGContextSetFillColorWithColor(self.context, color);
         CGColorRelease(color);
         CGContextFillPath(self.context);
+    } else {
+        assert(_fillStyle.isObject);
+        assert([_fillStyle.toObject isKindOfClass:VegaCGLinearGradient.class]);
+        VegaCGLinearGradient *gradient = _fillStyle.toObject;
+        [gradient fillWithContext:self.context];
     }
     CGContextAddPath(self.context, currentPath);
     CGPathRelease(currentPath);
 }
 
-- (VegaCGLinearGradient *)createLinearGradientWithX0:(double)x0 y0:(double)y0 x1:(double)x1 y1:(double)y1 {
-    return [[VegaCGLinearGradient alloc] initWithX0:x0 y0:y0 x1:x1 y1:y1];
+- (JSValue *)createLinearGradientWithX0:(double)x0 y0:(double)y0 x1:(double)x1 y1:(double)y1 {
+    VegaCGLinearGradient *ret = [[VegaCGLinearGradient alloc] initWithX0:x0 y0:y0 x1:x1 y1:y1];
+    return [LogProxy wrapObject:ret];
 }
 
 @end
 
 @implementation VegaCGCanvas
 
-- (instancetype)initWithWidth:(double)width
-                       height:(double)height
-                      context:(CGContextRef)parentContext {
-    self = [super init];
-    self.context = [[VegaCGContext alloc] initWithWidth:width height:height context:parentContext];
+- (instancetype)initWithContext:(CGContextRef)parentContext {
+    self = [super initWithTagName:@"canvas"];
+    if(self) {
+        self.context = [[VegaCGContext alloc] initWithContext:parentContext];
+    }
     return self;
 }
 
 - (VegaCGContext *)getContext:(NSString *)type {
-    (void)type;
     assert([type isEqualToString:@"2d"]); // no other types handled
     return self.context;
 }

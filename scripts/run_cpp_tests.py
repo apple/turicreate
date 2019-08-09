@@ -55,12 +55,12 @@ if __name__ == '__main__':
     subprocess.check_call(['bash', os.path.join(WORKSPACE, 'scripts/create_docker_images.sh')])
 
     # make tests if needed
-    run_in_docker(['bash', 'configure']) # TODO use --no-python when it works again
-    run_in_docker(['make', '-j%d' % args.j], '/build/release/test')
+    run_in_docker(['bash', 'configure', '--no-python'])
+    run_in_docker(['bash', '-c', 'make -j%d 2>&1 | grep -v \'ld: warning: direct access\'' % args.j], '/build/debug/test')
 
     # run tests
     # TODO pass through other arguments
-    run_in_docker(['python', '/build/scripts/run_cpp_tests.py', '-j%d' % args.j], '/build/release/test')
+    run_in_docker(['python', '/build/scripts/run_cpp_tests.py', '-j%d' % args.j], '/build/debug/test')
 
     # exit if successful (if failed, it will have thrown above)
     sys.exit(0)
@@ -162,7 +162,7 @@ if __name__ == '__main__':
     line = ctest_process.stdout.readline()
     if len(line) == 0:
       break
-    sys.stdout.write(line)
+    sys.stdout.write(line.decode())
     sys.stdout.flush()
     lines.append(line)
 
@@ -170,9 +170,9 @@ if __name__ == '__main__':
 
   if args.cache:
     # go through all the tests and see if we have a "Passed" line matching it
-    for i in xrange(len(tests)):
+    for i in range(len(tests)):
       for line in lines:
-        if ('Passed' in line) and ((" " + runtests[i] + " ") in line):
+        if ('Passed' in line.decode()) and ((" " + runtests[i] + " ") in line.decode()):
           # pass!
           cache.add(new_tests[tests[i]])
 

@@ -489,6 +489,17 @@ class unity_sarray: public unity_sarray_base {
   std::shared_ptr<unity_sarray_base> drop_missing_values();
 
   /**
+   * Returns a new integer typed array indicating the presence of a missing value or float NA
+   * in the corresponding element.
+   *
+   * If recursive is true, then it also checks if a NA is present in any element of a recursive type.
+   *
+   * If missing_is_true  is true, then the array contains a 1 if the element is a
+   * missing value and a 0 if it is not; otherwise, it returns 1 on the presence of a na.
+   */
+  std::shared_ptr<unity_sarray_base> missing_mask(bool recursive = false, bool missing_is_true = true);
+
+  /**
    * Returns a new array with all UNDEFINED values replaced with the given value.
    *
    * Throws if the given value is not convertible to the SArray's type.

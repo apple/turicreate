@@ -18,6 +18,8 @@ If you specify both `max_iterations` and `num_epochs`, `max_iterations` would
 take precedence and the model would train for that number of iterations and the 
 provided value of `num_epochs` would be ignored.
 
+When training a model it may be useful to look at the progress table in the output to see if the model has converged. This will help determine whether `max_iterations` needs to be increased to allow model to converge to an optimal solution.
+
 ### Warm Start
 
 To boost the accuracy of the Drawing Classifier models you train, and to help

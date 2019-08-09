@@ -264,10 +264,11 @@ std::shared_ptr<unity_sframe> load_images(std::string url, std::string format, b
     std::vector<std::string> all_files;
 
     // See what's at the user-provided location.
-    switch (fileio::get_file_status(url)) {
+    auto status = fileio::get_file_status(url);
+    switch (status.first) {
 
     case fileio::file_status::MISSING:
-      log_and_throw_io_failure(sanitize_url(url) + " not found.");
+      log_and_throw_io_failure(sanitize_url(url) + " not found. Err: " + status.second);
 
     case fileio::file_status::REGULAR_FILE:
       all_files.push_back(url);
@@ -292,7 +293,7 @@ std::shared_ptr<unity_sframe> load_images(std::string url, std::string format, b
 
     case fileio::file_status::FS_UNAVAILABLE:
       log_and_throw_io_failure("Error getting file system status for "
-                               + sanitize_url(url));
+                               + sanitize_url(url) + ". Err: " + status.second);
     }
 
     std::vector<std::string> column_names;
