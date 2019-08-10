@@ -9,6 +9,7 @@
 #include <core/storage/query_engine/operators/operator.hpp>
 #include <core/storage/query_engine/execution/query_context.hpp>
 #include <core/storage/query_engine/operators/operator_properties.hpp>
+#include <core/util/coro.hpp>
 namespace turi {
 namespace query_eval {
 
@@ -24,6 +25,8 @@ namespace query_eval {
 template <>
 struct operator_impl<planner_node_type::RANGE_NODE> : public query_operator {
  public:
+  DECL_CORO_STATE(execute);
+  flex_int cur;
 
   inline planner_node_type type() const { return planner_node_type::RANGE_NODE; }
 
@@ -43,15 +46,20 @@ struct operator_impl<planner_node_type::RANGE_NODE> : public query_operator {
     ASSERT_LE(m_start, m_end);
   }
 
-
   inline std::shared_ptr<query_operator> clone() const {
     return std::make_shared<operator_impl>(m_start, m_end);
   }
+  inline bool coro_running() const {
+    return CORO_RUNNING(execute);
+  }
 
   inline void execute(query_context& context) {
-    flex_int cur = m_start;
+
+    CORO_BEGIN(execute)
+    cur = m_start;
 
     while(cur < m_end) {
+      {
       auto ret = context.get_output_buffer();
       size_t len = std::min<size_t>(m_end - cur, context.block_size());
 
@@ -61,7 +69,10 @@ struct operator_impl<planner_node_type::RANGE_NODE> : public query_operator {
         ++cur;
       }
       context.emit(ret);
+      }
+      CORO_YIELD();
     }
+    CORO_END
   }
 
   static std::shared_ptr<planner_node> make_planner_node(

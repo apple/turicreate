@@ -573,12 +573,18 @@ class flexible_type {
   /**
    * Returns true if the value is equal to this type's equivalent of zero.
    */
-  bool is_zero() const;
+  inline bool is_zero() const;
 
   /**
    * Returns true if the value is considered a "missing value" or NA.
    */
-  bool is_na() const;
+  inline bool is_na() const;
+
+  /**
+   * Returns true if the value, or any contained value in a dictionary or list type,
+   * is considered a "missing value" or NA.
+   */
+  bool contains_na() const;
 
 /**************************************************************************/
 /*                                                                        */
@@ -2630,6 +2636,39 @@ inline FLEX_ALWAYS_INLINE_FLATTEN EXT_ENABLE_IF(bool) operator<=(const T& other,
  */
 template <typename T, typename S>
 inline FLEX_ALWAYS_INLINE_FLATTEN EXT_ENABLE_IF(bool) operator>=(const T& other, const S& f) { return (f <= other); }
+
+
+bool FLEX_ALWAYS_INLINE_FLATTEN flexible_type::is_na() const {
+  auto the_type = get_type();
+  return (the_type == flex_type_enum::UNDEFINED) ||
+          (the_type == flex_type_enum::FLOAT && std::isnan(get<flex_float>()));
+}
+
+bool FLEX_ALWAYS_INLINE_FLATTEN flexible_type::is_zero() const {
+  switch(get_type()) {
+    case flex_type_enum::INTEGER:
+      return get<flex_int>() == 0;
+    case flex_type_enum::FLOAT:
+      return get<flex_float>() == 0.0;
+    case flex_type_enum::STRING:
+      return get<flex_string>().empty();
+    case flex_type_enum::VECTOR:
+      return get<flex_vec>().empty();
+    case flex_type_enum::LIST:
+      return get<flex_list>().empty();
+    case flex_type_enum::DICT:
+      return get<flex_dict>().empty();
+    case flex_type_enum::IMAGE:
+      return get<flex_image>().m_format == Format::UNDEFINED;
+    case flex_type_enum::UNDEFINED:
+      return true;
+    default:
+      log_and_throw("Unexpected type!");
+  };
+  __builtin_unreachable();
+}
+
+
 } // namespace turi
 
 #undef EXT_ENABLE_IF

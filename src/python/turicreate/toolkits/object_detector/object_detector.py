@@ -210,6 +210,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
 
     _raise_error_if_not_detection_sframe(dataset, feature, annotations,
                                          require_annotations=True)
+    _tkutl._handle_missing_values(dataset, feature, 'dataset')
     is_annotations_list = dataset[annotations].dtype == list
 
     _tkutl._check_categorical_option_type('model', model,
@@ -282,7 +283,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     batch_size_each = batch_size // max(num_mxnet_gpus, 1)
     if use_mps and _mps_device_memory_limit() < 4 * 1024 * 1024 * 1024:
         # Reduce batch size for GPUs with less than 4GB RAM
-        batch_size_each = 16
+        if batch_size_each > 16:
+            batch_size_each = 16
     # Note, this may slightly alter the batch size to fit evenly on the GPUs
     batch_size = max(num_mxnet_gpus, 1) * batch_size_each
     if verbose:
@@ -574,8 +576,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         trainer = _mx.gluon.Trainer(net.collect_params(), 'sgd', options)
 
         for batch in loader:
-            data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0)
-            label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0)
+            data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
 
             Ls = []
             Zs = []
@@ -589,7 +591,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                 for L in Ls:
                     L.backward()
 
-            trainer.step(1)
+            trainer.step(1, ignore_stale_grad=True)
             cur_loss = _np.mean([L.asnumpy()[0] for L in Ls])
 
             update_progress(cur_loss, batch.iteration)
@@ -1164,8 +1166,14 @@ class ObjectDetector(_CustomModel):
         # Make sure we are removing the right layers
         assert (self._model[23].name == 'pool5' and
                 self._model[24].name == 'specialcrop5')
-        del net._children[24]
-        net._children[23] = op
+
+        try:
+            del net._children[24]
+            net._children[23] = op
+        except KeyError:
+            # Newer versions of MXNet use string keys
+            del net._children['24']
+            net._children['23'] = op
 
         s_ymap = net(s_image)
         mod = _mx.mod.Module(symbol=s_ymap, label_names=None, data_names=[self.feature])

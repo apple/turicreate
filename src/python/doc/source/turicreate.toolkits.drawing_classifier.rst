@@ -2,19 +2,18 @@
 ==========================
 
 .. automodule:: turicreate.toolkits.drawing_classifier
-    :members:
 
-.. currentmodule:: turicreate
+.. currentmodule:: turicreate.drawing_classifier
 
 
 drawing classifier
-----------------
+------------------
 .. autosummary::
   :toctree: generated/
   :nosignatures:
 
-  drawing_classifier.create
-  drawing_classifier.DrawingClassifier
+  create
+  DrawingClassifier
 
 utilities
 ---------

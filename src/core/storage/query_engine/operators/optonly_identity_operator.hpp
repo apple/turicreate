@@ -12,6 +12,7 @@
 #include <core/storage/query_engine/operators/operator.hpp>
 #include <core/storage/query_engine/execution/query_context.hpp>
 #include <core/storage/query_engine/operators/operator_properties.hpp>
+#include <core/util/coro.hpp>
 
 namespace turi {
 namespace query_eval {
@@ -40,6 +41,10 @@ class operator_impl<planner_node_type::IDENTITY_NODE> : public query_operator {
 
   inline std::shared_ptr<query_operator> clone() const {
     return std::make_shared<operator_impl>(*this);
+  }
+
+  inline bool coro_running() const {
+    return false;
   }
 
   static std::shared_ptr<planner_node> make_planner_node(std::shared_ptr<planner_node> pnode) {

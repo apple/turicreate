@@ -9,7 +9,7 @@ Class definition and utilities for the evaluation of the image classification mo
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-from ...visualization import _get_client_app_path, _focus_client_app
+from ...visualization import _get_client_app_path
 import turicreate as _tc
 
 import subprocess as __subprocess
@@ -190,8 +190,6 @@ def _start_process(process_input, extended_sframe, evaluation):
   proc = __subprocess.Popen(_get_client_app_path(), stdout=__subprocess.PIPE, stdin=__subprocess.PIPE)
   proc.stdin.write(process_input.encode('utf-8'))
 
-  _focus_client_app()
-
   #https://docs.python.org/2/library/subprocess.html#subprocess.Popen.communicate
 
   while(proc.poll() == None):
@@ -203,14 +201,7 @@ def _start_process(process_input, extended_sframe, evaluation):
 
   return proc
 
-def _image_conversion(image):
-  result = {
-    "width": image.width,
-    "height": image.height,
-    "column": "image",
-    "format": "png"
-  }
-
+def _image_resize(image):
   # resize with decode=False will produce a PNG encoded image
   # (even starting with a decoded image)
   # this behavior is enforced in test/unity/image_util.cxx:test_resize
@@ -232,5 +223,15 @@ def _image_conversion(image):
   image = _tc.image_analysis.resize(image, width=int(width), height=int(height), decode=False)
   assert(image._format_enum == 1) # png
 
-  result["data"] = _base64.b64encode(image._image_data)
+  return image
+
+def _image_conversion(image):
+  result = {
+    "width": image.width,
+    "height": image.height,
+    "column": "image",
+    "format": "png"
+  }
+
+  result["data"] = _base64.b64encode(_image_resize(image)._image_data)
   return result

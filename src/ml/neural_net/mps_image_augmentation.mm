@@ -208,7 +208,7 @@ NSArray<TCMPSUniformRandomNumberGenerator> *create_rng_batch(
 
 NSArray<TCMPSUniformRandomNumberGenerator> *create_rng_batch(
     size_t size,
-    const std::function<float(float lower_bound, float upper_bound)>& rng)
+    std::function<float(float lower_bound, float upper_bound)> rng)
 {
   // Create an Objective-C wrapper around the provided function yielding
   // uniformly distributed values.

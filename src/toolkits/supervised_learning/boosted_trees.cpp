@@ -82,6 +82,12 @@ void init_boosted_trees_common_options(option_manager &options){
       std::numeric_limits<int>::max(),
       false);
 
+  options.create_boolean_option(
+      "disable_posttrain_evaluation",
+      "Disable automatic computation of an evaluation report following training.",
+      false,
+      false);
+
   options.create_flexible_type_option(
       "metric",
       "Performance metric(s) to track during training iterations",

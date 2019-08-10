@@ -127,14 +127,15 @@ std::tuple<std::string, std::string, std::string> parse_hdfs_url(std::string url
   return std::make_tuple(host, port, path);
 }
 
-EXPORT file_status get_file_status(const std::string& path) {
+EXPORT std::pair<file_status, std::string> get_file_status(const std::string& path) {
+  std::string err_msg;
   if (boost::starts_with(path, fileio::get_cache_prefix())) {
     // this is a cache file. it is only REGULAR or MISSING
     try {
       fixed_size_cache_manager::get_instance().get_cache(path);
-      return file_status::REGULAR_FILE;
-    } catch (...) {
-      return file_status::MISSING;
+      return std::make_pair(file_status::REGULAR_FILE, err_msg);
+    } catch (const std::exception& ex) {
+      return std::make_pair(file_status::MISSING, std::string(ex.what()));
     }
 #ifdef TC_ENABLE_REMOTEFS
   } else if(boost::starts_with(path, "hdfs://")) {
@@ -145,33 +146,32 @@ EXPORT file_status get_file_status(const std::string& path) {
       // get the HDFS object
       auto& hdfs = turi::hdfs::get_hdfs(host, std::stoi(port));
       // fail we we are unable to construct the HDFS object
-      if (!hdfs.good()) return file_status::FS_UNAVAILABLE;
+      if (!hdfs.good()) return std::make_pair(file_status::FS_UNAVAILABLE, "Unable to construct HDFS connector: " + path);
       // we are good. Use the HDFS accessors to figure out what to return
-      if (!hdfs.path_exists(hdfspath)) return file_status::MISSING;
-      else if (hdfs.is_directory(hdfspath)) return file_status::DIRECTORY;
-      else return file_status::REGULAR_FILE;
-    } catch(...) {
+      if (!hdfs.path_exists(hdfspath)) return {file_status::MISSING, "hdfs path doesn't exist in " + hdfspath};
+      else if (hdfs.is_directory(hdfspath)) return {file_status::DIRECTORY, ""};
+      else return {file_status::REGULAR_FILE, ""};
+    } catch(const std::exception& ex) {
       // failure for some reason. fail with missing
-      return file_status::MISSING;
+      return {file_status::MISSING, ex.what()};
     }
   } else if (boost::starts_with(path, "s3://")) {
-    std::pair<bool, bool> ret = is_directory(path);
-    if (ret.first == false) return file_status::MISSING;
-    else if (ret.second == false) return file_status::REGULAR_FILE;
-    else if (ret.second == true) return file_status::DIRECTORY;
+    auto ret = is_directory(path);
+    return {ret.first, ret.second.error};
   } else if (is_web_protocol(get_protocol(path))) {
-    return file_status::REGULAR_FILE;
+    return {file_status::REGULAR_FILE, ""};
     // some other web protocol?
 #endif
   } else {
     // regular file
     struct stat statout;
     int ret = stat(path.c_str(), &statout);
-    if (ret != 0) return file_status::MISSING;
-    if (S_ISDIR(statout.st_mode)) return file_status::DIRECTORY;
-    else return file_status::REGULAR_FILE;
+    if (ret != 0) return {file_status::MISSING, "file not exist in " + path};
+    if (S_ISDIR(statout.st_mode)) return {file_status::DIRECTORY, ""};
+    else return {file_status::REGULAR_FILE, ""};
   }
-  return file_status::MISSING;
+
+  return {file_status::MISSING, "file not exist in " + path};
 }
 
 
@@ -236,8 +236,8 @@ get_directory_listing(const std::string& path) {
 }
 
 EXPORT bool create_directory(const std::string& path) {
-  file_status stat = get_file_status(path);
-  if (stat != file_status::MISSING) {
+  auto stat = get_file_status(path);
+  if (stat.first != file_status::MISSING) {
     return false;
   }
   if (boost::starts_with(path, fileio::get_cache_prefix())) {
@@ -278,8 +278,8 @@ EXPORT bool create_directory_or_throw(const std::string& path) {
   // this function throws if the directory still doesn't exist
   // at that location
   if (!boost::starts_with(path, "s3://")) {
-    file_status status = get_file_status(path);
-    switch (status) {
+    auto status = get_file_status(path);
+    switch (status.first) {
       case file_status::MISSING:
         log_and_throw_io_failure(
           "Unable to create directory structure at " +
@@ -309,7 +309,7 @@ EXPORT bool create_directory_or_throw(const std::string& path) {
 
 EXPORT bool delete_path(const std::string& path,
                         file_status stat) {
-  if (stat == file_status::FS_UNAVAILABLE) stat = get_file_status(path);
+  if (stat == file_status::FS_UNAVAILABLE) stat = get_file_status(path).first;
 
   if (stat == file_status::MISSING) {
     return false;
@@ -331,7 +331,7 @@ EXPORT bool delete_path(const std::string& path,
 
 bool delete_path_impl(const std::string& path,
                       file_status stat) {
-  if (stat == file_status::FS_UNAVAILABLE) stat = get_file_status(path);
+  if (stat == file_status::FS_UNAVAILABLE) stat = get_file_status(path).first;
   if (stat == file_status::MISSING) {
     return false;
   }
@@ -381,11 +381,11 @@ bool delete_path_impl(const std::string& path,
 }
 
 EXPORT bool delete_path_recursive(const std::string& path) {
-  file_status stat = get_file_status(path);
-  if (stat == file_status::REGULAR_FILE) {
+  auto stat = get_file_status(path);
+  if (stat.first == file_status::REGULAR_FILE) {
     delete_path(path);
     return true;
-  } else if (stat == file_status::MISSING) {
+  } else if (stat.first == file_status::MISSING) {
     return true;
   }
 
@@ -603,14 +603,14 @@ std::pair<std::string, std::string> split_path_elements(const std::string& url,
 EXPORT std::vector<std::pair<std::string, file_status>> get_glob_files(const std::string& url) {
   auto trimmed_url = url;
   boost::algorithm::trim(trimmed_url);
-  file_status status = get_file_status(trimmed_url);
-  if (status == file_status::REGULAR_FILE) {
+  auto status = get_file_status(trimmed_url);
+  if (status.first == file_status::REGULAR_FILE) {
     // its a regular file. Ignore the glob and load it
     return {{url, file_status::REGULAR_FILE}};
-  } else if(status == file_status::FS_UNAVAILABLE) {
-    log_and_throw("Filesystem unavailable. Check server log for details.");
+  } else if(status.first == file_status::FS_UNAVAILABLE) {
+    log_and_throw_io_failure("Filesystem unavailable. Check server log for details. err: " + status.second);
   }
-  std::pair<std::string, std::string> path_elements = split_path_elements(trimmed_url, status);
+  std::pair<std::string, std::string> path_elements = split_path_elements(trimmed_url, status.first);
   std::vector<std::pair<std::string, file_status>> files;
 
   if (path_elements.second == "") {
@@ -668,7 +668,7 @@ size_t get_io_parallelism_id(const std::string url) {
 
 bool try_to_open_file(const std::string url) {
   // if file doesn't exist, we fail immediately
-  if (get_file_status(url) != file_status::REGULAR_FILE) {
+  if (get_file_status(url).first != file_status::REGULAR_FILE) {
     return false;
   }
   bool success = true;
@@ -692,8 +692,8 @@ void copy(const std::string src, const std::string dest) {
 }
 
 bool change_file_mode(const std::string path, short mode) {
-  file_status stat = get_file_status(path);
-  if (stat == file_status::MISSING) {
+  auto stat = get_file_status(path);
+  if (stat.first == file_status::MISSING) {
     return false;
   }
 

@@ -10,7 +10,8 @@ namespace turi {
 sframe join(sframe& sf_left,
             sframe& sf_right,
             std::string join_type,
-            const std::map<std::string,std::string> join_columns,
+            const std::map<std::string,std::string>& join_columns,
+            const std::map<std::string,std::string>& alter_names_right,
             size_t max_buffer_size) {
   // ***SANITY CHECKS
 
@@ -54,6 +55,7 @@ sframe join(sframe& sf_left,
                                               left_join_positions,
                                               right_join_positions,
                                               in_join_type,
+                                              alter_names_right,
                                               max_buffer_size);
 
   return join_executor.grace_hash_join();

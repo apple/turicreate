@@ -46,17 +46,9 @@ def _raise_error_if_not_drawing_classifier_input_sframe(
     if len(dataset) == 0:
         raise _ToolkitError("Input Dataset is empty!")
 
-def _drop_missing_values(dataset, feature, is_train):
-    original_dataset_size = len(dataset)
-    dataset = dataset.dropna(columns=feature)
-    if original_dataset_size != len(dataset):
-        dataset_type = "train" if is_train else "validation"
-        print("Dropping " + str(original_dataset_size - len(dataset)) + " rows for missing features in the " + dataset_type + " dataset.")
-    return dataset
-
 def create(input_dataset, target, feature=None, validation_set='auto',
             warm_start='auto', batch_size=256,
-            max_iterations=100, verbose=True):
+            max_iterations=500, verbose=True):
     """
     Create a :class:`DrawingClassifier` model.
 
@@ -134,9 +126,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
 
         # Make predictions on the training set and as column to the SFrame
         >>> data['predictions'] = model.predict(data)
-
     """
-
     import mxnet as _mx
     from mxnet import autograd as _autograd
     from ._model_architecture import Model as _Model
@@ -207,9 +197,9 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         raise TypeError("Unrecognized type for 'validation_set'."
             + validation_set_corrective_string)
 
-    dataset = _drop_missing_values(dataset, feature, is_train =True)
+    _tkutl._handle_missing_values(dataset, feature, 'training_dataset')
     if len(validation_dataset) > 0:
-        validation_dataset = _drop_missing_values(validation_dataset, feature, is_train=False)
+        _tkutl._handle_missing_values(dataset, feature, 'validation_set')
 
     train_loader = _SFrameClassifierIter(dataset, batch_size,
                  feature_column=feature,
@@ -308,7 +298,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
 
         # Make one step of parameter update. Trainer needs to know the
         # batch size of data to normalize the gradient by 1/batch_size.
-        trainer.step(train_batch.data[0].shape[0])
+        trainer.step(train_batch.data[0].shape[0], ignore_stale_grad=True)
         # calculate training metrics
         train_loss = loss.mean().asscalar()
 
@@ -551,7 +541,6 @@ class DrawingClassifier(_CustomModel):
         The "probabilities" column contains the probabilities for each class
         that the model predicted for the data provided to the function.
         """
-
         from .._mxnet import _mxnet_utils
         import mxnet as _mx
         from ._sframe_loader import SFrameClassifierIter as _SFrameClassifierIter

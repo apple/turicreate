@@ -140,33 +140,39 @@ class ObjectDetectorTest(unittest.TestCase):
         }
         self.fields_ans = self.get_ans.keys()
 
-    @pytest.mark.xfail(raises = _ToolkitError)
+    def test_create_with_missing_value(self):
+        sf = self.sf.append(tc.SFrame({self.feature: tc.SArray([None], dtype=tc.Image), self.annotations: [self.sf[self.annotations][0]]}))
+        with self.assertRaises(_ToolkitError):
+            tc.object_detector.create(sf, feature=self.feature, annotations=self.annotations)
+
+
     def test_create_with_missing_feature(self):
-        tc.object_detector.create(self.sf, feature='wrong_feature', annotations=self.annotations)
+        with self.assertRaises(_ToolkitError):
+            tc.object_detector.create(self.sf, feature='wrong_feature', annotations=self.annotations)
 
-    @pytest.mark.xfail(raises = _ToolkitError)
     def test_create_with_missing_annotations(self):
-        tc.object_detector.create(self.sf, feature=self.feature, annotations='wrong_annotations')
+        with self.assertRaises(_ToolkitError):
+            tc.object_detector.create(self.sf, feature=self.feature, annotations='wrong_annotations')
 
-    @pytest.mark.xfail(raises = _ToolkitError)
     def test_create_with_invalid_annotations_list_coord(self):
-        sf = self.sf.head()
-        sf[self.annotations] = sf[self.annotations].apply(
-                lambda x: [{'label': _CLASSES[0], 'coordinates': [100, 50, 20, 40]}])
+        with self.assertRaises(_ToolkitError):
+            sf = self.sf.head()
+            sf[self.annotations] = sf[self.annotations].apply(
+                    lambda x: [{'label': _CLASSES[0], 'coordinates': [100, 50, 20, 40]}])
 
-        tc.object_detector.create(sf)
+            tc.object_detector.create(sf)
 
-    @pytest.mark.xfail(raises = _ToolkitError)
     def test_create_with_invalid_annotations_not_dict(self):
-        sf = self.sf.head()
-        sf[self.annotations] = sf[self.annotations].apply(
-                lambda x: [1])
+        with self.assertRaises(_ToolkitError):
+            sf = self.sf.head()
+            sf[self.annotations] = sf[self.annotations].apply(
+                    lambda x: [1])
 
-        tc.object_detector.create(sf)
+            tc.object_detector.create(sf)
 
-    @pytest.mark.xfail(raises = _ToolkitError)
     def test_create_with_empty_dataset(self):
-        tc.object_detector.create(self.sf[:0])
+        with self.assertRaises(_ToolkitError):
+            tc.object_detector.create(self.sf[:0])
 
     def test_dict_annotations(self):
         sf_copy = self.sf[:]
@@ -250,19 +256,19 @@ class ObjectDetectorTest(unittest.TestCase):
         ret = self.model.evaluate(self.sf[:0])
         self.assertEqual(ret['mean_average_precision_50'], 0.0)
 
-    @pytest.mark.xfail(raises = _ToolkitError)
     def test_evaluate_invalid_metric(self):
-        self.model.evaluate(self.sf.head(), metric='not-supported-metric')
+        with self.assertRaises(_ToolkitError):
+            self.model.evaluate(self.sf.head(), metric='not-supported-metric')
 
-    @pytest.mark.xfail(raises = _ToolkitError)
     def test_evaluate_invalid_format(self):
-        self.model.evaluate(self.sf.head(), output_type='not-supported-format')
+        with self.assertRaises(_ToolkitError):
+            self.model.evaluate(self.sf.head(), output_type='not-supported-format')
 
-    @pytest.mark.xfail(raises = _ToolkitError)
     def test_evaluate_missing_annotations(self):
-        sf = self.sf.copy()
-        del sf[self.annotations]
-        self.model.evaluate(sf.head())
+        with self.assertRaises(_ToolkitError):
+            sf = self.sf.copy()
+            del sf[self.annotations]
+            self.model.evaluate(sf.head())
 
     def test_export_coreml(self):
         from PIL import Image
@@ -386,9 +392,9 @@ class ObjectDetectorGPUTest(unittest.TestCase):
         old_num_gpus = tc.config.get_num_gpus()
         gpu_options = set([old_num_gpus, 0, 1])
         for in_gpus in gpu_options:
+            tc.config.set_num_gpus(in_gpus)
+            model = tc.object_detector.create(self.sf, max_iterations=1)
             for out_gpus in gpu_options:
-                tc.config.set_num_gpus(in_gpus)
-                model = tc.object_detector.create(self.sf, max_iterations=1)
                 with test_util.TempDirectory() as path:
                     model.save(path)
                     tc.config.set_num_gpus(out_gpus)

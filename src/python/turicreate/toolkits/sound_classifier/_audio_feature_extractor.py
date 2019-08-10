@@ -153,9 +153,10 @@ class VGGishFeatureExtractor(object):
 
         else:
             # Use Core ML
+
             for i, cur_example in enumerate(preprocessed_data):
                 for cur_frame in cur_example:
-                    x = {'input1': [cur_frame]}
+                    x = {'input1': _np.asarray([cur_frame])}
                     y = self.vggish_model.predict(x)
                     deep_features.append(y['output1'])
 

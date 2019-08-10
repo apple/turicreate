@@ -6,6 +6,8 @@
 
 #include <toolkits/coreml_export/neural_net_models_exporter.hpp>
 
+#include <sstream>
+
 #include <core/logging/assertions.hpp>
 #include <toolkits/coreml_export/mlmodel_include.hpp>
 #include <core/util/string_util.hpp>
@@ -24,9 +26,20 @@ namespace {
 
 constexpr char CONFIDENCE_STR[] = "Boxes × Class confidence (see user-defined metadata \"classes\")";
 constexpr char COORDINATES_STR[] = "Boxes × [x, y, width, height] (relative to image size)";
-constexpr char IOU_THRESHOLD_STR[] = "(optional) IOU Threshold override (default: 0.45)";
-constexpr char CONFIDENCE_THRESHOLD_STR[] = "(optional) Confidence Threshold override (default: 0.25)";
 
+std::string iou_threshold_description(float default_value) {
+  std::stringstream ss;
+  ss << "The maximum allowed overlap (as intersection-over-union ratio) for any"
+     << " pair of output bounding boxes (default: " << default_value << ")";
+  return ss.str();
+}
+
+std::string confidence_threshold_description(float default_value) {
+  std::stringstream ss;
+  ss << "The minimum confidence score for an output bounding box"
+     << " (default: " << default_value << ")";
+  return ss.str();
+}
 
 void set_string_feature(FeatureDescription* feature_desc, std::string name,
                         std::string short_description)
@@ -247,10 +260,17 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
   set_image_feature(pipeline_desc->add_input(), image_width, image_height, true);
 
   // Write FeatureDescription for the IOU Threshold input.
-  set_threshold_feature(pipeline_desc->add_input(), "iouThreshold", IOU_THRESHOLD_STR);
+  FeatureDescription* iou_threshold = pipeline_desc->add_input();
+  set_threshold_feature(iou_threshold, "iouThreshold",
+                        iou_threshold_description(options["iou_threshold"]));
+  set_feature_optional(iou_threshold);
 
   // Write FeatureDescription for the Confidence Threshold input.
-  set_threshold_feature(pipeline_desc->add_input(), "confidenceThreshold", CONFIDENCE_THRESHOLD_STR);
+  FeatureDescription* confidence_threshold = pipeline_desc->add_input();
+  set_threshold_feature(
+      confidence_threshold, "confidenceThreshold",
+      confidence_threshold_description(options["confidence_threshold"]));
+  set_feature_optional(confidence_threshold);
 
   // Write FeatureDescription for the Confidence output.
   set_predictions_feature(pipeline_desc->add_output(), "confidence", num_predictions, num_classes,

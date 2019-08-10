@@ -193,6 +193,10 @@ if(APPLE)
     # CoreML MLCustomModel requires macOS 10.14 or higher
     set(HAS_MLCUSTOMMODEL TRUE)
   endif()
+
+  if(NOT TC_BASE_SDK_VERSION VERSION_LESS 10.15)
+    add_definitions(-DHAS_MACOS_10_15)
+  endif()
 endif()
 
 

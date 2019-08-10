@@ -23,6 +23,7 @@
 #include <core/storage/sframe_data/sarray_v2_block_manager.hpp>
 #include <core/storage/sframe_data/sarray_v2_block_writer.hpp>
 #include <core/storage/sframe_data/sarray_v2_encoded_block.hpp>
+#include <core/storage/sframe_data/sarray_v2_type_encoding.hpp>
 #include <core/system/cppipc/server/cancel_ops.hpp>
 namespace turi {
 

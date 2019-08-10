@@ -12,6 +12,7 @@
 #include <core/storage/query_engine/operators/operator.hpp>
 #include <core/storage/query_engine/execution/query_context.hpp>
 #include <core/storage/query_engine/operators/operator_properties.hpp>
+#include <core/util/coro.hpp>
 
 namespace turi {
 namespace query_eval {
@@ -32,6 +33,7 @@ namespace query_eval {
 template<>
 class operator_impl<planner_node_type::TERNARY_OPERATOR> : public query_operator {
  public:
+  DECL_CORO_STATE(execute);
 
   planner_node_type type() const { return planner_node_type::TERNARY_OPERATOR; }
 
@@ -50,11 +52,16 @@ class operator_impl<planner_node_type::TERNARY_OPERATOR> : public query_operator
     return std::make_shared<operator_impl>(*this);
   }
 
+  inline bool coro_running() const {
+    return CORO_RUNNING(execute);
+  }
   inline void execute(query_context& context) {
     constexpr size_t CONDITION_INPUT = 0;
     constexpr size_t ISTRUE_INPUT = 1;
     constexpr size_t ISFALSE_INPUT = 2;
+    CORO_BEGIN(execute)
     while(1) {
+      {
       auto condition = context.get_next(CONDITION_INPUT);
 
       if (condition == nullptr) break;
@@ -93,7 +100,6 @@ class operator_impl<planner_node_type::TERNARY_OPERATOR> : public query_operator
 
         out_columns.clear();
         out_columns.push_back(input->cget_columns()[0]);
-        context.emit(output_buffer);
       } else {
 
         auto isfalse = context.get_next(ISFALSE_INPUT);
@@ -120,9 +126,12 @@ class operator_impl<planner_node_type::TERNARY_OPERATOR> : public query_operator
           ++isfalse_iter;
           ++out_iter;
         }
-        context.emit(output_buffer);
       }
+      context.emit(output_buffer);
+      }
+      CORO_YIELD();
     }
+    CORO_END
   }
 
   static std::shared_ptr<planner_node> make_planner_node(

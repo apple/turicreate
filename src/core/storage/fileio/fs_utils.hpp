@@ -29,8 +29,10 @@ enum class file_status {
  * \ingroup fileio
  * Checks a path (can be hdfs, s3, or regular) to see if it is a local path,
  * or a remote path.
+ *
+ * if file is missing, err_msg will be the second value if provided
  */
-file_status get_file_status(const std::string& path);
+std::pair<file_status, std::string> get_file_status(const std::string& path);
 
 
 /**

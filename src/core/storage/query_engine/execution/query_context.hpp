@@ -10,7 +10,7 @@
 #include <core/storage/sframe_data/sframe_rows.hpp>
 namespace turi {
 namespace query_eval {
-class executor_node;
+class execution_node;
 
 
 /**
@@ -18,15 +18,6 @@ class executor_node;
  * \addtogroup execution Execution
  * \{
  */
-
-/**
- * \ref query_context::emit returns a state, which informs the
- * operator about some execution detail.
- */
-enum class emit_state {
-  NONE, ///< Nothing of interest
-  SKIP_NEXT_BLOCK ///< Caller should skip the next block.
-};
 
 /**
  * This is the object passed to the coroutine which allows the coroutine
@@ -48,11 +39,11 @@ class query_context {
   query_context();
   query_context(const query_context&) = default;
   query_context(query_context&&) = default;
+  query_context& operator=(const query_context&) = default;
+  query_context& operator=(query_context&&) = default;
   ~query_context();
-  query_context(std::function<std::shared_ptr<sframe_rows>(size_t, bool)> callback_on_get_input,
-                std::function<emit_state(const std::shared_ptr<sframe_rows>&)> callback_on_emit,
-                size_t m_buffer_size,
-                emit_state initial_state);
+  query_context(execution_node* exec_node,
+                size_t m_buffer_size);
 
   /**
    * Requests for the next block for the given input.
@@ -70,16 +61,16 @@ class query_context {
   std::shared_ptr<sframe_rows> get_output_buffer();
 
   /**
-   * Returns the initial state.
-   */
-  emit_state initial_state() const;
-
-  /**
    * Emits a collection of rows. The number of rows emitted
    * MUST be the same as block_size(), except for the very last block
-   * of rows.
+   * of rows. Should yield immediately after emitting a block.
    */
-  emit_state emit(const std::shared_ptr<sframe_rows>& rows);
+  void emit(const std::shared_ptr<sframe_rows>& rows);
+
+  /**
+   * Returns true if the operator should try to skip a block.
+   */
+  bool should_skip();
 
   /**
    * The commmunication block size.
@@ -96,11 +87,7 @@ class query_context {
   // assumption means that at most one buffer may be used or given away at
   // any one point.
   std::shared_ptr<sframe_rows> m_buffers;
-
-  std::function<std::shared_ptr<sframe_rows>(size_t, bool)> m_callback_on_get_input;
-  std::function<emit_state(const std::shared_ptr<sframe_rows>&)> m_callback_on_emit;
-
-  emit_state m_initial_state;
+  execution_node* m_exec_node;
 };
 
 /// \}

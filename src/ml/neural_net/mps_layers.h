@@ -73,8 +73,8 @@ imageForCommandBuffer:(__nonnull id<MTLCommandBuffer>)cmdBuf
 - (BOOL)load;
 - (void)purge;
 - (void)checkpoint;
-- (size_t)weight_size;
-- (size_t)bias_size;
+- (size_t)weightSize;
+- (size_t)biasSize;
 
 @end // MPSCNNWeight
 

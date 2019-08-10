@@ -9,23 +9,10 @@
 #include <core/storage/query_engine/execution/query_context.hpp>
 #include <core/storage/query_engine/execution/execution_node.hpp>
 #include <core/system/cppipc/cppipc.hpp>
+#include <core/util/coro.hpp>
 
 namespace turi {
 namespace query_eval {
-using boost::coroutines::stack_traits;
-/*
- * Default stack size is 64K or minimum_size() whichever is larger
- */
-int64_t COROUTINE_STACK_SIZE =
-    64*1024 < stack_traits::minimum_size() ?
-        stack_traits::minimum_size() : 64*1024;
-
-REGISTER_GLOBAL_WITH_CHECKS(int64_t, COROUTINE_STACK_SIZE, false,
-            +[](int64_t i){
-              return (i > 0 &&
-                      stack_traits::minimum_size() <= static_cast<size_t>(i) &&
-                      static_cast<size_t>(i) <= stack_traits::maximum_size());
-            ;});
 
 execution_node::execution_node(const std::shared_ptr<query_operator>& op,
                                const std::vector<std::shared_ptr<execution_node> >& inputs) {
@@ -63,30 +50,23 @@ void execution_node::reset() {
   m_output_queue.reset();
 }
 
+
 void execution_node::start_coroutines() {
   // create the output queue
   m_output_queue.reset(new broadcast_queue<std::shared_ptr<sframe_rows>>(m_consumer_pos.size(), 2));
 
   // restart the coroutine
   m_coroutines_started = true;
-  auto coro_attributes = boost::coroutines::attributes(COROUTINE_STACK_SIZE);
 
   auto attributes = m_operator->attributes();
-  bool supports_skipping =
+  supports_skipping =
       attributes.attribute_bitfield & query_operator_attributes::SUPPORTS_SKIPPING;
 
-  bool is_linear_operator =
+  is_linear_operator =
       attributes.attribute_bitfield & query_operator_attributes::LINEAR;
 
   /*
-   * The mechanism here is somewhat subtle and can be hard to understand.
-   * This ought to be cleaned up a bit.
-   *
-   * The 2nd lambda below, is called whenever the coroutine produces stuff.
-   * Essentially, sink() leaves the current coroutine, sending information
-   * to its consumers.
-   *
-   * The consumers however will request from the current coroutine, whether
+   * The consumers will request from the current coroutine, whether
    * to skip the block or not. This is stored in the state
    * m_skip_next_block.
    *
@@ -104,69 +84,13 @@ void execution_node::start_coroutines() {
    *
    *  - If the operator does not support skipping, but is a linear operator,
    *  we can pull a trick by making it seem like the input is shorter.
-   *  Thus we do not return to the coroutine, but we bypass it,
-   *  Consuming the next inputs blocks, throwing it away, and sinking a nullptr
-   *  value.
+   *  Thus we do not return to the coroutine, but we bypass it, requesting a skip
+   *  from its previous blocks.
    *
    *  - If the operator does not support skipping AND is a non-linear operator
-   *  we need to process it normally.
+   *  we need to proess it normally.
    */
-  m_source = boost::coroutines::coroutine<void>::pull_type(
-      [this, supports_skipping, is_linear_operator]
-      (boost::coroutines::coroutine<void>::push_type & sink) {
-
-        emit_state initial_operator_state = emit_state::NONE;
-        if (supports_skipping && m_skip_next_block) {
-          initial_operator_state = emit_state::SKIP_NEXT_BLOCK;
-        }
-
-        query_context context([this](size_t input_id, bool skip) {
-                                auto ret = get_next_from_input(input_id, skip);
-                                return ret;
-                              },
-                              [this, &sink, supports_skipping, is_linear_operator]
-                              (const std::shared_ptr<sframe_rows>& rows)->emit_state{
-                                add_operator_output(rows);
-LABEL_GOTO_SINK_AGAIN:
-                                sink();
-
-                                // we are supposed to skip the next block
-                                if (m_skip_next_block) {
-                                  if (supports_skipping) {
-                                    // operator supports skipping. tell it
-                                    // we are skipping
-                                    return emit_state::SKIP_NEXT_BLOCK;
-                                  } else if (is_linear_operator) {
-                                    // make it look like the input is shorter
-                                    // just consume the inputs
-                                    for (size_t i = 0;i < num_inputs(); ++i) {
-                                      get_next_from_input(i, true);
-                                    }
-                                    // write a fake output, this is the skipped
-                                    // block. And sink again.
-                                    add_operator_output(nullptr);
-                                    goto LABEL_GOTO_SINK_AGAIN;
-                                  } else {
-                                    // operator does not support skipping.
-                                    // read it as usual
-                                    return emit_state::NONE;
-                                  }
-                                }
-                                return emit_state::NONE;
-                              },
-                              sframe_config::SFRAME_READ_BATCH_SIZE,
-                              initial_operator_state);
-        try {
-          m_operator->execute(context);
-        } catch(boost::coroutines::detail::forced_unwind& unwind) {
-          throw;
-        } catch(...) {
-          m_exception_occured = true;
-          m_exception = std::current_exception();
-        }
-
-      },
-      coro_attributes);
+  m_context = std::make_shared<query_context>(this, sframe_config::SFRAME_READ_BATCH_SIZE);
 }
 
 std::shared_ptr<sframe_rows> execution_node::get_next(size_t consumer_id, bool skip) {
@@ -176,15 +100,35 @@ std::shared_ptr<sframe_rows> execution_node::get_next(size_t consumer_id, bool s
 
   m_skip_next_block = skip;
 
-  if (m_coroutines_started == false) start_coroutines();
   DASSERT_LT(consumer_id, m_consumer_pos.size());
-
-  // consume from source when queue is empty and there is more in source
-  while (m_output_queue->empty(consumer_id) && m_source) {
-    m_source();
+  while (m_coroutines_started == false ||
+         (m_output_queue->empty(consumer_id) && m_operator->coro_running()))  {
+    if (m_coroutines_started == false) {
+      start_coroutines();
+    }
+    try {
+      if (m_skip_next_block) {
+        if (supports_skipping || !is_linear_operator) {
+          m_operator->execute(*m_context);
+        } else {
+          // make it look like the input is shorter
+          // just consume the inputs
+          for (size_t i = 0;i < num_inputs(); ++i) {
+            get_next_from_input(i, true);
+          }
+          add_operator_output(nullptr);
+        }
+      } else {
+        m_operator->execute(*m_context);
+      }
+    } catch(...) {
+      m_exception_occured = true;
+      m_exception = std::current_exception();
+    }
   }
+
   // end of data
-  if (m_output_queue->empty(consumer_id) && !m_source) return nullptr;
+  if (m_output_queue->empty(consumer_id) && m_operator->coro_running() == false) return nullptr;
 
   ASSERT_TRUE(!m_output_queue->empty(consumer_id));
 

@@ -53,8 +53,11 @@ struct unity_sframe_test {
     // check types match
     std::vector<flex_type_enum> dtypes = sframe->dtype();
     TS_ASSERT_EQUALS(dtypes[0], flex_type_enum::INTEGER);
+    TS_ASSERT_EQUALS(sframe->dtype(0), flex_type_enum::INTEGER);
     TS_ASSERT_EQUALS(dtypes[1], flex_type_enum::FLOAT);
+    TS_ASSERT_EQUALS(sframe->dtype(1), flex_type_enum::FLOAT);
     TS_ASSERT_EQUALS(dtypes[2], flex_type_enum::STRING);
+    TS_ASSERT_EQUALS(sframe->dtype(2), flex_type_enum::STRING);
 
     // check names match
     std::vector<std::string> names = sframe->column_names();

@@ -296,6 +296,10 @@ class sframe_rows {
           const row* m_source = nullptr;
           size_t m_current_idx = 0;
           const_iterator() { }
+          const_iterator(const const_iterator&) = default;
+          const_iterator(const_iterator&&) = default;
+          const_iterator& operator=(const const_iterator&) = default;
+          const_iterator& operator=(const_iterator&&) = default;
           /// default constructor
           explicit const_iterator(const sframe_rows::row& source, size_t current_idx = 0):
               m_source(&source), m_current_idx(current_idx) { };
@@ -356,6 +360,24 @@ class sframe_rows {
     row m_row;
     /// default constructor
     const_iterator() {}
+    const_iterator(const const_iterator& other) {
+      m_source = other.m_source;
+      m_row.copy_reference(other.m_row);
+    }
+    const_iterator(const_iterator&& other) {
+      m_source = other.m_source;
+      m_row.copy_reference(other.m_row);
+    }
+    const_iterator& operator=(const const_iterator& other) {
+      m_source = other.m_source;
+      m_row.copy_reference(other.m_row);
+      return *this;
+    }
+    const_iterator& operator=(const_iterator&& other) {
+      m_source = other.m_source;
+      m_row.copy_reference(other.m_row);
+      return *this;
+    }
     explicit const_iterator(const sframe_rows* source, size_t current_row_number = 0):
         m_row(source, current_row_number) { };
    private:
@@ -398,6 +420,24 @@ class sframe_rows {
     mutable row m_row;
     /// default constructor
     iterator() {}
+    iterator(const iterator& other) {
+      m_source = other.m_source;
+      m_row.copy_reference(other.m_row);
+    }
+    iterator(iterator&& other) {
+      m_source = std::move(other.m_source);
+      m_row.copy_reference(other.m_row);
+    }
+    iterator& operator=(const iterator& other) {
+      m_source = other.m_source;
+      m_row.copy_reference(other.m_row);
+      return *this;
+    }
+    iterator& operator=(iterator&& other) {
+      m_source = std::move(other.m_source);
+      m_row.copy_reference(other.m_row);
+      return *this;
+    }
     explicit iterator(sframe_rows* source, size_t current_row_number = 0):
         m_row(source, current_row_number) { };
    private:

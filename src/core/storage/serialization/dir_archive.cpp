@@ -147,7 +147,7 @@ void check_directory_writable(std::string directory, bool fail_on_existing_archi
   }
   // check for DIR_ARCHIVE_INI
   // now the mild annoyance is that the directory may be HDFS, or local disk
-  fileio::file_status stat = fileio::get_file_status(directory);
+  fileio::file_status stat = fileio::get_file_status(directory).first;
   if (stat == fileio::file_status::REGULAR_FILE) {
     // Always fail trying to overwrite existing file with directory
     log_and_throw_io_failure("Cannot create directory " + sanitize_url(directory) +
