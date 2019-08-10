@@ -24,6 +24,8 @@ cd ../strokes
 # Stroke data (around 200 MB each)
 curl https://storage.googleapis.com/quickdraw_dataset/full/raw/square.ndjson > square.ndjson
 curl https://storage.googleapis.com/quickdraw_dataset/full/raw/triangle.ndjson > triangle.ndjson
+
+cd ../..
 ```
 
 After running the above script, you should have a directory structure like this:

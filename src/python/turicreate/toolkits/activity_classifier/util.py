@@ -20,8 +20,8 @@ _MIN_NUM_SESSIONS_FOR_SPLIT = 100
 def random_split_by_session(dataset, session_id, fraction=0.9, seed=None):
     """
     Randomly split an SFrame into two SFrames based on the `session_id` such
-    that one split contains data for a `fraction` of the sessions while the
-    second split contains all data for the rest of the sessions.
+    that one split contains all data for a `fraction` of the sessions while
+    the second split contains all data for the rest of the sessions.
 
     Parameters
     ----------
