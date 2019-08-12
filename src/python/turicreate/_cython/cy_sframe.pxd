@@ -59,11 +59,12 @@ cdef extern from "<core/storage/sframe_interface/unity_sframe.hpp>" namespace "t
         bint has_size() except +
         string query_plan_string() except +
         unity_sframe_base_ptr join(unity_sframe_base_ptr, const string, map[string, string]) except +
+        unity_sframe_base_ptr join_with_custom_name(unity_sframe_base_ptr, const string, map[string, string], map[string, string]) except +
         unity_sarray_base_ptr pack_columns(const vector[string]&, const vector[string]&, flex_type_enum , const flexible_type&) except +
         unity_sframe_base_ptr stack (const string& , const vector[string]& , const vector[flex_type_enum]&, bint) except +
         unity_sframe_base_ptr sort(const vector[string]&, const vector[int]&) except +
         unity_sframe_base_ptr copy_range(size_t, size_t, size_t) except +
-        cpplist[unity_sframe_base_ptr] drop_missing_values(const vector[string]&, bint, bint) except +
+        cpplist[unity_sframe_base_ptr] drop_missing_values(const vector[string]&, bint, bint, bint) except +
         void delete_on_close() except +
         void explore(const string&, const string&) except +
         void show(const string&) except +
@@ -143,6 +144,8 @@ cdef class UnitySFrameProxy:
 
     cpdef join(self, UnitySFrameProxy right, how, dict on)
 
+    cpdef join_with_custom_name(self, UnitySFrameProxy right, how, dict on, dict alter_name)
+
     cpdef pack_columns(self, columns, keys, dtype, fill_na)
 
     cpdef stack(self, column_name, new_column_names, new_column_types, drop_na)
@@ -151,7 +154,7 @@ cdef class UnitySFrameProxy:
 
     cpdef copy_range(self, size_t start, size_t step, size_t end)
 
-    cpdef drop_missing_values(self, columns, bint is_all, bint split)
+    cpdef drop_missing_values(self, columns, bint is_all, bint split, bint recursive)
 
     cpdef __get_object_id(self)
 

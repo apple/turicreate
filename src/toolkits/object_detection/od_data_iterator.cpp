@@ -160,10 +160,17 @@ std::vector<image_annotation> parse_annotations(
               switch(annotation_position) {
 
                   case annotation_position_enum::CENTER:
-                      annotation.bounding_box.x -= annotation.bounding_box.width / 2.f;
-                      annotation.bounding_box.y -= annotation.bounding_box.height / 2.f;
-                      annotation.bounding_box.y = annotation_image_height - annotation.bounding_box.y;
-                      break;
+                    // Adjust from top-left to bottom-left origin, while
+                    // `annotation.bounding_box.y still represents the center.
+                    annotation.bounding_box.y =
+                        annotation_image_height - annotation.bounding_box.y;
+
+                    // Adjust from center position to top-left position.
+                    annotation.bounding_box.x -=
+                        annotation.bounding_box.width / 2.f;
+                    annotation.bounding_box.y -=
+                        annotation.bounding_box.height / 2.f;
+                    break;
 
                   case annotation_position_enum::TOP_LEFT:
                       annotation.bounding_box.y = annotation_image_height - annotation.bounding_box.y;

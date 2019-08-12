@@ -8,13 +8,14 @@
 #include <boost/program_options.hpp>
 #include <regex>
 #include <boost/algorithm/string.hpp>
+#include <core/logging/logger.hpp>
 #include <core/globals/globals.hpp>
 #include <core/storage/fileio/fs_utils.hpp>
 #include <core/storage/fileio/sanitize_url.hpp>
 #include <core/storage/fileio/general_fstream.hpp>
 #include <core/storage/fileio/s3_api.hpp>
 
-namespace po = boost::program_options;      
+namespace po = boost::program_options;
 
 constexpr size_t BUFFER_SIZE = 4 * 1024 * 1024; /* 4MB */
 void print_help(char** argv) {
@@ -71,7 +72,7 @@ bool recursive_copy(std::string srcpath, std::string dstpath) {
   // create descendent directories
   bool success = turi::fileio::create_directory(dstpath);
   if (!success) {
-    std::cerr << "Unable to create directory at " 
+    std::cerr << "Unable to create directory at "
               << turi::sanitize_url(dstpath) << "\n";
     return false;
   }
@@ -91,29 +92,31 @@ bool recursive_copy(std::string srcpath, std::string dstpath) {
   return true;
 }
 
-/// cp implementation. Behaves like cp. 
+/// cp implementation. Behaves like cp.
 int cp_impl(std::string srcpath, std::string dstpath) {
 
   auto src_type = turi::fileio::get_file_status(srcpath);
   auto dst_type = turi::fileio::get_file_status(dstpath);
-  if (src_type == turi::fileio::file_status::MISSING) {
+  if (src_type.first == turi::fileio::file_status::MISSING) {
     // missing source file
-    std::cerr << "Source file missing\n";
+    logstream(LOG_ERROR) << '\'' << srcpath << '\'' << " missing. " << __FILE__
+                         << " at " << __LINE__ << ". Err: " << src_type.second << std::endl;
     return 1;
-  } else if (src_type == turi::fileio::file_status::REGULAR_FILE) {
+  } else if (src_type.first == turi::fileio::file_status::REGULAR_FILE) {
     // source file is a single file
-    if (dst_type == turi::fileio::file_status::MISSING ||
-        dst_type == turi::fileio::file_status::REGULAR_FILE) {
+    if (dst_type.first == turi::fileio::file_status::MISSING ||
+        dst_type.first == turi::fileio::file_status::REGULAR_FILE) {
       // target is missing, or I am overwriting
       file_copy(srcpath, dstpath);
-    } else { 
+    } else {
       // if target is a directory... we need to come up with the target filename
       file_copy(srcpath, dstpath + "/" + turi::fileio::get_filename(srcpath));
     }
-  } else if (src_type == turi::fileio::file_status::DIRECTORY) {
+  } else if (src_type.first == turi::fileio::file_status::DIRECTORY) {
     // copying a directory
-    if (dst_type == turi::fileio::file_status::REGULAR_FILE) {
-      std::cerr << "Cannot create target directory. File already exists";
+    if (dst_type.first == turi::fileio::file_status::REGULAR_FILE) {
+      logstream(LOG_ERROR) << '\'' << srcpath << '\'' << " exists. "
+                           << "Cannot create target directory." << std::endl;
       return 1;
     } else {
       recursive_copy(srcpath, dstpath + "/" + turi::fileio::get_filename(srcpath));
@@ -143,13 +146,13 @@ int simple_ls_impl(std::string url) {
 }
 
 
-std::string glob_to_regex(std::string glob) { 
+std::string glob_to_regex(std::string glob) {
   // this is horribly incomplete. But works sufficiently
   boost::replace_all(glob, "/", "\\/");
   boost::replace_all(glob, "?", ".");
   boost::replace_all(glob, "*", ".*");
   return glob;
-} 
+}
 
 /// enumerates contents of "url", testing the rest against the glob
 int glob_ls_impl(std::string url, std::string glob) {
@@ -166,7 +169,7 @@ int glob_ls_impl(std::string url, std::string glob) {
         }
         std::cout << "\n";
       }
-    } 
+    }
     std::cout << "\n";
     std::cout << ctr << " entries found\n";
   } catch (std::string s) {
@@ -182,7 +185,7 @@ int main(int argc, char** argv) {
     print_help(argv);
     return 0;
   }
-  turi::globals::initialize_globals_from_environment(argv[0]);  
+  turi::globals::initialize_globals_from_environment(argv[0]);
   std::string command = argv[1];
   if (command == "cp" && argc == 4) {
     std::string srcpath = argv[2];
@@ -198,7 +201,7 @@ int main(int argc, char** argv) {
     std::string dstpath = argv[2];
     bool success = turi::fileio::create_directory(dstpath);
     if (!success) {
-      std::cerr << "Unable to create directory at " 
+      std::cerr << "Unable to create directory at "
                 << turi::sanitize_url(dstpath) << "\n";
       return 1;
     }
@@ -207,7 +210,7 @@ int main(int argc, char** argv) {
     include_s3_environment(dstpath);
     bool success = turi::fileio::delete_path(dstpath);
     if (!success) {
-      std::cerr << "Unable to delete path at " 
+      std::cerr << "Unable to delete path at "
                 << turi::sanitize_url(dstpath) << "\n";
       return 1;
     }
@@ -216,7 +219,7 @@ int main(int argc, char** argv) {
     include_s3_environment(dstpath);
     bool success = turi::fileio::delete_path_recursive(dstpath);
     if (!success) {
-      std::cerr << "Unable to recursively delete path at " 
+      std::cerr << "Unable to recursively delete path at "
                 << turi::sanitize_url(dstpath) << "\n";
       return 1;
     }
@@ -227,7 +230,7 @@ int main(int argc, char** argv) {
     // is there globs?
     size_t globchars = 0;
     for (char c: filename) globchars += (c == '*' || c == '?');
-    
+
     if (globchars == 0) {
       return simple_ls_impl(url);
     } else {

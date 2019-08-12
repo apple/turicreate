@@ -28,7 +28,6 @@ namespace vega_renderer {
                                     std::function<void(CGImageRef image)> completion_handler);
 
         protected:
-            static double acceptable_diff;
             std::string make_format_string(unsigned char *raw_format_str_ptr,
                                                     size_t raw_format_str_len);
             void run_test_case_with_spec(const std::string& test_spec, const std::string& name);

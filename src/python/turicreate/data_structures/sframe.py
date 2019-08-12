@@ -2385,13 +2385,22 @@ class SFrame(object):
         out : pandas.DataFrame
             The dataframe which contains all rows of SFrame
         """
+
+        from ..toolkits.image_classifier._evaluation import _image_resize
+
         assert HAS_PANDAS, 'pandas is not installed.'
         df = pandas.DataFrame()
         for i in range(self.num_columns()):
             column_name = self.column_names()[i]
-            df[column_name] = list(self[column_name])
+            if(self.column_types()[i] == _Image):
+                df[column_name] = [_image_resize(x[column_name])._to_pil_image() for x in self.select_columns([column_name])]
+            else:
+                df[column_name] = list(self[column_name])
             if len(df[column_name]) == 0:
-                df[column_name] = df[column_name].astype(self.column_types()[i])
+                column_type = self.column_types()[i]
+                if column_type in (array.array, type(None)):
+                    column_type = 'object'
+                df[column_name] = df[column_name].astype(column_type)
         return df
 
     def to_numpy(self):
@@ -4216,7 +4225,7 @@ class SFrame(object):
                                                                   group_output_columns,
                                                                   group_ops))
 
-    def join(self, right, on=None, how='inner'):
+    def join(self, right, on=None, how='inner', alter_name=None):
         """
         Merge two SFrames. Merges the current (left) SFrame with the given
         (right) SFrame using a SQL-style equi-join operation by columns.
@@ -4263,6 +4272,20 @@ class SFrame(object):
             * outer: Equivalent to a SQL full outer join. Result is
               the union between the result of a left outer join and a right
               outer join.
+
+        alter_name : None | dict
+            user provided names to resolve column name conflict when merging two sframe.
+
+            * 'None', then default conflict resolution will be used. For example, if 'X' is
+            defined in the sframe on the left side of join, and there's an column also called
+            'X' in the sframe on the right, 'X.1' will be used as the new column name when
+            appending the column 'X' from the right sframe, in order to avoid column name collision.
+
+            * if a dict is given, the dict key should be obtained from column names from the right
+            sframe. The dict value should be user preferred column name to resolve the name collision
+            instead of resolving by the default behavior. In general, dict key should not be any value
+            from the right sframe column names. If dict value will cause potential name confict
+            after an attempt to resolve, exception will be thrown.
 
         Returns
         -------
@@ -4349,7 +4372,19 @@ class SFrame(object):
             raise TypeError("Must pass a str, list, or dict of join keys")
 
         with cython_context():
-            return SFrame(_proxy=self.__proxy__.join(right.__proxy__, how, join_keys))
+            if alter_name is None:
+                return SFrame(_proxy=self.__proxy__.join(right.__proxy__, how, join_keys))
+            if type(alter_name) is dict:
+                left_names = self.column_names()
+                right_names = right.column_names()
+                for (k, v) in alter_name.items():
+                    if (k not in right_names) or (k in join_keys):
+                        raise KeyError("Redundant key %s for collision resolution" % k)
+                    if k == v:
+                        raise ValueError("Key %s should not be equal to value" % k)
+                    if v in left_names or v in right_names:
+                        raise ValueError("Value %s will cause further collision" % v)
+                return SFrame(_proxy=self.__proxy__.join_with_custom_name(right.__proxy__, how, join_keys, alter_name))
 
     def filter_by(self, values, column_name, exclude=False):
         """
@@ -4527,10 +4562,18 @@ class SFrame(object):
 
 
         # Suppress visualization output if 'none' target is set
-        from ..visualization._plot import _target
+        from ..visualization._plot import _target, display_table_in_notebook
         if _target == 'none':
             return
+        try:
+            if _target == 'auto' and \
+                get_ipython().__class__.__name__ == "ZMQInteractiveShell":
+                display_table_in_notebook(self)
+                return
+        except NameError:
+            pass
 
+        # Launch interactive GUI window
         path_to_client = _get_client_app_path()
 
         if title is None:
@@ -5556,7 +5599,7 @@ class SFrame(object):
         with cython_context():
             return SFrame(_proxy=self.__proxy__.sort(sort_column_names, sort_column_orders))
 
-    def dropna(self, columns=None, how='any'):
+    def dropna(self, columns=None, how='any', recursive=False):
         """
         Remove missing values from an SFrame. A missing value is either ``None``
         or ``NaN``.  If ``how`` is 'any', a row will be removed if any of the
@@ -5577,6 +5620,11 @@ class SFrame(object):
             Specifies whether a row should be dropped if at least one column
             has missing values, or if all columns have missing values.  'any' is
             default.
+
+        recursive: bool
+            By default is False. If this flag is set to True, then `nan` check will
+            be performed on each element of a sframe cell in a DFS manner if the cell
+            has a nested structure, such as dict, list.
 
         Returns
         -------
@@ -5631,9 +5679,9 @@ class SFrame(object):
         (columns, all_behavior) = self.__dropna_errchk(columns, how)
 
         with cython_context():
-            return SFrame(_proxy=self.__proxy__.drop_missing_values(columns, all_behavior, False))
+            return SFrame(_proxy=self.__proxy__.drop_missing_values(columns, all_behavior, False, recursive))
 
-    def dropna_split(self, columns=None, how='any'):
+    def dropna_split(self, columns=None, how='any', recursive=False):
         """
         Split rows with missing values from this SFrame. This function has the
         same functionality as :py:func:`~turicreate.SFrame.dropna`, but returns a
@@ -5651,6 +5699,12 @@ class SFrame(object):
             Specifies whether a row should be dropped if at least one column
             has missing values, or if all columns have missing values.  'any' is
             default.
+
+        recursive: bool
+            By default is False. If this flag is set to True, then `nan` check will
+            be performed on each element of a sframe cell in a recursive manner if the cell
+            has a nested structure, such as dict, list.
+
 
         Returns
         -------
@@ -5692,7 +5746,7 @@ class SFrame(object):
 
         (columns, all_behavior) = self.__dropna_errchk(columns, how)
 
-        sframe_tuple = self.__proxy__.drop_missing_values(columns, all_behavior, True)
+        sframe_tuple = self.__proxy__.drop_missing_values(columns, all_behavior, True, recursive)
 
         if len(sframe_tuple) != 2:
             raise RuntimeError("Did not return two SFrames!")

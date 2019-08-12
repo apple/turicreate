@@ -10,6 +10,7 @@
 #include <core/storage/query_engine/operators/operator.hpp>
 #include <core/storage/query_engine/execution/query_context.hpp>
 #include <core/storage/query_engine/operators/operator_properties.hpp>
+#include <core/util/coro.hpp>
 
 namespace turi {
 namespace query_eval {
@@ -27,6 +28,7 @@ namespace query_eval {
 template <>
 struct operator_impl<planner_node_type::PROJECT_NODE> : public query_operator {
  public:
+  DECL_CORO_STATE(execute);
 
   inline planner_node_type type() const { return planner_node_type::PROJECT_NODE; }
 
@@ -53,8 +55,13 @@ struct operator_impl<planner_node_type::PROJECT_NODE> : public query_operator {
     return std::make_shared<operator_impl>(*this);
   }
 
+  inline bool coro_running() const {
+    return CORO_RUNNING(execute);
+  }
   inline void execute(query_context& context) {
+    CORO_BEGIN(execute)
     while (1) {
+      {
       auto rows = context.get_next(0);
       if (rows == nullptr)
         break;
@@ -68,7 +75,10 @@ struct operator_impl<planner_node_type::PROJECT_NODE> : public query_operator {
         out_columns.push_back(rows_columns[m_indices[i]]);
       }
       context.emit(out);
+      }
+      CORO_YIELD();
     }
+    CORO_END
   };
 
   static std::shared_ptr<planner_node> make_planner_node(

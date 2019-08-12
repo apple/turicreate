@@ -165,6 +165,12 @@ void logistic_regression::init_options(const std::map<std::string,
       flex_undefined(),
       true);
 
+  options.create_boolean_option(
+      "disable_posttrain_evaluation",
+      "Disable automatic computation of an evaluation report following training.",
+      false,
+      false);
+
   // Set options!
   options.set_options(_opts);
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));

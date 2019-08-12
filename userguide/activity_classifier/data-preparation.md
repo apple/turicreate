@@ -17,8 +17,10 @@ def find_label_for_containing_interval(intervals, index):
         return containing_interval[0]
 
 # Load labels
-labels = tc.SFrame.read_csv(data_dir + 'labels.txt', delimiter=' ', header=False, verbose=False)
-labels = labels.rename({'X1': 'exp_id', 'X2': 'user_id', 'X3': 'activity_id', 'X4': 'start', 'X5': 'end'})
+labels = tc.SFrame.read_csv(data_dir + 'labels.txt', delimiter=' ', header=False,
+                            verbose=False)
+labels = labels.rename({'X1': 'exp_id', 'X2': 'user_id', 'X3': 'activity_id',
+                        'X4': 'start', 'X5': 'end'})
 labels
 ```
 
@@ -86,7 +88,7 @@ target_map = {
 }
 
 # Use the same labels used in the experiment
-data = data.filter_by(target_map.keys(), 'activity_id')
+data = data.filter_by(list(target_map.keys()), 'activity_id')
 data['activity'] = data['activity_id'].apply(lambda x: target_map[x])
 data = data.remove_column('activity_id')
 

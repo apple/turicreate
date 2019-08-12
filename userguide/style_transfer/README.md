@@ -66,7 +66,7 @@ training process, can result in better models.
 #### Model Creation
 
 Model creation may take time. If you do not have access to a GPU, it can
-take up to a day to train a good model. The number of training
+take up to a day or more to train a good model for one style image. The number of training
 iterations is determined automatically. You may lower this value to make
 model creation faster, as the cost of obtaining a potentially worse
 model. See [how it works](how-it-works.md) for more details on how this

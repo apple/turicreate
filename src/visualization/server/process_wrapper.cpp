@@ -76,21 +76,6 @@ process_wrapper::process_wrapper(const std::string& path_to_client) : m_alive(tr
       m_cond.wait(guard);
     }
   });
-
-  // workaround to pop-under GUI app window from popen:
-  // https://stackoverflow.com/a/13553471
-
-  #ifdef __APPLE__
-  ::turi::process osascript;
-  osascript.popen("/usr/bin/osascript",
-      std::vector<std::string>({
-        "-e",
-        "delay .5",
-        "-e",
-        "tell application \"Turi Create Visualization\" to activate"
-      }),
-      0, false);
-  #endif
 }
 
 process_wrapper::~process_wrapper() {

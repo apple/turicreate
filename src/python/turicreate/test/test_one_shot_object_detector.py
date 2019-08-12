@@ -65,7 +65,7 @@ def _get_data(feature, target):
         pil_img = _PIL_Image.fromarray(img, mode='RGB')
         image_format = FORMATS[rs.randint(len(FORMATS))]
         starter_images.append(from_pil_image(pil_img, image_format=image_format))
-        starter_target.append(i % len(_CLASSES))
+        starter_target.append(_CLASSES[i % len(_CLASSES)])
 
     train = tc.SFrame({
         feature: tc.SArray(starter_images),
@@ -110,6 +110,11 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
         }
         self.fields_ans = self.get_ans.keys()
 
+    def test_create_with_missing_value(self):
+        sf = self.train.append(tc.SFrame({self.feature: tc.SArray([None], dtype=tc.Image), self.target: [self.train[self.target][0]]}))
+        with self.assertRaises(_ToolkitError):
+            tc.one_shot_object_detector.create(sf, target=self.target)
+
     def test_create_with_missing_target(self):
         with self.assertRaises(_ToolkitError):
             tc.one_shot_object_detector.create(self.train, target='wrong_feature',
@@ -118,6 +123,14 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
     def test_create_with_empty_dataset(self):
         with self.assertRaises(_ToolkitError):
             tc.one_shot_object_detector.create(self.train[:0], target=self.target)
+
+    def test_create_with_no_background_images(self):
+        with self.assertRaises(_ToolkitError):
+            tc.one_shot_object_detector.create(self.train, target=self.target, backgrounds=tc.SArray())
+
+    def test_create_with_wrong_type_background_images(self):
+        with self.assertRaises(TypeError):
+            tc.one_shot_object_detector.create(self.train, target=self.target, backgrounds='wrong_backgrounds')
 
     def test_predict(self):
         sf = self.test.head()

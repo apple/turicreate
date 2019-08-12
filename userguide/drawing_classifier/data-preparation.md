@@ -24,6 +24,8 @@ cd ../strokes
 # Stroke data (around 200 MB each)
 curl https://storage.googleapis.com/quickdraw_dataset/full/raw/square.ndjson > square.ndjson
 curl https://storage.googleapis.com/quickdraw_dataset/full/raw/triangle.ndjson > triangle.ndjson
+
+cd ../..
 ```
 
 After running the above script, you should have a directory structure like this:
@@ -83,8 +85,9 @@ def build_bitmap_sframe():
 
     sf = tc.SFrame({"drawing": bitmaps_list, "label": labels_list})
     sf.save(os.path.join(sframes_dir, "bitmap_square_triangle.sframe"))
+    return sf 
 
-build_bitmap_sframe()
+sf = build_bitmap_sframe()
 ```
 
 After building the two SFrames, your directory structure should look like the
@@ -177,8 +180,9 @@ def build_strokes_sframe():
         labels_list.extend([class_name] * num_examples_per_class)
     sf = tc.SFrame({"drawing": drawings_list, "label": labels_list})
     sf.save(os.path.join(sframes_dir, "stroke_square_triangle.sframe"))
+    return sf 
 
-build_strokes_sframe()
+sf = build_strokes_sframe()
 ```
 
 When stroke-based drawing data is given as input to the Drawing Classifier 
@@ -190,7 +194,7 @@ more information about the preprocessing done under the hood.
 To visualize what your stroke-based drawings look like when rendered as a 
 bitmap, you can run the following utility function:
 ```python
-sf = build_stroke_sframe()
+sf = build_strokes_sframe()
 sf["rendered"] = tc.drawing_classifier.util.draw_strokes(sf["drawing"])
 sf.explore()
 ```

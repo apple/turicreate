@@ -11,6 +11,7 @@
 #include <core/storage/query_engine/operators/operator.hpp>
 #include <core/storage/query_engine/execution/query_context.hpp>
 #include <core/storage/query_engine/operators/operator_properties.hpp>
+#include <core/util/coro.hpp>
 namespace turi {
 namespace query_eval {
 
@@ -29,6 +30,7 @@ typedef std::function<flexible_type(const sframe_rows::row&)> transform_type;
 template<>
 class operator_impl<planner_node_type::TRANSFORM_NODE> : public query_operator {
  public:
+  DECL_CORO_STATE(execute);
   planner_node_type type() const { return planner_node_type::TRANSFORM_NODE; }
 
   static std::string name() { return "transform";  }
@@ -52,11 +54,16 @@ class operator_impl<planner_node_type::TRANSFORM_NODE> : public query_operator {
     return std::make_shared<operator_impl>(*this);
   }
 
+  inline bool coro_running() const {
+    return CORO_RUNNING(execute);
+  }
   inline void execute(query_context& context) {
+    CORO_BEGIN(execute)
     if (m_random_seed != -1){
       random::get_source().seed(m_random_seed + thread::thread_id());
     }
     while(1) {
+      {
       auto rows = context.get_next(0);
       if (rows == nullptr)
         break;
@@ -80,7 +87,10 @@ class operator_impl<planner_node_type::TRANSFORM_NODE> : public query_operator {
         ++iter;
       }
       context.emit(output);
+      }
+      CORO_YIELD();
     }
+    CORO_END
   }
 
   static std::shared_ptr<planner_node> make_planner_node(

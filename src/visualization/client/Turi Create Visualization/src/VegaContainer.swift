@@ -5,20 +5,49 @@
 
 import WebKit
 
-func log(_ message: String) {
-    let withNewline = String(format: "%@\n", message)
-    guard let data = withNewline.data(using: .utf8) else {
-        assert(false)
-        return
+private struct StandardError: TextOutputStream {
+    public mutating func write(_ str: String) { fputs(str, stderr) }
+}
+private var standardError = StandardError()
+
+#if DEBUG
+private var isDebugMode = true
+#else
+private var isDebugMode = false
+#endif
+
+func log(_ items: [Any]) {
+    for item in items {
+        print(item, separator: "", terminator: " ", to: &standardError);
     }
-    FileHandle.standardError.write(data)
+    print("", separator: "", terminator: "\n", to: &standardError)
     fflush(__stderrp)
 }
 
-func debug_log(_ message: String) {
+func log(_ items: Any...) {
+    log(items) // calls [Any] signature
+}
+
+func debug_log(_ items: Any...) {
     if let _ = ProcessInfo.processInfo.environment["TC_VISUALIZATION_CLIENT_ENABLE_DEBUG_LOGGING"] {
-        log("DEBUG: " + message + "\n")
+        log(["DEBUG:"] + items)
     }
+}
+
+func handleJavaScriptError(_ err: Error?) -> Bool {
+    if (err != nil) {
+        let nserr = err! as NSError
+        let lineno : Int = nserr.userInfo["WKJavaScriptExceptionLineNumber"] as? Int ?? 0
+        let colno : Int = nserr.userInfo["WKJavaScriptExceptionColumnNumber"] as? Int ?? 0
+        let message : String = nserr.userInfo["WKJavaScriptExceptionMessage"] as? String ?? "An unknown error occurred."
+        let source : String = nserr.userInfo["WKJavaScriptExceptionSourceURL"] as? String ?? "Unknown"
+        log("Unhandled JavaScript Exception in file:", source)
+        log("Line:", lineno, "Column:", colno)
+        log("Message:", message)
+        assert(false)
+        return true
+    }
+    return false
 }
 
 class VegaContainer: NSObject, WKScriptMessageHandler {
@@ -34,7 +63,6 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
     private var ready: Bool = false
 
     init(view: CustomWebKitView) {
-
         // initialize variables
         self.view = view;
         self.pipe = nil
@@ -45,11 +73,16 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
         // start the pipe
         self.pipe = Pipe(graph_data: self)
 
+        // set up debugging
+        if (isDebugMode) {
+            self.view.configuration.preferences.setValue(true, forKey: "developerExtrasEnabled")
+        }
+
         // load app bundle
+        self.view.configuration.userContentController.add(self, name: "scriptHandler")
         let appBundle = Bundle.main
         let htmlPath = appBundle.url(forResource: "index", withExtension: "html", subdirectory: "build")
         self.view.loadFileURL(htmlPath!, allowingReadAccessTo: appBundle.bundleURL)
-        self.view.configuration.userContentController.add(self, name: "scriptHandler")
     }
 
     // callback from the javascript
@@ -276,11 +309,7 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
             let updateJS = String(format: "setAccordionData(%@);", json_string)
 
             self.view.evaluateJavaScript(updateJS, completionHandler: {(value, err) in
-                if err != nil {
-                    // if we got here, we got a JS error
-                    log(err.debugDescription)
-                    assert(false)
-                }
+                handleJavaScriptError(err)
             });
         }
     }
@@ -290,11 +319,7 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
             if(self.loaded){
                 let updateJS = String(format: "setProtoMessage(\"%@\");", protobuf);
                 self.view.evaluateJavaScript(updateJS, completionHandler: { (value, err) in
-                    if err != nil {
-                        // if we got here, we got a JS error
-                        log(err.debugDescription)
-                        assert(false)
-                    }
+                    handleJavaScriptError(err)
                 });
             }else{
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: { self.send_proto(protobuf: protobuf) })
@@ -316,9 +341,7 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
 
                 self.view.evaluateJavaScript(jsString, completionHandler: { (value , err) in
 
-                    if err != nil {
-                        log(err.debugDescription)
-                        assert(false)
+                    if (handleJavaScriptError(err)) {
                         return
                     }
 
@@ -358,9 +381,7 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
 
                 self.view.evaluateJavaScript(jsString, completionHandler: { (value , err) in
 
-                    if err != nil {
-                        log(err.debugDescription)
-                        assert(false)
+                    if (handleJavaScriptError(err)) {
                         return
                     }
 
@@ -388,7 +409,7 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
                 // call function to get images
                 self.view.evaluateJavaScript(jsString, completionHandler: { (value , err) in
 
-                    if(err != nil){
+                    if (handleJavaScriptError(err)) {
                         return
                     }
 
@@ -404,7 +425,7 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
         let jsString = "export_png();";
         self.view.evaluateJavaScript(jsString, completionHandler: { (value , err) in
 
-            if(err != nil){
+            if (handleJavaScriptError(err)) {
                 return
             }
 
@@ -426,10 +447,8 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
         let updateJS = String(format: "setSpec(%@);", json_string)
 
         self.view.evaluateJavaScript(updateJS, completionHandler: {(value, err) in
-            if err != nil {
-                // if we got here, we got a JS error
-                log(err.debugDescription)
-                assert(false)
+            if (handleJavaScriptError(err)) {
+                return
             }
 
             debug_log("successfully sent vega spec to JS")
@@ -495,11 +514,7 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
             }
 
             self.view.evaluateJavaScript(updateJS, completionHandler: {(value, err) in
-                if err != nil {
-                    // if we got here, we got a JS error
-                    log(err.debugDescription)
-                    assert(false)
-                }
+                handleJavaScriptError(err)
             });
 
             // recurse -- once the process is ready for data, we should be able to freely push as much data to it

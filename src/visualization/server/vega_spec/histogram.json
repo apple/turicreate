@@ -17,7 +17,8 @@
       "update": "(bins.stop - bins.start) / bins.step"
     },
     {
-      "name": "nullGap", "value": 10
+      "name": "nullGap",
+      "update": "data(\"nulls\").length ? 10 : 0"
     },
     {
       "name": "barStep",
@@ -110,7 +111,7 @@
     {
       "name": "xscale",
       "type": "linear",
-      "range": [{"signal": "barStep + nullGap"}, {"signal": "width"}],
+      "range": [{"signal": "nullGap ? barStep + nullGap : 0"}, {"signal": "width"}],
       "round": true,
       "domain": {"signal": "[bins.start, bins.stop]"},
       "bins": {"signal": "bins"}
@@ -118,9 +119,9 @@
     {
       "name": "xscale-null",
       "type": "band",
-      "range": [0, {"signal": "barStep"}],
+      "range": [{"signal": "nullGap ? 0 : 1"}, {"signal": "nullGap ? barStep : 0"}],
       "round": true,
-      "domain": [null]
+      "domain": [{"signal": "nullGap ? null : ''"}]
     }
   ],
   "axes": [
@@ -140,7 +141,7 @@
       "orient": "left",
       "scale": "yscale",
       "tickCount": 5,
-      "offset": 5,
+      "offset": {"signal": "nullGap ? 5 : 0"},
       "grid": true
     }
   ],

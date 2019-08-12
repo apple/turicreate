@@ -6,21 +6,51 @@
 
 #include <ml/neural_net/compute_context.hpp>
 
-#if defined(HAS_MPS) && !defined(TC_BUILD_IOS)
-#include <ml/neural_net/mps_compute_context.hpp>
-#endif
+#include <algorithm>
+#include <map>
 
 namespace turi {
 namespace neural_net {
 
+namespace {
+
+std::multimap<int, compute_context::registration*> &get_registry() {
+  static auto *registry =
+      new std::multimap<int, compute_context::registration*>;
+  return *registry;
+}
+
+}  // namespace
+
+compute_context::registration::registration(int priority, factory factory_fn)
+  : priority_(priority),
+    factory_fn_(std::move(factory_fn))
+{
+  // No mutex is required if this is only used at static init time...
+  get_registry().emplace(priority, this);
+}
+
+compute_context::registration::~registration() {
+  // No mutex is required if this is only used at static init time...
+  std::pair<const int, compute_context::registration *> needle(priority_, this);
+  auto it = std::find(get_registry().begin(), get_registry().end(),
+                      needle);
+  if (it != get_registry().end()) {
+    get_registry().erase(it);
+  }
+}
+
 // static
 std::unique_ptr<compute_context> compute_context::create() {
-
-#if defined(HAS_MPS) && !defined(TC_BUILD_IOS)
-  return std::unique_ptr<compute_context>(new mps_compute_context);
-#else
-  return nullptr;
-#endif
+  // Return the first compute context created by any factory function, in
+  // ascending order by priority.
+  std::unique_ptr<compute_context> result;
+  auto it = get_registry().begin();
+  while (result == nullptr && it != get_registry().end()) {
+    result = it->second->create_context();
+    ++it;
+  }
+  return result;
 }
 
 compute_context::~compute_context() = default;

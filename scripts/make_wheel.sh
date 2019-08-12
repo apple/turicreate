@@ -44,6 +44,8 @@ print_help() {
   echo
   echo "  --docker-python3.6       Use docker to build for Python 3.6 in Ubuntu 10.04 with GCC 4.8."
   echo
+  echo "  --docker-python3.7       Use docker to build for Python 3.7 in Ubuntu 10.04 with GCC 4.8."
+  echo
   echo "  --num_procs=n            Specify the number of proceses to run in parallel."
   echo
   echo "  --target-dir=[dir]       The directory where the wheel and associated files are put."
@@ -70,6 +72,7 @@ while [ $# -gt 0 ]
     --docker-python2.7)     USE_DOCKER=1;DOCKER_PYTHON=2.7;;
     --docker-python3.5)     USE_DOCKER=1;DOCKER_PYTHON=3.5;;
     --docker-python3.6)     USE_DOCKER=1;DOCKER_PYTHON=3.6;;
+    --docker-python3.7)     USE_DOCKER=1;DOCKER_PYTHON=3.7;;
     --help)                 print_help ;;
     *) unknown_option $1 ;;
   esac

@@ -2688,7 +2688,7 @@ class gl_sframe {
    * \see dropna_split
    */
   gl_sframe dropna(const std::vector<std::string>& columns = std::vector<std::string>(),
-                   std::string how = "any") const;
+                   std::string how = "any", bool recursive = false) const;
 
   /**
    * Split rows with missing values from this \ref gl_sframe. This function has
@@ -2699,9 +2699,15 @@ class gl_sframe {
    *
    * \param columns Optional. The columns to use when looking for missing values.
    *    By default, all columns are used.
+   *
    * \param how Optional. Specifies whether a row should be dropped if at least
    * one column has missing values, or if all columns have missing values.
    * "any" is default.
+   *
+   * \param recursive Optional. It will recursively check whether a cell contains
+   * nan or not. This is handy for nested data structure like list, dictionary.
+   * For instance, {{FLEX_UNDEFINED, 1}, {1} will be treat as nan and will be removed
+   * if recursive is set to be true. Otherwise it won't be treated as nan-value.
    *
    * Example:
    * \code
@@ -2743,7 +2749,7 @@ class gl_sframe {
    */
   std::pair<gl_sframe, gl_sframe> dropna_split(
       const std::vector<std::string>& columns=std::vector<std::string>(),
-      std::string how = "any") const;
+      std::string how = "any", bool recursive = false) const;
 
   /**
    * Fill all missing values with a given value in a given column. If the
@@ -2754,6 +2760,11 @@ class gl_sframe {
    * \param column The name of the column to modify.
    *
    * \param value The value used to replace all missing values.
+   *
+   * \param recursive The recursive is used to set the manner of nan-value checking.
+   * If this value is true, a cell will be treated as missing value iff it contains nan.
+   * For instance, {{FLEX_UNDEFINED, 1}, {0}} and {FLEX_UNDEFINED, 1} will be all treated
+   * as nan-values.
    *
    * Example:
    * \code

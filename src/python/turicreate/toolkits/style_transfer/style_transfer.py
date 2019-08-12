@@ -110,6 +110,8 @@ def create(style_dataset, content_dataset, style_feature=None,
         raise _ToolkitError("content_dataset SFrame cannot be empty")
     if(batch_size < 1):
         raise _ToolkitError("'batch_size' must be greater than or equal to 1")
+    if max_iterations is not None and (not isinstance(max_iterations, int) or max_iterations < 0):
+        raise _ToolkitError("'max_iterations' must be an integer greater than or equal to 0")
 
     from ._sframe_loader import SFrameSTIter as _SFrameSTIter
     import mxnet as _mx
@@ -117,6 +119,7 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     if style_feature is None:
         style_feature = _tkutl._find_only_image_column(style_dataset)
+    
     if content_feature is None:
         content_feature = _tkutl._find_only_image_column(content_dataset)
     if verbose:
@@ -125,7 +128,9 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     _raise_error_if_not_training_sframe(style_dataset, style_feature)
     _raise_error_if_not_training_sframe(content_dataset, content_feature)
-
+    _tkutl._handle_missing_values(style_dataset, style_feature, 'style_dataset')
+    _tkutl._handle_missing_values(content_dataset, content_feature, 'content_dataset')
+        
     params = {
         'batch_size': batch_size,
         'vgg16_content_loss_layer': 2,  # conv3_3 layer
@@ -155,6 +160,9 @@ def create(style_dataset, content_dataset, style_feature=None,
         'aug_pca_noise': 0.0,
         'aug_max_attempts': 20,
         'aug_inter_method': 2,
+        'checkpoint': False,
+        'checkpoint_prefix': 'style_transfer',
+        'checkpoint_increment': 1000
     }
 
     if '_advanced_parameters' in kwargs:
@@ -176,7 +184,7 @@ def create(style_dataset, content_dataset, style_feature=None,
     input_shape = params['input_shape']
 
     iterations = 0
-    if max_iterations is None:
+    if max_iterations is None or max_iterations==0:
         max_iterations = len(style_dataset) * 10000
         if verbose:
             print('Setting max_iterations to be {}'.format(max_iterations))
@@ -279,6 +287,10 @@ def create(style_dataset, content_dataset, style_feature=None,
         for ctx0 in ctx:
             ctx_grams[ctx0] = [gram.as_in_context(ctx0) for gram in grams]
 
+    style_sa = style_dataset[style_feature]
+    idx_column = _tc.SArray(range(0, style_sa.shape[0]))
+    style_sframe = _tc.SFrame({"style": idx_column, style_feature: style_sa})
+
     #
     # Training loop
     #
@@ -346,6 +358,31 @@ def create(style_dataset, content_dataset, style_feature=None,
             else:
                 smoothed_loss = 0.9 * smoothed_loss + 0.1 * cur_loss
             iterations += 1
+
+            if params['checkpoint'] and iterations % params['checkpoint_increment'] == 0:
+                checkpoint_filename = params['checkpoint_prefix'] + "-" + str(iterations) + ".model"
+                training_time = _time.time() - start_time
+                state = {
+                    '_model': transformer,
+                    '_training_time_as_string': _seconds_as_string(training_time),
+                    'batch_size': batch_size,
+                    'num_styles': num_styles,
+                    'model': model,
+                    'input_image_shape': input_shape,
+                    'styles': style_sframe,
+                    'num_content_images': len(content_dataset),
+                    'training_time': training_time,
+                    'max_iterations': max_iterations,
+                    'training_iterations': iterations,
+                    'training_epochs': content_images_loader.cur_epoch,
+                    'style_feature': style_feature,
+                    'content_feature': content_feature,
+                    "_index_column": "style",
+                    'training_loss': smoothed_loss,
+                }
+                st_model = StyleTransfer(state)
+                st_model.save(checkpoint_filename)
+
             trainer.step(batch_size)
 
             if verbose and iterations == 1:
@@ -375,9 +412,6 @@ def create(style_dataset, content_dataset, style_feature=None,
                 break
 
     training_time = _time.time() - start_time
-    style_sa = style_dataset[style_feature]
-    idx_column = _tc.SArray(range(0, style_sa.shape[0]))
-    style_sframe = _tc.SFrame({"style": idx_column, style_feature: style_sa})
 
     # Save the model state
     state = {
