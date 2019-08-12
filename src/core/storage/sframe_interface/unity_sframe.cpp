@@ -957,11 +957,8 @@ std::shared_ptr<unity_sframe_base> unity_sframe::append(
       }
 
       if (needs_reorder) {
-        auto new_sframe = std::make_shared<unity_sframe>();
-        new_sframe->construct_from_planner_node(
-            std::make_shared<planner_node>(*(other_sframe->get_planner_node())),
-            this->column_names());
-        other_sframe = new_sframe;
+        other_sframe = std::static_pointer_cast<unity_sframe>(
+            other_sframe->select_columns(this->column_names()));
       }
     }
 
