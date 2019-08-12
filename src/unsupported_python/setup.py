@@ -11,7 +11,7 @@ from setuptools import setup
 from setuptools.command.install import install
 
 PACKAGE_NAME="turicreate"
-VERSION='4.2'
+VERSION='5.7'
 
 class InstallEngine(install):
     def run(self):
