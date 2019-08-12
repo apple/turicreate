@@ -40,8 +40,7 @@ void superimpose_image(const boost::gil::rgb8_image_t::view_t &superimposed,
 
 flex_image create_synthetic_image(const boost::gil::rgba8_image_t::view_t &starter_image_view,
                                   const boost::gil::rgb8_image_t::view_t &background_view,
-                                  ParameterSampler &parameter_sampler,
-                                  const flex_image &object) {
+                                  ParameterSampler &parameter_sampler) {
   boost::gil::rgba8_image_t background_rgba(boost::gil::rgba8_image_t::point_t(background_view.dimensions()));
   boost::gil::copy_and_convert_pixels(
     background_view,
