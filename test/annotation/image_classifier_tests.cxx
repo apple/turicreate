@@ -346,7 +346,7 @@ public:
 
     TS_ASSERT(annotation_testing::check_equality(annotation_sf, returned_sf));
 
-    
+
     turi::annotate::ImageClassification back_up_annotation;
 
     std::shared_ptr<turi::annotate::annotation_global>

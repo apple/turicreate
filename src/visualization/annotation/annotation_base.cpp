@@ -63,7 +63,7 @@ AnnotationBase::returnAnnotations(bool drop_null) {
   std::shared_ptr<unity_sframe> copy_data;
   {
     // append undefined values
-    if (m_data_na || !m_data_na->size()) {
+    if (m_data_na && m_data_na->size()) {
       auto cast_type = m_data->select_column(m_annotation_column)->dtype();
       auto na_type = m_data_na->select_column(m_annotation_column)->dtype();
       if (cast_type != na_type) {
