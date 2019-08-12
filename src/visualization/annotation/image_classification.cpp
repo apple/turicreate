@@ -520,7 +520,7 @@ void ImageClassification::_createFeaturesExtractor() {
 #ifdef __APPLE__
   if (m_data->size() == 0) {
     std::stringstream ss;
-    ss << "Exepect positive number of images. Found 0 valid images and "
+    ss << "Expect positive number of images. Found 0 valid images and "
        << m_data_na->size() << " missing images." << std::endl;
     std_log_and_throw(std::runtime_error, ss.str());
   }
