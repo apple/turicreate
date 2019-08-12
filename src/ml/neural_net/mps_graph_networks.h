@@ -26,6 +26,7 @@ enum GraphNetworkType {
   kSingleBNGraphNet,
   kSingleMPGraphNet,
   kODGraphNet,
+  kSTGraphNet,
   NUM_SUPPORTED_GRAPH_NETWORK_TYPES
 };
 

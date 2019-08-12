@@ -24,6 +24,7 @@ class MpsGraphNetworkType(object):
     kSingleBNGraphNet   = 2
     kSingleMPGraphNet   = 3
     kODGraphNet         = 4
+    kSTGraphNet         = 5
 
 
 class MpsGraphMode(object):

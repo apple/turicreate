@@ -2,6 +2,8 @@
 #include "mps_graph_layers.h"
 #include "mps_node_handle.h"
 
+#include "style_transfer/mps_style_transfer_graph_network.hpp"
+
 namespace turi {
 namespace neural_net {
 
@@ -24,6 +26,9 @@ std::unique_ptr<MPSGraphNetwork> createNetworkGraph(
     break;
   case kODGraphNet:
     result.reset(new ODNetworkGraph(params, config));
+    break;
+  case kSTGraphNet:
+    result.reset(new STNetworkGraph(params, config));
     break;
   default:
     throw std::invalid_argument("Undefined network.");
