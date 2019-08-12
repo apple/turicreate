@@ -23,7 +23,6 @@ def create(data,
     """
     Create a :class:`OneShotObjectDetector` model. Note: The One Shot Object Detector
     is currently in beta, as we make the toolkit faster and even more performant.
-    Please stay tuned for best results with the toolkit!
 
     Parameters
     ----------

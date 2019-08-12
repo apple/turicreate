@@ -1,6 +1,6 @@
 # One-Shot Object Detection
 
-*Note: The One Shot Object Detector is currently in beta, as we make the toolkit faster and even more performant. Please stay tuned for best results with the toolkit!*
+*Note: The One Shot Object Detector is currently in beta, as we make the toolkit faster and even more performant.*
 
 One-Shot object detection (OSOD) is the task of detecting an object from as few as **one** example per category. Unlike the [Object Detector](https://apple.github.io/turicreate/docs/userguide/object_detection) which requires many varied examples of objects in the real world, the One-Shot detector only requires a single canonical example of an object to train the classifier on and perform predictions for that category in the wild. It is best suited for 2D objects or when there isn't much expected variance in the examples, such as playing cards, logos, road signs, and clapperboards. One-Shot detector is not suitable for 3D objects such as faces, animals, and cars which is a task better suited for the regular [Object Detector](https://apple.github.io/turicreate/docs/userguide/object_detection). 
 
