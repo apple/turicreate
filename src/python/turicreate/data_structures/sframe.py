@@ -4560,11 +4560,27 @@ class SFrame(object):
         if sys.platform != 'darwin' and sys.platform != 'linux2' and sys.platform != 'linux':
             raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
 
-
         # Suppress visualization output if 'none' target is set
-        from ..visualization._plot import _target, display_table_in_notebook
+        from ..visualization._plot import _target, display_table_in_notebook, _ensure_web_server
         if _target == 'none':
             return
+
+        if title is None:
+            title = ""
+
+        # If browser target is set, launch in web browser
+        if _target == 'browser':
+            # First, make sure TURI_VISUALIZATION_WEB_SERVER_ROOT_DIRECTORY is set
+            _ensure_web_server()
+
+            # Launch localhost URL using Python built-in webbrowser module
+            import webbrowser
+            import turicreate as tc
+            url = tc.extensions.get_url_for_table(self, title)
+            webbrowser.open_new_tab(url)
+            return
+
+        # If auto target is set, try to show inline in Jupyter Notebook
         try:
             if _target == 'auto' and \
                 get_ipython().__class__.__name__ == "ZMQInteractiveShell":
@@ -4576,8 +4592,6 @@ class SFrame(object):
         # Launch interactive GUI window
         path_to_client = _get_client_app_path()
 
-        if title is None:
-            title = ""
         self.__proxy__.explore(path_to_client, title)
 
     def show(self):

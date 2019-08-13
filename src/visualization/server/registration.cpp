@@ -5,6 +5,7 @@
 #include "categorical_heatmap.hpp"
 #include "boxes_and_whiskers.hpp"
 #include "columnwise_summary.hpp"
+#include "server.hpp"
 
 namespace turi {
   namespace visualization {
@@ -18,6 +19,7 @@ namespace turi {
     REGISTER_FUNCTION(plot_histogram, "sa", "xlabel", "ylabel", "title");
     REGISTER_FUNCTION(plot_item_frequency, "sa", "xlabel", "ylabel", "title");
     REGISTER_FUNCTION(plot_from_vega_spec, "vega_spec");
+    REGISTER_FUNCTION(WebServer::get_url_for_table, "table", "title");
     END_FUNCTION_REGISTRATION
   }
 }
