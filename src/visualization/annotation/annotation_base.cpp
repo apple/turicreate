@@ -74,16 +74,14 @@ AnnotationBase::returnAnnotations(bool drop_null) {
         m_data_na->remove_column(m_data_na->column_index(m_annotation_column));
         m_data_na->add_column(integer_annotations, m_annotation_column);
       }
-      copy_data =
-          std::static_pointer_cast<unity_sframe>(m_data->append(m_data_na));
+      // temporary solution using sort to reconstruct
+      copy_data = std::static_pointer_cast<unity_sframe>(
+          m_data->append(m_data_na)->sort({"__idx"}, {true}));
     } else {
       copy_data = std::static_pointer_cast<unity_sframe>(
           m_data->copy_range(0, 1, m_data->size()));
     }
   }
-  // temporary solution
-  copy_data = std::static_pointer_cast<unity_sframe>(
-      copy_data->sort({"__idx"}, {true}));
 
   size_t id_column = copy_data->column_index("__idx");
   copy_data->remove_column(id_column);
@@ -118,7 +116,7 @@ std::shared_ptr<annotation_global> AnnotationBase::get_annotation_registry() {
 size_t AnnotationBase::size() { return m_data->size(); }
 
 /* must be called after _addIndexColumn */
-void AnnotationBase::splitUndefined(const std::string& column_names, bool how, bool recursive) {
+void AnnotationBase::_splitUndefined(const std::string& column_names, bool how, bool recursive) {
   DASSERT_TRUE(m_data->contains_column("__idx"));
   const auto &image_column_name = m_data_columns.at(0);
   auto split_data_set =

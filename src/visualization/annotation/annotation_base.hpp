@@ -90,9 +90,6 @@ public:
 
   virtual void checkDataSet() = 0;
 
-  /* must be called after construction */
-  virtual void splitUndefined(const std::string& column_names, bool how, bool recursive);
-
   BEGIN_BASE_CLASS_MEMBER_REGISTRATION()
 
   IMPORT_BASE_CLASS_REGISTRATION(ml_model_base);
@@ -132,6 +129,11 @@ protected:
   template <typename T, typename = typename std::enable_if<std::is_base_of<
                             ::google::protobuf::MessageLite, T>::value>::type>
   std::string _serialize_proto(T message);
+
+  /*
+   * split data set into 2 parts: non-missing values and missing values
+   * */
+  void _splitUndefined(const std::string& column_names, bool how, bool recursive);
 
 private:
   std::string __parse_proto_and_respond(std::string &input);

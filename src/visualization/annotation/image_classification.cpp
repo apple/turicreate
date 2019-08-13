@@ -30,9 +30,9 @@ ImageClassification::ImageClassification(
     : AnnotationBase(data, data_columns, annotation_column) {
   addAnnotationColumn();
   checkDataSet();
-  // tempaory workaround for avoiding resizing undefined images, check issue #1977
-  splitUndefined(data_columns.at(0), false, false);
-  // must be called after splitUndefined
+  // temporay workaround for avoiding resizing undefined images, check issue #1977
+  _splitUndefined(data_columns.at(0), false, false);
+  // must be called after _splitUndefined
   _createFeaturesExtractor();
 }
 

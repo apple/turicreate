@@ -20,9 +20,8 @@ annotated_data = tc.image_classifier.annotate(data)
 
 ```
 
-This utility will **only collect valid images**. All undefined values
-won't be shown in the window but it will be still included in result
-set with default annotation value (undefined value, which denotes missing
+This utility will only present rows from the SFrame that have non-missing values.
+All missing values won't be shown in the GUI but they will be still included in the result set with default annotation value (undefined value, which denotes missing
 annotation). Exception will be thrown if no valid image is found.
 
 If you forget to assign the output of your annotation to a variable,
