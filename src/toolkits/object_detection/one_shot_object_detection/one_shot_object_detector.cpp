@@ -144,7 +144,7 @@ create_synthetic_image_from_background_and_starter(const flex_image &starter,
   }
 
   flex_image rgba_flex_image = create_rgba_flex_image(starter);
-  boost::gil::rgba8_image_t::view_t starter_image_view =
+  boost::gil::rgba8_image_t::const_view_t starter_image_view =
       interleaved_view(rgba_flex_image.m_width, rgba_flex_image.m_height,
                        reinterpret_cast<const boost::gil::rgba8_pixel_t *>(
                            rgba_flex_image.get_image_data()),
@@ -152,9 +152,10 @@ create_synthetic_image_from_background_and_starter(const flex_image &starter,
                            rgba_flex_image.m_width  // row length in bytes
       );
 
-  boost::gil::rgb8_image_t::view_t background_view = interleaved_view(
+  boost::gil::rgb8_image_t::const_view_t background_view = interleaved_view(
       background.m_width, background.m_height,
-      (boost::gil::rgb8_pixel_t *)(background.get_image_data()),
+      reinterpret_cast<const boost::gil::rgb8_pixel_t *>(
+          background.get_image_data()),
       background.m_channels * background.m_width  // row length in bytes
   );
   flex_image synthetic_image = create_synthetic_image(
