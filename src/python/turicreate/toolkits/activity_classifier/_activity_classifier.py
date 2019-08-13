@@ -256,6 +256,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
         arg_params, aux_params = _ac_weights_mps_to_mxnet(mps_params, _net_params['lstm_h'])
     else:
         arg_params, aux_params = loss_model.get_params()
+        print(arg_params, aux_params)
 
     pred_model.init_params(arg_params=arg_params, aux_params=aux_params)
 
