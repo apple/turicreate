@@ -146,7 +146,7 @@ create_synthetic_image_from_background_and_starter(const flex_image &starter,
   flex_image rgba_flex_image = create_rgba_flex_image(starter);
   boost::gil::rgba8_image_t::view_t starter_image_view = interleaved_view(
       rgba_flex_image.m_width, rgba_flex_image.m_height,
-      (boost::gil::rgba8_pixel_t *)(rgba_flex_image.get_image_data()),
+      reinterpret_cast<boost::gil::rgba8_pixel_t *>(rgba_flex_image.get_image_data()),
       rgba_flex_image.m_channels * rgba_flex_image.m_width  // row length in bytes
   );
 
