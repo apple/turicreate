@@ -202,12 +202,7 @@ gl_sframe augment_data(const gl_sframe &data,
           },
           flex_type_enum::IMAGE);
 
-  /* @TODO: Split all backgrounds into as many chunks as there are cores
-   * available (= nsegments), and create augmented images in parallel.
-   * Replacing the `for` with a `parallel_for` fails the export_coreml unit test
-   * with an EXC_BAD_ACCESS in the function call to boost::gil::resample_pixels
-   */
-  for (size_t segment_id=0; segment_id<nsegments; segment_id++) {
+  parallel_for(0, nsegments, [&](size_t segment_id) {
     size_t segment_start = (segment_id * backgrounds.size()) / nsegments;
     size_t segment_end = ((segment_id + 1) * backgrounds.size()) / nsegments;
     size_t row_number = segment_start;
@@ -247,7 +242,7 @@ gl_sframe augment_data(const gl_sframe &data,
         }
       }
     }
-  }
+  });
   if (verbose) {
     table.print_footer();
   }
