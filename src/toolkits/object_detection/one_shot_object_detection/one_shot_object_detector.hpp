@@ -28,7 +28,7 @@ class EXPORT one_shot_object_detector: public ml_model_base {
   // TODO: augment -> train
   gl_sframe augment(const gl_sframe &data, const std::string &image_column_name,
                     const std::string &target_column_name,
-                    gl_sarray &backgrounds,
+                    const gl_sarray &backgrounds,
                     std::map<std::string, flexible_type> &options);
 
   BEGIN_CLASS_MEMBER_REGISTRATION("one_shot_object_detector")

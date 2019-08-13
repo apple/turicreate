@@ -144,11 +144,13 @@ create_synthetic_image_from_background_and_starter(const flex_image &starter,
   }
 
   flex_image rgba_flex_image = create_rgba_flex_image(starter);
-  boost::gil::rgba8_image_t::view_t starter_image_view = interleaved_view(
-      rgba_flex_image.m_width, rgba_flex_image.m_height,
-      reinterpret_cast<boost::gil::rgba8_pixel_t *>(rgba_flex_image.get_image_data()),
-      rgba_flex_image.m_channels * rgba_flex_image.m_width  // row length in bytes
-  );
+  boost::gil::rgba8_image_t::view_t starter_image_view =
+      interleaved_view(rgba_flex_image.m_width, rgba_flex_image.m_height,
+                       reinterpret_cast<const boost::gil::rgba8_pixel_t *>(
+                           rgba_flex_image.get_image_data()),
+                       rgba_flex_image.m_channels *
+                           rgba_flex_image.m_width  // row length in bytes
+      );
 
   boost::gil::rgb8_image_t::view_t background_view = interleaved_view(
       background.m_width, background.m_height,
@@ -261,9 +263,9 @@ one_shot_object_detector::one_shot_object_detector() {
 }
 
 gl_sframe one_shot_object_detector::augment(
-    const gl_sframe& data, const std::string& image_column_name,
-    const std::string& target_column_name, gl_sarray& backgrounds,
-    std::map<std::string, flexible_type>& options) {
+    const gl_sframe &data, const std::string &image_column_name,
+    const std::string &target_column_name, const gl_sarray &backgrounds,
+    std::map<std::string, flexible_type> &options) {
   // TODO: Automatically infer the image column name, or throw error if you
   // can't This should just happen on the Python side.
   gl_sframe augmented_data = data_augmentation::augment_data(
