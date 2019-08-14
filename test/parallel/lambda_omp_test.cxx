@@ -1,8 +1,8 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
-#include <parallel/lambda_omp.hpp>
-#include <parallel/mutex.hpp>
+#include <core/util/test_macros.hpp>
+#include <core/parallel/lambda_omp.hpp>
+#include <core/parallel/mutex.hpp>
 
 
 

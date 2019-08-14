@@ -54,7 +54,7 @@ generate_docs() {
 #  rm -rf pydocs
   mkdir -p pydocs
   cd pydocs
-  cp -R ${WORKSPACE}/src/unity/python/doc/* .
+  cp -R ${WORKSPACE}/src/python/doc/* .
   make clean SPHINXBUILD=${SPHINXBUILD}
   make html SPHINXBUILD=${SPHINXBUILD}
 }

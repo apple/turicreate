@@ -152,7 +152,7 @@ endif()
 if(APPLE)
   if(TC_BUILD_IOS)
     SET(TC_BASE_SDK iphoneos)
-    SET(COMPILER_FLAGS "${COMPILER_FLAGS} -miphoneos-version-min=12.0 -Wno-c++11-narrowing")
+    SET(COMPILER_FLAGS "${COMPILER_FLAGS} -miphoneos-version-min=10.0 -Wno-c++11-narrowing")
   else()
     SET(TC_BASE_SDK macosx)
 
@@ -192,6 +192,10 @@ if(APPLE)
 
     # CoreML MLCustomModel requires macOS 10.14 or higher
     set(HAS_MLCUSTOMMODEL TRUE)
+  endif()
+
+  if(NOT TC_BASE_SDK_VERSION VERSION_LESS 10.15)
+    add_definitions(-DHAS_MACOS_10_15)
   endif()
 endif()
 
@@ -342,7 +346,34 @@ if (CLANG)
     set(_cpp11_optional_flags "${_cpp11_optional_flags} -Wno-stdlibcxx-not-found")
   endif()
 
-  set(CPP11_FLAGS "-stdlib=libc++ -Wno-deprecated-register -Wno-enum-compare -Wno-conversion-null -Wno-constant-logical-operand -Wno-parentheses-equality -ftemplate-depth=900 ${_cpp11_optional_flags}")
+  check_cxx_compiler_flag("-Wno-deprecated-register" __no_deprecated_register)
+  if(${__no_deprecated_register})
+    set(_cpp11_optional_flags "${_cpp11_optional_flags} -Wno-deprecated-register")
+  endif()
+
+  # clang on Linux gives unused argument warnings all over the place
+  # they look useful, but let's suppress them for now since there are tons
+  # (and with warning-as-error, they break the build)
+  check_cxx_compiler_flag("-Qunused-arguments" __qunused_arguments)
+  if(${__qunused_arguments})
+    add_compile_options(-Qunused-arguments)
+  endif()
+  
+ 
+  # clang on Linux with libstdc++ from GCC 4.8.1 gives errors about class vs. struct hash.
+  # apparently it's defined as both in separate places in libstdc++
+  # and GCC 4.8.1 doesn't care, but clang does.
+  # Not sure how to tell whether we're using libstdc++ specifically, so for now,
+  # we'll just avoid this warning-as-error on non-Apple platforms entirely.
+  if(NOT APPLE)
+    check_cxx_compiler_flag("-Wno-mismatched-tags" __no_mismatched_tags)
+    if (${__no_mismatched_tags})
+      set(_cpp11_optional_flags "${_cpp11_optional_flags} -Wno-error=mismatched-tags")
+      set(_cpp11_optional_flags "${_cpp11_optional_flags} -Wno-mismatched-tags")
+    endif()
+  endif()
+
+  set(CPP11_FLAGS "-Wno-enum-compare -Wno-conversion-null -Wno-constant-logical-operand -Wno-parentheses-equality -ftemplate-depth=900 ${_cpp11_optional_flags}")
 
   set(WERROR_FLAGS "-Werror -Wall -Wsign-compare")
 else()
@@ -351,6 +382,13 @@ else()
   set(WERROR_FLAGS "-Werror")
 endif()
 
+# same goes for unknown warning group (for #pragma clang or #pragma GCC warning suppression)
+# seems different clang distributions have quite different warning arguments
+check_cxx_compiler_flag("-Wno-unknown-warning-option" __no_unknown_warning_option)
+if(${__no_unknown_warning_option})
+  add_compile_options(-Wno-unknown-warning-option)
+endif()
+ 
 if (${TC_STACK_DISPLAY})
   set(DEBUG_INFO_FLAGS "-g3 -fno-omit-frame-pointer")
 else()
@@ -426,7 +464,28 @@ if (MARCH)
 elseif (ARCH)
   set(ARCH_FLAG "-arch ${ARCH}")
 else()
-  set(MARCH "nehalem")  # Old CPU archetecture; enables SSE up to 4.2 + popcnt + other instructions. 
+  check_cxx_compiler_flag(-march=nehalem HAS_MARCH_NEHALEM)
+  if(HAS_MARCH_NEHALEM)
+    # Old CPU archetecture; enables SSE up to 4.2 + popcnt + other instructions.
+    # Supported on GCC 4.9.x and above
+    set(MARCH "nehalem")
+  else()
+    # Old CPU archetecture; enables SSE up to 3
+    # Supported on at least GCC 4.8.x, maybe earlier
+    set(MARCH "core2")
+    check_cxx_compiler_flag(-msse4 HAS_M_SSE4)
+    if(HAS_M_SSE4)
+      set(MARCH "${MARCH} -msse4")
+    endif()
+    check_cxx_compiler_flag(-msse4.1 HAS_M_SSE4_1)
+    if(HAS_M_SSE4_1)
+      set(MARCH "${MARCH} -msse4.1")
+    endif()
+    check_cxx_compiler_flag(-msse4.2 HAS_M_SSE4_2)
+    if(HAS_M_SSE4_2)
+      set(MARCH "${MARCH} -msse4.2")
+    endif()
+  endif()
   set(ARCH_FLAG "-march=${MARCH}")
 endif()
 
@@ -1093,11 +1152,11 @@ foreach(package ${packages})
 endforeach()
 
 include_directories(src)
+include_directories(src/core/system/platform)
 include_directories(SYSTEM src/external)
 include_directories(SYSTEM src/external/aws-sdk-cpp/aws-cpp-sdk-core/include)
 include_directories(SYSTEM src/external/aws-sdk-cpp/aws-cpp-sdk-s3/include)
 include_directories(SYSTEM src/external/google)
-include_directories(src/platform)
 
 if(EXISTS ${CMAKE_SOURCE_DIR}/extensions)
   include_directories(SYSTEM extensions)
@@ -1155,17 +1214,19 @@ set(_TC_COMMON_OBJECTS
   "$<TARGET_OBJECTS:sframe_query_engine>"
   "$<TARGET_OBJECTS:sgraph>"
   "$<TARGET_OBJECTS:shmipc>"
-  "$<TARGET_OBJECTS:stack_trace>"
   "$<TARGET_OBJECTS:startup_teardown>"
   "$<TARGET_OBJECTS:supervised_learning>"
   "$<TARGET_OBJECTS:table_printer>"
   "$<TARGET_OBJECTS:timer>"
+  "$<TARGET_OBJECTS:unity_sframe>"
+  "$<TARGET_OBJECTS:gl_sframe>"
+  "$<TARGET_OBJECTS:unity_sketches>"
   "$<TARGET_OBJECTS:unity>"
-  "$<TARGET_OBJECTS:unity_drawing_classifier>"
   "$<TARGET_OBJECTS:unity_activity_classification>"
   "$<TARGET_OBJECTS:unity_core>"
   "$<TARGET_OBJECTS:unity_coreml_model_export>"
   "$<TARGET_OBJECTS:unity_clustering>"
+  "$<TARGET_OBJECTS:unity_drawing_classifier>"
   "$<TARGET_OBJECTS:unity_evaluation>"
   "$<TARGET_OBJECTS:unity_factorization>"
   "$<TARGET_OBJECTS:unity_feature_engineering>"
@@ -1176,6 +1237,7 @@ set(_TC_COMMON_OBJECTS
   "$<TARGET_OBJECTS:unity_nearest_neighbors>"
   "$<TARGET_OBJECTS:unity_neural_net>"
   "$<TARGET_OBJECTS:unity_object_detection>"
+  "$<TARGET_OBJECTS:unity_one_shot_object_detection>"
   "$<TARGET_OBJECTS:unity_pattern_mining>"
   "$<TARGET_OBJECTS:unity_prototype>"
   "$<TARGET_OBJECTS:unity_recsys>"

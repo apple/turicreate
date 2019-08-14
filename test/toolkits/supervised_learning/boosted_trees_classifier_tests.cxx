@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <stdlib.h>
 #include <vector>
 #include <string>
@@ -9,14 +9,14 @@
 #include <random>
 
 // ML-Data Utils
-#include <ml_data/ml_data.hpp>
+#include <ml/ml_data/ml_data.hpp>
 
 // Models
-#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
-#include <unity/toolkits/supervised_learning/boosted_trees.hpp>
+#include <toolkits/supervised_learning/supervised_learning.hpp>
+#include <toolkits/supervised_learning/boosted_trees.hpp>
 
-#include <sframe/testing_utils.hpp>
-#include <util/testing_utils.hpp>
+#include <core/storage/sframe_data/testing_utils.hpp>
+#include <core/util/testing_utils.hpp>
 
 #include <cfenv>
 

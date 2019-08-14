@@ -1,0 +1,121 @@
+/**
+\defgroup technical_details_serialization Technical Details: Serialization
+\ingroup group_serialization
+
+The two key serialization objects are oarchive and iarchive (in
+    \c src/turicreate/serialization/oarchive.hpp and
+    \c src/turicreate/serialization/iarchive.hpp) respectively. oarchive internally
+wraps either a direct \c char* buffer which it resizes automatically, or a \c ostream
+object. Similarly, iarchive internally wraps either a direct \c char* buffer with
+a known length, or an \c istream object. All these members are directly
+accessible.
+
+\code
+class oarchive{
+ public:
+  std::ostream* out;    // pointer to output stream. Used if not NULL
+  char* buf;            // pointer to buffer. Used if out is NULL
+  size_t off;           // current length of buffer
+  size_t len;           // current maximum length of buffer.
+}
+
+class iarchive {
+ public:
+  std::istream* in;     // pointer to input stream. Used if not NULL
+  const char* buf;      // pointer to input buffer. Used if in is NULL
+  size_t off;           // offset of next position in buf
+  size_t len;           // length of buffer
+}
+\endcode
+
+
+The oarchive overloads operator<< and iarchive overloads operator>> to allow
+the use of the stream operator to serialize / deserialize objects.
+
+\code
+oarchive oarc(outstrm)
+string s;
+oarc << s << int(1) << long(2);
+...
+iarchive iarc(instrm)
+string s;
+int i; long j;
+iarc >> s >> i >> j;
+\endcode
+
+Using the oarchive as an example: this is done by a function:
+
+\code
+template <typename T>
+inline oarchive& operator<<(oarchive& oarc, const T& t)
+\endcode
+
+which immediately re-dispatches into the following template class:
+
+\code
+template <typename OutArcType, typename T, bool IsPodType>
+struct serialize_impl {
+  inline static void exec(OutArcType& oarc, const T& t) {
+    ...
+  }
+};
+\endcode
+
+Where IsPodType is true if T is a scalar or inherits from \ref
+turi::IS_POD_TYPE (see is_pod.hpp) and false
+otherwise. The \ref serialize_impl class is then further specialized around T to
+provide serializers for basic types (int, float, etc) , and common STL types
+(pair, string, vector, etc) using recursive calls if necessary. The base
+template class (when none of the specializations match), simply calls
+t.save(oarc). This thus implements the user-defined serializers for save and
+load functions.
+
+\code
+struct user_struct {
+  int i;
+  string s;
+  void save(oarchive& oarc) const {
+    oarc << i << s;
+  }
+  void load(iarchive& iarc) {
+    iarc >> i >> s;
+  }
+};
+\endcode
+
+The templatization over OutArcType allows for alternate definitions of oarchive
+which behave differently. For instance, \ref turi::oarchive_soft_fail which will only fail
+at runtime if an object type cannot be serialized. This is done via a use of
+SFINAE in \c has_save.hpp and \c has_load.hpp. To permit generic implementations
+of serialize_impl which are independent of OutArcType, the oarchive/iarchive must
+implement the following functions:
+
+\code
+class oarchive {
+ public:
+  // writes s bytes from c into the archive
+  void write(const char* c, std::streamsize s);
+
+  // writes t into the stream by direct memcpy.
+  // i.e. equivalent to write(reinterpret_cast<char*>(t), sizeof(t))
+  template <typename T>
+  void direct_assign(const T& t);
+
+  // advances the buffer by s bytes. equivalent to writing s bytes of \0
+  inline void advance(size_t s);
+
+  // return true if the buffer is invalid
+  inline bool fail();
+};
+
+class iarchive {
+ public:
+  // Reads one character from the archive
+  char read_char();
+
+  // reads len bytes from the archive writing into c
+  void read(char* c, size_t len);
+};
+\endcode
+
+*/

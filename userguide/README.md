@@ -57,15 +57,16 @@ later. Each incorporates automatic feature engineering and model
 selection.
 
 Using these toolkits, you can tackle a number of common scenarios:
-* [Recommender systems](recommender/README.md)
-* [Image classification](image_classifier/README.md)
-* [Drawing classification](drawing_classifier/README.md)
-* [Sound classification](sound_classifier/README.md)
-* [Image similarity](image_similarity/README.md)
-* [Object detection](object_detection/README.md)
-* [Style transfer](style_transfer/README.md)
-* [Activity classifier](activity_classifier/README.md)
-* [Text classifier](text_classifier/README.md)
+* [Recommender Systems](recommender/README.md)
+* [Image Classification](image_classifier/README.md)
+* [Drawing Classification](drawing_classifier/README.md)
+* [Sound Classification](sound_classifier/README.md)
+* [Image Similarity](image_similarity/README.md)
+* [Object Detection](object_detection/README.md)
+* [One-Shot Object Detection](one_shot_object_detection/README.md)
+* [Style Transfer](style_transfer/README.md)
+* [Activity Classifier](activity_classifier/README.md)
+* [Text Classifier](text_classifier/README.md)
 
 ### Machine learning essentials
 

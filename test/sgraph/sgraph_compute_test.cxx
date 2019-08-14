@@ -1,9 +1,9 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
-#include <sgraph/sgraph.hpp>
-#include <sgraph/sgraph_compute.hpp>
-#include <sframe/algorithm.hpp>
+#include <core/util/test_macros.hpp>
+#include <core/storage/sgraph_data/sgraph.hpp>
+#include <core/storage/sgraph_data/sgraph_compute.hpp>
+#include <core/storage/sframe_data/algorithm.hpp>
 #include <boost/bind.hpp>
 
 using namespace turi;

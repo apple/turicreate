@@ -8,9 +8,9 @@
 #include <capi/impl/capi_error_handling.hpp>
 #include <capi/impl/capi_initialization_internal.hpp>
 #include <capi/impl/capi_wrapper_structs.hpp>
-#include <export.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <unity/lib/visualization/show.hpp>
+#include <core/export.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <visualization/server/show.hpp>
 
 static turi::flexible_type optional_str(const char *str) {
     if (str == nullptr) {
@@ -72,6 +72,19 @@ EXPORT tc_plot* tc_plot_create_sframe_summary(const tc_sframe* sf,
   ERROR_HANDLE_END(error, NULL);
 }
 
+EXPORT tc_plot* tc_plot_create_from_vega(const char* vega_spec,
+                                  const tc_parameters* params,
+                                  tc_error** error) {
+  ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
+
+  CHECK_NOT_NULL(error, vega_spec, "vega_spec", NULL);
+
+  return new_tc_plot(std::make_shared<turi::visualization::Plot>(vega_spec));
+
+  ERROR_HANDLE_END(error, NULL);
+}
+
 EXPORT tc_flexible_type* tc_plot_get_vega_spec(const tc_plot* plot,
                                                tc_plot_variation variation,
                                                const tc_parameters*,
@@ -110,6 +123,18 @@ EXPORT bool tc_plot_finished_streaming(const tc_plot* plot,
   return plot->value->finished_streaming();
 
   ERROR_HANDLE_END(error, true);
+}
+
+EXPORT tc_flexible_type* tc_plot_get_url(const tc_plot* plot, const tc_parameters* params, tc_error** error) {
+  ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
+
+  CHECK_NOT_NULL(error, plot, "plot", NULL);
+
+  std::string url = plot->value->get_url();
+  return tc_ft_create_from_string(url.data(), url.size(), error);
+
+  ERROR_HANDLE_END(error, NULL);
 }
 
 #ifdef __APPLE__

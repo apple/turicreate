@@ -1,19 +1,19 @@
 # Linux Installation Instructions
 
 The minimum requirements are:
- - python 2.7 
- - glibc >= 2.12 (Centos >= 6, Ubuntu >= 10.10)
- - For Neural Network support, glibc >= 2.17 is needed. Centos >= 7 and Ubuntu >= 13.04
- - libstdc++ >= 6.0.21
+ - python 2.7, 3.5, or 3.6 (support for 3.7 pending #788)
+ - glibc >= 2.10 (Centos >= 6, Ubuntu >= 9.10, or equivalent)
+ - For Neural Network support, glibc >= 2.17 is needed (Centos >= 7, Ubuntu >= 13.04, or equivalent)
+ - libstdc++ >= 6.0.19 (Ubuntu >= 14.04 or equivalent, or GCC 4.8.3 or later)
  - libgconf-2-4 (on Ubuntu 17.10 and later)
 
 ## Ubuntu
 
 ### Ubuntu >= 17.10
 
-Follow the instructions for Ubuntu >= 16.04, but also install `libgconf-2-4`. This was previously included in desktop Ubuntu distributions but now needs to be installed separately starting with 17.10.
+Follow the instructions for Ubuntu >= 14.04, but also install `libgconf-2-4`. This was previously included in desktop Ubuntu distributions but now needs to be installed separately starting with 17.10.
 
-### Ubuntu >= 16.04
+### Ubuntu >= 14.04
 On recent versions of Ubuntu, we just need a few dependencies
 
 ```shell
@@ -41,43 +41,6 @@ Install turicreate
 pip install --upgrade pip
 pip install turicreate
 ```
-
-
-### Ubuntu >= 14.04
-On older versions, we need to get a newer installation of libstdc++. This should work up to Ubuntu 14.04
-
-```shell
-sudo apt-get -y install python-setuptools
-wget http://security.ubuntu.com/ubuntu/pool/main/g/gcc-5/gcc-5-base_5.4.0-6ubuntu1~16.04.10_amd64.deb
-wget http://security.ubuntu.com/ubuntu/pool/main/g/gcc-5/libstdc++6_5.4.0-6ubuntu1~16.04.10_amd64.deb
-sudo dpkg -i gcc-5-base_5.4.0-6ubuntu1~16.04.10_amd64.deb
-sudo dpkg -i libstdc++6_5.4.0-6ubuntu1~16.04.10_amd64.deb
-sudo easy_install pip
-sudo pip install virtualenv
-```
-
-
-To avoid making system changes, we are going to do everything in a virtualenv
-
-```shell
-cd $HOME
-virtualenv venv
-```
-
-Activate the virtualenv
-
-```shell
-cd venv
-source bin/activate
-```
-
-Install turicreate
-
-```shell
-pip install --upgrade pip
-pip install turicreate
-```
-
 
 ### Ubuntu < 14.04
 (Tested on Ubuntu 12.04)

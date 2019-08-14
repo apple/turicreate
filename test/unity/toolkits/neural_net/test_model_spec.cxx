@@ -6,15 +6,15 @@
 
 #define BOOST_TEST_MODULE test_model_spec
 
-#include <unity/toolkits/neural_net/model_spec.hpp>
+#include <ml/neural_net/model_spec.hpp>
 
 #include <algorithm>
 #include <cstdint>
 #include <memory>
 
 #include <boost/test/unit_test.hpp>
-#include <unity/toolkits/coreml_export/mlmodel_include.hpp>
-#include <util/test_macros.hpp>
+#include <toolkits/coreml_export/mlmodel_include.hpp>
+#include <core/util/test_macros.hpp>
 
 namespace turi {
 namespace neural_net {

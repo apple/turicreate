@@ -1,16 +1,16 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <string>
 #include <random>
 #include <set>
 #include <sstream>
 #include <vector>
 #include <algorithm>
-#include <util/cityhash_tc.hpp>
-#include <sframe/sarray_iterators.hpp>
-#include <parallel/atomic.hpp>
-#include <parallel/lambda_omp.hpp>
+#include <core/util/cityhash_tc.hpp>
+#include <core/storage/sframe_data/sarray_iterators.hpp>
+#include <core/parallel/atomic.hpp>
+#include <core/parallel/lambda_omp.hpp>
 #include <iterator>
 
 using namespace turi;

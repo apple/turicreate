@@ -5,17 +5,17 @@
  */
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <cstdio>
 #include <iostream>
 #include <algorithm>
-#include <fileio/temp_files.hpp>
-#include <unity/lib/unity_sframe.hpp>
-#include <sframe/dataframe.hpp>
-#include <sframe/algorithm.hpp>
-#include <sframe/sframe.hpp>
-#include <sframe/sarray.hpp>
-#include <sframe/sframe_config.hpp>
+#include <core/storage/fileio/temp_files.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
+#include <core/storage/sframe_data/dataframe.hpp>
+#include <core/storage/sframe_data/algorithm.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
+#include <core/storage/sframe_data/sframe_config.hpp>
 using namespace turi;
 
 struct unity_sframe_test {
@@ -53,8 +53,11 @@ struct unity_sframe_test {
     // check types match
     std::vector<flex_type_enum> dtypes = sframe->dtype();
     TS_ASSERT_EQUALS(dtypes[0], flex_type_enum::INTEGER);
+    TS_ASSERT_EQUALS(sframe->dtype(0), flex_type_enum::INTEGER);
     TS_ASSERT_EQUALS(dtypes[1], flex_type_enum::FLOAT);
+    TS_ASSERT_EQUALS(sframe->dtype(1), flex_type_enum::FLOAT);
     TS_ASSERT_EQUALS(dtypes[2], flex_type_enum::STRING);
+    TS_ASSERT_EQUALS(sframe->dtype(2), flex_type_enum::STRING);
 
     // check names match
     std::vector<std::string> names = sframe->column_names();
@@ -175,7 +178,7 @@ struct unity_sframe_test {
     tmp_vec.clear();
 
     // Filter by all 0's
-    res_ptr = sf->logical_filter(unity_zero); 
+    res_ptr = sf->logical_filter(unity_zero);
     sa_res_ptr = sa->logical_filter(unity_zero);
     TS_ASSERT_EQUALS(res_ptr->size(), 0);
     TS_ASSERT_EQUALS(sa_res_ptr->size(), 0);
@@ -332,9 +335,9 @@ struct unity_sframe_test {
     sf2->add_column(sa2, "b");
     sf2->add_column(sa1, "a");
 
-    TS_ASSERT_THROWS_ANYTHING(sf1->append(sf2));
+    TS_ASSERT_THROWS_NOTHING(sf1->append(sf2));
   }
-  
+
   void test_append_type_mismatch() {
     std::vector<flexible_type> test_data1;
     std::vector<flexible_type> test_data2;
@@ -355,7 +358,7 @@ struct unity_sframe_test {
 
     TS_ASSERT_THROWS_ANYTHING(sf1->append(sf2));
   }
-  
+
   void test_append() {
     dataframe_t testdf = _create_test_dataframe();
 
@@ -382,7 +385,7 @@ struct unity_sframe_test {
       TS_ASSERT_EQUALS(sf3_value.values["c"][i], testdf.values["c"][i - sf1->size()]);
     }
   }
-  
+
   void test_append_empty() {
     auto sf1 = std::make_shared<unity_sframe>();
     auto sf2 = std::make_shared<unity_sframe>();

@@ -3,11 +3,11 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include<sgraph/sgraph.hpp>
-#include<sgraph/sgraph_compute.hpp>
-#include<sframe/csv_line_tokenizer.hpp>
-#include<sframe/algorithm.hpp>
-#include<logger/logger.hpp>
+#include <core/storage/sgraph_data/sgraph.hpp>
+#include <core/storage/sgraph_data/sgraph_compute.hpp>
+#include <core/storage/sframe_data/csv_line_tokenizer.hpp>
+#include <core/storage/sframe_data/algorithm.hpp>
+#include <core/logging/logger.hpp>
 #include<timer/timer.hpp>
 #include<iostream>
 

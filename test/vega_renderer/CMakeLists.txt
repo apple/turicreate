@@ -4,6 +4,7 @@ if(APPLE AND NOT TC_BUILD_IOS)
 
     # sets XCTest_LIBRARIES
     include(FindXCTest)
+    include_directories(${XCTest_INCLUDE_DIRS})
 
     find_library( WEBKIT WebKit )
     message( STATUS "WebKit found at ${WEBKIT}")
@@ -38,6 +39,8 @@ if(APPLE AND NOT TC_BUILD_IOS)
     make_boost_test(vega_example_tests.cxx ${source_deps} REQUIRES ${target_deps})
     make_boost_test(vega_lite_example_tests.cxx ${source_deps} REQUIRES ${target_deps})
     make_boost_test(turicreate_example_tests.cxx ${source_deps} REQUIRES ${target_deps})
+    make_boost_test(log_proxy_tests.cxx log_proxy_tests_impl.mm ${source_deps} REQUIRES ${target_deps})
+    target_compile_options(log_proxy_tests.cxxtest PUBLIC "-fobjc-arc")
 
     # loop through files in turicreate
     file(GLOB_RECURSE VEGA_JSON_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.json)

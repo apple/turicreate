@@ -1,8 +1,8 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
-#include <sgraph/sgraph.hpp>
-#include <sgraph/sgraph_vertex_apply.hpp>
+#include <core/util/test_macros.hpp>
+#include <core/storage/sgraph_data/sgraph.hpp>
+#include <core/storage/sgraph_data/sgraph_vertex_apply.hpp>
 #include "sgraph_test_util.hpp"
 
 using namespace turi;

@@ -21,6 +21,7 @@ static const char * MLOneHotEncoderCategoryType_Name(MLOneHotEncoderCategoryType
         case MLOneHotEncoderCategoryType_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 #endif

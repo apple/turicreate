@@ -7,8 +7,8 @@
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>
 #include <capi/impl/capi_initialization_internal.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <export.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/export.hpp>
 
 extern "C" {
 
@@ -192,13 +192,7 @@ EXPORT double tc_ft_double(const tc_flexible_type* ft, tc_error** error) {
   turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, ft, "Flexible type", NULL);
-
-  if(ft->value.get_type() != turi::flex_type_enum::FLOAT) {
-    set_error(error, "Flexible type not a double.");
-    return 0;
-  }
-
-  return ft->value.get<double>();
+  return ft->value.to<double>(); 
 
   ERROR_HANDLE_END(error, NULL);
 }
@@ -209,12 +203,7 @@ EXPORT int64_t tc_ft_int64(const tc_flexible_type* ft, tc_error** error) {
 
   CHECK_NOT_NULL(error, ft, "Flexible type", NULL);
 
-  if(ft->value.get_type() != turi::flex_type_enum::INTEGER) {
-    set_error(error, "Flexible type not an integer.");
-    return 0;
-  }
-
-  return ft->value.get<int64_t>();
+  return ft->value.to<int64_t>();
 
   ERROR_HANDLE_END(error, NULL);
 }

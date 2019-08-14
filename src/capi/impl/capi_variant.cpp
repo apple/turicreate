@@ -4,12 +4,12 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <capi/TuriCreate.h>
-#include <unity/lib/toolkit_util.hpp>
+#include <model_server/lib/toolkit_util.hpp>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>
 #include <capi/impl/capi_initialization_internal.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <export.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/export.hpp>
 
 /******************************************************************************/
 /*                                                                            */

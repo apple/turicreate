@@ -9,10 +9,10 @@
 
 #include <capi/TuriCreate.h>
 #include <capi/impl/capi_wrapper_structs.hpp>
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/lib/gl_sarray.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
 #include <capi/impl/capi_wrapper_structs.hpp>
-#include <flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 #include <cmath>
 #include <vector>
 #include <iostream>

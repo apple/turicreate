@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <unity/lib/unity_graph.hpp>
 #include <unity/lib/unity_base_types.hpp>
 #include <unity/server/toolkits/recsys/data.hpp>

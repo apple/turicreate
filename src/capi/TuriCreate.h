@@ -878,6 +878,11 @@ tc_plot* tc_plot_create_2d(const tc_sarray* sa_x,
                            const tc_parameters* params,
                            tc_error** error);
 
+// Plot object from Vega or Vega-Lite JSON spec
+tc_plot* tc_plot_create_from_vega(const char* vega_spec,
+                                  const tc_parameters* params,
+                                  tc_error** error);
+
 // returns true if no further computation can be done on this stream
 // (should probably be used as a loop condition)
 bool tc_plot_finished_streaming(const tc_plot* plot, const tc_parameters *params, tc_error** error);
@@ -917,6 +922,10 @@ void tc_plot_render_vega_spec_into_context(const char * vega_spec,
 
 #endif // TC_BUILD_IOS
 #endif // __APPLE__
+
+// Returns a URL to this plot on a localhost web server.
+// Note: on the first call to this function, spins up the web server.
+tc_flexible_type* tc_plot_get_url(const tc_plot* plot, const tc_parameters* params, tc_error** error);
 
 #ifdef __cplusplus
 }

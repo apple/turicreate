@@ -6,9 +6,9 @@
 #ifndef TURI_SGRAPH_TEST_UTIL_HPP
 #define TURI_SGRAPH_TEST_UTIL_HPP
 
-#include <flexible_type/flexible_type.hpp>
-#include <sframe/sframe.hpp>
-#include <sgraph/sgraph.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sgraph_data/sgraph.hpp>
 
 namespace turi {
 

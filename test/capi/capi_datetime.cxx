@@ -9,8 +9,8 @@
 #include <boost/test/unit_test.hpp>
 #include <capi/TuriCreate.h>
 #include <capi/impl/capi_wrapper_structs.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <util/test_macros.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/util/test_macros.hpp>
 
 BOOST_AUTO_TEST_CASE(test_tc_datetime_create_empty) {
   tc_error* error = nullptr;

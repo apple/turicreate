@@ -6,8 +6,8 @@
 #ifndef TURI_IMAGE_DEEP_FEATURE_EXTRACTOR_REGISTRATIONS
 #define TURI_IMAGE_DEEP_FEATURE_EXTRACTOR_REGISTRATIONS
 
-#include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/lib/toolkit_class_specification.hpp>
+#include <model_server/lib/toolkit_class_macros.hpp>
+#include <model_server/lib/toolkit_class_specification.hpp>
 
 namespace turi {
 namespace image_deep_feature_extractor {

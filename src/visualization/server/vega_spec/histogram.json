@@ -1,0 +1,149 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v4.json",
+  "description": "A simple bar chart with embedded data.",
+  "autosize": {"type": "fit", "resize": false, "contains": "padding"},
+  "width": {{width}},
+  "height": {{height}},
+  "padding": 8,
+  "title": {{title}},
+  "style": "cell",
+  "signals": [
+    {
+      "name": "bins",
+      "update": "data(\"bins_data\")[0]"
+    },
+    {
+      "name": "binCount",
+      "update": "(bins.stop - bins.start) / bins.step"
+    },
+    {
+      "name": "nullGap",
+      "update": "data(\"nulls\").length ? 10 : 0"
+    },
+    {
+      "name": "barStep",
+      "update": "(width - nullGap) / (1 + binCount)"
+    }
+  ],
+  "data": [
+    {
+      "name": "source_2"
+      {{pre_filled_data_values}}
+    },
+    {
+      "name": "counts",
+      "source": "source_2",
+      "transform": [
+        {
+          "type": "filter",
+          "expr": "datum[\"missing\"] !== true && datum[\"count\"] != null"
+        }
+      ]
+    },
+    {
+      "name": "nulls",
+      "source": "source_2",
+      "transform": [
+        {
+          "expr": "datum[\"missing\"] === true && datum[\"count\"] != null",
+          "type": "filter"
+        }
+      ]
+    },
+    {
+      "name": "bins_data",
+      "source": "source_2",
+      "transform": [
+        {
+          "expr": "datum[\"start\"] != null && datum[\"stop\"] != null && datum[\"step\"] != null",
+          "type": "filter"
+        }
+      ]
+    }
+  ],
+  "marks": [
+    {
+      "type": "rect",
+      "from": {"data": "counts"},
+      "encode": {
+        "update": {
+          "x": {"scale": "xscale", "field": "left", "offset": 1},
+          "x2": {"scale": "xscale", "field": "right"},
+          "y": {"scale": "yscale", "field": "count"},
+          "y2": {"scale": "yscale", "value": 0},
+          "fill": {"value": "#108EE9"}
+        },
+        "hover": {
+          "fill": {"value": "#7EC2F3"}
+        }
+      }
+    },
+    {
+      "type": "rect",
+      "from": {"data": "nulls"},
+      "encode": {
+        "update": {
+          "x": {"scale": "xscale-null", "value": null, "offset": 1},
+          "x2": {"scale": "xscale-null", "band": 1},
+          "y": {"scale": "yscale", "field": "count"},
+          "y2": {"scale": "yscale", "value": 0},
+          "fill": {"value": "#108EE9"}
+        },
+        "hover": {
+          "fill": {"value": "#7EC2F3"}
+        }
+      }
+    }
+  ],
+  "scales": [
+    {
+      "name": "yscale",
+      "type": "linear",
+      "range": "height",
+      "round": true, "nice": true,
+      "domain": {
+        "fields": [
+          {"data": "counts", "field": "count"},
+          {"data": "nulls", "field": "count"}
+        ]
+      }
+    },
+    {
+      "name": "xscale",
+      "type": "linear",
+      "range": [{"signal": "nullGap ? barStep + nullGap : 0"}, {"signal": "width"}],
+      "round": true,
+      "domain": {"signal": "[bins.start, bins.stop]"},
+      "bins": {"signal": "bins"}
+    },
+    {
+      "name": "xscale-null",
+      "type": "band",
+      "range": [{"signal": "nullGap ? 0 : 1"}, {"signal": "nullGap ? barStep : 0"}],
+      "round": true,
+      "domain": [{"signal": "nullGap ? null : ''"}]
+    }
+  ],
+  "axes": [
+    {
+      "title": "{{xlabel}}",
+      "orient": "bottom",
+      "scale": "xscale",
+      "tickMinStep": 1,
+      "grid": true
+    },
+    {
+      "orient": "bottom",
+      "scale": "xscale-null"
+    },
+    {
+      "title": "{{ylabel}}",
+      "orient": "left",
+      "scale": "yscale",
+      "tickCount": 5,
+      "offset": {"signal": "nullGap ? 5 : 0"},
+      "grid": true
+    }
+  ],
+  {{config}}
+}

@@ -6,8 +6,8 @@
 #include <toolkits/image_deep_feature_extractor/image_deep_feature_extractor_toolkit.hpp>
 
 #include <toolkits/image_deep_feature_extractor/mlmodel_image_feature_extractor.hpp>
-#include <unity/lib/gl_sarray.hpp>
-#include <unity/lib/gl_sframe.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
 
 namespace turi {
 namespace image_deep_feature_extractor {
@@ -28,6 +28,13 @@ gl_sarray image_deep_feature_extractor_toolkit::extract_features(gl_sframe data,
                                                                  bool verbose, size_t batch_size) const {
   return m_feature_extractor->extract_features(data[column_name], verbose, batch_size);
 }
+
+
+gl_sarray image_deep_feature_extractor_toolkit::sarray_extract_features(gl_sarray data,
+                                                                 bool verbose, size_t batch_size) const {
+  return m_feature_extractor->extract_features(data, verbose, batch_size);
+}
+
 
 }  // image_deep_feature_extractor
 }  // turi

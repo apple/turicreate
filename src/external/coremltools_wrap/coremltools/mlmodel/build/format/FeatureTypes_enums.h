@@ -23,6 +23,7 @@ static const char * MLImageFeatureTypeSizeFlexibility_Name(MLImageFeatureTypeSiz
         case MLImageFeatureTypeSizeFlexibility_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLArrayDataType: int {
@@ -48,6 +49,7 @@ static const char * MLArrayFeatureTypeShapeFlexibility_Name(MLArrayFeatureTypeSh
         case MLArrayFeatureTypeShapeFlexibility_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLDictionaryFeatureTypeKeyType: int {
@@ -66,6 +68,7 @@ static const char * MLDictionaryFeatureTypeKeyType_Name(MLDictionaryFeatureTypeK
         case MLDictionaryFeatureTypeKeyType_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLSequenceFeatureTypeType: int {
@@ -84,6 +87,7 @@ static const char * MLSequenceFeatureTypeType_Name(MLSequenceFeatureTypeType x) 
         case MLSequenceFeatureTypeType_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 enum MLFeatureTypeType: int {
@@ -117,6 +121,7 @@ static const char * MLFeatureTypeType_Name(MLFeatureTypeType x) {
         case MLFeatureTypeType_NOT_SET:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 #endif

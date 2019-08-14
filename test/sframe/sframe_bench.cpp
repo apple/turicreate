@@ -4,9 +4,9 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <iostream>
-#include <sframe/sframe.hpp>
-#include <sframe/parallel_csv_parser.hpp>
-#include <fileio/temp_files.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_data/parallel_csv_parser.hpp>
+#include <core/storage/fileio/temp_files.hpp>
 #include <timer/timer.hpp>
 using namespace turi;
 

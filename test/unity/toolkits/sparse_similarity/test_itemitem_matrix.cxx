@@ -5,7 +5,7 @@
  */
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <iostream>
 #include <typeinfo>       // operator typeid
 #include <cstddef>
@@ -15,9 +15,9 @@
 #include <iterator>
 
 
-#include <unity/toolkits/sparse_similarity/sliced_itemitem_matrix.hpp>
-#include <util/cityhash_tc.hpp>
-#include <parallel/lambda_omp.hpp>
+#include <toolkits/sparse_similarity/sliced_itemitem_matrix.hpp>
+#include <core/util/cityhash_tc.hpp>
+#include <core/parallel/lambda_omp.hpp>
 
 using namespace turi;
 using namespace turi::sparse_sim;

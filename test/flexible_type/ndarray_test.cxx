@@ -5,14 +5,14 @@
  */
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <vector>
 #include <iostream>
 #include <typeinfo>       // operator typeid
 
 
-#include <flexible_type/flexible_type.hpp>
-#include <flexible_type/ndarray.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/data/flexible_type/ndarray.hpp>
 
 using namespace turi;
 using namespace flexible_type_impl;

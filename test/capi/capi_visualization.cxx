@@ -6,12 +6,12 @@
 
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 
 #include <capi/TuriCreate.h>
 #include "capi_utils.hpp"
-#include <unity/lib/visualization/plot.hpp>
-#include <unity/lib/visualization/show.hpp>
+#include <visualization/server/plot.hpp>
+#include <visualization/server/show.hpp>
 
 #include <random>
 
@@ -335,6 +335,25 @@ class capi_test_visualization {
             CAPI_CHECK_ERROR(error);
         }
 
+        void test_plot_get_url() {
+            // For a given plot, test that get_url returns the same value through C and C++ API
+            tc_error *error = nullptr;
+            tc_plot *actual_obj = tc_plot_create_1d(m_sa_int, "foo", "bar", "baz", nullptr, &error);
+            CAPI_CHECK_ERROR(error);
+            std::shared_ptr<Plot> expected_obj = std::dynamic_pointer_cast<Plot>(actual_obj->value);
+            std::string expected_url = expected_obj->get_url();
+            tc_flexible_type *actual_url_ft = tc_plot_get_url(actual_obj, nullptr, &error);
+            CAPI_CHECK_ERROR(error);
+            const char *actual_url_data = tc_ft_string_data(actual_url_ft, &error);
+            CAPI_CHECK_ERROR(error);
+            size_t actual_url_length = tc_ft_string_length(actual_url_ft, &error);
+            CAPI_CHECK_ERROR(error);
+            std::string actual_url(actual_url_data, actual_url_length);
+            TS_ASSERT_EQUALS(actual_url, expected_url);
+
+            // TODO - test web server page load
+        }
+
 #ifdef __APPLE__
 #ifndef TC_BUILD_IOS
 
@@ -395,6 +414,9 @@ BOOST_AUTO_TEST_CASE(test_2d_plots) {
 }
 BOOST_AUTO_TEST_CASE(test_sframe_summary_plot) {
   capi_test_visualization::test_sframe_summary_plot();
+}
+BOOST_AUTO_TEST_CASE(test_plot_get_url) {
+  capi_test_visualization::test_plot_get_url();
 }
 #ifdef __APPLE__
 #ifndef TC_BUILD_IOS

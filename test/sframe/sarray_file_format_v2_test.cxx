@@ -1,12 +1,12 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
-#include <fileio/temp_files.hpp>
-#include <sframe/sarray_v2_block_manager.hpp>
-#include <sframe/sarray_file_format_v2.hpp>
-#include <sframe/sarray_index_file.hpp>
+#include <core/util/test_macros.hpp>
+#include <core/storage/fileio/temp_files.hpp>
+#include <core/storage/sframe_data/sarray_v2_block_manager.hpp>
+#include <core/storage/sframe_data/sarray_file_format_v2.hpp>
+#include <core/storage/sframe_data/sarray_index_file.hpp>
 #include <timer/timer.hpp>
-#include <random/random.hpp>
+#include <core/random/random.hpp>
 
 using namespace turi;
 
@@ -134,6 +134,7 @@ struct sarray_file_format_v2_test {
 
 
   static const size_t VERY_LARGE_SIZE = 4*1024*1024;
+  //static const size_t VERY_LARGE_SIZE = 128*1024;
   void test_random_access(void) {
     // write a file
     sarray_group_format_writer_v2<size_t> group_writer;
@@ -246,117 +247,117 @@ struct sarray_file_format_v2_test {
               << ti.current_time() << " seconds \n";
 
 
-// random reads
-{
-  ti.start();
-  // now see if I can read it
-  sarray_format_reader_v2<flexible_type> reader;
-  reader.open(test_file_name + ":0");
-  random::seed(10001);
-  for (size_t i = 0;i < 1600; ++i) {
-    size_t len = 4096;
-    size_t start = random::fast_uniform<size_t>(0, 16 * VERY_LARGE_SIZE - 4097);
-    std::vector<flexible_type> vals;
-    reader.read_rows(start, start + len, vals);
-    TS_ASSERT_EQUALS(vals.size(), len);
-    for (size_t i = 0; i < len; ++i) {
-      if ((size_t)(vals[i]) != start + i) TS_ASSERT_EQUALS((size_t)(vals[i]), start + i);
-    }
-  }
-  std::cout << "1600 random seeks of 4096 flexible_type values in " 
-            << ti.current_time() << " seconds\n" << std::endl;
+    // random reads
+    {
+      ti.start();
+      // now see if I can read it
+      sarray_format_reader_v2<flexible_type> reader;
+      reader.open(test_file_name + ":0");
+      random::seed(10001);
+      for (size_t i = 0;i < 1600; ++i) {
+        size_t len = 4096;
+        size_t start = random::fast_uniform<size_t>(0, 16 * VERY_LARGE_SIZE - 4097);
+        std::vector<flexible_type> vals;
+        reader.read_rows(start, start + len, vals);
+        TS_ASSERT_EQUALS(vals.size(), len);
+        for (size_t i = 0; i < len; ++i) {
+          if ((size_t)(vals[i]) != start + i) TS_ASSERT_EQUALS((size_t)(vals[i]), start + i);
+        }
+      }
+      std::cout << "1600 random seeks of 4096 flexible_type values in "
+                << ti.current_time() << " seconds\n" << std::endl;
 
-  // test some edge cases. Read past the end
-  size_t end = 16*VERY_LARGE_SIZE;
-  std::vector<flexible_type> vals;
-  size_t ret = reader.read_rows(end - 5, 2*end, vals);
-  TS_ASSERT_EQUALS(ret, 5);
-  TS_ASSERT_EQUALS(vals.size(), 5);
-  for (size_t i = 0;i < vals.size(); ++i) {
-    if ((size_t)vals[i] != end - (5 - i)) TS_ASSERT_EQUALS((size_t)vals[i], end - (5 - i));
-  }
-}
-
-// random sequential reads
-{
-  ti.start();
-  // now see if I can read it
-  sarray_format_reader_v2<flexible_type> reader;
-  reader.open(test_file_name + ":0");
-  random::seed(10001);
-  std::vector<size_t> start_points;
-  for (size_t i = 0;i < 16; ++i) {
-    start_points.push_back(
-        random::fast_uniform<size_t>(0, 
-                                     15 * VERY_LARGE_SIZE));
-                                     // 15 so as to give some gap for reading
-  }
-  for (size_t i = 0;i < 100; ++i) {
-    for (size_t j = 0;j < start_points.size(); ++j) {
-      size_t len = 4096;
+      // test some edge cases. Read past the end
+      size_t end = 16*VERY_LARGE_SIZE;
       std::vector<flexible_type> vals;
-      reader.read_rows(start_points[j], start_points[j] + len, vals);
-      TS_ASSERT_EQUALS(vals.size(), len);
-      for (size_t k = 0; k < len; ++k) {
-        if ((size_t)vals[k] != start_points[j] + k) TS_ASSERT_EQUALS((size_t)vals[k], start_points[j] + k);
+      size_t ret = reader.read_rows(end - 5, 2*end, vals);
+      TS_ASSERT_EQUALS(ret, 5);
+      TS_ASSERT_EQUALS(vals.size(), 5);
+      for (size_t i = 0;i < vals.size(); ++i) {
+        if ((size_t)vals[i] != end - (5 - i)) TS_ASSERT_EQUALS((size_t)vals[i], end - (5 - i));
       }
-      start_points[j] += len;
     }
-  }
-  std::cout << "1600 semi-sequential seeks of average 4096 flexible_type values in " 
-            << ti.current_time() << " seconds\n" << std::endl;
-}
 
-{
-  ti.start();
-  sarray_format_reader_v2<flexible_type> reader;
-  reader.open(test_file_name + ":0");
-  random::seed(10001);
-  std::vector<size_t> start_points;
-  for (size_t i = 0;i < 16; ++i) {
-    start_points.push_back(
-        random::fast_uniform<size_t>(0, 
-                                     15 * VERY_LARGE_SIZE));
-                                     // 15 so as to give some gap for reading
-  }
-  for (size_t i = 0;i < 100; ++i) {
-    sframe_rows rows;
-    for (size_t j = 0;j < start_points.size(); ++j) {
-      size_t len = 4096;
-      reader.read_rows(start_points[j], start_points[j] + len, rows);
-      size_t k = 0;
-      TS_ASSERT_EQUALS(rows.num_rows(), len);
-      TS_ASSERT_EQUALS(rows.num_columns(), 1);
-      for (const auto& val: rows) {
-        if ((size_t)val[0] != start_points[j] + k) TS_ASSERT_EQUALS((size_t)val[0], start_points[j] + k);
-        ++k;
+    // random sequential reads
+    {
+      ti.start();
+      // now see if I can read it
+      sarray_format_reader_v2<flexible_type> reader;
+      reader.open(test_file_name + ":0");
+      random::seed(10001);
+      std::vector<size_t> start_points;
+      for (size_t i = 0;i < 16; ++i) {
+        start_points.push_back(
+            random::fast_uniform<size_t>(0,
+                                         15 * VERY_LARGE_SIZE));
+        // 15 so as to give some gap for reading
       }
-      TS_ASSERT_EQUALS(k, len);
-      start_points[j] += len;
+      for (size_t i = 0;i < 100; ++i) {
+        for (size_t j = 0;j < start_points.size(); ++j) {
+          size_t len = 4096;
+          std::vector<flexible_type> vals;
+          reader.read_rows(start_points[j], start_points[j] + len, vals);
+          TS_ASSERT_EQUALS(vals.size(), len);
+          for (size_t k = 0; k < len; ++k) {
+            if ((size_t)vals[k] != start_points[j] + k) TS_ASSERT_EQUALS((size_t)vals[k], start_points[j] + k);
+          }
+          start_points[j] += len;
+        }
+      }
+      std::cout << "1600 semi-sequential seeks of average 4096 flexible_type values in "
+                << ti.current_time() << " seconds\n" << std::endl;
     }
-  }
-  std::cout << "1600 sframe_rows semi-sequential seeks of average 4096 flexible_type values in " 
-            << ti.current_time() << " seconds\n" << std::endl;
-}
 
-{
-  sarray_format_reader_v2<flexible_type> reader;
-  reader.open(test_file_name + ":0");
-  ti.start();
-  std::vector<flexible_type> rows;
-  for (size_t j = 0;j < 64; ++j) {
-    size_t len = 1*1024*1024;
-    reader.read_rows(j * len, (j+1)*len, rows);
-    size_t k = 0;
-    for (const auto& val: rows) {
-      if ((size_t)val != j * len + k) TS_ASSERT_EQUALS((size_t)val, j * len + k);
-      ++k;
+    {
+      ti.start();
+      sarray_format_reader_v2<flexible_type> reader;
+      reader.open(test_file_name + ":0");
+      random::seed(10001);
+      std::vector<size_t> start_points;
+      for (size_t i = 0;i < 16; ++i) {
+        start_points.push_back(
+            random::fast_uniform<size_t>(0,
+                                         15 * VERY_LARGE_SIZE));
+        // 15 so as to give some gap for reading
+      }
+      for (size_t i = 0;i < 100; ++i) {
+        sframe_rows rows;
+        for (size_t j = 0;j < start_points.size(); ++j) {
+          size_t len = 4096;
+          reader.read_rows(start_points[j], start_points[j] + len, rows);
+          size_t k = 0;
+          TS_ASSERT_EQUALS(rows.num_rows(), len);
+          TS_ASSERT_EQUALS(rows.num_columns(), 1);
+          for (const auto& val: rows) {
+            if ((size_t)val[0] != start_points[j] + k) TS_ASSERT_EQUALS((size_t)val[0], start_points[j] + k);
+            ++k;
+          }
+          TS_ASSERT_EQUALS(k, len);
+          start_points[j] += len;
+        }
+      }
+      std::cout << "1600 sframe_rows semi-sequential seeks of average 4096 flexible_type values in "
+                << ti.current_time() << " seconds\n" << std::endl;
     }
-    TS_ASSERT_EQUALS(k, len);
-  }
-  std::cout << "64 vector read sequential seeks of 1M flexible_type values in " 
-            << ti.current_time() << " seconds\n" << std::endl;
-}
+
+    {
+      sarray_format_reader_v2<flexible_type> reader;
+      reader.open(test_file_name + ":0");
+      ti.start();
+      std::vector<flexible_type> rows;
+      for (size_t j = 0;j < 64; ++j) {
+        size_t len = 1*1024*1024;
+        reader.read_rows(j * len, (j+1)*len, rows);
+        size_t k = 0;
+        for (const auto& val: rows) {
+          if ((size_t)val != j * len + k) TS_ASSERT_EQUALS((size_t)val, j * len + k);
+          ++k;
+        }
+        TS_ASSERT_EQUALS(k, len);
+      }
+      std::cout << "64 vector read sequential seeks of 1M flexible_type values in "
+                << ti.current_time() << " seconds\n" << std::endl;
+    }
 
 
     {
@@ -371,7 +372,194 @@ struct sarray_file_format_v2_test {
         TS_ASSERT_EQUALS(rows.num_rows(), len);
         TS_ASSERT_EQUALS(rows.num_columns(), 1);
         for (const auto& val: rows) {
-           if ((size_t)val[0] != j * len + k) TS_ASSERT_EQUALS((size_t)val[0], j * len + k);
+          if ((size_t)val[0] != j * len + k) TS_ASSERT_EQUALS((size_t)val[0], j * len + k);
+          ++k;
+        }
+        TS_ASSERT_EQUALS(k, len);
+      }
+      std::cout << "64 sframe_rows sequential seeks of average 1M flexible_type values in "
+                << ti.current_time() << " seconds\n" << std::endl;
+    }
+  }
+
+  void test_missing_values_random_access(void) {
+    // write a file
+    sarray_group_format_writer_v2<flexible_type> group_writer;
+
+    timer ti;
+    ti.start();
+    // open with 4 segments
+    std::string test_file_name = get_temp_name() + ".sidx";
+    group_writer.open(test_file_name, 16, 1);
+
+    TS_ASSERT_EQUALS(group_writer.num_segments(), 16);
+    // open all segments, write one sequential value spanning all segments
+    size_t v = 0;
+    for (size_t i = 0;i < 16; ++i) {
+      for (size_t j = 0;j < VERY_LARGE_SIZE; ++j) {
+        if (v % 4 != 0) group_writer.write_segment(0, i, v);
+        else group_writer.write_segment(0, i, FLEX_UNDEFINED);
+        ++v;
+      }
+    }
+    group_writer.close();
+    group_writer.write_index_file();
+    std::cout << "Written 16*4M = 64M flexible_type integers to disk sequentially in: "
+              << ti.current_time() << " seconds \n";
+
+
+    // random reads
+    {
+      ti.start();
+      // now see if I can read it
+      sarray_format_reader_v2<flexible_type> reader;
+      reader.open(test_file_name + ":0");
+      random::seed(10001);
+      for (size_t i = 0;i < 1600; ++i) {
+        size_t len = 4096;
+        size_t start = random::fast_uniform<size_t>(0, 16 * VERY_LARGE_SIZE - 4097);
+        std::vector<flexible_type> vals;
+        reader.read_rows(start, start + len, vals);
+        TS_ASSERT_EQUALS(vals.size(), len);
+        for (size_t i = 0; i < len; ++i) {
+          if ((start + i) % 4 != 0) {
+            if ((size_t)(vals[i]) != start + i) TS_ASSERT_EQUALS((size_t)(vals[i]), start + i);
+          } else {
+            TS_ASSERT_EQUALS((int)(vals[i].get_type()), (int)flex_type_enum::UNDEFINED);
+          }
+        }
+      }
+      std::cout << "1600 random seeks of 4096 flexible_type values in "
+                << ti.current_time() << " seconds\n" << std::endl;
+
+      // test some edge cases. Read past the end
+      size_t end = 16*VERY_LARGE_SIZE;
+      std::vector<flexible_type> vals;
+      size_t ret = reader.read_rows(end - 5, 2*end, vals);
+      TS_ASSERT_EQUALS(ret, 5);
+      TS_ASSERT_EQUALS(vals.size(), 5);
+      for (size_t i = 0;i < vals.size(); ++i) {
+        if ((end - (5 - i)) % 4 != 0) {
+          if ((size_t)vals[i] != end - (5 - i)) TS_ASSERT_EQUALS((size_t)vals[i], end - (5 - i));
+        } else {
+          TS_ASSERT_EQUALS((int)(vals[i].get_type()), (int)flex_type_enum::UNDEFINED);
+        }
+      }
+    }
+
+    // random sequential reads
+    {
+      ti.start();
+      // now see if I can read it
+      sarray_format_reader_v2<flexible_type> reader;
+      reader.open(test_file_name + ":0");
+      random::seed(10001);
+      std::vector<size_t> start_points;
+      for (size_t i = 0;i < 16; ++i) {
+        start_points.push_back(
+            random::fast_uniform<size_t>(0,
+                                         15 * VERY_LARGE_SIZE));
+        // 15 so as to give some gap for reading
+      }
+      for (size_t i = 0;i < 100; ++i) {
+        for (size_t j = 0;j < start_points.size(); ++j) {
+          size_t len = 4096;
+          std::vector<flexible_type> vals;
+          reader.read_rows(start_points[j], start_points[j] + len, vals);
+          TS_ASSERT_EQUALS(vals.size(), len);
+          for (size_t k = 0; k < len; ++k) {
+            if ((start_points[j] + k) % 4 != 0) {
+              if ((size_t)vals[k] != start_points[j] + k) TS_ASSERT_EQUALS((size_t)vals[k], start_points[j] + k);
+            } else {
+              TS_ASSERT_EQUALS((int)(vals[k].get_type()), (int)flex_type_enum::UNDEFINED);
+            }
+          }
+          start_points[j] += len;
+        }
+      }
+      std::cout << "1600 semi-sequential seeks of average 4096 flexible_type values in "
+                << ti.current_time() << " seconds\n" << std::endl;
+    }
+
+    {
+      ti.start();
+      sarray_format_reader_v2<flexible_type> reader;
+      reader.open(test_file_name + ":0");
+      random::seed(10001);
+      std::vector<size_t> start_points;
+      for (size_t i = 0;i < 16; ++i) {
+        start_points.push_back(
+            random::fast_uniform<size_t>(0,
+                                         15 * VERY_LARGE_SIZE));
+        // 15 so as to give some gap for reading
+      }
+      for (size_t i = 0;i < 100; ++i) {
+        sframe_rows rows;
+        for (size_t j = 0;j < start_points.size(); ++j) {
+          size_t len = 4096;
+          reader.read_rows(start_points[j], start_points[j] + len, rows);
+          size_t k = 0;
+          TS_ASSERT_EQUALS(rows.num_rows(), len);
+          TS_ASSERT_EQUALS(rows.num_columns(), 1);
+          for (const auto& val: rows) {
+            if ((start_points[j] + k) % 4 != 0) {
+              if ((size_t)val[0] != start_points[j] + k) {
+                TS_ASSERT_EQUALS((size_t)val[0], start_points[j] + k);
+              }
+            } else {
+              TS_ASSERT_EQUALS((int)(val[0].get_type()), (int)flex_type_enum::UNDEFINED);
+            }
+            ++k;
+          }
+          TS_ASSERT_EQUALS(k, len);
+          start_points[j] += len;
+        }
+      }
+      std::cout << "1600 sframe_rows semi-sequential seeks of average 4096 flexible_type values in "
+                << ti.current_time() << " seconds\n" << std::endl;
+    }
+
+    {
+      sarray_format_reader_v2<flexible_type> reader;
+      reader.open(test_file_name + ":0");
+      ti.start();
+      std::vector<flexible_type> rows;
+      for (size_t j = 0;j < 64; ++j) {
+        size_t len = 1*1024*1024;
+        reader.read_rows(j * len, (j+1)*len, rows);
+        size_t k = 0;
+        for (const auto& val: rows) {
+          if ((j * len + k) % 4 != 0) {
+            if ((size_t)val != j * len + k) TS_ASSERT_EQUALS((size_t)val, j * len + k);
+          } else {
+            TS_ASSERT_EQUALS((int)(val.get_type()), (int)flex_type_enum::UNDEFINED);
+          }
+          ++k;
+        }
+        TS_ASSERT_EQUALS(k, len);
+      }
+      std::cout << "64 vector read sequential seeks of 1M flexible_type values in "
+                << ti.current_time() << " seconds\n" << std::endl;
+    }
+
+
+    {
+      sarray_format_reader_v2<flexible_type> reader;
+      reader.open(test_file_name + ":0");
+      ti.start();
+      sframe_rows rows;
+      for (size_t j = 0;j < 64; ++j) {
+        size_t len = 1*1024*1024;
+        reader.read_rows(j * len, (j+1)*len, rows);
+        size_t k = 0;
+        TS_ASSERT_EQUALS(rows.num_rows(), len);
+        TS_ASSERT_EQUALS(rows.num_columns(), 1);
+        for (const auto& val: rows) {
+          if ((j * len + k) % 4 != 0) {
+            if ((size_t)val[0] != j * len + k) TS_ASSERT_EQUALS((size_t)val[0], j * len + k);
+          } else {
+            TS_ASSERT_EQUALS((int)(val[0].get_type()), (int)flex_type_enum::UNDEFINED);
+          }
           ++k;
         }
         TS_ASSERT_EQUALS(k, len);
@@ -395,5 +583,8 @@ BOOST_AUTO_TEST_CASE(test_random_access) {
 }
 BOOST_AUTO_TEST_CASE(test_typed_random_access) {
   sarray_file_format_v2_test::test_typed_random_access();
+}
+BOOST_AUTO_TEST_CASE(test_missing_values_random_access) {
+  sarray_file_format_v2_test::test_missing_values_random_access();
 }
 BOOST_AUTO_TEST_SUITE_END()

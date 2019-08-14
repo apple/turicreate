@@ -1,13 +1,13 @@
 
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <string>
 #include <unistd.h>
-#include <flexible_type/flexible_type.hpp>
-#include <unity/lib/gl_sframe.hpp>
-#include <unity/toolkits/feature_engineering/dimension_reduction.hpp>
-#include <sframe/testing_utils.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
+#include <toolkits/feature_engineering/dimension_reduction.hpp>
+#include <core/storage/sframe_data/testing_utils.hpp>
 
 using namespace turi;
 using namespace turi::sdk_model::feature_engineering;

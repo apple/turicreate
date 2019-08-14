@@ -51,7 +51,7 @@ Turi Create also enables you to create independent plots including
 The `show` method displays a plot of the requested data structure or pair of
 data structures to the user, with an automatically selected plot type. When in
 Jupyter Notebook, it outputs to the notebook by default, and otherwise opens a
-native window. This behavior can be controlled with
+native window or in a web browser. This behavior can be controlled with
 [`turicreate.visualization.set_target`](https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.set_target.html).
 
 ##### Streaming Capability

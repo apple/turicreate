@@ -1,9 +1,9 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <iostream>
-#include <lazy_eval/lazy_eval_operation.hpp>
-#include <lazy_eval/lazy_eval_operation_dag.hpp>
+#include <core/storage/lazy_eval/lazy_eval_operation.hpp>
+#include <core/storage/lazy_eval/lazy_eval_operation_dag.hpp>
 
 using namespace turi;
 

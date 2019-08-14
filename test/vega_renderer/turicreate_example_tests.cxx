@@ -6,7 +6,7 @@
 
 #define BOOST_TEST_MODULE vega_example_tests
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include "base_fixture.hpp"
 
 #include "examples/turicreate/mushroom_categorical_heatmap.vg.h"
@@ -16,6 +16,7 @@
 #include "examples/turicreate/clang_format_boxes_and_whiskers.vg.h"
 #include "examples/turicreate/clang_format_histogram.vg.h"
 #include "examples/turicreate/mushroom_categorical_histogram.vg.h"
+#include "examples/turicreate/simple_themed_bar_chart.vl.h"
 
 using namespace vega_renderer::test_utils;
 
@@ -73,6 +74,12 @@ BOOST_AUTO_TEST_CASE(testCategoricalHistogram) {
   this->run_test_spec(examples_turicreate_mushroom_categorical_histogram_vg_json,
                       examples_turicreate_mushroom_categorical_histogram_vg_json_len,
                       "mushroom_categorical_histogram");
+}
+
+BOOST_AUTO_TEST_CASE(testSimpleThemedBarChart) {
+  this->run_test_spec(examples_turicreate_simple_themed_bar_chart_vl_json,
+                      examples_turicreate_simple_themed_bar_chart_vl_json_len,
+                      "simple_themed_bar_chart");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

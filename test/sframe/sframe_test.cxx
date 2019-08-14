@@ -1,19 +1,19 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
-#include <util/test_macros.hpp>
+#include <core/util/test_macros.hpp>
 #include <iostream>
 #include <typeinfo>
 #include <boost/filesystem.hpp>
-#include <sframe/sframe.hpp>
-#include <sframe/algorithm.hpp>
-#include <flexible_type/flexible_type.hpp>
-#include <sframe/parallel_csv_parser.hpp>
-#include <sframe/csv_line_tokenizer.hpp>
-#include <sframe/csv_writer.hpp>
-#include <random/random.hpp>
-#include <sframe/groupby_aggregate.hpp>
-#include <sframe/groupby_aggregate_operators.hpp>
-#include <sframe/sframe_saving.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_data/algorithm.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
+#include <core/storage/sframe_data/parallel_csv_parser.hpp>
+#include <core/storage/sframe_data/csv_line_tokenizer.hpp>
+#include <core/storage/sframe_data/csv_writer.hpp>
+#include <core/random/random.hpp>
+#include <core/storage/sframe_data/groupby_aggregate.hpp>
+#include <core/storage/sframe_data/groupby_aggregate_operators.hpp>
+#include <core/storage/sframe_data/sframe_saving.hpp>
 
 BOOST_TEST_DONT_PRINT_LOG_VALUE(std::vector<double>)
 BOOST_TEST_DONT_PRINT_LOG_VALUE(std::vector<std::string>)
@@ -23,6 +23,9 @@ struct sframe_test  {
   std::string test_writer_dbl_prefix;
   std::string test_writer_str_prefix;
   std::string test_writer_add_col_prefix;
+  std::string test_writer_arr_prefix;
+  std::string test_writer_dt_prefix;
+  std::string test_writer_ndarr_prefix;
   std::string test_writer_seg_size_err_prefix;
 
   public:
@@ -32,11 +35,17 @@ struct sframe_test  {
       sarray<flexible_type> test_writer_str;
       sarray<flexible_type> test_writer_add_col;
       sarray<flexible_type> test_writer_seg_size_err;
+      sarray<flexible_type> test_writer_arr;
+      sarray<flexible_type> test_writer_dt;
+      sarray<flexible_type> test_writer_ndarr;
 
       this->test_writer_prefix = get_temp_name() + ".sidx";
       this->test_writer_dbl_prefix = get_temp_name() + ".sidx";
       this->test_writer_str_prefix = get_temp_name() + ".sidx";
       this->test_writer_add_col_prefix = get_temp_name() + ".sidx";
+      this->test_writer_arr_prefix = get_temp_name() + ".sidx";
+      this->test_writer_dt_prefix = get_temp_name() + ".sidx";
+      this->test_writer_ndarr_prefix = get_temp_name() + ".sidx";
       this->test_writer_seg_size_err_prefix = get_temp_name() + ".sidx";
 
       std::vector<std::vector<size_t> > data{{1,2,3,4,5},
@@ -44,31 +53,45 @@ struct sframe_test  {
                                              {11,12,13,14,15},
                                              {16,17,18,19,20}};
 
-      //TODO: Make better!
       test_writer.open_for_write(this->test_writer_prefix, 4);
       test_writer_dbl.open_for_write(this->test_writer_dbl_prefix, 4);
       test_writer_str.open_for_write(this->test_writer_str_prefix, 4);
       test_writer_add_col.open_for_write(this->test_writer_add_col_prefix, 4);
+      test_writer_arr.open_for_write(this->test_writer_arr_prefix, 4);
+      test_writer_dt.open_for_write(this->test_writer_dt_prefix, 4);
+      test_writer_ndarr.open_for_write(this->test_writer_ndarr_prefix, 4);
 
       test_writer.set_type(flex_type_enum::INTEGER);
       test_writer_dbl.set_type(flex_type_enum::FLOAT);
       test_writer_str.set_type(flex_type_enum::STRING);
       test_writer_add_col.set_type(flex_type_enum::FLOAT);
+      test_writer_arr.set_type(flex_type_enum::VECTOR);
+      test_writer_dt.set_type(flex_type_enum::DATETIME);
+      test_writer_ndarr.set_type(flex_type_enum::ND_VECTOR);
 
       for (size_t i = 0; i < 4; ++i) {
         auto iter = test_writer.get_output_iterator(i);
         auto iter_dbl = test_writer_dbl.get_output_iterator(i);
         auto iter_str = test_writer_str.get_output_iterator(i);
         auto iter_add_col = test_writer_add_col.get_output_iterator(i);
+        auto iter_arr = test_writer_arr.get_output_iterator(i);
+        auto iter_dt = test_writer_dt.get_output_iterator(i);
+        auto iter_ndarr = test_writer_ndarr.get_output_iterator(i);
         for(auto val: data[i]) {
           *iter = val;
           *iter_dbl = val;
           *iter_str = std::to_string(val);
           *iter_add_col = val;
+          *iter_dt = flex_date_time(val);
+          *iter_arr = flex_vec(10,val);
+          *iter_ndarr = flex_nd_vec(std::vector<double>(10,val), {2,5});
           ++iter;
           ++iter_dbl;
           ++iter_str;
           ++iter_add_col;
+          ++iter_arr;
+          ++iter_dt;
+          ++iter_ndarr;
         }
       }
 
@@ -76,6 +99,9 @@ struct sframe_test  {
       test_writer_dbl.close();
       test_writer_str.close();
       test_writer_add_col.close();
+      test_writer_arr.close();
+      test_writer_dt.close();
+      test_writer_ndarr.close();
 
       std::vector<std::vector<size_t> > data2{{1,2,3,4},
                                              {5, 6,7,8,9,10,11,12},
@@ -543,9 +569,14 @@ struct sframe_test  {
       std::vector<std::shared_ptr<sarray<flexible_type>>>
         v{std::make_shared<sarray<flexible_type>>(test_writer_prefix),
           std::make_shared<sarray<flexible_type>>(test_writer_dbl_prefix),
-          std::make_shared<sarray<flexible_type>>(test_writer_str_prefix)};
+          std::make_shared<sarray<flexible_type>>(test_writer_str_prefix),
+          std::make_shared<sarray<flexible_type>>(test_writer_arr_prefix),
+          std::make_shared<sarray<flexible_type>>(test_writer_dt_prefix),
+          std::make_shared<sarray<flexible_type>>(test_writer_ndarr_prefix)
+        };
 
       sframe sf(v);
+      size_t nrows = sf.num_rows();
 
       auto reader = sf.get_reader();
 
@@ -562,7 +593,10 @@ struct sframe_test  {
         while(iter != end_iter) {
           std::vector<flexible_type> expected {flex_int(rowid+1),
                                                flex_float(rowid+1),
-                                               flex_string(std::to_string(rowid+1))};
+                                               flex_string(std::to_string(rowid+1)),
+                                               flex_vec(10, rowid+1),
+                                               flex_date_time(rowid+1),
+                                               flex_nd_vec(std::vector<double>(10, rowid+1), {2,5})};
           sframe::value_type actual = *iter;
           TS_ASSERT_EQUALS(actual.size(), expected.size());
           for (size_t j = 0; j < actual.size(); ++j) {
@@ -590,7 +624,12 @@ struct sframe_test  {
             }
             size_t rowid = startrow;
             while(iter != end_iter) {
-              std::vector<flexible_type> expected {flex_int(rowid+1), flex_float(rowid+1), flex_string(std::to_string(rowid+1))};
+            std::vector<flexible_type> expected {flex_int(rowid+1),
+                                                 flex_float(rowid+1),
+                                                 flex_string(std::to_string(rowid+1)),
+                                                 flex_vec(10, rowid+1),
+                                                 flex_date_time(rowid+1),
+                                                 flex_nd_vec(std::vector<double>(10, rowid+1), {2,5})};
               TS_ASSERT_EQUALS(iter->size(), expected.size());
               for (size_t j = 0; j < iter->size(); ++j) {
                 TS_ASSERT_EQUALS(iter->at(j), expected[j]);
@@ -610,7 +649,12 @@ struct sframe_test  {
             TS_ASSERT_EQUALS(ret.size(), 5);
             for (size_t i = 0;i < ret.size(); ++i) {
               size_t rowid = i + startrow;
-              std::vector<flexible_type> expected {flex_int(rowid+1), flex_float(rowid+1), flex_string(std::to_string(rowid+1))};
+              std::vector<flexible_type> expected {flex_int(rowid+1),
+                                                   flex_float(rowid+1),
+                                                   flex_string(std::to_string(rowid+1)),
+                                                   flex_vec(10, rowid+1),
+                                                   flex_date_time(rowid+1),
+                                                   flex_nd_vec(std::vector<double>(10, rowid+1), {2,5})};
               TS_ASSERT_EQUALS(ret[i].size(), expected.size());
               for (size_t j = 0; j < ret[i].size(); ++j) {
                 TS_ASSERT_EQUALS(ret[i].at(j), expected[j]);
@@ -626,11 +670,44 @@ struct sframe_test  {
             size_t nrows = reader->read_rows(startrow, startrow + 5, rows);
             TS_ASSERT_EQUALS(nrows, 5);
             TS_ASSERT_EQUALS(rows.num_rows(), 5);
-            TS_ASSERT_EQUALS(rows.num_columns(), 3);
+            TS_ASSERT_EQUALS(rows.num_columns(), 6);
             size_t i = 0;
             for (const auto& ret: rows) {
               size_t rowid = i + startrow;
-              std::vector<flexible_type> expected {flex_int(rowid+1), flex_float(rowid+1), flex_string(std::to_string(rowid+1))};
+              std::vector<flexible_type> expected {flex_int(rowid+1),
+                                                   flex_float(rowid+1),
+                                                   flex_string(std::to_string(rowid+1)),
+                                                   flex_vec(10, rowid+1),
+                                                   flex_date_time(rowid+1),
+                                                   flex_nd_vec(std::vector<double>(10, rowid+1), {2,5})};
+              TS_ASSERT_EQUALS(ret.size(), expected.size());
+              for (size_t j = 0; j < ret.size(); ++j) {
+                TS_ASSERT_EQUALS(ret.at(j), expected[j]);
+              }
+              ++i;
+            }
+          });
+
+      // randomaccess
+      // once again using the sframe_rows datastructure
+      // make 15 threads, each read 5 rows
+      parallel_for(0, (size_t)15,
+          [&](size_t seed) {
+            size_t startrow = (std::hash<unsigned long>()((unsigned long)seed)) % nrows;
+            sframe_rows rows;
+            size_t nrows = reader->read_rows(startrow, startrow + 5, rows);
+            TS_ASSERT_EQUALS(nrows, 5);
+            TS_ASSERT_EQUALS(rows.num_rows(), 5);
+            TS_ASSERT_EQUALS(rows.num_columns(), 6);
+            size_t i = 0;
+            for (const auto& ret: rows) {
+              size_t rowid = i + startrow;
+              std::vector<flexible_type> expected {flex_int(rowid+1),
+                                                   flex_float(rowid+1),
+                                                   flex_string(std::to_string(rowid+1)),
+                                                   flex_vec(10, rowid+1),
+                                                   flex_date_time(rowid+1),
+                                                   flex_nd_vec(std::vector<double>(10, rowid+1), {2,5})};
               TS_ASSERT_EQUALS(ret.size(), expected.size());
               for (size_t j = 0; j < ret.size(); ++j) {
                 TS_ASSERT_EQUALS(ret.at(j), expected[j]);

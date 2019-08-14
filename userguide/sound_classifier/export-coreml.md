@@ -3,7 +3,7 @@
 ***Note:*** *This functionality is only available on iOS 12+ and macOS 10.14+*
 
 The Turi Create Sound Classifier Models are also available for use in
-your iOS/macOS via exporting to Core ML. The exported Core ML model
+your iOS/macOS apps via exporting to Core ML. The exported Core ML model
 will be a `PipelineClassifier` containing a model for each of the
 three stages (see the [How it works section](../sound_classifier/how-it-works.md) for more details about the stages).
 
@@ -21,13 +21,17 @@ Before you can use the model you must download
 preprocessing stage, which is implemented as a Core ML custom model.
 The `libAudioPreprocessing.dylib` file can be found on the
 [Github releases page](https://github.com/apple/turicreate/releases).
-Once you've download that file, drag and drop it into your Xcode project.
+Once you've downloaded that file, drag and drop it into your Xcode project.
 The dialog box should look like:
 ![Xcode dylib Screen Shot](xcode-dylib.png)
+
+If your project will be submitted to the App Store you will need to package the `libAudioPreprocessing.dylib` into a Framework in order to avoid an [iTunes Connect error](https://developer.apple.com/library/archive/technotes/tn2435/_index.html#//apple_ref/doc/uid/DTS40017543-CH1-TROUBLESHOOTING_BUNDLE_ERRORS-EMBEDDED__DYLIB_FILES). To package the framework properly, follow [these steps](https://developer.apple.com/library/archive/technotes/tn2435/_index.html#//apple_ref/doc/uid/DTS40017543-CH1-ADD_FRAMEWORK_TARGET).
 
 Now, do the following:
 * Under **Project > Build Phases**, add `libAudioPreprocessing.dylib` to **Copy Bundle Resources**
 * Under **Project > General**, add `libAudioPreprocessing.dylib` to **Embedded Binaries** and to **Linked Frameworks and Libraries**
+
+_Note: if you've packaged the `.dylib` into a Framework you'll need to perform these steps using the Framework instead of the dylib._
 
 
 Now you are ready to start using your model. To create an instance of
@@ -38,17 +42,21 @@ let model = my_sound_classifier()
 
 The input to this model is an `MLMultiArray` of length 15,600 this is
 975ms of data at a sample rate of 16K per second (.975 * 16,000 = 15,600).
-The input must also only be one channel (i.e. mono not stero). It is
+The input must also only be one channel (i.e. mono not stereo). It is
 important that the input to the model be 15,600 elements of one channel
 data at a 16k sample rate.
 
 In order get predictions from your model, you will need to chuck your
-data into the correct size. Below is an example of doing that:
+data into the correct size. You will also need to import both `CoreML`
+and `AVFoundation`.
+
+Below is an example of doing that:
 ```swift
 // Read wav file
 var wav_file:AVAudioFile!
 do {
-   wav_file = try AVAudioFile(forReading:audioFilename)
+   let fileUrl = URL(fileReferenceLiteralResourceName: "<path to wav file>")
+   wav_file = try AVAudioFile(forReading:fileUrl)
 } catch {
    fatalError("Could not open wav file.")
 }
@@ -56,7 +64,8 @@ do {
 print("wav file length: \(wav_file.length)")
 assert(wav_file.fileFormat.sampleRate==16000.0, "Sample rate is not right!")
 
-let buffer = AVAudioPCMBuffer(pcmFormat: wav_file.processingFormat, frameCapacity: UInt32(wav_file.length))
+let buffer = AVAudioPCMBuffer(pcmFormat: wav_file.processingFormat,
+                              frameCapacity: UInt32(wav_file.length))
 do {
    try wav_file.read(into:buffer!)
 } catch{
@@ -68,25 +77,26 @@ guard let bufferData = try buffer?.floatChannelData else {
 
 // Chunk data and set to CoreML model
 let windowSize = 15600
-guard let audioData = try? MLMultiArray(shape:[windowSize as NSNumber], dataType:MLMultiArrayDataType.float32) else {
+guard let audioData = try? MLMultiArray(shape:[windowSize as NSNumber],
+                                        dataType:MLMultiArrayDataType.float32)
+                                        else {
    fatalError("Can not create MLMultiArray")
 }
 
 // Ignore any partial window at the end.
-var windowNumber = 0
 var results = [Dictionary<String, Double>]()
-while ((windowNumber+1) * windowSize) <= (wav_file.length - Int64(windowSize)) {
-   let offset = windowNumber * windowSize
+let windowNumber = wavFile.length / Int64(windowSize)
+for windowIndex in 0..<Int(windowNumber) {
+   let offset = windowIndex * windowSize
    for i in 0...windowSize {
       audioData[i] = NSNumber.init(value: bufferData[0][offset + i])
    }
-   let modelInput = modelInput(audio: audioData)
+   let modelInput = my_sound_classifierInput(audio: audioData)
 
    guard let modelOutput = try? model.prediction(input: modelInput) else {
       fatalError("Error calling predict")
    }
    results.append(modelOutput.categoryProbability)
-   windowNumber += 1
 }
 ```
 
@@ -111,6 +121,6 @@ for (label, sum) in prob_sums {
 }
 
 let most_probable_label = max_sum_label
-let probability = max_sum / Float(prob_sums.count)
+let probability = max_sum / Double(results.count)
 print("\(most_probable_label) predicted, with probability: \(probability)")
 ```

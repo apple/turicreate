@@ -17,7 +17,7 @@ The [Kaggle Cats and Dogs Dataset](https://www.microsoft.com/en-us/download/deta
 ```python
 import turicreate as tc
 
-# Load images (Note: you can ignore 'Not a JPEG file' errors)
+# Load images (Note:'Not a JPEG file' errors are warnings, meaning those files will be skipped)
 data = tc.image_analysis.load_images('PetImages', with_path=True)
 
 # From the path-name, create a label column

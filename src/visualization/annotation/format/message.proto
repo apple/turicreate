@@ -1,0 +1,27 @@
+syntax = "proto3";
+option optimize_for = LITE_RUNTIME;
+
+import public "annotate.proto";
+import public "data.proto";
+import public "meta.proto";
+import public "progress.proto";
+import public "similarity.proto";
+
+package TuriCreate.Annotation.Specification;
+
+message Parcel {
+  oneof Message {
+    Annotations annotations = 1;
+    Data data = 2;
+    MetaData metadata = 3;
+    ProgressMeta progress = 4;
+    Similarity similarity = 5;
+  }
+}
+
+message ClientRequest {
+  oneof Type {
+    DataGetter getter = 1;
+    Annotations annotations = 2;
+  }
+}
