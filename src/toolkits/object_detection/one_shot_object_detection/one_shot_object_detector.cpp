@@ -100,27 +100,21 @@ static std::map<std::string, size_t> generate_column_index_map(
   return index_map;
 }
 
-boost::gil::rgba8_image_t::view_t create_starter_image_view(
-    const flex_image &object_input) {
+flex_image create_rgba_flex_image(const flex_image &object_input) {
   if (!(object_input.is_decoded())) {
     log_and_throw("Input object starter image is not decoded.");
   }
-  flex_image object =
+  flex_image rgba_flex_image =
       image_util::resize_image(object_input, object_input.m_width,
                                object_input.m_height, 4, true)
           .to<flex_image>();
-  if (!(object.is_decoded())) {
+  if (!(rgba_flex_image.is_decoded())) {
     log_and_throw("Resized object starter image is not decoded.");
   }
-  if (object.m_channels != 4) {
+  if (rgba_flex_image.m_channels != 4) {
     log_and_throw("Object image is not resized to be 4.");
   }
-  boost::gil::rgba8_image_t::view_t starter_image_view = interleaved_view(
-      object.m_width, object.m_height,
-      (boost::gil::rgba8_pixel_t *)(object.get_image_data()),
-      object.m_channels * object.m_width  // row length in bytes
-  );
-  return starter_image_view;
+  return rgba_flex_image;
 }
 
 std::pair<flex_image, flex_dict>
@@ -149,12 +143,19 @@ create_synthetic_image_from_background_and_starter(const flex_image &starter,
     log_and_throw("Background image is not decoded into raw format.");
   }
 
-  boost::gil::rgba8_image_t::view_t starter_image_view =
-      create_starter_image_view(starter);
+  flex_image rgba_flex_image = create_rgba_flex_image(starter);
+  boost::gil::rgba8_image_t::const_view_t starter_image_view =
+      interleaved_view(rgba_flex_image.m_width, rgba_flex_image.m_height,
+                       reinterpret_cast<const boost::gil::rgba8_pixel_t *>(
+                           rgba_flex_image.get_image_data()),
+                       rgba_flex_image.m_channels *
+                           rgba_flex_image.m_width  // row length in bytes
+      );
 
-  boost::gil::rgb8_image_t::view_t background_view = interleaved_view(
+  boost::gil::rgb8_image_t::const_view_t background_view = interleaved_view(
       background.m_width, background.m_height,
-      (boost::gil::rgb8_pixel_t *)(background.get_image_data()),
+      reinterpret_cast<const boost::gil::rgb8_pixel_t *>(
+          background.get_image_data()),
       background.m_channels * background.m_width  // row length in bytes
   );
   flex_image synthetic_image = create_synthetic_image(

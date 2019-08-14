@@ -26,9 +26,8 @@ class EXPORT one_shot_object_detector: public ml_model_base {
   // Interface exposed via Unity server
 
   // TODO: augment -> train
-  gl_sframe augment(const gl_sframe &data,
-                    const std::string& image_column_name,
-                    const std::string& target_column_name,
+  gl_sframe augment(const gl_sframe &data, const std::string &image_column_name,
+                    const std::string &target_column_name,
                     const gl_sarray &backgrounds,
                     std::map<std::string, flexible_type> &options);
 
