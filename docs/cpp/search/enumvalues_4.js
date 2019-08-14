@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['jpg',['JPG',['../namespaceturi.html#a9a91663acc51ef53b8d40f4efe12b1bea92769fe7c40229f4301d6125e0a9e928',1,'turi']]]
+  ['exception',['EXCEPTION',['../group__cppipc.html#gga4b52bfde0818050add61a5338441e087acccc265b14c17af799a1834f4fbbe7cf',1,'cppipc']]]
 ];

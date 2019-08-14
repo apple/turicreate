@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.one_shot_object_detector.create &mdash; Turi Create API 5.6 documentation</title>
+  <title>turicreate.one_shot_object_detector.create &mdash; Turi Create API 5.7 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 5.6 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 5.7 documentation" href="../index.html"/>
         <link rel="up" title="one_shot_object_detector" href="../turicreate.toolkits.one_shot_object_detector.html"/>
         <link rel="next" title="turicreate.one_shot_object_detector.OneShotObjectDetector" href="turicreate.one_shot_object_detector.OneShotObjectDetector.html"/>
         <link rel="prev" title="one_shot_object_detector" href="../turicreate.toolkits.one_shot_object_detector.html"/> 
@@ -131,6 +131,55 @@
             
   <div class="section" id="turicreate-one-shot-object-detector-create">
 <h1>turicreate.one_shot_object_detector.create<a class="headerlink" href="#turicreate-one-shot-object-detector-create" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.one_shot_object_detector.create">
+<code class="descclassname">turicreate.one_shot_object_detector.</code><code class="descname">create</code><span class="sig-paren">(</span><em>data</em>, <em>target</em>, <em>backgrounds=None</em>, <em>batch_size=0</em>, <em>max_iterations=0</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.one_shot_object_detector.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a <a class="reference internal" href="turicreate.one_shot_object_detector.OneShotObjectDetector.html#turicreate.one_shot_object_detector.OneShotObjectDetector" title="turicreate.one_shot_object_detector.OneShotObjectDetector"><code class="xref py py-class docutils literal"><span class="pre">OneShotObjectDetector</span></code></a> model. Note: The One Shot Object Detector
+is currently in beta.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame | tc.Image</span></dt>
+<dd><p class="first last">A single starter image or an SFrame that contains the starter images
+along with their corresponding labels.  These image(s) can be in either
+RGB or RGBA format. They should not be padded.</p>
+</dd>
+<dt><strong>target</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Name of the target (when data is a single image) or the target column
+name (when data is an SFrame of images).</p>
+</dd>
+<dt><strong>backgrounds</strong> <span class="classifier-delimiter">:</span> <span class="classifier">optional SArray</span></dt>
+<dd><p class="first last">A list of backgrounds used for synthetic data generation. When set to
+None, a set of default backgrounds are downloaded and used.</p>
+</dd>
+<dt><strong>batch_size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The number of images per training iteration. If 0, then it will be
+automatically determined based on resource availability.</p>
+</dd>
+<dt><strong>max_iterations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The number of training iterations. If 0, then it will be automatically
+be determined based on the amount of data you provide.</p>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool optional</span></dt>
+<dd><p class="first last">If True, print progress updates and model details.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Train an object detector model</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">one_shot_object_detector</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;cards&#39;</span><span class="p">)</span>
+
+<span class="c1"># Make predictions on the training set and as column to the SFrame</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">test_data</span><span class="p">[</span><span class="s1">&#39;predictions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </div>
 
 
@@ -151,7 +200,7 @@
 
   <div role="contentinfo">
     <p>
-      Last updated on Jun 03, 2019.
+      Last updated on Aug 14, 2019.
     </p>
   </div>
 </footer>
@@ -163,13 +212,12 @@
   </div>
   
 
-
   
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.6',
+            VERSION:'5.7',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

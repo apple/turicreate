@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('classturi_1_1v2__block__impl_1_1block_
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="sarray__v2__block__writer_8hpp_source.html">sframe/sarray_v2_block_writer.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="sarray__v2__block__writer_8hpp_source.html">core/storage/sframe_data/sarray_v2_block_writer.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -143,7 +143,7 @@ Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Provides the file writing implementation for the v2 block format. See the sarray_v2_block_manager for details on the format.</p>
-<p>Basic usage is: </p><div class="fragment"><div class="line">block_writer writer;</div><div class="line">writer.init(<span class="stringliteral">&quot;index&quot;</span>, #segments, #columns);</div><div class="line"><span class="keywordflow">for</span> i = 0 to  #segments:</div><div class="line">  writer.open_segment(i, filename)</div><div class="line"></div><div class="line"><span class="comment">// now you perform repeat calls to the following functions</span></div><div class="line"><span class="comment">// to write blocks to the segments/columns</span></div><div class="line">writer.write_block(...)</div><div class="line">writer.write_typed_block(...)</div><div class="line"></div><div class="line"><span class="comment">// close all writes   </span></div><div class="line"><span class="keywordflow">for</span> i = 0 to  #segments:</div><div class="line">  writer.close_segment(i)</div><div class="line"></div><div class="line"><span class="comment">// output the array group index file</span></div><div class="line">writer.write_index_file()</div></div><!-- fragment --> 
+<p>Basic usage is: </p><div class="fragment"><div class="line">block_writer writer;</div><div class="line">writer.init(<span class="stringliteral">&quot;index&quot;</span>, #segments, #columns);</div><div class="line"><span class="keywordflow">for</span> i = 0 to  #segments:</div><div class="line">  writer.open_segment(i, filename)</div><div class="line"></div><div class="line"><span class="comment">// now you perform repeat calls to the following functions</span></div><div class="line"><span class="comment">// to write blocks to the segments/columns</span></div><div class="line">writer.write_block(...)</div><div class="line">writer.write_typed_block(...)</div><div class="line"></div><div class="line"><span class="comment">// close all writes</span></div><div class="line"><span class="keywordflow">for</span> i = 0 to  #segments:</div><div class="line">  writer.close_segment(i)</div><div class="line"></div><div class="line"><span class="comment">// output the array group index file</span></div><div class="line">writer.write_index_file()</div></div><!-- fragment --> 
 <p>Definition at line <a class="el" href="sarray__v2__block__writer_8hpp_source.html#l00059">59</a> of file <a class="el" href="sarray__v2__block__writer_8hpp_source.html">sarray_v2_block_writer.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a288ba48c658e2b3acac89898c8c5f720"></a>
@@ -430,7 +430,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>sframe/<a class="el" href="sarray__v2__block__writer_8hpp_source.html">sarray_v2_block_writer.hpp</a></li>
+<li>core/storage/sframe_data/<a class="el" href="sarray__v2__block__writer_8hpp_source.html">sarray_v2_block_writer.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

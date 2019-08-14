@@ -1,5 +1,7 @@
 var classturi_1_1neural__net_1_1compute__context =
 [
+    [ "registration", "classturi_1_1neural__net_1_1compute__context_1_1registration.html", null ],
+    [ "factory", "classturi_1_1neural__net_1_1compute__context.html#abcfeff5cc1b622c74073e6a0ccbbe709", null ],
     [ "create", "classturi_1_1neural__net_1_1compute__context.html#ac047143e45b9ce5dc614c9eb3818aa78", null ],
     [ "create_activity_classifier", "classturi_1_1neural__net_1_1compute__context.html#a6da40c90ac172d007bb33eefe01b1dc1", null ],
     [ "create_image_augmenter", "classturi_1_1neural__net_1_1compute__context.html#a85d5dd29c2b658048e79bcc5fa882276", null ],

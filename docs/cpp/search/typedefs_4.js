@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['factory',['factory',['../classturi_1_1neural__net_1_1compute__context.html#abcfeff5cc1b622c74073e6a0ccbbe709',1,'turi::neural_net::compute_context']]],
   ['flex_5fdict',['flex_dict',['../group__group__flexible__type__types.html#ga408eb4413a2a629b462fb3a5d4f42c24',1,'turi']]],
   ['flex_5ffloat',['flex_float',['../group__group__flexible__type__types.html#gadcf31f61cc0e0b82bdc9d886fa163e86',1,'turi']]],
   ['flex_5fimage',['flex_image',['../group__group__flexible__type__types.html#ga40bb1656bebeb5ab0e3cd138c09e5995',1,'turi']]],

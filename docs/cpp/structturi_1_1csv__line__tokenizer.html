@@ -118,7 +118,7 @@ $(document).ready(function(){initNavTree('structturi_1_1csv__line__tokenizer.htm
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="csv__line__tokenizer_8hpp_source.html">sframe/csv_line_tokenizer.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="csv__line__tokenizer_8hpp_source.html">core/storage/sframe_data/csv_line_tokenizer.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -350,7 +350,7 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>Tokenize a single CSV line into seperate fields, calling a callback for each parsed token.</p>
 <p>The function is of the form: </p><div class="fragment"><div class="line"><span class="keywordtype">bool</span> receive_token(<span class="keyword">const</span> <span class="keywordtype">char</span>* buffer, <span class="keywordtype">size_t</span> len) {</div><div class="line">  <span class="comment">// add the first len bytes of the buffer as the parsed token</span></div><div class="line">  <span class="comment">// return true on success and false on failure.</span></div><div class="line"></div><div class="line">  <span class="comment">// if this function returns false, the tokenize_line call will also</span></div><div class="line">  <span class="comment">// return false</span></div><div class="line"></div><div class="line">  <span class="comment">// The buffer may be modified</span></div><div class="line">}</div></div><!-- fragment --><p>For instance, to insert the parsed tokens into an output vector, the following code could be used:</p>
-<div class="fragment"><div class="line"><span class="keywordflow">return</span> <a class="code" href="structturi_1_1csv__line__tokenizer.html#a2ce0f06e5faf8ed46866e6be3f5350f7">tokenize_line</a>(str, </div><div class="line">                [&amp;](<span class="keyword">const</span> <span class="keywordtype">char</span>* buf, <span class="keywordtype">size_t</span> len)-&gt;<span class="keywordtype">bool</span> {</div><div class="line">                  output.emplace_back(buf, len);</div><div class="line">                  <span class="keywordflow">return</span> <span class="keyword">true</span>;</div><div class="line">                });</div></div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+<div class="fragment"><div class="line"><span class="keywordflow">return</span> <a class="code" href="structturi_1_1csv__line__tokenizer.html#a2ce0f06e5faf8ed46866e6be3f5350f7">tokenize_line</a>(str,</div><div class="line">                [&amp;](<span class="keyword">const</span> <span class="keywordtype">char</span>* buf, <span class="keywordtype">size_t</span> len)-&gt;<span class="keywordtype">bool</span> {</div><div class="line">                  output.emplace_back(buf, len);</div><div class="line">                  <span class="keywordflow">return</span> <span class="keyword">true</span>;</div><div class="line">                });</div></div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">str</td><td>Pointer to line to tokenize. Contents of string may be modified. </td></tr>
     <tr><td class="paramname">len</td><td>Length of line to tokenize </td></tr>
@@ -444,7 +444,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>The character used to begin a comment (Default '#'). An occurance of this character outside of quoted strings will cause the parser to ignore the remainder of the line. </p><pre class="fragment">* # this is a 
+<p>The character used to begin a comment (Default '#'). An occurance of this character outside of quoted strings will cause the parser to ignore the remainder of the line. </p><pre class="fragment">* # this is a
 * # comment
 * user,name,rating
 * 123,hello,45
@@ -655,7 +655,7 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>sframe/<a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a></li>
+<li>core/storage/sframe_data/<a class="el" href="csv__line__tokenizer_8hpp_source.html">csv_line_tokenizer.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

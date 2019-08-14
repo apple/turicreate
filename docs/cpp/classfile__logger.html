@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('classfile__logger.html','');});
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="logger_8hpp_source.html">logger/logger.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="logger_8hpp_source.html">core/logging/logger.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -164,7 +164,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <div class="textblock"><p>The main logging class.</p>
 <p>This writes to a file, and/or the system console. The main logger <a class="el" href="logger_8hpp.html#aef60a908dad24e76204c6225acb2fe85">global_logger</a> is a global instance of this class. </p>
 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00417">417</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00413">413</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a97b486960a56b3ca3bc657cfa9645cc9"></a>
 <div class="memitem">
@@ -284,7 +284,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 </div><div class="memdoc">
 <p>Set a callback to be called whenever a log message at a particular log level is issued. Only one observer can be set per log level. </p>
 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00475">475</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00471">471</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
@@ -311,7 +311,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 </div><div class="memdoc">
 <p>Gets the callback called when a log message at a particular log level is issued. Note that only one observer can be set per log level. </p>
 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00488">488</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00484">484</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
@@ -337,7 +337,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 </div><div class="memdoc">
 <p>If consolelog is true, subsequent logger output will be written to stdout / stderr. If log_to_stderr is true, all output is logged to stderr. </p>
 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00452">452</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00448">448</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
@@ -366,7 +366,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Streams a value into the logger. </p>
 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00498">498</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00494">494</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
@@ -393,7 +393,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Streams a value into the logger. </p>
 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00516">516</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00512">512</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
@@ -420,7 +420,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Streams an std::endl into the logger. </p>
 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00538">538</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00534">534</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
@@ -466,7 +466,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Sets the current logger level. All logging commands below the current logger level will not be written. </p>
 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00569">569</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00564">564</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
@@ -503,7 +503,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>If consolelog is true, subsequent logger output will be written to stdout / stderr. If log_to_stderr is true, all output is logged to stderr. </p>
 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00437">437</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00433">433</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
@@ -530,12 +530,12 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>If consolelog is true, subsequent logger output will be written to stdout / stderr. If log_to_stderr is true, all output is logged to stderr. </p>
 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00445">445</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00441">441</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>logger/<a class="el" href="logger_8hpp_source.html">logger.hpp</a></li>
+<li>core/logging/<a class="el" href="logger_8hpp_source.html">logger.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

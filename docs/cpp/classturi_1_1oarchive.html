@@ -120,7 +120,7 @@ $(document).ready(function(){initNavTree('classturi_1_1oarchive.html','');});
 <p>The serialization output archive object which, provided with a reference to an ostream, will write to the ostream, providing serialization capabilities.  
  <a href="classturi_1_1oarchive.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="oarchive_8hpp_source.html">serialization/oarchive.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="oarchive_8hpp_source.html">core/storage/serialization/oarchive.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -145,7 +145,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>If the oarchive is constructed without an ostream, writes go into a newly allocated buffer in oarc.buf. The serialized length is oarc.off and the entire buffer allocated length is oarc.len.</p>
 <p>If the oarchive is constructed with a std::vector&lt;char&gt;&amp;, it will behave as like the above case, but it will keep a reference to the std::vector&lt;char&gt; and use that for resizing. At completion, the std::vector&lt;char&gt; will contain the data and oarc.off contains the serialized length.</p>
 <p>and the entire buffer allocated length is oarc.len.</p>
-<p>To use this class, include <a class="el" href="serialization__includes_8hpp_source.html">serialization/serialization_includes.hpp</a> </p>
+<p>To use this class, include <a class="el" href="serialization__includes_8hpp_source.html">core/storage/serialization/serialization_includes.hpp</a> </p>
 
 <p>Definition at line <a class="el" href="oarchive_8hpp_source.html#l00080">80</a> of file <a class="el" href="oarchive_8hpp_source.html">oarchive.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
@@ -187,7 +187,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>serialization/<a class="el" href="oarchive_8hpp_source.html">oarchive.hpp</a></li>
+<li>core/storage/serialization/<a class="el" href="oarchive_8hpp_source.html">oarchive.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

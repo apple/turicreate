@@ -116,25 +116,25 @@ $(document).ready(function(){initNavTree('structturi_1_1function__closure__info.
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="function__closure__info_8hpp_source.html">unity/lib/api/function_closure_info.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="function__closure__info_8hpp_source.html">model_server/lib/api/function_closure_info.hpp</a>&gt;</code></p>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Describes a function capture closure.</p>
 <p>Defines a closure class describing a lambda closure. Contains 2 fields:</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">native_fn_name</td><td>The toolkit native function name</td></tr>
-    <tr><td class="paramname">arguments</td><td>An array of the same length as the toolkit native function. Each array element is an array of 2 elements [is_capture, value] <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;If is_capture == 1: </div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;    value contains the captured value</div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;If is_capture == 0:</div><div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;    value contains a number denoting the <span class="keyword">lambda</span> argument position.</div></div><!-- fragment --></td></tr>
+    <tr><td class="paramname">arguments</td><td>An array of the same length as the toolkit native function. Each array element is an array of 2 elements [is_capture, value] <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;If is_capture == 1:</div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;    value contains the captured value</div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;If is_capture == 0:</div><div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;    value contains a number denoting the <span class="keyword">lambda</span> argument position.</div></div><!-- fragment --></td></tr>
   </table>
   </dd>
 </dl>
 <p>Example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="keyword">lambda</span> x, y: fn(10, x, x, y)</div></div><!-- fragment --><p>Then arguments will be </p><pre class="fragment">[1, 10], --&gt;  is captured value. has value 10
-[0, 0],  --&gt;  is not captured value. is argument 0 of the lambda. 
-[0, 0],  --&gt;  is not captured value. is argument 0 of the lambda. 
-[0, 1]   --&gt;  is not captured value. is argument 1 of the lambda. 
+[0, 0],  --&gt;  is not captured value. is argument 0 of the lambda.
+[0, 0],  --&gt;  is not captured value. is argument 0 of the lambda.
+[0, 1]   --&gt;  is not captured value. is argument 1 of the lambda.
 </pre>  
 <p>Definition at line <a class="el" href="function__closure__info_8hpp_source.html#l00047">47</a> of file <a class="el" href="function__closure__info_8hpp_source.html">function_closure_info.hpp</a>.</p>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
-<li>unity/lib/api/<a class="el" href="function__closure__info_8hpp_source.html">function_closure_info.hpp</a></li>
+<li>model_server/lib/api/<a class="el" href="function__closure__info_8hpp_source.html">function_closure_info.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

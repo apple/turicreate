@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('classturi_1_1flexible__type.html','');
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="flexible__type_8hpp_source.html">flexible_type/flexible_type.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="flexible__type_8hpp_source.html">core/data/flexible_type/flexible_type.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -198,6 +198,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ab1a682f12baf1051f447c67ba536190e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a696f154a155e87d54c5b837b863504de"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1flexible__type.html#a696f154a155e87d54c5b837b863504de">is_na</a> () const </td></tr>
 <tr class="separator:a696f154a155e87d54c5b837b863504de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85895e95cdf5286ca2d9cb78ec27bd59"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1flexible__type.html#a85895e95cdf5286ca2d9cb78ec27bd59">contains_na</a> () const </td></tr>
+<tr class="separator:a85895e95cdf5286ca2d9cb78ec27bd59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e0c0492299b1836669fbc82df082cbd"><td class="memTemplParams" colspan="2">template&lt;typename Visitor &gt; </td></tr>
 <tr class="memitem:a7e0c0492299b1836669fbc82df082cbd"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classturi_1_1flexible__type.html#a7e0c0492299b1836669fbc82df082cbd">apply_mutating_visitor</a> (Visitor visitor) -&gt; decltype(visitor(prototype_flex_int))</td></tr>
 <tr class="separator:a7e0c0492299b1836669fbc82df082cbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -432,7 +434,7 @@ template&lt;typename Visitor &gt; </td></tr>
 <p>Performance of the <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> is generally extremely good. With modern compilers (sometimes with inlining limit bumped up) can sometimes produce code which is equivalent to, or runs as fast as the version using native types especially if certain type constraints are set-up before hand. For instance:</p>
 <div class="fragment"><div class="line"><span class="keywordflow">if</span> (x.get_type() == <a class="code" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76a5d5cd46919fa987731fb2edefe0f2a0c">flex_type_enum::INTEGER</a>) {</div><div class="line">  ... <span class="keywordflow">do</span> a whole bunch of stuff on x ...</div><div class="line">}</div></div><!-- fragment --><p>Integers and Floating point values are stored in-place inside the <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>. All other types are somewhat more complex (strings, vectors etc) and are optimized by copy on write. i.e. </p><div class="fragment"><div class="line"><a class="code" href="classturi_1_1flexible__type.html#ab7ced47636ee238dd993324b39ad6610">flexible_type</a> a = <span class="stringliteral">&quot;hello world&quot;</span>;</div><div class="line"><a class="code" href="classturi_1_1flexible__type.html#ab7ced47636ee238dd993324b39ad6610">flexible_type</a> b = a;</div></div><!-- fragment --><p> Both b and a will reference the same "hello world" until either one of them gets mutated. As such, all inplace operations (<a class="el" href="classturi_1_1flexible__type.html#a9cb5ea486620ffdd6f5aef446d3d304b">get()</a>, apply_visitor(Visitor)) require const, but also have a mutating version (mutating_get(), <a class="el" href="classturi_1_1flexible__type.html#a7e0c0492299b1836669fbc82df082cbd">apply_mutating_visitor(Visitor)</a>). </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l00251">251</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l00249">249</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="ab7ced47636ee238dd993324b39ad6610"></a>
 <div class="memitem">
@@ -456,7 +458,7 @@ template&lt;typename Visitor &gt; </td></tr>
 </div><div class="memdoc">
 <p>Default Constructor. By default constructs an integer of value 0. </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01646">1646</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01650">1650</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -501,7 +503,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Destructor. </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01657">1657</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01661">1661</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -528,7 +530,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Copy constructor. Assigns this to a copy of other. </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01665">1665</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01669">1669</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -555,7 +557,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Copy constructor. Assigns this to a copy of other. </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01670">1670</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01674">1674</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -611,7 +613,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Move constructor. Just assigns myself to the other, destroying the other. </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01681">1681</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01685">1685</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -638,7 +640,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Move constructor. (Const overload. Required since the T&amp;&amp; universal reference has a tendency to capture everything) </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01687">1687</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01691">1691</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -797,7 +799,7 @@ template&lt;typename Visitor &gt; </div>
 </div><div class="memdoc">
 <p>This is an overloaded member function, provided for convenience. It differs from the above function only in what argument(s) it accepts. </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01924">1924</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01928">1928</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -824,7 +826,7 @@ template&lt;typename Visitor &gt; </div>
 </div><div class="memdoc">
 <p>Compares if two flexible types are equivalent in value. i.e. permitting comparisons between integer and floating point types. </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02208">2208</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02212">2212</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -854,7 +856,7 @@ template&lt;typename Visitor &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02319">2319</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02323">2323</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -884,7 +886,7 @@ template&lt;typename Visitor &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02325">2325</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02329">2329</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -914,7 +916,23 @@ template&lt;typename Visitor &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02431">2431</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02435">2435</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a85895e95cdf5286ca2d9cb78ec27bd59"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool turi::flexible_type::contains_na </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns true if the value, or any contained value in a dictionary or list type, is considered a "missing value" or NA. </p>
 
 </div>
 </div>
@@ -944,7 +962,7 @@ template&lt;typename Visitor &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02330">2330</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02334">2334</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -974,7 +992,7 @@ template&lt;typename Visitor &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02345">2345</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02349">2349</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1039,7 +1057,7 @@ template&lt;typename T &gt; </div>
 <p>Where the current <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> contains a datetime type, returns the datetime as a pair of posix timestamp value and its timezone offset.</p>
 <p>The timezone offset is integral in <b>fifteen-minute</b> increments. i.e. a offset of 8 means timezone +2 </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01448">1448</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01452">1452</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1065,7 +1083,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Gets the date_time microsecond value </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01455">1455</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01459">1459</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1091,7 +1109,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Returns the type of the underlying storage </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01863">1863</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01867">1867</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1117,7 +1135,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Returns a 64 bit hash of the underlying value, switched on type. </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01876">1876</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01880">1880</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1143,7 +1161,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Returns a 128 bit hash of the underlying value, switched on type. This hash is appropriate for unique identification. </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01880">1880</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01884">1884</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1170,13 +1188,16 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Like operator== but requires also types to be equivalent. </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02212">2212</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02216">2216</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
 <a class="anchor" id="a696f154a155e87d54c5b837b863504de"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">bool turi::flexible_type::is_na </td>
@@ -1185,6 +1206,11 @@ template&lt;typename T &gt; </div>
           <td> const</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Returns true if the value is considered a "missing value" or NA. </p>
 
@@ -1193,6 +1219,9 @@ template&lt;typename T &gt; </div>
 <a class="anchor" id="ab1a682f12baf1051f447c67ba536190e"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">bool turi::flexible_type::is_zero </td>
@@ -1201,6 +1230,11 @@ template&lt;typename T &gt; </div>
           <td> const</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Returns true if the value is equal to this type's equivalent of zero. </p>
 
@@ -1229,7 +1263,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Deserializer. Loads the <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> from an archive object. Note that the type of the <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> may change. </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02485">2485</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02489">2489</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1273,7 +1307,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Implicit cast to <a class="el" href="structturi_1_1flex__date__time.html">flex_date_time</a> </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02117">2117</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02121">2121</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1299,7 +1333,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Implicit cast to vector&lt;pair&lt;flexible_type, flexible_type&gt;&gt; </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02113">2113</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02117">2117</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1325,7 +1359,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Implicit cast to flex_image </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02121">2121</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02125">2125</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1351,7 +1385,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Implicit cast to vector&lt;flexible_type&gt; </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02109">2109</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02113">2113</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1377,7 +1411,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Implicit cast to ndarray&lt;double&gt; </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02105">2105</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02109">2109</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1403,7 +1437,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Implicit cast to string </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02097">2097</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02101">2101</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1429,7 +1463,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Implicit cast to vector&lt;double&gt; </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02101">2101</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02105">2105</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1456,7 +1490,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Compares if two flexible types are not equivalent in value. i.e. permitting comparisons between integer and floating point types. Same as <a class="el" href="classturi_1_1flexible__type.html#a12fdbb828cfcf386849990cb86baa33d">flexible_type::approx_equal</a> </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02204">2204</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02208">2208</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1502,7 +1536,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Modulus operator. Equivalent to </p><div class="fragment"><div class="line">a = (*this);</div><div class="line">a %= otrer;</div><div class="line"><span class="keywordflow">return</span> a;</div></div><!-- fragment --><p>Note that unlike regular C++ typing rules, the resultant type is always the type of the left hand side. i.e. int + float = int, and float + int = float. </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02191">2191</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02195">2195</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1552,7 +1586,7 @@ template&lt;typename T &gt; </div>
 <li>All other conditions will result in an assertion failure. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02152">2152</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02156">2156</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1582,7 +1616,7 @@ template&lt;typename T &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02357">2357</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02361">2361</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1612,7 +1646,7 @@ template&lt;typename T &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02369">2369</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02373">2373</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1642,7 +1676,7 @@ template&lt;typename T &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02379">2379</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02383">2383</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1672,7 +1706,7 @@ template&lt;typename T &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02391">2391</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02395">2395</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1699,7 +1733,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Multiplication operator. Equivalent to </p><div class="fragment"><div class="line">a = (*this);</div><div class="line">a *= other;</div><div class="line"><span class="keywordflow">return</span> a;</div></div><!-- fragment --><p>Note that unlike regular C++ typing rules, the resultant type is always the type of the left hand side. i.e. int + float = int, and float + int = float. </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02176">2176</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02180">2180</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1749,7 +1783,7 @@ template&lt;typename T &gt; </div>
 <li>All other conditions will result in an assertion failure. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02157">2157</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02161">2161</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1776,7 +1810,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Plus operator. </p><div class="fragment"><div class="line">a = (*this);</div><div class="line">a += other;</div><div class="line"><span class="keywordflow">return</span> a;</div></div><!-- fragment --><p>Note that unlike regular C++ typing rules, the resultant type is always the type of the left hand side. i.e. int + float = int, and float + int = float. </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02163">2163</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02167">2167</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1828,7 +1862,7 @@ template&lt;typename T &gt; </div>
 <li>All other conditions will result in an assertion failure. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02132">2132</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02136">2136</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1859,7 +1893,7 @@ template&lt;typename T &gt; </div>
 <li>All other conditions will result in an assertion failure. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02125">2125</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02129">2129</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1886,7 +1920,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Subtract operator. Equivalent to </p><div class="fragment"><div class="line">a = (*this);</div><div class="line">a += other;</div><div class="line"><span class="keywordflow">return</span> a;</div></div><!-- fragment --><p>Note that unlike regular C++ typing rules, the resultant type is always the type of the left hand side. i.e. int + float = int, and float + int = float. </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02169">2169</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02173">2173</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1937,7 +1971,7 @@ template&lt;typename T &gt; </div>
 <li>All other conditions will result in an assertion failure. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02138">2138</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02142">2142</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1964,7 +1998,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Division operator. Equivalent to </p><div class="fragment"><div class="line">a = (*this);</div><div class="line">a /= other;</div><div class="line"><span class="keywordflow">return</span> a;</div></div><!-- fragment --><p>Note that unlike regular C++ typing rules, the resultant type is always the type of the left hand side. i.e. int + float = int, and float + int = float. </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02184">2184</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02188">2188</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2014,7 +2048,7 @@ template&lt;typename T &gt; </div>
 <li>All other conditions will result in an assertion failure. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02145">2145</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02149">2149</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2044,7 +2078,7 @@ template&lt;typename T &gt; </div>
 <li>All other cases will result in an assertion failure </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02216">2216</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02220">2220</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2093,7 +2127,7 @@ template&lt;typename T &gt; </div>
 <li>All other cases will result in an assertion failure </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02224">2224</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02228">2228</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2139,7 +2173,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Assignment operator. Copies the other to myself. See <a class="el" href="classturi_1_1flexible__type.html#af53b3520c60da7f16acf3c589362cd1c">flexible_type::operator=</a> </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01706">1706</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01710">1710</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2166,7 +2200,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Assignment operator. Copies the other to myself. See <a class="el" href="classturi_1_1flexible__type.html#af53b3520c60da7f16acf3c589362cd1c">flexible_type::operator=</a> </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01715">1715</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01719">1719</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2193,7 +2227,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Move assignment. Assigns myself from the other, destroying the other. </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01734">1734</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01738">1738</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2220,7 +2254,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Move assignment. (Const overload. Required since the T&amp;&amp; universal reference has a tendency to capture everything). </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01724">1724</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01728">1728</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2271,7 +2305,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>operator= for the undefined type See <a class="el" href="classturi_1_1flexible__type.html#af53b3520c60da7f16acf3c589362cd1c">flexible_type::operator=</a> </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01757">1757</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01761">1761</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2322,7 +2356,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Compares if two flexible types are equivalent in value. i.e. permitting comparisons between integer and floating point types. Same as <a class="el" href="classturi_1_1flexible__type.html#a12fdbb828cfcf386849990cb86baa33d">flexible_type::approx_equal</a> </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02199">2199</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02203">2203</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2371,7 +2405,7 @@ template&lt;typename T &gt; </div>
 <li>All other cases will result in an assertion failure </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02220">2220</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02224">2224</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2420,7 +2454,7 @@ template&lt;typename T &gt; </div>
 <li>All other cases will result in an assertion failure </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02228">2228</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02232">2232</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2470,7 +2504,7 @@ template&lt;typename T &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02289">2289</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02293">2293</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2501,7 +2535,7 @@ template&lt;typename T &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02304">2304</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02308">2308</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2532,7 +2566,7 @@ template&lt;typename T &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02444">2444</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02448">2448</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2563,7 +2597,7 @@ template&lt;typename T &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02459">2459</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02463">2463</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2631,7 +2665,7 @@ template&lt;typename T &gt; </div>
 <p>Deletes the contents of this class, resetting to a different type.</p>
 <p>Note: Also ensures that that the reference count becomes 1. </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01778">1778</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01782">1782</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2657,7 +2691,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Deletes the contents of this class, resetting to an integer </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01821">1821</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01825">1825</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2687,7 +2721,7 @@ template&lt;typename T &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02417">2417</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02421">2421</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2714,7 +2748,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Serializer. Saves the <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> in an archive object. </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02475">2475</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02479">2479</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2751,7 +2785,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Converts the current flexible type to a datetime type containing posix_timestamp value and timezone offset. The timezone offset is integral in <b>fifteen-minute</b> increments. i.e. a offset of 8 means timezone +2 </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01460">1460</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01464">1464</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2781,7 +2815,7 @@ template&lt;typename T &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02402">2402</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02406">2406</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2813,7 +2847,7 @@ template&lt;typename T &gt; </div>
 <li>All other cases will result in an assertion failure. </li>
 </ul>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01699">1699</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01703">1703</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2840,7 +2874,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Swaps contents with another <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01829">1829</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01833">1833</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2858,7 +2892,7 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Converts the <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> to a particular type. Behaves like the implicit cast operators, but explicit. In particular, this gets around the thorny issue that there is no way to cast to an flex_vec, flex_list or flex_dict even though the implicit cast operators exist. This is due to std::vector&lt;T&gt; having two constructors: </p><div class="fragment"><div class="line"><span class="comment">// regular copy constructor</span></div><div class="line">vector&lt;T&gt;::vector(<span class="keyword">const</span> std::vector&lt;T&gt;&amp;) ...</div><div class="line"></div><div class="line"><span class="comment">// constructs a vector of a particular size</span></div><div class="line">vector&lt;T&gt;::vector(<span class="keywordtype">size_t</span> N, T val = T()) ...</div></div><!-- fragment --><p> Resulting in two possible implicit cast routes when doing: </p><div class="fragment"><div class="line"><a class="code" href="classturi_1_1flexible__type.html#ab7ced47636ee238dd993324b39ad6610">flexible_type</a> f;</div><div class="line">...</div><div class="line">flex_vec v = f; <span class="comment">// fails</span></div><div class="line"><a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a> v = (<a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a>)f; <span class="comment">// fails</span></div></div><!-- fragment --><p>This function provides an explicit cast allowing the following to be written: </p><div class="fragment"><div class="line"><a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a> v = f.to&lt;<a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a>&gt;(); </div></div><!-- fragment --><p>Of course, the alternative of is always available. </p><div class="fragment"><div class="line"><a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a> v = f.operator <a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a>();</div></div><!-- fragment --><p> And indeed, the implementation of <a class="el" href="classturi_1_1flexible__type.html#a34f12dac35bf0035146408baa22bbb86">to()</a> simply redirects the calls. </p>
+<p>Converts the <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> to a particular type. Behaves like the implicit cast operators, but explicit. In particular, this gets around the thorny issue that there is no way to cast to an flex_vec, flex_list or flex_dict even though the implicit cast operators exist. This is due to std::vector&lt;T&gt; having two constructors: </p><div class="fragment"><div class="line"><span class="comment">// regular copy constructor</span></div><div class="line">vector&lt;T&gt;::vector(<span class="keyword">const</span> std::vector&lt;T&gt;&amp;) ...</div><div class="line"></div><div class="line"><span class="comment">// constructs a vector of a particular size</span></div><div class="line">vector&lt;T&gt;::vector(<span class="keywordtype">size_t</span> N, T val = T()) ...</div></div><!-- fragment --><p> Resulting in two possible implicit cast routes when doing: </p><div class="fragment"><div class="line"><a class="code" href="classturi_1_1flexible__type.html#ab7ced47636ee238dd993324b39ad6610">flexible_type</a> f;</div><div class="line">...</div><div class="line">flex_vec v = f; <span class="comment">// fails</span></div><div class="line"><a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a> v = (<a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a>)f; <span class="comment">// fails</span></div></div><!-- fragment --><p>This function provides an explicit cast allowing the following to be written: </p><div class="fragment"><div class="line"><a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a> v = f.to&lt;<a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a>&gt;();</div></div><!-- fragment --><p>Of course, the alternative of is always available. </p><div class="fragment"><div class="line"><a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a> v = f.operator <a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a>();</div></div><!-- fragment --><p> And indeed, the implementation of <a class="el" href="classturi_1_1flexible__type.html#a34f12dac35bf0035146408baa22bbb86">to()</a> simply redirects the calls. </p>
 
 </div>
 </div>
@@ -2876,7 +2910,7 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Converts the <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> to a particular type. Behaves like the implicit cast operators, but explicit. In particular, this gets around the thorny issue that there is no way to cast to an flex_vec, flex_list or flex_dict even though the implicit cast operators exist. This is due to std::vector&lt;T&gt; having two constructors: </p><div class="fragment"><div class="line"><span class="comment">// regular copy constructor</span></div><div class="line">vector&lt;T&gt;::vector(<span class="keyword">const</span> std::vector&lt;T&gt;&amp;) ...</div><div class="line"></div><div class="line"><span class="comment">// constructs a vector of a particular size</span></div><div class="line">vector&lt;T&gt;::vector(<span class="keywordtype">size_t</span> N, T val = T()) ...</div></div><!-- fragment --><p> Resulting in two possible implicit cast routes when doing: </p><div class="fragment"><div class="line"><a class="code" href="classturi_1_1flexible__type.html#ab7ced47636ee238dd993324b39ad6610">flexible_type</a> f;</div><div class="line">...</div><div class="line">flex_vec v = f; <span class="comment">// fails</span></div><div class="line"><a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a> v = (<a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a>)f; <span class="comment">// fails</span></div></div><!-- fragment --><p>This function provides an explicit cast allowing the following to be written: </p><div class="fragment"><div class="line"><a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a> v = f.to&lt;<a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a>&gt;(); </div></div><!-- fragment --><p>Of course, the alternative of is always available. </p><div class="fragment"><div class="line"><a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a> v = f.operator <a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a>();</div></div><!-- fragment --><p> And indeed, the implementation of <a class="el" href="classturi_1_1flexible__type.html#a34f12dac35bf0035146408baa22bbb86">to()</a> simply redirects the calls. </p>
+<p>Converts the <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> to a particular type. Behaves like the implicit cast operators, but explicit. In particular, this gets around the thorny issue that there is no way to cast to an flex_vec, flex_list or flex_dict even though the implicit cast operators exist. This is due to std::vector&lt;T&gt; having two constructors: </p><div class="fragment"><div class="line"><span class="comment">// regular copy constructor</span></div><div class="line">vector&lt;T&gt;::vector(<span class="keyword">const</span> std::vector&lt;T&gt;&amp;) ...</div><div class="line"></div><div class="line"><span class="comment">// constructs a vector of a particular size</span></div><div class="line">vector&lt;T&gt;::vector(<span class="keywordtype">size_t</span> N, T val = T()) ...</div></div><!-- fragment --><p> Resulting in two possible implicit cast routes when doing: </p><div class="fragment"><div class="line"><a class="code" href="classturi_1_1flexible__type.html#ab7ced47636ee238dd993324b39ad6610">flexible_type</a> f;</div><div class="line">...</div><div class="line">flex_vec v = f; <span class="comment">// fails</span></div><div class="line"><a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a> v = (<a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a>)f; <span class="comment">// fails</span></div></div><!-- fragment --><p>This function provides an explicit cast allowing the following to be written: </p><div class="fragment"><div class="line"><a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a> v = f.to&lt;<a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a>&gt;();</div></div><!-- fragment --><p>Of course, the alternative of is always available. </p><div class="fragment"><div class="line"><a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a> v = f.operator <a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a>();</div></div><!-- fragment --><p> And indeed, the implementation of <a class="el" href="classturi_1_1flexible__type.html#a34f12dac35bf0035146408baa22bbb86">to()</a> simply redirects the calls. </p>
 
 </div>
 </div>
@@ -2894,7 +2928,7 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Converts the <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> to a particular type. Behaves like the implicit cast operators, but explicit. In particular, this gets around the thorny issue that there is no way to cast to an flex_vec, flex_list or flex_dict even though the implicit cast operators exist. This is due to std::vector&lt;T&gt; having two constructors: </p><div class="fragment"><div class="line"><span class="comment">// regular copy constructor</span></div><div class="line">vector&lt;T&gt;::vector(<span class="keyword">const</span> std::vector&lt;T&gt;&amp;) ...</div><div class="line"></div><div class="line"><span class="comment">// constructs a vector of a particular size</span></div><div class="line">vector&lt;T&gt;::vector(<span class="keywordtype">size_t</span> N, T val = T()) ...</div></div><!-- fragment --><p> Resulting in two possible implicit cast routes when doing: </p><div class="fragment"><div class="line"><a class="code" href="classturi_1_1flexible__type.html#ab7ced47636ee238dd993324b39ad6610">flexible_type</a> f;</div><div class="line">...</div><div class="line">flex_vec v = f; <span class="comment">// fails</span></div><div class="line"><a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a> v = (<a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a>)f; <span class="comment">// fails</span></div></div><!-- fragment --><p>This function provides an explicit cast allowing the following to be written: </p><div class="fragment"><div class="line"><a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a> v = f.to&lt;<a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a>&gt;(); </div></div><!-- fragment --><p>Of course, the alternative of is always available. </p><div class="fragment"><div class="line"><a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a> v = f.operator <a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a>();</div></div><!-- fragment --><p> And indeed, the implementation of <a class="el" href="classturi_1_1flexible__type.html#a34f12dac35bf0035146408baa22bbb86">to()</a> simply redirects the calls. </p>
+<p>Converts the <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> to a particular type. Behaves like the implicit cast operators, but explicit. In particular, this gets around the thorny issue that there is no way to cast to an flex_vec, flex_list or flex_dict even though the implicit cast operators exist. This is due to std::vector&lt;T&gt; having two constructors: </p><div class="fragment"><div class="line"><span class="comment">// regular copy constructor</span></div><div class="line">vector&lt;T&gt;::vector(<span class="keyword">const</span> std::vector&lt;T&gt;&amp;) ...</div><div class="line"></div><div class="line"><span class="comment">// constructs a vector of a particular size</span></div><div class="line">vector&lt;T&gt;::vector(<span class="keywordtype">size_t</span> N, T val = T()) ...</div></div><!-- fragment --><p> Resulting in two possible implicit cast routes when doing: </p><div class="fragment"><div class="line"><a class="code" href="classturi_1_1flexible__type.html#ab7ced47636ee238dd993324b39ad6610">flexible_type</a> f;</div><div class="line">...</div><div class="line">flex_vec v = f; <span class="comment">// fails</span></div><div class="line"><a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a> v = (<a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a>)f; <span class="comment">// fails</span></div></div><!-- fragment --><p>This function provides an explicit cast allowing the following to be written: </p><div class="fragment"><div class="line"><a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a> v = f.to&lt;<a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a>&gt;();</div></div><!-- fragment --><p>Of course, the alternative of is always available. </p><div class="fragment"><div class="line"><a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a> v = f.operator <a class="code" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a>();</div></div><!-- fragment --><p> And indeed, the implementation of <a class="el" href="classturi_1_1flexible__type.html#a34f12dac35bf0035146408baa22bbb86">to()</a> simply redirects the calls. </p>
 
 </div>
 </div>
@@ -2920,7 +2954,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Returns the type index of the underlying storage. For compatibility with variant. </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01868">1868</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01872">1872</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2946,12 +2980,12 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Returns an integer ID identifying the type of the underlying storage. Equivalent to (size_t)(<a class="el" href="classturi_1_1flexible__type.html#aada3ceebb28d5983567e22a3ff5ec559">get_type()</a>). For compatibility with variant. </p>
 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01872">1872</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01876">1876</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>flexible_type/<a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a></li>
+<li>core/data/flexible_type/<a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('structturi_1_1neural__net_1_1image__au
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="image__augmentation_8hpp_source.html">unity/toolkits/neural_net/image_augmentation.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="image__augmentation_8hpp_source.html">ml/neural_net/image_augmentation.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -127,6 +127,8 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a5ac9025d711633ba51913a2f00b83212"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae3a74999a354a277cf932361dc930bf0"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1neural__net_1_1image__augmenter_1_1options.html#ae3a74999a354a277cf932361dc930bf0">output_height</a> = 0</td></tr>
 <tr class="separator:ae3a74999a354a277cf932361dc930bf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a342c93eadc70e8739bfbc00d900ab4d2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1neural__net_1_1image__augmenter_1_1options.html#a342c93eadc70e8739bfbc00d900ab4d2">random_seed</a> = 0</td></tr>
+<tr class="separator:a342c93eadc70e8739bfbc00d900ab4d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a394d4c4fba581eb86d0da3aa4ef2156a"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1neural__net_1_1image__augmenter_1_1options.html#a394d4c4fba581eb86d0da3aa4ef2156a">crop_prob</a> = 0.f</td></tr>
 <tr class="separator:a394d4c4fba581eb86d0da3aa4ef2156a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adbb46ef7c7ab4892473714da5704efd1"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1neural__net_1_1image__augmenter_1_1options.html#adbb46ef7c7ab4892473714da5704efd1">pad_prob</a> = 0.f</td></tr>
@@ -175,7 +177,7 @@ Public Attributes</h2></td></tr>
 <p>Maximum pixel value to add or subtract to each channel.</p>
 <p>For example, a value of 0.05 adds a random value between -0.05 and 0.05 to each channel of each pixel (represented as a value from 0 to 1). </p>
 
-<p>Definition at line <a class="el" href="image__augmentation_8hpp_source.html#l00198">198</a> of file <a class="el" href="image__augmentation_8hpp_source.html">image_augmentation.hpp</a>.</p>
+<p>Definition at line <a class="el" href="image__augmentation_8hpp_source.html#l00201">201</a> of file <a class="el" href="image__augmentation_8hpp_source.html">image_augmentation.hpp</a>.</p>
 
 </div>
 </div>
@@ -191,7 +193,7 @@ Public Attributes</h2></td></tr>
 <p>Maximum proportion to increase or decrease contrast.</p>
 <p>For example, a value of 0.05 multiplies the contrast by a random value between 0.95 and 1.05. </p>
 
-<p>Definition at line <a class="el" href="image__augmentation_8hpp_source.html#l00206">206</a> of file <a class="el" href="image__augmentation_8hpp_source.html">image_augmentation.hpp</a>.</p>
+<p>Definition at line <a class="el" href="image__augmentation_8hpp_source.html#l00209">209</a> of file <a class="el" href="image__augmentation_8hpp_source.html">image_augmentation.hpp</a>.</p>
 
 </div>
 </div>
@@ -206,7 +208,7 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>The probability of applying (attempting) a random crop. </p>
 
-<p>Definition at line <a class="el" href="image__augmentation_8hpp_source.html#l00177">177</a> of file <a class="el" href="image__augmentation_8hpp_source.html">image_augmentation.hpp</a>.</p>
+<p>Definition at line <a class="el" href="image__augmentation_8hpp_source.html#l00180">180</a> of file <a class="el" href="image__augmentation_8hpp_source.html">image_augmentation.hpp</a>.</p>
 
 </div>
 </div>
@@ -221,7 +223,7 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>The probability of flipping the image horizontally. </p>
 
-<p>Definition at line <a class="el" href="image__augmentation_8hpp_source.html#l00185">185</a> of file <a class="el" href="image__augmentation_8hpp_source.html">image_augmentation.hpp</a>.</p>
+<p>Definition at line <a class="el" href="image__augmentation_8hpp_source.html#l00188">188</a> of file <a class="el" href="image__augmentation_8hpp_source.html">image_augmentation.hpp</a>.</p>
 
 </div>
 </div>
@@ -237,7 +239,7 @@ Public Attributes</h2></td></tr>
 <p>Maximum proportion to rotate the hues.</p>
 <p>For example, a value of 0.05 applies a random rotation between -0.05 * pi and 0.05 * pi. </p>
 
-<p>Definition at line <a class="el" href="image__augmentation_8hpp_source.html#l00222">222</a> of file <a class="el" href="image__augmentation_8hpp_source.html">image_augmentation.hpp</a>.</p>
+<p>Definition at line <a class="el" href="image__augmentation_8hpp_source.html#l00225">225</a> of file <a class="el" href="image__augmentation_8hpp_source.html">image_augmentation.hpp</a>.</p>
 
 </div>
 </div>
@@ -282,7 +284,22 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>The probability of applying (attempting) a random pad. </p>
 
-<p>Definition at line <a class="el" href="image__augmentation_8hpp_source.html#l00181">181</a> of file <a class="el" href="image__augmentation_8hpp_source.html">image_augmentation.hpp</a>.</p>
+<p>Definition at line <a class="el" href="image__augmentation_8hpp_source.html#l00184">184</a> of file <a class="el" href="image__augmentation_8hpp_source.html">image_augmentation.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a342c93eadc70e8739bfbc00d900ab4d2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int turi::neural_net::image_augmenter::options::random_seed = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Seed for all pseudo-random number generation used by augmentation. </p>
+
+<p>Definition at line <a class="el" href="image__augmentation_8hpp_source.html#l00177">177</a> of file <a class="el" href="image__augmentation_8hpp_source.html">image_augmentation.hpp</a>.</p>
 
 </div>
 </div>
@@ -298,12 +315,12 @@ Public Attributes</h2></td></tr>
 <p>Maximum proportion to increase or decrease saturation.</p>
 <p>For example, a value of 0.05 multiplies the saturation by a random value between 0.95 and 1.05. </p>
 
-<p>Definition at line <a class="el" href="image__augmentation_8hpp_source.html#l00214">214</a> of file <a class="el" href="image__augmentation_8hpp_source.html">image_augmentation.hpp</a>.</p>
+<p>Definition at line <a class="el" href="image__augmentation_8hpp_source.html#l00217">217</a> of file <a class="el" href="image__augmentation_8hpp_source.html">image_augmentation.hpp</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>unity/toolkits/neural_net/<a class="el" href="image__augmentation_8hpp_source.html">image_augmentation.hpp</a></li>
+<li>ml/neural_net/<a class="el" href="image__augmentation_8hpp_source.html">image_augmentation.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

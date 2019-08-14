@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('classturi_1_1sarray__reader__buffer.ht
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="sarray__reader__buffer_8hpp_source.html">sframe/sarray_reader_buffer.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="sarray__reader__buffer_8hpp_source.html">core/storage/sframe_data/sarray_reader_buffer.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -151,9 +151,9 @@ size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 class turi::sarray_reader_buffer&lt; T &gt;</h3>
 
 <p>A buffered reader reading from a range of an sarray&lt;T&gt;.</p>
-<div class="fragment"><div class="line">sarray&lt;flexible_type&gt; mysarray = ...;</div><div class="line"></div><div class="line"><span class="comment">// Reader for the first thousand lines</span></div><div class="line">sarray_reader_buffer&lt;flexible_type&gt; reader(mysarray, 0, 1000);</div><div class="line"></div><div class="line"><span class="keywordflow">while</span>(reader.has_next()) {</div><div class="line"> flexible_type val = reader.next();</div><div class="line"> ... <span class="keywordflow">do</span> some thing with val ...</div><div class="line">}</div><div class="line"></div><div class="line"><span class="comment">// Reader for the entire sarray </span></div><div class="line">reader = sarray_reader_buffer&lt;flexible_type&gt;(mysarray, 0, (size_t)(-1));</div><div class="line">...</div></div><!-- fragment --><p>Internally, the reader maintains a vector as buffer, and when reading reaches the end of the buffer, refill the buffer by reading from sarray. </p>
+<div class="fragment"><div class="line">sarray&lt;flexible_type&gt; mysarray = ...;</div><div class="line"></div><div class="line"><span class="comment">// Reader for the first thousand lines</span></div><div class="line">sarray_reader_buffer&lt;flexible_type&gt; reader(mysarray, 0, 1000);</div><div class="line"></div><div class="line"><span class="keywordflow">while</span>(reader.has_next()) {</div><div class="line"> flexible_type val = reader.next();</div><div class="line"> ... <span class="keywordflow">do</span> some thing with val ...</div><div class="line">}</div><div class="line"></div><div class="line"><span class="comment">// Reader for the entire sarray</span></div><div class="line">reader = sarray_reader_buffer&lt;flexible_type&gt;(mysarray, 0, (size_t)(-1));</div><div class="line">...</div></div><!-- fragment --><p>Internally, the reader maintains a vector as buffer, and when reading reaches the end of the buffer, refill the buffer by reading from sarray. </p>
 
-<p>Definition at line <a class="el" href="sarray__reader__buffer_8hpp_source.html#l00046">46</a> of file <a class="el" href="sarray__reader__buffer_8hpp_source.html">sarray_reader_buffer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="gl__sarray_8hpp_source.html#l00036">36</a> of file <a class="el" href="gl__sarray_8hpp_source.html">gl_sarray.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a452e16611be3648c6ce920378faed564"></a>
 <div class="memitem">
@@ -299,8 +299,9 @@ template&lt;typename T&gt; </div>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
-<li>sframe/<a class="el" href="sarray__reader__buffer_8hpp_source.html">sarray_reader_buffer.hpp</a></li>
+<hr/>The documentation for this class was generated from the following files:<ul>
+<li>core/data/sframe/<a class="el" href="gl__sarray_8hpp_source.html">gl_sarray.hpp</a></li>
+<li>core/storage/sframe_data/<a class="el" href="sarray__reader__buffer_8hpp_source.html">sarray_reader_buffer.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

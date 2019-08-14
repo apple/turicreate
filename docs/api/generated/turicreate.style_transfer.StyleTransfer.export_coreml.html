@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.style_transfer.StyleTransfer.export_coreml &mdash; Turi Create API 5.6 documentation</title>
+  <title>turicreate.style_transfer.StyleTransfer.export_coreml &mdash; Turi Create API 5.7 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 5.6 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 5.7 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -142,7 +142,8 @@ of an image of fixed size</p>
 <dd><p class="first last">A tuple (defaults to (256, 256)) will bind the coreml model to a fixed shape.</p>
 </dd>
 <dt><strong>include_flexible_shape: bool</strong></dt>
-<dd><p class="first last">A boolean value indicating whether flexible_shape should be included or not.</p>
+<dd><p class="first last">Allows the size of the input image to be flexible. Any input image were the
+height and width are at least 64 will be accepted by the Core ML Model.</p>
 </dd>
 </dl>
 </td>
@@ -173,7 +174,7 @@ of an image of fixed size</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Jun 03, 2019.
+      Last updated on Aug 14, 2019.
     </p>
   </div>
 </footer>
@@ -185,13 +186,12 @@ of an image of fixed size</p>
   </div>
   
 
-
   
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.6',
+            VERSION:'5.7',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

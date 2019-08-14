@@ -29,7 +29,7 @@ var searchData=
   ['_5fdebug_5fcheck_5fequal',['_debug_check_equal',['../classturi_1_1sparse__similarity__lookup.html#ad394e2160c48dcb8c529d3545b7371c3',1,'turi::sparse_similarity_lookup']]],
   ['_5fdebug_5fis_5fequal',['_debug_is_equal',['../structturi_1_1ml__data__internal_1_1column__metadata.html#a313c183c39dc0e7deb7388d2946431c9',1,'turi::ml_data_internal::column_metadata']]],
   ['_5fget_5funique_5fdirectory',['_get_unique_directory',['../namespaceturi.html#ae717505f642d859bacec10acbaf25ff2',1,'turi']]],
-  ['_5fhead',['_head',['../classturi_1_1unity__sarray.html#addf883c4a50680fb8071bbe8bd1ffb0f',1,'turi::unity_sarray::_head()'],['../classturi_1_1unity__sframe.html#a890a2faaacff42437ba5bb6266f229a2',1,'turi::unity_sframe::_head()']]],
+  ['_5fhead',['_head',['../classturi_1_1unity__sarray.html#addf883c4a50680fb8071bbe8bd1ffb0f',1,'turi::unity_sarray::_head()'],['../classturi_1_1unity__sframe.html#a23a5e1f503a14bdb987ca15e8a257a98',1,'turi::unity_sframe::_head()']]],
   ['_5finit_5fdata',['_init_data',['../classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#afa6e959dedcec33a7c424faa74a60b27',1,'turi::supervised::xgboost::xgboost_model']]],
   ['_5flog',['_log',['../classfile__logger.html#a8dcc039c0a3102ca475b040d75d3772c',1,'file_logger']]],
   ['_5fls_5freturn',['_ls_return',['../structturi_1_1optimization_1_1__ls__return.html',1,'turi::optimization']]],
@@ -39,5 +39,5 @@ var searchData=
   ['_5fset_5fnum_5fbatches',['_set_num_batches',['../classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#a62a2c727d9a88421071d543ca5a26cce',1,'turi::supervised::xgboost::xgboost_model']]],
   ['_5fset_5fstorage_5fmode',['_set_storage_mode',['../classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#a907714092363034cd03eac43ae2770f5',1,'turi::supervised::xgboost::xgboost_model']]],
   ['_5fsolver_5freturn',['_solver_return',['../structturi_1_1optimization_1_1__solver__return.html',1,'turi::optimization']]],
-  ['_5ftail',['_tail',['../classturi_1_1unity__sframe.html#ad065dfa621df0a88be920bf36f68471d',1,'turi::unity_sframe']]]
+  ['_5ftail',['_tail',['../classturi_1_1unity__sframe.html#a16c083897c7666158710004ba1aa6c10',1,'turi::unity_sframe']]]
 ];

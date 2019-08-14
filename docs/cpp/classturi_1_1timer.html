@@ -121,7 +121,7 @@ $(document).ready(function(){initNavTree('classturi_1_1timer.html','');});
 <p>A simple class that can be used for benchmarking/timing up to microsecond resolution.  
  <a href="classturi_1_1timer.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="timer_8hpp_source.html">platform/timer/timer.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="timer_8hpp_source.html">core/system/platform/timer/timer.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -169,7 +169,7 @@ static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 <h1>Standard Usage </h1>
 <p>The timer is used by calling <a class="el" href="classturi_1_1timer.html#a02ea4162d49d2503d941fbdc83df6f7c">turi::timer::start</a> and then by getting the current time since start by calling <a class="el" href="classturi_1_1timer.html#aba6d6629e7faa0480c0a00cd55a4cce9">turi::timer::current_time</a>.</p>
 <p>For example:</p>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;timer/timer.hpp&gt;</span></div><div class="line"></div><div class="line"></div><div class="line"><a class="code" href="classturi_1_1timer.html">turi::timer</a> <a class="code" href="classturi_1_1timer.html#a9e43df2afaeed847dafdd0395201f7f4">timer</a>;</div><div class="line">timer.<a class="code" href="classturi_1_1timer.html#a02ea4162d49d2503d941fbdc83df6f7c">start</a>();</div><div class="line"><span class="comment">// do something</span></div><div class="line">std::cout &lt;&lt; <span class="stringliteral">&quot;Elapsed time: &quot;</span> &lt;&lt; timer.<a class="code" href="classturi_1_1timer.html#aba6d6629e7faa0480c0a00cd55a4cce9">current_time</a>() &lt;&lt; std::endl; </div></div><!-- fragment --><h1>Sleeping </h1>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;timer/timer.hpp&gt;</span></div><div class="line"></div><div class="line"></div><div class="line"><a class="code" href="classturi_1_1timer.html">turi::timer</a> <a class="code" href="classturi_1_1timer.html#a9e43df2afaeed847dafdd0395201f7f4">timer</a>;</div><div class="line">timer.<a class="code" href="classturi_1_1timer.html#a02ea4162d49d2503d941fbdc83df6f7c">start</a>();</div><div class="line"><span class="comment">// do something</span></div><div class="line">std::cout &lt;&lt; <span class="stringliteral">&quot;Elapsed time: &quot;</span> &lt;&lt; timer.<a class="code" href="classturi_1_1timer.html#aba6d6629e7faa0480c0a00cd55a4cce9">current_time</a>() &lt;&lt; std::endl;</div></div><!-- fragment --><h1>Sleeping </h1>
 <p>The sleep routines here are preferred than the sleep method provided by the standard C library. On Linux, the C sleep method can be woken up by signals, hence it may not sleep the full prescribed interval. The sleep implemented in the timer are more resilient.</p>
 <h1>Fast approximate time </h1>
 <p>Calling current item in a tight loop can be costly and so we provide a faster less accurate timing primitive which reads a local time variable that is updated roughly every 100 millisecond. These are the <a class="el" href="classturi_1_1timer.html#a6c57c6ce3fa05d78315158d237183543">turi::timer::approx_time_seconds</a> and <a class="el" href="classturi_1_1timer.html#ac3258a67330b4dc1165e4d7a5bd6e74a">turi::timer::approx_time_millis</a>. </p>
@@ -362,7 +362,7 @@ static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>platform/timer/<a class="el" href="timer_8hpp_source.html">timer.hpp</a></li>
+<li>core/system/platform/timer/<a class="el" href="timer_8hpp_source.html">timer.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

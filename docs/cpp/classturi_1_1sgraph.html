@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('classturi_1_1sgraph.html','');});
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="sgraph_8hpp_source.html">sgraph/sgraph.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="sgraph_8hpp_source.html">core/storage/sgraph_data/sgraph.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -239,7 +239,7 @@ Public Member Functions</h2></td></tr>
 <p>The edges however, are placed into 4*4=16 SFrames, each of 1 segment. Each edge (src,dst) is placed into the (hash(src) % 4) * 4 + hash(dst) % 4. Essentially the Edge SFrame can be thought of as cutting the adjacency matrix into a 4x4 grid.</p>
 <p>The result is that the edges in the block (0,0) is adjacent only to the vertices in the first block (0), the edges in block (0,1) is adjacent only to the vertices in block 0 and 1 and so on.</p>
 <pre class="fragment">*
-* Vertices                 Edges  
+* Vertices                 Edges
 *  +---+      +-------+-------+-------+-------+
 *  |   |      |       |       |       |       |
 *  | 0 |      | (0,0) | (0,1) | (0,2) | (0,3) |
@@ -1867,7 +1867,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>sgraph/<a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a></li>
+<li>core/storage/sgraph_data/<a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

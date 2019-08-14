@@ -19,6 +19,7 @@ var classturi_1_1flexible__type =
     [ "array_at", "classturi_1_1flexible__type.html#a6235d0d52a801d179134e4a808b17c87", null ],
     [ "array_at", "classturi_1_1flexible__type.html#a0f99c4389e3b7efce7d0cd6637eac961", null ],
     [ "clear", "classturi_1_1flexible__type.html#ab1973ae42bf80dcbba010cc466d8b541", null ],
+    [ "contains_na", "classturi_1_1flexible__type.html#a85895e95cdf5286ca2d9cb78ec27bd59", null ],
     [ "dict_at", "classturi_1_1flexible__type.html#a0b446fd5ac6663956f3cd0b1eac242ac", null ],
     [ "dict_at", "classturi_1_1flexible__type.html#a0be591554c1a9b534c0492e01a253c18", null ],
     [ "erase", "classturi_1_1flexible__type.html#a8d3897d8ed688fbc448860e2cdbe265e", null ],

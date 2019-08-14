@@ -160,6 +160,12 @@ Macros</h2></td></tr>
 <tr class="separator:gadb912d64d0939d853490021acd84217f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4029591943f3f4c2c4c33ee91c4057e8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga4029591943f3f4c2c4c33ee91c4057e8">__unlikely__</a>(x)      &#160;&#160;&#160;__builtin_expect((x),0)</td></tr>
 <tr class="separator:ga4029591943f3f4c2c4c33ee91c4057e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8750328f64c9b85845e920eecaf7094e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga8750328f64c9b85845e920eecaf7094e">GL_HOT_INLINE</a></td></tr>
+<tr class="separator:ga8750328f64c9b85845e920eecaf7094e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8691ea9431a3d3a1acf2d2b7eac72b92"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a></td></tr>
+<tr class="separator:ga8691ea9431a3d3a1acf2d2b7eac72b92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2c842d5324cd68fd7012566c613433b1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga2c842d5324cd68fd7012566c613433b1">GL_HOT_FLATTEN</a></td></tr>
+<tr class="separator:ga2c842d5324cd68fd7012566c613433b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae731468612d543efd1b13bca3a047139"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#gae731468612d543efd1b13bca3a047139">GL_COLD_NOINLINE_ERROR</a>&#160;&#160;&#160;__attribute__((cold, noinline, noreturn))</td></tr>
 <tr class="separator:gae731468612d543efd1b13bca3a047139"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -251,7 +257,52 @@ Functions</h2></td></tr>
 <p>This is used with various assertion routines. It never returns. The noreturn suppresses the "warning: control reaches end of
 non-void function" messages you get by using it this way. </p>
 
-<p>Definition at line <a class="el" href="code__optimization_8hpp_source.html#l00105">105</a> of file <a class="el" href="code__optimization_8hpp_source.html">code_optimization.hpp</a>.</p>
+<p>Definition at line <a class="el" href="code__optimization_8hpp_source.html#l00090">90</a> of file <a class="el" href="code__optimization_8hpp_source.html">code_optimization.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga2c842d5324cd68fd7012566c613433b1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GL_HOT_FLATTEN</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">GL_OPT_ATTR(flatten,                          \</div><div class="line">              _GL_HOT_FUNCTION_FLAGS            \</div><div class="line">              )</div></div><!-- fragment --><p>Forces flatten </p>
+
+<p>Definition at line <a class="el" href="code__optimization_8hpp_source.html#l00061">61</a> of file <a class="el" href="code__optimization_8hpp_source.html">code_optimization.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga8750328f64c9b85845e920eecaf7094e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GL_HOT_INLINE</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">GL_OPT_ATTR(always_inline,                    \</div><div class="line">              _GL_HOT_FUNCTION_FLAGS            \</div><div class="line">              )</div></div><!-- fragment --><p>Forces always inline </p>
+
+<p>Definition at line <a class="el" href="code__optimization_8hpp_source.html#l00042">42</a> of file <a class="el" href="code__optimization_8hpp_source.html">code_optimization.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga8691ea9431a3d3a1acf2d2b7eac72b92"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GL_HOT_INLINE_FLATTEN</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">GL_OPT_ATTR(always_inline,                    \</div><div class="line">              flatten,                          \</div><div class="line">              _GL_HOT_FUNCTION_FLAGS            \</div><div class="line">              )</div></div><!-- fragment --><p>Forces always inline and flatten </p>
+
+<p>Definition at line <a class="el" href="code__optimization_8hpp_source.html#l00051">51</a> of file <a class="el" href="code__optimization_8hpp_source.html">code_optimization.hpp</a>.</p>
 
 </div>
 </div>
@@ -305,7 +356,7 @@ template&lt;typename T , typename U &gt; </div>
 </div><div class="memdoc">
 <p>Serializes and deserializes a model, making sure that the model leaves the stream iterator in the appropriate place. </p>
 
-<p>Definition at line <a class="el" href="util_2testing__utils_8hpp_source.html#l00043">43</a> of file <a class="el" href="util_2testing__utils_8hpp_source.html">testing_utils.hpp</a>.</p>
+<p>Definition at line <a class="el" href="core_2util_2testing__utils_8hpp_source.html#l00043">43</a> of file <a class="el" href="core_2util_2testing__utils_8hpp_source.html">testing_utils.hpp</a>.</p>
 
 </div>
 </div>

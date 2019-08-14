@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['vector',['VECTOR',['../namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76a87752381b583740610f1dfeb07fdad7e',1,'turi']]]
+  ['quote_5fminimal',['QUOTE_MINIMAL',['../classturi_1_1csv__writer.html#aa493632143598612ce74f1e3268af255ae27ac2c6cdd8bc205a068f22b5147452',1,'turi::csv_writer']]],
+  ['quote_5fnone',['QUOTE_NONE',['../classturi_1_1csv__writer.html#aa493632143598612ce74f1e3268af255a6a73f69b7e43fff1722ac5eb1e76f480',1,'turi::csv_writer']]],
+  ['quote_5fnonnumeric',['QUOTE_NONNUMERIC',['../classturi_1_1csv__writer.html#aa493632143598612ce74f1e3268af255ac5eaa0ea3387a27ce58d9115fd4cbcde',1,'turi::csv_writer']]]
 ];

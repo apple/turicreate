@@ -120,7 +120,7 @@ $(document).ready(function(){initNavTree('classturi_1_1any.html','');});
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="any_8hpp_source.html">util/any.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="any_8hpp_source.html">core/util/any.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -213,8 +213,8 @@ Static Public Member Functions</h2></td></tr>
 <p>Condition <b>d</b>) is particular unusual so I will illustrate with an example.</p>
 <p>Given a simple user struct: </p><div class="fragment"><div class="line"><span class="keyword">struct </span>UserStruct {</div><div class="line">  <span class="keywordtype">int</span> i;</div><div class="line">  <span class="keywordtype">void</span> <a class="code" href="classturi_1_1any.html#a3bd97aa21114be3a8e63f55889d86cfd">save</a> (<a class="code" href="classturi_1_1oarchive.html">turi::oarchive</a>&amp; oarc)<span class="keyword"> const </span>{</div><div class="line">    oarc &lt;&lt; i;</div><div class="line">  }</div><div class="line">  <span class="keywordtype">void</span> <a class="code" href="classturi_1_1any.html#adca701de8a945f2c2c13a8401be301bc">load</a> (<a class="code" href="classturi_1_1iarchive.html">turi::iarchive</a>&amp; iarc) {</div><div class="line">    iarc &lt;&lt; i;</div><div class="line">  }</div><div class="line">}</div></div><!-- fragment --><p>If an any object contains the struct, it will be serializable.</p>
 <div class="fragment"><div class="line">UserStruct us;</div><div class="line">us.i = 10;</div><div class="line"><a class="code" href="classturi_1_1any.html#ac688f422e349f2cb828f52f663b7c6be">any</a> a = us;</div><div class="line"><span class="comment">// output file</span></div><div class="line">std::ofstream fout(<span class="stringliteral">&quot;test.bin&quot;</span>);</div><div class="line"><a class="code" href="classturi_1_1oarchive.html">turi::oarchive</a> oarc(fout);</div><div class="line">oarc &lt;&lt; a;    <span class="comment">// write the any</span></div></div><!-- fragment --><p>To deserialize, I will open an input archive and stream into an any.</p>
-<div class="fragment"><div class="line"><span class="comment">// open input </span></div><div class="line">std::ifstream fin(<span class="stringliteral">&quot;test.bin&quot;</span>);</div><div class="line"><a class="code" href="classturi_1_1iarchive.html">turi::iarchive</a> iarc(fin);</div><div class="line"><span class="comment">// create an any and read it</span></div><div class="line"><a class="code" href="classturi_1_1any.html#ac688f422e349f2cb828f52f663b7c6be">any</a> a;</div><div class="line">iarc &gt;&gt; a; </div></div><!-- fragment --><p>Now, unusually, the above code will fail, while the following code will succeed</p>
-<div class="fragment"><div class="line"><span class="comment">// open input </span></div><div class="line">std::ifstream fin(<span class="stringliteral">&quot;test.bin&quot;</span>);</div><div class="line"><a class="code" href="classturi_1_1iarchive.html">turi::iarchive</a> iarc(fin);</div><div class="line"><span class="comment">// create an any and read it</span></div><div class="line"><a class="code" href="classturi_1_1any.html#ac688f422e349f2cb828f52f663b7c6be">any</a> a;</div><div class="line">iarc &gt;&gt; a; </div><div class="line">std::cout &lt;&lt; a.as&lt;UserStruct&gt;().i;</div></div><!-- fragment --><p>The <code> a.as&lt;UserStruct&gt;() </code> forces the instantiation of static functions which allow the any deserialization to identify the UserStruct type. </p>
+<div class="fragment"><div class="line"><span class="comment">// open input</span></div><div class="line">std::ifstream fin(<span class="stringliteral">&quot;test.bin&quot;</span>);</div><div class="line"><a class="code" href="classturi_1_1iarchive.html">turi::iarchive</a> iarc(fin);</div><div class="line"><span class="comment">// create an any and read it</span></div><div class="line"><a class="code" href="classturi_1_1any.html#ac688f422e349f2cb828f52f663b7c6be">any</a> a;</div><div class="line">iarc &gt;&gt; a;</div></div><!-- fragment --><p>Now, unusually, the above code will fail, while the following code will succeed</p>
+<div class="fragment"><div class="line"><span class="comment">// open input</span></div><div class="line">std::ifstream fin(<span class="stringliteral">&quot;test.bin&quot;</span>);</div><div class="line"><a class="code" href="classturi_1_1iarchive.html">turi::iarchive</a> iarc(fin);</div><div class="line"><span class="comment">// create an any and read it</span></div><div class="line"><a class="code" href="classturi_1_1any.html#ac688f422e349f2cb828f52f663b7c6be">any</a> a;</div><div class="line">iarc &gt;&gt; a;</div><div class="line">std::cout &lt;&lt; a.as&lt;UserStruct&gt;().i;</div></div><!-- fragment --><p>The <code> a.as&lt;UserStruct&gt;() </code> forces the instantiation of static functions which allow the any deserialization to identify the UserStruct type. </p>
 
 <p>Definition at line <a class="el" href="any_8hpp_source.html#l00122">122</a> of file <a class="el" href="any_8hpp_source.html">any.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
@@ -371,7 +371,7 @@ template&lt;typename ValueType &gt; </div>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>util/<a class="el" href="any_8hpp_source.html">any.hpp</a></li>
+<li>core/util/<a class="el" href="any_8hpp_source.html">any.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

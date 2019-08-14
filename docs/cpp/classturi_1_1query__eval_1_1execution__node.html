@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('classturi_1_1query__eval_1_1execution_
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="execution__node_8hpp_source.html">sframe_query_engine/execution/execution_node.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="execution__node_8hpp_source.html">core/storage/query_engine/execution/execution_node.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -157,7 +157,7 @@ Public Member Functions</h2></td></tr>
 <p>An earlier version of this execution model used the former procedure (assuming uniform rate), now we use the <a class="el" href="classturi_1_1broadcast__queue.html">broadcast_queue</a> to provide unbounfed buffering.</p>
 <p>The <a class="el" href="classturi_1_1query__eval_1_1execution__node.html">execution_node</a> is not generally used directly (see the hierarchy of materialize functions). However, usage is not very complicated.</p>
 <p>Given an <a class="el" href="classturi_1_1query__eval_1_1execution__node.html">execution_node</a> graph, with a tip you will like to consume data from: </p><div class="fragment"><div class="line">(tip is a shared_ptr&lt;execution_node&gt;)</div><div class="line"><span class="comment">// register a new consumer (aka myself)</span></div><div class="line"><span class="keywordtype">size_t</span> consumer_id = tip-&gt;register_consumer();</div><div class="line"></div><div class="line"><span class="keywordflow">while</span>(1) {</div><div class="line">  <span class="keyword">auto</span> rows = node-&gt;get_next(consumer_id);</div><div class="line">  <span class="comment">// do stuff. rows == nullptr on completion</span></div><div class="line">}</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="execution__node_8hpp_source.html#l00153">153</a> of file <a class="el" href="execution__node_8hpp_source.html">execution_node.hpp</a>.</p>
+<p>Definition at line <a class="el" href="execution__node_8hpp_source.html#l00151">151</a> of file <a class="el" href="execution__node_8hpp_source.html">execution_node.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a297aa0097bf801eba1ba106ff844ecec"></a>
 <div class="memitem">
@@ -217,7 +217,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns true if an exception occured while executing this node </p>
 
-<p>Definition at line <a class="el" href="execution__node_8hpp_source.html#l00213">213</a> of file <a class="el" href="execution__node_8hpp_source.html">execution_node.hpp</a>.</p>
+<p>Definition at line <a class="el" href="execution__node_8hpp_source.html#l00211">211</a> of file <a class="el" href="execution__node_8hpp_source.html">execution_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -243,7 +243,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>If an exception occured while excecuting this node, this returns the last exception exception. Otherwise returns an exception_ptr which compares equal to the null pointer. </p>
 
-<p>Definition at line <a class="el" href="execution__node_8hpp_source.html#l00222">222</a> of file <a class="el" href="execution__node_8hpp_source.html">execution_node.hpp</a>.</p>
+<p>Definition at line <a class="el" href="execution__node_8hpp_source.html#l00220">220</a> of file <a class="el" href="execution__node_8hpp_source.html">execution_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -323,7 +323,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the number of inputs of the execution node </p>
 
-<p>Definition at line <a class="el" href="execution__node_8hpp_source.html#l00194">194</a> of file <a class="el" href="execution__node_8hpp_source.html">execution_node.hpp</a>.</p>
+<p>Definition at line <a class="el" href="execution__node_8hpp_source.html#l00192">192</a> of file <a class="el" href="execution__node_8hpp_source.html">execution_node.hpp</a>.</p>
 
 </div>
 </div>
@@ -360,7 +360,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>sframe_query_engine/execution/<a class="el" href="execution__node_8hpp_source.html">execution_node.hpp</a></li>
+<li>core/storage/query_engine/execution/<a class="el" href="execution__node_8hpp_source.html">execution_node.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

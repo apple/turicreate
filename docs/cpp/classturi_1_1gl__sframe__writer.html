@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('classturi_1_1gl__sframe__writer.html',
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="gl__sframe_8hpp_source.html">unity/lib/gl_sframe.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="gl__sframe_8hpp_source.html">core/data/sframe/gl_sframe.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -135,9 +135,9 @@ Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Provides the ability to write <a class="el" href="classturi_1_1gl__sframe.html">gl_sframe</a>. The <a class="el" href="classturi_1_1gl__sframe.html">gl_sframe</a> is internally cut into a collection of segments. Each segment can be written to independently, and the resultant SFrame is the effective concatenation of all the segments.</p>
-<div class="fragment"><div class="line"><span class="comment">// Writes an SFrame of 4 segments, and 2 columns &quot;a&quot; and &quot;b&quot;, both of which</span></div><div class="line"><span class="comment">// are integers.  </span></div><div class="line"><a class="code" href="classturi_1_1gl__sframe__writer.html#aee8e6b6bc29f14689bd21237f471d01b">gl_sframe_writer</a> writer({<span class="stringliteral">&quot;a&quot;</span>,<span class="stringliteral">&quot;b&quot;</span>}, </div><div class="line">                        {<a class="code" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a>:<a class="code" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76a5d5cd46919fa987731fb2edefe0f2a0c">INTEGER</a>, flex_type_enum::INTEGER}, </div><div class="line">                        4);</div><div class="line"></div><div class="line"><span class="comment">// for each segment, write a bunch of (i, i) pair values.</span></div><div class="line"><span class="comment">// segment 0 has 10 0&#39;s, </span></div><div class="line"><span class="comment">// segment 1 has 10 1&#39;s,</span></div><div class="line"><span class="comment">// etc</span></div><div class="line"><span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> seg = 0;seg &lt; 4; ++seg) {</div><div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0;i &lt; 10; ++i) {</div><div class="line">    writer.write({i, i}, seg);</div><div class="line">  }</div><div class="line">}</div><div class="line"></div><div class="line">gl_sframe sa = writer.close();</div><div class="line"><span class="comment">// sa is now an SFrame of 40 elements comprising of </span></div><div class="line"><span class="comment">// four consecutive sequences of (1,1) to (10,10)</span></div></div><!-- fragment --><p>Different segments can be written safely in parallel. It is not safe to write to the same segment simultanously. </p>
+<div class="fragment"><div class="line"><span class="comment">// Writes an SFrame of 4 segments, and 2 columns &quot;a&quot; and &quot;b&quot;, both of which</span></div><div class="line"><span class="comment">// are integers.</span></div><div class="line"><a class="code" href="classturi_1_1gl__sframe__writer.html#aee8e6b6bc29f14689bd21237f471d01b">gl_sframe_writer</a> writer({<span class="stringliteral">&quot;a&quot;</span>,<span class="stringliteral">&quot;b&quot;</span>},</div><div class="line">                        {<a class="code" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a>:<a class="code" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76a5d5cd46919fa987731fb2edefe0f2a0c">INTEGER</a>, flex_type_enum::INTEGER},</div><div class="line">                        4);</div><div class="line"></div><div class="line"><span class="comment">// for each segment, write a bunch of (i, i) pair values.</span></div><div class="line"><span class="comment">// segment 0 has 10 0&#39;s,</span></div><div class="line"><span class="comment">// segment 1 has 10 1&#39;s,</span></div><div class="line"><span class="comment">// etc</span></div><div class="line"><span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> seg = 0;seg &lt; 4; ++seg) {</div><div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0;i &lt; 10; ++i) {</div><div class="line">    writer.write({i, i}, seg);</div><div class="line">  }</div><div class="line">}</div><div class="line"></div><div class="line">gl_sframe sa = writer.close();</div><div class="line"><span class="comment">// sa is now an SFrame of 40 elements comprising of</span></div><div class="line"><span class="comment">// four consecutive sequences of (1,1) to (10,10)</span></div></div><!-- fragment --><p>Different segments can be written safely in parallel. It is not safe to write to the same segment simultanously. </p>
 
-<p>Definition at line <a class="el" href="gl__sframe_8hpp_source.html#l02986">2986</a> of file <a class="el" href="gl__sframe_8hpp_source.html">gl_sframe.hpp</a>.</p>
+<p>Definition at line <a class="el" href="gl__sframe_8hpp_source.html#l02997">2997</a> of file <a class="el" href="gl__sframe_8hpp_source.html">gl_sframe.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="aee8e6b6bc29f14689bd21237f471d01b"></a>
 <div class="memitem">
@@ -237,7 +237,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Writes a single value to a given segment.</p>
-<p>For instance, </p><div class="fragment"><div class="line"><a class="code" href="classturi_1_1gl__sframe__writer.html#aee8e6b6bc29f14689bd21237f471d01b">gl_sframe_writer</a>({<span class="stringliteral">&quot;a&quot;</span>,<span class="stringliteral">&quot;b&quot;</span>}, {<a class="code" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a>:<a class="code" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76ae738c26bf4ce1037fa81b039a915cbf6">FLOAT</a>, <a class="code" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76a63b588d5559f64f89a416e656880b949">flex_type_enum::STRING</a>}, 1);</div><div class="line">writer.write({1.5, <span class="stringliteral">&quot;hello&quot;</span>}, 0); </div></div><!-- fragment --><p>Different segments can be written safely in parallel. It is not safe to write to the same segment simultanously.</p>
+<p>For instance, </p><div class="fragment"><div class="line"><a class="code" href="classturi_1_1gl__sframe__writer.html#aee8e6b6bc29f14689bd21237f471d01b">gl_sframe_writer</a>({<span class="stringliteral">&quot;a&quot;</span>,<span class="stringliteral">&quot;b&quot;</span>}, {<a class="code" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a>:<a class="code" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76ae738c26bf4ce1037fa81b039a915cbf6">FLOAT</a>, <a class="code" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76a63b588d5559f64f89a416e656880b949">flex_type_enum::STRING</a>}, 1);</div><div class="line">writer.write({1.5, <span class="stringliteral">&quot;hello&quot;</span>}, 0);</div></div><!-- fragment --><p>Different segments can be written safely in parallel. It is not safe to write to the same segment simultanously.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">f</td><td>The value to write. This value should be of an array of the requested typse (as set in the constructor), or is castable to the requested type, or is FLEX_UNDEFINED.</td></tr>
@@ -298,12 +298,12 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="gl__sframe_8hpp_source.html#l03044">3044</a> of file <a class="el" href="gl__sframe_8hpp_source.html">gl_sframe.hpp</a>.</p>
+<p>Definition at line <a class="el" href="gl__sframe_8hpp_source.html#l03055">3055</a> of file <a class="el" href="gl__sframe_8hpp_source.html">gl_sframe.hpp</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>unity/lib/<a class="el" href="gl__sframe_8hpp_source.html">gl_sframe.hpp</a></li>
+<li>core/data/sframe/<a class="el" href="gl__sframe_8hpp_source.html">gl_sframe.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

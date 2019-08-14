@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('classturi_1_1sketches_1_1space__saving
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="space__saving_8hpp_source.html">sketches/space_saving.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="space__saving_8hpp_source.html">ml/sketches/space_saving.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -145,7 +145,7 @@ class turi::sketches::space_saving&lt; T &gt;</h3>
 
 <p>This class implements the Space Saving Sketch as described in Ahmed Metwally † Divyakant Agrawal Amr El Abbadi. Efficient Computation of Frequent and Top-k Elements in Data Streams.</p>
 <p>It provides an efficient one pass scan of all the data and provides an estimate all the frequently occuring elements, with guarantees that all elements with occurances &gt;=  N will be reported.</p>
-<div class="fragment"><div class="line"><a class="code" href="classturi_1_1sketches_1_1space__saving.html#acf872ec72fc1d4b782a78690ca0c49f2">space_saving</a> ss;</div><div class="line"><span class="comment">// repeatedly call</span></div><div class="line">ss.add(stuff);</div><div class="line"><span class="comment">// will return an array containing all the elements tracked</span></div><div class="line"><span class="comment">// not all elements may be truly frequent items</span></div><div class="line">ss.frequent_items() </div><div class="line"><span class="comment">// will return an array containing all the elements tracked which are</span></div><div class="line"><span class="comment">// guaranteed to have occurances &gt;= \epsilon N</span></div></div><!-- fragment --> 
+<div class="fragment"><div class="line"><a class="code" href="classturi_1_1sketches_1_1space__saving.html#acf872ec72fc1d4b782a78690ca0c49f2">space_saving</a> ss;</div><div class="line"><span class="comment">// repeatedly call</span></div><div class="line">ss.add(stuff);</div><div class="line"><span class="comment">// will return an array containing all the elements tracked</span></div><div class="line"><span class="comment">// not all elements may be truly frequent items</span></div><div class="line">ss.frequent_items()</div><div class="line"><span class="comment">// will return an array containing all the elements tracked which are</span></div><div class="line"><span class="comment">// guaranteed to have occurances &gt;= \epsilon N</span></div></div><!-- fragment --> 
 <p>Definition at line <a class="el" href="space__saving_8hpp_source.html#l00042">42</a> of file <a class="el" href="space__saving_8hpp_source.html">space_saving.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="acf872ec72fc1d4b782a78690ca0c49f2"></a>
@@ -390,7 +390,7 @@ template&lt;typename T&gt; </div>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>sketches/<a class="el" href="space__saving_8hpp_source.html">space_saving.hpp</a></li>
+<li>ml/sketches/<a class="el" href="space__saving_8hpp_source.html">space_saving.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

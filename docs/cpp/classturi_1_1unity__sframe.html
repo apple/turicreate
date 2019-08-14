@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('classturi_1_1unity__sframe.html','');}
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="unity__sframe_8hpp_source.html">unity/lib/unity_sframe.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="unity__sframe_8hpp_source.html">core/storage/sframe_interface/unity_sframe.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -125,106 +125,114 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:acf1a6f5e8d3102e6d03154d1627f0b69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a64182cf0b9259ca8d1a1f9dbad021843"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a64182cf0b9259ca8d1a1f9dbad021843">~unity_sframe</a> ()</td></tr>
 <tr class="separator:a64182cf0b9259ca8d1a1f9dbad021843"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abf8daf1dcf1f1a5c9ce3f3f90daa4c10"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#abf8daf1dcf1f1a5c9ce3f3f90daa4c10">construct_from_dataframe</a> (const <a class="el" href="structturi_1_1dataframe__t.html">dataframe_t</a> &amp;df)</td></tr>
-<tr class="separator:abf8daf1dcf1f1a5c9ce3f3f90daa4c10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a576ce214abe00101a2d0c5165c61f14a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a576ce214abe00101a2d0c5165c61f14a">construct_from_dataframe</a> (const <a class="el" href="structturi_1_1dataframe__t.html">dataframe_t</a> &amp;df) override</td></tr>
+<tr class="separator:a576ce214abe00101a2d0c5165c61f14a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a36535542e68005db87cbc35860ee7f7b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a36535542e68005db87cbc35860ee7f7b">construct_from_sframe</a> (const <a class="el" href="classturi_1_1sframe.html">sframe</a> &amp;sf)</td></tr>
 <tr class="separator:a36535542e68005db87cbc35860ee7f7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9f8644a8c177be7de2a0710b209f4e9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#ae9f8644a8c177be7de2a0710b209f4e9">construct_from_sframe_index</a> (std::string index_file)</td></tr>
-<tr class="separator:ae9f8644a8c177be7de2a0710b209f4e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac26fb4e5ca6342cc28a417c12e18b78a"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::string, std::shared_ptr&lt; unity_sarray_base &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#ac26fb4e5ca6342cc28a417c12e18b78a">construct_from_csvs</a> (std::string url, std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; parsing_config, std::map&lt; std::string, <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> &gt; column_type_hints)</td></tr>
-<tr class="separator:ac26fb4e5ca6342cc28a417c12e18b78a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d21a776859e3c422b83ebd9d50b77b6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a1d21a776859e3c422b83ebd9d50b77b6">save_frame</a> (std::string target_directory)</td></tr>
-<tr class="separator:a1d21a776859e3c422b83ebd9d50b77b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f383f45511896dbc7579feb130ba9e1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a8f383f45511896dbc7579feb130ba9e1">save_frame_reference</a> (std::string target_directory)</td></tr>
-<tr class="separator:a8f383f45511896dbc7579feb130ba9e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1949dc9550aa764518a29825caf7afd2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a1949dc9550aa764518a29825caf7afd2">construct_from_sframe_index</a> (std::string index_file) override</td></tr>
+<tr class="separator:a1949dc9550aa764518a29825caf7afd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab73654ce7aaf8e6058333e5b16db81e8"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::string, std::shared_ptr&lt; unity_sarray_base &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#ab73654ce7aaf8e6058333e5b16db81e8">construct_from_csvs</a> (std::string url, std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; parsing_config, std::map&lt; std::string, <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> &gt; column_type_hints) override</td></tr>
+<tr class="separator:ab73654ce7aaf8e6058333e5b16db81e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26083c273c3a39e8d5228cf3b4c73af7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a26083c273c3a39e8d5228cf3b4c73af7">save_frame</a> (std::string target_directory) override</td></tr>
+<tr class="separator:a26083c273c3a39e8d5228cf3b4c73af7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a007b40f01ed0633a5353f9b1db7c982b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a007b40f01ed0633a5353f9b1db7c982b">save_frame_reference</a> (std::string target_directory) override</td></tr>
+<tr class="separator:a007b40f01ed0633a5353f9b1db7c982b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:addea1ba2951b8a8f21c333b4a1430b2f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#addea1ba2951b8a8f21c333b4a1430b2f">save_frame_by_index_file</a> (std::string index_file)</td></tr>
 <tr class="separator:addea1ba2951b8a8f21c333b4a1430b2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0ef08a07f29d2705a06e645b93c11091"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a0ef08a07f29d2705a06e645b93c11091">clear</a> ()</td></tr>
-<tr class="separator:a0ef08a07f29d2705a06e645b93c11091"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a849e505ca625f231582a38763be3cc54"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a849e505ca625f231582a38763be3cc54">size</a> ()</td></tr>
-<tr class="separator:a849e505ca625f231582a38763be3cc54"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeed12630d98c2825d44ead9218a399e3"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#aeed12630d98c2825d44ead9218a399e3">num_columns</a> ()</td></tr>
-<tr class="separator:aeed12630d98c2825d44ead9218a399e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8fd3262a93b45910737f785c57d2b5a3"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a8fd3262a93b45910737f785c57d2b5a3">dtype</a> ()</td></tr>
-<tr class="separator:a8fd3262a93b45910737f785c57d2b5a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a08f9de6c5abca26cd9c3de902c956320"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a08f9de6c5abca26cd9c3de902c956320">column_names</a> ()</td></tr>
-<tr class="separator:a08f9de6c5abca26cd9c3de902c956320"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a19ecf0228cf3302a21523be2fc727637"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a19ecf0228cf3302a21523be2fc727637">head</a> (size_t nrows)</td></tr>
-<tr class="separator:a19ecf0228cf3302a21523be2fc727637"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a385c28fb2dc312aea7d6327cecda3802"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a385c28fb2dc312aea7d6327cecda3802">column_index</a> (const std::string &amp;name)</td></tr>
-<tr class="separator:a385c28fb2dc312aea7d6327cecda3802"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c5ee00ff1210462b28cf95c20f6080c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a2c5ee00ff1210462b28cf95c20f6080c">clear</a> () override</td></tr>
+<tr class="separator:a2c5ee00ff1210462b28cf95c20f6080c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f3fdfee4c929d59e0be098df6ddf424"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a4f3fdfee4c929d59e0be098df6ddf424">size</a> () override</td></tr>
+<tr class="separator:a4f3fdfee4c929d59e0be098df6ddf424"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94e336479f6fd6009d0d2b43d2cf76f7"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a94e336479f6fd6009d0d2b43d2cf76f7">num_columns</a> () override</td></tr>
+<tr class="separator:a94e336479f6fd6009d0d2b43d2cf76f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a065131c99efd3e9f26935f3731554527"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a065131c99efd3e9f26935f3731554527">dtype</a> () override</td></tr>
+<tr class="separator:a065131c99efd3e9f26935f3731554527"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0721ae7e4cb48c5f990798e30d28a15"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#aa0721ae7e4cb48c5f990798e30d28a15">dtype</a> (size_t <a class="el" href="classturi_1_1unity__sframe.html#a72993bb9ad0ba5d7ee6c41fd171b1e4c">column_index</a>)</td></tr>
+<tr class="separator:aa0721ae7e4cb48c5f990798e30d28a15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace572f69a53656502b137c05ca315c01"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#ace572f69a53656502b137c05ca315c01">dtype</a> (const std::string &amp;<a class="el" href="classturi_1_1unity__sframe.html#abbfa5e9bf78162b65bb5cefe23f89ffc">column_name</a>)</td></tr>
+<tr class="separator:ace572f69a53656502b137c05ca315c01"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b9bb354db2a2094d77405419fcf1d51"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a2b9bb354db2a2094d77405419fcf1d51">column_names</a> () override</td></tr>
+<tr class="separator:a2b9bb354db2a2094d77405419fcf1d51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8705760aff273c4c4374cf658006ba1e"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a8705760aff273c4c4374cf658006ba1e">head</a> (size_t nrows) override</td></tr>
+<tr class="separator:a8705760aff273c4c4374cf658006ba1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72993bb9ad0ba5d7ee6c41fd171b1e4c"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a72993bb9ad0ba5d7ee6c41fd171b1e4c">column_index</a> (const std::string &amp;name) override</td></tr>
+<tr class="separator:a72993bb9ad0ba5d7ee6c41fd171b1e4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abbfa5e9bf78162b65bb5cefe23f89ffc"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#abbfa5e9bf78162b65bb5cefe23f89ffc">column_name</a> (size_t index)</td></tr>
 <tr class="separator:abbfa5e9bf78162b65bb5cefe23f89ffc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93850223f37ed71ffb1a5b5f14fb9a48"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a93850223f37ed71ffb1a5b5f14fb9a48">contains_column</a> (const std::string &amp;name)</td></tr>
 <tr class="separator:a93850223f37ed71ffb1a5b5f14fb9a48"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a890a2faaacff42437ba5bb6266f229a2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structturi_1_1dataframe__t.html">dataframe_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a890a2faaacff42437ba5bb6266f229a2">_head</a> (size_t nrows)</td></tr>
-<tr class="separator:a890a2faaacff42437ba5bb6266f229a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad2e414417d80b5a0b4242f57050314ff"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#ad2e414417d80b5a0b4242f57050314ff">tail</a> (size_t nrows)</td></tr>
-<tr class="separator:ad2e414417d80b5a0b4242f57050314ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad065dfa621df0a88be920bf36f68471d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structturi_1_1dataframe__t.html">dataframe_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#ad065dfa621df0a88be920bf36f68471d">_tail</a> (size_t nrows)</td></tr>
-<tr class="separator:ad065dfa621df0a88be920bf36f68471d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad1553568db9179d9cea749e9386d45cf"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sarray_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#ad1553568db9179d9cea749e9386d45cf">select_column</a> (const std::string &amp;name)</td></tr>
-<tr class="separator:ad1553568db9179d9cea749e9386d45cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa618b984e2e381286866a34e74884d62"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#aa618b984e2e381286866a34e74884d62">logical_filter</a> (std::shared_ptr&lt; unity_sarray_base &gt; index)</td></tr>
-<tr class="separator:aa618b984e2e381286866a34e74884d62"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae2b8f7b00d84439fa50c7282aa0e9dd3"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#ae2b8f7b00d84439fa50c7282aa0e9dd3">select_columns</a> (const std::vector&lt; std::string &gt; &amp;names)</td></tr>
-<tr class="separator:ae2b8f7b00d84439fa50c7282aa0e9dd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaf02fd6ca95d55dbbb42028ca543397e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#aaf02fd6ca95d55dbbb42028ca543397e">add_column</a> (std::shared_ptr&lt; unity_sarray_base &gt;data, const std::string &amp;name)</td></tr>
-<tr class="separator:aaf02fd6ca95d55dbbb42028ca543397e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba9cd6cc6f468214ea4fcd602e42acd6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#aba9cd6cc6f468214ea4fcd602e42acd6">add_columns</a> (std::list&lt; std::shared_ptr&lt; unity_sarray_base &gt;&gt; data_list, std::vector&lt; std::string &gt; name_vec)</td></tr>
-<tr class="separator:aba9cd6cc6f468214ea4fcd602e42acd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a27f5a59c446df522fd6dd6e08dc6079e"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sarray_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a27f5a59c446df522fd6dd6e08dc6079e">transform</a> (const std::string &amp;lambda, <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> type, bool skip_undefined, int seed)</td></tr>
-<tr class="separator:a27f5a59c446df522fd6dd6e08dc6079e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac29cf5557069d505f7ec2914a3c09e37"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sarray_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#ac29cf5557069d505f7ec2914a3c09e37">transform_native</a> (const <a class="el" href="structturi_1_1function__closure__info.html">function_closure_info</a> &amp;lambda, <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> type, bool skip_undefined, int seed)</td></tr>
-<tr class="separator:ac29cf5557069d505f7ec2914a3c09e37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23a5e1f503a14bdb987ca15e8a257a98"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structturi_1_1dataframe__t.html">dataframe_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a23a5e1f503a14bdb987ca15e8a257a98">_head</a> (size_t nrows) override</td></tr>
+<tr class="separator:a23a5e1f503a14bdb987ca15e8a257a98"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ba92f88220854f76eae25f643e4b407"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a4ba92f88220854f76eae25f643e4b407">tail</a> (size_t nrows) override</td></tr>
+<tr class="separator:a4ba92f88220854f76eae25f643e4b407"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16c083897c7666158710004ba1aa6c10"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structturi_1_1dataframe__t.html">dataframe_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a16c083897c7666158710004ba1aa6c10">_tail</a> (size_t nrows) override</td></tr>
+<tr class="separator:a16c083897c7666158710004ba1aa6c10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93b7fe80a777407e7c787087f3325ae5"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sarray_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a93b7fe80a777407e7c787087f3325ae5">select_column</a> (const std::string &amp;name) override</td></tr>
+<tr class="separator:a93b7fe80a777407e7c787087f3325ae5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a329172deda6565b1627f4adad9dbea4b"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sarray_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a329172deda6565b1627f4adad9dbea4b">select_column</a> (size_t idx)</td></tr>
+<tr class="separator:a329172deda6565b1627f4adad9dbea4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae50475fe79c9426f87cffff329d707e6"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#ae50475fe79c9426f87cffff329d707e6">logical_filter</a> (std::shared_ptr&lt; unity_sarray_base &gt; index) override</td></tr>
+<tr class="separator:ae50475fe79c9426f87cffff329d707e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ec2e03f2adb399ea7a5b1195060d796"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a8ec2e03f2adb399ea7a5b1195060d796">select_columns</a> (const std::vector&lt; std::string &gt; &amp;names) override</td></tr>
+<tr class="separator:a8ec2e03f2adb399ea7a5b1195060d796"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a814ff0c9205a9ae32b4e146102b6f4d2"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a814ff0c9205a9ae32b4e146102b6f4d2">select_columns</a> (const std::vector&lt; size_t &gt; &amp;indices)</td></tr>
+<tr class="separator:a814ff0c9205a9ae32b4e146102b6f4d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7829006c17a6fd43be289de55c46a0e4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a7829006c17a6fd43be289de55c46a0e4">add_column</a> (std::shared_ptr&lt; unity_sarray_base &gt;data, const std::string &amp;name) override</td></tr>
+<tr class="separator:a7829006c17a6fd43be289de55c46a0e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26071d2a0b5efa0c058d8b9d168a4504"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a26071d2a0b5efa0c058d8b9d168a4504">add_columns</a> (std::list&lt; std::shared_ptr&lt; unity_sarray_base &gt;&gt; data_list, std::vector&lt; std::string &gt; name_vec) override</td></tr>
+<tr class="separator:a26071d2a0b5efa0c058d8b9d168a4504"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9df038d1a27e705a6d574a5331e05210"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sarray_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a9df038d1a27e705a6d574a5331e05210">transform</a> (const std::string &amp;lambda, <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> type, bool skip_undefined, int seed) override</td></tr>
+<tr class="separator:a9df038d1a27e705a6d574a5331e05210"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff83582492c5ff85cc4341d5ece78963"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sarray_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#aff83582492c5ff85cc4341d5ece78963">transform_native</a> (const <a class="el" href="structturi_1_1function__closure__info.html">function_closure_info</a> &amp;lambda, <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> type, bool skip_undefined, int seed) override</td></tr>
+<tr class="separator:aff83582492c5ff85cc4341d5ece78963"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af9f632b4471babf843ce37c4cf6aae1d"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sarray_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#af9f632b4471babf843ce37c4cf6aae1d">transform_lambda</a> (std::function&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>(const <a class="el" href="structturi_1_1sframe__rows_1_1row.html">sframe_rows::row</a> &amp;)&gt; lambda, <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> type, int seed)</td></tr>
 <tr class="separator:af9f632b4471babf843ce37c4cf6aae1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad4077dbd7f360570da490f9117f2043a"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#ad4077dbd7f360570da490f9117f2043a">flat_map</a> (const std::string &amp;lambda, std::vector&lt; std::string &gt; output_column_names, std::vector&lt; <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> &gt; output_column_types, bool skip_undefined, int seed)</td></tr>
-<tr class="separator:ad4077dbd7f360570da490f9117f2043a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad63cf8315424dbef4da3b09a3e1827ac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#ad63cf8315424dbef4da3b09a3e1827ac">set_column_name</a> (size_t i, std::string name)</td></tr>
-<tr class="separator:ad63cf8315424dbef4da3b09a3e1827ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a99926f25180b64e4edefa764247cb349"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a99926f25180b64e4edefa764247cb349">remove_column</a> (size_t i)</td></tr>
-<tr class="separator:a99926f25180b64e4edefa764247cb349"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0cc2c9ab6a838167e617db9fda7056c4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a0cc2c9ab6a838167e617db9fda7056c4">swap_columns</a> (size_t i, size_t j)</td></tr>
-<tr class="separator:a0cc2c9ab6a838167e617db9fda7056c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a315702c7e0105aa032d96ddcbf197f4e"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a315702c7e0105aa032d96ddcbf197f4e">flat_map</a> (const std::string &amp;lambda, std::vector&lt; std::string &gt; output_column_names, std::vector&lt; <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> &gt; output_column_types, bool skip_undefined, int seed) override</td></tr>
+<tr class="separator:a315702c7e0105aa032d96ddcbf197f4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a548dd4c73f557ec8d698d4f61a58617f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a548dd4c73f557ec8d698d4f61a58617f">set_column_name</a> (size_t i, std::string name) override</td></tr>
+<tr class="separator:a548dd4c73f557ec8d698d4f61a58617f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2997d438f43513674de61a5c4eee66d1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a2997d438f43513674de61a5c4eee66d1">remove_column</a> (size_t i) override</td></tr>
+<tr class="separator:a2997d438f43513674de61a5c4eee66d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75259966494a8e1ad580f15a8f708e03"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a75259966494a8e1ad580f15a8f708e03">swap_columns</a> (size_t i, size_t j) override</td></tr>
+<tr class="separator:a75259966494a8e1ad580f15a8f708e03"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad1ad3104a083de00183702ba4eae090b"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classturi_1_1sframe.html">sframe</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#ad1ad3104a083de00183702ba4eae090b">get_underlying_sframe</a> ()</td></tr>
 <tr class="separator:ad1ad3104a083de00183702ba4eae090b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a101e30368649011ff7e73775341edfd6"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="structturi_1_1query__eval_1_1planner__node.html">query_eval::planner_node</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a101e30368649011ff7e73775341edfd6">get_planner_node</a> ()</td></tr>
 <tr class="separator:a101e30368649011ff7e73775341edfd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af9f9ec8d04de7d05c5a30b5870ee4dd5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#af9f9ec8d04de7d05c5a30b5870ee4dd5">set_sframe</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1sframe.html">sframe</a> &gt; &amp;sf_ptr)</td></tr>
 <tr class="separator:af9f9ec8d04de7d05c5a30b5870ee4dd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a09e130823dc0fdc11547275b7f713d0d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a09e130823dc0fdc11547275b7f713d0d">begin_iterator</a> ()</td></tr>
-<tr class="separator:a09e130823dc0fdc11547275b7f713d0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af42ed6176e1674d62db3c536554cfbad"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#af42ed6176e1674d62db3c536554cfbad">iterator_get_next</a> (size_t len)</td></tr>
-<tr class="separator:af42ed6176e1674d62db3c536554cfbad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1bda760503bd25757ceff82fcd4830b0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a1bda760503bd25757ceff82fcd4830b0">save_as_csv</a> (const std::string &amp;url, std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; writing_config)</td></tr>
-<tr class="separator:a1bda760503bd25757ceff82fcd4830b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f101fe2ee6c572f6d3258088e18cbbb"><td class="memItemLeft" align="right" valign="top">std::list&lt; std::shared_ptr&lt; unity_sframe_base &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a8f101fe2ee6c572f6d3258088e18cbbb">random_split</a> (float percent, int random_seed, bool exact=false)</td></tr>
-<tr class="separator:a8f101fe2ee6c572f6d3258088e18cbbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af9b092b5e03cf5852f17f7c0b092d28d"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#af9b092b5e03cf5852f17f7c0b092d28d">sample</a> (float percent, int random_seed, bool exact=false)</td></tr>
-<tr class="separator:af9b092b5e03cf5852f17f7c0b092d28d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a67bed7000cb61f1b872ffec02e0be6aa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a67bed7000cb61f1b872ffec02e0be6aa">materialize</a> ()</td></tr>
-<tr class="separator:a67bed7000cb61f1b872ffec02e0be6aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aada83f8f216ee397bca507d237cb66c2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#aada83f8f216ee397bca507d237cb66c2">is_materialized</a> ()</td></tr>
-<tr class="separator:aada83f8f216ee397bca507d237cb66c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a674c877978344bdc5e86377c7cf51f8a"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a674c877978344bdc5e86377c7cf51f8a">query_plan_string</a> ()</td></tr>
-<tr class="separator:a674c877978344bdc5e86377c7cf51f8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4623a0c3398a1303f8774e08d30117ca"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a4623a0c3398a1303f8774e08d30117ca">has_size</a> ()</td></tr>
-<tr class="separator:a4623a0c3398a1303f8774e08d30117ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acbf17f956c27440e2c6565db68e0b0d9"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#acbf17f956c27440e2c6565db68e0b0d9">groupby_aggregate</a> (const std::vector&lt; std::string &gt; &amp;key_columns, const std::vector&lt; std::vector&lt; std::string &gt;&gt; &amp;group_columns, const std::vector&lt; std::string &gt; &amp;group_output_columns, const std::vector&lt; std::string &gt; &amp;group_operations)</td></tr>
-<tr class="separator:acbf17f956c27440e2c6565db68e0b0d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a219ff154e52e5f5096e733959e243d9f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a219ff154e52e5f5096e733959e243d9f">begin_iterator</a> () override</td></tr>
+<tr class="separator:a219ff154e52e5f5096e733959e243d9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02300b9d1d15412a19a208c50504a398"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a02300b9d1d15412a19a208c50504a398">iterator_get_next</a> (size_t len) override</td></tr>
+<tr class="separator:a02300b9d1d15412a19a208c50504a398"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af90eb8e284d7a918e7cc915c4b678f71"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#af90eb8e284d7a918e7cc915c4b678f71">save_as_csv</a> (const std::string &amp;url, std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; writing_config) override</td></tr>
+<tr class="separator:af90eb8e284d7a918e7cc915c4b678f71"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8798fbde82550d120907d44abb6e185e"><td class="memItemLeft" align="right" valign="top">std::list&lt; std::shared_ptr&lt; unity_sframe_base &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a8798fbde82550d120907d44abb6e185e">random_split</a> (float percent, int random_seed, bool exact=false) override</td></tr>
+<tr class="separator:a8798fbde82550d120907d44abb6e185e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a537a994601efc447fa9c5a4b9276b019"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a537a994601efc447fa9c5a4b9276b019">sample</a> (float percent, int random_seed, bool exact=false) override</td></tr>
+<tr class="separator:a537a994601efc447fa9c5a4b9276b019"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad74ebfb6c6ff6a5c6e3dc8bec2a0cf45"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#ad74ebfb6c6ff6a5c6e3dc8bec2a0cf45">materialize</a> () override</td></tr>
+<tr class="separator:ad74ebfb6c6ff6a5c6e3dc8bec2a0cf45"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99f26337ac609a0fe5a7934dcc9a4ca4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a99f26337ac609a0fe5a7934dcc9a4ca4">is_materialized</a> () override</td></tr>
+<tr class="separator:a99f26337ac609a0fe5a7934dcc9a4ca4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64076da98d5e3e50ab97f98d3f311d15"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a64076da98d5e3e50ab97f98d3f311d15">query_plan_string</a> () override</td></tr>
+<tr class="separator:a64076da98d5e3e50ab97f98d3f311d15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4603142108a8167519dee1b74af3caf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#ae4603142108a8167519dee1b74af3caf">has_size</a> () override</td></tr>
+<tr class="separator:ae4603142108a8167519dee1b74af3caf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff19571c8615825b6e2146b488ee9b01"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#aff19571c8615825b6e2146b488ee9b01">groupby_aggregate</a> (const std::vector&lt; std::string &gt; &amp;key_columns, const std::vector&lt; std::vector&lt; std::string &gt;&gt; &amp;group_columns, const std::vector&lt; std::string &gt; &amp;group_output_columns, const std::vector&lt; std::string &gt; &amp;group_operations) override</td></tr>
+<tr class="separator:aff19571c8615825b6e2146b488ee9b01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a22928141ddddd417e0bf75f311aa2ea1"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a22928141ddddd417e0bf75f311aa2ea1">groupby_aggregate</a> (const std::vector&lt; std::string &gt; &amp;key_columns, const std::vector&lt; std::vector&lt; std::string &gt;&gt; &amp;group_columns, const std::vector&lt; std::string &gt; &amp;group_output_columns, const std::vector&lt; std::shared_ptr&lt; <a class="el" href="classturi_1_1group__aggregate__value.html">group_aggregate_value</a> &gt;&gt; &amp;group_operations)</td></tr>
 <tr class="separator:a22928141ddddd417e0bf75f311aa2ea1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad9dad2cb8c7517e36ecdbee7ce348d13"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#ad9dad2cb8c7517e36ecdbee7ce348d13">append</a> (std::shared_ptr&lt; unity_sframe_base &gt; other)</td></tr>
-<tr class="separator:ad9dad2cb8c7517e36ecdbee7ce348d13"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa86bf264331ecf3743b4a9996e4194c3"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sarray_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#aa86bf264331ecf3743b4a9996e4194c3">pack_columns</a> (const std::vector&lt; std::string &gt; &amp;pack_column_names, const std::vector&lt; std::string &gt; &amp;dict_key_names, <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> <a class="el" href="classturi_1_1unity__sframe.html#a8fd3262a93b45910737f785c57d2b5a3">dtype</a>, const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;fill_na)</td></tr>
-<tr class="separator:aa86bf264331ecf3743b4a9996e4194c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7680f8e2540042a1ecc98d7eedf497ee"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a7680f8e2540042a1ecc98d7eedf497ee">stack</a> (const std::string &amp;<a class="el" href="classturi_1_1unity__sframe.html#abbfa5e9bf78162b65bb5cefe23f89ffc">column_name</a>, const std::vector&lt; std::string &gt; &amp;new_column_names, const std::vector&lt; <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> &gt; &amp;new_column_types, bool drop_na)</td></tr>
-<tr class="separator:a7680f8e2540042a1ecc98d7eedf497ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae176acdf81b72fae492f1abcb83fdd65"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#ae176acdf81b72fae492f1abcb83fdd65">copy_range</a> (size_t start, size_t step, size_t end)</td></tr>
-<tr class="separator:ae176acdf81b72fae492f1abcb83fdd65"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a13335d79431ec28a83f02e4ae42743d8"><td class="memItemLeft" align="right" valign="top">std::list&lt; std::shared_ptr&lt; unity_sframe_base &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a13335d79431ec28a83f02e4ae42743d8">drop_missing_values</a> (const std::vector&lt; std::string &gt; &amp;<a class="el" href="classturi_1_1unity__sframe.html#a08f9de6c5abca26cd9c3de902c956320">column_names</a>, bool all, bool <a class="el" href="group__eager__algorithms.html#gab9682fbfda1c4eb780e1faafb488c3f0">split</a>)</td></tr>
-<tr class="separator:a13335d79431ec28a83f02e4ae42743d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39c839ca544ff1038ca0a77516cd1792"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a39c839ca544ff1038ca0a77516cd1792">append</a> (std::shared_ptr&lt; unity_sframe_base &gt; other) override</td></tr>
+<tr class="separator:a39c839ca544ff1038ca0a77516cd1792"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f26a6fbb156be22fbe961cd9fc1912e"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sarray_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a8f26a6fbb156be22fbe961cd9fc1912e">pack_columns</a> (const std::vector&lt; std::string &gt; &amp;pack_column_names, const std::vector&lt; std::string &gt; &amp;dict_key_names, <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> <a class="el" href="classturi_1_1unity__sframe.html#a065131c99efd3e9f26935f3731554527">dtype</a>, const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;fill_na) override</td></tr>
+<tr class="separator:a8f26a6fbb156be22fbe961cd9fc1912e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7ac6ce97f59af09f461783f0a1950c9"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#af7ac6ce97f59af09f461783f0a1950c9">stack</a> (const std::string &amp;<a class="el" href="classturi_1_1unity__sframe.html#abbfa5e9bf78162b65bb5cefe23f89ffc">column_name</a>, const std::vector&lt; std::string &gt; &amp;new_column_names, const std::vector&lt; <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> &gt; &amp;new_column_types, bool drop_na) override</td></tr>
+<tr class="separator:af7ac6ce97f59af09f461783f0a1950c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4890e792069361e3a6cddf235df5bba"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#ab4890e792069361e3a6cddf235df5bba">copy_range</a> (size_t start, size_t step, size_t end) override</td></tr>
+<tr class="separator:ab4890e792069361e3a6cddf235df5bba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2ce30e580d260f4660074cf6553666b"><td class="memItemLeft" align="right" valign="top">std::list&lt; std::shared_ptr&lt; unity_sframe_base &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#ad2ce30e580d260f4660074cf6553666b">drop_missing_values</a> (const std::vector&lt; std::string &gt; &amp;<a class="el" href="classturi_1_1unity__sframe.html#a2b9bb354db2a2094d77405419fcf1d51">column_names</a>, bool all, bool <a class="el" href="group__eager__algorithms.html#gab9682fbfda1c4eb780e1faafb488c3f0">split</a>, bool recursive) override</td></tr>
+<tr class="separator:ad2ce30e580d260f4660074cf6553666b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb8f23664787da060b452e6b11959c1d"><td class="memItemLeft" align="right" valign="top">std::list&lt; std::shared_ptr&lt; unity_sframe_base &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#afb8f23664787da060b452e6b11959c1d">logical_filter_split</a> (std::shared_ptr&lt; unity_sarray_base &gt; logical_filter_array)</td></tr>
 <tr class="separator:afb8f23664787da060b452e6b11959c1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -263,14 +271,17 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Destructor. Calls <a class="el" href="classturi_1_1unity__sframe.html#a0ef08a07f29d2705a06e645b93c11091">clear()</a>. </p>
+<p>Destructor. Calls <a class="el" href="classturi_1_1unity__sframe.html#a2c5ee00ff1210462b28cf95c20f6080c">clear()</a>. </p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a890a2faaacff42437ba5bb6266f229a2"></a>
+<a class="anchor" id="a23a5e1f503a14bdb987ca15e8a257a98"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="structturi_1_1dataframe__t.html">dataframe_t</a> turi::unity_sframe::_head </td>
@@ -280,14 +291,22 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Same as head, returning dataframe. </p>
 
 </div>
 </div>
-<a class="anchor" id="ad065dfa621df0a88be920bf36f68471d"></a>
+<a class="anchor" id="a16c083897c7666158710004ba1aa6c10"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="structturi_1_1dataframe__t.html">dataframe_t</a> turi::unity_sframe::_tail </td>
@@ -297,14 +316,22 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Same as head, returning dataframe. </p>
 
 </div>
 </div>
-<a class="anchor" id="aaf02fd6ca95d55dbbb42028ca543397e"></a>
+<a class="anchor" id="a7829006c17a6fd43be289de55c46a0e4"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void turi::unity_sframe::add_column </td>
@@ -324,6 +351,11 @@ Public Member Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Mutates the current SFrame by adding the given column.</p>
 <p>Throws an exception if:</p><ul>
@@ -332,9 +364,12 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="aba9cd6cc6f468214ea4fcd602e42acd6"></a>
+<a class="anchor" id="a26071d2a0b5efa0c058d8b9d168a4504"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void turi::unity_sframe::add_columns </td>
@@ -354,6 +389,11 @@ Public Member Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Mutates the current SFrame by adding the given columns.</p>
 <p>Throws an exception if ANY given column cannot be added (for one of the reasons that add_column can fail).</p>
@@ -361,9 +401,12 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ad9dad2cb8c7517e36ecdbee7ce348d13"></a>
+<a class="anchor" id="a39c839ca544ff1038ca0a77516cd1792"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::shared_ptr&lt;unity_sframe_base&gt; turi::unity_sframe::append </td>
@@ -373,14 +416,22 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Returns a new SFrame which contains all rows combined from current SFrame and "other" The "other" SFrame has to have the same number of columns with the same column names and same column types as "this" SFrame </p>
 
 </div>
 </div>
-<a class="anchor" id="a09e130823dc0fdc11547275b7f713d0d"></a>
+<a class="anchor" id="a219ff154e52e5f5096e733959e243d9f"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void turi::unity_sframe::begin_iterator </td>
@@ -389,15 +440,23 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Begin iteration through the SFrame.</p>
-<p>Works together with <a class="el" href="classturi_1_1unity__sframe.html#af42ed6176e1674d62db3c536554cfbad">iterator_get_next()</a>. The usage pattern is as follows: </p><div class="fragment"><div class="line">sframe.begin_iterator();</div><div class="line"><span class="keywordflow">while</span>(1) {</div><div class="line">  <span class="keyword">auto</span> ret = sframe.iterator_get_next(64);</div><div class="line">  <span class="comment">// do stuff</span></div><div class="line">  <span class="keywordflow">if</span> (ret.size() &lt; 64) {</div><div class="line">    <span class="comment">// we are done</span></div><div class="line">    <span class="keywordflow">break</span>;</div><div class="line">  }</div><div class="line">}</div></div><!-- fragment --><p>Note that use of pretty much any of the other data-dependent SArray functions will invalidate the iterator. </p>
+<p>Works together with <a class="el" href="classturi_1_1unity__sframe.html#a02300b9d1d15412a19a208c50504a398">iterator_get_next()</a>. The usage pattern is as follows: </p><div class="fragment"><div class="line">sframe.begin_iterator();</div><div class="line"><span class="keywordflow">while</span>(1) {</div><div class="line">  <span class="keyword">auto</span> ret = sframe.iterator_get_next(64);</div><div class="line">  <span class="comment">// do stuff</span></div><div class="line">  <span class="keywordflow">if</span> (ret.size() &lt; 64) {</div><div class="line">    <span class="comment">// we are done</span></div><div class="line">    <span class="keywordflow">break</span>;</div><div class="line">  }</div><div class="line">}</div></div><!-- fragment --><p>Note that use of pretty much any of the other data-dependent SArray functions will invalidate the iterator. </p>
 
 </div>
 </div>
-<a class="anchor" id="a0ef08a07f29d2705a06e645b93c11091"></a>
+<a class="anchor" id="a2c5ee00ff1210462b28cf95c20f6080c"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void turi::unity_sframe::clear </td>
@@ -406,14 +465,22 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Clears the contents of the SFrame. </p>
 
 </div>
 </div>
-<a class="anchor" id="a385c28fb2dc312aea7d6327cecda3802"></a>
+<a class="anchor" id="a72993bb9ad0ba5d7ee6c41fd171b1e4c"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">size_t turi::unity_sframe::column_index </td>
@@ -423,6 +490,11 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Returns the index of the column <code>name</code> </p>
 
@@ -445,9 +517,12 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a08f9de6c5abca26cd9c3de902c956320"></a>
+<a class="anchor" id="a2b9bb354db2a2094d77405419fcf1d51"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::vector&lt;std::string&gt; turi::unity_sframe::column_names </td>
@@ -456,14 +531,22 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
-<p>Returns an array containing the name of each column. The length of the return array is equal to <a class="el" href="classturi_1_1unity__sframe.html#aeed12630d98c2825d44ead9218a399e3">num_columns()</a>. If the sframe is empty, this returns an empty array. </p>
+<p>Returns an array containing the name of each column. The length of the return array is equal to <a class="el" href="classturi_1_1unity__sframe.html#a94e336479f6fd6009d0d2b43d2cf76f7">num_columns()</a>. If the sframe is empty, this returns an empty array. </p>
 
 </div>
 </div>
-<a class="anchor" id="ac26fb4e5ca6342cc28a417c12e18b78a"></a>
+<a class="anchor" id="ab73654ce7aaf8e6058333e5b16db81e8"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::map&lt;std::string, std::shared_ptr&lt;unity_sarray_base&gt; &gt; turi::unity_sframe::construct_from_csvs </td>
@@ -489,6 +572,11 @@ Public Member Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Constructs an SFrame from one or more csv files. To keep the interface stable, the CSV parsing configuration read from a map of string-&gt;<a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> called parsing_config. The URL can be a single filename or a directory name. When passing in a directory and the pattern is non-empty, we will attempt to treat it as a glob pattern.</p>
 <p>The default parsing configuration is the following: </p><div class="fragment"><div class="line"><span class="keywordtype">bool</span> use_header = <span class="keyword">true</span>;</div><div class="line">tokenizer.delimiter = <span class="stringliteral">&quot;,&quot;</span>;</div><div class="line">tokenizer.comment_char = <span class="charliteral">&#39;\0&#39;</span>;</div><div class="line">tokenizer.escape_char = <span class="charliteral">&#39;\\&#39;</span>;</div><div class="line">tokenizer.double_quote = <span class="keyword">true</span>;</div><div class="line">tokenizer.quote_char = <span class="charliteral">&#39;\&quot;&#39;</span>;</div><div class="line">tokenizer.skip_initial_space = <span class="keyword">true</span>;</div></div><!-- fragment --><p>The fields in parsing config are:</p><ul>
@@ -503,9 +591,12 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="abf8daf1dcf1f1a5c9ce3f3f90daa4c10"></a>
+<a class="anchor" id="a576ce214abe00101a2d0c5165c61f14a"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void turi::unity_sframe::construct_from_dataframe </td>
@@ -515,6 +606,11 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Constructs an Sframe using a dataframe as input. Dataframe must not contain NaN values. </p>
 
@@ -537,9 +633,12 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ae9f8644a8c177be7de2a0710b209f4e9"></a>
+<a class="anchor" id="a1949dc9550aa764518a29825caf7afd2"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void turi::unity_sframe::construct_from_sframe_index </td>
@@ -549,8 +648,13 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
-<p>Constructs an SFrame from an existing directory on disk saved with <a class="el" href="classturi_1_1unity__sframe.html#a1d21a776859e3c422b83ebd9d50b77b6">save_frame()</a> or a on disk sarray prefix (saved with <a class="el" href="classturi_1_1unity__sframe.html#addea1ba2951b8a8f21c333b4a1430b2f">save_frame_by_index_file()</a>). This function will automatically detect if the location is a directory, or a file. The files will not be deleted on destruction. If the current object is already storing an frame, it is cleared (<a class="el" href="classturi_1_1unity__sframe.html#a0ef08a07f29d2705a06e645b93c11091">clear()</a>). May throw an exception on failure. If an exception occurs, the contents of SArray is empty. </p>
+<p>Constructs an SFrame from an existing directory on disk saved with <a class="el" href="classturi_1_1unity__sframe.html#a26083c273c3a39e8d5228cf3b4c73af7">save_frame()</a> or a on disk sarray prefix (saved with <a class="el" href="classturi_1_1unity__sframe.html#addea1ba2951b8a8f21c333b4a1430b2f">save_frame_by_index_file()</a>). This function will automatically detect if the location is a directory, or a file. The files will not be deleted on destruction. If the current object is already storing an frame, it is cleared (<a class="el" href="classturi_1_1unity__sframe.html#a2c5ee00ff1210462b28cf95c20f6080c">clear()</a>). May throw an exception on failure. If an exception occurs, the contents of SArray is empty. </p>
 
 </div>
 </div>
@@ -571,9 +675,12 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ae176acdf81b72fae492f1abcb83fdd65"></a>
+<a class="anchor" id="ab4890e792069361e3a6cddf235df5bba"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::shared_ptr&lt;unity_sframe_base&gt; turi::unity_sframe::copy_range </td>
@@ -599,14 +706,22 @@ Public Member Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Extracts a range of rows from an SFrame as a new SFrame. This will extract rows beginning at start (inclusive) and ending at end(exclusive) in steps of "step". step must be at least 1. </p>
 
 </div>
 </div>
-<a class="anchor" id="a13335d79431ec28a83f02e4ae42743d8"></a>
+<a class="anchor" id="ad2ce30e580d260f4660074cf6553666b"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::list&lt;std::shared_ptr&lt;unity_sframe_base&gt; &gt; turi::unity_sframe::drop_missing_values </td>
@@ -624,7 +739,13 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>split</em>&#160;</td>
+          <td class="paramname"><em>split</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>recursive</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -632,17 +753,26 @@ Public Member Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Returns a new SFrame with missing values dropped.</p>
 <p>Missing values are only searched for in the columns specified in the 'column_names'. If this vector is empty, all columns will be considered. If 'all' is true, a row is only dropped if all specified columns contain a missing value. If false, the row is dropped if any of the specified columns contain a missing value.</p>
 <p>If 'split' is true, this function returns two SFrames, the first being the SFrame with missing values dropped, and the second consisting of all the rows removed.</p>
+<p>If 'recursive' is true, the <code>nan</code>element check will be perfromed in a recursive manner to check each unit in a container-like flexible-typed cell in SFrame.</p>
 <p>Throws if the column names are not in this SFrame, or if too many are given. </p>
 
 </div>
 </div>
-<a class="anchor" id="a8fd3262a93b45910737f785c57d2b5a3"></a>
+<a class="anchor" id="a065131c99efd3e9f26935f3731554527"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::vector&lt;<a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a>&gt; turi::unity_sframe::dtype </td>
@@ -651,14 +781,56 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
-<p>Returns an array containing the datatype of each column. The length of the return array is equal to <a class="el" href="classturi_1_1unity__sframe.html#aeed12630d98c2825d44ead9218a399e3">num_columns()</a>. If the sframe is empty, this returns an empty array. </p>
+<p>Returns an array containing the datatype of each column. The length of the return array is equal to <a class="el" href="classturi_1_1unity__sframe.html#a94e336479f6fd6009d0d2b43d2cf76f7">num_columns()</a>. If the sframe is empty, this returns an empty array. </p>
 
 </div>
 </div>
-<a class="anchor" id="ad4077dbd7f360570da490f9117f2043a"></a>
+<a class="anchor" id="aa0721ae7e4cb48c5f990798e30d28a15"></a>
 <div class="memitem">
 <div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> turi::unity_sframe::dtype </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>column_index</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns the dtype of a particular column. </p>
+
+</div>
+</div>
+<a class="anchor" id="ace572f69a53656502b137c05ca315c01"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> turi::unity_sframe::dtype </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>column_name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns the dtype of a particular column. </p>
+
+</div>
+</div>
+<a class="anchor" id="a315702c7e0105aa032d96ddcbf197f4e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::shared_ptr&lt;unity_sframe_base&gt; turi::unity_sframe::flat_map </td>
@@ -696,6 +868,11 @@ Public Member Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Returns a new sarray which is a transform of each row in the sframe using a Python lambda function pickled into a string. </p>
 
@@ -733,9 +910,12 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="acbf17f956c27440e2c6565db68e0b0d9"></a>
+<a class="anchor" id="aff19571c8615825b6e2146b488ee9b01"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::shared_ptr&lt;unity_sframe_base&gt; turi::unity_sframe::groupby_aggregate </td>
@@ -767,6 +947,11 @@ Public Member Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Returns unity_sframe* where there is one row for each unique value of the key_column. group_operations is a collection of pairs of {column_name, operation_name} where operation_name is a builtin operator. </p>
 
@@ -811,9 +996,12 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a4623a0c3398a1303f8774e08d30117ca"></a>
+<a class="anchor" id="ae4603142108a8167519dee1b74af3caf"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">bool turi::unity_sframe::has_size </td>
@@ -822,14 +1010,22 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Return true if the sframe size is known. </p>
 
 </div>
 </div>
-<a class="anchor" id="a19ecf0228cf3302a21523be2fc727637"></a>
+<a class="anchor" id="a8705760aff273c4c4374cf658006ba1e"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::shared_ptr&lt;unity_sframe_base&gt; turi::unity_sframe::head </td>
@@ -839,14 +1035,22 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
-<p>Returns some number of rows of the SFrame in a dataframe representation. if nrows exceeds the number of rows in the SFrame ( <a class="el" href="classturi_1_1unity__sframe.html#a849e505ca625f231582a38763be3cc54">size()</a> ), this returns only <a class="el" href="classturi_1_1unity__sframe.html#a849e505ca625f231582a38763be3cc54">size()</a> rows. </p>
+<p>Returns some number of rows of the SFrame in a dataframe representation. if nrows exceeds the number of rows in the SFrame ( <a class="el" href="classturi_1_1unity__sframe.html#a4f3fdfee4c929d59e0be098df6ddf424">size()</a> ), this returns only <a class="el" href="classturi_1_1unity__sframe.html#a4f3fdfee4c929d59e0be098df6ddf424">size()</a> rows. </p>
 
 </div>
 </div>
-<a class="anchor" id="aada83f8f216ee397bca507d237cb66c2"></a>
+<a class="anchor" id="a99f26337ac609a0fe5a7934dcc9a4ca4"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">bool turi::unity_sframe::is_materialized </td>
@@ -855,14 +1059,22 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Returns whether or not this sframe is materialized </p>
 
 </div>
 </div>
-<a class="anchor" id="af42ed6176e1674d62db3c536554cfbad"></a>
+<a class="anchor" id="a02300b9d1d15412a19a208c50504a398"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::vector&lt; std::vector&lt;<a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>&gt; &gt; turi::unity_sframe::iterator_get_next </td>
@@ -872,8 +1084,13 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
-<p>Obtains the next block of elements of size len from the SFrame. Works together with <a class="el" href="classturi_1_1unity__sframe.html#a09e130823dc0fdc11547275b7f713d0d">begin_iterator()</a>. See the code example in <a class="el" href="classturi_1_1unity__sframe.html#a09e130823dc0fdc11547275b7f713d0d">begin_iterator()</a> for details.</p>
+<p>Obtains the next block of elements of size len from the SFrame. Works together with <a class="el" href="classturi_1_1unity__sframe.html#a219ff154e52e5f5096e733959e243d9f">begin_iterator()</a>. See the code example in <a class="el" href="classturi_1_1unity__sframe.html#a219ff154e52e5f5096e733959e243d9f">begin_iterator()</a> for details.</p>
 <p>This function will always return a vector of length 'len' unless at the end of the array, or if an error has occured.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -885,9 +1102,12 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="aa618b984e2e381286866a34e74884d62"></a>
+<a class="anchor" id="ae50475fe79c9426f87cffff329d707e6"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::shared_ptr&lt;unity_sframe_base&gt; turi::unity_sframe::logical_filter </td>
@@ -897,6 +1117,11 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Returns a new SFrame which is filtered by a given logical column. The index array must be the same length as the current array. An output array is returned containing only the elements in the current where are the corresponding element in the index array evaluates to true. </p>
 
@@ -926,9 +1151,12 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a67bed7000cb61f1b872ffec02e0be6aa"></a>
+<a class="anchor" id="ad74ebfb6c6ff6a5c6e3dc8bec2a0cf45"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void turi::unity_sframe::materialize </td>
@@ -937,14 +1165,22 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>materialize the sframe, this is different from save() as this is a temporary persist of all sarrays underneath the sframe to speed up some computation (for example, lambda) this will NOT create a new uity_sframe. </p>
 
 </div>
 </div>
-<a class="anchor" id="aeed12630d98c2825d44ead9218a399e3"></a>
+<a class="anchor" id="a94e336479f6fd6009d0d2b43d2cf76f7"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">size_t turi::unity_sframe::num_columns </td>
@@ -953,14 +1189,22 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Returns the number of columns in the SFrame. Returns 0 if the sframe is empty. </p>
 
 </div>
 </div>
-<a class="anchor" id="aa86bf264331ecf3743b4a9996e4194c3"></a>
+<a class="anchor" id="a8f26a6fbb156be22fbe961cd9fc1912e"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::shared_ptr&lt;unity_sarray_base&gt; turi::unity_sframe::pack_columns </td>
@@ -992,6 +1236,11 @@ Public Member Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Pack a subset columns of current SFrame into one dictionary column, using column name as key in the dictionary, and value of the column as value in the dictionary, returns a new SFrame that includes other non-packed columns plus the newly generated dict column. Missing value in the original column will not show up in the packed dictionary value.</p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -1007,9 +1256,12 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a674c877978344bdc5e86377c7cf51f8a"></a>
+<a class="anchor" id="a64076da98d5e3e50ab97f98d3f311d15"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::string turi::unity_sframe::query_plan_string </td>
@@ -1018,14 +1270,22 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Return the query plan as a string representation of a dot graph. </p>
 
 </div>
 </div>
-<a class="anchor" id="a8f101fe2ee6c572f6d3258088e18cbbb"></a>
+<a class="anchor" id="a8798fbde82550d120907d44abb6e185e"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::list&lt;std::shared_ptr&lt;unity_sframe_base&gt; &gt; turi::unity_sframe::random_split </td>
@@ -1051,15 +1311,23 @@ Public Member Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Randomly split the sframe into two parts, with ratio = percent, and seed = random_seed.</p>
 <p>Returns a list of size 2 of the unity_sframes resulting from the split. </p>
 
 </div>
 </div>
-<a class="anchor" id="a99926f25180b64e4edefa764247cb349"></a>
+<a class="anchor" id="a2997d438f43513674de61a5c4eee66d1"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void turi::unity_sframe::remove_column </td>
@@ -1069,14 +1337,22 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Remove the ith column. </p>
 
 </div>
 </div>
-<a class="anchor" id="af9b092b5e03cf5852f17f7c0b092d28d"></a>
+<a class="anchor" id="a537a994601efc447fa9c5a4b9276b019"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::shared_ptr&lt;unity_sframe_base&gt; turi::unity_sframe::sample </td>
@@ -1102,15 +1378,23 @@ Public Member Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Sample the rows of sframe uniformly with ratio = percent, and seed = random_seed.</p>
 <p>Returns unity_sframe* containing the sampled rows. </p>
 
 </div>
 </div>
-<a class="anchor" id="a1bda760503bd25757ceff82fcd4830b0"></a>
+<a class="anchor" id="af90eb8e284d7a918e7cc915c4b678f71"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void turi::unity_sframe::save_as_csv </td>
@@ -1130,6 +1414,11 @@ Public Member Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Save the sframe to url in csv format. To keep the interface stable, the CSV parsing configuration read from a map of string-&gt;<a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> called writing_config.</p>
 <p>The default writing configuration is the following: </p><div class="fragment"><div class="line">writer.delimiter = <span class="stringliteral">&quot;,&quot;</span>;</div><div class="line">writer.escape_char = <span class="charliteral">&#39;\\&#39;</span>;</div><div class="line">writer.double_quote = <span class="keyword">true</span>;</div><div class="line">writer.quote_char = <span class="charliteral">&#39;\&quot;&#39;</span>;</div><div class="line">writer.use_quote_char = <span class="keyword">true</span>;</div></div><!-- fragment --><p>For details on the meaning of each config see <a class="el" href="classturi_1_1csv__writer.html">csv_writer</a></p>
@@ -1143,9 +1432,12 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a1d21a776859e3c422b83ebd9d50b77b6"></a>
+<a class="anchor" id="a26083c273c3a39e8d5228cf3b4c73af7"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void turi::unity_sframe::save_frame </td>
@@ -1155,6 +1447,11 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Saves a copy of the current sframe into a directory. Does not modify the current sframe. </p>
 
@@ -1177,9 +1474,12 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a8f383f45511896dbc7579feb130ba9e1"></a>
+<a class="anchor" id="a007b40f01ed0633a5353f9b1db7c982b"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void turi::unity_sframe::save_frame_reference </td>
@@ -1189,15 +1489,23 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Performs an incomplete save of an existing SFrame into a directory. This saved SFrame may reference SFrames in other locations <em>in the same filesystem</em> for certain columns/segments/etc.</p>
 <p>Does not modify the current sframe. </p>
 
 </div>
 </div>
-<a class="anchor" id="ad1553568db9179d9cea749e9386d45cf"></a>
+<a class="anchor" id="a93b7fe80a777407e7c787087f3325ae5"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::shared_ptr&lt;unity_sarray_base&gt; turi::unity_sframe::select_column </td>
@@ -1207,14 +1515,39 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Returns an SArray with the column that corresponds to 'name'. Throws an exception if the name is not in the current SFrame. </p>
 
 </div>
 </div>
-<a class="anchor" id="ae2b8f7b00d84439fa50c7282aa0e9dd3"></a>
+<a class="anchor" id="a329172deda6565b1627f4adad9dbea4b"></a>
 <div class="memitem">
 <div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;unity_sarray_base&gt; turi::unity_sframe::select_column </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>idx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns an SArray with the column that corresponds to index idx. Throws an exception if the name is not in the current SFrame. </p>
+
+</div>
+</div>
+<a class="anchor" id="a8ec2e03f2adb399ea7a5b1195060d796"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::shared_ptr&lt;unity_sframe_base&gt; turi::unity_sframe::select_columns </td>
@@ -1224,14 +1557,39 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Returns an lazy sframe with the columns that have the given names. Throws an exception if ANY of the names given are not in the current SFrame. </p>
 
 </div>
 </div>
-<a class="anchor" id="ad63cf8315424dbef4da3b09a3e1827ac"></a>
+<a class="anchor" id="a814ff0c9205a9ae32b4e146102b6f4d2"></a>
 <div class="memitem">
 <div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;unity_sframe_base&gt; turi::unity_sframe::select_columns </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; size_t &gt; &amp;&#160;</td>
+          <td class="paramname"><em>indices</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns an lazy sframe with the columns given by the indices. </p>
+
+</div>
+</div>
+<a class="anchor" id="a548dd4c73f557ec8d698d4f61a58617f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void turi::unity_sframe::set_column_name </td>
@@ -1251,6 +1609,11 @@ Public Member Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Set the ith column name.</p>
 <p>Throws an exception if index out of bound or name already exists. </p>
@@ -1274,9 +1637,12 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a849e505ca625f231582a38763be3cc54"></a>
+<a class="anchor" id="a4f3fdfee4c929d59e0be098df6ddf424"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">size_t turi::unity_sframe::size </td>
@@ -1285,14 +1651,22 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Returns the number of rows in the SFrame. Returns 0 if the SFrame is empty. </p>
 
 </div>
 </div>
-<a class="anchor" id="a7680f8e2540042a1ecc98d7eedf497ee"></a>
+<a class="anchor" id="af7ac6ce97f59af09f461783f0a1950c9"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::shared_ptr&lt;unity_sframe_base&gt; turi::unity_sframe::stack </td>
@@ -1324,6 +1698,11 @@ Public Member Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Convert a dictionary column of the SFrame to two columns with first column as the key for the dictionary and second column as the value for the dictionary. Returns a new SFrame with the two newly created columns, plus all columns other than the stacked column. The values from those columns are duplicated for all rows created from the same original row.</p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -1339,9 +1718,12 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a0cc2c9ab6a838167e617db9fda7056c4"></a>
+<a class="anchor" id="a75259966494a8e1ad580f15a8f708e03"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void turi::unity_sframe::swap_columns </td>
@@ -1361,14 +1743,22 @@ Public Member Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Swap the ith and jth columns. </p>
 
 </div>
 </div>
-<a class="anchor" id="ad2e414417d80b5a0b4242f57050314ff"></a>
+<a class="anchor" id="a4ba92f88220854f76eae25f643e4b407"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::shared_ptr&lt;unity_sframe_base&gt; turi::unity_sframe::tail </td>
@@ -1378,14 +1768,22 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
-<p>Returns some number of rows from the end of the SFrame in a dataframe representation. If nrows exceeds the number of rows in the SFrame ( <a class="el" href="classturi_1_1unity__sframe.html#a849e505ca625f231582a38763be3cc54">size()</a> ), this returns only <a class="el" href="classturi_1_1unity__sframe.html#a849e505ca625f231582a38763be3cc54">size()</a> rows. </p>
+<p>Returns some number of rows from the end of the SFrame in a dataframe representation. If nrows exceeds the number of rows in the SFrame ( <a class="el" href="classturi_1_1unity__sframe.html#a4f3fdfee4c929d59e0be098df6ddf424">size()</a> ), this returns only <a class="el" href="classturi_1_1unity__sframe.html#a4f3fdfee4c929d59e0be098df6ddf424">size()</a> rows. </p>
 
 </div>
 </div>
-<a class="anchor" id="a27f5a59c446df522fd6dd6e08dc6079e"></a>
+<a class="anchor" id="a9df038d1a27e705a6d574a5331e05210"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::shared_ptr&lt;unity_sarray_base&gt; turi::unity_sframe::transform </td>
@@ -1417,6 +1815,11 @@ Public Member Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Returns a new sarray which is a transform of each row in the sframe using a Python lambda function pickled into a string. </p>
 
@@ -1455,9 +1858,12 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ac29cf5557069d505f7ec2914a3c09e37"></a>
+<a class="anchor" id="aff83582492c5ff85cc4341d5ece78963"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::shared_ptr&lt;unity_sarray_base&gt; turi::unity_sframe::transform_native </td>
@@ -1489,13 +1895,18 @@ Public Member Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Returns a new sarray which is a transform of each row in the sframe using a Python lambda function pickled into a string. </p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>unity/lib/<a class="el" href="unity__sframe_8hpp_source.html">unity_sframe.hpp</a></li>
+<li>core/storage/sframe_interface/<a class="el" href="unity__sframe_8hpp_source.html">unity_sframe.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

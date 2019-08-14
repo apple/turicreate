@@ -117,6 +117,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="functions_v.html#index_v"><span>v</span></a></li>
       <li><a href="functions_w.html#index_w"><span>w</span></a></li>
       <li><a href="functions_x.html#index_x"><span>x</span></a></li>
+      <li><a href="functions_z.html#index_z"><span>z</span></a></li>
       <li><a href="functions_0x7e.html#index_0x7e"><span>~</span></a></li>
     </ul>
   </div>
@@ -178,11 +179,18 @@ $(document).ready(function(){initNavTree('functions_c.html','');});
 : <a class="el" href="classturi_1_1factorization_1_1ranking__sgd__solver__base.html#ace81173d35dcd3edaf460c507097b10f">turi::factorization::ranking_sgd_solver_base&lt; SGDInterface &gt;</a>
 , <a class="el" href="classturi_1_1sgd_1_1sgd__solver__base.html#a2bdda3f87ec7093a0c49ca14b8708ac5">turi::sgd::sgd_solver_base</a>
 </li>
+<li>call()
+: <a class="el" href="classcppipc_1_1comm__client.html#a14535c64a8981a3888b02d9402032ef6">cppipc::comm_client</a>
+, <a class="el" href="classcppipc_1_1object__proxy.html#adf0ff9989e25e130fdde8853b62f3256">cppipc::object_proxy&lt; T &gt;</a>
+</li>
 <li>call_all_workers()
 : <a class="el" href="classturi_1_1lambda_1_1worker__pool.html#a94a252d74dcb44f45bbf0795071fb3f6">turi::lambda::worker_pool&lt; ProxyType &gt;</a>
 </li>
 <li>call_function()
 : <a class="el" href="classturi_1_1model__base.html#abbc2ebab68ff9478dfca0654fe65c48e">turi::model_base</a>
+</li>
+<li>call_message()
+: <a class="el" href="structcppipc_1_1call__message.html#a22f29a48da1b002af131dacaa8b84586">cppipc::call_message</a>
 </li>
 <li>callback_type
 : <a class="el" href="classturi_1_1nanosockets_1_1async__reply__socket.html#a0f5e4b7c77aed325815dc506de1b2fa8">turi::nanosockets::async_reply_socket</a>
@@ -237,7 +245,9 @@ $(document).ready(function(){initNavTree('functions_c.html','');});
 : <a class="el" href="classturi_1_1lazy__eval__operation__dag.html#a17109bfbc5901049692db718fb6290aa">turi::lazy_eval_operation_dag&lt; T &gt;</a>
 </li>
 <li>clear()
-: <a class="el" href="classturi_1_1blob.html#a83aa6f6a354ec33c5da42ba58103f78d">turi::blob</a>
+: <a class="el" href="structcppipc_1_1call__message.html#a64728bd4e0cb0149320778c0a0936a68">cppipc::call_message</a>
+, <a class="el" href="structcppipc_1_1reply__message.html#a77d63b8aec67d3e061debab6beddaa1d">cppipc::reply_message</a>
+, <a class="el" href="classturi_1_1blob.html#a83aa6f6a354ec33c5da42ba58103f78d">turi::blob</a>
 , <a class="el" href="structturi_1_1dataframe__t.html#af485200ba20189b58f2b0088396c25b4">turi::dataframe_t</a>
 , <a class="el" href="classturi_1_1dense__bitset.html#a7fcf69ea1ed28b1bd001b6eade33f65a">turi::dense_bitset</a>
 , <a class="el" href="classturi_1_1file__download__cache.html#a34c69d33df53a24563e3a48f84016940">turi::file_download_cache</a>
@@ -252,7 +262,7 @@ $(document).ready(function(){initNavTree('functions_c.html','');});
 , <a class="el" href="classturi_1_1sketches_1_1space__saving.html#a0f6cef5d1925ca2bdf8df069a4c49c5c">turi::sketches::space_saving&lt; T &gt;</a>
 , <a class="el" href="classturi_1_1sparse__sim_1_1dense__triangular__itemitem__container.html#a7cd8650cbcff5f8d77c7557b2e24f201">turi::sparse_sim::dense_triangular_itemitem_container&lt; T &gt;</a>
 , <a class="el" href="classturi_1_1unity__sarray.html#a67c8b8a28be486b59f05f98b8005aff1">turi::unity_sarray</a>
-, <a class="el" href="classturi_1_1unity__sframe.html#a0ef08a07f29d2705a06e645b93c11091">turi::unity_sframe</a>
+, <a class="el" href="classturi_1_1unity__sframe.html#a2c5ee00ff1210462b28cf95c20f6080c">turi::unity_sframe</a>
 , <a class="el" href="classturi_1_1value__container__mapper.html#a92e702742e5c6bc3aea91273ec506b98">turi::value_container_mapper&lt; Value, ValueContainer &gt;</a>
 </li>
 <li>clear_bit()
@@ -268,6 +278,9 @@ $(document).ready(function(){initNavTree('functions_c.html','');});
 </li>
 <li>clear_modified_flag()
 : <a class="el" href="classturi_1_1sgraph__compute_1_1vertex__block.html#a025cf0a56b8b06bd12e9254dc948ee05">turi::sgraph_compute::vertex_block&lt; SIterableType &gt;</a>
+</li>
+<li>clear_status_watch()
+: <a class="el" href="classcppipc_1_1comm__client.html#aa5b64ed5d3eeaa365809de54273c5e3d">cppipc::comm_client</a>
 </li>
 <li>clear_word_unsync()
 : <a class="el" href="classturi_1_1dense__bitset.html#a466a0756d22469bb1eccb8d72af6a539">turi::dense_bitset</a>
@@ -354,7 +367,7 @@ $(document).ready(function(){initNavTree('functions_c.html','');});
 , <a class="el" href="classturi_1_1ml__metadata.html#a082fe95433325b5220e81e082317afcc">turi::ml_metadata</a>
 , <a class="el" href="classturi_1_1sframe.html#a74cdabcf1bb49c7b7037d387f6884676">turi::sframe</a>
 , <a class="el" href="classturi_1_1sframe__reader.html#a8aa042cabeb6619f92856d1ca5e1b49b">turi::sframe_reader</a>
-, <a class="el" href="classturi_1_1unity__sframe.html#a385c28fb2dc312aea7d6327cecda3802">turi::unity_sframe</a>
+, <a class="el" href="classturi_1_1unity__sframe.html#a72993bb9ad0ba5d7ee6c41fd171b1e4c">turi::unity_sframe</a>
 , <a class="el" href="structturi_1_1v2_1_1ml__data__entry.html#aceb41e07477baf2d436b4a11e57953fc">turi::v2::ml_data_entry</a>
 , <a class="el" href="structturi_1_1v2_1_1ml__data__full__entry.html#acb2f6083c0295300421c6b7dd707f51b">turi::v2::ml_data_full_entry</a>
 </li>
@@ -387,7 +400,7 @@ $(document).ready(function(){initNavTree('functions_c.html','');});
 , <a class="el" href="classturi_1_1ml__metadata.html#a3e49f61295c7c9bda13cd3bb209b965f">turi::ml_metadata</a>
 , <a class="el" href="classturi_1_1sframe.html#a8c59d3fe72be771526584fb4f8c57291">turi::sframe</a>
 , <a class="el" href="structturi_1_1sframe__index__file__information.html#a1f7ba9b0f34c39f62d6f5ecdd80e13ca">turi::sframe_index_file_information</a>
-, <a class="el" href="classturi_1_1unity__sframe.html#a08f9de6c5abca26cd9c3de902c956320">turi::unity_sframe</a>
+, <a class="el" href="classturi_1_1unity__sframe.html#a2b9bb354db2a2094d77405419fcf1d51">turi::unity_sframe</a>
 , <a class="el" href="classturi_1_1unity__sframe__builder.html#a783ce2a379327124e5a0c156bf535f1b">turi::unity_sframe_builder</a>
 </li>
 <li>column_numbers
@@ -454,6 +467,12 @@ $(document).ready(function(){initNavTree('functions_c.html','');});
 </li>
 <li>combine_finalize()
 : <a class="el" href="classturi_1_1sketches_1_1streaming__quantile__sketch.html#a0ca525480498482ce9c849596d46b243">turi::sketches::streaming_quantile_sketch&lt; T, Comparator &gt;</a>
+</li>
+<li>comm_client()
+: <a class="el" href="classcppipc_1_1comm__client.html#ae649032590d47393ed441bb175dab70c">cppipc::comm_client</a>
+</li>
+<li>comm_server()
+: <a class="el" href="classcppipc_1_1comm__server.html#a2ba5223e8d8f2c244ff720663f405b96">cppipc::comm_server</a>
 </li>
 <li>comment_char
 : <a class="el" href="structturi_1_1csv__line__tokenizer.html#a604e9d5d369f40c7b7b3858cbe2d6cbf">turi::csv_line_tokenizer</a>
@@ -537,6 +556,10 @@ $(document).ready(function(){initNavTree('functions_c.html','');});
 : <a class="el" href="structturi_1_1ml__data__internal_1_1row__metadata.html#aa06c89bd55192a2735d5f0a6b34e90d1">turi::ml_data_internal::row_metadata</a>
 , <a class="el" href="structturi_1_1v2_1_1ml__data__internal_1_1row__metadata.html#a69e2e5e993c4fc9835766c5911c8b947">turi::v2::ml_data_internal::row_metadata</a>
 </li>
+<li>construct()
+: <a class="el" href="structcppipc_1_1call__message.html#a8962c5abd986ff3c17ef3ab1c6a2396e">cppipc::call_message</a>
+, <a class="el" href="structcppipc_1_1reply__message.html#a299ca5d390d39d17861ddf922dd6eeb5">cppipc::reply_message</a>
+</li>
 <li>construct_from_autodetect()
 : <a class="el" href="classturi_1_1unity__sarray.html#a74e0690fb054710fe243a46784055a9d">turi::unity_sarray</a>
 </li>
@@ -545,10 +568,10 @@ $(document).ready(function(){initNavTree('functions_c.html','');});
 </li>
 <li>construct_from_csvs()
 : <a class="el" href="classturi_1_1gl__sframe.html#a0fa86422340f6320da5434e0cafca193">turi::gl_sframe</a>
-, <a class="el" href="classturi_1_1unity__sframe.html#ac26fb4e5ca6342cc28a417c12e18b78a">turi::unity_sframe</a>
+, <a class="el" href="classturi_1_1unity__sframe.html#ab73654ce7aaf8e6058333e5b16db81e8">turi::unity_sframe</a>
 </li>
 <li>construct_from_dataframe()
-: <a class="el" href="classturi_1_1unity__sframe.html#abf8daf1dcf1f1a5c9ce3f3f90daa4c10">turi::unity_sframe</a>
+: <a class="el" href="classturi_1_1unity__sframe.html#a576ce214abe00101a2d0c5165c61f14a">turi::unity_sframe</a>
 </li>
 <li>construct_from_files()
 : <a class="el" href="classturi_1_1unity__sarray.html#a8f913c2b53bc575dfb3ed3bfc45df621">turi::unity_sarray</a>
@@ -570,7 +593,7 @@ $(document).ready(function(){initNavTree('functions_c.html','');});
 : <a class="el" href="classturi_1_1unity__sframe.html#a36535542e68005db87cbc35860ee7f7b">turi::unity_sframe</a>
 </li>
 <li>construct_from_sframe_index()
-: <a class="el" href="classturi_1_1unity__sframe.html#ae9f8644a8c177be7de2a0710b209f4e9">turi::unity_sframe</a>
+: <a class="el" href="classturi_1_1unity__sframe.html#a1949dc9550aa764518a29825caf7afd2">turi::unity_sframe</a>
 </li>
 <li>construct_from_vector()
 : <a class="el" href="classturi_1_1unity__sarray.html#af1c0e5dbf37395bfc6b4edbe03aba972">turi::unity_sarray</a>
@@ -600,6 +623,9 @@ $(document).ready(function(){initNavTree('functions_c.html','');});
 , <a class="el" href="classturi_1_1sframe__reader.html#a2c8436e1f3bf6b68604643a125172ca6">turi::sframe_reader</a>
 , <a class="el" href="classturi_1_1unity__sframe.html#a93850223f37ed71ffb1a5b5f14fb9a48">turi::unity_sframe</a>
 </li>
+<li>contains_na()
+: <a class="el" href="classturi_1_1flexible__type.html#a85895e95cdf5286ca2d9cb78ec27bd59">turi::flexible_type</a>
+</li>
 <li>contains_nan()
 : <a class="el" href="structturi_1_1dataframe__t.html#a0647ad36c4f0a0e4622e8637d5291d63">turi::dataframe_t</a>
 </li>
@@ -619,13 +645,16 @@ $(document).ready(function(){initNavTree('functions_c.html','');});
 <li>copy()
 : <a class="el" href="classturi_1_1blob.html#a16645668cb14a671932444dd78606a1b">turi::blob</a>
 </li>
+<li>copy_body_from()
+: <a class="el" href="structcppipc_1_1reply__message.html#a2c62a91f287808c6fea16ade3d405a25">cppipc::reply_message</a>
+</li>
 <li>copy_edge_field()
 : <a class="el" href="classturi_1_1sgraph.html#a9624a4a4c3cc842a42bf199f6c265132">turi::sgraph</a>
 , <a class="el" href="classturi_1_1unity__sgraph.html#adb0b6367cbe8060dcf755f2cc31a02eb">turi::unity_sgraph</a>
 </li>
 <li>copy_range()
 : <a class="el" href="classturi_1_1unity__sarray.html#a88cbeb1754e74389df2202108d793833">turi::unity_sarray</a>
-, <a class="el" href="classturi_1_1unity__sframe.html#ae176acdf81b72fae492f1abcb83fdd65">turi::unity_sframe</a>
+, <a class="el" href="classturi_1_1unity__sframe.html#ab4890e792069361e3a6cddf235df5bba">turi::unity_sframe</a>
 </li>
 <li>copy_reference()
 : <a class="el" href="structturi_1_1sframe__rows_1_1row.html#ac0ecdd06086f1a15bd780efbbeed2ddf">turi::sframe_rows::row</a>

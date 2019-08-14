@@ -117,24 +117,20 @@ $(document).ready(function(){initNavTree('classturi_1_1v2__block__impl_1_1encode
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="sarray__v2__encoded__block_8hpp_source.html">sframe/sarray_v2_encoded_block.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="sarray__v2__encoded__block_8hpp_source.html">core/storage/sframe_data/sarray_v2_encoded_block.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a810fc3ce5d98d8360f0f79d389091b64"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2__block__impl_1_1encoded__block__range.html#a810fc3ce5d98d8360f0f79d389091b64">release</a> ()</td></tr>
-<tr class="separator:a810fc3ce5d98d8360f0f79d389091b64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89518e69737b1a71259ef94e1dcefee8"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2__block__impl_1_1encoded__block__range.html#a89518e69737b1a71259ef94e1dcefee8">decode_to</a> (<a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> *decode_target, size_t num_elem)</td></tr>
 <tr class="separator:a89518e69737b1a71259ef94e1dcefee8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af65e01156815ac4a891d6a63da5967cc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2__block__impl_1_1encoded__block__range.html#af65e01156815ac4a891d6a63da5967cc">skip</a> (size_t n)</td></tr>
-<tr class="separator:af65e01156815ac4a891d6a63da5967cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>The range returned by <a class="el" href="classturi_1_1v2__block__impl_1_1encoded__block.html#a1e234d596c7a40b2e4558e32a6b19aee">encoded_block::get_range()</a>. It provides begin() and end() functions which allows it to be used in:</p>
-<div class="fragment"><div class="line"><span class="keywordflow">for</span> (<span class="keyword">const</span> flexible_type&amp; i : block.get_range()) {</div><div class="line">  ...</div><div class="line">}</div></div><!-- fragment --><p>The <a class="el" href="classturi_1_1v2__block__impl_1_1encoded__block__range.html">encoded_block_range</a> provides a one pass reader to the data.</p>
+<div class="textblock"><p>The range returned by <a class="el" href="classturi_1_1v2__block__impl_1_1encoded__block.html#a1e234d596c7a40b2e4558e32a6b19aee">encoded_block::get_range()</a>. It provides 2 basic methods. decode(target, size) and skip(n)</p>
+<p>The <a class="el" href="classturi_1_1v2__block__impl_1_1encoded__block__range.html">encoded_block_range</a> provides a one pass reader to the data.</p>
 <p>The <a class="el" href="classturi_1_1v2__block__impl_1_1encoded__block__range.html">encoded_block_range</a> holds its own pointers to the data and hence is not invalidated by destruction or reassignment of the originating <a class="el" href="classturi_1_1v2__block__impl_1_1encoded__block.html">encoded_block</a> object.</p>
 <p>The range is <em>not</em> concurrent. </p>
 
-<p>Definition at line <a class="el" href="sarray__v2__encoded__block_8hpp_source.html#l00148">148</a> of file <a class="el" href="sarray__v2__encoded__block_8hpp_source.html">sarray_v2_encoded_block.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray__v2__encoded__block_8hpp_source.html#l00140">140</a> of file <a class="el" href="sarray__v2__encoded__block_8hpp_source.html">sarray_v2_encoded_block.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a89518e69737b1a71259ef94e1dcefee8"></a>
 <div class="memitem">
@@ -163,41 +159,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a810fc3ce5d98d8360f0f79d389091b64"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void turi::v2_block_impl::encoded_block_range::release </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Releases the range object and all internal handles. All iterators are invalidated. </p>
-
-</div>
-</div>
-<a class="anchor" id="af65e01156815ac4a891d6a63da5967cc"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void turi::v2_block_impl::encoded_block_range::skip </td>
-          <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>n</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Skips some number of elements </p>
-
-</div>
-</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>sframe/<a class="el" href="sarray__v2__encoded__block_8hpp_source.html">sarray_v2_encoded_block.hpp</a></li>
+<li>core/storage/sframe_data/<a class="el" href="sarray__v2__encoded__block_8hpp_source.html">sarray_v2_encoded_block.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

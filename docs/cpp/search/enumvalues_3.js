@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['image',['IMAGE',['../namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76a23a12f67f614b5518c7f1c2465bf95e3',1,'turi']]],
-  ['integer',['INTEGER',['../namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76a5d5cd46919fa987731fb2edefe0f2a0c',1,'turi']]]
+  ['datetime',['DATETIME',['../namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76aa3eb957bd02f4780a599d5ec4464ca46',1,'turi']]],
+  ['dict',['DICT',['../namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76ad7f73f951e7f6c4ed5e17c4204f4032e',1,'turi']]]
 ];

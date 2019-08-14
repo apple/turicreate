@@ -133,9 +133,23 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2__block__impl_1_1block__writer.html">block_writer</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1v2__block__impl_1_1decode__double__stream.html">decode_double_stream</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1v2__block__impl_1_1decode__double__stream__legacy.html">decode_double_stream_legacy</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1v2__block__impl_1_1decode__ndvector__stream.html">decode_ndvector_stream</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1v2__block__impl_1_1decode__number__stream.html">decode_number_stream</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1v2__block__impl_1_1decode__string__stream.html">decode_string_stream</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1v2__block__impl_1_1decode__vector__stream.html">decode_vector_stream</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2__block__impl_1_1encoded__block.html">encoded_block</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2__block__impl_1_1encoded__block__range.html">encoded_block_range</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1v2__block__impl_1_1typed__decode__stream.html">typed_decode_stream</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
@@ -162,31 +176,8 @@ Functions</h2></td></tr>
 <tr class="separator:a35ef3d8def56d7291b0467a7cf68d2f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0f84d006e48e0ffe0047ce60be01dd9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi_1_1v2__block__impl.html#ad0f84d006e48e0ffe0047ce60be01dd9">typed_decode</a> (const <a class="el" href="structturi_1_1v2__block__impl_1_1block__info.html">block_info</a> &amp;info, char *start, size_t len, std::vector&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;ret)</td></tr>
 <tr class="separator:ad0f84d006e48e0ffe0047ce60be01dd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab382cbc83648f1fa44e98d8dfbc820f9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi_1_1v2__block__impl.html#ab382cbc83648f1fa44e98d8dfbc820f9">typed_decode_stream_callback</a> (const <a class="el" href="structturi_1_1v2__block__impl_1_1block__info.html">block_info</a> &amp;info, char *start, size_t len, std::function&lt; void(<a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>)&gt; retcallback)</td></tr>
-<tr class="separator:ab382cbc83648f1fa44e98d8dfbc820f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a740141d285664e60b39ed8f737c7ab00"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi_1_1v2__block__impl.html#a740141d285664e60b39ed8f737c7ab00">typed_encode</a> (const std::vector&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;data, <a class="el" href="structturi_1_1v2__block__impl_1_1block__info.html">block_info</a> &amp;info, <a class="el" href="classturi_1_1oarchive.html">oarchive</a> &amp;oarc)</td></tr>
 <tr class="separator:a740141d285664e60b39ed8f737c7ab00"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f172d2560efc52096449ecf3a5d5048"><td class="memTemplParams" colspan="2">template&lt;typename Fn &gt; </td></tr>
-<tr class="memitem:a5f172d2560efc52096449ecf3a5d5048"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi_1_1v2__block__impl.html#a5f172d2560efc52096449ecf3a5d5048">decode_number_stream</a> (size_t num_elements, <a class="el" href="classturi_1_1iarchive.html">iarchive</a> &amp;iarc, Fn callback)</td></tr>
-<tr class="separator:a5f172d2560efc52096449ecf3a5d5048"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a43114584e8886b10a08acc46d42d869c"><td class="memTemplParams" colspan="2">template&lt;typename Fn &gt; </td></tr>
-<tr class="memitem:a43114584e8886b10a08acc46d42d869c"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi_1_1v2__block__impl.html#a43114584e8886b10a08acc46d42d869c">decode_double_stream_legacy</a> (size_t num_elements, <a class="el" href="classturi_1_1iarchive.html">iarchive</a> &amp;iarc, Fn callback)</td></tr>
-<tr class="separator:a43114584e8886b10a08acc46d42d869c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86afebba7b232f32ff2e80e2ac79b2ae"><td class="memTemplParams" colspan="2">template&lt;typename Fn &gt; </td></tr>
-<tr class="memitem:a86afebba7b232f32ff2e80e2ac79b2ae"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi_1_1v2__block__impl.html#a86afebba7b232f32ff2e80e2ac79b2ae">decode_double_stream</a> (size_t num_elements, <a class="el" href="classturi_1_1iarchive.html">iarchive</a> &amp;iarc, Fn callback)</td></tr>
-<tr class="separator:a86afebba7b232f32ff2e80e2ac79b2ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aefbe5e860d6ac8aecc80a522275e5d32"><td class="memTemplParams" colspan="2">template&lt;typename Fn &gt; </td></tr>
-<tr class="memitem:aefbe5e860d6ac8aecc80a522275e5d32"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi_1_1v2__block__impl.html#aefbe5e860d6ac8aecc80a522275e5d32">decode_string_stream</a> (size_t num_elements, <a class="el" href="classturi_1_1iarchive.html">iarchive</a> &amp;iarc, Fn callback)</td></tr>
-<tr class="separator:aefbe5e860d6ac8aecc80a522275e5d32"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8655cc5ff3c6790fae8392abc9010df4"><td class="memTemplParams" colspan="2">template&lt;typename Fn &gt; </td></tr>
-<tr class="memitem:a8655cc5ff3c6790fae8392abc9010df4"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi_1_1v2__block__impl.html#a8655cc5ff3c6790fae8392abc9010df4">decode_vector_stream</a> (size_t num_elements, <a class="el" href="classturi_1_1iarchive.html">iarchive</a> &amp;iarc, Fn callback, bool new_format)</td></tr>
-<tr class="separator:a8655cc5ff3c6790fae8392abc9010df4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4c88704135a9b345ad36d08c0eaaa417"><td class="memTemplParams" colspan="2">template&lt;typename Fn &gt; </td></tr>
-<tr class="memitem:a4c88704135a9b345ad36d08c0eaaa417"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi_1_1v2__block__impl.html#a4c88704135a9b345ad36d08c0eaaa417">decode_nd_vector_stream</a> (size_t num_elements, <a class="el" href="classturi_1_1iarchive.html">iarchive</a> &amp;iarc, Fn callback, bool new_format)</td></tr>
-<tr class="separator:a4c88704135a9b345ad36d08c0eaaa417"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef3d47035f1d98babde888cb3afffad3"><td class="memTemplParams" colspan="2">template&lt;typename Fn &gt; </td></tr>
-<tr class="memitem:aef3d47035f1d98babde888cb3afffad3"><td class="memTemplItemLeft" align="right" valign="top">static bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi_1_1v2__block__impl.html#aef3d47035f1d98babde888cb3afffad3">typed_decode_stream_callback</a> (const <a class="el" href="structturi_1_1v2__block__impl_1_1block__info.html">block_info</a> &amp;info, char *start, size_t len, Fn callback)</td></tr>
-<tr class="separator:aef3d47035f1d98babde888cb3afffad3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>SFrame v2 Format Implementation Detail </p>
@@ -304,148 +295,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Decodes a collection of doubles into 'data'. Entries in data which are of type <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76a0db45d2a4141101bdfe48e3314cfbca3">flex_type_enum::UNDEFINED</a> will be skipped, and there must be exactly num_undefined number of them. It simply decodes a block using frame_of_reference_decode_128() and fills in data with it.</p>
-<dl class="section note"><dt>Note</dt><dd>We have an explicit implementation here that is equivalent to decode_number_stream for performance reasons since this is a <em>very</em> commonly encountered function. </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="a86afebba7b232f32ff2e80e2ac79b2ae"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Fn &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void turi::v2_block_impl::decode_double_stream </td>
-          <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>num_elements</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classturi_1_1iarchive.html">iarchive</a> &amp;&#160;</td>
-          <td class="paramname"><em>iarc</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">Fn&#160;</td>
-          <td class="paramname"><em>callback</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Decodes num_elements of numbers, calling the callback for each number. </p>
-
-<p>Definition at line <a class="el" href="sarray__v2__type__encoding_8hpp_source.html#l00203">203</a> of file <a class="el" href="sarray__v2__type__encoding_8hpp_source.html">sarray_v2_type_encoding.hpp</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a43114584e8886b10a08acc46d42d869c"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Fn &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void turi::v2_block_impl::decode_double_stream_legacy </td>
-          <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>num_elements</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classturi_1_1iarchive.html">iarchive</a> &amp;&#160;</td>
-          <td class="paramname"><em>iarc</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">Fn&#160;</td>
-          <td class="paramname"><em>callback</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Decodes num_elements of numbers, calling the callback for each number. </p>
-
-<p>Definition at line <a class="el" href="sarray__v2__type__encoding_8hpp_source.html#l00180">180</a> of file <a class="el" href="sarray__v2__type__encoding_8hpp_source.html">sarray_v2_type_encoding.hpp</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a4c88704135a9b345ad36d08c0eaaa417"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Fn &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void turi::v2_block_impl::decode_nd_vector_stream </td>
-          <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>num_elements</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classturi_1_1iarchive.html">iarchive</a> &amp;&#160;</td>
-          <td class="paramname"><em>iarc</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">Fn&#160;</td>
-          <td class="paramname"><em>callback</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>new_format</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Decodes num_elements of nd_vectors, calling the callback for each string. </p>
-
-<p>Definition at line <a class="el" href="sarray__v2__type__encoding_8hpp_source.html#l00317">317</a> of file <a class="el" href="sarray__v2__type__encoding_8hpp_source.html">sarray_v2_type_encoding.hpp</a>.</p>
+<dl class="section note"><dt>Note</dt><dd>We have an explicit implementation here that is equivalent to <a class="el" href="structturi_1_1v2__block__impl_1_1decode__number__stream.html">decode_number_stream</a> for performance reasons since this is a <em>very</em> commonly encountered function. </dd></dl>
 
 </div>
 </div>
@@ -479,149 +329,7 @@ template&lt;typename Fn &gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Decodes a collection of numbers into 'data'. Entries in data which are of type <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76a0db45d2a4141101bdfe48e3314cfbca3">flex_type_enum::UNDEFINED</a> will be skipped, and there must be exactly num_undefined number of them. It simply decodes a block using frame_of_reference_decode_128() and fills in data with it.</p>
-<dl class="section note"><dt>Note</dt><dd>We have an explicit implementation here that is equivalent to decode_number_stream for performance reasons since this is a <em>very</em> commonly encountered function. </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="a5f172d2560efc52096449ecf3a5d5048"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Fn &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void turi::v2_block_impl::decode_number_stream </td>
-          <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>num_elements</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classturi_1_1iarchive.html">iarchive</a> &amp;&#160;</td>
-          <td class="paramname"><em>iarc</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">Fn&#160;</td>
-          <td class="paramname"><em>callback</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Decodes num_elements of numbers, calling the callback for each number. </p>
-
-<p>Definition at line <a class="el" href="sarray__v2__type__encoding_8hpp_source.html#l00161">161</a> of file <a class="el" href="sarray__v2__type__encoding_8hpp_source.html">sarray_v2_type_encoding.hpp</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="aefbe5e860d6ac8aecc80a522275e5d32"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Fn &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void turi::v2_block_impl::decode_string_stream </td>
-          <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>num_elements</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classturi_1_1iarchive.html">iarchive</a> &amp;&#160;</td>
-          <td class="paramname"><em>iarc</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">Fn&#160;</td>
-          <td class="paramname"><em>callback</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Decodes num_elements of strings , calling the callback for each string. </p>
-
-<p>Definition at line <a class="el" href="sarray__v2__type__encoding_8hpp_source.html#l00227">227</a> of file <a class="el" href="sarray__v2__type__encoding_8hpp_source.html">sarray_v2_type_encoding.hpp</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a8655cc5ff3c6790fae8392abc9010df4"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Fn &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void turi::v2_block_impl::decode_vector_stream </td>
-          <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>num_elements</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classturi_1_1iarchive.html">iarchive</a> &amp;&#160;</td>
-          <td class="paramname"><em>iarc</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">Fn&#160;</td>
-          <td class="paramname"><em>callback</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>new_format</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Decodes num_elements of vectors, calling the callback for each string.</p>
-<p>This is the 2nd generation vector decoder. its use is flagged by turning on the block flag BLOCK_ENCODING_EXTENSION. </p>
-
-<p>Definition at line <a class="el" href="sarray__v2__type__encoding_8hpp_source.html#l00271">271</a> of file <a class="el" href="sarray__v2__type__encoding_8hpp_source.html">sarray_v2_type_encoding.hpp</a>.</p>
+<dl class="section note"><dt>Note</dt><dd>We have an explicit implementation here that is equivalent to <a class="el" href="structturi_1_1v2__block__impl_1_1decode__number__stream.html">decode_number_stream</a> for performance reasons since this is a <em>very</em> commonly encountered function. </dd></dl>
 
 </div>
 </div>
@@ -732,98 +440,6 @@ template&lt;typename Fn &gt; </div>
 <p>Decodes a collection of <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> values. The array must be of contiguous type, but permitting undefined values.</p>
 <p>See <a class="el" href="namespaceturi_1_1v2__block__impl.html#a740141d285664e60b39ed8f737c7ab00">typed_encode()</a> for details.</p>
 <dl class="section note"><dt>Note</dt><dd>The coding does not store the number of values stored. This is stored in the <a class="el" href="structturi_1_1v2__block__impl_1_1block__info.html">block_info</a> (block.num_elem) </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="ab382cbc83648f1fa44e98d8dfbc820f9"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool turi::v2_block_impl::typed_decode_stream_callback </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structturi_1_1v2__block__impl_1_1block__info.html">block_info</a> &amp;&#160;</td>
-          <td class="paramname"><em>info</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>start</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>len</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::function&lt; void(<a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>)&gt;&#160;</td>
-          <td class="paramname"><em>retcallback</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Decodes a colelction of <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> values calling a callback on each value. Returns false on failure. See <a class="el" href="namespaceturi_1_1v2__block__impl.html#ad0f84d006e48e0ffe0047ce60be01dd9">typed_decode()</a> </p>
-
-</div>
-</div>
-<a class="anchor" id="aef3d47035f1d98babde888cb3afffad3"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Fn &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static bool turi::v2_block_impl::typed_decode_stream_callback </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structturi_1_1v2__block__impl_1_1block__info.html">block_info</a> &amp;&#160;</td>
-          <td class="paramname"><em>info</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>start</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>len</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">Fn&#160;</td>
-          <td class="paramname"><em>callback</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Decodes a collection of <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> values. The array must be of contiguous type, but permitting undefined values.</p>
-<p>See <a class="el" href="namespaceturi_1_1v2__block__impl.html#a740141d285664e60b39ed8f737c7ab00">typed_encode()</a> for details.</p>
-<dl class="section note"><dt>Note</dt><dd>The coding does not store the number of values stored. This is stored in the <a class="el" href="structturi_1_1v2__block__impl_1_1block__info.html">block_info</a> (block.num_elem) </dd></dl>
-
-<p>Definition at line <a class="el" href="sarray__v2__type__encoding_8hpp_source.html#l00394">394</a> of file <a class="el" href="sarray__v2__type__encoding_8hpp_source.html">sarray_v2_type_encoding.hpp</a>.</p>
 
 </div>
 </div>

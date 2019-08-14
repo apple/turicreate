@@ -118,7 +118,7 @@ $(document).ready(function(){initNavTree('classturi_1_1v2__block__impl_1_1block_
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="sarray__v2__block__manager_8hpp_source.html">sframe/sarray_v2_block_manager.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="sarray__v2__block__manager_8hpp_source.html">core/storage/sframe_data/sarray_v2_block_manager.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -202,7 +202,7 @@ static <a class="el" href="classturi_1_1v2__block__impl_1_1block__manager.html">
 <p>When a column is opened by <a class="el" href="classturi_1_1v2__block__impl_1_1block__manager.html#ad2f22a722c480ce6f1f6e709d1cdf425">open_column()</a>, a <a class="el" href="namespaceturi_1_1v2__block__impl.html#a94d78bcd851eb06af0bf8129da9b5c3b">column_address</a> is returned. This is a pair of integers of {segment_file_id, and column_id}. column_id is the column within the segment. For instance, opening "group.0000:2" will have column_id = 2. The segment_file_id is an internal ID assigned by the block manager to track all accesses to the file group.0000. All open calls to group.0000 will return the same segment_file_id, and a reference counter is used internally to figure out when the file handle and block metadata can be released. <a class="el" href="classturi_1_1v2__block__impl_1_1block__manager.html#a894aaa104dc1754a35df2d1ac6184944">close_column()</a> thus must be called for every call to <a class="el" href="classturi_1_1v2__block__impl_1_1block__manager.html#ad2f22a722c480ce6f1f6e709d1cdf425">open_column()</a>.</p>
 <p>Once the column is opened, <a class="el" href="classturi_1_1v2__block__impl_1_1block__manager.html#a8203a24889f963b966c94fd57b1bbbc9">num_blocks_in_column()</a> can be used to obtain the number of blocks in the segment file belonging to the column. <a class="el" href="classturi_1_1v2__block__impl_1_1block__manager.html#a61af9c7af7d6fe9a746d4852e2370d24">read_block()</a> or <a class="el" href="classturi_1_1v2__block__impl_1_1block__manager.html#a65f43a7b44bf2969449087c97f4cbef7">read_typed_block()</a> can then be used to read the blocks. These functions take a <a class="el" href="namespaceturi_1_1v2__block__impl.html#a9af1ff72afa8d032d0404e6b4622af98">block_address</a>, which is a triple of {segment_file_id, column_id, block_id}. The first 2 fields can be copied from the column_address, the block_id is a sequential counter from 0 to <a class="el" href="classturi_1_1v2__block__impl_1_1block__manager.html#a8203a24889f963b966c94fd57b1bbbc9">num_blocks_in_column()</a> - 1. </p>
 
-<p>Definition at line <a class="el" href="sarray__v2__block__manager_8hpp_source.html#l00157">157</a> of file <a class="el" href="sarray__v2__block__manager_8hpp_source.html">sarray_v2_block_manager.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray__v2__block__manager_8hpp_source.html#l00155">155</a> of file <a class="el" href="sarray__v2__block__manager_8hpp_source.html">sarray_v2_block_manager.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a894aaa104dc1754a35df2d1ac6184944"></a>
 <div class="memitem">
@@ -364,7 +364,7 @@ template&lt;typename T &gt; </div>
 <p>May return less than nblocks if addr goes past the last block.</p>
 <p>Safe for concurrent operation. </p>
 
-<p>Definition at line <a class="el" href="sarray__v2__block__manager_8hpp_source.html#l00249">249</a> of file <a class="el" href="sarray__v2__block__manager_8hpp_source.html">sarray_v2_block_manager.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray__v2__block__manager_8hpp_source.html#l00247">247</a> of file <a class="el" href="sarray__v2__block__manager_8hpp_source.html">sarray_v2_block_manager.hpp</a>.</p>
 
 </div>
 </div>
@@ -444,7 +444,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>sframe/<a class="el" href="sarray__v2__block__manager_8hpp_source.html">sarray_v2_block_manager.hpp</a></li>
+<li>core/storage/sframe_data/<a class="el" href="sarray__v2__block__manager_8hpp_source.html">sarray_v2_block_manager.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

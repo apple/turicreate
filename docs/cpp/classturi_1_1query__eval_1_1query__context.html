@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('classturi_1_1query__eval_1_1query__con
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="query__context_8hpp_source.html">sframe_query_engine/execution/query_context.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="query__context_8hpp_source.html">core/storage/query_engine/execution/query_context.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -127,17 +127,17 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a6974ea7cd7e5c9f15e169b9636d02a2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa9de575a23da2ada31a55997d193b22"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classturi_1_1sframe__rows.html">sframe_rows</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1query__eval_1_1query__context.html#aaa9de575a23da2ada31a55997d193b22">get_output_buffer</a> ()</td></tr>
 <tr class="separator:aaa9de575a23da2ada31a55997d193b22"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a48602697c8e68e6a501f0e294af2cbda"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__execution.html#gab473b0ffabcc160384ef47c9ce76c1a8">emit_state</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1query__eval_1_1query__context.html#a48602697c8e68e6a501f0e294af2cbda">initial_state</a> () const </td></tr>
-<tr class="separator:a48602697c8e68e6a501f0e294af2cbda"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad88cd348a5ab71361c78fec8ce8e0050"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__execution.html#gab473b0ffabcc160384ef47c9ce76c1a8">emit_state</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1query__eval_1_1query__context.html#ad88cd348a5ab71361c78fec8ce8e0050">emit</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1sframe__rows.html">sframe_rows</a> &gt; &amp;rows)</td></tr>
-<tr class="separator:ad88cd348a5ab71361c78fec8ce8e0050"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5127ee85fef60b3b590625d7bf41cd6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1query__eval_1_1query__context.html#ab5127ee85fef60b3b590625d7bf41cd6">emit</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1sframe__rows.html">sframe_rows</a> &gt; &amp;rows)</td></tr>
+<tr class="separator:ab5127ee85fef60b3b590625d7bf41cd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5603c681bf41be2e3cf7998b4b3239a0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1query__eval_1_1query__context.html#a5603c681bf41be2e3cf7998b4b3239a0">should_skip</a> ()</td></tr>
+<tr class="separator:a5603c681bf41be2e3cf7998b4b3239a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a444666b681462cacdaa8f80d63ef26d1"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1query__eval_1_1query__context.html#a444666b681462cacdaa8f80d63ef26d1">block_size</a> () const </td></tr>
 <tr class="separator:a444666b681462cacdaa8f80d63ef26d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This is the object passed to the coroutine which allows the coroutine to read and write values. The expected usage pattern of the coroutine is:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> fn(query_context&amp; ctx) {</div><div class="line">  <span class="keywordflow">while</span>(1) {</div><div class="line">     <span class="keyword">auto</span> input = ctx.get_next(0); <span class="comment">// from 1st input. get_next(1) for 2nd input, etc.</span></div><div class="line">     <span class="keyword">auto</span> output = <a class="code" href="classturi_1_1query__eval_1_1query__context.html#aaa9de575a23da2ada31a55997d193b22">get_output_buffer</a>();</div><div class="line">     <span class="comment">// fill output buffer. Its just an sframe_rows</span></div><div class="line">     ctx.emit(output); <span class="comment">// only if output is non-empty.</span></div><div class="line">  }</div><div class="line">}</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="query__context_8hpp_source.html#l00046">46</a> of file <a class="el" href="query__context_8hpp_source.html">query_context.hpp</a>.</p>
+<p>Definition at line <a class="el" href="query__context_8hpp_source.html#l00037">37</a> of file <a class="el" href="query__context_8hpp_source.html">query_context.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a444666b681462cacdaa8f80d63ef26d1"></a>
 <div class="memitem">
@@ -161,16 +161,16 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>The commmunication block size. </p>
 
-<p>Definition at line <a class="el" href="query__context_8hpp_source.html#l00087">87</a> of file <a class="el" href="query__context_8hpp_source.html">query_context.hpp</a>.</p>
+<p>Definition at line <a class="el" href="query__context_8hpp_source.html#l00078">78</a> of file <a class="el" href="query__context_8hpp_source.html">query_context.hpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ad88cd348a5ab71361c78fec8ce8e0050"></a>
+<a class="anchor" id="ab5127ee85fef60b3b590625d7bf41cd6"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group__execution.html#gab473b0ffabcc160384ef47c9ce76c1a8">emit_state</a> turi::query_eval::query_context::emit </td>
+          <td class="memname">void turi::query_eval::query_context::emit </td>
           <td>(</td>
           <td class="paramtype">const std::shared_ptr&lt; <a class="el" href="classturi_1_1sframe__rows.html">sframe_rows</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>rows</em></td><td>)</td>
@@ -178,7 +178,7 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Emits a collection of rows. The number of rows emitted MUST be the same as <a class="el" href="classturi_1_1query__eval_1_1query__context.html#a444666b681462cacdaa8f80d63ef26d1">block_size()</a>, except for the very last block of rows. </p>
+<p>Emits a collection of rows. The number of rows emitted MUST be the same as <a class="el" href="classturi_1_1query__eval_1_1query__context.html#a444666b681462cacdaa8f80d63ef26d1">block_size()</a>, except for the very last block of rows. Should yield immediately after emitting a block. </p>
 
 </div>
 </div>
@@ -215,19 +215,19 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a48602697c8e68e6a501f0e294af2cbda"></a>
+<a class="anchor" id="a5603c681bf41be2e3cf7998b4b3239a0"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group__execution.html#gab473b0ffabcc160384ef47c9ce76c1a8">emit_state</a> turi::query_eval::query_context::initial_state </td>
+          <td class="memname">bool turi::query_eval::query_context::should_skip </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td> const</td>
+          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Returns the initial state. </p>
+<p>Returns true if the operator should try to skip a block. </p>
 
 </div>
 </div>
@@ -249,7 +249,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>sframe_query_engine/execution/<a class="el" href="query__context_8hpp_source.html">query_context.hpp</a></li>
+<li>core/storage/query_engine/execution/<a class="el" href="query__context_8hpp_source.html">query_context.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['file_5fstatus',['file_status',['../group__fileio.html#ga76f0038f6e87bbd52aea670fbd88b2ce',1,'turi::fileio']]],
-  ['flex_5ftype_5fenum',['flex_type_enum',['../namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76',1,'turi']]],
-  ['format',['Format',['../namespaceturi.html#a9a91663acc51ef53b8d40f4efe12b1be',1,'turi']]]
+  ['ml_5fcolumn_5fmode',['ml_column_mode',['../group__mldata.html#ga7beaf7388ecc8bb34821c4a0b38b292f',1,'turi']]],
+  ['ml_5fmissing_5fvalue_5faction',['ml_missing_value_action',['../group__mldata.html#gaf63b6ae12f1d3be45226d113d0ed1114',1,'turi']]]
 ];

@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('classturi_1_1lambda_1_1pylambda__funct
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="pylambda__function_8hpp_source.html">lambda/pylambda_function.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="pylambda__function_8hpp_source.html">core/system/lambda/pylambda_function.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -127,7 +127,7 @@ Public Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Represents a python lambda function object which is evaluated in parallel.</p>
 <h2>Usage </h2>
-<div class="fragment"><div class="line"><span class="comment">// Constructed from a pickled lambda string.</span></div><div class="line">std::string lambda_string=<span class="stringliteral">&quot;some pickled str&quot;</span></div><div class="line"><a class="code" href="classturi_1_1lambda_1_1pylambda__function.html#a1e42db9ca0e786c45ec9b6473b3b1886">pylambda_function</a> f(lambda_string);</div><div class="line"></div><div class="line"><span class="comment">// (optional) Set options such as random_seed or skip_undefined. </span></div><div class="line">f.set_skip_undefined(<span class="keyword">true</span>);</div><div class="line">f.set_random_seed(0);</div><div class="line"></div><div class="line"><span class="comment">// evaluate on a minibatch of values.</span></div><div class="line">std::vector&lt;flexible_type&gt; out;</div><div class="line">f.evaluate({1,2,3}, out);</div></div><!-- fragment --><p>The <a class="el" href="classturi_1_1lambda_1_1pylambda__function.html">pylambda_function</a> can also contain a gl_pickle directory. The gl_pickle must contain one function. The function will then be unpickled from the directory and used. </p><div class="fragment"><div class="line"><span class="comment">// Constructed from a pickled lambda string.</span></div><div class="line">std::string gl_pickle_directory = <span class="stringliteral">&quot;./pickled_function&quot;</span></div><div class="line"><a class="code" href="classturi_1_1lambda_1_1pylambda__function.html#a1e42db9ca0e786c45ec9b6473b3b1886">pylambda_function</a> f(gl_pickle_directory);</div></div><!-- fragment --><p>The evaluation is implemented using pylambda master and workers for parallelism:</p><ul>
+<div class="fragment"><div class="line"><span class="comment">// Constructed from a pickled lambda string.</span></div><div class="line">std::string lambda_string=<span class="stringliteral">&quot;some pickled str&quot;</span></div><div class="line"><a class="code" href="classturi_1_1lambda_1_1pylambda__function.html#a1e42db9ca0e786c45ec9b6473b3b1886">pylambda_function</a> f(lambda_string);</div><div class="line"></div><div class="line"><span class="comment">// (optional) Set options such as random_seed or skip_undefined.</span></div><div class="line">f.set_skip_undefined(<span class="keyword">true</span>);</div><div class="line">f.set_random_seed(0);</div><div class="line"></div><div class="line"><span class="comment">// evaluate on a minibatch of values.</span></div><div class="line">std::vector&lt;flexible_type&gt; out;</div><div class="line">f.evaluate({1,2,3}, out);</div></div><!-- fragment --><p>The <a class="el" href="classturi_1_1lambda_1_1pylambda__function.html">pylambda_function</a> can also contain a gl_pickle directory. The gl_pickle must contain one function. The function will then be unpickled from the directory and used. </p><div class="fragment"><div class="line"><span class="comment">// Constructed from a pickled lambda string.</span></div><div class="line">std::string gl_pickle_directory = <span class="stringliteral">&quot;./pickled_function&quot;</span></div><div class="line"><a class="code" href="classturi_1_1lambda_1_1pylambda__function.html#a1e42db9ca0e786c45ec9b6473b3b1886">pylambda_function</a> f(gl_pickle_directory);</div></div><!-- fragment --><p>The evaluation is implemented using pylambda master and workers for parallelism:</p><ul>
 <li>each call to evaluate() will grab one avaiable worker.</li>
 <li>if no worker is avaiable, block.</li>
 <li>when evaluate returns, the corresponding worker is released. </li>
@@ -168,7 +168,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>lambda/<a class="el" href="pylambda__function_8hpp_source.html">pylambda_function.hpp</a></li>
+<li>core/system/lambda/<a class="el" href="pylambda__function_8hpp_source.html">pylambda_function.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

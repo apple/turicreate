@@ -184,8 +184,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga0acaf4bacb1703c8c2064132a9588258"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gacd816d0bb628e05ad9e3387a29bf5809"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#gacd816d0bb628e05ad9e3387a29bf5809">turi::fileio::insecure_ssl_cert_checks</a> ()</td></tr>
 <tr class="separator:gacd816d0bb628e05ad9e3387a29bf5809"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0f149496b02231d71386cbc094d43c67"><td class="memItemLeft" align="right" valign="top">file_status&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga0f149496b02231d71386cbc094d43c67">turi::fileio::get_file_status</a> (const std::string &amp;path)</td></tr>
-<tr class="separator:ga0f149496b02231d71386cbc094d43c67"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf2df6422a38ad7fdcb6e8949ecb00b17"><td class="memItemLeft" align="right" valign="top">std::pair&lt; file_status, std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#gaf2df6422a38ad7fdcb6e8949ecb00b17">turi::fileio::get_file_status</a> (const std::string &amp;path)</td></tr>
+<tr class="separator:gaf2df6422a38ad7fdcb6e8949ecb00b17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga125e90d8c636d5c4e70d25437f97682c"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::pair&lt; std::string, file_status &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga125e90d8c636d5c4e70d25437f97682c">turi::fileio::get_directory_listing</a> (const std::string &amp;path)</td></tr>
 <tr class="separator:ga125e90d8c636d5c4e70d25437f97682c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6cf2e34ad8bc7b04c7de6bd884723a9a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga6cf2e34ad8bc7b04c7de6bd884723a9a">turi::fileio::create_directory</a> (const std::string &amp;path)</td></tr>
@@ -236,16 +236,14 @@ Functions</h2></td></tr>
 <tr class="separator:ga5d061c799a90c5c6a03728ef3de03d07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga234867c61a56b4fa2622e0f672084360"><td class="memItemLeft" align="right" valign="top">list_objects_response&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga234867c61a56b4fa2622e0f672084360">turi::list_directory</a> (std::string s3_url, std::string proxy=&quot;&quot;)</td></tr>
 <tr class="separator:ga234867c61a56b4fa2622e0f672084360"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga85a9407a949db18e04a56ba0fe8a79ac"><td class="memItemLeft" align="right" valign="top">std::pair&lt; bool, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga85a9407a949db18e04a56ba0fe8a79ac">turi::is_directory</a> (std::string s3_url, std::string proxy=&quot;&quot;)</td></tr>
-<tr class="separator:ga85a9407a949db18e04a56ba0fe8a79ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4b22e913c89f6de93fbbd479c4dbbe9c"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga4b22e913c89f6de93fbbd479c4dbbe9c">turi::delete_object</a> (std::string s3_url, std::string proxy=&quot;&quot;)</td></tr>
 <tr class="separator:ga4b22e913c89f6de93fbbd479c4dbbe9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga717b2264a5a6bb05f6c2435b9cb4e7cc"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga717b2264a5a6bb05f6c2435b9cb4e7cc">turi::delete_prefix</a> (std::string s3_url, std::string proxy=&quot;&quot;)</td></tr>
 <tr class="separator:ga717b2264a5a6bb05f6c2435b9cb4e7cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga814071ebbbb49a2ba27bace0540a09db"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga814071ebbbb49a2ba27bace0540a09db">turi::sanitize_s3_url</a> (const std::string &amp;url)</td></tr>
 <tr class="separator:ga814071ebbbb49a2ba27bace0540a09db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaccad1b81df07fb42c9ea0863cf1d6276"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#gaccad1b81df07fb42c9ea0863cf1d6276">turi::parse_s3url</a> (std::string url, s3url &amp;ret)</td></tr>
-<tr class="separator:gaccad1b81df07fb42c9ea0863cf1d6276"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf1f462276b68dd6b4dfec9a8a0e5213c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#gaf1f462276b68dd6b4dfec9a8a0e5213c">turi::parse_s3url</a> (std::string url, s3url &amp;ret, std::string &amp;err_msg)</td></tr>
+<tr class="separator:gaf1f462276b68dd6b4dfec9a8a0e5213c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5a3799347c103129ae70805e0161a6ff"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga5a3799347c103129ae70805e0161a6ff">turi::set_upload_timeout</a> (long timeout)</td></tr>
 <tr class="separator:ga5a3799347c103129ae70805e0161a6ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2c38590a0ad13fa63e4d25a366b653a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga2c38590a0ad13fa63e4d25a366b653a3">turi::set_download_timeout</a> (long timeout)</td></tr>
@@ -289,6 +287,8 @@ Variables</h2></td></tr>
 <tr class="separator:ga7bb2701d37c920ce6c02cc1d186e4818"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga112295e21cd70e9787d31753c40e6c53"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga112295e21cd70e9787d31753c40e6c53">turi::fileio::S3_ENDPOINT</a></td></tr>
 <tr class="separator:ga112295e21cd70e9787d31753c40e6c53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6f5fd91811967243ce77a229ccb7c944"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga6f5fd91811967243ce77a229ccb7c944">turi::fileio::S3_REGION</a></td></tr>
+<tr class="separator:ga6f5fd91811967243ce77a229ccb7c944"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga30c6f7618937944a323b6a79c39bb207"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga30c6f7618937944a323b6a79c39bb207">turi::fileio::NUM_GPUS</a></td></tr>
 <tr class="separator:ga30c6f7618937944a323b6a79c39bb207"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -813,12 +813,12 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga0f149496b02231d71386cbc094d43c67"></a>
+<a class="anchor" id="gaf2df6422a38ad7fdcb6e8949ecb00b17"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">file_status turi::fileio::get_file_status </td>
+          <td class="memname">std::pair&lt;file_status, std::string&gt; turi::fileio::get_file_status </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>path</em></td><td>)</td>
@@ -826,7 +826,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Checks a path (can be hdfs, s3, or regular) to see if it is a local path, or a remote path. </p>
+<p>Checks a path (can be hdfs, s3, or regular) to see if it is a local path, or a remote path.</p>
+<p>if file is missing, err_msg will be the second value if provided </p>
 
 </div>
 </div>
@@ -1090,33 +1091,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga85a9407a949db18e04a56ba0fe8a79ac"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::pair&lt;bool, bool&gt; turi::is_directory </td>
-          <td>(</td>
-          <td class="paramtype">std::string&#160;</td>
-          <td class="paramname"><em>s3_url</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::string&#160;</td>
-          <td class="paramname"><em>proxy</em> = <code>&quot;&quot;</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Tests if url is a directory or a regular file. Returns a pair of (exists, is_directory). If exists is false, is_directory should be ignored </p>
-
-</div>
-</div>
 <a class="anchor" id="ga234867c61a56b4fa2622e0f672084360"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1177,7 +1151,7 @@ Variables</h2></td></tr>
 <p>if s3_url points to a valid prefix, it will return only the prefix as a directory. For instance if I have an S3 bucket containing</p>
 <p>foo/hello.txt</p>
 <p>list_objects("s3://foo") will return simply "foo/" as a directory.</p>
-<p>See <a class="el" href="group__fileio.html#ga234867c61a56b4fa2622e0f672084360">list_directory()</a> and <a class="el" href="group__fileio.html#ga85a9407a949db18e04a56ba0fe8a79ac">is_directory()</a> for a more sensible implementation which behaves somewhat more file system like.</p>
+<p>See <a class="el" href="group__fileio.html#ga234867c61a56b4fa2622e0f672084360">list_directory()</a> and is_directory() for a more sensible implementation which behaves somewhat more file system like.</p>
 <dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="structturi_1_1list__objects__response.html">list_objects_response</a> object. If <a class="el" href="structturi_1_1list__objects__response.html#af577365458322fb05e09b782bcc257c6" title="Non-empty if there was an error. ">list_objects_response.error</a> is an empty string, it indicates success. Otherwise, it contains an error code. <a class="el" href="structturi_1_1list__objects__response.html#a76ffe7439c8f537e75bbad6f7e561356" title="A list of all the &quot;sub-directories&quot; found. ">list_objects_response.directories</a> indicate all "directories" stored with the requested prefix. And <a class="el" href="structturi_1_1list__objects__response.html#a5f2adce2ab92d07e7920daacabe97d8f" title="A list of all the objects found. ">list_objects_response.objects</a> indicates all regular objects stored with the requested prefix. </dd></dl>
 
 </div>
@@ -1292,7 +1266,7 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gaccad1b81df07fb42c9ea0863cf1d6276"></a>
+<a class="anchor" id="gaf1f462276b68dd6b4dfec9a8a0e5213c"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1306,7 +1280,13 @@ Variables</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="structturi_1_1s3url.html">s3url</a> &amp;&#160;</td>
-          <td class="paramname"><em>ret</em>&#160;</td>
+          <td class="paramname"><em>ret</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string &amp;&#160;</td>
+          <td class="paramname"><em>err_msg</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1591,6 +1571,23 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>The S3 connection endpoint; if empty string, S3 is assumed. </p>
+
+</div>
+</div>
+<a class="anchor" id="ga6f5fd91811967243ce77a229ccb7c944"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string turi::fileio::S3_REGION</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The S3 connection region; if empty string, region will be guessed by:</p><ol type="1">
+<li>TURI_S3_REGION environment variable</li>
+<li>AWS_DEFAULT_REGION environment variable</li>
+<li>known region to endpoint mappings if none of above works, empty region string will be set and AWS will guess bucket region from endpoint. </li>
+</ol>
 
 </div>
 </div>

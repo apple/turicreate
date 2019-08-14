@@ -153,7 +153,7 @@ var group__fileio =
     [ "get_cache_prefix", "group__fileio.html#ga373df97b4d1e0d066770c95270ce979f", null ],
     [ "get_directory_listing", "group__fileio.html#ga125e90d8c636d5c4e70d25437f97682c", null ],
     [ "get_dirname", "group__fileio.html#ga73216d9bc71edc25956b166fa488e930", null ],
-    [ "get_file_status", "group__fileio.html#ga0f149496b02231d71386cbc094d43c67", null ],
+    [ "get_file_status", "group__fileio.html#gaf2df6422a38ad7fdcb6e8949ecb00b17", null ],
     [ "get_filename", "group__fileio.html#ga08e80ce4936ba924ae5893d278ef8160", null ],
     [ "get_glob_files", "group__fileio.html#ga20a81f87a433cf558ae08b02914327fa", null ],
     [ "get_io_parallelism_id", "group__fileio.html#gace35fc0e0221b6c2b2c3bc20556a9579", null ],
@@ -168,7 +168,6 @@ var group__fileio =
     [ "get_temp_name", "group__fileio.html#ga49a7014c73f094ce56bb700d684fd08d", null ],
     [ "get_temp_name_prefer_hdfs", "group__fileio.html#ga8bea12507112de131eebd578bccfcb89", null ],
     [ "insecure_ssl_cert_checks", "group__fileio.html#gacd816d0bb628e05ad9e3387a29bf5809", null ],
-    [ "is_directory", "group__fileio.html#ga85a9407a949db18e04a56ba0fe8a79ac", null ],
     [ "list_directory", "group__fileio.html#ga234867c61a56b4fa2622e0f672084360", null ],
     [ "list_objects", "group__fileio.html#ga5d061c799a90c5c6a03728ef3de03d07", null ],
     [ "make_absolute_path", "group__fileio.html#ga71342aad2af5ea34fa8570899f610963", null ],
@@ -176,7 +175,7 @@ var group__fileio =
     [ "make_relative_path", "group__fileio.html#ga369eff0d3577d8e5fdfc30e5b32b0593", null ],
     [ "num_temp_directories", "group__fileio.html#ga938d93ca534d16a0946cba20516890f7", null ],
     [ "parse_hdfs_url", "group__fileio.html#ga5960b295c95ba0e4db8ddecf2438f924", null ],
-    [ "parse_s3url", "group__fileio.html#gaccad1b81df07fb42c9ea0863cf1d6276", null ],
+    [ "parse_s3url", "group__fileio.html#gaf1f462276b68dd6b4dfec9a8a0e5213c", null ],
     [ "reap_current_process_temp_files", "group__fileio.html#ga9148e7456c812a233d184699e377c959", null ],
     [ "reap_unused_temp_files", "group__fileio.html#gaadc7f2e18c38aae6132d2da2b50a08d8", null ],
     [ "remove_protocol", "group__fileio.html#ga9a7d84a46df11a91b15a027e88bc8f8e", null ],
@@ -193,5 +192,6 @@ var group__fileio =
     [ "FILEIO_READER_BUFFER_SIZE", "group__fileio.html#gaa0389579b7266afb2e8026ebec9d018e", null ],
     [ "FILEIO_WRITER_BUFFER_SIZE", "group__fileio.html#ga7bb2701d37c920ce6c02cc1d186e4818", null ],
     [ "NUM_GPUS", "group__fileio.html#ga30c6f7618937944a323b6a79c39bb207", null ],
-    [ "S3_ENDPOINT", "group__fileio.html#ga112295e21cd70e9787d31753c40e6c53", null ]
+    [ "S3_ENDPOINT", "group__fileio.html#ga112295e21cd70e9787d31753c40e6c53", null ],
+    [ "S3_REGION", "group__fileio.html#ga6f5fd91811967243ce77a229ccb7c944", null ]
 ];

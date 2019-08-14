@@ -118,7 +118,7 @@ $(document).ready(function(){initNavTree('structturi_1_1activity__classification
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="ac__data__iterator_8hpp_source.html">unity/toolkits/activity_classification/ac_data_iterator.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="ac__data__iterator_8hpp_source.html">toolkits/activity_classification/ac_data_iterator.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -133,13 +133,15 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a4ab64837a73cf78fc42b9609d7b8abe0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac7d8af57b5894499ee43ce25e6ad83b8"><td class="memItemLeft" align="right" valign="top">neural_net::shared_float_array&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1activity__classification_1_1data__iterator_1_1batch.html#ac7d8af57b5894499ee43ce25e6ad83b8">weights</a></td></tr>
 <tr class="separator:ac7d8af57b5894499ee43ce25e6ad83b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a283ffef43455227b5167e12f8732f4f5"><td class="memItemLeft" align="right" valign="top">neural_net::shared_float_array&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1activity__classification_1_1data__iterator_1_1batch.html#a283ffef43455227b5167e12f8732f4f5">labels_per_row</a></td></tr>
+<tr class="separator:a283ffef43455227b5167e12f8732f4f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e43b9443fc516b1ad419b8d0da7c300"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structturi_1_1activity__classification_1_1data__iterator_1_1batch_1_1chunk__info.html">chunk_info</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1activity__classification_1_1data__iterator_1_1batch.html#a7e43b9443fc516b1ad419b8d0da7c300">batch_info</a></td></tr>
 <tr class="separator:a7e43b9443fc516b1ad419b8d0da7c300"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Defines the output of a <a class="el" href="classturi_1_1activity__classification_1_1data__iterator.html">data_iterator</a>. </p>
 
-<p>Definition at line <a class="el" href="ac__data__iterator_8hpp_source.html#l00069">69</a> of file <a class="el" href="ac__data__iterator_8hpp_source.html">ac_data_iterator.hpp</a>.</p>
+<p>Definition at line <a class="el" href="ac__data__iterator_8hpp_source.html#l00076">76</a> of file <a class="el" href="ac__data__iterator_8hpp_source.html">ac_data_iterator.hpp</a>.</p>
 </div><h2 class="groupheader">Member Data Documentation</h2>
 <a class="anchor" id="a7e43b9443fc516b1ad419b8d0da7c300"></a>
 <div class="memitem">
@@ -153,7 +155,7 @@ Public Attributes</h2></td></tr>
 <p>Metadata for each valid (non-padded) row in the batch.</p>
 <p>The size of this vector is at most requested_batch_size. The info at index <code>i</code> describes the array at <code>features[i]</code>. </p>
 
-<p>Definition at line <a class="el" href="ac__data__iterator_8hpp_source.html#l00114">114</a> of file <a class="el" href="ac__data__iterator_8hpp_source.html">ac_data_iterator.hpp</a>.</p>
+<p>Definition at line <a class="el" href="ac__data__iterator_8hpp_source.html#l00131">131</a> of file <a class="el" href="ac__data__iterator_8hpp_source.html">ac_data_iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -169,7 +171,7 @@ Public Attributes</h2></td></tr>
 <p>An array with shape: (requested_batch_size, 1, prediction_window * predictions_in_chunk, num_feature_columns)</p>
 <p>Each row is a chunk of feature values from one session. </p>
 
-<p>Definition at line <a class="el" href="ac__data__iterator_8hpp_source.html#l00087">87</a> of file <a class="el" href="ac__data__iterator_8hpp_source.html">ac_data_iterator.hpp</a>.</p>
+<p>Definition at line <a class="el" href="ac__data__iterator_8hpp_source.html#l00094">94</a> of file <a class="el" href="ac__data__iterator_8hpp_source.html">ac_data_iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -183,10 +185,26 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>An array with shape: (requested_batch_size, 1, predictions_in_chunk, 1)</p>
-<p>Each row is the sequence of class label (indices) from one chunk.</p>
+<p>Each row is the sequence of class label (indices) from one chunk (labels picked after majority voting).</p>
 <p>If no target was specified, then this value is default constructed. </p>
 
-<p>Definition at line <a class="el" href="ac__data__iterator_8hpp_source.html#l00096">96</a> of file <a class="el" href="ac__data__iterator_8hpp_source.html">ac_data_iterator.hpp</a>.</p>
+<p>Definition at line <a class="el" href="ac__data__iterator_8hpp_source.html#l00104">104</a> of file <a class="el" href="ac__data__iterator_8hpp_source.html">ac_data_iterator.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a283ffef43455227b5167e12f8732f4f5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">neural_net::shared_float_array turi::activity_classification::data_iterator::batch::labels_per_row</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>An array with shape: (requested_batch_size, 1, prediction_window * predictions_in_chunk, 1)</p>
+<p>Each row is the sequence of raw class labels (indices) for each individual sample. </p>
+
+<p>Definition at line <a class="el" href="ac__data__iterator_8hpp_source.html#l00123">123</a> of file <a class="el" href="ac__data__iterator_8hpp_source.html">ac_data_iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -203,12 +221,12 @@ Public Attributes</h2></td></tr>
 <p>Each row is a sequence of 0 or 1 values indicating whether the corresponding label is padding (0) or refers to actual data (1).</p>
 <p>If no target was specified, then this value is default constructed. </p>
 
-<p>Definition at line <a class="el" href="ac__data__iterator_8hpp_source.html#l00106">106</a> of file <a class="el" href="ac__data__iterator_8hpp_source.html">ac_data_iterator.hpp</a>.</p>
+<p>Definition at line <a class="el" href="ac__data__iterator_8hpp_source.html#l00114">114</a> of file <a class="el" href="ac__data__iterator_8hpp_source.html">ac_data_iterator.hpp</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>unity/toolkits/activity_classification/<a class="el" href="ac__data__iterator_8hpp_source.html">ac_data_iterator.hpp</a></li>
+<li>toolkits/activity_classification/<a class="el" href="ac__data__iterator_8hpp_source.html">ac_data_iterator.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

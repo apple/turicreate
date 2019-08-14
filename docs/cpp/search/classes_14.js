@@ -18,5 +18,6 @@ var searchData=
   ['topk_5findexer',['topk_indexer',['../classturi_1_1topk__indexer.html',1,'turi']]],
   ['trace_5fcount',['trace_count',['../structturi_1_1trace__count.html',1,'turi']]],
   ['transformer_5fbase',['transformer_base',['../classturi_1_1sdk__model_1_1feature__engineering_1_1transformer__base.html',1,'turi::sdk_model::feature_engineering']]],
-  ['type_5fto_5fenum',['type_to_enum',['../structturi_1_1type__to__enum.html',1,'turi']]]
+  ['type_5fto_5fenum',['type_to_enum',['../structturi_1_1type__to__enum.html',1,'turi']]],
+  ['typed_5fdecode_5fstream',['typed_decode_stream',['../structturi_1_1v2__block__impl_1_1typed__decode__stream.html',1,'turi::v2_block_impl']]]
 ];

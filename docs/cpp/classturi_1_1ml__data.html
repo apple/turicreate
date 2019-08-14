@@ -118,7 +118,7 @@ $(document).ready(function(){initNavTree('classturi_1_1ml__data.html','');});
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="ml__data_2ml__data_8hpp_source.html">ml_data/ml_data.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="ml_2ml__data_2ml__data_8hpp_source.html">ml/ml_data/ml_data.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
@@ -197,7 +197,7 @@ Public Member Functions</h2></td></tr>
 <p>Untranslated columns can be specified with the set_data(...) method. The untranslated columns are tracked alongside the regular ones, but are not themselves translated, indexed, or even loaded until iteration. These additional columns are then available using the iterator's fill_untranslated_values function.</p>
 <p>The way to mark a column as untranslated is to manually specify its type as ml_column_mode::UNTRANSLATED using the mode_overrides parameter in the set_data method. The example code below illustrates this:</p>
 <div class="fragment"><div class="line">sframe X = make_integer_testing_sframe( {<span class="stringliteral">&quot;C1&quot;</span>, <span class="stringliteral">&quot;C2&quot;</span>}, { {0, 0}, {1, 1}, {2, 2}, {3, 3}, {4, 4} } );</div><div class="line"></div><div class="line"><a class="code" href="classturi_1_1ml__data.html#afb59cbec74175ad3cdf33937ebfcab70">ml_data</a> data;</div><div class="line"></div><div class="line">data.set_data(X, <span class="stringliteral">&quot;&quot;</span>, {}, { {<span class="stringliteral">&quot;C2&quot;</span>, ml_column_mode::UNTRANSLATED} });</div><div class="line"></div><div class="line">data.fill();</div><div class="line"></div><div class="line"></div><div class="line">std::vector&lt;ml_data_entry&gt; x_d;</div><div class="line">std::vector&lt;flexible_type&gt; x_f;</div><div class="line"><span class="comment"></span></div><div class="line"><span class="comment">////////////////////////////////////////</span></div><div class="line"><span class="comment"></span></div><div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> it = data.get_iterator(); !it.done(); ++it) {</div><div class="line"></div><div class="line">  it-&gt;fill(x_d);</div><div class="line"></div><div class="line">  ASSERT_EQ(x_d.size(), 1);</div><div class="line">  ASSERT_EQ(x_d[0].column_index, 0);</div><div class="line">  ASSERT_EQ(x_d[0].index, 0);</div><div class="line">  ASSERT_EQ(x_d[0].value, it.row_index());</div><div class="line"></div><div class="line">  it-&gt;fill_untranslated(x_f);</div><div class="line"></div><div class="line">  ASSERT_EQ(x_f.size(), 1);</div><div class="line">  <a class="code" href="group__assertions.html#ga1fbcd725707df2b89e601f9939d257bc">ASSERT_TRUE</a>(x_f[0] == it.row_index());</div><div class="line">}</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="ml__data_2ml__data_8hpp_source.html#l00257">257</a> of file <a class="el" href="ml__data_2ml__data_8hpp_source.html">ml_data.hpp</a>.</p>
+<p>Definition at line <a class="el" href="ml_2ml__data_2ml__data_8hpp_source.html#l00257">257</a> of file <a class="el" href="ml_2ml__data_2ml__data_8hpp_source.html">ml_data.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="afb59cbec74175ad3cdf33937ebfcab70"></a>
 <div class="memitem">
@@ -308,7 +308,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns true if there is no data in the container. </p>
 
-<p>Definition at line <a class="el" href="ml__data_2ml__data_8hpp_source.html#l00391">391</a> of file <a class="el" href="ml__data_2ml__data_8hpp_source.html">ml_data.hpp</a>.</p>
+<p>Definition at line <a class="el" href="ml_2ml__data_2ml__data_8hpp_source.html#l00391">391</a> of file <a class="el" href="ml_2ml__data_2ml__data_8hpp_source.html">ml_data.hpp</a>.</p>
 
 </div>
 </div>
@@ -452,7 +452,7 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Return an iterator over part of the data. See <a class="el" href="unity_2toolkits_2ml__data__2_2iterators_2ml__data__iterator_8hpp_source.html">iterators/ml_data_iterator.hpp</a> for documentation on the returned iterator. </p>
+<p>Return an iterator over part of the data. See <a class="el" href="toolkits_2ml__data__2_2iterators_2ml__data__iterator_8hpp_source.html">iterators/ml_data_iterator.hpp</a> for documentation on the returned iterator. </p>
 
 </div>
 </div>
@@ -478,7 +478,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Get the current serialization format. </p>
 
-<p>Definition at line <a class="el" href="ml__data_2ml__data_8hpp_source.html#l00477">477</a> of file <a class="el" href="ml__data_2ml__data_8hpp_source.html">ml_data.hpp</a>.</p>
+<p>Definition at line <a class="el" href="ml_2ml__data_2ml__data_8hpp_source.html#l00477">477</a> of file <a class="el" href="ml_2ml__data_2ml__data_8hpp_source.html">ml_data.hpp</a>.</p>
 
 </div>
 </div>
@@ -504,7 +504,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns true if a target column is present, and false otherwise. </p>
 
-<p>Definition at line <a class="el" href="ml__data_2ml__data_8hpp_source.html#l00410">410</a> of file <a class="el" href="ml__data_2ml__data_8hpp_source.html">ml_data.hpp</a>.</p>
+<p>Definition at line <a class="el" href="ml_2ml__data_2ml__data_8hpp_source.html#l00410">410</a> of file <a class="el" href="ml_2ml__data_2ml__data_8hpp_source.html">ml_data.hpp</a>.</p>
 
 </div>
 </div>
@@ -530,7 +530,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns true if any of the non-target columns are translated. </p>
 
-<p>Definition at line <a class="el" href="ml__data_2ml__data_8hpp_source.html#l00423">423</a> of file <a class="el" href="ml__data_2ml__data_8hpp_source.html">ml_data.hpp</a>.</p>
+<p>Definition at line <a class="el" href="ml_2ml__data_2ml__data_8hpp_source.html#l00423">423</a> of file <a class="el" href="ml_2ml__data_2ml__data_8hpp_source.html">ml_data.hpp</a>.</p>
 
 </div>
 </div>
@@ -556,7 +556,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns true if there are untranslated columns present, and false otherwise. </p>
 
-<p>Definition at line <a class="el" href="ml__data_2ml__data_8hpp_source.html#l00417">417</a> of file <a class="el" href="ml__data_2ml__data_8hpp_source.html">ml_data.hpp</a>.</p>
+<p>Definition at line <a class="el" href="ml_2ml__data_2ml__data_8hpp_source.html#l00417">417</a> of file <a class="el" href="ml_2ml__data_2ml__data_8hpp_source.html">ml_data.hpp</a>.</p>
 
 </div>
 </div>
@@ -582,7 +582,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the maximum row size present in the data. This information is calculated when the data is indexed and the <a class="el" href="classturi_1_1ml__data.html">ml_data</a> structure is filled. A buffer sized to this is guaranteed to hold any row encountered while iterating through the data. </p>
 
-<p>Definition at line <a class="el" href="ml__data_2ml__data_8hpp_source.html#l00433">433</a> of file <a class="el" href="ml__data_2ml__data_8hpp_source.html">ml_data.hpp</a>.</p>
+<p>Definition at line <a class="el" href="ml_2ml__data_2ml__data_8hpp_source.html#l00433">433</a> of file <a class="el" href="ml_2ml__data_2ml__data_8hpp_source.html">ml_data.hpp</a>.</p>
 
 </div>
 </div>
@@ -608,7 +608,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Direct access to the metadata. </p>
 
-<p>Definition at line <a class="el" href="ml__data_2ml__data_8hpp_source.html#l00367">367</a> of file <a class="el" href="ml__data_2ml__data_8hpp_source.html">ml_data.hpp</a>.</p>
+<p>Definition at line <a class="el" href="ml_2ml__data_2ml__data_8hpp_source.html#l00367">367</a> of file <a class="el" href="ml_2ml__data_2ml__data_8hpp_source.html">ml_data.hpp</a>.</p>
 
 </div>
 </div>
@@ -634,7 +634,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the number of columns present. </p>
 
-<p>Definition at line <a class="el" href="ml__data_2ml__data_8hpp_source.html#l00373">373</a> of file <a class="el" href="ml__data_2ml__data_8hpp_source.html">ml_data.hpp</a>.</p>
+<p>Definition at line <a class="el" href="ml_2ml__data_2ml__data_8hpp_source.html#l00373">373</a> of file <a class="el" href="ml_2ml__data_2ml__data_8hpp_source.html">ml_data.hpp</a>.</p>
 
 </div>
 </div>
@@ -660,7 +660,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>The number of rows present. </p>
 
-<p>Definition at line <a class="el" href="ml__data_2ml__data_8hpp_source.html#l00379">379</a> of file <a class="el" href="ml__data_2ml__data_8hpp_source.html">ml_data.hpp</a>.</p>
+<p>Definition at line <a class="el" href="ml_2ml__data_2ml__data_8hpp_source.html#l00379">379</a> of file <a class="el" href="ml_2ml__data_2ml__data_8hpp_source.html">ml_data.hpp</a>.</p>
 
 </div>
 </div>
@@ -710,7 +710,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>The number of rows present. </p>
 
-<p>Definition at line <a class="el" href="ml__data_2ml__data_8hpp_source.html#l00385">385</a> of file <a class="el" href="ml__data_2ml__data_8hpp_source.html">ml_data.hpp</a>.</p>
+<p>Definition at line <a class="el" href="ml_2ml__data_2ml__data_8hpp_source.html#l00385">385</a> of file <a class="el" href="ml_2ml__data_2ml__data_8hpp_source.html">ml_data.hpp</a>.</p>
 
 </div>
 </div>
@@ -742,7 +742,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>ml_data/<a class="el" href="ml__data_2ml__data_8hpp_source.html">ml_data.hpp</a></li>
+<li>ml/ml_data/<a class="el" href="ml_2ml__data_2ml__data_8hpp_source.html">ml_data.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

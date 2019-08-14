@@ -1,0 +1,25 @@
+var dir_a97535a7ef4ab2213be983dea1fc1090 =
+[
+    [ "batch_size.hpp", "batch__size_8hpp_source.html", null ],
+    [ "boxes_and_whiskers.hpp", "boxes__and__whiskers_8hpp_source.html", null ],
+    [ "categorical_heatmap.hpp", "categorical__heatmap_8hpp_source.html", null ],
+    [ "columnwise_summary.hpp", "columnwise__summary_8hpp_source.html", null ],
+    [ "dark_mode.hpp", "dark__mode_8hpp_source.html", null ],
+    [ "escape.hpp", "escape_8hpp_source.html", null ],
+    [ "extrema.hpp", "extrema_8hpp_source.html", null ],
+    [ "groupby.hpp", "visualization_2server_2groupby_8hpp_source.html", null ],
+    [ "heatmap.hpp", "heatmap_8hpp_source.html", null ],
+    [ "histogram.hpp", "histogram_8hpp_source.html", null ],
+    [ "io_buffer.hpp", "io__buffer_8hpp_source.html", null ],
+    [ "item_frequency.hpp", "item__frequency_8hpp_source.html", null ],
+    [ "plot.hpp", "plot_8hpp_source.html", null ],
+    [ "process_wrapper.hpp", "process__wrapper_8hpp_source.html", null ],
+    [ "scatter.hpp", "scatter_8hpp_source.html", null ],
+    [ "server.hpp", "server_8hpp_source.html", null ],
+    [ "show.hpp", "show_8hpp_source.html", null ],
+    [ "summary_view.hpp", "summary__view_8hpp_source.html", null ],
+    [ "thread.hpp", "thread_8hpp_source.html", null ],
+    [ "transformation.hpp", "transformation_8hpp_source.html", null ],
+    [ "vega_data.hpp", "vega__data_8hpp_source.html", null ],
+    [ "vega_spec.hpp", "vega__spec_8hpp_source.html", null ]
+];

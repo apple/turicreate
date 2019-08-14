@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['random_5fseed',['random_seed',['../structturi_1_1neural__net_1_1image__augmenter_1_1options.html#a342c93eadc70e8739bfbc00d900ab4d2',1,'turi::neural_net::image_augmenter::options::random_seed()'],['../structturi_1_1activity__classification_1_1data__iterator_1_1parameters.html#a7575345576c3c9ca023c89b9e3a6012a',1,'turi::activity_classification::data_iterator::parameters::random_seed()'],['../structturi_1_1object__detection_1_1data__iterator_1_1parameters.html#affb787ae8e59525335de06fe7099dad7',1,'turi::object_detection::data_iterator::parameters::random_seed()']]],
   ['registry',['registry',['../classturi_1_1any_1_1holder.html#a3b8910e4fb6dea4e0757a937c2de9192',1,'turi::any::holder']]],
   ['regularization_5ftype',['regularization_type',['../classturi_1_1factorization_1_1factorization__sgd__interface.html#a2eb1377b3d6ebbb4e1d47d4e1e134e87',1,'turi::factorization::factorization_sgd_interface']]],
   ['repeat',['repeat',['../structturi_1_1object__detection_1_1data__iterator_1_1parameters.html#acda6be4749cb5638161ac31a03b03d53',1,'turi::object_detection::data_iterator::parameters']]],

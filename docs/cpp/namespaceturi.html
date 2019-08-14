@@ -549,6 +549,8 @@ typedef <a class="el" href="classturi_1_1mutex.html">mutex</a>&#160;</td><td cla
 <tr class="separator:gad88e65780e1a9617bc5853ccbe78d93d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab3287fc42b19a09c06dd0138b2b97299"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sgraph__main.html#gab3287fc42b19a09c06dd0138b2b97299">sgraph_edge_data</a></td></tr>
 <tr class="separator:gab3287fc42b19a09c06dd0138b2b97299"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac1bc4e23409359261abdb23d0b87ec30"><td class="memItemLeft" align="right" valign="top">typedef boost::iostreams::stream&lt; charstream_impl::resizing_array_sink&lt; true &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#gac1bc4e23409359261abdb23d0b87ec30">charstream</a></td></tr>
+<tr class="separator:gac1bc4e23409359261abdb23d0b87ec30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gafaa2cc0f37094753493cb20e3ba0b29f"><td class="memItemLeft" align="right" valign="top">typedef std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__unity.html#gafaa2cc0f37094753493cb20e3ba0b29f">options_map_t</a></td></tr>
 <tr class="separator:gafaa2cc0f37094753493cb20e3ba0b29f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad2f01fc93cbbadcab29068fd9b6947ec"><td class="memItemLeft" align="right" valign="top">typedef std::function&lt; void(<a class="el" href="structturi_1_1edge__triple.html">edge_triple</a> &amp;)&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ad2f01fc93cbbadcab29068fd9b6947ec">lambda_triple_apply_fn</a></td></tr>
@@ -565,8 +567,6 @@ typedef <a class="el" href="classturi_1_1sframe.html">sframe</a>&#160;</td><td c
 <tr class="memitem:a62b96181769442a107940d85d2f5e59b"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a62b96181769442a107940d85d2f5e59b"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a62b96181769442a107940d85d2f5e59b">is_model_descendent</a> = std::is_convertible&lt; T *, <a class="el" href="classturi_1_1model__base.html">model_base</a> * &gt;</td></tr>
 <tr class="separator:a62b96181769442a107940d85d2f5e59b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gac1bc4e23409359261abdb23d0b87ec30"><td class="memItemLeft" align="right" valign="top">typedef boost::iostreams::stream&lt; charstream_impl::resizing_array_sink&lt; true &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#gac1bc4e23409359261abdb23d0b87ec30">charstream</a></td></tr>
-<tr class="separator:gac1bc4e23409359261abdb23d0b87ec30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -575,54 +575,6 @@ Enumerations</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:a8056e26a070ff45a1bf1232aa463dd1e"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; turi::unity_server_initializer &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a8056e26a070ff45a1bf1232aa463dd1e">capi_server_initializer</a> ()</td></tr>
 <tr class="separator:a8056e26a070ff45a1bf1232aa463dd1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga50858708e6b493a8725bbb40d992bff4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga50858708e6b493a8725bbb40d992bff4">download_url</a> (std::string url, std::string output_file)</td></tr>
-<tr class="separator:ga50858708e6b493a8725bbb40d992bff4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae775e307f6819797b5508a362f3a7853"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; int, bool, std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#gae775e307f6819797b5508a362f3a7853">download_url</a> (std::string url)</td></tr>
-<tr class="separator:gae775e307f6819797b5508a362f3a7853"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab5bb1f3b0e8696eb7a9e54404d14ef3a"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ab5bb1f3b0e8696eb7a9e54404d14ef3a">get_curl_error_string</a> (int status)</td></tr>
-<tr class="separator:ab5bb1f3b0e8696eb7a9e54404d14ef3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga5ff7eac62175d5e5bac69a32ba1fee75"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga5ff7eac62175d5e5bac69a32ba1fee75">get_s3_file_last_modified</a> (const std::string &amp;url)</td></tr>
-<tr class="separator:ga5ff7eac62175d5e5bac69a32ba1fee75"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga5d061c799a90c5c6a03728ef3de03d07"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structturi_1_1list__objects__response.html">list_objects_response</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga5d061c799a90c5c6a03728ef3de03d07">list_objects</a> (std::string s3_url, std::string proxy=&quot;&quot;)</td></tr>
-<tr class="separator:ga5d061c799a90c5c6a03728ef3de03d07"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga234867c61a56b4fa2622e0f672084360"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structturi_1_1list__objects__response.html">list_objects_response</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga234867c61a56b4fa2622e0f672084360">list_directory</a> (std::string s3_url, std::string proxy=&quot;&quot;)</td></tr>
-<tr class="separator:ga234867c61a56b4fa2622e0f672084360"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga85a9407a949db18e04a56ba0fe8a79ac"><td class="memItemLeft" align="right" valign="top">std::pair&lt; bool, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga85a9407a949db18e04a56ba0fe8a79ac">is_directory</a> (std::string s3_url, std::string proxy=&quot;&quot;)</td></tr>
-<tr class="separator:ga85a9407a949db18e04a56ba0fe8a79ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga4b22e913c89f6de93fbbd479c4dbbe9c"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga4b22e913c89f6de93fbbd479c4dbbe9c">delete_object</a> (std::string s3_url, std::string proxy=&quot;&quot;)</td></tr>
-<tr class="separator:ga4b22e913c89f6de93fbbd479c4dbbe9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga717b2264a5a6bb05f6c2435b9cb4e7cc"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga717b2264a5a6bb05f6c2435b9cb4e7cc">delete_prefix</a> (std::string s3_url, std::string proxy=&quot;&quot;)</td></tr>
-<tr class="separator:ga717b2264a5a6bb05f6c2435b9cb4e7cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga814071ebbbb49a2ba27bace0540a09db"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga814071ebbbb49a2ba27bace0540a09db">sanitize_s3_url</a> (const std::string &amp;url)</td></tr>
-<tr class="separator:ga814071ebbbb49a2ba27bace0540a09db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaccad1b81df07fb42c9ea0863cf1d6276"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#gaccad1b81df07fb42c9ea0863cf1d6276">parse_s3url</a> (std::string url, <a class="el" href="structturi_1_1s3url.html">s3url</a> &amp;ret)</td></tr>
-<tr class="separator:gaccad1b81df07fb42c9ea0863cf1d6276"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga5a3799347c103129ae70805e0161a6ff"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga5a3799347c103129ae70805e0161a6ff">set_upload_timeout</a> (long timeout)</td></tr>
-<tr class="separator:ga5a3799347c103129ae70805e0161a6ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga2c38590a0ad13fa63e4d25a366b653a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga2c38590a0ad13fa63e4d25a366b653a3">set_download_timeout</a> (long timeout)</td></tr>
-<tr class="separator:ga2c38590a0ad13fa63e4d25a366b653a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gabade0bf49f31a40150a079328ebc507b"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#gabade0bf49f31a40150a079328ebc507b">get_s3_error_code</a> (const std::string &amp;msg)</td></tr>
-<tr class="separator:gabade0bf49f31a40150a079328ebc507b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga77744d8898a95679d4f8c399767728b0"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga77744d8898a95679d4f8c399767728b0">sanitize_url</a> (std::string url)</td></tr>
-<tr class="separator:ga77744d8898a95679d4f8c399767728b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga6a39d09df58879b880f0ba2102ec047f"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga6a39d09df58879b880f0ba2102ec047f">get_system_user_name</a> ()</td></tr>
-<tr class="separator:ga6a39d09df58879b880f0ba2102ec047f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga49a7014c73f094ce56bb700d684fd08d"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga49a7014c73f094ce56bb700d684fd08d">get_temp_name</a> (const std::string &amp;prefix=&quot;&quot;, bool _prefer_hdfs=false)</td></tr>
-<tr class="separator:ga49a7014c73f094ce56bb700d684fd08d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga8bea12507112de131eebd578bccfcb89"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga8bea12507112de131eebd578bccfcb89">get_temp_name_prefer_hdfs</a> (const std::string &amp;prefix=&quot;&quot;)</td></tr>
-<tr class="separator:ga8bea12507112de131eebd578bccfcb89"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga843b3c39ee4383fdbe606debcf5273c7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga843b3c39ee4383fdbe606debcf5273c7">delete_temp_file</a> (std::string s)</td></tr>
-<tr class="separator:ga843b3c39ee4383fdbe606debcf5273c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga97a38eeb40011aa24012d90a46e53689"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga97a38eeb40011aa24012d90a46e53689">delete_temp_files</a> (std::vector&lt; std::string &gt; files)</td></tr>
-<tr class="separator:ga97a38eeb40011aa24012d90a46e53689"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaadc7f2e18c38aae6132d2da2b50a08d8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#gaadc7f2e18c38aae6132d2da2b50a08d8">reap_unused_temp_files</a> ()</td></tr>
-<tr class="separator:gaadc7f2e18c38aae6132d2da2b50a08d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga9148e7456c812a233d184699e377c959"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga9148e7456c812a233d184699e377c959">reap_current_process_temp_files</a> ()</td></tr>
-<tr class="separator:ga9148e7456c812a233d184699e377c959"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga904c193b58d4fefe5737c11a8bd2f961"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga904c193b58d4fefe5737c11a8bd2f961">get_temp_directories</a> ()</td></tr>
-<tr class="separator:ga904c193b58d4fefe5737c11a8bd2f961"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga938d93ca534d16a0946cba20516890f7"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga938d93ca534d16a0946cba20516890f7">num_temp_directories</a> ()</td></tr>
-<tr class="separator:ga938d93ca534d16a0946cba20516890f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5163d800c1557ce946f305d93665dbc1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a5163d800c1557ce946f305d93665dbc1">flex_type_is_convertible</a> (<a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> from, <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> to)</td></tr>
 <tr class="separator:a5163d800c1557ce946f305d93665dbc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a95083e63ff7e20e03de8833909a699f1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a95083e63ff7e20e03de8833909a699f1">flex_type_has_binary_op</a> (<a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> left, <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> right, char op)</td></tr>
@@ -663,32 +615,16 @@ Functions</h2></td></tr>
 <tr class="separator:a38d7a190d06b8c451159379b0648ee6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a156b50aa4a360da0f21c4797e608a685"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a156b50aa4a360da0f21c4797e608a685">boost_read_image</a> (std::string filename, char **out_data, size_t &amp;width, size_t &amp;height, size_t &amp;channels, <a class="el" href="namespaceturi.html#a9a91663acc51ef53b8d40f4efe12b1be">Format</a> &amp;format, size_t &amp;image_data_size, std::string format_string)</td></tr>
 <tr class="separator:a156b50aa4a360da0f21c4797e608a685"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9df09423ccd9d8dfeccd98adf9c6287f"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a9df09423ccd9d8dfeccd98adf9c6287f">operator&lt;&lt;</a> (std::ostream &amp;out, const <a class="el" href="classturi_1_1gl__sarray.html">gl_sarray</a> &amp;other)</td></tr>
+<tr class="separator:a9df09423ccd9d8dfeccd98adf9c6287f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b4187e63c2a35218e0b8c574657012b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a4b4187e63c2a35218e0b8c574657012b">infer_type_of_list</a> (const std::vector&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;vec)</td></tr>
+<tr class="separator:a4b4187e63c2a35218e0b8c574657012b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26f09d91617696aa2a93dae054142c4e"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a26f09d91617696aa2a93dae054142c4e">operator&lt;&lt;</a> (std::ostream &amp;out, const <a class="el" href="classturi_1_1gl__sframe.html">gl_sframe</a> &amp;other)</td></tr>
+<tr class="separator:a26f09d91617696aa2a93dae054142c4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae07b18042dc57af0299bda68a1a68a95"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__turilogger.html#gae07b18042dc57af0299bda68a1a68a95">begin_log_rotation</a> (std::string log_file_name, size_t log_interval, size_t truncate_limit)</td></tr>
 <tr class="separator:gae07b18042dc57af0299bda68a1a68a95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ff3de78d5d1e8ab742cf8c185db5f7a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a6ff3de78d5d1e8ab742cf8c185db5f7a">stop_log_rotation</a> ()</td></tr>
 <tr class="separator:a6ff3de78d5d1e8ab742cf8c185db5f7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d0e2ccadc441f5863ce350a4a13cbb7"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structturi_1_1ml__data__entry.html">ml_data_entry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a6d0e2ccadc441f5863ce350a4a13cbb7">translate_row_to_ml_data_entry</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const std::vector&lt; <a class="el" href="structturi_1_1ml__data__entry__global__index.html">ml_data_entry_global_index</a> &gt; &amp;row)</td></tr>
-<tr class="separator:a6d0e2ccadc441f5863ce350a4a13cbb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2bd4ccaf03d4989c964b7d73653ef907"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structturi_1_1ml__data__entry.html">ml_data_entry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a2bd4ccaf03d4989c964b7d73653ef907">translate_row_to_ml_data_entry</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const DenseVector &amp;row)</td></tr>
-<tr class="separator:a2bd4ccaf03d4989c964b7d73653ef907"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7543f0279215f40b8abdda5293e40f22"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structturi_1_1ml__data__entry.html">ml_data_entry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a7543f0279215f40b8abdda5293e40f22">translate_row_to_ml_data_entry</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const SparseVector &amp;v)</td></tr>
-<tr class="separator:a7543f0279215f40b8abdda5293e40f22"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a449a1ee8679d98e9f4684d08d68b2e13"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a449a1ee8679d98e9f4684d08d68b2e13">translate_row_to_original</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const DenseVector &amp;v)</td></tr>
-<tr class="separator:a449a1ee8679d98e9f4684d08d68b2e13"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7148fa32f1857a7cc4df132c2f64af84"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a7148fa32f1857a7cc4df132c2f64af84">translate_row_to_original</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const SparseVector &amp;v)</td></tr>
-<tr class="separator:a7148fa32f1857a7cc4df132c2f64af84"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa4ca8b3f0780a24c2d25863013d95d8e"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#aa4ca8b3f0780a24c2d25863013d95d8e">translate_row_to_original</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const std::vector&lt; <a class="el" href="structturi_1_1ml__data__entry__global__index.html">ml_data_entry_global_index</a> &gt; &amp;row)</td></tr>
-<tr class="separator:aa4ca8b3f0780a24c2d25863013d95d8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a473f1d62e742337465699da6367965"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="classturi_1_1sframe.html">sframe</a>, <a class="el" href="classturi_1_1ml__data.html">ml_data</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a8a473f1d62e742337465699da6367965">make_random_sframe_and_ml_data</a> (size_t n_rows, std::string column_types, bool create_target_column=false, bool target_column_categorical=false)</td></tr>
-<tr class="separator:a8a473f1d62e742337465699da6367965"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5d4c7093dd9c45bb94ea622b5e2d1751"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a5d4c7093dd9c45bb94ea622b5e2d1751">ml_testing_equals</a> (const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;v1, const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;v2)</td></tr>
-<tr class="separator:a5d4c7093dd9c45bb94ea622b5e2d1751"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga326f55a2e76d8679966233cb2597a845"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga326f55a2e76d8679966233cb2597a845">get_local_ip</a> (bool print=true)</td></tr>
-<tr class="separator:ga326f55a2e76d8679966233cb2597a845"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga6ce42155cbf6336409bfefcb603fffd7"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga6ce42155cbf6336409bfefcb603fffd7">get_local_ip_as_str</a> (bool print=true)</td></tr>
-<tr class="separator:ga6ce42155cbf6336409bfefcb603fffd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga45990906bbd14e040226282c8b1b3bf1"><td class="memItemLeft" align="right" valign="top">std::pair&lt; size_t, int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga45990906bbd14e040226282c8b1b3bf1">get_free_tcp_port</a> ()</td></tr>
-<tr class="separator:ga45990906bbd14e040226282c8b1b3bf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gadfb5999683f3468d3a758648743563ba"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:gadfb5999683f3468d3a758648743563ba"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__threading.html#gadfb5999683f3468d3a758648743563ba">atomic_compare_and_swap</a> (T &amp;a, T oldval, T newval)</td></tr>
 <tr class="separator:gadfb5999683f3468d3a758648743563ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -745,8 +681,6 @@ template&lt;typename T &gt; </td></tr>
 <tr class="separator:a0589a45142c448725fa6849c56628f51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5b9a25864879a98c50594582bf2726f0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__threading.html#ga5b9a25864879a98c50594582bf2726f0">in_parallel</a> (const std::function&lt; void(size_t thread_id,                                                                                                                                                                                               size_t num_threads)&gt; &amp;fn)</td></tr>
 <tr class="separator:ga5b9a25864879a98c50594582bf2726f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae6020e2e273ceaeef7a58bdd46032641"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ae6020e2e273ceaeef7a58bdd46032641">in_parallel_debug</a> (const std::function&lt; void(size_t thread_id,                                                                                                       size_t num_threads)&gt; &amp;fn)</td></tr>
-<tr class="separator:ae6020e2e273ceaeef7a58bdd46032641"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae01665f82adc1cb33d894854b82002ed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classturi_1_1thread__pool.html">thread_pool</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__threading.html#gae01665f82adc1cb33d894854b82002ed">get_parfor_thread_pool</a> ()</td></tr>
 <tr class="separator:gae01665f82adc1cb33d894854b82002ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac532f68a1b4c1c4b4d42ffd0fdff2784"><td class="memTemplParams" colspan="2">template&lt;typename FunctionType &gt; </td></tr>
@@ -762,20 +696,52 @@ template&lt;typename T &gt; </td></tr>
 <a class="el" href="classturi_1_1thread.html">thread</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ade42955781626642fc721b24ce67cfb5">launch_in_new_thread</a> (const boost::function&lt; void(void)&gt; &amp;f, size_t cpuid=size_t(-1))</td></tr>
 <tr class="memdesc:ade42955781626642fc721b24ce67cfb5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Runs f in a new thread. convenience function for creating a new thread quickly. <br /></td></tr>
 <tr class="separator:ade42955781626642fc721b24ce67cfb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaec90d32dd2853a7a6d0ab348ee99cf5c"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__process__management.html#gaec90d32dd2853a7a6d0ab348ee99cf5c">get_parent_pid</a> ()</td></tr>
-<tr class="separator:gaec90d32dd2853a7a6d0ab348ee99cf5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae881ed75b07502551ff0d650a7fb4836"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ae881ed75b07502551ff0d650a7fb4836">get_my_pid</a> ()</td></tr>
-<tr class="separator:ae881ed75b07502551ff0d650a7fb4836"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga31d1427f3f5d16cddd0ba4b2ade43b68"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__process__management.html#ga31d1427f3f5d16cddd0ba4b2ade43b68">wait_for_parent_exit</a> (size_t parent_pid)</td></tr>
-<tr class="separator:ga31d1427f3f5d16cddd0ba4b2ade43b68"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga9ce426914b88ffd7fc91dfe13155b768"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__process__management.html#ga9ce426914b88ffd7fc91dfe13155b768">is_process_running</a> (size_t pid)</td></tr>
-<tr class="separator:ga9ce426914b88ffd7fc91dfe13155b768"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga8878be5d5e527b2a0b4f34126e93c0c5"><td class="memItemLeft" align="right" valign="top">boost::optional&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__process__management.html#ga8878be5d5e527b2a0b4f34126e93c0c5">getenv_str</a> (const char *variable_name)</td></tr>
-<tr class="separator:ga8878be5d5e527b2a0b4f34126e93c0c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaef88f7b1b9f09282d7ff2db1c11ed7e8"><td class="memItemLeft" align="right" valign="top">rdtsc_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#gaef88f7b1b9f09282d7ff2db1c11ed7e8">estimate_ticks_per_second</a> ()</td></tr>
-<tr class="separator:gaef88f7b1b9f09282d7ff2db1c11ed7e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae6071c25cb81f5d2e5a99b13a53e6b48"><td class="memItemLeft" align="right" valign="top">rdtsc_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#gae6071c25cb81f5d2e5a99b13a53e6b48">rdtsc</a> (void)</td></tr>
-<tr class="separator:gae6071c25cb81f5d2e5a99b13a53e6b48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga50858708e6b493a8725bbb40d992bff4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga50858708e6b493a8725bbb40d992bff4">download_url</a> (std::string url, std::string output_file)</td></tr>
+<tr class="separator:ga50858708e6b493a8725bbb40d992bff4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae775e307f6819797b5508a362f3a7853"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; int, bool, std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#gae775e307f6819797b5508a362f3a7853">download_url</a> (std::string url)</td></tr>
+<tr class="separator:gae775e307f6819797b5508a362f3a7853"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5bb1f3b0e8696eb7a9e54404d14ef3a"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ab5bb1f3b0e8696eb7a9e54404d14ef3a">get_curl_error_string</a> (int status)</td></tr>
+<tr class="separator:ab5bb1f3b0e8696eb7a9e54404d14ef3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5ff7eac62175d5e5bac69a32ba1fee75"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga5ff7eac62175d5e5bac69a32ba1fee75">get_s3_file_last_modified</a> (const std::string &amp;url)</td></tr>
+<tr class="separator:ga5ff7eac62175d5e5bac69a32ba1fee75"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5d061c799a90c5c6a03728ef3de03d07"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structturi_1_1list__objects__response.html">list_objects_response</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga5d061c799a90c5c6a03728ef3de03d07">list_objects</a> (std::string s3_url, std::string proxy=&quot;&quot;)</td></tr>
+<tr class="separator:ga5d061c799a90c5c6a03728ef3de03d07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga234867c61a56b4fa2622e0f672084360"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structturi_1_1list__objects__response.html">list_objects_response</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga234867c61a56b4fa2622e0f672084360">list_directory</a> (std::string s3_url, std::string proxy=&quot;&quot;)</td></tr>
+<tr class="separator:ga234867c61a56b4fa2622e0f672084360"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4b22e913c89f6de93fbbd479c4dbbe9c"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga4b22e913c89f6de93fbbd479c4dbbe9c">delete_object</a> (std::string s3_url, std::string proxy=&quot;&quot;)</td></tr>
+<tr class="separator:ga4b22e913c89f6de93fbbd479c4dbbe9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga717b2264a5a6bb05f6c2435b9cb4e7cc"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga717b2264a5a6bb05f6c2435b9cb4e7cc">delete_prefix</a> (std::string s3_url, std::string proxy=&quot;&quot;)</td></tr>
+<tr class="separator:ga717b2264a5a6bb05f6c2435b9cb4e7cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga814071ebbbb49a2ba27bace0540a09db"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga814071ebbbb49a2ba27bace0540a09db">sanitize_s3_url</a> (const std::string &amp;url)</td></tr>
+<tr class="separator:ga814071ebbbb49a2ba27bace0540a09db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf1f462276b68dd6b4dfec9a8a0e5213c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#gaf1f462276b68dd6b4dfec9a8a0e5213c">parse_s3url</a> (std::string url, <a class="el" href="structturi_1_1s3url.html">s3url</a> &amp;ret, std::string &amp;err_msg)</td></tr>
+<tr class="separator:gaf1f462276b68dd6b4dfec9a8a0e5213c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5a3799347c103129ae70805e0161a6ff"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga5a3799347c103129ae70805e0161a6ff">set_upload_timeout</a> (long timeout)</td></tr>
+<tr class="separator:ga5a3799347c103129ae70805e0161a6ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2c38590a0ad13fa63e4d25a366b653a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga2c38590a0ad13fa63e4d25a366b653a3">set_download_timeout</a> (long timeout)</td></tr>
+<tr class="separator:ga2c38590a0ad13fa63e4d25a366b653a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabade0bf49f31a40150a079328ebc507b"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#gabade0bf49f31a40150a079328ebc507b">get_s3_error_code</a> (const std::string &amp;msg)</td></tr>
+<tr class="separator:gabade0bf49f31a40150a079328ebc507b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga77744d8898a95679d4f8c399767728b0"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga77744d8898a95679d4f8c399767728b0">sanitize_url</a> (std::string url)</td></tr>
+<tr class="separator:ga77744d8898a95679d4f8c399767728b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6a39d09df58879b880f0ba2102ec047f"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga6a39d09df58879b880f0ba2102ec047f">get_system_user_name</a> ()</td></tr>
+<tr class="separator:ga6a39d09df58879b880f0ba2102ec047f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga49a7014c73f094ce56bb700d684fd08d"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga49a7014c73f094ce56bb700d684fd08d">get_temp_name</a> (const std::string &amp;prefix=&quot;&quot;, bool _prefer_hdfs=false)</td></tr>
+<tr class="separator:ga49a7014c73f094ce56bb700d684fd08d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8bea12507112de131eebd578bccfcb89"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga8bea12507112de131eebd578bccfcb89">get_temp_name_prefer_hdfs</a> (const std::string &amp;prefix=&quot;&quot;)</td></tr>
+<tr class="separator:ga8bea12507112de131eebd578bccfcb89"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga843b3c39ee4383fdbe606debcf5273c7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga843b3c39ee4383fdbe606debcf5273c7">delete_temp_file</a> (std::string s)</td></tr>
+<tr class="separator:ga843b3c39ee4383fdbe606debcf5273c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga97a38eeb40011aa24012d90a46e53689"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga97a38eeb40011aa24012d90a46e53689">delete_temp_files</a> (std::vector&lt; std::string &gt; files)</td></tr>
+<tr class="separator:ga97a38eeb40011aa24012d90a46e53689"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaadc7f2e18c38aae6132d2da2b50a08d8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#gaadc7f2e18c38aae6132d2da2b50a08d8">reap_unused_temp_files</a> ()</td></tr>
+<tr class="separator:gaadc7f2e18c38aae6132d2da2b50a08d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9148e7456c812a233d184699e377c959"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga9148e7456c812a233d184699e377c959">reap_current_process_temp_files</a> ()</td></tr>
+<tr class="separator:ga9148e7456c812a233d184699e377c959"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga904c193b58d4fefe5737c11a8bd2f961"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga904c193b58d4fefe5737c11a8bd2f961">get_temp_directories</a> ()</td></tr>
+<tr class="separator:ga904c193b58d4fefe5737c11a8bd2f961"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga938d93ca534d16a0946cba20516890f7"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga938d93ca534d16a0946cba20516890f7">num_temp_directories</a> ()</td></tr>
+<tr class="separator:ga938d93ca534d16a0946cba20516890f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga28d9fd43fcb1100a7727348c160ee618"><td class="memTemplParams" colspan="2">template&lt;typename OutArcType , typename RandomAccessIterator &gt; </td></tr>
 <tr class="memitem:ga28d9fd43fcb1100a7727348c160ee618"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__group__serialization.html#ga28d9fd43fcb1100a7727348c160ee618">serialize_iterator</a> (OutArcType &amp;oarc, RandomAccessIterator begin, RandomAccessIterator end)</td></tr>
 <tr class="memdesc:ga28d9fd43fcb1100a7727348c160ee618"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes the contents between the iterators begin and end.  <a href="group__group__serialization.html#ga28d9fd43fcb1100a7727348c160ee618">More...</a><br /></td></tr>
@@ -882,106 +848,28 @@ template&lt;typename T &gt; </td></tr>
 <tr class="separator:ga7621d1f2b3e2bfec3fc2dd6f97c1efcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga76ef9da0e05c69bf0b824e20ac66ed9b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sgraph__main.html#ga76ef9da0e05c69bf0b824e20ac66ed9b">save_sgraph_to_csv</a> (const <a class="el" href="classturi_1_1sgraph.html">sgraph</a> &amp;g, std::string targetdir)</td></tr>
 <tr class="separator:ga76ef9da0e05c69bf0b824e20ac66ed9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga326f55a2e76d8679966233cb2597a845"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga326f55a2e76d8679966233cb2597a845">get_local_ip</a> (bool print=true)</td></tr>
+<tr class="separator:ga326f55a2e76d8679966233cb2597a845"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6ce42155cbf6336409bfefcb603fffd7"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga6ce42155cbf6336409bfefcb603fffd7">get_local_ip_as_str</a> (bool print=true)</td></tr>
+<tr class="separator:ga6ce42155cbf6336409bfefcb603fffd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga45990906bbd14e040226282c8b1b3bf1"><td class="memItemLeft" align="right" valign="top">std::pair&lt; size_t, int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga45990906bbd14e040226282c8b1b3bf1">get_free_tcp_port</a> ()</td></tr>
+<tr class="separator:ga45990906bbd14e040226282c8b1b3bf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaec90d32dd2853a7a6d0ab348ee99cf5c"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__process__management.html#gaec90d32dd2853a7a6d0ab348ee99cf5c">get_parent_pid</a> ()</td></tr>
+<tr class="separator:gaec90d32dd2853a7a6d0ab348ee99cf5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae881ed75b07502551ff0d650a7fb4836"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ae881ed75b07502551ff0d650a7fb4836">get_my_pid</a> ()</td></tr>
+<tr class="separator:ae881ed75b07502551ff0d650a7fb4836"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga31d1427f3f5d16cddd0ba4b2ade43b68"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__process__management.html#ga31d1427f3f5d16cddd0ba4b2ade43b68">wait_for_parent_exit</a> (size_t parent_pid)</td></tr>
+<tr class="separator:ga31d1427f3f5d16cddd0ba4b2ade43b68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9ce426914b88ffd7fc91dfe13155b768"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__process__management.html#ga9ce426914b88ffd7fc91dfe13155b768">is_process_running</a> (size_t pid)</td></tr>
+<tr class="separator:ga9ce426914b88ffd7fc91dfe13155b768"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8878be5d5e527b2a0b4f34126e93c0c5"><td class="memItemLeft" align="right" valign="top">boost::optional&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__process__management.html#ga8878be5d5e527b2a0b4f34126e93c0c5">getenv_str</a> (const char *variable_name)</td></tr>
+<tr class="separator:ga8878be5d5e527b2a0b4f34126e93c0c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaef88f7b1b9f09282d7ff2db1c11ed7e8"><td class="memItemLeft" align="right" valign="top">rdtsc_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#gaef88f7b1b9f09282d7ff2db1c11ed7e8">estimate_ticks_per_second</a> ()</td></tr>
+<tr class="separator:gaef88f7b1b9f09282d7ff2db1c11ed7e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae6071c25cb81f5d2e5a99b13a53e6b48"><td class="memItemLeft" align="right" valign="top">rdtsc_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#gae6071c25cb81f5d2e5a99b13a53e6b48">rdtsc</a> (void)</td></tr>
+<tr class="separator:gae6071c25cb81f5d2e5a99b13a53e6b48"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9d871f90185cac5c95fdb5c1aa3d88f"><td class="memItemLeft" align="right" valign="top">void EXPORT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ab9d871f90185cac5c95fdb5c1aa3d88f">configure_global_environment</a> (std::string argv0)</td></tr>
 <tr class="separator:ab9d871f90185cac5c95fdb5c1aa3d88f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9df09423ccd9d8dfeccd98adf9c6287f"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a9df09423ccd9d8dfeccd98adf9c6287f">operator&lt;&lt;</a> (std::ostream &amp;out, const <a class="el" href="classturi_1_1gl__sarray.html">gl_sarray</a> &amp;other)</td></tr>
-<tr class="separator:a9df09423ccd9d8dfeccd98adf9c6287f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4b4187e63c2a35218e0b8c574657012b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a4b4187e63c2a35218e0b8c574657012b">infer_type_of_list</a> (const std::vector&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;vec)</td></tr>
-<tr class="separator:a4b4187e63c2a35218e0b8c574657012b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26f09d91617696aa2a93dae054142c4e"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a26f09d91617696aa2a93dae054142c4e">operator&lt;&lt;</a> (std::ostream &amp;out, const <a class="el" href="classturi_1_1gl__sframe.html">gl_sframe</a> &amp;other)</td></tr>
-<tr class="separator:a26f09d91617696aa2a93dae054142c4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a12e181638a581021583e9fb60c0c7a29"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a12e181638a581021583e9fb60c0c7a29">varmap_to_flexmap</a> (const variant_map_type &amp;map)</td></tr>
-<tr class="separator:a12e181638a581021583e9fb60c0c7a29"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4b2b8f5911ab7feba4b935b857be0cc6"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::string, <a class="el" href="namespaceturi.html#a133f01ff63e13b5b78b761e5c78e0c25">variant_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a4b2b8f5911ab7feba4b935b857be0cc6">flexmap_to_varmap</a> (const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;map)</td></tr>
-<tr class="separator:a4b2b8f5911ab7feba4b935b857be0cc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d20f39e4623982dbe2b03fedbdf1374"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a1d20f39e4623982dbe2b03fedbdf1374">create_unity_global_singleton</a> (<a class="el" href="classturi_1_1toolkit__function__registry.html">toolkit_function_registry</a> *_toolkit_functions, <a class="el" href="classturi_1_1toolkit__class__registry.html">toolkit_class_registry</a> *_classes)</td></tr>
-<tr class="separator:a1d20f39e4623982dbe2b03fedbdf1374"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae2aa7d0c17d793a41e0d2e0fa4411a04"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classturi_1_1unity__global.html">unity_global</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ae2aa7d0c17d793a41e0d2e0fa4411a04">get_unity_global_singleton</a> ()</td></tr>
-<tr class="separator:ae2aa7d0c17d793a41e0d2e0fa4411a04"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a49aa840d12810de2e59ee965256b9713"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a49aa840d12810de2e59ee965256b9713">get_variant_which_name</a> (int i)</td></tr>
-<tr class="separator:a49aa840d12810de2e59ee965256b9713"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adc8eec97edcf72c280999c2f5e327e12"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:adc8eec97edcf72c280999c2f5e327e12"><td class="memTemplItemLeft" align="right" valign="top">static T &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#adc8eec97edcf72c280999c2f5e327e12">variant_get_ref</a> (<a class="el" href="namespaceturi.html#a133f01ff63e13b5b78b761e5c78e0c25">variant_type</a> &amp;v)</td></tr>
-<tr class="separator:adc8eec97edcf72c280999c2f5e327e12"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e8290f1526266dd5dfc96b95110c4c0"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a6e8290f1526266dd5dfc96b95110c4c0"><td class="memTemplItemLeft" align="right" valign="top">static const T &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a6e8290f1526266dd5dfc96b95110c4c0">variant_get_ref</a> (const <a class="el" href="namespaceturi.html#a133f01ff63e13b5b78b761e5c78e0c25">variant_type</a> &amp;v)</td></tr>
-<tr class="separator:a6e8290f1526266dd5dfc96b95110c4c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a95f64942a3fd22be6c4823c5107a2bde"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a95f64942a3fd22be6c4823c5107a2bde"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a95f64942a3fd22be6c4823c5107a2bde">variant_set_value</a> (<a class="el" href="namespaceturi.html#a133f01ff63e13b5b78b761e5c78e0c25">variant_type</a> &amp;v, const T &amp;f)</td></tr>
-<tr class="separator:a95f64942a3fd22be6c4823c5107a2bde"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4089b0a7d421bba15b1510e3816c11ab"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a4089b0a7d421bba15b1510e3816c11ab"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespaceturi.html#a133f01ff63e13b5b78b761e5c78e0c25">variant_type</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a4089b0a7d421bba15b1510e3816c11ab">to_variant</a> (const T &amp;f)</td></tr>
-<tr class="separator:a4089b0a7d421bba15b1510e3816c11ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a895255301986d2f7bc3aa81a460e0f14"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a895255301986d2f7bc3aa81a460e0f14"><td class="memTemplItemLeft" align="right" valign="top">std::decay&lt; T &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a895255301986d2f7bc3aa81a460e0f14">variant_get_value</a> (const <a class="el" href="namespaceturi.html#a133f01ff63e13b5b78b761e5c78e0c25">variant_type</a> &amp;v)</td></tr>
-<tr class="separator:a895255301986d2f7bc3aa81a460e0f14"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2a1cd29c1b4f2058389f782411e6b1a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ab2a1cd29c1b4f2058389f782411e6b1a">variant_deep_save</a> (const <a class="el" href="namespaceturi.html#a133f01ff63e13b5b78b761e5c78e0c25">variant_type</a> &amp;v, <a class="el" href="classturi_1_1oarchive.html">oarchive</a> &amp;oarc)</td></tr>
-<tr class="separator:ab2a1cd29c1b4f2058389f782411e6b1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ade9ab2fd16f9f9abcc4fde3f86e4b428"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ade9ab2fd16f9f9abcc4fde3f86e4b428"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ade9ab2fd16f9f9abcc4fde3f86e4b428">variant_deep_save</a> (const T &amp;v, <a class="el" href="classturi_1_1oarchive.html">oarchive</a> &amp;oarc)</td></tr>
-<tr class="separator:ade9ab2fd16f9f9abcc4fde3f86e4b428"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f1166aee6a6372142009d91bdd6a13d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a8f1166aee6a6372142009d91bdd6a13d">variant_deep_load</a> (<a class="el" href="namespaceturi.html#a133f01ff63e13b5b78b761e5c78e0c25">variant_type</a> &amp;v, <a class="el" href="classturi_1_1iarchive.html">iarchive</a> &amp;iarc)</td></tr>
-<tr class="separator:a8f1166aee6a6372142009d91bdd6a13d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3693451f85e001eb5311f4dcaceda27a"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a3693451f85e001eb5311f4dcaceda27a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a3693451f85e001eb5311f4dcaceda27a">variant_deep_load</a> (T &amp;v, <a class="el" href="classturi_1_1iarchive.html">iarchive</a> &amp;iarc)</td></tr>
-<tr class="separator:a3693451f85e001eb5311f4dcaceda27a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2aac567773d5068dce533ce7420be04c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a2aac567773d5068dce533ce7420be04c">add_metadata</a> (CoreML::Specification::Model &amp;model_spec, const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;context)</td></tr>
-<tr class="separator:a2aac567773d5068dce533ce7420be04c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af8f198ba330dd013625dbf4b410a2567"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; coreml::MLModelWrapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#af8f198ba330dd013625dbf4b410a2567">export_linear_regression_as_model_asset</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const Eigen::Matrix&lt; double, Eigen::Dynamic, 1 &gt; &amp;coefs, const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;context)</td></tr>
-<tr class="separator:af8f198ba330dd013625dbf4b410a2567"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a219221c1a9c8d5c4eaa144d26a71418e"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; coreml::MLModelWrapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a219221c1a9c8d5c4eaa144d26a71418e">export_linear_svm_as_model_asset</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const Eigen::Matrix&lt; double, Eigen::Dynamic, 1 &gt; &amp;coefs, const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;context)</td></tr>
-<tr class="separator:a219221c1a9c8d5c4eaa144d26a71418e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abb5b914fec49a52404c26b980ee6f44a"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; coreml::MLModelWrapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#abb5b914fec49a52404c26b980ee6f44a">export_logistic_model_as_model_asset</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const Eigen::Matrix&lt; double, Eigen::Dynamic, 1 &gt; &amp;coefs, const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;context)</td></tr>
-<tr class="separator:abb5b914fec49a52404c26b980ee6f44a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2f8f75adab79449ded48cf73fff58ac7"><td class="memItemLeft" align="right" valign="top">void EXPORT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a2f8f75adab79449ded48cf73fff58ac7">export_linear_regression_as_model_asset</a> (const std::string &amp;filename, const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const Eigen::Matrix&lt; double, Eigen::Dynamic, 1 &gt; &amp;coefs, const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;context)</td></tr>
-<tr class="separator:a2f8f75adab79449ded48cf73fff58ac7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef2291d40ba400f9fed0fbcd55c20810"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#aef2291d40ba400f9fed0fbcd55c20810">setup_pipeline_from_mldata</a> (CoreML::Pipeline &amp;pipeline, std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; metadata)</td></tr>
-<tr class="separator:aef2291d40ba400f9fed0fbcd55c20810"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9623f4cefedb6ecd21cb24d20c8f0070"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; coreml::MLModelWrapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a9623f4cefedb6ecd21cb24d20c8f0070">export_object_detector_model</a> (const <a class="el" href="classturi_1_1neural__net_1_1model__spec.html">neural_net::model_spec</a> &amp;nn_spec, size_t image_width, size_t image_height, size_t num_classes, size_t num_predictions, <a class="el" href="group__group__flexible__type__types.html#ga408eb4413a2a629b462fb3a5d4f42c24">flex_dict</a> user_defined_metadata, <a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a> class_labels, std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; options)</td></tr>
-<tr class="separator:a9623f4cefedb6ecd21cb24d20c8f0070"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c70151020bc0f0c9dddcfe8c83e7095"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; coreml::MLModelWrapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a3c70151020bc0f0c9dddcfe8c83e7095">export_activity_classifier_model</a> (const <a class="el" href="classturi_1_1neural__net_1_1model__spec.html">neural_net::model_spec</a> &amp;nn_spec, size_t prediction_window, const <a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a> &amp;features, size_t lstm_hidden_layer_size, const <a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a> &amp;class_labels, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;target)</td></tr>
-<tr class="separator:a3c70151020bc0f0c9dddcfe8c83e7095"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf17c7990e00eab46358ea2f7865faee"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__group__flexible__type__types.html#ga408eb4413a2a629b462fb3a5d4f42c24">flex_dict</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#acf17c7990e00eab46358ea2f7865faee">to_flat_dict</a> (const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;dict_or_list, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;separator, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;undefined_string, std::function&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>(const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;)&gt; nonnumeric_value_handler)</td></tr>
-<tr class="separator:acf17c7990e00eab46358ea2f7865faee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a47dee7eafcb0830112b307af255480aa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__group__flexible__type__types.html#ga408eb4413a2a629b462fb3a5d4f42c24">flex_dict</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a47dee7eafcb0830112b307af255480aa">to_flat_dict</a> (const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;input, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;separator, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;undefined_string, const std::string &amp;image_policy=&quot;error&quot;, const std::string &amp;datetime_policy=&quot;error&quot;)</td></tr>
-<tr class="separator:a47dee7eafcb0830112b307af255480aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a540a5abba9cb87b36865e3a15c87de31"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classturi_1_1gl__sarray.html">gl_sarray</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a540a5abba9cb87b36865e3a15c87de31">to_sarray_of_flat_dictionaries</a> (<a class="el" href="classturi_1_1gl__sarray.html">gl_sarray</a> input, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;sep, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;undefined_string, const std::string &amp;image_policy=&quot;error&quot;, const std::string &amp;datetime_policy=&quot;error&quot;)</td></tr>
-<tr class="separator:a540a5abba9cb87b36865e3a15c87de31"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac0897de203f0665490c3e558b3b8375b"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ac0897de203f0665490c3e558b3b8375b"><td class="memTemplItemLeft" align="right" valign="top">GL_HOT_INLINE std::pair&lt; size_t, size_t &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ac0897de203f0665490c3e558b3b8375b">find_slice_boundary_indices</a> (const std::vector&lt; std::pair&lt; size_t, T &gt; &gt; &amp;v, size_t item_index_lb, size_t item_index_ub)</td></tr>
-<tr class="separator:ac0897de203f0665490c3e558b3b8375b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a845719d1ce226dde6c31d2aa468d8836"><td class="memTemplParams" colspan="2">template&lt;typename T , typename SliceInitFunction , typename RowProcessFunction , typename ElementProcessFunction , typename SliceFinalizeFunction &gt; </td></tr>
-<tr class="memitem:a845719d1ce226dde6c31d2aa468d8836"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a845719d1ce226dde6c31d2aa468d8836">iterate_through_sparse_item_array_by_slice</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; std::vector&lt; std::pair&lt; size_t, T &gt; &gt; &gt; &gt; &amp;data, const std::vector&lt; size_t &gt; &amp;slice_delimiters, SliceInitFunction &amp;&amp;init_slice, RowProcessFunction &amp;&amp;preprocess_row, ElementProcessFunction &amp;&amp;process_element, SliceFinalizeFunction &amp;&amp;finalize_slice)</td></tr>
-<tr class="separator:a845719d1ce226dde6c31d2aa468d8836"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa7dc62f726e970d8994a01a66175a538"><td class="memTemplParams" colspan="2">template&lt;typename T , typename RowProcessFunction &gt; </td></tr>
-<tr class="memitem:aa7dc62f726e970d8994a01a66175a538"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#aa7dc62f726e970d8994a01a66175a538">iterate_through_sparse_item_array</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; std::vector&lt; std::pair&lt; size_t, T &gt; &gt; &gt; &gt; &amp;data, RowProcessFunction &amp;&amp;process_row)</td></tr>
-<tr class="separator:aa7dc62f726e970d8994a01a66175a538"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4b93738530621930c5a07a906a5b1865"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a4b93738530621930c5a07a906a5b1865"><td class="memTemplItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; std::vector&lt; std::pair&lt; size_t, T &gt; &gt; &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a4b93738530621930c5a07a906a5b1865">transpose_sparse_sarray</a> (std::shared_ptr&lt; <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; std::vector&lt; std::pair&lt; size_t, T &gt; &gt; &gt; &gt; data, const std::vector&lt; size_t &gt; &amp;item_counts, size_t max_memory_usage)</td></tr>
-<tr class="separator:a4b93738530621930c5a07a906a5b1865"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0ad3530418c9bcd52e3cec371f245a8b"><td class="memTemplParams" colspan="2">template&lt;typename InputIterator1 , typename InputIterator2 , typename ComparisonFunction , typename AccumulateFunction &gt; </td></tr>
-<tr class="memitem:ga0ad3530418c9bcd52e3cec371f245a8b"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__toolkit__util.html#ga0ad3530418c9bcd52e3cec371f245a8b">accumulate_intersection</a> (InputIterator1 first1, const InputIterator1 &amp;last1, InputIterator2 first2, const InputIterator2 &amp;last2, const ComparisonFunction &amp;less_than_operator, const AccumulateFunction &amp;accumulate_matching_pair)</td></tr>
-<tr class="separator:ga0ad3530418c9bcd52e3cec371f245a8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga1a245b6f97ff63864fcad59c40c1b47f"><td class="memTemplParams" colspan="2">template&lt;typename InputIterator1 , typename InputIterator2 , typename AccumulateFunction &gt; </td></tr>
-<tr class="memitem:ga1a245b6f97ff63864fcad59c40c1b47f"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__toolkit__util.html#ga1a245b6f97ff63864fcad59c40c1b47f">accumulate_intersection</a> (InputIterator1 first1, const InputIterator1 &amp;last1, InputIterator2 first2, const InputIterator2 &amp;last2, const AccumulateFunction &amp;accumulate_matching_pair)</td></tr>
-<tr class="separator:ga1a245b6f97ff63864fcad59c40c1b47f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga42ea40acb9aa1c215739d74870dca949"><td class="memTemplParams" colspan="2">template&lt;typename InputIterator1 , typename InputIterator2 &gt; </td></tr>
-<tr class="memitem:ga42ea40acb9aa1c215739d74870dca949"><td class="memTemplItemLeft" align="right" valign="top">static size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__toolkit__util.html#ga42ea40acb9aa1c215739d74870dca949">count_intersection</a> (InputIterator1 first1, const InputIterator1 &amp;last1, InputIterator2 first2, const InputIterator2 &amp;last2)</td></tr>
-<tr class="separator:ga42ea40acb9aa1c215739d74870dca949"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga89d7dc2175a0f5f56d4b297c3b1a0009"><td class="memTemplParams" colspan="2">template&lt;typename InputIterator1 , typename InputIterator2 , typename ComparisonFunction &gt; </td></tr>
-<tr class="memitem:ga89d7dc2175a0f5f56d4b297c3b1a0009"><td class="memTemplItemLeft" align="right" valign="top">static size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__toolkit__util.html#ga89d7dc2175a0f5f56d4b297c3b1a0009">count_intersection</a> (InputIterator1 first1, const InputIterator1 &amp;last1, InputIterator2 first2, const InputIterator2 &amp;last2, const ComparisonFunction &amp;less_than_operator)</td></tr>
-<tr class="separator:ga89d7dc2175a0f5f56d4b297c3b1a0009"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaa230f5663cb3d54930f7b834176edddd"><td class="memItemLeft" align="right" valign="top">std::vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__toolkit__util.html#gaa230f5663cb3d54930f7b834176edddd">get_unique_values</a> (std::shared_ptr&lt; <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &gt; indexed_column)</td></tr>
-<tr class="separator:gaa230f5663cb3d54930f7b834176edddd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga5be1372202e9256374e877793887e8af"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__toolkit__util.html#ga5be1372202e9256374e877793887e8af">make_unique</a> (std::shared_ptr&lt; <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &gt; indexed_column)</td></tr>
-<tr class="separator:ga5be1372202e9256374e877793887e8af"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga54025cc8bf2e793927c0202ebcb68ed3"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="classturi_1_1sframe.html">sframe</a>, <a class="el" href="classturi_1_1sframe.html">sframe</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__toolkit__util.html#ga54025cc8bf2e793927c0202ebcb68ed3">split_sframe_on_index</a> (const <a class="el" href="classturi_1_1sframe.html">sframe</a> &amp;src, std::function&lt; bool(size_t)&gt; switch_function)</td></tr>
-<tr class="separator:ga54025cc8bf2e793927c0202ebcb68ed3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf55b6675b70fe0932c3c6dff099edab3"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__toolkit__util.html#gaf55b6675b70fe0932c3c6dff099edab3">matrix_to_sarray</a> (const Eigen::MatrixXd &amp;m)</td></tr>
-<tr class="separator:gaf55b6675b70fe0932c3c6dff099edab3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga18a4682bfe16de1db8594e334d57e7ab"><td class="memTemplParams" colspan="2">template&lt;typename GenFunction &gt; </td></tr>
-<tr class="memitem:ga18a4682bfe16de1db8594e334d57e7ab"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classturi_1_1sframe.html">sframe</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__toolkit__util.html#ga18a4682bfe16de1db8594e334d57e7ab">sframe_from_ranged_generator</a> (const std::vector&lt; std::string &gt; &amp;column_names, const std::vector&lt; <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> &gt; &amp;column_types, size_t num_rows, GenFunction &amp;&amp;generator_function)</td></tr>
-<tr class="separator:ga18a4682bfe16de1db8594e334d57e7ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2a4ccf353c5cfe791a994b8015c0756"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ac2a4ccf353c5cfe791a994b8015c0756"><td class="memTemplItemLeft" align="right" valign="top">static bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ac2a4ccf353c5cfe791a994b8015c0756">is_power_of_2</a> (const T &amp;x, _ENABLE_IF_UINT(T))</td></tr>
 <tr class="separator:ac2a4ccf353c5cfe791a994b8015c0756"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1102,21 +990,21 @@ template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ga8f5c8bed80f073bc71a67c4256f32c6b"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ga8f5c8bed80f073bc71a67c4256f32c6b"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__util.html#ga8f5c8bed80f073bc71a67c4256f32c6b">extract_and_sort_top_k</a> (std::vector&lt; T &gt; &amp;v, size_t top_k)</td></tr>
 <tr class="separator:ga8f5c8bed80f073bc71a67c4256f32c6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a963920bf11ee9d5069b14395b6e81cab"><td class="memItemLeft" align="right" valign="top">static GL_HOT_INLINE_FLATTEN double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a963920bf11ee9d5069b14395b6e81cab">sigmoid</a> (double x)</td></tr>
+<tr class="memitem:a963920bf11ee9d5069b14395b6e81cab"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a963920bf11ee9d5069b14395b6e81cab">sigmoid</a> (double x)</td></tr>
 <tr class="separator:a963920bf11ee9d5069b14395b6e81cab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad7e4555283ef5773a9e2d0f7d9a35ada"><td class="memItemLeft" align="right" valign="top">static GL_HOT_INLINE_FLATTEN double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ad7e4555283ef5773a9e2d0f7d9a35ada">log1pe</a> (double x)</td></tr>
+<tr class="memitem:ad7e4555283ef5773a9e2d0f7d9a35ada"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ad7e4555283ef5773a9e2d0f7d9a35ada">log1pe</a> (double x)</td></tr>
 <tr class="separator:ad7e4555283ef5773a9e2d0f7d9a35ada"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6395f16416d199a2df25a21c31cdb0c2"><td class="memItemLeft" align="right" valign="top">static GL_HOT_INLINE_FLATTEN double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a6395f16416d199a2df25a21c31cdb0c2">log1pen</a> (double x)</td></tr>
+<tr class="memitem:a6395f16416d199a2df25a21c31cdb0c2"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a6395f16416d199a2df25a21c31cdb0c2">log1pen</a> (double x)</td></tr>
 <tr class="separator:a6395f16416d199a2df25a21c31cdb0c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5600b7667813008a0a49e09e63ef3dc4"><td class="memItemLeft" align="right" valign="top">static GL_HOT_INLINE_FLATTEN double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a5600b7667813008a0a49e09e63ef3dc4">log1me</a> (double x)</td></tr>
+<tr class="memitem:a5600b7667813008a0a49e09e63ef3dc4"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a5600b7667813008a0a49e09e63ef3dc4">log1me</a> (double x)</td></tr>
 <tr class="separator:a5600b7667813008a0a49e09e63ef3dc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a89243ba817f3e0649f932f3d8519278e"><td class="memItemLeft" align="right" valign="top">static GL_HOT_INLINE_FLATTEN double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a89243ba817f3e0649f932f3d8519278e">log1men</a> (double x)</td></tr>
+<tr class="memitem:a89243ba817f3e0649f932f3d8519278e"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a89243ba817f3e0649f932f3d8519278e">log1men</a> (double x)</td></tr>
 <tr class="separator:a89243ba817f3e0649f932f3d8519278e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0877f2ccb7dbec498442c05d2a8af5a6"><td class="memItemLeft" align="right" valign="top">static GL_HOT_INLINE_FLATTEN double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a0877f2ccb7dbec498442c05d2a8af5a6">logem1</a> (double x)</td></tr>
+<tr class="memitem:a0877f2ccb7dbec498442c05d2a8af5a6"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a0877f2ccb7dbec498442c05d2a8af5a6">logem1</a> (double x)</td></tr>
 <tr class="separator:a0877f2ccb7dbec498442c05d2a8af5a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a15a04229ebad06076c37abc50d640c5e"><td class="memItemLeft" align="right" valign="top">static GL_HOT_INLINE_FLATTEN double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a15a04229ebad06076c37abc50d640c5e">log1pe_deriviative</a> (double x)</td></tr>
+<tr class="memitem:a15a04229ebad06076c37abc50d640c5e"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a15a04229ebad06076c37abc50d640c5e">log1pe_deriviative</a> (double x)</td></tr>
 <tr class="separator:a15a04229ebad06076c37abc50d640c5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a54021649246b9412defe52a7dce47e0c"><td class="memItemLeft" align="right" valign="top">static GL_HOT_INLINE_FLATTEN double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a54021649246b9412defe52a7dce47e0c">log1pen_deriviative</a> (double x)</td></tr>
+<tr class="memitem:a54021649246b9412defe52a7dce47e0c"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a54021649246b9412defe52a7dce47e0c">log1pen_deriviative</a> (double x)</td></tr>
 <tr class="separator:a54021649246b9412defe52a7dce47e0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf635a8e0c8dccabee631e325b1eaa255"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#gaf635a8e0c8dccabee631e325b1eaa255">md5</a> (std::string val)</td></tr>
 <tr class="separator:gaf635a8e0c8dccabee631e325b1eaa255"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1230,15 +1118,119 @@ template&lt;typename Key , typename T &gt; </td></tr>
 <tr class="memitem:gadc4a1db7b70b67cf04197f3f7e6c95e9"><td class="memTemplParams" colspan="2">template&lt;typename T , typename U &gt; </td></tr>
 <tr class="memitem:gadc4a1db7b70b67cf04197f3f7e6c95e9"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__util.html#gadc4a1db7b70b67cf04197f3f7e6c95e9">_save_and_load_object</a> (T &amp;dest, const U &amp;src, std::string dir)</td></tr>
 <tr class="separator:gadc4a1db7b70b67cf04197f3f7e6c95e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d0e2ccadc441f5863ce350a4a13cbb7"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structturi_1_1ml__data__entry.html">ml_data_entry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a6d0e2ccadc441f5863ce350a4a13cbb7">translate_row_to_ml_data_entry</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const std::vector&lt; <a class="el" href="structturi_1_1ml__data__entry__global__index.html">ml_data_entry_global_index</a> &gt; &amp;row)</td></tr>
+<tr class="separator:a6d0e2ccadc441f5863ce350a4a13cbb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2bd4ccaf03d4989c964b7d73653ef907"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structturi_1_1ml__data__entry.html">ml_data_entry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a2bd4ccaf03d4989c964b7d73653ef907">translate_row_to_ml_data_entry</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const DenseVector &amp;row)</td></tr>
+<tr class="separator:a2bd4ccaf03d4989c964b7d73653ef907"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7543f0279215f40b8abdda5293e40f22"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structturi_1_1ml__data__entry.html">ml_data_entry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a7543f0279215f40b8abdda5293e40f22">translate_row_to_ml_data_entry</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const SparseVector &amp;v)</td></tr>
+<tr class="separator:a7543f0279215f40b8abdda5293e40f22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a449a1ee8679d98e9f4684d08d68b2e13"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a449a1ee8679d98e9f4684d08d68b2e13">translate_row_to_original</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const DenseVector &amp;v)</td></tr>
+<tr class="separator:a449a1ee8679d98e9f4684d08d68b2e13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7148fa32f1857a7cc4df132c2f64af84"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a7148fa32f1857a7cc4df132c2f64af84">translate_row_to_original</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const SparseVector &amp;v)</td></tr>
+<tr class="separator:a7148fa32f1857a7cc4df132c2f64af84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa4ca8b3f0780a24c2d25863013d95d8e"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#aa4ca8b3f0780a24c2d25863013d95d8e">translate_row_to_original</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const std::vector&lt; <a class="el" href="structturi_1_1ml__data__entry__global__index.html">ml_data_entry_global_index</a> &gt; &amp;row)</td></tr>
+<tr class="separator:aa4ca8b3f0780a24c2d25863013d95d8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a473f1d62e742337465699da6367965"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="classturi_1_1sframe.html">sframe</a>, <a class="el" href="classturi_1_1ml__data.html">ml_data</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a8a473f1d62e742337465699da6367965">make_random_sframe_and_ml_data</a> (size_t n_rows, std::string column_types, bool create_target_column=false, bool target_column_categorical=false)</td></tr>
+<tr class="separator:a8a473f1d62e742337465699da6367965"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d4c7093dd9c45bb94ea622b5e2d1751"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a5d4c7093dd9c45bb94ea622b5e2d1751">ml_testing_equals</a> (const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;v1, const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;v2)</td></tr>
+<tr class="separator:a5d4c7093dd9c45bb94ea622b5e2d1751"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a12e181638a581021583e9fb60c0c7a29"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a12e181638a581021583e9fb60c0c7a29">varmap_to_flexmap</a> (const variant_map_type &amp;map)</td></tr>
+<tr class="separator:a12e181638a581021583e9fb60c0c7a29"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b2b8f5911ab7feba4b935b857be0cc6"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::string, <a class="el" href="namespaceturi.html#a133f01ff63e13b5b78b761e5c78e0c25">variant_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a4b2b8f5911ab7feba4b935b857be0cc6">flexmap_to_varmap</a> (const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;map)</td></tr>
+<tr class="separator:a4b2b8f5911ab7feba4b935b857be0cc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d20f39e4623982dbe2b03fedbdf1374"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a1d20f39e4623982dbe2b03fedbdf1374">create_unity_global_singleton</a> (<a class="el" href="classturi_1_1toolkit__function__registry.html">toolkit_function_registry</a> *_toolkit_functions, <a class="el" href="classturi_1_1toolkit__class__registry.html">toolkit_class_registry</a> *_classes)</td></tr>
+<tr class="separator:a1d20f39e4623982dbe2b03fedbdf1374"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2aa7d0c17d793a41e0d2e0fa4411a04"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classturi_1_1unity__global.html">unity_global</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ae2aa7d0c17d793a41e0d2e0fa4411a04">get_unity_global_singleton</a> ()</td></tr>
+<tr class="separator:ae2aa7d0c17d793a41e0d2e0fa4411a04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49aa840d12810de2e59ee965256b9713"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a49aa840d12810de2e59ee965256b9713">get_variant_which_name</a> (int i)</td></tr>
+<tr class="separator:a49aa840d12810de2e59ee965256b9713"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc8eec97edcf72c280999c2f5e327e12"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:adc8eec97edcf72c280999c2f5e327e12"><td class="memTemplItemLeft" align="right" valign="top">static T &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#adc8eec97edcf72c280999c2f5e327e12">variant_get_ref</a> (<a class="el" href="namespaceturi.html#a133f01ff63e13b5b78b761e5c78e0c25">variant_type</a> &amp;v)</td></tr>
+<tr class="separator:adc8eec97edcf72c280999c2f5e327e12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e8290f1526266dd5dfc96b95110c4c0"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a6e8290f1526266dd5dfc96b95110c4c0"><td class="memTemplItemLeft" align="right" valign="top">static const T &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a6e8290f1526266dd5dfc96b95110c4c0">variant_get_ref</a> (const <a class="el" href="namespaceturi.html#a133f01ff63e13b5b78b761e5c78e0c25">variant_type</a> &amp;v)</td></tr>
+<tr class="separator:a6e8290f1526266dd5dfc96b95110c4c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a95f64942a3fd22be6c4823c5107a2bde"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a95f64942a3fd22be6c4823c5107a2bde"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a95f64942a3fd22be6c4823c5107a2bde">variant_set_value</a> (<a class="el" href="namespaceturi.html#a133f01ff63e13b5b78b761e5c78e0c25">variant_type</a> &amp;v, const T &amp;f)</td></tr>
+<tr class="separator:a95f64942a3fd22be6c4823c5107a2bde"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4089b0a7d421bba15b1510e3816c11ab"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a4089b0a7d421bba15b1510e3816c11ab"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespaceturi.html#a133f01ff63e13b5b78b761e5c78e0c25">variant_type</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a4089b0a7d421bba15b1510e3816c11ab">to_variant</a> (const T &amp;f)</td></tr>
+<tr class="separator:a4089b0a7d421bba15b1510e3816c11ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a895255301986d2f7bc3aa81a460e0f14"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a895255301986d2f7bc3aa81a460e0f14"><td class="memTemplItemLeft" align="right" valign="top">std::decay&lt; T &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a895255301986d2f7bc3aa81a460e0f14">variant_get_value</a> (const <a class="el" href="namespaceturi.html#a133f01ff63e13b5b78b761e5c78e0c25">variant_type</a> &amp;v)</td></tr>
+<tr class="separator:a895255301986d2f7bc3aa81a460e0f14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2a1cd29c1b4f2058389f782411e6b1a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ab2a1cd29c1b4f2058389f782411e6b1a">variant_deep_save</a> (const <a class="el" href="namespaceturi.html#a133f01ff63e13b5b78b761e5c78e0c25">variant_type</a> &amp;v, <a class="el" href="classturi_1_1oarchive.html">oarchive</a> &amp;oarc)</td></tr>
+<tr class="separator:ab2a1cd29c1b4f2058389f782411e6b1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade9ab2fd16f9f9abcc4fde3f86e4b428"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ade9ab2fd16f9f9abcc4fde3f86e4b428"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ade9ab2fd16f9f9abcc4fde3f86e4b428">variant_deep_save</a> (const T &amp;v, <a class="el" href="classturi_1_1oarchive.html">oarchive</a> &amp;oarc)</td></tr>
+<tr class="separator:ade9ab2fd16f9f9abcc4fde3f86e4b428"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f1166aee6a6372142009d91bdd6a13d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a8f1166aee6a6372142009d91bdd6a13d">variant_deep_load</a> (<a class="el" href="namespaceturi.html#a133f01ff63e13b5b78b761e5c78e0c25">variant_type</a> &amp;v, <a class="el" href="classturi_1_1iarchive.html">iarchive</a> &amp;iarc)</td></tr>
+<tr class="separator:a8f1166aee6a6372142009d91bdd6a13d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3693451f85e001eb5311f4dcaceda27a"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a3693451f85e001eb5311f4dcaceda27a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a3693451f85e001eb5311f4dcaceda27a">variant_deep_load</a> (T &amp;v, <a class="el" href="classturi_1_1iarchive.html">iarchive</a> &amp;iarc)</td></tr>
+<tr class="separator:a3693451f85e001eb5311f4dcaceda27a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2aac567773d5068dce533ce7420be04c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a2aac567773d5068dce533ce7420be04c">add_metadata</a> (CoreML::Specification::Model &amp;model_spec, const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;context)</td></tr>
+<tr class="separator:a2aac567773d5068dce533ce7420be04c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8f198ba330dd013625dbf4b410a2567"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; coreml::MLModelWrapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#af8f198ba330dd013625dbf4b410a2567">export_linear_regression_as_model_asset</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const Eigen::Matrix&lt; double, Eigen::Dynamic, 1 &gt; &amp;coefs, const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;context)</td></tr>
+<tr class="separator:af8f198ba330dd013625dbf4b410a2567"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a219221c1a9c8d5c4eaa144d26a71418e"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; coreml::MLModelWrapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a219221c1a9c8d5c4eaa144d26a71418e">export_linear_svm_as_model_asset</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const Eigen::Matrix&lt; double, Eigen::Dynamic, 1 &gt; &amp;coefs, const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;context)</td></tr>
+<tr class="separator:a219221c1a9c8d5c4eaa144d26a71418e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb5b914fec49a52404c26b980ee6f44a"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; coreml::MLModelWrapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#abb5b914fec49a52404c26b980ee6f44a">export_logistic_model_as_model_asset</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const Eigen::Matrix&lt; double, Eigen::Dynamic, 1 &gt; &amp;coefs, const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;context)</td></tr>
+<tr class="separator:abb5b914fec49a52404c26b980ee6f44a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f8f75adab79449ded48cf73fff58ac7"><td class="memItemLeft" align="right" valign="top">void EXPORT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a2f8f75adab79449ded48cf73fff58ac7">export_linear_regression_as_model_asset</a> (const std::string &amp;filename, const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const Eigen::Matrix&lt; double, Eigen::Dynamic, 1 &gt; &amp;coefs, const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;context)</td></tr>
+<tr class="separator:a2f8f75adab79449ded48cf73fff58ac7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef2291d40ba400f9fed0fbcd55c20810"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#aef2291d40ba400f9fed0fbcd55c20810">setup_pipeline_from_mldata</a> (CoreML::Pipeline &amp;pipeline, std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; metadata)</td></tr>
+<tr class="separator:aef2291d40ba400f9fed0fbcd55c20810"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9623f4cefedb6ecd21cb24d20c8f0070"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; coreml::MLModelWrapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a9623f4cefedb6ecd21cb24d20c8f0070">export_object_detector_model</a> (const <a class="el" href="classturi_1_1neural__net_1_1model__spec.html">neural_net::model_spec</a> &amp;nn_spec, size_t image_width, size_t image_height, size_t num_classes, size_t num_predictions, <a class="el" href="group__group__flexible__type__types.html#ga408eb4413a2a629b462fb3a5d4f42c24">flex_dict</a> user_defined_metadata, <a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a> class_labels, std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; options)</td></tr>
+<tr class="separator:a9623f4cefedb6ecd21cb24d20c8f0070"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c70151020bc0f0c9dddcfe8c83e7095"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; coreml::MLModelWrapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a3c70151020bc0f0c9dddcfe8c83e7095">export_activity_classifier_model</a> (const <a class="el" href="classturi_1_1neural__net_1_1model__spec.html">neural_net::model_spec</a> &amp;nn_spec, size_t prediction_window, const <a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a> &amp;features, size_t lstm_hidden_layer_size, const <a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a> &amp;class_labels, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;target)</td></tr>
+<tr class="separator:a3c70151020bc0f0c9dddcfe8c83e7095"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf17c7990e00eab46358ea2f7865faee"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__group__flexible__type__types.html#ga408eb4413a2a629b462fb3a5d4f42c24">flex_dict</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#acf17c7990e00eab46358ea2f7865faee">to_flat_dict</a> (const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;dict_or_list, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;separator, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;undefined_string, std::function&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>(const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;)&gt; nonnumeric_value_handler)</td></tr>
+<tr class="separator:acf17c7990e00eab46358ea2f7865faee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47dee7eafcb0830112b307af255480aa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__group__flexible__type__types.html#ga408eb4413a2a629b462fb3a5d4f42c24">flex_dict</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a47dee7eafcb0830112b307af255480aa">to_flat_dict</a> (const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;input, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;separator, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;undefined_string, const std::string &amp;image_policy=&quot;error&quot;, const std::string &amp;datetime_policy=&quot;error&quot;)</td></tr>
+<tr class="separator:a47dee7eafcb0830112b307af255480aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a540a5abba9cb87b36865e3a15c87de31"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classturi_1_1gl__sarray.html">gl_sarray</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a540a5abba9cb87b36865e3a15c87de31">to_sarray_of_flat_dictionaries</a> (<a class="el" href="classturi_1_1gl__sarray.html">gl_sarray</a> input, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;sep, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;undefined_string, const std::string &amp;image_policy=&quot;error&quot;, const std::string &amp;datetime_policy=&quot;error&quot;)</td></tr>
+<tr class="separator:a540a5abba9cb87b36865e3a15c87de31"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0897de203f0665490c3e558b3b8375b"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ac0897de203f0665490c3e558b3b8375b"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="group__util.html#ga8750328f64c9b85845e920eecaf7094e">GL_HOT_INLINE</a> std::pair&lt; size_t, size_t &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ac0897de203f0665490c3e558b3b8375b">find_slice_boundary_indices</a> (const std::vector&lt; std::pair&lt; size_t, T &gt; &gt; &amp;v, size_t item_index_lb, size_t item_index_ub)</td></tr>
+<tr class="separator:ac0897de203f0665490c3e558b3b8375b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a845719d1ce226dde6c31d2aa468d8836"><td class="memTemplParams" colspan="2">template&lt;typename T , typename SliceInitFunction , typename RowProcessFunction , typename ElementProcessFunction , typename SliceFinalizeFunction &gt; </td></tr>
+<tr class="memitem:a845719d1ce226dde6c31d2aa468d8836"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a845719d1ce226dde6c31d2aa468d8836">iterate_through_sparse_item_array_by_slice</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; std::vector&lt; std::pair&lt; size_t, T &gt; &gt; &gt; &gt; &amp;data, const std::vector&lt; size_t &gt; &amp;slice_delimiters, SliceInitFunction &amp;&amp;init_slice, RowProcessFunction &amp;&amp;preprocess_row, ElementProcessFunction &amp;&amp;process_element, SliceFinalizeFunction &amp;&amp;finalize_slice)</td></tr>
+<tr class="separator:a845719d1ce226dde6c31d2aa468d8836"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7dc62f726e970d8994a01a66175a538"><td class="memTemplParams" colspan="2">template&lt;typename T , typename RowProcessFunction &gt; </td></tr>
+<tr class="memitem:aa7dc62f726e970d8994a01a66175a538"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#aa7dc62f726e970d8994a01a66175a538">iterate_through_sparse_item_array</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; std::vector&lt; std::pair&lt; size_t, T &gt; &gt; &gt; &gt; &amp;data, RowProcessFunction &amp;&amp;process_row)</td></tr>
+<tr class="separator:aa7dc62f726e970d8994a01a66175a538"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b93738530621930c5a07a906a5b1865"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a4b93738530621930c5a07a906a5b1865"><td class="memTemplItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; std::vector&lt; std::pair&lt; size_t, T &gt; &gt; &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a4b93738530621930c5a07a906a5b1865">transpose_sparse_sarray</a> (std::shared_ptr&lt; <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; std::vector&lt; std::pair&lt; size_t, T &gt; &gt; &gt; &gt; data, const std::vector&lt; size_t &gt; &amp;item_counts, size_t max_memory_usage)</td></tr>
+<tr class="separator:a4b93738530621930c5a07a906a5b1865"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0ad3530418c9bcd52e3cec371f245a8b"><td class="memTemplParams" colspan="2">template&lt;typename InputIterator1 , typename InputIterator2 , typename ComparisonFunction , typename AccumulateFunction &gt; </td></tr>
+<tr class="memitem:ga0ad3530418c9bcd52e3cec371f245a8b"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__toolkit__util.html#ga0ad3530418c9bcd52e3cec371f245a8b">accumulate_intersection</a> (InputIterator1 first1, const InputIterator1 &amp;last1, InputIterator2 first2, const InputIterator2 &amp;last2, const ComparisonFunction &amp;less_than_operator, const AccumulateFunction &amp;accumulate_matching_pair)</td></tr>
+<tr class="separator:ga0ad3530418c9bcd52e3cec371f245a8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1a245b6f97ff63864fcad59c40c1b47f"><td class="memTemplParams" colspan="2">template&lt;typename InputIterator1 , typename InputIterator2 , typename AccumulateFunction &gt; </td></tr>
+<tr class="memitem:ga1a245b6f97ff63864fcad59c40c1b47f"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__toolkit__util.html#ga1a245b6f97ff63864fcad59c40c1b47f">accumulate_intersection</a> (InputIterator1 first1, const InputIterator1 &amp;last1, InputIterator2 first2, const InputIterator2 &amp;last2, const AccumulateFunction &amp;accumulate_matching_pair)</td></tr>
+<tr class="separator:ga1a245b6f97ff63864fcad59c40c1b47f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga42ea40acb9aa1c215739d74870dca949"><td class="memTemplParams" colspan="2">template&lt;typename InputIterator1 , typename InputIterator2 &gt; </td></tr>
+<tr class="memitem:ga42ea40acb9aa1c215739d74870dca949"><td class="memTemplItemLeft" align="right" valign="top">static size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__toolkit__util.html#ga42ea40acb9aa1c215739d74870dca949">count_intersection</a> (InputIterator1 first1, const InputIterator1 &amp;last1, InputIterator2 first2, const InputIterator2 &amp;last2)</td></tr>
+<tr class="separator:ga42ea40acb9aa1c215739d74870dca949"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga89d7dc2175a0f5f56d4b297c3b1a0009"><td class="memTemplParams" colspan="2">template&lt;typename InputIterator1 , typename InputIterator2 , typename ComparisonFunction &gt; </td></tr>
+<tr class="memitem:ga89d7dc2175a0f5f56d4b297c3b1a0009"><td class="memTemplItemLeft" align="right" valign="top">static size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__toolkit__util.html#ga89d7dc2175a0f5f56d4b297c3b1a0009">count_intersection</a> (InputIterator1 first1, const InputIterator1 &amp;last1, InputIterator2 first2, const InputIterator2 &amp;last2, const ComparisonFunction &amp;less_than_operator)</td></tr>
+<tr class="separator:ga89d7dc2175a0f5f56d4b297c3b1a0009"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa230f5663cb3d54930f7b834176edddd"><td class="memItemLeft" align="right" valign="top">std::vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__toolkit__util.html#gaa230f5663cb3d54930f7b834176edddd">get_unique_values</a> (std::shared_ptr&lt; <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &gt; indexed_column)</td></tr>
+<tr class="separator:gaa230f5663cb3d54930f7b834176edddd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5be1372202e9256374e877793887e8af"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__toolkit__util.html#ga5be1372202e9256374e877793887e8af">make_unique</a> (std::shared_ptr&lt; <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &gt; indexed_column)</td></tr>
+<tr class="separator:ga5be1372202e9256374e877793887e8af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga54025cc8bf2e793927c0202ebcb68ed3"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="classturi_1_1sframe.html">sframe</a>, <a class="el" href="classturi_1_1sframe.html">sframe</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__toolkit__util.html#ga54025cc8bf2e793927c0202ebcb68ed3">split_sframe_on_index</a> (const <a class="el" href="classturi_1_1sframe.html">sframe</a> &amp;src, std::function&lt; bool(size_t)&gt; switch_function)</td></tr>
+<tr class="separator:ga54025cc8bf2e793927c0202ebcb68ed3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf55b6675b70fe0932c3c6dff099edab3"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__toolkit__util.html#gaf55b6675b70fe0932c3c6dff099edab3">matrix_to_sarray</a> (const Eigen::MatrixXd &amp;m)</td></tr>
+<tr class="separator:gaf55b6675b70fe0932c3c6dff099edab3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga18a4682bfe16de1db8594e334d57e7ab"><td class="memTemplParams" colspan="2">template&lt;typename GenFunction &gt; </td></tr>
+<tr class="memitem:ga18a4682bfe16de1db8594e334d57e7ab"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classturi_1_1sframe.html">sframe</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__toolkit__util.html#ga18a4682bfe16de1db8594e334d57e7ab">sframe_from_ranged_generator</a> (const std::vector&lt; std::string &gt; &amp;column_names, const std::vector&lt; <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> &gt; &amp;column_types, size_t num_rows, GenFunction &amp;&amp;generator_function)</td></tr>
+<tr class="separator:ga18a4682bfe16de1db8594e334d57e7ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:a239e289c661e697c9191abaaae05981d"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a239e289c661e697c9191abaaae05981d">FLEX_UNDEFINED</a> = <a class="el" href="structturi_1_1flex__undefined.html">flex_undefined</a>()</td></tr>
 <tr class="separator:a239e289c661e697c9191abaaae05981d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af3497457f9cc0ff907b406a901c9a82a"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#af3497457f9cc0ff907b406a901c9a82a">DEFAULT_NUM_PYLAMBDA_WORKERS</a></td></tr>
-<tr class="separator:af3497457f9cc0ff907b406a901c9a82a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa645decb0a71f2af50301f4dcb336496"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#aa645decb0a71f2af50301f4dcb336496">DEFAULT_NUM_GRAPH_LAMBDA_WORKERS</a></td></tr>
-<tr class="separator:aa645decb0a71f2af50301f4dcb336496"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a465691d12234a4c54e292f97dda0ac80"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a465691d12234a4c54e292f97dda0ac80">DIR_ARCHIVE_INI_FILE</a></td></tr>
 <tr class="separator:a465691d12234a4c54e292f97dda0ac80"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b7d5834c43f10bb674f0008616ff805"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a1b7d5834c43f10bb674f0008616ff805">DIR_ARCHIVE_OBJECTS_BIN</a></td></tr>
@@ -1301,11 +1293,15 @@ Variables</h2></td></tr>
 <tr class="separator:ga9f1f371663b47e7e732b6a8659a1b9da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3d9472a9f9707e4c406223f64b712a57"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sgraph__main.html#ga3d9472a9f9707e4c406223f64b712a57">SGRAPH_HILBERT_CURVE_PARALLEL_FOR_NUM_THREADS</a></td></tr>
 <tr class="separator:ga3d9472a9f9707e4c406223f64b712a57"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae5579cc837c0c1dd19fe7508945b21e7"><td class="memItemLeft" align="right" valign="top">static GL_HOT_INLINE_FLATTEN bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mldata.html#gae5579cc837c0c1dd19fe7508945b21e7">mode_is_categorical</a> (<a class="el" href="group__mldata.html#ga7beaf7388ecc8bb34821c4a0b38b292f">ml_column_mode</a> mode)</td></tr>
+<tr class="memitem:af3497457f9cc0ff907b406a901c9a82a"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#af3497457f9cc0ff907b406a901c9a82a">DEFAULT_NUM_PYLAMBDA_WORKERS</a></td></tr>
+<tr class="separator:af3497457f9cc0ff907b406a901c9a82a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa645decb0a71f2af50301f4dcb336496"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#aa645decb0a71f2af50301f4dcb336496">DEFAULT_NUM_GRAPH_LAMBDA_WORKERS</a></td></tr>
+<tr class="separator:aa645decb0a71f2af50301f4dcb336496"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae5579cc837c0c1dd19fe7508945b21e7"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mldata.html#gae5579cc837c0c1dd19fe7508945b21e7">mode_is_categorical</a> (<a class="el" href="group__mldata.html#ga7beaf7388ecc8bb34821c4a0b38b292f">ml_column_mode</a> mode)</td></tr>
 <tr class="separator:gae5579cc837c0c1dd19fe7508945b21e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf7b982e837dafb8732be1d217e67bd79"><td class="memItemLeft" align="right" valign="top">static GL_HOT_INLINE_FLATTEN bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mldata.html#gaf7b982e837dafb8732be1d217e67bd79">mode_has_fixed_size</a> (<a class="el" href="group__mldata.html#ga7beaf7388ecc8bb34821c4a0b38b292f">ml_column_mode</a> mode)</td></tr>
+<tr class="memitem:gaf7b982e837dafb8732be1d217e67bd79"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mldata.html#gaf7b982e837dafb8732be1d217e67bd79">mode_has_fixed_size</a> (<a class="el" href="group__mldata.html#ga7beaf7388ecc8bb34821c4a0b38b292f">ml_column_mode</a> mode)</td></tr>
 <tr class="separator:gaf7b982e837dafb8732be1d217e67bd79"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga063ca313544fff079f668f77fa255089"><td class="memItemLeft" align="right" valign="top">static GL_HOT_INLINE_FLATTEN bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mldata.html#ga063ca313544fff079f668f77fa255089">mode_is_indexed</a> (<a class="el" href="group__mldata.html#ga7beaf7388ecc8bb34821c4a0b38b292f">ml_column_mode</a> mode)</td></tr>
+<tr class="memitem:ga063ca313544fff079f668f77fa255089"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mldata.html#ga063ca313544fff079f668f77fa255089">mode_is_indexed</a> (<a class="el" href="group__mldata.html#ga7beaf7388ecc8bb34821c4a0b38b292f">ml_column_mode</a> mode)</td></tr>
 <tr class="separator:ga063ca313544fff079f668f77fa255089"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa90807aacaf964777f174bde4526e902"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mldata.html#gaa90807aacaf964777f174bde4526e902">column_mode_enum_to_name</a> (<a class="el" href="group__mldata.html#ga7beaf7388ecc8bb34821c4a0b38b292f">ml_column_mode</a> mode)</td></tr>
 <tr class="separator:gaa90807aacaf964777f174bde4526e902"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1314,6 +1310,7 @@ Variables</h2></td></tr>
 <div class="textblock"><p>SKD. </p>
 <p>This file implements a collection of routines that operate and behave uniformly on all supported protocols. (currently, HDFS, S3, local fs)</p>
 <p>Provides a generic interface to call cython functions (which can in turn call python functions) from the C++ code and properly handle exceptions.</p>
+<p>Contains a fast set implementation and utilities.</p>
 <h1><a class="el" href="classturi_1_1ml__data.html">ml_data</a> layout format </h1>
 <p>The rows are stored in segments of a vector of entry_value structs, where entry_value encloses a union of an index_value and a double_value. Thus it is 8 bytes. Each vector contains up to row_block_size rows. The data is stored as an sarray&lt;vector&lt;entry_value&gt; &gt;</p>
 <h2>Raw data layout </h2>
@@ -1364,9 +1361,8 @@ Variables</h2></td></tr>
 <li>Make sure to use const auto&amp; where appropriate.</li>
 <li>Choose whether to use w, s, t, d, psdw, etc.</li>
 <li>Track MH acceptance ratio</li>
-<li>Consider using row-order Eigen matrices and checking for speedup (at least for CGS word_topic_counts?)</li>
+<li>Consider using row-order Eigen matrices and checking for speedup (at least for CGS word_topic_counts?) </li>
 </ul>
-<p>Contains a fast set implementation and utilities. </p>
 </div><h2 class="groupheader">Typedef Documentation</h2>
 <a class="anchor" id="a6ae2ab6a167bcb565888c5584ddc56ac"></a>
 <div class="memitem">
@@ -1395,7 +1391,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 <p>is_model_descendent&lt;T&gt;::value is true if *T is a descendent of <a class="el" href="classturi_1_1model__base.html">model_base</a>, or is <a class="el" href="classturi_1_1model__base.html">model_base</a> itself.</p>
-<div class="fragment"><div class="line">is_model_descendent&lt;flexible_type&gt;::value <span class="comment">// false</span></div><div class="line">is_model_descendent&lt;svariant_converter_imple_model*&gt;::value <span class="comment">// true</span></div><div class="line">is_model_descendent&lt;svariant_converter_imple_model&gt;::value <span class="comment">// false</span></div><div class="line">is_model_descendent&lt;model_base*&gt;::value <span class="comment">// true </span></div></div><!-- fragment --> 
+<div class="fragment"><div class="line">is_model_descendent&lt;flexible_type&gt;::value <span class="comment">// false</span></div><div class="line">is_model_descendent&lt;svariant_converter_imple_model*&gt;::value <span class="comment">// true</span></div><div class="line">is_model_descendent&lt;svariant_converter_imple_model&gt;::value <span class="comment">// false</span></div><div class="line">is_model_descendent&lt;model_base*&gt;::value <span class="comment">// true</span></div></div><!-- fragment --> 
 <p>Definition at line <a class="el" href="variant__converter_8hpp_source.html#l00071">71</a> of file <a class="el" href="variant__converter_8hpp_source.html">variant_converter.hpp</a>.</p>
 
 </div>
@@ -1454,7 +1450,7 @@ template&lt;typename T &gt; </div>
 <p>See the boost variant documentation for details.</p>
 <p>The variant should not be accessed directly. See <a class="el" href="namespaceturi.html#a4089b0a7d421bba15b1510e3816c11ab">to_variant</a> and <a class="el" href="namespaceturi.html#a895255301986d2f7bc3aa81a460e0f14">variant_get_value</a> for powerful ways to extract or store values from a variant. </p>
 
-<p>Definition at line <a class="el" href="variant_8hpp_source.html#l00021">21</a> of file <a class="el" href="variant_8hpp_source.html">variant.hpp</a>.</p>
+<p>Definition at line <a class="el" href="variant_8hpp_source.html#l00024">24</a> of file <a class="el" href="variant_8hpp_source.html">variant.hpp</a>.</p>
 
 </div>
 </div>
@@ -1513,7 +1509,7 @@ template&lt;typename T &gt; </div>
 <p>Numeric vector type. Stored type is the <a class="el" href="group__group__flexible__type__types.html#gac2900ffa5e2fef35d706e307db74d859">flex_nd_vec</a> </p>
 </td></tr>
 </table>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="_2Volumes_2tc-release_2turicreate_2src_2unity_2lib_2unity_sframe_8hpp-example.html#a1">/Volumes/tc-release/turicreate/src/unity/lib/unity_sframe.hpp</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="_2Volumes_2tc-release_2turicreate_2src_2core_2storage_2sframe_interface_2unity_sframe_8hpp-example.html#a0">/Volumes/tc-release/turicreate/src/core/storage/sframe_interface/unity_sframe.hpp</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00331">331</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
 
@@ -2760,7 +2756,7 @@ template&lt;typename T &gt; </div>
 template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">GL_HOT_INLINE std::pair&lt;size_t, size_t&gt; turi::find_slice_boundary_indices </td>
+          <td class="memname"><a class="el" href="group__util.html#ga8750328f64c9b85845e920eecaf7094e">GL_HOT_INLINE</a> std::pair&lt;size_t, size_t&gt; turi::find_slice_boundary_indices </td>
           <td>(</td>
           <td class="paramtype">const std::vector&lt; std::pair&lt; size_t, T &gt; &gt; &amp;&#160;</td>
           <td class="paramname"><em>v</em>, </td>
@@ -3197,39 +3193,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Given variant.which() gets the name of the type inside it. </p>
 
-<p>Definition at line <a class="el" href="variant_8hpp_source.html#l00066">66</a> of file <a class="el" href="variant_8hpp_source.html">variant.hpp</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ae6020e2e273ceaeef7a58bdd46032641"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void turi::in_parallel_debug </td>
-          <td>(</td>
-          <td class="paramtype">const std::function&lt; void(size_t thread_id,                                                                                                       size_t num_threads)&gt; &amp;&#160;</td>
-          <td class="paramname"><em>fn</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Runs a provided function in parallel, as in <a class="el" href="group__threading.html#ga5b9a25864879a98c50594582bf2726f0">turi::in_parallel</a>, but may also be customized by setting the environment variable TURI_PARALLEL_DEBUG:</p>
-<ul>
-<li>TURI_PARALLEL_DEBUG=0: default behavior</li>
-<li>TURI_PARALLEL_DEBUG=1: one slice on calling thread, others in parallel</li>
-<li>TURI_PARALLEL_DEBUG=2: run all sequentially (no parallelism) </li>
-</ul>
-
-<p>Definition at line <a class="el" href="lambda__omp_8hpp_source.html#l00089">89</a> of file <a class="el" href="lambda__omp_8hpp_source.html">lambda_omp.hpp</a>.</p>
+<p>Definition at line <a class="el" href="variant_8hpp_source.html#l00069">69</a> of file <a class="el" href="variant_8hpp_source.html">variant.hpp</a>.</p>
 
 </div>
 </div>
@@ -3425,7 +3389,7 @@ template&lt;typename T , typename RowProcessFunction &gt; </div>
 <p>Iterates through a sparse vector sarray efficiently, calling a prescribed function on each row and on each element.</p>
 <h2>Parameters: </h2>
 <p>data &ndash; an sarray of vectors of (index, value) pairs. This vector must be sorted by index.</p>
-<p>preprocess_row &ndash; the function called on every row. It has the signature: </p><pre class="fragment"> preprocess_row(size_t thread_idx, size_t row_idx, 
+<p>preprocess_row &ndash; the function called on every row. It has the signature: </p><pre class="fragment"> preprocess_row(size_t thread_idx, size_t row_idx,
                 std::vector&lt;std::pair&lt;size_t, T&gt; &gt;&amp; row)
 </pre><p>In this case, row_idx is the row currently being processed and row is the current row. Any modifications to row are discarded after this. </p>
 
@@ -3488,7 +3452,7 @@ template&lt;typename T , typename SliceInitFunction , typename RowProcessFunctio
 <p>slice_delimiters &ndash; A vector of length (num_slices - 1) that give the boundaries of the slices of indices. For example, [0, 5, 10, 12] would have 3 slices, with (0,5), (5, 10), and (10, 12) being the slices processed.</p>
 <p>init_slice &ndash; called at the beginning of each slice, before the data is processed. init_slice has the signature </p><pre class="fragment">init_slice(size_t slice_idx, size_t item_idx_start, size_t item_idx_end)
 </pre><p>where slice_idx is the slice counter (0, 1, ...), and item_idx_start and item_idx_end are taken from slice_boundaries[slice_idx] and slice_boundaries[slice_idx - 1].</p>
-<p>preprocess_row &ndash; the function called on every row. It has the signature: </p><pre class="fragment"> preprocess_row(size_t thread_idx, size_t row_idx, 
+<p>preprocess_row &ndash; the function called on every row. It has the signature: </p><pre class="fragment"> preprocess_row(size_t thread_idx, size_t row_idx,
                 size_t slice_item_idx_start, size_t slice_item_idx_end,
                 std::vector&lt;std::pair&lt;size_t, T&gt; &gt;&amp; row)
 </pre><p>In this case, row_idx is the row currently being processed, slice_item_idx_start and slice_item_idx_end are taken from the current slice, and row is the current row. The row can be modified, but any resulting modifications must preserve the sorted nature. If the row is empty upon return, then processing all future elements is skipped.</p>
@@ -3509,7 +3473,7 @@ template&lt;typename T , typename SliceInitFunction , typename RowProcessFunctio
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static GL_HOT_INLINE_FLATTEN double turi::log1me </td>
+          <td class="memname">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double turi::log1me </td>
           <td>(</td>
           <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>x</em></td><td>)</td>
@@ -3536,7 +3500,7 @@ template&lt;typename T , typename SliceInitFunction , typename RowProcessFunctio
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static GL_HOT_INLINE_FLATTEN double turi::log1men </td>
+          <td class="memname">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double turi::log1men </td>
           <td>(</td>
           <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>x</em></td><td>)</td>
@@ -3563,7 +3527,7 @@ template&lt;typename T , typename SliceInitFunction , typename RowProcessFunctio
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static GL_HOT_INLINE_FLATTEN double turi::log1pe </td>
+          <td class="memname">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double turi::log1pe </td>
           <td>(</td>
           <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>x</em></td><td>)</td>
@@ -3590,7 +3554,7 @@ template&lt;typename T , typename SliceInitFunction , typename RowProcessFunctio
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static GL_HOT_INLINE_FLATTEN double turi::log1pe_deriviative </td>
+          <td class="memname">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double turi::log1pe_deriviative </td>
           <td>(</td>
           <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>x</em></td><td>)</td>
@@ -3617,7 +3581,7 @@ template&lt;typename T , typename SliceInitFunction , typename RowProcessFunctio
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static GL_HOT_INLINE_FLATTEN double turi::log1pen </td>
+          <td class="memname">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double turi::log1pen </td>
           <td>(</td>
           <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>x</em></td><td>)</td>
@@ -3644,7 +3608,7 @@ template&lt;typename T , typename SliceInitFunction , typename RowProcessFunctio
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static GL_HOT_INLINE_FLATTEN double turi::log1pen_deriviative </td>
+          <td class="memname">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double turi::log1pen_deriviative </td>
           <td>(</td>
           <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>x</em></td><td>)</td>
@@ -3671,7 +3635,7 @@ template&lt;typename T , typename SliceInitFunction , typename RowProcessFunctio
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static GL_HOT_INLINE_FLATTEN double turi::logem1 </td>
+          <td class="memname">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double turi::logem1 </td>
           <td>(</td>
           <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>x</em></td><td>)</td>
@@ -3777,7 +3741,7 @@ template&lt;typename T , typename SliceInitFunction , typename RowProcessFunctio
 </div><div class="memdoc">
 <p>Better equality testing stuff. Handles out-of-order on the categorical_vector, which is assumed by <a class="el" href="classturi_1_1ml__data.html">ml_data</a>. </p>
 
-<p>Definition at line <a class="el" href="ml__data_2testing__utils_8hpp_source.html#l00057">57</a> of file <a class="el" href="ml__data_2testing__utils_8hpp_source.html">testing_utils.hpp</a>.</p>
+<p>Definition at line <a class="el" href="ml_2ml__data_2testing__utils_8hpp_source.html#l00057">57</a> of file <a class="el" href="ml_2ml__data_2testing__utils_8hpp_source.html">testing_utils.hpp</a>.</p>
 
 </div>
 </div>
@@ -4531,7 +4495,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static GL_HOT_INLINE_FLATTEN double turi::sigmoid </td>
+          <td class="memname">static <a class="el" href="group__util.html#ga8691ea9431a3d3a1acf2d2b7eac72b92">GL_HOT_INLINE_FLATTEN</a> double turi::sigmoid </td>
           <td>(</td>
           <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>x</em></td><td>)</td>
@@ -4735,7 +4699,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Converts an arbitrary value to a variant. T can be <b>alot</b> of possibilities. See the supported type list for details. </p>
 
-<p>Definition at line <a class="el" href="variant_8hpp_source.html#l00305">305</a> of file <a class="el" href="variant_8hpp_source.html">variant.hpp</a>.</p>
+<p>Definition at line <a class="el" href="variant_8hpp_source.html#l00308">308</a> of file <a class="el" href="variant_8hpp_source.html">variant.hpp</a>.</p>
 
 </div>
 </div>
@@ -5262,7 +5226,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Gets a reference to a content of a variant. Throws if variant contains an inappropriate type. </p>
 
-<p>Definition at line <a class="el" href="variant_8hpp_source.html#l00128">128</a> of file <a class="el" href="variant_8hpp_source.html">variant.hpp</a>.</p>
+<p>Definition at line <a class="el" href="variant_8hpp_source.html#l00131">131</a> of file <a class="el" href="variant_8hpp_source.html">variant.hpp</a>.</p>
 
 </div>
 </div>
@@ -5291,7 +5255,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Gets a const reference to the content of a variant. Throws if variant contains an inappropriate type. </p>
 
-<p>Definition at line <a class="el" href="variant_8hpp_source.html#l00141">141</a> of file <a class="el" href="variant_8hpp_source.html">variant.hpp</a>.</p>
+<p>Definition at line <a class="el" href="variant_8hpp_source.html#l00144">144</a> of file <a class="el" href="variant_8hpp_source.html">variant.hpp</a>.</p>
 
 </div>
 </div>
@@ -5320,7 +5284,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Reads an arbitrary type from a variant. T can be <b>alot</b> of possibilities. See the supported type list for details. </p>
 
-<p>Definition at line <a class="el" href="variant_8hpp_source.html#l00317">317</a> of file <a class="el" href="variant_8hpp_source.html">variant.hpp</a>.</p>
+<p>Definition at line <a class="el" href="variant_8hpp_source.html#l00320">320</a> of file <a class="el" href="variant_8hpp_source.html">variant.hpp</a>.</p>
 
 </div>
 </div>
@@ -5359,7 +5323,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Stores an arbitrary value in a variant </p>
 
-<p>Definition at line <a class="el" href="variant_8hpp_source.html#l00294">294</a> of file <a class="el" href="variant_8hpp_source.html">variant.hpp</a>.</p>
+<p>Definition at line <a class="el" href="variant_8hpp_source.html#l00297">297</a> of file <a class="el" href="variant_8hpp_source.html">variant.hpp</a>.</p>
 
 </div>
 </div>
@@ -5512,7 +5476,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>A global static variable to be used when an undefined value is needed. i.e. </p><div class="fragment"><div class="line">flexible_type f = <a class="code" href="namespaceturi.html#a239e289c661e697c9191abaaae05981d">FLEX_UNDEFINED</a>;</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01401">1401</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01405">1405</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>

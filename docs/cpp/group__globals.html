@@ -174,7 +174,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keyword">auto</span> __ ## varname ## __register__ ## instance =           \</div><div class="line">      ::turi::globals::register_global                          \</div><div class="line">                       &lt;type&gt;(<span class="stringliteral">&quot;TURI_&quot;</span> #varname,                 \</div><div class="line">                              (type*)(&amp;varname),                    \</div><div class="line">                              runtime_modifiable);</div></div><!-- fragment --><p>Register a global variable.</p>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keyword">auto</span> __ ## varname ## __register__ ## instance =           \</div><div class="line">      ::turi::globals::register_global                              \</div><div class="line">                       &lt;type&gt;(<span class="stringliteral">&quot;TURI_&quot;</span> #varname,                     \</div><div class="line">                              (type*)(&amp;varname),                    \</div><div class="line">                              runtime_modifiable);</div></div><!-- fragment --><p>Register a global variable.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">type</td><td>The type of the variable. Must be integral, string, or double. </td></tr>
@@ -227,7 +227,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keyword">auto</span> __ ## varname ## __register__ ## instance =                      \</div><div class="line">      ::turi::globals::register_global                                     \</div><div class="line">                       &lt;type&gt;(<span class="stringliteral">&quot;TURI_&quot;</span> #varname,                            \</div><div class="line">                              (type*)(&amp;varname),                               \</div><div class="line">                              runtime_modifiable,                              \</div><div class="line">                              lambda);</div></div><!-- fragment --><p>Register a global variable with value checking.</p>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keyword">auto</span> __ ## varname ## __register__ ## instance =                      \</div><div class="line">      ::turi::globals::register_global                                         \</div><div class="line">                       &lt;type&gt;(<span class="stringliteral">&quot;TURI_&quot;</span> #varname,                                \</div><div class="line">                              (type*)(&amp;varname),                               \</div><div class="line">                              runtime_modifiable,                              \</div><div class="line">                              lambda);</div></div><!-- fragment --><p>Register a global variable with value checking.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">type</td><td>The type of the variable. Must be integral, string, or double. </td></tr>

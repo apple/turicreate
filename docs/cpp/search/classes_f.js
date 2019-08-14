@@ -2,6 +2,12 @@ var searchData=
 [
   ['oarchive',['oarchive',['../classturi_1_1oarchive.html',1,'turi']]],
   ['oarchive_5fsoft_5ffail',['oarchive_soft_fail',['../classturi_1_1oarchive__soft__fail.html',1,'turi']]],
+  ['object_5ffactory_5fbase',['object_factory_base',['../classcppipc_1_1object__factory__base.html',1,'cppipc']]],
+  ['object_5ffactory_5fimpl',['object_factory_impl',['../classcppipc_1_1object__factory__impl.html',1,'cppipc']]],
+  ['object_5ffactory_5fproxy',['object_factory_proxy',['../classcppipc_1_1object__factory__proxy.html',1,'cppipc']]],
+  ['object_5fproxy',['object_proxy',['../classcppipc_1_1object__proxy.html',1,'cppipc']]],
+  ['object_5fproxy_3c_20cppipc_3a_3aobject_5ffactory_5fbase_20_3e',['object_proxy&lt; cppipc::object_factory_base &gt;',['../classcppipc_1_1object__proxy.html',1,'cppipc']]],
+  ['object_5fproxy_3c_20turi_3a_3amodel_5fbase_20_3e',['object_proxy&lt; turi::model_base &gt;',['../classcppipc_1_1object__proxy.html',1,'cppipc']]],
   ['operator_5fimpl_3c_20planner_5fnode_5ftype_3a_3aappend_5fnode_20_3e',['operator_impl&lt; planner_node_type::APPEND_NODE &gt;',['../classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1APPEND__NODE_01_4.html',1,'turi::query_eval']]],
   ['operator_5fimpl_3c_20planner_5fnode_5ftype_3a_3abinary_5ftransform_5fnode_20_3e',['operator_impl&lt; planner_node_type::BINARY_TRANSFORM_NODE &gt;',['../classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1BINARY__TRANSFORM__NODE_01_4.html',1,'turi::query_eval']]],
   ['operator_5fimpl_3c_20planner_5fnode_5ftype_3a_3aconstant_5fnode_20_3e',['operator_impl&lt; planner_node_type::CONSTANT_NODE &gt;',['../structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1CONSTANT__NODE_01_4.html',1,'turi::query_eval']]],

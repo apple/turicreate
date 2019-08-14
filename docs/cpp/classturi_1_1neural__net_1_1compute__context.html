@@ -110,6 +110,8 @@ $(document).ready(function(){initNavTree('classturi_1_1neural__net_1_1compute__c
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="classturi_1_1neural__net_1_1compute__context-members.html">List of all members</a>  </div>
@@ -118,8 +120,18 @@ $(document).ready(function(){initNavTree('classturi_1_1neural__net_1_1compute__c
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="compute__context_8hpp_source.html">unity/toolkits/neural_net/compute_context.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="compute__context_8hpp_source.html">ml/neural_net/compute_context.hpp</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1compute__context_1_1registration.html">registration</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:abcfeff5cc1b622c74073e6a0ccbbe709"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1compute__context.html#abcfeff5cc1b622c74073e6a0ccbbe709">factory</a> = std::function&lt; std::unique_ptr&lt; <a class="el" href="classturi_1_1neural__net_1_1compute__context.html">compute_context</a> &gt;()&gt;</td></tr>
+<tr class="separator:abcfeff5cc1b622c74073e6a0ccbbe709"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a029040628cfc32aaa5d0b064611adf66"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1compute__context.html#a029040628cfc32aaa5d0b064611adf66">gpu_names</a> () const  =0</td></tr>
@@ -142,7 +154,23 @@ Static Public Member Functions</h2></td></tr>
 <div class="textblock"><p>Interface for factories that produce concrete data augmentation and neural network module instances, used to abstract across backend implementations and hardware resources. </p>
 
 <p>Definition at line <a class="el" href="compute__context_8hpp_source.html#l00023">23</a> of file <a class="el" href="compute__context_8hpp_source.html">compute_context.hpp</a>.</p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a class="anchor" id="abcfeff5cc1b622c74073e6a0ccbbe709"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classturi_1_1neural__net_1_1compute__context.html#abcfeff5cc1b622c74073e6a0ccbbe709">turi::neural_net::compute_context::factory</a> =  std::function&lt;std::unique_ptr&lt;<a class="el" href="classturi_1_1neural__net_1_1compute__context.html">compute_context</a>&gt;()&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Function that yields a compute context. </p>
+
+<p>Definition at line <a class="el" href="compute__context_8hpp_source.html#l00027">27</a> of file <a class="el" href="compute__context_8hpp_source.html">compute_context.hpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="ac047143e45b9ce5dc614c9eb3818aa78"></a>
 <div class="memitem">
 <div class="memproto">
@@ -163,7 +191,7 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Creates a compute context using a backend appropriate to the current platform and hardware. </p>
+<p>Requests a <a class="el" href="classturi_1_1neural__net_1_1compute__context.html">compute_context</a> from each registered <a class="el" href="classturi_1_1neural__net_1_1compute__context.html#abcfeff5cc1b622c74073e6a0ccbbe709">compute_context::factory</a>, in ascending order by "priority", until one returns non-nil. Factories should be registered so that this function yields a backend appropriate to the current platform and hardware. </p>
 
 </div>
 </div>
@@ -406,7 +434,7 @@ Static Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>unity/toolkits/neural_net/<a class="el" href="compute__context_8hpp_source.html">compute_context.hpp</a></li>
+<li>ml/neural_net/<a class="el" href="compute__context_8hpp_source.html">compute_context.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

@@ -114,6 +114,6 @@ var group__operators =
       [ "qpi", "structturi_1_1query__eval_1_1planner__node.html#a080f64d6a2f516f62179e8b36b9e6d2c", null ]
     ] ],
     [ "pnode_ptr", "group__operators.html#gae14c095239ca2097fbed7781e7ba8a33", null ],
-    [ "type", "group__operators.html#ga59fc4d93a21f444e45edd42aa221d298", null ],
+    [ "DECL_CORO_STATE", "group__operators.html#gab74f263c378e060a7206529032cb5593", null ],
     [ "unique_sarray_tag", "group__operators.html#ga73a66fd17453a325e30cd3100d7d4008", null ]
 ];

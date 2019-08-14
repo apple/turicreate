@@ -1,6 +1,7 @@
 var searchData=
 [
   ['s3_5fendpoint',['S3_ENDPOINT',['../group__fileio.html#ga112295e21cd70e9787d31753c40e6c53',1,'turi::fileio']]],
+  ['s3_5fregion',['S3_REGION',['../group__fileio.html#ga6f5fd91811967243ce77a229ccb7c944',1,'turi::fileio']]],
   ['sarray_5ffrom_5ffile_5fbatch_5fsize',['SARRAY_FROM_FILE_BATCH_SIZE',['../group__sframe__main.html#gab4060e1d00eabb1bf74af3ecaef1751e',1,'turi']]],
   ['sarray_5fwriter_5finital_5felements_5fper_5fblock',['SARRAY_WRITER_INITAL_ELEMENTS_PER_BLOCK',['../group__sframe__main.html#ga71cf727dd3ad628263a73b11c6ad6528',1,'turi']]],
   ['sarray_5fwriter_5fmin_5felements_5fper_5fblock',['SARRAY_WRITER_MIN_ELEMENTS_PER_BLOCK',['../group__sframe__main.html#ga7281e1bb0446ea33004e78d51ea8c6a7',1,'turi']]],
@@ -43,6 +44,8 @@ var searchData=
   ['solver_5ftime',['solver_time',['../group__LBFGS.html#ga3f8ffff2045bb56606a1717c12120354',1,'turi::optimization::solver_status']]],
   ['state',['state',['../classturi_1_1ml__model__base.html#a6f247683fa7362282797f5aebc780d70',1,'turi::ml_model_base']]],
   ['status',['status',['../group__LBFGS.html#ga44df0921d9969a2c9108b0b3e3278b51',1,'turi::optimization::solver_status::status()'],['../structturi_1_1optimization_1_1__solver__return.html#abfc7b4703c39b004988f74ec07d976e7',1,'turi::optimization::_solver_return::status()'],['../structturi_1_1optimization_1_1__ls__return.html#a5e3626fdf961f70c72aa5c3871c0f810',1,'turi::optimization::_ls_return::status()']]],
+  ['status_5fbuffer_5fmutex',['status_buffer_mutex',['../classcppipc_1_1comm__client.html#a5ba7f6680e949e8c411dff7c9964d0e3',1,'cppipc::comm_client']]],
+  ['status_5fcallback_5fthread',['status_callback_thread',['../classcppipc_1_1comm__client.html#a011c0f1fae00cbcc2a890022cdd19609',1,'cppipc::comm_client']]],
   ['step_5fsize',['step_size',['../group__LBFGS.html#ga78601acb18969ba32ff4d2a656226c13',1,'turi::optimization::solver_status::step_size()'],['../structturi_1_1optimization_1_1__ls__return.html#a193a4107362048705538b3575ddd5041',1,'turi::optimization::_ls_return::step_size()']]],
   ['store_5ferrors',['store_errors',['../structturi_1_1csv__file__handling__options.html#ab1795754c078f81e504935dbb410f112',1,'turi::csv_file_handling_options']]],
   ['success',['success',['../structturi_1_1toolkit__function__response__type.html#ada8f570ee8db880b2f16c0d88d470030',1,'turi::toolkit_function_response_type']]]

@@ -52,6 +52,7 @@ var classturi_1_1unity__sarray =
     [ "max", "classturi_1_1unity__sarray.html#a827f648c316973c9b30c93698b7f29b5", null ],
     [ "mean", "classturi_1_1unity__sarray.html#ae7eca82ad5ed55417a77da0b8d39b0af", null ],
     [ "min", "classturi_1_1unity__sarray.html#ad257e89c7a8425e09c9c81b4a55076d6", null ],
+    [ "missing_mask", "classturi_1_1unity__sarray.html#a4cbe03088f430086e30da3f156c07760", null ],
     [ "nnz", "classturi_1_1unity__sarray.html#a9cc5025871ec3972714e0eeb7f885d6d", null ],
     [ "num_missing", "classturi_1_1unity__sarray.html#ab759b45ff7839fccf9924c3956c32629", null ],
     [ "right_scalar_operator", "classturi_1_1unity__sarray.html#ad7f105e10cecd16c253e8314dd6e38d5", null ],

@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('structturi_1_1object__detection_1_1dat
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="od__data__iterator_8hpp_source.html">unity/toolkits/object_detection/od_data_iterator.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="od__data__iterator_8hpp_source.html">toolkits/object_detection/od_data_iterator.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -135,11 +135,13 @@ Public Attributes</h2></td></tr>
 <tr class="separator:acda6be4749cb5638161ac31a03b03d53"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac841ac06cfca279c95a9dce811a6d5a1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1object__detection_1_1data__iterator_1_1parameters.html#ac841ac06cfca279c95a9dce811a6d5a1">shuffle</a> = true</td></tr>
 <tr class="separator:ac841ac06cfca279c95a9dce811a6d5a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:affb787ae8e59525335de06fe7099dad7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1object__detection_1_1data__iterator_1_1parameters.html#affb787ae8e59525335de06fe7099dad7">random_seed</a> = 0</td></tr>
+<tr class="separator:affb787ae8e59525335de06fe7099dad7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Defines the inputs to a <a class="el" href="classturi_1_1object__detection_1_1data__iterator.html">data_iterator</a> factory function. </p>
 
-<p>Definition at line <a class="el" href="od__data__iterator_8hpp_source.html#l00031">31</a> of file <a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a>.</p>
+<p>Definition at line <a class="el" href="od__data__iterator_8hpp_source.html#l00051">51</a> of file <a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a>.</p>
 </div><h2 class="groupheader">Member Data Documentation</h2>
 <a class="anchor" id="a1dd5facebc2acef79b28337a67ef73a6"></a>
 <div class="memitem">
@@ -153,7 +155,7 @@ Public Attributes</h2></td></tr>
 <p>The name of the column containing the annotations.</p>
 <p>The values must either be dictionaries containing an annotation, or a list of such dictionaries. An annotation dictionary has a "label" key whose value is a string, and a "coordinates" key whose value is another dictionary containing "x", "y", "width", and "height", describing the position of the center and the size of the bounding box (in the image's coordinates, with the origin at the top left). </p>
 
-<p>Definition at line <a class="el" href="od__data__iterator_8hpp_source.html#l00046">46</a> of file <a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a>.</p>
+<p>Definition at line <a class="el" href="od__data__iterator_8hpp_source.html#l00066">66</a> of file <a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -170,7 +172,7 @@ Public Attributes</h2></td></tr>
 <p>If empty, then the labels will be inferred from the data. If non-empty, an exception will be thrown upon encountering an unexpected label.</p>
 <p>: This should be a flex_list to accomodate integer labels! </p>
 
-<p>Definition at line <a class="el" href="od__data__iterator_8hpp_source.html#l00071">71</a> of file <a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a>.</p>
+<p>Definition at line <a class="el" href="od__data__iterator_8hpp_source.html#l00091">91</a> of file <a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -185,7 +187,7 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>The SFrame to traverse </p>
 
-<p>Definition at line <a class="el" href="od__data__iterator_8hpp_source.html#l00034">34</a> of file <a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a>.</p>
+<p>Definition at line <a class="el" href="od__data__iterator_8hpp_source.html#l00054">54</a> of file <a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -201,7 +203,7 @@ Public Attributes</h2></td></tr>
 <p>The name of the column containing the images.</p>
 <p>Each value is either an image or a path to an image file on disk. </p>
 
-<p>Definition at line <a class="el" href="od__data__iterator_8hpp_source.html#l00061">61</a> of file <a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a>.</p>
+<p>Definition at line <a class="el" href="od__data__iterator_8hpp_source.html#l00081">81</a> of file <a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -217,7 +219,22 @@ Public Attributes</h2></td></tr>
 <p>Optional name of a column containing predictions.</p>
 <p>If not empty, then the iterator will parse and yield a secondary stream of bounding boxes, intended for use in evaluating existing predictions. </p>
 
-<p>Definition at line <a class="el" href="od__data__iterator_8hpp_source.html#l00054">54</a> of file <a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a>.</p>
+<p>Definition at line <a class="el" href="od__data__iterator_8hpp_source.html#l00074">74</a> of file <a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="affb787ae8e59525335de06fe7099dad7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int turi::object_detection::data_iterator::parameters::random_seed = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Determines results of shuffle operations if enabled. </p>
+
+<p>Definition at line <a class="el" href="od__data__iterator_8hpp_source.html#l00106">106</a> of file <a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -232,7 +249,7 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>Whether to traverse the data more than once. </p>
 
-<p>Definition at line <a class="el" href="od__data__iterator_8hpp_source.html#l00076">76</a> of file <a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a>.</p>
+<p>Definition at line <a class="el" href="od__data__iterator_8hpp_source.html#l00100">100</a> of file <a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -247,12 +264,12 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>Whether to shuffle the data on subsequent traversals. </p>
 
-<p>Definition at line <a class="el" href="od__data__iterator_8hpp_source.html#l00079">79</a> of file <a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a>.</p>
+<p>Definition at line <a class="el" href="od__data__iterator_8hpp_source.html#l00103">103</a> of file <a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>unity/toolkits/object_detection/<a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a></li>
+<li>toolkits/object_detection/<a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

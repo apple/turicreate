@@ -1,5 +1,6 @@
 var classturi_1_1neural__net_1_1mps__compute__context =
 [
+    [ "factory", "classturi_1_1neural__net_1_1mps__compute__context.html#abcfeff5cc1b622c74073e6a0ccbbe709", null ],
     [ "mps_compute_context", "classturi_1_1neural__net_1_1mps__compute__context.html#a10b9addf2c7324e9b02798a88d431da6", null ],
     [ "mps_compute_context", "classturi_1_1neural__net_1_1mps__compute__context.html#ac3f1f2ef730a752a786a30f10814d182", null ],
     [ "create", "classturi_1_1neural__net_1_1mps__compute__context.html#ac047143e45b9ce5dc614c9eb3818aa78", null ],

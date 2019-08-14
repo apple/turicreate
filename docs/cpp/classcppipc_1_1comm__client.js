@@ -1,0 +1,26 @@
+var classcppipc_1_1comm__client =
+[
+    [ "comm_client", "classcppipc_1_1comm__client.html#ae649032590d47393ed441bb175dab70c", null ],
+    [ "comm_client", "classcppipc_1_1comm__client.html#a021f0c9432200eb27d37fa4997110b4e", null ],
+    [ "~comm_client", "classcppipc_1_1comm__client.html#a3b5118e1afb6c86135a32dc62090e416", null ],
+    [ "add_status_watch", "classcppipc_1_1comm__client.html#af8560b918adaabdb556e0cb4816b1f06", null ],
+    [ "call", "classcppipc_1_1comm__client.html#a14535c64a8981a3888b02d9402032ef6", null ],
+    [ "clear_status_watch", "classcppipc_1_1comm__client.html#aa5b64ed5d3eeaa365809de54273c5e3d", null ],
+    [ "delete_object", "classcppipc_1_1comm__client.html#af85b11228c52b8c97b97c029b34fcb8e", null ],
+    [ "incr_ref_count", "classcppipc_1_1comm__client.html#a33ad94628bcea50b60d2dc3ebf3b4da8", null ],
+    [ "init", "classcppipc_1_1comm__client.html#a5afc6836fd33703ba11498ee7beba01d", null ],
+    [ "make_object", "classcppipc_1_1comm__client.html#a0535adcf8ed155dc240a236b0033d43a", null ],
+    [ "ping", "classcppipc_1_1comm__client.html#a14186bfee377e84680afa2fe69ac836d", null ],
+    [ "register_function", "classcppipc_1_1comm__client.html#a6d139c54c3e0653cf72a780ad79e5c9a", null ],
+    [ "remove_status_watch", "classcppipc_1_1comm__client.html#afebc1f028dbd89f9e51aa94db2ab0ef1", null ],
+    [ "send_deletion_list", "classcppipc_1_1comm__client.html#a59cfeadbcfab8940521384b974679566", null ],
+    [ "set_server_alive_watch_pid", "classcppipc_1_1comm__client.html#a718554b58ef28134964464921b88438f", null ],
+    [ "start", "classcppipc_1_1comm__client.html#a479d8019a70c4932dddf7cb235904737", null ],
+    [ "start_status_callback_thread", "classcppipc_1_1comm__client.html#a12552e01d4fd8558d553a690a9415975", null ],
+    [ "status_callback_thread_function", "classcppipc_1_1comm__client.html#a8d2f8a16abda256b8dd2a1866bb1f91e", null ],
+    [ "stop", "classcppipc_1_1comm__client.html#ae87be87dc345902e2302057d09739e91", null ],
+    [ "stop_ping_thread", "classcppipc_1_1comm__client.html#a08982555c67856fc030bf75aca47ec90", null ],
+    [ "stop_status_callback_thread", "classcppipc_1_1comm__client.html#a319a8b10941ba2723143be11f919604a", null ],
+    [ "status_buffer_mutex", "classcppipc_1_1comm__client.html#a5ba7f6680e949e8c411dff7c9964d0e3", null ],
+    [ "status_callback_thread", "classcppipc_1_1comm__client.html#a011c0f1fae00cbcc2a890022cdd19609", null ]
+];

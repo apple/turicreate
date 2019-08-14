@@ -118,7 +118,7 @@ $(document).ready(function(){initNavTree('classturi_1_1unity__sarray.html','');}
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="unity__sarray_8hpp_source.html">unity/lib/unity_sarray.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="unity__sarray_8hpp_source.html">core/storage/sframe_interface/unity_sarray.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -216,6 +216,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aac1b615d9f4c421285aa6e020b47487d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec45b3b0e87f78d20891dbcbe9f26c8d"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sarray_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sarray.html#aec45b3b0e87f78d20891dbcbe9f26c8d">drop_missing_values</a> ()</td></tr>
 <tr class="separator:aec45b3b0e87f78d20891dbcbe9f26c8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4cbe03088f430086e30da3f156c07760"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sarray_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sarray.html#a4cbe03088f430086e30da3f156c07760">missing_mask</a> (bool recursive=false, bool missing_is_true=true)</td></tr>
+<tr class="separator:a4cbe03088f430086e30da3f156c07760"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f13d761b2443f904c8438a280047e95"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sarray_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sarray.html#a6f13d761b2443f904c8438a280047e95">fill_missing_values</a> (<a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> default_value)</td></tr>
 <tr class="separator:a6f13d761b2443f904c8438a280047e95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a91f2c94aeee519fc925ddeaeab2bf2dc"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sarray_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sarray.html#a91f2c94aeee519fc925ddeaeab2bf2dc">tail</a> (size_t nrows=10)</td></tr>
@@ -1420,6 +1422,35 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a4cbe03088f430086e30da3f156c07760"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;unity_sarray_base&gt; turi::unity_sarray::missing_mask </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>recursive</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>missing_is_true</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns a new integer typed array indicating the presence of a missing value or float NA in the corresponding element.</p>
+<p>If recursive is true, then it also checks if a NA is present in any element of a recursive type.</p>
+<p>If missing_is_true is true, then the array contains a 1 if the element is a missing value and a 0 if it is not; otherwise, it returns 1 on the presence of a na. </p>
+
+</div>
+</div>
 <a class="anchor" id="a9cc5025871ec3972714e0eeb7f885d6d"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1767,7 +1798,7 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Return the content as a vector. Convenience function. </p>
 
-<p>Definition at line <a class="el" href="unity__sarray_8hpp_source.html#l00715">715</a> of file <a class="el" href="unity__sarray_8hpp_source.html">unity_sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="unity__sarray_8hpp_source.html#l00726">726</a> of file <a class="el" href="unity__sarray_8hpp_source.html">unity_sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -2059,7 +2090,7 @@ Static Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>unity/lib/<a class="el" href="unity__sarray_8hpp_source.html">unity_sarray.hpp</a></li>
+<li>core/storage/sframe_interface/<a class="el" href="unity__sarray_8hpp_source.html">unity_sarray.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

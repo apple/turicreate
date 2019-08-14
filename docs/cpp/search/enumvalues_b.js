@@ -1,8 +1,14 @@
 var searchData=
 [
-  ['skip_5fnext_5fblock',['SKIP_NEXT_BLOCK',['../group__execution.html#ggab473b0ffabcc160384ef47c9ce76c1a8a009bbb685090cf4b869f3586a91fe896',1,'turi::query_eval']]],
-  ['source',['SOURCE',['../structturi_1_1query__eval_1_1query__operator__attributes.html#a05525a39bd5f136f602e11b97033179baa61de5617f6ac92e6c26c972dda7836a',1,'turi::query_eval::query_operator_attributes']]],
-  ['string',['STRING',['../namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76a63b588d5559f64f89a416e656880b949',1,'turi']]],
-  ['sub_5flinear',['SUB_LINEAR',['../structturi_1_1query__eval_1_1query__operator__attributes.html#a05525a39bd5f136f602e11b97033179ba7425be21cb10ab0f14e5d579b0fe1ea8',1,'turi::query_eval::query_operator_attributes']]],
-  ['supports_5fskipping',['SUPPORTS_SKIPPING',['../structturi_1_1query__eval_1_1query__operator__attributes.html#a05525a39bd5f136f602e11b97033179ba51546a00098888fc27b94e9517017d2d',1,'turi::query_eval::query_operator_attributes']]]
+  ['ok',['OK',['../group__cppipc.html#gga4b52bfde0818050add61a5338441e087ae0aa021e21dddbd6d8cecec71e9cf564',1,'cppipc']]],
+  ['opt_5fin_5fprogress',['OPT_IN_PROGRESS',['../group__optimization__config.html#gga4e4d767a8f716615589c682d5103da63a4e285bed7503e26195d1a723fdbfa3ea',1,'turi::optimization']]],
+  ['opt_5finterrupted',['OPT_INTERRUPTED',['../group__optimization__config.html#gga4e4d767a8f716615589c682d5103da63aa7480e90efbb51381fc268bc3bc8b65f',1,'turi::optimization']]],
+  ['opt_5fiteration_5flimit',['OPT_ITERATION_LIMIT',['../group__optimization__config.html#gga4e4d767a8f716615589c682d5103da63aa6377b3246038a65b7acea17523ec166',1,'turi::optimization']]],
+  ['opt_5floaded',['OPT_LOADED',['../group__optimization__config.html#gga4e4d767a8f716615589c682d5103da63ae63190f631bfcb3b3f64e255c5ba44fc',1,'turi::optimization']]],
+  ['opt_5fls_5ffailure',['OPT_LS_FAILURE',['../group__optimization__config.html#gga4e4d767a8f716615589c682d5103da63a475d2a6c0d0a6da8238ceee70c6ca0ba',1,'turi::optimization']]],
+  ['opt_5fnumeric_5ferror',['OPT_NUMERIC_ERROR',['../group__optimization__config.html#gga4e4d767a8f716615589c682d5103da63ad5f51cd3fbca976370dec3083a9cc475',1,'turi::optimization']]],
+  ['opt_5fnumeric_5foverflow',['OPT_NUMERIC_OVERFLOW',['../group__optimization__config.html#gga4e4d767a8f716615589c682d5103da63a05a20a387662092e40c6c9f245603c85',1,'turi::optimization']]],
+  ['opt_5foptimal',['OPT_OPTIMAL',['../group__optimization__config.html#gga4e4d767a8f716615589c682d5103da63a59e95ca7d6a35be924a4f631ad6e59de',1,'turi::optimization']]],
+  ['opt_5ftime_5flimit',['OPT_TIME_LIMIT',['../group__optimization__config.html#gga4e4d767a8f716615589c682d5103da63af0e3248ece4cfab18824bb1dbeb8dd76',1,'turi::optimization']]],
+  ['opt_5funset',['OPT_UNSET',['../group__optimization__config.html#gga4e4d767a8f716615589c682d5103da63a422a72919c0571ef4300385ce03699d5',1,'turi::optimization']]]
 ];

@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('classturi_1_1hash__bucket__container.h
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="sframe_2groupby_8hpp_source.html">sframe/groupby.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="core_2storage_2sframe__data_2groupby_8hpp_source.html">core/storage/sframe_data/groupby.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -135,9 +135,9 @@ class turi::hash_bucket_container&lt; T &gt;</h3>
 <div class="fragment"><div class="line"><span class="keyword">typedef</span> std::vector&lt;flexible_type&gt; valuetype;</div><div class="line">sframe sf = ...;</div><div class="line"></div><div class="line">hash_bucket_container&lt;std::vector&lt;flexible_type&gt;&gt; hash_container(</div><div class="line">   sf.num_segments(),</div><div class="line">   [](<span class="keyword">const</span> value_type&amp; a, <span class="keyword">const</span> value_type&amp; b) { <span class="keywordflow">return</span> a[0] &lt; b[0]; }</div><div class="line">);</div><div class="line"></div><div class="line"><a class="code" href="group__threading.html#gac532f68a1b4c1c4b4d42ffd0fdff2784">parallel_for</a>(0, sf.num_segments(); [&amp;](<span class="keywordtype">size_t</span> i) {</div><div class="line">  <span class="keyword">auto</span> iter = sf.get_reader().begin(i);</div><div class="line">  <span class="keyword">auto</span> end = sf.get_reader().end(i);</div><div class="line">  <span class="keywordflow">while</span> (iter != end) {</div><div class="line">    <span class="keywordtype">size_t</span> hash = *iter[0].hash();</div><div class="line">    hash_container.add(*iter, hash % hash_container.num_buckets());</div><div class="line">    ++iter;</div><div class="line">  }</div><div class="line">});</div><div class="line"></div><div class="line">sframe outsf;</div><div class="line">hash_container.sort_and_write(outsf);</div></div><!-- fragment --><p>Each <a class="el" href="classturi_1_1hash__bucket.html">hash_bucket</a> has an in memory buffer, and is backed by an sarray segment. When the buffer is full, it is sorted and written into the sarray segment as a sorted chunk.</p>
 <p>The sort_and_write function then merges the sorted chunks and write out to a new sarray or sframe. </p>
 
-<p>Definition at line <a class="el" href="sframe_2groupby_8hpp_source.html#l00075">75</a> of file <a class="el" href="sframe_2groupby_8hpp_source.html">groupby.hpp</a>.</p>
+<p>Definition at line <a class="el" href="core_2storage_2sframe__data_2groupby_8hpp_source.html#l00075">75</a> of file <a class="el" href="core_2storage_2sframe__data_2groupby_8hpp_source.html">groupby.hpp</a>.</p>
 </div><hr/>The documentation for this class was generated from the following file:<ul>
-<li>sframe/<a class="el" href="sframe_2groupby_8hpp_source.html">groupby.hpp</a></li>
+<li>core/storage/sframe_data/<a class="el" href="core_2storage_2sframe__data_2groupby_8hpp_source.html">groupby.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

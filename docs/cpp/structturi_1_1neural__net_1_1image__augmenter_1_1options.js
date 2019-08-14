@@ -9,5 +9,6 @@ var structturi_1_1neural__net_1_1image__augmenter_1_1options =
     [ "output_height", "structturi_1_1neural__net_1_1image__augmenter_1_1options.html#ae3a74999a354a277cf932361dc930bf0", null ],
     [ "output_width", "structturi_1_1neural__net_1_1image__augmenter_1_1options.html#a5ac9025d711633ba51913a2f00b83212", null ],
     [ "pad_prob", "structturi_1_1neural__net_1_1image__augmenter_1_1options.html#adbb46ef7c7ab4892473714da5704efd1", null ],
+    [ "random_seed", "structturi_1_1neural__net_1_1image__augmenter_1_1options.html#a342c93eadc70e8739bfbc00d900ab4d2", null ],
     [ "saturation_max_jitter", "structturi_1_1neural__net_1_1image__augmenter_1_1options.html#af6fddfda6b1b70fa3d0d2edaa64a1012", null ]
 ];

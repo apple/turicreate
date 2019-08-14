@@ -32,6 +32,7 @@ var annotated_dup =
         [ "pixel_zeros_t", "structboost_1_1gil_1_1pixel__zeros__t.html", null ]
       ] ]
     ] ],
+    [ "cppipc", "namespacecppipc.html", "namespacecppipc" ],
     [ "parser_impl", null, [
       [ "parser_config", "structparser__impl_1_1parser__config.html", "structparser__impl_1_1parser__config" ]
     ] ],

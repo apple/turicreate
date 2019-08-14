@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SArray &mdash; Turi Create API 5.6 documentation</title>
+  <title>turicreate.SArray &mdash; Turi Create API 5.7 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 5.6 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 5.7 documentation" href="../index.html"/>
         <link rel="up" title="Data" href="../turicreate.data_structures.html"/>
         <link rel="next" title="turicreate.SFrame" href="turicreate.SFrame.html"/>
         <link rel="prev" title="Data" href="../turicreate.data_structures.html"/> 
@@ -143,8 +143,9 @@ SArray.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list | numpy.ndarray | pandas.Series | string</span></dt>
-<dd><p class="first last">The input data. If this is a list, numpy.ndarray, or pandas.Series,
+<dt><strong>data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list | numpy.ndarray | pandas.Series | string | generator | map | range | filter</span></dt>
+<dd><p class="first last">The input data. If this is a list or can generate a list from map,
+filter, and generator, numpy.ndarray, or pandas.Series,
 the data in the list is converted and stored in an SArray.
 Alternatively if this is a string, it is interpreted as a path (or
 url) to a text file. Each line of the text file is loaded as a
@@ -191,6 +192,43 @@ for details)</li>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
 <span class="go">or:</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]),</span> <span class="nb">int</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Construct an SArray from range (xrange for py2):
+.. warning:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">no</span> <span class="n">step</span> <span class="ow">is</span> <span class="n">provided</span> <span class="kn">from</span> <span class="nn">range</span><span class="p">,</span> <span class="n">SArray</span><span class="o">.</span><span class="n">from_sequence</span> <span class="ow">is</span> <span class="n">preferred</span> <span class="ow">in</span> <span class="n">terms</span> <span class="n">of</span> <span class="n">performance</span><span class="o">.</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="go">or:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Construct an SArray from map:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="go">or:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>Construct an SArray from filter:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="go">or:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>Construct an SArray from generator:</p>
+<dl class="docutils">
+<dt>def gen():</dt>
+<dd><p class="first">x = 0
+while x &lt; 10:</p>
+<blockquote class="last">
+<div>yield x
+x += 1</div></blockquote>
+</dd>
+</dl>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">gen</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="go">or:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">gen</span><span class="p">())</span>
 </pre></div>
 </div>
 <p>If the type is not specified, automatic inference is attempted:</p>
@@ -632,7 +670,7 @@ not be used for large data.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Jun 03, 2019.
+      Last updated on Aug 14, 2019.
     </p>
   </div>
 </footer>
@@ -644,13 +682,12 @@ not be used for large data.</p>
   </div>
   
 
-
   
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.6',
+            VERSION:'5.7',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

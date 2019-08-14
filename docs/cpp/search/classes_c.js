@@ -2,8 +2,8 @@ var searchData=
 [
   ['l1_5fnorm',['l1_norm',['../classturi_1_1optimization_1_1l1__norm.html',1,'turi::optimization']]],
   ['l2_5fnorm',['l2_norm',['../classturi_1_1optimization_1_1l2__norm.html',1,'turi::optimization']]],
-  ['l2_5frescaling',['l2_rescaling',['../classturi_1_1l2__rescaling.html',1,'turi']]],
   ['l2_5frescaling',['l2_rescaling',['../classturi_1_1supervised_1_1l2__rescaling.html',1,'turi::supervised']]],
+  ['l2_5frescaling',['l2_rescaling',['../classturi_1_1l2__rescaling.html',1,'turi']]],
   ['labeled_5fimage',['labeled_image',['../structturi_1_1neural__net_1_1labeled__image.html',1,'turi::neural_net']]],
   ['lambda_5fcall_5fby_5fdict_5fdata',['lambda_call_by_dict_data',['../structturi_1_1lambda_1_1lambda__call__by__dict__data.html',1,'turi::lambda']]],
   ['lambda_5fcall_5fby_5fsframe_5frows_5fdata',['lambda_call_by_sframe_rows_data',['../structturi_1_1lambda_1_1lambda__call__by__sframe__rows__data.html',1,'turi::lambda']]],
@@ -14,6 +14,7 @@ var searchData=
   ['lazy_5feval_5foperation_5fbase',['lazy_eval_operation_base',['../structturi_1_1lazy__eval__operation__base.html',1,'turi']]],
   ['lazy_5feval_5foperation_5fdag',['lazy_eval_operation_dag',['../classturi_1_1lazy__eval__operation__dag.html',1,'turi']]],
   ['lbfgs_5fsolver',['lbfgs_solver',['../classturi_1_1optimization_1_1lbfgs__solver.html',1,'turi::optimization']]],
+  ['left_5fshift_5ftuple_3c_20std_3a_3atuple_3c_20t_2c_20ts_2e_2e_2e_20_3e_20_3e',['left_shift_tuple&lt; std::tuple&lt; T, Ts... &gt; &gt;',['../structcppipc_1_1left__shift__tuple_3_01std_1_1tuple_3_01T_00_01Ts_8_8_8_01_4_01_4.html',1,'cppipc']]],
   ['less_5fthan_5ffull_5ffunction',['less_than_full_function',['../structturi_1_1query__eval_1_1less__than__full__function.html',1,'turi::query_eval']]],
   ['less_5fthan_5fpartial_5ffunction',['less_than_partial_function',['../structturi_1_1query__eval_1_1less__than__partial__function.html',1,'turi::query_eval']]],
   ['linear_5fregression',['linear_regression',['../classturi_1_1supervised_1_1linear__regression.html',1,'turi::supervised']]],

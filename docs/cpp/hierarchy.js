@@ -9,6 +9,9 @@ var hierarchy =
     [ "turi::dir_archive_impl::archive_index_information", "structturi_1_1dir__archive__impl_1_1archive__index__information.html", null ],
     [ "turi::nanosockets::async_reply_socket", "classturi_1_1nanosockets_1_1async__reply__socket.html", null ],
     [ "turi::nanosockets::async_request_socket", "classturi_1_1nanosockets_1_1async__request__socket.html", null ],
+    [ "cppipc::authentication_base", "classcppipc_1_1authentication__base.html", [
+      [ "cppipc::authentication_token_method", "classcppipc_1_1authentication__token__method.html", null ]
+    ] ],
     [ "turi::auto_close_sarrays", "classturi_1_1auto__close__sarrays.html", null ],
     [ "turi::object_detection::average_precision_calculator", "classturi_1_1object__detection_1_1average__precision__calculator.html", null ],
     [ "turi::nearest_neighbors::ball_tree_neighbors", "classturi_1_1nearest__neighbors_1_1ball__tree__neighbors.html", null ],
@@ -32,6 +35,7 @@ var hierarchy =
     [ "turi::fileio::cache_block", "structturi_1_1fileio_1_1cache__block.html", null ],
     [ "turi::fileio_impl::cache_stream_sink", "classturi_1_1fileio__impl_1_1cache__stream__sink.html", null ],
     [ "turi::fileio_impl::cache_stream_source", "classturi_1_1fileio__impl_1_1cache__stream__source.html", null ],
+    [ "cppipc::call_message", "structcppipc_1_1call__message.html", null ],
     [ "turi::cancellable_barrier", "classturi_1_1cancellable__barrier.html", null ],
     [ "boost::gil::channel_assigns_t< Channel1, Channel2 >", "structboost_1_1gil_1_1channel__assigns__t.html", null ],
     [ "boost::gil::channel_divides_scalar_t< Channel, Scalar, ChannelR >", "structboost_1_1gil_1_1channel__divides__scalar__t.html", null ],
@@ -50,16 +54,18 @@ var hierarchy =
     [ "turi::shmipc::client", "classturi_1_1shmipc_1_1client.html", null ],
     [ "turi::kmeans::cluster", "structturi_1_1kmeans_1_1cluster.html", null ],
     [ "turi::sframe_saving_impl::column_blocks", "structturi_1_1sframe__saving__impl_1_1column__blocks.html", null ],
-    [ "turi::ml_data_internal::column_indexer", "classturi_1_1ml__data__internal_1_1column__indexer.html", null ],
     [ "turi::v2::ml_data_internal::column_indexer", "classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html", [
       [ "turi::v2::ml_data_internal::column_unique_indexer", "classturi_1_1v2_1_1ml__data__internal_1_1column__unique__indexer.html", null ]
     ] ],
-    [ "turi::ml_data_internal::column_metadata", "structturi_1_1ml__data__internal_1_1column__metadata.html", null ],
+    [ "turi::ml_data_internal::column_indexer", "classturi_1_1ml__data__internal_1_1column__indexer.html", null ],
     [ "turi::v2::ml_data_internal::column_metadata", "structturi_1_1v2_1_1ml__data__internal_1_1column__metadata.html", null ],
-    [ "turi::ml_data_internal::column_statistics", "classturi_1_1ml__data__internal_1_1column__statistics.html", null ],
+    [ "turi::ml_data_internal::column_metadata", "structturi_1_1ml__data__internal_1_1column__metadata.html", null ],
     [ "turi::v2::ml_data_internal::column_statistics", "classturi_1_1v2_1_1ml__data__internal_1_1column__statistics.html", [
       [ "turi::v2::ml_data_internal::basic_column_statistics", "classturi_1_1v2_1_1ml__data__internal_1_1basic__column__statistics.html", null ]
     ] ],
+    [ "turi::ml_data_internal::column_statistics", "classturi_1_1ml__data__internal_1_1column__statistics.html", null ],
+    [ "cppipc::comm_client", "classcppipc_1_1comm__client.html", null ],
+    [ "cppipc::comm_server", "classcppipc_1_1comm__server.html", null ],
     [ "turi::v2::composite_row_container", "structturi_1_1v2_1_1composite__row__container.html", null ],
     [ "turi::v2::composite_row_specification", "classturi_1_1v2_1_1composite__row__specification.html", null ],
     [ "turi::neural_net::compute_context", "classturi_1_1neural__net_1_1compute__context.html", [
@@ -95,12 +101,22 @@ var hierarchy =
     [ "turi::dataframe_row_iterator", "classturi_1_1dataframe__row__iterator.html", null ],
     [ "turi::dataframe_t", "structturi_1_1dataframe__t.html", null ],
     [ "turi::flexible_type_impl::date_time_string_reader", "classturi_1_1flexible__type__impl_1_1date__time__string__reader.html", null ],
+    [ "turi::v2_block_impl::decode_double_stream", "structturi_1_1v2__block__impl_1_1decode__double__stream.html", null ],
+    [ "turi::v2_block_impl::decode_double_stream_legacy", "structturi_1_1v2__block__impl_1_1decode__double__stream__legacy.html", null ],
+    [ "turi::v2_block_impl::decode_ndvector_stream", "structturi_1_1v2__block__impl_1_1decode__ndvector__stream.html", null ],
+    [ "turi::v2_block_impl::decode_number_stream", "structturi_1_1v2__block__impl_1_1decode__number__stream.html", null ],
+    [ "turi::v2_block_impl::decode_string_stream", "structturi_1_1v2__block__impl_1_1decode__string__stream.html", null ],
+    [ "turi::v2_block_impl::decode_vector_stream", "structturi_1_1v2__block__impl_1_1decode__vector__stream.html", null ],
     [ "turi::flexible_type_impl::decrement_operator", "structturi_1_1flexible__type__impl_1_1decrement__operator.html", null ],
     [ "turi::deferred_rwlock", "classturi_1_1deferred__rwlock.html", null ],
     [ "turi::dense_bitset", "classturi_1_1dense__bitset.html", null ],
     [ "turi::sparse_sim::dense_triangular_itemitem_container< T >", "classturi_1_1sparse__sim_1_1dense__triangular__itemitem__container.html", null ],
+    [ "cppipc::detail::deserialize_return_and_clear< RetType, is_proxied_object >", "structcppipc_1_1detail_1_1deserialize__return__and__clear.html", null ],
     [ "turi::flexible_type_impl::deserializer", "structturi_1_1flexible__type__impl_1_1deserializer.html", null ],
     [ "turi::dir_archive", "classturi_1_1dir__archive.html", null ],
+    [ "cppipc::dispatch", "structcppipc_1_1dispatch.html", [
+      [ "cppipc::dispatch_impl< T, MemFn >", "structcppipc_1_1dispatch__impl.html", null ]
+    ] ],
     [ "turi::flexible_type_impl::divide_equal_operator", "structturi_1_1flexible__type__impl_1_1divide__equal__operator.html", null ],
     [ "turi::sgraph_compute::edge_scope", "classturi_1_1sgraph__compute_1_1edge__scope.html", null ],
     [ "turi::edge_triple", "structturi_1_1edge__triple.html", null ],
@@ -117,6 +133,11 @@ var hierarchy =
         [ "turi::bad_cast", "classturi_1_1bad__cast.html", null ]
       ] ]
     ] ],
+    [ "cppipc::detail::exec_and_serialize_response< RetType, T, MemFn, Args >", "structcppipc_1_1detail_1_1exec__and__serialize__response.html", null ],
+    [ "cppipc::detail::exec_and_serialize_response< void, T, MemFn, Args... >", "structcppipc_1_1detail_1_1exec__and__serialize__response_3_01void_00_01T_00_01MemFn_00_01Args_8_8_8_01_4.html", null ],
+    [ "cppipc::detail::execute_disect< T, Memfn, ArgumentTuple, Args >", "structcppipc_1_1detail_1_1execute__disect.html", null ],
+    [ "cppipc::detail::execute_disect< T, Memfn, std::tuple<>, Args... >", "structcppipc_1_1detail_1_1execute__disect_3_01T_00_01Memfn_00_01std_1_1tuple_3_4_00_01Args_8_8_8_01_4.html", null ],
+    [ "cppipc::detail::execute_disect_call< T, Memfn >", "structcppipc_1_1detail_1_1execute__disect__call.html", null ],
     [ "turi::query_eval::execution_node", "classturi_1_1query__eval_1_1execution__node.html", null ],
     [ "turi::factorization::factorization_model", "classturi_1_1factorization_1_1factorization__model.html", null ],
     [ "turi::sgraph_compute::fast_edge_scope", "classturi_1_1sgraph__compute_1_1fast__edge__scope.html", null ],
@@ -170,6 +191,7 @@ var hierarchy =
     [ "turi::flexible_type_internals::ft_converter< CVTR__FLOATING_POINT >", "structturi_1_1flexible__type__internals_1_1ft__converter_3_01CVTR____FLOATING__POINT_01_4.html", null ],
     [ "turi::flexible_type_internals::ft_converter< CVTR__INTEGER >", "structturi_1_1flexible__type__internals_1_1ft__converter_3_01CVTR____INTEGER_01_4.html", null ],
     [ "turi::toolkit_function_wrapper_impl::function_args_to_mpl_vector< Fn >", "structturi_1_1toolkit__function__wrapper__impl_1_1function__args__to__mpl__vector.html", null ],
+    [ "cppipc::function_args_to_tuple< Fn >", "structcppipc_1_1function__args__to__tuple.html", null ],
     [ "turi::function_closure_info", "structturi_1_1function__closure__info.html", null ],
     [ "turi::function_output_iterator< UnaryFunction, MoveFunction >", "classturi_1_1function__output__iterator.html", null ],
     [ "turi::nearest_neighbors::gaussian_kernel", "structturi_1_1nearest__neighbors_1_1gaussian__kernel.html", null ],
@@ -277,10 +299,13 @@ var hierarchy =
     [ "turi::sframe_impl::is_siterable< T, DecayedT, Iterator >", "structturi_1_1sframe__impl_1_1is__siterable.html", null ],
     [ "turi::sframe_impl::is_swriter_base< T, DecayedT, Iterator >", "structturi_1_1sframe__impl_1_1is__swriter__base.html", null ],
     [ "turi::is_valid_flex_type< T >", "structturi_1_1is__valid__flex__type.html", null ],
-    [ "turi::sframe_rows::iterator", "structturi_1_1sframe__rows_1_1iterator.html", null ],
-    [ "turi::hopscotch_table< T, Hash, KeyEqual >::iterator", "structturi_1_1hopscotch__table_1_1iterator.html", null ],
+    [ "cppipc::detail::issue_disect< ArgumentTuple, Args >", "structcppipc_1_1detail_1_1issue__disect.html", null ],
+    [ "cppipc::detail::issue_disect< ArgumentTuple, Arg, Args... >", "structcppipc_1_1detail_1_1issue__disect_3_01ArgumentTuple_00_01Arg_00_01Args_8_8_8_01_4.html", null ],
+    [ "cppipc::detail::issue_disect< std::tuple<>, Args... >", "structcppipc_1_1detail_1_1issue__disect_3_01std_1_1tuple_3_4_00_01Args_8_8_8_01_4.html", null ],
     [ "turi::gl_sarray_range::iterator", "structturi_1_1gl__sarray__range_1_1iterator.html", null ],
     [ "turi::gl_sframe_range::iterator", "structturi_1_1gl__sframe__range_1_1iterator.html", null ],
+    [ "turi::sframe_rows::iterator", "structturi_1_1sframe__rows_1_1iterator.html", null ],
+    [ "turi::hopscotch_table< T, Hash, KeyEqual >::iterator", "structturi_1_1hopscotch__table_1_1iterator.html", null ],
     [ "turi::join_impl::join_hash_table", "classturi_1_1join__impl_1_1join__hash__table.html", null ],
     [ "boost::gil::detail::kernel_1d_adaptor< Core >", "classboost_1_1gil_1_1detail_1_1kernel__1d__adaptor.html", null ],
     [ "boost::gil::detail::kernel_1d_adaptor< array< T, Size > >", "classboost_1_1gil_1_1detail_1_1kernel__1d__adaptor.html", [
@@ -296,6 +321,7 @@ var hierarchy =
     [ "turi::lazy_eval_operation_base< T >", "structturi_1_1lazy__eval__operation__base.html", null ],
     [ "turi::lazy_eval_operation_dag< T >", "classturi_1_1lazy__eval__operation__dag.html", null ],
     [ "turi::optimization::lbfgs_solver", "classturi_1_1optimization_1_1lbfgs__solver.html", null ],
+    [ "cppipc::left_shift_tuple< std::tuple< T, Ts... > >", "structcppipc_1_1left__shift__tuple_3_01std_1_1tuple_3_01T_00_01Ts_8_8_8_01_4_01_4.html", null ],
     [ "turi::query_eval::less_than_full_function", "structturi_1_1query__eval_1_1less__than__full__function.html", null ],
     [ "turi::query_eval::less_than_partial_function", "structturi_1_1query__eval_1_1less__than__partial__function.html", null ],
     [ "turi::list_objects_response", "structturi_1_1list__objects__response.html", null ],
@@ -331,16 +357,16 @@ var hierarchy =
     [ "boost::gil::matrix3x2< T >", "classboost_1_1gil_1_1matrix3x2.html", null ],
     [ "turi::flexible_type_impl::minus_equal_operator", "structturi_1_1flexible__type__impl_1_1minus__equal__operator.html", null ],
     [ "turi::ml_data", "classturi_1_1ml__data.html", null ],
-    [ "turi::ml_data_internal::ml_data_block", "structturi_1_1ml__data__internal_1_1ml__data__block.html", null ],
     [ "turi::v2::ml_data_internal::ml_data_block", "structturi_1_1v2_1_1ml__data__internal_1_1ml__data__block.html", null ],
-    [ "turi::ml_data_internal::ml_data_block_manager", "classturi_1_1ml__data__internal_1_1ml__data__block__manager.html", null ],
+    [ "turi::ml_data_internal::ml_data_block", "structturi_1_1ml__data__internal_1_1ml__data__block.html", null ],
     [ "turi::v2::ml_data_internal::ml_data_block_manager", "classturi_1_1v2_1_1ml__data__internal_1_1ml__data__block__manager.html", null ],
-    [ "turi::ml_data_entry", "structturi_1_1ml__data__entry.html", null ],
+    [ "turi::ml_data_internal::ml_data_block_manager", "classturi_1_1ml__data__internal_1_1ml__data__block__manager.html", null ],
     [ "turi::v2::ml_data_entry", "structturi_1_1v2_1_1ml__data__entry.html", null ],
-    [ "turi::ml_data_entry_global_index", "structturi_1_1ml__data__entry__global__index.html", null ],
+    [ "turi::ml_data_entry", "structturi_1_1ml__data__entry.html", null ],
     [ "turi::v2::ml_data_entry_global_index", "structturi_1_1v2_1_1ml__data__entry__global__index.html", null ],
-    [ "turi::ml_data_full_entry", "structturi_1_1ml__data__full__entry.html", null ],
+    [ "turi::ml_data_entry_global_index", "structturi_1_1ml__data__entry__global__index.html", null ],
     [ "turi::v2::ml_data_full_entry", "structturi_1_1v2_1_1ml__data__full__entry.html", null ],
+    [ "turi::ml_data_full_entry", "structturi_1_1ml__data__full__entry.html", null ],
     [ "turi::ml_data_iterator", "classturi_1_1ml__data__iterator.html", null ],
     [ "turi::v2::ml_data_iterator_base", "classturi_1_1v2_1_1ml__data__iterator__base.html", [
       [ "turi::v2::ml_data_block_iterator", "classturi_1_1v2_1_1ml__data__block__iterator.html", null ],
@@ -400,6 +426,13 @@ var hierarchy =
     [ "turi::query_eval::node_info", "structturi_1_1query__eval_1_1node__info.html", null ],
     [ "turi::oarchive", "classturi_1_1oarchive.html", null ],
     [ "turi::oarchive_soft_fail", "classturi_1_1oarchive__soft__fail.html", null ],
+    [ "cppipc::object_factory_base", "classcppipc_1_1object__factory__base.html", [
+      [ "cppipc::object_factory_impl", "classcppipc_1_1object__factory__impl.html", null ],
+      [ "cppipc::object_factory_proxy", "classcppipc_1_1object__factory__proxy.html", null ]
+    ] ],
+    [ "cppipc::object_proxy< T >", "classcppipc_1_1object__proxy.html", null ],
+    [ "cppipc::object_proxy< cppipc::object_factory_base >", "classcppipc_1_1object__proxy.html", null ],
+    [ "cppipc::object_proxy< turi::model_base >", "classcppipc_1_1object__proxy.html", null ],
     [ "turi::query_eval::opt_append_on_source", "classturi_1_1query__eval_1_1opt__append__on__source.html", null ],
     [ "turi::query_eval::opt_eliminate_empty_append", "classturi_1_1query__eval_1_1opt__eliminate__empty__append.html", null ],
     [ "turi::query_eval::opt_eliminate_identity_project", "classturi_1_1query__eval_1_1opt__eliminate__identity__project.html", null ],
@@ -471,6 +504,7 @@ var hierarchy =
     [ "turi::globals::register_global< double >", "structturi_1_1globals_1_1register__global_3_01double_01_4.html", null ],
     [ "turi::globals::register_global< int64_t >", "structturi_1_1globals_1_1register__global_3_01int64__t_01_4.html", null ],
     [ "turi::globals::register_global< std::string >", "structturi_1_1globals_1_1register__global_3_01std_1_1string_01_4.html", null ],
+    [ "turi::neural_net::compute_context::registration", "classturi_1_1neural__net_1_1compute__context_1_1registration.html", null ],
     [ "turi::any::holder< ValueType >::registry_type", "structturi_1_1any_1_1holder_1_1registry__type.html", null ],
     [ "turi::optimization::regularizer_interface", "classturi_1_1optimization_1_1regularizer__interface.html", [
       [ "turi::optimization::elastic_net", "classturi_1_1optimization_1_1elastic__net.html", null ],
@@ -479,15 +513,16 @@ var hierarchy =
         [ "turi::optimization::l2_norm", "classturi_1_1optimization_1_1l2__norm.html", null ]
       ] ]
     ] ],
+    [ "cppipc::reply_message", "structcppipc_1_1reply__message.html", null ],
     [ "turi::resizing_array_sink_ref", "classturi_1_1resizing__array__sink__ref.html", null ],
     [ "turi::neural_net::image_augmenter::result", "structturi_1_1neural__net_1_1image__augmenter_1_1result.html", null ],
     [ "turi::toolkit_function_wrapper_impl::result_of_function_wrapper< T >", "structturi_1_1toolkit__function__wrapper__impl_1_1result__of__function__wrapper.html", null ],
     [ "turi::toolkit_function_wrapper_impl::result_of_function_wrapper< void >", "structturi_1_1toolkit__function__wrapper__impl_1_1result__of__function__wrapper_3_01void_01_4.html", null ],
     [ "turi::sframe_rows::row", "structturi_1_1sframe__rows_1_1row.html", null ],
-    [ "turi::ml_data_internal::row_data_block", "structturi_1_1ml__data__internal_1_1row__data__block.html", null ],
     [ "turi::v2::ml_data_internal::row_data_block", "structturi_1_1v2_1_1ml__data__internal_1_1row__data__block.html", null ],
-    [ "turi::ml_data_internal::row_metadata", "structturi_1_1ml__data__internal_1_1row__metadata.html", null ],
+    [ "turi::ml_data_internal::row_data_block", "structturi_1_1ml__data__internal_1_1row__data__block.html", null ],
     [ "turi::v2::ml_data_internal::row_metadata", "structturi_1_1v2_1_1ml__data__internal_1_1row__metadata.html", null ],
+    [ "turi::ml_data_internal::row_metadata", "structturi_1_1ml__data__internal_1_1row__metadata.html", null ],
     [ "turi::v2::row_slicer", "classturi_1_1v2_1_1row__slicer.html", null ],
     [ "turi::pattern_mining::rule", "structturi_1_1pattern__mining_1_1rule.html", null ],
     [ "turi::pattern_mining::rule_list", "classturi_1_1pattern__mining_1_1rule__list.html", null ],
@@ -565,11 +600,11 @@ var hierarchy =
     [ "turi::spinrwlock", "classturi_1_1spinrwlock.html", null ],
     [ "spmat", "classspmat.html", null ],
     [ "turi::nearest_neighbors::squared_euclidean", "structturi_1_1nearest__neighbors_1_1squared__euclidean.html", null ],
-    [ "turi::supervised::standardization_interface", "classturi_1_1supervised_1_1standardization__interface.html", [
-      [ "turi::supervised::l2_rescaling", "classturi_1_1supervised_1_1l2__rescaling.html", null ]
-    ] ],
     [ "turi::standardization_interface", "classturi_1_1standardization__interface.html", [
       [ "turi::l2_rescaling", "classturi_1_1l2__rescaling.html", null ]
+    ] ],
+    [ "turi::supervised::standardization_interface", "classturi_1_1supervised_1_1standardization__interface.html", [
+      [ "turi::supervised::l2_rescaling", "classturi_1_1supervised_1_1l2__rescaling.html", null ]
     ] ],
     [ "turi::statistics_tracker", "classturi_1_1statistics__tracker.html", null ],
     [ "turi::sketches::streaming_quantile_sketch< T, Comparator >", "classturi_1_1sketches_1_1streaming__quantile__sketch.html", null ],
@@ -619,6 +654,7 @@ var hierarchy =
     [ "turi::topk_indexer", "classturi_1_1topk__indexer.html", null ],
     [ "turi::trace_count", "structturi_1_1trace__count.html", null ],
     [ "turi::type_to_enum< T >", "structturi_1_1type__to__enum.html", null ],
+    [ "turi::v2_block_impl::typed_decode_stream", "structturi_1_1v2__block__impl_1_1typed__decode__stream.html", null ],
     [ "turi::unfair_lock", "classturi_1_1unfair__lock.html", null ],
     [ "turi::random::distributions::uniform< IntType >", "structturi_1_1random_1_1distributions_1_1uniform.html", null ],
     [ "turi::union_fstream", "classturi_1_1union__fstream.html", null ],

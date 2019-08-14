@@ -22,5 +22,6 @@ var searchData=
   ['frame_5fof_5freference_5fheader_5fnum_5fbits',['FRAME_OF_REFERENCE_HEADER_NUM_BITS',['../namespaceturi_1_1integer__pack.html#a7452733259eb33a260aa8f102054dce1',1,'turi::integer_pack']]],
   ['func_5fevals',['func_evals',['../structturi_1_1optimization_1_1__solver__return.html#a7be16b1fe707d988a8740648f89f0df7',1,'turi::optimization::_solver_return::func_evals()'],['../structturi_1_1optimization_1_1__ls__return.html#a62689862e41d648077654227f1e4c29e',1,'turi::optimization::_ls_return::func_evals()']]],
   ['func_5fvalue',['func_value',['../structturi_1_1optimization_1_1__solver__return.html#a42be6076991b8526834277bad6d9c484',1,'turi::optimization::_solver_return']]],
+  ['function_5fname',['function_name',['../structcppipc_1_1call__message.html#a799fbf57b1bffe33d4b1f247fee0682c',1,'cppipc::call_message']]],
   ['function_5fvalue',['function_value',['../group__LBFGS.html#ga758648f2e9684fb59d8c5bf2ada9b82e',1,'turi::optimization::solver_status']]]
 ];

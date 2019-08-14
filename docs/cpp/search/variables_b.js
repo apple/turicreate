@@ -1,6 +1,7 @@
 var searchData=
 [
   ['labels',['labels',['../structturi_1_1activity__classification_1_1data__iterator_1_1batch.html#a4ab64837a73cf78fc42b9609d7b8abe0',1,'turi::activity_classification::data_iterator::batch']]],
+  ['labels_5fper_5frow',['labels_per_row',['../structturi_1_1activity__classification_1_1data__iterator_1_1batch.html#a283ffef43455227b5167e12f8732f4f5',1,'turi::activity_classification::data_iterator::batch']]],
   ['lambda',['lambda',['../classturi_1_1optimization_1_1l2__norm.html#a4027651e22413ac8ffa1250f7cf5ca85',1,'turi::optimization::l2_norm::lambda()'],['../classturi_1_1optimization_1_1l1__norm.html#a5faaa4f62b846c029629666644f61ba3',1,'turi::optimization::l1_norm::lambda()']]],
   ['lb',['lb',['../group__optimization__constraints.html#ga3628769c713e72d43caa063f22714e4f',1,'turi::optimization::box_constraints']]],
   ['length',['length',['../structturi_1_1v2__block__impl_1_1block__info.html#a348aebd3950b0dad978a743f2728574e',1,'turi::v2_block_impl::block_info']]],

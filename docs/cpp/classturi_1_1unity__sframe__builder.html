@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('classturi_1_1unity__sframe__builder.ht
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="unity__sframe__builder_8hpp_source.html">unity/lib/unity_sframe_builder.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="unity__sframe__builder_8hpp_source.html">core/storage/sframe_interface/unity_sframe_builder.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -141,7 +141,7 @@ Public Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Provides a Python interface to incrementally build an SFrame.</p>
 <p>Unlike most other unity objects, this is not a wrapper of another "sframe_builder" class, but provides the implementation. This is because it is a slightly embellished wrapper around the SArray's output iterator, so there is no further functionality that needs to be available for the C++ side.</p>
-<p>The <a class="el" href="classturi_1_1unity__sframe__builder.html">unity_sframe_builder</a> is designed to append values until <a class="el" href="classturi_1_1unity__sframe__builder.html#a5a5a1d3e5e64bba999d1978cd571b7bd">close</a> is called, which returns the SArray. No "reopening" is allowed, and no operations in that instance of <a class="el" href="classturi_1_1unity__sframe__builder.html">unity_sframe_builder</a> will work after close is called.</p>
+<p>The <a class="el" href="classturi_1_1unity__sframe__builder.html">unity_sframe_builder</a> is designed to append values until <a class="el" href="classturi_1_1unity__sframe__builder.html#a5a5a1d3e5e64bba999d1978cd571b7bd">close</a> is called, which returns the SFrame. No "reopening" is allowed, and no operations in that instance of <a class="el" href="classturi_1_1unity__sframe__builder.html">unity_sframe_builder</a> will work after close is called.</p>
 <p>This also doesn't wrap the already existing <a class="el" href="classturi_1_1unity__sarray__builder.html">unity_sarray_builder</a> despite its similarity, because using the sframe output iterator allows for multiple columns to be kept in the same file. </p>
 
 <p>Definition at line <a class="el" href="unity__sframe__builder_8hpp_source.html#l00037">37</a> of file <a class="el" href="unity__sframe__builder_8hpp_source.html">unity_sframe_builder.hpp</a>.</p>
@@ -360,7 +360,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>unity/lib/<a class="el" href="unity__sframe__builder_8hpp_source.html">unity_sframe_builder.hpp</a></li>
+<li>core/storage/sframe_interface/<a class="el" href="unity__sframe__builder_8hpp_source.html">unity_sframe_builder.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

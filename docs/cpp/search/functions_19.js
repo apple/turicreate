@@ -7,6 +7,8 @@ var searchData=
   ['_7ebox_5fconstraints',['~box_constraints',['../group__optimization__constraints.html#gafeeef2dbc64c1944e8830584265d66eb',1,'turi::optimization::box_constraints']]],
   ['_7ecache_5fblock',['~cache_block',['../structturi_1_1fileio_1_1cache__block.html#a093700fb9a48dcf0c73c22879e890d6f',1,'turi::fileio::cache_block']]],
   ['_7ecache_5fstream_5fsink',['~cache_stream_sink',['../classturi_1_1fileio__impl_1_1cache__stream__sink.html#ac96663aaca6aa6337f2039959a5a05a4',1,'turi::fileio_impl::cache_stream_sink']]],
+  ['_7ecomm_5fclient',['~comm_client',['../classcppipc_1_1comm__client.html#a3b5118e1afb6c86135a32dc62090e416',1,'cppipc::comm_client']]],
+  ['_7ecomm_5fserver',['~comm_server',['../classcppipc_1_1comm__server.html#ac3ae51b068359bd6159e58e1838f3677',1,'cppipc::comm_server']]],
   ['_7econstraint_5finterface',['~constraint_interface',['../classturi_1_1optimization_1_1constraint__interface.html#a7df530db19a17a0129fc3d127fa22ed9',1,'turi::optimization::constraint_interface']]],
   ['_7edense_5fbitset',['~dense_bitset',['../classturi_1_1dense__bitset.html#abce88da6816188975cc0601bf5f4e63f',1,'turi::dense_bitset']]],
   ['_7edir_5farchive',['~dir_archive',['../classturi_1_1dir__archive.html#adb54cd725b6bac9d56b5c7a303d743a9',1,'turi::dir_archive']]],

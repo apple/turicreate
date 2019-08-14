@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('classturi_1_1timeseries_1_1interpolato
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="interpolate__value_8hpp_source.html">unity/extensions/timeseries/interpolate_value.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="interpolate__value_8hpp_source.html">model_server/extensions/timeseries/interpolate_value.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -133,7 +133,7 @@ Public Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Simple interface for 2-D interpolation required for re-sample. functions.</p>
 <div class="fragment"><div class="line">output = interpolator.emit(1.5, 1, 1, 2, 2)</div></div><!-- fragment --><p>As an example, consider the following simple function which interpolates values linearly.</p>
-<p>Interpolates the value at t, using the values at (t1, v1), (t2, v2) </p><div class="fragment"><div class="line">linear = [](<span class="keyword">const</span> flexible_type&amp; t, </div><div class="line">    <span class="keyword">const</span> flexible_type&amp; t1, <span class="keyword">const</span> flexible_type&amp; t2,</div><div class="line">    <span class="keyword">const</span> flexible_type&amp; v1, <span class="keyword">const</span> flexible_type&amp; v2) {</div><div class="line">  <span class="keywordflow">return</span> v1 + (v2 - v2) * (t - t1) / (t2 - t1);</div><div class="line">} </div></div><!-- fragment --> 
+<p>Interpolates the value at t, using the values at (t1, v1), (t2, v2) </p><div class="fragment"><div class="line">linear = [](<span class="keyword">const</span> flexible_type&amp; t,</div><div class="line">    <span class="keyword">const</span> flexible_type&amp; t1, <span class="keyword">const</span> flexible_type&amp; t2,</div><div class="line">    <span class="keyword">const</span> flexible_type&amp; v1, <span class="keyword">const</span> flexible_type&amp; v2) {</div><div class="line">  <span class="keywordflow">return</span> v1 + (v2 - v2) * (t - t1) / (t2 - t1);</div><div class="line">}</div></div><!-- fragment --> 
 <p>Definition at line <a class="el" href="interpolate__value_8hpp_source.html#l00036">36</a> of file <a class="el" href="interpolate__value_8hpp_source.html">interpolate_value.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a67a014e41973a04d1f8e75b7eee770c8"></a>
@@ -267,7 +267,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>unity/extensions/timeseries/<a class="el" href="interpolate__value_8hpp_source.html">interpolate_value.hpp</a></li>
+<li>model_server/extensions/timeseries/<a class="el" href="interpolate__value_8hpp_source.html">interpolate_value.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
