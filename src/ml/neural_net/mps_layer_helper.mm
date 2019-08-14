@@ -46,7 +46,7 @@
     [MPSCNNFullyConnectedNode nodeWithSource:inputNode
                                      weights:fullyConnectedDataLoad];
 
-  fullyConnectedNode.weights = fullyConnectedDataLoad;
+  // fullyConnectedNode.weights = fullyConnectedDataLoad;
   
   return fullyConnectedNode;
 }
@@ -101,7 +101,7 @@
 
   convNode.paddingPolicy = padding;
 
-  convNode.weights = convDataLoad;
+  // convNode.weights = convDataLoad;
   
 	return convNode;
 }
@@ -129,7 +129,7 @@
   MPSCNNInstanceNormalizationNode *instNormNode =  [MPSCNNInstanceNormalizationNode nodeWithSource:inputNode
                                                                                         dataSource:instNormDataLoad];
 
-  instNormNode.weights = instNormDataLoad;
+  // instNormNode.weights = instNormDataLoad;
 
   return instNormNode;
 }

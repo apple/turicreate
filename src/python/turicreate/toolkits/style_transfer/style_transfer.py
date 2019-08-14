@@ -287,14 +287,22 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     if use_mps:
         transformer.batch_size = 1
-        transformer.forward(_mx.nd.uniform(0, 1, (1, 3) + input_shape), _mx.nd.array([0]))
-        
+        transformer_output = transformer.forward(_mx.nd.uniform(0, 1, (1, 3) + input_shape), _mx.nd.array([0]))
+        vgg_model.forward(transformer_output)
+
         net_params = transformer.collect_params()
+        vgg_params = vgg_model.collect_params()
+
         mps_net_params = {}
 
         keys = list(net_params)
+        vgg_keys = list(vgg_params)
+
         for k in keys:
             mps_net_params[k] = net_params[k].data().asnumpy()
+
+        for k in vgg_keys:
+            mps_net_params[k] = vgg_params[k].data().asnumpy()
 
         mps_config = {
             'mode': _MpsGraphMode.Train,
