@@ -1,0 +1,1523 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <title>Nearest neighbors · GitBook</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.0">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-anchors/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../supervised-learning/regression.html" />
+    
+    
+    <link rel="prev" href="../graph_analytics/" />
+    
+
+    <script src="../turi/js/jquery/jquery-2.1.3.min.js"></script>
+    <script src="../turi/js/d3/d3.min.js"></script>
+    <script src="../supervised-learning/images/random-utils.js"></script>
+    <script src="../supervised-learning/images/plotting-utils.js"></script>
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Overview
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../sframe/">
+            
+                <a href="../sframe/">
+            
+                    
+                    Working with data
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../sframe/tabular-data.html">
+            
+                <a href="../sframe/tabular-data.html">
+            
+                    
+                    Tabular data
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.1" data-path="../sframe/sframe-intro.html">
+            
+                <a href="../sframe/sframe-intro.html">
+            
+                    
+                    Loading and Saving
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2" data-path="../sframe/data-manipulation.html">
+            
+                <a href="../sframe/data-manipulation.html">
+            
+                    
+                    Data Manipulation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.3" data-path="../data_formats_and_sources/sql_integration.html">
+            
+                <a href="../data_formats_and_sources/sql_integration.html">
+            
+                    
+                    SQL Databases
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../sgraph/sgraph.html">
+            
+                <a href="../sgraph/sgraph.html">
+            
+                    
+                    Graph data
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="../text/analysis.html">
+            
+                <a href="../text/analysis.html">
+            
+                    
+                    Text data
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4" data-path="../vis/">
+            
+                <a href="../vis/">
+            
+                    
+                    Visualization
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.4.1" data-path="../vis/gallery.html">
+            
+                <a href="../vis/gallery.html">
+            
+                    
+                    Example Gallery
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4.2" data-path="../vis/use_cases.html">
+            
+                <a href="../vis/use_cases.html">
+            
+                    
+                    Sample Use Cases
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../applications/">
+            
+                <a href="../applications/">
+            
+                    
+                    Task focused toolkits
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../recommender/">
+            
+                <a href="../recommender/">
+            
+                    
+                    Recommender Systems
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1.1" data-path="../recommender/using-trained-models.html">
+            
+                <a href="../recommender/using-trained-models.html">
+            
+                    
+                    Using models
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.1.2" data-path="../recommender/choosing-a-model.html">
+            
+                <a href="../recommender/choosing-a-model.html">
+            
+                    
+                    Choosing a model
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.1.3" data-path="../recommender/coreml-deployment.html">
+            
+                <a href="../recommender/coreml-deployment.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../image_classifier/">
+            
+                <a href="../image_classifier/">
+            
+                    
+                    Image Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.2.1" data-path="../image_classifier/advanced-usage.html">
+            
+                <a href="../image_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.2" data-path="../image_classifier/how-it-works.html">
+            
+                <a href="../image_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.3" data-path="../image_classifier/export-coreml.html">
+            
+                <a href="../image_classifier/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../drawing_classifier/">
+            
+                <a href="../drawing_classifier/">
+            
+                    
+                    Drawing Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.3.1" data-path="../drawing_classifier/how-it-works.html">
+            
+                <a href="../drawing_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.2" data-path="../drawing_classifier/data-preparation.html">
+            
+                <a href="../drawing_classifier/data-preparation.html">
+            
+                    
+                    Data Preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.3" data-path="../drawing_classifier/export-coreml.html">
+            
+                <a href="../drawing_classifier/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.4" data-path="../drawing_classifier/advanced-usage.html">
+            
+                <a href="../drawing_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../sound_classifier/">
+            
+                <a href="../sound_classifier/">
+            
+                    
+                    Sound Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.4.1" data-path="../sound_classifier/how-it-works.html">
+            
+                <a href="../sound_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.2" data-path="../sound_classifier/advanced-usage.html">
+            
+                <a href="../sound_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.3" data-path="../sound_classifier/export-coreml.html">
+            
+                <a href="../sound_classifier/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../image_similarity/">
+            
+                <a href="../image_similarity/">
+            
+                    
+                    Image Similarity
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.5.1" data-path="../image_similarity/export-coreml.html">
+            
+                <a href="../image_similarity/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6" data-path="../object_detection/">
+            
+                <a href="../object_detection/">
+            
+                    
+                    Object Detection
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.6.1" data-path="../object_detection/data-preparation.html">
+            
+                <a href="../object_detection/data-preparation.html">
+            
+                    
+                    Data Preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6.2" data-path="../object_detection/advanced-usage.html">
+            
+                <a href="../object_detection/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6.3" data-path="../object_detection/export-coreml.html">
+            
+                <a href="../object_detection/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6.4" data-path="../object_detection/how-it-works.html">
+            
+                <a href="../object_detection/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.7" data-path="../one_shot_object_detection/">
+            
+                <a href="../one_shot_object_detection/">
+            
+                    
+                    One-Shot Object Detection
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.8" data-path="../style_transfer/">
+            
+                <a href="../style_transfer/">
+            
+                    
+                    Style Transfer
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.8.1" data-path="../style_transfer/how-it-works.html">
+            
+                <a href="../style_transfer/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.8.2" data-path="../style_transfer/export-coreml.html">
+            
+                <a href="../style_transfer/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9" data-path="../activity_classifier/">
+            
+                <a href="../activity_classifier/">
+            
+                    
+                    Activity Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.9.1" data-path="../activity_classifier/data-preparation.html">
+            
+                <a href="../activity_classifier/data-preparation.html">
+            
+                    
+                    Data Preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9.2" data-path="../activity_classifier/advanced-usage.html">
+            
+                <a href="../activity_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9.3" data-path="../activity_classifier/export_coreml.html">
+            
+                <a href="../activity_classifier/export_coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9.4" data-path="../activity_classifier/how-it-works.html">
+            
+                <a href="../activity_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.10" data-path="../text_classifier/">
+            
+                <a href="../text_classifier/">
+            
+                    
+                    Text Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../modeling-data/">
+            
+                <a href="../modeling-data/">
+            
+                    
+                    Machine learning essentials
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../supervised-learning/classifier.html">
+            
+                <a href="../supervised-learning/classifier.html">
+            
+                    
+                    Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1.1" data-path="../supervised-learning/boosted_trees_classifier.html">
+            
+                <a href="../supervised-learning/boosted_trees_classifier.html">
+            
+                    
+                    Boosted Trees Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.2" data-path="../supervised-learning/decision_tree_classifier.html">
+            
+                <a href="../supervised-learning/decision_tree_classifier.html">
+            
+                    
+                    Decision Tree Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.3" data-path="../supervised-learning/logistic-regression.html">
+            
+                <a href="../supervised-learning/logistic-regression.html">
+            
+                    
+                    Logistic Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.4" data-path="../supervised-learning/knn_classifier.html">
+            
+                <a href="../supervised-learning/knn_classifier.html">
+            
+                    
+                    Nearest Neighbor Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.5" data-path="../supervised-learning/random_forest_classifier.html">
+            
+                <a href="../supervised-learning/random_forest_classifier.html">
+            
+                    
+                    Random Forest Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.6" data-path="../supervised-learning/svm.html">
+            
+                <a href="../supervised-learning/svm.html">
+            
+                    
+                    SVM
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.7" data-path="../supervised-learning/export-coreml.html">
+            
+                <a href="../supervised-learning/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../clustering/">
+            
+                <a href="../clustering/">
+            
+                    
+                    Clustering
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.2.1" data-path="../clustering/kmeans.html">
+            
+                <a href="../clustering/kmeans.html">
+            
+                    
+                    KMeans
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.2" data-path="../clustering/dbscan.html">
+            
+                <a href="../clustering/dbscan.html">
+            
+                    
+                    DBSCAN
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../graph_analytics/">
+            
+                <a href="../graph_analytics/">
+            
+                    
+                    Graph analytics
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.4.4" data-path="nearest_neighbors.html">
+            
+                <a href="nearest_neighbors.html">
+            
+                    
+                    Nearest neighbors
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="../supervised-learning/regression.html">
+            
+                <a href="../supervised-learning/regression.html">
+            
+                    
+                    Regression
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.5.1" data-path="../supervised-learning/boosted_trees_regression.html">
+            
+                <a href="../supervised-learning/boosted_trees_regression.html">
+            
+                    
+                    Boosted Trees Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.2" data-path="../supervised-learning/decision_tree_regression.html">
+            
+                <a href="../supervised-learning/decision_tree_regression.html">
+            
+                    
+                    Decision Tree Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.3" data-path="../supervised-learning/linear-regression.html">
+            
+                <a href="../supervised-learning/linear-regression.html">
+            
+                    
+                    Linear Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.4" data-path="../supervised-learning/random_forest_regression.html">
+            
+                <a href="../supervised-learning/random_forest_regression.html">
+            
+                    
+                    Random Forest Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.5" data-path="../supervised-learning/export-coreml.html">
+            
+                <a href="../supervised-learning/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="../text/">
+            
+                <a href="../text/">
+            
+                    
+                    Text analysis
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../evaluation/">
+            
+                <a href="../evaluation/">
+            
+                    
+                    Evaluating models
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../evaluation/regression.html">
+            
+                <a href="../evaluation/regression.html">
+            
+                    
+                    Regression metrics
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../evaluation/classification.html">
+            
+                <a href="../evaluation/classification.html">
+            
+                    
+                    Classification metrics
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../conclusion.html">
+            
+                <a href="../conclusion.html">
+            
+                    
+                    Additional Resources
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../cpp.html">
+            
+                <a href="../cpp.html">
+            
+                    
+                    C++ API
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="../datasets.html">
+            
+                <a href="../datasets.html">
+            
+                    
+                    Dataset Disclaimer
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Nearest neighbors</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="nearest-neighbors"><a name="nearest-neighbors" class="plugin-anchor" href="#nearest-neighbors"><i class="fa fa-link" aria-hidden="true"></i></a>Nearest Neighbors</h1><p>The Turi Create <a href="https://apple.github.io/turicreate/docs/api/turicreate.toolkits.nearest_neighbors.html" target="_blank">nearest neighbors
+toolkit</a>
+is used to find the rows in a data table that are most similar to a
+query row. This is a two-stage process, analogous to many other Turi
+Create toolkits. First we create a
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.nearest_neighbors.NearestNeighborsModel.html" target="_blank">NearestNeighborsModel</a>,
+using a <strong>reference dataset</strong> contained in an
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.SFrame.html" target="_blank">SFrame</a>.
+Next we query the model, using either the <code>query</code> or the
+<code>similarity_graph</code> method. Each of these methods is explained further
+below.</p><p>For this chapter we use an example dataset of house attributes and prices:</p><pre><code class="lang-python"><span class="hljs-keyword">import</span> turicreate <span class="hljs-keyword">as</span> tc
+sf = tc.SFrame.read_csv(<span class="hljs-string">&apos;houses.csv&apos;</span>)
+sf.head(<span class="hljs-number">5</span>)</code></pre>
+<pre><code class="lang-no-highlight">+------+---------+------+--------+------+-------+
+| tax  | bedroom | bath | price  | size |  lot  |
++------+---------+------+--------+------+-------+
+| 590  |    2    | 1.0  | 50000  | 770  | 22100 |
+| 1050 |    3    | 2.0  | 85000  | 1410 | 12000 |
+|  20  |    3    | 1.0  | 22500  | 1060 |  3500 |
+| 870  |    2    | 2.0  | 90000  | 1300 | 17500 |
+| 1320 |    3    | 2.0  | 133000 | 1500 | 30000 |
++------+---------+------+--------+------+-------+
+[5 rows x 6 columns]</code></pre>
+<p>Because the features in this dataset have very different scales (e.g. price is
+in the hundreds of thousands while the number of bedrooms is in the single
+digits), it is important to <strong>normalize the features</strong>. In this example we
+standardize so that each feature is measured in terms of standard deviations
+from the mean (see <a href="http://en.wikipedia.org/wiki/Normalization_%28statistics%29" target="_blank">Wikipedia for more
+detail</a>). In
+addition, both reference and query datasets may have a column with row labels,
+but for this example we let the model default to using row indices as labels.</p><pre><code class="lang-python"><span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> sf.column_names():
+    sf[c] = (sf[c] - sf[c].mean()) / sf[c].std()</code></pre>
+<p>First, we <strong>create a nearest neighbors model</strong>. We can list specific features to
+use in our distance computations, or default to using all features in the
+reference SFrame. In the model summary below the following code snippet, note
+that there are three features, because our second command specifies three
+numeric SFrame columns as features for the model. There are also three unpacked
+features, because each feature is in its own column.</p><pre><code class="lang-python">model = tc.nearest_neighbors.create(sf)
+model = tc.nearest_neighbors.create(sf, features=[<span class="hljs-string">&apos;bedroom&apos;</span>, <span class="hljs-string">&apos;bath&apos;</span>, <span class="hljs-string">&apos;size&apos;</span>])
+model.summary()</code></pre>
+<pre><code class="lang-no-highlight">Class                         : NearestNeighborsModel
+
+Attributes
+----------
+Distance                      : euclidean
+Method                        : ball tree
+Number of examples            : 15
+Number of feature columns     : 3
+Number of unpacked features   : 3
+Total training time (seconds) : 0.0091
+
+Ball Tree Attributes
+--------------------
+Tree depth                    : 1
+Leaf size                     : 1000</code></pre>
+<p>To retrieve the five closest neighbors for <em>new</em> data points or a <em>subset</em> of
+the original reference data, we <strong>query</strong> the model with the <code>query</code> method.
+Query points must also be contained in an SFrame, and must have columns with the
+same names as those used to construct the model (additional columns are allowed,
+but ignored). The result of the <code>query</code> method is an SFrame with four columns:
+query label, reference label, distance, and rank of the reference point among
+the query point&apos;s nearest neighbors.</p><pre><code class="lang-python">knn = model.query(sf[:<span class="hljs-number">5</span>], k=<span class="hljs-number">5</span>)
+knn.head()</code></pre>
+<pre><code class="lang-no-highlight">+-------------+-----------------+----------------+------+
+| query_label | reference_label |    distance    | rank |
++-------------+-----------------+----------------+------+
+|      0      |        0        |      0.0       |  1   |
+|      0      |        5        | 0.100742954001 |  2   |
+|      0      |        7        | 0.805943632008 |  3   |
+|      0      |        10       | 1.82070683014  |  4   |
+|      0      |        2        | 1.83900997922  |  5   |
+|      1      |        1        |      0.0       |  1   |
+|      1      |        8        | 0.181337317202 |  2   |
+|      1      |        4        | 0.181337317202 |  3   |
+|      1      |        11       | 0.322377452803 |  4   |
+|      1      |        12       | 0.705200678007 |  5   |
++-------------+-----------------+----------------+------+
+[10 rows x 4 columns]</code></pre>
+<p>In some cases the query dataset <em>is</em> the reference dataset. For this task of
+constructing the <strong>similarity_graph</strong> on the reference data, the model&apos;s
+<code>similarity_graph</code> can be used. For brute force models it can be almost twice as
+fast, depending on the data sparsity and chosen distance function. By default,
+the <code>similarity_graph</code> method returns an
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.SGraph.html" target="_blank">SGraph</a>
+whose vertices are the rows of the reference dataset and whose edges indicate a
+nearest neighbor match. Specifically, the destination vertex of an edge is a
+nearest neighbor of the source vertex. <code>similarity_graph</code> can also return
+results in the same form as the <code>query</code> method if so desired.</p><pre><code class="lang-python">sim_graph = model.similarity_graph(k=<span class="hljs-number">3</span>)</code></pre>
+<p><img alt="boston_sim_graph" src="images/boston_sim_graph.png"></p><h4 id="distance-functions"><a name="distance-functions" class="plugin-anchor" href="#distance-functions"><i class="fa fa-link" aria-hidden="true"></i></a>Distance functions</h4><p>The most critical choice in computing nearest neighbors is the
+<strong>distance function</strong> that measures the dissimilarity between any pair
+of observations.</p><p>For numeric data, the options are <code>euclidean</code>, <code>manhattan</code>,
+<code>cosine</code>, and <code>transformed_dot_product.</code> For data in dictionary
+format (i.e. sparse data), <code>jaccard</code> and <code>weighted_jaccard</code> are also
+options, in addition to the numeric distances. For string features, use
+<code>levenshtein</code> distance, or use the text analytics toolkit&apos;s
+<code>count_ngrams</code> feature to convert strings to dictionaries of words or
+character shingles, then use Jaccard or weighted Jaccard distance.
+Leaving the distance parameter set to its default value of <code>auto</code>
+tells the model to choose the most reasonable distance based on the type
+of features in the reference data. In the following output cell, the
+second line of the model summary confirms our choice of Manhattan
+distance.</p><pre><code class="lang-python">model = tc.nearest_neighbors.create(sf, features=[<span class="hljs-string">&apos;bedroom&apos;</span>, <span class="hljs-string">&apos;bath&apos;</span>, <span class="hljs-string">&apos;size&apos;</span>],
+                                    distance=<span class="hljs-string">&apos;manhattan&apos;</span>)
+model.summary()</code></pre>
+<pre><code class="lang-no-highlight">Class                         : NearestNeighborsModel
+
+Attributes
+----------
+Distance                      : manhattan
+Method                        : ball tree
+Number of examples            : 15
+Number of feature columns     : 3
+Number of unpacked features   : 3
+Total training time (seconds) : 0.013
+
+Ball Tree Attributes
+--------------------
+Tree depth                    : 1
+Leaf size                     : 1000</code></pre>
+<p>Distance functions are also exposed in the <code>turicreate.distances</code>
+module. This allows us not only to specify the distance argument for a
+nearest neighbors model as a distance function (rather than a string),
+but also to <em>use</em> that function for any other purpose.</p><p>In the following snippet we use a nearest neighbors model to find the
+closest reference points to the first three rows of our dataset, then
+confirm the results by computing a couple of the distances manually with
+the Manhattan distance function.</p><pre><code class="lang-python">model = tc.nearest_neighbors.create(sf, features=[<span class="hljs-string">&apos;bedroom&apos;</span>, <span class="hljs-string">&apos;bath&apos;</span>, <span class="hljs-string">&apos;size&apos;</span>],
+                                    distance=tc.distances.manhattan)
+knn = model.query(sf[:<span class="hljs-number">3</span>], k=<span class="hljs-number">3</span>)
+knn.print_rows()
+
+sf_check = sf[[<span class="hljs-string">&apos;bedroom&apos;</span>, <span class="hljs-string">&apos;bath&apos;</span>, <span class="hljs-string">&apos;size&apos;</span>]]
+<span class="hljs-keyword">print</span> <span class="hljs-string">&quot;distance check 1:&quot;</span>, tc.distances.manhattan(sf_check[<span class="hljs-number">2</span>], sf_check[<span class="hljs-number">10</span>])
+<span class="hljs-keyword">print</span> <span class="hljs-string">&quot;distance check 2:&quot;</span>, tc.distances.manhattan(sf_check[<span class="hljs-number">2</span>], sf_check[<span class="hljs-number">14</span>])</code></pre>
+<pre><code class="lang-no-highlight">+-------------+-----------------+-----------------+------+
+| query_label | reference_label |     distance    | rank |
++-------------+-----------------+-----------------+------+
+|      0      |        0        |       0.0       |  1   |
+|      0      |        5        |  0.100742954001 |  2   |
+|      0      |        7        |  0.805943632008 |  3   |
+|      1      |        1        |       0.0       |  1   |
+|      1      |        8        |  0.181337317202 |  2   |
+|      1      |        4        |  0.181337317202 |  3   |
+|      2      |        2        |       0.0       |  1   |
+|      2      |        10       | 0.0604457724006 |  2   |
+|      2      |        14       |  1.61656820464  |  3   |
++-------------+-----------------+-----------------+------+
+[9 rows x 4 columns
+
+distance check 1: 0.0604457724006
+distance check 2: 1.61656820464</code></pre>
+<p>Turi Create also allows <strong>composite distances</strong>, which allow the nearest
+neighbors tool (and other distance-based tools) to work with features
+that have different types. Specifically, a composite distance is a
+<em>weighted sum of standard distances applied to subsets of features</em>,
+specified in the form of a Python list. Each element of a composite
+distance list contains three things:</p><ol><li>a list or tuple of feature names
+</li>
+<li>a standard distance name
+</li>
+<li>a multiplier for the standard distance.
+</li></ol>
+<p>In our house price dataset, for example, suppose we want to measure the
+difference between numbers of bedrooms and baths with Manhattan distance
+and the difference between house and lot sizes with Euclidean distance.
+In addition, we want the Euclidean component to carry twice as much
+weight. The composite distance for this would be:</p><pre><code class="lang-python">my_dist = [[[<span class="hljs-string">&apos;bedroom&apos;</span>, <span class="hljs-string">&apos;bath&apos;</span>], <span class="hljs-string">&apos;manhattan&apos;</span>, <span class="hljs-number">1</span>],
+           [[<span class="hljs-string">&apos;size&apos;</span>, <span class="hljs-string">&apos;lot&apos;</span>], <span class="hljs-string">&apos;euclidean&apos;</span>, <span class="hljs-number">2</span>]]</code></pre>
+<p>This list can be passed to the <code>distance</code> parameter just like a standard
+distance function name or handle.</p><pre><code class="lang-python">model = tc.nearest_neighbors.create(sf, distance=my_dist)
+model.summary()</code></pre>
+<pre><code class="lang-no-highlight">Class                         : NearestNeighborsModel
+
+Attributes
+----------
+Method                        : brute_force
+Number of distance components : 2
+Number of examples            : 15
+Number of feature columns     : 4
+Number of unpacked features   : 4
+Total training time (seconds) : 0.0017</code></pre>
+<p>If we specify the distance parameter as <code>auto</code>, a composite distance
+is created where each type of feature is paired with the most
+appropriate distance function. Please see the documentation for the
+<a href="https://apple.github.io/turicreate/docs/api/turicreate.toolkits.distances.html" target="_blank">Turi Create distances
+module</a>
+for more on composite distances.</p><h4 id="search-methods"><a name="search-methods" class="plugin-anchor" href="#search-methods"><i class="fa fa-link" aria-hidden="true"></i></a>Search methods</h4><p>Another important choice in model creation is the <strong>method</strong>. The
+<code>brute_force</code> method computes the distance between a query point and <em>each</em> of
+the reference points, with a run time linear in the number of reference points.
+Creating a model with the <code>ball_tree</code> method takes more time, but leads to
+much faster queries by partitioning the reference data into successively smaller
+balls and searching only those that are relatively close to the query.  The
+default method is <code>auto</code> which chooses a reasonable method based on both the
+feature types and the selected distance function. The method parameter is also
+specified when the model is created. The third row of the model summary confirms
+our choice to use the ball tree in the next example.</p><pre><code class="lang-python">model = tc.nearest_neighbors.create(sf, features=[<span class="hljs-string">&apos;bedroom&apos;</span>, <span class="hljs-string">&apos;bath&apos;</span>, <span class="hljs-string">&apos;size&apos;</span>],
+                                    method=<span class="hljs-string">&apos;ball_tree&apos;</span>, leaf_size=<span class="hljs-number">5</span>)
+model.summary()</code></pre>
+<pre><code class="lang-no-highlight">Class                         : NearestNeighborsModel
+
+Attributes
+----------
+Method                        : ball_tree
+Number of distance components : 1
+Number of examples            : 15
+Number of feature columns     : 3
+Number of unpacked features   : 3
+Total training time (seconds) : 0.0253
+
+Ball Tree Attributes
+--------------------
+Tree depth                    : 3
+Leaf size                     : 5</code></pre>
+<p>If the ball tree is used, it&apos;s important to choose an appropriate value for the
+&apos;leaf_size&apos; parameter, which controls how many observations are stored in each
+leaf of the ball tree. By default, this is set so that the tree is no more than
+12 levels deep, but larger or smaller values may lead to quicker queries
+depending on the shape and dimension of the data. Our houses example only has 15
+rows, so the <code>leaf_size</code> parameter (and the <code>ball_tree</code> method for that
+matter) are not too useful, but for illustration purposes we set the leaf size
+to 5 above.</p><h4 id="missing-data"><a name="missing-data" class="plugin-anchor" href="#missing-data"><i class="fa fa-link" aria-hidden="true"></i></a>Missing data</h4><p>The reference dataset that is used to create the nearest neighbors model
+cannot have missing data. Please use the
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.SFrame.fillna.html" target="_blank">SFrame.fillna</a>
+and
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.SArray.dropna.html" target="_blank">SFrame.dropna</a>
+utilities to preprocess missing values before creating a nearest
+neighbors model.</p><p>On the other hand, data passed to the <code>query</code> method <em>can</em> have missing
+data.  For numeric columns, missing values are imputed to be the mean of
+the corresponding column in the reference dataset used to create the
+model. Missing values in string columns are imputed as empty strings.</p>
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="../graph_analytics/" class="navigation navigation-prev " aria-label="Previous page: Graph analytics">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../supervised-learning/regression.html" class="navigation navigation-next " aria-label="Next page: Regression">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Nearest neighbors","level":"1.4.4","depth":2,"next":{"title":"Regression","level":"1.4.5","depth":2,"path":"supervised-learning/regression.md","ref":"supervised-learning/regression.md","articles":[{"title":"Boosted Trees Regression","level":"1.4.5.1","depth":3,"path":"supervised-learning/boosted_trees_regression.md","ref":"supervised-learning/boosted_trees_regression.md","articles":[]},{"title":"Decision Tree Regression","level":"1.4.5.2","depth":3,"path":"supervised-learning/decision_tree_regression.md","ref":"supervised-learning/decision_tree_regression.md","articles":[]},{"title":"Linear Regression","level":"1.4.5.3","depth":3,"path":"supervised-learning/linear-regression.md","ref":"supervised-learning/linear-regression.md","articles":[]},{"title":"Random Forest Regression","level":"1.4.5.4","depth":3,"path":"supervised-learning/random_forest_regression.md","ref":"supervised-learning/random_forest_regression.md","articles":[]},{"title":"Deployment to Core ML","level":"1.4.5.5","depth":3,"path":"supervised-learning/export-coreml.md","ref":"supervised-learning/export-coreml.md","articles":[]}]},"previous":{"title":"Graph analytics","level":"1.4.3","depth":2,"path":"graph_analytics/README.md","ref":"graph_analytics/README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"nearest_neighbors/nearest_neighbors.md","mtime":"2019-08-14T20:10:55.258Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2019-08-14T20:12:25.573Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-collapsible-menu/plugin.js"></script>
+        
+    
+        
+        <script src="https://cdn.mathjax.org/mathjax/2.6-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-mathjax/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

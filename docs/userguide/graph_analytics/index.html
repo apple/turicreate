@@ -1,0 +1,1459 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <title>Graph analytics · GitBook</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.0">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-anchors/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../nearest_neighbors/nearest_neighbors.html" />
+    
+    
+    <link rel="prev" href="../clustering/dbscan.html" />
+    
+
+    <script src="../turi/js/jquery/jquery-2.1.3.min.js"></script>
+    <script src="../turi/js/d3/d3.min.js"></script>
+    <script src="../supervised-learning/images/random-utils.js"></script>
+    <script src="../supervised-learning/images/plotting-utils.js"></script>
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Overview
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../sframe/">
+            
+                <a href="../sframe/">
+            
+                    
+                    Working with data
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../sframe/tabular-data.html">
+            
+                <a href="../sframe/tabular-data.html">
+            
+                    
+                    Tabular data
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.1" data-path="../sframe/sframe-intro.html">
+            
+                <a href="../sframe/sframe-intro.html">
+            
+                    
+                    Loading and Saving
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2" data-path="../sframe/data-manipulation.html">
+            
+                <a href="../sframe/data-manipulation.html">
+            
+                    
+                    Data Manipulation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.3" data-path="../data_formats_and_sources/sql_integration.html">
+            
+                <a href="../data_formats_and_sources/sql_integration.html">
+            
+                    
+                    SQL Databases
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../sgraph/sgraph.html">
+            
+                <a href="../sgraph/sgraph.html">
+            
+                    
+                    Graph data
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="../text/analysis.html">
+            
+                <a href="../text/analysis.html">
+            
+                    
+                    Text data
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4" data-path="../vis/">
+            
+                <a href="../vis/">
+            
+                    
+                    Visualization
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.4.1" data-path="../vis/gallery.html">
+            
+                <a href="../vis/gallery.html">
+            
+                    
+                    Example Gallery
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4.2" data-path="../vis/use_cases.html">
+            
+                <a href="../vis/use_cases.html">
+            
+                    
+                    Sample Use Cases
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../applications/">
+            
+                <a href="../applications/">
+            
+                    
+                    Task focused toolkits
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../recommender/">
+            
+                <a href="../recommender/">
+            
+                    
+                    Recommender Systems
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1.1" data-path="../recommender/using-trained-models.html">
+            
+                <a href="../recommender/using-trained-models.html">
+            
+                    
+                    Using models
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.1.2" data-path="../recommender/choosing-a-model.html">
+            
+                <a href="../recommender/choosing-a-model.html">
+            
+                    
+                    Choosing a model
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.1.3" data-path="../recommender/coreml-deployment.html">
+            
+                <a href="../recommender/coreml-deployment.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../image_classifier/">
+            
+                <a href="../image_classifier/">
+            
+                    
+                    Image Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.2.1" data-path="../image_classifier/advanced-usage.html">
+            
+                <a href="../image_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.2" data-path="../image_classifier/how-it-works.html">
+            
+                <a href="../image_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.3" data-path="../image_classifier/export-coreml.html">
+            
+                <a href="../image_classifier/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../drawing_classifier/">
+            
+                <a href="../drawing_classifier/">
+            
+                    
+                    Drawing Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.3.1" data-path="../drawing_classifier/how-it-works.html">
+            
+                <a href="../drawing_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.2" data-path="../drawing_classifier/data-preparation.html">
+            
+                <a href="../drawing_classifier/data-preparation.html">
+            
+                    
+                    Data Preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.3" data-path="../drawing_classifier/export-coreml.html">
+            
+                <a href="../drawing_classifier/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.4" data-path="../drawing_classifier/advanced-usage.html">
+            
+                <a href="../drawing_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../sound_classifier/">
+            
+                <a href="../sound_classifier/">
+            
+                    
+                    Sound Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.4.1" data-path="../sound_classifier/how-it-works.html">
+            
+                <a href="../sound_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.2" data-path="../sound_classifier/advanced-usage.html">
+            
+                <a href="../sound_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.3" data-path="../sound_classifier/export-coreml.html">
+            
+                <a href="../sound_classifier/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../image_similarity/">
+            
+                <a href="../image_similarity/">
+            
+                    
+                    Image Similarity
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.5.1" data-path="../image_similarity/export-coreml.html">
+            
+                <a href="../image_similarity/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6" data-path="../object_detection/">
+            
+                <a href="../object_detection/">
+            
+                    
+                    Object Detection
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.6.1" data-path="../object_detection/data-preparation.html">
+            
+                <a href="../object_detection/data-preparation.html">
+            
+                    
+                    Data Preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6.2" data-path="../object_detection/advanced-usage.html">
+            
+                <a href="../object_detection/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6.3" data-path="../object_detection/export-coreml.html">
+            
+                <a href="../object_detection/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6.4" data-path="../object_detection/how-it-works.html">
+            
+                <a href="../object_detection/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.7" data-path="../one_shot_object_detection/">
+            
+                <a href="../one_shot_object_detection/">
+            
+                    
+                    One-Shot Object Detection
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.8" data-path="../style_transfer/">
+            
+                <a href="../style_transfer/">
+            
+                    
+                    Style Transfer
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.8.1" data-path="../style_transfer/how-it-works.html">
+            
+                <a href="../style_transfer/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.8.2" data-path="../style_transfer/export-coreml.html">
+            
+                <a href="../style_transfer/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9" data-path="../activity_classifier/">
+            
+                <a href="../activity_classifier/">
+            
+                    
+                    Activity Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.9.1" data-path="../activity_classifier/data-preparation.html">
+            
+                <a href="../activity_classifier/data-preparation.html">
+            
+                    
+                    Data Preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9.2" data-path="../activity_classifier/advanced-usage.html">
+            
+                <a href="../activity_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9.3" data-path="../activity_classifier/export_coreml.html">
+            
+                <a href="../activity_classifier/export_coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9.4" data-path="../activity_classifier/how-it-works.html">
+            
+                <a href="../activity_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.10" data-path="../text_classifier/">
+            
+                <a href="../text_classifier/">
+            
+                    
+                    Text Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../modeling-data/">
+            
+                <a href="../modeling-data/">
+            
+                    
+                    Machine learning essentials
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../supervised-learning/classifier.html">
+            
+                <a href="../supervised-learning/classifier.html">
+            
+                    
+                    Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1.1" data-path="../supervised-learning/boosted_trees_classifier.html">
+            
+                <a href="../supervised-learning/boosted_trees_classifier.html">
+            
+                    
+                    Boosted Trees Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.2" data-path="../supervised-learning/decision_tree_classifier.html">
+            
+                <a href="../supervised-learning/decision_tree_classifier.html">
+            
+                    
+                    Decision Tree Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.3" data-path="../supervised-learning/logistic-regression.html">
+            
+                <a href="../supervised-learning/logistic-regression.html">
+            
+                    
+                    Logistic Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.4" data-path="../supervised-learning/knn_classifier.html">
+            
+                <a href="../supervised-learning/knn_classifier.html">
+            
+                    
+                    Nearest Neighbor Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.5" data-path="../supervised-learning/random_forest_classifier.html">
+            
+                <a href="../supervised-learning/random_forest_classifier.html">
+            
+                    
+                    Random Forest Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.6" data-path="../supervised-learning/svm.html">
+            
+                <a href="../supervised-learning/svm.html">
+            
+                    
+                    SVM
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.7" data-path="../supervised-learning/export-coreml.html">
+            
+                <a href="../supervised-learning/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../clustering/">
+            
+                <a href="../clustering/">
+            
+                    
+                    Clustering
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.2.1" data-path="../clustering/kmeans.html">
+            
+                <a href="../clustering/kmeans.html">
+            
+                    
+                    KMeans
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.2" data-path="../clustering/dbscan.html">
+            
+                <a href="../clustering/dbscan.html">
+            
+                    
+                    DBSCAN
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.4.3" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Graph analytics
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../nearest_neighbors/nearest_neighbors.html">
+            
+                <a href="../nearest_neighbors/nearest_neighbors.html">
+            
+                    
+                    Nearest neighbors
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="../supervised-learning/regression.html">
+            
+                <a href="../supervised-learning/regression.html">
+            
+                    
+                    Regression
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.5.1" data-path="../supervised-learning/boosted_trees_regression.html">
+            
+                <a href="../supervised-learning/boosted_trees_regression.html">
+            
+                    
+                    Boosted Trees Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.2" data-path="../supervised-learning/decision_tree_regression.html">
+            
+                <a href="../supervised-learning/decision_tree_regression.html">
+            
+                    
+                    Decision Tree Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.3" data-path="../supervised-learning/linear-regression.html">
+            
+                <a href="../supervised-learning/linear-regression.html">
+            
+                    
+                    Linear Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.4" data-path="../supervised-learning/random_forest_regression.html">
+            
+                <a href="../supervised-learning/random_forest_regression.html">
+            
+                    
+                    Random Forest Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.5" data-path="../supervised-learning/export-coreml.html">
+            
+                <a href="../supervised-learning/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="../text/">
+            
+                <a href="../text/">
+            
+                    
+                    Text analysis
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../evaluation/">
+            
+                <a href="../evaluation/">
+            
+                    
+                    Evaluating models
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../evaluation/regression.html">
+            
+                <a href="../evaluation/regression.html">
+            
+                    
+                    Regression metrics
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../evaluation/classification.html">
+            
+                <a href="../evaluation/classification.html">
+            
+                    
+                    Classification metrics
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../conclusion.html">
+            
+                <a href="../conclusion.html">
+            
+                    
+                    Additional Resources
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../cpp.html">
+            
+                <a href="../cpp.html">
+            
+                    
+                    C++ API
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="../datasets.html">
+            
+                <a href="../datasets.html">
+            
+                    
+                    Dataset Disclaimer
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Graph analytics</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="introduction-to-graph-analytics"><a name="introduction-to-graph-analytics" class="plugin-anchor" href="#introduction-to-graph-analytics"><i class="fa fa-link" aria-hidden="true"></i></a>Introduction to Graph Analytics</h1><p>Going from inspiration to production with graph models requires knowledge of several of the graph&apos;s attributes:
+influential and outlier nodes, clusters and communities, hidden
+connections between nodes, and the ability to compare different graphs based on
+these attributes. The
+<a href="https://apple.github.io/turicreate/docs/api/turicreate.toolkits.graph_analytics.html" target="_blank">Graph Analytics toolkit</a>
+enables this depth of understanding by providing several methods:</p><ul><li><a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.connected_components.create.html" target="_blank">Connected components</a>
+</li>
+<li><a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.graph_coloring.create.html" target="_blank">Graph coloring</a>
+</li>
+<li><a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.kcore.create.html" target="_blank">K-Core decomposition</a>
+</li>
+<li><a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.pagerank.create.html" target="_blank">PageRank</a>
+</li>
+<li><a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.shortest_path.create.html" target="_blank">Single-source shortest path</a>
+</li>
+<li><a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.triangle_counting.create.html#turicreate.triangle_counting.create" target="_blank">Triangle count</a>
+</li></ul>
+<p>Each method takes an input graph and returns a model object, which contains the
+run time, an SFrame with the desired output for each vertex, and a new graph
+whose vertices contain the output as an attribute.</p><h1 id="examples"><a name="examples" class="plugin-anchor" href="#examples"><i class="fa fa-link" aria-hidden="true"></i></a>Examples</h1><p>To illustrate some of these methods, we&apos;ll use a previously created SGraph where
+vertices represent Wikipedia articles for  US businesses and edges represent
+hyperlinks between articles.</p><pre><code class="lang-python"><span class="hljs-keyword">import</span> turicreate
+sg = turicreate.load_sgraph(<span class="hljs-string">&apos;US_business_links&apos;</span>)
+
+print(sg.summary())</code></pre>
+<pre><code class="lang-no-highlight">{&apos;num_edges&apos;: 517127, &apos;num_vertices&apos;: 233121}</code></pre>
+<h5 id="pagerank"><a name="pagerank" class="plugin-anchor" href="#pagerank"><i class="fa fa-link" aria-hidden="true"></i></a>PageRank</h5><p>PageRank is an iterative algorithm to compute the most influential nodes in a
+network. In each iteration, a vertex&apos;s influence is measured as the sum of
+influence of the nodes that point at the vertex. Each node&apos;s score is updated
+until the scores converge, or until the user-specified maximum number of
+iterations is reached.</p><p>As with other Turi Create methods, the model object is constructed with
+the <code>create</code> function. The <code>summary()</code> method provides a snapshot of the
+result, and the <code>list_fields()</code> method gives the attributes of the model
+that can be queried.</p><pre><code class="lang-python">pr = turicreate.pagerank.create(sg, max_iterations=<span class="hljs-number">10</span>)
+print(pr.summary())</code></pre>
+<pre><code class="lang-no-highlight">PagerankModel
+Graph:
++--------------+--------+
+| num_edges    | 517127 |
+| num_vertices | 233121 |
++--------------+--------+
+Result:
++----------+-------------------------------------------------------+
+| graph    | SGraph. See m[&apos;graph&apos;]                                |
+| pagerank | SFrame with each vertex&apos;s pagerank. See m[&apos;pagerank&apos;] |
+| delta    | 3824.08346598                                         |
++----------+-------------------------------------------------------+
+Setting:
++-------------------+------+
+| threshold         | 0.01 |
+| reset_probability | 0.15 |
+| max_iterations    | 10   |
++-------------------+------+
+Metric:
++----------------+----------+
+| num_iterations | 10       |
+| training_time  | 7.223114 |
++----------------+----------+
+Queryable Fields
++-------------------+-----------------------------------------------------------+
+| Field             | Description                                               |
++-------------------+-----------------------------------------------------------+
+| training_time     | Total training time of the model                          |
+| graph             | A new SGraph with the pagerank as a vertex property       |
+| delta             | Change in pagerank for the last iteration in L1 norm      |
+| reset_probability | The probability of randomly jumps to any node in the graph|
+| pagerank          | An SFrame with each vertex&apos;s pagerank                     |
+| num_iterations    | Number of iterations                                      |
+| threshold         | The convergence threshold in L1 norm                      |
+| max_iterations    | The maximum number of iterations to run                   |
++-------------------+-----------------------------------------------------------+</code></pre>
+<p>The model fields are retrieved either with the <code>get</code> method or by
+treating the model as a dictionary, as in the following snippet, which
+shows the model creation run time of about 7 seconds.</p><pre><code class="lang-python">print(pr[<span class="hljs-string">&apos;training_time&apos;</span>])</code></pre>
+<pre><code class="lang-no-highlight">7.234136</code></pre>
+<p>The <code>pagerank</code> field contains an SFrame with the per-node pagerank score. For
+this example of Wikipedia articles and hyperlinks, ABC takes the top spot by a
+large margin.</p><pre><code class="lang-python">pr_out = pr[<span class="hljs-string">&apos;pagerank&apos;</span>]
+print(pr_out.topk(<span class="hljs-string">&apos;pagerank&apos;</span>, k=<span class="hljs-number">10</span>))</code></pre>
+<pre><code class="lang-no-highlight">+-------------------------------+---------------+---------------+
+|              __id             |    pagerank   |     delta     |
++-------------------------------+---------------+---------------+
+| American Broadcasting Company | 3050.12285481 | 171.095519607 |
+|           Microsoft           | 1640.93294801 | 79.4193105615 |
+|           DC Comics           | 1623.76580168 |  231.05676926 |
+|       Paramount Pictures      | 1341.29716993 | 74.7486642804 |
+|            Facebook           | 1218.69295972 | 23.8510621222 |
+|             Google            | 1180.48509934 |  41.271924661 |
+|       Ford Motor Company      | 1156.31695182 | 84.5552251247 |
+|            Twitter            | 1074.30512161 | 16.3932159159 |
+|       Columbia Pictures       | 921.042912728 | 55.2951992749 |
+|    The Walt Disney Company    | 878.301063411 | 74.9881435438 |
++-------------------------------+---------------+---------------+
+[10 rows x 3 columns]</code></pre>
+<h5 id="triangle-counting"><a name="triangle-counting" class="plugin-anchor" href="#triangle-counting"><i class="fa fa-link" aria-hidden="true"></i></a>Triangle counting</h5><p>The number of triangles in a vertex&apos;s immediate neighborhood is a measure of the
+&quot;density&quot; of the vertex&apos;s neighborhood. In both of the figures below, vertex A
+has three immediate neighbors, ignoring edge directions. In the top figure, none
+of node A&apos;s neighbors is connected to any other neighbor, indicating a very
+loosely connected network. In contrast, all of the three neighbors are connected
+to each other in the bottom figure, indicating a tightly connected network.</p><p><img alt="triangle_count" src="images/triangle_count.png"></p><pre><code class="lang-python">tri = turicreate.triangle_counting.create(sg)
+print(tri.summary())</code></pre>
+<pre><code class="lang-no-highlight">TriangleCountingModel
+Graph:
++--------------+--------+
+| num_edges    | 517127 |
+| num_vertices | 233121 |
++--------------+--------+
+Result:
++----------------+-------------------------------------------------------------------+
+| graph          | SGraph. See m[&apos;graph&apos;]                                            |
+| num_triangles  | 171968                                                            |
+| triangle_count | SFrame with each vertex&apos;s triangle count. See m[&apos;triangle_count&apos;] |
++----------------+-------------------------------------------------------------------+
+Metric:
++---------------+-----------+
+| training_time | 29.043092 |
++---------------+-----------+
+Queriable Fields
++----------------+------------------------------------------------------------+
+| Field          | Description                                                |
++----------------+------------------------------------------------------------+
+| graph          | A new SGraph with the triangle count as a vertex property. |
+| num_triangles  | Total number of triangles in the graph.                    |
+| triangle_count | An SFrame with the triangle count for each vertex.         |
+| training_time  | Total training time of the model                           |
++----------------+------------------------------------------------------------+</code></pre>
+<p>In this dataset, there is a lot of overlap between the companies with large
+influence in the Wikipedia article network (as measured by PageRank) and the
+companies with the largest and most dense neighborhoods, as measured by the
+triangle count method, but there are notable differences. ABC has only the sixth
+most triangles despite having the highest pagerank, while Microsoft ranks very
+high by both statistics, suggesting the Microsoft article is slightly more
+central in the network.</p><pre><code class="lang-python">tri_out = tri[<span class="hljs-string">&apos;triangle_count&apos;</span>]
+print(tri_out.topk(<span class="hljs-string">&apos;triangle_count&apos;</span>, k=<span class="hljs-number">10</span>))</code></pre>
+<pre><code class="lang-no-highlight">+-------------------------------+----------------+
+|              __id             | triangle_count |
++-------------------------------+----------------+
+|           Microsoft           |     21447      |
+|             Google            |     15491      |
+|            Facebook           |     14200      |
+|              IBM              |     11716      |
+|       Paramount Pictures      |     10547      |
+| American Broadcasting Company |     10514      |
+|            Twitter            |      9219      |
+|       Target Corporation      |      8474      |
+|        Delta Air Lines        |      8195      |
+|             Intel             |      7952      |
++-------------------------------+----------------+
+[10 rows x 2 columns]</code></pre>
+<h5 id="single-source-shortest-path"><a name="single-source-shortest-path" class="plugin-anchor" href="#single-source-shortest-path"><i class="fa fa-link" aria-hidden="true"></i></a>Single-source shortest path</h5><p>Paths in a graph are a sequence of vertices, where each consecutive pair is
+connected by an edge in the graph. The single-source shortest path problem is to
+find the shortest path from all vertices in the graph to a user-specified target
+node. The source vertex with the smallest distribution of shortest paths can be
+considered the most central node in the graph.</p><p>Because Turi Create SGraphs use directed edges, the shortest path toolkit
+also finds the shortest directed paths to a source vertex. In this example we
+find all shortest paths to the node for the Microsoft article, then visualize
+the shortest path from the Microsoft article to the Weyerhauser article.
+We find the quickest way to get from Microsoft to Weyerhauser is via the
+articles on Google.</p><pre><code class="lang-python">sssp = turicreate.shortest_path.create(sg, source_vid=<span class="hljs-string">&apos;Microsoft&apos;</span>)
+sssp.get_path(vid=<span class="hljs-string">&apos;Weyerhaeuser&apos;</span>,
+              highlight=[<span class="hljs-string">&apos;Microsoft&apos;</span>, <span class="hljs-string">&apos;Weyerhaeuser&apos;</span>], arrows=<span class="hljs-keyword">True</span>, ewidth=<span class="hljs-number">1.5</span>)</code></pre>
+<pre><code class="lang-no-highlight">[(&apos;Microsoft&apos;, 0.0),
+ (&apos;Google&apos;, 1.0),
+ (&apos;Weyerhaeuser&apos;, 3.0)]</code></pre>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="../clustering/dbscan.html" class="navigation navigation-prev " aria-label="Previous page: DBSCAN">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../nearest_neighbors/nearest_neighbors.html" class="navigation navigation-next " aria-label="Next page: Nearest neighbors">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Graph analytics","level":"1.4.3","depth":2,"next":{"title":"Nearest neighbors","level":"1.4.4","depth":2,"path":"nearest_neighbors/nearest_neighbors.md","ref":"nearest_neighbors/nearest_neighbors.md","articles":[]},"previous":{"title":"DBSCAN","level":"1.4.2.2","depth":3,"path":"clustering/dbscan.md","ref":"clustering/dbscan.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"graph_analytics/README.md","mtime":"2019-08-14T20:10:55.170Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2019-08-14T20:12:25.573Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-collapsible-menu/plugin.js"></script>
+        
+    
+        
+        <script src="https://cdn.mathjax.org/mathjax/2.6-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-mathjax/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

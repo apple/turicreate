@@ -1,0 +1,1554 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <title>DBSCAN · GitBook</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.0">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-anchors/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../graph_analytics/" />
+    
+    
+    <link rel="prev" href="kmeans.html" />
+    
+
+    <script src="../turi/js/jquery/jquery-2.1.3.min.js"></script>
+    <script src="../turi/js/d3/d3.min.js"></script>
+    <script src="../supervised-learning/images/random-utils.js"></script>
+    <script src="../supervised-learning/images/plotting-utils.js"></script>
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Overview
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../sframe/">
+            
+                <a href="../sframe/">
+            
+                    
+                    Working with data
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../sframe/tabular-data.html">
+            
+                <a href="../sframe/tabular-data.html">
+            
+                    
+                    Tabular data
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.1" data-path="../sframe/sframe-intro.html">
+            
+                <a href="../sframe/sframe-intro.html">
+            
+                    
+                    Loading and Saving
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2" data-path="../sframe/data-manipulation.html">
+            
+                <a href="../sframe/data-manipulation.html">
+            
+                    
+                    Data Manipulation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.3" data-path="../data_formats_and_sources/sql_integration.html">
+            
+                <a href="../data_formats_and_sources/sql_integration.html">
+            
+                    
+                    SQL Databases
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../sgraph/sgraph.html">
+            
+                <a href="../sgraph/sgraph.html">
+            
+                    
+                    Graph data
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="../text/analysis.html">
+            
+                <a href="../text/analysis.html">
+            
+                    
+                    Text data
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4" data-path="../vis/">
+            
+                <a href="../vis/">
+            
+                    
+                    Visualization
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.4.1" data-path="../vis/gallery.html">
+            
+                <a href="../vis/gallery.html">
+            
+                    
+                    Example Gallery
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4.2" data-path="../vis/use_cases.html">
+            
+                <a href="../vis/use_cases.html">
+            
+                    
+                    Sample Use Cases
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../applications/">
+            
+                <a href="../applications/">
+            
+                    
+                    Task focused toolkits
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../recommender/">
+            
+                <a href="../recommender/">
+            
+                    
+                    Recommender Systems
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1.1" data-path="../recommender/using-trained-models.html">
+            
+                <a href="../recommender/using-trained-models.html">
+            
+                    
+                    Using models
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.1.2" data-path="../recommender/choosing-a-model.html">
+            
+                <a href="../recommender/choosing-a-model.html">
+            
+                    
+                    Choosing a model
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.1.3" data-path="../recommender/coreml-deployment.html">
+            
+                <a href="../recommender/coreml-deployment.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../image_classifier/">
+            
+                <a href="../image_classifier/">
+            
+                    
+                    Image Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.2.1" data-path="../image_classifier/advanced-usage.html">
+            
+                <a href="../image_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.2" data-path="../image_classifier/how-it-works.html">
+            
+                <a href="../image_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.3" data-path="../image_classifier/export-coreml.html">
+            
+                <a href="../image_classifier/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../drawing_classifier/">
+            
+                <a href="../drawing_classifier/">
+            
+                    
+                    Drawing Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.3.1" data-path="../drawing_classifier/how-it-works.html">
+            
+                <a href="../drawing_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.2" data-path="../drawing_classifier/data-preparation.html">
+            
+                <a href="../drawing_classifier/data-preparation.html">
+            
+                    
+                    Data Preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.3" data-path="../drawing_classifier/export-coreml.html">
+            
+                <a href="../drawing_classifier/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.4" data-path="../drawing_classifier/advanced-usage.html">
+            
+                <a href="../drawing_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../sound_classifier/">
+            
+                <a href="../sound_classifier/">
+            
+                    
+                    Sound Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.4.1" data-path="../sound_classifier/how-it-works.html">
+            
+                <a href="../sound_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.2" data-path="../sound_classifier/advanced-usage.html">
+            
+                <a href="../sound_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.3" data-path="../sound_classifier/export-coreml.html">
+            
+                <a href="../sound_classifier/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../image_similarity/">
+            
+                <a href="../image_similarity/">
+            
+                    
+                    Image Similarity
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.5.1" data-path="../image_similarity/export-coreml.html">
+            
+                <a href="../image_similarity/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6" data-path="../object_detection/">
+            
+                <a href="../object_detection/">
+            
+                    
+                    Object Detection
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.6.1" data-path="../object_detection/data-preparation.html">
+            
+                <a href="../object_detection/data-preparation.html">
+            
+                    
+                    Data Preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6.2" data-path="../object_detection/advanced-usage.html">
+            
+                <a href="../object_detection/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6.3" data-path="../object_detection/export-coreml.html">
+            
+                <a href="../object_detection/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6.4" data-path="../object_detection/how-it-works.html">
+            
+                <a href="../object_detection/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.7" data-path="../one_shot_object_detection/">
+            
+                <a href="../one_shot_object_detection/">
+            
+                    
+                    One-Shot Object Detection
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.8" data-path="../style_transfer/">
+            
+                <a href="../style_transfer/">
+            
+                    
+                    Style Transfer
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.8.1" data-path="../style_transfer/how-it-works.html">
+            
+                <a href="../style_transfer/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.8.2" data-path="../style_transfer/export-coreml.html">
+            
+                <a href="../style_transfer/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9" data-path="../activity_classifier/">
+            
+                <a href="../activity_classifier/">
+            
+                    
+                    Activity Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.9.1" data-path="../activity_classifier/data-preparation.html">
+            
+                <a href="../activity_classifier/data-preparation.html">
+            
+                    
+                    Data Preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9.2" data-path="../activity_classifier/advanced-usage.html">
+            
+                <a href="../activity_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9.3" data-path="../activity_classifier/export_coreml.html">
+            
+                <a href="../activity_classifier/export_coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9.4" data-path="../activity_classifier/how-it-works.html">
+            
+                <a href="../activity_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.10" data-path="../text_classifier/">
+            
+                <a href="../text_classifier/">
+            
+                    
+                    Text Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../modeling-data/">
+            
+                <a href="../modeling-data/">
+            
+                    
+                    Machine learning essentials
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../supervised-learning/classifier.html">
+            
+                <a href="../supervised-learning/classifier.html">
+            
+                    
+                    Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1.1" data-path="../supervised-learning/boosted_trees_classifier.html">
+            
+                <a href="../supervised-learning/boosted_trees_classifier.html">
+            
+                    
+                    Boosted Trees Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.2" data-path="../supervised-learning/decision_tree_classifier.html">
+            
+                <a href="../supervised-learning/decision_tree_classifier.html">
+            
+                    
+                    Decision Tree Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.3" data-path="../supervised-learning/logistic-regression.html">
+            
+                <a href="../supervised-learning/logistic-regression.html">
+            
+                    
+                    Logistic Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.4" data-path="../supervised-learning/knn_classifier.html">
+            
+                <a href="../supervised-learning/knn_classifier.html">
+            
+                    
+                    Nearest Neighbor Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.5" data-path="../supervised-learning/random_forest_classifier.html">
+            
+                <a href="../supervised-learning/random_forest_classifier.html">
+            
+                    
+                    Random Forest Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.6" data-path="../supervised-learning/svm.html">
+            
+                <a href="../supervised-learning/svm.html">
+            
+                    
+                    SVM
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.7" data-path="../supervised-learning/export-coreml.html">
+            
+                <a href="../supervised-learning/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Clustering
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.2.1" data-path="kmeans.html">
+            
+                <a href="kmeans.html">
+            
+                    
+                    KMeans
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.4.2.2" data-path="dbscan.html">
+            
+                <a href="dbscan.html">
+            
+                    
+                    DBSCAN
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../graph_analytics/">
+            
+                <a href="../graph_analytics/">
+            
+                    
+                    Graph analytics
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../nearest_neighbors/nearest_neighbors.html">
+            
+                <a href="../nearest_neighbors/nearest_neighbors.html">
+            
+                    
+                    Nearest neighbors
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="../supervised-learning/regression.html">
+            
+                <a href="../supervised-learning/regression.html">
+            
+                    
+                    Regression
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.5.1" data-path="../supervised-learning/boosted_trees_regression.html">
+            
+                <a href="../supervised-learning/boosted_trees_regression.html">
+            
+                    
+                    Boosted Trees Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.2" data-path="../supervised-learning/decision_tree_regression.html">
+            
+                <a href="../supervised-learning/decision_tree_regression.html">
+            
+                    
+                    Decision Tree Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.3" data-path="../supervised-learning/linear-regression.html">
+            
+                <a href="../supervised-learning/linear-regression.html">
+            
+                    
+                    Linear Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.4" data-path="../supervised-learning/random_forest_regression.html">
+            
+                <a href="../supervised-learning/random_forest_regression.html">
+            
+                    
+                    Random Forest Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.5" data-path="../supervised-learning/export-coreml.html">
+            
+                <a href="../supervised-learning/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="../text/">
+            
+                <a href="../text/">
+            
+                    
+                    Text analysis
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../evaluation/">
+            
+                <a href="../evaluation/">
+            
+                    
+                    Evaluating models
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../evaluation/regression.html">
+            
+                <a href="../evaluation/regression.html">
+            
+                    
+                    Regression metrics
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../evaluation/classification.html">
+            
+                <a href="../evaluation/classification.html">
+            
+                    
+                    Classification metrics
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../conclusion.html">
+            
+                <a href="../conclusion.html">
+            
+                    
+                    Additional Resources
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../cpp.html">
+            
+                <a href="../cpp.html">
+            
+                    
+                    C++ API
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="../datasets.html">
+            
+                <a href="../datasets.html">
+            
+                    
+                    Dataset Disclaimer
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >DBSCAN</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="dbscan"><a name="dbscan" class="plugin-anchor" href="#dbscan"><i class="fa fa-link" aria-hidden="true"></i></a>DBSCAN</h1><p><strong>DSBCAN</strong>, short for Density-Based Spatial Clustering of Applications with
+Noise, is the most popular density-based clustering method. Density-based
+clustering algorithms attempt to capture our intuition that a cluster &#x2014; a
+difficult term to define precisely &#x2014; is a region of the data space where
+there are lots of points, surrounded by a region where there are few points.
+DBSCAN does this by partitioning the input data points into three types:</p><ul><li><p><em>Core</em> points have a large number of other points within a given neighborhood. The
+parameter <code>min_core_neighbors</code> defines how many points counts as a &quot;large
+number&quot;, while the <code>radius</code> parameter defines how large the neighborhoods are
+around each point. Specifically, a point <script type="math/tex; ">y</script> is in the neighborhood of point</p><p><script type="math/tex; ">x</script> if <script type="math/tex; ">d(x, y) < </script> <code>radius</code>, where <script type="math/tex; ">d</script> is a user-specified distance
+function.</p></li>
+<li><p><em>Boundary</em> points are within distance <code>radius</code> of a core point, but don&apos;t
+have sufficient neighbors of their own to be considered core.</p></li>
+<li><p><em>Noise</em> points comprise the remainder of the data. These points have too
+few neighbors to be considered core points, and are further than distance
+<code>radius</code> from all core points.</p></li></ul>
+<p>Clusters are formed by connecting core points that are neighbors of each other,
+then assigning boundary points to their nearest core neighbor&apos;s cluster. Noise
+points are left unassigned.</p><p>DBSCAN tends to be slower than K-means because it requires computation of the
+similarity graph on the input dataset, but it has several major conceptual
+advantages:</p><ul><li><p>The number of clusters does not need to be known <em>a priori</em>; DBSCAN detects the
+optimum number of clusters automatically for the given values of
+<code>min_core_neighbors</code> and <code>radius</code>.</p></li>
+<li><p>DBSCAN recovers much more flexible cluster shapes than K-means, which can only
+find spherical clusters.</p></li>
+<li><p>DBSCAN intrinsically finds and labels outliers as such, making it a great tool
+for outlier and anomaly detection.</p></li>
+<li><p>DBSCAN works with any distance function. Note that results may be poor for
+distances that do not obey standard properties of distances, i.e. symmetry,
+non-negativity, triangle inequality, and identity of indiscernibles. The
+distances &quot;euclidean&quot;, &quot;manhattan&quot;, &quot;jaccard&quot;, and &quot;levenshtein&quot; will likely
+yield the best results.</p></li></ul>
+<h4 id="basic-usage"><a name="basic-usage" class="plugin-anchor" href="#basic-usage"><i class="fa fa-link" aria-hidden="true"></i></a>Basic usage</h4><p>To illustrate the basic usage of DBSCAN and how the results can differ from
+K-means, we simulate non-spherical, low-dimensional data using the scikit-learn
+datasets module.<a href="../datasets.html"><sup>1</sup></a></p><pre><code class="lang-python"><span class="hljs-keyword">import</span> turicreate <span class="hljs-keyword">as</span> tc
+<span class="hljs-keyword">from</span> sklearn.datasets <span class="hljs-keyword">import</span> make_moons
+
+data = make_moons(n_samples=<span class="hljs-number">200</span>, shuffle=<span class="hljs-keyword">True</span>, noise=<span class="hljs-number">0.1</span>, random_state=<span class="hljs-number">19</span>)
+sf = tc.SFrame(data[<span class="hljs-number">0</span>]).unpack(<span class="hljs-string">&apos;X1&apos;</span>)
+
+dbscan_model = tc.dbscan.create(sf, radius=<span class="hljs-number">0.25</span>)
+dbscan_model.summary()</code></pre>
+<pre><code class="lang-no-highlight">Class                                   : DBSCANModel
+
+Schema
+------
+Number of examples                      : 200
+Number of feature columns               : 2
+Max distance to a neighbor (radius)     : 0.25
+Min number of neighbors for core points : 10
+Number of distance components           : 1
+
+Training summary
+----------------
+Total training time (seconds)           : 0.1954
+Number of clusters                      : 2
+
+Accessible fields
+-----------------
+   cluster_id                           : Cluster label for each row in the input dataset.</code></pre>
+<p>Like the K-means model, the assignments of points to clusters is in the models&apos;
+<code>cluster-id</code> field. The second column shows the cluster assignment for the row
+index of the input data indicated by the first column. The third column shows
+whether DBSCAN considers the point <em>core</em>, <em>boundary</em>, or <em>noise</em>. Noise points
+are not assigned to a cluster, which is encoded as a &quot;missing&quot; value in the
+&apos;cluster_id&apos; column.</p><pre><code class="lang-python">dbscan_model[<span class="hljs-string">&apos;cluster_id&apos;</span>].head(<span class="hljs-number">5</span>)</code></pre>
+<pre><code class="lang-no-highlight">+--------+------------+------+
+| row_id | cluster_id | type |
++--------+------------+------+
+|  175   |     1      | core |
+|  136   |     0      | core |
+|   33   |     1      | core |
+|  113   |     0      | core |
+|  110   |     1      | core |
++--------+------------+------+
+[5 rows x 3 columns]</code></pre>
+<pre><code class="lang-python">dbscan_model[<span class="hljs-string">&apos;cluster_id&apos;</span>].tail(<span class="hljs-number">5</span>)</code></pre>
+<pre><code class="lang-no-highlight">+--------+------------+----------+
+| row_id | cluster_id |   type   |
++--------+------------+----------+
+|   53   |     0      | boundary |
+|   4    |     1      | boundary |
+|   43   |     0      | boundary |
+|  116   |     0      | boundary |
+|   74   |    None    |  noise   |
++--------+------------+----------+
+[5 rows x 3 columns]</code></pre>
+<p>Because we generated 2D data, we can plot it and color the points according to
+the cluster assignments generated by our DBSCAN model. The first step is to join
+the cluster results back to the original data. Please note: DBSCAN scrambles the
+row order - be careful!</p><p>Next we define boolean masks so we can plot the core, boundary, and noise points
+separately. Boundary points are drawn smaller than core points, and
+(unclustered) noise points are left black. Some plotting code is omitted for
+brevity.</p><!-- ax.set_xlabel('X1.0'); ax.set_ylabel('X1.1', rotation=0) -->
+
+
+<pre><code class="lang-python"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+plt.style.use(<span class="hljs-string">&apos;ggplot&apos;</span>)
+
+sf = sf.add_row_number(<span class="hljs-string">&apos;row_id&apos;</span>)
+sf = sf.join(dbscan_model[<span class="hljs-string">&apos;cluster_id&apos;</span>], on=<span class="hljs-string">&apos;row_id&apos;</span>, how=<span class="hljs-string">&apos;left&apos;</span>)
+sf = sf.rename({<span class="hljs-string">&apos;cluster_id&apos;</span>: <span class="hljs-string">&apos;dbscan_id&apos;</span>})
+
+core_mask = sf[<span class="hljs-string">&apos;type&apos;</span>] == <span class="hljs-string">&apos;core&apos;</span>
+boundary_mask = sf[<span class="hljs-string">&apos;type&apos;</span>] == <span class="hljs-string">&apos;boundary&apos;</span>
+noise_mask = sf[<span class="hljs-string">&apos;type&apos;</span>] == <span class="hljs-string">&apos;noise&apos;</span>
+
+fig, ax = plt.subplots()
+ax.scatter(sf[<span class="hljs-string">&apos;X1.0&apos;</span>][core_mask], sf[<span class="hljs-string">&apos;X1.1&apos;</span>][core_mask], s=<span class="hljs-number">80</span>, alpha=<span class="hljs-number">0.9</span>,
+           c=sf[<span class="hljs-string">&apos;dbscan_id&apos;</span>][core_mask], cmap=plt.cm.Set1)
+
+ax.scatter(sf[<span class="hljs-string">&apos;X1.0&apos;</span>][boundary_mask], sf[<span class="hljs-string">&apos;X1.1&apos;</span>][boundary_mask], s=<span class="hljs-number">40</span>,
+           alpha=<span class="hljs-number">0.7</span>, c=sf[<span class="hljs-string">&apos;dbscan_id&apos;</span>][boundary_mask], cmap=plt.cm.Set1)
+
+ax.scatter(sf[<span class="hljs-string">&apos;X1.0&apos;</span>][noise_mask], sf[<span class="hljs-string">&apos;X1.1&apos;</span>][noise_mask], s=<span class="hljs-number">40</span>, alpha=<span class="hljs-number">0.7</span>,
+           c=<span class="hljs-string">&apos;black&apos;</span>)
+fig.show()</code></pre>
+<p><img alt="dbscan_moons" src="images/dbscan_moons.png"></p><p>For comparison, K-means cannot identify the true clusters in this case, even
+when we tell the model the correct number of clusters.</p><!-- ax.set_xlabel('X1.0'); ax.set_ylabel('X1.1', rotation=0) -->
+
+
+<pre><code class="lang-python">kmeans_model = tc.kmeans.create(sf, features=[<span class="hljs-string">&apos;X1.0&apos;</span>, <span class="hljs-string">&apos;X1.1&apos;</span>], num_clusters=<span class="hljs-number">2</span>)
+sf[<span class="hljs-string">&apos;kmeans_id&apos;</span>] = kmeans_model[<span class="hljs-string">&apos;cluster_id&apos;</span>][<span class="hljs-string">&apos;cluster_id&apos;</span>]
+
+fig, ax = plt.subplots()
+ax.scatter(sf[<span class="hljs-string">&apos;X1.0&apos;</span>], sf[<span class="hljs-string">&apos;X1.1&apos;</span>], s=<span class="hljs-number">80</span>, alpha=<span class="hljs-number">0.9</span>, c=sf[<span class="hljs-string">&apos;kmeans_id&apos;</span>],
+           cmap=plt.cm.Set1)
+fig.show()</code></pre>
+<p><img alt="kmeans_moons" src="images/kmeans_moons.png"></p><h4 id="setting-key-parameters"><a name="setting-key-parameters" class="plugin-anchor" href="#setting-key-parameters"><i class="fa fa-link" aria-hidden="true"></i></a>Setting key parameters</h4><p>DBSCAN is particularly useful when the number of clusters is not known <em>a
+priori</em>, but it can be tricky to set the <code>radius</code> and <code>min_core_neighbors</code>
+parameters. To improve the quality of DBSCAN results, try the following:</p><ul><li><p>When <code>radius</code> is too large or <code>min_core_neighbors</code> is too small, every point
+being labeled as a core point, often connected as a single cluster. If your
+created model has a single cluster with only core points (and you suspect this
+is incorrect), try decreasing the <code>radius</code> parameter or increasing the
+<code>min_core_neighbors</code> parameter.</p></li>
+<li><p>Conversely, if DBSCAN labels all points as noise, with no clusters returned at
+all, try increasing the <code>radius</code> or decreasing the <code>min_core_neighbors</code>.</p></li>
+<li><p>Use the Turi Create nearest neighbors toolkit to construct a
+similarity graph on the data and plot the distribution of distances with
+Canvas. This will give you a sense for reasonable values of the <code>radius</code>
+parameter, then the <code>min_core_neighbors</code> parameter can be tuned by itself for
+optimal results.</p></li></ul>
+<h4 id="choosing-the-distance-function"><a name="choosing-the-distance-function" class="plugin-anchor" href="#choosing-the-distance-function"><i class="fa fa-link" aria-hidden="true"></i></a>Choosing the distance function</h4><p>DBSCAN is not restricted to Euclidean distances. The Turi Create
+implementation allows any distance function---including composite distances---to
+be used with DBSCAN. This allows for a tremendous amount of flexibility in terms
+of data types and tuning for optimal clustering quality. To demonstrate this
+flexibility we&apos;ll use DBSCAN with Jaccard distance to deduplicate wikipedia
+articles.</p><pre><code class="lang-python"><span class="hljs-keyword">import</span> turicreate <span class="hljs-keyword">as</span> tc
+
+sf = tc.SFrame.read_csv(<span class="hljs-string">&apos;wikipedia-data.csv&apos;</span>, header=<span class="hljs-keyword">False</span>)
+sf.save(<span class="hljs-string">&apos;wikipedia.sframe&apos;</span>)</code></pre>
+<p>This particular subset of wikipedia has over 72,000 documents; in the interest
+of speed for the demo we sample 20% of this. We also preprocess the data by
+constructing a bag-of-words representation for each article and trimming out
+stop words. See Turi Create&apos;s <a href="https://apple.github.io/turicreate/docs/api/turicreate.toolkits.text_analytics.html" target="_blank">text analytics</a> and
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.SArray.html" target="_blank">SArray</a>
+documentation for more details.</p><pre><code class="lang-python">sf_sample = sf.sample(<span class="hljs-number">0.2</span>)
+sf_sample[<span class="hljs-string">&apos;word_bag&apos;</span>] = tc.text_analytics.count_words(sf_sample[<span class="hljs-string">&apos;X1&apos;</span>])
+sf_sample[<span class="hljs-string">&apos;word_bag&apos;</span>] = sf_sample[<span class="hljs-string">&apos;word_bag&apos;</span>].dict_trim_by_keys(
+                                    tc.text_analytics.stop_words(), exclude=<span class="hljs-keyword">True</span>)</code></pre>
+<p>With our trimmed bag of words representation, Jaccard distance is a natural
+choice. For the purpose of deduplication we want to identify points as &quot;core&quot; if
+they have any near neighbors at all, so we set <code>min_core_neighbors</code> to 1. To
+define what we mean by &quot;near&quot; we set the <code>radius</code> parameter somewhat arbitrarily
+at 0.5; this means that two points are considered neighbors if they share 50% or
+more of the words present in either article.</p><pre><code class="lang-python">wiki_cluster = tc.dbscan.create(sf_sample, features=[<span class="hljs-string">&apos;word_bag&apos;</span>],
+                                distance=<span class="hljs-string">&apos;jaccard&apos;</span>, radius=<span class="hljs-number">0.5</span>,
+                                min_core_neighbors=<span class="hljs-number">1</span>)
+wiki_cluster.summary()</code></pre>
+<pre><code class="lang-no-highlight">Class                                   : DBSCANModel
+
+Schema
+------
+Number of examples                      : 14265
+Number of feature columns               : 1
+Max distance to a neighbor (radius)     : 0.5
+Min number of neighbors for core points : 1
+Number of distance components           : 1
+
+Training summary
+----------------
+Total training time (seconds)           : 35.1235
+Number of clusters                      : 88
+
+Accessible fields
+-----------------
+   cluster_id                           : Cluster label for each row in the input dataset.</code></pre>
+<p>From the model summary we see there are 88 clusters in the set of 14,265
+documents. For more detail on the distribution of cluster sizes, we can use the
+method.</p><pre><code class="lang-python">wiki_cluster[<span class="hljs-string">&apos;cluster_id&apos;</span>][<span class="hljs-string">&apos;cluster_id&apos;</span>].sketch_summary()</code></pre>
+<pre><code class="lang-no-highlight">+--------------------+---------------+----------+
+|        item        |     value     | is exact |
++--------------------+---------------+----------+
+|       Length       |     14265     |   Yes    |
+|        Min         |      0.0      |   Yes    |
+|        Max         |      87.0     |   Yes    |
+|        Mean        | 32.3243243243 |   Yes    |
+|        Sum         |    10764.0    |   Yes    |
+|      Variance      | 699.186105024 |   Yes    |
+| Standard Deviation | 26.4421274678 |   Yes    |
+|  # Missing Values  |     13932     |   Yes    |
+|  # unique values   |       88      |    No    |
++--------------------+---------------+----------+
+
+Most frequent items:
++-------+----+----+----+----+----+----+----+----+----+----+
+| value | 1  | 10 | 5  | 19 | 9  | 36 | 64 | 62 | 11 | 23 |
++-------+----+----+----+----+----+----+----+----+----+----+
+| count | 33 | 29 | 18 | 15 | 14 | 13 | 9  | 7  | 7  | 5  |
++-------+----+----+----+----+----+----+----+----+----+----+
+
+Quantiles:
++-----+-----+-----+------+------+------+------+------+------+
+|  0% |  1% |  5% | 25%  | 50%  | 75%  | 95%  | 99%  | 100% |
++-----+-----+-----+------+------+------+------+------+------+
+| 0.0 | 1.0 | 1.0 | 10.0 | 24.0 | 55.0 | 80.0 | 86.0 | 87.0 |
++-----+-----+-----+------+------+------+------+------+------+</code></pre>
+<p>This indicates that of our 14,265 documents, 13,932 are considered noise (i.e.
+missing values), which in this context means they have no duplicates. The
+largest cluster has 33 duplicate documents! Let&apos;s see what they are. To do this
+we again need to join the cluster IDs back to our input dataset.</p><pre><code class="lang-python">sf_sample = sf_sample.add_row_number(<span class="hljs-string">&apos;row_id&apos;</span>)
+sf_sample = sf_sample.join(wiki_cluster[<span class="hljs-string">&apos;cluster_id&apos;</span>], on=<span class="hljs-string">&apos;row_id&apos;</span>, how=<span class="hljs-string">&apos;left&apos;</span>)</code></pre>
+<pre><code class="lang-no-highlight">In [98]: sf_sample[sf_sample[&apos;cluster_id&apos;] == 1][[&apos;X1&apos;]].print_rows(10, max_row_width=80, max_column_width=80)
++---------------------------------------------------------------------------------+
+|                                        X1                                       |
++---------------------------------------------------------------------------------+
+| graceunitedmethodistchurchwilmingtondelaware it was built in 1868 and added ... |
+| firstpresbyterianchurchdelhinewyork it was added to the national register of... |
+| methodistepiscopalchurchofnorwich it was added to the national register of h... |
+| odonelhouseandfarm it was listed on the national register of historic places... |
+| saintpaulsepiscopalchurchwatertownnewyork it was listed on the national regi... |
+| windsorhillshistoricdistrict it was added to the national register of histor... |
+| pepperellcenterhistoricdistrict the district was added to the national regis... |
+| eboardmanhouse it was built in 1820 and added to the national register of hi... |
+| johnsoutherhouse the house was built in 1883 and added to the national regis... |
+| ednastolikerthreedecker it was built in 1916 and added to the national regis... |
++---------------------------------------------------------------------------------+
+[33 rows x 1 columns]</code></pre>
+<p>It seems this cluster captures a set of article stubs that simply list when a
+physical structure was build and added to the National Register of Historic
+Places.</p><p>There are two important caveats regarding distance functions in DBSCAN:</p><ol><li><p>DBSCAN computes many pairwise distances. For dense data, Turi Create
+computes some distances much faster than others, namely &quot;euclidean&quot;,
+&quot;squared_euclidean&quot;, &quot;cosine&quot;, and &quot;transformed_dot_product&quot;. Other
+distances, as well as all distances with sparse data, may result in longer
+run times.</p></li>
+<li><p>DBSCAN does not explicitly require the standard distance properties
+(symmetry, non-negativity, triangle inequality, and identity of
+indiscernibles) to hold, but it is based on connecting high-density points
+which are <em>close</em> to each other into a single cluster. If the specified
+notion of closeness violates the usual distance properties, DBSCAN may yield
+counterintuitive results. We expect to see the most intuitive results with
+&quot;euclidean&quot;, &quot;manhattan&quot;, &quot;jaccard&quot;, and &quot;levenshtein&quot; distances.</p></li></ol>
+<h4 id="references-and-more-information"><a name="references-and-more-information" class="plugin-anchor" href="#references-and-more-information"><i class="fa fa-link" aria-hidden="true"></i></a>References and more information</h4><ul><li><p>Ester, M., et al. (1996) <a href="http://www.aaai.org/Papers/KDD/1996/KDD96-037.pdf" target="_blank">A Density-Based Algorithm for Discovering Clusters in
+Large Spatial Databases with
+Noise</a>. In Proceedings of the
+Second International Conference on Knowledge Discovery and Data Mining. pp.
+226-231.</p></li>
+<li><p><a href="https://en.wikipedia.org/wiki/DBSCAN" target="_blank">Wikipedia - DBSCAN</a></p></li>
+<li><p><a href="https://www.naftaliharris.com/blog/visualizing-dbscan-clustering/" target="_blank">Visualizing DBSCAN
+Clustering</a></p></li></ul>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="kmeans.html" class="navigation navigation-prev " aria-label="Previous page: KMeans">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../graph_analytics/" class="navigation navigation-next " aria-label="Next page: Graph analytics">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"DBSCAN","level":"1.4.2.2","depth":3,"next":{"title":"Graph analytics","level":"1.4.3","depth":2,"path":"graph_analytics/README.md","ref":"graph_analytics/README.md","articles":[]},"previous":{"title":"KMeans","level":"1.4.2.1","depth":3,"path":"clustering/kmeans.md","ref":"clustering/kmeans.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"clustering/dbscan.md","mtime":"2019-08-14T20:10:55.151Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2019-08-14T20:12:25.573Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-collapsible-menu/plugin.js"></script>
+        
+    
+        
+        <script src="https://cdn.mathjax.org/mathjax/2.6-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-mathjax/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

@@ -1,0 +1,1385 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <title>Text Classifier · GitBook</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.0">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-anchors/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../modeling-data/" />
+    
+    
+    <link rel="prev" href="../activity_classifier/how-it-works.html" />
+    
+
+    <script src="../turi/js/jquery/jquery-2.1.3.min.js"></script>
+    <script src="../turi/js/d3/d3.min.js"></script>
+    <script src="../supervised-learning/images/random-utils.js"></script>
+    <script src="../supervised-learning/images/plotting-utils.js"></script>
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Overview
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../sframe/">
+            
+                <a href="../sframe/">
+            
+                    
+                    Working with data
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../sframe/tabular-data.html">
+            
+                <a href="../sframe/tabular-data.html">
+            
+                    
+                    Tabular data
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.1" data-path="../sframe/sframe-intro.html">
+            
+                <a href="../sframe/sframe-intro.html">
+            
+                    
+                    Loading and Saving
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2" data-path="../sframe/data-manipulation.html">
+            
+                <a href="../sframe/data-manipulation.html">
+            
+                    
+                    Data Manipulation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.3" data-path="../data_formats_and_sources/sql_integration.html">
+            
+                <a href="../data_formats_and_sources/sql_integration.html">
+            
+                    
+                    SQL Databases
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../sgraph/sgraph.html">
+            
+                <a href="../sgraph/sgraph.html">
+            
+                    
+                    Graph data
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="../text/analysis.html">
+            
+                <a href="../text/analysis.html">
+            
+                    
+                    Text data
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4" data-path="../vis/">
+            
+                <a href="../vis/">
+            
+                    
+                    Visualization
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.4.1" data-path="../vis/gallery.html">
+            
+                <a href="../vis/gallery.html">
+            
+                    
+                    Example Gallery
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4.2" data-path="../vis/use_cases.html">
+            
+                <a href="../vis/use_cases.html">
+            
+                    
+                    Sample Use Cases
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../applications/">
+            
+                <a href="../applications/">
+            
+                    
+                    Task focused toolkits
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../recommender/">
+            
+                <a href="../recommender/">
+            
+                    
+                    Recommender Systems
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1.1" data-path="../recommender/using-trained-models.html">
+            
+                <a href="../recommender/using-trained-models.html">
+            
+                    
+                    Using models
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.1.2" data-path="../recommender/choosing-a-model.html">
+            
+                <a href="../recommender/choosing-a-model.html">
+            
+                    
+                    Choosing a model
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.1.3" data-path="../recommender/coreml-deployment.html">
+            
+                <a href="../recommender/coreml-deployment.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../image_classifier/">
+            
+                <a href="../image_classifier/">
+            
+                    
+                    Image Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.2.1" data-path="../image_classifier/advanced-usage.html">
+            
+                <a href="../image_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.2" data-path="../image_classifier/how-it-works.html">
+            
+                <a href="../image_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.3" data-path="../image_classifier/export-coreml.html">
+            
+                <a href="../image_classifier/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../drawing_classifier/">
+            
+                <a href="../drawing_classifier/">
+            
+                    
+                    Drawing Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.3.1" data-path="../drawing_classifier/how-it-works.html">
+            
+                <a href="../drawing_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.2" data-path="../drawing_classifier/data-preparation.html">
+            
+                <a href="../drawing_classifier/data-preparation.html">
+            
+                    
+                    Data Preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.3" data-path="../drawing_classifier/export-coreml.html">
+            
+                <a href="../drawing_classifier/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.4" data-path="../drawing_classifier/advanced-usage.html">
+            
+                <a href="../drawing_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../sound_classifier/">
+            
+                <a href="../sound_classifier/">
+            
+                    
+                    Sound Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.4.1" data-path="../sound_classifier/how-it-works.html">
+            
+                <a href="../sound_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.2" data-path="../sound_classifier/advanced-usage.html">
+            
+                <a href="../sound_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.3" data-path="../sound_classifier/export-coreml.html">
+            
+                <a href="../sound_classifier/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../image_similarity/">
+            
+                <a href="../image_similarity/">
+            
+                    
+                    Image Similarity
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.5.1" data-path="../image_similarity/export-coreml.html">
+            
+                <a href="../image_similarity/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6" data-path="../object_detection/">
+            
+                <a href="../object_detection/">
+            
+                    
+                    Object Detection
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.6.1" data-path="../object_detection/data-preparation.html">
+            
+                <a href="../object_detection/data-preparation.html">
+            
+                    
+                    Data Preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6.2" data-path="../object_detection/advanced-usage.html">
+            
+                <a href="../object_detection/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6.3" data-path="../object_detection/export-coreml.html">
+            
+                <a href="../object_detection/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6.4" data-path="../object_detection/how-it-works.html">
+            
+                <a href="../object_detection/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.7" data-path="../one_shot_object_detection/">
+            
+                <a href="../one_shot_object_detection/">
+            
+                    
+                    One-Shot Object Detection
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.8" data-path="../style_transfer/">
+            
+                <a href="../style_transfer/">
+            
+                    
+                    Style Transfer
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.8.1" data-path="../style_transfer/how-it-works.html">
+            
+                <a href="../style_transfer/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.8.2" data-path="../style_transfer/export-coreml.html">
+            
+                <a href="../style_transfer/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9" data-path="../activity_classifier/">
+            
+                <a href="../activity_classifier/">
+            
+                    
+                    Activity Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.9.1" data-path="../activity_classifier/data-preparation.html">
+            
+                <a href="../activity_classifier/data-preparation.html">
+            
+                    
+                    Data Preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9.2" data-path="../activity_classifier/advanced-usage.html">
+            
+                <a href="../activity_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9.3" data-path="../activity_classifier/export_coreml.html">
+            
+                <a href="../activity_classifier/export_coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9.4" data-path="../activity_classifier/how-it-works.html">
+            
+                <a href="../activity_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.3.10" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Text Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../modeling-data/">
+            
+                <a href="../modeling-data/">
+            
+                    
+                    Machine learning essentials
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../supervised-learning/classifier.html">
+            
+                <a href="../supervised-learning/classifier.html">
+            
+                    
+                    Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1.1" data-path="../supervised-learning/boosted_trees_classifier.html">
+            
+                <a href="../supervised-learning/boosted_trees_classifier.html">
+            
+                    
+                    Boosted Trees Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.2" data-path="../supervised-learning/decision_tree_classifier.html">
+            
+                <a href="../supervised-learning/decision_tree_classifier.html">
+            
+                    
+                    Decision Tree Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.3" data-path="../supervised-learning/logistic-regression.html">
+            
+                <a href="../supervised-learning/logistic-regression.html">
+            
+                    
+                    Logistic Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.4" data-path="../supervised-learning/knn_classifier.html">
+            
+                <a href="../supervised-learning/knn_classifier.html">
+            
+                    
+                    Nearest Neighbor Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.5" data-path="../supervised-learning/random_forest_classifier.html">
+            
+                <a href="../supervised-learning/random_forest_classifier.html">
+            
+                    
+                    Random Forest Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.6" data-path="../supervised-learning/svm.html">
+            
+                <a href="../supervised-learning/svm.html">
+            
+                    
+                    SVM
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.7" data-path="../supervised-learning/export-coreml.html">
+            
+                <a href="../supervised-learning/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../clustering/">
+            
+                <a href="../clustering/">
+            
+                    
+                    Clustering
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.2.1" data-path="../clustering/kmeans.html">
+            
+                <a href="../clustering/kmeans.html">
+            
+                    
+                    KMeans
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.2" data-path="../clustering/dbscan.html">
+            
+                <a href="../clustering/dbscan.html">
+            
+                    
+                    DBSCAN
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../graph_analytics/">
+            
+                <a href="../graph_analytics/">
+            
+                    
+                    Graph analytics
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../nearest_neighbors/nearest_neighbors.html">
+            
+                <a href="../nearest_neighbors/nearest_neighbors.html">
+            
+                    
+                    Nearest neighbors
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="../supervised-learning/regression.html">
+            
+                <a href="../supervised-learning/regression.html">
+            
+                    
+                    Regression
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.5.1" data-path="../supervised-learning/boosted_trees_regression.html">
+            
+                <a href="../supervised-learning/boosted_trees_regression.html">
+            
+                    
+                    Boosted Trees Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.2" data-path="../supervised-learning/decision_tree_regression.html">
+            
+                <a href="../supervised-learning/decision_tree_regression.html">
+            
+                    
+                    Decision Tree Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.3" data-path="../supervised-learning/linear-regression.html">
+            
+                <a href="../supervised-learning/linear-regression.html">
+            
+                    
+                    Linear Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.4" data-path="../supervised-learning/random_forest_regression.html">
+            
+                <a href="../supervised-learning/random_forest_regression.html">
+            
+                    
+                    Random Forest Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.5" data-path="../supervised-learning/export-coreml.html">
+            
+                <a href="../supervised-learning/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="../text/">
+            
+                <a href="../text/">
+            
+                    
+                    Text analysis
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../evaluation/">
+            
+                <a href="../evaluation/">
+            
+                    
+                    Evaluating models
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../evaluation/regression.html">
+            
+                <a href="../evaluation/regression.html">
+            
+                    
+                    Regression metrics
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../evaluation/classification.html">
+            
+                <a href="../evaluation/classification.html">
+            
+                    
+                    Classification metrics
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../conclusion.html">
+            
+                <a href="../conclusion.html">
+            
+                    
+                    Additional Resources
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../cpp.html">
+            
+                <a href="../cpp.html">
+            
+                    
+                    C++ API
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="../datasets.html">
+            
+                <a href="../datasets.html">
+            
+                    
+                    Dataset Disclaimer
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Text Classifier</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="text-classification"><a name="text-classification" class="plugin-anchor" href="#text-classification"><i class="fa fa-link" aria-hidden="true"></i></a>Text classification</h1><p>Text classification - commonly used in tasks such as <a href="https://en.wikipedia.org/wiki/Sentiment_analysis" target="_blank"> sentiment
+analysis</a> - refers to the use of natural language processing (NLP) 
+techniques to extract subjective information such as the polarity of the text, e.g., whether or not the
+author is speaking positively or negatively about some topic.</p><p>In many cases, it can help keep a pulse on users&apos; needs and adapt
+products and services accordingly. Many applications exist for this
+type of analysis:</p><ul><li><strong>Forum data</strong>: Find out how people feel about various products and
+features.
+</li>
+<li><strong>Restaurant and movie reviews</strong>: What are people raving about? What
+do people hate?
+</li>
+<li><strong>Social media</strong>: What is the sentiment about a hashtag, e.g. for a
+company, politician, etc?
+</li>
+<li><strong>Call center transcripts</strong>: Are callers praising or complaining about
+particular topics?
+</li></ul>
+<p>In addition, text classification can also be used to identify features
+(or aspects) of entities that are mentioned, and then estimate the
+sentiment for each aspect. For example, when studying reviews about
+mobile phones you may be interested in how people feel about aspects
+such as battery life, screen resolution, size, etc.</p><h4 id="loading-data"><a name="loading-data" class="plugin-anchor" href="#loading-data"><i class="fa fa-link" aria-hidden="true"></i></a>Loading Data</h4><p>The <a href="https://archive.ics.uci.edu/ml/datasets/SMS+Spam+Collection" target="_blank">SMS Spam Collection Dataset</a> provides more than five thousand labeled text messages.<a href="../datasets.html"><sup>1</sup></a> After downloading and decompressing the dataset, move the <code>SMSSpamCollection</code> file to your project directory.</p><h4 id="introductory-example"><a name="introductory-example" class="plugin-anchor" href="#introductory-example"><i class="fa fa-link" aria-hidden="true"></i></a>Introductory Example</h4><p>Let&apos;s now take a look at a simple example of sentiment analysis where
+the task is to predict whether it contains positive or negative
+sentiment.  For instance, the model will predict &quot;positive sentiment&quot;
+for a snippet of text -- whether it is a text message, movie review or a tweet -- when
+it contains words like &quot;awesome&quot; and &quot;fantastic&quot;. Likewise, having many
+words with a negative connotation will yield a prediction of &quot;negative
+sentiment&quot;.</p><pre><code class="lang-python"><span class="hljs-keyword">import</span> turicreate <span class="hljs-keyword">as</span> tc
+
+<span class="hljs-comment"># Only load the first two columns from csv</span>
+data = tc.SFrame.read_csv(<span class="hljs-string">&apos;SMSSpamCollection&apos;</span>, header=<span class="hljs-keyword">False</span>, delimiter=<span class="hljs-string">&apos;\t&apos;</span>, quote_char=<span class="hljs-string">&apos;\0&apos;</span>)
+
+<span class="hljs-comment"># Rename the columns</span>
+data = data.rename({<span class="hljs-string">&apos;X1&apos;</span>: <span class="hljs-string">&apos;label&apos;</span>, <span class="hljs-string">&apos;X2&apos;</span>: <span class="hljs-string">&apos;text&apos;</span>})
+
+<span class="hljs-comment"># Split the data into training and testing</span>
+training_data, test_data = data.random_split(<span class="hljs-number">0.8</span>)
+
+<span class="hljs-comment"># Create a model using higher max_iterations than default</span>
+model = tc.text_classifier.create(training_data, <span class="hljs-string">&apos;label&apos;</span>, features=[<span class="hljs-string">&apos;text&apos;</span>], max_iterations=<span class="hljs-number">100</span>)
+
+<span class="hljs-comment"># Save predictions to an SArray</span>
+predictions = model.predict(test_data)
+
+<span class="hljs-comment"># Make evaluation the model</span>
+metrics = model.evaluate(test_data)
+print(metrics[<span class="hljs-string">&apos;accuracy&apos;</span>])
+
+<span class="hljs-comment"># Save the model for later use in Turi Create</span>
+model.save(<span class="hljs-string">&apos;MyTextMessageClassifier.model&apos;</span>)
+
+<span class="hljs-comment"># Export for use in Core ML</span>
+model.export_coreml(<span class="hljs-string">&apos;MyTextMessageClassifier.mlmodel&apos;</span>)</code></pre>
+<h4 id="how-it-works"><a name="how-it-works" class="plugin-anchor" href="#how-it-works"><i class="fa fa-link" aria-hidden="true"></i></a>How it works</h4><p>Training a text classifier is really important when you want to tune the
+model to your data set to take advantage of vocabulary that is
+particular to your application. The text classifier in Turi Create is
+currently a simple combination of two components:</p><ul><li>feature engineering:  a <a href="../text/analysis.html">bag-of-words</a>
+transformation
+</li>
+<li>statistical model: a LogisticClassifier is used to classify text based
+on the above features
+</li></ul>
+<p>The bag-of-words and a logistic regression classifier is a very strong
+baseline for this particular task and works on a wide variety of
+datasets.</p><p>After creating the above model, you can inspect the underlying
+classifier model using:</p><pre><code class="lang-python">classifier = model.classifier</code></pre>
+<h4 id="deploying-to-core-ml"><a name="deploying-to-core-ml" class="plugin-anchor" href="#deploying-to-core-ml"><i class="fa fa-link" aria-hidden="true"></i></a>Deploying to Core ML</h4><p>You can use the trained text classifier in Xcode by exporting it to Core ML. Exporting is done by:</p><pre><code class="lang-python">model.export_coreml(<span class="hljs-string">&apos;MyTextMessageClassifier.mlmodel&apos;</span>)</code></pre>
+<p>Dragging the saved model into Xcode and inspecting it looks like the following:
+<img src="images/sentence_classifier_model.png"></p><p>The model expects a bag-of-words representation of the input text. In Swift, we can use the <a href="https://developer.apple.com/documentation/foundation/nslinguistictagger/tokenizing_natural_language_text" target="_blank">NSLinguisticTagger</a> to parse the input string into words and create this representation. The example below demonstrates how to use the NSLinguisticTagger, and get predictions from the exported model.</p><pre><code class="lang-swift"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">bow</span><span class="hljs-params">(text: String)</span></span> -&gt; [<span class="hljs-type">String</span>: <span class="hljs-type">Double</span>] {
+    <span class="hljs-keyword">var</span> bagOfWords = [<span class="hljs-type">String</span>: <span class="hljs-type">Double</span>]()
+
+    <span class="hljs-keyword">let</span> tagger = <span class="hljs-type">NSLinguisticTagger</span>(tagSchemes: [.tokenType], options: <span class="hljs-number">0</span>)
+    <span class="hljs-keyword">let</span> range = <span class="hljs-type">NSRange</span>(location: <span class="hljs-number">0</span>, length: text.utf16.<span class="hljs-built_in">count</span>)
+    <span class="hljs-keyword">let</span> options: <span class="hljs-type">NSLinguisticTagger</span>.<span class="hljs-type">Options</span> = [.omitPunctuation, .omitWhitespace]
+    tagger.string = text.lowercased()
+
+    tagger.enumerateTags(<span class="hljs-keyword">in</span>: range, unit: .word, scheme: .tokenType, options: options) { <span class="hljs-number">_</span>, tokenRange, <span class="hljs-number">_</span> <span class="hljs-keyword">in</span>
+        <span class="hljs-keyword">let</span> word = (text <span class="hljs-keyword">as</span> <span class="hljs-type">NSString</span>).substring(with: tokenRange)
+        <span class="hljs-keyword">if</span> bagOfWords[word] != <span class="hljs-literal">nil</span> {
+            bagOfWords[word]! += <span class="hljs-number">1</span>
+        } <span class="hljs-keyword">else</span> {
+            bagOfWords[word] = <span class="hljs-number">1</span>
+        }
+    }
+
+    <span class="hljs-keyword">return</span> bagOfWords
+}
+
+<span class="hljs-keyword">let</span> bagOfWords = bow(text: text)
+<span class="hljs-keyword">let</span> prediction = <span class="hljs-keyword">try</span>? <span class="hljs-type">MySentenceClassifier</span>().prediction(text: bagOfWords)</code></pre>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="../activity_classifier/how-it-works.html" class="navigation navigation-prev " aria-label="Previous page: How it works">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../modeling-data/" class="navigation navigation-next " aria-label="Next page: Machine learning essentials">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Text Classifier","level":"1.3.10","depth":2,"next":{"title":"Machine learning essentials","level":"1.4","depth":1,"path":"modeling-data/README.md","ref":"modeling-data/README.md","articles":[{"title":"Classification","level":"1.4.1","depth":2,"path":"supervised-learning/classifier.md","ref":"supervised-learning/classifier.md","articles":[{"title":"Boosted Trees Classifier","level":"1.4.1.1","depth":3,"path":"supervised-learning/boosted_trees_classifier.md","ref":"supervised-learning/boosted_trees_classifier.md","articles":[]},{"title":"Decision Tree Classifier","level":"1.4.1.2","depth":3,"path":"supervised-learning/decision_tree_classifier.md","ref":"supervised-learning/decision_tree_classifier.md","articles":[]},{"title":"Logistic Regression","level":"1.4.1.3","depth":3,"path":"supervised-learning/logistic-regression.md","ref":"supervised-learning/logistic-regression.md","articles":[]},{"title":"Nearest Neighbor Classifier","level":"1.4.1.4","depth":3,"path":"supervised-learning/knn_classifier.md","ref":"supervised-learning/knn_classifier.md","articles":[]},{"title":"Random Forest Classifier","level":"1.4.1.5","depth":3,"path":"supervised-learning/random_forest_classifier.md","ref":"supervised-learning/random_forest_classifier.md","articles":[]},{"title":"SVM","level":"1.4.1.6","depth":3,"path":"supervised-learning/svm.md","ref":"supervised-learning/svm.md","articles":[]},{"title":"Deployment to Core ML","level":"1.4.1.7","depth":3,"path":"supervised-learning/export-coreml.md","ref":"supervised-learning/export-coreml.md","articles":[]}]},{"title":"Clustering","level":"1.4.2","depth":2,"path":"clustering/README.md","ref":"clustering/README.md","articles":[{"title":"KMeans","level":"1.4.2.1","depth":3,"path":"clustering/kmeans.md","ref":"clustering/kmeans.md","articles":[]},{"title":"DBSCAN","level":"1.4.2.2","depth":3,"path":"clustering/dbscan.md","ref":"clustering/dbscan.md","articles":[]}]},{"title":"Graph analytics","level":"1.4.3","depth":2,"path":"graph_analytics/README.md","ref":"graph_analytics/README.md","articles":[]},{"title":"Nearest neighbors","level":"1.4.4","depth":2,"path":"nearest_neighbors/nearest_neighbors.md","ref":"nearest_neighbors/nearest_neighbors.md","articles":[]},{"title":"Regression","level":"1.4.5","depth":2,"path":"supervised-learning/regression.md","ref":"supervised-learning/regression.md","articles":[{"title":"Boosted Trees Regression","level":"1.4.5.1","depth":3,"path":"supervised-learning/boosted_trees_regression.md","ref":"supervised-learning/boosted_trees_regression.md","articles":[]},{"title":"Decision Tree Regression","level":"1.4.5.2","depth":3,"path":"supervised-learning/decision_tree_regression.md","ref":"supervised-learning/decision_tree_regression.md","articles":[]},{"title":"Linear Regression","level":"1.4.5.3","depth":3,"path":"supervised-learning/linear-regression.md","ref":"supervised-learning/linear-regression.md","articles":[]},{"title":"Random Forest Regression","level":"1.4.5.4","depth":3,"path":"supervised-learning/random_forest_regression.md","ref":"supervised-learning/random_forest_regression.md","articles":[]},{"title":"Deployment to Core ML","level":"1.4.5.5","depth":3,"path":"supervised-learning/export-coreml.md","ref":"supervised-learning/export-coreml.md","articles":[]}]},{"title":"Text analysis","level":"1.4.6","depth":2,"path":"text/README.md","ref":"text/README.md","articles":[]}]},"previous":{"title":"How it works","level":"1.3.9.4","depth":3,"path":"activity_classifier/how-it-works.md","ref":"activity_classifier/how-it-works.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"text_classifier/README.md","mtime":"2019-08-14T20:10:55.535Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2019-08-14T20:12:25.573Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-collapsible-menu/plugin.js"></script>
+        
+    
+        
+        <script src="https://cdn.mathjax.org/mathjax/2.6-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-mathjax/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

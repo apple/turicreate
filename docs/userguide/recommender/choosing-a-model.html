@@ -1,0 +1,1547 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <title>Choosing a model · GitBook</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.0">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-anchors/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="coreml-deployment.html" />
+    
+    
+    <link rel="prev" href="using-trained-models.html" />
+    
+
+    <script src="../turi/js/jquery/jquery-2.1.3.min.js"></script>
+    <script src="../turi/js/d3/d3.min.js"></script>
+    <script src="../supervised-learning/images/random-utils.js"></script>
+    <script src="../supervised-learning/images/plotting-utils.js"></script>
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Overview
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../sframe/">
+            
+                <a href="../sframe/">
+            
+                    
+                    Working with data
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../sframe/tabular-data.html">
+            
+                <a href="../sframe/tabular-data.html">
+            
+                    
+                    Tabular data
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.1" data-path="../sframe/sframe-intro.html">
+            
+                <a href="../sframe/sframe-intro.html">
+            
+                    
+                    Loading and Saving
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2" data-path="../sframe/data-manipulation.html">
+            
+                <a href="../sframe/data-manipulation.html">
+            
+                    
+                    Data Manipulation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.3" data-path="../data_formats_and_sources/sql_integration.html">
+            
+                <a href="../data_formats_and_sources/sql_integration.html">
+            
+                    
+                    SQL Databases
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../sgraph/sgraph.html">
+            
+                <a href="../sgraph/sgraph.html">
+            
+                    
+                    Graph data
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="../text/analysis.html">
+            
+                <a href="../text/analysis.html">
+            
+                    
+                    Text data
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4" data-path="../vis/">
+            
+                <a href="../vis/">
+            
+                    
+                    Visualization
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.4.1" data-path="../vis/gallery.html">
+            
+                <a href="../vis/gallery.html">
+            
+                    
+                    Example Gallery
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4.2" data-path="../vis/use_cases.html">
+            
+                <a href="../vis/use_cases.html">
+            
+                    
+                    Sample Use Cases
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../applications/">
+            
+                <a href="../applications/">
+            
+                    
+                    Task focused toolkits
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Recommender Systems
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1.1" data-path="using-trained-models.html">
+            
+                <a href="using-trained-models.html">
+            
+                    
+                    Using models
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.3.1.2" data-path="choosing-a-model.html">
+            
+                <a href="choosing-a-model.html">
+            
+                    
+                    Choosing a model
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.1.3" data-path="coreml-deployment.html">
+            
+                <a href="coreml-deployment.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../image_classifier/">
+            
+                <a href="../image_classifier/">
+            
+                    
+                    Image Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.2.1" data-path="../image_classifier/advanced-usage.html">
+            
+                <a href="../image_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.2" data-path="../image_classifier/how-it-works.html">
+            
+                <a href="../image_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.3" data-path="../image_classifier/export-coreml.html">
+            
+                <a href="../image_classifier/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../drawing_classifier/">
+            
+                <a href="../drawing_classifier/">
+            
+                    
+                    Drawing Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.3.1" data-path="../drawing_classifier/how-it-works.html">
+            
+                <a href="../drawing_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.2" data-path="../drawing_classifier/data-preparation.html">
+            
+                <a href="../drawing_classifier/data-preparation.html">
+            
+                    
+                    Data Preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.3" data-path="../drawing_classifier/export-coreml.html">
+            
+                <a href="../drawing_classifier/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.4" data-path="../drawing_classifier/advanced-usage.html">
+            
+                <a href="../drawing_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../sound_classifier/">
+            
+                <a href="../sound_classifier/">
+            
+                    
+                    Sound Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.4.1" data-path="../sound_classifier/how-it-works.html">
+            
+                <a href="../sound_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.2" data-path="../sound_classifier/advanced-usage.html">
+            
+                <a href="../sound_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.3" data-path="../sound_classifier/export-coreml.html">
+            
+                <a href="../sound_classifier/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../image_similarity/">
+            
+                <a href="../image_similarity/">
+            
+                    
+                    Image Similarity
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.5.1" data-path="../image_similarity/export-coreml.html">
+            
+                <a href="../image_similarity/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6" data-path="../object_detection/">
+            
+                <a href="../object_detection/">
+            
+                    
+                    Object Detection
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.6.1" data-path="../object_detection/data-preparation.html">
+            
+                <a href="../object_detection/data-preparation.html">
+            
+                    
+                    Data Preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6.2" data-path="../object_detection/advanced-usage.html">
+            
+                <a href="../object_detection/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6.3" data-path="../object_detection/export-coreml.html">
+            
+                <a href="../object_detection/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6.4" data-path="../object_detection/how-it-works.html">
+            
+                <a href="../object_detection/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.7" data-path="../one_shot_object_detection/">
+            
+                <a href="../one_shot_object_detection/">
+            
+                    
+                    One-Shot Object Detection
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.8" data-path="../style_transfer/">
+            
+                <a href="../style_transfer/">
+            
+                    
+                    Style Transfer
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.8.1" data-path="../style_transfer/how-it-works.html">
+            
+                <a href="../style_transfer/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.8.2" data-path="../style_transfer/export-coreml.html">
+            
+                <a href="../style_transfer/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9" data-path="../activity_classifier/">
+            
+                <a href="../activity_classifier/">
+            
+                    
+                    Activity Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.9.1" data-path="../activity_classifier/data-preparation.html">
+            
+                <a href="../activity_classifier/data-preparation.html">
+            
+                    
+                    Data Preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9.2" data-path="../activity_classifier/advanced-usage.html">
+            
+                <a href="../activity_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9.3" data-path="../activity_classifier/export_coreml.html">
+            
+                <a href="../activity_classifier/export_coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.9.4" data-path="../activity_classifier/how-it-works.html">
+            
+                <a href="../activity_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.10" data-path="../text_classifier/">
+            
+                <a href="../text_classifier/">
+            
+                    
+                    Text Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../modeling-data/">
+            
+                <a href="../modeling-data/">
+            
+                    
+                    Machine learning essentials
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../supervised-learning/classifier.html">
+            
+                <a href="../supervised-learning/classifier.html">
+            
+                    
+                    Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1.1" data-path="../supervised-learning/boosted_trees_classifier.html">
+            
+                <a href="../supervised-learning/boosted_trees_classifier.html">
+            
+                    
+                    Boosted Trees Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.2" data-path="../supervised-learning/decision_tree_classifier.html">
+            
+                <a href="../supervised-learning/decision_tree_classifier.html">
+            
+                    
+                    Decision Tree Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.3" data-path="../supervised-learning/logistic-regression.html">
+            
+                <a href="../supervised-learning/logistic-regression.html">
+            
+                    
+                    Logistic Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.4" data-path="../supervised-learning/knn_classifier.html">
+            
+                <a href="../supervised-learning/knn_classifier.html">
+            
+                    
+                    Nearest Neighbor Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.5" data-path="../supervised-learning/random_forest_classifier.html">
+            
+                <a href="../supervised-learning/random_forest_classifier.html">
+            
+                    
+                    Random Forest Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.6" data-path="../supervised-learning/svm.html">
+            
+                <a href="../supervised-learning/svm.html">
+            
+                    
+                    SVM
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.7" data-path="../supervised-learning/export-coreml.html">
+            
+                <a href="../supervised-learning/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../clustering/">
+            
+                <a href="../clustering/">
+            
+                    
+                    Clustering
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.2.1" data-path="../clustering/kmeans.html">
+            
+                <a href="../clustering/kmeans.html">
+            
+                    
+                    KMeans
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.2" data-path="../clustering/dbscan.html">
+            
+                <a href="../clustering/dbscan.html">
+            
+                    
+                    DBSCAN
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../graph_analytics/">
+            
+                <a href="../graph_analytics/">
+            
+                    
+                    Graph analytics
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../nearest_neighbors/nearest_neighbors.html">
+            
+                <a href="../nearest_neighbors/nearest_neighbors.html">
+            
+                    
+                    Nearest neighbors
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="../supervised-learning/regression.html">
+            
+                <a href="../supervised-learning/regression.html">
+            
+                    
+                    Regression
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.5.1" data-path="../supervised-learning/boosted_trees_regression.html">
+            
+                <a href="../supervised-learning/boosted_trees_regression.html">
+            
+                    
+                    Boosted Trees Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.2" data-path="../supervised-learning/decision_tree_regression.html">
+            
+                <a href="../supervised-learning/decision_tree_regression.html">
+            
+                    
+                    Decision Tree Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.3" data-path="../supervised-learning/linear-regression.html">
+            
+                <a href="../supervised-learning/linear-regression.html">
+            
+                    
+                    Linear Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.4" data-path="../supervised-learning/random_forest_regression.html">
+            
+                <a href="../supervised-learning/random_forest_regression.html">
+            
+                    
+                    Random Forest Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.5" data-path="../supervised-learning/export-coreml.html">
+            
+                <a href="../supervised-learning/export-coreml.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="../text/">
+            
+                <a href="../text/">
+            
+                    
+                    Text analysis
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../evaluation/">
+            
+                <a href="../evaluation/">
+            
+                    
+                    Evaluating models
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../evaluation/regression.html">
+            
+                <a href="../evaluation/regression.html">
+            
+                    
+                    Regression metrics
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../evaluation/classification.html">
+            
+                <a href="../evaluation/classification.html">
+            
+                    
+                    Classification metrics
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../conclusion.html">
+            
+                <a href="../conclusion.html">
+            
+                    
+                    Additional Resources
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../cpp.html">
+            
+                <a href="../cpp.html">
+            
+                    
+                    C++ API
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="../datasets.html">
+            
+                <a href="../datasets.html">
+            
+                    
+                    Dataset Disclaimer
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Choosing a model</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="choosing-a-model"><a name="choosing-a-model" class="plugin-anchor" href="#choosing-a-model"><i class="fa fa-link" aria-hidden="true"></i></a>Choosing a Model</h1><p>In this section, we give some intuition for which modeling choices you
+may make depending on your data and your task. Each recommender model in
+Turi Create has certain strengths that fit well with certain types of
+data and different objectives.</p><p>The easiest way to choose a model is to let Turi Create choose your
+model for you.  This is done by simply using the default
+recommender.create function, which chooses the model based on the data
+provided to it.  As an example, the following code creates a basic item
+similarity model and then generates recommendations for each user in the
+dataset:</p><pre><code class="lang-python">m = turicreate.recommender.create(data, user_id=<span class="hljs-string">&apos;user&apos;</span>, item_id=<span class="hljs-string">&apos;movie&apos;</span>)
+recs = m.recommend()</code></pre>
+<p>Using the default create method provides an excellent way to quickly get
+a recommender model up and running, but in many cases it&apos;s desirable to
+have more control over the process.</p><p>Effectively choosing and tuning a recommender model is best done in two
+stages.  The first stage is to match the type of data up with the
+correct model or models, and the second stage is to correctly evaluate
+and tune the model(s) and assess their accuracy.  Sometimes one model
+works better and sometimes another, depending on the data set. In a
+later section, we&apos;ll look at evaluating a model so you can be confident
+you chose the best one.</p><h3 id="data-type-explicit-implicit-or-item-content-data"><a name="data-type-explicit-implicit-or-item-content-data" class="plugin-anchor" href="#data-type-explicit-implicit-or-item-content-data"><i class="fa fa-link" aria-hidden="true"></i></a>Data Type: Explicit, Implicit, or Item Content Data?</h3><p>With <em>Explicit data</em>, there is an associated target column that gives a
+score for each interaction between a users and an items.  An example of
+this type would be a data set of user&apos;s ratings for movies or books.
+With this type of data, the objective is typically to either predict
+which new items a user would rate highly or to predict a user&apos;s rating
+on a given item.</p><p><em>Implicit data</em> does not include any rating information.  In this case,
+a dataset may have just two columns -- user ID and item ID.  For this
+type of data, the recommendations are based on which items are similar
+to the items a user has interacted with.</p><p>The third type of data that Turi Create can use to build a recommender
+system is <em>item content data</em>.  In this case, information associated
+with each individual item, instead of the user interaction patterns, is
+used to recommend items similar to a collection of items in a query set.
+For example, item content could be a text description of an item, a set
+of key words, an address, categories, or even a list of similar items
+taken from another model.</p><h3 id="working-with-explicit-data"><a name="working-with-explicit-data" class="plugin-anchor" href="#working-with-explicit-data"><i class="fa fa-link" aria-hidden="true"></i></a>Working with Explicit Data</h3><p>If your data is <em>explicit</em>, i.e., the observations include an actual
+rating given by the user, then the model you wish to use depends on
+whether you want to predict the rating a user would give a particular
+item, or if you want the model to recommend items that it believes the
+user would rate highly.</p><p>If you have ratings data and care about accurately predicting the rating
+a user would give a specific item , then we typically recommend you use
+the <code>factorization_recommender</code>.  In this model the observed ratings are
+modeled as a weighted combination of terms, where the weights (along
+with some of the terms, also known as factors) are learned from data.
+All of these models can easily incorporate user or item side features.</p><p>A linear model assumes that the rating is a linear combination of user
+features, item features, user bias, and item popularity bias.  The
+<code>factorization_recommender</code> goes one step further and allows each rating
+to also depend on a term representing the inner product of two vectors,
+one representing the user&apos;s affinity to a set of latent preference
+modes, and one representing the item&apos;s affinity to these modes.  These
+are commonly called latent factors and are automatically learned from
+observation data.  When side data is available, the model allows for
+interaction terms between these learned latent factors and all the side
+features.  As a rule of  thumb, the presence of side data can make the
+model more finicky to learn (due to its power and flexibility).</p><p>If you care about <em>ranking performance</em>, instead of simply predicting
+the rating accurately, then choose
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.html" target="_blank">ItemSimilarityRecommender</a>
+or
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.html" target="_blank">RankingFactorizationRecommender</a>.
+With rating data, the <code>item_similarity_recommender</code> model scores items
+based on how likely they predict the user will rate them highly, but the
+absolute values of the predicted scores may not match up with the actual
+ratings a user would give the item.</p><p>The
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.html" target="_blank">RankingFactorizationRecommender</a>
+tries to recommend items that are both similar to the items in a user&apos;s
+dataset and, if rating information is provided, those that would be
+rated highly by the user.  It tends to predict ratings with less
+accuracy than the non-ranking <code>factorization_recommender</code>, but it tends
+to do much better at choosing items that a user would rate highly.  This
+is because it also penalizes the predicted rating of items that are
+significantly different from the items a user has interacted with.  In
+other words, it only predicts a high rating for user-item pairs in which
+it predicts a high rating and is confident in that prediction.</p><p>Furthermore, this model works particularly well when the target ratings
+are binary, i.e., if they come from thumbs up/thumbs down flags. In this
+case, use the input parameter <code>binary_targets = True</code>.</p><p>When a <code>target</code> column is provided, the model returned by the default
+<code>recommender.create</code> function is a matrix factorization model. The
+matrix factorization model can also be called directly with
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.recommender.ranking_factorization_recommender.create.html" target="_blank">ranking_factorization_recommender.create</a>.
+When using the model-specific create function, other arguments can be
+provided to better tune the model, such as <code>num_factors</code> or
+<code>regularization</code>.  See the documentation on
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.html" target="_blank">RankingFactorizationRecommender</a>
+for more information.</p><pre><code class="lang-python">m = turicreate.ranking_factorization_recommender.create(data,
+                                          user_id=<span class="hljs-string">&apos;user&apos;</span>,
+                                    item_id=<span class="hljs-string">&apos;movie&apos;</span>,
+                                    target=<span class="hljs-string">&apos;rating&apos;</span>)</code></pre>
+<h3 id="working-with-implicit-data"><a name="working-with-implicit-data" class="plugin-anchor" href="#working-with-implicit-data"><i class="fa fa-link" aria-hidden="true"></i></a>Working with Implicit Data</h3><p>The goal a recommender system built with implicit data is to recommend
+items that are similar to those similar to the collection of items a
+user has interacted with.  &quot;Similar&quot; in this case is determined by other
+user interactions -- if most users with similar behavior to a given user
+also interacted with a item the given user had not, that item would
+likely in the given user&apos;s recommendations.</p><p>In this case, the default <code>recommender.create</code> function in the example
+code above code returns an
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.html" target="_blank">ItemSimilarityRecommender</a>
+which computes the similarity between each pair of items and recommends
+items to each user that are closest to items they have already used or
+liked:</p><pre><code class="lang-python">m = turicreate.item_similarity_recommender.create(data,
+                                                user_id=<span class="hljs-string">&apos;user&apos;</span>,
+                                                item_id=<span class="hljs-string">&apos;movie&apos;</span>)</code></pre>
+<p>The <code>ranking_factorization_recommender</code> is also great for implicit data,
+and can be called the same way:</p><pre><code class="lang-python">m = turicreate.ranking_factorization_recommender.create(data,
+                                          user_id=<span class="hljs-string">&apos;user&apos;</span>,
+                                    item_id=<span class="hljs-string">&apos;movie&apos;</span>)</code></pre>
+<p>With implicit data, the ranking factorization model has two solvers, one
+which uses a randomized sgd-based method to tune the results, and the
+other which uses an implicit form of alternating least squares (iALS).
+The default sgd-based method samples unobserved items along with the
+observed ones, then treats them as negative examples.  This is the
+default solver.  Implicit ALS is a version of the popular Alternating
+Least Squares (ALS) algorithm that attempts to find factors that
+distinguish between the given user-item pairs and all other negative
+examples.  This algorithm can be faster than the sgd method,
+particularly if there are many items, but it does not currently support
+side features.  This solver can be activated by passing in <code>solver =
+&quot;ials&quot;</code> to <code>ranking_factorization_recommender.create</code>. On some
+datasets, one of these solvers can yield better precision-recall scores
+than the <code>item_similarity_recommender</code>.</p><h3 id="item-content-data"><a name="item-content-data" class="plugin-anchor" href="#item-content-data"><i class="fa fa-link" aria-hidden="true"></i></a>Item Content Data</h3><p>The
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.recommender.item_content_recommender.ItemContentRecommender.html" target="_blank">ItemContentRecommender</a>
+builds a model similar to the item similarity model, but uses
+similarities between item content to actually build the model.  In
+this model, the similarity score between two items is calculated by
+first computing the similarity between the item data for each column,
+then taking a weighted average of the per-column similarities to get
+the final similarity.  The recommendations are generated according to
+the average similarity of a candidate item to all the items in a
+user&apos;s set of rated items.  This model can be created without
+observation data about user-item interactions, in which case such
+information must be passed in at recommend time in order to make
+recommendations.</p><p>Note that in most situations, the similarity patterns of items
+can be inferred effectively from patterns in the user interaction
+data, and the <code>factorization_recommender</code> and
+<code>item_similarity_recommender</code> do this effectively.  However,
+leveraging information about item content can be very useful,
+particularly when the user-item interaction data is sparse or not
+known until recommend time.</p><h3 id="side-information-for-users-items-and-observations"><a name="side-information-for-users-items-and-observations" class="plugin-anchor" href="#side-information-for-users-items-and-observations"><i class="fa fa-link" aria-hidden="true"></i></a>Side information for users, items, and observations</h3><p>In many cases, additional information about the users or items can
+improve the quality of the recommendations.  For example, including
+information about the genre and year of a movie can be useful
+information in recommending movies.  We call this type of information
+user side data or item side data depending on whether it goes with the
+user or the item.</p><p>Including side data is easy with the <code>user_data</code> or <code>item_data</code>
+parameters to the <code>recommender.create()</code> function.  These arguments
+are SFrames and must have a user or item column that corresponds to
+the <code>user_id</code> and <code>item_id</code> columns in the observation data.  Internally,
+the data is joined to the particular user or item when training the
+model, the data is saved with the model and also used to make
+recommendations.</p><p>In particular, the
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.recommender.factorization_recommender.FactorizationRecommender.html" target="_blank">FactorizationRecommender</a>
+and the
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.html" target="_blank">RankingFactorizationRecommender</a>
+both incorporate the side data into the prediction through additional
+interaction terms between the user, the item, and the side feature. For
+the actual formula, see the API docs for the
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.recommender.factorization_recommender.FactorizationRecommender.html" target="_blank">FactorizationRecommender</a>.
+Both of these models also allow you to obtain the parameters that have
+been learned for each of the side features via the <code>m[&apos;coefficients&apos;]</code>
+argument.</p><p>Side data may also be provided for each observation. For example, it
+might be useful to have recommendations change based on the time at
+which the query is being made. To do so, you could create a model using
+an SFrame that contains a time column, in addition to a user and item
+column. For example, a &quot;time&quot; column could include a string indicating
+the hour; this will be treated as a categorical variable and the model
+will learn a latent factor for each unique hour.</p><pre><code class="lang-python"><span class="hljs-comment"># sf has columns: user_id, item_id, time</span>
+m = tc.ranking_factorization_recommender.create(sf)</code></pre>
+<p>In order to include this information when requesting observations, you
+may include the desired additional data as columns in an SFrame for the
+<code>users</code> argument to <code>m.recommend()</code>. In our example above, when querying
+for recommendations, you would include the time that you want to use for
+each set of recommendations.</p><pre><code class="lang-python">users_query = tc.SFrame({<span class="hljs-string">&apos;user_id&apos;</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], <span class="hljs-string">&apos;time&apos;</span>: [<span class="hljs-string">&apos;10pm&apos;</span>, <span class="hljs-string">&apos;10pm&apos;</span>, <span class="hljs-string">&apos;11pm&apos;</span>]})
+m.recommend(users=user_query)</code></pre>
+<p>In this case, recommendations for user 1 and 2 would use the parameters
+learned from observations that occurred at 10pm, whereas the
+recommendations for user 3 would incorporate parameters corresponding to
+11pm. For more details, check out
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.recommender.factorization_recommender.FactorizationRecommender.recommend.html#turicreate.recommender.factorization_recommender.FactorizationRecommender.recommend" target="_blank">recommend</a>
+in the API docs.</p><p>You may check the number of columns used as side information by querying
+<code>m[&apos;observation_column_names&apos;]</code>, <code>m[&apos;user_side_data_column_names&apos;]</code>, and
+<code>m[&apos;item_side_data_column_names&apos;]</code>. By printing the model, you can also
+see this information. In the following model, we had four columns in the
+observation data (two of which were <code>user_id</code> and <code>item_id</code>) and four
+columns in the SFrame passed to <code>item_side_data</code> (one of which was
+<code>item_id</code>):</p><pre><code class="lang-no-highlight">Class                           : RankingFactorizationRecommender
+
+Schema
+------
+User ID                         : user_id
+Item ID                         : item_id
+Target                          : None
+Additional observation features : 2
+Number of user side features    : 0
+Number of item side features    : 3</code></pre>
+<p>If new side data exists when recommendations are desired, this can be
+passed in via the <code>new_observation_data</code>, <code>new_user_data</code>, and
+<code>new_item_data</code> arguments. Any data provided there will take precedence
+over the user and item side data stored with the model.</p><p>Not all of the models make use of side data: the
+<code>popularity_recommender</code> and <code>item_similarity_recommender</code> create
+methods currently do not use it.</p><h3 id="suggested-pre-processing-techniques"><a name="suggested-pre-processing-techniques" class="plugin-anchor" href="#suggested-pre-processing-techniques"><i class="fa fa-link" aria-hidden="true"></i></a>Suggested pre-processing techniques</h3><p>Lastly, here are a couple of common data issues that can affect the
+performance of a recommender.  First, if the observation data is very
+sparse, i.e., contains only one or two observations for a large number
+of users, then none of the models will perform much better than the
+simple baselines available via the <code>popularity_recommender</code>.  In this
+case, it might help to prune out the rare users and rare items and try
+again.  Also, re-examine the data collection and data cleaning process
+to see if mistakes were made.  Try to get more observation data per user
+and per item, if you can.</p><p>Another issue often occurs when usage data is treated as ratings.
+Unlike explicit ratings that lie on a nice linear interval, say 0 to 5,
+usage data can be badly skewed.  For instance, in the Million Song
+dataset, one user played a song more than 16,000 times.  All the models
+would have a difficult time fitting to such a badly skewed target.  The
+fix is to bucketize the usage data.  For instance, any play count
+greater than 50 can be mapped to the maximum rating of 5.  You can also
+clip the play counts to be binary, e.g., any number greater than 2 is
+mapped to 1, otherwise it&apos;s 0.</p><h3 id="evaluating-model-performance"><a name="evaluating-model-performance" class="plugin-anchor" href="#evaluating-model-performance"><i class="fa fa-link" aria-hidden="true"></i></a>Evaluating Model Performance</h3><p>When trying out different recommender models, it&apos;s critical to have a
+principled way of evaluating their performance.  The standard approach
+to this is to split the observation data into two parts, a training
+set and a test set.  The model is trained on the training set, and
+then evaluated on the test set -- evaluating your model on the same
+dataset that it was trained on gives a very bad idea of how well it
+will perform in practice.  Once the model type and associated parameters
+are chosen, the model can be trained on the full dataset.</p><p>With recommender systems, we can evaluate models using two different
+metrics, RMSE and precision-recall.  RMSE measures how well the model
+predicts the score of the user, while precision-recall measures how
+well the recommend() function recommends items that the user also
+chooses.  For example, the best RMSE value is when the model exactly
+predicts the value of all the ratings in the test set.  Similarly, the
+best precision-recall value is when the user has 5 items in the test
+set and recommend() recommends exactly those 5 items.  While both can
+be important depending on the type of data and desired task,
+precision-recall is often more useful in evaluating how well a
+recommender system will perform in practice.</p><p>The Turi Create recommender toolkit includes a function,
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.recommender.util.random_split_by_user.html" target="_blank">tc.recommender.random_split_by_user</a>,
+to easily generate training and test sets from observation data.
+Unlike <code>tc.SFrame.random_split</code>, it only puts data for a subset of the
+users into the test set.  This is typically sufficient for evaluating
+recommender systems.</p><p><code>tc.recommender.random_split_by_user</code> generates a test set by first
+choosing a subset of the users at random, then choosing a random
+subset of that user&apos;s items.  By default, it chooses 1000 users and,
+for each of these users, 20% of their items on average.  Note that not
+all users may be represented by the test set, as some users may not
+have any of their items randomly selected for the test set.</p><p>Once training and test set are generated, the
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.recommender.util.compare_models.html#turicreate.recommender.util.compare_models" target="_blank">tc.recommender.util.compare_models</a>
+function allows easy evaluation of several models using either RMSE or
+precision-recall.  These models may the same models with different
+parameters or completely different types of model.</p><p>The Turi Create recommender toolkit provides several ways of
+working with rating data while ensuring good precision-recall.  To
+accurately evaluate the precision-recall of a model trained on explicit
+rating data, it&apos;s important to only include highly rated items in your
+test set as these are the items a user would likely choose.  Creating
+such a test set can be done with a handful of SFrame operations and
+<code>tc.recommender.random_split_by_user</code>:</p><pre><code class="lang-no-highlight">high_rated_data = data[data[&quot;rating&quot;] &gt;= 4]
+low_rated_data = data[data[&quot;rating&quot;] &lt; 4]
+train_data_1, test_data = tc.recommender.random_split_by_user(
+                                    high_rated_data, user_id=&apos;user&apos;, item_id=&apos;movie&apos;)
+train_data = train_data_1.append(low_rated_data)</code></pre>
+<p>Other examples of comparing models can be found in the API
+documentation for
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.recommender.util.compare_models.html#turicreate.recommender.util.compare_models" target="_blank">tc.recommender.util.compare_models</a>.</p>
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="using-trained-models.html" class="navigation navigation-prev " aria-label="Previous page: Using models">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="coreml-deployment.html" class="navigation navigation-next " aria-label="Next page: Deployment to Core ML">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Choosing a model","level":"1.3.1.2","depth":3,"next":{"title":"Deployment to Core ML","level":"1.3.1.3","depth":3,"path":"recommender/coreml-deployment.md","ref":"recommender/coreml-deployment.md","articles":[]},"previous":{"title":"Using models","level":"1.3.1.1","depth":3,"path":"recommender/using-trained-models.md","ref":"recommender/using-trained-models.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"recommender/choosing-a-model.md","mtime":"2019-08-14T20:10:55.355Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2019-08-14T20:12:25.573Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-collapsible-menu/plugin.js"></script>
+        
+    
+        
+        <script src="https://cdn.mathjax.org/mathjax/2.6-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-mathjax/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
