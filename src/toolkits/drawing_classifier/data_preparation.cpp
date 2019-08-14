@@ -147,6 +147,7 @@ flex_list ramer_douglas_peucker(
     if (begin == end) {
         return compressed_stroke;
     }
+    DASSERT_TRUE(begin != end);
     const flex_dict &first_point = begin->get<flex_dict>();
     const flex_dict &last_point = (end-1)->get<flex_dict>();
     Line L(first_point, last_point);
@@ -172,7 +173,7 @@ flex_list ramer_douglas_peucker(
     return compressed_stroke;
 }
 
-flex_list simplify_drawing(flex_list raw_drawing, int row_number) {
+flex_list simplify_drawing(flex_list &raw_drawing, int row_number) {
     size_t num_strokes = raw_drawing.size();
     float min_x = std::numeric_limits<float>::max();
     float max_x = 0;
@@ -230,15 +231,27 @@ flex_list simplify_drawing(flex_list raw_drawing, int row_number) {
     return simplified_drawing;
 }
 
-bool in_bounds(int x, int y, int dim) {
-    return (x >= 0 && x < dim && y >= 0 && y < dim);
+bool in_bounds(int x, int y, int x_dim, int y_dim) {
+    return (x >= 0 && x < x_dim && y >= 0 && y < y_dim);
 }
 
 void paint_point(flex_nd_vec &bitmap, int x, int y, int pad) {
-    size_t dimension = bitmap.shape()[1];
+    size_t x_dimension = bitmap.shape()[0];
+    size_t y_dimension = bitmap.shape()[1];
     for (int dx = -pad; dx < pad; dx++) {
         for (int dy = -pad; dy < pad; dy++) {
-            if (in_bounds(x+dx, y+dy, dimension)) {
+            if (in_bounds(x + dx, y + dy, x_dimension, y_dimension)) {
+                DASSERT_GE(x + dx, 0);
+                DASSERT_LT(x + dx, x_dimension);
+                DASSERT_GE(y + dy, 0);
+                DASSERT_LT(y + dy, y_dimension);
+#ifndef NDEBUG
+                std::vector<size_t> indices = {0,(size_t)(y+dy),(size_t)(x+dx)};
+                DASSERT_EQ(
+                    bitmap[(y+dy) * x_dimension + (x+dx)],
+                    bitmap.at(bitmap.fast_index(indices))
+                    );
+#endif
                 bitmap[(y+dy) * dimension + (x+dx)] = 1.0;
             }
         }
@@ -246,12 +259,14 @@ void paint_point(flex_nd_vec &bitmap, int x, int y, int pad) {
 }
 
 flex_nd_vec paint_stroke(
-    flex_nd_vec bitmap, Point start, Point end, float stroke_width) {
+    flex_nd_vec &bitmap, const Point &start, const Point &end, float stroke_width) {
     bool along_x;
     float slope;
     if (floorf(end.get_x()) == floorf(start.get_x())) {
         slope = std::numeric_limits<float>::max();
     } else {
+        // Make sure denominator of slope is non-zero, not necessarily positive.
+        DASSERT_NE(end.get_x() - start.get_x(), 0);
         slope = (end.get_y() - start.get_y())/(end.get_x() - start.get_x());
     }
     int pad = (int)(stroke_width/2);
@@ -260,6 +275,8 @@ flex_nd_vec paint_stroke(
         || (!along_x && (start.get_y() > end.get_y()))) {
         std::swap(start, end);
     }
+    DASSERT_LE(start.get_x(), end.get_x());
+    DASSERT_LE(start.get_y(), end.get_y());
     int x1 = (int)(start.get_x());
     int y1 = (int)(start.get_y());
     int x2 = (int)(end.get_x());
@@ -267,47 +284,79 @@ flex_nd_vec paint_stroke(
     if (along_x) {
         for (int x = x1; x <= x2; x++) {
             int y = (int)(slope * (x - x1) + y1);
+            DASSERT_LE(y1, y);
+            DASSERT_LE(y, y2);
             paint_point(bitmap, x, y, pad);
         }
     } else {
         for (int y = y1; y <= y2; y++) {
             int x = (int)(x1 + ((y - y1) / slope));
+            DASSERT_LE(x1, x);
+            DASSERT_LE(x, x2);
             paint_point(bitmap, x, y, pad);
         }
     }
     return bitmap;
 }
 
-flex_image blur_bitmap(flex_nd_vec bitmap, int ksize) {
+flex_image blur_bitmap(const flex_nd_vec &bitmap, int ksize) {
     std::vector<size_t> bitmap_shape = bitmap.shape();
     flex_nd_vec blurred_bitmap(bitmap_shape, 0.0);
+    DASSERT_EQ(blurred_bitmap.num_elem(), bitmap.num_elem());
     int dimension = bitmap_shape[1];
+    DASSERT_EQ(dimension, INTERMEDIATE_BITMAP_WIDTH);
     int pad = ksize/2;
+    DASSERT_LT(pad, dimension);
     for (int row = 0; row < dimension; row++) {
         for (int col = 0; col < dimension; col++) {
             int index = row * dimension + col;
+            DASSERT_GE(index, 0);
+            DASSERT_LT(index, blurred_bitmap.num_elem());
             if (row < pad
                 || row >= dimension-pad
                 || col < pad
                 || col >= dimension-pad) {
                 blurred_bitmap[index] = std::min(255.0, 255 * bitmap[index]);
+                DASSERT_LE(blurred_bitmap[index], 255.0);
                 continue;
             }
+            DASSERT_GE(row, pad);
+            DASSERT_LT(row, dimension-pad);
+            DASSERT_GE(col, pad);
+            DASSERT_LT(col, dimension-pad);
             double sum_for_blur = 0.0;
             int num_values_in_sum = 0;
             for (int dr = -pad; dr <= pad; dr++) {
                 for (int dc = -pad; dc <= pad; dc++) {
+                    DASSERT_GE(num_values_in_sum, 0);
+                    DASSERT_GE(row + dr, 0);
+                    DASSERT_LE(row + dr, dimension);
+                    DASSERT_GE(col + dc, 0);
+                    DASSERT_LE(col + dc, dimension);
+                    DASSERT_GE((row+dr) * dimension + (col+dc), 0);
+                    DASSERT_LT((row+dr) * dimension + (col+dc), bitmap.num_elem());
+#ifndef NDEBUG
+                    std::vector<size_t> indices = {0,(size_t)(row+dr),(size_t)(col+dc)};
+                    DASSERT_EQ(
+                        bitmap[(row+dr) * dimension + (col+dc)],
+                        bitmap.at(bitmap.fast_index(indices))
+                        );
+#endif
                     sum_for_blur += bitmap[(row+dr) * dimension + (col+dc)];
                     num_values_in_sum += 1;
                 }
             }
+            DASSERT_GT(num_values_in_sum, 0);
             blurred_bitmap[index] = std::min(255.0,
                 255 * sum_for_blur / num_values_in_sum);
+            DASSERT_LE(blurred_bitmap[index], 255.0);
         }
     }
     uint8_t image_data[dimension * dimension];
     for (int idx=0; idx < dimension * dimension; idx++) {
         image_data[idx] = ((uint8_t)(blurred_bitmap[idx]));
+        DASSERT_GE(image_data[idx], 0);
+        DASSERT_LE(image_data[idx], 255);
     }
     return flex_image((const char *)image_data,
         dimension,                  // height
@@ -320,7 +369,7 @@ flex_image blur_bitmap(flex_nd_vec bitmap, int ksize) {
 }
 
 #ifdef __APPLE__
-flex_image rasterize_on_mac(flex_list simplified_drawing) {
+flex_image rasterize_on_mac(const flex_list &simplified_drawing) {
     size_t num_strokes = simplified_drawing.size();
     int MAC_OS_STRIDE = 64;
     CGColorSpaceRef grayscale = CGColorSpaceCreateDeviceGray();
@@ -390,7 +439,7 @@ flex_image rasterize_on_mac(flex_list simplified_drawing) {
 }
 #endif // __APPLE__
 
-flex_image rasterize(flex_list simplified_drawing) {
+flex_image rasterize(flex_list &simplified_drawing) {
     flex_image final_bitmap; // 1 x 28 x 28
     size_t num_strokes = simplified_drawing.size();
 #ifdef __APPLE__
@@ -422,7 +471,8 @@ flex_image rasterize(flex_list simplified_drawing) {
 }
 
 flex_image convert_stroke_based_drawing_to_bitmap(
-    flex_list stroke_based_drawing, int row_number) {
+    flex_list &stroke_based_drawing, int row_number) {
+    DASSERT_TRUE(row_number >= 0);
     flex_list normalized_drawing = simplify_drawing(
         stroke_based_drawing, row_number);
     flex_image bitmap = rasterize(normalized_drawing);
