@@ -129,7 +129,6 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     --------
     ActivityClassifier, util.random_split_by_session
     """
-    _tkutl._raise_error_if_not_sframe(dataset, "dataset")
     from .._mxnet import _mxnet_utils
     from ._mx_model_architecture import _net_params
     from ._sframe_sequence_iterator import SFrameSequenceIter as _SFrameSequenceIter
@@ -141,6 +140,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
                               ac_weights_mps_to_mxnet as _ac_weights_mps_to_mxnet)
 
 
+    _tkutl._raise_error_if_not_sframe(dataset, "dataset")
     if not isinstance(target, str):
         raise _ToolkitError('target must be of type str')
     if not isinstance(session_id, str):
@@ -231,7 +231,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     # Define model architecture
     context = _mxnet_utils.get_mxnet_context(max_devices=num_sessions)
 
-    # Always create MXnet models, as the pred_model is later saved to the state
+    # Always create MXNet models, as the pred_model is later saved to the state
     # If MPS is used - the loss_model will be overwritten
     loss_model, pred_model = _define_model_mxnet(len(target_map), prediction_window,
                                                  predictions_in_chunk, context)
@@ -496,10 +496,10 @@ class ActivityClassifier(_CustomModel):
         vector with probabilities for each class.
 
         The activity classifier generates a single prediction for each
-        ``prediction_window`` rows in ``dataset``, per ``session_id``. Thus the
-        number of predictions is smaller than the length of ``dataset``. By
-        default each prediction is replicated by ``prediction_window`` to return
-        a prediction for each row of ``dataset``. Use ``output_frequency`` to
+        ``prediction_window`` rows in ``dataset``, per ``session_id``. The number
+        of these predictions is smaller than the length of ``dataset``. By default,
+        when ``output_frequency='per_row'``, each prediction is repeated ``prediction_window`` to return
+        a prediction for each row of ``dataset``. Use ``output_frequency=per_window`` to
         get the unreplicated predictions.
 
         Parameters
