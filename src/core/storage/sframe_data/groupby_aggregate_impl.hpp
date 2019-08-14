@@ -226,35 +226,63 @@ class group_aggregate_container {
 
    /// Sort all elements in the container and writes to the output.
    void group_and_write(sframe& out);
+
+   /// init tls data members
+   void init_tls();
+
+   void flush_tls();
+
   private:
 
+   inline void throw_if_not_initialized() const {
+     if (UNLIKELY(!tss_.init_))
+       log_and_throw("group_aggregate_container is not initialized");
+   }
+
+   using sa_buffer_t = sarray<std::string>;
+
+   void merge_buffer_set(std::shared_ptr<sa_buffer_t> buffer_ptr);
    /// collection of all the group operations
+
    std::vector<group_descriptor> group_descriptors;
 
-   struct segment_information {
-     /// Locks on the elements structure
-     turi::simple_spinlock in_memory_group_lock;
-     turi::simple_spinlock fine_grain_locks[128];
-     atomic<size_t> refctr;
-     /// Intermediate group values
-     hopscotch_map<size_t, std::vector<groupby_element>* > elements;
+   using vec_chunk_t = std::vector<size_t>;
 
-     /// Locks on the below structures
-     turi::mutex file_lock;
+   struct segment_information {
+     hopscotch_map<size_t, std::vector<groupby_element>* > elements;
      /// The temporary storage for the grouped values
      sarray<std::string>::iterator outiter;
-     /// Storing the size of each sorted chunk.
-     std::vector<size_t> chunk_size;
+     vec_chunk_t chunk_size;
    };
+
+   using vec_segment_t = std::vector<segment_information>;
 
    /// Writes the content into the sarray segment backend.
    void flush_segment(size_t segmentid);
 
-   size_t max_buffer_size;
-   std::vector<segment_information> segments;
-   sarray<std::string> intermediate_buffer;
-   std::unique_ptr<sarray<std::string>::reader_type> reader;
+   const size_t max_buffer_size;
+   const size_t num_segments;
 
+   struct tls_segment_set {
+     size_t id_ = 0;
+     bool init_{false};
+     vec_segment_t segments_{};
+   };
+
+  /* life cycle is from the start of a thread to end of a thread */
+   static thread_local tls_segment_set tss_;
+
+   turi::simple_spinlock buffer_lock_;
+   /// buffer for each job.
+   std::vector<std::shared_ptr<sa_buffer_t>> buffer_set_;
+   /// Storing the size of each sorted chunk for each segment
+   std::vector<vec_chunk_t> chunk_size_set_;
+   /// global buffer
+   sarray<std::string> intermediate_buffer;
+   /// lock guard for each segment in global buffer
+   std::vector<turi::mutex> lock_pool_;
+   /// global buffer reader
+   std::unique_ptr<sarray<std::string>::reader_type> reader;
    /// Sort all elements in the container and writes to the output.
    void group_and_write_segment(sframe& out,
                                 std::shared_ptr<sarray<std::string>::reader_type> reader,

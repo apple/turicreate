@@ -191,6 +191,7 @@ sframe groupby_aggregate(const sframe& source,
   logstream(LOG_INFO) << "Filling group container: " << std::endl;
   parallel_for (0, input_reader->num_segments(),
                 [&](size_t i) {
+                  container.init_tls();
                   auto iter = input_reader->begin(i);
                   auto enditer = input_reader->end(i);
                   while(iter != enditer) {
@@ -198,6 +199,7 @@ sframe groupby_aggregate(const sframe& source,
                     container.add(row, num_keys);
                     ++iter;
                   }
+                  container.flush_tls();
                 });
 
   logstream(LOG_INFO) << "Group container filled in " << ti.current_time() << std::endl;
