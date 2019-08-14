@@ -252,51 +252,51 @@ void paint_point(flex_nd_vec &bitmap, int x, int y, int pad) {
                     bitmap.at(bitmap.fast_index(indices))
                     );
 #endif
-                bitmap[(y+dy) * dimension + (x+dx)] = 1.0;
+                bitmap[(y + dy) * x_dimension + (x + dx)] = 1.0;
             }
         }
     }
 }
 
-flex_nd_vec paint_stroke(
-    flex_nd_vec &bitmap, const Point &start, const Point &end, float stroke_width) {
-    bool along_x;
-    float slope;
-    if (floorf(end.get_x()) == floorf(start.get_x())) {
-        slope = std::numeric_limits<float>::max();
-    } else {
-        // Make sure denominator of slope is non-zero, not necessarily positive.
-        DASSERT_NE(end.get_x() - start.get_x(), 0);
-        slope = (end.get_y() - start.get_y())/(end.get_x() - start.get_x());
+flex_nd_vec paint_stroke(flex_nd_vec &bitmap, Point &start, Point &end,
+                         float stroke_width) {
+  bool along_x;
+  float slope;
+  if (floorf(end.get_x()) == floorf(start.get_x())) {
+    slope = std::numeric_limits<float>::max();
+  } else {
+    // Make sure denominator of slope is non-zero, not necessarily positive.
+    DASSERT_NE(end.get_x() - start.get_x(), 0);
+    slope = (end.get_y() - start.get_y()) / (end.get_x() - start.get_x());
+  }
+  int pad = (int)(stroke_width / 2);
+  along_x = (fabs(slope) < 1);
+  if ((along_x && (start.get_x() > end.get_x())) ||
+      (!along_x && (start.get_y() > end.get_y()))) {
+    std::swap(start, end);
+  }
+  DASSERT_LE(start.get_x(), end.get_x());
+  DASSERT_LE(start.get_y(), end.get_y());
+  int x1 = (int)(start.get_x());
+  int y1 = (int)(start.get_y());
+  int x2 = (int)(end.get_x());
+  int y2 = (int)(end.get_y());
+  if (along_x) {
+    for (int x = x1; x <= x2; x++) {
+      int y = (int)(slope * (x - x1) + y1);
+      DASSERT_LE(y1, y);
+      DASSERT_LE(y, y2);
+      paint_point(bitmap, x, y, pad);
     }
-    int pad = (int)(stroke_width/2);
-    along_x = (fabs(slope) < 1);
-    if ((along_x && (start.get_x() > end.get_x()))
-        || (!along_x && (start.get_y() > end.get_y()))) {
-        std::swap(start, end);
+  } else {
+    for (int y = y1; y <= y2; y++) {
+      int x = (int)(x1 + ((y - y1) / slope));
+      DASSERT_LE(x1, x);
+      DASSERT_LE(x, x2);
+      paint_point(bitmap, x, y, pad);
     }
-    DASSERT_LE(start.get_x(), end.get_x());
-    DASSERT_LE(start.get_y(), end.get_y());
-    int x1 = (int)(start.get_x());
-    int y1 = (int)(start.get_y());
-    int x2 = (int)(end.get_x());
-    int y2 = (int)(end.get_y());
-    if (along_x) {
-        for (int x = x1; x <= x2; x++) {
-            int y = (int)(slope * (x - x1) + y1);
-            DASSERT_LE(y1, y);
-            DASSERT_LE(y, y2);
-            paint_point(bitmap, x, y, pad);
-        }
-    } else {
-        for (int y = y1; y <= y2; y++) {
-            int x = (int)(x1 + ((y - y1) / slope));
-            DASSERT_LE(x1, x);
-            DASSERT_LE(x, x2);
-            paint_point(bitmap, x, y, pad);
-        }
-    }
-    return bitmap;
+  }
+  return bitmap;
 }
 
 flex_image blur_bitmap(const flex_nd_vec &bitmap, int ksize) {
