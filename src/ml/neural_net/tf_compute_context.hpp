@@ -4,8 +4,8 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#ifndef UNITY_TOOLKITS_NEURAL_NET_MXNET_COMPUTE_CONTEXT_HPP_
-#define UNITY_TOOLKITS_NEURAL_NET_MXNET_COMPUTE_CONTEXT_HPP_
+#ifndef UNITY_TOOLKITS_NEURAL_NET_TF_COMPUTE_CONTEXT_HPP_
+#define UNITY_TOOLKITS_NEURAL_NET_TF_COMPUTE_CONTEXT_HPP_
 
 #include <ml/neural_net/compute_context.hpp>
 
@@ -18,7 +18,7 @@ namespace neural_net {
  * for neural network computation and for data
  * augmentation.
  */
-class mxnet_compute_context: public compute_context {
+class tf_compute_context: public compute_context {
 public:
 
 
@@ -27,9 +27,9 @@ public:
    *
    * \todo Guard against eGPU coming and going?
    */
-  mxnet_compute_context();
+  tf_compute_context();
 
-  ~mxnet_compute_context();
+  ~tf_compute_context();
 
   std::vector<std::string> gpu_names() const override;
   size_t memory_budget() const override;
@@ -49,4 +49,4 @@ public:
 }  // namespace neural_net
 }  // namespace turi
 
-#endif  // UNITY_TOOLKITS_NEURAL_NET_MXNET_COMPUTE_CONTEXT_HPP_
+#endif  // UNITY_TOOLKITS_NEURAL_NET_TF_COMPUTE_CONTEXT_HPP_

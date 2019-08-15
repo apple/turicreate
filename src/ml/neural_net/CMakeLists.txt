@@ -55,11 +55,11 @@ else()
   set(additional_unity_neural_net_requirements "")
 endif()
 
-make_library(tcmxnet SHARED
+make_library(tctf SHARED
   SOURCES
-  mxnet_compute_context.cpp
+  tf_compute_context.cpp
 )
-set_target_properties(tcmxnet PROPERTIES SUFFIX ".so")
+set_target_properties(tctf PROPERTIES SUFFIX ".so")
 
 make_library(unity_neural_net OBJECT
   SOURCES
