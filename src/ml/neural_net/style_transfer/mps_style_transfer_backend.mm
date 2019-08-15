@@ -84,8 +84,18 @@ style_transfer::style_transfer(const float_array_map &config,
 }
 
 float_array_map style_transfer::export_weights() const {
+  if (@available(macOS 10.15, *)) {
+    NSDictionary<NSString *, NSData *> *dictWeights
+        = [m_impl->model exportWeights];
+    
+    float_array_map weights
+        = [TCMPSStyleTransferHelpers fromNSDictionary:dictWeights];
 
-  return float_array_map();
+    return weights;
+  } else {
+    log_and_throw("Can't export weights on the GPU Style Transfer Network for \
+                   MacOS platform lower than 10.15");
+  }
 }
 
 float_array_map style_transfer::predict(const float_array_map& inputs) const {
