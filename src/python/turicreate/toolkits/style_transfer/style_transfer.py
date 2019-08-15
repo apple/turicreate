@@ -322,7 +322,7 @@ def create(style_dataset, content_dataset, style_feature=None,
                                   output_size=(3, input_shape[0], input_shape[1]),
                                   config=mps_config,
                                   weights=mps_net_params)
-
+        
         return None
 
     #
