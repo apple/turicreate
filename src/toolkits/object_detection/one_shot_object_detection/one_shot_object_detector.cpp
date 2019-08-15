@@ -178,7 +178,8 @@ gl_sframe augment_data(const gl_sframe &data,
                        << " background images." << std::endl;
     table.print_header();
   }
-  std::vector<std::string> output_column_names = {image_column_name, "annotation"};
+  std::vector<std::string> output_column_names = {image_column_name,
+                                                  "annotation"};
   std::vector<flex_type_enum> output_column_types = {flex_type_enum::IMAGE,
                                                      flex_type_enum::DICT};
   gl_sframe_writer output_writer(output_column_names, output_column_types);
@@ -208,7 +209,7 @@ gl_sframe augment_data(const gl_sframe &data,
    * Replacing the `for` with a `parallel_for` fails the export_coreml unit test
    * with an EXC_BAD_ACCESS in the function call to boost::gil::resample_pixels
    */
-  for (size_t segment_id=0; segment_id<nsegments; segment_id++) {
+  for (size_t segment_id = 0; segment_id < nsegments; segment_id++) {
     size_t segment_start = (segment_id * backgrounds.size()) / nsegments;
     size_t segment_end = ((segment_id + 1) * backgrounds.size()) / nsegments;
     size_t row_number = segment_start;
