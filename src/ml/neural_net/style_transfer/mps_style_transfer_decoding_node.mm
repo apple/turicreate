@@ -28,12 +28,12 @@
   self = [super init];
   
   if (self) {
-  	_upsample = [MPSCNNUpsamplingNearestNode nodeWithSource:inputNode
+    _upsample = [MPSCNNUpsamplingNearestNode nodeWithSource:inputNode
                                        integerScaleFactorX:descriptor.upsample.scale
                                        integerScaleFactorY:descriptor.upsample.scale];
 
     NSMutableData* convBiases = [NSMutableData dataWithLength:descriptor.conv.outputFeatureChannels*sizeof(float)];
-  	_conv = [MPSCNNConvolutionNode createConvolutional:[_upsample resultImage]
+    _conv = [MPSCNNConvolutionNode createConvolutional:[_upsample resultImage]
                                            kernelWidth:descriptor.conv.kernelWidth
                                           kernelHeight:descriptor.conv.kernelHeight
                                   inputFeatureChannels:descriptor.conv.inputFeatureChannels
