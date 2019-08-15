@@ -10,6 +10,7 @@ import os as _os
 import sys as _sys
 import requests as _requests
 import turicreate as _tc
+import tarfile as _tarfile
 import hashlib as _hashlib
 from six.moves.urllib import parse as _urlparse
 from ._pre_trained_models import _download_and_checksum_files
