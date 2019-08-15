@@ -4,7 +4,6 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-
 #import <ml/neural_net/style_transfer/mps_style_transfer_backend.hpp>
 #import <ml/neural_net/style_transfer/mps_style_transfer.h>
 #import <ml/neural_net/mps_utils.h>
@@ -15,7 +14,6 @@
 @end
 
 @implementation TCMPSStyleTransferHelpers
-
 +(float_array_map) fromNSDictionary: (NSDictionary<NSString *, NSData *> *) dictionary {
   float_array_map map;
   for (NSString* key in dictionary) {
