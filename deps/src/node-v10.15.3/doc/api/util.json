@@ -1,0 +1,2599 @@
+{
+  "type": "module",
+  "source": "doc/api/util.md",
+  "modules": [
+    {
+      "textRaw": "Util",
+      "name": "util",
+      "introduced_in": "v0.10.0",
+      "stability": 2,
+      "stabilityText": "Stable",
+      "desc": "<p>The <code>util</code> module is primarily designed to support the needs of Node.js' own\ninternal APIs. However, many of the utilities are useful for application and\nmodule developers as well. It can be accessed using:</p>\n<pre><code class=\"language-js\">const util = require('util');\n</code></pre>",
+      "methods": [
+        {
+          "textRaw": "util.callbackify(original)",
+          "type": "method",
+          "name": "callbackify",
+          "meta": {
+            "added": [
+              "v8.2.0"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {Function} a callback style function",
+                "name": "return",
+                "type": "Function",
+                "desc": "a callback style function"
+              },
+              "params": [
+                {
+                  "textRaw": "`original` {Function} An `async` function",
+                  "name": "original",
+                  "type": "Function",
+                  "desc": "An `async` function"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>Takes an <code>async</code> function (or a function that returns a <code>Promise</code>) and returns a\nfunction following the error-first callback style, i.e. taking\nan <code>(err, value) => ...</code> callback as the last argument. In the callback, the\nfirst argument will be the rejection reason (or <code>null</code> if the <code>Promise</code>\nresolved), and the second argument will be the resolved value.</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nasync function fn() {\n  return 'hello world';\n}\nconst callbackFunction = util.callbackify(fn);\n\ncallbackFunction((err, ret) => {\n  if (err) throw err;\n  console.log(ret);\n});\n</code></pre>\n<p>Will print:</p>\n<pre><code class=\"language-txt\">hello world\n</code></pre>\n<p>The callback is executed asynchronously, and will have a limited stack trace.\nIf the callback throws, the process will emit an <a href=\"process.html#process_event_uncaughtexception\"><code>'uncaughtException'</code></a>\nevent, and if not handled will exit.</p>\n<p>Since <code>null</code> has a special meaning as the first argument to a callback, if a\nwrapped function rejects a <code>Promise</code> with a falsy value as a reason, the value\nis wrapped in an <code>Error</code> with the original value stored in a field named\n<code>reason</code>.</p>\n<pre><code class=\"language-js\">function fn() {\n  return Promise.reject(null);\n}\nconst callbackFunction = util.callbackify(fn);\n\ncallbackFunction((err, ret) => {\n  // When the Promise was rejected with `null` it is wrapped with an Error and\n  // the original value is stored in `reason`.\n  err &#x26;&#x26; err.hasOwnProperty('reason') &#x26;&#x26; err.reason === null;  // true\n});\n</code></pre>"
+        },
+        {
+          "textRaw": "util.debuglog(section)",
+          "type": "method",
+          "name": "debuglog",
+          "meta": {
+            "added": [
+              "v0.11.3"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {Function} The logging function",
+                "name": "return",
+                "type": "Function",
+                "desc": "The logging function"
+              },
+              "params": [
+                {
+                  "textRaw": "`section` {string} A string identifying the portion of the application for which the `debuglog` function is being created.",
+                  "name": "section",
+                  "type": "string",
+                  "desc": "A string identifying the portion of the application for which the `debuglog` function is being created."
+                }
+              ]
+            }
+          ],
+          "desc": "<p>The <code>util.debuglog()</code> method is used to create a function that conditionally\nwrites debug messages to <code>stderr</code> based on the existence of the <code>NODE_DEBUG</code>\nenvironment variable. If the <code>section</code> name appears within the value of that\nenvironment variable, then the returned function operates similar to\n<a href=\"console.html#console_console_error_data_args\"><code>console.error()</code></a>. If not, then the returned function is a no-op.</p>\n<pre><code class=\"language-js\">const util = require('util');\nconst debuglog = util.debuglog('foo');\n\ndebuglog('hello from foo [%d]', 123);\n</code></pre>\n<p>If this program is run with <code>NODE_DEBUG=foo</code> in the environment, then\nit will output something like:</p>\n<pre><code class=\"language-txt\">FOO 3245: hello from foo [123]\n</code></pre>\n<p>where <code>3245</code> is the process id. If it is not run with that\nenvironment variable set, then it will not print anything.</p>\n<p>The <code>section</code> supports wildcard also:</p>\n<pre><code class=\"language-js\">const util = require('util');\nconst debuglog = util.debuglog('foo-bar');\n\ndebuglog('hi there, it\\'s foo-bar [%d]', 2333);\n</code></pre>\n<p>if it is run with <code>NODE_DEBUG=foo*</code> in the environment, then it will output\nsomething like:</p>\n<pre><code class=\"language-txt\">FOO-BAR 3257: hi there, it's foo-bar [2333]\n</code></pre>\n<p>Multiple comma-separated <code>section</code> names may be specified in the <code>NODE_DEBUG</code>\nenvironment variable: <code>NODE_DEBUG=fs,net,tls</code>.</p>"
+        },
+        {
+          "textRaw": "util.deprecate(fn, msg[, code])",
+          "type": "method",
+          "name": "deprecate",
+          "meta": {
+            "added": [
+              "v0.8.0"
+            ],
+            "changes": [
+              {
+                "version": "v10.0.0",
+                "pr-url": "https://github.com/nodejs/node/pull/16393",
+                "description": "Deprecation warnings are only emitted once for each code."
+              }
+            ]
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {Function} The deprecated function wrapped to emit a warning.",
+                "name": "return",
+                "type": "Function",
+                "desc": "The deprecated function wrapped to emit a warning."
+              },
+              "params": [
+                {
+                  "textRaw": "`fn` {Function} The function that is being deprecated.",
+                  "name": "fn",
+                  "type": "Function",
+                  "desc": "The function that is being deprecated."
+                },
+                {
+                  "textRaw": "`msg` {string} A warning message to display when the deprecated function is invoked.",
+                  "name": "msg",
+                  "type": "string",
+                  "desc": "A warning message to display when the deprecated function is invoked."
+                },
+                {
+                  "textRaw": "`code` {string} A deprecation code. See the [list of deprecated APIs][] for a list of codes.",
+                  "name": "code",
+                  "type": "string",
+                  "desc": "A deprecation code. See the [list of deprecated APIs][] for a list of codes.",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>The <code>util.deprecate()</code> method wraps <code>fn</code> (which may be a function or class) in\nsuch a way that it is marked as deprecated.</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nexports.obsoleteFunction = util.deprecate(() => {\n  // Do something here.\n}, 'obsoleteFunction() is deprecated. Use newShinyFunction() instead.');\n</code></pre>\n<p>When called, <code>util.deprecate()</code> will return a function that will emit a\n<code>DeprecationWarning</code> using the <a href=\"process.html#process_event_warning\"><code>'warning'</code></a> event. The warning will\nbe emitted and printed to <code>stderr</code> the first time the returned function is\ncalled. After the warning is emitted, the wrapped function is called without\nemitting a warning.</p>\n<p>If the same optional <code>code</code> is supplied in multiple calls to <code>util.deprecate()</code>,\nthe warning will be emitted only once for that <code>code</code>.</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nconst fn1 = util.deprecate(someFunction, someMessage, 'DEP0001');\nconst fn2 = util.deprecate(someOtherFunction, someOtherMessage, 'DEP0001');\nfn1(); // emits a deprecation warning with code DEP0001\nfn2(); // does not emit a deprecation warning because it has the same code\n</code></pre>\n<p>If either the <code>--no-deprecation</code> or <code>--no-warnings</code> command line flags are\nused, or if the <code>process.noDeprecation</code> property is set to <code>true</code> <em>prior</em> to\nthe first deprecation warning, the <code>util.deprecate()</code> method does nothing.</p>\n<p>If the <code>--trace-deprecation</code> or <code>--trace-warnings</code> command line flags are set,\nor the <code>process.traceDeprecation</code> property is set to <code>true</code>, a warning and a\nstack trace are printed to <code>stderr</code> the first time the deprecated function is\ncalled.</p>\n<p>If the <code>--throw-deprecation</code> command line flag is set, or the\n<code>process.throwDeprecation</code> property is set to <code>true</code>, then an exception will be\nthrown when the deprecated function is called.</p>\n<p>The <code>--throw-deprecation</code> command line flag and <code>process.throwDeprecation</code>\nproperty take precedence over <code>--trace-deprecation</code> and\n<code>process.traceDeprecation</code>.</p>"
+        },
+        {
+          "textRaw": "util.format(format[, ...args])",
+          "type": "method",
+          "name": "format",
+          "meta": {
+            "added": [
+              "v0.5.3"
+            ],
+            "changes": [
+              {
+                "version": "v8.4.0",
+                "pr-url": "https://github.com/nodejs/node/pull/14558",
+                "description": "The `%o` and `%O` specifiers are supported now."
+              }
+            ]
+          },
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`format` {string} A `printf`-like format string.",
+                  "name": "format",
+                  "type": "string",
+                  "desc": "A `printf`-like format string."
+                },
+                {
+                  "name": "...args",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>The <code>util.format()</code> method returns a formatted string using the first argument\nas a <code>printf</code>-like format.</p>\n<p>The first argument is a string containing zero or more <em>placeholder</em> tokens.\nEach placeholder token is replaced with the converted value from the\ncorresponding argument. Supported placeholders are:</p>\n<ul>\n<li><code>%s</code> - <code>String</code>.</li>\n<li><code>%d</code> - <code>Number</code> (integer or floating point value) or <code>BigInt</code>.</li>\n<li><code>%i</code> - Integer or <code>BigInt</code>.</li>\n<li><code>%f</code> - Floating point value.</li>\n<li><code>%j</code> - JSON. Replaced with the string <code>'[Circular]'</code> if the argument\ncontains circular references.</li>\n<li><code>%o</code> - <code>Object</code>. A string representation of an object\nwith generic JavaScript object formatting.\nSimilar to <code>util.inspect()</code> with options\n<code>{ showHidden: true, showProxy: true }</code>. This will show the full object\nincluding non-enumerable properties and proxies.</li>\n<li><code>%O</code> - <code>Object</code>. A string representation of an object with generic JavaScript\nobject formatting. Similar to <code>util.inspect()</code> without options. This will show\nthe full object not including non-enumerable properties and proxies.</li>\n<li><code>%%</code> - single percent sign (<code>'%'</code>). This does not consume an argument.</li>\n<li>Returns: <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type\" class=\"type\">&lt;string&gt;</a> The formatted string</li>\n</ul>\n<p>If the placeholder does not have a corresponding argument, the placeholder is\nnot replaced.</p>\n<pre><code class=\"language-js\">util.format('%s:%s', 'foo');\n// Returns: 'foo:%s'\n</code></pre>\n<p>If there are more arguments passed to the <code>util.format()</code> method than the number\nof placeholders, the extra arguments are coerced into strings then concatenated\nto the returned string, each delimited by a space. Excessive arguments whose\n<code>typeof</code> is <code>'object'</code> or <code>'symbol'</code> (except <code>null</code>) will be transformed by\n<code>util.inspect()</code>.</p>\n<pre><code class=\"language-js\">util.format('%s:%s', 'foo', 'bar', 'baz'); // 'foo:bar baz'\n</code></pre>\n<p>If the first argument is not a string then <code>util.format()</code> returns\na string that is the concatenation of all arguments separated by spaces.\nEach argument is converted to a string using <code>util.inspect()</code>.</p>\n<pre><code class=\"language-js\">util.format(1, 2, 3); // '1 2 3'\n</code></pre>\n<p>If only one argument is passed to <code>util.format()</code>, it is returned as it is\nwithout any formatting.</p>\n<pre><code class=\"language-js\">util.format('%% %s'); // '%% %s'\n</code></pre>\n<p>Please note that <code>util.format()</code> is a synchronous method that is mainly\nintended as a debugging tool. Some input values can have a significant\nperformance overhead that can block the event loop. Use this function\nwith care and never in a hot code path.</p>"
+        },
+        {
+          "textRaw": "util.formatWithOptions(inspectOptions, format[, ...args])",
+          "type": "method",
+          "name": "formatWithOptions",
+          "meta": {
+            "added": [
+              "v10.0.0"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`inspectOptions` {Object}",
+                  "name": "inspectOptions",
+                  "type": "Object"
+                },
+                {
+                  "textRaw": "`format` {string}",
+                  "name": "format",
+                  "type": "string"
+                },
+                {
+                  "name": "...args",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>This function is identical to <a href=\"#util_util_format_format_args\"><code>util.format()</code></a>, except in that it takes\nan <code>inspectOptions</code> argument which specifies options that are passed along to\n<a href=\"#util_util_inspect_object_options\"><code>util.inspect()</code></a>.</p>\n<pre><code class=\"language-js\">util.formatWithOptions({ colors: true }, 'See object %O', { foo: 42 });\n// Returns 'See object { foo: 42 }', where `42` is colored as a number\n// when printed to a terminal.\n</code></pre>"
+        },
+        {
+          "textRaw": "util.getSystemErrorName(err)",
+          "type": "method",
+          "name": "getSystemErrorName",
+          "meta": {
+            "added": [
+              "v9.7.0"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {string}",
+                "name": "return",
+                "type": "string"
+              },
+              "params": [
+                {
+                  "textRaw": "`err` {number}",
+                  "name": "err",
+                  "type": "number"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>Returns the string name for a numeric error code that comes from a Node.js API.\nThe mapping between error codes and error names is platform-dependent.\nSee <a href=\"errors.html#errors_common_system_errors\">Common System Errors</a> for the names of common errors.</p>\n<pre><code class=\"language-js\">fs.access('file/that/does/not/exist', (err) => {\n  const name = util.getSystemErrorName(err.errno);\n  console.error(name);  // ENOENT\n});\n</code></pre>"
+        },
+        {
+          "textRaw": "util.inherits(constructor, superConstructor)",
+          "type": "method",
+          "name": "inherits",
+          "meta": {
+            "added": [
+              "v0.3.0"
+            ],
+            "changes": [
+              {
+                "version": "v5.0.0",
+                "pr-url": "https://github.com/nodejs/node/pull/3455",
+                "description": "The `constructor` parameter can refer to an ES6 class now."
+              }
+            ]
+          },
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`constructor` {Function}",
+                  "name": "constructor",
+                  "type": "Function"
+                },
+                {
+                  "textRaw": "`superConstructor` {Function}",
+                  "name": "superConstructor",
+                  "type": "Function"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>Usage of <code>util.inherits()</code> is discouraged. Please use the ES6 <code>class</code> and\n<code>extends</code> keywords to get language level inheritance support. Also note\nthat the two styles are <a href=\"https://github.com/nodejs/node/issues/4179\">semantically incompatible</a>.</p>\n<p>Inherit the prototype methods from one <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/constructor\">constructor</a> into another. The\nprototype of <code>constructor</code> will be set to a new object created from\n<code>superConstructor</code>.</p>\n<p>As an additional convenience, <code>superConstructor</code> will be accessible\nthrough the <code>constructor.super_</code> property.</p>\n<pre><code class=\"language-js\">const util = require('util');\nconst EventEmitter = require('events');\n\nfunction MyStream() {\n  EventEmitter.call(this);\n}\n\nutil.inherits(MyStream, EventEmitter);\n\nMyStream.prototype.write = function(data) {\n  this.emit('data', data);\n};\n\nconst stream = new MyStream();\n\nconsole.log(stream instanceof EventEmitter); // true\nconsole.log(MyStream.super_ === EventEmitter); // true\n\nstream.on('data', (data) => {\n  console.log(`Received data: \"${data}\"`);\n});\nstream.write('It works!'); // Received data: \"It works!\"\n</code></pre>\n<p>ES6 example using <code>class</code> and <code>extends</code>:</p>\n<pre><code class=\"language-js\">const EventEmitter = require('events');\n\nclass MyStream extends EventEmitter {\n  write(data) {\n    this.emit('data', data);\n  }\n}\n\nconst stream = new MyStream();\n\nstream.on('data', (data) => {\n  console.log(`Received data: \"${data}\"`);\n});\nstream.write('With ES6');\n</code></pre>"
+        },
+        {
+          "textRaw": "util.inspect(object[, options])",
+          "type": "method",
+          "name": "inspect",
+          "meta": {
+            "added": [
+              "v0.3.0"
+            ],
+            "changes": [
+              {
+                "version": "v10.12.0",
+                "pr-url": "https://github.com/nodejs/node/pull/22788",
+                "description": "The `sorted` option is supported now."
+              },
+              {
+                "version": "v10.6.0",
+                "pr-url": "https://github.com/nodejs/node/pull/20725",
+                "description": "Inspecting linked lists and similar objects is now possible up to the maximum call stack size."
+              },
+              {
+                "version": "v10.0.0",
+                "pr-url": "https://github.com/nodejs/node/pull/19259",
+                "description": "The `WeakMap` and `WeakSet` entries can now be inspected."
+              },
+              {
+                "version": "v9.9.0",
+                "pr-url": "https://github.com/nodejs/node/pull/17576",
+                "description": "The `compact` option is supported now."
+              },
+              {
+                "version": "v6.6.0",
+                "pr-url": "https://github.com/nodejs/node/pull/8174",
+                "description": "Custom inspection functions can now return `this`."
+              },
+              {
+                "version": "v6.3.0",
+                "pr-url": "https://github.com/nodejs/node/pull/7499",
+                "description": "The `breakLength` option is supported now."
+              },
+              {
+                "version": "v6.1.0",
+                "pr-url": "https://github.com/nodejs/node/pull/6334",
+                "description": "The `maxArrayLength` option is supported now; in particular, long arrays are truncated by default."
+              },
+              {
+                "version": "v6.1.0",
+                "pr-url": "https://github.com/nodejs/node/pull/6465",
+                "description": "The `showProxy` option is supported now."
+              }
+            ]
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {string} The representation of passed object",
+                "name": "return",
+                "type": "string",
+                "desc": "The representation of passed object"
+              },
+              "params": [
+                {
+                  "textRaw": "`object` {any} Any JavaScript primitive or `Object`.",
+                  "name": "object",
+                  "type": "any",
+                  "desc": "Any JavaScript primitive or `Object`."
+                },
+                {
+                  "textRaw": "`options` {Object}",
+                  "name": "options",
+                  "type": "Object",
+                  "options": [
+                    {
+                      "textRaw": "`showHidden` {boolean} If `true`, the `object`'s non-enumerable symbols and properties will be included in the formatted result as well as [`WeakMap`][] and [`WeakSet`][] entries. **Default:** `false`.",
+                      "name": "showHidden",
+                      "type": "boolean",
+                      "default": "`false`",
+                      "desc": "If `true`, the `object`'s non-enumerable symbols and properties will be included in the formatted result as well as [`WeakMap`][] and [`WeakSet`][] entries."
+                    },
+                    {
+                      "textRaw": "`depth` {number} Specifies the number of times to recurse while formatting the `object`. This is useful for inspecting large complicated objects. To make it recurse up to the maximum call stack size pass `Infinity` or `null`. **Default:** `2`.",
+                      "name": "depth",
+                      "type": "number",
+                      "default": "`2`",
+                      "desc": "Specifies the number of times to recurse while formatting the `object`. This is useful for inspecting large complicated objects. To make it recurse up to the maximum call stack size pass `Infinity` or `null`."
+                    },
+                    {
+                      "textRaw": "`colors` {boolean} If `true`, the output will be styled with ANSI color codes. Colors are customizable, see [Customizing `util.inspect` colors][]. **Default:** `false`.",
+                      "name": "colors",
+                      "type": "boolean",
+                      "default": "`false`",
+                      "desc": "If `true`, the output will be styled with ANSI color codes. Colors are customizable, see [Customizing `util.inspect` colors][]."
+                    },
+                    {
+                      "textRaw": "`customInspect` {boolean} If `false`, then custom `inspect(depth, opts)` functions will not be called. **Default:** `true`.",
+                      "name": "customInspect",
+                      "type": "boolean",
+                      "default": "`true`",
+                      "desc": "If `false`, then custom `inspect(depth, opts)` functions will not be called."
+                    },
+                    {
+                      "textRaw": "`showProxy` {boolean} If `true`, then objects and functions that are `Proxy` objects will be introspected to show their `target` and `handler` objects. **Default:** `false`.",
+                      "name": "showProxy",
+                      "type": "boolean",
+                      "default": "`false`",
+                      "desc": "If `true`, then objects and functions that are `Proxy` objects will be introspected to show their `target` and `handler` objects."
+                    },
+                    {
+                      "textRaw": "`maxArrayLength` {number} Specifies the maximum number of `Array`, [`TypedArray`][], [`WeakMap`][] and [`WeakSet`][] elements to include when formatting. Set to `null` or `Infinity` to show all elements. Set to `0` or negative to show no elements. **Default:** `100`.",
+                      "name": "maxArrayLength",
+                      "type": "number",
+                      "default": "`100`",
+                      "desc": "Specifies the maximum number of `Array`, [`TypedArray`][], [`WeakMap`][] and [`WeakSet`][] elements to include when formatting. Set to `null` or `Infinity` to show all elements. Set to `0` or negative to show no elements."
+                    },
+                    {
+                      "textRaw": "`breakLength` {number} The length at which an object's keys are split across multiple lines. Set to `Infinity` to format an object as a single line. **Default:** `60` for legacy compatibility.",
+                      "name": "breakLength",
+                      "type": "number",
+                      "default": "`60` for legacy compatibility",
+                      "desc": "The length at which an object's keys are split across multiple lines. Set to `Infinity` to format an object as a single line."
+                    },
+                    {
+                      "textRaw": "`compact` {boolean} Setting this to `false` changes the default indentation to use a line break for each object key instead of lining up multiple properties in one line. It will also break text that is above the `breakLength` size into smaller and better readable chunks and indents objects the same as arrays. Note that no text will be reduced below 16 characters, no matter the `breakLength` size. For more information, see the example below. **Default:** `true`.",
+                      "name": "compact",
+                      "type": "boolean",
+                      "default": "`true`",
+                      "desc": "Setting this to `false` changes the default indentation to use a line break for each object key instead of lining up multiple properties in one line. It will also break text that is above the `breakLength` size into smaller and better readable chunks and indents objects the same as arrays. Note that no text will be reduced below 16 characters, no matter the `breakLength` size. For more information, see the example below."
+                    },
+                    {
+                      "textRaw": "`sorted` {boolean|Function} If set to `true` or a function, all properties of an object and Set and Map entries will be sorted in the returned string. If set to `true` the [default sort][] is going to be used. If set to a function, it is used as a [compare function][].",
+                      "name": "sorted",
+                      "type": "boolean|Function",
+                      "desc": "If set to `true` or a function, all properties of an object and Set and Map entries will be sorted in the returned string. If set to `true` the [default sort][] is going to be used. If set to a function, it is used as a [compare function][]."
+                    }
+                  ],
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>The <code>util.inspect()</code> method returns a string representation of <code>object</code> that is\nintended for debugging. The output of <code>util.inspect</code> may change at any time\nand should not be depended upon programmatically. Additional <code>options</code> may be\npassed that alter certain aspects of the formatted string.\n<code>util.inspect()</code> will use the constructor's name and/or <code>@@toStringTag</code> to make\nan identifiable tag for an inspected value.</p>\n<pre><code class=\"language-js\">class Foo {\n  get [Symbol.toStringTag]() {\n    return 'bar';\n  }\n}\n\nclass Bar {}\n\nconst baz = Object.create(null, { [Symbol.toStringTag]: { value: 'foo' } });\n\nutil.inspect(new Foo()); // 'Foo [bar] {}'\nutil.inspect(new Bar()); // 'Bar {}'\nutil.inspect(baz);       // '[foo] {}'\n</code></pre>\n<p>The following example inspects all properties of the <code>util</code> object:</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nconsole.log(util.inspect(util, { showHidden: true, depth: null }));\n</code></pre>\n<p>Values may supply their own custom <code>inspect(depth, opts)</code> functions, when\ncalled these receive the current <code>depth</code> in the recursive inspection, as well as\nthe options object passed to <code>util.inspect()</code>.</p>\n<p>The following example highlights the difference with the <code>compact</code> option:</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nconst o = {\n  a: [1, 2, [[\n    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do ' +\n      'eiusmod tempor incididunt ut labore et dolore magna aliqua.',\n    'test',\n    'foo']], 4],\n  b: new Map([['za', 1], ['zb', 'test']])\n};\nconsole.log(util.inspect(o, { compact: true, depth: 5, breakLength: 80 }));\n\n// This will print\n\n// { a:\n//   [ 1,\n//     2,\n//     [ [ 'Lorem ipsum dolor sit amet, consectetur [...]', // A long line\n//           'test',\n//           'foo' ] ],\n//     4 ],\n//   b: Map { 'za' => 1, 'zb' => 'test' } }\n\n// Setting `compact` to false changes the output to be more reader friendly.\nconsole.log(util.inspect(o, { compact: false, depth: 5, breakLength: 80 }));\n\n// {\n//   a: [\n//     1,\n//     2,\n//     [\n//       [\n//         'Lorem ipsum dolor sit amet, consectetur ' +\n//           'adipiscing elit, sed do eiusmod tempor ' +\n//           'incididunt ut labore et dolore magna ' +\n//           'aliqua.,\n//         'test',\n//         'foo'\n//       ]\n//     ],\n//     4\n//   ],\n//   b: Map {\n//     'za' => 1,\n//     'zb' => 'test'\n//   }\n// }\n\n// Setting `breakLength` to e.g. 150 will print the \"Lorem ipsum\" text in a\n// single line.\n// Reducing the `breakLength` will split the \"Lorem ipsum\" text in smaller\n// chunks.\n</code></pre>\n<p>Using the <code>showHidden</code> option allows to inspect <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap\"><code>WeakMap</code></a> and <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet\"><code>WeakSet</code></a>\nentries. If there are more entries than <code>maxArrayLength</code>, there is no guarantee\nwhich entries are displayed. That means retrieving the same <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet\"><code>WeakSet</code></a>\nentries twice might actually result in a different output. Besides this any item\nmight be collected at any point of time by the garbage collector if there is no\nstrong reference left to that object. Therefore there is no guarantee to get a\nreliable output.</p>\n<pre><code class=\"language-js\">const { inspect } = require('util');\n\nconst obj = { a: 1 };\nconst obj2 = { b: 2 };\nconst weakSet = new WeakSet([obj, obj2]);\n\nconsole.log(inspect(weakSet, { showHidden: true }));\n// WeakSet { { a: 1 }, { b: 2 } }\n</code></pre>\n<p>The <code>sorted</code> option makes sure the output is identical, no matter of the\nproperties insertion order:</p>\n<pre><code class=\"language-js\">const { inspect } = require('util');\nconst assert = require('assert');\n\nconst o1 = {\n  b: [2, 3, 1],\n  a: '`a` comes before `b`',\n  c: new Set([2, 3, 1])\n};\nconsole.log(inspect(o1, { sorted: true }));\n// { a: '`a` comes before `b`', b: [ 2, 3, 1 ], c: Set { 1, 2, 3 } }\nconsole.log(inspect(o1, { sorted: (a, b) => b.localeCompare(a) }));\n// { c: Set { 3, 2, 1 }, b: [ 2, 3, 1 ], a: '`a` comes before `b`' }\n\nconst o2 = {\n  c: new Set([2, 1, 3]),\n  a: '`a` comes before `b`',\n  b: [2, 3, 1]\n};\nassert.strict.equal(\n  inspect(o1, { sorted: true }),\n  inspect(o2, { sorted: true })\n);\n</code></pre>\n<p>Please note that <code>util.inspect()</code> is a synchronous method that is mainly\nintended as a debugging tool. Some input values can have a significant\nperformance overhead that can block the event loop. Use this function\nwith care and never in a hot code path.</p>"
+        },
+        {
+          "textRaw": "util.inspect(object[, showHidden[, depth[, colors]]])",
+          "type": "method",
+          "name": "inspect",
+          "meta": {
+            "added": [
+              "v0.3.0"
+            ],
+            "changes": [
+              {
+                "version": "v10.12.0",
+                "pr-url": "https://github.com/nodejs/node/pull/22788",
+                "description": "The `sorted` option is supported now."
+              },
+              {
+                "version": "v10.6.0",
+                "pr-url": "https://github.com/nodejs/node/pull/20725",
+                "description": "Inspecting linked lists and similar objects is now possible up to the maximum call stack size."
+              },
+              {
+                "version": "v10.0.0",
+                "pr-url": "https://github.com/nodejs/node/pull/19259",
+                "description": "The `WeakMap` and `WeakSet` entries can now be inspected."
+              },
+              {
+                "version": "v9.9.0",
+                "pr-url": "https://github.com/nodejs/node/pull/17576",
+                "description": "The `compact` option is supported now."
+              },
+              {
+                "version": "v6.6.0",
+                "pr-url": "https://github.com/nodejs/node/pull/8174",
+                "description": "Custom inspection functions can now return `this`."
+              },
+              {
+                "version": "v6.3.0",
+                "pr-url": "https://github.com/nodejs/node/pull/7499",
+                "description": "The `breakLength` option is supported now."
+              },
+              {
+                "version": "v6.1.0",
+                "pr-url": "https://github.com/nodejs/node/pull/6334",
+                "description": "The `maxArrayLength` option is supported now; in particular, long arrays are truncated by default."
+              },
+              {
+                "version": "v6.1.0",
+                "pr-url": "https://github.com/nodejs/node/pull/6465",
+                "description": "The `showProxy` option is supported now."
+              }
+            ]
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {string} The representation of passed object",
+                "name": "return",
+                "type": "string",
+                "desc": "The representation of passed object"
+              },
+              "params": [
+                {
+                  "textRaw": "`object` {any} Any JavaScript primitive or `Object`.",
+                  "name": "object",
+                  "type": "any",
+                  "desc": "Any JavaScript primitive or `Object`."
+                },
+                {
+                  "textRaw": "`showHidden` {boolean} If `true`, the `object`'s non-enumerable symbols and properties will be included in the formatted result as well as [`WeakMap`][] and [`WeakSet`][] entries. **Default:** `false`.",
+                  "name": "showHidden",
+                  "type": "boolean",
+                  "default": "`false`",
+                  "desc": "If `true`, the `object`'s non-enumerable symbols and properties will be included in the formatted result as well as [`WeakMap`][] and [`WeakSet`][] entries.",
+                  "optional": true
+                },
+                {
+                  "textRaw": "`depth` {number} Specifies the number of times to recurse while formatting the `object`. This is useful for inspecting large complicated objects. To make it recurse up to the maximum call stack size pass `Infinity` or `null`. **Default:** `2`.",
+                  "name": "depth",
+                  "type": "number",
+                  "default": "`2`",
+                  "desc": "Specifies the number of times to recurse while formatting the `object`. This is useful for inspecting large complicated objects. To make it recurse up to the maximum call stack size pass `Infinity` or `null`.",
+                  "optional": true
+                },
+                {
+                  "textRaw": "`colors` {boolean} If `true`, the output will be styled with ANSI color codes. Colors are customizable, see [Customizing `util.inspect` colors][]. **Default:** `false`.",
+                  "name": "colors",
+                  "type": "boolean",
+                  "default": "`false`",
+                  "desc": "If `true`, the output will be styled with ANSI color codes. Colors are customizable, see [Customizing `util.inspect` colors][].",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>The <code>util.inspect()</code> method returns a string representation of <code>object</code> that is\nintended for debugging. The output of <code>util.inspect</code> may change at any time\nand should not be depended upon programmatically. Additional <code>options</code> may be\npassed that alter certain aspects of the formatted string.\n<code>util.inspect()</code> will use the constructor's name and/or <code>@@toStringTag</code> to make\nan identifiable tag for an inspected value.</p>\n<pre><code class=\"language-js\">class Foo {\n  get [Symbol.toStringTag]() {\n    return 'bar';\n  }\n}\n\nclass Bar {}\n\nconst baz = Object.create(null, { [Symbol.toStringTag]: { value: 'foo' } });\n\nutil.inspect(new Foo()); // 'Foo [bar] {}'\nutil.inspect(new Bar()); // 'Bar {}'\nutil.inspect(baz);       // '[foo] {}'\n</code></pre>\n<p>The following example inspects all properties of the <code>util</code> object:</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nconsole.log(util.inspect(util, { showHidden: true, depth: null }));\n</code></pre>\n<p>Values may supply their own custom <code>inspect(depth, opts)</code> functions, when\ncalled these receive the current <code>depth</code> in the recursive inspection, as well as\nthe options object passed to <code>util.inspect()</code>.</p>\n<p>The following example highlights the difference with the <code>compact</code> option:</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nconst o = {\n  a: [1, 2, [[\n    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do ' +\n      'eiusmod tempor incididunt ut labore et dolore magna aliqua.',\n    'test',\n    'foo']], 4],\n  b: new Map([['za', 1], ['zb', 'test']])\n};\nconsole.log(util.inspect(o, { compact: true, depth: 5, breakLength: 80 }));\n\n// This will print\n\n// { a:\n//   [ 1,\n//     2,\n//     [ [ 'Lorem ipsum dolor sit amet, consectetur [...]', // A long line\n//           'test',\n//           'foo' ] ],\n//     4 ],\n//   b: Map { 'za' => 1, 'zb' => 'test' } }\n\n// Setting `compact` to false changes the output to be more reader friendly.\nconsole.log(util.inspect(o, { compact: false, depth: 5, breakLength: 80 }));\n\n// {\n//   a: [\n//     1,\n//     2,\n//     [\n//       [\n//         'Lorem ipsum dolor sit amet, consectetur ' +\n//           'adipiscing elit, sed do eiusmod tempor ' +\n//           'incididunt ut labore et dolore magna ' +\n//           'aliqua.,\n//         'test',\n//         'foo'\n//       ]\n//     ],\n//     4\n//   ],\n//   b: Map {\n//     'za' => 1,\n//     'zb' => 'test'\n//   }\n// }\n\n// Setting `breakLength` to e.g. 150 will print the \"Lorem ipsum\" text in a\n// single line.\n// Reducing the `breakLength` will split the \"Lorem ipsum\" text in smaller\n// chunks.\n</code></pre>\n<p>Using the <code>showHidden</code> option allows to inspect <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap\"><code>WeakMap</code></a> and <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet\"><code>WeakSet</code></a>\nentries. If there are more entries than <code>maxArrayLength</code>, there is no guarantee\nwhich entries are displayed. That means retrieving the same <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet\"><code>WeakSet</code></a>\nentries twice might actually result in a different output. Besides this any item\nmight be collected at any point of time by the garbage collector if there is no\nstrong reference left to that object. Therefore there is no guarantee to get a\nreliable output.</p>\n<pre><code class=\"language-js\">const { inspect } = require('util');\n\nconst obj = { a: 1 };\nconst obj2 = { b: 2 };\nconst weakSet = new WeakSet([obj, obj2]);\n\nconsole.log(inspect(weakSet, { showHidden: true }));\n// WeakSet { { a: 1 }, { b: 2 } }\n</code></pre>\n<p>The <code>sorted</code> option makes sure the output is identical, no matter of the\nproperties insertion order:</p>\n<pre><code class=\"language-js\">const { inspect } = require('util');\nconst assert = require('assert');\n\nconst o1 = {\n  b: [2, 3, 1],\n  a: '`a` comes before `b`',\n  c: new Set([2, 3, 1])\n};\nconsole.log(inspect(o1, { sorted: true }));\n// { a: '`a` comes before `b`', b: [ 2, 3, 1 ], c: Set { 1, 2, 3 } }\nconsole.log(inspect(o1, { sorted: (a, b) => b.localeCompare(a) }));\n// { c: Set { 3, 2, 1 }, b: [ 2, 3, 1 ], a: '`a` comes before `b`' }\n\nconst o2 = {\n  c: new Set([2, 1, 3]),\n  a: '`a` comes before `b`',\n  b: [2, 3, 1]\n};\nassert.strict.equal(\n  inspect(o1, { sorted: true }),\n  inspect(o2, { sorted: true })\n);\n</code></pre>\n<p>Please note that <code>util.inspect()</code> is a synchronous method that is mainly\nintended as a debugging tool. Some input values can have a significant\nperformance overhead that can block the event loop. Use this function\nwith care and never in a hot code path.</p>",
+          "miscs": [
+            {
+              "textRaw": "Customizing `util.inspect` colors",
+              "name": "Customizing `util.inspect` colors",
+              "type": "misc",
+              "desc": "<p>Color output (if enabled) of <code>util.inspect</code> is customizable globally\nvia the <code>util.inspect.styles</code> and <code>util.inspect.colors</code> properties.</p>\n<p><code>util.inspect.styles</code> is a map associating a style name to a color from\n<code>util.inspect.colors</code>.</p>\n<p>The default styles and associated colors are:</p>\n<ul>\n<li><code>number</code> - <code>yellow</code></li>\n<li><code>boolean</code> - <code>yellow</code></li>\n<li><code>string</code> - <code>green</code></li>\n<li><code>date</code> - <code>magenta</code></li>\n<li><code>regexp</code> - <code>red</code></li>\n<li><code>null</code> - <code>bold</code></li>\n<li><code>undefined</code> - <code>grey</code></li>\n<li><code>special</code> - <code>cyan</code> (only applied to functions at this time)</li>\n<li><code>name</code> - (no styling)</li>\n</ul>\n<p>The predefined color codes are: <code>white</code>, <code>grey</code>, <code>black</code>, <code>blue</code>, <code>cyan</code>,\n<code>green</code>, <code>magenta</code>, <code>red</code> and <code>yellow</code>. There are also <code>bold</code>, <code>italic</code>,\n<code>underline</code> and <code>inverse</code> codes.</p>\n<p>Color styling uses ANSI control codes that may not be supported on all\nterminals.</p>"
+            },
+            {
+              "textRaw": "Custom inspection functions on Objects",
+              "name": "Custom inspection functions on Objects",
+              "type": "misc",
+              "desc": "<p>Objects may also define their own\n<a href=\"#util_util_inspect_custom\"><code>[util.inspect.custom](depth, opts)</code></a> (or the equivalent\nbut deprecated <code>inspect(depth, opts)</code>) function, which <code>util.inspect()</code> will\ninvoke and use the result of when inspecting the object:</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nclass Box {\n  constructor(value) {\n    this.value = value;\n  }\n\n  [util.inspect.custom](depth, options) {\n    if (depth &#x3C; 0) {\n      return options.stylize('[Box]', 'special');\n    }\n\n    const newOptions = Object.assign({}, options, {\n      depth: options.depth === null ? null : options.depth - 1\n    });\n\n    // Five space padding because that's the size of \"Box&#x3C; \".\n    const padding = ' '.repeat(5);\n    const inner = util.inspect(this.value, newOptions)\n                      .replace(/\\n/g, `\\n${padding}`);\n    return `${options.stylize('Box', 'special')}&#x3C; ${inner} >`;\n  }\n}\n\nconst box = new Box(true);\n\nutil.inspect(box);\n// Returns: \"Box&#x3C; true >\"\n</code></pre>\n<p>Custom <code>[util.inspect.custom](depth, opts)</code> functions typically return a string\nbut may return a value of any type that will be formatted accordingly by\n<code>util.inspect()</code>.</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nconst obj = { foo: 'this will not show up in the inspect() output' };\nobj[util.inspect.custom] = (depth) => {\n  return { bar: 'baz' };\n};\n\nutil.inspect(obj);\n// Returns: \"{ bar: 'baz' }\"\n</code></pre>"
+            }
+          ],
+          "properties": [
+            {
+              "textRaw": "`custom` {symbol} that can be used to declare custom inspect functions.",
+              "type": "symbol",
+              "name": "custom",
+              "meta": {
+                "added": [
+                  "v6.6.0"
+                ],
+                "changes": [
+                  {
+                    "version": "v10.12.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/20857",
+                    "description": "This is now defined as a shared symbol."
+                  }
+                ]
+              },
+              "desc": "<p>In addition to being accessible through <code>util.inspect.custom</code>, this\nsymbol is <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/for\">registered globally</a> and can be\naccessed in any environment as <code>Symbol.for('nodejs.util.inspect.custom')</code>.</p>\n<pre><code class=\"language-js\">const inspect = Symbol.for('nodejs.util.inspect.custom');\n\nclass Password {\n  constructor(value) {\n    this.value = value;\n  }\n\n  toString() {\n    return 'xxxxxxxx';\n  }\n\n  [inspect]() {\n    return `Password &#x3C;${this.toString()}>`;\n  }\n}\n\nconst password = new Password('r0sebud');\nconsole.log(password);\n// Prints Password &#x3C;xxxxxxxx>\n</code></pre>\n<p>See <a href=\"#util_custom_inspection_functions_on_objects\">Custom inspection functions on Objects</a> for more details.</p>",
+              "shortDesc": "that can be used to declare custom inspect functions."
+            },
+            {
+              "textRaw": "util.inspect.defaultOptions",
+              "name": "defaultOptions",
+              "meta": {
+                "added": [
+                  "v6.4.0"
+                ],
+                "changes": []
+              },
+              "desc": "<p>The <code>defaultOptions</code> value allows customization of the default options used by\n<code>util.inspect</code>. This is useful for functions like <code>console.log</code> or\n<code>util.format</code> which implicitly call into <code>util.inspect</code>. It shall be set to an\nobject containing one or more valid <a href=\"#util_util_inspect_object_options\"><code>util.inspect()</code></a> options. Setting\noption properties directly is also supported.</p>\n<pre><code class=\"language-js\">const util = require('util');\nconst arr = Array(101).fill(0);\n\nconsole.log(arr); // logs the truncated array\nutil.inspect.defaultOptions.maxArrayLength = null;\nconsole.log(arr); // logs the full array\n</code></pre>"
+            }
+          ]
+        },
+        {
+          "textRaw": "util.isDeepStrictEqual(val1, val2)",
+          "type": "method",
+          "name": "isDeepStrictEqual",
+          "meta": {
+            "added": [
+              "v9.0.0"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {boolean}",
+                "name": "return",
+                "type": "boolean"
+              },
+              "params": [
+                {
+                  "textRaw": "`val1` {any}",
+                  "name": "val1",
+                  "type": "any"
+                },
+                {
+                  "textRaw": "`val2` {any}",
+                  "name": "val2",
+                  "type": "any"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>Returns <code>true</code> if there is deep strict equality between <code>val1</code> and <code>val2</code>.\nOtherwise, returns <code>false</code>.</p>\n<p>See <a href=\"assert.html#assert_assert_deepstrictequal_actual_expected_message\"><code>assert.deepStrictEqual()</code></a> for more information about deep strict\nequality.</p>"
+        },
+        {
+          "textRaw": "util.promisify(original)",
+          "type": "method",
+          "name": "promisify",
+          "meta": {
+            "added": [
+              "v8.0.0"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {Function}",
+                "name": "return",
+                "type": "Function"
+              },
+              "params": [
+                {
+                  "textRaw": "`original` {Function}",
+                  "name": "original",
+                  "type": "Function"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>Takes a function following the common error-first callback style, i.e. taking\nan <code>(err, value) => ...</code> callback as the last argument, and returns a version\nthat returns promises.</p>\n<pre><code class=\"language-js\">const util = require('util');\nconst fs = require('fs');\n\nconst stat = util.promisify(fs.stat);\nstat('.').then((stats) => {\n  // Do something with `stats`\n}).catch((error) => {\n  // Handle the error.\n});\n</code></pre>\n<p>Or, equivalently using <code>async function</code>s:</p>\n<pre><code class=\"language-js\">const util = require('util');\nconst fs = require('fs');\n\nconst stat = util.promisify(fs.stat);\n\nasync function callStat() {\n  const stats = await stat('.');\n  console.log(`This directory is owned by ${stats.uid}`);\n}\n</code></pre>\n<p>If there is an <code>original[util.promisify.custom]</code> property present, <code>promisify</code>\nwill return its value, see <a href=\"#util_custom_promisified_functions\">Custom promisified functions</a>.</p>\n<p><code>promisify()</code> assumes that <code>original</code> is a function taking a callback as its\nfinal argument in all cases. If <code>original</code> is not a function, <code>promisify()</code>\nwill throw an error. If <code>original</code> is a function but its last argument is not\nan error-first callback, it will still be passed an error-first\ncallback as its last argument.</p>",
+          "modules": [
+            {
+              "textRaw": "Custom promisified functions",
+              "name": "custom_promisified_functions",
+              "desc": "<p>Using the <code>util.promisify.custom</code> symbol one can override the return value of\n<a href=\"#util_util_promisify_original\"><code>util.promisify()</code></a>:</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nfunction doSomething(foo, callback) {\n  // ...\n}\n\ndoSomething[util.promisify.custom] = (foo) => {\n  return getPromiseSomehow();\n};\n\nconst promisified = util.promisify(doSomething);\nconsole.log(promisified === doSomething[util.promisify.custom]);\n// prints 'true'\n</code></pre>\n<p>This can be useful for cases where the original function does not follow the\nstandard format of taking an error-first callback as the last argument.</p>\n<p>For example, with a function that takes in\n<code>(foo, onSuccessCallback, onErrorCallback)</code>:</p>\n<pre><code class=\"language-js\">doSomething[util.promisify.custom] = (foo) => {\n  return new Promise((resolve, reject) => {\n    doSomething(foo, resolve, reject);\n  });\n};\n</code></pre>\n<p>If <code>promisify.custom</code> is defined but is not a function, <code>promisify()</code> will\nthrow an error.</p>",
+              "type": "module",
+              "displayName": "Custom promisified functions"
+            }
+          ],
+          "properties": [
+            {
+              "textRaw": "`custom` {symbol}",
+              "type": "symbol",
+              "name": "custom",
+              "meta": {
+                "added": [
+                  "v8.0.0"
+                ],
+                "changes": []
+              },
+              "desc": "<p>A <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Symbol_type\" class=\"type\">&lt;symbol&gt;</a> that can be used to declare custom promisified variants of functions,\nsee <a href=\"#util_custom_promisified_functions\">Custom promisified functions</a>.</p>"
+            }
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "textRaw": "Class: util.TextDecoder",
+          "type": "class",
+          "name": "util.TextDecoder",
+          "meta": {
+            "added": [
+              "v8.3.0"
+            ],
+            "changes": []
+          },
+          "desc": "<p>An implementation of the <a href=\"https://encoding.spec.whatwg.org/\">WHATWG Encoding Standard</a> <code>TextDecoder</code> API.</p>\n<pre><code class=\"language-js\">const decoder = new TextDecoder('shift_jis');\nlet string = '';\nlet buffer;\nwhile (buffer = getNextChunkSomehow()) {\n  string += decoder.decode(buffer, { stream: true });\n}\nstring += decoder.decode(); // end-of-stream\n</code></pre>",
+          "modules": [
+            {
+              "textRaw": "WHATWG Supported Encodings",
+              "name": "whatwg_supported_encodings",
+              "desc": "<p>Per the <a href=\"https://encoding.spec.whatwg.org/\">WHATWG Encoding Standard</a>, the encodings supported by the\n<code>TextDecoder</code> API are outlined in the tables below. For each encoding,\none or more aliases may be used.</p>\n<p>Different Node.js build configurations support different sets of encodings.\nWhile a very basic set of encodings is supported even on Node.js builds without\nICU enabled, support for some encodings is provided only when Node.js is built\nwith ICU and using the full ICU data (see <a href=\"intl.html\">Internationalization</a>).</p>",
+              "modules": [
+                {
+                  "textRaw": "Encodings Supported Without ICU",
+                  "name": "encodings_supported_without_icu",
+                  "desc": "<table>\n<thead>\n<tr>\n<th>Encoding</th>\n<th>Aliases</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>'utf-8'</code></td>\n<td><code>'unicode-1-1-utf-8'</code>, <code>'utf8'</code></td>\n</tr>\n<tr>\n<td><code>'utf-16le'</code></td>\n<td><code>'utf-16'</code></td>\n</tr>\n</tbody>\n</table>",
+                  "type": "module",
+                  "displayName": "Encodings Supported Without ICU"
+                },
+                {
+                  "textRaw": "Encodings Supported by Default (With ICU)",
+                  "name": "encodings_supported_by_default_(with_icu)",
+                  "desc": "<table>\n<thead>\n<tr>\n<th>Encoding</th>\n<th>Aliases</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>'utf-8'</code></td>\n<td><code>'unicode-1-1-utf-8'</code>, <code>'utf8'</code></td>\n</tr>\n<tr>\n<td><code>'utf-16le'</code></td>\n<td><code>'utf-16'</code></td>\n</tr>\n<tr>\n<td><code>'utf-16be'</code></td>\n<td></td>\n</tr>\n</tbody>\n</table>",
+                  "type": "module",
+                  "displayName": "Encodings Supported by Default (With ICU)"
+                },
+                {
+                  "textRaw": "Encodings Requiring Full ICU Data",
+                  "name": "encodings_requiring_full_icu_data",
+                  "desc": "<table>\n<thead>\n<tr>\n<th>Encoding</th>\n<th>Aliases</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>'ibm866'</code></td>\n<td><code>'866'</code>, <code>'cp866'</code>, <code>'csibm866'</code></td>\n</tr>\n<tr>\n<td><code>'iso-8859-2'</code></td>\n<td><code>'csisolatin2'</code>, <code>'iso-ir-101'</code>, <code>'iso8859-2'</code>, <code>'iso88592'</code>, <code>'iso_8859-2'</code>, <code>'iso_8859-2:1987'</code>, <code>'l2'</code>, <code>'latin2'</code></td>\n</tr>\n<tr>\n<td><code>'iso-8859-3'</code></td>\n<td><code>'csisolatin3'</code>, <code>'iso-ir-109'</code>, <code>'iso8859-3'</code>, <code>'iso88593'</code>, <code>'iso_8859-3'</code>, <code>'iso_8859-3:1988'</code>, <code>'l3'</code>, <code>'latin3'</code></td>\n</tr>\n<tr>\n<td><code>'iso-8859-4'</code></td>\n<td><code>'csisolatin4'</code>, <code>'iso-ir-110'</code>, <code>'iso8859-4'</code>, <code>'iso88594'</code>, <code>'iso_8859-4'</code>, <code>'iso_8859-4:1988'</code>, <code>'l4'</code>, <code>'latin4'</code></td>\n</tr>\n<tr>\n<td><code>'iso-8859-5'</code></td>\n<td><code>'csisolatincyrillic'</code>, <code>'cyrillic'</code>, <code>'iso-ir-144'</code>, <code>'iso8859-5'</code>, <code>'iso88595'</code>, <code>'iso_8859-5'</code>, <code>'iso_8859-5:1988'</code></td>\n</tr>\n<tr>\n<td><code>'iso-8859-6'</code></td>\n<td><code>'arabic'</code>, <code>'asmo-708'</code>, <code>'csiso88596e'</code>, <code>'csiso88596i'</code>, <code>'csisolatinarabic'</code>, <code>'ecma-114'</code>, <code>'iso-8859-6-e'</code>, <code>'iso-8859-6-i'</code>, <code>'iso-ir-127'</code>, <code>'iso8859-6'</code>, <code>'iso88596'</code>, <code>'iso_8859-6'</code>, <code>'iso_8859-6:1987'</code></td>\n</tr>\n<tr>\n<td><code>'iso-8859-7'</code></td>\n<td><code>'csisolatingreek'</code>, <code>'ecma-118'</code>, <code>'elot_928'</code>, <code>'greek'</code>, <code>'greek8'</code>, <code>'iso-ir-126'</code>, <code>'iso8859-7'</code>, <code>'iso88597'</code>, <code>'iso_8859-7'</code>, <code>'iso_8859-7:1987'</code>, <code>'sun_eu_greek'</code></td>\n</tr>\n<tr>\n<td><code>'iso-8859-8'</code></td>\n<td><code>'csiso88598e'</code>, <code>'csisolatinhebrew'</code>, <code>'hebrew'</code>, <code>'iso-8859-8-e'</code>, <code>'iso-ir-138'</code>, <code>'iso8859-8'</code>, <code>'iso88598'</code>, <code>'iso_8859-8'</code>, <code>'iso_8859-8:1988'</code>, <code>'visual'</code></td>\n</tr>\n<tr>\n<td><code>'iso-8859-8-i'</code></td>\n<td><code>'csiso88598i'</code>, <code>'logical'</code></td>\n</tr>\n<tr>\n<td><code>'iso-8859-10'</code></td>\n<td><code>'csisolatin6'</code>, <code>'iso-ir-157'</code>, <code>'iso8859-10'</code>, <code>'iso885910'</code>, <code>'l6'</code>, <code>'latin6'</code></td>\n</tr>\n<tr>\n<td><code>'iso-8859-13'</code></td>\n<td><code>'iso8859-13'</code>, <code>'iso885913'</code></td>\n</tr>\n<tr>\n<td><code>'iso-8859-14'</code></td>\n<td><code>'iso8859-14'</code>, <code>'iso885914'</code></td>\n</tr>\n<tr>\n<td><code>'iso-8859-15'</code></td>\n<td><code>'csisolatin9'</code>, <code>'iso8859-15'</code>, <code>'iso885915'</code>, <code>'iso_8859-15'</code>, <code>'l9'</code></td>\n</tr>\n<tr>\n<td><code>'koi8-r'</code></td>\n<td><code>'cskoi8r'</code>, <code>'koi'</code>, <code>'koi8'</code>, <code>'koi8_r'</code></td>\n</tr>\n<tr>\n<td><code>'koi8-u'</code></td>\n<td><code>'koi8-ru'</code></td>\n</tr>\n<tr>\n<td><code>'macintosh'</code></td>\n<td><code>'csmacintosh'</code>, <code>'mac'</code>, <code>'x-mac-roman'</code></td>\n</tr>\n<tr>\n<td><code>'windows-874'</code></td>\n<td><code>'dos-874'</code>, <code>'iso-8859-11'</code>, <code>'iso8859-11'</code>, <code>'iso885911'</code>, <code>'tis-620'</code></td>\n</tr>\n<tr>\n<td><code>'windows-1250'</code></td>\n<td><code>'cp1250'</code>, <code>'x-cp1250'</code></td>\n</tr>\n<tr>\n<td><code>'windows-1251'</code></td>\n<td><code>'cp1251'</code>, <code>'x-cp1251'</code></td>\n</tr>\n<tr>\n<td><code>'windows-1252'</code></td>\n<td><code>'ansi_x3.4-1968'</code>, <code>'ascii'</code>, <code>'cp1252'</code>, <code>'cp819'</code>, <code>'csisolatin1'</code>, <code>'ibm819'</code>, <code>'iso-8859-1'</code>, <code>'iso-ir-100'</code>, <code>'iso8859-1'</code>, <code>'iso88591'</code>, <code>'iso_8859-1'</code>, <code>'iso_8859-1:1987'</code>, <code>'l1'</code>, <code>'latin1'</code>, <code>'us-ascii'</code>, <code>'x-cp1252'</code></td>\n</tr>\n<tr>\n<td><code>'windows-1253'</code></td>\n<td><code>'cp1253'</code>, <code>'x-cp1253'</code></td>\n</tr>\n<tr>\n<td><code>'windows-1254'</code></td>\n<td><code>'cp1254'</code>, <code>'csisolatin5'</code>, <code>'iso-8859-9'</code>, <code>'iso-ir-148'</code>, <code>'iso8859-9'</code>, <code>'iso88599'</code>, <code>'iso_8859-9'</code>, <code>'iso_8859-9:1989'</code>, <code>'l5'</code>, <code>'latin5'</code>, <code>'x-cp1254'</code></td>\n</tr>\n<tr>\n<td><code>'windows-1255'</code></td>\n<td><code>'cp1255'</code>, <code>'x-cp1255'</code></td>\n</tr>\n<tr>\n<td><code>'windows-1256'</code></td>\n<td><code>'cp1256'</code>, <code>'x-cp1256'</code></td>\n</tr>\n<tr>\n<td><code>'windows-1257'</code></td>\n<td><code>'cp1257'</code>, <code>'x-cp1257'</code></td>\n</tr>\n<tr>\n<td><code>'windows-1258'</code></td>\n<td><code>'cp1258'</code>, <code>'x-cp1258'</code></td>\n</tr>\n<tr>\n<td><code>'x-mac-cyrillic'</code></td>\n<td><code>'x-mac-ukrainian'</code></td>\n</tr>\n<tr>\n<td><code>'gbk'</code></td>\n<td><code>'chinese'</code>, <code>'csgb2312'</code>, <code>'csiso58gb231280'</code>, <code>'gb2312'</code>, <code>'gb_2312'</code>, <code>'gb_2312-80'</code>, <code>'iso-ir-58'</code>, <code>'x-gbk'</code></td>\n</tr>\n<tr>\n<td><code>'gb18030'</code></td>\n<td></td>\n</tr>\n<tr>\n<td><code>'big5'</code></td>\n<td><code>'big5-hkscs'</code>, <code>'cn-big5'</code>, <code>'csbig5'</code>, <code>'x-x-big5'</code></td>\n</tr>\n<tr>\n<td><code>'euc-jp'</code></td>\n<td><code>'cseucpkdfmtjapanese'</code>, <code>'x-euc-jp'</code></td>\n</tr>\n<tr>\n<td><code>'iso-2022-jp'</code></td>\n<td><code>'csiso2022jp'</code></td>\n</tr>\n<tr>\n<td><code>'shift_jis'</code></td>\n<td><code>'csshiftjis'</code>, <code>'ms932'</code>, <code>'ms_kanji'</code>, <code>'shift-jis'</code>, <code>'sjis'</code>, <code>'windows-31j'</code>, <code>'x-sjis'</code></td>\n</tr>\n<tr>\n<td><code>'euc-kr'</code></td>\n<td><code>'cseuckr'</code>, <code>'csksc56011987'</code>, <code>'iso-ir-149'</code>, <code>'korean'</code>, <code>'ks_c_5601-1987'</code>, <code>'ks_c_5601-1989'</code>, <code>'ksc5601'</code>, <code>'ksc_5601'</code>, <code>'windows-949'</code></td>\n</tr>\n</tbody>\n</table>\n<p>The <code>'iso-8859-16'</code> encoding listed in the <a href=\"https://encoding.spec.whatwg.org/\">WHATWG Encoding Standard</a>\nis not supported.</p>",
+                  "type": "module",
+                  "displayName": "Encodings Requiring Full ICU Data"
+                }
+              ],
+              "type": "module",
+              "displayName": "WHATWG Supported Encodings"
+            }
+          ],
+          "methods": [
+            {
+              "textRaw": "textDecoder.decode([input[, options]])",
+              "type": "method",
+              "name": "decode",
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {string}",
+                    "name": "return",
+                    "type": "string"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`input` {ArrayBuffer|DataView|TypedArray} An `ArrayBuffer`, `DataView` or `Typed Array` instance containing the encoded data.",
+                      "name": "input",
+                      "type": "ArrayBuffer|DataView|TypedArray",
+                      "desc": "An `ArrayBuffer`, `DataView` or `Typed Array` instance containing the encoded data.",
+                      "optional": true
+                    },
+                    {
+                      "textRaw": "`options` {Object}",
+                      "name": "options",
+                      "type": "Object",
+                      "options": [
+                        {
+                          "textRaw": "`stream` {boolean} `true` if additional chunks of data are expected. **Default:** `false`.",
+                          "name": "stream",
+                          "type": "boolean",
+                          "default": "`false`",
+                          "desc": "`true` if additional chunks of data are expected."
+                        }
+                      ],
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Decodes the <code>input</code> and returns a string. If <code>options.stream</code> is <code>true</code>, any\nincomplete byte sequences occurring at the end of the <code>input</code> are buffered\ninternally and emitted after the next call to <code>textDecoder.decode()</code>.</p>\n<p>If <code>textDecoder.fatal</code> is <code>true</code>, decoding errors that occur will result in a\n<code>TypeError</code> being thrown.</p>"
+            }
+          ],
+          "properties": [
+            {
+              "textRaw": "`encoding` {string}",
+              "type": "string",
+              "name": "encoding",
+              "desc": "<p>The encoding supported by the <code>TextDecoder</code> instance.</p>"
+            },
+            {
+              "textRaw": "`fatal` {boolean}",
+              "type": "boolean",
+              "name": "fatal",
+              "desc": "<p>The value will be <code>true</code> if decoding errors result in a <code>TypeError</code> being\nthrown.</p>"
+            },
+            {
+              "textRaw": "`ignoreBOM` {boolean}",
+              "type": "boolean",
+              "name": "ignoreBOM",
+              "desc": "<p>The value will be <code>true</code> if the decoding result will include the byte order\nmark.</p>"
+            }
+          ],
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`encoding` {string} Identifies the `encoding` that this `TextDecoder` instance supports. **Default:** `'utf-8'`.",
+                  "name": "encoding",
+                  "type": "string",
+                  "default": "`'utf-8'`",
+                  "desc": "Identifies the `encoding` that this `TextDecoder` instance supports.",
+                  "optional": true
+                },
+                {
+                  "textRaw": "`options` {Object}",
+                  "name": "options",
+                  "type": "Object",
+                  "options": [
+                    {
+                      "textRaw": "`fatal` {boolean} `true` if decoding failures are fatal. This option is only supported when ICU is enabled (see [Internationalization][]). **Default:** `false`.",
+                      "name": "fatal",
+                      "type": "boolean",
+                      "default": "`false`",
+                      "desc": "`true` if decoding failures are fatal. This option is only supported when ICU is enabled (see [Internationalization][])."
+                    },
+                    {
+                      "textRaw": "`ignoreBOM` {boolean} When `true`, the `TextDecoder` will include the byte order mark in the decoded result. When `false`, the byte order mark will be removed from the output. This option is only used when `encoding` is `'utf-8'`, `'utf-16be'` or `'utf-16le'`. **Default:** `false`.",
+                      "name": "ignoreBOM",
+                      "type": "boolean",
+                      "default": "`false`",
+                      "desc": "When `true`, the `TextDecoder` will include the byte order mark in the decoded result. When `false`, the byte order mark will be removed from the output. This option is only used when `encoding` is `'utf-8'`, `'utf-16be'` or `'utf-16le'`."
+                    }
+                  ],
+                  "optional": true
+                }
+              ],
+              "desc": "<p>Creates an new <code>TextDecoder</code> instance. The <code>encoding</code> may specify one of the\nsupported encodings or an alias.</p>"
+            }
+          ]
+        },
+        {
+          "textRaw": "Class: util.TextEncoder",
+          "type": "class",
+          "name": "util.TextEncoder",
+          "meta": {
+            "added": [
+              "v8.3.0"
+            ],
+            "changes": []
+          },
+          "desc": "<p>An implementation of the <a href=\"https://encoding.spec.whatwg.org/\">WHATWG Encoding Standard</a> <code>TextEncoder</code> API. All\ninstances of <code>TextEncoder</code> only support UTF-8 encoding.</p>\n<pre><code class=\"language-js\">const encoder = new TextEncoder();\nconst uint8array = encoder.encode('this is some data');\n</code></pre>",
+          "methods": [
+            {
+              "textRaw": "textEncoder.encode([input])",
+              "type": "method",
+              "name": "encode",
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {Uint8Array}",
+                    "name": "return",
+                    "type": "Uint8Array"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`input` {string} The text to encode. **Default:** an empty string.",
+                      "name": "input",
+                      "type": "string",
+                      "default": "an empty string",
+                      "desc": "The text to encode.",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>UTF-8 encodes the <code>input</code> string and returns a <code>Uint8Array</code> containing the\nencoded bytes.</p>"
+            }
+          ],
+          "properties": [
+            {
+              "textRaw": "`encoding` {string}",
+              "type": "string",
+              "name": "encoding",
+              "desc": "<p>The encoding supported by the <code>TextEncoder</code> instance. Always set to <code>'utf-8'</code>.</p>"
+            }
+          ]
+        }
+      ],
+      "properties": [
+        {
+          "textRaw": "util.types",
+          "name": "types",
+          "meta": {
+            "added": [
+              "v10.0.0"
+            ],
+            "changes": []
+          },
+          "desc": "<p><code>util.types</code> provides a number of type checks for different kinds of built-in\nobjects. Unlike <code>instanceof</code> or <code>Object.prototype.toString.call(value)</code>,\nthese checks do not inspect properties of the object that are accessible from\nJavaScript (like their prototype), and usually have the overhead of\ncalling into C++.</p>\n<p>The result generally does not make any guarantees about what kinds of\nproperties or behavior a value exposes in JavaScript. They are primarily\nuseful for addon developers who prefer to do type checking in JavaScript.</p>",
+          "methods": [
+            {
+              "textRaw": "util.types.isAnyArrayBuffer(value)",
+              "type": "method",
+              "name": "isAnyArrayBuffer",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a built-in <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer\"><code>ArrayBuffer</code></a> or\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer\"><code>SharedArrayBuffer</code></a> instance.</p>\n<p>See also <a href=\"#util_util_types_isarraybuffer_value\"><code>util.types.isArrayBuffer()</code></a> and\n<a href=\"#util_util_types_issharedarraybuffer_value\"><code>util.types.isSharedArrayBuffer()</code></a>.</p>\n<pre><code class=\"language-js\">util.types.isAnyArrayBuffer(new ArrayBuffer());  // Returns true\nutil.types.isAnyArrayBuffer(new SharedArrayBuffer());  // Returns true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isArgumentsObject(value)",
+              "type": "method",
+              "name": "isArgumentsObject",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is an <code>arguments</code> object.</p>\n<!-- eslint-disable prefer-rest-params -->\n<pre><code class=\"language-js\">function foo() {\n  util.types.isArgumentsObject(arguments);  // Returns true\n}\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isArrayBuffer(value)",
+              "type": "method",
+              "name": "isArrayBuffer",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a built-in <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer\"><code>ArrayBuffer</code></a> instance.\nThis does <em>not</em> include <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer\"><code>SharedArrayBuffer</code></a> instances. Usually, it is\ndesirable to test for both; See <a href=\"#util_util_types_isanyarraybuffer_value\"><code>util.types.isAnyArrayBuffer()</code></a> for that.</p>\n<pre><code class=\"language-js\">util.types.isArrayBuffer(new ArrayBuffer());  // Returns true\nutil.types.isArrayBuffer(new SharedArrayBuffer());  // Returns false\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isAsyncFunction(value)",
+              "type": "method",
+              "name": "isAsyncFunction",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is an <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function\">async function</a>.\nNote that this only reports back what the JavaScript engine is seeing;\nin particular, the return value may not match the original source code if\na transpilation tool was used.</p>\n<pre><code class=\"language-js\">util.types.isAsyncFunction(function foo() {});  // Returns false\nutil.types.isAsyncFunction(async function foo() {});  // Returns true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isBigInt64Array(value)",
+              "type": "method",
+              "name": "isBigInt64Array",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a <code>BigInt64Array</code> instance.</p>\n<pre><code class=\"language-js\">util.types.isBigInt64Array(new BigInt64Array());   // Returns true\nutil.types.isBigInt64Array(new BigUint64Array());  // Returns false\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isBigUint64Array(value)",
+              "type": "method",
+              "name": "isBigUint64Array",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a <code>BigUint64Array</code> instance.</p>\n<pre><code class=\"language-js\">util.types.isBigUint64Array(new BigInt64Array());   // Returns false\nutil.types.isBigUint64Array(new BigUint64Array());  // Returns true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isBooleanObject(value)",
+              "type": "method",
+              "name": "isBooleanObject",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a boolean object, e.g. created\nby <code>new Boolean()</code>.</p>\n<pre><code class=\"language-js\">util.types.isBooleanObject(false);  // Returns false\nutil.types.isBooleanObject(true);   // Returns false\nutil.types.isBooleanObject(new Boolean(false)); // Returns true\nutil.types.isBooleanObject(new Boolean(true));  // Returns true\nutil.types.isBooleanObject(Boolean(false)); // Returns false\nutil.types.isBooleanObject(Boolean(true));  // Returns false\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isBoxedPrimitive(value)",
+              "type": "method",
+              "name": "isBoxedPrimitive",
+              "meta": {
+                "added": [
+                  "v10.11.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is any boxed primitive object, e.g. created\nby <code>new Boolean()</code>, <code>new String()</code> or <code>Object(Symbol())</code>.</p>\n<p>For example:</p>\n<pre><code class=\"language-js\">util.types.isBoxedPrimitive(false); // Returns false\nutil.types.isBoxedPrimitive(new Boolean(false)); // Returns true\nutil.types.isBoxedPrimitive(Symbol('foo')); // Returns false\nutil.types.isBoxedPrimitive(Object(Symbol('foo'))); // Returns true\nutil.types.isBoxedPrimitive(Object(BigInt(5))); // Returns true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isDataView(value)",
+              "type": "method",
+              "name": "isDataView",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a built-in <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView\"><code>DataView</code></a> instance.</p>\n<pre><code class=\"language-js\">const ab = new ArrayBuffer(20);\nutil.types.isDataView(new DataView(ab));  // Returns true\nutil.types.isDataView(new Float64Array());  // Returns false\n</code></pre>\n<p>See also <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/isView\"><code>ArrayBuffer.isView()</code></a>.</p>"
+            },
+            {
+              "textRaw": "util.types.isDate(value)",
+              "type": "method",
+              "name": "isDate",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a built-in <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date\"><code>Date</code></a> instance.</p>\n<pre><code class=\"language-js\">util.types.isDate(new Date());  // Returns true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isExternal(value)",
+              "type": "method",
+              "name": "isExternal",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a native <code>External</code> value.</p>"
+            },
+            {
+              "textRaw": "util.types.isFloat32Array(value)",
+              "type": "method",
+              "name": "isFloat32Array",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a built-in <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array\"><code>Float32Array</code></a> instance.</p>\n<pre><code class=\"language-js\">util.types.isFloat32Array(new ArrayBuffer());  // Returns false\nutil.types.isFloat32Array(new Float32Array());  // Returns true\nutil.types.isFloat32Array(new Float64Array());  // Returns false\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isFloat64Array(value)",
+              "type": "method",
+              "name": "isFloat64Array",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a built-in <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array\"><code>Float64Array</code></a> instance.</p>\n<pre><code class=\"language-js\">util.types.isFloat64Array(new ArrayBuffer());  // Returns false\nutil.types.isFloat64Array(new Uint8Array());  // Returns false\nutil.types.isFloat64Array(new Float64Array());  // Returns true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isGeneratorFunction(value)",
+              "type": "method",
+              "name": "isGeneratorFunction",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a generator function.\nNote that this only reports back what the JavaScript engine is seeing;\nin particular, the return value may not match the original source code if\na transpilation tool was used.</p>\n<pre><code class=\"language-js\">util.types.isGeneratorFunction(function foo() {});  // Returns false\nutil.types.isGeneratorFunction(function* foo() {});  // Returns true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isGeneratorObject(value)",
+              "type": "method",
+              "name": "isGeneratorObject",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a generator object as returned from a\nbuilt-in generator function.\nNote that this only reports back what the JavaScript engine is seeing;\nin particular, the return value may not match the original source code if\na transpilation tool was used.</p>\n<pre><code class=\"language-js\">function* foo() {}\nconst generator = foo();\nutil.types.isGeneratorObject(generator);  // Returns true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isInt8Array(value)",
+              "type": "method",
+              "name": "isInt8Array",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a built-in <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array\"><code>Int8Array</code></a> instance.</p>\n<pre><code class=\"language-js\">util.types.isInt8Array(new ArrayBuffer());  // Returns false\nutil.types.isInt8Array(new Int8Array());  // Returns true\nutil.types.isInt8Array(new Float64Array());  // Returns false\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isInt16Array(value)",
+              "type": "method",
+              "name": "isInt16Array",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a built-in <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array\"><code>Int16Array</code></a> instance.</p>\n<pre><code class=\"language-js\">util.types.isInt16Array(new ArrayBuffer());  // Returns false\nutil.types.isInt16Array(new Int16Array());  // Returns true\nutil.types.isInt16Array(new Float64Array());  // Returns false\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isInt32Array(value)",
+              "type": "method",
+              "name": "isInt32Array",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a built-in <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array\"><code>Int32Array</code></a> instance.</p>\n<pre><code class=\"language-js\">util.types.isInt32Array(new ArrayBuffer());  // Returns false\nutil.types.isInt32Array(new Int32Array());  // Returns true\nutil.types.isInt32Array(new Float64Array());  // Returns false\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isMap(value)",
+              "type": "method",
+              "name": "isMap",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a built-in <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map\"><code>Map</code></a> instance.</p>\n<pre><code class=\"language-js\">util.types.isMap(new Map());  // Returns true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isMapIterator(value)",
+              "type": "method",
+              "name": "isMapIterator",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is an iterator returned for a built-in\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map\"><code>Map</code></a> instance.</p>\n<pre><code class=\"language-js\">const map = new Map();\nutil.types.isMapIterator(map.keys());  // Returns true\nutil.types.isMapIterator(map.values());  // Returns true\nutil.types.isMapIterator(map.entries());  // Returns true\nutil.types.isMapIterator(map[Symbol.iterator]());  // Returns true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isModuleNamespaceObject(value)",
+              "type": "method",
+              "name": "isModuleNamespaceObject",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is an instance of a <a href=\"https://tc39.github.io/ecma262/#sec-module-namespace-exotic-objects\">Module Namespace Object</a>.</p>\n<!-- eslint-skip -->\n<pre><code class=\"language-js\">import * as ns from './a.js';\n\nutil.types.isModuleNamespaceObject(ns);  // Returns true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isNativeError(value)",
+              "type": "method",
+              "name": "isNativeError",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is an instance of a built-in <a href=\"errors.html#errors_class_error\"><code>Error</code></a> type.</p>\n<pre><code class=\"language-js\">util.types.isNativeError(new Error());  // Returns true\nutil.types.isNativeError(new TypeError());  // Returns true\nutil.types.isNativeError(new RangeError());  // Returns true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isNumberObject(value)",
+              "type": "method",
+              "name": "isNumberObject",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a number object, e.g. created\nby <code>new Number()</code>.</p>\n<pre><code class=\"language-js\">util.types.isNumberObject(0);  // Returns false\nutil.types.isNumberObject(new Number(0));   // Returns true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isPromise(value)",
+              "type": "method",
+              "name": "isPromise",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a built-in <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise\"><code>Promise</code></a>.</p>\n<pre><code class=\"language-js\">util.types.isPromise(Promise.resolve(42));  // Returns true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isProxy(value)",
+              "type": "method",
+              "name": "isProxy",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy\"><code>Proxy</code></a> instance.</p>\n<pre><code class=\"language-js\">const target = {};\nconst proxy = new Proxy(target, {});\nutil.types.isProxy(target);  // Returns false\nutil.types.isProxy(proxy);  // Returns true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isRegExp(value)",
+              "type": "method",
+              "name": "isRegExp",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a regular expression object.</p>\n<pre><code class=\"language-js\">util.types.isRegExp(/abc/);  // Returns true\nutil.types.isRegExp(new RegExp('abc'));  // Returns true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isSet(value)",
+              "type": "method",
+              "name": "isSet",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a built-in <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set\"><code>Set</code></a> instance.</p>\n<pre><code class=\"language-js\">util.types.isSet(new Set());  // Returns true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isSetIterator(value)",
+              "type": "method",
+              "name": "isSetIterator",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is an iterator returned for a built-in\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set\"><code>Set</code></a> instance.</p>\n<pre><code class=\"language-js\">const set = new Set();\nutil.types.isSetIterator(set.keys());  // Returns true\nutil.types.isSetIterator(set.values());  // Returns true\nutil.types.isSetIterator(set.entries());  // Returns true\nutil.types.isSetIterator(set[Symbol.iterator]());  // Returns true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isSharedArrayBuffer(value)",
+              "type": "method",
+              "name": "isSharedArrayBuffer",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a built-in <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer\"><code>SharedArrayBuffer</code></a> instance.\nThis does <em>not</em> include <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer\"><code>ArrayBuffer</code></a> instances. Usually, it is\ndesirable to test for both; See <a href=\"#util_util_types_isanyarraybuffer_value\"><code>util.types.isAnyArrayBuffer()</code></a> for that.</p>\n<pre><code class=\"language-js\">util.types.isSharedArrayBuffer(new ArrayBuffer());  // Returns false\nutil.types.isSharedArrayBuffer(new SharedArrayBuffer());  // Returns true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isStringObject(value)",
+              "type": "method",
+              "name": "isStringObject",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a string object, e.g. created\nby <code>new String()</code>.</p>\n<pre><code class=\"language-js\">util.types.isStringObject('foo');  // Returns false\nutil.types.isStringObject(new String('foo'));   // Returns true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isSymbolObject(value)",
+              "type": "method",
+              "name": "isSymbolObject",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a symbol object, created\nby calling <code>Object()</code> on a <code>Symbol</code> primitive.</p>\n<pre><code class=\"language-js\">const symbol = Symbol('foo');\nutil.types.isSymbolObject(symbol);  // Returns false\nutil.types.isSymbolObject(Object(symbol));   // Returns true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isTypedArray(value)",
+              "type": "method",
+              "name": "isTypedArray",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a built-in <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray\"><code>TypedArray</code></a> instance.</p>\n<pre><code class=\"language-js\">util.types.isTypedArray(new ArrayBuffer());  // Returns false\nutil.types.isTypedArray(new Uint8Array());  // Returns true\nutil.types.isTypedArray(new Float64Array());  // Returns true\n</code></pre>\n<p>See also <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/isView\"><code>ArrayBuffer.isView()</code></a>.</p>"
+            },
+            {
+              "textRaw": "util.types.isUint8Array(value)",
+              "type": "method",
+              "name": "isUint8Array",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a built-in <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array\"><code>Uint8Array</code></a> instance.</p>\n<pre><code class=\"language-js\">util.types.isUint8Array(new ArrayBuffer());  // Returns false\nutil.types.isUint8Array(new Uint8Array());  // Returns true\nutil.types.isUint8Array(new Float64Array());  // Returns false\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isUint8ClampedArray(value)",
+              "type": "method",
+              "name": "isUint8ClampedArray",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a built-in <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray\"><code>Uint8ClampedArray</code></a> instance.</p>\n<pre><code class=\"language-js\">util.types.isUint8ClampedArray(new ArrayBuffer());  // Returns false\nutil.types.isUint8ClampedArray(new Uint8ClampedArray());  // Returns true\nutil.types.isUint8ClampedArray(new Float64Array());  // Returns false\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isUint16Array(value)",
+              "type": "method",
+              "name": "isUint16Array",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a built-in <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array\"><code>Uint16Array</code></a> instance.</p>\n<pre><code class=\"language-js\">util.types.isUint16Array(new ArrayBuffer());  // Returns false\nutil.types.isUint16Array(new Uint16Array());  // Returns true\nutil.types.isUint16Array(new Float64Array());  // Returns false\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isUint32Array(value)",
+              "type": "method",
+              "name": "isUint32Array",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a built-in <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array\"><code>Uint32Array</code></a> instance.</p>\n<pre><code class=\"language-js\">util.types.isUint32Array(new ArrayBuffer());  // Returns false\nutil.types.isUint32Array(new Uint32Array());  // Returns true\nutil.types.isUint32Array(new Float64Array());  // Returns false\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isWeakMap(value)",
+              "type": "method",
+              "name": "isWeakMap",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a built-in <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap\"><code>WeakMap</code></a> instance.</p>\n<pre><code class=\"language-js\">util.types.isWeakMap(new WeakMap());  // Returns true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isWeakSet(value)",
+              "type": "method",
+              "name": "isWeakSet",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a built-in <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet\"><code>WeakSet</code></a> instance.</p>\n<pre><code class=\"language-js\">util.types.isWeakSet(new WeakSet());  // Returns true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.types.isWebAssemblyCompiledModule(value)",
+              "type": "method",
+              "name": "isWebAssemblyCompiledModule",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`value` {any}",
+                      "name": "value",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the value is a built-in <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Module\"><code>WebAssembly.Module</code></a> instance.</p>\n<pre><code class=\"language-js\">const module = new WebAssembly.Module(wasmBuffer);\nutil.types.isWebAssemblyCompiledModule(module);  // Returns true\n</code></pre>"
+            }
+          ]
+        }
+      ],
+      "modules": [
+        {
+          "textRaw": "Deprecated APIs",
+          "name": "deprecated_apis",
+          "desc": "<p>The following APIs are deprecated and should no longer be used. Existing\napplications and modules should be updated to find alternative approaches.</p>",
+          "methods": [
+            {
+              "textRaw": "util._extend(target, source)",
+              "type": "method",
+              "name": "_extend",
+              "meta": {
+                "added": [
+                  "v0.7.5"
+                ],
+                "deprecated": [
+                  "v6.0.0"
+                ],
+                "changes": []
+              },
+              "stability": 0,
+              "stabilityText": "Deprecated: Use [`Object.assign()`] instead.",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`target` {Object}",
+                      "name": "target",
+                      "type": "Object"
+                    },
+                    {
+                      "textRaw": "`source` {Object}",
+                      "name": "source",
+                      "type": "Object"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>The <code>util._extend()</code> method was never intended to be used outside of internal\nNode.js modules. The community found and used it anyway.</p>\n<p>It is deprecated and should not be used in new code. JavaScript comes with very\nsimilar built-in functionality through <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign\"><code>Object.assign()</code></a>.</p>"
+            },
+            {
+              "textRaw": "util.debug(string)",
+              "type": "method",
+              "name": "debug",
+              "meta": {
+                "added": [
+                  "v0.3.0"
+                ],
+                "deprecated": [
+                  "v0.11.3"
+                ],
+                "changes": []
+              },
+              "stability": 0,
+              "stabilityText": "Deprecated: Use [`console.error()`][] instead.",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`string` {string} The message to print to `stderr`",
+                      "name": "string",
+                      "type": "string",
+                      "desc": "The message to print to `stderr`"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Deprecated predecessor of <code>console.error</code>.</p>"
+            },
+            {
+              "textRaw": "util.error([...strings])",
+              "type": "method",
+              "name": "error",
+              "meta": {
+                "added": [
+                  "v0.3.0"
+                ],
+                "deprecated": [
+                  "v0.11.3"
+                ],
+                "changes": []
+              },
+              "stability": 0,
+              "stabilityText": "Deprecated: Use [`console.error()`][] instead.",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`...strings` {string} The message to print to `stderr`",
+                      "name": "...strings",
+                      "type": "string",
+                      "desc": "The message to print to `stderr`",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Deprecated predecessor of <code>console.error</code>.</p>"
+            },
+            {
+              "textRaw": "util.isArray(object)",
+              "type": "method",
+              "name": "isArray",
+              "meta": {
+                "added": [
+                  "v0.6.0"
+                ],
+                "deprecated": [
+                  "v4.0.0"
+                ],
+                "changes": []
+              },
+              "stability": 0,
+              "stabilityText": "Deprecated: Use [`Array.isArray()`][] instead.",
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`object` {any}",
+                      "name": "object",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Alias for <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray\"><code>Array.isArray()</code></a>.</p>\n<p>Returns <code>true</code> if the given <code>object</code> is an <code>Array</code>. Otherwise, returns <code>false</code>.</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nutil.isArray([]);\n// Returns: true\nutil.isArray(new Array());\n// Returns: true\nutil.isArray({});\n// Returns: false\n</code></pre>"
+            },
+            {
+              "textRaw": "util.isBoolean(object)",
+              "type": "method",
+              "name": "isBoolean",
+              "meta": {
+                "added": [
+                  "v0.11.5"
+                ],
+                "deprecated": [
+                  "v4.0.0"
+                ],
+                "changes": []
+              },
+              "stability": 0,
+              "stabilityText": "Deprecated: Use `typeof value === 'boolean'` instead.",
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`object` {any}",
+                      "name": "object",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the given <code>object</code> is a <code>Boolean</code>. Otherwise, returns <code>false</code>.</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nutil.isBoolean(1);\n// Returns: false\nutil.isBoolean(0);\n// Returns: false\nutil.isBoolean(false);\n// Returns: true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.isBuffer(object)",
+              "type": "method",
+              "name": "isBuffer",
+              "meta": {
+                "added": [
+                  "v0.11.5"
+                ],
+                "deprecated": [
+                  "v4.0.0"
+                ],
+                "changes": []
+              },
+              "stability": 0,
+              "stabilityText": "Deprecated: Use [`Buffer.isBuffer()`][] instead.",
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`object` {any}",
+                      "name": "object",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the given <code>object</code> is a <code>Buffer</code>. Otherwise, returns <code>false</code>.</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nutil.isBuffer({ length: 0 });\n// Returns: false\nutil.isBuffer([]);\n// Returns: false\nutil.isBuffer(Buffer.from('hello world'));\n// Returns: true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.isDate(object)",
+              "type": "method",
+              "name": "isDate",
+              "meta": {
+                "added": [
+                  "v0.6.0"
+                ],
+                "deprecated": [
+                  "v4.0.0"
+                ],
+                "changes": []
+              },
+              "stability": 0,
+              "stabilityText": "Deprecated: Use [`util.types.isDate()`][] instead.",
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`object` {any}",
+                      "name": "object",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the given <code>object</code> is a <code>Date</code>. Otherwise, returns <code>false</code>.</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nutil.isDate(new Date());\n// Returns: true\nutil.isDate(Date());\n// false (without 'new' returns a String)\nutil.isDate({});\n// Returns: false\n</code></pre>"
+            },
+            {
+              "textRaw": "util.isError(object)",
+              "type": "method",
+              "name": "isError",
+              "meta": {
+                "added": [
+                  "v0.6.0"
+                ],
+                "deprecated": [
+                  "v4.0.0"
+                ],
+                "changes": []
+              },
+              "stability": 0,
+              "stabilityText": "Deprecated: Use [`util.types.isNativeError()`][] instead.",
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`object` {any}",
+                      "name": "object",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the given <code>object</code> is an <a href=\"errors.html#errors_class_error\"><code>Error</code></a>. Otherwise, returns\n<code>false</code>.</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nutil.isError(new Error());\n// Returns: true\nutil.isError(new TypeError());\n// Returns: true\nutil.isError({ name: 'Error', message: 'an error occurred' });\n// Returns: false\n</code></pre>\n<p>Note that this method relies on <code>Object.prototype.toString()</code> behavior. It is\npossible to obtain an incorrect result when the <code>object</code> argument manipulates\n<code>@@toStringTag</code>.</p>\n<pre><code class=\"language-js\">const util = require('util');\nconst obj = { name: 'Error', message: 'an error occurred' };\n\nutil.isError(obj);\n// Returns: false\nobj[Symbol.toStringTag] = 'Error';\nutil.isError(obj);\n// Returns: true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.isFunction(object)",
+              "type": "method",
+              "name": "isFunction",
+              "meta": {
+                "added": [
+                  "v0.11.5"
+                ],
+                "deprecated": [
+                  "v4.0.0"
+                ],
+                "changes": []
+              },
+              "stability": 0,
+              "stabilityText": "Deprecated: Use `typeof value === 'function'` instead.",
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`object` {any}",
+                      "name": "object",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the given <code>object</code> is a <code>Function</code>. Otherwise, returns\n<code>false</code>.</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nfunction Foo() {}\nconst Bar = () => {};\n\nutil.isFunction({});\n// Returns: false\nutil.isFunction(Foo);\n// Returns: true\nutil.isFunction(Bar);\n// Returns: true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.isNull(object)",
+              "type": "method",
+              "name": "isNull",
+              "meta": {
+                "added": [
+                  "v0.11.5"
+                ],
+                "deprecated": [
+                  "v4.0.0"
+                ],
+                "changes": []
+              },
+              "stability": 0,
+              "stabilityText": "Deprecated: Use `value === null` instead.",
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`object` {any}",
+                      "name": "object",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the given <code>object</code> is strictly <code>null</code>. Otherwise, returns\n<code>false</code>.</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nutil.isNull(0);\n// Returns: false\nutil.isNull(undefined);\n// Returns: false\nutil.isNull(null);\n// Returns: true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.isNullOrUndefined(object)",
+              "type": "method",
+              "name": "isNullOrUndefined",
+              "meta": {
+                "added": [
+                  "v0.11.5"
+                ],
+                "deprecated": [
+                  "v4.0.0"
+                ],
+                "changes": []
+              },
+              "stability": 0,
+              "stabilityText": "Deprecated: Use\n`value === undefined || value === null` instead.",
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`object` {any}",
+                      "name": "object",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the given <code>object</code> is <code>null</code> or <code>undefined</code>. Otherwise,\nreturns <code>false</code>.</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nutil.isNullOrUndefined(0);\n// Returns: false\nutil.isNullOrUndefined(undefined);\n// Returns: true\nutil.isNullOrUndefined(null);\n// Returns: true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.isNumber(object)",
+              "type": "method",
+              "name": "isNumber",
+              "meta": {
+                "added": [
+                  "v0.11.5"
+                ],
+                "deprecated": [
+                  "v4.0.0"
+                ],
+                "changes": []
+              },
+              "stability": 0,
+              "stabilityText": "Deprecated: Use `typeof value === 'number'` instead.",
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`object` {any}",
+                      "name": "object",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the given <code>object</code> is a <code>Number</code>. Otherwise, returns <code>false</code>.</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nutil.isNumber(false);\n// Returns: false\nutil.isNumber(Infinity);\n// Returns: true\nutil.isNumber(0);\n// Returns: true\nutil.isNumber(NaN);\n// Returns: true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.isObject(object)",
+              "type": "method",
+              "name": "isObject",
+              "meta": {
+                "added": [
+                  "v0.11.5"
+                ],
+                "deprecated": [
+                  "v4.0.0"
+                ],
+                "changes": []
+              },
+              "stability": 0,
+              "stabilityText": "Deprecated:\nUse `value !== null && typeof value === 'object'` instead.",
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`object` {any}",
+                      "name": "object",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the given <code>object</code> is strictly an <code>Object</code> <strong>and</strong> not a\n<code>Function</code> (even though functions are objects in JavaScript).\nOtherwise, returns <code>false</code>.</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nutil.isObject(5);\n// Returns: false\nutil.isObject(null);\n// Returns: false\nutil.isObject({});\n// Returns: true\nutil.isObject(() => {});\n// Returns: false\n</code></pre>"
+            },
+            {
+              "textRaw": "util.isPrimitive(object)",
+              "type": "method",
+              "name": "isPrimitive",
+              "meta": {
+                "added": [
+                  "v0.11.5"
+                ],
+                "deprecated": [
+                  "v4.0.0"
+                ],
+                "changes": []
+              },
+              "stability": 0,
+              "stabilityText": "Deprecated: Use\n`(typeof value !== 'object' && typeof value !== 'function') || value === null`\ninstead.",
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`object` {any}",
+                      "name": "object",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the given <code>object</code> is a primitive type. Otherwise, returns\n<code>false</code>.</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nutil.isPrimitive(5);\n// Returns: true\nutil.isPrimitive('foo');\n// Returns: true\nutil.isPrimitive(false);\n// Returns: true\nutil.isPrimitive(null);\n// Returns: true\nutil.isPrimitive(undefined);\n// Returns: true\nutil.isPrimitive({});\n// Returns: false\nutil.isPrimitive(() => {});\n// Returns: false\nutil.isPrimitive(/^$/);\n// Returns: false\nutil.isPrimitive(new Date());\n// Returns: false\n</code></pre>"
+            },
+            {
+              "textRaw": "util.isRegExp(object)",
+              "type": "method",
+              "name": "isRegExp",
+              "meta": {
+                "added": [
+                  "v0.6.0"
+                ],
+                "deprecated": [
+                  "v4.0.0"
+                ],
+                "changes": []
+              },
+              "stability": 0,
+              "stabilityText": "Deprecated",
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`object` {any}",
+                      "name": "object",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the given <code>object</code> is a <code>RegExp</code>. Otherwise, returns <code>false</code>.</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nutil.isRegExp(/some regexp/);\n// Returns: true\nutil.isRegExp(new RegExp('another regexp'));\n// Returns: true\nutil.isRegExp({});\n// Returns: false\n</code></pre>"
+            },
+            {
+              "textRaw": "util.isString(object)",
+              "type": "method",
+              "name": "isString",
+              "meta": {
+                "added": [
+                  "v0.11.5"
+                ],
+                "deprecated": [
+                  "v4.0.0"
+                ],
+                "changes": []
+              },
+              "stability": 0,
+              "stabilityText": "Deprecated: Use `typeof value === 'string'` instead.",
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`object` {any}",
+                      "name": "object",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the given <code>object</code> is a <code>string</code>. Otherwise, returns <code>false</code>.</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nutil.isString('');\n// Returns: true\nutil.isString('foo');\n// Returns: true\nutil.isString(String('foo'));\n// Returns: true\nutil.isString(5);\n// Returns: false\n</code></pre>"
+            },
+            {
+              "textRaw": "util.isSymbol(object)",
+              "type": "method",
+              "name": "isSymbol",
+              "meta": {
+                "added": [
+                  "v0.11.5"
+                ],
+                "deprecated": [
+                  "v4.0.0"
+                ],
+                "changes": []
+              },
+              "stability": 0,
+              "stabilityText": "Deprecated: Use `typeof value === 'symbol'` instead.",
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`object` {any}",
+                      "name": "object",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the given <code>object</code> is a <code>Symbol</code>. Otherwise, returns <code>false</code>.</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nutil.isSymbol(5);\n// Returns: false\nutil.isSymbol('foo');\n// Returns: false\nutil.isSymbol(Symbol('foo'));\n// Returns: true\n</code></pre>"
+            },
+            {
+              "textRaw": "util.isUndefined(object)",
+              "type": "method",
+              "name": "isUndefined",
+              "meta": {
+                "added": [
+                  "v0.11.5"
+                ],
+                "deprecated": [
+                  "v4.0.0"
+                ],
+                "changes": []
+              },
+              "stability": 0,
+              "stabilityText": "Deprecated: Use `value === undefined` instead.",
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`object` {any}",
+                      "name": "object",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns <code>true</code> if the given <code>object</code> is <code>undefined</code>. Otherwise, returns <code>false</code>.</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nconst foo = undefined;\nutil.isUndefined(5);\n// Returns: false\nutil.isUndefined(foo);\n// Returns: true\nutil.isUndefined(null);\n// Returns: false\n</code></pre>"
+            },
+            {
+              "textRaw": "util.log(string)",
+              "type": "method",
+              "name": "log",
+              "meta": {
+                "added": [
+                  "v0.3.0"
+                ],
+                "deprecated": [
+                  "v6.0.0"
+                ],
+                "changes": []
+              },
+              "stability": 0,
+              "stabilityText": "Deprecated: Use a third party module instead.",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`string` {string}",
+                      "name": "string",
+                      "type": "string"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>The <code>util.log()</code> method prints the given <code>string</code> to <code>stdout</code> with an included\ntimestamp.</p>\n<pre><code class=\"language-js\">const util = require('util');\n\nutil.log('Timestamped message.');\n</code></pre>"
+            },
+            {
+              "textRaw": "util.print([...strings])",
+              "type": "method",
+              "name": "print",
+              "meta": {
+                "added": [
+                  "v0.3.0"
+                ],
+                "deprecated": [
+                  "v0.11.3"
+                ],
+                "changes": []
+              },
+              "stability": 0,
+              "stabilityText": "Deprecated: Use [`console.log()`][] instead.",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "name": "...strings",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Deprecated predecessor of <code>console.log</code>.</p>"
+            },
+            {
+              "textRaw": "util.puts([...strings])",
+              "type": "method",
+              "name": "puts",
+              "meta": {
+                "added": [
+                  "v0.3.0"
+                ],
+                "deprecated": [
+                  "v0.11.3"
+                ],
+                "changes": []
+              },
+              "stability": 0,
+              "stabilityText": "Deprecated: Use [`console.log()`][] instead.",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "name": "...strings",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Deprecated predecessor of <code>console.log</code>.</p>"
+            }
+          ],
+          "type": "module",
+          "displayName": "Deprecated APIs"
+        }
+      ],
+      "type": "module",
+      "displayName": "Util"
+    }
+  ]
+}

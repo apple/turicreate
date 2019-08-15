@@ -1,0 +1,85 @@
+{
+  "type": "module",
+  "source": "doc/api/debugger.md",
+  "introduced_in": "v0.9.12",
+  "stability": 2,
+  "stabilityText": "Stable",
+  "miscs": [
+    {
+      "textRaw": "Debugger",
+      "name": "Debugger",
+      "introduced_in": "v0.9.12",
+      "stability": 2,
+      "stabilityText": "Stable",
+      "type": "misc",
+      "desc": "<p>Node.js includes an out-of-process debugging utility accessible via a\n<a href=\"#debugger_v8_inspector_integration_for_node_js\">V8 Inspector</a> and built-in debugging client. To use it, start Node.js\nwith the <code>inspect</code> argument followed by the path to the script to debug; a\nprompt will be displayed indicating successful launch of the debugger:</p>\n<pre><code class=\"language-txt\">$ node inspect myscript.js\n&#x3C; Debugger listening on ws://127.0.0.1:9229/80e7a814-7cd3-49fb-921a-2e02228cd5ba\n&#x3C; For help, see: https://nodejs.org/en/docs/inspector\n&#x3C; Debugger attached.\nBreak on start in myscript.js:1\n> 1 (function (exports, require, module, __filename, __dirname) { global.x = 5;\n  2 setTimeout(() => {\n  3   console.log('world');\ndebug>\n</code></pre>\n<p>Node.js's debugger client is not a full-featured debugger, but simple step and\ninspection are possible.</p>\n<p>Inserting the statement <code>debugger;</code> into the source code of a script will\nenable a breakpoint at that position in the code:</p>\n<!-- eslint-disable no-debugger -->\n<pre><code class=\"language-js\">// myscript.js\nglobal.x = 5;\nsetTimeout(() => {\n  debugger;\n  console.log('world');\n}, 1000);\nconsole.log('hello');\n</code></pre>\n<p>Once the debugger is run, a breakpoint will occur at line 3:</p>\n<pre><code class=\"language-txt\">$ node inspect myscript.js\n&#x3C; Debugger listening on ws://127.0.0.1:9229/80e7a814-7cd3-49fb-921a-2e02228cd5ba\n&#x3C; For help, see: https://nodejs.org/en/docs/inspector\n&#x3C; Debugger attached.\nBreak on start in myscript.js:1\n> 1 (function (exports, require, module, __filename, __dirname) { global.x = 5;\n  2 setTimeout(() => {\n  3   debugger;\ndebug> cont\n&#x3C; hello\nbreak in myscript.js:3\n  1 (function (exports, require, module, __filename, __dirname) { global.x = 5;\n  2 setTimeout(() => {\n> 3   debugger;\n  4   console.log('world');\n  5 }, 1000);\ndebug> next\nbreak in myscript.js:4\n  2 setTimeout(() => {\n  3   debugger;\n> 4   console.log('world');\n  5 }, 1000);\n  6 console.log('hello');\ndebug> repl\nPress Ctrl + C to leave debug repl\n> x\n5\n> 2 + 2\n4\ndebug> next\n&#x3C; world\nbreak in myscript.js:5\n  3   debugger;\n  4   console.log('world');\n> 5 }, 1000);\n  6 console.log('hello');\n  7\ndebug> .exit\n</code></pre>\n<p>The <code>repl</code> command allows code to be evaluated remotely. The <code>next</code> command\nsteps to the next line. Type <code>help</code> to see what other commands are available.</p>\n<p>Pressing <code>enter</code> without typing a command will repeat the previous debugger\ncommand.</p>",
+      "miscs": [
+        {
+          "textRaw": "Watchers",
+          "name": "watchers",
+          "desc": "<p>It is possible to watch expression and variable values while debugging. On\nevery breakpoint, each expression from the watchers list will be evaluated\nin the current context and displayed immediately before the breakpoint's\nsource code listing.</p>\n<p>To begin watching an expression, type <code>watch('my_expression')</code>. The command\n<code>watchers</code> will print the active watchers. To remove a watcher, type\n<code>unwatch('my_expression')</code>.</p>",
+          "type": "misc",
+          "displayName": "Watchers"
+        },
+        {
+          "textRaw": "Command reference",
+          "name": "command_reference",
+          "modules": [
+            {
+              "textRaw": "Stepping",
+              "name": "stepping",
+              "desc": "<ul>\n<li><code>cont</code>, <code>c</code> - Continue execution</li>\n<li><code>next</code>, <code>n</code> - Step next</li>\n<li><code>step</code>, <code>s</code> - Step in</li>\n<li><code>out</code>, <code>o</code> - Step out</li>\n<li><code>pause</code> - Pause running code (like pause button in Developer Tools)</li>\n</ul>",
+              "type": "module",
+              "displayName": "Stepping"
+            },
+            {
+              "textRaw": "Breakpoints",
+              "name": "breakpoints",
+              "desc": "<ul>\n<li><code>setBreakpoint()</code>, <code>sb()</code> - Set breakpoint on current line</li>\n<li><code>setBreakpoint(line)</code>, <code>sb(line)</code> - Set breakpoint on specific line</li>\n<li><code>setBreakpoint('fn()')</code>, <code>sb(...)</code> - Set breakpoint on a first statement in\nfunctions body</li>\n<li><code>setBreakpoint('script.js', 1)</code>, <code>sb(...)</code> - Set breakpoint on first line of\n<code>script.js</code></li>\n<li><code>clearBreakpoint('script.js', 1)</code>, <code>cb(...)</code> - Clear breakpoint in <code>script.js</code>\non line 1</li>\n</ul>\n<p>It is also possible to set a breakpoint in a file (module) that\nis not loaded yet:</p>\n<pre><code class=\"language-txt\">$ node inspect main.js\n&#x3C; Debugger listening on ws://127.0.0.1:9229/4e3db158-9791-4274-8909-914f7facf3bd\n&#x3C; For help, see: https://nodejs.org/en/docs/inspector\n&#x3C; Debugger attached.\nBreak on start in main.js:1\n> 1 (function (exports, require, module, __filename, __dirname) { const mod = require('./mod.js');\n  2 mod.hello();\n  3 mod.hello();\ndebug> setBreakpoint('mod.js', 22)\nWarning: script 'mod.js' was not loaded yet.\ndebug> c\nbreak in mod.js:22\n 20 // USE OR OTHER DEALINGS IN THE SOFTWARE.\n 21\n>22 exports.hello = function() {\n 23   return 'hello from module';\n 24 };\ndebug>\n</code></pre>",
+              "type": "module",
+              "displayName": "Breakpoints"
+            },
+            {
+              "textRaw": "Information",
+              "name": "information",
+              "desc": "<ul>\n<li><code>backtrace</code>, <code>bt</code> - Print backtrace of current execution frame</li>\n<li><code>list(5)</code> - List scripts source code with 5 line context (5 lines before and\nafter)</li>\n<li><code>watch(expr)</code> - Add expression to watch list</li>\n<li><code>unwatch(expr)</code> - Remove expression from watch list</li>\n<li><code>watchers</code> - List all watchers and their values (automatically listed on each\nbreakpoint)</li>\n<li><code>repl</code> - Open debugger's repl for evaluation in debugging script's context</li>\n<li><code>exec expr</code> - Execute an expression in debugging script's context</li>\n</ul>",
+              "type": "module",
+              "displayName": "Information"
+            },
+            {
+              "textRaw": "Execution control",
+              "name": "execution_control",
+              "desc": "<ul>\n<li><code>run</code> - Run script (automatically runs on debugger's start)</li>\n<li><code>restart</code> - Restart script</li>\n<li><code>kill</code> - Kill script</li>\n</ul>",
+              "type": "module",
+              "displayName": "Execution control"
+            },
+            {
+              "textRaw": "Various",
+              "name": "various",
+              "desc": "<ul>\n<li><code>scripts</code> - List all loaded scripts</li>\n<li><code>version</code> - Display V8's version</li>\n</ul>",
+              "type": "module",
+              "displayName": "Various"
+            }
+          ],
+          "type": "misc",
+          "displayName": "Command reference"
+        },
+        {
+          "textRaw": "Advanced Usage",
+          "name": "advanced_usage",
+          "modules": [
+            {
+              "textRaw": "V8 Inspector Integration for Node.js",
+              "name": "v8_inspector_integration_for_node.js",
+              "desc": "<p>V8 Inspector integration allows attaching Chrome DevTools to Node.js\ninstances for debugging and profiling. It uses the\n<a href=\"https://chromedevtools.github.io/devtools-protocol/\">Chrome DevTools Protocol</a>.</p>\n<p>V8 Inspector can be enabled by passing the <code>--inspect</code> flag when starting a\nNode.js application. It is also possible to supply a custom port with that flag,\ne.g. <code>--inspect=9222</code> will accept DevTools connections on port 9222.</p>\n<p>To break on the first line of the application code, pass the <code>--inspect-brk</code>\nflag instead of <code>--inspect</code>.</p>\n<pre><code class=\"language-txt\">$ node --inspect index.js\nDebugger listening on 127.0.0.1:9229.\nTo start debugging, open the following URL in Chrome:\n    chrome-devtools://devtools/bundled/js_app.html?experiments=true&#x26;v8only=true&#x26;ws=127.0.0.1:9229/dc9010dd-f8b8-4ac5-a510-c1a114ec7d29\n</code></pre>\n<p>(In the example above, the UUID dc9010dd-f8b8-4ac5-a510-c1a114ec7d29\nat the end of the URL is generated on the fly, it varies in different\ndebugging sessions.)</p>\n<p>If the Chrome browser is older than 66.0.3345.0,\nuse <code>inspector.html</code> instead of <code>js_app.html</code> in the above URL.</p>",
+              "type": "module",
+              "displayName": "V8 Inspector Integration for Node.js"
+            }
+          ],
+          "type": "misc",
+          "displayName": "Advanced Usage"
+        }
+      ]
+    }
+  ]
+}

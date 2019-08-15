@@ -1,0 +1,1465 @@
+{
+  "type": "module",
+  "source": "doc/api/child_process.md",
+  "modules": [
+    {
+      "textRaw": "Child Process",
+      "name": "child_process",
+      "introduced_in": "v0.10.0",
+      "desc": "<!--lint disable maximum-line-length-->\n<blockquote>\n<p>Stability: 2 - Stable</p>\n</blockquote>\n<p>The <code>child_process</code> module provides the ability to spawn child processes in\na manner that is similar, but not identical, to <a href=\"http://man7.org/linux/man-pages/man3/popen.3.html\"><code>popen(3)</code></a>. This capability\nis primarily provided by the <a href=\"#child_process_child_process_spawn_command_args_options\"><code>child_process.spawn()</code></a> function:</p>\n<pre><code class=\"language-js\">const { spawn } = require('child_process');\nconst ls = spawn('ls', ['-lh', '/usr']);\n\nls.stdout.on('data', (data) => {\n  console.log(`stdout: ${data}`);\n});\n\nls.stderr.on('data', (data) => {\n  console.log(`stderr: ${data}`);\n});\n\nls.on('close', (code) => {\n  console.log(`child process exited with code ${code}`);\n});\n</code></pre>\n<p>By default, pipes for <code>stdin</code>, <code>stdout</code>, and <code>stderr</code> are established between\nthe parent Node.js process and the spawned child. These pipes have\nlimited (and platform-specific) capacity. If the child process writes to\nstdout in excess of that limit without the output being captured, the child\nprocess will block waiting for the pipe buffer to accept more data. This is\nidentical to the behavior of pipes in the shell. Use the <code>{ stdio: 'ignore' }</code>\noption if the output will not be consumed.</p>\n<p>The <a href=\"#child_process_child_process_spawn_command_args_options\"><code>child_process.spawn()</code></a> method spawns the child process asynchronously,\nwithout blocking the Node.js event loop. The <a href=\"#child_process_child_process_spawnsync_command_args_options\"><code>child_process.spawnSync()</code></a>\nfunction provides equivalent functionality in a synchronous manner that blocks\nthe event loop until the spawned process either exits or is terminated.</p>\n<p>For convenience, the <code>child_process</code> module provides a handful of synchronous\nand asynchronous alternatives to <a href=\"#child_process_child_process_spawn_command_args_options\"><code>child_process.spawn()</code></a> and\n<a href=\"#child_process_child_process_spawnsync_command_args_options\"><code>child_process.spawnSync()</code></a>. <em>Note that each of these alternatives are\nimplemented on top of <a href=\"#child_process_child_process_spawn_command_args_options\"><code>child_process.spawn()</code></a> or <a href=\"#child_process_child_process_spawnsync_command_args_options\"><code>child_process.spawnSync()</code></a>.</em></p>\n<ul>\n<li><a href=\"#child_process_child_process_exec_command_options_callback\"><code>child_process.exec()</code></a>: spawns a shell and runs a command within that shell,\npassing the <code>stdout</code> and <code>stderr</code> to a callback function when complete.</li>\n<li><a href=\"#child_process_child_process_execfile_file_args_options_callback\"><code>child_process.execFile()</code></a>: similar to <a href=\"#child_process_child_process_exec_command_options_callback\"><code>child_process.exec()</code></a> except that\nit spawns the command directly without first spawning a shell by default.</li>\n<li><a href=\"#child_process_child_process_fork_modulepath_args_options\"><code>child_process.fork()</code></a>: spawns a new Node.js process and invokes a\nspecified module with an IPC communication channel established that allows\nsending messages between parent and child.</li>\n<li><a href=\"#child_process_child_process_execsync_command_options\"><code>child_process.execSync()</code></a>: a synchronous version of\n<a href=\"#child_process_child_process_exec_command_options_callback\"><code>child_process.exec()</code></a> that <em>will</em> block the Node.js event loop.</li>\n<li><a href=\"#child_process_child_process_execfilesync_file_args_options\"><code>child_process.execFileSync()</code></a>: a synchronous version of\n<a href=\"#child_process_child_process_execfile_file_args_options_callback\"><code>child_process.execFile()</code></a> that <em>will</em> block the Node.js event loop.</li>\n</ul>\n<p>For certain use cases, such as automating shell scripts, the\n<a href=\"#child_process_synchronous_process_creation\">synchronous counterparts</a> may be more convenient. In many cases, however,\nthe synchronous methods can have significant impact on performance due to\nstalling the event loop while spawned processes complete.</p>",
+      "modules": [
+        {
+          "textRaw": "Asynchronous Process Creation",
+          "name": "asynchronous_process_creation",
+          "desc": "<p>The <a href=\"#child_process_child_process_spawn_command_args_options\"><code>child_process.spawn()</code></a>, <a href=\"#child_process_child_process_fork_modulepath_args_options\"><code>child_process.fork()</code></a>, <a href=\"#child_process_child_process_exec_command_options_callback\"><code>child_process.exec()</code></a>,\nand <a href=\"#child_process_child_process_execfile_file_args_options_callback\"><code>child_process.execFile()</code></a> methods all follow the idiomatic asynchronous\nprogramming pattern typical of other Node.js APIs.</p>\n<p>Each of the methods returns a <a href=\"#child_process_child_process\"><code>ChildProcess</code></a> instance. These objects\nimplement the Node.js <a href=\"events.html#events_class_eventemitter\"><code>EventEmitter</code></a> API, allowing the parent process to\nregister listener functions that are called when certain events occur during\nthe life cycle of the child process.</p>\n<p>The <a href=\"#child_process_child_process_exec_command_options_callback\"><code>child_process.exec()</code></a> and <a href=\"#child_process_child_process_execfile_file_args_options_callback\"><code>child_process.execFile()</code></a> methods additionally\nallow for an optional <code>callback</code> function to be specified that is invoked\nwhen the child process terminates.</p>",
+          "modules": [
+            {
+              "textRaw": "Spawning `.bat` and `.cmd` files on Windows",
+              "name": "spawning_`.bat`_and_`.cmd`_files_on_windows",
+              "desc": "<p>The importance of the distinction between <a href=\"#child_process_child_process_exec_command_options_callback\"><code>child_process.exec()</code></a> and\n<a href=\"#child_process_child_process_execfile_file_args_options_callback\"><code>child_process.execFile()</code></a> can vary based on platform. On Unix-type operating\nsystems (Unix, Linux, macOS) <a href=\"#child_process_child_process_execfile_file_args_options_callback\"><code>child_process.execFile()</code></a> can be more efficient\nbecause it does not spawn a shell by default. On Windows, however, <code>.bat</code> and <code>.cmd</code>\nfiles are not executable on their own without a terminal, and therefore cannot\nbe launched using <a href=\"#child_process_child_process_execfile_file_args_options_callback\"><code>child_process.execFile()</code></a>. When running on Windows, <code>.bat</code>\nand <code>.cmd</code> files can be invoked using <a href=\"#child_process_child_process_spawn_command_args_options\"><code>child_process.spawn()</code></a> with the <code>shell</code>\noption set, with <a href=\"#child_process_child_process_exec_command_options_callback\"><code>child_process.exec()</code></a>, or by spawning <code>cmd.exe</code> and passing\nthe <code>.bat</code> or <code>.cmd</code> file as an argument (which is what the <code>shell</code> option and\n<a href=\"#child_process_child_process_exec_command_options_callback\"><code>child_process.exec()</code></a> do). In any case, if the script filename contains\nspaces it needs to be quoted.</p>\n<pre><code class=\"language-js\">// On Windows Only ...\nconst { spawn } = require('child_process');\nconst bat = spawn('cmd.exe', ['/c', 'my.bat']);\n\nbat.stdout.on('data', (data) => {\n  console.log(data.toString());\n});\n\nbat.stderr.on('data', (data) => {\n  console.log(data.toString());\n});\n\nbat.on('exit', (code) => {\n  console.log(`Child exited with code ${code}`);\n});\n</code></pre>\n<pre><code class=\"language-js\">// OR...\nconst { exec } = require('child_process');\nexec('my.bat', (err, stdout, stderr) => {\n  if (err) {\n    console.error(err);\n    return;\n  }\n  console.log(stdout);\n});\n\n// Script with spaces in the filename:\nconst bat = spawn('\"my script.cmd\"', ['a', 'b'], { shell: true });\n// or:\nexec('\"my script.cmd\" a b', (err, stdout, stderr) => {\n  // ...\n});\n</code></pre>",
+              "type": "module",
+              "displayName": "Spawning `.bat` and `.cmd` files on Windows"
+            }
+          ],
+          "methods": [
+            {
+              "textRaw": "child_process.exec(command[, options][, callback])",
+              "type": "method",
+              "name": "exec",
+              "meta": {
+                "added": [
+                  "v0.1.90"
+                ],
+                "changes": [
+                  {
+                    "version": "v8.8.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/15380",
+                    "description": "The `windowsHide` option is supported now."
+                  }
+                ]
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {ChildProcess}",
+                    "name": "return",
+                    "type": "ChildProcess"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`command` {string} The command to run, with space-separated arguments.",
+                      "name": "command",
+                      "type": "string",
+                      "desc": "The command to run, with space-separated arguments."
+                    },
+                    {
+                      "textRaw": "`options` {Object}",
+                      "name": "options",
+                      "type": "Object",
+                      "options": [
+                        {
+                          "textRaw": "`cwd` {string} Current working directory of the child process. **Default:** `null`.",
+                          "name": "cwd",
+                          "type": "string",
+                          "default": "`null`",
+                          "desc": "Current working directory of the child process."
+                        },
+                        {
+                          "textRaw": "`env` {Object} Environment key-value pairs. **Default:** `null`.",
+                          "name": "env",
+                          "type": "Object",
+                          "default": "`null`",
+                          "desc": "Environment key-value pairs."
+                        },
+                        {
+                          "textRaw": "`encoding` {string} **Default:** `'utf8'`",
+                          "name": "encoding",
+                          "type": "string",
+                          "default": "`'utf8'`"
+                        },
+                        {
+                          "textRaw": "`shell` {string} Shell to execute the command with. See [Shell Requirements][] and [Default Windows Shell][]. **Default:** `'/bin/sh'` on UNIX, `process.env.ComSpec` on Windows.",
+                          "name": "shell",
+                          "type": "string",
+                          "default": "`'/bin/sh'` on UNIX, `process.env.ComSpec` on Windows",
+                          "desc": "Shell to execute the command with. See [Shell Requirements][] and [Default Windows Shell][]."
+                        },
+                        {
+                          "textRaw": "`timeout` {number} **Default:** `0`",
+                          "name": "timeout",
+                          "type": "number",
+                          "default": "`0`"
+                        },
+                        {
+                          "textRaw": "`maxBuffer` {number} Largest amount of data in bytes allowed on stdout or stderr. If exceeded, the child process is terminated. See caveat at [`maxBuffer` and Unicode][]. **Default:** `200 * 1024`.",
+                          "name": "maxBuffer",
+                          "type": "number",
+                          "default": "`200 * 1024`",
+                          "desc": "Largest amount of data in bytes allowed on stdout or stderr. If exceeded, the child process is terminated. See caveat at [`maxBuffer` and Unicode][]."
+                        },
+                        {
+                          "textRaw": "`killSignal` {string|integer} **Default:** `'SIGTERM'`",
+                          "name": "killSignal",
+                          "type": "string|integer",
+                          "default": "`'SIGTERM'`"
+                        },
+                        {
+                          "textRaw": "`uid` {number} Sets the user identity of the process (see setuid(2)).",
+                          "name": "uid",
+                          "type": "number",
+                          "desc": "Sets the user identity of the process (see setuid(2))."
+                        },
+                        {
+                          "textRaw": "`gid` {number} Sets the group identity of the process (see setgid(2)).",
+                          "name": "gid",
+                          "type": "number",
+                          "desc": "Sets the group identity of the process (see setgid(2))."
+                        },
+                        {
+                          "textRaw": "`windowsHide` {boolean} Hide the subprocess console window that would normally be created on Windows systems. **Default:** `false`.",
+                          "name": "windowsHide",
+                          "type": "boolean",
+                          "default": "`false`",
+                          "desc": "Hide the subprocess console window that would normally be created on Windows systems."
+                        }
+                      ],
+                      "optional": true
+                    },
+                    {
+                      "textRaw": "`callback` {Function} called with the output when process terminates.",
+                      "name": "callback",
+                      "type": "Function",
+                      "desc": "called with the output when process terminates.",
+                      "options": [
+                        {
+                          "textRaw": "`error` {Error}",
+                          "name": "error",
+                          "type": "Error"
+                        },
+                        {
+                          "textRaw": "`stdout` {string|Buffer}",
+                          "name": "stdout",
+                          "type": "string|Buffer"
+                        },
+                        {
+                          "textRaw": "`stderr` {string|Buffer}",
+                          "name": "stderr",
+                          "type": "string|Buffer"
+                        }
+                      ],
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Spawns a shell then executes the <code>command</code> within that shell, buffering any\ngenerated output. The <code>command</code> string passed to the exec function is processed\ndirectly by the shell and special characters (vary based on\n<a href=\"https://en.wikipedia.org/wiki/List_of_command-line_interpreters\">shell</a>)\nneed to be dealt with accordingly:</p>\n<pre><code class=\"language-js\">exec('\"/path/to/test file/test.sh\" arg1 arg2');\n// Double quotes are used so that the space in the path is not interpreted as\n// multiple arguments\n\nexec('echo \"The \\\\$HOME variable is $HOME\"');\n// The $HOME variable is escaped in the first instance, but not in the second\n</code></pre>\n<p><strong>Never pass unsanitized user input to this function. Any input containing shell\nmetacharacters may be used to trigger arbitrary command execution.</strong></p>\n<p>If a <code>callback</code> function is provided, it is called with the arguments\n<code>(error, stdout, stderr)</code>. On success, <code>error</code> will be <code>null</code>. On error,\n<code>error</code> will be an instance of <a href=\"errors.html#errors_class_error\"><code>Error</code></a>. The <code>error.code</code> property will be\nthe exit code of the child process while <code>error.signal</code> will be set to the\nsignal that terminated the process. Any exit code other than <code>0</code> is considered\nto be an error.</p>\n<p>The <code>stdout</code> and <code>stderr</code> arguments passed to the callback will contain the\nstdout and stderr output of the child process. By default, Node.js will decode\nthe output as UTF-8 and pass strings to the callback. The <code>encoding</code> option\ncan be used to specify the character encoding used to decode the stdout and\nstderr output. If <code>encoding</code> is <code>'buffer'</code>, or an unrecognized character\nencoding, <code>Buffer</code> objects will be passed to the callback instead.</p>\n<pre><code class=\"language-js\">const { exec } = require('child_process');\nexec('cat *.js missing_file | wc -l', (error, stdout, stderr) => {\n  if (error) {\n    console.error(`exec error: ${error}`);\n    return;\n  }\n  console.log(`stdout: ${stdout}`);\n  console.log(`stderr: ${stderr}`);\n});\n</code></pre>\n<p>If <code>timeout</code> is greater than <code>0</code>, the parent will send the signal\nidentified by the <code>killSignal</code> property (the default is <code>'SIGTERM'</code>) if the\nchild runs longer than <code>timeout</code> milliseconds.</p>\n<p>Unlike the <a href=\"http://man7.org/linux/man-pages/man3/exec.3.html\"><code>exec(3)</code></a> POSIX system call, <code>child_process.exec()</code> does not replace\nthe existing process and uses a shell to execute the command.</p>\n<p>If this method is invoked as its <a href=\"util.html#util_util_promisify_original\"><code>util.promisify()</code></a>ed version, it returns\na <code>Promise</code> for an <code>Object</code> with <code>stdout</code> and <code>stderr</code> properties. In case of an\nerror (including any error resulting in an exit code other than 0), a rejected\npromise is returned, with the same <code>error</code> object given in the callback, but\nwith an additional two properties <code>stdout</code> and <code>stderr</code>.</p>\n<pre><code class=\"language-js\">const util = require('util');\nconst exec = util.promisify(require('child_process').exec);\n\nasync function lsExample() {\n  const { stdout, stderr } = await exec('ls');\n  console.log('stdout:', stdout);\n  console.log('stderr:', stderr);\n}\nlsExample();\n</code></pre>"
+            },
+            {
+              "textRaw": "child_process.execFile(file[, args][, options][, callback])",
+              "type": "method",
+              "name": "execFile",
+              "meta": {
+                "added": [
+                  "v0.1.91"
+                ],
+                "changes": [
+                  {
+                    "version": "v8.8.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/15380",
+                    "description": "The `windowsHide` option is supported now."
+                  }
+                ]
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {ChildProcess}",
+                    "name": "return",
+                    "type": "ChildProcess"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`file` {string} The name or path of the executable file to run.",
+                      "name": "file",
+                      "type": "string",
+                      "desc": "The name or path of the executable file to run."
+                    },
+                    {
+                      "textRaw": "`args` {string[]} List of string arguments.",
+                      "name": "args",
+                      "type": "string[]",
+                      "desc": "List of string arguments.",
+                      "optional": true
+                    },
+                    {
+                      "textRaw": "`options` {Object}",
+                      "name": "options",
+                      "type": "Object",
+                      "options": [
+                        {
+                          "textRaw": "`cwd` {string} Current working directory of the child process.",
+                          "name": "cwd",
+                          "type": "string",
+                          "desc": "Current working directory of the child process."
+                        },
+                        {
+                          "textRaw": "`env` {Object} Environment key-value pairs.",
+                          "name": "env",
+                          "type": "Object",
+                          "desc": "Environment key-value pairs."
+                        },
+                        {
+                          "textRaw": "`encoding` {string} **Default:** `'utf8'`",
+                          "name": "encoding",
+                          "type": "string",
+                          "default": "`'utf8'`"
+                        },
+                        {
+                          "textRaw": "`timeout` {number} **Default:** `0`",
+                          "name": "timeout",
+                          "type": "number",
+                          "default": "`0`"
+                        },
+                        {
+                          "textRaw": "`maxBuffer` {number} Largest amount of data in bytes allowed on stdout or stderr. If exceeded, the child process is terminated. See caveat at [`maxBuffer` and Unicode][]. **Default:** `200 * 1024`.",
+                          "name": "maxBuffer",
+                          "type": "number",
+                          "default": "`200 * 1024`",
+                          "desc": "Largest amount of data in bytes allowed on stdout or stderr. If exceeded, the child process is terminated. See caveat at [`maxBuffer` and Unicode][]."
+                        },
+                        {
+                          "textRaw": "`killSignal` {string|integer} **Default:** `'SIGTERM'`",
+                          "name": "killSignal",
+                          "type": "string|integer",
+                          "default": "`'SIGTERM'`"
+                        },
+                        {
+                          "textRaw": "`uid` {number} Sets the user identity of the process (see setuid(2)).",
+                          "name": "uid",
+                          "type": "number",
+                          "desc": "Sets the user identity of the process (see setuid(2))."
+                        },
+                        {
+                          "textRaw": "`gid` {number} Sets the group identity of the process (see setgid(2)).",
+                          "name": "gid",
+                          "type": "number",
+                          "desc": "Sets the group identity of the process (see setgid(2))."
+                        },
+                        {
+                          "textRaw": "`windowsHide` {boolean} Hide the subprocess console window that would normally be created on Windows systems. **Default:** `false`.",
+                          "name": "windowsHide",
+                          "type": "boolean",
+                          "default": "`false`",
+                          "desc": "Hide the subprocess console window that would normally be created on Windows systems."
+                        },
+                        {
+                          "textRaw": "`windowsVerbatimArguments` {boolean} No quoting or escaping of arguments is done on Windows. Ignored on Unix. **Default:** `false`.",
+                          "name": "windowsVerbatimArguments",
+                          "type": "boolean",
+                          "default": "`false`",
+                          "desc": "No quoting or escaping of arguments is done on Windows. Ignored on Unix."
+                        },
+                        {
+                          "textRaw": "`shell` {boolean|string} If `true`, runs `command` inside of a shell. Uses `'/bin/sh'` on UNIX, and `process.env.ComSpec` on Windows. A different shell can be specified as a string. See [Shell Requirements][] and [Default Windows Shell][]. **Default:** `false` (no shell).",
+                          "name": "shell",
+                          "type": "boolean|string",
+                          "default": "`false` (no shell)",
+                          "desc": "If `true`, runs `command` inside of a shell. Uses `'/bin/sh'` on UNIX, and `process.env.ComSpec` on Windows. A different shell can be specified as a string. See [Shell Requirements][] and [Default Windows Shell][]."
+                        }
+                      ],
+                      "optional": true
+                    },
+                    {
+                      "textRaw": "`callback` {Function} Called with the output when process terminates.",
+                      "name": "callback",
+                      "type": "Function",
+                      "desc": "Called with the output when process terminates.",
+                      "options": [
+                        {
+                          "textRaw": "`error` {Error}",
+                          "name": "error",
+                          "type": "Error"
+                        },
+                        {
+                          "textRaw": "`stdout` {string|Buffer}",
+                          "name": "stdout",
+                          "type": "string|Buffer"
+                        },
+                        {
+                          "textRaw": "`stderr` {string|Buffer}",
+                          "name": "stderr",
+                          "type": "string|Buffer"
+                        }
+                      ],
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>The <code>child_process.execFile()</code> function is similar to <a href=\"#child_process_child_process_exec_command_options_callback\"><code>child_process.exec()</code></a>\nexcept that it does not spawn a shell by default. Rather, the specified executable <code>file</code>\nis spawned directly as a new process making it slightly more efficient than\n<a href=\"#child_process_child_process_exec_command_options_callback\"><code>child_process.exec()</code></a>.</p>\n<p>The same options as <a href=\"#child_process_child_process_exec_command_options_callback\"><code>child_process.exec()</code></a> are supported. Since a shell is not\nspawned, behaviors such as I/O redirection and file globbing are not supported.</p>\n<pre><code class=\"language-js\">const { execFile } = require('child_process');\nconst child = execFile('node', ['--version'], (error, stdout, stderr) => {\n  if (error) {\n    throw error;\n  }\n  console.log(stdout);\n});\n</code></pre>\n<p>The <code>stdout</code> and <code>stderr</code> arguments passed to the callback will contain the\nstdout and stderr output of the child process. By default, Node.js will decode\nthe output as UTF-8 and pass strings to the callback. The <code>encoding</code> option\ncan be used to specify the character encoding used to decode the stdout and\nstderr output. If <code>encoding</code> is <code>'buffer'</code>, or an unrecognized character\nencoding, <code>Buffer</code> objects will be passed to the callback instead.</p>\n<p>If this method is invoked as its <a href=\"util.html#util_util_promisify_original\"><code>util.promisify()</code></a>ed version, it returns\na <code>Promise</code> for an <code>Object</code> with <code>stdout</code> and <code>stderr</code> properties. In case of an\nerror (including any error resulting in an exit code other than 0), a rejected\npromise is returned, with the same <code>error</code> object given in the\ncallback, but with an additional two properties <code>stdout</code> and <code>stderr</code>.</p>\n<pre><code class=\"language-js\">const util = require('util');\nconst execFile = util.promisify(require('child_process').execFile);\nasync function getVersion() {\n  const { stdout } = await execFile('node', ['--version']);\n  console.log(stdout);\n}\ngetVersion();\n</code></pre>\n<p><strong>If the <code>shell</code> option is enabled, do not pass unsanitized user input to this\nfunction. Any input containing shell metacharacters may be used to trigger\narbitrary command execution.</strong></p>"
+            },
+            {
+              "textRaw": "child_process.fork(modulePath[, args][, options])",
+              "type": "method",
+              "name": "fork",
+              "meta": {
+                "added": [
+                  "v0.5.0"
+                ],
+                "changes": [
+                  {
+                    "version": "v8.0.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/10866",
+                    "description": "The `stdio` option can now be a string."
+                  },
+                  {
+                    "version": "v6.4.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/7811",
+                    "description": "The `stdio` option is supported now."
+                  }
+                ]
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {ChildProcess}",
+                    "name": "return",
+                    "type": "ChildProcess"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`modulePath` {string} The module to run in the child.",
+                      "name": "modulePath",
+                      "type": "string",
+                      "desc": "The module to run in the child."
+                    },
+                    {
+                      "textRaw": "`args` {string[]} List of string arguments.",
+                      "name": "args",
+                      "type": "string[]",
+                      "desc": "List of string arguments.",
+                      "optional": true
+                    },
+                    {
+                      "textRaw": "`options` {Object}",
+                      "name": "options",
+                      "type": "Object",
+                      "options": [
+                        {
+                          "textRaw": "`cwd` {string} Current working directory of the child process.",
+                          "name": "cwd",
+                          "type": "string",
+                          "desc": "Current working directory of the child process."
+                        },
+                        {
+                          "textRaw": "`detached` {boolean} Prepare child to run independently of its parent process. Specific behavior depends on the platform, see [`options.detached`][]).",
+                          "name": "detached",
+                          "type": "boolean",
+                          "desc": "Prepare child to run independently of its parent process. Specific behavior depends on the platform, see [`options.detached`][])."
+                        },
+                        {
+                          "textRaw": "`env` {Object} Environment key-value pairs.",
+                          "name": "env",
+                          "type": "Object",
+                          "desc": "Environment key-value pairs."
+                        },
+                        {
+                          "textRaw": "`execPath` {string} Executable used to create the child process.",
+                          "name": "execPath",
+                          "type": "string",
+                          "desc": "Executable used to create the child process."
+                        },
+                        {
+                          "textRaw": "`execArgv` {string[]} List of string arguments passed to the executable. **Default:** `process.execArgv`.",
+                          "name": "execArgv",
+                          "type": "string[]",
+                          "default": "`process.execArgv`",
+                          "desc": "List of string arguments passed to the executable."
+                        },
+                        {
+                          "textRaw": "`silent` {boolean} If `true`, stdin, stdout, and stderr of the child will be piped to the parent, otherwise they will be inherited from the parent, see the `'pipe'` and `'inherit'` options for [`child_process.spawn()`][]'s [`stdio`][] for more details. **Default:** `false`.",
+                          "name": "silent",
+                          "type": "boolean",
+                          "default": "`false`",
+                          "desc": "If `true`, stdin, stdout, and stderr of the child will be piped to the parent, otherwise they will be inherited from the parent, see the `'pipe'` and `'inherit'` options for [`child_process.spawn()`][]'s [`stdio`][] for more details."
+                        },
+                        {
+                          "textRaw": "`stdio` {Array|string} See [`child_process.spawn()`][]'s [`stdio`][]. When this option is provided, it overrides `silent`. If the array variant is used, it must contain exactly one item with value `'ipc'` or an error will be thrown. For instance `[0, 1, 2, 'ipc']`.",
+                          "name": "stdio",
+                          "type": "Array|string",
+                          "desc": "See [`child_process.spawn()`][]'s [`stdio`][]. When this option is provided, it overrides `silent`. If the array variant is used, it must contain exactly one item with value `'ipc'` or an error will be thrown. For instance `[0, 1, 2, 'ipc']`."
+                        },
+                        {
+                          "textRaw": "`windowsVerbatimArguments` {boolean} No quoting or escaping of arguments is done on Windows. Ignored on Unix. **Default:** `false`.",
+                          "name": "windowsVerbatimArguments",
+                          "type": "boolean",
+                          "default": "`false`",
+                          "desc": "No quoting or escaping of arguments is done on Windows. Ignored on Unix."
+                        },
+                        {
+                          "textRaw": "`uid` {number} Sets the user identity of the process (see setuid(2)).",
+                          "name": "uid",
+                          "type": "number",
+                          "desc": "Sets the user identity of the process (see setuid(2))."
+                        },
+                        {
+                          "textRaw": "`gid` {number} Sets the group identity of the process (see setgid(2)).",
+                          "name": "gid",
+                          "type": "number",
+                          "desc": "Sets the group identity of the process (see setgid(2))."
+                        }
+                      ],
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>The <code>child_process.fork()</code> method is a special case of\n<a href=\"#child_process_child_process_spawn_command_args_options\"><code>child_process.spawn()</code></a> used specifically to spawn new Node.js processes.\nLike <a href=\"#child_process_child_process_spawn_command_args_options\"><code>child_process.spawn()</code></a>, a <a href=\"#child_process_child_process\"><code>ChildProcess</code></a> object is returned. The returned\n<a href=\"#child_process_child_process\"><code>ChildProcess</code></a> will have an additional communication channel built-in that\nallows messages to be passed back and forth between the parent and child. See\n<a href=\"#child_process_subprocess_send_message_sendhandle_options_callback\"><code>subprocess.send()</code></a> for details.</p>\n<p>It is important to keep in mind that spawned Node.js child processes are\nindependent of the parent with exception of the IPC communication channel\nthat is established between the two. Each process has its own memory, with\ntheir own V8 instances. Because of the additional resource allocations\nrequired, spawning a large number of child Node.js processes is not\nrecommended.</p>\n<p>By default, <code>child_process.fork()</code> will spawn new Node.js instances using the\n<a href=\"process.html#process_process_execpath\"><code>process.execPath</code></a> of the parent process. The <code>execPath</code> property in the\n<code>options</code> object allows for an alternative execution path to be used.</p>\n<p>Node.js processes launched with a custom <code>execPath</code> will communicate with the\nparent process using the file descriptor (fd) identified using the\nenvironment variable <code>NODE_CHANNEL_FD</code> on the child process.</p>\n<p>Unlike the <a href=\"http://man7.org/linux/man-pages/man2/fork.2.html\"><code>fork(2)</code></a> POSIX system call, <code>child_process.fork()</code> does not clone the\ncurrent process.</p>\n<p>The <code>shell</code> option available in <a href=\"#child_process_child_process_spawn_command_args_options\"><code>child_process.spawn()</code></a> is not supported by\n<code>child_process.fork()</code> and will be ignored if set.</p>"
+            },
+            {
+              "textRaw": "child_process.spawn(command[, args][, options])",
+              "type": "method",
+              "name": "spawn",
+              "meta": {
+                "added": [
+                  "v0.1.90"
+                ],
+                "changes": [
+                  {
+                    "version": "v8.8.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/15380",
+                    "description": "The `windowsHide` option is supported now."
+                  },
+                  {
+                    "version": "v6.4.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/7696",
+                    "description": "The `argv0` option is supported now."
+                  },
+                  {
+                    "version": "v5.7.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/4598",
+                    "description": "The `shell` option is supported now."
+                  }
+                ]
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {ChildProcess}",
+                    "name": "return",
+                    "type": "ChildProcess"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`command` {string} The command to run.",
+                      "name": "command",
+                      "type": "string",
+                      "desc": "The command to run."
+                    },
+                    {
+                      "textRaw": "`args` {string[]} List of string arguments.",
+                      "name": "args",
+                      "type": "string[]",
+                      "desc": "List of string arguments.",
+                      "optional": true
+                    },
+                    {
+                      "textRaw": "`options` {Object}",
+                      "name": "options",
+                      "type": "Object",
+                      "options": [
+                        {
+                          "textRaw": "`cwd` {string} Current working directory of the child process.",
+                          "name": "cwd",
+                          "type": "string",
+                          "desc": "Current working directory of the child process."
+                        },
+                        {
+                          "textRaw": "`env` {Object} Environment key-value pairs.",
+                          "name": "env",
+                          "type": "Object",
+                          "desc": "Environment key-value pairs."
+                        },
+                        {
+                          "textRaw": "`argv0` {string} Explicitly set the value of `argv[0]` sent to the child process. This will be set to `command` if not specified.",
+                          "name": "argv0",
+                          "type": "string",
+                          "desc": "Explicitly set the value of `argv[0]` sent to the child process. This will be set to `command` if not specified."
+                        },
+                        {
+                          "textRaw": "`stdio` {Array|string} Child's stdio configuration (see [`options.stdio`][`stdio`]).",
+                          "name": "stdio",
+                          "type": "Array|string",
+                          "desc": "Child's stdio configuration (see [`options.stdio`][`stdio`])."
+                        },
+                        {
+                          "textRaw": "`detached` {boolean} Prepare child to run independently of its parent process. Specific behavior depends on the platform, see [`options.detached`][]).",
+                          "name": "detached",
+                          "type": "boolean",
+                          "desc": "Prepare child to run independently of its parent process. Specific behavior depends on the platform, see [`options.detached`][])."
+                        },
+                        {
+                          "textRaw": "`uid` {number} Sets the user identity of the process (see setuid(2)).",
+                          "name": "uid",
+                          "type": "number",
+                          "desc": "Sets the user identity of the process (see setuid(2))."
+                        },
+                        {
+                          "textRaw": "`gid` {number} Sets the group identity of the process (see setgid(2)).",
+                          "name": "gid",
+                          "type": "number",
+                          "desc": "Sets the group identity of the process (see setgid(2))."
+                        },
+                        {
+                          "textRaw": "`shell` {boolean|string} If `true`, runs `command` inside of a shell. Uses `'/bin/sh'` on UNIX, and `process.env.ComSpec` on Windows. A different shell can be specified as a string. See [Shell Requirements][] and [Default Windows Shell][]. **Default:** `false` (no shell).",
+                          "name": "shell",
+                          "type": "boolean|string",
+                          "default": "`false` (no shell)",
+                          "desc": "If `true`, runs `command` inside of a shell. Uses `'/bin/sh'` on UNIX, and `process.env.ComSpec` on Windows. A different shell can be specified as a string. See [Shell Requirements][] and [Default Windows Shell][]."
+                        },
+                        {
+                          "textRaw": "`windowsVerbatimArguments` {boolean} No quoting or escaping of arguments is done on Windows. Ignored on Unix. This is set to `true` automatically when `shell` is specified. **Default:** `false`.",
+                          "name": "windowsVerbatimArguments",
+                          "type": "boolean",
+                          "default": "`false`",
+                          "desc": "No quoting or escaping of arguments is done on Windows. Ignored on Unix. This is set to `true` automatically when `shell` is specified."
+                        },
+                        {
+                          "textRaw": "`windowsHide` {boolean} Hide the subprocess console window that would normally be created on Windows systems. **Default:** `false`.",
+                          "name": "windowsHide",
+                          "type": "boolean",
+                          "default": "`false`",
+                          "desc": "Hide the subprocess console window that would normally be created on Windows systems."
+                        }
+                      ],
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>The <code>child_process.spawn()</code> method spawns a new process using the given\n<code>command</code>, with command line arguments in <code>args</code>. If omitted, <code>args</code> defaults\nto an empty array.</p>\n<p><strong>If the <code>shell</code> option is enabled, do not pass unsanitized user input to this\nfunction. Any input containing shell metacharacters may be used to trigger\narbitrary command execution.</strong></p>\n<p>A third argument may be used to specify additional options, with these defaults:</p>\n<pre><code class=\"language-js\">const defaults = {\n  cwd: undefined,\n  env: process.env\n};\n</code></pre>\n<p>Use <code>cwd</code> to specify the working directory from which the process is spawned.\nIf not given, the default is to inherit the current working directory.</p>\n<p>Use <code>env</code> to specify environment variables that will be visible to the new\nprocess, the default is <a href=\"process.html#process_process_env\"><code>process.env</code></a>.</p>\n<p><code>undefined</code> values in <code>env</code> will be ignored.</p>\n<p>Example of running <code>ls -lh /usr</code>, capturing <code>stdout</code>, <code>stderr</code>, and the\nexit code:</p>\n<pre><code class=\"language-js\">const { spawn } = require('child_process');\nconst ls = spawn('ls', ['-lh', '/usr']);\n\nls.stdout.on('data', (data) => {\n  console.log(`stdout: ${data}`);\n});\n\nls.stderr.on('data', (data) => {\n  console.log(`stderr: ${data}`);\n});\n\nls.on('close', (code) => {\n  console.log(`child process exited with code ${code}`);\n});\n</code></pre>\n<p>Example: A very elaborate way to run <code>ps ax | grep ssh</code></p>\n<pre><code class=\"language-js\">const { spawn } = require('child_process');\nconst ps = spawn('ps', ['ax']);\nconst grep = spawn('grep', ['ssh']);\n\nps.stdout.on('data', (data) => {\n  grep.stdin.write(data);\n});\n\nps.stderr.on('data', (data) => {\n  console.log(`ps stderr: ${data}`);\n});\n\nps.on('close', (code) => {\n  if (code !== 0) {\n    console.log(`ps process exited with code ${code}`);\n  }\n  grep.stdin.end();\n});\n\ngrep.stdout.on('data', (data) => {\n  console.log(data.toString());\n});\n\ngrep.stderr.on('data', (data) => {\n  console.log(`grep stderr: ${data}`);\n});\n\ngrep.on('close', (code) => {\n  if (code !== 0) {\n    console.log(`grep process exited with code ${code}`);\n  }\n});\n</code></pre>\n<p>Example of checking for failed <code>spawn</code>:</p>\n<pre><code class=\"language-js\">const { spawn } = require('child_process');\nconst subprocess = spawn('bad_command');\n\nsubprocess.on('error', (err) => {\n  console.log('Failed to start subprocess.');\n});\n</code></pre>\n<p>Certain platforms (macOS, Linux) will use the value of <code>argv[0]</code> for the process\ntitle while others (Windows, SunOS) will use <code>command</code>.</p>\n<p>Node.js currently overwrites <code>argv[0]</code> with <code>process.execPath</code> on startup, so\n<code>process.argv[0]</code> in a Node.js child process will not match the <code>argv0</code>\nparameter passed to <code>spawn</code> from the parent, retrieve it with the\n<code>process.argv0</code> property instead.</p>",
+              "properties": [
+                {
+                  "textRaw": "options.detached",
+                  "name": "detached",
+                  "meta": {
+                    "added": [
+                      "v0.7.10"
+                    ],
+                    "changes": []
+                  },
+                  "desc": "<p>On Windows, setting <code>options.detached</code> to <code>true</code> makes it possible for the\nchild process to continue running after the parent exits. The child will have\nits own console window. <em>Once enabled for a child process, it cannot be\ndisabled</em>.</p>\n<p>On non-Windows platforms, if <code>options.detached</code> is set to <code>true</code>, the child\nprocess will be made the leader of a new process group and session. Note that\nchild processes may continue running after the parent exits regardless of\nwhether they are detached or not. See <a href=\"http://man7.org/linux/man-pages/man2/setsid.2.html\"><code>setsid(2)</code></a> for more information.</p>\n<p>By default, the parent will wait for the detached child to exit. To prevent the\nparent from waiting for a given <code>subprocess</code> to exit, use the\n<code>subprocess.unref()</code> method. Doing so will cause the parent's event loop to not\ninclude the child in its reference count, allowing the parent to exit\nindependently of the child, unless there is an established IPC channel between\nthe child and the parent.</p>\n<p>When using the <code>detached</code> option to start a long-running process, the process\nwill not stay running in the background after the parent exits unless it is\nprovided with a <code>stdio</code> configuration that is not connected to the parent.\nIf the parent's <code>stdio</code> is inherited, the child will remain attached to the\ncontrolling terminal.</p>\n<p>Example of a long-running process, by detaching and also ignoring its parent\n<code>stdio</code> file descriptors, in order to ignore the parent's termination:</p>\n<pre><code class=\"language-js\">const { spawn } = require('child_process');\n\nconst subprocess = spawn(process.argv[0], ['child_program.js'], {\n  detached: true,\n  stdio: 'ignore'\n});\n\nsubprocess.unref();\n</code></pre>\n<p>Alternatively one can redirect the child process' output into files:</p>\n<pre><code class=\"language-js\">const fs = require('fs');\nconst { spawn } = require('child_process');\nconst out = fs.openSync('./out.log', 'a');\nconst err = fs.openSync('./out.log', 'a');\n\nconst subprocess = spawn('prg', [], {\n  detached: true,\n  stdio: [ 'ignore', out, err ]\n});\n\nsubprocess.unref();\n</code></pre>"
+                },
+                {
+                  "textRaw": "options.stdio",
+                  "name": "stdio",
+                  "meta": {
+                    "added": [
+                      "v0.7.10"
+                    ],
+                    "changes": [
+                      {
+                        "version": "v3.3.1",
+                        "pr-url": "https://github.com/nodejs/node/pull/2727",
+                        "description": "The value `0` is now accepted as a file descriptor."
+                      }
+                    ]
+                  },
+                  "desc": "<p>The <code>options.stdio</code> option is used to configure the pipes that are established\nbetween the parent and child process. By default, the child's stdin, stdout,\nand stderr are redirected to corresponding <a href=\"#child_process_subprocess_stdin\"><code>subprocess.stdin</code></a>,\n<a href=\"#child_process_subprocess_stdout\"><code>subprocess.stdout</code></a>, and <a href=\"#child_process_subprocess_stderr\"><code>subprocess.stderr</code></a> streams on the\n<a href=\"#child_process_child_process\"><code>ChildProcess</code></a> object. This is equivalent to setting the <code>options.stdio</code>\nequal to <code>['pipe', 'pipe', 'pipe']</code>.</p>\n<p>For convenience, <code>options.stdio</code> may be one of the following strings:</p>\n<ul>\n<li><code>'pipe'</code> - equivalent to <code>['pipe', 'pipe', 'pipe']</code> (the default)</li>\n<li><code>'ignore'</code> - equivalent to <code>['ignore', 'ignore', 'ignore']</code></li>\n<li><code>'inherit'</code> - equivalent to <code>['inherit', 'inherit', 'inherit']</code> or <code>[0, 1, 2]</code></li>\n</ul>\n<p>Otherwise, the value of <code>options.stdio</code> is an array where each index corresponds\nto an fd in the child. The fds 0, 1, and 2 correspond to stdin, stdout,\nand stderr, respectively. Additional fds can be specified to create additional\npipes between the parent and child. The value is one of the following:</p>\n<ol>\n<li>\n<p><code>'pipe'</code> - Create a pipe between the child process and the parent process.\nThe parent end of the pipe is exposed to the parent as a property on the\n<code>child_process</code> object as <a href=\"#child_process_options_stdio\"><code>subprocess.stdio[fd]</code></a>. Pipes created\nfor fds 0 - 2 are also available as <a href=\"#child_process_subprocess_stdin\"><code>subprocess.stdin</code></a>,\n<a href=\"#child_process_subprocess_stdout\"><code>subprocess.stdout</code></a> and <a href=\"#child_process_subprocess_stderr\"><code>subprocess.stderr</code></a>, respectively.</p>\n</li>\n<li>\n<p><code>'ipc'</code> - Create an IPC channel for passing messages/file descriptors\nbetween parent and child. A <a href=\"#child_process_child_process\"><code>ChildProcess</code></a> may have at most <em>one</em> IPC stdio\nfile descriptor. Setting this option enables the <a href=\"#child_process_subprocess_send_message_sendhandle_options_callback\"><code>subprocess.send()</code></a>\nmethod. If the child is a Node.js process, the presence of an IPC channel\nwill enable <a href=\"process.html#process_process_send_message_sendhandle_options_callback\"><code>process.send()</code></a> and <a href=\"process.html#process_process_disconnect\"><code>process.disconnect()</code></a> methods,\nas well as <a href=\"process.html#process_event_disconnect\"><code>'disconnect'</code></a> and <a href=\"process.html#process_event_message\"><code>'message'</code></a> events within the child.</p>\n<p>Accessing the IPC channel fd in any way other than <a href=\"process.html#process_process_send_message_sendhandle_options_callback\"><code>process.send()</code></a>\nor using the IPC channel with a child process that is not a Node.js instance\nis not supported.</p>\n</li>\n<li>\n<p><code>'ignore'</code> - Instructs Node.js to ignore the fd in the child. While Node.js\nwill always open fds 0 - 2 for the processes it spawns, setting the fd to\n<code>'ignore'</code> will cause Node.js to open <code>/dev/null</code> and attach it to the\nchild's fd.</p>\n</li>\n<li>\n<p><code>'inherit'</code> - Pass through the corresponding stdio stream to/from the\nparent process.  In the first three positions, this is equivalent to\n<code>process.stdin</code>, <code>process.stdout</code>, and <code>process.stderr</code>, respectively.  In\nany other position, equivalent to <code>'ignore'</code>.</p>\n</li>\n<li>\n<p><a href=\"stream.html#stream_stream\" class=\"type\">&lt;Stream&gt;</a> object - Share a readable or writable stream that refers to a tty,\nfile, socket, or a pipe with the child process. The stream's underlying\nfile descriptor is duplicated in the child process to the fd that\ncorresponds to the index in the <code>stdio</code> array. Note that the stream must\nhave an underlying descriptor (file streams do not until the <code>'open'</code>\nevent has occurred).</p>\n</li>\n<li>\n<p>Positive integer - The integer value is interpreted as a file descriptor\nthat is currently open in the parent process. It is shared with the child\nprocess, similar to how <a href=\"stream.html#stream_stream\" class=\"type\">&lt;Stream&gt;</a> objects can be shared.</p>\n</li>\n<li>\n<p><code>null</code>, <code>undefined</code> - Use default value. For stdio fds 0, 1, and 2 (in other\nwords, stdin, stdout, and stderr) a pipe is created. For fd 3 and up, the\ndefault is <code>'ignore'</code>.</p>\n</li>\n</ol>\n<pre><code class=\"language-js\">const { spawn } = require('child_process');\n\n// Child will use parent's stdios\nspawn('prg', [], { stdio: 'inherit' });\n\n// Spawn child sharing only stderr\nspawn('prg', [], { stdio: ['pipe', 'pipe', process.stderr] });\n\n// Open an extra fd=4, to interact with programs presenting a\n// startd-style interface.\nspawn('prg', [], { stdio: ['pipe', null, null, null, 'pipe'] });\n</code></pre>\n<p><em>It is worth noting that when an IPC channel is established between the\nparent and child processes, and the child is a Node.js process, the child\nis launched with the IPC channel unreferenced (using <code>unref()</code>) until the\nchild registers an event handler for the <a href=\"process.html#process_event_disconnect\"><code>'disconnect'</code></a> event\nor the <a href=\"process.html#process_event_message\"><code>'message'</code></a> event. This allows the child to exit\nnormally without the process being held open by the open IPC channel.</em></p>\n<p>On UNIX-like operating systems, the <a href=\"#child_process_child_process_spawn_command_args_options\"><code>child_process.spawn()</code></a> method\nperforms memory operations synchronously before decoupling the event loop\nfrom the child. Applications with a large memory footprint may find frequent\n<a href=\"#child_process_child_process_spawn_command_args_options\"><code>child_process.spawn()</code></a> calls to be a bottleneck. For more information,\nsee <a href=\"https://bugs.chromium.org/p/v8/issues/detail?id=7381\">V8 issue 7381</a>.</p>\n<p>See also: <a href=\"#child_process_child_process_exec_command_options_callback\"><code>child_process.exec()</code></a> and <a href=\"#child_process_child_process_fork_modulepath_args_options\"><code>child_process.fork()</code></a>.</p>"
+                }
+              ]
+            }
+          ],
+          "type": "module",
+          "displayName": "Asynchronous Process Creation"
+        },
+        {
+          "textRaw": "Synchronous Process Creation",
+          "name": "synchronous_process_creation",
+          "desc": "<p>The <a href=\"#child_process_child_process_spawnsync_command_args_options\"><code>child_process.spawnSync()</code></a>, <a href=\"#child_process_child_process_execsync_command_options\"><code>child_process.execSync()</code></a>, and\n<a href=\"#child_process_child_process_execfilesync_file_args_options\"><code>child_process.execFileSync()</code></a> methods are <strong>synchronous</strong> and <strong>WILL</strong> block\nthe Node.js event loop, pausing execution of any additional code until the\nspawned process exits.</p>\n<p>Blocking calls like these are mostly useful for simplifying general-purpose\nscripting tasks and for simplifying the loading/processing of application\nconfiguration at startup.</p>",
+          "methods": [
+            {
+              "textRaw": "child_process.execFileSync(file[, args][, options])",
+              "type": "method",
+              "name": "execFileSync",
+              "meta": {
+                "added": [
+                  "v0.11.12"
+                ],
+                "changes": [
+                  {
+                    "version": "v10.10.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/22409",
+                    "description": "The `input` option can now be any `TypedArray` or a `DataView`."
+                  },
+                  {
+                    "version": "v8.8.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/15380",
+                    "description": "The `windowsHide` option is supported now."
+                  },
+                  {
+                    "version": "v8.0.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/10653",
+                    "description": "The `input` option can now be a `Uint8Array`."
+                  },
+                  {
+                    "version": "v6.2.1, v4.5.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/6939",
+                    "description": "The `encoding` option can now explicitly be set to `buffer`."
+                  }
+                ]
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {Buffer|string} The stdout from the command.",
+                    "name": "return",
+                    "type": "Buffer|string",
+                    "desc": "The stdout from the command."
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`file` {string} The name or path of the executable file to run.",
+                      "name": "file",
+                      "type": "string",
+                      "desc": "The name or path of the executable file to run."
+                    },
+                    {
+                      "textRaw": "`args` {string[]} List of string arguments.",
+                      "name": "args",
+                      "type": "string[]",
+                      "desc": "List of string arguments.",
+                      "optional": true
+                    },
+                    {
+                      "textRaw": "`options` {Object}",
+                      "name": "options",
+                      "type": "Object",
+                      "options": [
+                        {
+                          "textRaw": "`cwd` {string} Current working directory of the child process.",
+                          "name": "cwd",
+                          "type": "string",
+                          "desc": "Current working directory of the child process."
+                        },
+                        {
+                          "textRaw": "`input` {string|Buffer|TypedArray|DataView} The value which will be passed as stdin to the spawned process. Supplying this value will override `stdio[0]`.",
+                          "name": "input",
+                          "type": "string|Buffer|TypedArray|DataView",
+                          "desc": "The value which will be passed as stdin to the spawned process. Supplying this value will override `stdio[0]`."
+                        },
+                        {
+                          "textRaw": "`stdio` {string|Array} Child's stdio configuration. `stderr` by default will be output to the parent process' stderr unless `stdio` is specified. **Default:** `'pipe'`.",
+                          "name": "stdio",
+                          "type": "string|Array",
+                          "default": "`'pipe'`",
+                          "desc": "Child's stdio configuration. `stderr` by default will be output to the parent process' stderr unless `stdio` is specified."
+                        },
+                        {
+                          "textRaw": "`env` {Object} Environment key-value pairs.",
+                          "name": "env",
+                          "type": "Object",
+                          "desc": "Environment key-value pairs."
+                        },
+                        {
+                          "textRaw": "`uid` {number} Sets the user identity of the process (see setuid(2)).",
+                          "name": "uid",
+                          "type": "number",
+                          "desc": "Sets the user identity of the process (see setuid(2))."
+                        },
+                        {
+                          "textRaw": "`gid` {number} Sets the group identity of the process (see setgid(2)).",
+                          "name": "gid",
+                          "type": "number",
+                          "desc": "Sets the group identity of the process (see setgid(2))."
+                        },
+                        {
+                          "textRaw": "`timeout` {number} In milliseconds the maximum amount of time the process is allowed to run. **Default:** `undefined`.",
+                          "name": "timeout",
+                          "type": "number",
+                          "default": "`undefined`",
+                          "desc": "In milliseconds the maximum amount of time the process is allowed to run."
+                        },
+                        {
+                          "textRaw": "`killSignal` {string|integer} The signal value to be used when the spawned process will be killed. **Default:** `'SIGTERM'`.",
+                          "name": "killSignal",
+                          "type": "string|integer",
+                          "default": "`'SIGTERM'`",
+                          "desc": "The signal value to be used when the spawned process will be killed."
+                        },
+                        {
+                          "textRaw": "`maxBuffer` {number} Largest amount of data in bytes allowed on stdout or stderr. If exceeded, the child process is terminated. See caveat at [`maxBuffer` and Unicode][]. **Default:** `200 * 1024`.",
+                          "name": "maxBuffer",
+                          "type": "number",
+                          "default": "`200 * 1024`",
+                          "desc": "Largest amount of data in bytes allowed on stdout or stderr. If exceeded, the child process is terminated. See caveat at [`maxBuffer` and Unicode][]."
+                        },
+                        {
+                          "textRaw": "`encoding` {string} The encoding used for all stdio inputs and outputs. **Default:** `'buffer'`.",
+                          "name": "encoding",
+                          "type": "string",
+                          "default": "`'buffer'`",
+                          "desc": "The encoding used for all stdio inputs and outputs."
+                        },
+                        {
+                          "textRaw": "`windowsHide` {boolean} Hide the subprocess console window that would normally be created on Windows systems. **Default:** `false`.",
+                          "name": "windowsHide",
+                          "type": "boolean",
+                          "default": "`false`",
+                          "desc": "Hide the subprocess console window that would normally be created on Windows systems."
+                        },
+                        {
+                          "textRaw": "`shell` {boolean|string} If `true`, runs `command` inside of a shell. Uses `'/bin/sh'` on UNIX, and `process.env.ComSpec` on Windows. A different shell can be specified as a string. See [Shell Requirements][] and [Default Windows Shell][]. **Default:** `false` (no shell).",
+                          "name": "shell",
+                          "type": "boolean|string",
+                          "default": "`false` (no shell)",
+                          "desc": "If `true`, runs `command` inside of a shell. Uses `'/bin/sh'` on UNIX, and `process.env.ComSpec` on Windows. A different shell can be specified as a string. See [Shell Requirements][] and [Default Windows Shell][]."
+                        }
+                      ],
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>The <code>child_process.execFileSync()</code> method is generally identical to\n<a href=\"#child_process_child_process_execfile_file_args_options_callback\"><code>child_process.execFile()</code></a> with the exception that the method will not return\nuntil the child process has fully closed. When a timeout has been encountered\nand <code>killSignal</code> is sent, the method won't return until the process has\ncompletely exited.</p>\n<p>If the child process intercepts and handles the <code>SIGTERM</code> signal and\ndoes not exit, the parent process will still wait until the child process has\nexited.</p>\n<p>If the process times out or has a non-zero exit code, this method <strong><em>will</em></strong>\nthrow an <a href=\"errors.html#errors_class_error\"><code>Error</code></a> that will include the full result of the underlying\n<a href=\"#child_process_child_process_spawnsync_command_args_options\"><code>child_process.spawnSync()</code></a>.</p>\n<p><strong>If the <code>shell</code> option is enabled, do not pass unsanitized user input to this\nfunction. Any input containing shell metacharacters may be used to trigger\narbitrary command execution.</strong></p>"
+            },
+            {
+              "textRaw": "child_process.execSync(command[, options])",
+              "type": "method",
+              "name": "execSync",
+              "meta": {
+                "added": [
+                  "v0.11.12"
+                ],
+                "changes": [
+                  {
+                    "version": "v10.10.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/22409",
+                    "description": "The `input` option can now be any `TypedArray` or a `DataView`."
+                  },
+                  {
+                    "version": "v8.8.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/15380",
+                    "description": "The `windowsHide` option is supported now."
+                  },
+                  {
+                    "version": "v8.0.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/10653",
+                    "description": "The `input` option can now be a `Uint8Array`."
+                  }
+                ]
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {Buffer|string} The stdout from the command.",
+                    "name": "return",
+                    "type": "Buffer|string",
+                    "desc": "The stdout from the command."
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`command` {string} The command to run.",
+                      "name": "command",
+                      "type": "string",
+                      "desc": "The command to run."
+                    },
+                    {
+                      "textRaw": "`options` {Object}",
+                      "name": "options",
+                      "type": "Object",
+                      "options": [
+                        {
+                          "textRaw": "`cwd` {string} Current working directory of the child process.",
+                          "name": "cwd",
+                          "type": "string",
+                          "desc": "Current working directory of the child process."
+                        },
+                        {
+                          "textRaw": "`input` {string|Buffer|TypedArray|DataView} The value which will be passed as stdin to the spawned process. Supplying this value will override `stdio[0]`.",
+                          "name": "input",
+                          "type": "string|Buffer|TypedArray|DataView",
+                          "desc": "The value which will be passed as stdin to the spawned process. Supplying this value will override `stdio[0]`."
+                        },
+                        {
+                          "textRaw": "`stdio` {string|Array} Child's stdio configuration. `stderr` by default will be output to the parent process' stderr unless `stdio` is specified. **Default:** `'pipe'`.",
+                          "name": "stdio",
+                          "type": "string|Array",
+                          "default": "`'pipe'`",
+                          "desc": "Child's stdio configuration. `stderr` by default will be output to the parent process' stderr unless `stdio` is specified."
+                        },
+                        {
+                          "textRaw": "`env` {Object} Environment key-value pairs.",
+                          "name": "env",
+                          "type": "Object",
+                          "desc": "Environment key-value pairs."
+                        },
+                        {
+                          "textRaw": "`shell` {string} Shell to execute the command with. See [Shell Requirements][] and [Default Windows Shell][]. **Default:** `'/bin/sh'` on UNIX, `process.env.ComSpec` on Windows.",
+                          "name": "shell",
+                          "type": "string",
+                          "default": "`'/bin/sh'` on UNIX, `process.env.ComSpec` on Windows",
+                          "desc": "Shell to execute the command with. See [Shell Requirements][] and [Default Windows Shell][]."
+                        },
+                        {
+                          "textRaw": "`uid` {number} Sets the user identity of the process. (See setuid(2)).",
+                          "name": "uid",
+                          "type": "number",
+                          "desc": "Sets the user identity of the process. (See setuid(2))."
+                        },
+                        {
+                          "textRaw": "`gid` {number} Sets the group identity of the process. (See setgid(2)).",
+                          "name": "gid",
+                          "type": "number",
+                          "desc": "Sets the group identity of the process. (See setgid(2))."
+                        },
+                        {
+                          "textRaw": "`timeout` {number} In milliseconds the maximum amount of time the process is allowed to run. **Default:** `undefined`.",
+                          "name": "timeout",
+                          "type": "number",
+                          "default": "`undefined`",
+                          "desc": "In milliseconds the maximum amount of time the process is allowed to run."
+                        },
+                        {
+                          "textRaw": "`killSignal` {string|integer} The signal value to be used when the spawned process will be killed. **Default:** `'SIGTERM'`.",
+                          "name": "killSignal",
+                          "type": "string|integer",
+                          "default": "`'SIGTERM'`",
+                          "desc": "The signal value to be used when the spawned process will be killed."
+                        },
+                        {
+                          "textRaw": "`maxBuffer` {number} Largest amount of data in bytes allowed on stdout or stderr. If exceeded, the child process is terminated. See caveat at [`maxBuffer` and Unicode][]. **Default:** `200 * 1024`.",
+                          "name": "maxBuffer",
+                          "type": "number",
+                          "default": "`200 * 1024`",
+                          "desc": "Largest amount of data in bytes allowed on stdout or stderr. If exceeded, the child process is terminated. See caveat at [`maxBuffer` and Unicode][]."
+                        },
+                        {
+                          "textRaw": "`encoding` {string} The encoding used for all stdio inputs and outputs. **Default:** `'buffer'`.",
+                          "name": "encoding",
+                          "type": "string",
+                          "default": "`'buffer'`",
+                          "desc": "The encoding used for all stdio inputs and outputs."
+                        },
+                        {
+                          "textRaw": "`windowsHide` {boolean} Hide the subprocess console window that would normally be created on Windows systems. **Default:** `false`.",
+                          "name": "windowsHide",
+                          "type": "boolean",
+                          "default": "`false`",
+                          "desc": "Hide the subprocess console window that would normally be created on Windows systems."
+                        }
+                      ],
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>The <code>child_process.execSync()</code> method is generally identical to\n<a href=\"#child_process_child_process_exec_command_options_callback\"><code>child_process.exec()</code></a> with the exception that the method will not return until\nthe child process has fully closed. When a timeout has been encountered and\n<code>killSignal</code> is sent, the method won't return until the process has completely\nexited. <em>Note that if the child process intercepts and handles the <code>SIGTERM</code>\nsignal and doesn't exit, the parent process will wait until the child\nprocess has exited.</em></p>\n<p>If the process times out or has a non-zero exit code, this method <strong><em>will</em></strong>\nthrow. The <a href=\"errors.html#errors_class_error\"><code>Error</code></a> object will contain the entire result from\n<a href=\"#child_process_child_process_spawnsync_command_args_options\"><code>child_process.spawnSync()</code></a>.</p>\n<p><strong>Never pass unsanitized user input to this function. Any input containing shell\nmetacharacters may be used to trigger arbitrary command execution.</strong></p>"
+            },
+            {
+              "textRaw": "child_process.spawnSync(command[, args][, options])",
+              "type": "method",
+              "name": "spawnSync",
+              "meta": {
+                "added": [
+                  "v0.11.12"
+                ],
+                "changes": [
+                  {
+                    "version": "v10.10.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/22409",
+                    "description": "The `input` option can now be any `TypedArray` or a `DataView`."
+                  },
+                  {
+                    "version": "v8.8.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/15380",
+                    "description": "The `windowsHide` option is supported now."
+                  },
+                  {
+                    "version": "v8.0.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/10653",
+                    "description": "The `input` option can now be a `Uint8Array`."
+                  },
+                  {
+                    "version": "v6.2.1, v4.5.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/6939",
+                    "description": "The `encoding` option can now explicitly be set to `buffer`."
+                  },
+                  {
+                    "version": "v5.7.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/4598",
+                    "description": "The `shell` option is supported now."
+                  }
+                ]
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {Object}",
+                    "name": "return",
+                    "type": "Object",
+                    "options": [
+                      {
+                        "textRaw": "`pid` {number} Pid of the child process.",
+                        "name": "pid",
+                        "type": "number",
+                        "desc": "Pid of the child process."
+                      },
+                      {
+                        "textRaw": "`output` {Array} Array of results from stdio output.",
+                        "name": "output",
+                        "type": "Array",
+                        "desc": "Array of results from stdio output."
+                      },
+                      {
+                        "textRaw": "`stdout` {Buffer|string} The contents of `output[1]`.",
+                        "name": "stdout",
+                        "type": "Buffer|string",
+                        "desc": "The contents of `output[1]`."
+                      },
+                      {
+                        "textRaw": "`stderr` {Buffer|string} The contents of `output[2]`.",
+                        "name": "stderr",
+                        "type": "Buffer|string",
+                        "desc": "The contents of `output[2]`."
+                      },
+                      {
+                        "textRaw": "`status` {number} The exit code of the child process.",
+                        "name": "status",
+                        "type": "number",
+                        "desc": "The exit code of the child process."
+                      },
+                      {
+                        "textRaw": "`signal` {string} The signal used to kill the child process.",
+                        "name": "signal",
+                        "type": "string",
+                        "desc": "The signal used to kill the child process."
+                      },
+                      {
+                        "textRaw": "`error` {Error} The error object if the child process failed or timed out.",
+                        "name": "error",
+                        "type": "Error",
+                        "desc": "The error object if the child process failed or timed out."
+                      }
+                    ]
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`command` {string} The command to run.",
+                      "name": "command",
+                      "type": "string",
+                      "desc": "The command to run."
+                    },
+                    {
+                      "textRaw": "`args` {string[]} List of string arguments.",
+                      "name": "args",
+                      "type": "string[]",
+                      "desc": "List of string arguments.",
+                      "optional": true
+                    },
+                    {
+                      "textRaw": "`options` {Object}",
+                      "name": "options",
+                      "type": "Object",
+                      "options": [
+                        {
+                          "textRaw": "`cwd` {string} Current working directory of the child process.",
+                          "name": "cwd",
+                          "type": "string",
+                          "desc": "Current working directory of the child process."
+                        },
+                        {
+                          "textRaw": "`input` {string|Buffer|TypedArray|DataView} The value which will be passed as stdin to the spawned process. Supplying this value will override `stdio[0]`.",
+                          "name": "input",
+                          "type": "string|Buffer|TypedArray|DataView",
+                          "desc": "The value which will be passed as stdin to the spawned process. Supplying this value will override `stdio[0]`."
+                        },
+                        {
+                          "textRaw": "`argv0` {string} Explicitly set the value of `argv[0]` sent to the child process. This will be set to `command` if not specified.",
+                          "name": "argv0",
+                          "type": "string",
+                          "desc": "Explicitly set the value of `argv[0]` sent to the child process. This will be set to `command` if not specified."
+                        },
+                        {
+                          "textRaw": "`stdio` {string|Array} Child's stdio configuration.",
+                          "name": "stdio",
+                          "type": "string|Array",
+                          "desc": "Child's stdio configuration."
+                        },
+                        {
+                          "textRaw": "`env` {Object} Environment key-value pairs.",
+                          "name": "env",
+                          "type": "Object",
+                          "desc": "Environment key-value pairs."
+                        },
+                        {
+                          "textRaw": "`uid` {number} Sets the user identity of the process (see setuid(2)).",
+                          "name": "uid",
+                          "type": "number",
+                          "desc": "Sets the user identity of the process (see setuid(2))."
+                        },
+                        {
+                          "textRaw": "`gid` {number} Sets the group identity of the process (see setgid(2)).",
+                          "name": "gid",
+                          "type": "number",
+                          "desc": "Sets the group identity of the process (see setgid(2))."
+                        },
+                        {
+                          "textRaw": "`timeout` {number} In milliseconds the maximum amount of time the process is allowed to run. **Default:** `undefined`.",
+                          "name": "timeout",
+                          "type": "number",
+                          "default": "`undefined`",
+                          "desc": "In milliseconds the maximum amount of time the process is allowed to run."
+                        },
+                        {
+                          "textRaw": "`killSignal` {string|integer} The signal value to be used when the spawned process will be killed. **Default:** `'SIGTERM'`.",
+                          "name": "killSignal",
+                          "type": "string|integer",
+                          "default": "`'SIGTERM'`",
+                          "desc": "The signal value to be used when the spawned process will be killed."
+                        },
+                        {
+                          "textRaw": "`maxBuffer` {number} Largest amount of data in bytes allowed on stdout or stderr. If exceeded, the child process is terminated. See caveat at [`maxBuffer` and Unicode][]. **Default:** `200 * 1024`.",
+                          "name": "maxBuffer",
+                          "type": "number",
+                          "default": "`200 * 1024`",
+                          "desc": "Largest amount of data in bytes allowed on stdout or stderr. If exceeded, the child process is terminated. See caveat at [`maxBuffer` and Unicode][]."
+                        },
+                        {
+                          "textRaw": "`encoding` {string} The encoding used for all stdio inputs and outputs. **Default:** `'buffer'`.",
+                          "name": "encoding",
+                          "type": "string",
+                          "default": "`'buffer'`",
+                          "desc": "The encoding used for all stdio inputs and outputs."
+                        },
+                        {
+                          "textRaw": "`shell` {boolean|string} If `true`, runs `command` inside of a shell. Uses `'/bin/sh'` on UNIX, and `process.env.ComSpec` on Windows. A different shell can be specified as a string. See [Shell Requirements][] and [Default Windows Shell][]. **Default:** `false` (no shell).",
+                          "name": "shell",
+                          "type": "boolean|string",
+                          "default": "`false` (no shell)",
+                          "desc": "If `true`, runs `command` inside of a shell. Uses `'/bin/sh'` on UNIX, and `process.env.ComSpec` on Windows. A different shell can be specified as a string. See [Shell Requirements][] and [Default Windows Shell][]."
+                        },
+                        {
+                          "textRaw": "`windowsVerbatimArguments` {boolean} No quoting or escaping of arguments is done on Windows. Ignored on Unix. This is set to `true` automatically when `shell` is specified. **Default:** `false`.",
+                          "name": "windowsVerbatimArguments",
+                          "type": "boolean",
+                          "default": "`false`",
+                          "desc": "No quoting or escaping of arguments is done on Windows. Ignored on Unix. This is set to `true` automatically when `shell` is specified."
+                        },
+                        {
+                          "textRaw": "`windowsHide` {boolean} Hide the subprocess console window that would normally be created on Windows systems. **Default:** `false`.",
+                          "name": "windowsHide",
+                          "type": "boolean",
+                          "default": "`false`",
+                          "desc": "Hide the subprocess console window that would normally be created on Windows systems."
+                        }
+                      ],
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>The <code>child_process.spawnSync()</code> method is generally identical to\n<a href=\"#child_process_child_process_spawn_command_args_options\"><code>child_process.spawn()</code></a> with the exception that the function will not return\nuntil the child process has fully closed. When a timeout has been encountered\nand <code>killSignal</code> is sent, the method won't return until the process has\ncompletely exited. Note that if the process intercepts and handles the\n<code>SIGTERM</code> signal and doesn't exit, the parent process will wait until the child\nprocess has exited.</p>\n<p><strong>If the <code>shell</code> option is enabled, do not pass unsanitized user input to this\nfunction. Any input containing shell metacharacters may be used to trigger\narbitrary command execution.</strong></p>"
+            }
+          ],
+          "type": "module",
+          "displayName": "Synchronous Process Creation"
+        },
+        {
+          "textRaw": "`maxBuffer` and Unicode",
+          "name": "`maxbuffer`_and_unicode",
+          "desc": "<p>The <code>maxBuffer</code> option specifies the largest number of bytes allowed on <code>stdout</code>\nor <code>stderr</code>. If this value is exceeded, then the child process is terminated.\nThis impacts output that includes multibyte character encodings such as UTF-8 or\nUTF-16. For instance, <code>console.log('中文测试')</code> will send 13 UTF-8 encoded bytes\nto <code>stdout</code> although there are only 4 characters.</p>",
+          "type": "module",
+          "displayName": "`maxBuffer` and Unicode"
+        },
+        {
+          "textRaw": "Shell Requirements",
+          "name": "shell_requirements",
+          "desc": "<p>The shell should understand the <code>-c</code> switch on UNIX or <code>/d /s /c</code> on Windows.\nOn Windows, command line parsing should be compatible with <code>'cmd.exe'</code>.</p>",
+          "type": "module",
+          "displayName": "Shell Requirements"
+        },
+        {
+          "textRaw": "Default Windows Shell",
+          "name": "default_windows_shell",
+          "desc": "<p>Although Microsoft specifies <code>%COMSPEC%</code> must contain the path to\n<code>'cmd.exe'</code> in the root environment, child processes are not always subject to\nthe same requirement. Thus, in <code>child_process</code> functions where a shell can be\nspawned, <code>'cmd.exe'</code> is used as a fallback if <code>process.env.ComSpec</code> is\nunavailable.</p>",
+          "type": "module",
+          "displayName": "Default Windows Shell"
+        }
+      ],
+      "classes": [
+        {
+          "textRaw": "Class: ChildProcess",
+          "type": "class",
+          "name": "ChildProcess",
+          "meta": {
+            "added": [
+              "v2.2.0"
+            ],
+            "changes": []
+          },
+          "desc": "<p>Instances of the <code>ChildProcess</code> class are <a href=\"events.html#events_class_eventemitter\"><code>EventEmitters</code></a> that represent\nspawned child processes.</p>\n<p>Instances of <code>ChildProcess</code> are not intended to be created directly. Rather,\nuse the <a href=\"#child_process_child_process_spawn_command_args_options\"><code>child_process.spawn()</code></a>, <a href=\"#child_process_child_process_exec_command_options_callback\"><code>child_process.exec()</code></a>,\n<a href=\"#child_process_child_process_execfile_file_args_options_callback\"><code>child_process.execFile()</code></a>, or <a href=\"#child_process_child_process_fork_modulepath_args_options\"><code>child_process.fork()</code></a> methods to create\ninstances of <code>ChildProcess</code>.</p>",
+          "events": [
+            {
+              "textRaw": "Event: 'close'",
+              "type": "event",
+              "name": "close",
+              "meta": {
+                "added": [
+                  "v0.7.7"
+                ],
+                "changes": []
+              },
+              "params": [
+                {
+                  "textRaw": "`code` {number} The exit code if the child exited on its own.",
+                  "name": "code",
+                  "type": "number",
+                  "desc": "The exit code if the child exited on its own."
+                },
+                {
+                  "textRaw": "`signal` {string} The signal by which the child process was terminated.",
+                  "name": "signal",
+                  "type": "string",
+                  "desc": "The signal by which the child process was terminated."
+                }
+              ],
+              "desc": "<p>The <code>'close'</code> event is emitted when the stdio streams of a child process have\nbeen closed. This is distinct from the <a href=\"#child_process_event_exit\"><code>'exit'</code></a> event, since multiple\nprocesses might share the same stdio streams.</p>"
+            },
+            {
+              "textRaw": "Event: 'disconnect'",
+              "type": "event",
+              "name": "disconnect",
+              "meta": {
+                "added": [
+                  "v0.7.2"
+                ],
+                "changes": []
+              },
+              "params": [],
+              "desc": "<p>The <code>'disconnect'</code> event is emitted after calling the\n<a href=\"#child_process_subprocess_disconnect\"><code>subprocess.disconnect()</code></a> method in parent process or\n<a href=\"process.html#process_process_disconnect\"><code>process.disconnect()</code></a> in child process. After disconnecting it is no longer\npossible to send or receive messages, and the <a href=\"#child_process_subprocess_connected\"><code>subprocess.connected</code></a>\nproperty is <code>false</code>.</p>"
+            },
+            {
+              "textRaw": "Event: 'error'",
+              "type": "event",
+              "name": "error",
+              "params": [
+                {
+                  "textRaw": "`err` {Error} The error.",
+                  "name": "err",
+                  "type": "Error",
+                  "desc": "The error."
+                }
+              ],
+              "desc": "<p>The <code>'error'</code> event is emitted whenever:</p>\n<ol>\n<li>The process could not be spawned, or</li>\n<li>The process could not be killed, or</li>\n<li>Sending a message to the child process failed.</li>\n</ol>\n<p>The <code>'exit'</code> event may or may not fire after an error has occurred. When\nlistening to both the <code>'exit'</code> and <code>'error'</code> events, it is important to guard\nagainst accidentally invoking handler functions multiple times.</p>\n<p>See also <a href=\"#child_process_subprocess_kill_signal\"><code>subprocess.kill()</code></a> and <a href=\"#child_process_subprocess_send_message_sendhandle_options_callback\"><code>subprocess.send()</code></a>.</p>"
+            },
+            {
+              "textRaw": "Event: 'exit'",
+              "type": "event",
+              "name": "exit",
+              "meta": {
+                "added": [
+                  "v0.1.90"
+                ],
+                "changes": []
+              },
+              "params": [
+                {
+                  "textRaw": "`code` {number} The exit code if the child exited on its own.",
+                  "name": "code",
+                  "type": "number",
+                  "desc": "The exit code if the child exited on its own."
+                },
+                {
+                  "textRaw": "`signal` {string} The signal by which the child process was terminated.",
+                  "name": "signal",
+                  "type": "string",
+                  "desc": "The signal by which the child process was terminated."
+                }
+              ],
+              "desc": "<p>The <code>'exit'</code> event is emitted after the child process ends. If the process\nexited, <code>code</code> is the final exit code of the process, otherwise <code>null</code>. If the\nprocess terminated due to receipt of a signal, <code>signal</code> is the string name of\nthe signal, otherwise <code>null</code>. One of the two will always be non-null.</p>\n<p>Note that when the <code>'exit'</code> event is triggered, child process stdio streams\nmight still be open.</p>\n<p>Also, note that Node.js establishes signal handlers for <code>SIGINT</code> and\n<code>SIGTERM</code> and Node.js processes will not terminate immediately due to receipt\nof those signals. Rather, Node.js will perform a sequence of cleanup actions\nand then will re-raise the handled signal.</p>\n<p>See <a href=\"http://man7.org/linux/man-pages/man2/waitpid.2.html\"><code>waitpid(2)</code></a>.</p>"
+            },
+            {
+              "textRaw": "Event: 'message'",
+              "type": "event",
+              "name": "message",
+              "meta": {
+                "added": [
+                  "v0.5.9"
+                ],
+                "changes": []
+              },
+              "params": [
+                {
+                  "textRaw": "`message` {Object} A parsed JSON object or primitive value.",
+                  "name": "message",
+                  "type": "Object",
+                  "desc": "A parsed JSON object or primitive value."
+                },
+                {
+                  "textRaw": "`sendHandle` {Handle} A [`net.Socket`][] or [`net.Server`][] object, or undefined.",
+                  "name": "sendHandle",
+                  "type": "Handle",
+                  "desc": "A [`net.Socket`][] or [`net.Server`][] object, or undefined."
+                }
+              ],
+              "desc": "<p>The <code>'message'</code> event is triggered when a child process uses <a href=\"process.html#process_process_send_message_sendhandle_options_callback\"><code>process.send()</code></a>\nto send messages.</p>\n<p>The message goes through serialization and parsing. The resulting\nmessage might not be the same as what is originally sent.</p>"
+            }
+          ],
+          "properties": [
+            {
+              "textRaw": "`channel` {Object} A pipe representing the IPC channel to the child process.",
+              "type": "Object",
+              "name": "channel",
+              "meta": {
+                "added": [
+                  "v7.1.0"
+                ],
+                "changes": []
+              },
+              "desc": "<p>The <code>subprocess.channel</code> property is a reference to the child's IPC channel. If\nno IPC channel currently exists, this property is <code>undefined</code>.</p>",
+              "shortDesc": "A pipe representing the IPC channel to the child process."
+            },
+            {
+              "textRaw": "`connected` {boolean} Set to `false` after `subprocess.disconnect()` is called.",
+              "type": "boolean",
+              "name": "connected",
+              "meta": {
+                "added": [
+                  "v0.7.2"
+                ],
+                "changes": []
+              },
+              "desc": "<p>The <code>subprocess.connected</code> property indicates whether it is still possible to\nsend and receive messages from a child process. When <code>subprocess.connected</code> is\n<code>false</code>, it is no longer possible to send or receive messages.</p>",
+              "shortDesc": "Set to `false` after `subprocess.disconnect()` is called."
+            },
+            {
+              "textRaw": "`killed` {boolean} Set to `true` after `subprocess.kill()` is used to successfully send a signal to the child process.",
+              "type": "boolean",
+              "name": "killed",
+              "meta": {
+                "added": [
+                  "v0.5.10"
+                ],
+                "changes": []
+              },
+              "desc": "<p>The <code>subprocess.killed</code> property indicates whether the child process\nsuccessfully received a signal from <code>subprocess.kill()</code>. The <code>killed</code> property\ndoes not indicate that the child process has been terminated.</p>",
+              "shortDesc": "Set to `true` after `subprocess.kill()` is used to successfully send a signal to the child process."
+            },
+            {
+              "textRaw": "`pid` {integer}",
+              "type": "integer",
+              "name": "pid",
+              "meta": {
+                "added": [
+                  "v0.1.90"
+                ],
+                "changes": []
+              },
+              "desc": "<p>Returns the process identifier (PID) of the child process.</p>\n<pre><code class=\"language-js\">const { spawn } = require('child_process');\nconst grep = spawn('grep', ['ssh']);\n\nconsole.log(`Spawned child pid: ${grep.pid}`);\ngrep.stdin.end();\n</code></pre>"
+            },
+            {
+              "textRaw": "`stderr` {stream.Readable}",
+              "type": "stream.Readable",
+              "name": "stderr",
+              "meta": {
+                "added": [
+                  "v0.1.90"
+                ],
+                "changes": []
+              },
+              "desc": "<p>A <code>Readable Stream</code> that represents the child process's <code>stderr</code>.</p>\n<p>If the child was spawned with <code>stdio[2]</code> set to anything other than <code>'pipe'</code>,\nthen this will be <code>null</code>.</p>\n<p><code>subprocess.stderr</code> is an alias for <code>subprocess.stdio[2]</code>. Both properties will\nrefer to the same value.</p>"
+            },
+            {
+              "textRaw": "`stdin` {stream.Writable}",
+              "type": "stream.Writable",
+              "name": "stdin",
+              "meta": {
+                "added": [
+                  "v0.1.90"
+                ],
+                "changes": []
+              },
+              "desc": "<p>A <code>Writable Stream</code> that represents the child process's <code>stdin</code>.</p>\n<p><em>Note that if a child process waits to read all of its input, the child will not\ncontinue until this stream has been closed via <code>end()</code>.</em></p>\n<p>If the child was spawned with <code>stdio[0]</code> set to anything other than <code>'pipe'</code>,\nthen this will be <code>null</code>.</p>\n<p><code>subprocess.stdin</code> is an alias for <code>subprocess.stdio[0]</code>. Both properties will\nrefer to the same value.</p>"
+            },
+            {
+              "textRaw": "`stdio` {Array}",
+              "type": "Array",
+              "name": "stdio",
+              "meta": {
+                "added": [
+                  "v0.7.10"
+                ],
+                "changes": []
+              },
+              "desc": "<p>A sparse array of pipes to the child process, corresponding with positions in\nthe <a href=\"#child_process_options_stdio\"><code>stdio</code></a> option passed to <a href=\"#child_process_child_process_spawn_command_args_options\"><code>child_process.spawn()</code></a> that have been set\nto the value <code>'pipe'</code>. Note that <code>subprocess.stdio[0]</code>, <code>subprocess.stdio[1]</code>,\nand <code>subprocess.stdio[2]</code> are also available as <code>subprocess.stdin</code>,\n<code>subprocess.stdout</code>, and <code>subprocess.stderr</code>, respectively.</p>\n<p>In the following example, only the child's fd <code>1</code> (stdout) is configured as a\npipe, so only the parent's <code>subprocess.stdio[1]</code> is a stream, all other values\nin the array are <code>null</code>.</p>\n<pre><code class=\"language-js\">const assert = require('assert');\nconst fs = require('fs');\nconst child_process = require('child_process');\n\nconst subprocess = child_process.spawn('ls', {\n  stdio: [\n    0, // Use parent's stdin for child\n    'pipe', // Pipe child's stdout to parent\n    fs.openSync('err.out', 'w') // Direct child's stderr to a file\n  ]\n});\n\nassert.strictEqual(subprocess.stdio[0], null);\nassert.strictEqual(subprocess.stdio[0], subprocess.stdin);\n\nassert(subprocess.stdout);\nassert.strictEqual(subprocess.stdio[1], subprocess.stdout);\n\nassert.strictEqual(subprocess.stdio[2], null);\nassert.strictEqual(subprocess.stdio[2], subprocess.stderr);\n</code></pre>"
+            },
+            {
+              "textRaw": "`stdout` {stream.Readable}",
+              "type": "stream.Readable",
+              "name": "stdout",
+              "meta": {
+                "added": [
+                  "v0.1.90"
+                ],
+                "changes": []
+              },
+              "desc": "<p>A <code>Readable Stream</code> that represents the child process's <code>stdout</code>.</p>\n<p>If the child was spawned with <code>stdio[1]</code> set to anything other than <code>'pipe'</code>,\nthen this will be <code>null</code>.</p>\n<p><code>subprocess.stdout</code> is an alias for <code>subprocess.stdio[1]</code>. Both properties will\nrefer to the same value.</p>"
+            }
+          ],
+          "methods": [
+            {
+              "textRaw": "subprocess.disconnect()",
+              "type": "method",
+              "name": "disconnect",
+              "meta": {
+                "added": [
+                  "v0.7.2"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": []
+                }
+              ],
+              "desc": "<p>Closes the IPC channel between parent and child, allowing the child to exit\ngracefully once there are no other connections keeping it alive. After calling\nthis method the <code>subprocess.connected</code> and <code>process.connected</code> properties in\nboth the parent and child (respectively) will be set to <code>false</code>, and it will be\nno longer possible to pass messages between the processes.</p>\n<p>The <code>'disconnect'</code> event will be emitted when there are no messages in the\nprocess of being received. This will most often be triggered immediately after\ncalling <code>subprocess.disconnect()</code>.</p>\n<p>Note that when the child process is a Node.js instance (e.g. spawned using\n<a href=\"#child_process_child_process_fork_modulepath_args_options\"><code>child_process.fork()</code></a>), the <code>process.disconnect()</code> method can be invoked\nwithin the child process to close the IPC channel as well.</p>"
+            },
+            {
+              "textRaw": "subprocess.kill([signal])",
+              "type": "method",
+              "name": "kill",
+              "meta": {
+                "added": [
+                  "v0.1.90"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`signal` {string}",
+                      "name": "signal",
+                      "type": "string",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>The <code>subprocess.kill()</code> method sends a signal to the child process. If no\nargument is given, the process will be sent the <code>'SIGTERM'</code> signal. See\n<a href=\"http://man7.org/linux/man-pages/man7/signal.7.html\"><code>signal(7)</code></a> for a list of available signals.</p>\n<pre><code class=\"language-js\">const { spawn } = require('child_process');\nconst grep = spawn('grep', ['ssh']);\n\ngrep.on('close', (code, signal) => {\n  console.log(\n    `child process terminated due to receipt of signal ${signal}`);\n});\n\n// Send SIGHUP to process\ngrep.kill('SIGHUP');\n</code></pre>\n<p>The <a href=\"#child_process_child_process\"><code>ChildProcess</code></a> object may emit an <a href=\"#child_process_event_error\"><code>'error'</code></a> event if the signal cannot be\ndelivered. Sending a signal to a child process that has already exited is not\nan error but may have unforeseen consequences. Specifically, if the process\nidentifier (PID) has been reassigned to another process, the signal will be\ndelivered to that process instead which can have unexpected results.</p>\n<p>Note that while the function is called <code>kill</code>, the signal delivered to the\nchild process may not actually terminate the process.</p>\n<p>See <a href=\"http://man7.org/linux/man-pages/man2/kill.2.html\"><code>kill(2)</code></a> for reference.</p>\n<p>On Linux, child processes of child processes will not be terminated\nwhen attempting to kill their parent. This is likely to happen when running a\nnew process in a shell or with the use of the <code>shell</code> option of <code>ChildProcess</code>:</p>\n<pre><code class=\"language-js\">'use strict';\nconst { spawn } = require('child_process');\n\nconst subprocess = spawn(\n  'sh',\n  [\n    '-c',\n    `node -e \"setInterval(() => {\n      console.log(process.pid, 'is alive')\n    }, 500);\"`\n  ], {\n    stdio: ['inherit', 'inherit', 'inherit']\n  }\n);\n\nsetTimeout(() => {\n  subprocess.kill(); // does not terminate the node process in the shell\n}, 2000);\n</code></pre>"
+            },
+            {
+              "textRaw": "subprocess.ref()",
+              "type": "method",
+              "name": "ref",
+              "meta": {
+                "added": [
+                  "v0.7.10"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": []
+                }
+              ],
+              "desc": "<p>Calling <code>subprocess.ref()</code> after making a call to <code>subprocess.unref()</code> will\nrestore the removed reference count for the child process, forcing the parent\nto wait for the child to exit before exiting itself.</p>\n<pre><code class=\"language-js\">const { spawn } = require('child_process');\n\nconst subprocess = spawn(process.argv[0], ['child_program.js'], {\n  detached: true,\n  stdio: 'ignore'\n});\n\nsubprocess.unref();\nsubprocess.ref();\n</code></pre>"
+            },
+            {
+              "textRaw": "subprocess.send(message[, sendHandle[, options]][, callback])",
+              "type": "method",
+              "name": "send",
+              "meta": {
+                "added": [
+                  "v0.5.9"
+                ],
+                "changes": [
+                  {
+                    "version": "v5.8.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/5283",
+                    "description": "The `options` parameter, and the `keepOpen` option in particular, is supported now."
+                  },
+                  {
+                    "version": "v5.0.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/3516",
+                    "description": "This method returns a boolean for flow control now."
+                  },
+                  {
+                    "version": "v4.0.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/2620",
+                    "description": "The `callback` parameter is supported now."
+                  }
+                ]
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {boolean}",
+                    "name": "return",
+                    "type": "boolean"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`message` {Object}",
+                      "name": "message",
+                      "type": "Object"
+                    },
+                    {
+                      "textRaw": "`sendHandle` {Handle}",
+                      "name": "sendHandle",
+                      "type": "Handle",
+                      "optional": true
+                    },
+                    {
+                      "textRaw": "`options` {Object} The `options` argument, if present, is an object used to parameterize the sending of certain types of handles. `options` supports the following properties:",
+                      "name": "options",
+                      "type": "Object",
+                      "desc": "The `options` argument, if present, is an object used to parameterize the sending of certain types of handles. `options` supports the following properties:",
+                      "options": [
+                        {
+                          "textRaw": "`keepOpen` {boolean} A value that can be used when passing instances of `net.Socket`. When `true`, the socket is kept open in the sending process. **Default:** `false`.",
+                          "name": "keepOpen",
+                          "type": "boolean",
+                          "default": "`false`",
+                          "desc": "A value that can be used when passing instances of `net.Socket`. When `true`, the socket is kept open in the sending process."
+                        }
+                      ],
+                      "optional": true
+                    },
+                    {
+                      "textRaw": "`callback` {Function}",
+                      "name": "callback",
+                      "type": "Function",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>When an IPC channel has been established between the parent and child (\ni.e. when using <a href=\"#child_process_child_process_fork_modulepath_args_options\"><code>child_process.fork()</code></a>), the <code>subprocess.send()</code> method can\nbe used to send messages to the child process. When the child process is a\nNode.js instance, these messages can be received via the <a href=\"process.html#process_event_message\"><code>'message'</code></a> event.</p>\n<p>The message goes through serialization and parsing. The resulting\nmessage might not be the same as what is originally sent.</p>\n<p>For example, in the parent script:</p>\n<pre><code class=\"language-js\">const cp = require('child_process');\nconst n = cp.fork(`${__dirname}/sub.js`);\n\nn.on('message', (m) => {\n  console.log('PARENT got message:', m);\n});\n\n// Causes the child to print: CHILD got message: { hello: 'world' }\nn.send({ hello: 'world' });\n</code></pre>\n<p>And then the child script, <code>'sub.js'</code> might look like this:</p>\n<pre><code class=\"language-js\">process.on('message', (m) => {\n  console.log('CHILD got message:', m);\n});\n\n// Causes the parent to print: PARENT got message: { foo: 'bar', baz: null }\nprocess.send({ foo: 'bar', baz: NaN });\n</code></pre>\n<p>Child Node.js processes will have a <a href=\"process.html#process_process_send_message_sendhandle_options_callback\"><code>process.send()</code></a> method of their own that\nallows the child to send messages back to the parent.</p>\n<p>There is a special case when sending a <code>{cmd: 'NODE_foo'}</code> message. Messages\ncontaining a <code>NODE_</code> prefix in the <code>cmd</code> property are reserved for use within\nNode.js core and will not be emitted in the child's <a href=\"process.html#process_event_message\"><code>'message'</code></a>\nevent. Rather, such messages are emitted using the\n<code>'internalMessage'</code> event and are consumed internally by Node.js.\nApplications should avoid using such messages or listening for\n<code>'internalMessage'</code> events as it is subject to change without notice.</p>\n<p>The optional <code>sendHandle</code> argument that may be passed to <code>subprocess.send()</code> is\nfor passing a TCP server or socket object to the child process. The child will\nreceive the object as the second argument passed to the callback function\nregistered on the <a href=\"process.html#process_event_message\"><code>'message'</code></a> event. Any data that is received\nand buffered in the socket will not be sent to the child.</p>\n<p>The optional <code>callback</code> is a function that is invoked after the message is\nsent but before the child may have received it. The function is called with a\nsingle argument: <code>null</code> on success, or an <a href=\"errors.html#errors_class_error\"><code>Error</code></a> object on failure.</p>\n<p>If no <code>callback</code> function is provided and the message cannot be sent, an\n<code>'error'</code> event will be emitted by the <a href=\"#child_process_child_process\"><code>ChildProcess</code></a> object. This can happen,\nfor instance, when the child process has already exited.</p>\n<p><code>subprocess.send()</code> will return <code>false</code> if the channel has closed or when the\nbacklog of unsent messages exceeds a threshold that makes it unwise to send\nmore. Otherwise, the method returns <code>true</code>. The <code>callback</code> function can be\nused to implement flow control.</p>\n<h4>Example: sending a server object</h4>\n<p>The <code>sendHandle</code> argument can be used, for instance, to pass the handle of\na TCP server object to the child process as illustrated in the example below:</p>\n<pre><code class=\"language-js\">const subprocess = require('child_process').fork('subprocess.js');\n\n// Open up the server object and send the handle.\nconst server = require('net').createServer();\nserver.on('connection', (socket) => {\n  socket.end('handled by parent');\n});\nserver.listen(1337, () => {\n  subprocess.send('server', server);\n});\n</code></pre>\n<p>The child would then receive the server object as:</p>\n<pre><code class=\"language-js\">process.on('message', (m, server) => {\n  if (m === 'server') {\n    server.on('connection', (socket) => {\n      socket.end('handled by child');\n    });\n  }\n});\n</code></pre>\n<p>Once the server is now shared between the parent and child, some connections\ncan be handled by the parent and some by the child.</p>\n<p>While the example above uses a server created using the <code>net</code> module, <code>dgram</code>\nmodule servers use exactly the same workflow with the exceptions of listening on\na <code>'message'</code> event instead of <code>'connection'</code> and using <code>server.bind()</code> instead of\n<code>server.listen()</code>. This is, however, currently only supported on UNIX platforms.</p>\n<h4>Example: sending a socket object</h4>\n<p>Similarly, the <code>sendHandler</code> argument can be used to pass the handle of a\nsocket to the child process. The example below spawns two children that each\nhandle connections with \"normal\" or \"special\" priority:</p>\n<pre><code class=\"language-js\">const { fork } = require('child_process');\nconst normal = fork('subprocess.js', ['normal']);\nconst special = fork('subprocess.js', ['special']);\n\n// Open up the server and send sockets to child. Use pauseOnConnect to prevent\n// the sockets from being read before they are sent to the child process.\nconst server = require('net').createServer({ pauseOnConnect: true });\nserver.on('connection', (socket) => {\n\n  // If this is special priority\n  if (socket.remoteAddress === '74.125.127.100') {\n    special.send('socket', socket);\n    return;\n  }\n  // This is normal priority\n  normal.send('socket', socket);\n});\nserver.listen(1337);\n</code></pre>\n<p>The <code>subprocess.js</code> would receive the socket handle as the second argument\npassed to the event callback function:</p>\n<pre><code class=\"language-js\">process.on('message', (m, socket) => {\n  if (m === 'socket') {\n    if (socket) {\n      // Check that the client socket exists.\n      // It is possible for the socket to be closed between the time it is\n      // sent and the time it is received in the child process.\n      socket.end(`Request handled with ${process.argv[2]} priority`);\n    }\n  }\n});\n</code></pre>\n<p>Once a socket has been passed to a child, the parent is no longer capable of\ntracking when the socket is destroyed. To indicate this, the <code>.connections</code>\nproperty becomes <code>null</code>. It is recommended not to use <code>.maxConnections</code> when\nthis occurs.</p>\n<p>It is also recommended that any <code>'message'</code> handlers in the child process\nverify that <code>socket</code> exists, as the connection may have been closed during the\ntime it takes to send the connection to the child.</p>"
+            },
+            {
+              "textRaw": "subprocess.unref()",
+              "type": "method",
+              "name": "unref",
+              "meta": {
+                "added": [
+                  "v0.7.10"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": []
+                }
+              ],
+              "desc": "<p>By default, the parent will wait for the detached child to exit. To prevent the\nparent from waiting for a given <code>subprocess</code> to exit, use the\n<code>subprocess.unref()</code> method. Doing so will cause the parent's event loop to not\ninclude the child in its reference count, allowing the parent to exit\nindependently of the child, unless there is an established IPC channel between\nthe child and the parent.</p>\n<pre><code class=\"language-js\">const { spawn } = require('child_process');\n\nconst subprocess = spawn(process.argv[0], ['child_program.js'], {\n  detached: true,\n  stdio: 'ignore'\n});\n\nsubprocess.unref();\n</code></pre>"
+            }
+          ]
+        }
+      ],
+      "type": "module",
+      "displayName": "Child Process"
+    }
+  ]
+}

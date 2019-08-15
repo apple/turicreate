@@ -1,0 +1,105 @@
+{
+  "type": "module",
+  "source": "doc/api/string_decoder.md",
+  "modules": [
+    {
+      "textRaw": "String Decoder",
+      "name": "string_decoder",
+      "introduced_in": "v0.10.0",
+      "stability": 2,
+      "stabilityText": "Stable",
+      "desc": "<p>The <code>string_decoder</code> module provides an API for decoding <code>Buffer</code> objects into\nstrings in a manner that preserves encoded multi-byte UTF-8 and UTF-16\ncharacters. It can be accessed using:</p>\n<pre><code class=\"language-js\">const { StringDecoder } = require('string_decoder');\n</code></pre>\n<p>The following example shows the basic use of the <code>StringDecoder</code> class.</p>\n<pre><code class=\"language-js\">const { StringDecoder } = require('string_decoder');\nconst decoder = new StringDecoder('utf8');\n\nconst cent = Buffer.from([0xC2, 0xA2]);\nconsole.log(decoder.write(cent));\n\nconst euro = Buffer.from([0xE2, 0x82, 0xAC]);\nconsole.log(decoder.write(euro));\n</code></pre>\n<p>When a <code>Buffer</code> instance is written to the <code>StringDecoder</code> instance, an\ninternal buffer is used to ensure that the decoded string does not contain\nany incomplete multibyte characters. These are held in the buffer until the\nnext call to <code>stringDecoder.write()</code> or until <code>stringDecoder.end()</code> is called.</p>\n<p>In the following example, the three UTF-8 encoded bytes of the European Euro\nsymbol (<code>€</code>) are written over three separate operations:</p>\n<pre><code class=\"language-js\">const { StringDecoder } = require('string_decoder');\nconst decoder = new StringDecoder('utf8');\n\ndecoder.write(Buffer.from([0xE2]));\ndecoder.write(Buffer.from([0x82]));\nconsole.log(decoder.end(Buffer.from([0xAC])));\n</code></pre>",
+      "classes": [
+        {
+          "textRaw": "Class: StringDecoder",
+          "type": "class",
+          "name": "StringDecoder",
+          "methods": [
+            {
+              "textRaw": "stringDecoder.end([buffer])",
+              "type": "method",
+              "name": "end",
+              "meta": {
+                "added": [
+                  "v0.9.3"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {string}",
+                    "name": "return",
+                    "type": "string"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`buffer` {Buffer|TypedArray|DataView} A `Buffer`, or `TypedArray`, or `DataView` containing the bytes to decode.",
+                      "name": "buffer",
+                      "type": "Buffer|TypedArray|DataView",
+                      "desc": "A `Buffer`, or `TypedArray`, or `DataView` containing the bytes to decode.",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns any remaining input stored in the internal buffer as a string. Bytes\nrepresenting incomplete UTF-8 and UTF-16 characters will be replaced with\nsubstitution characters appropriate for the character encoding.</p>\n<p>If the <code>buffer</code> argument is provided, one final call to <code>stringDecoder.write()</code>\nis performed before returning the remaining input.</p>"
+            },
+            {
+              "textRaw": "stringDecoder.write(buffer)",
+              "type": "method",
+              "name": "write",
+              "meta": {
+                "added": [
+                  "v0.1.99"
+                ],
+                "changes": [
+                  {
+                    "version": "v8.0.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/9618",
+                    "description": "Each invalid character is now replaced by a single replacement character instead of one for each individual byte."
+                  }
+                ]
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {string}",
+                    "name": "return",
+                    "type": "string"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`buffer` {Buffer|TypedArray|DataView} A `Buffer`, or `TypedArray`, or `DataView` containing the bytes to decode.",
+                      "name": "buffer",
+                      "type": "Buffer|TypedArray|DataView",
+                      "desc": "A `Buffer`, or `TypedArray`, or `DataView` containing the bytes to decode."
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Returns a decoded string, ensuring that any incomplete multibyte characters at\nthe end of the <code>Buffer</code>, or <code>TypedArray</code>, or <code>DataView</code> are omitted from the\nreturned string and stored in an internal buffer for the next call to\n<code>stringDecoder.write()</code> or <code>stringDecoder.end()</code>.</p>"
+            }
+          ],
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`encoding` {string} The character encoding the `StringDecoder` will use. **Default:** `'utf8'`.",
+                  "name": "encoding",
+                  "type": "string",
+                  "default": "`'utf8'`",
+                  "desc": "The character encoding the `StringDecoder` will use.",
+                  "optional": true
+                }
+              ],
+              "desc": "<p>Creates a new <code>StringDecoder</code> instance.</p>"
+            }
+          ]
+        }
+      ],
+      "type": "module",
+      "displayName": "String Decoder"
+    }
+  ]
+}

@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Inspector | Node.js v10.15.3 Documentation</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/inspector.html">
+</head>
+<body class="alt apidoc" id="api-section-inspector">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="Go back to the home page">
+          Node.js
+        </a>
+      </div>
+      <ul>
+<li><a href="documentation.html" class="nav-documentation">About these Docs</a></li>
+<li><a href="synopsis.html" class="nav-synopsis">Usage &#x26; Example</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="assert.html" class="nav-assert">Assertion Testing</a></li>
+<li><a href="async_hooks.html" class="nav-async_hooks">Async Hooks</a></li>
+<li><a href="buffer.html" class="nav-buffer">Buffer</a></li>
+<li><a href="addons.html" class="nav-addons">C++ Addons</a></li>
+<li><a href="n-api.html" class="nav-n-api">C/C++ Addons - N-API</a></li>
+<li><a href="child_process.html" class="nav-child_process">Child Processes</a></li>
+<li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
+<li><a href="cli.html" class="nav-cli">Command Line Options</a></li>
+<li><a href="console.html" class="nav-console">Console</a></li>
+<li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
+<li><a href="debugger.html" class="nav-debugger">Debugger</a></li>
+<li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
+<li><a href="dns.html" class="nav-dns">DNS</a></li>
+<li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="esm.html" class="nav-esm">ECMAScript Modules</a></li>
+<li><a href="errors.html" class="nav-errors">Errors</a></li>
+<li><a href="events.html" class="nav-events">Events</a></li>
+<li><a href="fs.html" class="nav-fs">File System</a></li>
+<li><a href="globals.html" class="nav-globals">Globals</a></li>
+<li><a href="http.html" class="nav-http">HTTP</a></li>
+<li><a href="http2.html" class="nav-http2">HTTP/2</a></li>
+<li><a href="https.html" class="nav-https">HTTPS</a></li>
+<li><a href="inspector.html" class="nav-inspector active">Inspector</a></li>
+<li><a href="intl.html" class="nav-intl">Internationalization</a></li>
+<li><a href="modules.html" class="nav-modules">Modules</a></li>
+<li><a href="net.html" class="nav-net">Net</a></li>
+<li><a href="os.html" class="nav-os">OS</a></li>
+<li><a href="path.html" class="nav-path">Path</a></li>
+<li><a href="perf_hooks.html" class="nav-perf_hooks">Performance Hooks</a></li>
+<li><a href="process.html" class="nav-process">Process</a></li>
+<li><a href="punycode.html" class="nav-punycode">Punycode</a></li>
+<li><a href="querystring.html" class="nav-querystring">Query Strings</a></li>
+<li><a href="readline.html" class="nav-readline">Readline</a></li>
+<li><a href="repl.html" class="nav-repl">REPL</a></li>
+<li><a href="stream.html" class="nav-stream">Stream</a></li>
+<li><a href="string_decoder.html" class="nav-string_decoder">String Decoder</a></li>
+<li><a href="timers.html" class="nav-timers">Timers</a></li>
+<li><a href="tls.html" class="nav-tls">TLS/SSL</a></li>
+<li><a href="tracing.html" class="nav-tracing">Trace Events</a></li>
+<li><a href="tty.html" class="nav-tty">TTY</a></li>
+<li><a href="dgram.html" class="nav-dgram">UDP/Datagram</a></li>
+<li><a href="url.html" class="nav-url">URL</a></li>
+<li><a href="util.html" class="nav-util">Utilities</a></li>
+<li><a href="v8.html" class="nav-v8">V8</a></li>
+<li><a href="vm.html" class="nav-vm">VM</a></li>
+<li><a href="worker_threads.html" class="nav-worker_threads">Worker Threads</a></li>
+<li><a href="zlib.html" class="nav-zlib">ZLIB</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="https://github.com/nodejs/node" class="nav-https-github-com-nodejs-node">GitHub Repo &#x26; Issue Tracker</a></li>
+</ul>
+    </div>
+
+    <div id="column1" data-id="inspector" class="interior">
+      <header>
+        <h1>Node.js v10.15.3 Documentation</h1>
+        <div id="gtoc">
+          <ul>
+            <li>
+              <a href="index.html" name="toc">Index</a>
+            </li>
+            <li>
+              <a href="all.html">View on single page</a>
+            </li>
+            <li>
+              <a href="inspector.json">View as JSON</a>
+            </li>
+            
+    <li class="version-picker">
+      <a href="#">View another version <span>&#x25bc;</span></a>
+      <ol class="version-picker"><li><a href="https://nodejs.org/docs/latest-v11.x/api/inspector.html">11.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v10.x/api/inspector.html">10.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v9.x/api/inspector.html">9.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v8.x/api/inspector.html">8.x <b>LTS</b></a></li></ol>
+    </li>
+  
+            <li class="edit_on_github"><a href="https://github.com/nodejs/node/edit/master/doc/api/inspector.md"><span class="github_icon"><svg height="16" width="16" viewBox="0 0 16.1 16.1" fill="currentColor"><path d="M8 0a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2 .4-2.5-.5-2.7-1 0-.1-.5-.9-.8-1-.3-.2-.7-.6 0-.6.6 0 1 .6 1.2.8.7 1.2 1.9 1 2.4.7 0-.5.2-.9.5-1-1.8-.3-3.7-1-3.7-4 0-.9.3-1.6.8-2.2 0-.2-.3-1 .1-2 0 0 .7-.3 2.2.7a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.5 1.1.2 2 .1 2.1.5.6.8 1.3.8 2.2 0 3-1.9 3.7-3.6 4 .3.2.5.7.5 1.4v2.2c0 .2.1.5.5.4A8 8 0 0 0 16 8a8 8 0 0 0-8-8z"/></svg></span>Edit on GitHub</a></li>
+          </ul>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>Table of Contents</h2>
+        <ul>
+<li>
+<p><span class="stability_1"><a href="#inspector_inspector">Inspector</a></span></p>
+<ul>
+<li><a href="#inspector_inspector_close">inspector.close()</a></li>
+<li><a href="#inspector_inspector_console">inspector.console</a></li>
+<li><a href="#inspector_inspector_open_port_host_wait">inspector.open([port[, host[, wait]]])</a></li>
+<li><a href="#inspector_inspector_url">inspector.url()</a></li>
+<li>
+<p><a href="#inspector_class_inspector_session">Class: inspector.Session</a></p>
+<ul>
+<li><a href="#inspector_constructor_new_inspector_session">Constructor: new inspector.Session()</a></li>
+<li><a href="#inspector_event_inspectornotification">Event: 'inspectorNotification'</a></li>
+<li><a href="#inspector_event_lt_inspector_protocol_method_gt">Event: &#x3C;inspector-protocol-method></a></li>
+<li><a href="#inspector_session_connect">session.connect()</a></li>
+<li><a href="#inspector_session_disconnect">session.disconnect()</a></li>
+<li><a href="#inspector_session_post_method_params_callback">session.post(method[, params][, callback])</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#inspector_example_usage">Example usage</a></p>
+<ul>
+<li><a href="#inspector_cpu_profiler">CPU Profiler</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+      </div>
+
+      <div id="apicontent">
+        <h1>Inspector<span><a class="mark" href="#inspector_inspector" id="inspector_inspector">#</a></span></h1>
+
+<p></p><div class="api_stability api_stability_1"><a href="documentation.html#documentation_stability_index">Stability: 1</a> - Experimental</div><p></p>
+<p>The <code>inspector</code> module provides an API for interacting with the V8 inspector.</p>
+<p>It can be accessed using:</p>
+<pre><code class="language-js">const inspector = require('inspector');
+</code></pre>
+<h2>inspector.close()<span><a class="mark" href="#inspector_inspector_close" id="inspector_inspector_close">#</a></span></h2>
+<p>Deactivate the inspector. Blocks until there are no active connections.</p>
+<h2>inspector.console<span><a class="mark" href="#inspector_inspector_console" id="inspector_inspector_console">#</a></span></h2>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> An object to send messages to the remote inspector console.</li>
+</ul>
+<pre><code class="language-js">require('inspector').console.log('a message');
+</code></pre>
+<p>The inspector console does not have API parity with Node.js
+console.</p>
+<h2>inspector.open([port[, host[, wait]]])<span><a class="mark" href="#inspector_inspector_open_port_host_wait" id="inspector_inspector_open_port_host_wait">#</a></span></h2>
+<ul>
+<li><code>port</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> Port to listen on for inspector connections. Optional.
+<strong>Default:</strong> what was specified on the CLI.</li>
+<li><code>host</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> Host to listen on for inspector connections. Optional.
+<strong>Default:</strong> what was specified on the CLI.</li>
+<li><code>wait</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> Block until a client has connected. Optional.
+<strong>Default:</strong> <code>false</code>.</li>
+</ul>
+<p>Activate inspector on host and port. Equivalent to <code>node --inspect=[[host:]port]</code>, but can be done programmatically after node has
+started.</p>
+<p>If wait is <code>true</code>, will block until a client has connected to the inspect port
+and flow control has been passed to the debugger client.</p>
+<p>See the <a href="cli.html#inspector_security">security warning</a> regarding the <code>host</code>
+parameter usage.</p>
+<h2>inspector.url()<span><a class="mark" href="#inspector_inspector_url" id="inspector_inspector_url">#</a></span></h2>
+<ul>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Undefined_type" class="type">&#x3C;undefined></a></li>
+</ul>
+<p>Return the URL of the active inspector, or <code>undefined</code> if there is none.</p>
+<h2>Class: inspector.Session<span><a class="mark" href="#inspector_class_inspector_session" id="inspector_class_inspector_session">#</a></span></h2>
+<p>The <code>inspector.Session</code> is used for dispatching messages to the V8 inspector
+back-end and receiving message responses and notifications.</p>
+<h3>Constructor: new inspector.Session()<span><a class="mark" href="#inspector_constructor_new_inspector_session" id="inspector_constructor_new_inspector_session">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.0.0</span>
+</div>
+<p>Create a new instance of the <code>inspector.Session</code> class. The inspector session
+needs to be connected through <a href="#inspector_session_connect"><code>session.connect()</code></a> before the messages
+can be dispatched to the inspector backend.</p>
+<p><code>inspector.Session</code> is an <a href="events.html#events_class_eventemitter"><code>EventEmitter</code></a> with the following events:</p>
+<h3>Event: 'inspectorNotification'<span><a class="mark" href="#inspector_event_inspectornotification" id="inspector_event_inspectornotification">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.0.0</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> The notification message object</li>
+</ul>
+<p>Emitted when any notification from the V8 Inspector is received.</p>
+<pre><code class="language-js">session.on('inspectorNotification', (message) => console.log(message.method));
+// Debugger.paused
+// Debugger.resumed
+</code></pre>
+<p>It is also possible to subscribe only to notifications with specific method:</p>
+<h3>Event: &#x3C;inspector-protocol-method><span><a class="mark" href="#inspector_event_lt_inspector_protocol_method_gt" id="inspector_event_lt_inspector_protocol_method_gt">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.0.0</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> The notification message object</li>
+</ul>
+<p>Emitted when an inspector notification is received that has its method field set
+to the <code>&#x3C;inspector-protocol-method></code> value.</p>
+<p>The following snippet installs a listener on the <a href="https://chromedevtools.github.io/devtools-protocol/v8/Debugger#event-paused"><code>'Debugger.paused'</code></a>
+event, and prints the reason for program suspension whenever program
+execution is suspended (through breakpoints, for example):</p>
+<pre><code class="language-js">session.on('Debugger.paused', ({ params }) => {
+  console.log(params.hitBreakpoints);
+});
+// [ '/the/file/that/has/the/breakpoint.js:11:0' ]
+</code></pre>
+<h3>session.connect()<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/inspector.js#L33">[src]</a><span><a class="mark" href="#inspector_session_connect" id="inspector_session_connect">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.0.0</span>
+</div>
+<p>Connects a session to the inspector back-end. An exception will be thrown
+if there is already a connected session established either through the API or by
+a front-end connected to the Inspector WebSocket port.</p>
+<h3>session.disconnect()<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/inspector.js#L88">[src]</a><span><a class="mark" href="#inspector_session_disconnect" id="inspector_session_disconnect">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.0.0</span>
+</div>
+<p>Immediately close the session. All pending message callbacks will be called
+with an error. <a href="#inspector_session_connect"><code>session.connect()</code></a> will need to be called to be able to send
+messages again. Reconnected session will lose all inspector state, such as
+enabled agents or configured breakpoints.</p>
+<h3>session.post(method[, params][, callback])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/inspector.js#L61">[src]</a><span><a class="mark" href="#inspector_session_post_method_params_callback" id="inspector_session_post_method_params_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.0.0</span>
+</div>
+<ul>
+<li><code>method</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li><code>params</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a></li>
+</ul>
+<p>Posts a message to the inspector back-end. <code>callback</code> will be notified when
+a response is received. <code>callback</code> is a function that accepts two optional
+arguments - error and message-specific result.</p>
+<pre><code class="language-js">session.post('Runtime.evaluate', { expression: '2 + 2' },
+             (error, { result }) => console.log(result));
+// Output: { type: 'number', value: 4, description: '4' }
+</code></pre>
+<p>The latest version of the V8 inspector protocol is published on the
+<a href="https://chromedevtools.github.io/devtools-protocol/v8/">Chrome DevTools Protocol Viewer</a>.</p>
+<p>Node.js inspector supports all the Chrome DevTools Protocol domains declared
+by V8. Chrome DevTools Protocol domain provides an interface for interacting
+with one of the runtime agents used to inspect the application state and listen
+to the run-time events.</p>
+<h2>Example usage<span><a class="mark" href="#inspector_example_usage" id="inspector_example_usage">#</a></span></h2>
+<h3>CPU Profiler<span><a class="mark" href="#inspector_cpu_profiler" id="inspector_cpu_profiler">#</a></span></h3>
+<p>Apart from the debugger, various V8 Profilers are available through the DevTools
+protocol. Here's a simple example showing how to use the <a href="https://chromedevtools.github.io/devtools-protocol/v8/Profiler">CPU profiler</a>:</p>
+<pre><code class="language-js">const inspector = require('inspector');
+const fs = require('fs');
+const session = new inspector.Session();
+session.connect();
+
+session.post('Profiler.enable', () => {
+  session.post('Profiler.start', () => {
+    // invoke business logic under measurement here...
+
+    // some time later...
+    session.post('Profiler.stop', (err, { profile }) => {
+      // write profile to disk, upload, etc.
+      if (!err) {
+        fs.writeFileSync('./profile.cpuprofile', JSON.stringify(profile));
+      }
+    });
+  });
+});
+</code></pre>
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>
