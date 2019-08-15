@@ -21,6 +21,9 @@ class OneShotObjectDetectorBackgroundData(object):
     def __init__(self):
         self.source_tar_filename = "one_shot_backgrounds.sarray.tar"
         self.destination_tar_filename = "one_shot_backgrounds.sarray.tar"
+        self.destination_sarray_filename = "one_shot_backgrounds.sarray"
+        self.destination_sarray_path = _os.path.join(_get_cache_dir("data"),
+            self.destination_sarray_filename)
         self.sarray_url = _urlparse.urljoin(
             DATA_URL_ROOT, self.source_tar_filename)
         self.sarray_url_md5_pairs = [
@@ -28,7 +31,11 @@ class OneShotObjectDetectorBackgroundData(object):
             ]
 
     def get_backgrounds_path(self):
-        backgrounds_path = _download_and_checksum_files(
+        if _os.path.exists(self.destination_sarray_path):
+            return self.destination_sarray_path
+        tarfile_path = _download_and_checksum_files(
             self.sarray_url_md5_pairs, _get_cache_dir("data")
             )[0]
-        return backgrounds_path
+        backgrounds_tar = _tarfile.open(tarfile_path)
+        backgrounds_tar.extractall(_get_cache_dir("data"))
+        return self.destination_sarray_path
