@@ -1849,14 +1849,12 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
     ew << table_spec.str();
 
     // This materializes if not already
-    auto underlying_sframe = self->get_underlying_sframe();
+    sframe underlying_sframe = self->get_underlying_sframe();
 
     // Get a reader just once.
-    auto reader = underlying_sframe->get_reader();
+    sframe_reader reader = underlying_sframe->get_reader();
 
     ew << visualization::table_data(self, reader.get(), 0, 100);
-
-    //const size_t resized_height = 200;
 
     while (ew.good()) {
       // get input, send responses
