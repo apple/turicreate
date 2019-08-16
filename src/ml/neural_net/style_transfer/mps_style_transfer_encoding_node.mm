@@ -27,7 +27,7 @@
   self = [super init];
   
   if (self) {
-    NSMutableData* convBiases = [NSMutableData dataWithLength:descriptor.conv.outputFeatureChannels*sizeof(float)];
+    NSMutableData* zeroedConvBiases = [NSMutableData dataWithLength:descriptor.conv.outputFeatureChannels*sizeof(float)];
     _conv = [MPSCNNConvolutionNode createConvolutional:inputNode
                                            kernelWidth:descriptor.conv.kernelWidth
                                           kernelHeight:descriptor.conv.kernelHeight
@@ -38,7 +38,7 @@
                                           paddingWidth:descriptor.conv.paddingWidth
                                          paddingHeight:descriptor.conv.paddingHeight
                                                weights:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_weights"]]
-                                                biases:[convBiases copy]
+                                                biases:zeroedConvBiases
                                                  label:descriptor.conv.label
                                          updateWeights:descriptor.conv.updateWeights
                                                 device:dev
