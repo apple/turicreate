@@ -273,8 +273,8 @@ int main(int argc, char** argv) {
     if (argc > 2) reps = std::stoi(argv[2]);
     if (argc > 3) nusers = std::stoi(argv[3]);
 
-    if (false) turi::bench_test_aggreate_count_summary(nrows, reps);
-    turi::bench_test_aggreate_min_summary(nrows, nusers, reps, -1000, 1000);
+    turi::bench_test_aggreate_count_summary(nrows, reps);
+    if (false) turi::bench_test_aggreate_min_summary(nrows, nusers, reps, -1000, 1000);
     // if (false) turi::bench_test_aggreate_avg_summary(nrows, reps, -1000,
     // 1000);
 

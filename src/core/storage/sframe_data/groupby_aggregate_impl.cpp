@@ -244,7 +244,7 @@ group_aggregate_container::group_aggregate_container(size_t max_buffer_size,
   num_local_buffers =
       num_local_buffers == 0
           ? 1
-          : std::max<size_t>(num_local_buffers, std::thread::hardware_concurrency());
+          : std::min<size_t>(num_local_buffers, thread_pool::get_instance().size());
 
   // construct local buffers
   for (size_t ii = 0; ii < num_local_buffers; ++ii) {
@@ -401,7 +401,7 @@ void group_aggregate_container::flush_segment(size_t segmentid) {
     }
   }
   // ok. now we can write! lock the file
-  size_t round_robin = ++merry_go_round_ % local_buffer_set_.size();
+  size_t round_robin = (++merry_go_round_) % local_buffer_set_.size();
 
   auto& local_buffer = local_buffer_set_[round_robin];
 
@@ -410,6 +410,9 @@ void group_aggregate_container::flush_segment(size_t segmentid) {
   {
     std::lock_guard<turi::simple_spinlock> slk(
         local_buffer.sa_seg_locks_[segmentid]);
+
+    logstream(LOG_PROGRESS) << "flush buffer from task_id: " << tss_.id_
+                            << ", segment_id: "<< segmentid << ", on buffer: " << round_robin << std::endl;
 
     auto outiter = local_buffer.sa_buffer_ptr_->get_output_iterator(segmentid);
     oarchive oarc;
