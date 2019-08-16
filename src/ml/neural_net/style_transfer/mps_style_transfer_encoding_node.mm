@@ -27,6 +27,7 @@
   self = [super init];
   
   if (self) {
+    // No bias
     NSMutableData* zeroedConvBiases = [NSMutableData dataWithLength:descriptor.conv.outputFeatureChannels*sizeof(float)];
     _conv = [MPSCNNConvolutionNode createConvolutional:inputNode
                                            kernelWidth:descriptor.conv.kernelWidth

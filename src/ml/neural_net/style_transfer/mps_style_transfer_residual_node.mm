@@ -31,6 +31,7 @@
   self = [super init];
 
   if (self) {
+    // No bias
     NSMutableData* zeroedConv1Biases = [NSMutableData dataWithLength:descriptor.conv1.outputFeatureChannels*sizeof(float)];
     _conv1 = [MPSCNNConvolutionNode createConvolutional:inputNode
                                             kernelWidth:descriptor.conv1.kernelWidth
@@ -59,6 +60,7 @@
 
     _relu1 = [MPSCNNNeuronReLUNNode nodeWithSource:[_instNorm1 resultImage]];
 
+    // No bias
     NSMutableData* zeroedConv2Biases = [NSMutableData dataWithLength:descriptor.conv2.outputFeatureChannels*sizeof(float)];
     _conv2 = [MPSCNNConvolutionNode createConvolutional:[_relu1 resultImage]
                                             kernelWidth:descriptor.conv2.kernelWidth

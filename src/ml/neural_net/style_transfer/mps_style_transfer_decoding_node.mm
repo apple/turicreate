@@ -32,6 +32,7 @@
                                        integerScaleFactorX:descriptor.upsample.scale
                                        integerScaleFactorY:descriptor.upsample.scale];
 
+    // No bias
     NSMutableData* zeroedConvBiases = [NSMutableData dataWithLength:descriptor.conv.outputFeatureChannels*sizeof(float)];
     _conv = [MPSCNNConvolutionNode createConvolutional:[_upsample resultImage]
                                            kernelWidth:descriptor.conv.kernelWidth
