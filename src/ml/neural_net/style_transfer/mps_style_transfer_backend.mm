@@ -28,6 +28,10 @@ using namespace turi::neural_net;
     std::vector<size_t> dataShape = { dataLength }; 
     float *dataBytes = (float *) (value.bytes);
     
+    // TODO: This copy is inefficient. This should be a wrapper around NSData: 
+    //       a custom subclass of float_array that preserves a strong reference
+    //       to the NSData instance.
+    
     shared_float_array array = shared_float_array::copy(dataBytes, dataShape);
     
     map.emplace(key.UTF8String, array);
@@ -60,8 +64,6 @@ namespace style_transfer {
 struct style_transfer::impl {
   API_AVAILABLE(macos(10.15)) TCMPSStyleTransfer *model = nil;
 };
-
-style_transfer::~style_transfer() {}
 
 style_transfer::style_transfer(const float_array_map &config,
                                const float_array_map &weights) {
