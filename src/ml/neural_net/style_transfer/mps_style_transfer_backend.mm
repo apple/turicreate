@@ -6,6 +6,9 @@
 
 #import <ml/neural_net/style_transfer/mps_style_transfer_backend.hpp>
 #import <ml/neural_net/style_transfer/mps_style_transfer.h>
+
+#import <ml/neural_net/model_spec.hpp>
+#import <ml/neural_net/mps_device_manager.h>
 #import <ml/neural_net/mps_utils.h>
 
 @interface TCMPSStyleTransferHelpers:NSObject
@@ -56,6 +59,8 @@ namespace style_transfer {
 struct style_transfer::impl {
   API_AVAILABLE(macos(10.15)) TCMPSStyleTransfer *model = nil;
 };
+
+style_transfer::~style_transfer() {}
 
 style_transfer::style_transfer(const float_array_map &config,
                                const float_array_map &weights) {

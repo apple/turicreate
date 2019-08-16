@@ -14,8 +14,6 @@
 
 #include <ml/neural_net/float_array.hpp>
 #include <ml/neural_net/model_backend.hpp>
-#include <ml/neural_net/model_spec.hpp>
-#include <ml/neural_net/mps_device_manager.h>
 
 using namespace turi::neural_net;
 
@@ -27,7 +25,7 @@ public:
   style_transfer(const float_array_map &config,
                  const float_array_map &weights);
   
-  ~style_transfer() {}
+  ~style_transfer();
 
   float_array_map export_weights() const override;
   float_array_map predict(const float_array_map& inputs) const override;
