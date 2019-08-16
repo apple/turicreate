@@ -14,11 +14,11 @@
 @implementation MPSCNNFullyConnectedNode (TCMPSLayerHelper)
 
 - (void)setWeights:(TCMPSConvolutionWeights *)weights {
-    objc_setAssociatedObject(self, @selector(tag), weights, OBJC_ASSOCIATION_RETAIN);
+    objc_setAssociatedObject(self, @selector(weights), weights, OBJC_ASSOCIATION_RETAIN);
 }
 
 - (NSString *)weights {
-    return objc_getAssociatedObject(self, @selector(tag));
+    return objc_getAssociatedObject(self, @selector(weights));
 }
 
 + (MPSCNNFullyConnectedNode *) createFullyConnected:(MPSNNImageNode *)inputNode
@@ -65,11 +65,11 @@
 @implementation MPSCNNConvolutionNode (TCMPSLayerHelper)
 
 - (void)setWeights:(TCMPSConvolutionWeights *)weights {
-    objc_setAssociatedObject(self, @selector(tag), weights, OBJC_ASSOCIATION_RETAIN);
+    objc_setAssociatedObject(self, @selector(weights), weights, OBJC_ASSOCIATION_RETAIN);
 }
 
 - (NSString *)weights {
-    return objc_getAssociatedObject(self, @selector(tag));
+    return objc_getAssociatedObject(self, @selector(weights));
 }
 
 + (MPSCNNConvolutionNode *) createConvolutional:(MPSNNImageNode *)inputNode
@@ -128,11 +128,11 @@
 @implementation MPSCNNInstanceNormalizationNode (TCMPSLayerHelper)
 
 - (void)setWeights:(TCMPSInstanceNormDataLoader *)weights {
-    objc_setAssociatedObject(self, @selector(tag), weights, OBJC_ASSOCIATION_RETAIN);
+    objc_setAssociatedObject(self, @selector(weights), weights, OBJC_ASSOCIATION_RETAIN);
 }
 
 - (NSString *)weights {
-    return objc_getAssociatedObject(self, @selector(tag));
+    return objc_getAssociatedObject(self, @selector(weights));
 }
 
 + (MPSCNNInstanceNormalizationNode *) createInstanceNormalization:(MPSNNImageNode *)inputNode
