@@ -25,8 +25,10 @@ API_AVAILABLE(macos(10.15))
 @property (nonatomic) NSUInteger imgWidth;
 @property (nonatomic) NSUInteger imgHeight;
 
-- (instancetype) initWithParameters:(NSDictionary<NSString *, NSData *> *)weights
-                          numStyles:(NSUInteger)numStyles;
+- (instancetype) initWithDev:(id<MTLDevice>) dev
+                commandQueue:(id<MTLCommandQueue>) commandQueue
+                     weights:(NSDictionary<NSString *, NSData *> *) weights
+                   numStyles:(NSUInteger) numStyles;
 
 - (NSDictionary<NSString *, NSData *> *) exportWeights;
 - (NSDictionary<NSString *, NSData *> *) predict:(NSDictionary<NSString *, NSData *> *)inputs;

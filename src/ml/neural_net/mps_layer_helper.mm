@@ -9,8 +9,21 @@
 #import <ml/neural_net/mps_layer_instance_norm_data_loader.h>
 #import <ml/neural_net/mps_weight.h>
 
+#import <objc/runtime.h>
+
+static char kWeightsKey;
+
 @implementation MPSCNNFullyConnectedNode (TCMPSLayerHelper)
 @dynamic weights;
+
+- (void)setWeights:(TCMPSConvolutionWeights *)weights {
+  objc_setAssociatedObject(self, &kWeightsKey, weights, OBJC_ASSOCIATION_RETAIN);
+}
+
+- (NSString *)weights {
+  return objc_getAssociatedObject(self, &kWeightsKey);
+}
+
 + (MPSCNNFullyConnectedNode *) createFullyConnected:(MPSNNImageNode *)inputNode
                                inputFeatureChannels:(NSUInteger)inputFeatureChannels
                               outputFeatureChannels:(NSUInteger)outputFeatureChannels
@@ -54,6 +67,15 @@
 
 @implementation MPSCNNConvolutionNode (TCMPSLayerHelper)
 @dynamic weights;
+
+- (void)setWeights:(TCMPSConvolutionWeights *)weights {
+  objc_setAssociatedObject(self, &kWeightsKey, weights, OBJC_ASSOCIATION_RETAIN);
+}
+
+- (NSString *)weights {
+  return objc_getAssociatedObject(self, &kWeightsKey);
+}
+
 + (MPSCNNConvolutionNode *) createConvolutional:(MPSNNImageNode *)inputNode
                                     kernelWidth:(NSUInteger)kernelWidth
                                    kernelHeight:(NSUInteger)kernelHeight
@@ -103,12 +125,21 @@
 
   convNode.weights = convDataLoad;
   
-	return convNode;
+  return convNode;
 }
 @end
 
 @implementation MPSCNNInstanceNormalizationNode (TCMPSLayerHelper)
 @dynamic weights;
+
+- (void)setWeights:(TCMPSInstanceNormDataLoader *)weights {
+  objc_setAssociatedObject(self, &kWeightsKey, weights, OBJC_ASSOCIATION_RETAIN);
+}
+
+- (NSString *)weights {
+  return objc_getAssociatedObject(self, &kWeightsKey);
+}
+
 + (MPSCNNInstanceNormalizationNode *) createInstanceNormalization:(MPSNNImageNode *)inputNode
                                                          channels:(NSUInteger)channels
                                                            styles:(NSUInteger)styles

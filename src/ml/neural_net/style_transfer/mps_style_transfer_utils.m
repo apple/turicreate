@@ -80,9 +80,9 @@
 
   // Encoding 3 Instance Normalization
 
-  transformerDesc.encode2.inst.channels = 128;
-  transformerDesc.encode2.inst.styles = numStyles;
-  transformerDesc.encode2.inst.label = @"transformer_encode_3_inst";
+  transformerDesc.encode3.inst.channels = 128;
+  transformerDesc.encode3.inst.styles = numStyles;
+  transformerDesc.encode3.inst.label = @"transformer_encode_3_inst";
 
   // Residual 1 Convolution 1
 
@@ -312,13 +312,13 @@
 
   // Decode 2 Instance Normalization
 
-  transformerDesc.decode1.inst.channels = 32;
-  transformerDesc.decode1.inst.styles = numStyles;
-  transformerDesc.decode1.inst.label = @"transformer_decode_2_inst";
+  transformerDesc.decode2.inst.channels = 32;
+  transformerDesc.decode2.inst.styles = numStyles;
+  transformerDesc.decode2.inst.label = @"transformer_decode_2_inst";
 
   // Decode 2 Upsampling
 
-  transformerDesc.decode1.upsample.scale = 2;
+  transformerDesc.decode2.upsample.scale = 2;
 
   // Decode 3 Convolution
 
@@ -335,9 +335,9 @@
 
   // Decode 3 Instance Normalization
 
-  transformerDesc.decode1.inst.channels = 3;
-  transformerDesc.decode1.inst.styles = numStyles;
-  transformerDesc.decode1.inst.label = @"transformer_decode_3_inst";
+  transformerDesc.inst.channels = 3;
+  transformerDesc.inst.styles = numStyles;
+  transformerDesc.inst.label = @"transformer_decode_3_inst";
 
   return transformerDesc;
 }
