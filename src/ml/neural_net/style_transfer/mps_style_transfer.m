@@ -51,7 +51,7 @@
                    numStyles:(NSUInteger) numStyles {
   self = [super init];
   if (self) {
-    // Allocate a _dev and _commandQueue
+    // Assign a _dev and _commandQueue
     _dev = dev;
     _commandQueue = commandQueue;
 

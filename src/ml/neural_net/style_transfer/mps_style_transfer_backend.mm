@@ -11,6 +11,8 @@
 #import <ml/neural_net/mps_device_manager.h>
 #import <ml/neural_net/mps_utils.h>
 
+using namespace turi::neural_net;
+
 @interface TCMPSStyleTransferHelpers:NSObject
 +(float_array_map) fromNSDictionary: (NSDictionary<NSString *, NSData *> *) dictionary;
 +(NSDictionary<NSString *, NSData *> *) toNSDictionary: (float_array_map) map;
@@ -27,8 +29,8 @@
     float *dataBytes = (float *) (value.bytes);
     
     shared_float_array array = shared_float_array::copy(dataBytes, dataShape);
-
-    map.insert(std::pair<std::string, shared_float_array>([key UTF8String], array));  
+    
+    map.emplace(key.UTF8String, array);
   }
   return map;
 }
@@ -41,11 +43,10 @@
     const float* elementData = element.second.data();
     const size_t elementSize = element.second.size() * sizeof(float);
 
-    NSMutableData * mutableElementData = [NSMutableData dataWithLength:elementSize];
-    memcpy(mutableElementData.mutableBytes, elementData, elementSize);
+    NSData *data = [NSData dataWithBytes:elementData length:elementSize];
 
     NSString* elementKey = [NSString stringWithUTF8String:element.first.c_str()];
-    dictionary[elementKey] = [NSData dataWithData:mutableElementData];
+    dictionary[elementKey] = data;
   }
 
   return [dictionary copy];

@@ -15,22 +15,20 @@
 #include <ml/neural_net/float_array.hpp>
 #include <ml/neural_net/model_backend.hpp>
 
-using namespace turi::neural_net;
-
 namespace turi {
 namespace style_transfer {
 
-class EXPORT style_transfer : public model_backend {
+class EXPORT style_transfer : public turi::neural_net::model_backend {
 public:
-  style_transfer(const float_array_map &config,
-                 const float_array_map &weights);
+  style_transfer(const turi::neural_net::float_array_map &config,
+                 const turi::neural_net::float_array_map &weights);
   
   ~style_transfer();
 
-  float_array_map export_weights() const override;
-  float_array_map predict(const float_array_map& inputs) const override;
+  turi::neural_net::float_array_map export_weights() const override;
+  turi::neural_net::float_array_map predict(const turi::neural_net::float_array_map& inputs) const override;
   void set_learning_rate(float lr) override;
-  float_array_map train(const float_array_map& inputs) override;
+  turi::neural_net::float_array_map train(const turi::neural_net::float_array_map& inputs) override;
 private:
   struct impl;
   std::unique_ptr<impl> m_impl;

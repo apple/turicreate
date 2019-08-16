@@ -10,7 +10,7 @@
 - (instancetype) init {
   self = [super init];
   if (self) {
-    _label = [NSString alloc];
+    _label = [[NSString alloc] init];
   }
   return self;
 }
@@ -20,7 +20,7 @@
 - (instancetype) init {
   self = [super init];
   if (self) {
-    _label = [NSString alloc];
+    _label = [[NSString alloc] init];
   }
   return self;
 }
