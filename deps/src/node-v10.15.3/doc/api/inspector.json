@@ -1,0 +1,224 @@
+{
+  "type": "module",
+  "source": "doc/api/inspector.md",
+  "modules": [
+    {
+      "textRaw": "Inspector",
+      "name": "inspector",
+      "introduced_in": "v8.0.0",
+      "stability": 1,
+      "stabilityText": "Experimental",
+      "desc": "<p>The <code>inspector</code> module provides an API for interacting with the V8 inspector.</p>\n<p>It can be accessed using:</p>\n<pre><code class=\"language-js\">const inspector = require('inspector');\n</code></pre>",
+      "methods": [
+        {
+          "textRaw": "inspector.close()",
+          "type": "method",
+          "name": "close",
+          "signatures": [
+            {
+              "params": []
+            }
+          ],
+          "desc": "<p>Deactivate the inspector. Blocks until there are no active connections.</p>"
+        },
+        {
+          "textRaw": "inspector.open([port[, host[, wait]]])",
+          "type": "method",
+          "name": "open",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`port` {number} Port to listen on for inspector connections. Optional. **Default:** what was specified on the CLI.",
+                  "name": "port",
+                  "type": "number",
+                  "default": "what was specified on the CLI",
+                  "desc": "Port to listen on for inspector connections. Optional.",
+                  "optional": true
+                },
+                {
+                  "textRaw": "`host` {string} Host to listen on for inspector connections. Optional. **Default:** what was specified on the CLI.",
+                  "name": "host",
+                  "type": "string",
+                  "default": "what was specified on the CLI",
+                  "desc": "Host to listen on for inspector connections. Optional.",
+                  "optional": true
+                },
+                {
+                  "textRaw": "`wait` {boolean} Block until a client has connected. Optional. **Default:** `false`.",
+                  "name": "wait",
+                  "type": "boolean",
+                  "default": "`false`",
+                  "desc": "Block until a client has connected. Optional.",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>Activate inspector on host and port. Equivalent to <code>node --inspect=[[host:]port]</code>, but can be done programmatically after node has\nstarted.</p>\n<p>If wait is <code>true</code>, will block until a client has connected to the inspect port\nand flow control has been passed to the debugger client.</p>\n<p>See the <a href=\"cli.html#inspector_security\">security warning</a> regarding the <code>host</code>\nparameter usage.</p>"
+        },
+        {
+          "textRaw": "inspector.url()",
+          "type": "method",
+          "name": "url",
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {string|undefined}",
+                "name": "return",
+                "type": "string|undefined"
+              },
+              "params": []
+            }
+          ],
+          "desc": "<p>Return the URL of the active inspector, or <code>undefined</code> if there is none.</p>"
+        }
+      ],
+      "properties": [
+        {
+          "textRaw": "`console` {Object} An object to send messages to the remote inspector console.",
+          "type": "Object",
+          "name": "console",
+          "desc": "<pre><code class=\"language-js\">require('inspector').console.log('a message');\n</code></pre>\n<p>The inspector console does not have API parity with Node.js\nconsole.</p>",
+          "shortDesc": "An object to send messages to the remote inspector console."
+        }
+      ],
+      "classes": [
+        {
+          "textRaw": "Class: inspector.Session",
+          "type": "class",
+          "name": "inspector.Session",
+          "desc": "<p>The <code>inspector.Session</code> is used for dispatching messages to the V8 inspector\nback-end and receiving message responses and notifications.</p>",
+          "events": [
+            {
+              "textRaw": "Event: 'inspectorNotification'",
+              "type": "event",
+              "name": "inspectorNotification",
+              "meta": {
+                "added": [
+                  "v8.0.0"
+                ],
+                "changes": []
+              },
+              "params": [
+                {
+                  "textRaw": "{Object} The notification message object",
+                  "type": "Object",
+                  "desc": "The notification message object"
+                }
+              ],
+              "desc": "<p>Emitted when any notification from the V8 Inspector is received.</p>\n<pre><code class=\"language-js\">session.on('inspectorNotification', (message) => console.log(message.method));\n// Debugger.paused\n// Debugger.resumed\n</code></pre>\n<p>It is also possible to subscribe only to notifications with specific method:</p>"
+            },
+            {
+              "textRaw": "Event: <inspector-protocol-method>",
+              "type": "event",
+              "name": "<inspector-protocol-method>",
+              "meta": {
+                "added": [
+                  "v8.0.0"
+                ],
+                "changes": []
+              },
+              "params": [
+                {
+                  "textRaw": "{Object} The notification message object",
+                  "type": "Object",
+                  "desc": "The notification message object"
+                }
+              ],
+              "desc": "<p>Emitted when an inspector notification is received that has its method field set\nto the <code>&#x3C;inspector-protocol-method></code> value.</p>\n<p>The following snippet installs a listener on the <a href=\"https://chromedevtools.github.io/devtools-protocol/v8/Debugger#event-paused\"><code>'Debugger.paused'</code></a>\nevent, and prints the reason for program suspension whenever program\nexecution is suspended (through breakpoints, for example):</p>\n<pre><code class=\"language-js\">session.on('Debugger.paused', ({ params }) => {\n  console.log(params.hitBreakpoints);\n});\n// [ '/the/file/that/has/the/breakpoint.js:11:0' ]\n</code></pre>"
+            }
+          ],
+          "methods": [
+            {
+              "textRaw": "session.connect()",
+              "type": "method",
+              "name": "connect",
+              "meta": {
+                "added": [
+                  "v8.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": []
+                }
+              ],
+              "desc": "<p>Connects a session to the inspector back-end. An exception will be thrown\nif there is already a connected session established either through the API or by\na front-end connected to the Inspector WebSocket port.</p>"
+            },
+            {
+              "textRaw": "session.disconnect()",
+              "type": "method",
+              "name": "disconnect",
+              "meta": {
+                "added": [
+                  "v8.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": []
+                }
+              ],
+              "desc": "<p>Immediately close the session. All pending message callbacks will be called\nwith an error. <a href=\"#inspector_session_connect\"><code>session.connect()</code></a> will need to be called to be able to send\nmessages again. Reconnected session will lose all inspector state, such as\nenabled agents or configured breakpoints.</p>"
+            },
+            {
+              "textRaw": "session.post(method[, params][, callback])",
+              "type": "method",
+              "name": "post",
+              "meta": {
+                "added": [
+                  "v8.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`method` {string}",
+                      "name": "method",
+                      "type": "string"
+                    },
+                    {
+                      "textRaw": "`params` {Object}",
+                      "name": "params",
+                      "type": "Object",
+                      "optional": true
+                    },
+                    {
+                      "textRaw": "`callback` {Function}",
+                      "name": "callback",
+                      "type": "Function",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Posts a message to the inspector back-end. <code>callback</code> will be notified when\na response is received. <code>callback</code> is a function that accepts two optional\narguments - error and message-specific result.</p>\n<pre><code class=\"language-js\">session.post('Runtime.evaluate', { expression: '2 + 2' },\n             (error, { result }) => console.log(result));\n// Output: { type: 'number', value: 4, description: '4' }\n</code></pre>\n<p>The latest version of the V8 inspector protocol is published on the\n<a href=\"https://chromedevtools.github.io/devtools-protocol/v8/\">Chrome DevTools Protocol Viewer</a>.</p>\n<p>Node.js inspector supports all the Chrome DevTools Protocol domains declared\nby V8. Chrome DevTools Protocol domain provides an interface for interacting\nwith one of the runtime agents used to inspect the application state and listen\nto the run-time events.</p>\n<h2>Example usage</h2>"
+            }
+          ],
+          "modules": [
+            {
+              "textRaw": "CPU Profiler",
+              "name": "cpu_profiler",
+              "desc": "<p>Apart from the debugger, various V8 Profilers are available through the DevTools\nprotocol. Here's a simple example showing how to use the <a href=\"https://chromedevtools.github.io/devtools-protocol/v8/Profiler\">CPU profiler</a>:</p>\n<pre><code class=\"language-js\">const inspector = require('inspector');\nconst fs = require('fs');\nconst session = new inspector.Session();\nsession.connect();\n\nsession.post('Profiler.enable', () => {\n  session.post('Profiler.start', () => {\n    // invoke business logic under measurement here...\n\n    // some time later...\n    session.post('Profiler.stop', (err, { profile }) => {\n      // write profile to disk, upload, etc.\n      if (!err) {\n        fs.writeFileSync('./profile.cpuprofile', JSON.stringify(profile));\n      }\n    });\n  });\n});\n</code></pre>",
+              "type": "module",
+              "displayName": "CPU Profiler"
+            }
+          ],
+          "signatures": [
+            {
+              "params": [],
+              "desc": "<p>Create a new instance of the <code>inspector.Session</code> class. The inspector session\nneeds to be connected through <a href=\"#inspector_session_connect\"><code>session.connect()</code></a> before the messages\ncan be dispatched to the inspector backend.</p>\n<p><code>inspector.Session</code> is an <a href=\"events.html#events_class_eventemitter\"><code>EventEmitter</code></a> with the following events:</p>"
+            }
+          ]
+        }
+      ],
+      "type": "module",
+      "displayName": "Inspector"
+    }
+  ]
+}

@@ -1,0 +1,540 @@
+{
+  "type": "module",
+  "source": "doc/api/os.md",
+  "modules": [
+    {
+      "textRaw": "OS",
+      "name": "os",
+      "introduced_in": "v0.10.0",
+      "stability": 2,
+      "stabilityText": "Stable",
+      "desc": "<p>The <code>os</code> module provides a number of operating system-related utility methods.\nIt can be accessed using:</p>\n<pre><code class=\"language-js\">const os = require('os');\n</code></pre>",
+      "properties": [
+        {
+          "textRaw": "`EOL` {string}",
+          "type": "string",
+          "name": "EOL",
+          "meta": {
+            "added": [
+              "v0.7.8"
+            ],
+            "changes": []
+          },
+          "desc": "<p>A string constant defining the operating system-specific end-of-line marker:</p>\n<ul>\n<li><code>\\n</code> on POSIX</li>\n<li><code>\\r\\n</code> on Windows</li>\n</ul>"
+        },
+        {
+          "textRaw": "`constants` {Object}",
+          "type": "Object",
+          "name": "constants",
+          "meta": {
+            "added": [
+              "v6.3.0"
+            ],
+            "changes": []
+          },
+          "desc": "<p>Returns an object containing commonly used operating system specific constants\nfor error codes, process signals, and so on. The specific constants currently\ndefined are described in <a href=\"#os_os_constants_1\">OS Constants</a>.</p>"
+        }
+      ],
+      "methods": [
+        {
+          "textRaw": "os.arch()",
+          "type": "method",
+          "name": "arch",
+          "meta": {
+            "added": [
+              "v0.5.0"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {string}",
+                "name": "return",
+                "type": "string"
+              },
+              "params": []
+            }
+          ],
+          "desc": "<p>The <code>os.arch()</code> method returns a string identifying the operating system CPU\narchitecture for which the Node.js binary was compiled.</p>\n<p>The current possible values are: <code>'arm'</code>, <code>'arm64'</code>, <code>'ia32'</code>, <code>'mips'</code>,\n<code>'mipsel'</code>, <code>'ppc'</code>, <code>'ppc64'</code>, <code>'s390'</code>, <code>'s390x'</code>, <code>'x32'</code>, and <code>'x64'</code>.</p>\n<p>Equivalent to <a href=\"process.html#process_process_arch\"><code>process.arch</code></a>.</p>"
+        },
+        {
+          "textRaw": "os.cpus()",
+          "type": "method",
+          "name": "cpus",
+          "meta": {
+            "added": [
+              "v0.3.3"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {Object[]}",
+                "name": "return",
+                "type": "Object[]"
+              },
+              "params": []
+            }
+          ],
+          "desc": "<p>The <code>os.cpus()</code> method returns an array of objects containing information about\neach logical CPU core.</p>\n<p>The properties included on each object include:</p>\n<ul>\n<li><code>model</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type\" class=\"type\">&lt;string&gt;</a></li>\n<li><code>speed</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type\" class=\"type\">&lt;number&gt;</a> (in MHz)</li>\n<li>\n<p><code>times</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\" class=\"type\">&lt;Object&gt;</a></p>\n<ul>\n<li><code>user</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type\" class=\"type\">&lt;number&gt;</a> The number of milliseconds the CPU has spent in user mode.</li>\n<li><code>nice</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type\" class=\"type\">&lt;number&gt;</a> The number of milliseconds the CPU has spent in nice mode.</li>\n<li><code>sys</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type\" class=\"type\">&lt;number&gt;</a> The number of milliseconds the CPU has spent in sys mode.</li>\n<li><code>idle</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type\" class=\"type\">&lt;number&gt;</a> The number of milliseconds the CPU has spent in idle mode.</li>\n<li><code>irq</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type\" class=\"type\">&lt;number&gt;</a> The number of milliseconds the CPU has spent in irq mode.</li>\n</ul>\n</li>\n</ul>\n<!-- eslint-disable semi -->\n<pre><code class=\"language-js\">[\n  {\n    model: 'Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz',\n    speed: 2926,\n    times: {\n      user: 252020,\n      nice: 0,\n      sys: 30340,\n      idle: 1070356870,\n      irq: 0\n    }\n  },\n  {\n    model: 'Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz',\n    speed: 2926,\n    times: {\n      user: 306960,\n      nice: 0,\n      sys: 26980,\n      idle: 1071569080,\n      irq: 0\n    }\n  },\n  {\n    model: 'Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz',\n    speed: 2926,\n    times: {\n      user: 248450,\n      nice: 0,\n      sys: 21750,\n      idle: 1070919370,\n      irq: 0\n    }\n  },\n  {\n    model: 'Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz',\n    speed: 2926,\n    times: {\n      user: 256880,\n      nice: 0,\n      sys: 19430,\n      idle: 1070905480,\n      irq: 20\n    }\n  },\n  {\n    model: 'Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz',\n    speed: 2926,\n    times: {\n      user: 511580,\n      nice: 20,\n      sys: 40900,\n      idle: 1070842510,\n      irq: 0\n    }\n  },\n  {\n    model: 'Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz',\n    speed: 2926,\n    times: {\n      user: 291660,\n      nice: 0,\n      sys: 34360,\n      idle: 1070888000,\n      irq: 10\n    }\n  },\n  {\n    model: 'Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz',\n    speed: 2926,\n    times: {\n      user: 308260,\n      nice: 0,\n      sys: 55410,\n      idle: 1071129970,\n      irq: 880\n    }\n  },\n  {\n    model: 'Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz',\n    speed: 2926,\n    times: {\n      user: 266450,\n      nice: 1480,\n      sys: 34920,\n      idle: 1072572010,\n      irq: 30\n    }\n  }\n]\n</code></pre>\n<p>Because <code>nice</code> values are UNIX-specific, on Windows the <code>nice</code> values of all\nprocessors are always 0.</p>"
+        },
+        {
+          "textRaw": "os.endianness()",
+          "type": "method",
+          "name": "endianness",
+          "meta": {
+            "added": [
+              "v0.9.4"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {string}",
+                "name": "return",
+                "type": "string"
+              },
+              "params": []
+            }
+          ],
+          "desc": "<p>The <code>os.endianness()</code> method returns a string identifying the endianness of the\nCPU <em>for which the Node.js binary was compiled</em>.</p>\n<p>Possible values are:</p>\n<ul>\n<li><code>'BE'</code> for big endian</li>\n<li><code>'LE'</code> for little endian.</li>\n</ul>"
+        },
+        {
+          "textRaw": "os.freemem()",
+          "type": "method",
+          "name": "freemem",
+          "meta": {
+            "added": [
+              "v0.3.3"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {integer}",
+                "name": "return",
+                "type": "integer"
+              },
+              "params": []
+            }
+          ],
+          "desc": "<p>The <code>os.freemem()</code> method returns the amount of free system memory in bytes as\nan integer.</p>"
+        },
+        {
+          "textRaw": "os.getPriority([pid])",
+          "type": "method",
+          "name": "getPriority",
+          "meta": {
+            "added": [
+              "v10.10.0"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {integer}",
+                "name": "return",
+                "type": "integer"
+              },
+              "params": [
+                {
+                  "textRaw": "`pid` {integer} The process ID to retrieve scheduling priority for. **Default** `0`.",
+                  "name": "pid",
+                  "type": "integer",
+                  "desc": "The process ID to retrieve scheduling priority for. **Default** `0`.",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>The <code>os.getPriority()</code> method returns the scheduling priority for the process\nspecified by <code>pid</code>. If <code>pid</code> is not provided, or is <code>0</code>, the priority of the\ncurrent process is returned.</p>"
+        },
+        {
+          "textRaw": "os.homedir()",
+          "type": "method",
+          "name": "homedir",
+          "meta": {
+            "added": [
+              "v2.3.0"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {string}",
+                "name": "return",
+                "type": "string"
+              },
+              "params": []
+            }
+          ],
+          "desc": "<p>The <code>os.homedir()</code> method returns the home directory of the current user as a\nstring.</p>"
+        },
+        {
+          "textRaw": "os.hostname()",
+          "type": "method",
+          "name": "hostname",
+          "meta": {
+            "added": [
+              "v0.3.3"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {string}",
+                "name": "return",
+                "type": "string"
+              },
+              "params": []
+            }
+          ],
+          "desc": "<p>The <code>os.hostname()</code> method returns the hostname of the operating system as a\nstring.</p>"
+        },
+        {
+          "textRaw": "os.loadavg()",
+          "type": "method",
+          "name": "loadavg",
+          "meta": {
+            "added": [
+              "v0.3.3"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {number[]}",
+                "name": "return",
+                "type": "number[]"
+              },
+              "params": []
+            }
+          ],
+          "desc": "<p>The <code>os.loadavg()</code> method returns an array containing the 1, 5, and 15 minute\nload averages.</p>\n<p>The load average is a measure of system activity, calculated by the operating\nsystem and expressed as a fractional number. As a rule of thumb, the load\naverage should ideally be less than the number of logical CPUs in the system.</p>\n<p>The load average is a UNIX-specific concept with no real equivalent on\nWindows platforms. On Windows, the return value is always <code>[0, 0, 0]</code>.</p>"
+        },
+        {
+          "textRaw": "os.networkInterfaces()",
+          "type": "method",
+          "name": "networkInterfaces",
+          "meta": {
+            "added": [
+              "v0.6.0"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {Object}",
+                "name": "return",
+                "type": "Object"
+              },
+              "params": []
+            }
+          ],
+          "desc": "<p>The <code>os.networkInterfaces()</code> method returns an object containing only network\ninterfaces that have been assigned a network address.</p>\n<p>Each key on the returned object identifies a network interface. The associated\nvalue is an array of objects that each describe an assigned network address.</p>\n<p>The properties available on the assigned network address object include:</p>\n<ul>\n<li><code>address</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type\" class=\"type\">&lt;string&gt;</a> The assigned IPv4 or IPv6 address</li>\n<li><code>netmask</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type\" class=\"type\">&lt;string&gt;</a> The IPv4 or IPv6 network mask</li>\n<li><code>family</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type\" class=\"type\">&lt;string&gt;</a> Either <code>IPv4</code> or <code>IPv6</code></li>\n<li><code>mac</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type\" class=\"type\">&lt;string&gt;</a> The MAC address of the network interface</li>\n<li><code>internal</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type\" class=\"type\">&lt;boolean&gt;</a> <code>true</code> if the network interface is a loopback or\nsimilar interface that is not remotely accessible; otherwise <code>false</code></li>\n<li><code>scopeid</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type\" class=\"type\">&lt;number&gt;</a> The numeric IPv6 scope ID (only specified when <code>family</code>\nis <code>IPv6</code>)</li>\n<li><code>cidr</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type\" class=\"type\">&lt;string&gt;</a> The assigned IPv4 or IPv6 address with the routing prefix\nin CIDR notation. If the <code>netmask</code> is invalid, this property is set\nto <code>null</code>.</li>\n</ul>\n<!-- eslint-skip -->\n<pre><code class=\"language-js\">{\n  lo: [\n    {\n      address: '127.0.0.1',\n      netmask: '255.0.0.0',\n      family: 'IPv4',\n      mac: '00:00:00:00:00:00',\n      internal: true,\n      cidr: '127.0.0.1/8'\n    },\n    {\n      address: '::1',\n      netmask: 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff',\n      family: 'IPv6',\n      mac: '00:00:00:00:00:00',\n      internal: true,\n      cidr: '::1/128'\n    }\n  ],\n  eth0: [\n    {\n      address: '192.168.1.108',\n      netmask: '255.255.255.0',\n      family: 'IPv4',\n      mac: '01:02:03:0a:0b:0c',\n      internal: false,\n      cidr: '192.168.1.108/24'\n    },\n    {\n      address: 'fe80::a00:27ff:fe4e:66a1',\n      netmask: 'ffff:ffff:ffff:ffff::',\n      family: 'IPv6',\n      mac: '01:02:03:0a:0b:0c',\n      internal: false,\n      cidr: 'fe80::a00:27ff:fe4e:66a1/64'\n    }\n  ]\n}\n</code></pre>"
+        },
+        {
+          "textRaw": "os.platform()",
+          "type": "method",
+          "name": "platform",
+          "meta": {
+            "added": [
+              "v0.5.0"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {string}",
+                "name": "return",
+                "type": "string"
+              },
+              "params": []
+            }
+          ],
+          "desc": "<p>The <code>os.platform()</code> method returns a string identifying the operating system\nplatform as set during compile time of Node.js.</p>\n<p>Currently possible values are:</p>\n<ul>\n<li><code>'aix'</code></li>\n<li><code>'darwin'</code></li>\n<li><code>'freebsd'</code></li>\n<li><code>'linux'</code></li>\n<li><code>'openbsd'</code></li>\n<li><code>'sunos'</code></li>\n<li><code>'win32'</code></li>\n</ul>\n<p>Equivalent to <a href=\"process.html#process_process_platform\"><code>process.platform</code></a>.</p>\n<p>The value <code>'android'</code> may also be returned if the Node.js is built on the\nAndroid operating system. However, Android support in Node.js is considered\n<a href=\"https://github.com/nodejs/node/blob/master/BUILDING.md#androidandroid-based-devices-eg-firefox-os\">to be experimental</a> at this time.</p>"
+        },
+        {
+          "textRaw": "os.release()",
+          "type": "method",
+          "name": "release",
+          "meta": {
+            "added": [
+              "v0.3.3"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {string}",
+                "name": "return",
+                "type": "string"
+              },
+              "params": []
+            }
+          ],
+          "desc": "<p>The <code>os.release()</code> method returns a string identifying the operating system\nrelease.</p>\n<p>On POSIX systems, the operating system release is determined by calling\n<a href=\"https://linux.die.net/man/3/uname\"><a href=\"http://man7.org/linux/man-pages/man3/uname.3.html\"><code>uname(3)</code></a></a>. On Windows, <code>GetVersionExW()</code> is used. Please see\n<a href=\"https://en.wikipedia.org/wiki/Uname#Examples\">https://en.wikipedia.org/wiki/Uname#Examples</a> for more information.</p>"
+        },
+        {
+          "textRaw": "os.setPriority([pid, ]priority)",
+          "type": "method",
+          "name": "setPriority",
+          "meta": {
+            "added": [
+              "v10.10.0"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`pid` {integer} The process ID to set scheduling priority for. **Default** `0`.",
+                  "name": "pid",
+                  "type": "integer",
+                  "desc": "The process ID to set scheduling priority for. **Default** `0`.",
+                  "optional": true
+                },
+                {
+                  "textRaw": "`priority` {integer} The scheduling priority to assign to the process.",
+                  "name": "priority",
+                  "type": "integer",
+                  "desc": "The scheduling priority to assign to the process."
+                }
+              ]
+            }
+          ],
+          "desc": "<p>The <code>os.setPriority()</code> method attempts to set the scheduling priority for the\nprocess specified by <code>pid</code>. If <code>pid</code> is not provided, or is <code>0</code>, the priority\nof the current process is used.</p>\n<p>The <code>priority</code> input must be an integer between <code>-20</code> (high priority) and <code>19</code>\n(low priority). Due to differences between Unix priority levels and Windows\npriority classes, <code>priority</code> is mapped to one of six priority constants in\n<code>os.constants.priority</code>. When retrieving a process priority level, this range\nmapping may cause the return value to be slightly different on Windows. To avoid\nconfusion, it is recommended to set <code>priority</code> to one of the priority constants.</p>\n<p>On Windows setting priority to <code>PRIORITY_HIGHEST</code> requires elevated user,\notherwise the set priority will be silently reduced to <code>PRIORITY_HIGH</code>.</p>"
+        },
+        {
+          "textRaw": "os.tmpdir()",
+          "type": "method",
+          "name": "tmpdir",
+          "meta": {
+            "added": [
+              "v0.9.9"
+            ],
+            "changes": [
+              {
+                "version": "v2.0.0",
+                "pr-url": "https://github.com/nodejs/node/pull/747",
+                "description": "This function is now cross-platform consistent and no longer returns a path with a trailing slash on any platform"
+              }
+            ]
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {string}",
+                "name": "return",
+                "type": "string"
+              },
+              "params": []
+            }
+          ],
+          "desc": "<p>The <code>os.tmpdir()</code> method returns a string specifying the operating system's\ndefault directory for temporary files.</p>"
+        },
+        {
+          "textRaw": "os.totalmem()",
+          "type": "method",
+          "name": "totalmem",
+          "meta": {
+            "added": [
+              "v0.3.3"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {integer}",
+                "name": "return",
+                "type": "integer"
+              },
+              "params": []
+            }
+          ],
+          "desc": "<p>The <code>os.totalmem()</code> method returns the total amount of system memory in bytes\nas an integer.</p>"
+        },
+        {
+          "textRaw": "os.type()",
+          "type": "method",
+          "name": "type",
+          "meta": {
+            "added": [
+              "v0.3.3"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {string}",
+                "name": "return",
+                "type": "string"
+              },
+              "params": []
+            }
+          ],
+          "desc": "<p>The <code>os.type()</code> method returns a string identifying the operating system name\nas returned by <a href=\"https://linux.die.net/man/3/uname\"><a href=\"http://man7.org/linux/man-pages/man3/uname.3.html\"><code>uname(3)</code></a></a>. For example, <code>'Linux'</code> on Linux, <code>'Darwin'</code> on\nmacOS, and <code>'Windows_NT'</code> on Windows.</p>\n<p>Please see <a href=\"https://en.wikipedia.org/wiki/Uname#Examples\">https://en.wikipedia.org/wiki/Uname#Examples</a> for additional\ninformation about the output of running <a href=\"https://linux.die.net/man/3/uname\"><a href=\"http://man7.org/linux/man-pages/man3/uname.3.html\"><code>uname(3)</code></a></a> on various operating\nsystems.</p>"
+        },
+        {
+          "textRaw": "os.uptime()",
+          "type": "method",
+          "name": "uptime",
+          "meta": {
+            "added": [
+              "v0.3.3"
+            ],
+            "changes": [
+              {
+                "version": "v10.0.0",
+                "pr-url": "https://github.com/nodejs/node/pull/20129",
+                "description": "The result of this function no longer contains a fraction component on Windows."
+              }
+            ]
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {integer}",
+                "name": "return",
+                "type": "integer"
+              },
+              "params": []
+            }
+          ],
+          "desc": "<p>The <code>os.uptime()</code> method returns the system uptime in number of seconds.</p>"
+        },
+        {
+          "textRaw": "os.userInfo([options])",
+          "type": "method",
+          "name": "userInfo",
+          "meta": {
+            "added": [
+              "v6.0.0"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {Object}",
+                "name": "return",
+                "type": "Object"
+              },
+              "params": [
+                {
+                  "textRaw": "`options` {Object}",
+                  "name": "options",
+                  "type": "Object",
+                  "options": [
+                    {
+                      "textRaw": "`encoding` {string} Character encoding used to interpret resulting strings. If `encoding` is set to `'buffer'`, the `username`, `shell`, and `homedir` values will be `Buffer` instances. **Default:** `'utf8'`.",
+                      "name": "encoding",
+                      "type": "string",
+                      "default": "`'utf8'`",
+                      "desc": "Character encoding used to interpret resulting strings. If `encoding` is set to `'buffer'`, the `username`, `shell`, and `homedir` values will be `Buffer` instances."
+                    }
+                  ],
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>The <code>os.userInfo()</code> method returns information about the currently effective\nuser — on POSIX platforms, this is typically a subset of the password file. The\nreturned object includes the <code>username</code>, <code>uid</code>, <code>gid</code>, <code>shell</code>, and <code>homedir</code>.\nOn Windows, the <code>uid</code> and <code>gid</code> fields are <code>-1</code>, and <code>shell</code> is <code>null</code>.</p>\n<p>The value of <code>homedir</code> returned by <code>os.userInfo()</code> is provided by the operating\nsystem. This differs from the result of <code>os.homedir()</code>, which queries several\nenvironment variables for the home directory before falling back to the\noperating system response.</p>"
+        }
+      ],
+      "modules": [
+        {
+          "textRaw": "OS Constants",
+          "name": "os_constants",
+          "desc": "<p>The following constants are exported by <code>os.constants</code>.</p>\n<p>Not all constants will be available on every operating system.</p>",
+          "modules": [
+            {
+              "textRaw": "Signal Constants",
+              "name": "signal_constants",
+              "meta": {
+                "changes": [
+                  {
+                    "version": "v5.11.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/6093",
+                    "description": "Added support for `SIGINFO`."
+                  }
+                ]
+              },
+              "desc": "<p>The following signal constants are exported by <code>os.constants.signals</code>:</p>\n<table>\n  <tr>\n    <th>Constant</th>\n    <th>Description</th>\n  </tr>\n  <tr>\n    <td><code>SIGHUP</code></td>\n    <td>Sent to indicate when a controlling terminal is closed or a parent\n    process exits.</td>\n  </tr>\n  <tr>\n    <td><code>SIGINT</code></td>\n    <td>Sent to indicate when a user wishes to interrupt a process\n    (<code>(Ctrl+C)</code>).</td>\n  </tr>\n  <tr>\n    <td><code>SIGQUIT</code></td>\n    <td>Sent to indicate when a user wishes to terminate a process and perform a\n    core dump.</td>\n  </tr>\n  <tr>\n    <td><code>SIGILL</code></td>\n    <td>Sent to a process to notify that it has attempted to perform an illegal,\n    malformed, unknown, or privileged instruction.</td>\n  </tr>\n  <tr>\n    <td><code>SIGTRAP</code></td>\n    <td>Sent to a process when an exception has occurred.</td>\n  </tr>\n  <tr>\n    <td><code>SIGABRT</code></td>\n    <td>Sent to a process to request that it abort.</td>\n  </tr>\n  <tr>\n    <td><code>SIGIOT</code></td>\n    <td>Synonym for <code>SIGABRT</code></td>\n  </tr>\n  <tr>\n    <td><code>SIGBUS</code></td>\n    <td>Sent to a process to notify that it has caused a bus error.</td>\n  </tr>\n  <tr>\n    <td><code>SIGFPE</code></td>\n    <td>Sent to a process to notify that it has performed an illegal arithmetic\n    operation.</td>\n  </tr>\n  <tr>\n    <td><code>SIGKILL</code></td>\n    <td>Sent to a process to terminate it immediately.</td>\n  </tr>\n  <tr>\n    <td><code>SIGUSR1</code> <code>SIGUSR2</code></td>\n    <td>Sent to a process to identify user-defined conditions.</td>\n  </tr>\n  <tr>\n    <td><code>SIGSEGV</code></td>\n    <td>Sent to a process to notify of a segmentation fault.</td>\n  </tr>\n  <tr>\n    <td><code>SIGPIPE</code></td>\n    <td>Sent to a process when it has attempted to write to a disconnected\n    pipe.</td>\n  </tr>\n  <tr>\n    <td><code>SIGALRM</code></td>\n    <td>Sent to a process when a system timer elapses.</td>\n  </tr>\n  <tr>\n    <td><code>SIGTERM</code></td>\n    <td>Sent to a process to request termination.</td>\n  </tr>\n  <tr>\n    <td><code>SIGCHLD</code></td>\n    <td>Sent to a process when a child process terminates.</td>\n  </tr>\n  <tr>\n    <td><code>SIGSTKFLT</code></td>\n    <td>Sent to a process to indicate a stack fault on a coprocessor.</td>\n  </tr>\n  <tr>\n    <td><code>SIGCONT</code></td>\n    <td>Sent to instruct the operating system to continue a paused process.</td>\n  </tr>\n  <tr>\n    <td><code>SIGSTOP</code></td>\n    <td>Sent to instruct the operating system to halt a process.</td>\n  </tr>\n  <tr>\n    <td><code>SIGTSTP</code></td>\n    <td>Sent to a process to request it to stop.</td>\n  </tr>\n  <tr>\n    <td><code>SIGBREAK</code></td>\n    <td>Sent to indicate when a user wishes to interrupt a process.</td>\n  </tr>\n  <tr>\n    <td><code>SIGTTIN</code></td>\n    <td>Sent to a process when it reads from the TTY while in the\n    background.</td>\n  </tr>\n  <tr>\n    <td><code>SIGTTOU</code></td>\n    <td>Sent to a process when it writes to the TTY while in the\n    background.</td>\n  </tr>\n  <tr>\n    <td><code>SIGURG</code></td>\n    <td>Sent to a process when a socket has urgent data to read.</td>\n  </tr>\n  <tr>\n    <td><code>SIGXCPU</code></td>\n    <td>Sent to a process when it has exceeded its limit on CPU usage.</td>\n  </tr>\n  <tr>\n    <td><code>SIGXFSZ</code></td>\n    <td>Sent to a process when it grows a file larger than the maximum\n    allowed.</td>\n  </tr>\n  <tr>\n    <td><code>SIGVTALRM</code></td>\n    <td>Sent to a process when a virtual timer has elapsed.</td>\n  </tr>\n  <tr>\n    <td><code>SIGPROF</code></td>\n    <td>Sent to a process when a system timer has elapsed.</td>\n  </tr>\n  <tr>\n    <td><code>SIGWINCH</code></td>\n    <td>Sent to a process when the controlling terminal has changed its\n    size.</td>\n  </tr>\n  <tr>\n    <td><code>SIGIO</code></td>\n    <td>Sent to a process when I/O is available.</td>\n  </tr>\n  <tr>\n    <td><code>SIGPOLL</code></td>\n    <td>Synonym for <code>SIGIO</code></td>\n  </tr>\n  <tr>\n    <td><code>SIGLOST</code></td>\n    <td>Sent to a process when a file lock has been lost.</td>\n  </tr>\n  <tr>\n    <td><code>SIGPWR</code></td>\n    <td>Sent to a process to notify of a power failure.</td>\n  </tr>\n  <tr>\n    <td><code>SIGINFO</code></td>\n    <td>Synonym for <code>SIGPWR</code></td>\n  </tr>\n  <tr>\n    <td><code>SIGSYS</code></td>\n    <td>Sent to a process to notify of a bad argument.</td>\n  </tr>\n  <tr>\n    <td><code>SIGUNUSED</code></td>\n    <td>Synonym for <code>SIGSYS</code></td>\n  </tr>\n</table>",
+              "type": "module",
+              "displayName": "Signal Constants"
+            },
+            {
+              "textRaw": "Error Constants",
+              "name": "error_constants",
+              "desc": "<p>The following error constants are exported by <code>os.constants.errno</code>:</p>",
+              "modules": [
+                {
+                  "textRaw": "POSIX Error Constants",
+                  "name": "posix_error_constants",
+                  "desc": "<table>\n  <tr>\n    <th>Constant</th>\n    <th>Description</th>\n  </tr>\n  <tr>\n    <td><code>E2BIG</code></td>\n    <td>Indicates that the list of arguments is longer than expected.</td>\n  </tr>\n  <tr>\n    <td><code>EACCES</code></td>\n    <td>Indicates that the operation did not have sufficient permissions.</td>\n  </tr>\n  <tr>\n    <td><code>EADDRINUSE</code></td>\n    <td>Indicates that the network address is already in use.</td>\n  </tr>\n  <tr>\n    <td><code>EADDRNOTAVAIL</code></td>\n    <td>Indicates that the network address is currently unavailable for\n    use.</td>\n  </tr>\n  <tr>\n    <td><code>EAFNOSUPPORT</code></td>\n    <td>Indicates that the network address family is not supported.</td>\n  </tr>\n  <tr>\n    <td><code>EAGAIN</code></td>\n    <td>Indicates that there is currently no data available and to try the\n    operation again later.</td>\n  </tr>\n  <tr>\n    <td><code>EALREADY</code></td>\n    <td>Indicates that the socket already has a pending connection in\n    progress.</td>\n  </tr>\n  <tr>\n    <td><code>EBADF</code></td>\n    <td>Indicates that a file descriptor is not valid.</td>\n  </tr>\n  <tr>\n    <td><code>EBADMSG</code></td>\n    <td>Indicates an invalid data message.</td>\n  </tr>\n  <tr>\n    <td><code>EBUSY</code></td>\n    <td>Indicates that a device or resource is busy.</td>\n  </tr>\n  <tr>\n    <td><code>ECANCELED</code></td>\n    <td>Indicates that an operation was canceled.</td>\n  </tr>\n  <tr>\n    <td><code>ECHILD</code></td>\n    <td>Indicates that there are no child processes.</td>\n  </tr>\n  <tr>\n    <td><code>ECONNABORTED</code></td>\n    <td>Indicates that the network connection has been aborted.</td>\n  </tr>\n  <tr>\n    <td><code>ECONNREFUSED</code></td>\n    <td>Indicates that the network connection has been refused.</td>\n  </tr>\n  <tr>\n    <td><code>ECONNRESET</code></td>\n    <td>Indicates that the network connection has been reset.</td>\n  </tr>\n  <tr>\n    <td><code>EDEADLK</code></td>\n    <td>Indicates that a resource deadlock has been avoided.</td>\n  </tr>\n  <tr>\n    <td><code>EDESTADDRREQ</code></td>\n    <td>Indicates that a destination address is required.</td>\n  </tr>\n  <tr>\n    <td><code>EDOM</code></td>\n    <td>Indicates that an argument is out of the domain of the function.</td>\n  </tr>\n  <tr>\n    <td><code>EDQUOT</code></td>\n    <td>Indicates that the disk quota has been exceeded.</td>\n  </tr>\n  <tr>\n    <td><code>EEXIST</code></td>\n    <td>Indicates that the file already exists.</td>\n  </tr>\n  <tr>\n    <td><code>EFAULT</code></td>\n    <td>Indicates an invalid pointer address.</td>\n  </tr>\n  <tr>\n    <td><code>EFBIG</code></td>\n    <td>Indicates that the file is too large.</td>\n  </tr>\n  <tr>\n    <td><code>EHOSTUNREACH</code></td>\n    <td>Indicates that the host is unreachable.</td>\n  </tr>\n  <tr>\n    <td><code>EIDRM</code></td>\n    <td>Indicates that the identifier has been removed.</td>\n  </tr>\n  <tr>\n    <td><code>EILSEQ</code></td>\n    <td>Indicates an illegal byte sequence.</td>\n  </tr>\n  <tr>\n    <td><code>EINPROGRESS</code></td>\n    <td>Indicates that an operation is already in progress.</td>\n  </tr>\n  <tr>\n    <td><code>EINTR</code></td>\n    <td>Indicates that a function call was interrupted.</td>\n  </tr>\n  <tr>\n    <td><code>EINVAL</code></td>\n    <td>Indicates that an invalid argument was provided.</td>\n  </tr>\n  <tr>\n    <td><code>EIO</code></td>\n    <td>Indicates an otherwise unspecified I/O error.</td>\n  </tr>\n  <tr>\n    <td><code>EISCONN</code></td>\n    <td>Indicates that the socket is connected.</td>\n  </tr>\n  <tr>\n    <td><code>EISDIR</code></td>\n    <td>Indicates that the path is a directory.</td>\n  </tr>\n  <tr>\n    <td><code>ELOOP</code></td>\n    <td>Indicates too many levels of symbolic links in a path.</td>\n  </tr>\n  <tr>\n    <td><code>EMFILE</code></td>\n    <td>Indicates that there are too many open files.</td>\n  </tr>\n  <tr>\n    <td><code>EMLINK</code></td>\n    <td>Indicates that there are too many hard links to a file.</td>\n  </tr>\n  <tr>\n    <td><code>EMSGSIZE</code></td>\n    <td>Indicates that the provided message is too long.</td>\n  </tr>\n  <tr>\n    <td><code>EMULTIHOP</code></td>\n    <td>Indicates that a multihop was attempted.</td>\n  </tr>\n  <tr>\n    <td><code>ENAMETOOLONG</code></td>\n    <td>Indicates that the filename is too long.</td>\n  </tr>\n  <tr>\n    <td><code>ENETDOWN</code></td>\n    <td>Indicates that the network is down.</td>\n  </tr>\n  <tr>\n    <td><code>ENETRESET</code></td>\n    <td>Indicates that the connection has been aborted by the network.</td>\n  </tr>\n  <tr>\n    <td><code>ENETUNREACH</code></td>\n    <td>Indicates that the network is unreachable.</td>\n  </tr>\n  <tr>\n    <td><code>ENFILE</code></td>\n    <td>Indicates too many open files in the system.</td>\n  </tr>\n  <tr>\n    <td><code>ENOBUFS</code></td>\n    <td>Indicates that no buffer space is available.</td>\n  </tr>\n  <tr>\n    <td><code>ENODATA</code></td>\n    <td>Indicates that no message is available on the stream head read\n    queue.</td>\n  </tr>\n  <tr>\n    <td><code>ENODEV</code></td>\n    <td>Indicates that there is no such device.</td>\n  </tr>\n  <tr>\n    <td><code>ENOENT</code></td>\n    <td>Indicates that there is no such file or directory.</td>\n  </tr>\n  <tr>\n    <td><code>ENOEXEC</code></td>\n    <td>Indicates an exec format error.</td>\n  </tr>\n  <tr>\n    <td><code>ENOLCK</code></td>\n    <td>Indicates that there are no locks available.</td>\n  </tr>\n  <tr>\n    <td><code>ENOLINK</code></td>\n    <td>Indications that a link has been severed.</td>\n  </tr>\n  <tr>\n    <td><code>ENOMEM</code></td>\n    <td>Indicates that there is not enough space.</td>\n  </tr>\n  <tr>\n    <td><code>ENOMSG</code></td>\n    <td>Indicates that there is no message of the desired type.</td>\n  </tr>\n  <tr>\n    <td><code>ENOPROTOOPT</code></td>\n    <td>Indicates that a given protocol is not available.</td>\n  </tr>\n  <tr>\n    <td><code>ENOSPC</code></td>\n    <td>Indicates that there is no space available on the device.</td>\n  </tr>\n  <tr>\n    <td><code>ENOSR</code></td>\n    <td>Indicates that there are no stream resources available.</td>\n  </tr>\n  <tr>\n    <td><code>ENOSTR</code></td>\n    <td>Indicates that a given resource is not a stream.</td>\n  </tr>\n  <tr>\n    <td><code>ENOSYS</code></td>\n    <td>Indicates that a function has not been implemented.</td>\n  </tr>\n  <tr>\n    <td><code>ENOTCONN</code></td>\n    <td>Indicates that the socket is not connected.</td>\n  </tr>\n  <tr>\n    <td><code>ENOTDIR</code></td>\n    <td>Indicates that the path is not a directory.</td>\n  </tr>\n  <tr>\n    <td><code>ENOTEMPTY</code></td>\n    <td>Indicates that the directory is not empty.</td>\n  </tr>\n  <tr>\n    <td><code>ENOTSOCK</code></td>\n    <td>Indicates that the given item is not a socket.</td>\n  </tr>\n  <tr>\n    <td><code>ENOTSUP</code></td>\n    <td>Indicates that a given operation is not supported.</td>\n  </tr>\n  <tr>\n    <td><code>ENOTTY</code></td>\n    <td>Indicates an inappropriate I/O control operation.</td>\n  </tr>\n  <tr>\n    <td><code>ENXIO</code></td>\n    <td>Indicates no such device or address.</td>\n  </tr>\n  <tr>\n    <td><code>EOPNOTSUPP</code></td>\n    <td>Indicates that an operation is not supported on the socket.  Note that\n    while <code>ENOTSUP</code> and <code>EOPNOTSUPP</code> have the same value\n    on Linux, according to POSIX.1 these error values should be distinct.)</td>\n  </tr>\n  <tr>\n    <td><code>EOVERFLOW</code></td>\n    <td>Indicates that a value is too large to be stored in a given data\n    type.</td>\n  </tr>\n  <tr>\n    <td><code>EPERM</code></td>\n    <td>Indicates that the operation is not permitted.</td>\n  </tr>\n  <tr>\n    <td><code>EPIPE</code></td>\n    <td>Indicates a broken pipe.</td>\n  </tr>\n  <tr>\n    <td><code>EPROTO</code></td>\n    <td>Indicates a protocol error.</td>\n  </tr>\n  <tr>\n    <td><code>EPROTONOSUPPORT</code></td>\n    <td>Indicates that a protocol is not supported.</td>\n  </tr>\n  <tr>\n    <td><code>EPROTOTYPE</code></td>\n    <td>Indicates the wrong type of protocol for a socket.</td>\n  </tr>\n  <tr>\n    <td><code>ERANGE</code></td>\n    <td>Indicates that the results are too large.</td>\n  </tr>\n  <tr>\n    <td><code>EROFS</code></td>\n    <td>Indicates that the file system is read only.</td>\n  </tr>\n  <tr>\n    <td><code>ESPIPE</code></td>\n    <td>Indicates an invalid seek operation.</td>\n  </tr>\n  <tr>\n    <td><code>ESRCH</code></td>\n    <td>Indicates that there is no such process.</td>\n  </tr>\n  <tr>\n    <td><code>ESTALE</code></td>\n    <td>Indicates that the file handle is stale.</td>\n  </tr>\n  <tr>\n    <td><code>ETIME</code></td>\n    <td>Indicates an expired timer.</td>\n  </tr>\n  <tr>\n    <td><code>ETIMEDOUT</code></td>\n    <td>Indicates that the connection timed out.</td>\n  </tr>\n  <tr>\n    <td><code>ETXTBSY</code></td>\n    <td>Indicates that a text file is busy.</td>\n  </tr>\n  <tr>\n    <td><code>EWOULDBLOCK</code></td>\n    <td>Indicates that the operation would block.</td>\n  </tr>\n  <tr>\n    <td><code>EXDEV</code></td>\n    <td>Indicates an improper link.\n  </tr>\n</table>",
+                  "type": "module",
+                  "displayName": "POSIX Error Constants"
+                },
+                {
+                  "textRaw": "Windows Specific Error Constants",
+                  "name": "windows_specific_error_constants",
+                  "desc": "<p>The following error codes are specific to the Windows operating system:</p>\n<table>\n  <tr>\n    <th>Constant</th>\n    <th>Description</th>\n  </tr>\n  <tr>\n    <td><code>WSAEINTR</code></td>\n    <td>Indicates an interrupted function call.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEBADF</code></td>\n    <td>Indicates an invalid file handle.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEACCES</code></td>\n    <td>Indicates insufficient permissions to complete the operation.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEFAULT</code></td>\n    <td>Indicates an invalid pointer address.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEINVAL</code></td>\n    <td>Indicates that an invalid argument was passed.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEMFILE</code></td>\n    <td>Indicates that there are too many open files.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEWOULDBLOCK</code></td>\n    <td>Indicates that a resource is temporarily unavailable.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEINPROGRESS</code></td>\n    <td>Indicates that an operation is currently in progress.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEALREADY</code></td>\n    <td>Indicates that an operation is already in progress.</td>\n  </tr>\n  <tr>\n    <td><code>WSAENOTSOCK</code></td>\n    <td>Indicates that the resource is not a socket.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEDESTADDRREQ</code></td>\n    <td>Indicates that a destination address is required.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEMSGSIZE</code></td>\n    <td>Indicates that the message size is too long.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEPROTOTYPE</code></td>\n    <td>Indicates the wrong protocol type for the socket.</td>\n  </tr>\n  <tr>\n    <td><code>WSAENOPROTOOPT</code></td>\n    <td>Indicates a bad protocol option.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEPROTONOSUPPORT</code></td>\n    <td>Indicates that the protocol is not supported.</td>\n  </tr>\n  <tr>\n    <td><code>WSAESOCKTNOSUPPORT</code></td>\n    <td>Indicates that the socket type is not supported.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEOPNOTSUPP</code></td>\n    <td>Indicates that the operation is not supported.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEPFNOSUPPORT</code></td>\n    <td>Indicates that the protocol family is not supported.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEAFNOSUPPORT</code></td>\n    <td>Indicates that the address family is not supported.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEADDRINUSE</code></td>\n    <td>Indicates that the network address is already in use.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEADDRNOTAVAIL</code></td>\n    <td>Indicates that the network address is not available.</td>\n  </tr>\n  <tr>\n    <td><code>WSAENETDOWN</code></td>\n    <td>Indicates that the network is down.</td>\n  </tr>\n  <tr>\n    <td><code>WSAENETUNREACH</code></td>\n    <td>Indicates that the network is unreachable.</td>\n  </tr>\n  <tr>\n    <td><code>WSAENETRESET</code></td>\n    <td>Indicates that the network connection has been reset.</td>\n  </tr>\n  <tr>\n    <td><code>WSAECONNABORTED</code></td>\n    <td>Indicates that the connection has been aborted.</td>\n  </tr>\n  <tr>\n    <td><code>WSAECONNRESET</code></td>\n    <td>Indicates that the connection has been reset by the peer.</td>\n  </tr>\n  <tr>\n    <td><code>WSAENOBUFS</code></td>\n    <td>Indicates that there is no buffer space available.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEISCONN</code></td>\n    <td>Indicates that the socket is already connected.</td>\n  </tr>\n  <tr>\n    <td><code>WSAENOTCONN</code></td>\n    <td>Indicates that the socket is not connected.</td>\n  </tr>\n  <tr>\n    <td><code>WSAESHUTDOWN</code></td>\n    <td>Indicates that data cannot be sent after the socket has been\n    shutdown.</td>\n  </tr>\n  <tr>\n    <td><code>WSAETOOMANYREFS</code></td>\n    <td>Indicates that there are too many references.</td>\n  </tr>\n  <tr>\n    <td><code>WSAETIMEDOUT</code></td>\n    <td>Indicates that the connection has timed out.</td>\n  </tr>\n  <tr>\n    <td><code>WSAECONNREFUSED</code></td>\n    <td>Indicates that the connection has been refused.</td>\n  </tr>\n  <tr>\n    <td><code>WSAELOOP</code></td>\n    <td>Indicates that a name cannot be translated.</td>\n  </tr>\n  <tr>\n    <td><code>WSAENAMETOOLONG</code></td>\n    <td>Indicates that a name was too long.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEHOSTDOWN</code></td>\n    <td>Indicates that a network host is down.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEHOSTUNREACH</code></td>\n    <td>Indicates that there is no route to a network host.</td>\n  </tr>\n  <tr>\n    <td><code>WSAENOTEMPTY</code></td>\n    <td>Indicates that the directory is not empty.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEPROCLIM</code></td>\n    <td>Indicates that there are too many processes.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEUSERS</code></td>\n    <td>Indicates that the user quota has been exceeded.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEDQUOT</code></td>\n    <td>Indicates that the disk quota has been exceeded.</td>\n  </tr>\n  <tr>\n    <td><code>WSAESTALE</code></td>\n    <td>Indicates a stale file handle reference.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEREMOTE</code></td>\n    <td>Indicates that the item is remote.</td>\n  </tr>\n  <tr>\n    <td><code>WSASYSNOTREADY</code></td>\n    <td>Indicates that the network subsystem is not ready.</td>\n  </tr>\n  <tr>\n    <td><code>WSAVERNOTSUPPORTED</code></td>\n    <td>Indicates that the <code>winsock.dll</code> version is out of\n    range.</td>\n  </tr>\n  <tr>\n    <td><code>WSANOTINITIALISED</code></td>\n    <td>Indicates that successful WSAStartup has not yet been performed.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEDISCON</code></td>\n    <td>Indicates that a graceful shutdown is in progress.</td>\n  </tr>\n  <tr>\n    <td><code>WSAENOMORE</code></td>\n    <td>Indicates that there are no more results.</td>\n  </tr>\n  <tr>\n    <td><code>WSAECANCELLED</code></td>\n    <td>Indicates that an operation has been canceled.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEINVALIDPROCTABLE</code></td>\n    <td>Indicates that the procedure call table is invalid.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEINVALIDPROVIDER</code></td>\n    <td>Indicates an invalid service provider.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEPROVIDERFAILEDINIT</code></td>\n    <td>Indicates that the service provider failed to initialized.</td>\n  </tr>\n  <tr>\n    <td><code>WSASYSCALLFAILURE</code></td>\n    <td>Indicates a system call failure.</td>\n  </tr>\n  <tr>\n    <td><code>WSASERVICE_NOT_FOUND</code></td>\n    <td>Indicates that a service was not found.</td>\n  </tr>\n  <tr>\n    <td><code>WSATYPE_NOT_FOUND</code></td>\n    <td>Indicates that a class type was not found.</td>\n  </tr>\n  <tr>\n    <td><code>WSA_E_NO_MORE</code></td>\n    <td>Indicates that there are no more results.</td>\n  </tr>\n  <tr>\n    <td><code>WSA_E_CANCELLED</code></td>\n    <td>Indicates that the call was canceled.</td>\n  </tr>\n  <tr>\n    <td><code>WSAEREFUSED</code></td>\n    <td>Indicates that a database query was refused.</td>\n  </tr>\n</table>",
+                  "type": "module",
+                  "displayName": "Windows Specific Error Constants"
+                }
+              ],
+              "type": "module",
+              "displayName": "Error Constants"
+            },
+            {
+              "textRaw": "dlopen Constants",
+              "name": "dlopen_constants",
+              "desc": "<p>If available on the operating system, the following constants\nare exported in <code>os.constants.dlopen</code>. See <a href=\"http://man7.org/linux/man-pages/man3/dlopen.3.html\"><code>dlopen(3)</code></a> for detailed\ninformation.</p>\n<table>\n  <tr>\n    <th>Constant</th>\n    <th>Description</th>\n  </tr>\n  <tr>\n    <td><code>RTLD_LAZY</code></td>\n    <td>Perform lazy binding. Node.js sets this flag by default.</td>\n  </tr>\n  <tr>\n    <td><code>RTLD_NOW</code></td>\n    <td>Resolve all undefined symbols in the library before dlopen(3)\n    returns.</td>\n  </tr>\n  <tr>\n    <td><code>RTLD_GLOBAL</code></td>\n    <td>Symbols defined by the library will be made available for symbol\n    resolution of subsequently loaded libraries.</td>\n  </tr>\n  <tr>\n    <td><code>RTLD_LOCAL</code></td>\n    <td>The converse of <code>RTLD_GLOBAL</code>. This is the default behavior\n    if neither flag is specified.</td>\n  </tr>\n  <tr>\n    <td><code>RTLD_DEEPBIND</code></td>\n    <td>Make a self-contained library use its own symbols in preference to\n    symbols from previously loaded libraries.</td>\n  </tr>\n</table>",
+              "type": "module",
+              "displayName": "dlopen Constants"
+            },
+            {
+              "textRaw": "Priority Constants",
+              "name": "priority_constants",
+              "meta": {
+                "added": [
+                  "v10.10.0"
+                ],
+                "changes": []
+              },
+              "desc": "<p>The following process scheduling constants are exported by\n<code>os.constants.priority</code>:</p>\n<table>\n  <tr>\n    <th>Constant</th>\n    <th>Description</th>\n  </tr>\n  <tr>\n    <td><code>PRIORITY_LOW</code></td>\n    <td>The lowest process scheduling priority. This corresponds to\n    <code>IDLE_PRIORITY_CLASS</code> on Windows, and a nice value of\n    <code>19</code> on all other platforms.</td>\n  </tr>\n  <tr>\n    <td><code>PRIORITY_BELOW_NORMAL</code></td>\n    <td>The process scheduling priority above <code>PRIORITY_LOW</code> and\n    below <code>PRIORITY_NORMAL</code>. This corresponds to\n    <code>BELOW_NORMAL_PRIORITY_CLASS</code> on Windows, and a nice value of\n    <code>10</code> on all other platforms.</td>\n  </tr>\n  <tr>\n    <td><code>PRIORITY_NORMAL</code></td>\n    <td>The default process scheduling priority. This corresponds to\n    <code>NORMAL_PRIORITY_CLASS</code> on Windows, and a nice value of\n    <code>0</code> on all other platforms.</td>\n  </tr>\n  <tr>\n    <td><code>PRIORITY_ABOVE_NORMAL</code></td>\n    <td>The process scheduling priority above <code>PRIORITY_NORMAL</code> and\n    below <code>PRIORITY_HIGH</code>. This corresponds to\n    <code>ABOVE_NORMAL_PRIORITY_CLASS</code> on Windows, and a nice value of\n    <code>-7</code> on all other platforms.</td>\n  </tr>\n  <tr>\n    <td><code>PRIORITY_HIGH</code></td>\n    <td>The process scheduling priority above <code>PRIORITY_ABOVE_NORMAL</code>\n    and below <code>PRIORITY_HIGHEST</code>. This corresponds to\n    <code>HIGH_PRIORITY_CLASS</code> on Windows, and a nice value of\n    <code>-14</code> on all other platforms.</td>\n  </tr>\n  <tr>\n    <td><code>PRIORITY_HIGHEST</code></td>\n    <td>The highest process scheduling priority. This corresponds to\n    <code>REALTIME_PRIORITY_CLASS</code> on Windows, and a nice value of\n    <code>-20</code> on all other platforms.</td>\n  </tr>\n</table>",
+              "type": "module",
+              "displayName": "Priority Constants"
+            },
+            {
+              "textRaw": "libuv Constants",
+              "name": "libuv_constants",
+              "desc": "<table>\n  <tr>\n    <th>Constant</th>\n    <th>Description</th>\n  </tr>\n  <tr>\n    <td><code>UV_UDP_REUSEADDR</code></td>\n    <td></td>\n  </tr>\n</table>",
+              "type": "module",
+              "displayName": "libuv Constants"
+            }
+          ],
+          "type": "module",
+          "displayName": "OS Constants"
+        }
+      ],
+      "type": "module",
+      "displayName": "OS"
+    }
+  ]
+}

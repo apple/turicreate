@@ -425,9 +425,9 @@ std::shared_ptr<unity_sarray_base> unity_sframe::select_column(const std::string
   size_t column_index = _column_index_iter - _column_names.begin();
   auto ret = select_column(column_index);
 
-  DASSERT_EQ(std::static_pointer_cast<unity_sarray>(ret)->dtype(), dtype(name)); 
+  DASSERT_EQ(std::static_pointer_cast<unity_sarray>(ret)->dtype(), dtype(name));
 
-  return ret; 
+  return ret;
 }
 
 std::shared_ptr<unity_sarray_base> unity_sframe::select_column(size_t column_index) {
@@ -450,24 +450,24 @@ std::shared_ptr<unity_sframe_base> unity_sframe::select_columns(
 #ifndef NDEBUG
   {
     std::shared_ptr<unity_sframe> X = std::static_pointer_cast<unity_sframe>(ret);
-      
+
     DASSERT_EQ(X->num_columns(), names.size());
 
-    for(size_t i = 0; i < names.size(); ++i) { 
+    for(size_t i = 0; i < names.size(); ++i) {
       DASSERT_EQ(names[i], X->column_name(i));
       DASSERT_EQ(this->dtype(names[i]), X->dtype(i));
     }
   }
 #endif
 
-  return ret; 
+  return ret;
 }
 
 std::shared_ptr<unity_sframe_base> unity_sframe::select_columns(
     const std::vector<size_t>& indices) {
   Dlog_func_entry();
 
-  if(indices.empty()) { 
+  if(indices.empty()) {
     return std::make_shared<unity_sframe>();
   }
 
@@ -478,7 +478,7 @@ std::shared_ptr<unity_sframe_base> unity_sframe::select_columns(
   }
 
   for(size_t i = 0; i < indices.size(); ++i) {
-    size_t col_idx = indices[i]; 
+    size_t col_idx = indices[i];
     if(col_idx >= m_column_names.size()) {
       std_log_and_throw(std::range_error, "Column index out of bounds.");
     }
@@ -922,8 +922,10 @@ std::shared_ptr<unity_sframe_base> unity_sframe::append(
     return ret;
   }
 
-  // Error checking
+  // Error checking and reorder other sframe if necessary
   {
+    bool needs_reorder = false;
+
     if (this->num_columns() != other_sframe->num_columns()) {
       log_and_throw("Two SFrames have different number of columns");
     }
@@ -933,6 +935,8 @@ std::shared_ptr<unity_sframe_base> unity_sframe::append(
     size_t num_columns = column_names.size();
 
     if(column_names != other_column_names) {
+      needs_reorder = true;
+
       std::sort(column_names.begin(), column_names.end());
       std::sort(other_column_names.begin(), other_column_names.end());
 
@@ -950,7 +954,13 @@ std::shared_ptr<unity_sframe_base> unity_sframe::append(
 
         log_and_throw(ss.str().c_str());
       }
+
+      if (needs_reorder) {
+        other_sframe = std::static_pointer_cast<unity_sframe>(
+            other_sframe->select_columns(this->column_names()));
+      }
     }
+
 
     auto column_types = this->dtype();
     auto other_column_types = other_sframe->dtype();
@@ -1277,11 +1287,11 @@ unity_sframe::sort(const std::vector<std::string>& sort_keys,
   }
 
   std::vector<size_t> sort_indices;
- 
-  if(sort_keys.empty()) { 
-    sort_indices.resize(this->num_columns()); 
-    std::iota(sort_indices.begin(), sort_indices.end(), 0); 
-  } else { 
+
+  if(sort_keys.empty()) {
+    sort_indices.resize(this->num_columns());
+    std::iota(sort_indices.begin(), sort_indices.end(), 0);
+  } else {
     sort_indices = _convert_column_names_to_indices(sort_keys);
   }
 
@@ -1601,14 +1611,14 @@ std::list<std::shared_ptr<unity_sframe_base>> unity_sframe::drop_missing_values(
   } else {
 
     std::vector<size_t> column_indices;
-       
-    if(column_names.empty()) { 
-      column_indices.resize(this->num_columns()); 
-      std::iota(column_indices.begin(), column_indices.end(), 0); 
-    } else { 
+
+    if(column_names.empty()) {
+      column_indices.resize(this->num_columns());
+      std::iota(column_indices.begin(), column_indices.end(), 0);
+    } else {
       column_indices = _convert_column_names_to_indices(column_names);
     }
-        
+
     // Separate out the columns that require contains_na, which is more expensive.
     size_t n_recursive = 0, n_simple = column_indices.size();
 
@@ -1754,7 +1764,7 @@ std::vector<size_t> unity_sframe::_convert_column_names_to_indices(
 #ifndef NDEBUG
   {
     DASSERT_EQ(column_indices.size(), column_names.size());
-    for(size_t i = 0; i < column_names.size(); ++i ) { 
+    for(size_t i = 0; i < column_names.size(); ++i ) {
       DASSERT_EQ(column_names[i], this->column_name(column_indices[i]));
     }
   }
@@ -1862,7 +1872,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
       std::string column_name;
 
       enum class MethodType {None = 0, GetRows = 1, GetAccordion = 2};
-      MethodType response = MethodType::None;  
+      MethodType response = MethodType::None;
 
       auto sa = gl_sarray(std::vector<flexible_type>(1, input)).astype(flex_type_enum::DICT);
       flex_dict dict = sa[0].get<flex_dict>();

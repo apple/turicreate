@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>REPL | Node.js v10.15.3 Documentation</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/repl.html">
+</head>
+<body class="alt apidoc" id="api-section-repl">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="Go back to the home page">
+          Node.js
+        </a>
+      </div>
+      <ul>
+<li><a href="documentation.html" class="nav-documentation">About these Docs</a></li>
+<li><a href="synopsis.html" class="nav-synopsis">Usage &#x26; Example</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="assert.html" class="nav-assert">Assertion Testing</a></li>
+<li><a href="async_hooks.html" class="nav-async_hooks">Async Hooks</a></li>
+<li><a href="buffer.html" class="nav-buffer">Buffer</a></li>
+<li><a href="addons.html" class="nav-addons">C++ Addons</a></li>
+<li><a href="n-api.html" class="nav-n-api">C/C++ Addons - N-API</a></li>
+<li><a href="child_process.html" class="nav-child_process">Child Processes</a></li>
+<li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
+<li><a href="cli.html" class="nav-cli">Command Line Options</a></li>
+<li><a href="console.html" class="nav-console">Console</a></li>
+<li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
+<li><a href="debugger.html" class="nav-debugger">Debugger</a></li>
+<li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
+<li><a href="dns.html" class="nav-dns">DNS</a></li>
+<li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="esm.html" class="nav-esm">ECMAScript Modules</a></li>
+<li><a href="errors.html" class="nav-errors">Errors</a></li>
+<li><a href="events.html" class="nav-events">Events</a></li>
+<li><a href="fs.html" class="nav-fs">File System</a></li>
+<li><a href="globals.html" class="nav-globals">Globals</a></li>
+<li><a href="http.html" class="nav-http">HTTP</a></li>
+<li><a href="http2.html" class="nav-http2">HTTP/2</a></li>
+<li><a href="https.html" class="nav-https">HTTPS</a></li>
+<li><a href="inspector.html" class="nav-inspector">Inspector</a></li>
+<li><a href="intl.html" class="nav-intl">Internationalization</a></li>
+<li><a href="modules.html" class="nav-modules">Modules</a></li>
+<li><a href="net.html" class="nav-net">Net</a></li>
+<li><a href="os.html" class="nav-os">OS</a></li>
+<li><a href="path.html" class="nav-path">Path</a></li>
+<li><a href="perf_hooks.html" class="nav-perf_hooks">Performance Hooks</a></li>
+<li><a href="process.html" class="nav-process">Process</a></li>
+<li><a href="punycode.html" class="nav-punycode">Punycode</a></li>
+<li><a href="querystring.html" class="nav-querystring">Query Strings</a></li>
+<li><a href="readline.html" class="nav-readline">Readline</a></li>
+<li><a href="repl.html" class="nav-repl active">REPL</a></li>
+<li><a href="stream.html" class="nav-stream">Stream</a></li>
+<li><a href="string_decoder.html" class="nav-string_decoder">String Decoder</a></li>
+<li><a href="timers.html" class="nav-timers">Timers</a></li>
+<li><a href="tls.html" class="nav-tls">TLS/SSL</a></li>
+<li><a href="tracing.html" class="nav-tracing">Trace Events</a></li>
+<li><a href="tty.html" class="nav-tty">TTY</a></li>
+<li><a href="dgram.html" class="nav-dgram">UDP/Datagram</a></li>
+<li><a href="url.html" class="nav-url">URL</a></li>
+<li><a href="util.html" class="nav-util">Utilities</a></li>
+<li><a href="v8.html" class="nav-v8">V8</a></li>
+<li><a href="vm.html" class="nav-vm">VM</a></li>
+<li><a href="worker_threads.html" class="nav-worker_threads">Worker Threads</a></li>
+<li><a href="zlib.html" class="nav-zlib">ZLIB</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="https://github.com/nodejs/node" class="nav-https-github-com-nodejs-node">GitHub Repo &#x26; Issue Tracker</a></li>
+</ul>
+    </div>
+
+    <div id="column1" data-id="repl" class="interior">
+      <header>
+        <h1>Node.js v10.15.3 Documentation</h1>
+        <div id="gtoc">
+          <ul>
+            <li>
+              <a href="index.html" name="toc">Index</a>
+            </li>
+            <li>
+              <a href="all.html">View on single page</a>
+            </li>
+            <li>
+              <a href="repl.json">View as JSON</a>
+            </li>
+            
+    <li class="version-picker">
+      <a href="#">View another version <span>&#x25bc;</span></a>
+      <ol class="version-picker"><li><a href="https://nodejs.org/docs/latest-v11.x/api/repl.html">11.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v10.x/api/repl.html">10.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v9.x/api/repl.html">9.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v8.x/api/repl.html">8.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v7.x/api/repl.html">7.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v6.x/api/repl.html">6.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v5.x/api/repl.html">5.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v4.x/api/repl.html">4.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v0.12.x/api/repl.html">0.12.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v0.10.x/api/repl.html">0.10.x</a></li></ol>
+    </li>
+  
+            <li class="edit_on_github"><a href="https://github.com/nodejs/node/edit/master/doc/api/repl.md"><span class="github_icon"><svg height="16" width="16" viewBox="0 0 16.1 16.1" fill="currentColor"><path d="M8 0a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2 .4-2.5-.5-2.7-1 0-.1-.5-.9-.8-1-.3-.2-.7-.6 0-.6.6 0 1 .6 1.2.8.7 1.2 1.9 1 2.4.7 0-.5.2-.9.5-1-1.8-.3-3.7-1-3.7-4 0-.9.3-1.6.8-2.2 0-.2-.3-1 .1-2 0 0 .7-.3 2.2.7a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.5 1.1.2 2 .1 2.1.5.6.8 1.3.8 2.2 0 3-1.9 3.7-3.6 4 .3.2.5.7.5 1.4v2.2c0 .2.1.5.5.4A8 8 0 0 0 16 8a8 8 0 0 0-8-8z"/></svg></span>Edit on GitHub</a></li>
+          </ul>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>Table of Contents</h2>
+        <ul>
+<li>
+<p><span class="stability_2"><a href="#repl_repl">REPL</a></span></p>
+<ul>
+<li>
+<p><a href="#repl_design_and_features">Design and Features</a></p>
+<ul>
+<li><a href="#repl_commands_and_special_keys">Commands and Special Keys</a></li>
+<li>
+<p><a href="#repl_default_evaluation">Default Evaluation</a></p>
+<ul>
+<li><a href="#repl_javascript_expressions">JavaScript Expressions</a></li>
+<li><a href="#repl_global_and_local_scope">Global and Local Scope</a></li>
+<li><a href="#repl_accessing_core_node_js_modules">Accessing Core Node.js Modules</a></li>
+<li><a href="#repl_global_uncaught_exceptions">Global Uncaught Exceptions</a></li>
+<li><a href="#repl_assignment_of_the_underscore_variable">Assignment of the <code>_</code> (underscore) variable</a></li>
+<li><a href="#repl_await_keyword"><code>await</code> keyword</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#repl_custom_evaluation_functions">Custom Evaluation Functions</a></p>
+<ul>
+<li><a href="#repl_recoverable_errors">Recoverable Errors</a></li>
+</ul>
+</li>
+<li><a href="#repl_customizing_repl_output">Customizing REPL Output</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#repl_class_replserver">Class: REPLServer</a></p>
+<ul>
+<li><a href="#repl_event_exit">Event: 'exit'</a></li>
+<li><a href="#repl_event_reset">Event: 'reset'</a></li>
+<li><a href="#repl_replserver_definecommand_keyword_cmd">replServer.defineCommand(keyword, cmd)</a></li>
+<li><a href="#repl_replserver_displayprompt_preservecursor">replServer.displayPrompt([preserveCursor])</a></li>
+<li><a href="#repl_replserver_clearbufferedcommand">replServer.clearBufferedCommand()</a></li>
+<li><span class="stability_0"><a href="#repl_replserver_parsereplkeyword_keyword_rest">replServer.parseREPLKeyword(keyword[, rest])</a></span></li>
+</ul>
+</li>
+<li><a href="#repl_repl_start_options">repl.start([options])</a></li>
+<li>
+<p><a href="#repl_the_node_js_repl">The Node.js REPL</a></p>
+<ul>
+<li><a href="#repl_environment_variable_options">Environment Variable Options</a></li>
+<li><a href="#repl_persistent_history">Persistent History</a></li>
+<li><a href="#repl_using_the_node_js_repl_with_advanced_line_editors">Using the Node.js REPL with advanced line-editors</a></li>
+<li><a href="#repl_starting_multiple_repl_instances_against_a_single_running_instance">Starting multiple REPL instances against a single running instance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+      </div>
+
+      <div id="apicontent">
+        <h1>REPL<span><a class="mark" href="#repl_repl" id="repl_repl">#</a></span></h1>
+
+<p></p><div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p></p>
+<p>The <code>repl</code> module provides a Read-Eval-Print-Loop (REPL) implementation that
+is available both as a standalone program or includible in other applications.
+It can be accessed using:</p>
+<pre><code class="language-js">const repl = require('repl');
+</code></pre>
+<h2>Design and Features<span><a class="mark" href="#repl_design_and_features" id="repl_design_and_features">#</a></span></h2>
+<p>The <code>repl</code> module exports the <a href="#repl_class_replserver"><code>repl.REPLServer</code></a> class. While running,
+instances of <a href="#repl_class_replserver"><code>repl.REPLServer</code></a> will accept individual lines of user input,
+evaluate those according to a user-defined evaluation function, then output the
+result. Input and output may be from <code>stdin</code> and <code>stdout</code>, respectively, or may
+be connected to any Node.js <a href="stream.html">stream</a>.</p>
+<p>Instances of <a href="#repl_class_replserver"><code>repl.REPLServer</code></a> support automatic completion of inputs,
+simplistic Emacs-style line editing, multi-line inputs, ANSI-styled output,
+saving and restoring current REPL session state, error recovery, and
+customizable evaluation functions.</p>
+<h3>Commands and Special Keys<span><a class="mark" href="#repl_commands_and_special_keys" id="repl_commands_and_special_keys">#</a></span></h3>
+<p>The following special commands are supported by all REPL instances:</p>
+<ul>
+<li><code>.break</code> - When in the process of inputting a multi-line expression, entering
+the <code>.break</code> command (or pressing the <code>&#x3C;ctrl>-C</code> key combination) will abort
+further input or processing of that expression.</li>
+<li><code>.clear</code> - Resets the REPL <code>context</code> to an empty object and clears any
+multi-line expression currently being input.</li>
+<li><code>.exit</code> - Close the I/O stream, causing the REPL to exit.</li>
+<li><code>.help</code> - Show this list of special commands.</li>
+<li><code>.save</code> - Save the current REPL session to a file:
+<code>> .save ./file/to/save.js</code></li>
+<li><code>.load</code> - Load a file into the current REPL session.
+<code>> .load ./file/to/load.js</code></li>
+<li><code>.editor</code> - Enter editor mode (<code>&#x3C;ctrl>-D</code> to finish, <code>&#x3C;ctrl>-C</code> to cancel).</li>
+</ul>
+<!-- eslint-skip -->
+<pre><code class="language-js">> .editor
+// Entering editor mode (^D to finish, ^C to cancel)
+function welcome(name) {
+  return `Hello ${name}!`;
+}
+
+welcome('Node.js User');
+
+// ^D
+'Hello Node.js User!'
+>
+</code></pre>
+<p>The following key combinations in the REPL have these special effects:</p>
+<ul>
+<li><code>&#x3C;ctrl>-C</code> - When pressed once, has the same effect as the <code>.break</code> command.
+When pressed twice on a blank line, has the same effect as the <code>.exit</code>
+command.</li>
+<li><code>&#x3C;ctrl>-D</code> - Has the same effect as the <code>.exit</code> command.</li>
+<li><code>&#x3C;tab></code> - When pressed on a blank line, displays global and local (scope)
+variables. When pressed while entering other input, displays relevant
+autocompletion options.</li>
+</ul>
+<h3>Default Evaluation<span><a class="mark" href="#repl_default_evaluation" id="repl_default_evaluation">#</a></span></h3>
+<p>By default, all instances of <a href="#repl_class_replserver"><code>repl.REPLServer</code></a> use an evaluation function
+that evaluates JavaScript expressions and provides access to Node.js' built-in
+modules. This default behavior can be overridden by passing in an alternative
+evaluation function when the <a href="#repl_class_replserver"><code>repl.REPLServer</code></a> instance is created.</p>
+<h4>JavaScript Expressions<span><a class="mark" href="#repl_javascript_expressions" id="repl_javascript_expressions">#</a></span></h4>
+<p>The default evaluator supports direct evaluation of JavaScript expressions:</p>
+<!-- eslint-skip -->
+<pre><code class="language-js">> 1 + 1
+2
+> const m = 2
+undefined
+> m + 1
+3
+</code></pre>
+<p>Unless otherwise scoped within blocks or functions, variables declared
+either implicitly or using the <code>const</code>, <code>let</code>, or <code>var</code> keywords
+are declared at the global scope.</p>
+<h4>Global and Local Scope<span><a class="mark" href="#repl_global_and_local_scope" id="repl_global_and_local_scope">#</a></span></h4>
+<p>The default evaluator provides access to any variables that exist in the global
+scope. It is possible to expose a variable to the REPL explicitly by assigning
+it to the <code>context</code> object associated with each <code>REPLServer</code>:</p>
+<pre><code class="language-js">const repl = require('repl');
+const msg = 'message';
+
+repl.start('> ').context.m = msg;
+</code></pre>
+<p>Properties in the <code>context</code> object appear as local within the REPL:</p>
+<!-- eslint-skip -->
+<pre><code class="language-js">$ node repl_test.js
+> m
+'message'
+</code></pre>
+<p>Context properties are not read-only by default. To specify read-only globals,
+context properties must be defined using <code>Object.defineProperty()</code>:</p>
+<pre><code class="language-js">const repl = require('repl');
+const msg = 'message';
+
+const r = repl.start('> ');
+Object.defineProperty(r.context, 'm', {
+  configurable: false,
+  enumerable: true,
+  value: msg
+});
+</code></pre>
+<h4>Accessing Core Node.js Modules<span><a class="mark" href="#repl_accessing_core_node_js_modules" id="repl_accessing_core_node_js_modules">#</a></span></h4>
+<p>The default evaluator will automatically load Node.js core modules into the
+REPL environment when used. For instance, unless otherwise declared as a
+global or scoped variable, the input <code>fs</code> will be evaluated on-demand as
+<code>global.fs = require('fs')</code>.</p>
+<!-- eslint-skip -->
+<pre><code class="language-js">> fs.createReadStream('./some/file');
+</code></pre>
+<h4>Global Uncaught Exceptions<span><a class="mark" href="#repl_global_uncaught_exceptions" id="repl_global_uncaught_exceptions">#</a></span></h4>
+<p>The REPL uses the <a href="domain.html"><code>domain</code></a> module to catch all uncaught exceptions for that
+REPL session.</p>
+<p>This use of the <a href="domain.html"><code>domain</code></a> module in the REPL has these side effects:</p>
+<ul>
+<li>Uncaught exceptions do not emit the <a href="process.html#process_event_uncaughtexception"><code>'uncaughtException'</code></a> event.</li>
+<li>Trying to use <a href="process.html#process_process_setuncaughtexceptioncapturecallback_fn"><code>process.setUncaughtExceptionCaptureCallback()</code></a> throws
+an <a href="errors.html#errors_err_domain_cannot_set_uncaught_exception_capture"><code>ERR_DOMAIN_CANNOT_SET_UNCAUGHT_EXCEPTION_CAPTURE</code></a> error.</li>
+</ul>
+<h4>Assignment of the `_` (underscore) variable<span><a class="mark" href="#repl_assignment_of_the_underscore_variable" id="repl_assignment_of_the_underscore_variable">#</a></span></h4>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v9.8.0</td>
+<td><p>Added <code>_error</code> support.</p></td></tr>
+</tbody></table>
+</details>
+</div>
+<p>The default evaluator will, by default, assign the result of the most recently
+evaluated expression to the special variable <code>_</code> (underscore).
+Explicitly setting <code>_</code> to a value will disable this behavior.</p>
+<!-- eslint-skip -->
+<pre><code class="language-js">> [ 'a', 'b', 'c' ]
+[ 'a', 'b', 'c' ]
+> _.length
+3
+> _ += 1
+Expression assignment to _ now disabled.
+4
+> 1 + 1
+2
+> _
+4
+</code></pre>
+<p>Similarly, <code>_error</code> will refer to the last seen error, if there was any.
+Explicitly setting <code>_error</code> to a value will disable this behavior.</p>
+<!-- eslint-skip -->
+<pre><code class="language-js">> throw new Error('foo');
+Error: foo
+> _error.message
+'foo'
+</code></pre>
+<h4>`await` keyword<span><a class="mark" href="#repl_await_keyword" id="repl_await_keyword">#</a></span></h4>
+<p>With the <a href="cli.html#cli_experimental_repl_await"><code>--experimental-repl-await</code></a> command line option specified,
+experimental support for the <code>await</code> keyword is enabled.</p>
+<!-- eslint-skip -->
+<pre><code class="language-js">> await Promise.resolve(123)
+123
+> await Promise.reject(new Error('REPL await'))
+Error: REPL await
+    at repl:1:45
+> const timeout = util.promisify(setTimeout);
+undefined
+> const old = Date.now(); await timeout(1000); console.log(Date.now() - old);
+1002
+undefined
+</code></pre>
+<h3>Custom Evaluation Functions<span><a class="mark" href="#repl_custom_evaluation_functions" id="repl_custom_evaluation_functions">#</a></span></h3>
+<p>When a new <a href="#repl_class_replserver"><code>repl.REPLServer</code></a> is created, a custom evaluation function may be
+provided. This can be used, for instance, to implement fully customized REPL
+applications.</p>
+<p>The following illustrates a hypothetical example of a REPL that performs
+translation of text from one language to another:</p>
+<pre><code class="language-js">const repl = require('repl');
+const { Translator } = require('translator');
+
+const myTranslator = new Translator('en', 'fr');
+
+function myEval(cmd, context, filename, callback) {
+  callback(null, myTranslator.translate(cmd));
+}
+
+repl.start({ prompt: '> ', eval: myEval });
+</code></pre>
+<h4>Recoverable Errors<span><a class="mark" href="#repl_recoverable_errors" id="repl_recoverable_errors">#</a></span></h4>
+<p>As a user is typing input into the REPL prompt, pressing the <code>&#x3C;enter></code> key will
+send the current line of input to the <code>eval</code> function. In order to support
+multi-line input, the eval function can return an instance of <code>repl.Recoverable</code>
+to the provided callback function:</p>
+<pre><code class="language-js">function myEval(cmd, context, filename, callback) {
+  let result;
+  try {
+    result = vm.runInThisContext(cmd);
+  } catch (e) {
+    if (isRecoverableError(e)) {
+      return callback(new repl.Recoverable(e));
+    }
+  }
+  callback(null, result);
+}
+
+function isRecoverableError(error) {
+  if (error.name === 'SyntaxError') {
+    return /^(Unexpected end of input|Unexpected token)/.test(error.message);
+  }
+  return false;
+}
+</code></pre>
+<h3>Customizing REPL Output<span><a class="mark" href="#repl_customizing_repl_output" id="repl_customizing_repl_output">#</a></span></h3>
+<p>By default, <a href="#repl_class_replserver"><code>repl.REPLServer</code></a> instances format output using the
+<a href="util.html#util_util_inspect_object_options"><code>util.inspect()</code></a> method before writing the output to the provided <code>Writable</code>
+stream (<code>process.stdout</code> by default). The <code>useColors</code> boolean option can be
+specified at construction to instruct the default writer to use ANSI style
+codes to colorize the output from the <code>util.inspect()</code> method.</p>
+<p>It is possible to fully customize the output of a <a href="#repl_class_replserver"><code>repl.REPLServer</code></a> instance
+by passing a new function in using the <code>writer</code> option on construction. The
+following example, for instance, simply converts any input text to upper case:</p>
+<pre><code class="language-js">const repl = require('repl');
+
+const r = repl.start({ prompt: '> ', eval: myEval, writer: myWriter });
+
+function myEval(cmd, context, filename, callback) {
+  callback(null, cmd);
+}
+
+function myWriter(output) {
+  return output.toUpperCase();
+}
+</code></pre>
+<h2>Class: REPLServer<span><a class="mark" href="#repl_class_replserver" id="repl_class_replserver">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v0.1.91</span>
+</div>
+<p>The <code>repl.REPLServer</code> class inherits from the <a href="readline.html#readline_class_interface"><code>readline.Interface</code></a> class.
+Instances of <code>repl.REPLServer</code> are created using the <code>repl.start()</code> method and
+<em>should not</em> be created directly using the JavaScript <code>new</code> keyword.</p>
+<h3>Event: 'exit'<span><a class="mark" href="#repl_event_exit" id="repl_event_exit">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.7.7</span>
+</div>
+<p>The <code>'exit'</code> event is emitted when the REPL is exited either by receiving the
+<code>.exit</code> command as input, the user pressing <code>&#x3C;ctrl>-C</code> twice to signal <code>SIGINT</code>,
+or by pressing <code>&#x3C;ctrl>-D</code> to signal <code>'end'</code> on the input stream. The listener
+callback is invoked without any arguments.</p>
+<pre><code class="language-js">replServer.on('exit', () => {
+  console.log('Received "exit" event from repl!');
+  process.exit();
+});
+</code></pre>
+<h3>Event: 'reset'<span><a class="mark" href="#repl_event_reset" id="repl_event_reset">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.11.0</span>
+</div>
+<p>The <code>'reset'</code> event is emitted when the REPL's context is reset. This occurs
+whenever the <code>.clear</code> command is received as input <em>unless</em> the REPL is using
+the default evaluator and the <code>repl.REPLServer</code> instance was created with the
+<code>useGlobal</code> option set to <code>true</code>. The listener callback will be called with a
+reference to the <code>context</code> object as the only argument.</p>
+<p>This can be used primarily to re-initialize REPL context to some pre-defined
+state:</p>
+<pre><code class="language-js">const repl = require('repl');
+
+function initializeContext(context) {
+  context.m = 'test';
+}
+
+const r = repl.start({ prompt: '> ' });
+initializeContext(r.context);
+
+r.on('reset', initializeContext);
+</code></pre>
+<p>When this code is executed, the global <code>'m'</code> variable can be modified but then
+reset to its initial value using the <code>.clear</code> command:</p>
+<!-- eslint-skip -->
+<pre><code class="language-js">$ ./node example.js
+> m
+'test'
+> m = 1
+1
+> m
+1
+> .clear
+Clearing context...
+> m
+'test'
+>
+</code></pre>
+<h3>replServer.defineCommand(keyword, cmd)<span><a class="mark" href="#repl_replserver_definecommand_keyword_cmd" id="repl_replserver_definecommand_keyword_cmd">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.3.0</span>
+</div>
+<ul>
+<li><code>keyword</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> The command keyword (<em>without</em> a leading <code>.</code> character).</li>
+<li><code>cmd</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> The function to invoke when the command is processed.</li>
+</ul>
+<p>The <code>replServer.defineCommand()</code> method is used to add new <code>.</code>-prefixed commands
+to the REPL instance. Such commands are invoked by typing a <code>.</code> followed by the
+<code>keyword</code>. The <code>cmd</code> is either a <code>Function</code> or an <code>Object</code> with the following
+properties:</p>
+<ul>
+<li><code>help</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> Help text to be displayed when <code>.help</code> is entered (Optional).</li>
+<li><code>action</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> The function to execute, optionally accepting a single
+string argument.</li>
+</ul>
+<p>The following example shows two new commands added to the REPL instance:</p>
+<pre><code class="language-js">const repl = require('repl');
+
+const replServer = repl.start({ prompt: '> ' });
+replServer.defineCommand('sayhello', {
+  help: 'Say hello',
+  action(name) {
+    this.clearBufferedCommand();
+    console.log(`Hello, ${name}!`);
+    this.displayPrompt();
+  }
+});
+replServer.defineCommand('saybye', function saybye() {
+  console.log('Goodbye!');
+  this.close();
+});
+</code></pre>
+<p>The new commands can then be used from within the REPL instance:</p>
+<pre><code class="language-txt">> .sayhello Node.js User
+Hello, Node.js User!
+> .saybye
+Goodbye!
+</code></pre>
+<h3>replServer.displayPrompt([preserveCursor])<span><a class="mark" href="#repl_replserver_displayprompt_preservecursor" id="repl_replserver_displayprompt_preservecursor">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.91</span>
+</div>
+<ul>
+<li><code>preserveCursor</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+</ul>
+<p>The <code>replServer.displayPrompt()</code> method readies the REPL instance for input
+from the user, printing the configured <code>prompt</code> to a new line in the <code>output</code>
+and resuming the <code>input</code> to accept new input.</p>
+<p>When multi-line input is being entered, an ellipsis is printed rather than the
+'prompt'.</p>
+<p>When <code>preserveCursor</code> is <code>true</code>, the cursor placement will not be reset to <code>0</code>.</p>
+<p>The <code>replServer.displayPrompt</code> method is primarily intended to be called from
+within the action function for commands registered using the
+<code>replServer.defineCommand()</code> method.</p>
+<h3>replServer.clearBufferedCommand()<span><a class="mark" href="#repl_replserver_clearbufferedcommand" id="repl_replserver_clearbufferedcommand">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v9.0.0</span>
+</div>
+<p>The <code>replServer.clearBufferedCommand()</code> method clears any command that has been
+buffered but not yet executed. This method is primarily intended to be
+called from within the action function for commands registered using the
+<code>replServer.defineCommand()</code> method.</p>
+<h3>replServer.parseREPLKeyword(keyword[, rest])<span><a class="mark" href="#repl_replserver_parsereplkeyword_keyword_rest" id="repl_replserver_parsereplkeyword_keyword_rest">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.8.9</span><span>Deprecated since: v9.0.0</span>
+</div>
+<ul>
+<li><code>keyword</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> the potential keyword to parse and execute</li>
+<li><code>rest</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a> any parameters to the keyword command</li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+</ul>
+<p></p><div class="api_stability api_stability_0"><a href="documentation.html#documentation_stability_index">Stability: 0</a> - Deprecated.</div><p></p>
+<p>An internal method used to parse and execute <code>REPLServer</code> keywords.
+Returns <code>true</code> if <code>keyword</code> is a valid keyword, otherwise <code>false</code>.</p>
+<h2>repl.start([options])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/repl.js#L756">[src]</a><span><a class="mark" href="#repl_repl_start_options" id="repl_repl_start_options">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v10.0.0</td>
+<td><p>The <code>REPL_MAGIC_MODE</code> <code>replMode</code> was removed.</p></td></tr>
+<tr><td>v5.8.0</td>
+<td><p>The <code>options</code> parameter is optional now.</p></td></tr>
+<tr><td>v0.1.91</td>
+<td><p><span>Added in: v0.1.91</span></p></td></tr>
+</tbody></table>
+</details>
+</div>
+<ul>
+<li>
+<p><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></p>
+<ul>
+<li><code>prompt</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> The input prompt to display. <strong>Default:</strong> <code>'> '</code>
+(with a trailing space).</li>
+<li><code>input</code> <a href="stream.html#stream_class_stream_readable" class="type">&#x3C;stream.Readable></a> The <code>Readable</code> stream from which REPL input will
+be read. <strong>Default:</strong> <code>process.stdin</code>.</li>
+<li><code>output</code> <a href="stream.html#stream_class_stream_writable" class="type">&#x3C;stream.Writable></a> The <code>Writable</code> stream to which REPL output will
+be written. <strong>Default:</strong> <code>process.stdout</code>.</li>
+<li><code>terminal</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> If <code>true</code>, specifies that the <code>output</code> should be
+treated as a TTY terminal, and have ANSI/VT100 escape codes written to it.
+<strong>Default:</strong> checking the value of the <code>isTTY</code> property on the <code>output</code>
+stream upon instantiation.</li>
+<li><code>eval</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> The function to be used when evaluating each given line
+of input. <strong>Default:</strong> an async wrapper for the JavaScript <code>eval()</code>
+function. An <code>eval</code> function can error with <code>repl.Recoverable</code> to indicate
+the input was incomplete and prompt for additional lines.</li>
+<li><code>useColors</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> If <code>true</code>, specifies that the default <code>writer</code>
+function should include ANSI color styling to REPL output. If a custom
+<code>writer</code> function is provided then this has no effect. <strong>Default:</strong> the
+REPL instances <code>terminal</code> value.</li>
+<li><code>useGlobal</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> If <code>true</code>, specifies that the default evaluation
+function will use the JavaScript <code>global</code> as the context as opposed to
+creating a new separate context for the REPL instance. The node CLI REPL
+sets this value to <code>true</code>. <strong>Default:</strong> <code>false</code>.</li>
+<li><code>ignoreUndefined</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> If <code>true</code>, specifies that the default writer
+will not output the return value of a command if it evaluates to
+<code>undefined</code>. <strong>Default:</strong> <code>false</code>.</li>
+<li><code>writer</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> The function to invoke to format the output of each
+ command before writing to <code>output</code>. <strong>Default:</strong> <a href="util.html#util_util_inspect_object_options"><code>util.inspect()</code></a>.</li>
+<li><code>completer</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> An optional function used for custom Tab auto
+ completion. See <a href="readline.html#readline_use_of_the_completer_function"><code>readline.InterfaceCompleter</code></a> for an example.</li>
+<li>
+<p><code>replMode</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Symbol_type" class="type">&#x3C;symbol></a> A flag that specifies whether the default evaluator
+executes all JavaScript commands in strict mode or default (sloppy) mode.
+Acceptable values are:</p>
+<ul>
+<li><code>repl.REPL_MODE_SLOPPY</code> - evaluates expressions in sloppy mode.</li>
+<li><code>repl.REPL_MODE_STRICT</code> - evaluates expressions in strict mode. This is
+equivalent to prefacing every repl statement with <code>'use strict'</code>.</li>
+</ul>
+</li>
+<li><code>breakEvalOnSigint</code> - Stop evaluating the current piece of code when
+<code>SIGINT</code> is received, i.e. <code>Ctrl+C</code> is pressed. This cannot be used together
+with a custom <code>eval</code> function. <strong>Default:</strong> <code>false</code>.</li>
+</ul>
+</li>
+<li>Returns: <a href="repl.html#repl_class_replserver" class="type">&#x3C;repl.REPLServer></a></li>
+</ul>
+<p>The <code>repl.start()</code> method creates and starts a <a href="#repl_class_replserver"><code>repl.REPLServer</code></a> instance.</p>
+<p>If <code>options</code> is a string, then it specifies the input prompt:</p>
+<pre><code class="language-js">const repl = require('repl');
+
+// a Unix style prompt
+repl.start('$ ');
+</code></pre>
+<h2>The Node.js REPL<span><a class="mark" href="#repl_the_node_js_repl" id="repl_the_node_js_repl">#</a></span></h2>
+<p>Node.js itself uses the <code>repl</code> module to provide its own interactive interface
+for executing JavaScript. This can be used by executing the Node.js binary
+without passing any arguments (or by passing the <code>-i</code> argument):</p>
+<!-- eslint-skip -->
+<pre><code class="language-js">$ node
+> const a = [1, 2, 3];
+undefined
+> a
+[ 1, 2, 3 ]
+> a.forEach((v) => {
+...   console.log(v);
+...   });
+1
+2
+3
+</code></pre>
+<h3>Environment Variable Options<span><a class="mark" href="#repl_environment_variable_options" id="repl_environment_variable_options">#</a></span></h3>
+<p>Various behaviors of the Node.js REPL can be customized using the following
+environment variables:</p>
+<ul>
+<li><code>NODE_REPL_HISTORY</code> - When a valid path is given, persistent REPL history
+will be saved to the specified file rather than <code>.node_repl_history</code> in the
+user's home directory. Setting this value to <code>''</code> will disable persistent
+REPL history. Whitespace will be trimmed from the value.</li>
+<li><code>NODE_REPL_HISTORY_SIZE</code> - Controls how many lines of history will be
+persisted if history is available. Must be a positive number.
+<strong>Default:</strong> <code>1000</code>.</li>
+<li><code>NODE_REPL_MODE</code> - May be either <code>'sloppy'</code> or <code>'strict'</code>. <strong>Default:</strong>
+<code>'sloppy'</code>, which will allow non-strict mode code to be run.</li>
+</ul>
+<h3>Persistent History<span><a class="mark" href="#repl_persistent_history" id="repl_persistent_history">#</a></span></h3>
+<p>By default, the Node.js REPL will persist history between <code>node</code> REPL sessions
+by saving inputs to a <code>.node_repl_history</code> file located in the user's home
+directory. This can be disabled by setting the environment variable
+<code>NODE_REPL_HISTORY=''</code>.</p>
+<h3>Using the Node.js REPL with advanced line-editors<span><a class="mark" href="#repl_using_the_node_js_repl_with_advanced_line_editors" id="repl_using_the_node_js_repl_with_advanced_line_editors">#</a></span></h3>
+<p>For advanced line-editors, start Node.js with the environment variable
+<code>NODE_NO_READLINE=1</code>. This will start the main and debugger REPL in canonical
+terminal settings, which will allow use with <code>rlwrap</code>.</p>
+<p>For example, the following can be added to a <code>.bashrc</code> file:</p>
+<pre><code class="language-text">alias node="env NODE_NO_READLINE=1 rlwrap node"
+</code></pre>
+<h3>Starting multiple REPL instances against a single running instance<span><a class="mark" href="#repl_starting_multiple_repl_instances_against_a_single_running_instance" id="repl_starting_multiple_repl_instances_against_a_single_running_instance">#</a></span></h3>
+<p>It is possible to create and run multiple REPL instances against a single
+running instance of Node.js that share a single <code>global</code> object but have
+separate I/O interfaces.</p>
+<p>The following example, for instance, provides separate REPLs on <code>stdin</code>, a Unix
+socket, and a TCP socket:</p>
+<pre><code class="language-js">const net = require('net');
+const repl = require('repl');
+let connections = 0;
+
+repl.start({
+  prompt: 'Node.js via stdin> ',
+  input: process.stdin,
+  output: process.stdout
+});
+
+net.createServer((socket) => {
+  connections += 1;
+  repl.start({
+    prompt: 'Node.js via Unix socket> ',
+    input: socket,
+    output: socket
+  }).on('exit', () => {
+    socket.end();
+  });
+}).listen('/tmp/node-repl-sock');
+
+net.createServer((socket) => {
+  connections += 1;
+  repl.start({
+    prompt: 'Node.js via TCP socket> ',
+    input: socket,
+    output: socket
+  }).on('exit', () => {
+    socket.end();
+  });
+}).listen(5001);
+</code></pre>
+<p>Running this application from the command line will start a REPL on stdin.
+Other REPL clients may connect through the Unix socket or TCP socket. <code>telnet</code>,
+for instance, is useful for connecting to TCP sockets, while <code>socat</code> can be used
+to connect to both Unix and TCP sockets.</p>
+<p>By starting a REPL from a Unix socket-based server instead of stdin, it is
+possible to connect to a long-running Node.js process without restarting it.</p>
+<p>For an example of running a "full-featured" (<code>terminal</code>) REPL over
+a <code>net.Server</code> and <code>net.Socket</code> instance, see:
+<a href="https://gist.github.com/TooTallNate/2209310">https://gist.github.com/TooTallNate/2209310</a>.</p>
+<p>For an example of running a REPL instance over <a href="https://curl.haxx.se/docs/manpage.html"></a><a href="http://man7.org/linux/man-pages/man1/curl.1.html"><code>curl(1)</code></a>, see:
+<a href="https://gist.github.com/TooTallNate/2053342">https://gist.github.com/TooTallNate/2053342</a>.</p>
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

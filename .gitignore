@@ -28,7 +28,6 @@ description.json
 
 *swp
 \.mchg\.mchg
-.ycm_extra_conf*
 
 ############# python stuff ################
 *.py[cod]
@@ -37,7 +36,6 @@ description.json
 # Packages
 *.egg
 *.egg-info
-dist
 /build
 eggs
 parts
@@ -85,7 +83,6 @@ xcuserdata/
 deps/env
 deps/local
 deps/build
-node_modules/
 
 /dummy.cpp
 

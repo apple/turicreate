@@ -1,0 +1,2107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>HTTP | Node.js v10.15.3 Documentation</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/http.html">
+</head>
+<body class="alt apidoc" id="api-section-http">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="Go back to the home page">
+          Node.js
+        </a>
+      </div>
+      <ul>
+<li><a href="documentation.html" class="nav-documentation">About these Docs</a></li>
+<li><a href="synopsis.html" class="nav-synopsis">Usage &#x26; Example</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="assert.html" class="nav-assert">Assertion Testing</a></li>
+<li><a href="async_hooks.html" class="nav-async_hooks">Async Hooks</a></li>
+<li><a href="buffer.html" class="nav-buffer">Buffer</a></li>
+<li><a href="addons.html" class="nav-addons">C++ Addons</a></li>
+<li><a href="n-api.html" class="nav-n-api">C/C++ Addons - N-API</a></li>
+<li><a href="child_process.html" class="nav-child_process">Child Processes</a></li>
+<li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
+<li><a href="cli.html" class="nav-cli">Command Line Options</a></li>
+<li><a href="console.html" class="nav-console">Console</a></li>
+<li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
+<li><a href="debugger.html" class="nav-debugger">Debugger</a></li>
+<li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
+<li><a href="dns.html" class="nav-dns">DNS</a></li>
+<li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="esm.html" class="nav-esm">ECMAScript Modules</a></li>
+<li><a href="errors.html" class="nav-errors">Errors</a></li>
+<li><a href="events.html" class="nav-events">Events</a></li>
+<li><a href="fs.html" class="nav-fs">File System</a></li>
+<li><a href="globals.html" class="nav-globals">Globals</a></li>
+<li><a href="http.html" class="nav-http active">HTTP</a></li>
+<li><a href="http2.html" class="nav-http2">HTTP/2</a></li>
+<li><a href="https.html" class="nav-https">HTTPS</a></li>
+<li><a href="inspector.html" class="nav-inspector">Inspector</a></li>
+<li><a href="intl.html" class="nav-intl">Internationalization</a></li>
+<li><a href="modules.html" class="nav-modules">Modules</a></li>
+<li><a href="net.html" class="nav-net">Net</a></li>
+<li><a href="os.html" class="nav-os">OS</a></li>
+<li><a href="path.html" class="nav-path">Path</a></li>
+<li><a href="perf_hooks.html" class="nav-perf_hooks">Performance Hooks</a></li>
+<li><a href="process.html" class="nav-process">Process</a></li>
+<li><a href="punycode.html" class="nav-punycode">Punycode</a></li>
+<li><a href="querystring.html" class="nav-querystring">Query Strings</a></li>
+<li><a href="readline.html" class="nav-readline">Readline</a></li>
+<li><a href="repl.html" class="nav-repl">REPL</a></li>
+<li><a href="stream.html" class="nav-stream">Stream</a></li>
+<li><a href="string_decoder.html" class="nav-string_decoder">String Decoder</a></li>
+<li><a href="timers.html" class="nav-timers">Timers</a></li>
+<li><a href="tls.html" class="nav-tls">TLS/SSL</a></li>
+<li><a href="tracing.html" class="nav-tracing">Trace Events</a></li>
+<li><a href="tty.html" class="nav-tty">TTY</a></li>
+<li><a href="dgram.html" class="nav-dgram">UDP/Datagram</a></li>
+<li><a href="url.html" class="nav-url">URL</a></li>
+<li><a href="util.html" class="nav-util">Utilities</a></li>
+<li><a href="v8.html" class="nav-v8">V8</a></li>
+<li><a href="vm.html" class="nav-vm">VM</a></li>
+<li><a href="worker_threads.html" class="nav-worker_threads">Worker Threads</a></li>
+<li><a href="zlib.html" class="nav-zlib">ZLIB</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="https://github.com/nodejs/node" class="nav-https-github-com-nodejs-node">GitHub Repo &#x26; Issue Tracker</a></li>
+</ul>
+    </div>
+
+    <div id="column1" data-id="http" class="interior">
+      <header>
+        <h1>Node.js v10.15.3 Documentation</h1>
+        <div id="gtoc">
+          <ul>
+            <li>
+              <a href="index.html" name="toc">Index</a>
+            </li>
+            <li>
+              <a href="all.html">View on single page</a>
+            </li>
+            <li>
+              <a href="http.json">View as JSON</a>
+            </li>
+            
+    <li class="version-picker">
+      <a href="#">View another version <span>&#x25bc;</span></a>
+      <ol class="version-picker"><li><a href="https://nodejs.org/docs/latest-v11.x/api/http.html">11.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v10.x/api/http.html">10.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v9.x/api/http.html">9.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v8.x/api/http.html">8.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v7.x/api/http.html">7.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v6.x/api/http.html">6.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v5.x/api/http.html">5.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v4.x/api/http.html">4.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v0.12.x/api/http.html">0.12.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v0.10.x/api/http.html">0.10.x</a></li></ol>
+    </li>
+  
+            <li class="edit_on_github"><a href="https://github.com/nodejs/node/edit/master/doc/api/http.md"><span class="github_icon"><svg height="16" width="16" viewBox="0 0 16.1 16.1" fill="currentColor"><path d="M8 0a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2 .4-2.5-.5-2.7-1 0-.1-.5-.9-.8-1-.3-.2-.7-.6 0-.6.6 0 1 .6 1.2.8.7 1.2 1.9 1 2.4.7 0-.5.2-.9.5-1-1.8-.3-3.7-1-3.7-4 0-.9.3-1.6.8-2.2 0-.2-.3-1 .1-2 0 0 .7-.3 2.2.7a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.5 1.1.2 2 .1 2.1.5.6.8 1.3.8 2.2 0 3-1.9 3.7-3.6 4 .3.2.5.7.5 1.4v2.2c0 .2.1.5.5.4A8 8 0 0 0 16 8a8 8 0 0 0-8-8z"/></svg></span>Edit on GitHub</a></li>
+          </ul>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>Table of Contents</h2>
+        <ul>
+<li>
+<p><span class="stability_2"><a href="#http_http">HTTP</a></span></p>
+<ul>
+<li>
+<p><a href="#http_class_http_agent">Class: http.Agent</a></p>
+<ul>
+<li><a href="#http_new_agent_options">new Agent([options])</a></li>
+<li><a href="#http_agent_createconnection_options_callback">agent.createConnection(options[, callback])</a></li>
+<li><a href="#http_agent_keepsocketalive_socket">agent.keepSocketAlive(socket)</a></li>
+<li><a href="#http_agent_reusesocket_socket_request">agent.reuseSocket(socket, request)</a></li>
+<li><a href="#http_agent_destroy">agent.destroy()</a></li>
+<li><a href="#http_agent_freesockets">agent.freeSockets</a></li>
+<li><a href="#http_agent_getname_options">agent.getName(options)</a></li>
+<li><a href="#http_agent_maxfreesockets">agent.maxFreeSockets</a></li>
+<li><a href="#http_agent_maxsockets">agent.maxSockets</a></li>
+<li><a href="#http_agent_requests">agent.requests</a></li>
+<li><a href="#http_agent_sockets">agent.sockets</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#http_class_http_clientrequest">Class: http.ClientRequest</a></p>
+<ul>
+<li><a href="#http_event_abort">Event: 'abort'</a></li>
+<li><a href="#http_event_connect">Event: 'connect'</a></li>
+<li><a href="#http_event_continue">Event: 'continue'</a></li>
+<li><a href="#http_event_information">Event: 'information'</a></li>
+<li><a href="#http_event_response">Event: 'response'</a></li>
+<li><a href="#http_event_socket">Event: 'socket'</a></li>
+<li><a href="#http_event_timeout">Event: 'timeout'</a></li>
+<li><a href="#http_event_upgrade">Event: 'upgrade'</a></li>
+<li><a href="#http_request_abort">request.abort()</a></li>
+<li><a href="#http_request_aborted">request.aborted</a></li>
+<li><a href="#http_request_connection">request.connection</a></li>
+<li><a href="#http_request_end_data_encoding_callback">request.end([data[, encoding]][, callback])</a></li>
+<li><a href="#http_request_finished">request.finished</a></li>
+<li><a href="#http_request_flushheaders">request.flushHeaders()</a></li>
+<li><a href="#http_request_getheader_name">request.getHeader(name)</a></li>
+<li><a href="#http_request_maxheaderscount">request.maxHeadersCount</a></li>
+<li><a href="#http_request_removeheader_name">request.removeHeader(name)</a></li>
+<li><a href="#http_request_setheader_name_value">request.setHeader(name, value)</a></li>
+<li><a href="#http_request_setnodelay_nodelay">request.setNoDelay([noDelay])</a></li>
+<li><a href="#http_request_setsocketkeepalive_enable_initialdelay">request.setSocketKeepAlive([enable][, initialDelay])</a></li>
+<li><a href="#http_request_settimeout_timeout_callback">request.setTimeout(timeout[, callback])</a></li>
+<li><a href="#http_request_socket">request.socket</a></li>
+<li><a href="#http_request_write_chunk_encoding_callback">request.write(chunk[, encoding][, callback])</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#http_class_http_server">Class: http.Server</a></p>
+<ul>
+<li><a href="#http_event_checkcontinue">Event: 'checkContinue'</a></li>
+<li><a href="#http_event_checkexpectation">Event: 'checkExpectation'</a></li>
+<li><a href="#http_event_clienterror">Event: 'clientError'</a></li>
+<li><a href="#http_event_close">Event: 'close'</a></li>
+<li><a href="#http_event_connect_1">Event: 'connect'</a></li>
+<li><a href="#http_event_connection">Event: 'connection'</a></li>
+<li><a href="#http_event_request">Event: 'request'</a></li>
+<li><a href="#http_event_upgrade_1">Event: 'upgrade'</a></li>
+<li><a href="#http_server_close_callback">server.close([callback])</a></li>
+<li><a href="#http_server_listen">server.listen()</a></li>
+<li><a href="#http_server_listening">server.listening</a></li>
+<li><a href="#http_server_maxheaderscount">server.maxHeadersCount</a></li>
+<li><a href="#http_server_headerstimeout">server.headersTimeout</a></li>
+<li><a href="#http_server_settimeout_msecs_callback">server.setTimeout([msecs][, callback])</a></li>
+<li><a href="#http_server_timeout">server.timeout</a></li>
+<li><a href="#http_server_keepalivetimeout">server.keepAliveTimeout</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#http_class_http_serverresponse">Class: http.ServerResponse</a></p>
+<ul>
+<li><a href="#http_event_close_1">Event: 'close'</a></li>
+<li><a href="#http_event_finish">Event: 'finish'</a></li>
+<li><a href="#http_response_addtrailers_headers">response.addTrailers(headers)</a></li>
+<li><a href="#http_response_connection">response.connection</a></li>
+<li><a href="#http_response_end_data_encoding_callback">response.end([data][, encoding][, callback])</a></li>
+<li><a href="#http_response_finished">response.finished</a></li>
+<li><a href="#http_response_getheader_name">response.getHeader(name)</a></li>
+<li><a href="#http_response_getheadernames">response.getHeaderNames()</a></li>
+<li><a href="#http_response_getheaders">response.getHeaders()</a></li>
+<li><a href="#http_response_hasheader_name">response.hasHeader(name)</a></li>
+<li><a href="#http_response_headerssent">response.headersSent</a></li>
+<li><a href="#http_response_removeheader_name">response.removeHeader(name)</a></li>
+<li><a href="#http_response_senddate">response.sendDate</a></li>
+<li><a href="#http_response_setheader_name_value">response.setHeader(name, value)</a></li>
+<li><a href="#http_response_settimeout_msecs_callback">response.setTimeout(msecs[, callback])</a></li>
+<li><a href="#http_response_socket">response.socket</a></li>
+<li><a href="#http_response_statuscode">response.statusCode</a></li>
+<li><a href="#http_response_statusmessage">response.statusMessage</a></li>
+<li><a href="#http_response_write_chunk_encoding_callback">response.write(chunk[, encoding][, callback])</a></li>
+<li><a href="#http_response_writecontinue">response.writeContinue()</a></li>
+<li><a href="#http_response_writehead_statuscode_statusmessage_headers">response.writeHead(statusCode[, statusMessage][, headers])</a></li>
+<li><a href="#http_response_writeprocessing">response.writeProcessing()</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#http_class_http_incomingmessage">Class: http.IncomingMessage</a></p>
+<ul>
+<li><a href="#http_event_aborted">Event: 'aborted'</a></li>
+<li><a href="#http_event_close_2">Event: 'close'</a></li>
+<li><a href="#http_message_aborted">message.aborted</a></li>
+<li><a href="#http_message_complete">message.complete</a></li>
+<li><a href="#http_message_destroy_error">message.destroy([error])</a></li>
+<li><a href="#http_message_headers">message.headers</a></li>
+<li><a href="#http_message_httpversion">message.httpVersion</a></li>
+<li><a href="#http_message_method">message.method</a></li>
+<li><a href="#http_message_rawheaders">message.rawHeaders</a></li>
+<li><a href="#http_message_rawtrailers">message.rawTrailers</a></li>
+<li><a href="#http_message_settimeout_msecs_callback">message.setTimeout(msecs, callback)</a></li>
+<li><a href="#http_message_socket">message.socket</a></li>
+<li><a href="#http_message_statuscode">message.statusCode</a></li>
+<li><a href="#http_message_statusmessage">message.statusMessage</a></li>
+<li><a href="#http_message_trailers">message.trailers</a></li>
+<li><a href="#http_message_url">message.url</a></li>
+</ul>
+</li>
+<li><a href="#http_http_methods">http.METHODS</a></li>
+<li><a href="#http_http_status_codes">http.STATUS_CODES</a></li>
+<li><a href="#http_http_createserver_options_requestlistener">http.createServer([options][, requestListener])</a></li>
+<li><a href="#http_http_get_options_callback">http.get(options[, callback])</a></li>
+<li><a href="#http_http_get_url_options_callback">http.get(url[, options][, callback])</a></li>
+<li><a href="#http_http_globalagent">http.globalAgent</a></li>
+<li><a href="#http_http_maxheadersize">http.maxHeaderSize</a></li>
+<li><a href="#http_http_request_options_callback">http.request(options[, callback])</a></li>
+<li><a href="#http_http_request_url_options_callback">http.request(url[, options][, callback])</a></li>
+</ul>
+</li>
+</ul>
+      </div>
+
+      <div id="apicontent">
+        <h1>HTTP<span><a class="mark" href="#http_http" id="http_http">#</a></span></h1>
+
+<p></p><div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p></p>
+<p>To use the HTTP server and client one must <code>require('http')</code>.</p>
+<p>The HTTP interfaces in Node.js are designed to support many features
+of the protocol which have been traditionally difficult to use.
+In particular, large, possibly chunk-encoded, messages. The interface is
+careful to never buffer entire requests or responses — the
+user is able to stream data.</p>
+<p>HTTP message headers are represented by an object like this:</p>
+<!-- eslint-skip -->
+<pre><code class="language-js">{ 'content-length': '123',
+  'content-type': 'text/plain',
+  'connection': 'keep-alive',
+  'host': 'mysite.com',
+  'accept': '*/*' }
+</code></pre>
+<p>Keys are lowercased. Values are not modified.</p>
+<p>In order to support the full spectrum of possible HTTP applications, Node.js's
+HTTP API is very low-level. It deals with stream handling and message
+parsing only. It parses a message into headers and body but it does not
+parse the actual headers or the body.</p>
+<p>See <a href="#http_message_headers"><code>message.headers</code></a> for details on how duplicate headers are handled.</p>
+<p>The raw headers as they were received are retained in the <code>rawHeaders</code>
+property, which is an array of <code>[key, value, key2, value2, ...]</code>. For
+example, the previous message header object might have a <code>rawHeaders</code>
+list like the following:</p>
+<!-- eslint-disable semi -->
+<pre><code class="language-js">[ 'ConTent-Length', '123456',
+  'content-LENGTH', '123',
+  'content-type', 'text/plain',
+  'CONNECTION', 'keep-alive',
+  'Host', 'mysite.com',
+  'accepT', '*/*' ]
+</code></pre>
+<h2>Class: http.Agent<span><a class="mark" href="#http_class_http_agent" id="http_class_http_agent">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v0.3.4</span>
+</div>
+<p>An <code>Agent</code> is responsible for managing connection persistence
+and reuse for HTTP clients. It maintains a queue of pending requests
+for a given host and port, reusing a single socket connection for each
+until the queue is empty, at which time the socket is either destroyed
+or put into a pool where it is kept to be used again for requests to the
+same host and port. Whether it is destroyed or pooled depends on the
+<code>keepAlive</code> <a href="#http_new_agent_options">option</a>.</p>
+<p>Pooled connections have TCP Keep-Alive enabled for them, but servers may
+still close idle connections, in which case they will be removed from the
+pool and a new connection will be made when a new HTTP request is made for
+that host and port. Servers may also refuse to allow multiple requests
+over the same connection, in which case the connection will have to be
+remade for every request and cannot be pooled. The <code>Agent</code> will still make
+the requests to that server, but each one will occur over a new connection.</p>
+<p>When a connection is closed by the client or the server, it is removed
+from the pool. Any unused sockets in the pool will be unrefed so as not
+to keep the Node.js process running when there are no outstanding requests.
+(see <a href="net.html#net_socket_unref"><code>socket.unref()</code></a>).</p>
+<p>It is good practice, to <a href="#http_agent_destroy"><code>destroy()</code></a> an <code>Agent</code> instance when it is no
+longer in use, because unused sockets consume OS resources.</p>
+<p>Sockets are removed from an agent when the socket emits either
+a <code>'close'</code> event or an <code>'agentRemove'</code> event. When intending to keep one
+HTTP request open for a long time without keeping it in the agent, something
+like the following may be done:</p>
+<pre><code class="language-js">http.get(options, (res) => {
+  // Do stuff
+}).on('socket', (socket) => {
+  socket.emit('agentRemove');
+});
+</code></pre>
+<p>An agent may also be used for an individual request. By providing
+<code>{agent: false}</code> as an option to the <code>http.get()</code> or <code>http.request()</code>
+functions, a one-time use <code>Agent</code> with default options will be used
+for the client connection.</p>
+<p><code>agent:false</code>:</p>
+<pre><code class="language-js">http.get({
+  hostname: 'localhost',
+  port: 80,
+  path: '/',
+  agent: false  // create a new agent just for this one request
+}, (res) => {
+  // Do stuff with response
+});
+</code></pre>
+<h3>new Agent([options])<span><a class="mark" href="#http_new_agent_options" id="http_new_agent_options">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.3.4</span>
+</div>
+<ul>
+<li>
+<p><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> Set of configurable options to set on the agent.
+Can have the following fields:</p>
+<ul>
+<li><code>keepAlive</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> Keep sockets around even when there are no
+outstanding requests, so they can be used for future requests without
+having to reestablish a TCP connection. <strong>Default:</strong> <code>false</code>.</li>
+<li><code>keepAliveMsecs</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> When using the <code>keepAlive</code> option, specifies
+the <a href="net.html#net_socket_setkeepalive_enable_initialdelay">initial delay</a>
+for TCP Keep-Alive packets. Ignored when the
+<code>keepAlive</code> option is <code>false</code> or <code>undefined</code>. <strong>Default:</strong> <code>1000</code>.</li>
+<li><code>maxSockets</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> Maximum number of sockets to allow per
+host. <strong>Default:</strong> <code>Infinity</code>.</li>
+<li><code>maxFreeSockets</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> Maximum number of sockets to leave open
+in a free state. Only relevant if <code>keepAlive</code> is set to <code>true</code>.
+<strong>Default:</strong> <code>256</code>.</li>
+<li><code>timeout</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> Socket timeout in milliseconds.
+This will set the timeout after the socket is connected.</li>
+</ul>
+</li>
+</ul>
+<p><code>options</code> in <a href="net.html#net_socket_connect_options_connectlistener"><code>socket.connect()</code></a> are also supported.</p>
+<p>The default <a href="#http_http_globalagent"><code>http.globalAgent</code></a> that is used by <a href="#http_http_request_options_callback"><code>http.request()</code></a> has all
+of these values set to their respective defaults.</p>
+<p>To configure any of them, a custom <a href="#http_class_http_agent"><code>http.Agent</code></a> instance must be created.</p>
+<pre><code class="language-js">const http = require('http');
+const keepAliveAgent = new http.Agent({ keepAlive: true });
+options.agent = keepAliveAgent;
+http.request(options, onResponseCallback);
+</code></pre>
+<h3>agent.createConnection(options[, callback])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/https.js#L91">[src]</a><span><a class="mark" href="#http_agent_createconnection_options_callback" id="http_agent_createconnection_options_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.11.4</span>
+</div>
+<ul>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> Options containing connection details. Check
+<a href="net.html#net_net_createconnection_options_connectlistener"><code>net.createConnection()</code></a> for the format of the options</li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> Callback function that receives the created socket</li>
+<li>Returns: <a href="net.html#net_class_net_socket" class="type">&#x3C;net.Socket></a></li>
+</ul>
+<p>Produces a socket/stream to be used for HTTP requests.</p>
+<p>By default, this function is the same as <a href="net.html#net_net_createconnection_options_connectlistener"><code>net.createConnection()</code></a>. However,
+custom agents may override this method in case greater flexibility is desired.</p>
+<p>A socket/stream can be supplied in one of two ways: by returning the
+socket/stream from this function, or by passing the socket/stream to <code>callback</code>.</p>
+<p><code>callback</code> has a signature of <code>(err, stream)</code>.</p>
+<h3>agent.keepSocketAlive(socket)<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/_http_agent.js#L316">[src]</a><span><a class="mark" href="#http_agent_keepsocketalive_socket" id="http_agent_keepsocketalive_socket">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.1.0</span>
+</div>
+<ul>
+<li><code>socket</code> <a href="net.html#net_class_net_socket" class="type">&#x3C;net.Socket></a></li>
+</ul>
+<p>Called when <code>socket</code> is detached from a request and could be persisted by the
+<code>Agent</code>. Default behavior is to:</p>
+<pre><code class="language-js">socket.setKeepAlive(true, this.keepAliveMsecs);
+socket.unref();
+return true;
+</code></pre>
+<p>This method can be overridden by a particular <code>Agent</code> subclass. If this
+method returns a falsy value, the socket will be destroyed instead of persisting
+it for use with the next request.</p>
+<h3>agent.reuseSocket(socket, request)<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/_http_agent.js#L323">[src]</a><span><a class="mark" href="#http_agent_reusesocket_socket_request" id="http_agent_reusesocket_socket_request">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.1.0</span>
+</div>
+<ul>
+<li><code>socket</code> <a href="net.html#net_class_net_socket" class="type">&#x3C;net.Socket></a></li>
+<li><code>request</code> <a href="http.html#http_class_http_clientrequest" class="type">&#x3C;http.ClientRequest></a></li>
+</ul>
+<p>Called when <code>socket</code> is attached to <code>request</code> after being persisted because of
+the keep-alive options. Default behavior is to:</p>
+<pre><code class="language-js">socket.ref();
+</code></pre>
+<p>This method can be overridden by a particular <code>Agent</code> subclass.</p>
+<h3>agent.destroy()<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/_http_agent.js#L328">[src]</a><span><a class="mark" href="#http_agent_destroy" id="http_agent_destroy">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.11.4</span>
+</div>
+<p>Destroy any sockets that are currently in use by the agent.</p>
+<p>It is usually not necessary to do this. However, if using an
+agent with <code>keepAlive</code> enabled, then it is best to explicitly shut down
+the agent when it will no longer be used. Otherwise,
+sockets may hang open for quite a long time before the server
+terminates them.</p>
+<h3>agent.freeSockets<span><a class="mark" href="#http_agent_freesockets" id="http_agent_freesockets">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.11.4</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+</ul>
+<p>An object which contains arrays of sockets currently awaiting use by
+the agent when <code>keepAlive</code> is enabled. Do not modify.</p>
+<h3>agent.getName(options)<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/https.js#L156">[src]</a><span><a class="mark" href="#http_agent_getname_options" id="http_agent_getname_options">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.11.4</span>
+</div>
+<ul>
+<li>
+<p><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> A set of options providing information for name generation</p>
+<ul>
+<li><code>host</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> A domain name or IP address of the server to issue the
+request to</li>
+<li><code>port</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> Port of remote server</li>
+<li><code>localAddress</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> Local interface to bind for network connections
+when issuing the request</li>
+<li><code>family</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a> Must be 4 or 6 if this doesn't equal <code>undefined</code>.</li>
+</ul>
+</li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+</ul>
+<p>Get a unique name for a set of request options, to determine whether a
+connection can be reused. For an HTTP agent, this returns
+<code>host:port:localAddress</code> or <code>host:port:localAddress:family</code>. For an HTTPS agent,
+the name includes the CA, cert, ciphers, and other HTTPS/TLS-specific options
+that determine socket reusability.</p>
+<h3>agent.maxFreeSockets<span><a class="mark" href="#http_agent_maxfreesockets" id="http_agent_maxfreesockets">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.11.7</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a></li>
+</ul>
+<p>By default set to 256. For agents with <code>keepAlive</code> enabled, this
+sets the maximum number of sockets that will be left open in the free
+state.</p>
+<h3>agent.maxSockets<span><a class="mark" href="#http_agent_maxsockets" id="http_agent_maxsockets">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.3.6</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a></li>
+</ul>
+<p>By default set to <code>Infinity</code>. Determines how many concurrent sockets the agent
+can have open per origin. Origin is the returned value of <a href="#http_agent_getname_options"><code>agent.getName()</code></a>.</p>
+<h3>agent.requests<span><a class="mark" href="#http_agent_requests" id="http_agent_requests">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.5.9</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+</ul>
+<p>An object which contains queues of requests that have not yet been assigned to
+sockets. Do not modify.</p>
+<h3>agent.sockets<span><a class="mark" href="#http_agent_sockets" id="http_agent_sockets">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.3.6</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+</ul>
+<p>An object which contains arrays of sockets currently in use by the
+agent. Do not modify.</p>
+<h2>Class: http.ClientRequest<span><a class="mark" href="#http_class_http_clientrequest" id="http_class_http_clientrequest">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v0.1.17</span>
+</div>
+<p>This object is created internally and returned from <a href="#http_http_request_options_callback"><code>http.request()</code></a>. It
+represents an <em>in-progress</em> request whose header has already been queued. The
+header is still mutable using the <a href="#http_request_setheader_name_value"><code>setHeader(name, value)</code></a>,
+<a href="#http_request_getheader_name"><code>getHeader(name)</code></a>, <a href="#http_request_removeheader_name"><code>removeHeader(name)</code></a> API. The actual header will
+be sent along with the first data chunk or when calling <a href="#http_request_end_data_encoding_callback"><code>request.end()</code></a>.</p>
+<p>To get the response, add a listener for <a href="#http_event_response"><code>'response'</code></a> to the request object.
+<a href="#http_event_response"><code>'response'</code></a> will be emitted from the request object when the response
+headers have been received. The <a href="#http_event_response"><code>'response'</code></a> event is executed with one
+argument which is an instance of <a href="#http_class_http_incomingmessage"><code>http.IncomingMessage</code></a>.</p>
+<p>During the <a href="#http_event_response"><code>'response'</code></a> event, one can add listeners to the
+response object; particularly to listen for the <code>'data'</code> event.</p>
+<p>If no <a href="#http_event_response"><code>'response'</code></a> handler is added, then the response will be
+entirely discarded. However, if a <a href="#http_event_response"><code>'response'</code></a> event handler is added,
+then the data from the response object <strong>must</strong> be consumed, either by
+calling <code>response.read()</code> whenever there is a <code>'readable'</code> event, or
+by adding a <code>'data'</code> handler, or by calling the <code>.resume()</code> method.
+Until the data is consumed, the <code>'end'</code> event will not fire. Also, until
+the data is read it will consume memory that can eventually lead to a
+'process out of memory' error.</p>
+<p>Node.js does not check whether Content-Length and the length of the
+body which has been transmitted are equal or not.</p>
+<p>The request inherits from <a href="stream.html#stream_stream">Stream</a>, and additionally implements the
+following:</p>
+<h3>Event: 'abort'<span><a class="mark" href="#http_event_abort" id="http_event_abort">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v1.4.1</span>
+</div>
+<p>Emitted when the request has been aborted by the client. This event is only
+emitted on the first call to <code>abort()</code>.</p>
+<h3>Event: 'connect'<span><a class="mark" href="#http_event_connect" id="http_event_connect">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.7.0</span>
+</div>
+<ul>
+<li><code>response</code> <a href="http.html#http_class_http_incomingmessage" class="type">&#x3C;http.IncomingMessage></a></li>
+<li><code>socket</code> <a href="net.html#net_class_net_socket" class="type">&#x3C;net.Socket></a></li>
+<li><code>head</code> <a href="buffer.html#buffer_class_buffer" class="type">&#x3C;Buffer></a></li>
+</ul>
+<p>Emitted each time a server responds to a request with a <code>CONNECT</code> method. If
+this event is not being listened for, clients receiving a <code>CONNECT</code> method will
+have their connections closed.</p>
+<p>A client and server pair demonstrating how to listen for the <code>'connect'</code> event:</p>
+<pre><code class="language-js">const http = require('http');
+const net = require('net');
+const url = require('url');
+
+// Create an HTTP tunneling proxy
+const proxy = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('okay');
+});
+proxy.on('connect', (req, cltSocket, head) => {
+  // connect to an origin server
+  const srvUrl = url.parse(`http://${req.url}`);
+  const srvSocket = net.connect(srvUrl.port, srvUrl.hostname, () => {
+    cltSocket.write('HTTP/1.1 200 Connection Established\r\n' +
+                    'Proxy-agent: Node.js-Proxy\r\n' +
+                    '\r\n');
+    srvSocket.write(head);
+    srvSocket.pipe(cltSocket);
+    cltSocket.pipe(srvSocket);
+  });
+});
+
+// now that proxy is running
+proxy.listen(1337, '127.0.0.1', () => {
+
+  // make a request to a tunneling proxy
+  const options = {
+    port: 1337,
+    host: '127.0.0.1',
+    method: 'CONNECT',
+    path: 'www.google.com:80'
+  };
+
+  const req = http.request(options);
+  req.end();
+
+  req.on('connect', (res, socket, head) => {
+    console.log('got connected!');
+
+    // make a request over an HTTP tunnel
+    socket.write('GET / HTTP/1.1\r\n' +
+                 'Host: www.google.com:80\r\n' +
+                 'Connection: close\r\n' +
+                 '\r\n');
+    socket.on('data', (chunk) => {
+      console.log(chunk.toString());
+    });
+    socket.on('end', () => {
+      proxy.close();
+    });
+  });
+});
+</code></pre>
+<h3>Event: 'continue'<span><a class="mark" href="#http_event_continue" id="http_event_continue">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.3.2</span>
+</div>
+<p>Emitted when the server sends a '100 Continue' HTTP response, usually because
+the request contained 'Expect: 100-continue'. This is an instruction that
+the client should send the request body.</p>
+<h3>Event: 'information'<span><a class="mark" href="#http_event_information" id="http_event_information">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.0.0</span>
+</div>
+<p>Emitted when the server sends a 1xx response (excluding 101 Upgrade). This
+event is emitted with a callback containing an object with a status code.</p>
+<pre><code class="language-js">const http = require('http');
+
+const options = {
+  host: '127.0.0.1',
+  port: 8080,
+  path: '/length_request'
+};
+
+// Make a request
+const req = http.request(options);
+req.end();
+
+req.on('information', (res) => {
+  console.log(`Got information prior to main response: ${res.statusCode}`);
+});
+</code></pre>
+<p>101 Upgrade statuses do not fire this event due to their break from the
+traditional HTTP request/response chain, such as web sockets, in-place TLS
+upgrades, or HTTP 2.0. To be notified of 101 Upgrade notices, listen for the
+<a href="#http_event_upgrade"><code>'upgrade'</code></a> event instead.</p>
+<h3>Event: 'response'<span><a class="mark" href="#http_event_response" id="http_event_response">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.0</span>
+</div>
+<ul>
+<li><code>response</code> <a href="http.html#http_class_http_incomingmessage" class="type">&#x3C;http.IncomingMessage></a></li>
+</ul>
+<p>Emitted when a response is received to this request. This event is emitted only
+once.</p>
+<h3>Event: 'socket'<span><a class="mark" href="#http_event_socket" id="http_event_socket">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.5.3</span>
+</div>
+<ul>
+<li><code>socket</code> <a href="net.html#net_class_net_socket" class="type">&#x3C;net.Socket></a></li>
+</ul>
+<p>Emitted after a socket is assigned to this request.</p>
+<h3>Event: 'timeout'<span><a class="mark" href="#http_event_timeout" id="http_event_timeout">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.7.8</span>
+</div>
+<p>Emitted when the underlying socket times out from inactivity. This only notifies
+that the socket has been idle. The request must be aborted manually.</p>
+<p>See also: <a href="#http_request_settimeout_timeout_callback"><code>request.setTimeout()</code></a>.</p>
+<h3>Event: 'upgrade'<span><a class="mark" href="#http_event_upgrade" id="http_event_upgrade">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.94</span>
+</div>
+<ul>
+<li><code>response</code> <a href="http.html#http_class_http_incomingmessage" class="type">&#x3C;http.IncomingMessage></a></li>
+<li><code>socket</code> <a href="net.html#net_class_net_socket" class="type">&#x3C;net.Socket></a></li>
+<li><code>head</code> <a href="buffer.html#buffer_class_buffer" class="type">&#x3C;Buffer></a></li>
+</ul>
+<p>Emitted each time a server responds to a request with an upgrade. If this
+event is not being listened for and the response status code is 101 Switching
+Protocols, clients receiving an upgrade header will have their connections
+closed.</p>
+<p>A client server pair demonstrating how to listen for the <code>'upgrade'</code> event.</p>
+<pre><code class="language-js">const http = require('http');
+
+// Create an HTTP server
+const srv = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('okay');
+});
+srv.on('upgrade', (req, socket, head) => {
+  socket.write('HTTP/1.1 101 Web Socket Protocol Handshake\r\n' +
+               'Upgrade: WebSocket\r\n' +
+               'Connection: Upgrade\r\n' +
+               '\r\n');
+
+  socket.pipe(socket); // echo back
+});
+
+// now that server is running
+srv.listen(1337, '127.0.0.1', () => {
+
+  // make a request
+  const options = {
+    port: 1337,
+    host: '127.0.0.1',
+    headers: {
+      'Connection': 'Upgrade',
+      'Upgrade': 'websocket'
+    }
+  };
+
+  const req = http.request(options);
+  req.end();
+
+  req.on('upgrade', (res, socket, upgradeHead) => {
+    console.log('got upgraded!');
+    socket.end();
+    process.exit(0);
+  });
+});
+</code></pre>
+<h3>request.abort()<span><a class="mark" href="#http_request_abort" id="http_request_abort">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.3.8</span>
+</div>
+<p>Marks the request as aborting. Calling this will cause remaining data
+in the response to be dropped and the socket to be destroyed.</p>
+<h3>request.aborted<span><a class="mark" href="#http_request_aborted" id="http_request_aborted">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.11.14</span>
+</div>
+<p>If a request has been aborted, this value is the time when the request was
+aborted, in milliseconds since 1 January 1970 00:00:00 UTC.</p>
+<h3>request.connection<span><a class="mark" href="#http_request_connection" id="http_request_connection">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.3.0</span>
+</div>
+<ul>
+<li><a href="net.html#net_class_net_socket" class="type">&#x3C;net.Socket></a></li>
+</ul>
+<p>See <a href="#http_request_socket"><code>request.socket</code></a>.</p>
+<h3>request.end([data[, encoding]][, callback])<span><a class="mark" href="#http_request_end_data_encoding_callback" id="http_request_end_data_encoding_callback">#</a></span></h3>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v10.0.0</td>
+<td><p>This method now returns a reference to <code>ClientRequest</code>.</p></td></tr>
+<tr><td>v0.1.90</td>
+<td><p><span>Added in: v0.1.90</span></p></td></tr>
+</tbody></table>
+</details>
+</div>
+<ul>
+<li><code>data</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="buffer.html#buffer_class_buffer" class="type">&#x3C;Buffer></a></li>
+<li><code>encoding</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this" class="type">&#x3C;this></a></li>
+</ul>
+<p>Finishes sending the request. If any parts of the body are
+unsent, it will flush them to the stream. If the request is
+chunked, this will send the terminating <code>'0\r\n\r\n'</code>.</p>
+<p>If <code>data</code> is specified, it is equivalent to calling
+<a href="#http_request_write_chunk_encoding_callback"><code>request.write(data, encoding)</code></a> followed by <code>request.end(callback)</code>.</p>
+<p>If <code>callback</code> is specified, it will be called when the request stream
+is finished.</p>
+<h3>request.finished<span><a class="mark" href="#http_request_finished" id="http_request_finished">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.0.1</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+</ul>
+<p>The <code>request.finished</code> property will be <code>true</code> if <a href="#http_request_end_data_encoding_callback"><code>request.end()</code></a>
+has been called. <code>request.end()</code> will automatically be called if the
+request was initiated via <a href="#http_http_get_options_callback"><code>http.get()</code></a>.</p>
+<h3>request.flushHeaders()<span><a class="mark" href="#http_request_flushheaders" id="http_request_flushheaders">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v1.6.0</span>
+</div>
+<p>Flush the request headers.</p>
+<p>For efficiency reasons, Node.js normally buffers the request headers until
+<code>request.end()</code> is called or the first chunk of request data is written. It
+then tries to pack the request headers and data into a single TCP packet.</p>
+<p>That's usually desired (it saves a TCP round-trip), but not when the first
+data is not sent until possibly much later. <code>request.flushHeaders()</code> bypasses
+the optimization and kickstarts the request.</p>
+<h3>request.getHeader(name)<span><a class="mark" href="#http_request_getheader_name" id="http_request_getheader_name">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v1.6.0</span>
+</div>
+<ul>
+<li><code>name</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
+</ul>
+<p>Reads out a header on the request. Note that the name is case insensitive.
+The type of the return value depends on the arguments provided to
+<a href="#http_request_setheader_name_value"><code>request.setHeader()</code></a>.</p>
+<pre><code class="language-js">request.setHeader('content-type', 'text/html');
+request.setHeader('Content-Length', Buffer.byteLength(body));
+request.setHeader('Cookie', ['type=ninja', 'language=javascript']);
+const contentType = request.getHeader('Content-Type');
+// contentType is 'text/html'
+const contentLength = request.getHeader('Content-Length');
+// contentLength is of type number
+const cookie = request.getHeader('Cookie');
+// cookie is of type string[]
+</code></pre>
+<h3>request.maxHeadersCount<span><a class="mark" href="#http_request_maxheaderscount" id="http_request_maxheaderscount">#</a></span></h3>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> <strong>Default:</strong> <code>2000</code></li>
+</ul>
+<p>Limits maximum response headers count. If set to 0, no limit will be applied.</p>
+<h3>request.removeHeader(name)<span><a class="mark" href="#http_request_removeheader_name" id="http_request_removeheader_name">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v1.6.0</span>
+</div>
+<ul>
+<li><code>name</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+</ul>
+<p>Removes a header that's already defined into headers object.</p>
+<pre><code class="language-js">request.removeHeader('Content-Type');
+</code></pre>
+<h3>request.setHeader(name, value)<span><a class="mark" href="#http_request_setheader_name_value" id="http_request_setheader_name_value">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v1.6.0</span>
+</div>
+<ul>
+<li><code>name</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li><code>value</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
+</ul>
+<p>Sets a single header value for headers object. If this header already exists in
+the to-be-sent headers, its value will be replaced. Use an array of strings
+here to send multiple headers with the same name. Non-string values will be
+stored without modification. Therefore, <a href="#http_request_getheader_name"><code>request.getHeader()</code></a> may return
+non-string values. However, the non-string values will be converted to strings
+for network transmission.</p>
+<pre><code class="language-js">request.setHeader('Content-Type', 'application/json');
+</code></pre>
+<p>or</p>
+<pre><code class="language-js">request.setHeader('Cookie', ['type=ninja', 'language=javascript']);
+</code></pre>
+<h3>request.setNoDelay([noDelay])<span><a class="mark" href="#http_request_setnodelay_nodelay" id="http_request_setnodelay_nodelay">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.5.9</span>
+</div>
+<ul>
+<li><code>noDelay</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+</ul>
+<p>Once a socket is assigned to this request and is connected
+<a href="net.html#net_socket_setnodelay_nodelay"><code>socket.setNoDelay()</code></a> will be called.</p>
+<h3>request.setSocketKeepAlive([enable][, initialDelay])<span><a class="mark" href="#http_request_setsocketkeepalive_enable_initialdelay" id="http_request_setsocketkeepalive_enable_initialdelay">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.5.9</span>
+</div>
+<ul>
+<li><code>enable</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li><code>initialDelay</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a></li>
+</ul>
+<p>Once a socket is assigned to this request and is connected
+<a href="net.html#net_socket_setkeepalive_enable_initialdelay"><code>socket.setKeepAlive()</code></a> will be called.</p>
+<h3>request.setTimeout(timeout[, callback])<span><a class="mark" href="#http_request_settimeout_timeout_callback" id="http_request_settimeout_timeout_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.5.9</span>
+</div>
+<ul>
+<li><code>timeout</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> Milliseconds before a request times out.</li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> Optional function to be called when a timeout occurs.
+Same as binding to the <code>'timeout'</code> event.</li>
+<li>Returns: <a href="http.html#http_class_http_clientrequest" class="type">&#x3C;http.ClientRequest></a></li>
+</ul>
+<p>Once a socket is assigned to this request and is connected
+<a href="net.html#net_socket_settimeout_timeout_callback"><code>socket.setTimeout()</code></a> will be called.</p>
+<h3>request.socket<span><a class="mark" href="#http_request_socket" id="http_request_socket">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.3.0</span>
+</div>
+<ul>
+<li><a href="net.html#net_class_net_socket" class="type">&#x3C;net.Socket></a></li>
+</ul>
+<p>Reference to the underlying socket. Usually users will not want to access
+this property. In particular, the socket will not emit <code>'readable'</code> events
+because of how the protocol parser attaches to the socket. The <code>socket</code>
+may also be accessed via <code>request.connection</code>.</p>
+<pre><code class="language-js">const http = require('http');
+const options = {
+  host: 'www.google.com',
+};
+const req = http.get(options);
+req.end();
+req.once('response', (res) => {
+  const ip = req.socket.localAddress;
+  const port = req.socket.localPort;
+  console.log(`Your IP address is ${ip} and your source port is ${port}.`);
+  // consume response object
+});
+</code></pre>
+<h3>request.write(chunk[, encoding][, callback])<span><a class="mark" href="#http_request_write_chunk_encoding_callback" id="http_request_write_chunk_encoding_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.29</span>
+</div>
+<ul>
+<li><code>chunk</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="buffer.html#buffer_class_buffer" class="type">&#x3C;Buffer></a></li>
+<li><code>encoding</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+</ul>
+<p>Sends a chunk of the body. By calling this method
+many times, a request body can be sent to a
+server — in that case it is suggested to use the
+<code>['Transfer-Encoding', 'chunked']</code> header line when
+creating the request.</p>
+<p>The <code>encoding</code> argument is optional and only applies when <code>chunk</code> is a string.
+Defaults to <code>'utf8'</code>.</p>
+<p>The <code>callback</code> argument is optional and will be called when this chunk of data
+is flushed, but only if the chunk is non-empty.</p>
+<p>Returns <code>true</code> if the entire data was flushed successfully to the kernel
+buffer. Returns <code>false</code> if all or part of the data was queued in user memory.
+<code>'drain'</code> will be emitted when the buffer is free again.</p>
+<p>When <code>write</code> function is called with empty string or buffer, it does
+nothing and waits for more input.</p>
+<h2>Class: http.Server<span><a class="mark" href="#http_class_http_server" id="http_class_http_server">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v0.1.17</span>
+</div>
+<p>This class inherits from <a href="net.html#net_class_net_server"><code>net.Server</code></a> and has the following additional
+events:</p>
+<h3>Event: 'checkContinue'<span><a class="mark" href="#http_event_checkcontinue" id="http_event_checkcontinue">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.3.0</span>
+</div>
+<ul>
+<li><code>request</code> <a href="http.html#http_class_http_incomingmessage" class="type">&#x3C;http.IncomingMessage></a></li>
+<li><code>response</code> <a href="http.html#http_class_http_serverresponse" class="type">&#x3C;http.ServerResponse></a></li>
+</ul>
+<p>Emitted each time a request with an HTTP <code>Expect: 100-continue</code> is received.
+If this event is not listened for, the server will automatically respond
+with a <code>100 Continue</code> as appropriate.</p>
+<p>Handling this event involves calling <a href="#http_response_writecontinue"><code>response.writeContinue()</code></a> if the
+client should continue to send the request body, or generating an appropriate
+HTTP response (e.g. 400 Bad Request) if the client should not continue to send
+the request body.</p>
+<p>Note that when this event is emitted and handled, the <a href="#http_event_request"><code>'request'</code></a> event will
+not be emitted.</p>
+<h3>Event: 'checkExpectation'<span><a class="mark" href="#http_event_checkexpectation" id="http_event_checkexpectation">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v5.5.0</span>
+</div>
+<ul>
+<li><code>request</code> <a href="http.html#http_class_http_incomingmessage" class="type">&#x3C;http.IncomingMessage></a></li>
+<li><code>response</code> <a href="http.html#http_class_http_serverresponse" class="type">&#x3C;http.ServerResponse></a></li>
+</ul>
+<p>Emitted each time a request with an HTTP <code>Expect</code> header is received, where the
+value is not <code>100-continue</code>. If this event is not listened for, the server will
+automatically respond with a <code>417 Expectation Failed</code> as appropriate.</p>
+<p>Note that when this event is emitted and handled, the <a href="#http_event_request"><code>'request'</code></a> event will
+not be emitted.</p>
+<h3>Event: 'clientError'<span><a class="mark" href="#http_event_clienterror" id="http_event_clienterror">#</a></span></h3>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v9.4.0</td>
+<td><p>The <code>rawPacket</code> is the current buffer that just parsed. Adding this buffer to the error object of <code>'clientError'</code> event is to make it possible that developers can log the broken packet.</p></td></tr>
+<tr><td>v6.0.0</td>
+<td><p>The default action of calling <code>.destroy()</code> on the <code>socket</code> will no longer take place if there are listeners attached for <code>'clientError'</code>.</p></td></tr>
+<tr><td>v0.1.94</td>
+<td><p><span>Added in: v0.1.94</span></p></td></tr>
+</tbody></table>
+</details>
+</div>
+<ul>
+<li><code>exception</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
+<li><code>socket</code> <a href="net.html#net_class_net_socket" class="type">&#x3C;net.Socket></a></li>
+</ul>
+<p>If a client connection emits an <code>'error'</code> event, it will be forwarded here.
+Listener of this event is responsible for closing/destroying the underlying
+socket. For example, one may wish to more gracefully close the socket with a
+custom HTTP response instead of abruptly severing the connection.</p>
+<p>Default behavior is to close the socket with an HTTP '400 Bad Request' response
+if possible, otherwise the socket is immediately destroyed.</p>
+<p><code>socket</code> is the <a href="net.html#net_class_net_socket"><code>net.Socket</code></a> object that the error originated from.</p>
+<pre><code class="language-js">const http = require('http');
+
+const server = http.createServer((req, res) => {
+  res.end();
+});
+server.on('clientError', (err, socket) => {
+  socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
+});
+server.listen(8000);
+</code></pre>
+<p>When the <code>'clientError'</code> event occurs, there is no <code>request</code> or <code>response</code>
+object, so any HTTP response sent, including response headers and payload,
+<em>must</em> be written directly to the <code>socket</code> object. Care must be taken to
+ensure the response is a properly formatted HTTP response message.</p>
+<p><code>err</code> is an instance of <code>Error</code> with two extra columns:</p>
+<ul>
+<li><code>bytesParsed</code>: the bytes count of request packet that Node.js may have parsed
+correctly;</li>
+<li><code>rawPacket</code>: the raw packet of current request.</li>
+</ul>
+<h3>Event: 'close'<span><a class="mark" href="#http_event_close" id="http_event_close">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.4</span>
+</div>
+<p>Emitted when the server closes.</p>
+<h3>Event: 'connect'<span><a class="mark" href="#http_event_connect_1" id="http_event_connect_1">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.7.0</span>
+</div>
+<ul>
+<li><code>request</code> <a href="http.html#http_class_http_incomingmessage" class="type">&#x3C;http.IncomingMessage></a> Arguments for the HTTP request, as it is in
+the <a href="#http_event_request"><code>'request'</code></a> event</li>
+<li><code>socket</code> <a href="net.html#net_class_net_socket" class="type">&#x3C;net.Socket></a> Network socket between the server and client</li>
+<li><code>head</code> <a href="buffer.html#buffer_class_buffer" class="type">&#x3C;Buffer></a> The first packet of the tunneling stream (may be empty)</li>
+</ul>
+<p>Emitted each time a client requests an HTTP <code>CONNECT</code> method. If this event is
+not listened for, then clients requesting a <code>CONNECT</code> method will have their
+connections closed.</p>
+<p>After this event is emitted, the request's socket will not have a <code>'data'</code>
+event listener, meaning it will need to be bound in order to handle data
+sent to the server on that socket.</p>
+<h3>Event: 'connection'<span><a class="mark" href="#http_event_connection" id="http_event_connection">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.0</span>
+</div>
+<ul>
+<li><code>socket</code> <a href="net.html#net_class_net_socket" class="type">&#x3C;net.Socket></a></li>
+</ul>
+<p>This event is emitted when a new TCP stream is established. <code>socket</code> is
+typically an object of type <a href="net.html#net_class_net_socket"><code>net.Socket</code></a>. Usually users will not want to
+access this event. In particular, the socket will not emit <code>'readable'</code> events
+because of how the protocol parser attaches to the socket. The <code>socket</code> can
+also be accessed at <code>request.connection</code>.</p>
+<p>This event can also be explicitly emitted by users to inject connections
+into the HTTP server. In that case, any <a href="stream.html#stream_class_stream_duplex"><code>Duplex</code></a> stream can be passed.</p>
+<h3>Event: 'request'<span><a class="mark" href="#http_event_request" id="http_event_request">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.0</span>
+</div>
+<ul>
+<li><code>request</code> <a href="http.html#http_class_http_incomingmessage" class="type">&#x3C;http.IncomingMessage></a></li>
+<li><code>response</code> <a href="http.html#http_class_http_serverresponse" class="type">&#x3C;http.ServerResponse></a></li>
+</ul>
+<p>Emitted each time there is a request. Note that there may be multiple requests
+per connection (in the case of HTTP Keep-Alive connections).</p>
+<h3>Event: 'upgrade'<span><a class="mark" href="#http_event_upgrade_1" id="http_event_upgrade_1">#</a></span></h3>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v10.0.0</td>
+<td><p>Not listening to this event no longer causes the socket to be destroyed if a client sends an Upgrade header.</p></td></tr>
+<tr><td>v0.1.94</td>
+<td><p><span>Added in: v0.1.94</span></p></td></tr>
+</tbody></table>
+</details>
+</div>
+<ul>
+<li><code>request</code> <a href="http.html#http_class_http_incomingmessage" class="type">&#x3C;http.IncomingMessage></a> Arguments for the HTTP request, as it is in
+the <a href="#http_event_request"><code>'request'</code></a> event</li>
+<li><code>socket</code> <a href="net.html#net_class_net_socket" class="type">&#x3C;net.Socket></a> Network socket between the server and client</li>
+<li><code>head</code> <a href="buffer.html#buffer_class_buffer" class="type">&#x3C;Buffer></a> The first packet of the upgraded stream (may be empty)</li>
+</ul>
+<p>Emitted each time a client requests an HTTP upgrade. Listening to this event
+is optional and clients cannot insist on a protocol change.</p>
+<p>After this event is emitted, the request's socket will not have a <code>'data'</code>
+event listener, meaning it will need to be bound in order to handle data
+sent to the server on that socket.</p>
+<h3>server.close([callback])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/net.js#L1552">[src]</a><span><a class="mark" href="#http_server_close_callback" id="http_server_close_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.90</span>
+</div>
+<ul>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a></li>
+</ul>
+<p>Stops the server from accepting new connections. See <a href="net.html#net_server_close_callback"><code>net.Server.close()</code></a>.</p>
+<h3>server.listen()<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/net.js#L1350">[src]</a><span><a class="mark" href="#http_server_listen" id="http_server_listen">#</a></span></h3>
+<p>Starts the HTTP server listening for connections.
+This method is identical to <a href="net.html#net_server_listen"><code>server.listen()</code></a> from <a href="net.html#net_class_net_server"><code>net.Server</code></a>.</p>
+<h3>server.listening<span><a class="mark" href="#http_server_listening" id="http_server_listening">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v5.7.0</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> Indicates whether or not the server is listening for connections.</li>
+</ul>
+<h3>server.maxHeadersCount<span><a class="mark" href="#http_server_maxheaderscount" id="http_server_maxheaderscount">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.7.0</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> <strong>Default:</strong> <code>2000</code></li>
+</ul>
+<p>Limits maximum incoming headers count. If set to 0, no limit will be applied.</p>
+<h3>server.headersTimeout<span><a class="mark" href="#http_server_headerstimeout" id="http_server_headerstimeout">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.14.0</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> <strong>Default:</strong> <code>40000</code></li>
+</ul>
+<p>Limit the amount of time the parser will wait to receive the complete HTTP
+headers.</p>
+<p>In case of inactivity, the rules defined in <a href="">server.timeout</a> apply. However,
+that inactivity based timeout would still allow the connection to be kept open
+if the headers are being sent very slowly (by default, up to a byte per 2
+minutes). In order to prevent this, whenever header data arrives an additional
+check is made that more than <code>server.headersTimeout</code> milliseconds has not
+passed since the connection was established. If the check fails, a <code>'timeout'</code>
+event is emitted on the server object, and (by default) the socket is destroyed.
+See <a href="">server.timeout</a> for more information on how timeout behaviour can be
+customised.</p>
+<h3>server.setTimeout([msecs][, callback])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/https.js#L82">[src]</a><span><a class="mark" href="#http_server_settimeout_msecs_callback" id="http_server_settimeout_msecs_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.9.12</span>
+</div>
+<ul>
+<li><code>msecs</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> <strong>Default:</strong> <code>120000</code> (2 minutes)</li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a></li>
+<li>Returns: <a href="http.html#http_class_http_server" class="type">&#x3C;http.Server></a></li>
+</ul>
+<p>Sets the timeout value for sockets, and emits a <code>'timeout'</code> event on
+the Server object, passing the socket as an argument, if a timeout
+occurs.</p>
+<p>If there is a <code>'timeout'</code> event listener on the Server object, then it
+will be called with the timed-out socket as an argument.</p>
+<p>By default, the Server's timeout value is 2 minutes, and sockets are
+destroyed automatically if they time out. However, if a callback is assigned
+to the Server's <code>'timeout'</code> event, timeouts must be handled explicitly.</p>
+<h3>server.timeout<span><a class="mark" href="#http_server_timeout" id="http_server_timeout">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.9.12</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> Timeout in milliseconds. <strong>Default:</strong> <code>120000</code> (2 minutes).</li>
+</ul>
+<p>The number of milliseconds of inactivity before a socket is presumed
+to have timed out.</p>
+<p>A value of <code>0</code> will disable the timeout behavior on incoming connections.</p>
+<p>The socket timeout logic is set up on connection, so changing this
+value only affects new connections to the server, not any existing connections.</p>
+<h3>server.keepAliveTimeout<span><a class="mark" href="#http_server_keepalivetimeout" id="http_server_keepalivetimeout">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.0.0</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> Timeout in milliseconds. <strong>Default:</strong> <code>5000</code> (5 seconds).</li>
+</ul>
+<p>The number of milliseconds of inactivity a server needs to wait for additional
+incoming data, after it has finished writing the last response, before a socket
+will be destroyed. If the server receives new data before the keep-alive
+timeout has fired, it will reset the regular inactivity timeout, i.e.,
+<a href="#http_server_timeout"><code>server.timeout</code></a>.</p>
+<p>A value of <code>0</code> will disable the keep-alive timeout behavior on incoming
+connections.
+A value of <code>0</code> makes the http server behave similarly to Node.js versions prior
+to 8.0.0, which did not have a keep-alive timeout.</p>
+<p>The socket timeout logic is set up on connection, so changing this value only
+affects new connections to the server, not any existing connections.</p>
+<h2>Class: http.ServerResponse<span><a class="mark" href="#http_class_http_serverresponse" id="http_class_http_serverresponse">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v0.1.17</span>
+</div>
+<p>This object is created internally by an HTTP server — not by the user. It is
+passed as the second parameter to the <a href="#http_event_request"><code>'request'</code></a> event.</p>
+<p>The response inherits from <a href="stream.html#stream_stream">Stream</a>, and additionally implements the
+following:</p>
+<h3>Event: 'close'<span><a class="mark" href="#http_event_close_1" id="http_event_close_1">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.6.7</span>
+</div>
+<p>Indicates that the underlying connection was terminated before
+<a href="#http_response_end_data_encoding_callback"><code>response.end()</code></a> was called or able to flush.</p>
+<h3>Event: 'finish'<span><a class="mark" href="#http_event_finish" id="http_event_finish">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.3.6</span>
+</div>
+<p>Emitted when the response has been sent. More specifically, this event is
+emitted when the last segment of the response headers and body have been
+handed off to the operating system for transmission over the network. It
+does not imply that the client has received anything yet.</p>
+<h3>response.addTrailers(headers)<span><a class="mark" href="#http_response_addtrailers_headers" id="http_response_addtrailers_headers">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.3.0</span>
+</div>
+<ul>
+<li><code>headers</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+</ul>
+<p>This method adds HTTP trailing headers (a header but at the end of the
+message) to the response.</p>
+<p>Trailers will <strong>only</strong> be emitted if chunked encoding is used for the
+response; if it is not (e.g. if the request was HTTP/1.0), they will
+be silently discarded.</p>
+<p>Note that HTTP requires the <code>Trailer</code> header to be sent in order to
+emit trailers, with a list of the header fields in its value. E.g.,</p>
+<pre><code class="language-js">response.writeHead(200, { 'Content-Type': 'text/plain',
+                          'Trailer': 'Content-MD5' });
+response.write(fileData);
+response.addTrailers({ 'Content-MD5': '7895bf4b8828b55ceaf47747b4bca667' });
+response.end();
+</code></pre>
+<p>Attempting to set a header field name or value that contains invalid characters
+will result in a <a href="errors.html#errors_class_typeerror"><code>TypeError</code></a> being thrown.</p>
+<h3>response.connection<span><a class="mark" href="#http_response_connection" id="http_response_connection">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.3.0</span>
+</div>
+<ul>
+<li><a href="net.html#net_class_net_socket" class="type">&#x3C;net.Socket></a></li>
+</ul>
+<p>See <a href="#http_response_socket"><code>response.socket</code></a>.</p>
+<h3>response.end([data][, encoding][, callback])<span><a class="mark" href="#http_response_end_data_encoding_callback" id="http_response_end_data_encoding_callback">#</a></span></h3>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v10.0.0</td>
+<td><p>This method now returns a reference to <code>ServerResponse</code>.</p></td></tr>
+<tr><td>v0.1.90</td>
+<td><p><span>Added in: v0.1.90</span></p></td></tr>
+</tbody></table>
+</details>
+</div>
+<ul>
+<li><code>data</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="buffer.html#buffer_class_buffer" class="type">&#x3C;Buffer></a></li>
+<li><code>encoding</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this" class="type">&#x3C;this></a></li>
+</ul>
+<p>This method signals to the server that all of the response headers and body
+have been sent; that server should consider this message complete.
+The method, <code>response.end()</code>, MUST be called on each response.</p>
+<p>If <code>data</code> is specified, it is equivalent to calling
+<a href="#http_response_write_chunk_encoding_callback"><code>response.write(data, encoding)</code></a> followed by <code>response.end(callback)</code>.</p>
+<p>If <code>callback</code> is specified, it will be called when the response stream
+is finished.</p>
+<h3>response.finished<span><a class="mark" href="#http_response_finished" id="http_response_finished">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.0.2</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+</ul>
+<p>Boolean value that indicates whether the response has completed. Starts
+as <code>false</code>. After <a href="#http_response_end_data_encoding_callback"><code>response.end()</code></a> executes, the value will be <code>true</code>.</p>
+<h3>response.getHeader(name)<span><a class="mark" href="#http_response_getheader_name" id="http_response_getheader_name">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.4.0</span>
+</div>
+<ul>
+<li><code>name</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
+</ul>
+<p>Reads out a header that's already been queued but not sent to the client.
+Note that the name is case insensitive. The type of the return value depends
+on the arguments provided to <a href="#http_response_setheader_name_value"><code>response.setHeader()</code></a>.</p>
+<pre><code class="language-js">response.setHeader('Content-Type', 'text/html');
+response.setHeader('Content-Length', Buffer.byteLength(body));
+response.setHeader('Set-Cookie', ['type=ninja', 'language=javascript']);
+const contentType = response.getHeader('content-type');
+// contentType is 'text/html'
+const contentLength = response.getHeader('Content-Length');
+// contentLength is of type number
+const setCookie = response.getHeader('set-cookie');
+// setCookie is of type string[]
+</code></pre>
+<h3>response.getHeaderNames()<span><a class="mark" href="#http_response_getheadernames" id="http_response_getheadernames">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v7.7.0</span>
+</div>
+<ul>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string[]></a></li>
+</ul>
+<p>Returns an array containing the unique names of the current outgoing headers.
+All header names are lowercase.</p>
+<pre><code class="language-js">response.setHeader('Foo', 'bar');
+response.setHeader('Set-Cookie', ['foo=bar', 'bar=baz']);
+
+const headerNames = response.getHeaderNames();
+// headerNames === ['foo', 'set-cookie']
+</code></pre>
+<h3>response.getHeaders()<span><a class="mark" href="#http_response_getheaders" id="http_response_getheaders">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v7.7.0</span>
+</div>
+<ul>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+</ul>
+<p>Returns a shallow copy of the current outgoing headers. Since a shallow copy
+is used, array values may be mutated without additional calls to various
+header-related http module methods. The keys of the returned object are the
+header names and the values are the respective header values. All header names
+are lowercase.</p>
+<p>The object returned by the <code>response.getHeaders()</code> method <em>does not</em>
+prototypically inherit from the JavaScript <code>Object</code>. This means that typical
+<code>Object</code> methods such as <code>obj.toString()</code>, <code>obj.hasOwnProperty()</code>, and others
+are not defined and <em>will not work</em>.</p>
+<pre><code class="language-js">response.setHeader('Foo', 'bar');
+response.setHeader('Set-Cookie', ['foo=bar', 'bar=baz']);
+
+const headers = response.getHeaders();
+// headers === { foo: 'bar', 'set-cookie': ['foo=bar', 'bar=baz'] }
+</code></pre>
+<h3>response.hasHeader(name)<span><a class="mark" href="#http_response_hasheader_name" id="http_response_hasheader_name">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v7.7.0</span>
+</div>
+<ul>
+<li><code>name</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+</ul>
+<p>Returns <code>true</code> if the header identified by <code>name</code> is currently set in the
+outgoing headers. Note that the header name matching is case-insensitive.</p>
+<pre><code class="language-js">const hasContentType = response.hasHeader('content-type');
+</code></pre>
+<h3>response.headersSent<span><a class="mark" href="#http_response_headerssent" id="http_response_headerssent">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.9.3</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+</ul>
+<p>Boolean (read-only). True if headers were sent, false otherwise.</p>
+<h3>response.removeHeader(name)<span><a class="mark" href="#http_response_removeheader_name" id="http_response_removeheader_name">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.4.0</span>
+</div>
+<ul>
+<li><code>name</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+</ul>
+<p>Removes a header that's queued for implicit sending.</p>
+<pre><code class="language-js">response.removeHeader('Content-Encoding');
+</code></pre>
+<h3>response.sendDate<span><a class="mark" href="#http_response_senddate" id="http_response_senddate">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.7.5</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+</ul>
+<p>When true, the Date header will be automatically generated and sent in
+the response if it is not already present in the headers. Defaults to true.</p>
+<p>This should only be disabled for testing; HTTP requires the Date header
+in responses.</p>
+<h3>response.setHeader(name, value)<span><a class="mark" href="#http_response_setheader_name_value" id="http_response_setheader_name_value">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.4.0</span>
+</div>
+<ul>
+<li><code>name</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li><code>value</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
+</ul>
+<p>Sets a single header value for implicit headers. If this header already exists
+in the to-be-sent headers, its value will be replaced. Use an array of strings
+here to send multiple headers with the same name. Non-string values will be
+stored without modification. Therefore, <a href="#http_response_getheader_name"><code>response.getHeader()</code></a> may return
+non-string values. However, the non-string values will be converted to strings
+for network transmission.</p>
+<pre><code class="language-js">response.setHeader('Content-Type', 'text/html');
+</code></pre>
+<p>or</p>
+<pre><code class="language-js">response.setHeader('Set-Cookie', ['type=ninja', 'language=javascript']);
+</code></pre>
+<p>Attempting to set a header field name or value that contains invalid characters
+will result in a <a href="errors.html#errors_class_typeerror"><code>TypeError</code></a> being thrown.</p>
+<p>When headers have been set with <a href="#http_response_setheader_name_value"><code>response.setHeader()</code></a>, they will be merged
+with any headers passed to <a href="#http_response_writehead_statuscode_statusmessage_headers"><code>response.writeHead()</code></a>, with the headers passed
+to <a href="#http_response_writehead_statuscode_statusmessage_headers"><code>response.writeHead()</code></a> given precedence.</p>
+<pre><code class="language-js">// returns content-type = text/plain
+const server = http.createServer((req, res) => {
+  res.setHeader('Content-Type', 'text/html');
+  res.setHeader('X-Foo', 'bar');
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('ok');
+});
+</code></pre>
+<p>If <a href="#http_response_writehead_statuscode_statusmessage_headers"><code>response.writeHead()</code></a> method is called and this method has not been
+called, it will directly write the supplied header values onto the network
+channel without caching internally, and the <a href="#http_response_getheader_name"><code>response.getHeader()</code></a> on the
+header will not yield the expected result. If progressive population of headers
+is desired with potential future retrieval and modification, use
+<a href="#http_response_setheader_name_value"><code>response.setHeader()</code></a> instead of <a href="#http_response_writehead_statuscode_statusmessage_headers"><code>response.writeHead()</code></a>.</p>
+<h3>response.setTimeout(msecs[, callback])<span><a class="mark" href="#http_response_settimeout_msecs_callback" id="http_response_settimeout_msecs_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.9.12</span>
+</div>
+<ul>
+<li><code>msecs</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a></li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a></li>
+<li>Returns: <a href="http.html#http_class_http_serverresponse" class="type">&#x3C;http.ServerResponse></a></li>
+</ul>
+<p>Sets the Socket's timeout value to <code>msecs</code>. If a callback is
+provided, then it is added as a listener on the <code>'timeout'</code> event on
+the response object.</p>
+<p>If no <code>'timeout'</code> listener is added to the request, the response, or
+the server, then sockets are destroyed when they time out. If a handler is
+assigned to the request, the response, or the server's <code>'timeout'</code> events,
+timed out sockets must be handled explicitly.</p>
+<h3>response.socket<span><a class="mark" href="#http_response_socket" id="http_response_socket">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.3.0</span>
+</div>
+<ul>
+<li><a href="net.html#net_class_net_socket" class="type">&#x3C;net.Socket></a></li>
+</ul>
+<p>Reference to the underlying socket. Usually users will not want to access
+this property. In particular, the socket will not emit <code>'readable'</code> events
+because of how the protocol parser attaches to the socket. After
+<code>response.end()</code>, the property is nulled. The <code>socket</code> may also be accessed
+via <code>response.connection</code>.</p>
+<pre><code class="language-js">const http = require('http');
+const server = http.createServer((req, res) => {
+  const ip = res.socket.remoteAddress;
+  const port = res.socket.remotePort;
+  res.end(`Your IP address is ${ip} and your source port is ${port}.`);
+}).listen(3000);
+</code></pre>
+<h3>response.statusCode<span><a class="mark" href="#http_response_statuscode" id="http_response_statuscode">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.4.0</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a></li>
+</ul>
+<p>When using implicit headers (not calling <a href="#http_response_writehead_statuscode_statusmessage_headers"><code>response.writeHead()</code></a> explicitly),
+this property controls the status code that will be sent to the client when
+the headers get flushed.</p>
+<pre><code class="language-js">response.statusCode = 404;
+</code></pre>
+<p>After response header was sent to the client, this property indicates the
+status code which was sent out.</p>
+<h3>response.statusMessage<span><a class="mark" href="#http_response_statusmessage" id="http_response_statusmessage">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.11.8</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+</ul>
+<p>When using implicit headers (not calling <a href="#http_response_writehead_statuscode_statusmessage_headers"><code>response.writeHead()</code></a> explicitly),
+this property controls the status message that will be sent to the client when
+the headers get flushed. If this is left as <code>undefined</code> then the standard
+message for the status code will be used.</p>
+<pre><code class="language-js">response.statusMessage = 'Not found';
+</code></pre>
+<p>After response header was sent to the client, this property indicates the
+status message which was sent out.</p>
+<h3>response.write(chunk[, encoding][, callback])<span><a class="mark" href="#http_response_write_chunk_encoding_callback" id="http_response_write_chunk_encoding_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.29</span>
+</div>
+<ul>
+<li><code>chunk</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="buffer.html#buffer_class_buffer" class="type">&#x3C;Buffer></a></li>
+<li><code>encoding</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> <strong>Default:</strong> <code>'utf8'</code></li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+</ul>
+<p>If this method is called and <a href="#http_response_writehead_statuscode_statusmessage_headers"><code>response.writeHead()</code></a> has not been called,
+it will switch to implicit header mode and flush the implicit headers.</p>
+<p>This sends a chunk of the response body. This method may
+be called multiple times to provide successive parts of the body.</p>
+<p>Note that in the <code>http</code> module, the response body is omitted when the
+request is a HEAD request. Similarly, the <code>204</code> and <code>304</code> responses
+<em>must not</em> include a message body.</p>
+<p><code>chunk</code> can be a string or a buffer. If <code>chunk</code> is a string,
+the second parameter specifies how to encode it into a byte stream.
+<code>callback</code> will be called when this chunk of data is flushed.</p>
+<p>This is the raw HTTP body and has nothing to do with higher-level multi-part
+body encodings that may be used.</p>
+<p>The first time <a href="#http_response_write_chunk_encoding_callback"><code>response.write()</code></a> is called, it will send the buffered
+header information and the first chunk of the body to the client. The second
+time <a href="#http_response_write_chunk_encoding_callback"><code>response.write()</code></a> is called, Node.js assumes data will be streamed,
+and sends the new data separately. That is, the response is buffered up to the
+first chunk of the body.</p>
+<p>Returns <code>true</code> if the entire data was flushed successfully to the kernel
+buffer. Returns <code>false</code> if all or part of the data was queued in user memory.
+<code>'drain'</code> will be emitted when the buffer is free again.</p>
+<h3>response.writeContinue()<span><a class="mark" href="#http_response_writecontinue" id="http_response_writecontinue">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.3.0</span>
+</div>
+<p>Sends a HTTP/1.1 100 Continue message to the client, indicating that
+the request body should be sent. See the <a href="#http_event_checkcontinue"><code>'checkContinue'</code></a> event on
+<code>Server</code>.</p>
+<h3>response.writeHead(statusCode[, statusMessage][, headers])<span><a class="mark" href="#http_response_writehead_statuscode_statusmessage_headers" id="http_response_writehead_statuscode_statusmessage_headers">#</a></span></h3>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v5.11.0, v4.4.5</td>
+<td><p>A <code>RangeError</code> is thrown if <code>statusCode</code> is not a number in the range <code>[100, 999]</code>.</p></td></tr>
+<tr><td>v0.1.30</td>
+<td><p><span>Added in: v0.1.30</span></p></td></tr>
+</tbody></table>
+</details>
+</div>
+<ul>
+<li><code>statusCode</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a></li>
+<li><code>statusMessage</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li><code>headers</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+</ul>
+<p>Sends a response header to the request. The status code is a 3-digit HTTP
+status code, like <code>404</code>. The last argument, <code>headers</code>, are the response headers.
+Optionally one can give a human-readable <code>statusMessage</code> as the second
+argument.</p>
+<pre><code class="language-js">const body = 'hello world';
+response.writeHead(200, {
+  'Content-Length': Buffer.byteLength(body),
+  'Content-Type': 'text/plain' });
+</code></pre>
+<p>This method must only be called once on a message and it must
+be called before <a href="#http_response_end_data_encoding_callback"><code>response.end()</code></a> is called.</p>
+<p>If <a href="#http_response_write_chunk_encoding_callback"><code>response.write()</code></a> or <a href="#http_response_end_data_encoding_callback"><code>response.end()</code></a> are called before calling
+this, the implicit/mutable headers will be calculated and call this function.</p>
+<p>When headers have been set with <a href="#http_response_setheader_name_value"><code>response.setHeader()</code></a>, they will be merged
+with any headers passed to <a href="#http_response_writehead_statuscode_statusmessage_headers"><code>response.writeHead()</code></a>, with the headers passed
+to <a href="#http_response_writehead_statuscode_statusmessage_headers"><code>response.writeHead()</code></a> given precedence.</p>
+<p>If this method is called and <a href="#http_response_setheader_name_value"><code>response.setHeader()</code></a> has not been called,
+it will directly write the supplied header values onto the network channel
+without caching internally, and the <a href="#http_response_getheader_name"><code>response.getHeader()</code></a> on the header
+will not yield the expected result. If progressive population of headers is
+desired with potential future retrieval and modification, use
+<a href="#http_response_setheader_name_value"><code>response.setHeader()</code></a> instead.</p>
+<pre><code class="language-js">// returns content-type = text/plain
+const server = http.createServer((req, res) => {
+  res.setHeader('Content-Type', 'text/html');
+  res.setHeader('X-Foo', 'bar');
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('ok');
+});
+</code></pre>
+<p>Note that Content-Length is given in bytes not characters. The above example
+works because the string <code>'hello world'</code> contains only single byte characters.
+If the body contains higher coded characters then <code>Buffer.byteLength()</code>
+should be used to determine the number of bytes in a given encoding.
+And Node.js does not check whether Content-Length and the length of the body
+which has been transmitted are equal or not.</p>
+<p>Attempting to set a header field name or value that contains invalid characters
+will result in a <a href="errors.html#errors_class_typeerror"><code>TypeError</code></a> being thrown.</p>
+<h3>response.writeProcessing()<span><a class="mark" href="#http_response_writeprocessing" id="http_response_writeprocessing">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.0.0</span>
+</div>
+<p>Sends a HTTP/1.1 102 Processing message to the client, indicating that
+the request body should be sent.</p>
+<h2>Class: http.IncomingMessage<span><a class="mark" href="#http_class_http_incomingmessage" id="http_class_http_incomingmessage">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v0.1.17</span>
+</div>
+<p>An <code>IncomingMessage</code> object is created by <a href="#http_class_http_server"><code>http.Server</code></a> or
+<a href="#http_class_http_clientrequest"><code>http.ClientRequest</code></a> and passed as the first argument to the <a href="#http_event_request"><code>'request'</code></a>
+and <a href="#http_event_response"><code>'response'</code></a> event respectively. It may be used to access response
+status, headers and data.</p>
+<p>It implements the <a href="stream.html#stream_class_stream_readable">Readable Stream</a> interface, as well as the
+following additional events, methods, and properties.</p>
+<h3>Event: 'aborted'<span><a class="mark" href="#http_event_aborted" id="http_event_aborted">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.3.8</span>
+</div>
+<p>Emitted when the request has been aborted.</p>
+<h3>Event: 'close'<span><a class="mark" href="#http_event_close_2" id="http_event_close_2">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.4.2</span>
+</div>
+<p>Indicates that the underlying connection was closed.
+Just like <code>'end'</code>, this event occurs only once per response.</p>
+<h3>message.aborted<span><a class="mark" href="#http_message_aborted" id="http_message_aborted">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.1.0</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+</ul>
+<p>The <code>message.aborted</code> property will be <code>true</code> if the request has
+been aborted.</p>
+<h3>message.complete<span><a class="mark" href="#http_message_complete" id="http_message_complete">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.3.0</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+</ul>
+<p>The <code>message.complete</code> property will be <code>true</code> if a complete HTTP message has
+been received and successfully parsed.</p>
+<p>This property is particularly useful as a means of determining if a client or
+server fully transmitted a message before a connection was terminated:</p>
+<pre><code class="language-js">const req = http.request({
+  host: '127.0.0.1',
+  port: 8080,
+  method: 'POST'
+}, (res) => {
+  res.resume();
+  res.on('end', () => {
+    if (!res.complete)
+      console.error(
+        'The connection was terminated while the message was still being sent');
+  });
+});
+</code></pre>
+<h3>message.destroy([error])<span><a class="mark" href="#http_message_destroy_error" id="http_message_destroy_error">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.3.0</span>
+</div>
+<ul>
+<li><code>error</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
+</ul>
+<p>Calls <code>destroy()</code> on the socket that received the <code>IncomingMessage</code>. If <code>error</code>
+is provided, an <code>'error'</code> event is emitted and <code>error</code> is passed as an argument
+to any listeners on the event.</p>
+<h3>message.headers<span><a class="mark" href="#http_message_headers" id="http_message_headers">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.5</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+</ul>
+<p>The request/response headers object.</p>
+<p>Key-value pairs of header names and values. Header names are lower-cased.</p>
+<pre><code class="language-js">// Prints something like:
+//
+// { 'user-agent': 'curl/7.22.0',
+//   host: '127.0.0.1:8000',
+//   accept: '*/*' }
+console.log(request.headers);
+</code></pre>
+<p>Duplicates in raw headers are handled in the following ways, depending on the
+header name:</p>
+<ul>
+<li>Duplicates of <code>age</code>, <code>authorization</code>, <code>content-length</code>, <code>content-type</code>,
+<code>etag</code>, <code>expires</code>, <code>from</code>, <code>host</code>, <code>if-modified-since</code>, <code>if-unmodified-since</code>,
+<code>last-modified</code>, <code>location</code>, <code>max-forwards</code>, <code>proxy-authorization</code>, <code>referer</code>,
+<code>retry-after</code>, or <code>user-agent</code> are discarded.</li>
+<li><code>set-cookie</code> is always an array. Duplicates are added to the array.</li>
+<li>For duplicate <code>cookie</code> headers, the values are joined together with '; '.</li>
+<li>For all other headers, the values are joined together with ', '.</li>
+</ul>
+<h3>message.httpVersion<span><a class="mark" href="#http_message_httpversion" id="http_message_httpversion">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.1</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+</ul>
+<p>In case of server request, the HTTP version sent by the client. In the case of
+client response, the HTTP version of the connected-to server.
+Probably either <code>'1.1'</code> or <code>'1.0'</code>.</p>
+<p>Also <code>message.httpVersionMajor</code> is the first integer and
+<code>message.httpVersionMinor</code> is the second.</p>
+<h3>message.method<span><a class="mark" href="#http_message_method" id="http_message_method">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.1</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+</ul>
+<p><strong>Only valid for request obtained from <a href="#http_class_http_server"><code>http.Server</code></a>.</strong></p>
+<p>The request method as a string. Read only. Examples: <code>'GET'</code>, <code>'DELETE'</code>.</p>
+<h3>message.rawHeaders<span><a class="mark" href="#http_message_rawheaders" id="http_message_rawheaders">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.11.6</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string[]></a></li>
+</ul>
+<p>The raw request/response headers list exactly as they were received.</p>
+<p>Note that the keys and values are in the same list. It is <em>not</em> a
+list of tuples. So, the even-numbered offsets are key values, and the
+odd-numbered offsets are the associated values.</p>
+<p>Header names are not lowercased, and duplicates are not merged.</p>
+<pre><code class="language-js">// Prints something like:
+//
+// [ 'user-agent',
+//   'this is invalid because there can be only one',
+//   'User-Agent',
+//   'curl/7.22.0',
+//   'Host',
+//   '127.0.0.1:8000',
+//   'ACCEPT',
+//   '*/*' ]
+console.log(request.rawHeaders);
+</code></pre>
+<h3>message.rawTrailers<span><a class="mark" href="#http_message_rawtrailers" id="http_message_rawtrailers">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.11.6</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string[]></a></li>
+</ul>
+<p>The raw request/response trailer keys and values exactly as they were
+received. Only populated at the <code>'end'</code> event.</p>
+<h3>message.setTimeout(msecs, callback)<span><a class="mark" href="#http_message_settimeout_msecs_callback" id="http_message_settimeout_msecs_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.5.9</span>
+</div>
+<ul>
+<li><code>msecs</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a></li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a></li>
+<li>Returns: <a href="http.html#http_class_http_incomingmessage" class="type">&#x3C;http.IncomingMessage></a></li>
+</ul>
+<p>Calls <code>message.connection.setTimeout(msecs, callback)</code>.</p>
+<h3>message.socket<span><a class="mark" href="#http_message_socket" id="http_message_socket">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.3.0</span>
+</div>
+<ul>
+<li><a href="net.html#net_class_net_socket" class="type">&#x3C;net.Socket></a></li>
+</ul>
+<p>The <a href="net.html#net_class_net_socket"><code>net.Socket</code></a> object associated with the connection.</p>
+<p>With HTTPS support, use <a href="tls.html#tls_tlssocket_getpeercertificate_detailed"><code>request.socket.getPeerCertificate()</code></a> to obtain the
+client's authentication details.</p>
+<h3>message.statusCode<span><a class="mark" href="#http_message_statuscode" id="http_message_statuscode">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.1</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a></li>
+</ul>
+<p><strong>Only valid for response obtained from <a href="#http_class_http_clientrequest"><code>http.ClientRequest</code></a>.</strong></p>
+<p>The 3-digit HTTP response status code. E.G. <code>404</code>.</p>
+<h3>message.statusMessage<span><a class="mark" href="#http_message_statusmessage" id="http_message_statusmessage">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.11.10</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+</ul>
+<p><strong>Only valid for response obtained from <a href="#http_class_http_clientrequest"><code>http.ClientRequest</code></a>.</strong></p>
+<p>The HTTP response status message (reason phrase). E.G. <code>OK</code> or <code>Internal Server Error</code>.</p>
+<h3>message.trailers<span><a class="mark" href="#http_message_trailers" id="http_message_trailers">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.3.0</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+</ul>
+<p>The request/response trailers object. Only populated at the <code>'end'</code> event.</p>
+<h3>message.url<span><a class="mark" href="#http_message_url" id="http_message_url">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.90</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+</ul>
+<p><strong>Only valid for request obtained from <a href="#http_class_http_server"><code>http.Server</code></a>.</strong></p>
+<p>Request URL string. This contains only the URL that is
+present in the actual HTTP request. If the request is:</p>
+<pre><code class="language-txt">GET /status?name=ryan HTTP/1.1\r\n
+Accept: text/plain\r\n
+\r\n
+</code></pre>
+<p>Then <code>request.url</code> will be:</p>
+<!-- eslint-disable semi -->
+<pre><code class="language-js">'/status?name=ryan'
+</code></pre>
+<p>To parse the url into its parts <code>require('url').parse(request.url)</code>
+can be used:</p>
+<pre><code class="language-txt">$ node
+> require('url').parse('/status?name=ryan')
+Url {
+  protocol: null,
+  slashes: null,
+  auth: null,
+  host: null,
+  port: null,
+  hostname: null,
+  hash: null,
+  search: '?name=ryan',
+  query: 'name=ryan',
+  pathname: '/status',
+  path: '/status?name=ryan',
+  href: '/status?name=ryan' }
+</code></pre>
+<p>To extract the parameters from the query string, the
+<code>require('querystring').parse</code> function can be used, or
+<code>true</code> can be passed as the second argument to <code>require('url').parse</code>:</p>
+<pre><code class="language-txt">$ node
+> require('url').parse('/status?name=ryan', true)
+Url {
+  protocol: null,
+  slashes: null,
+  auth: null,
+  host: null,
+  port: null,
+  hostname: null,
+  hash: null,
+  search: '?name=ryan',
+  query: { name: 'ryan' },
+  pathname: '/status',
+  path: '/status?name=ryan',
+  href: '/status?name=ryan' }
+</code></pre>
+<h2>http.METHODS<span><a class="mark" href="#http_http_methods" id="http_http_methods">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v0.11.8</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string[]></a></li>
+</ul>
+<p>A list of the HTTP methods that are supported by the parser.</p>
+<h2>http.STATUS_CODES<span><a class="mark" href="#http_http_status_codes" id="http_http_status_codes">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v0.1.22</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+</ul>
+<p>A collection of all the standard HTTP response status codes, and the
+short description of each. For example, <code>http.STATUS_CODES[404] === 'Not Found'</code>.</p>
+<h2>http.createServer([options][, requestListener])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/http.js#L37">[src]</a><span><a class="mark" href="#http_http_createserver_options_requestlistener" id="http_http_createserver_options_requestlistener">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v9.6.0</td>
+<td><p>The <code>options</code> argument is supported now.</p></td></tr>
+<tr><td>v0.1.13</td>
+<td><p><span>Added in: v0.1.13</span></p></td></tr>
+</tbody></table>
+</details>
+</div>
+<ul>
+<li>
+<p><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></p>
+<ul>
+<li><code>IncomingMessage</code> <a href="http.html#http_class_http_incomingmessage" class="type">&#x3C;http.IncomingMessage></a> Specifies the <code>IncomingMessage</code>
+class to be used. Useful for extending the original <code>IncomingMessage</code>.
+<strong>Default:</strong> <code>IncomingMessage</code>.</li>
+<li><code>ServerResponse</code> <a href="http.html#http_class_http_serverresponse" class="type">&#x3C;http.ServerResponse></a> Specifies the <code>ServerResponse</code> class
+to be used. Useful for extending the original <code>ServerResponse</code>. <strong>Default:</strong>
+<code>ServerResponse</code>.</li>
+</ul>
+</li>
+<li>
+<p><code>requestListener</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a></p>
+</li>
+<li>
+<p>Returns: <a href="http.html#http_class_http_server" class="type">&#x3C;http.Server></a></p>
+</li>
+</ul>
+<p>Returns a new instance of <a href="#http_class_http_server"><code>http.Server</code></a>.</p>
+<p>The <code>requestListener</code> is a function which is automatically
+added to the <a href="#http_event_request"><code>'request'</code></a> event.</p>
+<h2>http.get(options[, callback])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/http.js#L45">[src]</a><span><a class="mark" href="#http_http_get_options_callback" id="http_http_get_options_callback">#</a></span></h2>
+<h2>http.get(url[, options][, callback])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/http.js#L45">[src]</a><span><a class="mark" href="#http_http_get_url_options_callback" id="http_http_get_url_options_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v10.9.0</td>
+<td><p>The <code>url</code> parameter can now be passed along with a separate <code>options</code> object.</p></td></tr>
+<tr><td>v7.5.0</td>
+<td><p>The <code>options</code> parameter can be a WHATWG <code>URL</code> object.</p></td></tr>
+<tr><td>v0.3.6</td>
+<td><p><span>Added in: v0.3.6</span></p></td></tr>
+</tbody></table>
+</details>
+</div>
+<ul>
+<li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="url.html#url_the_whatwg_url_api" class="type">&#x3C;URL></a></li>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> Accepts the same <code>options</code> as
+<a href="#http_http_request_options_callback"><code>http.request()</code></a>, with the <code>method</code> always set to <code>GET</code>.
+Properties that are inherited from the prototype are ignored.</li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a></li>
+<li>Returns: <a href="http.html#http_class_http_clientrequest" class="type">&#x3C;http.ClientRequest></a></li>
+</ul>
+<p>Since most requests are GET requests without bodies, Node.js provides this
+convenience method. The only difference between this method and
+<a href="#http_http_request_options_callback"><code>http.request()</code></a> is that it sets the method to GET and calls <code>req.end()</code>
+automatically. Note that the callback must take care to consume the response
+data for reasons stated in <a href="#http_class_http_clientrequest"><code>http.ClientRequest</code></a> section.</p>
+<p>The <code>callback</code> is invoked with a single argument that is an instance of
+<a href="#http_class_http_incomingmessage"><code>http.IncomingMessage</code></a>.</p>
+<p>JSON fetching example:</p>
+<pre><code class="language-js">http.get('http://nodejs.org/dist/index.json', (res) => {
+  const { statusCode } = res;
+  const contentType = res.headers['content-type'];
+
+  let error;
+  if (statusCode !== 200) {
+    error = new Error('Request Failed.\n' +
+                      `Status Code: ${statusCode}`);
+  } else if (!/^application\/json/.test(contentType)) {
+    error = new Error('Invalid content-type.\n' +
+                      `Expected application/json but received ${contentType}`);
+  }
+  if (error) {
+    console.error(error.message);
+    // consume response data to free up memory
+    res.resume();
+    return;
+  }
+
+  res.setEncoding('utf8');
+  let rawData = '';
+  res.on('data', (chunk) => { rawData += chunk; });
+  res.on('end', () => {
+    try {
+      const parsedData = JSON.parse(rawData);
+      console.log(parsedData);
+    } catch (e) {
+      console.error(e.message);
+    }
+  });
+}).on('error', (e) => {
+  console.error(`Got error: ${e.message}`);
+});
+</code></pre>
+<h2>http.globalAgent<span><a class="mark" href="#http_http_globalagent" id="http_http_globalagent">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v0.5.9</span>
+</div>
+<ul>
+<li><a href="http.html#http_class_http_agent" class="type">&#x3C;http.Agent></a></li>
+</ul>
+<p>Global instance of <code>Agent</code> which is used as the default for all HTTP client
+requests.</p>
+<h2>http.maxHeaderSize<span><a class="mark" href="#http_http_maxheadersize" id="http_http_maxheadersize">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v10.15.0</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a></li>
+</ul>
+<p>Read-only property specifying the maximum allowed size of HTTP headers in bytes.
+Defaults to 8KB. Configurable using the <a href="cli.html#cli_max_http_header_size_size"><code>--max-http-header-size</code></a> CLI option.</p>
+<h2>http.request(options[, callback])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/http.js#L41">[src]</a><span><a class="mark" href="#http_http_request_options_callback" id="http_http_request_options_callback">#</a></span></h2>
+<h2>http.request(url[, options][, callback])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/http.js#L41">[src]</a><span><a class="mark" href="#http_http_request_url_options_callback" id="http_http_request_url_options_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v10.9.0</td>
+<td><p>The <code>url</code> parameter can now be passed along with a separate <code>options</code> object.</p></td></tr>
+<tr><td>v7.5.0</td>
+<td><p>The <code>options</code> parameter can be a WHATWG <code>URL</code> object.</p></td></tr>
+<tr><td>v0.3.6</td>
+<td><p><span>Added in: v0.3.6</span></p></td></tr>
+</tbody></table>
+</details>
+</div>
+<ul>
+<li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="url.html#url_the_whatwg_url_api" class="type">&#x3C;URL></a></li>
+<li>
+<p><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></p>
+<ul>
+<li><code>protocol</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> Protocol to use. <strong>Default:</strong> <code>'http:'</code>.</li>
+<li><code>host</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> A domain name or IP address of the server to issue the
+request to. <strong>Default:</strong> <code>'localhost'</code>.</li>
+<li><code>hostname</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> Alias for <code>host</code>. To support <a href="url.html#url_url_parse_urlstring_parsequerystring_slashesdenotehost"><code>url.parse()</code></a>,
+<code>hostname</code> will be used if both <code>host</code> and <code>hostname</code> are specified.</li>
+<li><code>family</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> IP address family to use when resolving <code>host</code> or
+<code>hostname</code>. Valid values are <code>4</code> or <code>6</code>. When unspecified, both IP v4 and
+v6 will be used.</li>
+<li><code>port</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> Port of remote server. <strong>Default:</strong> <code>80</code>.</li>
+<li><code>localAddress</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> Local interface to bind for network connections.</li>
+<li><code>socketPath</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> Unix Domain Socket (cannot be used if one of <code>host</code>
+or <code>port</code> is specified, those specify a TCP Socket).</li>
+<li><code>method</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> A string specifying the HTTP request method. <strong>Default:</strong>
+<code>'GET'</code>.</li>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> Request path. Should include query string if any.
+E.G. <code>'/index.html?page=12'</code>. An exception is thrown when the request path
+contains illegal characters. Currently, only spaces are rejected but that
+may change in the future. <strong>Default:</strong> <code>'/'</code>.</li>
+<li><code>headers</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> An object containing request headers.</li>
+<li><code>auth</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> Basic authentication i.e. <code>'user:password'</code> to compute an
+Authorization header.</li>
+<li>
+<p><code>agent</code> <a href="http.html#http_class_http_agent" class="type">&#x3C;http.Agent></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> Controls <a href="#http_class_http_agent"><code>Agent</code></a> behavior. Possible
+values:</p>
+<ul>
+<li><code>undefined</code> (default): use <a href="#http_http_globalagent"><code>http.globalAgent</code></a> for this host and port.</li>
+<li><code>Agent</code> object: explicitly use the passed in <code>Agent</code>.</li>
+<li><code>false</code>: causes a new <code>Agent</code> with default values to be used.</li>
+</ul>
+</li>
+<li><code>createConnection</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> A function that produces a socket/stream to
+use for the request when the <code>agent</code> option is not used. This can be used to
+avoid creating a custom <code>Agent</code> class just to override the default
+<code>createConnection</code> function. See <a href="#http_agent_createconnection_options_callback"><code>agent.createConnection()</code></a> for more
+details. Any <a href="stream.html#stream_class_stream_duplex"><code>Duplex</code></a> stream is a valid return value.</li>
+<li><code>timeout</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a>: A number specifying the socket timeout in milliseconds.
+This will set the timeout before the socket is connected.</li>
+<li><code>setHost</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a>: Specifies whether or not to automatically add the
+<code>Host</code> header. Defaults to <code>true</code>.</li>
+</ul>
+</li>
+<li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a></li>
+<li>Returns: <a href="http.html#http_class_http_clientrequest" class="type">&#x3C;http.ClientRequest></a></li>
+</ul>
+<p>Node.js maintains several connections per server to make HTTP requests.
+This function allows one to transparently issue requests.</p>
+<p><code>url</code> can be a string or a <a href="url.html#url_the_whatwg_url_api"><code>URL</code></a> object. If <code>url</code> is a
+string, it is automatically parsed with <a href="url.html#url_url_parse_urlstring_parsequerystring_slashesdenotehost"><code>url.parse()</code></a>. If it is a <a href="url.html#url_the_whatwg_url_api"><code>URL</code></a>
+object, it will be automatically converted to an ordinary <code>options</code> object.</p>
+<p>If both <code>url</code> and <code>options</code> are specified, the objects are merged, with the
+<code>options</code> properties taking precedence.</p>
+<p>The optional <code>callback</code> parameter will be added as a one-time listener for
+the <a href="#http_event_response"><code>'response'</code></a> event.</p>
+<p><code>http.request()</code> returns an instance of the <a href="#http_class_http_clientrequest"><code>http.ClientRequest</code></a>
+class. The <code>ClientRequest</code> instance is a writable stream. If one needs to
+upload a file with a POST request, then write to the <code>ClientRequest</code> object.</p>
+<pre><code class="language-js">const postData = querystring.stringify({
+  'msg': 'Hello World!'
+});
+
+const options = {
+  hostname: 'www.google.com',
+  port: 80,
+  path: '/upload',
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Content-Length': Buffer.byteLength(postData)
+  }
+};
+
+const req = http.request(options, (res) => {
+  console.log(`STATUS: ${res.statusCode}`);
+  console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
+  res.setEncoding('utf8');
+  res.on('data', (chunk) => {
+    console.log(`BODY: ${chunk}`);
+  });
+  res.on('end', () => {
+    console.log('No more data in response.');
+  });
+});
+
+req.on('error', (e) => {
+  console.error(`problem with request: ${e.message}`);
+});
+
+// write data to request body
+req.write(postData);
+req.end();
+</code></pre>
+<p>Note that in the example <code>req.end()</code> was called. With <code>http.request()</code> one
+must always call <code>req.end()</code> to signify the end of the request -
+even if there is no data being written to the request body.</p>
+<p>If any error is encountered during the request (be that with DNS resolution,
+TCP level errors, or actual HTTP parse errors) an <code>'error'</code> event is emitted
+on the returned request object. As with all <code>'error'</code> events, if no listeners
+are registered the error will be thrown.</p>
+<p>There are a few special headers that should be noted.</p>
+<ul>
+<li>
+<p>Sending a 'Connection: keep-alive' will notify Node.js that the connection to
+the server should be persisted until the next request.</p>
+</li>
+<li>
+<p>Sending a 'Content-Length' header will disable the default chunked encoding.</p>
+</li>
+<li>
+<p>Sending an 'Expect' header will immediately send the request headers.
+Usually, when sending 'Expect: 100-continue', both a timeout and a listener
+for the <code>'continue'</code> event should be set. See RFC2616 Section 8.2.3 for more
+information.</p>
+</li>
+<li>
+<p>Sending an Authorization header will override using the <code>auth</code> option
+to compute basic authentication.</p>
+</li>
+</ul>
+<p>Example using a <a href="url.html#url_the_whatwg_url_api"><code>URL</code></a> as <code>options</code>:</p>
+<pre><code class="language-js">const options = new URL('http://abc:xyz@example.com');
+
+const req = http.request(options, (res) => {
+  // ...
+});
+</code></pre>
+<p>In a successful request, the following events will be emitted in the following
+order:</p>
+<ul>
+<li><code>'socket'</code></li>
+<li>
+<p><code>'response'</code></p>
+<ul>
+<li><code>'data'</code> any number of times, on the <code>res</code> object
+(<code>'data'</code> will not be emitted at all if the response body is empty, for
+instance, in most redirects)</li>
+<li><code>'end'</code> on the <code>res</code> object</li>
+</ul>
+</li>
+<li><code>'close'</code></li>
+</ul>
+<p>In the case of a connection error, the following events will be emitted:</p>
+<ul>
+<li><code>'socket'</code></li>
+<li><code>'error'</code></li>
+<li><code>'close'</code></li>
+</ul>
+<p>If <code>req.abort()</code> is called before the connection succeeds, the following events
+will be emitted in the following order:</p>
+<ul>
+<li><code>'socket'</code></li>
+<li>(<code>req.abort()</code> called here)</li>
+<li><code>'abort'</code></li>
+<li><code>'error'</code> with an error with message <code>'Error: socket hang up'</code> and code
+<code>'ECONNRESET'</code></li>
+<li><code>'close'</code></li>
+</ul>
+<p>If <code>req.abort()</code> is called after the response is received, the following events
+will be emitted in the following order:</p>
+<ul>
+<li><code>'socket'</code></li>
+<li>
+<p><code>'response'</code></p>
+<ul>
+<li><code>'data'</code> any number of times, on the <code>res</code> object</li>
+</ul>
+</li>
+<li>(<code>req.abort()</code> called here)</li>
+<li><code>'abort'</code></li>
+<li><code>'aborted'</code> on the <code>res</code> object</li>
+<li><code>'close'</code></li>
+<li><code>'end'</code> on the <code>res</code> object</li>
+<li><code>'close'</code> on the <code>res</code> object</li>
+</ul>
+<p>Note that setting the <code>timeout</code> option or using the <code>setTimeout()</code> function will
+not abort the request or do anything besides add a <code>'timeout'</code> event.</p>
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

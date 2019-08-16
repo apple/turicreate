@@ -52,6 +52,15 @@ def preview_synthetic_training_data(data,
         backgrounds_tar = _tarfile.open(backgrounds_tar_path)
         backgrounds_tar.extractall()
         backgrounds = _tc.SArray("one_shot_backgrounds.sarray")
+        # We resize the background dimensions by half along each axis to reduce
+        # the disk footprint during augmentation, and also reduce the time
+        # taken to synthesize data. 
+        backgrounds = backgrounds.apply(lambda im: _tc.image_analysis.resize(
+            im,
+            int(im.width/2),
+            int(im.height/2),
+            im.channels
+            ))
     # Option arguments to pass in to C++ Object Detector, if we use it:
     # {'mlmodel_path':'darknet.mlmodel', 'max_iterations' : 25}
     options_for_augmentation = {

@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Debugger | Node.js v10.15.3 Documentation</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/debugger.html">
+</head>
+<body class="alt apidoc" id="api-section-debugger">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="Go back to the home page">
+          Node.js
+        </a>
+      </div>
+      <ul>
+<li><a href="documentation.html" class="nav-documentation">About these Docs</a></li>
+<li><a href="synopsis.html" class="nav-synopsis">Usage &#x26; Example</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="assert.html" class="nav-assert">Assertion Testing</a></li>
+<li><a href="async_hooks.html" class="nav-async_hooks">Async Hooks</a></li>
+<li><a href="buffer.html" class="nav-buffer">Buffer</a></li>
+<li><a href="addons.html" class="nav-addons">C++ Addons</a></li>
+<li><a href="n-api.html" class="nav-n-api">C/C++ Addons - N-API</a></li>
+<li><a href="child_process.html" class="nav-child_process">Child Processes</a></li>
+<li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
+<li><a href="cli.html" class="nav-cli">Command Line Options</a></li>
+<li><a href="console.html" class="nav-console">Console</a></li>
+<li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
+<li><a href="debugger.html" class="nav-debugger active">Debugger</a></li>
+<li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
+<li><a href="dns.html" class="nav-dns">DNS</a></li>
+<li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="esm.html" class="nav-esm">ECMAScript Modules</a></li>
+<li><a href="errors.html" class="nav-errors">Errors</a></li>
+<li><a href="events.html" class="nav-events">Events</a></li>
+<li><a href="fs.html" class="nav-fs">File System</a></li>
+<li><a href="globals.html" class="nav-globals">Globals</a></li>
+<li><a href="http.html" class="nav-http">HTTP</a></li>
+<li><a href="http2.html" class="nav-http2">HTTP/2</a></li>
+<li><a href="https.html" class="nav-https">HTTPS</a></li>
+<li><a href="inspector.html" class="nav-inspector">Inspector</a></li>
+<li><a href="intl.html" class="nav-intl">Internationalization</a></li>
+<li><a href="modules.html" class="nav-modules">Modules</a></li>
+<li><a href="net.html" class="nav-net">Net</a></li>
+<li><a href="os.html" class="nav-os">OS</a></li>
+<li><a href="path.html" class="nav-path">Path</a></li>
+<li><a href="perf_hooks.html" class="nav-perf_hooks">Performance Hooks</a></li>
+<li><a href="process.html" class="nav-process">Process</a></li>
+<li><a href="punycode.html" class="nav-punycode">Punycode</a></li>
+<li><a href="querystring.html" class="nav-querystring">Query Strings</a></li>
+<li><a href="readline.html" class="nav-readline">Readline</a></li>
+<li><a href="repl.html" class="nav-repl">REPL</a></li>
+<li><a href="stream.html" class="nav-stream">Stream</a></li>
+<li><a href="string_decoder.html" class="nav-string_decoder">String Decoder</a></li>
+<li><a href="timers.html" class="nav-timers">Timers</a></li>
+<li><a href="tls.html" class="nav-tls">TLS/SSL</a></li>
+<li><a href="tracing.html" class="nav-tracing">Trace Events</a></li>
+<li><a href="tty.html" class="nav-tty">TTY</a></li>
+<li><a href="dgram.html" class="nav-dgram">UDP/Datagram</a></li>
+<li><a href="url.html" class="nav-url">URL</a></li>
+<li><a href="util.html" class="nav-util">Utilities</a></li>
+<li><a href="v8.html" class="nav-v8">V8</a></li>
+<li><a href="vm.html" class="nav-vm">VM</a></li>
+<li><a href="worker_threads.html" class="nav-worker_threads">Worker Threads</a></li>
+<li><a href="zlib.html" class="nav-zlib">ZLIB</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="https://github.com/nodejs/node" class="nav-https-github-com-nodejs-node">GitHub Repo &#x26; Issue Tracker</a></li>
+</ul>
+    </div>
+
+    <div id="column1" data-id="debugger" class="interior">
+      <header>
+        <h1>Node.js v10.15.3 Documentation</h1>
+        <div id="gtoc">
+          <ul>
+            <li>
+              <a href="index.html" name="toc">Index</a>
+            </li>
+            <li>
+              <a href="all.html">View on single page</a>
+            </li>
+            <li>
+              <a href="debugger.json">View as JSON</a>
+            </li>
+            
+    <li class="version-picker">
+      <a href="#">View another version <span>&#x25bc;</span></a>
+      <ol class="version-picker"><li><a href="https://nodejs.org/docs/latest-v11.x/api/debugger.html">11.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v10.x/api/debugger.html">10.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v9.x/api/debugger.html">9.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v8.x/api/debugger.html">8.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v7.x/api/debugger.html">7.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v6.x/api/debugger.html">6.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v5.x/api/debugger.html">5.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v4.x/api/debugger.html">4.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v0.12.x/api/debugger.html">0.12.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v0.10.x/api/debugger.html">0.10.x</a></li></ol>
+    </li>
+  
+            <li class="edit_on_github"><a href="https://github.com/nodejs/node/edit/master/doc/api/debugger.md"><span class="github_icon"><svg height="16" width="16" viewBox="0 0 16.1 16.1" fill="currentColor"><path d="M8 0a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2 .4-2.5-.5-2.7-1 0-.1-.5-.9-.8-1-.3-.2-.7-.6 0-.6.6 0 1 .6 1.2.8.7 1.2 1.9 1 2.4.7 0-.5.2-.9.5-1-1.8-.3-3.7-1-3.7-4 0-.9.3-1.6.8-2.2 0-.2-.3-1 .1-2 0 0 .7-.3 2.2.7a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.5 1.1.2 2 .1 2.1.5.6.8 1.3.8 2.2 0 3-1.9 3.7-3.6 4 .3.2.5.7.5 1.4v2.2c0 .2.1.5.5.4A8 8 0 0 0 16 8a8 8 0 0 0-8-8z"/></svg></span>Edit on GitHub</a></li>
+          </ul>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>Table of Contents</h2>
+        <ul>
+<li>
+<p><span class="stability_2"><a href="#debugger_debugger">Debugger</a></span></p>
+<ul>
+<li><a href="#debugger_watchers">Watchers</a></li>
+<li>
+<p><a href="#debugger_command_reference">Command reference</a></p>
+<ul>
+<li><a href="#debugger_stepping">Stepping</a></li>
+<li><a href="#debugger_breakpoints">Breakpoints</a></li>
+<li><a href="#debugger_information">Information</a></li>
+<li><a href="#debugger_execution_control">Execution control</a></li>
+<li><a href="#debugger_various">Various</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#debugger_advanced_usage">Advanced Usage</a></p>
+<ul>
+<li><a href="#debugger_v8_inspector_integration_for_node_js">V8 Inspector Integration for Node.js</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+      </div>
+
+      <div id="apicontent">
+        <h1>Debugger<span><a class="mark" href="#debugger_debugger" id="debugger_debugger">#</a></span></h1>
+
+<p></p><div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p></p>
+
+<p>Node.js includes an out-of-process debugging utility accessible via a
+<a href="#debugger_v8_inspector_integration_for_node_js">V8 Inspector</a> and built-in debugging client. To use it, start Node.js
+with the <code>inspect</code> argument followed by the path to the script to debug; a
+prompt will be displayed indicating successful launch of the debugger:</p>
+<pre><code class="language-txt">$ node inspect myscript.js
+&#x3C; Debugger listening on ws://127.0.0.1:9229/80e7a814-7cd3-49fb-921a-2e02228cd5ba
+&#x3C; For help, see: https://nodejs.org/en/docs/inspector
+&#x3C; Debugger attached.
+Break on start in myscript.js:1
+> 1 (function (exports, require, module, __filename, __dirname) { global.x = 5;
+  2 setTimeout(() => {
+  3   console.log('world');
+debug>
+</code></pre>
+<p>Node.js's debugger client is not a full-featured debugger, but simple step and
+inspection are possible.</p>
+<p>Inserting the statement <code>debugger;</code> into the source code of a script will
+enable a breakpoint at that position in the code:</p>
+<!-- eslint-disable no-debugger -->
+<pre><code class="language-js">// myscript.js
+global.x = 5;
+setTimeout(() => {
+  debugger;
+  console.log('world');
+}, 1000);
+console.log('hello');
+</code></pre>
+<p>Once the debugger is run, a breakpoint will occur at line 3:</p>
+<pre><code class="language-txt">$ node inspect myscript.js
+&#x3C; Debugger listening on ws://127.0.0.1:9229/80e7a814-7cd3-49fb-921a-2e02228cd5ba
+&#x3C; For help, see: https://nodejs.org/en/docs/inspector
+&#x3C; Debugger attached.
+Break on start in myscript.js:1
+> 1 (function (exports, require, module, __filename, __dirname) { global.x = 5;
+  2 setTimeout(() => {
+  3   debugger;
+debug> cont
+&#x3C; hello
+break in myscript.js:3
+  1 (function (exports, require, module, __filename, __dirname) { global.x = 5;
+  2 setTimeout(() => {
+> 3   debugger;
+  4   console.log('world');
+  5 }, 1000);
+debug> next
+break in myscript.js:4
+  2 setTimeout(() => {
+  3   debugger;
+> 4   console.log('world');
+  5 }, 1000);
+  6 console.log('hello');
+debug> repl
+Press Ctrl + C to leave debug repl
+> x
+5
+> 2 + 2
+4
+debug> next
+&#x3C; world
+break in myscript.js:5
+  3   debugger;
+  4   console.log('world');
+> 5 }, 1000);
+  6 console.log('hello');
+  7
+debug> .exit
+</code></pre>
+<p>The <code>repl</code> command allows code to be evaluated remotely. The <code>next</code> command
+steps to the next line. Type <code>help</code> to see what other commands are available.</p>
+<p>Pressing <code>enter</code> without typing a command will repeat the previous debugger
+command.</p>
+<h2>Watchers<span><a class="mark" href="#debugger_watchers" id="debugger_watchers">#</a></span></h2>
+<p>It is possible to watch expression and variable values while debugging. On
+every breakpoint, each expression from the watchers list will be evaluated
+in the current context and displayed immediately before the breakpoint's
+source code listing.</p>
+<p>To begin watching an expression, type <code>watch('my_expression')</code>. The command
+<code>watchers</code> will print the active watchers. To remove a watcher, type
+<code>unwatch('my_expression')</code>.</p>
+<h2>Command reference<span><a class="mark" href="#debugger_command_reference" id="debugger_command_reference">#</a></span></h2>
+<h3>Stepping<span><a class="mark" href="#debugger_stepping" id="debugger_stepping">#</a></span></h3>
+<ul>
+<li><code>cont</code>, <code>c</code> - Continue execution</li>
+<li><code>next</code>, <code>n</code> - Step next</li>
+<li><code>step</code>, <code>s</code> - Step in</li>
+<li><code>out</code>, <code>o</code> - Step out</li>
+<li><code>pause</code> - Pause running code (like pause button in Developer Tools)</li>
+</ul>
+<h3>Breakpoints<span><a class="mark" href="#debugger_breakpoints" id="debugger_breakpoints">#</a></span></h3>
+<ul>
+<li><code>setBreakpoint()</code>, <code>sb()</code> - Set breakpoint on current line</li>
+<li><code>setBreakpoint(line)</code>, <code>sb(line)</code> - Set breakpoint on specific line</li>
+<li><code>setBreakpoint('fn()')</code>, <code>sb(...)</code> - Set breakpoint on a first statement in
+functions body</li>
+<li><code>setBreakpoint('script.js', 1)</code>, <code>sb(...)</code> - Set breakpoint on first line of
+<code>script.js</code></li>
+<li><code>clearBreakpoint('script.js', 1)</code>, <code>cb(...)</code> - Clear breakpoint in <code>script.js</code>
+on line 1</li>
+</ul>
+<p>It is also possible to set a breakpoint in a file (module) that
+is not loaded yet:</p>
+<pre><code class="language-txt">$ node inspect main.js
+&#x3C; Debugger listening on ws://127.0.0.1:9229/4e3db158-9791-4274-8909-914f7facf3bd
+&#x3C; For help, see: https://nodejs.org/en/docs/inspector
+&#x3C; Debugger attached.
+Break on start in main.js:1
+> 1 (function (exports, require, module, __filename, __dirname) { const mod = require('./mod.js');
+  2 mod.hello();
+  3 mod.hello();
+debug> setBreakpoint('mod.js', 22)
+Warning: script 'mod.js' was not loaded yet.
+debug> c
+break in mod.js:22
+ 20 // USE OR OTHER DEALINGS IN THE SOFTWARE.
+ 21
+>22 exports.hello = function() {
+ 23   return 'hello from module';
+ 24 };
+debug>
+</code></pre>
+<h3>Information<span><a class="mark" href="#debugger_information" id="debugger_information">#</a></span></h3>
+<ul>
+<li><code>backtrace</code>, <code>bt</code> - Print backtrace of current execution frame</li>
+<li><code>list(5)</code> - List scripts source code with 5 line context (5 lines before and
+after)</li>
+<li><code>watch(expr)</code> - Add expression to watch list</li>
+<li><code>unwatch(expr)</code> - Remove expression from watch list</li>
+<li><code>watchers</code> - List all watchers and their values (automatically listed on each
+breakpoint)</li>
+<li><code>repl</code> - Open debugger's repl for evaluation in debugging script's context</li>
+<li><code>exec expr</code> - Execute an expression in debugging script's context</li>
+</ul>
+<h3>Execution control<span><a class="mark" href="#debugger_execution_control" id="debugger_execution_control">#</a></span></h3>
+<ul>
+<li><code>run</code> - Run script (automatically runs on debugger's start)</li>
+<li><code>restart</code> - Restart script</li>
+<li><code>kill</code> - Kill script</li>
+</ul>
+<h3>Various<span><a class="mark" href="#debugger_various" id="debugger_various">#</a></span></h3>
+<ul>
+<li><code>scripts</code> - List all loaded scripts</li>
+<li><code>version</code> - Display V8's version</li>
+</ul>
+<h2>Advanced Usage<span><a class="mark" href="#debugger_advanced_usage" id="debugger_advanced_usage">#</a></span></h2>
+<h3>V8 Inspector Integration for Node.js<span><a class="mark" href="#debugger_v8_inspector_integration_for_node_js" id="debugger_v8_inspector_integration_for_node_js">#</a></span></h3>
+<p>V8 Inspector integration allows attaching Chrome DevTools to Node.js
+instances for debugging and profiling. It uses the
+<a href="https://chromedevtools.github.io/devtools-protocol/">Chrome DevTools Protocol</a>.</p>
+<p>V8 Inspector can be enabled by passing the <code>--inspect</code> flag when starting a
+Node.js application. It is also possible to supply a custom port with that flag,
+e.g. <code>--inspect=9222</code> will accept DevTools connections on port 9222.</p>
+<p>To break on the first line of the application code, pass the <code>--inspect-brk</code>
+flag instead of <code>--inspect</code>.</p>
+<pre><code class="language-txt">$ node --inspect index.js
+Debugger listening on 127.0.0.1:9229.
+To start debugging, open the following URL in Chrome:
+    chrome-devtools://devtools/bundled/js_app.html?experiments=true&#x26;v8only=true&#x26;ws=127.0.0.1:9229/dc9010dd-f8b8-4ac5-a510-c1a114ec7d29
+</code></pre>
+<p>(In the example above, the UUID dc9010dd-f8b8-4ac5-a510-c1a114ec7d29
+at the end of the URL is generated on the fly, it varies in different
+debugging sessions.)</p>
+<p>If the Chrome browser is older than 66.0.3345.0,
+use <code>inspector.html</code> instead of <code>js_app.html</code> in the above URL.</p>
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

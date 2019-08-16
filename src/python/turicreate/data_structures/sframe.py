@@ -3781,48 +3781,8 @@ class SFrame(object):
         if type(other) is not SFrame:
             raise RuntimeError("SFrame append can only work with SFrame")
 
-        left_empty = len(self.column_names()) == 0
-        right_empty = len(other.column_names()) == 0
-
-        if (left_empty and right_empty):
-            return SFrame()
-
-        if (left_empty or right_empty):
-            non_empty_sframe = self if right_empty else other
-            return non_empty_sframe.__copy__()
-
-        my_column_names = self.column_names()
-        my_column_types = self.column_types()
-        other_column_names = other.column_names()
-        if (len(my_column_names) != len(other_column_names)):
-            raise RuntimeError("Two SFrames have to have the same number of columns")
-
-        # check if the order of column name is the same
-        column_name_order_match = True
-        for i in range(len(my_column_names)):
-            if other_column_names[i] != my_column_names[i]:
-                column_name_order_match = False
-                break
-
-        processed_other_frame = other
-        if not column_name_order_match:
-            # we allow name order of two sframes to be different, so we create a new sframe from
-            # "other" sframe to make it has exactly the same shape
-            processed_other_frame = SFrame()
-            for i in range(len(my_column_names)):
-                col_name = my_column_names[i]
-                if(col_name not in other_column_names):
-                    raise RuntimeError("Column " + my_column_names[i] + " does not exist in second SFrame")
-
-                other_column = other.select_column(col_name)
-                processed_other_frame.add_column(other_column, col_name, inplace=True)
-
-                # check column type
-                if my_column_types[i] != other_column.dtype:
-                    raise RuntimeError("Column " + my_column_names[i] + " type is not the same in two SFrames, one is " + str(my_column_types[i]) + ", the other is " + str(other_column.dtype))
-
         with cython_context():
-            return SFrame(_proxy=self.__proxy__.append(processed_other_frame.__proxy__))
+            return SFrame(_proxy=self.__proxy__.append(other.__proxy__))
 
     def groupby(self, key_column_names, operations, *args):
         """
