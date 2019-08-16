@@ -31,7 +31,7 @@ using namespace turi::neural_net;
     // TODO: This copy is inefficient. This should be a wrapper around NSData: 
     //       a custom subclass of float_array that preserves a strong reference
     //       to the NSData instance.
-    
+
     shared_float_array array = shared_float_array::copy(dataBytes, dataShape);
     
     map.emplace(key.UTF8String, array);
@@ -46,6 +46,11 @@ using namespace turi::neural_net;
   for (const auto &element : map) {
     const float* elementData = element.second.data();
     const size_t elementSize = element.second.size() * sizeof(float);
+
+    // TODO: This copy is inefficient. We can construct an NSData that wraps a 
+    //       shared_float_array. 
+    // 
+    // API: https://developer.apple.com/documentation/foundation/nsdata/1417337-initwithbytesnocopy?language=objc
 
     NSData *data = [NSData dataWithBytes:elementData length:elementSize];
 
