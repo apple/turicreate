@@ -9,8 +9,18 @@
 #import <ml/neural_net/mps_layer_instance_norm_data_loader.h>
 #import <ml/neural_net/mps_weight.h>
 
+#import <objc/runtime.h>
+
 @implementation MPSCNNFullyConnectedNode (TCMPSLayerHelper)
-@dynamic weights;
+
+- (void)setWeights:(TCMPSConvolutionWeights *)weights {
+    objc_setAssociatedObject(self, @selector(tag), weights, OBJC_ASSOCIATION_RETAIN);
+}
+
+- (NSString *)weights {
+    return objc_getAssociatedObject(self, @selector(tag));
+}
+
 + (MPSCNNFullyConnectedNode *) createFullyConnected:(MPSNNImageNode *)inputNode
                                inputFeatureChannels:(NSUInteger)inputFeatureChannels
                               outputFeatureChannels:(NSUInteger)outputFeatureChannels
@@ -46,14 +56,22 @@
     [MPSCNNFullyConnectedNode nodeWithSource:inputNode
                                      weights:fullyConnectedDataLoad];
 
-  // fullyConnectedNode.weights = fullyConnectedDataLoad;
+  fullyConnectedNode.weights = fullyConnectedDataLoad;
   
   return fullyConnectedNode;
 }
 @end
 
 @implementation MPSCNNConvolutionNode (TCMPSLayerHelper)
-@dynamic weights;
+
+- (void)setWeights:(TCMPSConvolutionWeights *)weights {
+    objc_setAssociatedObject(self, @selector(tag), weights, OBJC_ASSOCIATION_RETAIN);
+}
+
+- (NSString *)weights {
+    return objc_getAssociatedObject(self, @selector(tag));
+}
+
 + (MPSCNNConvolutionNode *) createConvolutional:(MPSNNImageNode *)inputNode
                                     kernelWidth:(NSUInteger)kernelWidth
                                    kernelHeight:(NSUInteger)kernelHeight
@@ -101,14 +119,22 @@
 
   convNode.paddingPolicy = padding;
 
-  // convNode.weights = convDataLoad;
+  convNode.weights = convDataLoad;
   
   return convNode;
 }
 @end
 
 @implementation MPSCNNInstanceNormalizationNode (TCMPSLayerHelper)
-@dynamic weights;
+
+- (void)setWeights:(TCMPSInstanceNormDataLoader *)weights {
+    objc_setAssociatedObject(self, @selector(tag), weights, OBJC_ASSOCIATION_RETAIN);
+}
+
+- (NSString *)weights {
+    return objc_getAssociatedObject(self, @selector(tag));
+}
+
 + (MPSCNNInstanceNormalizationNode *) createInstanceNormalization:(MPSNNImageNode *)inputNode
                                                          channels:(NSUInteger)channels
                                                            styles:(NSUInteger)styles
@@ -129,7 +155,7 @@
   MPSCNNInstanceNormalizationNode *instNormNode =  [MPSCNNInstanceNormalizationNode nodeWithSource:inputNode
                                                                                         dataSource:instNormDataLoad];
 
-  // instNormNode.weights = instNormDataLoad;
+  instNormNode.weights = instNormDataLoad;
 
   return instNormNode;
 }
