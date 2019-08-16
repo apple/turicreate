@@ -178,9 +178,10 @@ static void bench_test_aggreate_nthread(
   DASSERT_EQ(sf.num_rows(), nrows);
   // sf.debug_print();
   size_t max_hardware_mp = turi::thread::cpu_count();
-  if (2 < max_hardware_mp) test_fn(sf, keys, op_keys, nrows, 2, reps);
+  // if (2 < max_hardware_mp) test_fn(sf, keys, op_keys, nrows, 2, reps);
   if (4 < max_hardware_mp) test_fn(sf, keys, op_keys, nrows, 4, reps);
-  if (8 < max_hardware_mp) test_fn(sf, keys, op_keys, nrows, 8, reps);
+  // if (6 < max_hardware_mp) test_fn(sf, keys, op_keys, nrows, 6, reps);
+  // if (8 < max_hardware_mp) test_fn(sf, keys, op_keys, nrows, 8, reps);
   test_fn(sf, keys, op_keys, nrows, max_hardware_mp, reps);
 }
 
@@ -259,11 +260,19 @@ static void bench_test_aggreate_min_summary(size_t nrows, size_t nusers,
 };  // namespace turi
 
 int main(int argc, char** argv) {
+
+  global_logger().set_log_level(LOG_PROGRESS);
+
   try {
     // 1 million rows
-    size_t nrows = 1000000;
-    size_t reps = 100;
-    size_t nusers = 10000;
+    size_t nrows = 100000;
+    size_t reps = 5;
+    size_t nusers = 100;
+
+    if (argc > 1) nrows = std::stoi(argv[1]);
+    if (argc > 2) reps = std::stoi(argv[2]);
+    if (argc > 3) nusers = std::stoi(argv[3]);
+
     if (false) turi::bench_test_aggreate_count_summary(nrows, reps);
     turi::bench_test_aggreate_min_summary(nrows, nusers, reps, -1000, 1000);
     // if (false) turi::bench_test_aggreate_avg_summary(nrows, reps, -1000,
