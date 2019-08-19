@@ -239,7 +239,7 @@ group_aggregate_container::group_aggregate_container(size_t max_buffer_size,
   size_t num_local_buffers =
       (fs_util::get_file_handle_limit() >> 1) / num_segments;
 
-  logprogress_stream << "num_local_buffers: " << num_local_buffers << std::endl;
+  logstream(LOG_INFO) << "num_local_buffers: " << num_local_buffers << std::endl;
 
   num_local_buffers =
       num_local_buffers == 0
@@ -411,7 +411,7 @@ void group_aggregate_container::flush_segment(size_t segmentid) {
     std::lock_guard<turi::simple_spinlock> slk(
         local_buffer.sa_seg_locks_[segmentid]);
 
-    logstream(LOG_PROGRESS) << "flush buffer from task_id: " << tss_.id_
+    logstream(LOG_INFO) << "flush buffer from task_id: " << tss_.id_
                             << ", segment_id: "<< segmentid << ", on buffer: " << round_robin << std::endl;
 
     auto outiter = local_buffer.sa_buffer_ptr_->get_output_iterator(segmentid);
@@ -435,7 +435,7 @@ void group_aggregate_container::merge_local_buffer_set() {
     log_and_throw("intermediate_buffer is should be closed before stealing local_buffer.");
 
   turi::timer ti;
-  logstream(LOG_PROGRESS) << "Merging local buffer set " << std::endl;
+  logstream(LOG_INFO) << "Merging local buffer set " << std::endl;
 
   // merge all other local buffers to first local buffer
   std::unique_ptr<sarray<std::string>> buffer_to_merge =
@@ -500,7 +500,7 @@ void group_aggregate_container::merge_local_buffer_set() {
   gl_buffer_ = std::move(*buffer_to_merge);
   gl_chunk_size_set_ = std::move(chunk_to_merge);
 
-  logstream(LOG_PROGRESS) << "Merging finished in " << ti.current_time_millis()
+  logstream(LOG_INFO) << "Merging finished in " << ti.current_time_millis()
                           << " ms." << std::endl;
 }
 

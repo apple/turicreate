@@ -188,7 +188,7 @@ sframe groupby_aggregate(const sframe& source,
   // shuffle the rows based on the value of the key column.
   auto input_reader = frame_with_relevant_cols.get_reader(thread::cpu_count());
   turi::timer ti;
-  logstream(LOG_PROGRESS) << "Filling group container: " << std::endl;
+  logstream(LOG_INFO) << "Filling group container: " << std::endl;
   parallel_for (0, input_reader->num_segments(),
                 [&](size_t i) {
                   container.init_tls();
@@ -202,11 +202,11 @@ sframe groupby_aggregate(const sframe& source,
                   container.flush_tls();
                 });
 
-  logstream(LOG_PROGRESS) << "Group container filled in " << ti.current_time() << std::endl;
-  logstream(LOG_PROGRESS) << "Writing output: " << std::endl;
+  logstream(LOG_INFO) << "Group container filled in " << ti.current_time() << std::endl;
+  logstream(LOG_INFO) << "Writing output: " << std::endl;
   ti.start();
   container.group_and_write(output);
-  logstream(LOG_PROGRESS) << "Output written in: " << ti.current_time() << std::endl;
+  logstream(LOG_INFO) << "Output written in: " << ti.current_time() << std::endl;
   output.close();
   return output;
 }
