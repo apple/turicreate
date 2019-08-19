@@ -31,7 +31,7 @@ from .util import _MIN_NUM_SESSIONS_FOR_SPLIT
 
 
 def create(dataset, session_id, target, features=None, prediction_window=100,
-           validation_set='auto', max_iterations=10, batch_size=32, verbose=True):
+           validation_set='auto', max_iterations=10, batch_size=32, verbose=True, **kwargs):
     """
     Create an :class:`ActivityClassifier` model.
 
@@ -139,6 +139,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     from .._mps_utils import (use_mps as _use_mps,
                               mps_device_name as _mps_device_name,
                               ac_weights_mps_to_mxnet as _ac_weights_mps_to_mxnet)
+    from ._tf_model_architecture import ActivityTensorFlowModel
 
 
     if not isinstance(target, str):
@@ -165,6 +166,21 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     _tkutl._raise_error_if_sarray_not_expected_dtype(dataset[target], target, [str, int])
     _tkutl._raise_error_if_sarray_not_expected_dtype(dataset[session_id], session_id, [str, int])
 
+    params = {
+        'use_tensorflow': False,
+        'mps' : False
+    }
+
+    if '_advanced_parameters' in kwargs:
+        # Make sure no additional parameters are provided
+        new_keys = set(kwargs['_advanced_parameters'].keys())
+        set_keys = set(params.keys())
+        unsupported = new_keys - set_keys
+        if unsupported:
+            raise _ToolkitError('Unknown advanced parameters: {}'.format(unsupported))
+
+        params.update(kwargs['_advanced_parameters'])
+
     if isinstance(validation_set, str) and validation_set == 'auto':
         # Computing the number of unique sessions in this way is relatively
         # expensive. Ideally we'd incorporate this logic into the C++ code that
@@ -190,7 +206,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
     # Decide whether to use MPS GPU, MXnet GPU or CPU
     num_mxnet_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=num_sessions)
-    use_mps = _use_mps() and num_mxnet_gpus == 0
+    use_mps = _use_mps() and num_mxnet_gpus == 0 and params['mps']
 
     if verbose:
         if use_mps:
@@ -199,6 +215,8 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
             print('Using GPU to create model (CUDA)')
         elif num_mxnet_gpus > 1:
             print('Using {} GPUs to create model (CUDA)'.format(num_mxnet_gpus))
+        elif params['use_tensorflow'] == True:
+            print('Using Tensorflow')
         else:
             print('Using CPU to create model')
 
@@ -241,6 +259,10 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
                                        prediction_window, predictions_in_chunk, is_prediction_model=False)
 
         log = _fit_model_mps(loss_model, data_iter, valid_iter, max_iterations, verbose)
+    elif params['use_tensorflow'] == True:
+        ac_model = ActivityTensorFlowModel(batch_size, len(features), len(target_map), prediction_window, predictions_in_chunk)
+        # Train the model using Tensorflow
+        log = ac_model.fit_model_tf(data_iter, valid_iter, max_iterations, verbose, 1e-3)
 
     else:
         # Train the model using Mxnet
@@ -250,13 +272,12 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     # Set up prediction model
     pred_model.bind(data_shapes=data_iter.provide_data, label_shapes=None,
                     for_training=False)
-
+    
     if use_mps:
         mps_params = loss_model.export()
         arg_params, aux_params = _ac_weights_mps_to_mxnet(mps_params, _net_params['lstm_h'])
     else:
         arg_params, aux_params = loss_model.get_params()
-        print(arg_params, aux_params)
 
     pred_model.init_params(arg_params=arg_params, aux_params=aux_params)
 
