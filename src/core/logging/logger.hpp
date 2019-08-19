@@ -328,7 +328,7 @@
   do {                                                              \
     auto throw_error = [&]() GL_COLD_NOINLINE_ERROR {  \
       logstream(LOG_ERROR) << (message) << std::endl;               \
-      throw(std::string(message));                                  \
+      throw(std::runtime_error(message));                                  \
     };                                                              \
     throw_error();                                                  \
   } while(0)
