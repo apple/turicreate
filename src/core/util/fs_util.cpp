@@ -21,6 +21,9 @@
 #include <core/util/string_util.hpp>
 
 #include <sys/param.h>
+#ifndef _WIN32
+#include <sys/resource.h>
+#endif
 
 bool turi::fs_util::upgrade_file_handle_limit(size_t limit) {
 #ifndef _WIN32
