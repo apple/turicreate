@@ -78,6 +78,7 @@ class EXPORT object_detector: public ml_model_base {
       {{"metric", std::string("auto")}});
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::predict, "data");
+  // register_defaults("predict", {{"data", to_variant(gl_sarray())}});
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::export_to_coreml, "filename",
     "options");
@@ -124,6 +125,10 @@ class EXPORT object_detector: public ml_model_base {
   virtual std::unique_ptr<neural_net::model_spec> init_model(
       const std::string& pretrained_mlmodel_path) const;
 
+  virtual std::vector<neural_net::image_annotation> convert_yolo_to_annotations(
+      const neural_net::float_array& yolo_map,
+      const std::vector<std::pair<float, float>>& anchor_boxes,
+      float min_confidence);
 
   // Support for iterative training.
   // TODO: Expose via forthcoming C-API checkpointing mechanism?

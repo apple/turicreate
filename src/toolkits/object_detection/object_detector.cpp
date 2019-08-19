@@ -575,6 +575,15 @@ variant_map_type object_detector::perform_evaluation(gl_sframe data,
   return evaluate(data, metric);
 }
 
+std::vector<neural_net::image_annotation>
+object_detector::convert_yolo_to_annotations(
+    const neural_net::float_array& yolo_map,
+    const std::vector<std::pair<float, float>>& anchor_boxes,
+    float min_confidence) {
+  return turi::object_detection::convert_yolo_to_annotations(
+      yolo_map, anchor_boxes, min_confidence);
+}
+
 std::unique_ptr<model_spec> object_detector::init_model(
     const std::string& pretrained_mlmodel_path) const {
 
