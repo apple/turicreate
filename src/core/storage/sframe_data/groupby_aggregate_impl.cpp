@@ -447,13 +447,29 @@ void group_aggregate_container::merge_local_buffer_set() {
     chunk.reserve(chunk.size() * local_buffer_set_.size());
   }
 
+  // skip empty segments
+  std::vector<size_t> non_empty_segment;
+  non_empty_segment.reserve(num_segments);
+
   for (size_t ii = 1; ii < local_buffer_set_.size(); ++ii) {
     auto& local_buffer = local_buffer_set_[ii];
     while (local_buffer.refctr_ > 0) cpu_relax();
     // no writers now, close it
     local_buffer.sa_buffer_ptr_->close();
 
-    parallel_for(0, num_segments, [&](size_t segment_id) {
+    non_empty_segment.clear();
+    auto reader = local_buffer.sa_buffer_ptr_->get_reader();
+    DASSERT_EQ(reader->num_segments(), num_segments);
+
+    for (size_t ii = 0; ii < num_segments; ii++) {
+      if (reader->segment_length(ii)) {
+        non_empty_segment.push_back(ii);
+      }
+    };
+
+    parallel_for(0, non_empty_segment.size(), [&](size_t ii) {
+      size_t segment_id = non_empty_segment[ii];
+
       auto reader = local_buffer.sa_buffer_ptr_->get_reader();
       DASSERT_EQ(reader->num_segments(), num_segments);
 
