@@ -1,4 +1,4 @@
-/* Copyright © 2018 Apple Inc. All rights reserved.
+/* Copyright © 2019 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
@@ -14,7 +14,7 @@ namespace neural_net {
 
 
 /**
- * A compute_context implementation backed by MXNet
+ * A compute_context implementation backed by TensorFlow
  * for neural network computation and for data
  * augmentation.
  */
@@ -23,9 +23,7 @@ public:
 
 
   /**
-   * Constructs a context wrapping the best currently available Metal device.
-   *
-   * \todo Guard against eGPU coming and going?
+   * Constructs a context wrapping devices that will not have Metal.
    */
   tf_compute_context();
 
