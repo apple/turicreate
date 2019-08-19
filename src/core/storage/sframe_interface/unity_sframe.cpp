@@ -1849,10 +1849,10 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
     ew << table_spec.str();
 
     // This materializes if not already
-    sframe underlying_sframe = self->get_underlying_sframe();
+    std::shared_ptr<sframe> underlying_sframe = self->get_underlying_sframe();
 
     // Get a reader just once.
-    sframe_reader reader = underlying_sframe->get_reader();
+    std::shared_ptr<sframe_reader> reader = underlying_sframe->get_reader();
 
     ew << visualization::table_data(self, reader.get(), 0, 100);
 
