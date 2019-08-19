@@ -29,8 +29,10 @@
                          descriptor:(TCMPSResidualDescriptor *)descriptor
                         initWeights:(NSDictionary<NSString *, NSData *> *) weights {
   self = [super init];
-  
+
   if (self) {
+    // No bias
+    NSMutableData* zeroedConv1Biases = [NSMutableData dataWithLength:descriptor.conv1.outputFeatureChannels*sizeof(float)];
     _conv1 = [MPSCNNConvolutionNode createConvolutional:inputNode
                                             kernelWidth:descriptor.conv1.kernelWidth
                                            kernelHeight:descriptor.conv1.kernelHeight
@@ -41,7 +43,7 @@
                                            paddingWidth:descriptor.conv1.paddingWidth
                                           paddingHeight:descriptor.conv1.paddingHeight
                                                 weights:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_1_weights"]]
-                                                 biases:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_1_bias"]]
+                                                 biases:zeroedConv1Biases
                                                   label:descriptor.conv1.label
                                           updateWeights:descriptor.conv1.updateWeights
                                                  device:dev
@@ -58,6 +60,8 @@
 
     _relu1 = [MPSCNNNeuronReLUNNode nodeWithSource:[_instNorm1 resultImage]];
 
+    // No bias
+    NSMutableData* zeroedConv2Biases = [NSMutableData dataWithLength:descriptor.conv2.outputFeatureChannels*sizeof(float)];
     _conv2 = [MPSCNNConvolutionNode createConvolutional:[_relu1 resultImage]
                                             kernelWidth:descriptor.conv2.kernelWidth
                                            kernelHeight:descriptor.conv2.kernelHeight
@@ -68,7 +72,7 @@
                                            paddingWidth:descriptor.conv2.paddingWidth
                                           paddingHeight:descriptor.conv2.paddingHeight
                                                 weights:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_2_weights"]]
-                                                 biases:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_2_bias"]]
+                                                 biases:zeroedConv2Biases
                                                   label:descriptor.conv2.label
                                           updateWeights:descriptor.conv2.updateWeights
                                                  device:dev

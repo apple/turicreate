@@ -44,29 +44,24 @@
 @end
 
 @implementation TCMPSStyleTransfer
-- (instancetype) initWithParameters:(NSDictionary<NSString *, NSData *> *)weights
-                          numStyles:(NSUInteger)numStyles {
+
+- (instancetype) initWithDev:(id<MTLDevice>) dev
+                commandQueue:(id<MTLCommandQueue>) commandQueue
+                     weights:(NSDictionary<NSString *, NSData *> *) weights
+                   numStyles:(NSUInteger) numStyles {
   self = [super init];
   if (self) {
-    // Set Default parameters values
+    // Assign a _dev and _commandQueue
+    _dev = dev;
+    _commandQueue = commandQueue;
 
+    // Set Default parameters values
     _batchSize = 6;
     _contentLossMultiplier = 1.0;
     _styleLossMultiplier = 1e-4;
     _updateAllParams = YES;
     _imgWidth = 256;
     _imgHeight = 256;
-
-    // Create the loss descriptors for the style and content images
-    MPSCNNLossDescriptor *styleDesc = [MPSCNNLossDescriptor cnnLossDescriptorWithType:MPSCNNLossTypeMeanSquaredError
-                                                                         reductionType:MPSCNNReductionTypeMean];
-
-    styleDesc.weight = 0.5 * _styleLossMultiplier;
-
-    MPSCNNLossDescriptor *contentDesc = [MPSCNNLossDescriptor cnnLossDescriptorWithType:MPSCNNLossTypeMeanSquaredError
-                                                                           reductionType:MPSCNNReductionTypeMean];
-
-    contentDesc.weight = 0.5 * _contentLossMultiplier;
 
     // Create Proper Input Nodes
     _contentNode = [MPSNNImageNode nodeWithHandle: [[TCMPSGraphNodeHandle alloc] initWithLabel:@"contentImage"]];
@@ -81,10 +76,6 @@
     TCMPSTransformerDescriptor *transformerDesc = [TCMPSStyleTransfer defineTransformerDescriptor:numStyles
                                                                                    tuneAllWeights:_updateAllParams];
     TCMPSVgg16Descriptor *vgg16Desc = [TCMPSStyleTransfer defineVGG16Descriptor:numStyles];
-
-    // Allocate a _dev and _commandQueue
-    _dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
-    _commandQueue = [_dev newCommandQueue];
 
     _model = [[TCMPSStyleTransferTransformerNetwork alloc] initWithParameters:@"Transformer"
                                                                     inputNode:_contentNode
@@ -135,6 +126,17 @@
     NSUInteger gramScaling2 = ((DEFAULT_IMAGE_SIZE/2) * (DEFAULT_IMAGE_SIZE/2));
     NSUInteger gramScaling3 = ((DEFAULT_IMAGE_SIZE/4) * (DEFAULT_IMAGE_SIZE/4));
     NSUInteger gramScaling4 = ((DEFAULT_IMAGE_SIZE/8) * (DEFAULT_IMAGE_SIZE/8));
+
+    // Create the loss descriptors for the style and content images
+    MPSCNNLossDescriptor *styleDesc = [MPSCNNLossDescriptor cnnLossDescriptorWithType:MPSCNNLossTypeMeanSquaredError
+                                                                         reductionType:MPSCNNReductionTypeMean];
+
+    styleDesc.weight = 0.5 * _styleLossMultiplier;
+
+    MPSCNNLossDescriptor *contentDesc = [MPSCNNLossDescriptor cnnLossDescriptorWithType:MPSCNNLossTypeMeanSquaredError
+                                                                           reductionType:MPSCNNReductionTypeMean];
+
+    contentDesc.weight = 0.5 * _contentLossMultiplier;
 
     MPSNNGramMatrixCalculationNode *gramMatrixStyleLossFirstReLU
       = [MPSNNGramMatrixCalculationNode nodeWithSource:_styleVggLoss.reluOut1
@@ -236,7 +238,7 @@
   }
   return self;
 }
- 
+
 - (NSDictionary<NSString *, NSData *> *) exportWeights {
   return [_model exportWeights:@"transformer_"];
 }
