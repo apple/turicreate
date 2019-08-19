@@ -335,7 +335,7 @@
   do {                                                \
     auto throw_error = [&]() GL_COLD_NOINLINE_ERROR { \
       logstream(LOG_ERROR) << (message) << std::endl; \
-      throw(std::runtime_error(message));             \
+      throw(std::string(message));                    \
     };                                                \
     throw_error();                                    \
   } while (0)
@@ -378,7 +378,7 @@
       _turi_ss << (message) << ". " << __func__ << " from " << __FILE__ \
                << " at " << __LINE__ << std::endl;                      \
       logstream(LOG_ERROR) << message << std::endl;                     \
-      throw(std::runtime_error(_turi_ss.str()));                        \
+      throw(_turi_ss.str());                                            \
     };                                                                  \
     throw_error();                                                      \
   } while (0)
