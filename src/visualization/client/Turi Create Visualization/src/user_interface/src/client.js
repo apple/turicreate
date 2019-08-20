@@ -4,7 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-async function fetch(url) {
+export async function fetch(url, body) {
   // Create the XHR request
   var req = new XMLHttpRequest();
 
@@ -18,28 +18,46 @@ async function fetch(url) {
       }
     });
     req.addEventListener("error", function() {
-      reject(this.response);
+      reject('An error occurred while requesting ' + url + ' from location ' + window.location);
     });
     req.responseType = "json";
-    req.open("GET", url);
-    req.send();
+    if (typeof body === 'object') {
+      body = JSON.stringify(body);
+    }
+    var method = "GET";
+    if (body) {
+      method = "POST";
+    }
+    req.open(method, url);
+    req.send(body);
   });
 }
 
-export async function initBrowserClient() {
-  // Reconstruct the current visualization ID from the query string
-  // Fetch the spec for the current visualization
-  let id = window.location.search.slice(1); // chop off "?"
-  let spec = await fetch("/spec/" + id);
-
-  // TODO - this logic assumes we're getting data for a streaming Plot object.
-  // This will need to be refactored to support visualizations like explore().
-  var data = await fetch("/data/" + id);
+async function initVisualization(id, type) {
+  let spec = await fetch(`/spec/${type}/${id}`);
+  var body = undefined;
+  if (type == 'table') {
+    // for table, fetch the first 100 rows by default
+    body = {'type': 'rows', start: 0, end: 100};
+  }
+  var data = await fetch(`/data/${type}/${id}`, body);
 
   window.setSpec(spec);
-  window.updateData(data);
-  while (data.progress < 1.0) {
-    data = await fetch("/data/" + id);
-    window.updateData(data);
+  window.handleInput(data);
+
+  if (type == 'plot') {
+    // Stream in the rest of the data, if necessary
+    while (data.progress < 1.0) {
+      data = await fetch(`/data/${type}/${id}`);
+      window.handleInput(data);
+    }
   }
+}
+
+export async function initBrowserClient() {
+  // Parse the query string and determine type of visualization
+  let params = new URLSearchParams(window.location.search);
+  let id = params.get('id');
+  let type = params.get('type');
+  initVisualization(id, type);
 }
