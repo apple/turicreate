@@ -7,11 +7,17 @@
 // Server impl code adapted from Beast example in
 // boost/beast/example/http/server/async/http_server_async.cpp
 
+#include <core/data/sframe/gl_sarray.hpp>
 #include <core/storage/fileio/fs_utils.hpp>
 #include <core/storage/fileio/general_fstream.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
+#include <core/storage/sframe_interface/unity_sframe.hpp>
 #include <core/globals/globals.hpp>
 #include <core/logging/logger.hpp>
+#include <visualization/server/escape.hpp>
 #include <visualization/server/server.hpp>
+#include <visualization/server/table.hpp>
+#include <visualization/server/vega_spec.hpp>
 
 #include <boost/asio/bind_executor.hpp>
 #include <boost/asio/ip/tcp.hpp>
@@ -21,6 +27,8 @@
 #include <boost/beast/version.hpp>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/fusion/include/std_pair.hpp>
 
@@ -105,7 +113,8 @@ template<
 void handle_request(
     http::request<Body, http::basic_fields<Allocator>>&& req,
     Send&& send,
-    const WebServer::plot_map& plots) {
+    const WebServer::plot_map& plots,
+    const WebServer::table_vector& tables) {
     // Returns a bad request response
     auto const bad_request =
     [&req](boost::beast::string_view why)
@@ -147,6 +156,7 @@ void handle_request(
 
     // Make sure we can handle the method=
     if( req.method() != http::verb::get &&
+        req.method() != http::verb::post &&
         req.method() != http::verb::head)
         return send(bad_request("Unknown HTTP-method"));
 
@@ -159,7 +169,7 @@ void handle_request(
             res.content_length(body.size());
             res.keep_alive(req.keep_alive());
             return send(std::move(res));
-        } else if(req.method() == http::verb::get) {
+        } else if(req.method() == http::verb::get || req.method() == http::verb::post) {
             http::response<http::string_body> res{
                 std::piecewise_construct,
                 std::make_tuple(body),
@@ -177,8 +187,8 @@ void handle_request(
 
     try {
         auto req_target = req.target();
-        if (req_target.find("/spec/") == 0) {
-            const size_t spec_url_length = sizeof("/spec/") - 1;
+        if (req_target.find("/spec/plot/") == 0) {
+            const size_t spec_url_length = sizeof("/spec/plot/") - 1;
             std::string plot_id = req_target.substr(spec_url_length).to_string();
             if (plots.find(plot_id) == plots.end()) {
                 return server_error("Expected plot " + plot_id + " was not found");
@@ -188,22 +198,107 @@ void handle_request(
             // For now, force light mode, until we have dark mode
             // support for all visualizations and the web app itself.
             std::string plot_spec = plot.get_spec(tc_plot_color_light);
-
             std::stringstream ss;
             ss << "{\"type\":\"vega\",\"data\":";
             ss << plot_spec;
             ss << "}";
             return respond(ss.str(), "application/json");
         }
-        if (req_target.find("/data/") == 0) {
-            const size_t data_url_length = sizeof("/data/") - 1;
+
+        if (req_target.find("/spec/table/") == 0) {
+            const size_t spec_url_length = sizeof("/spec/table/") - 1;
+            std::string table_id = req_target.substr(spec_url_length).to_string();
+            size_t idx = std::stoul(table_id);
+            if (idx >= tables.size()) {
+                return server_error("Expected table " + table_id + " was not found");
+            }
+            const WebServer::table& container = tables[idx];
+            const std::shared_ptr<turi::unity_sframe>& table = container.sf;
+            std::stringstream ss;
+            ss << "{\"type\":\"table\",\"data\":";
+            ss << table_spec(table, container.title, table_id);
+            ss << "}";
+            return respond(ss.str(), "application/json");
+        }
+
+        if (req_target.find("/data/plot/") == 0) {
+            const size_t data_url_length = sizeof("/data/plot/") - 1;
             std::string plot_id = req_target.substr(data_url_length).to_string();
             if (plots.find(plot_id) == plots.end()) {
                 return server_error("Expected plot " + plot_id + " was not found");
             }
             const Plot& plot = plots.at(plot_id);
-            std::string plot_data = plot.get_next_data();
-            return respond(plot_data, "application/json");
+            std::stringstream plot_data;
+            plot_data << "{\"data_spec\":";
+            plot_data << plot.get_next_data();
+            plot_data << "}";
+            return respond(plot_data.str(), "application/json");
+        }
+
+        if (req_target.find("/data/table/") == 0) {
+            const size_t data_url_length = sizeof("/data/table/") - 1;
+            std::string table_id = req_target.substr(data_url_length).to_string();
+
+            std::string image_row, image_column;
+            size_t image_url_pos = table_id.find("/image/");
+            if (image_url_pos != std::string::npos) {
+                // Found image URL request
+                DASSERT_EQ(req.method(), http::verb::get);
+
+                // chop off everything after /image/
+                std::string image_requested = table_id.substr(image_url_pos + sizeof("/image/") - 1);
+
+                // chop off everything before /image/
+                table_id = table_id.substr(0, image_url_pos);
+                size_t idx = std::stoul(table_id);
+                if (idx >= tables.size()) {
+                    return server_error("Expected table " + table_id + " was not found");
+                }
+                const WebServer::table& container = tables[idx];
+                const std::shared_ptr<turi::unity_sframe>& table = container.sf;
+
+                // extract row and column
+                size_t slash_pos = image_requested.find("/");
+                if (slash_pos == std::string::npos) {
+                    return server_error("Could not parse image URL requested: " + req_target.to_string());
+                }
+                std::string row = image_requested.substr(0, slash_pos);
+                size_t row_index = std::stoul(row);
+                std::string column_name = image_requested.substr(slash_pos + 1);
+
+                // find the image and return it as PNG data
+                turi::gl_sarray gl_sa(table->select_column(column_name));
+                turi::flex_image value = gl_sa[row_index].get<turi::flex_image>();
+                std::string png_data = image_png_data(value, 200 /* resized_height */);
+                return respond(png_data, "image/png");
+            }
+
+            size_t idx = std::stoul(table_id);
+            if (idx >= tables.size()) {
+                return server_error("Expected table " + table_id + " was not found");
+            }
+            const WebServer::table& container = tables[idx];
+            const std::shared_ptr<turi::unity_sframe>& table = container.sf;
+
+            // Read request type out of message body
+            using boost::property_tree::ptree;
+            ptree pt;
+            std::string body = req.body();
+            std::stringstream ss(body);
+            read_json(ss, pt);
+            std::string type = pt.get<std::string>("type");
+            if (type == "rows") {
+                size_t start = pt.get<size_t>("start");
+                size_t end = pt.get<size_t>("end");
+
+                return respond(table_data(table, container.reader.get(), start, end), "application/json");
+            } else if (type == "accordion") {
+                size_t row_index = pt.get<size_t>("index");
+                std::string column_name = pt.get<std::string>("column");
+                return respond(table_accordion(table, column_name, row_index), "application/json");
+            } else {
+                log_and_throw("Unexpected data table request type: " + type);
+            }
         }
 
         // try to match a static file
@@ -291,16 +386,20 @@ private:
     std::shared_ptr<void> res_;
     send_lambda lambda_;
     const WebServer::plot_map& m_plots; // reference to the uuid->plot dictionary
+    const WebServer::table_vector& m_tables; // reference to the table (unity_sframe) array
 
 public:
     // Take ownership of the socket
     explicit session(
         tcp::socket socket,
-        const WebServer::plot_map& plots)
+        const WebServer::plot_map& plots,
+        const WebServer::table_vector& tables)
         : socket_(std::move(socket))
         , strand_(socket_.get_executor())
         , lambda_(*this)
-        , m_plots(plots) { }
+        , m_plots(plots)
+        , m_tables(tables)
+        { }
 
     // Start the asynchronous operation
     void run() {
@@ -336,7 +435,7 @@ public:
             return fail(ec, "read");
 
         // Send the response
-        handle_request(std::move(req_), lambda_, m_plots);
+        handle_request(std::move(req_), lambda_, m_plots, m_tables);
     }
 
     void on_write(
@@ -379,15 +478,19 @@ private:
     tcp::acceptor acceptor_;
     tcp::socket socket_;
     const WebServer::plot_map& m_plots; // reference to the uuid->plot dictionary
+    const WebServer::table_vector& m_tables; // reference to the table (SFrame) vector
 
 public:
     listener(
         boost::asio::io_context& ioc,
         tcp::endpoint endpoint,
-        const WebServer::plot_map& plots)
+        const WebServer::plot_map& plots,
+        const WebServer::table_vector& tables)
         : acceptor_(ioc)
         , socket_(ioc)
-        , m_plots(plots) {
+        , m_plots(plots)
+        , m_tables(tables)
+        {
         boost::system::error_code ec;
 
         // Open the acceptor
@@ -450,7 +553,9 @@ public:
             // Create the session and run it
             std::make_shared<session>(
                 std::move(socket_),
-                m_plots)->run();
+                m_plots,
+                m_tables
+            )->run();
         }
 
         // Accept another connection
@@ -494,7 +599,7 @@ public:
     std::vector<std::thread> m_threads; // listener threads
     std::shared_ptr<listener> m_listener = nullptr;
 
-    Impl(const plot_map& plots) {
+    Impl(const plot_map& plots, const table_vector& tables) {
         logstream(LOG_DEBUG) << "WebServer: starting WebServer::Impl\n";
         m_port = find_port();
         const auto address = boost::asio::ip::make_address("127.0.0.1");
@@ -503,7 +608,8 @@ public:
         m_listener = std::make_shared<listener>(
             m_ioc,
             tcp::endpoint{address, m_port},
-            plots);
+            plots,
+            tables);
         m_listener->run();
 
         // Run the ioc on background threads
@@ -525,7 +631,7 @@ public:
     }
 };
 
-WebServer::WebServer() : m_impl(new Impl(m_plots)) {
+WebServer::WebServer() : m_impl(new Impl(m_plots, m_tables)) {
     logstream(LOG_DEBUG) << "WebServer: starting WebServer\n";
 }
 WebServer::~WebServer() {
@@ -540,20 +646,52 @@ WebServer& WebServer::get_instance() {
     return *server;
 }
 
+std::string WebServer::get_base_url() {
+    std::string port_str = std::to_string(get_instance().m_impl->m_port);
+    return "http://localhost:" + port_str;
+}
+
 std::string WebServer::get_url_for_plot(const Plot& plot) {
-    return get_instance().add_plot(plot);
+    std::string id = get_instance().add_plot(plot);
+    // return formatted URL
+    return get_base_url() + "/index.html?type=plot&id=" + id;
+}
+
+std::string WebServer::get_url_for_table(const std::shared_ptr<turi::unity_sframe>& sf, const std::string& title) {
+    std::string id = get_instance().add_table(sf, title);
+
+    // return formatted URL
+    std::string port_str = std::to_string(get_instance().m_impl->m_port);
+    return get_base_url() + "/index.html?type=table&id=" + id;
 }
 
 std::string WebServer::add_plot(const Plot& plot) {
-
     // add to dictionary with UUID
     const std::string& uuid_str = plot.get_id();
     m_plots[uuid_str] = plot;
-
-    // return formatted URL
-    std::string port_str = std::to_string(m_impl->m_port);
-    return "http://localhost:" + port_str + "/index.html?" + uuid_str;
+    return uuid_str;
 }
+
+std::string WebServer::add_table(const std::shared_ptr<turi::unity_sframe>& sf, const std::string& title) {
+
+    // add to vector with index
+    size_t idx = m_tables.size();
+
+    // This materializes if not already
+    auto underlying_sframe = sf->get_underlying_sframe();
+
+    // Get a reader just once.
+    auto reader = underlying_sframe->get_reader();
+
+    // Store the SFrame and reader.
+    m_tables.emplace_back(sf, std::move(reader), title);
+
+    // Return the table ID
+    return std::to_string(idx);
+}
+
+WebServer::table::table(const std::shared_ptr<unity_sframe>& sf, std::unique_ptr<sframe_reader> reader, const std::string& title)
+    : sf(sf), reader(std::move(reader)), title(title) { }
 
 namespace turi {
     namespace visualization {

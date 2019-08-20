@@ -27,11 +27,12 @@ namespace visualization {
   > to_base64;
 
   std::string escape_float(flex_float value);
+  std::string escape_image(flex_image value, size_t resized_height,
+                              size_t row_index,
+                              const std::string& columnName);
 
   std::string escapeForTable( const flexible_type& value,
-                              boost::local_time::time_zone_ptr empty_tz,
-                              std::queue<vega_data::Image>* image_queue = NULL,
-                              size_t count = -1,
+                              size_t row_index = -1,
                               const std::string& columnName = "");
 
   std::string replace_all(std::string str, const std::string& from, const std::string& to);

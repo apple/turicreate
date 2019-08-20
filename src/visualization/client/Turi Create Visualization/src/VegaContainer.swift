@@ -147,7 +147,6 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
 
             case "error":
                 log(logMessage)
-                assert(false, "Encountered an unhandled JavaScript error.")
                 break
 
             default:
@@ -492,26 +491,15 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
 
 
             let updateJS: String
-            if self.data_spec.count != 0 {
+            assert(self.data_spec.count != 0);
 
-                let data_spec = self.data_spec.removeFirst()
-                guard let data_json = try? JSON.stringify(obj: data_spec) else {
-                    // should be JSON serializable, or we have a bug
-                    assert(false)
-                    return
-                }
-                updateJS = String(format: "updateData(%@);", data_json);
-
-            } else {
-
-                assert(self.image_spec.count != 0)
-                let spec = self.image_spec.removeFirst()
-                let raw_data = ["data": spec] as [String : Any]
-                let arrData = try! JSONSerialization.data(withJSONObject: raw_data)
-                let json_string = String(data: arrData, encoding: .utf8)!
-                updateJS = String(format: "setImageData(%@);", json_string)
-
+            let data_spec = self.data_spec.removeFirst()
+            guard let data_json = try? JSON.stringify(obj: data_spec) else {
+                // should be JSON serializable, or we have a bug
+                assert(false)
+                return
             }
+            updateJS = String(format: "updateData(%@);", data_json);
 
             self.view.evaluateJavaScript(updateJS, completionHandler: {(value, err) in
                 handleJavaScriptError(err)
