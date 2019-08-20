@@ -86,8 +86,8 @@
 }
 
 - (void) setLearningRate:(float)lr {
-  [[_conv1 weights] setLearningRate:lr];
-  [[_conv2 weights] setLearningRate:lr];
+  [_conv1.tc_weightsData setLearningRate:lr];
+  [_conv2.tc_weightsData setLearningRate:lr];
 }
 
 @end
