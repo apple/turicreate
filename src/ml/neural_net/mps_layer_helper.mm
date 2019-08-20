@@ -14,13 +14,13 @@
 static char kWeightsKey;
 
 @implementation MPSCNNFullyConnectedNode (TCMPSLayerHelper)
-@dynamic tcWeightsData;
+@dynamic tc_weightsData;
 
-- (void)setTcWeightsData:(TCMPSConvolutionWeights *)tcWeightsData {
-  objc_setAssociatedObject(self, &kWeightsKey, tcWeightsData, OBJC_ASSOCIATION_RETAIN);
+- (void)setTc_weightsData:(TCMPSConvolutionWeights *)tc_weightsData {
+  objc_setAssociatedObject(self, &kWeightsKey, tc_weightsData, OBJC_ASSOCIATION_RETAIN);
 }
 
-- (NSString *)tcWeightsData {
+- (NSString *)tc_weightsData {
   return objc_getAssociatedObject(self, &kWeightsKey);
 }
 
@@ -59,20 +59,20 @@ static char kWeightsKey;
     [MPSCNNFullyConnectedNode nodeWithSource:inputNode
                                      weights:fullyConnectedDataLoad];
 
-  fullyConnectedNode.tcWeightsData = fullyConnectedDataLoad;
+  fullyConnectedNode.tc_weightsData = fullyConnectedDataLoad;
   
   return fullyConnectedNode;
 }
 @end
 
 @implementation MPSCNNConvolutionNode (TCMPSLayerHelper)
-@dynamic tcWeightsData;
+@dynamic tc_weightsData;
 
-- (void)setTcWeightsData:(TCMPSConvolutionWeights *)tcWeightsData {
-  objc_setAssociatedObject(self, &kWeightsKey, tcWeightsData, OBJC_ASSOCIATION_RETAIN);
+- (void)setTc_weightsData:(TCMPSConvolutionWeights *)tc_weightsData {
+  objc_setAssociatedObject(self, &kWeightsKey, tc_weightsData, OBJC_ASSOCIATION_RETAIN);
 }
 
-- (NSString *)tcWeightsData {
+- (NSString *)tc_weightsData {
   return objc_getAssociatedObject(self, &kWeightsKey);
 }
 
@@ -123,20 +123,20 @@ static char kWeightsKey;
 
   convNode.paddingPolicy = padding;
 
-  convNode.tcWeightsData = convDataLoad;
+  convNode.tc_weightsData = convDataLoad;
   
   return convNode;
 }
 @end
 
 @implementation MPSCNNInstanceNormalizationNode (TCMPSLayerHelper)
-@dynamic tcWeightsData;
+@dynamic tc_weightsData;
 
-- (void)setTcWeightsData:(TCMPSInstanceNormDataLoader *)tcWeightsData {
-  objc_setAssociatedObject(self, &kWeightsKey, tcWeightsData, OBJC_ASSOCIATION_RETAIN);
+- (void)setTc_weightsData:(TCMPSInstanceNormDataLoader *)tc_weightsData {
+  objc_setAssociatedObject(self, &kWeightsKey, tc_weightsData, OBJC_ASSOCIATION_RETAIN);
 }
 
-- (NSString *)tcWeightsData {
+- (NSString *)tc_weightsData {
   return objc_getAssociatedObject(self, &kWeightsKey);
 }
 
@@ -160,7 +160,7 @@ static char kWeightsKey;
   MPSCNNInstanceNormalizationNode *instNormNode =  [MPSCNNInstanceNormalizationNode nodeWithSource:inputNode
                                                                                         dataSource:instNormDataLoad];
 
-  instNormNode.tcWeightsData = instNormDataLoad;
+  instNormNode.tc_weightsData = instNormDataLoad;
 
   return instNormNode;
 }
