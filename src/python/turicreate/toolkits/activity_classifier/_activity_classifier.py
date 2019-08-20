@@ -28,6 +28,7 @@ from turicreate.toolkits._model import PythonProxy as _PythonProxy
 
 from .util import random_split_by_session as _random_split_by_session
 from .util import _MIN_NUM_SESSIONS_FOR_SPLIT
+import tensorflow as tf
 
 
 def create(dataset, session_id, target, features=None, prediction_window=100,
@@ -139,7 +140,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     from .._mps_utils import (use_mps as _use_mps,
                               mps_device_name as _mps_device_name,
                               ac_weights_mps_to_mxnet as _ac_weights_mps_to_mxnet)
-    from ._tf_model_architecture import ActivityTensorFlowModel
+    from ._tf_model_architecture import ActivityTensorFlowModel, fit_model_tf
 
 
     if not isinstance(target, str):
@@ -206,7 +207,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
     # Decide whether to use MPS GPU, MXnet GPU or CPU
     num_mxnet_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=num_sessions)
-    use_mps = _use_mps() and num_mxnet_gpus == 0 and params['mps']
+    use_mps = _use_mps() and num_mxnet_gpus == 0 and not params['use_tensorflow']
 
     if verbose:
         if use_mps:
@@ -215,7 +216,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
             print('Using GPU to create model (CUDA)')
         elif num_mxnet_gpus > 1:
             print('Using {} GPUs to create model (CUDA)'.format(num_mxnet_gpus))
-        elif params['use_tensorflow'] == True:
+        elif params['use_tensorflow']:
             print('Using Tensorflow')
         else:
             print('Using CPU to create model')
@@ -223,7 +224,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     # Create data iterators
     user_provided_batch_size = batch_size
     batch_size = max(batch_size, num_mxnet_gpus, 1)
-    use_mx_data_batch = not use_mps
+    use_mx_data_batch = not use_mps and not params['use_tensorflow']
     data_iter = _SFrameSequenceIter(chunked_data, len(features),
                                     prediction_window, predictions_in_chunk,
                                     batch_size, use_target=use_target, mx_output=use_mx_data_batch)
@@ -259,10 +260,11 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
                                        prediction_window, predictions_in_chunk, is_prediction_model=False)
 
         log = _fit_model_mps(loss_model, data_iter, valid_iter, max_iterations, verbose)
-    elif params['use_tensorflow'] == True:
+    elif params['use_tensorflow']:
         ac_model = ActivityTensorFlowModel(batch_size, len(features), len(target_map), prediction_window, predictions_in_chunk)
         # Train the model using Tensorflow
-        log = ac_model.fit_model_tf(data_iter, valid_iter, max_iterations, verbose, 1e-3)
+        log = fit_model_tf(ac_model, data_iter, valid_iter, max_iterations, verbose, 1e-3)
+        ac_model.export_weights()
 
     else:
         # Train the model using Mxnet
@@ -276,6 +278,12 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     if use_mps:
         mps_params = loss_model.export()
         arg_params, aux_params = _ac_weights_mps_to_mxnet(mps_params, _net_params['lstm_h'])
+    elif params['use_tensorflow']:
+        tf_net_params = tf.compat.v1.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)
+        # print(all_vars)
+        for keys in tf_net_params:
+            print("Keys", keys) 
+            print("Tensor by name", tf.get_default_graph().get_tensor_by_name(keys.name))
     else:
         arg_params, aux_params = loss_model.get_params()
 
