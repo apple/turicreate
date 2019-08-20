@@ -375,11 +375,11 @@ if (CLANG)
 
   set(CPP11_FLAGS "-Wno-enum-compare -Wno-conversion-null -Wno-constant-logical-operand -Wno-parentheses-equality -ftemplate-depth=900 ${_cpp11_optional_flags}")
 
-  set(WERROR_FLAGS "-Wall -Wsign-compare")
+  set(WERROR_FLAGS "-Werror -Wall -Wsign-compare")
 else()
   # non-clang
   set(CPP11_FLAGS "-Wno-enum-compare -Wno-conversion-null -ftemplate-depth=900 -Wno-unknown-pragmas")
-  #set(WERROR_FLAGS "-Werror")
+  set(WERROR_FLAGS "-Werror")
 endif()
 
 # same goes for unknown warning group (for #pragma clang or #pragma GCC warning suppression)

@@ -16,6 +16,7 @@ _net_params = {
 }
 
 class ActivityTensorFlowModel():
+
     def __init__(self, batch_size, num_features, num_classes, prediction_window, seq_len):
 
         tf.compat.v1.get_default_graph()
@@ -24,7 +25,7 @@ class ActivityTensorFlowModel():
         self.batch_size = batch_size
         self.seq_len = seq_len
 
-        # Initializer
+        # Xavier Initializer
         initializer = tf.compat.v1.glorot_uniform_initializer()
 
         # Vars
@@ -61,6 +62,7 @@ class ActivityTensorFlowModel():
         conv = tf.nn.bias_add(conv, biases['conv_bias'])
         conv = tf.nn.relu(conv)
 
+        # TODO: Initialize weights for LSTM
         # Long Stem Term Memory
         conv = tf.nn.dropout(conv, rate=0.2)
         cells = tf.nn.rnn_cell.LSTMCell(num_units=_net_params['lstm_h'], state_is_tuple=True, forget_bias=0.0, reuse=tf.compat.v1.AUTO_REUSE)
@@ -77,15 +79,19 @@ class ActivityTensorFlowModel():
         out = tf.add(tf.matmul(dense, weights['dense1_weight']),biases['dense1_bias'])
         self.probs = tf.nn.softmax(out)
 
+        # Weights
         seq_sum_weights = tf.reduce_sum(self.weight, axis=1)
         binary_seq_sum_weights = tf.reduce_sum(seq_sum_weights)
 
-        self.loss_per_seq = tf.compat.v1.losses.softmax_cross_entropy(logits=self.probs, onehot_labels=self.target, weights=self.weight)
+        # Loss
+        self.loss_per_seq = tf.compat.v1.losses.softmax_cross_entropy(logits=out, onehot_labels=self.target, weights=self.weight)
         self.loss_op = tf.reduce_sum(self.loss_per_seq) / (binary_seq_sum_weights + 1e-5)
 
+        # Opyimizer
         optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate=self.set_learning_rate(1e-3))
         self.train_op = optimizer.minimize(self.loss_op)
         
+        # Predictions
         correct_pred = tf.cast(tf.equal(tf.argmax(out, 2), tf.argmax(self.target, 2)), dtype=tf.float32)
         correct_pred = tf.tensordot(correct_pred, tf.transpose(self.weight), axes=1)
         self.acc_per_seq = tf.reduce_sum(correct_pred) / (seq_sum_weights + 1e-5 )
@@ -111,9 +117,9 @@ class ActivityTensorFlowModel():
     def export_weights(self):
         vars = tf.compat.v1.trainable_variables()
         vars_vals = self.sess.run(vars)
+        # TODO: Needs to match CoreML / model_spec 
         for var, val in zip(vars, vars_vals):
             result = {"var: {}, value: {}".format(var.name, val)}
-            # print("var: {}, value: {}".format(var.name, val))
         return result
 
     def set_learning_rate(self, lr):
@@ -152,9 +158,6 @@ def fit_model_tf(model, data_iter, valid_iter, max_iterations, verbose, lr):
         for batch in data_iter:
             feed_dict = {"input": batch.data, "labels": batch.labels, "weights": batch.weights }
             result = model.train(feed_dict)
-            # print(loss, probs)
-            # print(loss_per_seq_value, loss_value, acc_per_seq_value, acc_value)
-
             log['train_loss'] += result['loss'] / train_batches
             log['train_acc'] += result['acc'] / train_batches
             
@@ -177,13 +180,13 @@ def fit_model_tf(model, data_iter, valid_iter, max_iterations, verbose, lr):
                 print("| {cur_iter:<{width}}| {train_acc:<{width}.3f}| {train_loss:<{width}.3f}| {time:<{width}.1f}|".format(
                           cur_iter = iteration + 1, train_acc = log['train_acc'], train_loss = log['train_loss'],
                           time = elapsed_time, width = column_width-1))
-            # else:
-            #     # print progress row with validation info
-            #     print("| {cur_iter:<{width}}| {train_acc:<{width}.3f}| {train_loss:<{width}.3f}"
-            #           "| {valid_acc:<{width}.3f}| {valid_loss:<{width}.3f}| {time:<{width}.1f}| ".format(
-            #               cur_iter = iteration + 1, train_acc = log['train_acc'], train_loss = log['train_loss'],
-            #               valid_acc = log['valid_acc'], valid_loss = log['valid_loss'], time = elapsed_time,
-            #               width = column_width-1))
+            else:
+                # print progress row with validation info
+                print("| {cur_iter:<{width}}| {train_acc:<{width}.3f}| {train_loss:<{width}.3f}"
+                      "| {valid_acc:<{width}.3f}| {valid_loss:<{width}.3f}| {time:<{width}.1f}| ".format(
+                          cur_iter = iteration + 1, train_acc = log['train_acc'], train_loss = log['train_loss'],
+                          valid_acc = log['valid_acc'], valid_loss = log['valid_loss'], time = elapsed_time,
+                          width = column_width-1))
 
     if verbose:
         print(hr)
