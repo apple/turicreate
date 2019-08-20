@@ -6,9 +6,10 @@
 #include <ml/neural_net/tf_compute_context.hpp>
 
 #include <iostream>
+#include <vector>
+
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
-#include <vector>
 
 namespace turi {
 namespace neural_net {

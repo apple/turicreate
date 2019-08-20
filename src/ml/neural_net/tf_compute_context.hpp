@@ -23,7 +23,7 @@ public:
 
 
   /**
-   * Constructs a context wrapping devices that will not have Metal.
+   * Constructs a context wrapping devices.
    */
   tf_compute_context();
 
