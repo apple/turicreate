@@ -71,7 +71,7 @@ struct style_transfer::impl {
 };
 
 style_transfer::style_transfer(const float_array_map &config,
-                               const float_array_map &weights) {
+                               const float_array_map &weights) : m_impl(new style_transfer::impl()) {
   @autoreleasepool {
     if (@available(macOS 10.15, *)) {
       id <MTLDevice> dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
@@ -93,6 +93,8 @@ style_transfer::style_transfer(const float_array_map &config,
     }
   }
 }
+
+style_transfer::~style_transfer() {}
 
 float_array_map style_transfer::export_weights() const {
   if (@available(macOS 10.15, *)) {

@@ -21,7 +21,35 @@ import turicreate as _tc
 import numpy as _np
 import math as _math
 import six as _six
+from .._mps_utils import (use_mps as _use_mps,
+                          mps_device_memory_limit as _mps_device_memory_limit,
+                          MpsGraphAPI as _MpsGraphAPI,
+                          MpsStyleGraphAPI as _MpsStyleGraphAPI,
+                          MpsGraphNetworkType as _MpsGraphNetworkType,
+                          MpsGraphMode as _MpsGraphMode,
+                          mps_to_mxnet as _mps_to_mxnet,
+                          mxnet_to_mps as _mxnet_to_mps)
 
+def _get_mps_st_net(input_image_shape, batch_size, output_size,
+                    config, weights={}):
+    """
+    Initializes an MpsGraphAPI for style transfer.
+    """
+    network = _MpsStyleGraphAPI(network_id=_MpsGraphNetworkType.kSTGraphNet)
+
+    c_in, h_in, w_in =  input_image_shape
+
+    c_out = output_size[0]
+    h_out = h_in
+    w_out = w_in
+
+    c_view = c_in
+    h_view = h_in
+    w_view = w_in
+
+    network.init(batch_size, c_in, h_in, w_in, c_out, h_out, w_out,
+                 weights=weights, config=config)
+    return network
 
 def _vgg16_data_prep(batch):
     """
@@ -179,7 +207,14 @@ def create(style_dataset, content_dataset, style_feature=None,
     _style_loss_mult = params['style_loss_mult']
 
     num_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=params['batch_size'])
+    use_mps = _use_mps() and num_gpus == 0
     batch_size_each = params['batch_size'] // max(num_gpus, 1)
+    
+    if use_mps and _mps_device_memory_limit() < 4 * 1024 * 1024 * 1024:
+        # Reduce batch size for GPUs with less than 4GB RAM
+        if batch_size_each > 16:
+            batch_size_each = 16
+
     batch_size = max(num_gpus, 1) * batch_size_each
     input_shape = params['input_shape']
 
@@ -248,6 +283,121 @@ def create(style_dataset, content_dataset, style_feature=None,
 
         _tkutl._print_neural_compute_device(cuda_gpus=cuda_gpus, use_mps=False,
                                             cuda_mem_req=cuda_mem_req, has_mps_impl=False)
+
+    if use_mps:
+        mps_key_map = {
+           "transformer_conv0_weight": "transformer_encode_1_conv_weights",
+           "transformer_conv1_weight": "transformer_encode_2_conv_weights",
+           "transformer_conv2_weight": "transformer_encode_3_conv_weights",
+           "transformer_conv3_weight": "transformer_decoding_1_conv_weights",
+           "transformer_conv4_weight": "transformer_decoding_2_conv_weights",
+           "transformer_conv5_weight": "transformer_conv5_weight",
+           "transformer_instancenorm0_beta": "transformer_encode_1_inst_beta",
+           "transformer_instancenorm0_gamma": "transformer_encode_1_inst_gamma",
+           "transformer_instancenorm1_beta": "transformer_encode_2_inst_beta",
+           "transformer_instancenorm1_gamma": "transformer_encode_2_inst_gamma",
+           "transformer_instancenorm2_beta": "transformer_encode_3_inst_beta",
+           "transformer_instancenorm2_gamma": "transformer_encode_3_inst_gamma",
+           "transformer_instancenorm3_beta": "transformer_decoding_1_inst_beta",
+           "transformer_instancenorm3_gamma": "transformer_decoding_1_inst_gamma",
+           "transformer_instancenorm4_beta": "transformer_decoding_2_inst_beta",
+           "transformer_instancenorm4_gamma": "transformer_decoding_2_inst_gamma",
+           "transformer_instancenorm5_beta": "transformer_instancenorm5_gamma",
+           "transformer_instancenorm5_gamma": "transformer_instancenorm5_beta",
+           "transformer_residualblock0_conv0_weight": "transformer_residual_1_conv_1_weights",
+           "transformer_residualblock0_conv1_weight": "transformer_residual_1_conv_2_weights",
+           "transformer_residualblock0_instancenorm0_beta": "transformer_residual_1_inst_1_beta",
+           "transformer_residualblock0_instancenorm0_gamma": "transformer_residual_1_inst_1_gamma",
+           "transformer_residualblock0_instancenorm1_beta": "transformer_residual_1_inst_2_beta",
+           "transformer_residualblock0_instancenorm1_gamma": "transformer_residual_1_inst_2_gamma",
+           "transformer_residualblock1_conv0_weight": "transformer_residual_2_conv_1_weights",
+           "transformer_residualblock1_conv1_weight": "transformer_residual_2_conv_2_weights",
+           "transformer_residualblock1_instancenorm0_beta": "transformer_residual_2_inst_1_beta",
+           "transformer_residualblock1_instancenorm0_gamma": "transformer_residual_2_inst_1_gamma",
+           "transformer_residualblock1_instancenorm1_beta": "transformer_residual_2_inst_2_beta",
+           "transformer_residualblock1_instancenorm1_gamma": "transformer_residual_2_inst_2_gamma",
+           "transformer_residualblock2_conv0_weight": "transformer_residual_3_conv_1_weights",
+           "transformer_residualblock2_conv1_weight": "transformer_residual_3_conv_2_weights",
+           "transformer_residualblock2_instancenorm0_beta": "transformer_residual_3_inst_1_beta",
+           "transformer_residualblock2_instancenorm0_gamma": "transformer_residual_3_inst_1_gamma",
+           "transformer_residualblock2_instancenorm1_beta": "transformer_residual_3_inst_2_beta",
+           "transformer_residualblock2_instancenorm1_gamma": "transformer_residual_3_inst_2_gamma",
+           "transformer_residualblock3_conv0_weight": "transformer_residual_4_conv_1_weights",
+           "transformer_residualblock3_conv1_weight": "transformer_residual_4_conv_2_weights",
+           "transformer_residualblock3_instancenorm0_beta": "transformer_residual_4_inst_1_beta",
+           "transformer_residualblock3_instancenorm0_gamma": "transformer_residual_4_inst_1_gamma",
+           "transformer_residualblock3_instancenorm1_beta": "transformer_residual_4_inst_2_beta",
+           "transformer_residualblock3_instancenorm1_gamma": "transformer_residual_4_inst_2_gamma",
+           "transformer_residualblock4_conv0_weight": "transformer_residual_5_conv_1_weights",
+           "transformer_residualblock4_conv1_weight": "transformer_residual_5_conv_2_weights",
+           "transformer_residualblock4_instancenorm0_beta": "transformer_residual_5_inst_1_beta",
+           "transformer_residualblock4_instancenorm0_gamma": "transformer_residual_5_inst_1_gamma",
+           "transformer_residualblock4_instancenorm1_beta": "transformer_residual_5_inst_2_beta",
+           "transformer_residualblock4_instancenorm1_gamma": "transformer_residual_5_inst_2_gamma",
+           "vgg16_conv0_weight": "vgg_block_1_conv_1_weights",
+           "vgg16_conv0_bias": "vgg_block_1_conv_1_biases",
+           "vgg16_conv1_weight": "vgg_block_1_conv_2_weights",
+           "vgg16_conv1_bias": "vgg_block_1_conv_2_biases",
+           "vgg16_conv2_weight": "vgg_block_2_conv_1_weights",
+           "vgg16_conv2_bias": "vgg_block_2_conv_1_biases",
+           "vgg16_conv3_weight": "vgg_block_2_conv_2_weights",
+           "vgg16_conv3_bias": "vgg_block_2_conv_2_biases",
+           "vgg16_conv4_weight": "vgg_block_3_conv_1_weights",
+           "vgg16_conv4_bias": "vgg_block_3_conv_1_biases",
+           "vgg16_conv5_weight": "vgg_block_3_conv_2_weights",
+           "vgg16_conv5_bias": "vgg_block_3_conv_2_biases",
+           "vgg16_conv6_weight": "vgg_block_3_conv_3_weights",
+           "vgg16_conv6_bias": "vgg_block_3_conv_3_biases",
+           "vgg16_conv7_weight": "vgg_block_4_conv_1_weights",
+           "vgg16_conv7_bias": "vgg_block_4_conv_1_biases",
+           "vgg16_conv8_weight": "vgg_block_4_conv_2_weights",
+           "vgg16_conv8_bias": "vgg_block_4_conv_2_biases",
+           "vgg16_conv9_weight": "vgg_block_4_conv_3_weights",
+           "vgg16_conv9_bias": "vgg_block_4_conv_3_biases"
+        }
+
+        transformer.batch_size = 1
+        transformer_output = transformer.forward(_mx.nd.uniform(0, 1, (1, 3) + input_shape), _mx.nd.array([0]))
+        vgg_model.forward(transformer_output)
+
+        net_params = transformer.collect_params()
+        vgg_params = vgg_model.collect_params()
+
+        mps_net_params = {}
+
+        keys = list(net_params)
+        vgg_keys = list(vgg_params)
+
+        for k in keys:
+            mps_net_params[mps_key_map[k]] = net_params[k].data().asnumpy()
+
+        for k in vgg_keys:
+            mps_net_params[mps_key_map[k]] = vgg_params[k].data().asnumpy()
+
+        mps_config = {
+            'mode': _MpsGraphMode.Train,
+            'use_sgd': True,
+            'st_include_network': True,
+            'st_include_loss': True,
+            'st_vgg16_content_loss_layer': params['vgg16_content_loss_layer'],
+            'st_lr': params['lr'],
+            'st_content_loss_mult': params['content_loss_mult'],
+            'st_style_loss_mult': params['style_loss_mult'],
+            'st_finetune_all_params': params['finetune_all_params'],
+            "st_num_styles": num_styles
+        }
+
+        mps_net = _get_mps_st_net(input_image_shape=(3, input_shape[0], input_shape[1]),
+                                  batch_size=batch_size,
+                                  output_size=(3, input_shape[0], input_shape[1]),
+                                  config=mps_config,
+                                  weights=mps_net_params)
+        
+        # TODO: Test Predict.
+        # TODO: Test Training.
+        
+        return mps_net
+
     #
     # Pre-compute gram matrices for style images
     #
@@ -258,6 +408,7 @@ def create(style_dataset, content_dataset, style_feature=None,
                                         feature_column=style_feature, input_shape=input_shape,
                                         loader_type='stretch',
                                         sequential=params['sequential_image_processing'])
+
     num_layers = len(params['style_loss_mult'])
     gram_chunks = [[] for _ in range(num_layers)]
     for s_batch in style_images_loader:

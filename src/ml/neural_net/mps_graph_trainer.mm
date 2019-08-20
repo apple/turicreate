@@ -7,6 +7,9 @@
 #import "mps_device_manager.h"
 #import "mps_graph_cnnmodule.h"
 
+#include "mps_graph_networks.h"
+#include "style_transfer/mps_style_transfer_backend.hpp"
+
 using turi::neural_net::deferred_float_array;
 using turi::neural_net::external_float_array;
 using turi::neural_net::float_array;
@@ -55,10 +58,15 @@ int TCMPSCreateGraphModule(MPSHandle *out) {
   API_END();
 }
 
-int TCMPSDeleteGraphModule(MPSHandle handle) {
+int TCMPSDeleteGraphModule(MPSHandle handle, int network_id) {
   API_BEGIN();
-  mps_graph_cnn_module *obj = (mps_graph_cnn_module *)handle;
-  delete obj;
+  if (network_id != static_cast<int>(turi::neural_net::kSTGraphNet)) {
+    mps_graph_cnn_module *obj = (mps_graph_cnn_module *)handle;
+    delete obj;
+  } else {
+    turi::style_transfer::style_transfer *obj = (turi::style_transfer::style_transfer *)handle;
+    delete obj;
+  }
   API_END();
 }
 
@@ -106,20 +114,34 @@ int TCMPSTrainReturnGradGraph(
   API_END();
 }
 
-int TCMPSInitGraph(MPSHandle handle, int network_id, int n, int c_in, int h_in, int w_in,
+int TCMPSInitGraph(MPSHandle *handle, int network_id, int n, int c_in, int h_in, int w_in,
               int c_out, int h_out, int w_out,
               char **config_names, void **config_arrays, int config_len,
               char **weight_names, void **weight_arrays, int weight_len) {
   API_BEGIN();
+  if (network_id != static_cast<int>(turi::neural_net::kSTGraphNet)) {
+    mps_graph_cnn_module *mps = new mps_graph_cnn_module();
 
-  float_array_map config =
-      make_array_map(config_names, config_arrays, config_len);
-  float_array_map weights =
-      make_array_map(weight_names, weight_arrays, weight_len);
+    float_array_map config =
+        make_array_map(config_names, config_arrays, config_len);
+    float_array_map weights =
+        make_array_map(weight_names, weight_arrays, weight_len);
 
-  mps_graph_cnn_module *obj = (mps_graph_cnn_module *)handle;
-  obj->init(network_id, n, c_in, h_in, w_in, c_out, h_out, w_out,
-            config, weights);
+    mps->init(network_id, n, c_in, h_in, w_in, c_out, h_out, w_out,
+              config, weights);
+
+    *handle = (void *)mps;
+  } else {
+    float_array_map config =
+        make_array_map(config_names, config_arrays, config_len);
+    float_array_map weights =
+        make_array_map(weight_names, weight_arrays, weight_len);
+
+    turi::style_transfer::style_transfer* mps 
+        = new turi::style_transfer::style_transfer(config, weights);
+
+    *handle = (void *)mps;
+  }
   API_END();
 }
 

@@ -113,7 +113,8 @@
                                                                    cmdQueue:cmdQ
                                                                  descriptor:descriptor.decode2
                                                                 initWeights:weights];
-
+    
+    NSMutableData* zeroedConvBiases = [NSMutableData dataWithLength:descriptor.conv.outputFeatureChannels*sizeof(float)];
     _conv = [MPSCNNConvolutionNode createConvolutional:[_decoding2 output]
                                            kernelWidth:descriptor.conv.kernelWidth
                                           kernelHeight:descriptor.conv.kernelHeight
@@ -124,7 +125,7 @@
                                           paddingWidth:descriptor.conv.paddingWidth
                                          paddingHeight:descriptor.conv.paddingHeight
                                                weights:weights[@"transformer_conv5_weight"]
-                                                biases:weights[@"transformer_conv5_bias"]
+                                                biases:zeroedConvBiases
                                                  label:descriptor.conv.label
                                          updateWeights:descriptor.conv.updateWeights
                                                 device:dev

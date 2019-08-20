@@ -24,6 +24,7 @@ class MpsGraphNetworkType(object):
     kSingleBNGraphNet   = 2
     kSingleMPGraphNet   = 3
     kODGraphNet         = 4
+    kSTGraphNet         = 5
 
 
 class MpsGraphMode(object):
@@ -408,7 +409,6 @@ class MpsGraphAPI(object):
         self.handle = _ctypes.c_void_p()
         self._LIB = _load_tcmps_lib()
         assert self._LIB is not None, "Cannot use MpsGraphAPI without libtcmps.dylib"
-        self._LIB.TCMPSCreateGraphModule(_ctypes.byref(self.handle))
         self._buf_out_fp16 = None
         self._buf_loss = None
         self._ishape = None
@@ -419,7 +419,7 @@ class MpsGraphAPI(object):
         self._cur_learning_rate = None
 
     def __del__(self):
-        self._LIB.TCMPSDeleteGraphModule(self.handle)
+        self._LIB.TCMPSDeleteGraphModule(self.handle, self.network_id)
 
     def init(self, n, c_in, h_in, w_in, c_out, h_out, w_out, config=None, weights=None):
         if weights is None:
@@ -438,7 +438,7 @@ class MpsGraphAPI(object):
         config_items, config_name, config_arr = _prepare_network_parameters(config)
         weights_items, weights_name, weights_arr = _prepare_network_parameters(weights)
         self._LIB.TCMPSInitGraph(
-            self.handle,
+            _ctypes.byref(self.handle),
             self.network_id,
             _ctypes.c_int32(n),
             _ctypes.c_int32(c_in),
@@ -679,3 +679,70 @@ class MpsLowLevelAPI(object):
         assert output.shape() == self._oshape
 
         return output
+
+class MpsStyleGraphAPI(object):
+    def __init__(self, network_id):
+        self.handle = _ctypes.c_void_p()
+        self._LIB = _load_tcmps_lib()
+        assert self._LIB is not None, "Cannot use MpsGraphAPI without libtcmps.dylib"
+        self.network_id = network_id
+        self._cur_config = {}
+
+    def __del__(self):
+        self._LIB.TCMPSDeleteGraphModule(self.handle, self.network_id)
+
+    def init(self, n, c_in, h_in, w_in, c_out, h_out, w_out, config=None, weights=None):
+        if weights is None:
+            weights = {}
+        
+        if config is None:
+            config = {
+                'learning_rate': 1e-3,
+                'gradient_clipping': 0.025,
+                'weight_decay': 0.00005,
+                'momentum': 0.9,
+            }
+
+        config_items, config_name, config_arr = _prepare_network_parameters(config)
+        weights_items, weights_name, weights_arr = _prepare_network_parameters(weights)
+
+        self._LIB.TCMPSInitGraph(
+            _ctypes.byref(self.handle),
+            self.network_id,
+            _ctypes.c_int32(n),
+            _ctypes.c_int32(c_in),
+            _ctypes.c_int32(h_in),
+            _ctypes.c_int32(w_in),
+            _ctypes.c_int32(c_out),
+            _ctypes.c_int32(h_out),
+            _ctypes.c_int32(w_out),
+            config_name, config_arr, _ctypes.c_int32(len(config_items)),
+            weights_name, weights_arr, _ctypes.c_int32(len(weights_items)),
+        )
+        self._cur_config = _deepcopy(config)
+
+    def train(self, input, label):
+        pass
+    def predict(self, input):
+        input_array = MpsFloatArray(input)
+        result_handle = _ctypes.c_void_p()
+
+        status_code = self._LIB.TCMPSPredictGraph(
+            self.handle, input_array.handle, _ctypes.byref(result_handle))
+
+        assert status_code == 0, "Error calling TCMPSPredictGraph"
+        assert result_handle, "TCMPSPredictGraph unexpectedly returned NULL pointer"
+
+        result = MpsFloatArray(result_handle)
+        assert result.shape() == self._oshape
+
+        return result
+        
+    def train_return_grad(self, input, grad):
+        pass
+    def set_learning_rate(self, new_lr):
+        pass
+    def load(self, weights):
+        pass
+    def export(self):
+        pass

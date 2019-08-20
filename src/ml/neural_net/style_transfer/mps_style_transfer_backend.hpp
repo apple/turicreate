@@ -23,7 +23,7 @@ public:
   style_transfer(const turi::neural_net::float_array_map &config,
                  const turi::neural_net::float_array_map &weights);
   
-  ~style_transfer() = default;
+  ~style_transfer();
 
   turi::neural_net::float_array_map export_weights() const override;
   turi::neural_net::float_array_map predict(const turi::neural_net::float_array_map& inputs) const override;
