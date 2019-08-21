@@ -73,7 +73,7 @@ struct style_transfer::impl {
 style_transfer::style_transfer(const float_array_map &config,
                                const float_array_map &weights) {
   @autoreleasepool {
-    if (@available(macOS 10.15, *)) {
+    #ifdef HAS_MACOS_10_15
       id <MTLDevice> dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
       id <MTLCommandQueue> cmdQueue = [dev newCommandQueue];
 
@@ -87,15 +87,15 @@ style_transfer::style_transfer(const float_array_map &config,
                                                  commandQueue:cmdQueue
                                                       weights:styleTransferWeights
                                                     numStyles:numStyles];
-    } else {
+    #else
       log_and_throw("Can't construct GPU Style Transfer Network for MacOS \
                      platform lower than 10.15");
-    }
+    #endif
   }
 }
 
 float_array_map style_transfer::export_weights() const {
-  if (@available(macOS 10.15, *)) {
+  #ifdef HAS_MACOS_10_15
     NSDictionary<NSString *, NSData *> *dictWeights
         = [m_impl->model exportWeights];
     
@@ -103,14 +103,14 @@ float_array_map style_transfer::export_weights() const {
         = [TCMPSStyleTransferHelpers fromNSDictionary:dictWeights];
 
     return weights;
-  } else {
+  #else
     log_and_throw("Can't export weights on the GPU Style Transfer Network for \
                    MacOS platform lower than 10.15");
-  }
+  #endif
 }
 
 float_array_map style_transfer::predict(const float_array_map& inputs) const {
-  if (@available(macOS 10.15, *)) {
+  #ifdef HAS_MACOS_10_15
     NSDictionary<NSString *, NSData *> *dictInputs
         = [TCMPSStyleTransferHelpers toNSDictionary: inputs];
 
@@ -121,23 +121,23 @@ float_array_map style_transfer::predict(const float_array_map& inputs) const {
         = [TCMPSStyleTransferHelpers fromNSDictionary:dictOutput];
 
     return output;
-  } else {
+  #else
     log_and_throw("Can't call predict on GPU Style Transfer Network for MacOS \
                      platform lower than 10.15");
-  }
+  #endif
 }
 
 void style_transfer::set_learning_rate(float lr) {
-  if (@available(macOS 10.15, *)) {
+  #ifdef HAS_MACOS_10_15
     [m_impl->model setLearningRate:lr];
-  } else {
+  #else
     log_and_throw("Can't call set_learning_rate on GPU Style Transfer Network \
                    for MacOS platform lower than 10.15");
-  }
+  #endif
 }
 
 float_array_map style_transfer::train(const float_array_map& inputs) {
-  if (@available(macOS 10.15, *)) {
+  #ifdef HAS_MACOS_10_15
     NSDictionary<NSString *, NSData *> *dictInputs
         = [TCMPSStyleTransferHelpers toNSDictionary: inputs];
 
@@ -148,10 +148,10 @@ float_array_map style_transfer::train(const float_array_map& inputs) {
         = [TCMPSStyleTransferHelpers fromNSDictionary:dictLoss];
 
     return loss;
-  } else {
+  #else
     log_and_throw("Can't call train on GPU Style Transfer Network for MacOS \
                      platform lower than 10.15");
-  }
+  #endif
 }
 
 } // namespace style_transfer
