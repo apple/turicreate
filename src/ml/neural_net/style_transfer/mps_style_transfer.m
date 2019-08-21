@@ -75,7 +75,7 @@
     // Create the Descriptors for the Transformer and VGG16 Networks
     TCMPSTransformerDescriptor *transformerDesc = [TCMPSStyleTransfer defineTransformerDescriptor:numStyles
                                                                                    tuneAllWeights:_updateAllParams];
-    TCMPSVgg16Descriptor *vgg16Desc = [TCMPSStyleTransfer defineVGG16Descriptor:numStyles];
+    // TCMPSVgg16Descriptor *vgg16Desc = [TCMPSStyleTransfer defineVGG16Descriptor:numStyles];
 
     _model = [[TCMPSStyleTransferTransformerNetwork alloc] initWithParameters:@"Transformer"
                                                                     inputNode:_contentNode
@@ -83,7 +83,7 @@
                                                                      cmdQueue:_commandQueue
                                                                    descriptor:transformerDesc
                                                                   initWeights:weights];
-
+    /*
     _contentPreProcess = [[TCMPSStyleTransferPreProcessing alloc] initWithParameters:@"Content_Pre_Processing"
                                                                            inputNode:_model.forwardPass
                                                                            scaleNode:_contentScaleNode
@@ -228,12 +228,12 @@
     _trainingGraph = [MPSNNGraph graphWithDevice:_dev
                                     resultImages:@[lastNodes[0].resultImage, lastNodes[1].resultImage]
                                 resultsAreNeeded:&resultsAreNeeded[0]];
-
+    */
     _inferenceGraph = [MPSNNGraph graphWithDevice:_dev
                                       resultImage:_model.forwardPass
                               resultImageIsNeeded:YES];
 
-    _trainingGraph.format = MPSImageFeatureChannelFormatFloat32;
+    // _trainingGraph.format = MPSImageFeatureChannelFormatFloat32;
     _inferenceGraph.format = MPSImageFeatureChannelFormatFloat32;
   }
   return self;
@@ -244,6 +244,9 @@
 }
 
 - (NSDictionary<NSString *, NSData *> *) predict:(NSDictionary<NSString *, NSData *> *)inputs {
+  // TODO: Change for testing
+  _batchSize = 1;
+
   MPSImageDescriptor *imgDesc = [MPSImageDescriptor
     imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat32
                                width:_imgWidth
@@ -255,10 +258,17 @@
   NSMutableArray<MPSImage *> *contentImageArray = [[NSMutableArray alloc] init];
 
   for (NSUInteger index = 0; index < _batchSize; index++) {
-    NSString* key = [NSString stringWithFormat:@"%@%lu", @"contentImage", index];
+    // NSString* key = [NSString stringWithFormat:@"%@%lu", @"contentImage", index];
+    NSString* key = @"input";
     MPSImage *contentImage = [[MPSImage alloc] initWithDevice:_dev imageDescriptor:imgDesc];
     [contentImage writeBytes:inputs[key].bytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
     [contentImageArray addObject:contentImage];
+    NSLog(@"Inputs");
+    for (int i = 0; i < 10; i++) {
+      float* numbers = (float *)inputs[key].bytes;
+      NSLog(@"%f", numbers[i]);
+    }
+    NSLog(@"\n");
   }
 
   MPSImageBatch *contentImageBatch = [contentImageArray copy];  
@@ -284,10 +294,10 @@
   NSMutableDictionary<NSString *, NSData *> *imagesOut = [[NSMutableDictionary alloc] init];;
 
   for (MPSImage *image in stylizedImages) {
-    NSMutableData* styleData = [NSMutableData dataWithLength:(NSUInteger)sizeof(float) * _imgWidth * _imgHeight * 3];
+    NSMutableData* styleData = [NSMutableData dataWithLength:(NSUInteger)sizeof(float) * _imgWidth * _imgHeight * 32];
     [image readBytes:styleData.mutableBytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
-    NSString* key = [NSString stringWithFormat:@"%@%lu", @"stylizedImage", [stylizedImages indexOfObject:image]];
-    imagesOut[key] = styleData;
+    // NSString* key = [NSString stringWithFormat:@"%@%lu", @"stylizedImage", [stylizedImages indexOfObject:image]];
+    imagesOut[@"output"] = styleData;
   }
 
   return [imagesOut copy];

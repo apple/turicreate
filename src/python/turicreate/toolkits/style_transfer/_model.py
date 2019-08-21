@@ -111,6 +111,8 @@ class Transformer(HybridBlock):
         self.num_styles = num_styles
         block = ResidualBlock
         self.scale255 = False
+        # TODO: Testing
+        self.layerReturn = False
 
         with self.name_scope():
             self.conv1 = _nn.Conv2D(32, 9, 1, 0, in_channels=3, use_bias=False)
@@ -153,12 +155,13 @@ class Transformer(HybridBlock):
             layer.batch_size = batch_size
 
     def hybrid_forward(self, F, X, style_idx):
-        h1 = F.pad(X, mode="reflect", pad_width=(0,0,0,0,4,4,4,4))
-        h1 = self.conv1(h1)
-        h1 = self.inst_norm1(h1, style_idx)
-        h1 = F.Activation(h1, 'relu')
+        # h1 = F.pad(X, mode="reflect", pad_width=(0,0,0,0,4,4,4,4))
+        h1 = F.pad(X, mode="constant", constant_value=0, pad_width=(0,0,0,0,4,4,4,4))
+        h1_conv = self.conv1(h1)
+        # h1 = self.inst_norm1(h1, style_idx)
+        h1_relu = F.Activation(h1_conv, 'relu')
 
-        h2 = F.pad(h1, mode="reflect", pad_width=(0,0,0,0,1,1,1,1))
+        h2 = F.pad(h1_relu, mode="reflect", pad_width=(0,0,0,0,1,1,1,1))
         h2 = self.conv2(h2)
         h2 = self.inst_norm2(h2, style_idx)
         h2 = F.Activation(h2, 'relu')
@@ -193,6 +196,8 @@ class Transformer(HybridBlock):
         z = F.Activation(d3, 'sigmoid')
         if self.scale255:
             return z * 255
+        elif self.layerReturn:
+            return h1_conv
         else:
             return z
 

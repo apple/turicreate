@@ -62,6 +62,8 @@ def _decode_bytes_to_native_string(s):
 def mps_to_mxnet(weight):
     if weight.ndim == 1:
         return weight
+    elif weight.ndim == 2:
+        return weight
     elif weight.ndim == 4:
         return weight.transpose(0, 3, 1, 2)
     else:
@@ -70,6 +72,8 @@ def mps_to_mxnet(weight):
 
 def mxnet_to_mps(weight):
     if weight.ndim == 1:
+        return weight
+    elif weight.ndim == 2:
         return weight
     elif weight.ndim == 4:
         return weight.transpose(0, 2, 3, 1)
@@ -734,7 +738,7 @@ class MpsStyleGraphAPI(object):
         assert result_handle, "TCMPSPredictGraph unexpectedly returned NULL pointer"
 
         result = MpsFloatArray(result_handle)
-        assert result.shape() == self._oshape
+        print(result.shape())
 
         return result
         

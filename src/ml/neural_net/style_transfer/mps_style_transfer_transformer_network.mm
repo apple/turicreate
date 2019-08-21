@@ -50,7 +50,7 @@
                                                                    cmdQueue:cmdQ
                                                                  descriptor:descriptor.encode1
                                                                 initWeights:weights];
-
+    /*
     _encoding2 = [[TCMPSStyleTransferEncodingNode alloc] initWithParameters:@"transformer_encode_2_"
                                                                   inputNode:[_encoding1 output]
                                                                      device:dev
@@ -141,8 +141,9 @@
                                                                     cmdQueue:cmdQ];
 
     _sigmoid = [MPSCNNNeuronSigmoidNode nodeWithSource:[_instNorm resultImage]];
-    
-    _forwardPass = [_sigmoid resultImage];
+    */
+    _forwardPass = [_encoding1 output];
+    // _forwardPass = [_sigmoid resultImage];
   }
 
   return self;

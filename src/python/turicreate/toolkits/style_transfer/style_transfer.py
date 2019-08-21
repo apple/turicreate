@@ -357,23 +357,27 @@ def create(style_dataset, content_dataset, style_feature=None,
         }
 
         transformer.batch_size = 1
-        transformer_output = transformer.forward(_mx.nd.uniform(0, 1, (1, 3) + input_shape), _mx.nd.array([0]))
-        vgg_model.forward(transformer_output)
+        transformer.layerReturn = True
+
+        test_input = _mx.nd.ones((1, 3) + input_shape)
+
+        transformer_output = transformer.forward(test_input, _mx.nd.array([0]))
+        # vgg_model.forward(transformer_output)
 
         net_params = transformer.collect_params()
-        vgg_params = vgg_model.collect_params()
+        # vgg_params = vgg_model.collect_params()
 
         mps_net_params = {}
 
         keys = list(net_params)
-        vgg_keys = list(vgg_params)
+        # vgg_keys = list(vgg_params)
 
         for k in keys:
-            mps_net_params[mps_key_map[k]] = net_params[k].data().asnumpy()
-
+          mps_net_params[mps_key_map[k]] = _mxnet_to_mps(net_params[k].data().asnumpy())
+        '''
         for k in vgg_keys:
             mps_net_params[mps_key_map[k]] = vgg_params[k].data().asnumpy()
-
+        '''
         mps_config = {
             'mode': _MpsGraphMode.Train,
             'use_sgd': True,
@@ -387,16 +391,28 @@ def create(style_dataset, content_dataset, style_feature=None,
             "st_num_styles": num_styles
         }
 
+        print(transformer_output)
+
         mps_net = _get_mps_st_net(input_image_shape=(3, input_shape[0], input_shape[1]),
                                   batch_size=batch_size,
                                   output_size=(3, input_shape[0], input_shape[1]),
                                   config=mps_config,
                                   weights=mps_net_params)
         
+
         # TODO: Test Predict.
+        output = mps_net.predict(test_input.asnumpy())
         # TODO: Test Training.
-        
+        mps_z = output.asnumpy().reshape(1, 256, 256, 32)
+        z = _mps_to_mxnet(mps_z)
+        print(z)
+
+        '''
+        print(transformer_output)
+
         return mps_net
+        '''
+        return None
 
     #
     # Pre-compute gram matrices for style images
