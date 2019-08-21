@@ -1,0 +1,3 @@
+# Treat these paths as external for the purposes of GitHub's Linguist
+deps/* linguist-vendored
+src/external/* linguist-vendored
