@@ -14,7 +14,7 @@
 @property (nonatomic) MPSCNNUpsamplingNearestNode *upsample;
 @property (nonatomic) MPSCNNConvolutionNode *conv;
 @property (nonatomic) MPSCNNInstanceNormalizationNode* instNorm;
-@property (nonatomic) MPSCNNNeuronReLUNNode* relu;
+@property (nonatomic) MPSCNNNeuronReLUNode* relu;
 @end
 
 @implementation TCMPSStyleTransferDecodingNode
@@ -59,7 +59,7 @@
                                                                       device:dev
                                                                     cmdQueue:cmdQ];
 
-    _relu = [MPSCNNNeuronReLUNNode nodeWithSource: [_instNorm resultImage]];
+    _relu = [MPSCNNNeuronReLUNode nodeWithSource: [_instNorm resultImage]];
 
     _output = [_relu resultImage];
   }

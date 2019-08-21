@@ -302,8 +302,8 @@ def create(style_dataset, content_dataset, style_feature=None,
            "transformer_instancenorm3_gamma": "transformer_decoding_1_inst_gamma",
            "transformer_instancenorm4_beta": "transformer_decoding_2_inst_beta",
            "transformer_instancenorm4_gamma": "transformer_decoding_2_inst_gamma",
-           "transformer_instancenorm5_beta": "transformer_instancenorm5_gamma",
-           "transformer_instancenorm5_gamma": "transformer_instancenorm5_beta",
+           "transformer_instancenorm5_beta": "transformer_instancenorm5_beta",
+           "transformer_instancenorm5_gamma": "transformer_instancenorm5_gamma",
            "transformer_residualblock0_conv0_weight": "transformer_residual_1_conv_1_weights",
            "transformer_residualblock0_conv1_weight": "transformer_residual_1_conv_2_weights",
            "transformer_residualblock0_instancenorm0_beta": "transformer_residual_1_inst_1_beta",
@@ -357,27 +357,31 @@ def create(style_dataset, content_dataset, style_feature=None,
         }
 
         transformer.batch_size = 1
-        transformer.layerReturn = True
 
-        test_input = _mx.nd.ones((1, 3) + input_shape)
+        test_input = _mx.nd.uniform(0, 1, (1, 3) + input_shape)
+        test_output = _mx.nd.ones((1, 3) + input_shape)
 
         transformer_output = transformer.forward(test_input, _mx.nd.array([0]))
-        # vgg_model.forward(transformer_output)
+        vgg16_s = _vgg16_data_prep(transformer_output)
+        vgg_output = vgg_model.forward(vgg16_s)
+
+        vgg16_t = _vgg16_data_prep(test_input)
+        content_output = vgg_model.forward(vgg16_t)
 
         net_params = transformer.collect_params()
-        # vgg_params = vgg_model.collect_params()
+        vgg_params = vgg_model.collect_params()
 
         mps_net_params = {}
 
         keys = list(net_params)
-        # vgg_keys = list(vgg_params)
+        vgg_keys = list(vgg_params)
 
         for k in keys:
           mps_net_params[mps_key_map[k]] = _mxnet_to_mps(net_params[k].data().asnumpy())
-        '''
+        
         for k in vgg_keys:
-            mps_net_params[mps_key_map[k]] = vgg_params[k].data().asnumpy()
-        '''
+            mps_net_params[mps_key_map[k]] = _mxnet_to_mps(vgg_params[k].data().asnumpy())
+        
         mps_config = {
             'mode': _MpsGraphMode.Train,
             'use_sgd': True,
@@ -391,8 +395,6 @@ def create(style_dataset, content_dataset, style_feature=None,
             "st_num_styles": num_styles
         }
 
-        print(transformer_output)
-
         mps_net = _get_mps_st_net(input_image_shape=(3, input_shape[0], input_shape[1]),
                                   batch_size=batch_size,
                                   output_size=(3, input_shape[0], input_shape[1]),
@@ -400,18 +402,45 @@ def create(style_dataset, content_dataset, style_feature=None,
                                   weights=mps_net_params)
         
 
-        # TODO: Test Predict.
-        output = mps_net.predict(test_input.asnumpy())
-        # TODO: Test Training.
-        mps_z = output.asnumpy().reshape(1, 256, 256, 32)
+        # Test Predict
+        output = mps_net.predict(_mxnet_to_mps(test_input.asnumpy()))
+        mps_z = output.asnumpy().reshape(1, 256, 256, 3)
         z = _mps_to_mxnet(mps_z)
         print(z)
 
-        '''
-        print(transformer_output)
+        VGG_CONTENT_LOSS_LAYER = 2;
+        CONTENT_LOSS_MULT = 1.0
+        STYLE_LOSS_MULT = 1e-4
+        LEARNING_RATE = 0.001
 
-        return mps_net
-        '''
+        trainable_params = transformer.collect_params('.*gamma|.*beta')
+        trainer = _gluon.Trainer(trainable_params, 'adam', {'learning_rate': LEARNING_RATE})
+        mse_loss = _gluon.loss.L2Loss()
+
+        vgg16_s = _vgg16_data_prep(test_output)
+        s_vgg_outputs = vgg_model.forward(vgg16_s)
+        gram_output = [_gram_matrix(x) for x in s_vgg_outputs]
+        
+        c_content_layer = content_output[VGG_CONTENT_LOSS_LAYER]
+        p_content_layer = vgg_output[VGG_CONTENT_LOSS_LAYER]
+
+        style_losses = []
+        for s_g, p_g in zip(gram_output, vgg_output):
+          gram_out = _gram_matrix(p_g)
+          loss_val = mse_loss(s_g, gram_out)
+          style_losses.append(STYLE_LOSS_MULT * loss_val)
+        
+        style_loss = _mx.nd.add_n(*style_losses)
+        content_loss = CONTENT_LOSS_MULT * mse_loss(c_content_layer, p_content_layer)
+        total_loss = (content_loss + style_loss) / 10000.0
+
+        print("Loss in Python: "+str(total_loss))
+
+        # TODO: Test Training
+        loss = mps_net.train(_mxnet_to_mps(test_input.asnumpy()), _mxnet_to_mps(test_output.asnumpy()))
+        print("Loss in MPS:")
+        print(loss.asnumpy()/10000.0)
+
         return None
 
     #

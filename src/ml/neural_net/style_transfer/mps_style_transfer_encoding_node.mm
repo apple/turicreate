@@ -13,7 +13,7 @@
 @interface TCMPSStyleTransferEncodingNode ()
 @property (nonatomic) MPSCNNConvolutionNode *conv;
 @property (nonatomic) MPSCNNInstanceNormalizationNode* instNorm;
-@property (nonatomic) MPSCNNNeuronReLUNNode* relu;
+@property (nonatomic) MPSCNNNeuronReLUNode* relu;
 @end
 
 @implementation TCMPSStyleTransferEncodingNode
@@ -45,7 +45,6 @@
                                                 device:dev
                                               cmdQueue:cmdQ];
 
-    /*
     _instNorm = [MPSCNNInstanceNormalizationNode createInstanceNormalization:[_conv resultImage]
                                                                     channels:descriptor.inst.channels
                                                                       styles:descriptor.inst.styles
@@ -54,12 +53,9 @@
                                                                        label:descriptor.inst.label
                                                                       device:dev
                                                                     cmdQueue:cmdQ];
-    */
 
-    _relu = [MPSCNNNeuronReLUNNode nodeWithSource: [_conv resultImage]];
+    _relu = [MPSCNNNeuronReLUNode nodeWithSource: [_instNorm resultImage]];
 
-    // _relu = [MPSCNNNeuronReLUNNode nodeWithSource: [_instNorm resultImage]];
-    // _output = [_conv resultImage];
     _output = [_relu resultImage];
   }
 

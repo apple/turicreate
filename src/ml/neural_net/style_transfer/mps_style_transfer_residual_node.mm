@@ -13,7 +13,7 @@
 @interface TCMPSStyleTransferResidualNode ()
 @property (nonatomic) MPSCNNConvolutionNode *conv1;
 @property (nonatomic) MPSCNNInstanceNormalizationNode *instNorm1;
-@property (nonatomic) MPSCNNNeuronReLUNNode *relu1;
+@property (nonatomic) MPSCNNNeuronReLUNode *relu1;
 
 @property (nonatomic) MPSCNNConvolutionNode *conv2;
 @property (nonatomic) MPSCNNInstanceNormalizationNode *instNorm2;
@@ -58,7 +58,7 @@
                                                                        device:dev
                                                                      cmdQueue:cmdQ];
 
-    _relu1 = [MPSCNNNeuronReLUNNode nodeWithSource:[_instNorm1 resultImage]];
+    _relu1 = [MPSCNNNeuronReLUNode nodeWithSource:[_instNorm1 resultImage]];
 
     // No bias
     NSMutableData* zeroedConv2Biases = [NSMutableData dataWithLength:descriptor.conv2.outputFeatureChannels*sizeof(float)];

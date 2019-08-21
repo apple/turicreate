@@ -50,7 +50,7 @@
                                                                    cmdQueue:cmdQ
                                                                  descriptor:descriptor.encode1
                                                                 initWeights:weights];
-    /*
+    
     _encoding2 = [[TCMPSStyleTransferEncodingNode alloc] initWithParameters:@"transformer_encode_2_"
                                                                   inputNode:[_encoding1 output]
                                                                      device:dev
@@ -64,6 +64,7 @@
                                                                    cmdQueue:cmdQ
                                                                  descriptor:descriptor.encode3
                                                                 initWeights:weights];
+
 
     _residual1 = [[TCMPSStyleTransferResidualNode alloc] initWithParameters:@"transformer_residual_1_"
                                                                   inputNode:[_encoding3 output]
@@ -113,7 +114,7 @@
                                                                    cmdQueue:cmdQ
                                                                  descriptor:descriptor.decode2
                                                                 initWeights:weights];
-    
+
     NSMutableData* zeroedConvBiases = [NSMutableData dataWithLength:descriptor.conv.outputFeatureChannels*sizeof(float)];
     _conv = [MPSCNNConvolutionNode createConvolutional:[_decoding2 output]
                                            kernelWidth:descriptor.conv.kernelWidth
@@ -141,9 +142,8 @@
                                                                     cmdQueue:cmdQ];
 
     _sigmoid = [MPSCNNNeuronSigmoidNode nodeWithSource:[_instNorm resultImage]];
-    */
-    _forwardPass = [_encoding1 output];
-    // _forwardPass = [_sigmoid resultImage];
+
+    _forwardPass = [_sigmoid resultImage];
   }
 
   return self;
