@@ -112,6 +112,7 @@ public:
 
 protected:
   std::shared_ptr<unity_sframe> m_data;
+  std::shared_ptr<unity_sframe> m_data_na;
   const std::vector<std::string> m_data_columns;
   std::string m_annotation_column;
   std::shared_ptr<visualization::process_wrapper> m_aw;
@@ -128,6 +129,11 @@ protected:
   template <typename T, typename = typename std::enable_if<std::is_base_of<
                             ::google::protobuf::MessageLite, T>::value>::type>
   std::string _serialize_proto(T message);
+
+  /*
+   * split data set into 2 parts: non-missing values and missing values
+   * */
+  void _splitUndefined(const std::string& column_names, bool how, bool recursive);
 
 private:
   std::string __parse_proto_and_respond(std::string &input);

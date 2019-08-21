@@ -6,7 +6,7 @@ classifier toolkit that let you do more.
 
 #### Annotating Data
 
-If you only have images without corresponding labels, you can 
+If you only have images without corresponding labels, you can
 use the annotation utility built into the image_classifier. An example
 of its usage is shown below:
 
@@ -20,7 +20,11 @@ annotated_data = tc.image_classifier.annotate(data)
 
 ```
 
-If you forget to assign the output of your annotation to a variable, 
+This utility will only present rows from the SFrame that have non-missing values.
+All missing values won't be shown in the GUI but they will be still included in the result set with default annotation value (undefined value, which denotes missing
+annotation). Exception will be thrown if no valid image is found.
+
+If you forget to assign the output of your annotation to a variable,
 we've included a method to help you recover those annotations. The code
 for that is shown below:
 
