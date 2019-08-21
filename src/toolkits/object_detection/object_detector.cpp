@@ -444,9 +444,9 @@ gl_sarray object_detector::predict(gl_sframe data) {
                       {"width", each_row.bounding_box.width},
                       {"height", each_row.bounding_box.height}};
       flex_dict each_annotation = {{"confidence", each_row.confidence},
-                                     {"bounding_box", bb_dict},
-                                     {"identifier", each_row.identifier}};
-      predicted_row_ft.push_back(each_annotation);
+                                   {"bounding_box", std::move(bb_dict)},
+                                   {"identifier", each_row.identifier}};
+      predicted_row_ft.push_back(std::move(each_annotation));
     }
     result.write(predicted_row_ft, 0);
   };

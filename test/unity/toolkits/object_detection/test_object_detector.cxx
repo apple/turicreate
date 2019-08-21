@@ -20,12 +20,6 @@ namespace turi {
 namespace object_detection {
 namespace {
 
-const std::vector<std::pair<float, float>> anchor_boxes = {
-    {1.f, 2.f}, {1.f, 1.f},  {2.f, 1.f},   {2.f, 4.f},   {2.f, 2.f},
-    {4.f, 2.f}, {4.f, 8.f},  {4.f, 4.f},   {8.f, 4.f},   {8.f, 16.f},
-    {8.f, 8.f}, {16.f, 8.f}, {16.f, 32.f}, {16.f, 16.f}, {32.f, 16.f},
-};
-
 using CoreML::Specification::NeuralNetwork;
 using turi::neural_net::compute_context;
 using turi::neural_net::deferred_float_array;
@@ -772,7 +766,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto_split) {
 
 BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
   static constexpr size_t test_num_examples = 100;
-  static constexpr size_t test_max_iterations = 4;
+  static constexpr size_t test_max_iterations = 2;
   static constexpr size_t test_batch_size = 2;
   const std::string test_annotations_name = "test_annotations";
   const std::string test_image_name = "test_image";
@@ -804,9 +798,9 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
     // comparison.
     auto test_annotations =
         std::make_shared<std::vector<std::vector<image_annotation>>>();
+
     auto next_batch_impl = [=](size_t batch_size) {
       TS_ASSERT_EQUALS(batch_size, test_batch_size);
-
       std::vector<labeled_image> result(test_batch_size);
       for (size_t j = 0; j < result.size(); ++j) {
         // The actual contents of the image and the annotations are irrelevant
@@ -872,7 +866,9 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
       return result;
     };
     mock_nn_model->train_calls_.push_back(train_impl);
-  }
+
+  }  // End of test_max_iterations for loop
+
   auto create_iterator_impl = [&](data_iterator::parameters iterator_params) {
     return std::move(mock_iterator);
   };
@@ -933,20 +929,23 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
                    test_class_labels.size());
 
   mock_iterator.reset(new mock_data_iterator);
-  mock_augmenter.reset(new mock_image_augmenter);
-  mock_nn_model.reset(new mock_model_backend);
-
-  mock_context.reset(new mock_compute_context);
   mock_iterator->class_labels_ = test_class_labels;
   mock_iterator->num_instances_ = test_num_instances;
-  static constexpr size_t num_prediction_instances = 2;
+  model.create_iterator_calls_.push_back(create_iterator_impl);
 
-  // Program the mock_iterator to return two arbitrary images, each with one
-  // unique annotation. We'll store a copy of the annotations for later
-  // comparison.
+  mock_context.reset(new mock_compute_context);
+  model.create_compute_context_calls_.push_back(create_compute_context_impl);
+
+  mock_augmenter.reset(new mock_image_augmenter);
+  mock_context->create_augmenter_calls_.push_back(create_augmenter_impl);
+
+  mock_nn_model.reset(new mock_model_backend);
+  mock_context->create_object_detector_calls_.push_back(
+      create_object_detector_impl);
+
+  static constexpr size_t num_prediction_instances = 2;
   auto test_annotations =
       std::make_shared<std::vector<std::vector<image_annotation>>>();
-
   auto next_batch_impl = [=](size_t batch_size) {
     TS_ASSERT_EQUALS(batch_size, test_batch_size);
 
@@ -966,15 +965,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
 
     return result;
   };
-  // Stores one batch
   mock_iterator->next_batch_calls_.push_back(next_batch_impl);
-
-  auto empty_next_batch_impl = [=](size_t batch_size) {
-    std::vector<labeled_image> result(0);
-    return result;
-  };
-  // Stores an empty batch
-  mock_iterator->next_batch_calls_.push_back(empty_next_batch_impl);
 
   // Program the mock_augmenter to return an arbitrary float_array, and to
   // pass through the annotations.
@@ -993,14 +984,6 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
   };
   mock_augmenter->prepare_images_calls_.push_back(prepare_images_impl);
 
-  model.create_iterator_calls_.push_back(create_iterator_impl);
-
-  mock_context->create_augmenter_calls_.push_back(create_augmenter_impl);
-
-  mock_context->create_object_detector_calls_.push_back(
-      create_object_detector_impl);
-  model.create_compute_context_calls_.push_back(create_compute_context_impl);
-
   auto predict_impl = [](const float_array_map& inputs) {
     float_array_map result;
 
@@ -1015,10 +998,11 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
 
     // Allocate a YOLO map and define a setter function so we can populate it
     // relatively conveniently.
-    size_t buffer_size =
-        anchor_boxes.size() * NUM_PREDS * OUTPUT_GRID_SIZE * OUTPUT_GRID_SIZE;
+    size_t buffer_size = test_batch_size * anchor_boxes.size() * NUM_PREDS *
+                         OUTPUT_GRID_SIZE * OUTPUT_GRID_SIZE;
     std::vector<float> buffer(buffer_size, 0.f);
-    auto set_val = [&](size_t h, size_t w, size_t b, size_t p, float val) {
+    auto set_val = [&](size_t b_num, size_t h, size_t w, size_t b, size_t p,
+                       float val) {
       float* out = buffer.data();
       out += h * NUM_PREDS * anchor_boxes.size() * OUTPUT_GRID_SIZE;
       out += w * NUM_PREDS * anchor_boxes.size();
@@ -1027,50 +1011,79 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
       *out = val;
     };
 
-    // Initialize all confidence scores to large negative values, which
-    // correspond to zero confidence (after passing through the sigmoid
-    // function).
-    for (size_t h = 0; h < OUTPUT_GRID_SIZE; ++h) {
-      for (size_t w = 0; w < OUTPUT_GRID_SIZE; ++w) {
-        for (size_t b = 0; b < anchor_boxes.size(); ++b) {
-          set_val(h, w, b, 4, -1000.f);  // conf
+    for (size_t batch_num = 0; batch_num < test_batch_size;
+         ++batch_num) {  // batch size
+      // Initialize all confidence scores to large negative values, which
+      // correspond to zero confidence (after passing through the sigmoid
+      // function).
+      for (size_t h = 0; h < OUTPUT_GRID_SIZE; ++h) {
+        for (size_t w = 0; w < OUTPUT_GRID_SIZE; ++w) {
+          for (size_t b = 0; b < anchor_boxes.size(); ++b) {
+            set_val(batch_num, h, w, b, 4, -1000.f);  // conf
+          }
         }
       }
+
+      // Predict class 0 at the center of output cell (1,0) with exactly the
+      // size of anchor box 0.
+      set_val(batch_num, 0, 1, 0, 0, 0.f);     // x
+      set_val(batch_num, 0, 1, 0, 1, 0.f);     // y
+      set_val(batch_num, 0, 1, 0, 2, 0.f);     // w
+      set_val(batch_num, 0, 1, 0, 3, 0.f);     // h
+      set_val(batch_num, 0, 1, 0, 4, 1000.f);  // conf
+      set_val(batch_num, 0, 1, 0, 5, 1000.f);  // class 0
+      set_val(batch_num, 0, 1, 0, 6, 0.f);     // class 1
+
+      // Predict class 1 at the upper-left corner of output cell (0,1) at half
+      // the size of anchor box 1, with confidence 0.5.
+      set_val(batch_num, 1, 0, 1, 0, -1000.f);         // x
+      set_val(batch_num, 1, 0, 1, 1, -1000.f);         // y
+      set_val(batch_num, 1, 0, 1, 2, std::log(0.5f));  // w
+      set_val(batch_num, 1, 0, 1, 3, std::log(0.5f));  // h
+      set_val(batch_num, 1, 0, 1, 4, 0.f);             // conf
+      set_val(batch_num, 1, 0, 1, 5, 0.f);             // class 0
+      set_val(batch_num, 1, 0, 1, 6, 1000.f);          // class 1
     }
 
-    // Predict class 0 at the center of output cell (1,0) with exactly the size
-    // of anchor box 0.
-    set_val(0, 1, 0, 0, 0.f);     // x
-    set_val(0, 1, 0, 1, 0.f);     // y
-    set_val(0, 1, 0, 2, 0.f);     // w
-    set_val(0, 1, 0, 3, 0.f);     // h
-    set_val(0, 1, 0, 4, 1000.f);  // conf
-    set_val(0, 1, 0, 5, 1000.f);  // class 0
-    set_val(0, 1, 0, 6, 0.f);     // class 1
-
-    // Predict class 1 at the upper-left corner of output cell (0,1) at half the
-    // size of anchor box 1, with confidence 0.5.
-    set_val(1, 0, 1, 0, -1000.f);         // x
-    set_val(1, 0, 1, 1, -1000.f);         // y
-    set_val(1, 0, 1, 2, std::log(0.5f));  // w
-    set_val(1, 0, 1, 3, std::log(0.5f));  // h
-    set_val(1, 0, 1, 4, 0.f);             // conf
-    set_val(1, 0, 1, 5, 0.f);             // class 0
-    set_val(1, 0, 1, 6, 1000.f);          // class 1
-
-    // Create the float_array.
     shared_float_array arr = shared_float_array::wrap(
-        buffer,
-        {OUTPUT_GRID_SIZE, OUTPUT_GRID_SIZE, anchor_boxes.size() * NUM_PREDS});
+        buffer, {test_batch_size, OUTPUT_GRID_SIZE, OUTPUT_GRID_SIZE,
+                 anchor_boxes.size() * NUM_PREDS});
     result["output"] = arr;
     return result;
   };
   mock_nn_model->predict_calls_.push_back(predict_impl);
 
+  mock_iterator->next_batch_calls_.push_back(next_batch_impl);
+  mock_augmenter->prepare_images_calls_.push_back(prepare_images_impl);
+  mock_nn_model->predict_calls_.push_back(predict_impl);
+
+  auto empty_next_batch_impl = [=](size_t batch_size) {
+    std::vector<labeled_image> result(0);
+    return result;
+  };
+  // Send empty batch to match perform_predict() implementation
+  mock_iterator->next_batch_calls_.push_back(empty_next_batch_impl);
+
   auto convert_yolo_impl =
       [](const neural_net::float_array& yolo_map,
          const std::vector<std::pair<float, float>>& anchor_boxes,
          float min_confidence) {
+        ASSERT_EQ(yolo_map.dim(), 3);
+        const size_t* const shape = yolo_map.shape();
+        const size_t output_height = shape[0];
+        const size_t output_width = shape[1];
+        const size_t num_channels = shape[2];
+
+        size_t num_anchor_boxes = 2;
+        static constexpr size_t NUM_CLASSES = 2;
+        static constexpr size_t NUM_PREDS =
+            NUM_CLASSES + 5;  // 4 for bbox, 1 conf
+        ASSERT_EQ(num_channels, num_anchor_boxes * NUM_PREDS);
+
+        static constexpr size_t OUTPUT_GRID_SIZE = 2;
+        ASSERT_EQ(output_height, OUTPUT_GRID_SIZE);
+        ASSERT_EQ(output_width, OUTPUT_GRID_SIZE);
+
         std::vector<image_annotation> result;
         for (size_t j = 0; j < num_prediction_instances; ++j) {
           // The actual contents of the image and the annotations are irrelevant
@@ -1086,8 +1099,9 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
       };
 
   // Two calls for two batches
-  model.convert_yolo_to_annotations_calls_.push_back(convert_yolo_impl);
-  model.convert_yolo_to_annotations_calls_.push_back(convert_yolo_impl);
+  for (size_t i = 0; i < 2 * test_batch_size; ++i) {
+    model.convert_yolo_to_annotations_calls_.push_back(convert_yolo_impl);
+  }
 
   gl_sarray result = model.predict(data);
   for (size_t j = 0; j < result.size(); ++j) {

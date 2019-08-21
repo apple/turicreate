@@ -78,7 +78,6 @@ class EXPORT object_detector: public ml_model_base {
       {{"metric", std::string("auto")}});
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::predict, "data");
-  // register_defaults("predict", {{"data", to_variant(gl_sarray())}});
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::export_to_coreml, "filename",
     "options");
