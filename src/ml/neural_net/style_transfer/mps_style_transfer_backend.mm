@@ -4,6 +4,8 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#ifdef HAS_MACOS_10_15
+
 #import <ml/neural_net/style_transfer/mps_style_transfer_backend.hpp>
 #import <ml/neural_net/style_transfer/mps_style_transfer.h>
 
@@ -158,3 +160,5 @@ float_array_map style_transfer::train(const float_array_map& inputs) {
 
 } // namespace style_transfer
 } // namespace turi
+
+#endif // #ifdef HAS_MACOS_10_15

@@ -15,6 +15,8 @@
 #include <ml/neural_net/float_array.hpp>
 #include <ml/neural_net/model_backend.hpp>
 
+#ifdef HAS_MACOS_10_15
+
 namespace turi {
 namespace style_transfer {
 
@@ -36,5 +38,7 @@ private:
 
 } // namespace style_transfer
 } // namespace turi
+
+#endif // #ifdef HAS_MACOS_10_15
 
 #endif

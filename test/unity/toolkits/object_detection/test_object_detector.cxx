@@ -223,6 +223,12 @@ public:
   using perform_evaluation_call =
       std::function<variant_map_type(gl_sframe data, std::string metric)>;
 
+  using convert_yolo_to_annotations_call =
+      std::function<std::vector<image_annotation>(
+          const neural_net::float_array& yolo_map,
+          const std::vector<std::pair<float, float>>& anchor_boxes,
+          float min_confidence)>;
+
   ~test_object_detector() {
     TS_ASSERT(create_iterator_calls_.empty());
     TS_ASSERT(create_compute_context_calls_.empty());
@@ -266,6 +272,17 @@ public:
     return expected_call(data, metric);
   }
 
+  std::vector<neural_net::image_annotation> convert_yolo_to_annotations(
+      const neural_net::float_array& yolo_map,
+      const std::vector<std::pair<float, float>>& anchor_boxes,
+      float min_confidence) override {
+    TS_ASSERT(!convert_yolo_to_annotations_calls_.empty());
+    convert_yolo_to_annotations_call expected_call =
+        std::move(convert_yolo_to_annotations_calls_.front());
+    convert_yolo_to_annotations_calls_.pop_front();
+    return expected_call(yolo_map, anchor_boxes, min_confidence);
+  }
+
   template <class T>
   T get_field(const std::string& name) {
     return variant_get_value<T>(get_value_from_state(name));
@@ -275,6 +292,8 @@ public:
   mutable std::deque<create_compute_context_call> create_compute_context_calls_;
   mutable std::deque<init_model_call> init_model_calls_;
   mutable std::deque<perform_evaluation_call> perform_evaluation_calls_;
+  mutable std::deque<convert_yolo_to_annotations_call>
+      convert_yolo_to_annotations_calls_;
 };
 
 BOOST_AUTO_TEST_CASE(test_object_detector_train) {
@@ -743,7 +762,353 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto_split) {
 
   // Deconstructing `model` here will assert that every expected call to a
   // mocked-out method has been called.
-}  
+}
+
+BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
+  static constexpr size_t test_num_examples = 100;
+  static constexpr size_t test_max_iterations = 2;
+  static constexpr size_t test_batch_size = 2;
+  const std::string test_annotations_name = "test_annotations";
+  const std::string test_image_name = "test_image";
+  static constexpr float test_loss = 5.f;
+  const std::vector<std::string> test_class_labels = {"label1", "label2"};
+  static constexpr size_t test_num_instances = 123;
+
+  // Create an arbitrary SFrame with test_num_examples rows, since
+  // object_detector uses the number of rows to compute num_examples, which is
+  // used as a normalizer.
+  gl_sframe data({{"ignored", gl_sarray::from_sequence(0, test_num_examples)}});
+
+  test_object_detector model;
+  // Allocate the mock dependencies. We'll transfer ownership when the toolkit
+  // code attempts to instantiate these dependencies.
+  std::unique_ptr<mock_data_iterator> mock_iterator(new mock_data_iterator);
+  std::unique_ptr<mock_image_augmenter> mock_augmenter(
+      new mock_image_augmenter);
+  std::unique_ptr<mock_model_backend> mock_nn_model(new mock_model_backend);
+  std::unique_ptr<mock_compute_context> mock_context(new mock_compute_context);
+
+  mock_iterator->class_labels_ = test_class_labels;
+  mock_iterator->num_instances_ = test_num_instances;
+
+  auto num_iterations_submitted = std::make_shared<size_t>(0);
+  for (size_t i = 0; i < test_max_iterations; ++i) {
+    // Program the mock_iterator to return two arbitrary images, each with one
+    // unique annotation. We'll store a copy of the annotations for later
+    // comparison.
+    auto test_annotations =
+        std::make_shared<std::vector<std::vector<image_annotation>>>();
+
+    auto next_batch_impl = [=](size_t batch_size) {
+      TS_ASSERT_EQUALS(batch_size, test_batch_size);
+      std::vector<labeled_image> result(test_batch_size);
+      for (size_t j = 0; j < result.size(); ++j) {
+        // The actual contents of the image and the annotations are irrelevant
+        // for the purposes of this test. But encode the batch index and row
+        // index into the bounding box so that we can verify this data is passed
+        // into the image augmenter.
+        image_annotation annotation;
+        annotation.bounding_box.x = i;
+        annotation.bounding_box.y = j;
+
+        result[j].annotations.push_back(annotation);
+        test_annotations->push_back(result[j].annotations);
+      }
+
+      return result;
+    };
+    mock_iterator->next_batch_calls_.push_back(next_batch_impl);
+
+    // Program the mock_augmenter to return an arbitrary float_array, and to
+    // pass through the annotations.
+    auto test_image_batch = std::make_shared<shared_float_array>();
+    auto prepare_images_impl = [=](std::vector<labeled_image> source_batch) {
+      // The source batch should batch what we returned from the mock_iterator.
+      TS_ASSERT_EQUALS(source_batch.size(), test_batch_size);
+      for (size_t j = 0; j < source_batch.size(); ++j) {
+        TS_ASSERT_EQUALS(source_batch[j].annotations, (*test_annotations)[j]);
+      }
+      // Return an arbitrary float_array, just a scalar encoding the iteration
+      // index.
+      image_augmenter::result res;
+      res.image_batch = shared_float_array::wrap(static_cast<float>(i));
+      res.annotations_batch = *test_annotations;
+
+      // Save the image_batch for downstream validation.
+      *test_image_batch = res.image_batch;
+
+      return res;
+    };
+    mock_augmenter->prepare_images_calls_.push_back(prepare_images_impl);
+
+    // The mock_model_backend should expect calls to set_learning_rate just at
+    // the 50% and 75% marks.
+    if (i == test_max_iterations / 2 || i == test_max_iterations * 3 / 4) {
+      auto set_learning_rate_impl = [=](float lr) {
+        TS_ASSERT_EQUALS(*num_iterations_submitted, i);
+      };
+      mock_nn_model->set_learning_rate_calls_.push_back(set_learning_rate_impl);
+    }
+
+    // The mock_model_backend should expect `train` calls on every iteration.
+    auto train_impl = [=](const float_array_map& inputs) {
+      // The input_batch should just be whatever the image_augmenter returned.
+      shared_float_array input_batch = inputs.at("input");
+      TS_ASSERT_EQUALS(input_batch.data(), test_image_batch->data());
+
+      // Track how many calls we've had.
+      *num_iterations_submitted += 1;
+
+      // Multiply loss by 8 to offset the "mps_loss_mult" factor currently
+      // hardwired in to avoid fp16 underflow in MPS.
+      std::map<std::string, shared_float_array> result;
+      result["loss"] = shared_float_array::wrap(8 * test_loss);
+      return result;
+    };
+    mock_nn_model->train_calls_.push_back(train_impl);
+
+  }  // End of test_max_iterations for loop
+
+  auto create_iterator_impl = [&](data_iterator::parameters iterator_params) {
+    return std::move(mock_iterator);
+  };
+
+  model.create_iterator_calls_.push_back(create_iterator_impl);
+
+  auto create_augmenter_impl = [&](const image_augmenter::options& opts) {
+    return std::move(mock_augmenter);
+  };
+  mock_context->create_augmenter_calls_.push_back(create_augmenter_impl);
+
+  // We'll provide this path for the "mlmodel_path" option. When the
+  // object_detector attempts to initialize weights from that path, just return
+  // some arbitrary dummy params.
+  const std::string test_mlmodel_path = "/test/foo.mlmodel";
+  model.init_model_calls_.emplace_back([=](const std::string& model_path) {
+    std::unique_ptr<model_spec> nn_spec(new model_spec);
+    nn_spec->add_convolution("test_layer", "test_input", 16, 16, 3, 3, 1, 1,
+                             model_spec::padding_type::SAME,
+                             /* weight_init_fn */ [](float* w, float* w_end) {
+                               for (int i = 0; i < w_end - w; ++i) {
+                                 w[i] = static_cast<float>(i);
+                               }
+                             });
+    return nn_spec;
+  });
+
+  auto create_object_detector_impl =
+      [&](int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
+          const float_array_map& config,
+          const float_array_map& weights) { return std::move(mock_nn_model); };
+  mock_context->create_object_detector_calls_.push_back(
+      create_object_detector_impl);
+
+  auto create_compute_context_impl = [&] { return std::move(mock_context); };
+  model.create_compute_context_calls_.push_back(create_compute_context_impl);
+
+  // Training will trigger a call to evaluation, to compute training metrics.
+  auto perform_evaluation_impl = [&](gl_sframe data, std::string metric) {
+    std::map<std::string, variant_type> result;
+    result["mean_average_precision"] = 0.80f;
+    return result;
+  };
+  model.perform_evaluation_calls_.push_back(perform_evaluation_impl);
+
+  // Now, actually invoke object_detector::train. This will trigger all the
+  // assertions registered above.
+  model.train(data, test_annotations_name, test_image_name, gl_sframe(),
+              {
+                  {"mlmodel_path", test_mlmodel_path},
+                  {"batch_size", test_batch_size},
+                  {"max_iterations", test_max_iterations},
+              });
+
+  TS_ASSERT_EQUALS(model.get_field<flex_int>("num_bounding_boxes"),
+                   test_num_instances);
+  TS_ASSERT_EQUALS(model.get_field<flex_int>("num_classes"),
+                   test_class_labels.size());
+
+  mock_iterator.reset(new mock_data_iterator);
+  mock_iterator->class_labels_ = test_class_labels;
+  mock_iterator->num_instances_ = test_num_instances;
+  model.create_iterator_calls_.push_back(create_iterator_impl);
+
+  mock_context.reset(new mock_compute_context);
+  model.create_compute_context_calls_.push_back(create_compute_context_impl);
+
+  mock_augmenter.reset(new mock_image_augmenter);
+  mock_context->create_augmenter_calls_.push_back(create_augmenter_impl);
+
+  mock_nn_model.reset(new mock_model_backend);
+  mock_context->create_object_detector_calls_.push_back(
+      create_object_detector_impl);
+
+  static constexpr size_t num_prediction_instances = 2;
+  auto test_annotations =
+      std::make_shared<std::vector<std::vector<image_annotation>>>();
+  auto next_batch_impl = [=](size_t batch_size) {
+    TS_ASSERT_EQUALS(batch_size, test_batch_size);
+
+    std::vector<labeled_image> result(test_batch_size);
+    for (size_t j = 0; j < result.size(); ++j) {
+      // The actual contents of the image and the annotations are irrelevant
+      // for the purposes of this test. But encode the batch index and row
+      // index into the bounding box so that we can verify this data is passed
+      // into the image augmenter.
+      image_annotation annotation;
+      annotation.bounding_box.x = 0;
+      annotation.bounding_box.y = j;
+
+      result[j].annotations.push_back(annotation);
+      test_annotations->push_back(result[j].annotations);
+    }
+
+    return result;
+  };
+  mock_iterator->next_batch_calls_.push_back(next_batch_impl);
+
+  // Program the mock_augmenter to return an arbitrary float_array, and to
+  // pass through the annotations.
+  auto test_image_batch = std::make_shared<shared_float_array>();
+  auto prepare_images_impl = [=](std::vector<labeled_image> source_batch) {
+    // Return an arbitrary float_array, just a scalar encoding the iteration
+    // index.
+    image_augmenter::result res;
+    res.image_batch = shared_float_array::wrap(static_cast<float>(0));
+    res.annotations_batch = *test_annotations;
+
+    // Save the image_batch for downstream validation.
+    *test_image_batch = res.image_batch;
+
+    return res;
+  };
+  mock_augmenter->prepare_images_calls_.push_back(prepare_images_impl);
+
+  auto predict_impl = [](const float_array_map& inputs) {
+    float_array_map result;
+
+    static constexpr size_t OUTPUT_GRID_SIZE = 2;
+    static constexpr size_t NUM_CLASSES = 2;
+    static constexpr size_t NUM_PREDS = NUM_CLASSES + 5;  // 4 for bbox, 1 conf
+
+    const std::vector<std::pair<float, float>> anchor_boxes = {
+        {1.f, 2.f},
+        {1.f, 1.f},
+    };
+
+    // Allocate a YOLO map and define a setter function so we can populate it
+    // relatively conveniently.
+    size_t buffer_size = test_batch_size * anchor_boxes.size() * NUM_PREDS *
+                         OUTPUT_GRID_SIZE * OUTPUT_GRID_SIZE;
+    std::vector<float> buffer(buffer_size, 0.f);
+    auto set_val = [&](size_t b_num, size_t h, size_t w, size_t b, size_t p,
+                       float val) {
+      float* out = buffer.data();
+      out += h * NUM_PREDS * anchor_boxes.size() * OUTPUT_GRID_SIZE;
+      out += w * NUM_PREDS * anchor_boxes.size();
+      out += b * NUM_PREDS;
+      out += p;
+      *out = val;
+    };
+
+    for (size_t batch_num = 0; batch_num < test_batch_size;
+         ++batch_num) {  // batch size
+      // Initialize all confidence scores to large negative values, which
+      // correspond to zero confidence (after passing through the sigmoid
+      // function).
+      for (size_t h = 0; h < OUTPUT_GRID_SIZE; ++h) {
+        for (size_t w = 0; w < OUTPUT_GRID_SIZE; ++w) {
+          for (size_t b = 0; b < anchor_boxes.size(); ++b) {
+            set_val(batch_num, h, w, b, 4, -1000.f);  // conf
+          }
+        }
+      }
+
+      // Predict class 0 at the center of output cell (1,0) with exactly the
+      // size of anchor box 0.
+      set_val(batch_num, 0, 1, 0, 0, 0.f);     // x
+      set_val(batch_num, 0, 1, 0, 1, 0.f);     // y
+      set_val(batch_num, 0, 1, 0, 2, 0.f);     // w
+      set_val(batch_num, 0, 1, 0, 3, 0.f);     // h
+      set_val(batch_num, 0, 1, 0, 4, 1000.f);  // conf
+      set_val(batch_num, 0, 1, 0, 5, 1000.f);  // class 0
+      set_val(batch_num, 0, 1, 0, 6, 0.f);     // class 1
+
+      // Predict class 1 at the upper-left corner of output cell (0,1) at half
+      // the size of anchor box 1, with confidence 0.5.
+      set_val(batch_num, 1, 0, 1, 0, -1000.f);         // x
+      set_val(batch_num, 1, 0, 1, 1, -1000.f);         // y
+      set_val(batch_num, 1, 0, 1, 2, std::log(0.5f));  // w
+      set_val(batch_num, 1, 0, 1, 3, std::log(0.5f));  // h
+      set_val(batch_num, 1, 0, 1, 4, 0.f);             // conf
+      set_val(batch_num, 1, 0, 1, 5, 0.f);             // class 0
+      set_val(batch_num, 1, 0, 1, 6, 1000.f);          // class 1
+    }
+
+    shared_float_array arr = shared_float_array::wrap(
+        buffer, {test_batch_size, OUTPUT_GRID_SIZE, OUTPUT_GRID_SIZE,
+                 anchor_boxes.size() * NUM_PREDS});
+    result["output"] = arr;
+    return result;
+  };
+  mock_nn_model->predict_calls_.push_back(predict_impl);
+
+  mock_iterator->next_batch_calls_.push_back(next_batch_impl);
+  mock_augmenter->prepare_images_calls_.push_back(prepare_images_impl);
+  mock_nn_model->predict_calls_.push_back(predict_impl);
+
+  auto empty_next_batch_impl = [=](size_t batch_size) {
+    std::vector<labeled_image> result(0);
+    return result;
+  };
+  // Send empty batch to match perform_predict() implementation
+  mock_iterator->next_batch_calls_.push_back(empty_next_batch_impl);
+
+  auto convert_yolo_impl =
+      [](const neural_net::float_array& yolo_map,
+         const std::vector<std::pair<float, float>>& anchor_boxes,
+         float min_confidence) {
+        ASSERT_EQ(yolo_map.dim(), 3);
+        const size_t* const shape = yolo_map.shape();
+        const size_t output_height = shape[0];
+        const size_t output_width = shape[1];
+        const size_t num_channels = shape[2];
+
+        size_t num_anchor_boxes = 2;
+        static constexpr size_t NUM_CLASSES = 2;
+        static constexpr size_t NUM_PREDS =
+            NUM_CLASSES + 5;  // 4 for bbox, 1 conf
+        ASSERT_EQ(num_channels, num_anchor_boxes * NUM_PREDS);
+
+        static constexpr size_t OUTPUT_GRID_SIZE = 2;
+        ASSERT_EQ(output_height, OUTPUT_GRID_SIZE);
+        ASSERT_EQ(output_width, OUTPUT_GRID_SIZE);
+
+        std::vector<image_annotation> result;
+        for (size_t j = 0; j < num_prediction_instances; ++j) {
+          // The actual contents of the image and the annotations are irrelevant
+          // for the purposes of this test. But encode the batch index and row
+          // index into the bounding box so that we can verify this data is
+          // passed into the image augmenter.
+          image_annotation annotation;
+          annotation.bounding_box.x = 0;
+          annotation.bounding_box.y = j;
+          result.push_back(annotation);
+        }
+        return result;
+      };
+
+  // Two calls for two batches
+  for (size_t i = 0; i < 2 * test_batch_size; ++i) {
+    model.convert_yolo_to_annotations_calls_.push_back(convert_yolo_impl);
+  }
+
+  gl_sarray result = model.predict(data);
+  for (size_t j = 0; j < result.size(); ++j) {
+    TS_ASSERT_EQUALS(result[j].size(), num_prediction_instances);
+  }
+}
+
 }  // namespace
 }  // namespace object_detection
 }  // namespace turi

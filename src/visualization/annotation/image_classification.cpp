@@ -28,9 +28,12 @@ ImageClassification::ImageClassification(
     const std::vector<std::string> &data_columns,
     const std::string &annotation_column)
     : AnnotationBase(data, data_columns, annotation_column) {
-  this->addAnnotationColumn();
-  this->checkDataSet();
-  this->_createFeaturesExtractor();
+  addAnnotationColumn();
+  checkDataSet();
+  // temporay workaround for avoiding resizing undefined images, check issue #1977
+  _splitUndefined(data_columns.at(0), false, false);
+  // must be called after _splitUndefined
+  _createFeaturesExtractor();
 }
 
 annotate_spec::Data ImageClassification::getItems(size_t start, size_t end) {
@@ -512,7 +515,16 @@ void ImageClassification::checkDataSet() {
 }
 
 void ImageClassification::_createFeaturesExtractor() {
+  // gurantee splitUndefined is called first
+  DASSERT_TRUE(m_data_na != nullptr);
 #ifdef __APPLE__
+  if (m_data->size() == 0) {
+    std::stringstream ss;
+    ss << "Expect positive number of images. Found 0 valid images and "
+       << m_data_na->size() << " missing images." << std::endl;
+    std_log_and_throw(std::runtime_error, ss.str());
+  }
+
   m_extractor = create_feature_extractor();
   auto data_sarray = std::static_pointer_cast<unity_sarray>(m_data->select_column(m_data_columns.at(0)));
   m_image_feature_extraction_sarray = gl_sarray(data_sarray);
