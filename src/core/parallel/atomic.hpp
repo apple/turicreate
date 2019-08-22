@@ -36,6 +36,8 @@ namespace turi_impl {
     //! Performs an atomic decrement by 1, returning the new value
     T dec() { return __sync_sub_and_fetch(&value, 1);  }
 
+    T load() const {return value; }
+
     //! Lvalue implicit cast
     operator T() const { return value; }
 
@@ -72,7 +74,7 @@ namespace turi_impl {
     //! Performs an atomic increment by 'val', returning the old value
     T inc_ret_last(const T val) { return __sync_fetch_and_add(&value, val);  }
 
-    //! Performs an atomic decrement by 'val', returning the new value
+    //! Performs an atomic decrement by 'val', returning the old value
     T dec_ret_last(const T val) { return __sync_fetch_and_sub(&value, val);  }
 
     //! Performs an atomic exchange with 'val', returning the previous value
@@ -94,6 +96,8 @@ namespace turi_impl {
 
     //! Performs an atomic decrement by 1, returning the new value
     T dec() { return dec(1);  }
+
+    T load() { return value; }
 
     //! Lvalue implicit cast
     operator T() const { return value; }
