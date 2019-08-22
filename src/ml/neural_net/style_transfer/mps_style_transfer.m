@@ -257,18 +257,15 @@
 
   NSMutableArray<MPSImage *> *contentImageArray = [[NSMutableArray alloc] init];
 
+  /**
+  * TODO: write what needs to be done for batching
+  **/
   for (NSUInteger index = 0; index < _batchSize; index++) {
-    // NSString* key = [NSString stringWithFormat:@"%@%lu", @"contentImage", index];
+    // NSString* key = [NSString stringWithFormat:@"%@%lu", @"input", index];
     NSString* key = @"input";
     MPSImage *contentImage = [[MPSImage alloc] initWithDevice:_dev imageDescriptor:imgDesc];
     [contentImage writeBytes:inputs[key].bytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
     [contentImageArray addObject:contentImage];
-    NSLog(@"Inputs");
-    for (int i = 0; i < 10; i++) {
-      float* numbers = (float *)inputs[key].bytes;
-      NSLog(@"%f", numbers[i]);
-    }
-    NSLog(@"\n");
   }
 
   MPSImageBatch *contentImageBatch = [contentImageArray copy];  
@@ -293,11 +290,15 @@
 
   NSMutableDictionary<NSString *, NSData *> *imagesOut = [[NSMutableDictionary alloc] init];;
 
+  /**
+  * TODO: write what needs to be done for batching
+  **/
   for (MPSImage *image in stylizedImages) {
+    // NSString* key = [NSString stringWithFormat:@"%@%lu", @"stylizedImage", [stylizedImages indexOfObject:image]];
+    NSString* key = @"output";
     NSMutableData* styleData = [NSMutableData dataWithLength:(NSUInteger)sizeof(float) * _imgWidth * _imgHeight * 3];
     [image readBytes:styleData.mutableBytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
-    // NSString* key = [NSString stringWithFormat:@"%@%lu", @"stylizedImage", [stylizedImages indexOfObject:image]];
-    imagesOut[@"output"] = styleData;
+    imagesOut[key] = styleData;
   }
 
   return [imagesOut copy];

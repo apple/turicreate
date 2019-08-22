@@ -132,15 +132,20 @@ int TCMPSInitGraph(MPSHandle *handle, int network_id, int n, int c_in, int h_in,
 
     *handle = (void *)mps;
   } else {
-    float_array_map config =
-        make_array_map(config_names, config_arrays, config_len);
-    float_array_map weights =
-        make_array_map(weight_names, weight_arrays, weight_len);
+    #ifdef HAS_MACOS_10_15
+      float_array_map config =
+          make_array_map(config_names, config_arrays, config_len);
+      float_array_map weights =
+          make_array_map(weight_names, weight_arrays, weight_len);
 
-    turi::style_transfer::style_transfer* mps 
-        = new turi::style_transfer::style_transfer(config, weights);
+      turi::style_transfer::style_transfer* mps 
+          = new turi::style_transfer::style_transfer(config, weights);
 
-    *handle = (void *)mps;
+      *handle = (void *)mps;
+    #else
+      log_and_throw("Can't construct GPU Style Transfer Network for MacOS \
+                     platform lower than 10.15");
+    #endif
   }
   API_END();
 }

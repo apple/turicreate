@@ -438,9 +438,13 @@ def create(style_dataset, content_dataset, style_feature=None,
 
         # TODO: Test Training
         loss = mps_net.train(_mxnet_to_mps(test_input.asnumpy()), _mxnet_to_mps(test_output.asnumpy()))
+
         print("Loss in MPS:")
         print(loss.asnumpy()/10000.0)
 
+        weights = mps_net.export()
+        print(weights)
+        
         return None
 
     #

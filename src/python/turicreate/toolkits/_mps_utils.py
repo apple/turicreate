@@ -764,4 +764,8 @@ class MpsStyleGraphAPI(object):
     def load(self, weights):
         pass
     def export(self):
-        pass
+        iter_handle = _ctypes.c_void_p()
+        status_code = self._LIB.TCMPSExportGraph(self.handle,
+                                                 _ctypes.byref(iter_handle))
+        assert status_code == 0
+        return dict(MpsFloatArrayIterator(iter_handle))
