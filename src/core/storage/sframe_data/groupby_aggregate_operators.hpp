@@ -5,10 +5,11 @@
  */
 #ifndef TURI_SFRAME_GROUPBY_AGGREGATE_OPERATORS_HPP
 #define TURI_SFRAME_GROUPBY_AGGREGATE_OPERATORS_HPP
-#include <core/storage/sframe_data/group_aggregate_value.hpp>
 #include <ml/sketches/streaming_quantile_sketch.hpp>
-namespace turi {
+#include <core/storage/sframe_data/group_aggregate_value.hpp>
+#include <core/parallel/atomic.hpp>
 
+namespace turi {
 
 /**
  * \ingroup sframe_physical
@@ -529,17 +530,17 @@ class count: public group_aggregate_value {
   }
 
   void add_element_simple(const flexible_type& flex) {
-    ++value;
+    ++value_;
   }
 
   /// combines two partial counts
   void combine(const group_aggregate_value& other) {
-    value += dynamic_cast<const count&>(other).value;
+    value_ += dynamic_cast<const count&>(other).value_;
   }
 
   /// Emits the count result
   flexible_type emit() const {
-    return flexible_type(value);
+    return flexible_type(value_.load());
   }
 
   /// The types supported by the count. (everything)
@@ -554,7 +555,7 @@ class count: public group_aggregate_value {
   }
 
   flex_type_enum set_input_type(flex_type_enum type) {
-    throw ("set_input_type is not supported for count");
+    throw std::runtime_error("set_input_type is not supported for count");
   }
 
   /// Name of the class
@@ -562,18 +563,20 @@ class count: public group_aggregate_value {
     return "Count";
   }
 
-  /// Serializer
+  /// Serializer, not intended for concurrency
   void save(oarchive& oarc) const {
-    oarc << value;
+    oarc << (size_t)value_;
   }
 
-  /// Deserializer
+  /// Deserializer, not intended for concurrency
   void load(iarchive& iarc) {
-    iarc >> value;
+    size_t val = 0;
+    iarc >> val;
+    value_.exchange(val);
   }
 
  private:
-  size_t value = 0;
+  turi::atomic<size_t> value_;
 };
 
 /**

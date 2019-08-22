@@ -230,6 +230,8 @@ class group_aggregate_container {
 
    /// collection of all the group operations
    std::vector<group_descriptor> group_descriptors;
+   std::vector<group_descriptor> lock_free_group;
+   std::vector<group_descriptor> lock_needed_group;
 
    struct segment_information {
      /// Locks on the elements structure

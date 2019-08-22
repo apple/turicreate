@@ -232,6 +232,11 @@ void group_aggregate_container::define_group(std::vector<size_t> column_numbers,
   desc.column_numbers = column_numbers;
   desc.aggregator = aggregator;
   group_descriptors.push_back(desc);
+  if (aggregator->is_lock_required()) {
+    lock_needed_group.push_back(desc);
+  } else {
+    lock_free_group.push_back(desc);
+  }
 }
 
 void group_aggregate_container::add(const std::vector<flexible_type>& val,
@@ -249,6 +254,7 @@ void group_aggregate_container::add(const std::vector<flexible_type>& val,
   auto groupby_element_vec = groupby_element_vec_ptr;
   segments[target_segment].refctr.inc();
   lock.unlock();
+
   segments[target_segment].fine_grain_locks[hash % 128].lock();
   bool found = false;
   for (size_t i = 0;i < groupby_element_vec->size(); ++i) {

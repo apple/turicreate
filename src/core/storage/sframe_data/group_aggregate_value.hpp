@@ -63,6 +63,16 @@ class group_aggregate_value {
   }
 
   /**
+   * check if lock is required..
+   * return true if lock is needed. Otherwise, operation
+   * doesn't need to explicitly acquire lock to be thread-safe.
+   *
+   * Default implementation always returns true.
+   */
+
+  virtual bool is_lock_required() const { return true; };
+
+  /**
    * Adds an element to the aggregate. Simple version of add_element
    * where there is only one input value for the operator
    */
