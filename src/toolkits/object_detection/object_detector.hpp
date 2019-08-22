@@ -39,8 +39,8 @@ class EXPORT object_detector: public ml_model_base {
   void train(gl_sframe data, std::string annotations_column_name,
              std::string image_column_name, variant_type validation_data,
              std::map<std::string, flexible_type> opts);
-  variant_map_type evaluate(gl_sframe data, std::string metric,
-                            std::map<std::string, flexible_type> opts);
+  variant_map_type evaluate(gl_sframe data, std::string metric);
+  gl_sarray predict(gl_sframe data);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
       std::string filename, std::map<std::string, flexible_type> opts);
 
@@ -73,11 +73,11 @@ class EXPORT object_detector: public ml_model_base {
       "    be determined based on the amount of data you provide.\n"
   );
 
-  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::evaluate, "data", "metric",
-                                 "options");
+  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::evaluate, "data", "metric");
   register_defaults("evaluate",
-      {{"metric", std::string("auto")},
-       {"options", to_variant(std::map<std::string, flexible_type>())}});
+      {{"metric", std::string("auto")}});
+
+  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::predict, "data");
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::export_to_coreml, "filename",
     "options");
@@ -124,6 +124,10 @@ class EXPORT object_detector: public ml_model_base {
   virtual std::unique_ptr<neural_net::model_spec> init_model(
       const std::string& pretrained_mlmodel_path) const;
 
+  virtual std::vector<neural_net::image_annotation> convert_yolo_to_annotations(
+      const neural_net::float_array& yolo_map,
+      const std::vector<std::pair<float, float>>& anchor_boxes,
+      float min_confidence);
 
   // Support for iterative training.
   // TODO: Expose via forthcoming C-API checkpointing mechanism?
@@ -136,6 +140,12 @@ class EXPORT object_detector: public ml_model_base {
 
   virtual variant_map_type perform_evaluation(gl_sframe data,
                                               std::string metric);
+
+  void perform_predict(
+      gl_sframe data,
+      std::function<void(const std::vector<neural_net::image_annotation>&,
+                         const std::vector<neural_net::image_annotation>&)>
+          consumer);
 
   // Utility code
 
