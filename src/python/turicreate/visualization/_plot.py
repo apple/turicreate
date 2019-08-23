@@ -367,7 +367,7 @@ def display_table_in_notebook(sf):
     def image_formatter(im):
         image_buffer = BytesIO()
         im.save(image_buffer, format='PNG')
-        return "<img src=\"data:image/png;base64," + base64.b64encode(image_buffer.getvalue()) + "\"/>"
+        return "<img src=\"data:image/png;base64," + base64.b64encode(image_buffer.getvalue()).decode() + "\"/>"
 
     import pandas as pd
     maximum_rows = 100
