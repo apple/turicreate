@@ -285,6 +285,7 @@ def create(style_dataset, content_dataset, style_feature=None,
                                             cuda_mem_req=cuda_mem_req, has_mps_impl=False)
 
     if use_mps:
+        # TODO: refactor somehow
         mps_key_map = {
            "transformer_conv0_weight": "transformer_encode_1_conv_weights",
            "transformer_conv1_weight": "transformer_encode_2_conv_weights",
