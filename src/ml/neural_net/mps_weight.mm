@@ -377,10 +377,11 @@ NS_ASSUME_NONNULL_END
 updateWithCommandBuffer:(__nonnull id<MTLCommandBuffer>)commandBuffer
           gradientState:
               (MPSCNNConvolutionGradientState *__nonnull)gradientState {
-
-  [self.optimizer encodeToCommandBuffer:commandBuffer
-               convolutionGradientState:gradientState
-                     convolutionWeights:self];
+  if (_updateWeights) {
+    [self.optimizer encodeToCommandBuffer:commandBuffer
+                 convolutionGradientState:gradientState
+                       convolutionWeights:self];
+  }
 
   return self.state;
 }
@@ -393,12 +394,8 @@ updateWithCommandBuffer:(__nonnull id<MTLCommandBuffer>)commandBuffer
 
   // Note: we ignore sourceState here, as self.state has the same data, with
   // possibly higher precision.
-  if(_updateWeights){
-    return [self updateWithCommandBuffer:commandBuffer
-                           gradientState:gradientState];
-  } else {
-    return sourceState;
-  }
+  return [self updateWithCommandBuffer:commandBuffer
+                         gradientState:gradientState];
 }
 
 - (void)set_cq:(id<MTLCommandQueue>)cmd_queue {

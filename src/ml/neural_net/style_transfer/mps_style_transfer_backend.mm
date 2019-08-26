@@ -102,7 +102,7 @@ float_array_map style_transfer::export_weights() const {
   if (@available(macOS 10.15, *)) {
     NSDictionary<NSString *, NSData *> *dictWeights
         = [m_impl->model exportWeights];
-    NSLog(@"%@", [dictWeights allKeys]);
+    
     float_array_map weights
         = [TCMPSStyleTransferHelpers fromNSDictionary:dictWeights];
 

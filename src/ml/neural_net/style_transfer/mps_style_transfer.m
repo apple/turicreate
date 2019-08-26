@@ -59,7 +59,7 @@
     _batchSize = 6;
     _contentLossMultiplier = 1.0;
     _styleLossMultiplier = 1e-4;
-    _updateAllParams = YES;
+    _updateAllParams = NO;
     _imgWidth = 256;
     _imgHeight = 256;
 
@@ -83,6 +83,12 @@
                                                                      cmdQueue:_commandQueue
                                                                    descriptor:transformerDesc
                                                                   initWeights:weights];
+
+    // Not Sure why this works. If this isn't defined the backward pass doesn't work properly
+    _model.forwardPass.handle = [[TCMPSGraphNodeHandle alloc] initWithLabel:@"TransformerForwardPass"];
+    _model.forwardPass.exportFromGraph = YES;
+    _model.forwardPass.synchronizeResource = YES;
+    _model.forwardPass.imageAllocator = [MPSImage defaultAllocator];
 
     _contentPreProcess = [[TCMPSStyleTransferPreProcessing alloc] initWithParameters:@"Content_Pre_Processing"
                                                                            inputNode:_model.forwardPass
@@ -131,12 +137,12 @@
     MPSCNNLossDescriptor *styleDesc = [MPSCNNLossDescriptor cnnLossDescriptorWithType:MPSCNNLossTypeMeanSquaredError
                                                                          reductionType:MPSCNNReductionTypeMean];
 
-    styleDesc.weight = 0.5 * _styleLossMultiplier;
+    styleDesc.weight = 0.5 * _styleLossMultiplier * 0.0001;
 
     MPSCNNLossDescriptor *contentDesc = [MPSCNNLossDescriptor cnnLossDescriptorWithType:MPSCNNLossTypeMeanSquaredError
                                                                            reductionType:MPSCNNReductionTypeMean];
 
-    contentDesc.weight = 0.5 * _contentLossMultiplier;
+    contentDesc.weight = 0.5 * _contentLossMultiplier * 0.0001;
 
     MPSNNGramMatrixCalculationNode *gramMatrixStyleLossFirstReLU
       = [MPSNNGramMatrixCalculationNode nodeWithSource:_styleVggLoss.reluOut1
@@ -208,8 +214,8 @@
                                              addLossStyle3Style4.resultImage]];
 
     MPSNNAdditionNode* totalLoss
-      = [MPSNNAdditionNode nodeWithSources:@[addTotalStyleLoss.resultImage,
-                                             contentLossNode.resultImage]];
+      = [MPSNNAdditionNode nodeWithSources:@[contentLossNode.resultImage,
+                                             addTotalStyleLoss.resultImage]];
 
     totalLoss.resultImage.handle = [[TCMPSGraphNodeHandle alloc] initWithLabel:@"totalLossValue"];
     totalLoss.resultImage.exportFromGraph = YES;

@@ -407,7 +407,7 @@ def create(style_dataset, content_dataset, style_feature=None,
         output = mps_net.predict(_mxnet_to_mps(test_input.asnumpy()))
         mps_z = output.asnumpy().reshape(1, 256, 256, 3)
         z = _mps_to_mxnet(mps_z)
-        print(z)
+        # print(z)
 
         VGG_CONTENT_LOSS_LAYER = 2;
         CONTENT_LOSS_MULT = 1.0
@@ -418,34 +418,58 @@ def create(style_dataset, content_dataset, style_feature=None,
         trainer = _gluon.Trainer(trainable_params, 'adam', {'learning_rate': LEARNING_RATE})
         mse_loss = _gluon.loss.L2Loss()
 
-        vgg16_s = _vgg16_data_prep(test_output)
-        s_vgg_outputs = vgg_model.forward(vgg16_s)
-        gram_output = [_gram_matrix(x) for x in s_vgg_outputs]
-        
-        c_content_layer = content_output[VGG_CONTENT_LOSS_LAYER]
-        p_content_layer = vgg_output[VGG_CONTENT_LOSS_LAYER]
+        start_time_mxnet = _time.time()
+        for i in range(0, 10):
+            with _mx.autograd.record():
+                transformer_output = transformer.forward(test_input, _mx.nd.array([0]))
 
-        style_losses = []
-        for s_g, p_g in zip(gram_output, vgg_output):
-          gram_out = _gram_matrix(p_g)
-          loss_val = mse_loss(s_g, gram_out)
-          style_losses.append(STYLE_LOSS_MULT * loss_val)
-        
-        style_loss = _mx.nd.add_n(*style_losses)
-        content_loss = CONTENT_LOSS_MULT * mse_loss(c_content_layer, p_content_layer)
-        total_loss = (content_loss + style_loss) / 10000.0
+                vgg16_s = _vgg16_data_prep(transformer_output)
+                vgg_output = vgg_model.forward(vgg16_s)
 
-        print("Loss in Python: "+str(total_loss))
+                vgg16_t = _vgg16_data_prep(test_input)
+                content_output = vgg_model.forward(vgg16_t)
 
+                vgg16_sty = _vgg16_data_prep(test_output)
+                s_vgg_outputs = vgg_model.forward(vgg16_sty)
+
+                gram_output = [_gram_matrix(x) for x in s_vgg_outputs]
+                
+                c_content_layer = content_output[VGG_CONTENT_LOSS_LAYER]
+                p_content_layer = vgg_output[VGG_CONTENT_LOSS_LAYER]
+
+                style_losses = []
+                for s_g, p_g in zip(gram_output, vgg_output):
+                  gram_out = _gram_matrix(p_g)
+                  loss_val = mse_loss(s_g, gram_out)
+                  style_losses.append(STYLE_LOSS_MULT * loss_val)
+                
+                style_loss = _mx.nd.add_n(*style_losses)
+                content_loss = CONTENT_LOSS_MULT * mse_loss(c_content_layer, p_content_layer)
+                total_loss = (content_loss + style_loss) / 10000.0
+                total_loss.backward()
+                print("Loss in Python: "+str(total_loss))
+
+            trainer.step(1)
+
+        end_time_mxnet = _time.time() - start_time_mxnet
+
+        start_time_mps = _time.time()
         # TODO: Test Training
-        loss = mps_net.train(_mxnet_to_mps(test_input.asnumpy()), _mxnet_to_mps(test_output.asnumpy()))
+        for x in range(0, 10):
+            loss = mps_net.train(_mxnet_to_mps(test_input.asnumpy()), _mxnet_to_mps(test_output.asnumpy()))
 
-        print("Loss in MPS:")
-        print(loss.asnumpy()/10000.0)
+            print("Loss in MPS:")
+            print(loss.asnumpy())
 
-        weights = mps_net.export()
-        print(weights)
+            # weights = mps_net.export()
+            # print(weights["transformer_decode_3_inst"])
+        end_time_mps = _time.time() - start_time_mps
         
+        print("MxNet Time")
+        print(_seconds_as_string(end_time_mxnet))   
+        print("MPS Time") 
+        print(_seconds_as_string(end_time_mps))
+
         return None
 
     #

@@ -753,7 +753,6 @@ class MpsStyleGraphAPI(object):
         assert result_handle, "TCMPSPredictGraph unexpectedly returned NULL pointer"
 
         result = MpsFloatArray(result_handle)
-        print(result.shape())
 
         return result
         

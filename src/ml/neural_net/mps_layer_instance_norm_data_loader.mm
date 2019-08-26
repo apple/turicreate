@@ -183,7 +183,6 @@ API_AVAILABLE(macos(10.14))
 
 - (MPSCNNNormalizationGammaAndBetaState *)updateGammaAndBetaWithCommandBuffer:(id<MTLCommandBuffer>)commandBuffer 
                                               instanceNormalizationStateBatch:(MPSCNNInstanceNormalizationGradientStateBatch *)instanceNormalizationStateBatch {
-    
   NSUInteger t1 = [_adamGamma timeStep];
   NSUInteger t2 = [_adamBeta timeStep];
 
