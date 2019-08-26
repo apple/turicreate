@@ -188,15 +188,15 @@
 - (NSDictionary<NSString *, NSData *> *) exportWeights:(NSString *)prefix {
   NSMutableDictionary<NSString *, NSData *> *weights = [[NSMutableDictionary alloc] init];
 
-  NSString* encoding1Prefix = [NSString stringWithFormat:@"%@%@", prefix, @"encoding_1_"];
+  NSString* encoding1Prefix = [NSString stringWithFormat:@"%@%@", prefix, @"encode_1_"];
   NSDictionary<NSString *, NSData *> * encode1Weights = [_encoding1 exportWeights:encoding1Prefix];
   [weights addEntriesFromDictionary: encode1Weights];
 
-  NSString* encoding2Prefix = [NSString stringWithFormat:@"%@%@", prefix, @"encoding_2_"];
+  NSString* encoding2Prefix = [NSString stringWithFormat:@"%@%@", prefix, @"encode_2_"];
   NSDictionary<NSString *, NSData *> * encode2Weights = [_encoding2 exportWeights:encoding2Prefix];
   [weights addEntriesFromDictionary: encode2Weights];
 
-  NSString* encoding3Prefix = [NSString stringWithFormat:@"%@%@", prefix, @"encoding_3_"];
+  NSString* encoding3Prefix = [NSString stringWithFormat:@"%@%@", prefix, @"encode_3_"];
   NSDictionary<NSString *, NSData *> * encode3Weights = [_encoding3 exportWeights:encoding3Prefix];
   [weights addEntriesFromDictionary: encode3Weights];
   
@@ -220,11 +220,11 @@
   NSDictionary<NSString *, NSData *> * residual5Weights = [_residual5 exportWeights:residual5Prefix];
   [weights addEntriesFromDictionary: residual5Weights];
 
-  NSString* decode1Prefix = [NSString stringWithFormat:@"%@%@", prefix, @"decode_1_"];
+  NSString* decode1Prefix = [NSString stringWithFormat:@"%@%@", prefix, @"decoding_1_"];
   NSDictionary<NSString *, NSData *> * decode1Weights = [_decoding1 exportWeights:decode1Prefix];
   [weights addEntriesFromDictionary: decode1Weights];
 
-  NSString* decode2Prefix = [NSString stringWithFormat:@"%@%@", prefix, @"decode_2_"];
+  NSString* decode2Prefix = [NSString stringWithFormat:@"%@%@", prefix, @"decoding_2_"];
   NSDictionary<NSString *, NSData *> * decode2Weights = [_decoding2 exportWeights:decode2Prefix];
   [weights addEntriesFromDictionary: decode2Weights];
 

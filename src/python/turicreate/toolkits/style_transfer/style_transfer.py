@@ -230,10 +230,6 @@ def create(style_dataset, content_dataset, style_feature=None,
     else:
         content_loader_type = params['training_content_loader_type']
 
-    content_images_loader = _SFrameSTIter(content_dataset, batch_size, shuffle=True,
-                                  feature_column=content_feature, input_shape=input_shape,
-                                  loader_type=content_loader_type, aug_params=params,
-                                  sequential=params['sequential_image_processing'])
     ctx = _mxnet_utils.get_mxnet_context(max_devices=params['batch_size'])
 
     num_styles = len(style_dataset)
@@ -244,7 +240,7 @@ def create(style_dataset, content_dataset, style_feature=None,
     transformer = _Transformer(num_styles, batch_size_each)
     transformer.collect_params().initialize(ctx=ctx)
 
-    if params['pretrained_weights']:
+    if params['pretrained_weights'] or use_mps:
         transformer.load_params(transformer_model_path, ctx, allow_missing=True)
 
     # For some reason, the transformer fails to hybridize for training, so we
@@ -281,12 +277,34 @@ def create(style_dataset, content_dataset, style_feature=None,
         # Estimate memory usage (based on experiments)
         cuda_mem_req = 260 + batch_size_each * 880 + num_styles * 1.4
 
-        _tkutl._print_neural_compute_device(cuda_gpus=cuda_gpus, use_mps=False,
+        _tkutl._print_neural_compute_device(cuda_gpus=cuda_gpus, use_mps=use_mps,
                                             cuda_mem_req=cuda_mem_req, has_mps_impl=False)
+    #
+    # Pre-compute gram matrices for style images
+    #
+    if verbose:
+        print('Analyzing visual features of the style images')
 
+    
+    if use_mps:
+        batch_size = 1
+    
+    content_images_loader = _SFrameSTIter(content_dataset, batch_size, shuffle=True,
+                                  feature_column=content_feature, input_shape=input_shape,
+                                  loader_type=content_loader_type, aug_params=params,
+                                  sequential=params['sequential_image_processing'])
+
+    style_images_loader = _SFrameSTIter(style_dataset, batch_size, shuffle=False, num_epochs=1,
+                                        feature_column=style_feature, input_shape=input_shape,
+                                        loader_type='stretch',
+                                        sequential=params['sequential_image_processing'])
+
+    style_sa = style_dataset[style_feature]
+    idx_column = _tc.SArray(range(0, style_sa.shape[0]))
+    style_sframe = _tc.SFrame({"style": idx_column, style_feature: style_sa})
     if use_mps:
         # TODO: refactor somehow
-        mps_key_map = {
+        mxnet_mps_key_map = {
            "transformer_conv0_weight": "transformer_encode_1_conv_weights",
            "transformer_conv1_weight": "transformer_encode_2_conv_weights",
            "transformer_conv2_weight": "transformer_encode_3_conv_weights",
@@ -357,10 +375,10 @@ def create(style_dataset, content_dataset, style_feature=None,
            "vgg16_conv9_bias": "vgg_block_4_conv_3_biases"
         }
 
-        transformer.batch_size = 1
+        mps_mxnet_key_map = dict([reversed(i) for i in mxnet_mps_key_map.items()])
 
+        transformer.batch_size = 1 # TODO: Train MPS with multiple batch sizes
         test_input = _mx.nd.uniform(0, 1, (1, 3) + input_shape)
-        test_output = _mx.nd.ones((1, 3) + input_shape)
 
         transformer_output = transformer.forward(test_input, _mx.nd.array([0]))
         vgg16_s = _vgg16_data_prep(transformer_output)
@@ -378,10 +396,10 @@ def create(style_dataset, content_dataset, style_feature=None,
         vgg_keys = list(vgg_params)
 
         for k in keys:
-          mps_net_params[mps_key_map[k]] = _mxnet_to_mps(net_params[k].data().asnumpy())
+            mps_net_params[mxnet_mps_key_map[k]] = _mxnet_to_mps(net_params[k].data().asnumpy())
         
         for k in vgg_keys:
-            mps_net_params[mps_key_map[k]] = _mxnet_to_mps(vgg_params[k].data().asnumpy())
+            mps_net_params[mxnet_mps_key_map[k]] = _mxnet_to_mps(vgg_params[k].data().asnumpy())
         
         mps_config = {
             'mode': _MpsGraphMode.Train,
@@ -392,96 +410,124 @@ def create(style_dataset, content_dataset, style_feature=None,
             'st_lr': params['lr'],
             'st_content_loss_mult': params['content_loss_mult'],
             'st_style_loss_mult': params['style_loss_mult'],
-            'st_finetune_all_params': params['finetune_all_params'],
+            'st_finetune_all_params': params['finetune_all_params'], # TODO: plumb through this usage
             "st_num_styles": num_styles
         }
 
-        mps_net = _get_mps_st_net(input_image_shape=(3, input_shape[0], input_shape[1]),
-                                  batch_size=batch_size,
-                                  output_size=(3, input_shape[0], input_shape[1]),
-                                  config=mps_config,
-                                  weights=mps_net_params)
-        
+        # TODO: Plumb through Predict with multiple batches
 
-        # Test Predict
-        output = mps_net.predict(_mxnet_to_mps(test_input.asnumpy()))
-        mps_z = output.asnumpy().reshape(1, 256, 256, 3)
-        z = _mps_to_mxnet(mps_z)
-        # print(z)
+        # output = mps_net.predict(_mxnet_to_mps(test_input.asnumpy()))
+        # mps_z = output.asnumpy().reshape(1, 256, 256, 3)
+        # z = _mps_to_mxnet(mps_z)
 
-        VGG_CONTENT_LOSS_LAYER = 2;
-        CONTENT_LOSS_MULT = 1.0
-        STYLE_LOSS_MULT = 1e-4
-        LEARNING_RATE = 0.001
+        for idx, s_batch in enumerate(style_images_loader):
+            s_data = _gluon.utils.split_and_load(s_batch.data[0], ctx_list=ctx, batch_axis=0)
+            style_image = s_data[0]
+            mps_net = _get_mps_st_net(input_image_shape=(3, input_shape[0], input_shape[1]),
+                                      batch_size=batch_size,
+                                      output_size=(3, input_shape[0], input_shape[1]),
+                                      config=mps_config,
+                                      weights=mps_net_params)
+            if(max_iterations < num_styles):
+                print("Warning: Changing max_iterations to atleast the number of style images")
+                max_iterations = num_styles
 
-        trainable_params = transformer.collect_params('.*gamma|.*beta')
-        trainer = _gluon.Trainer(trainable_params, 'adam', {'learning_rate': LEARNING_RATE})
-        mse_loss = _gluon.loss.L2Loss()
+            for mini_iteration in range(0, max_iterations // num_styles):
+                iterations = mini_iteration + idx * max_iterations // num_styles
 
-        start_time_mxnet = _time.time()
-        for i in range(0, 10):
-            with _mx.autograd.record():
-                transformer_output = transformer.forward(test_input, _mx.nd.array([0]))
+                c_batch = content_images_loader.next()
+                c_data = _gluon.utils.split_and_load(c_batch.data[0], ctx_list=ctx, batch_axis=0)
+                content_image = c_data[0]
 
-                vgg16_s = _vgg16_data_prep(transformer_output)
-                vgg_output = vgg_model.forward(vgg16_s)
+                loss = mps_net.train(_mxnet_to_mps(content_image.asnumpy()), _mxnet_to_mps(style_image.asnumpy()))
+                cur_loss = loss.asnumpy()[0]
 
-                vgg16_t = _vgg16_data_prep(test_input)
-                content_output = vgg_model.forward(vgg16_t)
+                if smoothed_loss is None:
+                    smoothed_loss = cur_loss
+                else:
+                    smoothed_loss = 0.9 * smoothed_loss + 0.1 * cur_loss
 
-                vgg16_sty = _vgg16_data_prep(test_output)
-                s_vgg_outputs = vgg_model.forward(vgg16_sty)
-
-                gram_output = [_gram_matrix(x) for x in s_vgg_outputs]
+                if verbose and iterations == 0 and idx == 0:
+                    # Print progress table header
+                    column_names = ['Iteration', 'Loss', 'Elapsed Time']
+                    num_columns = len(column_names)
+                    column_width = max(map(lambda x: len(x), column_names)) + 2
+                    hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
+                    print(hr)
+                    print(('| {:<{width}}' * num_columns + '|').format(*column_names, width=column_width-1))
+                    print(hr)
                 
-                c_content_layer = content_output[VGG_CONTENT_LOSS_LAYER]
-                p_content_layer = vgg_output[VGG_CONTENT_LOSS_LAYER]
+                cur_time = _time.time()
 
-                style_losses = []
-                for s_g, p_g in zip(gram_output, vgg_output):
-                  gram_out = _gram_matrix(p_g)
-                  loss_val = mse_loss(s_g, gram_out)
-                  style_losses.append(STYLE_LOSS_MULT * loss_val)
-                
-                style_loss = _mx.nd.add_n(*style_losses)
-                content_loss = CONTENT_LOSS_MULT * mse_loss(c_content_layer, p_content_layer)
-                total_loss = (content_loss + style_loss) / 10000.0
-                total_loss.backward()
-                print("Loss in Python: "+str(total_loss))
+                if verbose and (cur_time > last_time + 10 or iterations == max_iterations):
+                    # Print progress table row
+                    elapsed_time = cur_time - start_time
+                    print("| {cur_iter:<{width}}| {loss:<{width}.3f}| {time:<{width}.1f}|".format(
+                        cur_iter = iterations, loss = smoothed_loss,
+                        time = elapsed_time , width = column_width-1))
+                    last_time = cur_time
 
-            trainer.step(1)
+            mps_weights = mps_net.export()
 
-        end_time_mxnet = _time.time() - start_time_mxnet
+            # TODO: Refactor code to be less unwrappy
+            transformer.collect_params()[mps_mxnet_key_map["transformer_encode_1_inst_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_encode_1_inst_beta"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_encode_1_inst_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_encode_1_inst_gamma"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_encode_2_inst_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_encode_2_inst_beta"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_encode_2_inst_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_encode_2_inst_gamma"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_encode_3_inst_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_encode_3_inst_beta"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_encode_3_inst_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_encode_3_inst_gamma"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_decoding_1_inst_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_decoding_1_inst_beta"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_decoding_1_inst_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_decoding_1_inst_gamma"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_decoding_2_inst_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_decoding_2_inst_beta"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_decoding_2_inst_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_decoding_2_inst_gamma"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_instancenorm5_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_instancenorm5_beta"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_instancenorm5_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_instancenorm5_gamma"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_residual_1_inst_1_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_1_inst_1_beta"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_residual_1_inst_1_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_1_inst_1_gamma"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_residual_1_inst_2_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_1_inst_2_beta"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_residual_1_inst_2_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_1_inst_2_gamma"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_residual_2_inst_1_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_2_inst_1_beta"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_residual_2_inst_1_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_2_inst_1_gamma"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_residual_2_inst_2_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_2_inst_2_beta"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_residual_2_inst_2_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_2_inst_2_gamma"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_residual_3_inst_1_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_3_inst_1_beta"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_residual_3_inst_1_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_3_inst_1_gamma"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_residual_3_inst_2_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_3_inst_2_beta"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_residual_3_inst_2_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_3_inst_2_gamma"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_residual_4_inst_1_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_4_inst_1_beta"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_residual_4_inst_1_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_4_inst_1_gamma"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_residual_4_inst_2_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_4_inst_2_beta"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_residual_4_inst_2_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_4_inst_2_gamma"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_residual_5_inst_1_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_5_inst_1_beta"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_residual_5_inst_1_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_5_inst_1_gamma"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_residual_5_inst_2_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_5_inst_2_beta"]))
+            transformer.collect_params()[mps_mxnet_key_map["transformer_residual_5_inst_2_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_5_inst_2_gamma"]))
 
-        start_time_mps = _time.time()
-        # TODO: Test Training
-        for x in range(0, 10):
-            loss = mps_net.train(_mxnet_to_mps(test_input.asnumpy()), _mxnet_to_mps(test_output.asnumpy()))
+            if idx == (num_styles - 1):
+                print(hr)
 
-            print("Loss in MPS:")
-            print(loss.asnumpy())
+        training_time = _time.time() - start_time
 
-            # weights = mps_net.export()
-            # print(weights["transformer_decode_3_inst"])
-        end_time_mps = _time.time() - start_time_mps
-        
-        print("MxNet Time")
-        print(_seconds_as_string(end_time_mxnet))   
-        print("MPS Time") 
-        print(_seconds_as_string(end_time_mps))
+        state = {
+            '_model': transformer,
+            '_training_time_as_string': _seconds_as_string(training_time),
+            'batch_size': batch_size,
+            'num_styles': num_styles,
+            'model': model,
+            'input_image_shape': input_shape,
+            'styles': style_sframe,
+            'num_content_images': len(content_dataset),
+            'training_time': training_time,
+            'max_iterations': max_iterations,
+            'training_iterations': max_iterations,
+            'training_epochs': content_images_loader.cur_epoch,
+            'style_feature': style_feature,
+            'content_feature': content_feature,
+            "_index_column": "style",
+            'training_loss': smoothed_loss,
+        }
 
-        return None
-
-    #
-    # Pre-compute gram matrices for style images
-    #
-    if verbose:
-        print('Analyzing visual features of the style images')
-
-    style_images_loader = _SFrameSTIter(style_dataset, batch_size, shuffle=False, num_epochs=1,
-                                        feature_column=style_feature, input_shape=input_shape,
-                                        loader_type='stretch',
-                                        sequential=params['sequential_image_processing'])
+        return StyleTransfer(state)
 
     num_layers = len(params['style_loss_mult'])
     gram_chunks = [[] for _ in range(num_layers)]
@@ -511,10 +557,6 @@ def create(style_dataset, content_dataset, style_feature=None,
     else:
         for ctx0 in ctx:
             ctx_grams[ctx0] = [gram.as_in_context(ctx0) for gram in grams]
-
-    style_sa = style_dataset[style_feature]
-    idx_column = _tc.SArray(range(0, style_sa.shape[0]))
-    style_sframe = _tc.SFrame({"style": idx_column, style_feature: style_sa})
 
     #
     # Training loop
