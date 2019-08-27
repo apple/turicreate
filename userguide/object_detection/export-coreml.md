@@ -112,8 +112,8 @@ request.imageCropAndScaleOption = .scaleFill
 ```
 
 We use `.scaleFill` that stretches the image into the native input size of the
-model. If you use `.centerCrop` or `.scaleFit`, it will be a bit tricker to
-correctly map the bonding box coordinate system to the original input image.
+model. If you use `.centerCrop` or `.scaleFit`, it will be a bit trickier to
+correctly map the bounding box coordinate system to the original input image.
 
 From the `request` results we get two `MLMultiArray` instances,
 `coordinates` and `confidence`. For easier handling, we will convert these
