@@ -170,7 +170,6 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
     params = {
         'use_tensorflow': False,
-        'mps' : False,
         'show_deprecated_warnings' : False
     }
 
@@ -212,7 +211,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
     # Decide whether to use MPS GPU, MXnet GPU or CPU
     num_mxnet_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=num_sessions)
-    use_mps = _use_mps() and num_mxnet_gpus == 0 and not params['use_tensorflow']
+    use_mps = _use_mps() and num_mxnet_gpus == 0 
 
     if verbose:
         if use_mps:
