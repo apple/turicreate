@@ -28,7 +28,7 @@ from turicreate.toolkits._model import PythonProxy as _PythonProxy
 
 from .util import random_split_by_session as _random_split_by_session
 from .util import _MIN_NUM_SESSIONS_FOR_SPLIT
-import tensorflow as tf
+
 
 
 def create(dataset, session_id, target, features=None, prediction_window=100,
@@ -140,8 +140,9 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     from .._mps_utils import (use_mps as _use_mps,
                               mps_device_name as _mps_device_name,
                               ac_weights_mps_to_mxnet as _ac_weights_mps_to_mxnet)
-    from ._tf_model_architecture import ActivityTensorFlowModel, fit_model_tf
-
+    from ._tf_model_architecture import ActivityTensorFlowModel, _fit_model_tf
+    from .._mxnet import mxnet as _mx
+    import tensorflow as _tf
 
     if not isinstance(target, str):
         raise _ToolkitError('target must be of type str')
@@ -169,7 +170,8 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
     params = {
         'use_tensorflow': False,
-        'mps' : False
+        'mps' : False,
+        'show_deprecated_warnings' : False
     }
 
     if '_advanced_parameters' in kwargs:
@@ -181,6 +183,9 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
             raise _ToolkitError('Unknown advanced parameters: {}'.format(unsupported))
 
         params.update(kwargs['_advanced_parameters'])
+
+    if not(params['show_deprecated_warnings']):
+        _tf.compat.v1.logging.set_verbosity(_tf.compat.v1.logging.ERROR)
 
     if isinstance(validation_set, str) and validation_set == 'auto':
         # Computing the number of unique sessions in this way is relatively
@@ -224,6 +229,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     # Create data iterators
     user_provided_batch_size = batch_size
     batch_size = max(batch_size, num_mxnet_gpus, 1)
+
     use_mx_data_batch = not use_mps and not params['use_tensorflow']
     data_iter = _SFrameSequenceIter(chunked_data, len(features),
                                     prediction_window, predictions_in_chunk,
@@ -252,24 +258,32 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
     # Always create MXnet models, as the pred_model is later saved to the state
     # If MPS is used - the loss_model will be overwritten
-    loss_model, pred_model = _define_model_mxnet(len(target_map), prediction_window,
-                                                 predictions_in_chunk, context)
+    loss_model, pred_model = _define_model_mxnet(len(target_map), prediction_window, predictions_in_chunk, context)
 
     if use_mps:
         loss_model = _define_model_mps(batch_size, len(features), len(target_map),
                                        prediction_window, predictions_in_chunk, is_prediction_model=False)
 
         log = _fit_model_mps(loss_model, data_iter, valid_iter, max_iterations, verbose)
-    elif params['use_tensorflow']:
-        ac_model = ActivityTensorFlowModel(batch_size, len(features), len(target_map), prediction_window, predictions_in_chunk)
-        # Train the model using Tensorflow
-        log = fit_model_tf(ac_model, data_iter, valid_iter, max_iterations, verbose, 1e-3)
-        ac_model.export_weights()
-
     else:
-        # Train the model using Mxnet
-        log = _fit_model_mxnet(loss_model, data_iter, valid_iter,
-                         max_iterations, num_mxnet_gpus, verbose)
+        # Initialize the weights in MXNet and then pass them in TensorFlow
+        dummy_data_iter = _SFrameSequenceIter(chunked_data, len(features),
+                                    prediction_window, predictions_in_chunk,
+                                    batch_size, use_target=use_target, mx_output=True)
+        loss_model.bind(data_shapes=dummy_data_iter.provide_data, label_shapes=dummy_data_iter.provide_label)
+        loss_model.init_params(initializer=_mx.init.Xavier())
+        net_params, aux = loss_model.get_params()
+
+        # Dictionary with layer names as key and initialised value as value
+        net_params.update(aux)
+
+        if params['use_tensorflow']:
+            ac_model = ActivityTensorFlowModel(net_params, batch_size, len(features), len(target_map), prediction_window, predictions_in_chunk)
+            # Train the model using Tensorflow
+            log = _fit_model_tf(ac_model, net_params, data_iter, valid_iter, max_iterations, verbose, 1e-3)
+        else:
+            # Train the model using Mxnet
+            log = _fit_model_mxnet(loss_model, dummy_data_iter, valid_iter, max_iterations, num_mxnet_gpus, verbose)
 
     # Set up prediction model
     pred_model.bind(data_shapes=data_iter.provide_data, label_shapes=None,
@@ -278,12 +292,18 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     if use_mps:
         mps_params = loss_model.export()
         arg_params, aux_params = _ac_weights_mps_to_mxnet(mps_params, _net_params['lstm_h'])
+
     elif params['use_tensorflow']:
-        tf_net_params = tf.compat.v1.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)
-        # print(all_vars)
-        for keys in tf_net_params:
-            print("Keys", keys) 
-            print("Tensor by name", tf.get_default_graph().get_tensor_by_name(keys.name))
+        # Copy the weights back in the MXNet format
+        aux_params, arg_params  = {}, {}
+        tf_export_params = ac_model.export_weights()
+        for k in tf_export_params.keys():
+            if k in net_params:
+                if k in ['bn_moving_mean', 'bn_moving_var']:
+                    aux_params[k] = _mx.nd.array(tf_export_params[k])
+                else:
+                    arg_params[k] = _mx.nd.array(tf_export_params[k])
+
     else:
         arg_params, aux_params = loss_model.get_params()
 
