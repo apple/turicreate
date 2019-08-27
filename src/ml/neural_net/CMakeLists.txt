@@ -56,7 +56,11 @@ else()
   set(additional_unity_neural_net_requirements "")
 endif()
 
-# TODO: a backend wrapping MXNet.
+make_library(tctensorflow SHARED
+  SOURCES
+  tf_compute_context.cpp
+)
+set_target_properties(tctensorflow PROPERTIES SUFFIX ".so")
 
 make_library(unity_neural_net OBJECT
   SOURCES
